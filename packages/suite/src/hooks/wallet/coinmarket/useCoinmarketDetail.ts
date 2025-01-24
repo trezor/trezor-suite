@@ -1,5 +1,7 @@
 import { createContext, useContext } from 'react';
 
+import type { TradingType } from '@suite-common/invity';
+
 import { useSelector } from 'src/hooks/suite';
 import {
     CoinmarketDetailContextValues,
@@ -14,7 +16,6 @@ import {
     CoinmarketGetTypedTradeProps,
     CoinmarketTradeInfoMapProps,
     CoinmarketTradeMapProps,
-    CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
 import { useServerEnvironment } from 'src/hooks/wallet/coinmarket/useServerEnviroment';
@@ -22,7 +23,7 @@ import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmark
 
 const isBuyTrade = (trade: Trade): trade is TradeBuy => trade.tradeType === 'buy';
 
-const getTypedTrade = <T extends CoinmarketTradeType>({
+const getTypedTrade = <T extends TradingType>({
     trades,
     tradeType,
     transactionId,
@@ -64,7 +65,7 @@ const getTypedInfoTrade = <T extends keyof CoinmarketTradeMapProps>({
     }
 };
 
-const getCoinmarketDetailData = <T extends CoinmarketTradeType>({
+const getCoinmarketDetailData = <T extends TradingType>({
     coinmarket,
     tradeType,
 }: CoinmarketGetDetailDataProps): CoinmarketGetDetailDataOutputProps<T> => {
@@ -87,7 +88,7 @@ const getCoinmarketDetailData = <T extends CoinmarketTradeType>({
     };
 };
 
-export const useCoinmarketDetail = <T extends CoinmarketTradeType>({
+export const useCoinmarketDetail = <T extends TradingType>({
     selectedAccount,
     tradeType,
 }: CoinmarketUseDetailProps): CoinmarketUseDetailOutputProps<T> => {
@@ -115,7 +116,7 @@ export const CoinmarketDetailContext = createContext<CoinmarketDetailContextValu
 );
 CoinmarketDetailContext.displayName = 'CoinmarketDetailContext';
 
-export const useCoinmarketDetailContext = <T extends CoinmarketTradeType>() => {
+export const useCoinmarketDetailContext = <T extends TradingType>() => {
     const context = useContext<CoinmarketDetailContextValues<T> | null>(CoinmarketDetailContext);
     if (context === null) throw Error('CoinmarketDetailContext used without Context');
 

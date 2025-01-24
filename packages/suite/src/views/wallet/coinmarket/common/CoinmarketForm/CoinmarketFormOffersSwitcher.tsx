@@ -1,11 +1,9 @@
 import { spacings } from '@trezor/theme';
 import { Row, Card, Column, Spinner, Paragraph } from '@trezor/components';
+import type { TradingTradeType } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
-import {
-    CoinmarketTradeDetailType,
-    CoinmarketUtilsProvidersProps,
-} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketExchangeFormContextProps } from 'src/types/coinmarket/coinmarketForm';
 import {
     FORM_EXCHANGE_CEX,
@@ -21,7 +19,7 @@ interface CoinmarketFormOffersSwitcherProps {
     isFormLoading: boolean;
     isFormInvalid: boolean;
     providers: CoinmarketUtilsProvidersProps | undefined;
-    bestRatedQuote: CoinmarketTradeDetailType | undefined;
+    bestRatedQuote: TradingTradeType | undefined;
 }
 
 export const CoinmarketFormOffersSwitcher = ({

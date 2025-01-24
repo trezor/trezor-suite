@@ -10,7 +10,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
 import { networks } from '@suite-common/wallet-config';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI, type TradingBuyType } from '@suite-common/invity';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
@@ -19,7 +19,7 @@ import {
     getAmountLimits,
 } from 'src/utils/wallet/coinmarket/buyUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-import { CoinmarketTradeBuyType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
+import { UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
 import {
     addIdsToQuotes,
     coinmarketGetSuccessQuotes,
@@ -67,7 +67,7 @@ export const useCoinmarketBuyForm = ({
     const { callInProgress, account, timer, device, setCallInProgress, checkQuotesTimer } =
         useCoinmarketInitializer({ selectedAccount, pageType });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
-        useCoinmarketPaymentMethod<CoinmarketTradeBuyType>();
+        useCoinmarketPaymentMethod<TradingBuyType>();
     const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =
         useCoinmarketNavigation(account);
 
@@ -222,12 +222,11 @@ export const useCoinmarketBuyForm = ({
             }
 
             // processed quotes and without alternative quotes
-            const quotesDefault = filterQuotesAccordingTags<CoinmarketTradeBuyType>(
-                addIdsToQuotes<CoinmarketTradeBuyType>(allQuotes, 'buy'),
+            const quotesDefault = filterQuotesAccordingTags<TradingBuyType>(
+                addIdsToQuotes<TradingBuyType>(allQuotes, 'buy'),
             );
             // without errors
-            const quotesSuccess =
-                coinmarketGetSuccessQuotes<CoinmarketTradeBuyType>(quotesDefault) ?? [];
+            const quotesSuccess = coinmarketGetSuccessQuotes<TradingBuyType>(quotesDefault) ?? [];
 
             const bestQuote = quotesSuccess?.[0];
             const bestQuotePaymentMethod = bestQuote?.paymentMethod;

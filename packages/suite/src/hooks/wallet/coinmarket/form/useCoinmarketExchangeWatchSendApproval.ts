@@ -3,9 +3,8 @@ import { useTimeoutFn, useUnmount } from 'react-use';
 
 import { ExchangeTrade } from 'invity-api';
 
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI, type TradingExchangeType } from '@suite-common/invity';
 
-import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useDispatch } from 'src/hooks/suite';
 import { saveSelectedQuote } from 'src/actions/wallet/coinmarketExchangeActions';
 
@@ -45,7 +44,7 @@ export const useCoinmarketExchangeWatchSendApproval = ({
         const watchTradeAsync = async () => {
             cancelRefresh();
 
-            const response = await invityAPI.watchTrade<CoinmarketTradeExchangeType>(
+            const response = await invityAPI.watchTrade<TradingExchangeType>(
                 selectedQuote,
                 'exchange',
                 refreshCount,

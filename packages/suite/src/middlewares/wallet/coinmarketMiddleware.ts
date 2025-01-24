@@ -2,7 +2,7 @@ import { MiddlewareAPI } from 'redux';
 
 import { UI } from '@trezor/connect';
 import { accountsActions } from '@suite-common/wallet-core';
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI, type TradingType } from '@suite-common/invity';
 
 import { AppState, Action, Dispatch } from 'src/types/suite';
 import {

@@ -2,16 +2,16 @@ import { useEffect } from 'react';
 
 import { Button, Column, Divider, InfoItem, Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import type { TradingExchangeType } from '@suite-common/invity';
 
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
-import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { AccountLabeling, Translation } from 'src/components/suite';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 
 export const CoinmarketOfferExchangeSend = () => {
     const { device, account, callInProgress, selectedQuote, exchangeInfo, sendTransaction, trade } =
-        useCoinmarketFormContext<CoinmarketTradeExchangeType>();
+        useCoinmarketFormContext<TradingExchangeType>();
     useCoinmarketWatchTrade({
         account,
         trade,

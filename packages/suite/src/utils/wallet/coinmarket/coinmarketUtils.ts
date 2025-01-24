@@ -21,7 +21,7 @@ import {
     sortByCoin,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
-import { regional } from '@suite-common/invity';
+import { regional, type TradingTradeType, type TradingType } from '@suite-common/invity';
 
 import { Account } from 'src/types/wallet';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
@@ -35,8 +35,6 @@ import {
     CoinmarketTradeBuySellDetailMapProps,
     CoinmarketTradeBuySellType,
     CoinmarketTradeDetailMapProps,
-    CoinmarketTradeDetailType,
-    CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 
 export const cryptoPlatformSeparator = '--';
@@ -249,7 +247,7 @@ export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
     return { tag, infoNote };
 };
 
-export const coinmarketGetSuccessQuotes = <T extends CoinmarketTradeType>(
+export const coinmarketGetSuccessQuotes = <T extends TradingType>(
     quotes: CoinmarketTradeDetailMapProps[T][] | undefined,
 ) => (quotes ? quotes.filter(quote => quote.error === undefined) : undefined);
 
@@ -273,9 +271,9 @@ export const filterQuotesAccordingTags = <T extends CoinmarketTradeBuySellType>(
 ) => allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
 
 // fill orderId for all, paymentId for sell and buy, quoteId for exchange
-export const addIdsToQuotes = <T extends CoinmarketTradeType>(
+export const addIdsToQuotes = <T extends TradingType>(
     allQuotes: CoinmarketTradeDetailMapProps[T][] | undefined,
-    type: CoinmarketTradeType,
+    type: TradingType,
 ): CoinmarketTradeDetailMapProps[T][] => {
     if (!allQuotes) allQuotes = [];
 
@@ -299,9 +297,9 @@ export const addIdsToQuotes = <T extends CoinmarketTradeType>(
 };
 
 export const getBestRatedQuote = (
-    quotes: CoinmarketTradeDetailType[] | undefined,
-    type: CoinmarketTradeType,
-): CoinmarketTradeDetailType | undefined => {
+    quotes: TradingTradeType[] | undefined,
+    type: TradingType,
+): TradingTradeType | undefined => {
     const quotesFiltered = quotes?.filter(item => item.rate && item.rate !== 0);
     const bestRatedQuotes = quotesFiltered
         ? [...quotesFiltered].sort((a, b) => {
@@ -501,7 +499,7 @@ export const coinmarketGetAccountLabel = (label: string, shouldSendInSats: boole
     label === 'BTC' && shouldSendInSats ? 'sat' : label;
 
 export const coinmarketGetSectionActionLabel = (
-    type: CoinmarketTradeType,
+    type: TradingType,
 ): Extract<
     ExtendedMessageDescriptor['id'],
     'TR_BUY' | 'TR_COINMARKET_SELL' | 'TR_COINMARKET_SWAP'

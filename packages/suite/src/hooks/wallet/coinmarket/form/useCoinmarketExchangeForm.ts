@@ -15,7 +15,7 @@ import { Account } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networks } from '@suite-common/wallet-config';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI, type TradingExchangeType } from '@suite-common/invity';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/coinmarketExchangeActions';
@@ -35,10 +35,7 @@ import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
-import {
-    CoinmarketTradeExchangeType,
-    UseCoinmarketFormProps,
-} from 'src/types/coinmarket/coinmarket';
+import { UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
 import {
     CoinmarketExchangeFormContextProps,
     CoinmarketExchangeFormProps,
@@ -101,7 +98,7 @@ export const useCoinmarketExchangeForm = ({
     const [amountLimits, setAmountLimits] = useState<CryptoAmountLimitProps | undefined>(undefined);
 
     const [innerQuotes, setInnerQuotes] = useState<ExchangeTrade[] | undefined>(
-        coinmarketGetSuccessQuotes<CoinmarketTradeExchangeType>(quotes),
+        coinmarketGetSuccessQuotes<TradingExchangeType>(quotes),
     );
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
 
@@ -275,7 +272,7 @@ export const useCoinmarketExchangeForm = ({
                 const currency = cryptoIdToCoinSymbol(quotesRequest.send) ?? quotesRequest.send;
                 const limits = getAmountLimits({ quotes: allQuotes, currency });
 
-                const successQuotes = addIdsToQuotes<CoinmarketTradeExchangeType>(
+                const successQuotes = addIdsToQuotes<TradingExchangeType>(
                     getSuccessQuotesOrdered(allQuotes),
                     'exchange',
                 );

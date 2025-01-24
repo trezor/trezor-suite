@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 
 import { Divider, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import type { TradingExchangeType } from '@suite-common/invity';
 
 import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
 import { CoinmarketVerify } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerify';
@@ -12,7 +13,6 @@ import {
     CoinmarketSelectedOfferStepper,
     CoinmarketSelectedOfferStepperItemProps,
 } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferStepper';
-import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketOfferExchangeSend } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferExchange/CoinmarketOfferExchangeSend';
 import { CoinmarketOfferExchangeSendSwap } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferExchange/CoinmarketOfferExchangeSendSwap';
 import { CoinmarketOfferExchangeSendApproval } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferExchange/CoinmarketOfferExchangeSendApproval';
@@ -24,7 +24,7 @@ export const CoinmarketOfferExchange = ({
     type,
     quoteAmounts,
 }: CoinmarketOfferExchangeProps) => {
-    const { exchangeStep } = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
+    const { exchangeStep } = useCoinmarketFormContext<TradingExchangeType>();
     const cryptoId = selectedQuote?.receive;
     const coinmarketVerifyAccount = useCoinmarketVerifyAccount({ cryptoId });
 

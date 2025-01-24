@@ -2,9 +2,9 @@ import { Fragment } from 'react';
 
 import { Divider, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import type { TradingSellType } from '@suite-common/invity';
 
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketOfferSellProps } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketOfferSellBankAccount } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferSell/CoinmarketOfferSellBankAccount';
 import { CoinmarketSelectedOfferSellTransaction } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferSell/CoinmarketOfferSellTransaction';
@@ -15,7 +15,7 @@ import {
 } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferStepper';
 
 export const CoinmarketOfferSell = (props: CoinmarketOfferSellProps) => {
-    const { sellStep } = useCoinmarketFormContext<CoinmarketTradeSellType>();
+    const { sellStep } = useCoinmarketFormContext<TradingSellType>();
 
     const steps: (CoinmarketSelectedOfferStepperItemProps & {
         component: JSX.Element | null;

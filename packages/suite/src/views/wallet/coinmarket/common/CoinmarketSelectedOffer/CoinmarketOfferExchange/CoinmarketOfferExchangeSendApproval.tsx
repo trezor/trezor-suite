@@ -16,10 +16,10 @@ import {
     Card,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import type { TradingExchangeType } from '@suite-common/invity';
 
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { useCoinmarketExchangeWatchSendApproval } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeWatchSendApproval';
@@ -46,7 +46,7 @@ export const CoinmarketOfferExchangeSendApproval = () => {
         confirmTrade,
         sendTransaction,
         setExchangeStep,
-    } = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
+    } = useCoinmarketFormContext<TradingExchangeType>();
     const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
     const [approvalType, setApprovalType] = useState<ExtendedDexApprovalType>(
         selectedQuote?.status === 'CONFIRM' ? 'APPROVED' : 'MINIMAL',

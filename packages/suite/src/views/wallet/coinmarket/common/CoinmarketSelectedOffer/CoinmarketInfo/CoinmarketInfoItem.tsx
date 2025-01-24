@@ -3,16 +3,17 @@ import { CryptoId } from 'invity-api';
 import { Account } from '@suite-common/wallet-types';
 import { Column, Row, InfoItem, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import type { TradingType } from '@suite-common/invity';
 
 import { AccountLabeling, Translation } from 'src/components/suite';
-import { CoinmarketPayGetLabelType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketPayGetLabelType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 
 interface CoinmarketInfoItemProps {
     account?: Account;
-    type: CoinmarketTradeType;
+    type: TradingType;
     label: CoinmarketPayGetLabelType;
     currency?: CryptoId;
     amount?: string;

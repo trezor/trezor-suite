@@ -4,6 +4,7 @@ import { CryptoId } from 'invity-api';
 
 import { Button, TextButton, Row, Column, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import type { TradingTradeType, TradingType } from '@suite-common/invity';
 
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import {
@@ -24,7 +25,6 @@ import {
     parseCryptoId,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormOfferFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferFiatAmount';
-import { CoinmarketTradeDetailType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
 import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/coinmarket/form';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
@@ -32,8 +32,8 @@ import { CoinmarketFormOffersSwitcher } from 'src/views/wallet/coinmarket/common
 import { useCoinmarketDeviceDisconnected } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketDeviceDisconnected';
 
 const getSelectedQuote = (
-    context: CoinmarketFormContextValues<CoinmarketTradeType>,
-    bestScoredQuote: CoinmarketTradeDetailType | undefined,
+    context: CoinmarketFormContextValues<TradingType>,
+    bestScoredQuote: TradingTradeType | undefined,
 ) => {
     if (isCoinmarketExchangeContext(context)) {
         return context.getValues(FORM_EXCHANGE_TYPE) === FORM_EXCHANGE_DEX

@@ -13,6 +13,7 @@ import type {
 
 import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import type { FeeLevel } from '@trezor/connect';
+import type { TradingType } from '@suite-common/invity';
 
 import type { WalletAction, Account } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
@@ -28,10 +29,7 @@ import { STORAGE } from 'src/actions/suite/constants';
 import type { AppState, Action as SuiteAction } from 'src/types/suite';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
-import {
-    CoinmarketPaymentMethodListProps,
-    CoinmarketTradeType,
-} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
 
 export interface ComposedTransactionInfo {
     composed?: Pick<
@@ -97,7 +95,7 @@ export interface State {
     modalAccount: Account | undefined;
     isLoading: boolean;
     lastLoadedTimestamp: number;
-    activeSection?: CoinmarketTradeType;
+    activeSection?: TradingType;
     prefilledFromCryptoId: CryptoId | undefined;
 }
 
@@ -279,7 +277,7 @@ export const coinmarketReducer = (
     });
 
 export const selectSupportedSymbols =
-    (type: CoinmarketTradeType) =>
+    (type: TradingType) =>
     (state: AppState): Set<CryptoId> | undefined => {
         const { coinmarket } = state.wallet;
         switch (type) {

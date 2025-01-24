@@ -1,14 +1,12 @@
 import styled from 'styled-components';
 
 import { Card } from '@trezor/components';
+import type { TradingBuyType } from '@suite-common/invity';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
-import {
-    CoinmarketGetCryptoQuoteAmountProps,
-    CoinmarketTradeBuyType,
-} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketGetCryptoQuoteAmountProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
 import { CoinmarketDetailBuyPaymentPaymentSuccessful } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentSuccessful';
 import { CoinmarketDetailBuyPaymentFailed } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentFailed';
@@ -21,7 +19,7 @@ const Wrapper = styled.div`
 `;
 
 export const CoinmarketDetailBuy = () => {
-    const { trade, info, account } = useCoinmarketDetailContext<CoinmarketTradeBuyType>();
+    const { trade, info, account } = useCoinmarketDetailContext<TradingBuyType>();
     const dispatch = useDispatch();
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default coinmarket page, the trade is shown there in the previous trades

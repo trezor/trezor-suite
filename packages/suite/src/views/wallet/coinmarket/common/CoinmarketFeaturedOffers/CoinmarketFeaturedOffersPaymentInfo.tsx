@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
 import { spacingsPx } from '@trezor/theme';
+import type { TradingType } from '@suite-common/invity';
 
 import {
     CoinmarketTradeBuySellType,
     CoinmarketTradeDetailBuySellType,
-    CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 import { Translation } from 'src/components/suite';
 import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentPlainType';
@@ -18,7 +18,7 @@ const PaymentInfoWrapper = styled.div`
 
 interface CoinmarketFeaturedOffersPaymentInfoProps {
     quote: CoinmarketTradeDetailBuySellType;
-    type: CoinmarketTradeType;
+    type: TradingType;
 }
 
 export const CoinmarketFeaturedOffersPaymentInfo = ({

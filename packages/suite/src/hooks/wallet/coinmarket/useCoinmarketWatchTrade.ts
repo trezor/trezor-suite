@@ -11,7 +11,7 @@ import {
     WatchSellTradeResponse,
 } from 'invity-api';
 
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI, type TradingType } from '@suite-common/invity';
 
 import { Trade, TradeType } from 'src/types/wallet/coinmarketCommonTypes';
 import { saveTrade as saveBuyTrade } from 'src/actions/wallet/coinmarketBuyActions';
@@ -19,7 +19,6 @@ import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/coinmarketExc
 import { saveTrade as saveSellTrade } from 'src/actions/wallet/coinmarketSellActions';
 import {
     CoinmarketTradeStatusType,
-    CoinmarketTradeType,
     CoinmarketUseWatchTradeProps,
     CoinmarketWatchTradeProps,
 } from 'src/types/coinmarket/coinmarket';
@@ -34,7 +33,7 @@ export const tradeFinalStatuses: Record<TradeType, CoinmarketTradeStatusType[]> 
 const shouldRefreshTrade = (trade: Trade | undefined) =>
     trade && trade.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
 
-const coinmarketWatchTrade = async <T extends CoinmarketTradeType>({
+const coinmarketWatchTrade = async <T extends TradingType>({
     trade,
     account,
     refreshCount,
@@ -99,7 +98,7 @@ const coinmarketWatchTrade = async <T extends CoinmarketTradeType>({
     }
 };
 
-export const useCoinmarketWatchTrade = <T extends CoinmarketTradeType>({
+export const useCoinmarketWatchTrade = <T extends TradingType>({
     account,
     trade,
 }: CoinmarketUseWatchTradeProps<T>) => {

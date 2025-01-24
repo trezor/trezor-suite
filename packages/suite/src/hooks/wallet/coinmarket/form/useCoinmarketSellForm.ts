@@ -9,7 +9,7 @@ import { isChanged } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networks } from '@suite-common/wallet-config';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI, type TradingSellType } from '@suite-common/invity';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
@@ -27,7 +27,6 @@ import { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
     CoinmarketAccountOptionsGroupOptionProps,
-    CoinmarketTradeSellType,
     UseCoinmarketFormProps,
 } from 'src/types/coinmarket/coinmarket';
 import {
@@ -86,7 +85,7 @@ export const useCoinmarketSellForm = ({
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
         useCoinmarketInitializer({ selectedAccount, pageType });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
-        useCoinmarketPaymentMethod<CoinmarketTradeSellType>();
+        useCoinmarketPaymentMethod<TradingSellType>();
     const {
         selectedFee: selectedFeeRecomposedAndSigned,
         composed,
@@ -108,7 +107,7 @@ export const useCoinmarketSellForm = ({
     const [amountLimits, setAmountLimits] = useState<AmountLimitProps | undefined>(undefined);
     const [sellStep, setSellStep] = useState<CoinmarketSellStepType>('BANK_ACCOUNT');
     const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(
-        coinmarketGetSuccessQuotes<CoinmarketTradeSellType>(quotes),
+        coinmarketGetSuccessQuotes<TradingSellType>(quotes),
     );
     const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
@@ -266,12 +265,12 @@ export const useCoinmarketSellForm = ({
                     currency,
                 });
 
-                const quotesDefault = filterQuotesAccordingTags<CoinmarketTradeSellType>(
-                    addIdsToQuotes<CoinmarketTradeSellType>(allQuotes, 'sell'),
+                const quotesDefault = filterQuotesAccordingTags<TradingSellType>(
+                    addIdsToQuotes<TradingSellType>(allQuotes, 'sell'),
                 );
                 // without errors
                 const quotesSuccess =
-                    coinmarketGetSuccessQuotes<CoinmarketTradeSellType>(quotesDefault) ?? [];
+                    coinmarketGetSuccessQuotes<TradingSellType>(quotesDefault) ?? [];
 
                 const bestQuote = quotesSuccess?.[0];
                 const bestQuotePaymentMethod = bestQuote?.paymentMethod;

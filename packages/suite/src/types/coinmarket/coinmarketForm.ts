@@ -21,6 +21,14 @@ import {
 } from '@suite-common/wallet-types';
 import { FeeLevel } from '@trezor/connect';
 import { AccountsState } from '@suite-common/wallet-core';
+import type {
+    TradingBuyType,
+    TradingExchangeType,
+    TradingPaymentMethodType,
+    TradingSellType,
+    TradingTradeType,
+    TradingType,
+} from '@suite-common/invity';
 
 import {
     CoinmarketAccountOptionsGroupOptionProps,
@@ -29,14 +37,8 @@ import {
     CoinmarketGetProvidersInfoProps,
     CoinmarketPaymentMethodListProps,
     CoinmarketPaymentMethodProps,
-    CoinmarketPaymentMethodType,
-    CoinmarketTradeBuyType,
     CoinmarketTradeDetailMapProps,
-    CoinmarketTradeDetailType,
-    CoinmarketTradeExchangeType,
     CoinmarketTradeSellExchangeType,
-    CoinmarketTradeSellType,
-    CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 import type { Account } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
@@ -173,7 +175,7 @@ export interface CoinmarketBuyFormContextProps
     extends UseFormReturn<CoinmarketBuyFormProps>,
         CoinmarketCommonFormProps,
         CoinmarketCommonFormBuySellProps {
-    type: CoinmarketTradeBuyType;
+    type: TradingBuyType;
     buyInfo?: BuyInfo;
     cryptoInputValue?: string;
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
@@ -197,7 +199,7 @@ export interface CoinmarketSellFormContextProps
     extends UseFormReturn<CoinmarketSellFormProps>,
         CoinmarketCommonFormProps,
         CoinmarketCommonFormBuySellProps {
-    type: CoinmarketTradeSellType;
+    type: TradingSellType;
     isComposing: boolean;
     sellInfo?: SellInfo;
     localCurrencyOption: { label: string; value: string };
@@ -230,7 +232,7 @@ export interface CoinmarketSellFormContextProps
 export interface CoinmarketExchangeFormContextProps
     extends UseFormReturn<CoinmarketExchangeFormProps>,
         CoinmarketCommonFormProps {
-    type: CoinmarketTradeExchangeType;
+    type: TradingExchangeType;
     // form - additional helpers for form
     form: {
         state: CoinmarketFormStateProps;
@@ -273,9 +275,9 @@ export type CoinmarketFormMapProps = {
     exchange: CoinmarketExchangeFormContextProps;
 };
 
-export type CoinmarketFormContextValues<T extends CoinmarketTradeType> = CoinmarketFormMapProps[T];
+export type CoinmarketFormContextValues<T extends TradingType> = CoinmarketFormMapProps[T];
 
-export type CoinmarketPaymentMethodHookProps<T extends CoinmarketTradeType> = {
+export type CoinmarketPaymentMethodHookProps<T extends TradingType> = {
     paymentMethods: CoinmarketPaymentMethodListProps[];
     getPaymentMethods: (
         quotes: CoinmarketTradeDetailMapProps[T][],
@@ -376,11 +378,11 @@ export interface CoinmarketUseComposeTransactionReturnProps
 
 export interface CoinmarketOfferCommonProps {
     account?: Account;
-    selectedQuote: CoinmarketTradeDetailType;
+    selectedQuote: TradingTradeType;
     providers: CoinmarketGetProvidersInfoProps;
-    type: CoinmarketTradeType;
+    type: TradingType;
     quoteAmounts: CoinmarketGetCryptoQuoteAmountProps | null;
-    paymentMethod?: CoinmarketPaymentMethodType;
+    paymentMethod?: TradingPaymentMethodType;
     paymentMethodName?: string;
 }
 

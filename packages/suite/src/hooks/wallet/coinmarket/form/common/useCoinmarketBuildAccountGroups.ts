@@ -1,18 +1,16 @@
 import { useMemo } from 'react';
 
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import type { TradingType } from '@suite-common/invity';
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 import { selectSupportedSymbols } from 'src/reducers/wallet/coinmarketReducer';
-import {
-    CoinmarketAccountsOptionsGroupProps,
-    CoinmarketTradeType,
-} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketAccountsOptionsGroupProps } from 'src/types/coinmarket/coinmarket';
 import { coinmarketBuildAccountOptions } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 export const useCoinmarketBuildAccountGroups = (
-    type: CoinmarketTradeType,
+    type: TradingType,
 ): CoinmarketAccountsOptionsGroupProps[] => {
     const accounts = useSelector(selectAccounts);
     const accountLabels = useSelector(selectAccountLabels);

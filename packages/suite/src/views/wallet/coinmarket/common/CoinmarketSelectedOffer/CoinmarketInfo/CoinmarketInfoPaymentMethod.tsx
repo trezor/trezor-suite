@@ -1,11 +1,11 @@
+import type { TradingPaymentMethodType } from '@suite-common/invity';
 import { InfoItem } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketPaymentMethodType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketPaymentType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentType';
 
 interface CoinmarketInfoPaymentMethodProps {
-    paymentMethod: CoinmarketPaymentMethodType;
+    paymentMethod: TradingPaymentMethodType;
     paymentMethodName?: string;
 }
 

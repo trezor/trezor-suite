@@ -1,11 +1,11 @@
+import type { TradingPaymentMethodType } from '@suite-common/invity';
 import { Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { FORM_DEFAULT_PAYMENT_METHOD } from 'src/constants/wallet/coinmarket/form';
-import { CoinmarketPaymentMethodType } from 'src/types/coinmarket/coinmarket';
 
 interface CoinmarketPaymentTypeProps {
-    method?: CoinmarketPaymentMethodType;
+    method?: TradingPaymentMethodType;
     methodName?: string;
 }
 type TranslatedPaymentMethod = 'bankTransfer' | 'creditCard';

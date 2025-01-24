@@ -1,15 +1,13 @@
 import { ExchangeTrade } from 'invity-api';
 
 import { Row, Tooltip, Text } from '@trezor/components';
+import type { TradingTradeType } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
-import {
-    CoinmarketExchangeProvidersInfoProps,
-    CoinmarketTradeDetailType,
-} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketExchangeProvidersInfoProps } from 'src/types/coinmarket/coinmarket';
 
 interface CoinmarketInfoExchangeTypeProps {
-    selectedQuote: CoinmarketTradeDetailType;
+    selectedQuote: TradingTradeType;
     providers: CoinmarketExchangeProvidersInfoProps;
 }
 

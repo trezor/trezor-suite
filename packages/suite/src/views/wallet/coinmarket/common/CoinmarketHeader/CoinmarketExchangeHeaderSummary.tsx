@@ -4,8 +4,8 @@ import { CryptoId } from 'invity-api';
 import { H3, Icon, Row, Text } from '@trezor/components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { spacings } from '@trezor/theme';
+import type { TradingExchangeType } from '@suite-common/invity';
 
-import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useSelector } from 'src/hooks/suite';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
@@ -23,7 +23,7 @@ export const CoinmarketExchangeHeaderSummary = ({
     receiveCurrency,
 }: CoinmarketExchangeHeaderSummaryProps) => {
     const theme = useTheme();
-    const context = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
+    const context = useCoinmarketFormContext<TradingExchangeType>();
     const { account } = context;
     const { symbol } = account;
     const fee = useSelector(state => state.wallet.coinmarket.composedTransactionInfo.composed?.fee);

@@ -16,6 +16,7 @@ import {
     selectSelectedDevice,
     toggleRememberDevice,
 } from '@suite-common/wallet-core';
+import type { TradingType } from '@suite-common/invity';
 
 import { GetState, Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -30,7 +31,6 @@ import {
     COINMARKET_COMMON,
     COINMARKET_EXCHANGE,
 } from 'src/actions/wallet/constants';
-import { CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 
 export type CoinmarketCommonAction =
     | {
@@ -55,7 +55,7 @@ export type CoinmarketCommonAction =
       }
     | {
           type: typeof COINMARKET_COMMON.SET_COINMARKET_ACTIVE_SECTION;
-          activeSection: CoinmarketTradeType;
+          activeSection: TradingType;
       }
     | {
           type: typeof COINMARKET_COMMON.SET_COINMARKET_FROM_PREFILLED_CRYPTO_ID;
@@ -79,7 +79,7 @@ export const setCoinmarketModalAccount = (
     modalAccount,
 });
 
-export const setActiveSection = (activeSection: CoinmarketTradeType): CoinmarketCommonAction => ({
+export const setActiveSection = (activeSection: TradingType): CoinmarketCommonAction => ({
     type: COINMARKET_COMMON.SET_COINMARKET_ACTIVE_SECTION,
     activeSection,
 });

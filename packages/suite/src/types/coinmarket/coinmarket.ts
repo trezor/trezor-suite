@@ -8,13 +8,9 @@ import {
     ExchangeTrade,
     ExchangeTradeStatus,
     FiatCurrencyCode,
-    SellCryptoPaymentMethod,
     SellFiatTrade,
     SellProviderInfo,
     SellTradeStatus,
-    WatchBuyTradeResponse,
-    WatchExchangeTradeResponse,
-    WatchSellTradeResponse,
 } from 'invity-api';
 import { AnyAction, Dispatch } from 'redux';
 
@@ -26,6 +22,13 @@ import { TokenDefinitionsState } from '@suite-common/token-definitions';
 import { AssetLogoProps } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { AssetOptionBaseProps } from '@trezor/product-components';
+import type {
+    TradingBuyType,
+    TradingExchangeType,
+    TradingPaymentMethodType,
+    TradingSellType,
+    TradingType,
+} from '@suite-common/invity';
 
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 import { State } from 'src/reducers/wallet/coinmarketReducer';
@@ -66,16 +69,9 @@ export type UseCoinmarketFormProps = UseCoinmarketProps & {
     pageType?: CoinmarketPageType;
 };
 
-export type CoinmarketTradeBuyType = 'buy';
-export type CoinmarketTradeSellType = 'sell';
-export type CoinmarketTradeExchangeType = 'exchange';
-export type CoinmarketTradeType =
-    | CoinmarketTradeBuyType
-    | CoinmarketTradeSellType
-    | CoinmarketTradeExchangeType;
-export type CoinmarketTradeBuySellType = Exclude<CoinmarketTradeType, CoinmarketTradeExchangeType>;
-export type CoinmarketTradeSellExchangeType = Exclude<CoinmarketTradeType, CoinmarketTradeBuyType>;
-export type CoinmarketTradeBuyExchangeType = Exclude<CoinmarketTradeType, CoinmarketTradeSellType>;
+export type CoinmarketTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
+export type CoinmarketTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
+export type CoinmarketTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;
 
 export type CoinmarketTradeMapProps = {
     buy: TradeBuy;
@@ -83,7 +79,6 @@ export type CoinmarketTradeMapProps = {
     exchange: TradeExchange;
 };
 
-export type CoinmarketTradeDetailType = BuyTrade | SellFiatTrade | ExchangeTrade;
 export type CoinmarketTradeDetailBuySellType = BuyTrade | SellFiatTrade;
 
 export type CoinmarketTradeDetailMapProps = {
@@ -99,15 +94,9 @@ export type CoinmarketTradeInfoMapProps = {
     exchange: ExchangeInfo;
 };
 
-export type CoinmarketWatchTradeResponseMapProps = {
-    buy: WatchBuyTradeResponse;
-    sell: WatchSellTradeResponse;
-    exchange: WatchExchangeTradeResponse;
-};
-
 export interface CoinmarketGetTypedTradeProps {
     trades: Trade[];
-    tradeType: CoinmarketTradeType;
+    tradeType: TradingType;
     transactionId: string | undefined;
 }
 
@@ -120,15 +109,15 @@ export interface CoinmarketGetDetailDataProps {
 
 export interface CoinmarketGetTypedInfoTradeProps {
     coinmarket: State;
-    tradeType: CoinmarketTradeType;
+    tradeType: TradingType;
 }
 
-export interface CoinmarketUseWatchTradeProps<T extends CoinmarketTradeType> {
+export interface CoinmarketUseWatchTradeProps<T extends TradingType> {
     account: Account | undefined;
     trade: CoinmarketTradeMapProps[T] | undefined;
 }
 
-export interface CoinmarketWatchTradeProps<T extends CoinmarketTradeType> {
+export interface CoinmarketWatchTradeProps<T extends TradingType> {
     trade: CoinmarketTradeMapProps[T];
     account: Account;
     refreshCount: number;
@@ -226,7 +215,7 @@ export interface CoinmarketAccountsOptionsGroupProps {
 export type CoinmarketFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
 
 export interface CoinmarketGetAmountLabelsProps {
-    type: CoinmarketTradeType;
+    type: TradingType;
     amountInCrypto: boolean;
 }
 
@@ -269,10 +258,8 @@ export interface CoinmarketGetCryptoQuoteAmountProps {
     receiveCurrency: CryptoId | undefined;
 }
 
-export type CoinmarketPaymentMethodType = BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
-
 export interface CoinmarketGetPaymentMethodProps {
-    paymentMethod?: CoinmarketPaymentMethodType;
+    paymentMethod?: TradingPaymentMethodType;
     paymentMethodName?: string;
 }
 

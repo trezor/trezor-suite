@@ -5,6 +5,7 @@ import { CryptoId } from 'invity-api';
 
 import { spacingsPx } from '@trezor/theme';
 import { Icon } from '@trezor/components';
+import type { TradingTradeType } from '@suite-common/invity';
 
 import {
     getCryptoQuoteAmountProps,
@@ -12,7 +13,6 @@ import {
     isCoinmarketSellContext,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { CoinmarketTradeDetailType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
@@ -35,7 +35,7 @@ interface CoinmarketFeaturedOffersAmountProps {
 }
 
 interface CoinmarketFeaturedOffersAmountsProps {
-    quote: CoinmarketTradeDetailType;
+    quote: TradingTradeType;
 }
 
 const CoinmarketFeaturedOffersAmount = ({

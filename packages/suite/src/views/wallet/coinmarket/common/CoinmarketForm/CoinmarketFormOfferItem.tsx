@@ -1,15 +1,13 @@
+import type { TradingTradeType } from '@suite-common/invity';
 import { Row, Spinner, Card, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import {
-    CoinmarketTradeDetailType,
-    CoinmarketUtilsProvidersProps,
-} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
 
 interface CoinmarketFormOfferItemProps {
-    bestQuote: CoinmarketTradeDetailType | undefined;
+    bestQuote: TradingTradeType | undefined;
     isFormLoading: boolean;
     isFormInvalid: boolean;
     providers: CoinmarketUtilsProvidersProps | undefined;

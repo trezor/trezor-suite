@@ -5,10 +5,10 @@ import { BankAccount } from 'invity-api';
 
 import { Button, Select, Icon, Row } from '@trezor/components';
 import { fontWeights, spacingsPx, typography } from '@trezor/theme';
+import type { TradingSellType } from '@suite-common/invity';
 
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { formatIban } from 'src/utils/wallet/coinmarket/sellUtils';
-import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const Wrapper = styled.div`
@@ -118,7 +118,7 @@ const IconWrapper = styled.div`
 export const CoinmarketOfferSellBankAccount = () => {
     const theme = useTheme();
     const { callInProgress, confirmTrade, addBankAccount, selectedQuote } =
-        useCoinmarketFormContext<CoinmarketTradeSellType>();
+        useCoinmarketFormContext<TradingSellType>();
     const [bankAccount, setBankAccount] = useState<BankAccount | undefined>(
         selectedQuote?.bankAccounts ? selectedQuote?.bankAccounts[0] : undefined,
     );

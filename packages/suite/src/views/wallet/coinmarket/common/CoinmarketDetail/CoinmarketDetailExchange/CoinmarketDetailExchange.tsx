@@ -1,15 +1,13 @@
 import styled from 'styled-components';
 
 import { Card } from '@trezor/components';
+import type { TradingExchangeType } from '@suite-common/invity';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
-import {
-    CoinmarketGetCryptoQuoteAmountProps,
-    CoinmarketTradeExchangeType,
-} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketGetCryptoQuoteAmountProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
 import { CoinmarketDetailExchangePaymentSuccessful } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentSuccessful';
 import { CoinmarketDetailExchangePaymentKYC } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentKYC';
@@ -23,7 +21,7 @@ const Wrapper = styled.div`
 `;
 
 export const CoinmarketDetailExchange = () => {
-    const { account, trade, info } = useCoinmarketDetailContext<CoinmarketTradeExchangeType>();
+    const { account, trade, info } = useCoinmarketDetailContext<TradingExchangeType>();
     const dispatch = useDispatch();
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed

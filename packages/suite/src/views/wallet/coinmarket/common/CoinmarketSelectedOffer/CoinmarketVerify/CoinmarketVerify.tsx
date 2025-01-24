@@ -7,12 +7,12 @@ import { Input, Button, Paragraph, Divider, Column, Tooltip } from '@trezor/comp
 import { spacings } from '@trezor/theme';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { TradingExchangeType } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketTradeBuyExchangeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketVerifyOptions } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerifyOptions';
 import { CoinmarketVerifyAccountReturnProps } from 'src/types/coinmarket/coinmarketVerify';
 import { CoinmarketAddressOptions } from 'src/views/wallet/coinmarket/common/CoinmarketAddressOptions';
@@ -35,7 +35,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: Coinmark
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const { cryptoIdToNativeCoinSymbol, cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
-    const context = useCoinmarketFormContext<CoinmarketTradeBuyExchangeType>();
+    const context = useCoinmarketFormContext<TradingExchangeType>();
     const { callInProgress, device, verifyAddress, addressVerified, confirmTrade } = context;
     const exchangeQuote = isCoinmarketExchangeContext(context) ? context.selectedQuote : null;
     const {

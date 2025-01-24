@@ -1,6 +1,13 @@
 import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { CurrencyOption } from '@suite-common/wallet-types';
+import type {
+    TradingBuyType,
+    TradingExchangeType,
+    TradingSellType,
+    TradingTradeType,
+    TradingType,
+} from '@suite-common/invity';
 
 import {
     FORM_FIAT_CURRENCY_SELECT,
@@ -12,12 +19,7 @@ import {
     CoinmarketGetFiatCurrenciesProps,
     CoinmarketGetPaymentMethodProps,
     CoinmarketGetProvidersInfoProps,
-    CoinmarketTradeBuyType,
     CoinmarketTradeDetailMapProps,
-    CoinmarketTradeDetailType,
-    CoinmarketTradeExchangeType,
-    CoinmarketTradeSellType,
-    CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
 import {
     CoinmarketFormContextValues,
@@ -26,19 +28,19 @@ import {
 
 export const isCoinmarketBuyContext = (
     context: CoinmarketFormMapProps[keyof CoinmarketFormMapProps],
-): context is CoinmarketFormMapProps[CoinmarketTradeBuyType] => context.type === 'buy';
+): context is CoinmarketFormMapProps[TradingBuyType] => context.type === 'buy';
 
 export const isCoinmarketSellContext = (
     context: CoinmarketFormMapProps[keyof CoinmarketFormMapProps],
-): context is CoinmarketFormMapProps[CoinmarketTradeSellType] => context.type === 'sell';
+): context is CoinmarketFormMapProps[TradingSellType] => context.type === 'sell';
 
 export const isCoinmarketExchangeContext = (
     context: CoinmarketFormMapProps[keyof CoinmarketFormMapProps],
-): context is CoinmarketFormMapProps[CoinmarketTradeExchangeType] => context.type === 'exchange';
+): context is CoinmarketFormMapProps[TradingExchangeType] => context.type === 'exchange';
 
 export const getCryptoQuoteAmountProps = (
-    quoteInput: CoinmarketTradeDetailType | undefined,
-    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+    quoteInput: TradingTradeType | undefined,
+    context: CoinmarketFormContextValues<TradingType>,
 ): CoinmarketGetCryptoQuoteAmountProps | null => {
     if (!quoteInput) return null;
 
@@ -84,7 +86,7 @@ export const getCryptoQuoteAmountProps = (
 };
 
 export const getProvidersInfoProps = (
-    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+    context: CoinmarketFormContextValues<TradingType>,
 ): CoinmarketGetProvidersInfoProps => {
     if (isCoinmarketBuyContext(context)) {
         return context.buyInfo?.providerInfos;
@@ -98,7 +100,7 @@ export const getProvidersInfoProps = (
 };
 
 export const getFiatCurrenciesProps = (
-    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+    context: CoinmarketFormContextValues<TradingType>,
 ): CoinmarketGetFiatCurrenciesProps | null => {
     if (isCoinmarketBuyContext(context)) {
         return {
@@ -117,7 +119,7 @@ export const getFiatCurrenciesProps = (
 };
 
 export const getSelectQuoteTyped = (
-    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+    context: CoinmarketFormContextValues<TradingType>,
 ): ((quote: CoinmarketTradeDetailMapProps[typeof context.type]) => void) => {
     const selectQuote = context.selectQuote as (
         quote: CoinmarketTradeDetailMapProps[typeof context.type],
@@ -127,7 +129,7 @@ export const getSelectQuoteTyped = (
 };
 
 export const getSelectedCrypto = (
-    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+    context: CoinmarketFormContextValues<TradingType>,
 ): CoinmarketCryptoListProps | null | undefined => {
     if (isCoinmarketExchangeContext(context)) {
         return context.getValues().receiveCryptoSelect;
@@ -141,7 +143,7 @@ export const getSelectedCrypto = (
 };
 
 export const getSelectedCurrency = (
-    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+    context: CoinmarketFormContextValues<TradingType>,
 ): CurrencyOption => {
     if (isCoinmarketExchangeContext(context)) {
         return context.getValues(FORM_OUTPUT_CURRENCY);
@@ -156,7 +158,7 @@ export const getSelectedCurrency = (
 
 export const getPaymentMethod = (
     selectedQuote: SellFiatTrade | ExchangeTrade | BuyTrade,
-    context: CoinmarketFormContextValues<CoinmarketTradeType>,
+    context: CoinmarketFormContextValues<TradingType>,
 ): CoinmarketGetPaymentMethodProps => {
     if (isCoinmarketExchangeContext(context)) return {};
 

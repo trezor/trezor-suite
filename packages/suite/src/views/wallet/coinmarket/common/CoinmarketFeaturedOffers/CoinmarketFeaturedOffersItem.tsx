@@ -4,6 +4,7 @@ import { SellFiatTrade } from 'invity-api';
 import { Badge, Button, Card, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import type { TradingTradeType, TradingType } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
 import {
@@ -16,11 +17,7 @@ import {
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
-import {
-    CoinmarketTradeDetailBuySellType,
-    CoinmarketTradeDetailType,
-    CoinmarketTradeType,
-} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketTradeDetailBuySellType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketFeaturedOffersAmounts } from 'src/views/wallet/coinmarket/common/CoinmarketFeaturedOffers/CoinmarketFeaturedOffersAmounts';
 import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
 import { CoinmarketFeaturedOffersPaymentInfo } from 'src/views/wallet/coinmarket/common/CoinmarketFeaturedOffers/CoinmarketFeaturedOffersPaymentInfo';
@@ -75,14 +72,14 @@ const OfferBadgeWrap = styled.div`
 `;
 
 interface CoinmarketOffersItemProps {
-    quote: CoinmarketTradeDetailType;
-    context: CoinmarketFormContextValues<CoinmarketTradeType>;
+    quote: TradingTradeType;
+    context: CoinmarketFormContextValues<TradingType>;
     isBestRate: boolean;
 }
 
 const actionButtonText = (
-    context: CoinmarketFormContextValues<CoinmarketTradeType>,
-    quote: CoinmarketTradeDetailType,
+    context: CoinmarketFormContextValues<TradingType>,
+    quote: TradingTradeType,
 ) => {
     if (isCoinmarketBuyContext(context)) {
         return <Translation id="TR_BUY" />;

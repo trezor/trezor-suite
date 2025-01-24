@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 
 import { ExchangeTrade } from 'invity-api';
 
-import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
+import type { TradingExchangeType } from '@suite-common/invity';
+
 import {
     EXCHANGE_COMPARATOR_KYC_FILTER,
     EXCHANGE_COMPARATOR_KYC_FILTER_NO_KYC,
@@ -17,8 +18,7 @@ import { CoinmarketOffersExchangeQuotesByTypeSection } from 'src/views/wallet/co
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 export const CoinmarketOffersExchange = () => {
-    const { quotes, exchangeInfo, getValues } =
-        useCoinmarketFormContext<CoinmarketTradeExchangeType>();
+    const { quotes, exchangeInfo, getValues } = useCoinmarketFormContext<TradingExchangeType>();
     const exchangeTypeFilter = getValues(EXCHANGE_COMPARATOR_RATE_FILTER);
     const kycFilter = getValues(EXCHANGE_COMPARATOR_KYC_FILTER);
     const showAll = exchangeTypeFilter === EXCHANGE_COMPARATOR_RATE_FILTER_ALL;

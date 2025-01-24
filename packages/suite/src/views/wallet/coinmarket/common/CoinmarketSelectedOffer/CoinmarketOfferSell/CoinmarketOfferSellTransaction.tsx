@@ -2,10 +2,10 @@ import styled from 'styled-components';
 
 import { Button, Column, Spinner, Text } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
+import type { TradingSellType } from '@suite-common/invity';
 
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
-import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const Wrapper = styled.div`
@@ -41,7 +41,7 @@ const Address = styled.div``;
 
 export const CoinmarketSelectedOfferSellTransaction = () => {
     const { device, account, callInProgress, selectedQuote, sellInfo, sendTransaction, trade } =
-        useCoinmarketFormContext<CoinmarketTradeSellType>();
+        useCoinmarketFormContext<TradingSellType>();
     useCoinmarketWatchTrade({
         account,
         trade,

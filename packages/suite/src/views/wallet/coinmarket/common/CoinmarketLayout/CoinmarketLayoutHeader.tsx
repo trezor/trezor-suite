@@ -3,6 +3,7 @@ import { PropsWithChildren, useMemo } from 'react';
 import { IconButton, Row, Box, Button } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Route } from '@suite-common/suite-types';
+import type { TradingType } from '@suite-common/invity';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
@@ -10,12 +11,8 @@ import { useLayout, useSelector, useTranslation, useDispatch } from 'src/hooks/s
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { TranslationKey, Translation } from 'src/components/suite/Translation';
 import { goto } from 'src/actions/suite/routerActions';
-import { CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 
-const getBackRoute = (
-    route?: Route['name'],
-    activeSection?: CoinmarketTradeType,
-): Route['name'] => {
+const getBackRoute = (route?: Route['name'], activeSection?: TradingType): Route['name'] => {
     const routePrefix = 'wallet-coinmarket-';
     const match = route?.match(new RegExp(`^${routePrefix}(exchange|buy|sell)-`));
 

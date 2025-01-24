@@ -21,10 +21,10 @@ import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { TranslationKey } from '@suite-common/intl-types';
 import { spacings } from '@trezor/theme';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
+import type { TradingExchangeType } from '@suite-common/invity';
 
 import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
 import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
@@ -82,7 +82,7 @@ export const CoinmarketOfferExchangeSendSwap = () => {
         confirmTrade,
         sendTransaction,
         getValues,
-    } = useCoinmarketFormContext<CoinmarketTradeExchangeType>();
+    } = useCoinmarketFormContext<TradingExchangeType>();
     const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage ?? '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
