@@ -31,4 +31,4 @@ jobs:
           node-version-file: ".nvmrc"
 
       - run: yarn install --immutable
-      - run: yarn workspace @trezor/request-manager test:e2e
+      - run: yarn workspace @trezor/request-manager test:all
