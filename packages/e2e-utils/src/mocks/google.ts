@@ -53,10 +53,7 @@ export class GoogleMock {
             if (req.method === 'OPTIONS') {
                 res.setHeader('Access-Control-Allow-Origin', '*');
                 res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-                res.setHeader(
-                    'Access-Control-Allow-Headers',
-                    'Content-Type, Authorization, dropbox-api-arg',
-                );
+                res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
                 res.setHeader('Access-Control-Allow-Credentials', 'true');
 
                 return res.status(200).end();
@@ -65,10 +62,7 @@ export class GoogleMock {
             // Handle normal requests
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-            res.setHeader(
-                'Access-Control-Allow-Headers',
-                'Content-Type, Authorization, dropbox-api-arg',
-            );
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
             this.requests.push(req.url);
 
             if (this.nextResponse.length) {
@@ -156,7 +150,7 @@ export class GoogleMock {
 
         app.get('/drive/v3/files/:id', express.json(), (req, res) => {
             const { id } = req.params;
-            console.log('[mockGoogleDrive]: get', req.params.id);
+            console.log('[mockGoogleDrive]: get file by id', req.params.id);
             const file = Object.values(this.files).find(f => f.id === id);
             if (file) {
                 return res.send(file.data);
@@ -171,6 +165,7 @@ export class GoogleMock {
         });
 
         app.get('/drive/v3/files', express.json(), (_req, res) => {
+            console.log('[mockGoogleDrive]: get files');
             res.json({
                 files: Object.values(this.files),
             });

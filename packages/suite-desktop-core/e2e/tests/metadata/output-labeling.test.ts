@@ -25,7 +25,7 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata', '@webOnly
         // go to legacy account 6, it has txs with multiple outputs
         await page.getByTestId('@account-menu/legacy').click();
         await page.getByTestId('@account-menu/btc/legacy/5/label').click();
-        
+
         // Try to open multiple metadata inputs
         await metadataPage.clickAddOutputLabelButton(OutputLabelId.BitcoinLegacy6, 0);
         await metadataPage.clickAddOutputLabelButton(OutputLabelId.BitcoinLegacy6, 1);

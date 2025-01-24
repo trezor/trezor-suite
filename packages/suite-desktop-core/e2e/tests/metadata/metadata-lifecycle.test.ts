@@ -55,7 +55,6 @@ test.describe(
 
             // Add another wallet, enable labeling on the new device
             await page.getByTestId('@menu/switch-device').click();
-            await page.pause();
             await page.getByTestId('@switch-device/add-hidden-wallet-button').click();
             await page.getByTestId('@passphrase/input').fill('abc');
             await page.getByTestId('@passphrase/hidden/submit-button').click();
