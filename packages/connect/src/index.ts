@@ -57,7 +57,7 @@ const onCoreEvent = (message: CoreEventMessage) => {
 
     if (type === POPUP.CANCEL_POPUP_REQUEST) return;
 
-    _log.debug('handleMessage', message);
+    // _log.debug('handleMessage', message);
 
     switch (event) {
         case RESPONSE_EVENT: {

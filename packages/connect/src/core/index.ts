@@ -1084,7 +1084,7 @@ export class Core extends EventEmitter {
     }
 
     handleMessage(message: CoreRequestMessage) {
-        _log.debug('handleMessage', message);
+        // _log.debug('handleMessage', message);
 
         switch (message.type) {
             case POPUP.HANDSHAKE:
