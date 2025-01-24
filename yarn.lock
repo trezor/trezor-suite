@@ -9871,6 +9871,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
+    "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
@@ -10097,6 +10098,7 @@ __metadata:
   dependencies:
     "@gorhom/bottom-sheet": "npm:5.0.5"
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@reduxjs/toolkit": "npm:1.9.5"
     "@shopify/flash-list": "npm:^1.7.2"
     "@shopify/react-native-skia": "npm:^1.5.10"
     "@suite-common/wallet-config": "workspace:*"
