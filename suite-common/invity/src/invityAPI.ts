@@ -123,16 +123,10 @@ class InvityAPI {
     }
 
     private getOptionAPIHeader() {
-        const headersAPI = {
-            desktop: 'X-SuiteA-Api',
-            web: 'X-SuiteW-Api',
-            native: 'X-SuiteN-Api',
-        } as const;
+        if (isNative()) return 'X-SuiteN-Api';
+        if (isDesktop()) return 'X-SuiteA-Api';
 
-        if (isNative()) return headersAPI.native;
-        if (isDesktop()) return headersAPI.desktop;
-
-        return headersAPI.web;
+        return 'X-SuiteW-Api';
     }
 
     private options(
