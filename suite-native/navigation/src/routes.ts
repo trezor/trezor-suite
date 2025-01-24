@@ -116,6 +116,8 @@ export enum SettingsStackRoutes {
     SettingsAbout = 'SettingsAbout',
     SettingsFAQ = 'SettingsFAQ',
     SettingsCoinEnabling = 'SettingsCoinEnabling',
+    SettingsDeviceChecks = 'SettingsDeviceChecks',
+    TurnOffFirmwareAuthenticityCheckModal = 'TurnOffFirmwareAuthenticityCheckModal',
 }
 
 export enum TradingStackRoutes {

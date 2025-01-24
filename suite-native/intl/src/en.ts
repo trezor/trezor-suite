@@ -594,6 +594,10 @@ export const en = {
                     title: 'Enabled coins',
                     subtitle: 'Manage coins that you use',
                 },
+                deviceChecks: {
+                    title: 'Device checks',
+                    subtitle: 'Authenticity and security checks',
+                },
             },
             support: {
                 title: 'Support',
@@ -756,6 +760,31 @@ export const en = {
             wallet: {
                 standard: 'Standard wallet',
                 defaultPassphrase: 'Passphrase wallet #{index}',
+            },
+        },
+        deviceChecks: {
+            title: 'Device checks',
+            firmwareAuthenticityCheck: {
+                title: 'Turn off firmware authenticity check',
+                subtitle:
+                    'Firmware authenticity check is a crucial security feature. We strongly recommend keeping it turned on.',
+                buttonTurnOff: 'Turn off',
+                buttonTurnOn: 'Turn on',
+                buttonLearnMore: 'Learn more',
+
+                turnOffModal: {
+                    title: 'Turn off firmware authenticity check',
+                    content:
+                        'Trezor Support will never ask you to turn off the firmware revision check. This feature is designed to protect your security.',
+                    item1: 'Only if the device has passed the check before',
+                    item1Explanation:
+                        'Using an unverified device could result in the loss of funds.',
+                    item2: 'Only for testing and development',
+                    item2Explanation:
+                        'These security checks should only be disabled for testing and development purposes.',
+                    acknowledgement: 'I’ve read and understood the above',
+                    buttonTurnOff: 'Turn off',
+                },
             },
         },
     },

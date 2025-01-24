@@ -21,6 +21,8 @@ import { isDevButtonVisibleAtom } from './ProductionDebug';
 export const FeaturesSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
     const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const isFwRevisionCheckEnabled = useFeatureFlag(FeatureFlag.IsFwRevisionCheckEnabled);
+
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const navigateTo = useSettingsNavigateTo();
 
@@ -69,6 +71,18 @@ export const FeaturesSettings = () => {
                         isLoading={hasDiscovery}
                         testID="@settings/coin-enabling"
                     />
+                    {isFwRevisionCheckEnabled && (
+                        <SettingsSectionItem
+                            iconName="trezorDevices"
+                            title={
+                                <Translation id="moduleSettings.items.features.deviceChecks.title" />
+                            }
+                            subtitle={
+                                <Translation id="moduleSettings.items.features.deviceChecks.subtitle" />
+                            }
+                            onPress={() => navigateTo(SettingsStackRoutes.SettingsDeviceChecks)}
+                        />
+                    )}
                 </>
             )}
         </SettingsSection>

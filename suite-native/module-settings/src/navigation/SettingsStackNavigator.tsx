@@ -13,6 +13,8 @@ import { SettingsViewOnly } from '../screens/SettingsViewOnly';
 import { SettingsAboutUsScreen } from '../screens/SettingsAboutUsScreen';
 import { SettingsFAQScreen } from '../screens/SettingsFAQScreen';
 import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
+import { SettingsDeviceChecksScreen } from '../screens/SettingsDeviceChecksScreen';
+import { TurnOffFirmwareAuthenticityCheckModalScreen } from '../screens/TurnOffFirmwareAuthenticityCheckModalScreen';
 
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 
@@ -52,6 +54,14 @@ export const SettingsStackNavigator = () => (
             options={{ title: SettingsStackRoutes.SettingsCoinEnabling }}
             name={SettingsStackRoutes.SettingsCoinEnabling}
             component={SettingsCoinEnablingScreen}
+        />
+        <SettingsStack.Screen
+            name={SettingsStackRoutes.SettingsDeviceChecks}
+            component={SettingsDeviceChecksScreen}
+        />
+        <SettingsStack.Screen
+            name={SettingsStackRoutes.TurnOffFirmwareAuthenticityCheckModal}
+            component={TurnOffFirmwareAuthenticityCheckModalScreen}
         />
     </SettingsStack.Navigator>
 );

@@ -65,6 +65,8 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsAbout]: undefined;
     [SettingsStackRoutes.SettingsFAQ]: undefined;
     [SettingsStackRoutes.SettingsCoinEnabling]: undefined;
+    [SettingsStackRoutes.SettingsDeviceChecks]: undefined;
+    [SettingsStackRoutes.TurnOffFirmwareAuthenticityCheckModal]: undefined;
 };
 
 export type ReceiveStackParamList = {
