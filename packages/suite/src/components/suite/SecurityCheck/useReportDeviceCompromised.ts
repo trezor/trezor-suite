@@ -1,7 +1,9 @@
 import { useEffect, useMemo } from 'react';
 
+import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { isArrayMember } from '@trezor/utils';
 
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
@@ -76,13 +78,14 @@ const useReportHashCheck = () => {
     const attemptCount = isError ? hashCheck.attemptCount : null;
 
     useEffect(() => {
-        if (errorType && hashCheckErrorScenarios[errorType].shouldReport) {
-            reportCheckFail(
-                'Firmware hash',
-                { ...commonData, errorType, attemptCount },
-                errorPayload,
-            );
-        }
+        if (!errorType) return;
+        if (!hashCheckErrorScenarios[errorType].shouldReport) return;
+        const willBeRetried =
+            isArrayMember(errorType, FIRMWARE.HASH_CHECK_RETRIABLE_ERRORS) &&
+            (attemptCount ?? 0) < FIRMWARE.HASH_CHECK_MAX_ATTEMPTS;
+        if (willBeRetried) return;
+
+        reportCheckFail('Firmware hash', { ...commonData, errorType, attemptCount }, errorPayload);
     }, [commonData, errorType, errorPayload, attemptCount]);
 
     // success bears warning if it needed retries, so we report the previous error payload, see Device.ts in connect
