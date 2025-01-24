@@ -90,7 +90,7 @@ export const SelectAssetModal = ({
                                 badge,
                                 contractAddress,
                                 shouldTryToFetch,
-                            }: AssetProps) => (
+                            }) => (
                                 <AssetItem
                                     data-testid={`${dataTestId}/option/${cryptoName}-${symbol}`}
                                     key={`${symbol}${contractAddress ? `-${contractAddress}` : ''}`}
