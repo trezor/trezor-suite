@@ -27,6 +27,7 @@ android/
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+/reports/junit-report.xml
 
 # macOS
 .DS_Store
