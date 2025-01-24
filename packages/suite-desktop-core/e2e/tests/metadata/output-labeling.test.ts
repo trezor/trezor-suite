@@ -83,4 +83,8 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata', '@webOnly
         expect(fileContent).toContain(expectedSubstr);
         expect(typeof fileContent).toBe('string');
     });
+
+    test.afterEach(async ({ metadataProviderMock }) => {
+        await metadataProviderMock.stop();
+    });
 });
