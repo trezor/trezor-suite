@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, memo, forwardRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, memo, forwardRef, useMemo } from 'react';
 
 import styled from 'styled-components';
 
@@ -80,8 +80,6 @@ export function VirtualizedListComponent<T extends BaseItemProps>(
     const [items, setItems] = useState(initialItems);
     const [startIndex, setStartIndex] = useState(0);
     const [endIndex, setEndIndex] = useState(DEFAULT_VISIBLE_ITEMS_COUNT);
-    const [itemHeights, setItemHeights] = useState<number[]>([]);
-    const [totalHeight, setTotalHeight] = useState(0);
     const debouncedOnScrollEnd = debounce(onScrollEnd, 1000);
 
     const resetScroll = useCallback(() => {
@@ -97,11 +95,11 @@ export function VirtualizedListComponent<T extends BaseItemProps>(
         }
     }, [initialItems, items, resetScroll]);
 
-    useEffect(() => {
-        const heights = items.map(item => calculateItemHeight(item));
-        setItemHeights(heights);
-        setTotalHeight(heights.reduce((acc, height) => acc + height, 0));
-    }, [items]);
+    const itemHeights = useMemo(() => items.map(item => calculateItemHeight(item)), [items]);
+    const totalHeight = useMemo(
+        () => itemHeights.reduce((acc, height) => acc + height, 0),
+        [itemHeights],
+    );
 
     const handleScroll = useCallback(
         (e: Event) => {
