@@ -5,12 +5,7 @@ export type Protocol =
     | 'btc'
     | 'litecoin'
     | 'bitcoincash'
-    | 'bitcoingold'
-    | 'dash'
-    | 'digibyte'
     | 'dogecoin'
-    | 'namecoin'
-    | 'vertcoin'
     | 'zcash'
     | 'ethereum'
     | 'ethclassic'
@@ -27,11 +22,7 @@ export type Protocol =
     | 'bch'
     | 'bsc'
     | 'bnb'
-    | 'btg'
-    | 'dgb'
     | 'doge'
-    | 'nmc'
-    | 'vtc'
     | 'zec'
     | 'eth'
     | 'etc'
@@ -58,12 +49,7 @@ export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     btc: ['bitcoin', 'btc'],
     ltc: ['litecoin', 'ltc'],
     bch: ['bitcoincash', 'bch'],
-    btg: ['bitcoingold', 'btg'],
-    dash: ['dash'],
-    dgb: ['digibyte', 'dgb'],
     doge: ['dogecoin', 'doge'],
-    nmc: ['namecoin', 'nmc'],
-    vtc: ['vertcoin', 'vtc'],
     zec: ['zcash', 'zec'],
     eth: ['ethereum', 'eth'],
     etc: ['ethclassic', 'etc'],
