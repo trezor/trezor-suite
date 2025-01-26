@@ -114,7 +114,7 @@ export const useTradingSellForm = ({
 
     const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
         useTradingSellFormDefaultValues(account, sellInfo);
-    const sellDraftKey = 'coinmarket-sell';
+    const sellDraftKey = 'trading-sell';
     const { saveDraft, getDraft, removeDraft } = useFormDraft<TradingSellFormProps>(sellDraftKey);
     const draft = getDraft(sellDraftKey);
     const getDraftUpdated = (): TradingSellFormProps | null => {

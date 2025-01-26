@@ -1,8 +1,13 @@
 # Storage changelog
 
+## 53
+
+-   Renamed coinmarketTrades to tradingTrades
+
 ## 52
 
 -   Deprecated Vertcoin (VTC), Bitcoin Gold (BTG), Namecoin (NMC), DigiByte (DGB), and Dash (DASH) networks. Removed related transactions, accounts, and settings.
+-   Renamed coinmarketTrades to tradingTrades
 
 ## 51
 

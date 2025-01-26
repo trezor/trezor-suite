@@ -123,7 +123,7 @@ export const useTradingExchangeForm = ({
     ) as TradeExchange | undefined;
 
     const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues(account);
-    const exchangeDraftKey = 'coinmarket-exchange';
+    const exchangeDraftKey = 'trading-exchange';
     const { getDraft, saveDraft, removeDraft } =
         useFormDraft<TradingExchangeFormProps>(exchangeDraftKey);
     const draft = getDraft(exchangeDraftKey);

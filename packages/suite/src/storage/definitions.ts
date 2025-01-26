@@ -103,7 +103,7 @@ export interface SuiteDBSchema extends DBSchema {
             deviceState: string;
         };
     };
-    coinmarketTrades: {
+    tradingTrades: {
         key: string;
         value: Trade;
     };

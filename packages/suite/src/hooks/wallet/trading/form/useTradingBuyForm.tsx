@@ -82,8 +82,7 @@ export const useTradingBuyForm = ({
         suggestedFiatCurrency,
     } = useTradingBuyFormDefaultValues(account.symbol, buyInfo);
     const buyDraftKey = account.key;
-    const { saveDraft, getDraft, removeDraft } =
-        useFormDraft<TradingBuyFormProps>('coinmarket-buy');
+    const { saveDraft, getDraft, removeDraft } = useFormDraft<TradingBuyFormProps>('trading-buy');
     const draft = getDraft(buyDraftKey);
     const draftUpdated: TradingBuyFormProps | null = draft
         ? {

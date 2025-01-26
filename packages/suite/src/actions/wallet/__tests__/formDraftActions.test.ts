@@ -29,29 +29,29 @@ describe('Form draft actions', () => {
         const initialState = getInitialState();
         const store = initStore(initialState);
         const expectedFormDraftState = {
-            'coinmarket-buy/form': { input: 'value' },
+            'trading-buy/form': { input: 'value' },
         };
 
-        store.dispatch(formDraftActions.saveDraft('coinmarket-buy')('form', { input: 'value' }));
+        store.dispatch(formDraftActions.saveDraft('trading-buy')('form', { input: 'value' }));
         const formDraftState = store.getState().wallet.formDrafts;
         expect(formDraftState).toEqual(expectedFormDraftState);
     });
 
     it('gets draft', () => {
-        const initialState = getInitialState({ 'coinmarket-buy/form': { input: 'value' } });
+        const initialState = getInitialState({ 'trading-buy/form': { input: 'value' } });
         const store = initStore(initialState);
         const expectedDraft = { input: 'value' };
 
-        const draft = store.dispatch(formDraftActions.getDraft('coinmarket-buy')('form'));
+        const draft = store.dispatch(formDraftActions.getDraft('trading-buy')('form'));
         expect(draft).toEqual(expectedDraft);
     });
 
     it('removes draft', () => {
-        const initialState = getInitialState({ 'coinmarket-buy/form': { input: 'value' } });
+        const initialState = getInitialState({ 'trading-buy/form': { input: 'value' } });
         const store = initStore(initialState);
         const expectedDraft = {};
 
-        store.dispatch(formDraftActions.removeDraft('coinmarket-buy')('form'));
+        store.dispatch(formDraftActions.removeDraft('trading-buy')('form'));
         expect(store.getState().wallet.formDrafts).toEqual(expectedDraft);
     });
 });

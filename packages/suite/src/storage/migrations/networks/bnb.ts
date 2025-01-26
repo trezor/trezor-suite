@@ -192,8 +192,8 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
         formDrafts.delete(key);
     });
 
-    await updateAll(transaction, 'coinmarketTrades', trade => {
-        // @ts-expect-error
+    // @ts-expect-error -coinmarketTrades doesn't exists anymore
+    await updateAll(transaction, 'coinmarketTrades', (trade: Trade) => {
         if (trade.account.symbol === 'bnb') {
             trade.account.symbol = 'bsc';
         }

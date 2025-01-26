@@ -30,7 +30,7 @@ export const preloadStore = async () => {
     const accounts = await db.getItemsExtended('accounts');
     const discovery = await db.getItemsExtended('discovery');
     const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
-    const tradingTrades = await db.getItemsExtended('coinmarketTrades');
+    const tradingTrades = await db.getItemsExtended('tradingTrades');
     const historicRates = await db.getItemsWithKeys('historicRates');
     const graph = await db.getItemsExtended('graph');
     const analytics = await db.getItemByPK('analytics', 'suite');

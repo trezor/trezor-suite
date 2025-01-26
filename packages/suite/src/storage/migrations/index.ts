@@ -22,6 +22,7 @@ import { PartialRecord } from '@trezor/type-utils';
 import type { CustomBackend, BlockbookUrl } from 'src/types/wallet/backend';
 import type { State } from 'src/reducers/wallet/settingsReducer';
 import { migrationOfBnbNetwork } from 'src/storage/migrations/networks/bnb';
+import { migrationCoinmarketToTrading } from 'src/storage/migrations/trading/migrationCoinmarketToTrading';
 
 import { updateAll } from './utils';
 import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';
@@ -129,6 +130,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 17) {
+        // @ts-expect-error coinmarketTrades doesn't exists anymore
         db.createObjectStore('coinmarketTrades', { keyPath: 'key' });
     }
 
@@ -1225,5 +1227,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         for (const network of deprecatedNetworks) {
             await backendSettings.delete(network as NetworkSymbol); // Delete backend settings for each deprecated network
         }
+    }
+
+    if (oldVersion < 53) {
+        await migrationCoinmarketToTrading(db, oldVersion, newVersion, transaction);
     }
 };

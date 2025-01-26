@@ -116,7 +116,7 @@ export const useTradingWatchTrade = <T extends TradingType>({
         cancelRefresh();
     });
 
-    const { removeDraft } = useFormDraft(`coinmarket-${trade?.tradeType ?? 'buy'}`);
+    const { removeDraft } = useFormDraft(`trading-${trade?.tradeType ?? 'buy'}`);
 
     useEffect(() => {
         if (!trade || !account) return;
