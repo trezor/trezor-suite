@@ -75,7 +75,7 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
         {
             heading: <Translation id="TR_STAKE_SIGN_UNSTAKING_TRANSACTION" />,
             content: {
-                text: <Translation id="TR_COINMARKET_NETWORK_FEE" />,
+                text: <Translation id="TR_TRADING_NETWORK_FEE" />,
                 isBadge: true,
             },
         },
@@ -100,7 +100,7 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
                 />
             ),
             content: {
-                text: <Translation id="TR_COINMARKET_NETWORK_FEE" />,
+                text: <Translation id="TR_TRADING_NETWORK_FEE" />,
                 isBadge: true,
             },
         },

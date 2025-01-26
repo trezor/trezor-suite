@@ -6,18 +6,18 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 
-export interface CoinmarketSelectedOfferStepperItemProps {
+export interface TradingSelectedOfferStepperItemProps {
     step: string;
     translationId: ExtendedMessageDescriptor['id'];
     isActive: boolean;
     component: JSX.Element | null;
 }
 
-interface CoinmarketSelectedOfferStepperProps {
-    steps: CoinmarketSelectedOfferStepperItemProps[];
+interface TradingSelectedOfferStepperProps {
+    steps: TradingSelectedOfferStepperItemProps[];
 }
 
-export const CoinmarketSelectedOfferStepper = ({ steps }: CoinmarketSelectedOfferStepperProps) => (
+export const TradingSelectedOfferStepper = ({ steps }: TradingSelectedOfferStepperProps) => (
     <Row justifyContent="center" gap={spacings.xl}>
         {steps.map((step, index) => (
             <Fragment key={index}>

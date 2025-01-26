@@ -1,5 +1,5 @@
 import { Account } from 'src/types/wallet';
-import { coinmarketReducer } from 'src/reducers/wallet/coinmarketReducer';
+import { tradingReducer } from 'src/reducers/wallet/tradingReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { transactionsReducer } from 'src/reducers/wallet';
 
@@ -52,7 +52,7 @@ export const ACCOUNT: Account = {
 
 export const DEFAULT_STORE = {
     wallet: {
-        coinmarket: coinmarketReducer(undefined, { type: 'foo' } as any),
+        trading: tradingReducer(undefined, { type: 'foo' } as any),
         selectedAccount: selectedAccountReducer(undefined, { type: 'foo' } as any),
         transactions: transactionsReducer(undefined, { type: 'foo' } as any),
     },

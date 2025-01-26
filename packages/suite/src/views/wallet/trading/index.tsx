@@ -51,9 +51,9 @@ export const TooltipText = styled.div<{ $isYellow?: boolean }>`
     }
 `;
 
-export const CoinmarketTestWrapper = styled.div``;
+export const TradingTestWrapper = styled.div``;
 
-export const CoinmarketFooterLogoWrapper = styled.div`
+export const TradingFooterLogoWrapper = styled.div`
     display: flex;
     align-items: center;
     flex: 1;

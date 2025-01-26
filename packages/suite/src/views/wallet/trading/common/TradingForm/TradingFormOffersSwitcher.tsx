@@ -3,32 +3,32 @@ import { Row, Card, Column, Spinner, Paragraph } from '@trezor/components';
 import type { TradingTradeType } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketExchangeFormContextProps } from 'src/types/coinmarket/coinmarketForm';
+import { TradingUtilsProvidersProps } from 'src/types/trading/trading';
+import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 import {
     FORM_EXCHANGE_CEX,
     FORM_EXCHANGE_DEX,
     FORM_EXCHANGE_TYPE,
     FORM_RATE_FLOATING,
     FORM_RATE_TYPE,
-} from 'src/constants/wallet/coinmarket/form';
-import { CoinmarketFormOffersSwitcherItem } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffersSwitcherItem';
+} from 'src/constants/wallet/trading/form';
+import { TradingFormOffersSwitcherItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcherItem';
 
-interface CoinmarketFormOffersSwitcherProps {
-    context: CoinmarketExchangeFormContextProps;
+interface TradingFormOffersSwitcherProps {
+    context: TradingExchangeFormContextProps;
     isFormLoading: boolean;
     isFormInvalid: boolean;
-    providers: CoinmarketUtilsProvidersProps | undefined;
+    providers: TradingUtilsProvidersProps | undefined;
     bestRatedQuote: TradingTradeType | undefined;
 }
 
-export const CoinmarketFormOffersSwitcher = ({
+export const TradingFormOffersSwitcher = ({
     context,
     isFormLoading,
     isFormInvalid,
     providers,
     bestRatedQuote,
-}: CoinmarketFormOffersSwitcherProps) => {
+}: TradingFormOffersSwitcherProps) => {
     const { setValue, getValues, dexQuotes, cexQuotes } = context;
     const { exchangeType } = getValues();
     const cexQuote = cexQuotes?.[0];
@@ -47,7 +47,7 @@ export const CoinmarketFormOffersSwitcher = ({
                     >
                         <Spinner size={32} isGrey={false} />
                         <Paragraph typographyStyle="hint" variant="tertiary">
-                            <Translation id="TR_COINMARKET_OFFER_LOOKING" />
+                            <Translation id="TR_TRADING_OFFER_LOOKING" />
                         </Paragraph>
                     </Row>
                 </Card>
@@ -62,9 +62,9 @@ export const CoinmarketFormOffersSwitcher = ({
                     align="center"
                     margin={{ vertical: spacings.xs }}
                 >
-                    <Translation id="TR_COINMARKET_OFFER_NO_FOUND" />
+                    <Translation id="TR_TRADING_OFFER_NO_FOUND" />
                     <br />
-                    <Translation id="TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY" />
+                    <Translation id="TR_TRADING_CHANGE_AMOUNT_OR_CURRENCY" />
                 </Paragraph>
             </Card>
         );
@@ -77,7 +77,7 @@ export const CoinmarketFormOffersSwitcher = ({
                 gap={spacings.xxs}
             >
                 {cexQuote ? (
-                    <CoinmarketFormOffersSwitcherItem
+                    <TradingFormOffersSwitcherItem
                         selectedExchangeType={exchangeType}
                         isSelectable={!hasSingleOption}
                         onSelect={() => setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_CEX)}
@@ -92,11 +92,11 @@ export const CoinmarketFormOffersSwitcher = ({
                         align="center"
                         margin={{ vertical: spacings.md }}
                     >
-                        <Translation id="TR_COINMARKET_NO_CEX_PROVIDER_FOUND" />
+                        <Translation id="TR_TRADING_NO_CEX_PROVIDER_FOUND" />
                     </Paragraph>
                 )}
                 {dexQuote ? (
-                    <CoinmarketFormOffersSwitcherItem
+                    <TradingFormOffersSwitcherItem
                         selectedExchangeType={exchangeType}
                         isSelectable={!hasSingleOption}
                         onSelect={() => {
@@ -114,7 +114,7 @@ export const CoinmarketFormOffersSwitcher = ({
                         align="center"
                         margin={{ vertical: spacings.md }}
                     >
-                        <Translation id="TR_COINMARKET_NO_DEX_PROVIDER_FOUND" />
+                        <Translation id="TR_TRADING_NO_DEX_PROVIDER_FOUND" />
                     </Paragraph>
                 )}
             </Column>

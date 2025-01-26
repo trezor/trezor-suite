@@ -5,16 +5,16 @@ import { spacings } from '@trezor/theme';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { parseCryptoId } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
-interface CoinmarketInfoHeaderProps {
+interface TradingInfoHeaderProps {
     receiveCurrency?: CryptoId;
 }
 
-export const CoinmarketInfoHeader = ({ receiveCurrency }: CoinmarketInfoHeaderProps) => {
-    const { cryptoIdToPlatformName, cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
+export const TradingInfoHeader = ({ receiveCurrency }: TradingInfoHeaderProps) => {
+    const { cryptoIdToPlatformName, cryptoIdToSymbolAndContractAddress } = useTradingInfo();
 
     const { networkId } = parseCryptoId(receiveCurrency!);
     const platform = cryptoIdToPlatformName(networkId);
@@ -24,11 +24,11 @@ export const CoinmarketInfoHeader = ({ receiveCurrency }: CoinmarketInfoHeaderPr
 
     return (
         <Row gap={spacings.xs}>
-            {receiveCurrency && <CoinmarketCoinLogo cryptoId={receiveCurrency} size={24} />}
+            {receiveCurrency && <TradingCoinLogo cryptoId={receiveCurrency} size={24} />}
             <Text typographyStyle="titleSmall">
                 {coinSymbol && contractAddress ? (
                     <Translation
-                        id="TR_COINMARKET_TOKEN_NETWORK"
+                        id="TR_TRADING_TOKEN_NETWORK"
                         values={{
                             tokenName: displaySymbol,
                             networkName: platform,

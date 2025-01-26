@@ -26,7 +26,7 @@ import { useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
 import { Modal, Translation } from 'src/components/suite';
-import { selectAccountIncludingChosenInCoinmarket } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
@@ -61,7 +61,7 @@ export const TransactionReviewModalContent = ({
     txInfoState,
     cancelSignTx,
 }: TransactionReviewModalContentProps) => {
-    const account = useSelector(selectAccountIncludingChosenInCoinmarket);
+    const account = useSelector(selectAccountIncludingChosenInTrading);
     const fees = useSelector(state => state.wallet.fees);
     const device = useSelector(selectSelectedDevice);
     const isActionAbortable = useSelector(selectIsActionAbortable);

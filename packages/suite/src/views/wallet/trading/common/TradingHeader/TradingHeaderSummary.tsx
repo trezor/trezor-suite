@@ -4,15 +4,15 @@ import { H3, Icon, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx } from '@trezor/theme';
 
-import { CoinmarketExchangeHeaderSummary } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketExchangeHeaderSummary';
-import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
-import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { TradingExchangeHeaderSummary } from 'src/views/wallet/trading/common/TradingHeader/TradingExchangeHeaderSummary';
+import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
+import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    isCoinmarketExchangeContext,
-    isCoinmarketSellContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarket';
+    isTradingExchangeContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
+import { TradingCryptoAmountProps } from 'src/types/trading/trading';
 
 const IconWrapper = styled.div`
     margin-left: ${spacingsPx.sm};
@@ -26,23 +26,23 @@ const SummaryWrap = styled.div`
     }
 `;
 
-export const CoinmarketHeaderSummary = ({
+export const TradingHeaderSummary = ({
     className,
     sendAmount,
     sendCurrency,
     receiveCurrency,
     receiveAmount,
-}: CoinmarketCryptoAmountProps) => {
-    const context = useCoinmarketFormContext();
+}: TradingCryptoAmountProps) => {
+    const context = useTradingFormContext();
 
     return (
         <SummaryWrap className={className}>
             <Row alignItems="center">
-                {isCoinmarketSellContext(context) && (
+                {isTradingSellContext(context) && (
                     <>
                         {receiveCurrency && (
                             <H3>
-                                <CoinmarketCryptoAmount
+                                <TradingCryptoAmount
                                     amount={receiveAmount}
                                     cryptoId={receiveCurrency}
                                     displayLogo
@@ -53,13 +53,13 @@ export const CoinmarketHeaderSummary = ({
                             <Icon variant="tertiary" name="arrowRightLong" />
                         </IconWrapper>
                         <H3>
-                            <CoinmarketFiatAmount currency={sendCurrency} />
+                            <TradingFiatAmount currency={sendCurrency} />
                         </H3>
                     </>
                 )}
 
-                {isCoinmarketExchangeContext(context) && (
-                    <CoinmarketExchangeHeaderSummary
+                {isTradingExchangeContext(context) && (
+                    <TradingExchangeHeaderSummary
                         sendCurrency={sendCurrency}
                         sendAmount={sendAmount}
                         receiveCurrency={receiveCurrency}

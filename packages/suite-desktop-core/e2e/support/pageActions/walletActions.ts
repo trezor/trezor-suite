@@ -17,9 +17,9 @@ export class WalletActions {
     readonly walletStakingButton: Locator;
     readonly stakeAddress: Locator;
     readonly walletExtraDropDown: Locator;
-    readonly coinMarketBuyButton: Locator;
+    readonly tradingBuyButton: Locator;
     readonly coinExchangeButton: Locator;
-    readonly coinMarketDropdownBuyButton: Locator;
+    readonly tradingDropdownBuyButton: Locator;
     readonly balanceOfAccount = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@wallet/coin-balance/value-${symbol}`);
     readonly accountDetailsTabButton: Locator;
@@ -44,11 +44,11 @@ export class WalletActions {
         this.walletStakingButton = this.page.getByTestId('@wallet/menu/staking');
         this.stakeAddress = this.page.getByTestId('@cardano/staking/address');
         this.walletExtraDropDown = this.page.getByTestId('@wallet/menu/extra-dropdown');
-        this.coinMarketBuyButton = this.page.getByTestId('@wallet/menu/wallet-coinmarket-buy');
-        this.coinExchangeButton = this.page.getByTestId('@wallet/menu/wallet-coinmarket-exchange');
-        this.coinMarketDropdownBuyButton = this.page
+        this.tradingBuyButton = this.page.getByTestId('@wallet/menu/wallet-trading-buy');
+        this.coinExchangeButton = this.page.getByTestId('@wallet/menu/wallet-trading-exchange');
+        this.tradingDropdownBuyButton = this.page
             .getByRole('list')
-            .getByTestId('@wallet/menu/wallet-coinmarket-buy');
+            .getByTestId('@wallet/menu/wallet-trading-buy');
         this.accountDetailsTabButton = this.page.getByTestId('@wallet/menu/wallet-details');
         this.accountDetails = this.page.getByTestId('@wallet/account-details');
         this.showPublicKeyButton = this.page.getByTestId('@wallets/details/show-xpub-button');
@@ -112,15 +112,15 @@ export class WalletActions {
     }
 
     @step()
-    async openCoinMarket(params: WalletParams = {}) {
+    async openTrading(params: WalletParams = {}) {
         await this.accountButton(params).click();
         //TODO: #16073 We cannot set resolution for Electron. on CI button is hidden under dropdown due to a breakpoint
-        const isBuyButtonHidden = !(await this.coinMarketBuyButton.isVisible());
+        const isBuyButtonHidden = !(await this.tradingBuyButton.isVisible());
         if (isBuyButtonHidden) {
             await this.walletExtraDropDown.click();
-            await this.coinMarketDropdownBuyButton.click();
+            await this.tradingDropdownBuyButton.click();
         } else {
-            await this.coinMarketBuyButton.click();
+            await this.tradingBuyButton.click();
         }
     }
 

@@ -2,23 +2,23 @@ import type { TradingPaymentMethodType } from '@suite-common/invity';
 import { Flex, FlexProps, useMediaQuery, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { CoinmarketPaymentType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentType';
+import { TradingPaymentType } from 'src/views/wallet/trading/common/TradingPaymentType';
 import {
-    CoinmarketProviderInfo,
-    CoinmarketProviderInfoProps,
-} from 'src/views/wallet/coinmarket/common/CoinmarketProviderInfo';
+    TradingProviderInfo,
+    TradingProviderInfoProps,
+} from 'src/views/wallet/trading/common/TradingProviderInfo';
 
-interface CoinmarketTransactionProvidersProps extends CoinmarketProviderInfoProps {
+interface TradingTransactionProvidersProps extends TradingProviderInfoProps {
     paymentMethod?: TradingPaymentMethodType;
     paymentMethodName?: string;
 }
 
-export const CoinmarketTransactionProvider = ({
+export const TradingTransactionProvider = ({
     exchange,
     providers,
     paymentMethod,
     paymentMethodName,
-}: CoinmarketTransactionProvidersProps) => {
+}: TradingTransactionProvidersProps) => {
     const isBelowDesktop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.XL})`);
     const flexProps: Omit<FlexProps, 'children'> = isBelowDesktop
         ? {
@@ -36,9 +36,9 @@ export const CoinmarketTransactionProvider = ({
 
     return (
         <Flex gap={spacings.sm} {...flexProps}>
-            <CoinmarketProviderInfo exchange={exchange} providers={providers} />
+            <TradingProviderInfo exchange={exchange} providers={providers} />
             {paymentMethod && (
-                <CoinmarketPaymentType method={paymentMethod} methodName={paymentMethodName} />
+                <TradingPaymentType method={paymentMethod} methodName={paymentMethodName} />
             )}
         </Flex>
     );

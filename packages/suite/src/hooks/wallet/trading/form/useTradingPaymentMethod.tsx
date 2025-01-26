@@ -2,20 +2,20 @@ import { useCallback } from 'react';
 
 import { useSelector } from 'src/hooks/suite';
 import {
-    CoinmarketPaymentMethodListProps,
-    CoinmarketPaymentMethodProps,
-    CoinmarketTradeBuySellType,
-    CoinmarketTradeDetailMapProps,
-} from 'src/types/coinmarket/coinmarket';
-import { CoinmarketPaymentMethodHookProps } from 'src/types/coinmarket/coinmarketForm';
+    TradingPaymentMethodListProps,
+    TradingPaymentMethodProps,
+    TradingTradeBuySellType,
+    TradingTradeDetailMapProps,
+} from 'src/types/trading/trading';
+import { TradingPaymentMethodHookProps } from 'src/types/trading/tradingForm';
 
-const useCoinmarketPaymentMethod = <
-    T extends CoinmarketTradeBuySellType,
->(): CoinmarketPaymentMethodHookProps<T> => {
-    const paymentMethods = useSelector(state => state.wallet.coinmarket.info.paymentMethods);
+const useTradingPaymentMethod = <
+    T extends TradingTradeBuySellType,
+>(): TradingPaymentMethodHookProps<T> => {
+    const paymentMethods = useSelector(state => state.wallet.trading.info.paymentMethods);
 
-    const getPaymentMethods = (quotes: CoinmarketTradeDetailMapProps[T][]) => {
-        const newPaymentMethods: CoinmarketPaymentMethodListProps[] = [];
+    const getPaymentMethods = (quotes: TradingTradeDetailMapProps[T][]) => {
+        const newPaymentMethods: TradingPaymentMethodListProps[] = [];
 
         quotes.forEach(quote => {
             const { paymentMethod } = quote;
@@ -33,8 +33,8 @@ const useCoinmarketPaymentMethod = <
 
     const getQuotesByPaymentMethod = useCallback(
         (
-            quotes: CoinmarketTradeDetailMapProps[T][] | undefined,
-            currentPaymentMethod: CoinmarketPaymentMethodProps,
+            quotes: TradingTradeDetailMapProps[T][] | undefined,
+            currentPaymentMethod: TradingPaymentMethodProps,
         ) => {
             if (!quotes) return;
 
@@ -54,4 +54,4 @@ const useCoinmarketPaymentMethod = <
     };
 };
 
-export default useCoinmarketPaymentMethod;
+export default useTradingPaymentMethod;

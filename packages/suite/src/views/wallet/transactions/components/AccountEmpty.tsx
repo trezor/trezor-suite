@@ -26,7 +26,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
         });
     };
     const handleNavigateToBuyPage = () => {
-        dispatch(goto('wallet-coinmarket-buy', { preserveParams: true }));
+        dispatch(goto('wallet-trading-buy', { preserveParams: true }));
 
         analytics.report({
             type: EventType.AccountsEmptyAccountBuy,

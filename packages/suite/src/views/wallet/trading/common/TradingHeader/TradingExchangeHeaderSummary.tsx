@@ -8,25 +8,25 @@ import type { TradingExchangeType } from '@suite-common/invity';
 
 import { useSelector } from 'src/hooks/suite';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 
-interface CoinmarketExchangeHeaderSummaryProps {
+interface TradingExchangeHeaderSummaryProps {
     sendAmount: string | number | undefined;
     sendCurrency: CryptoId | string | undefined;
     receiveCurrency: CryptoId | undefined;
 }
 
-export const CoinmarketExchangeHeaderSummary = ({
+export const TradingExchangeHeaderSummary = ({
     sendAmount,
     sendCurrency,
     receiveCurrency,
-}: CoinmarketExchangeHeaderSummaryProps) => {
+}: TradingExchangeHeaderSummaryProps) => {
     const theme = useTheme();
-    const context = useCoinmarketFormContext<TradingExchangeType>();
+    const context = useTradingFormContext<TradingExchangeType>();
     const { account } = context;
     const { symbol } = account;
-    const fee = useSelector(state => state.wallet.coinmarket.composedTransactionInfo.composed?.fee);
+    const fee = useSelector(state => state.wallet.trading.composedTransactionInfo.composed?.fee);
     const feeAmount = formatNetworkAmount(fee || '0', symbol);
 
     return (
@@ -40,7 +40,7 @@ export const CoinmarketExchangeHeaderSummary = ({
             <Row alignItems="center" gap={spacings.sm} flexWrap="wrap">
                 {sendCurrency && (
                     <H3>
-                        <CoinmarketCryptoAmount
+                        <TradingCryptoAmount
                             amount={sendAmount}
                             cryptoId={sendCurrency as CryptoId}
                             displayLogo
@@ -50,7 +50,7 @@ export const CoinmarketExchangeHeaderSummary = ({
                 <Icon variant="tertiary" name="arrowRightLong" />
                 {receiveCurrency && (
                     <H3>
-                        <CoinmarketCryptoAmount cryptoId={receiveCurrency} displayLogo />
+                        <TradingCryptoAmount cryptoId={receiveCurrency} displayLogo />
                     </H3>
                 )}
             </Row>

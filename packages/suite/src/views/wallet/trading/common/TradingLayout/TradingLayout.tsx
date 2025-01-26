@@ -3,19 +3,19 @@ import { PropsWithChildren } from 'react';
 import { spacings } from '@trezor/theme';
 import { Column } from '@trezor/components';
 
-import { CoinmarketLayoutNavigation } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayoutNavigation';
+import { TradingLayoutNavigation } from 'src/views/wallet/trading/common/TradingLayout/TradingLayoutNavigation';
 import { useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
-interface CoinmarketLayoutProps extends PropsWithChildren {}
+interface TradingLayoutProps extends PropsWithChildren {}
 
-export const CoinmarketLayout = ({ children }: CoinmarketLayoutProps) => {
+export const TradingLayout = ({ children }: TradingLayoutProps) => {
     const routeName = useSelector(selectRouteName);
 
     return (
-        <Column data-testid="@coinmarket" gap={spacings.xl}>
-            {!routeName?.includes(`wallet-coinmarket-exchange`) && (
-                <CoinmarketLayoutNavigation route={routeName} />
+        <Column data-testid="@trading" gap={spacings.xl}>
+            {!routeName?.includes(`wallet-trading-exchange`) && (
+                <TradingLayoutNavigation route={routeName} />
             )}
             {children}
         </Column>

@@ -45,81 +45,81 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
         () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/anonymize'),
     ),
 
-    // coinmarket
-    'wallet-coinmarket-buy': lazy(() =>
+    // trading
+    'wallet-trading-buy': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/buy/CoinmarketBuyForm'
-        ).then(({ CoinmarketBuyForm }) => ({ default: CoinmarketBuyForm })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyForm'
+        ).then(({ TradingBuyForm }) => ({ default: TradingBuyForm })),
     ),
-    'wallet-coinmarket-buy-detail': lazy(() =>
+    'wallet-trading-buy-detail': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/buy/CoinmarketBuyDetail'
-        ).then(({ CoinmarketBuyDetail }) => ({ default: CoinmarketBuyDetail })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyDetail'
+        ).then(({ TradingBuyDetail }) => ({ default: TradingBuyDetail })),
     ),
-    'wallet-coinmarket-buy-offers': lazy(() =>
+    'wallet-trading-buy-offers': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/buy/CoinmarketBuyOffers'
-        ).then(({ CoinmarketBuyOffers }) => ({ default: CoinmarketBuyOffers })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyOffers'
+        ).then(({ TradingBuyOffers }) => ({ default: TradingBuyOffers })),
     ),
-    'wallet-coinmarket-buy-confirm': lazy(() =>
+    'wallet-trading-buy-confirm': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/buy/CoinmarketBuyConfirm'
-        ).then(({ CoinmarketBuyConfirm }) => ({ default: CoinmarketBuyConfirm })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyConfirm'
+        ).then(({ TradingBuyConfirm }) => ({ default: TradingBuyConfirm })),
     ),
-    'wallet-coinmarket-sell': lazy(() =>
+    'wallet-trading-sell': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell/CoinmarketSellForm'
-        ).then(({ CoinmarketSellForm }) => ({ default: CoinmarketSellForm })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellForm'
+        ).then(({ TradingSellForm }) => ({ default: TradingSellForm })),
     ),
-    'wallet-coinmarket-sell-detail': lazy(() =>
+    'wallet-trading-sell-detail': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell/CoinmarketSellDetail'
-        ).then(({ CoinmarketSellDetail }) => ({ default: CoinmarketSellDetail })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellDetail'
+        ).then(({ TradingSellDetail }) => ({ default: TradingSellDetail })),
     ),
-    'wallet-coinmarket-sell-offers': lazy(() =>
+    'wallet-trading-sell-offers': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell/CoinmarketSellOffers'
-        ).then(({ CoinmarketSellOffers }) => ({ default: CoinmarketSellOffers })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellOffers'
+        ).then(({ TradingSellOffers }) => ({ default: TradingSellOffers })),
     ),
-    'wallet-coinmarket-sell-confirm': lazy(() =>
+    'wallet-trading-sell-confirm': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/sell/CoinmarketSellConfirm'
-        ).then(({ CoinmarketSellConfirm }) => ({ default: CoinmarketSellConfirm })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellConfirm'
+        ).then(({ TradingSellConfirm }) => ({ default: TradingSellConfirm })),
     ),
-    'wallet-coinmarket-exchange': lazy(() =>
+    'wallet-trading-exchange': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/exchange/CoinmarketExchangeForm'
-        ).then(({ CoinmarketExchangeForm }) => ({ default: CoinmarketExchangeForm })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeForm'
+        ).then(({ TradingExchangeForm }) => ({ default: TradingExchangeForm })),
     ),
-    'wallet-coinmarket-exchange-detail': lazy(() =>
+    'wallet-trading-exchange-detail': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/exchange/CoinmarketExchangeDetail'
-        ).then(({ CoinmarketExchangeDetail }) => ({ default: CoinmarketExchangeDetail })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeDetail'
+        ).then(({ TradingExchangeDetail }) => ({ default: TradingExchangeDetail })),
     ),
-    'wallet-coinmarket-exchange-offers': lazy(() =>
+    'wallet-trading-exchange-offers': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/exchange/CoinmarketExchangeOffers'
-        ).then(({ CoinmarketExchangeOffers }) => ({ default: CoinmarketExchangeOffers })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeOffers'
+        ).then(({ TradingExchangeOffers }) => ({ default: TradingExchangeOffers })),
     ),
-    'wallet-coinmarket-exchange-confirm': lazy(() =>
+    'wallet-trading-exchange-confirm': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/exchange/CoinmarketExchangeConfirm'
-        ).then(({ CoinmarketExchangeConfirm }) => ({ default: CoinmarketExchangeConfirm })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeConfirm'
+        ).then(({ TradingExchangeConfirm }) => ({ default: TradingExchangeConfirm })),
     ),
-    'wallet-coinmarket-dca': lazy(() =>
+    'wallet-trading-dca': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/DCA/CoinmarketDCALanding'
-        ).then(({ CoinmarketDCALanding }) => ({ default: CoinmarketDCALanding })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/DCA/TradingDCALanding'
+        ).then(({ TradingDCALanding }) => ({ default: TradingDCALanding })),
     ),
-    'wallet-coinmarket-redirect': lazy(() =>
+    'wallet-trading-redirect': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/redirect/CoinmarketRedirect'
-        ).then(({ CoinmarketRedirect }) => ({ default: CoinmarketRedirect })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/redirect/TradingRedirect'
+        ).then(({ TradingRedirect }) => ({ default: TradingRedirect })),
     ),
-    'wallet-coinmarket-transactions': lazy(() =>
+    'wallet-trading-transactions': lazy(() =>
         import(
-            /* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/transactions/CoinmarketTransactions'
-        ).then(({ CoinmarketTransactions }) => ({ default: CoinmarketTransactions })),
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/transactions/TradingTransactions'
+        ).then(({ TradingTransactions }) => ({ default: TradingTransactions })),
     ),
 
     // password-manager

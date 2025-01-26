@@ -2,7 +2,7 @@ import { accountsActions } from '@suite-common/wallet-core';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import type { Action } from 'src/types/suite';
-import { State as CoinmarketState } from 'src/reducers/wallet/coinmarketReducer';
+import { State as TradingState } from 'src/reducers/wallet/tradingReducer';
 
 export type State = SelectedAccountStatus;
 
@@ -12,9 +12,9 @@ export type SelectedAccountRootState = {
     };
 };
 
-export type SelectedAccountRootStateWithCoinmarket = SelectedAccountRootState & {
+export type SelectedAccountRootStateWithTrading = SelectedAccountRootState & {
     wallet: {
-        coinmarket: CoinmarketState;
+        trading: TradingState;
     };
 };
 
@@ -48,13 +48,13 @@ export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =
     state.wallet.selectedAccount.status === 'loaded';
 
 /**
- * Mainly used for common modals, also used in the Coinmarket section.
- * @returns account from coinmarket if it's set, otherwise account from the store
+ * Mainly used for common modals, also used in the Trading section.
+ * @returns account from trading if it's set, otherwise account from the store
  */
-export const selectAccountIncludingChosenInCoinmarket = (
-    state: SelectedAccountRootStateWithCoinmarket,
+export const selectAccountIncludingChosenInTrading = (
+    state: SelectedAccountRootStateWithTrading,
 ) => {
-    const { modalAccount } = state.wallet.coinmarket;
+    const { modalAccount } = state.wallet.trading;
 
     if (modalAccount) {
         return modalAccount;

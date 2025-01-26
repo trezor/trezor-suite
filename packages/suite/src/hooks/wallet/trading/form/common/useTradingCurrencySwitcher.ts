@@ -11,19 +11,16 @@ import {
     FORM_OUTPUT_AMOUNT,
     FORM_OUTPUT_FIAT,
     FORM_SEND_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/coinmarket/form';
+} from 'src/constants/wallet/trading/form';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import {
-    CoinmarketAllFormProps,
-    CoinmarketSellExchangeFormProps,
-} from 'src/types/coinmarket/coinmarketForm';
+import { TradingAllFormProps, TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
 import { SendContextValues } from 'src/types/wallet/sendForm';
 import {
-    coinmarketGetRoundedFiatAmount,
-    getCoinmarketNetworkDecimals,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+    tradingGetRoundedFiatAmount,
+    getTradingNetworkDecimals,
+} from 'src/utils/wallet/trading/tradingUtils';
 
-interface CoinmarketUseCurrencySwitcherProps<T extends CoinmarketAllFormProps> {
+interface TradingUseCurrencySwitcherProps<T extends TradingAllFormProps> {
     account: Account;
     methods: UseFormReturn<T>;
     quoteCryptoAmount: string | undefined;
@@ -33,13 +30,13 @@ interface CoinmarketUseCurrencySwitcherProps<T extends CoinmarketAllFormProps> {
         cryptoInput: typeof FORM_CRYPTO_INPUT | typeof FORM_OUTPUT_AMOUNT;
         fiatInput: typeof FORM_FIAT_INPUT | typeof FORM_OUTPUT_FIAT;
     };
-    composeRequest?: SendContextValues<CoinmarketSellExchangeFormProps>['composeTransaction'];
+    composeRequest?: SendContextValues<TradingSellExchangeFormProps>['composeTransaction'];
 }
 
 /**
- * Hook for switching between crypto and fiat amount in coinmarket Sell and Buy form
+ * Hook for switching between crypto and fiat amount in trading Sell and Buy form
  */
-export const useCoinmarketCurrencySwitcher = <T extends CoinmarketAllFormProps>({
+export const useTradingCurrencySwitcher = <T extends TradingAllFormProps>({
     account,
     methods,
     quoteCryptoAmount,
@@ -47,13 +44,13 @@ export const useCoinmarketCurrencySwitcher = <T extends CoinmarketAllFormProps>(
     network,
     inputNames,
     composeRequest,
-}: CoinmarketUseCurrencySwitcherProps<T>) => {
+}: TradingUseCurrencySwitcherProps<T>) => {
     const { setValue, getValues, control } =
-        methods as unknown as UseFormReturn<CoinmarketAllFormProps>;
+        methods as unknown as UseFormReturn<TradingAllFormProps>;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const cryptoInputValue = useWatch({ control, name: inputNames.cryptoInput });
     const sendCryptoSelect = getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT);
-    const networkDecimals = getCoinmarketNetworkDecimals({
+    const networkDecimals = getTradingNetworkDecimals({
         sendCryptoSelect,
         network,
     });
@@ -68,7 +65,7 @@ export const useCoinmarketCurrencySwitcher = <T extends CoinmarketAllFormProps>(
 
             setValue(inputNames.cryptoInput, amount === '-1' ? '' : amount);
         } else {
-            setValue(inputNames.fiatInput, coinmarketGetRoundedFiatAmount(quoteFiatAmount));
+            setValue(inputNames.fiatInput, tradingGetRoundedFiatAmount(quoteFiatAmount));
         }
 
         setValue('amountInCrypto', !amountInCrypto);

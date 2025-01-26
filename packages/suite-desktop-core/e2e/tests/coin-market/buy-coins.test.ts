@@ -18,7 +18,7 @@ test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'
         await marketPage.mockInvity();
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
-        await walletPage.openCoinMarket();
+        await walletPage.openTrading();
     });
 
     test('Select compared offers to buy', async ({ marketPage }) => {

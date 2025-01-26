@@ -6,44 +6,44 @@ import { FiatCurrencyCode } from 'invity-api';
 import { Row, Select, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    CoinmarketAccountOptionsGroupOptionProps,
-    CoinmarketCryptoListProps,
-    CoinmarketTradeSellExchangeType,
-} from 'src/types/coinmarket/coinmarket';
+    TradingAccountOptionsGroupOptionProps,
+    TradingCryptoListProps,
+    TradingTradeSellExchangeType,
+} from 'src/types/trading/trading';
 import {
-    CoinmarketExchangeFormProps,
-    CoinmarketFormInputAccountProps,
-    CoinmarketSellFormProps,
-} from 'src/types/coinmarket/coinmarketForm';
-import { CoinmarketFormInputAccountOption } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputAccountOption';
-import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
-import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
+    TradingExchangeFormProps,
+    TradingFormInputAccountProps,
+    TradingSellFormProps,
+} from 'src/types/trading/tradingForm';
+import { TradingFormInputAccountOption } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAccountOption';
+import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
+import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
-import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketBuildAccountGroups';
+import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import { Translation } from 'src/components/suite';
 
-export const CoinmarketFormInputAccount = <
-    TFieldValues extends CoinmarketSellFormProps | CoinmarketExchangeFormProps,
+export const TradingFormInputAccount = <
+    TFieldValues extends TradingSellFormProps | TradingExchangeFormProps,
 >({
     label,
     accountSelectName,
     methods,
-}: CoinmarketFormInputAccountProps<TFieldValues>) => {
+}: TradingFormInputAccountProps<TFieldValues>) => {
     const {
         type,
         form: {
             helpers: { onCryptoCurrencyChange },
         },
-    } = useCoinmarketFormContext<CoinmarketTradeSellExchangeType>();
-    const optionGroups = useCoinmarketBuildAccountGroups(type);
+    } = useTradingFormContext<TradingTradeSellExchangeType>();
+    const optionGroups = useTradingBuildAccountGroups(type);
 
     const { control, getValues } = methods;
     const selectedOption = getValues(accountSelectName) as
-        | CoinmarketAccountOptionsGroupOptionProps
+        | TradingAccountOptionsGroupOptionProps
         | undefined;
-    const fiatValues = useCoinmarketFiatValues({
+    const fiatValues = useTradingFiatValues({
         sendCryptoSelect: selectedOption,
         fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
     });
@@ -57,11 +57,11 @@ export const CoinmarketFormInputAccount = <
                     value={value}
                     labelLeft={label && <Translation id={label} />}
                     options={optionGroups}
-                    onChange={async (selected: CoinmarketAccountOptionsGroupOptionProps) => {
+                    onChange={async (selected: TradingAccountOptionsGroupOptionProps) => {
                         await onCryptoCurrencyChange(selected); // order matters, this has to be called before onChange
                         onChange(selected);
                     }}
-                    filterOption={createFilter<CoinmarketCryptoListProps>({
+                    filterOption={createFilter<TradingCryptoListProps>({
                         stringify: option => `${option.label} ${option.data.cryptoName}`,
                     })}
                     formatGroupLabel={group => (
@@ -77,22 +77,22 @@ export const CoinmarketFormInputAccount = <
                         </Text>
                     )}
                     formatOptionLabel={(
-                        option: CoinmarketAccountOptionsGroupOptionProps,
+                        option: TradingAccountOptionsGroupOptionProps,
                         { context },
                     ) => (
-                        <CoinmarketFormInputAccountOption
+                        <TradingFormInputAccountOption
                             option={option}
                             optionGroups={optionGroups}
                             decimals={option.decimals}
                             isSelected={context === 'value'}
                         />
                     )}
-                    data-testid="@coinmarket/form/select-crypto"
+                    data-testid="@trading/form/select-crypto"
                     isClearable={false}
                     isSearchable
                     bottomText={
                         fiatValues && (
-                            <CoinmarketBalance
+                            <TradingBalance
                                 balance={fiatValues.accountBalance}
                                 symbol={fiatValues.symbol}
                                 tokenAddress={fiatValues.tokenAddress}

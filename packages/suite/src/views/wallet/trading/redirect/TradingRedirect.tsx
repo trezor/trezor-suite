@@ -8,7 +8,7 @@ import { FeeLevel } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
-import { useCoinmarketRedirect } from 'src/hooks/wallet/useCoinmarketRedirect';
+import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
 import { Translation } from 'src/components/suite';
 
 const Wrapper = styled.div`
@@ -21,9 +21,9 @@ const Wrapper = styled.div`
     height: 100%;
 `;
 
-export const CoinmarketRedirect = () => {
+export const TradingRedirect = () => {
     const { redirectToOffers, redirectToDetail, redirectToSellOffers, redirectToExchangeOffers } =
-        useCoinmarketRedirect();
+        useTradingRedirect();
     const router = useSelector(state => state.router);
 
     useEffect(() => {

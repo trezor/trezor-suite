@@ -42,7 +42,7 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
     const routeName = useSelector(selectRouteName);
 
     // handle moment when children are not rendered yet in the Trade section
-    const isTradeSection = routeName?.includes('wallet-coinmarket');
+    const isTradeSection = routeName?.includes('wallet-trading');
 
     return isTradeSection || children ? (
         <Container>{children ?? null}</Container>

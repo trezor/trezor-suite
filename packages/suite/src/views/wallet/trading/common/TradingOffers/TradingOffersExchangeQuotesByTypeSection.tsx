@@ -4,19 +4,19 @@ import { H3, Icon, Row, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { ExtendedMessageDescriptor, Translation } from 'src/components/suite/Translation';
-import { CoinmarketOffersItem } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersItem';
+import { TradingOffersItem } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
 
-interface CoinmarketOffersExchangeQuotesByTypeSectionProps {
+interface TradingOffersExchangeQuotesByTypeSectionProps {
     quotes: ExchangeTrade[];
     heading: ExtendedMessageDescriptor['id'];
     tooltip: ExtendedMessageDescriptor['id'];
 }
 
-export const CoinmarketOffersExchangeQuotesByTypeSection = ({
+export const TradingOffersExchangeQuotesByTypeSection = ({
     quotes,
     heading,
     tooltip,
-}: CoinmarketOffersExchangeQuotesByTypeSectionProps) => {
+}: TradingOffersExchangeQuotesByTypeSectionProps) => {
     if (quotes.length === 0) return null;
 
     return (
@@ -34,7 +34,7 @@ export const CoinmarketOffersExchangeQuotesByTypeSection = ({
                 </Tooltip>
             </Row>
             {quotes.map(quote => (
-                <CoinmarketOffersItem key={quote.orderId} quote={quote} isBestRate={false} />
+                <TradingOffersItem key={quote.orderId} quote={quote} isBestRate={false} />
             ))}
         </>
     );

@@ -12,7 +12,7 @@ import { prepareDiscoveryMiddleware } from './discoveryMiddleware';
 import storageMiddleware from './storageMiddleware';
 import walletMiddleware from './walletMiddleware';
 import graphMiddleware from './graphMiddleware';
-import { coinmarketMiddleware } from './coinmarketMiddleware';
+import { tradingMiddleware } from './tradingMiddleware';
 import { coinjoinMiddleware } from './coinjoinMiddleware';
 
 export default [
@@ -25,6 +25,6 @@ export default [
     prepareStakeMiddleware(extraDependencies),
     storageMiddleware,
     graphMiddleware,
-    coinmarketMiddleware,
+    tradingMiddleware,
     coinjoinMiddleware,
 ];

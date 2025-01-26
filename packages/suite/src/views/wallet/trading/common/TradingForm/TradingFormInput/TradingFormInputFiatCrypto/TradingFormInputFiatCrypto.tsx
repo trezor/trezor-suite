@@ -1,35 +1,32 @@
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    CoinmarketBuyFormProps,
-    CoinmarketExchangeFormProps,
-    CoinmarketFormInputFiatCryptoWrapProps,
-    CoinmarketSellFormProps,
-} from 'src/types/coinmarket/coinmarketForm';
-import { CoinmarketFormSwitcherCryptoFiat } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormSwitcherCryptoFiat';
-import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketFormInputCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputCryptoAmount';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { CoinmarketFormInputFiat } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiat';
+    TradingBuyFormProps,
+    TradingExchangeFormProps,
+    TradingFormInputFiatCryptoWrapProps,
+    TradingSellFormProps,
+} from 'src/types/trading/tradingForm';
+import { TradingFormSwitcherCryptoFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormSwitcherCryptoFiat';
+import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
 import { Translation } from 'src/components/suite';
 
-export const CoinmarketFormInputFiatCrypto = <
-    TFieldValues extends
-        | CoinmarketSellFormProps
-        | CoinmarketBuyFormProps
-        | CoinmarketExchangeFormProps,
+export const TradingFormInputFiatCrypto = <
+    TFieldValues extends TradingSellFormProps | TradingBuyFormProps | TradingExchangeFormProps,
 >({
     showLabel = true,
     ...formProps
-}: CoinmarketFormInputFiatCryptoWrapProps<TFieldValues>) => {
-    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
+}: TradingFormInputFiatCryptoWrapProps<TFieldValues>) => {
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const {
         type,
         form: {
             state: { isFormLoading, toggleAmountInCrypto },
         },
-    } = useCoinmarketFormContext();
+    } = useTradingFormContext();
     const {
         cryptoCurrencyLabel,
         cryptoInputName,
@@ -39,7 +36,7 @@ export const CoinmarketFormInputFiatCrypto = <
         fiatInputName,
     } = formProps;
     const { amountInCrypto } = methods.getValues();
-    const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto });
+    const amountLabels = tradingGetAmountLabels({ type, amountInCrypto });
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoCurrencyLabel);
     const displaySymbol = coinSymbol && getDisplaySymbol(coinSymbol, contractAddress);
 
@@ -50,7 +47,7 @@ export const CoinmarketFormInputFiatCrypto = <
         methods,
         labelLeft: showLabel ? <Translation id={amountLabels.inputLabel} /> : undefined,
         labelRight: showLabel ? (
-            <CoinmarketFormSwitcherCryptoFiat
+            <TradingFormSwitcherCryptoFiat
                 currency={!amountInCrypto ? displaySymbol : currencySelectLabel ?? ''}
                 isDisabled={isFormLoading}
                 toggleAmountInCrypto={toggleAmountInCrypto}
@@ -59,8 +56,8 @@ export const CoinmarketFormInputFiatCrypto = <
     };
 
     return amountInCrypto ? (
-        <CoinmarketFormInputCryptoAmount {...inputProps} />
+        <TradingFormInputCryptoAmount {...inputProps} />
     ) : (
-        <CoinmarketFormInputFiat {...inputProps} />
+        <TradingFormInputFiat {...inputProps} />
     );
 };

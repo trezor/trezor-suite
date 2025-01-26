@@ -3,7 +3,7 @@ import { CryptoId } from 'invity-api';
 import { DefinitionType, TokenDefinitions } from '@suite-common/token-definitions';
 import { Account } from '@suite-common/wallet-types';
 
-import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
+import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 
 export const accountBtc = {
     index: 1,
@@ -202,7 +202,7 @@ const accountOptionPlaceholder = {
 };
 
 export const FIXTURE_ACCOUNT_OPTIONS: Array<{
-    option: CoinmarketAccountOptionsGroupOptionProps | undefined;
+    option: TradingAccountOptionsGroupOptionProps | undefined;
     result: { address: string; token: string | null };
 }> = [
     {

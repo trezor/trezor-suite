@@ -2,18 +2,15 @@ import { useState } from 'react';
 
 import { useTimer } from '@trezor/react-utils';
 
-import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from 'src/constants/wallet/coinmarket/metadata';
+import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from 'src/constants/wallet/trading/metadata';
 import { useDevice } from 'src/hooks/suite';
-import { useServerEnvironment } from 'src/hooks/wallet/coinmarket/useServerEnviroment';
-import {
-    UseCoinmarketCommonProps,
-    UseCoinmarketCommonReturnProps,
-} from 'src/types/coinmarket/coinmarket';
+import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
+import { UseTradingCommonProps, UseTradingCommonReturnProps } from 'src/types/trading/trading';
 
-export const useCoinmarketInitializer = ({
+export const useTradingInitializer = ({
     selectedAccount,
     pageType,
-}: UseCoinmarketCommonProps): UseCoinmarketCommonReturnProps => {
+}: UseTradingCommonProps): UseTradingCommonReturnProps => {
     const timer = useTimer();
     const { account } = selectedAccount;
     const { device } = useDevice();

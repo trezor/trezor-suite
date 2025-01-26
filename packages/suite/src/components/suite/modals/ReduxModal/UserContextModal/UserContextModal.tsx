@@ -6,7 +6,7 @@ import { useDispatch } from 'src/hooks/suite';
 import {
     PinMismatchModal,
     PassphraseDuplicateModal,
-    CoinmarketTermsModal,
+    TradingTermsModal,
     ConfirmAddressModal,
     ConfirmXpubModal,
     TransactionReviewModal,
@@ -108,9 +108,9 @@ export const UserContextModal = ({
             return <TransactionReviewModal {...payload} />;
         case 'cardano-withdraw-modal':
             return <CardanoWithdrawModal onCancel={onCancel} />;
-        case 'coinmarket-buy-terms': {
+        case 'trading-buy-terms': {
             return (
-                <CoinmarketTermsModal
+                <TradingTermsModal
                     onCancel={onCancel}
                     type="BUY"
                     decision={payload.decision}
@@ -119,9 +119,9 @@ export const UserContextModal = ({
                 />
             );
         }
-        case 'coinmarket-sell-terms':
+        case 'trading-sell-terms':
             return (
-                <CoinmarketTermsModal
+                <TradingTermsModal
                     onCancel={onCancel}
                     type="SELL"
                     decision={payload.decision}
@@ -130,22 +130,22 @@ export const UserContextModal = ({
                 />
             );
 
-        case 'coinmarket-exchange-terms':
+        case 'trading-exchange-terms':
             return (
-                <CoinmarketTermsModal
+                <TradingTermsModal
                     onCancel={onCancel}
-                    type="COINMARKET_SWAP"
+                    type="TRADING_SWAP"
                     decision={payload.decision}
                     provider={payload.provider}
                     toCryptoCurrency={payload.toCryptoCurrency as CryptoId}
                     fromCryptoCurrency={payload.fromCryptoCurrency as CryptoId}
                 />
             );
-        case 'coinmarket-exchange-dex-terms':
+        case 'trading-exchange-dex-terms':
             return (
-                <CoinmarketTermsModal
+                <TradingTermsModal
                     onCancel={onCancel}
-                    type="COINMARKET_SWAP_DEX"
+                    type="TRADING_SWAP_DEX"
                     decision={payload.decision}
                     provider={payload.provider}
                     toCryptoCurrency={payload.toCryptoCurrency as CryptoId}

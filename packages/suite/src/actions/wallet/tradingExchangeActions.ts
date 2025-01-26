@@ -11,9 +11,9 @@ import { invityAPI } from '@suite-common/invity';
 import { Account } from 'src/types/wallet';
 import { Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
-import { verifyAddress as verifyExchangeAddress } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { verifyAddress as verifyExchangeAddress } from 'src/actions/wallet/trading/tradingCommonActions';
 
-import { COINMARKET_EXCHANGE, COINMARKET_COMMON } from './constants';
+import { TRADING_EXCHANGE, TRADING_COMMON } from './constants';
 
 export interface ExchangeInfo {
     exchangeList?: ExchangeListResponse;
@@ -22,26 +22,26 @@ export interface ExchangeInfo {
     sellSymbols: Set<CryptoId>;
 }
 
-export type CoinmarketExchangeAction =
-    | { type: typeof COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO; exchangeInfo: ExchangeInfo }
+export type TradingExchangeAction =
+    | { type: typeof TRADING_EXCHANGE.SAVE_EXCHANGE_INFO; exchangeInfo: ExchangeInfo }
     | {
-          type: typeof COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST;
+          type: typeof TRADING_EXCHANGE.SAVE_QUOTE_REQUEST;
           request: ExchangeTradeQuoteRequest;
       }
-    | { type: typeof COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID; transactionId: string | undefined }
-    | { type: typeof COINMARKET_EXCHANGE.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
-    | { type: typeof COINMARKET_EXCHANGE.VERIFY_ADDRESS; addressVerified: string }
+    | { type: typeof TRADING_EXCHANGE.SAVE_TRANSACTION_ID; transactionId: string | undefined }
+    | { type: typeof TRADING_EXCHANGE.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
+    | { type: typeof TRADING_EXCHANGE.VERIFY_ADDRESS; addressVerified: string }
     | {
-          type: typeof COINMARKET_EXCHANGE.SAVE_QUOTES;
+          type: typeof TRADING_EXCHANGE.SAVE_QUOTES;
           quotes: ExchangeTrade[];
       }
     | {
-          type: typeof COINMARKET_EXCHANGE.SAVE_QUOTE;
+          type: typeof TRADING_EXCHANGE.SAVE_QUOTE;
           quote: ExchangeTrade | undefined;
       }
-    | { type: typeof COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT; account: Account | undefined }
+    | { type: typeof TRADING_EXCHANGE.SET_TRADING_ACCOUNT; account: Account | undefined }
     | {
-          type: typeof COINMARKET_COMMON.SAVE_TRADE;
+          type: typeof TRADING_COMMON.SAVE_TRADE;
           date: string;
           key?: string;
           tradeType: 'exchange';
@@ -87,19 +87,19 @@ export const loadExchangeInfo = async (): Promise<ExchangeInfo> => {
     };
 };
 
-export const saveExchangeInfo = (exchangeInfo: ExchangeInfo): CoinmarketExchangeAction => ({
-    type: COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO,
+export const saveExchangeInfo = (exchangeInfo: ExchangeInfo): TradingExchangeAction => ({
+    type: TRADING_EXCHANGE.SAVE_EXCHANGE_INFO,
     exchangeInfo,
 });
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
-// used in useCoinmarketExchangeOffers
-export const openCoinmarketExchangeConfirmModal =
+// used in useTradingExchangeOffers
+export const openTradingExchangeConfirmModal =
     (provider?: string, isDex?: boolean, fromCryptoCurrency?: string, toCryptoCurrency?: string) =>
     (dispatch: Dispatch) =>
         dispatch(
             modalActions.openDeferredModal({
-                type: isDex ? 'coinmarket-exchange-dex-terms' : 'coinmarket-exchange-terms',
+                type: isDex ? 'trading-exchange-dex-terms' : 'trading-exchange-terms',
                 provider,
                 fromCryptoCurrency,
                 toCryptoCurrency,
@@ -110,8 +110,8 @@ export const saveTrade = (
     exchangeTrade: ExchangeTrade,
     account: Account,
     date: string,
-): CoinmarketExchangeAction => ({
-    type: COINMARKET_COMMON.SAVE_TRADE,
+): TradingExchangeAction => ({
+    type: TRADING_COMMON.SAVE_TRADE,
     tradeType: 'exchange',
     key: exchangeTrade.orderId,
     date,
@@ -124,37 +124,35 @@ export const saveTrade = (
     },
 });
 
-export const saveQuoteRequest = (request: ExchangeTradeQuoteRequest): CoinmarketExchangeAction => ({
-    type: COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST,
+export const saveQuoteRequest = (request: ExchangeTradeQuoteRequest): TradingExchangeAction => ({
+    type: TRADING_EXCHANGE.SAVE_QUOTE_REQUEST,
     request,
 });
 
-export const saveTransactionId = (transactionId: string | undefined): CoinmarketExchangeAction => ({
-    type: COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID,
+export const saveTransactionId = (transactionId: string | undefined): TradingExchangeAction => ({
+    type: TRADING_EXCHANGE.SAVE_TRANSACTION_ID,
     transactionId,
 });
 
-export const saveQuotes = (quotes: ExchangeTrade[]): CoinmarketExchangeAction => ({
-    type: COINMARKET_EXCHANGE.SAVE_QUOTES,
+export const saveQuotes = (quotes: ExchangeTrade[]): TradingExchangeAction => ({
+    type: TRADING_EXCHANGE.SAVE_QUOTES,
     quotes,
 });
 
-export const saveSelectedQuote = (quote: ExchangeTrade | undefined): CoinmarketExchangeAction => ({
-    type: COINMARKET_EXCHANGE.SAVE_QUOTE,
+export const saveSelectedQuote = (quote: ExchangeTrade | undefined): TradingExchangeAction => ({
+    type: TRADING_EXCHANGE.SAVE_QUOTE,
     quote,
 });
 
-export const setIsFromRedirect = (isFromRedirect: boolean): CoinmarketExchangeAction => ({
-    type: COINMARKET_EXCHANGE.SET_IS_FROM_REDIRECT,
+export const setIsFromRedirect = (isFromRedirect: boolean): TradingExchangeAction => ({
+    type: TRADING_EXCHANGE.SET_IS_FROM_REDIRECT,
     isFromRedirect,
 });
 
 export const verifyAddress = (account: Account, address?: string, path?: string) =>
-    verifyExchangeAddress(account, address, path, COINMARKET_EXCHANGE.VERIFY_ADDRESS);
+    verifyExchangeAddress(account, address, path, TRADING_EXCHANGE.VERIFY_ADDRESS);
 
-export const setCoinmarketExchangeAccount = (
-    account: Account | undefined,
-): CoinmarketExchangeAction => ({
-    type: COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT,
+export const setTradingExchangeAccount = (account: Account | undefined): TradingExchangeAction => ({
+    type: TRADING_EXCHANGE.SET_TRADING_ACCOUNT,
     account,
 });

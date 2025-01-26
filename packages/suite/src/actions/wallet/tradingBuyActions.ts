@@ -12,42 +12,42 @@ import { invityAPI, regional } from '@suite-common/invity';
 import { Account } from 'src/types/wallet';
 import { Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
-import { verifyAddress as verifyBuyAddress } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import { CoinmarketFiatCurrenciesProps } from 'src/types/coinmarket/coinmarket';
+import { verifyAddress as verifyBuyAddress } from 'src/actions/wallet/trading/tradingCommonActions';
+import { TradingFiatCurrenciesProps } from 'src/types/trading/trading';
 
-import { COINMARKET_BUY, COINMARKET_COMMON } from './constants';
+import { TRADING_BUY, TRADING_COMMON } from './constants';
 
 export interface BuyInfo {
     buyInfo: Omit<BuyListResponse, 'defaultAmountsOfFiatCurrencies'> & {
-        defaultAmountsOfFiatCurrencies: CoinmarketFiatCurrenciesProps;
+        defaultAmountsOfFiatCurrencies: TradingFiatCurrenciesProps;
     };
     providerInfos: { [name: string]: BuyProviderInfo };
     supportedFiatCurrencies: Set<string>;
     supportedCryptoCurrencies: Set<CryptoId>;
 }
 
-export type CoinmarketBuyAction =
-    | { type: typeof COINMARKET_BUY.SAVE_BUY_INFO; buyInfo: BuyInfo }
-    | { type: typeof COINMARKET_BUY.DISPOSE }
-    | { type: typeof COINMARKET_BUY.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
-    | { type: typeof COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID; transactionId: string }
-    | { type: typeof COINMARKET_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
-    | { type: typeof COINMARKET_BUY.VERIFY_ADDRESS; addressVerified: string | undefined }
+export type TradingBuyAction =
+    | { type: typeof TRADING_BUY.SAVE_BUY_INFO; buyInfo: BuyInfo }
+    | { type: typeof TRADING_BUY.DISPOSE }
+    | { type: typeof TRADING_BUY.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
+    | { type: typeof TRADING_BUY.SAVE_TRANSACTION_DETAIL_ID; transactionId: string }
+    | { type: typeof TRADING_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
+    | { type: typeof TRADING_BUY.VERIFY_ADDRESS; addressVerified: string | undefined }
     | {
-          type: typeof COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO;
+          type: typeof TRADING_BUY.SAVE_CACHED_ACCOUNT_INFO;
           symbol: Account['symbol'];
           index: Account['index'];
           accountType: Account['accountType'];
           shouldSubmit?: boolean;
       }
     | {
-          type: typeof COINMARKET_BUY.SAVE_QUOTES;
+          type: typeof TRADING_BUY.SAVE_QUOTES;
           quotes: BuyTrade[];
       }
-    | { type: typeof COINMARKET_BUY.SAVE_QUOTE; quote: BuyTrade | undefined }
-    | { type: typeof COINMARKET_BUY.CLEAR_QUOTES }
+    | { type: typeof TRADING_BUY.SAVE_QUOTE; quote: BuyTrade | undefined }
+    | { type: typeof TRADING_BUY.CLEAR_QUOTES }
     | {
-          type: typeof COINMARKET_COMMON.SAVE_TRADE;
+          type: typeof TRADING_COMMON.SAVE_TRADE;
           date: string;
           key?: string;
           tradeType: 'buy';
@@ -62,7 +62,7 @@ export type CoinmarketBuyAction =
 
 export const loadBuyInfo = async (): Promise<BuyInfo> => {
     const buyInfo = await invityAPI.getBuyList();
-    const defaultAmountsOfFiatCurrencies: CoinmarketFiatCurrenciesProps = new Map();
+    const defaultAmountsOfFiatCurrencies: TradingFiatCurrenciesProps = new Map();
 
     if (!buyInfo || !buyInfo.providers) {
         return {
@@ -107,27 +107,27 @@ export const loadBuyInfo = async (): Promise<BuyInfo> => {
     };
 };
 
-export const saveBuyInfo = (buyInfo: BuyInfo): CoinmarketBuyAction => ({
-    type: COINMARKET_BUY.SAVE_BUY_INFO,
+export const saveBuyInfo = (buyInfo: BuyInfo): TradingBuyAction => ({
+    type: TRADING_BUY.SAVE_BUY_INFO,
     buyInfo,
 });
 
-export const dispose = (): CoinmarketBuyAction => ({
-    type: COINMARKET_BUY.DISPOSE,
+export const dispose = (): TradingBuyAction => ({
+    type: TRADING_BUY.DISPOSE,
 });
 
-export const setIsFromRedirect = (isFromRedirect: boolean): CoinmarketBuyAction => ({
-    type: COINMARKET_BUY.SET_IS_FROM_REDIRECT,
+export const setIsFromRedirect = (isFromRedirect: boolean): TradingBuyAction => ({
+    type: TRADING_BUY.SET_IS_FROM_REDIRECT,
     isFromRedirect,
 });
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
-// used in useCoinmarketBuyForm
-export const openCoinmarketBuyConfirmModal =
+// used in useTradingBuyForm
+export const openTradingBuyConfirmModal =
     (provider?: string, cryptoCurrency?: string) => (dispatch: Dispatch) =>
         dispatch(
             modalActions.openDeferredModal({
-                type: 'coinmarket-buy-terms',
+                type: 'trading-buy-terms',
                 provider,
                 cryptoCurrency,
             }),
@@ -137,8 +137,8 @@ export const saveTrade = (
     buyTrade: BuyTrade,
     account: Account,
     date: string,
-): CoinmarketBuyAction => ({
-    type: COINMARKET_COMMON.SAVE_TRADE,
+): TradingBuyAction => ({
+    type: TRADING_COMMON.SAVE_TRADE,
     tradeType: 'buy',
     key: buyTrade.paymentId,
     date,
@@ -151,13 +151,13 @@ export const saveTrade = (
     },
 });
 
-export const saveQuoteRequest = (request: BuyTradeQuoteRequest): CoinmarketBuyAction => ({
-    type: COINMARKET_BUY.SAVE_QUOTE_REQUEST,
+export const saveQuoteRequest = (request: BuyTradeQuoteRequest): TradingBuyAction => ({
+    type: TRADING_BUY.SAVE_QUOTE_REQUEST,
     request,
 });
 
-export const saveTransactionDetailId = (transactionId: string): CoinmarketBuyAction => ({
-    type: COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID,
+export const saveTransactionDetailId = (transactionId: string): TradingBuyAction => ({
+    type: TRADING_BUY.SAVE_TRANSACTION_DETAIL_ID,
     transactionId,
 });
 
@@ -166,27 +166,27 @@ export const saveCachedAccountInfo = (
     index: number,
     accountType: Account['accountType'],
     shouldSubmit = false,
-): CoinmarketBuyAction => ({
-    type: COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO,
+): TradingBuyAction => ({
+    type: TRADING_BUY.SAVE_CACHED_ACCOUNT_INFO,
     symbol,
     index,
     accountType,
     shouldSubmit,
 });
 
-export const saveQuotes = (quotes: BuyTrade[]): CoinmarketBuyAction => ({
-    type: COINMARKET_BUY.SAVE_QUOTES,
+export const saveQuotes = (quotes: BuyTrade[]): TradingBuyAction => ({
+    type: TRADING_BUY.SAVE_QUOTES,
     quotes,
 });
 
-export const saveSelectedQuote = (quote: BuyTrade | undefined): CoinmarketBuyAction => ({
-    type: COINMARKET_BUY.SAVE_QUOTE,
+export const saveSelectedQuote = (quote: BuyTrade | undefined): TradingBuyAction => ({
+    type: TRADING_BUY.SAVE_QUOTE,
     quote,
 });
 
-export const clearQuotes = (): CoinmarketBuyAction => ({
-    type: COINMARKET_BUY.CLEAR_QUOTES,
+export const clearQuotes = (): TradingBuyAction => ({
+    type: TRADING_BUY.CLEAR_QUOTES,
 });
 
 export const verifyAddress = (account: Account, address?: string, path?: string) =>
-    verifyBuyAddress(account, address, path, COINMARKET_BUY.VERIFY_ADDRESS);
+    verifyBuyAddress(account, address, path, TRADING_BUY.VERIFY_ADDRESS);

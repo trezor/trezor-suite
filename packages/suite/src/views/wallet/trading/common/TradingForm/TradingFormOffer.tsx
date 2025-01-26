@@ -6,36 +6,36 @@ import { Button, TextButton, Row, Column, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import type { TradingTradeType, TradingType } from '@suite-common/invity';
 
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
     getSelectedCrypto,
     getSelectQuoteTyped,
-    isCoinmarketExchangeContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+    isTradingExchangeContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
 import { Translation } from 'src/components/suite';
-import { CoinmarketFormOfferItem } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferItem';
-import { CoinmarketFormOfferCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferCryptoAmount';
+import { TradingFormOfferItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferItem';
+import { TradingFormOfferCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferCryptoAmount';
 import {
-    coinmarketGetAmountLabels,
-    coinmarketGetRoundedFiatAmount,
-    coinmarketGetSectionActionLabel,
+    tradingGetAmountLabels,
+    tradingGetRoundedFiatAmount,
+    tradingGetSectionActionLabel,
     getBestRatedQuote,
     parseCryptoId,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketFormOfferFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferFiatAmount';
-import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
-import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/coinmarket/form';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { CoinmarketFormOffersSwitcher } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffersSwitcher';
-import { useCoinmarketDeviceDisconnected } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketDeviceDisconnected';
+} from 'src/utils/wallet/trading/tradingUtils';
+import { TradingFormOfferFiatAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferFiatAmount';
+import { TradingFormContextValues } from 'src/types/trading/tradingForm';
+import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/trading/form';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { TradingFormOffersSwitcher } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcher';
+import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 
 const getSelectedQuote = (
-    context: CoinmarketFormContextValues<TradingType>,
+    context: TradingFormContextValues<TradingType>,
     bestScoredQuote: TradingTradeType | undefined,
 ) => {
-    if (isCoinmarketExchangeContext(context)) {
+    if (isTradingExchangeContext(context)) {
         return context.getValues(FORM_EXCHANGE_TYPE) === FORM_EXCHANGE_DEX
             ? context.dexQuotes?.[0]
             : context.cexQuotes?.[0];
@@ -44,10 +44,10 @@ const getSelectedQuote = (
     }
 };
 
-export const CoinmarketFormOffer = () => {
+export const TradingFormOffer = () => {
     const [isCompareLoading, setIsCompareLoading] = useState<boolean>(false);
-    const context = useCoinmarketFormContext();
-    const { cryptoIdToPlatformName } = useCoinmarketInfo();
+    const context = useTradingFormContext();
+    const { cryptoIdToPlatformName } = useTradingInfo();
     const {
         type,
         quotes,
@@ -64,29 +64,27 @@ export const CoinmarketFormOffer = () => {
     const selectedCrypto = getSelectedCrypto(context);
     const receiveCurrency = bestScoredQuoteAmounts?.receiveCurrency;
     const { amountInCrypto } = getValues();
-    const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto });
+    const amountLabels = tradingGetAmountLabels({ type, amountInCrypto });
     const sendAmount =
         !state.isLoadingOrInvalid && bestScoredQuoteAmounts?.sendAmount
             ? bestScoredQuoteAmounts.sendAmount
             : '0';
 
     const selectQuote = getSelectQuoteTyped(context);
-    const shouldDisplayFiatAmount = isCoinmarketExchangeContext(context) ? false : amountInCrypto;
+    const shouldDisplayFiatAmount = isTradingExchangeContext(context) ? false : amountInCrypto;
     const { networkId, contractAddress } = parseCryptoId(selectedCrypto?.value ?? ('' as CryptoId));
     const network = selectedCrypto?.value ? cryptoIdToPlatformName(networkId) : undefined;
 
-    const { coinmarketDeviceDisconnected } = useCoinmarketDeviceDisconnected();
+    const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     return (
         <Column gap={spacings.lg}>
-            <Column gap={spacings.xs} data-testid="@coinmarket/best-offer">
+            <Column gap={spacings.xs} data-testid="@trading/best-offer">
                 <Translation id={amountLabels.offerLabel} />
                 {shouldDisplayFiatAmount ? (
-                    <CoinmarketFormOfferFiatAmount
-                        amount={coinmarketGetRoundedFiatAmount(sendAmount)}
-                    />
+                    <TradingFormOfferFiatAmount amount={tradingGetRoundedFiatAmount(sendAmount)} />
                 ) : (
-                    <CoinmarketFormOfferCryptoAmount
+                    <TradingFormOfferCryptoAmount
                         amount={
                             !state.isLoadingOrInvalid && bestScoredQuoteAmounts?.receiveAmount
                                 ? bestScoredQuoteAmounts.receiveAmount
@@ -99,10 +97,10 @@ export const CoinmarketFormOffer = () => {
                         }
                     />
                 )}
-                {isCoinmarketExchangeContext(context) && contractAddress && network && (
+                {isTradingExchangeContext(context) && contractAddress && network && (
                     <Paragraph typographyStyle="label" variant="tertiary">
                         <Translation
-                            id="TR_COINMARKET_ON_NETWORK_CHAIN"
+                            id="TR_TRADING_ON_NETWORK_CHAIN"
                             values={{
                                 networkName: network,
                             }}
@@ -112,7 +110,7 @@ export const CoinmarketFormOffer = () => {
             </Column>
             <Column gap={spacings.xxs} margin={{ vertical: spacings.md }}>
                 <Row justifyContent="space-between">
-                    <Translation id="TR_COINMARKET_YOUR_BEST_OFFER" />
+                    <Translation id="TR_TRADING_YOUR_BEST_OFFER" />
                     <TextButton
                         onClick={async () => {
                             setIsCompareLoading(true);
@@ -121,14 +119,14 @@ export const CoinmarketFormOffer = () => {
                         size="small"
                         isDisabled={state.isLoadingOrInvalid}
                         isLoading={isCompareLoading}
-                        data-testid="@coinmarket/form/compare-button"
+                        data-testid="@trading/form/compare-button"
                         type="button"
                     >
-                        <Translation id="TR_COINMARKET_COMPARE_OFFERS" />
+                        <Translation id="TR_TRADING_COMPARE_OFFERS" />
                     </TextButton>
                 </Row>
-                {isCoinmarketExchangeContext(context) ? (
-                    <CoinmarketFormOffersSwitcher
+                {isTradingExchangeContext(context) ? (
+                    <TradingFormOffersSwitcher
                         context={context}
                         isFormLoading={state.isFormLoading}
                         isFormInvalid={state.isFormInvalid}
@@ -136,7 +134,7 @@ export const CoinmarketFormOffer = () => {
                         bestRatedQuote={bestRatedQuote}
                     />
                 ) : (
-                    <CoinmarketFormOfferItem
+                    <TradingFormOfferItem
                         bestQuote={quote}
                         isFormLoading={state.isFormLoading}
                         isFormInvalid={state.isFormInvalid}
@@ -156,10 +154,10 @@ export const CoinmarketFormOffer = () => {
                     top: spacings.md,
                 }}
                 isFullWidth
-                isDisabled={coinmarketDeviceDisconnected || state.isLoadingOrInvalid || !quote}
-                data-testid={`@coinmarket/form/${type}-button`}
+                isDisabled={tradingDeviceDisconnected || state.isLoadingOrInvalid || !quote}
+                data-testid={`@trading/form/${type}-button`}
             >
-                <Translation id={coinmarketGetSectionActionLabel(type)} />
+                <Translation id={tradingGetSectionActionLabel(type)} />
             </Button>
         </Column>
     );

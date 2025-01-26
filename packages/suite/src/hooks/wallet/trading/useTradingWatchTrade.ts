@@ -13,18 +13,18 @@ import {
 
 import { invityAPI, type TradingType } from '@suite-common/invity';
 
-import { Trade, TradeType } from 'src/types/wallet/coinmarketCommonTypes';
-import { saveTrade as saveBuyTrade } from 'src/actions/wallet/coinmarketBuyActions';
-import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/coinmarketExchangeActions';
-import { saveTrade as saveSellTrade } from 'src/actions/wallet/coinmarketSellActions';
+import { Trade, TradeType } from 'src/types/wallet/tradingCommonTypes';
+import { saveTrade as saveBuyTrade } from 'src/actions/wallet/tradingBuyActions';
+import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/tradingExchangeActions';
+import { saveTrade as saveSellTrade } from 'src/actions/wallet/tradingSellActions';
 import {
-    CoinmarketTradeStatusType,
-    CoinmarketUseWatchTradeProps,
-    CoinmarketWatchTradeProps,
-} from 'src/types/coinmarket/coinmarket';
+    TradingTradeStatusType,
+    TradingUseWatchTradeProps,
+    TradingWatchTradeProps,
+} from 'src/types/trading/trading';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 
-export const tradeFinalStatuses: Record<TradeType, CoinmarketTradeStatusType[]> = {
+export const tradeFinalStatuses: Record<TradeType, TradingTradeStatusType[]> = {
     buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
     sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
     exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
@@ -33,13 +33,13 @@ export const tradeFinalStatuses: Record<TradeType, CoinmarketTradeStatusType[]> 
 const shouldRefreshTrade = (trade: Trade | undefined) =>
     trade && trade.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
 
-const coinmarketWatchTrade = async <T extends TradingType>({
+const tradingWatchTrade = async <T extends TradingType>({
     trade,
     account,
     refreshCount,
     dispatch,
     removeDraft,
-}: CoinmarketWatchTradeProps<T>) => {
+}: TradingWatchTradeProps<T>) => {
     const response = await invityAPI.watchTrade<T>(trade.data, trade.tradeType, refreshCount);
     if (!response) return;
     if (response.status && response.status !== trade.data.status) {
@@ -98,10 +98,10 @@ const coinmarketWatchTrade = async <T extends TradingType>({
     }
 };
 
-export const useCoinmarketWatchTrade = <T extends TradingType>({
+export const useTradingWatchTrade = <T extends TradingType>({
     account,
     trade,
-}: CoinmarketUseWatchTradeProps<T>) => {
+}: TradingUseWatchTradeProps<T>) => {
     const REFRESH_SECONDS = 30;
     const dispatch = useDispatch();
     const [refreshCount, setRefreshCount] = useState(0);
@@ -124,7 +124,7 @@ export const useCoinmarketWatchTrade = <T extends TradingType>({
         if (shouldRefreshTrade(trade)) {
             cancelRefresh();
             invityAPI.createInvityAPIKey(account.descriptor);
-            coinmarketWatchTrade<T>({ trade, account, refreshCount, dispatch, removeDraft });
+            tradingWatchTrade<T>({ trade, account, refreshCount, dispatch, removeDraft });
 
             resetRefresh();
         }

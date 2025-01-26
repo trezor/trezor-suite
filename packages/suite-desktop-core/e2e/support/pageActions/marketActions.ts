@@ -15,8 +15,8 @@ import {
 import expectedTradeRequestPayload from '../../fixtures/invity/buy/trade-request.json';
 import { DevicePromptActions } from './devicePromptActions';
 
-const quoteProviderLocator = '@coinmarket/offers/quote/provider';
-const quoteAmountLocator = '@coinmarket/offers/quote/crypto-amount';
+const quoteProviderLocator = '@trading/offers/quote/provider';
+const quoteAmountLocator = '@trading/offers/quote/crypto-amount';
 const getCountryLabel = (country: string) => {
     const labelWithFlag = regional.countriesMap.get(country);
     if (!labelWithFlag) {
@@ -54,7 +54,7 @@ export class MarketActions {
     readonly youPayFiatInput: Locator;
     readonly youPayCurrencyDropdown: Locator;
     readonly youPayCurrencyOption = (currency: FiatCurrencyCode) =>
-        this.page.getByTestId(`@coinmarket/form/fiat-currency-select/option/${currency}`);
+        this.page.getByTestId(`@trading/form/fiat-currency-select/option/${currency}`);
     readonly youPayFiatCryptoSwitchButton: Locator;
     readonly youPayCryptoInput: Locator;
     readonly youPayFractionButton = (amount: '10%' | '25%' | '50%' | 'Max') =>
@@ -64,22 +64,21 @@ export class MarketActions {
     readonly customFeeInput: Locator;
     readonly countryOfResidenceDropdown: Locator;
     readonly countryOfResidenceOption = (countryCode: string) =>
-        this.page.getByTestId(`@coinmarket/form/country-select/option/${countryCode}`);
+        this.page.getByTestId(`@trading/form/country-select/option/${countryCode}`);
     readonly accountDropdown: Locator;
     readonly accountSearchInput: Locator;
     readonly accountTabFilter = (tab: 'all-networks' | 'eth' | 'pol' | 'bsc' | 'sol') =>
-        this.page.getByTestId(`@coinmarket/form/select-crypto/network-tab/${tab}`);
+        this.page.getByTestId(`@trading/form/select-crypto/network-tab/${tab}`);
     readonly accountOption = (cryptoName: string, symbol: NetworkSymbol) =>
-        this.page.getByTestId(`@coinmarket/form/select-crypto/option/${cryptoName}-${symbol}`);
+        this.page.getByTestId(`@trading/form/select-crypto/option/${cryptoName}-${symbol}`);
     readonly paymentMethodDropdown: Locator;
     readonly paymentMethodOption = (method: PaymentMethods) =>
-        this.page.getByTestId(`@coinmarket/form/payment-method-select/option/${method}`);
-    // Compared offers
+        this.page.getByTestId(`@trading/form/payment-method-select/option/${method}`);
     readonly buyOffersPage: Locator;
     readonly compareButton: Locator;
     readonly quotes: Locator;
     readonly quoteOfProvider = (provider: string) =>
-        this.page.getByTestId(`@coinmarket/offers/quote-${provider}`);
+        this.page.getByTestId(`@trading/offers/quote-${provider}`);
     readonly quoteAmount: Locator;
     readonly refreshTime: Locator;
     readonly selectThisQuoteButton: Locator;
@@ -114,72 +113,63 @@ export class MarketActions {
         private url: string,
     ) {
         this.devicePrompt = new DevicePromptActions(page);
-
-        this.offerSpinner = this.page.getByTestId('@coinmarket/offers/loading-spinner');
-        this.section = this.page.getByTestId('@coinmarket');
-        this.form = this.page.getByTestId('@coinmarket/form');
+        this.offerSpinner = this.page.getByTestId('@trading/offers/loading-spinner');
+        this.section = this.page.getByTestId('@trading');
+        this.form = this.page.getByTestId('@trading/form');
         this.quoteProvider = this.page.getByTestId(quoteProviderLocator);
-        this.bestOfferSection = this.page.getByTestId('@coinmarket/best-offer');
-        this.bestOfferAmount = this.page.getByTestId('@coinmarket/best-offer/amount');
-        this.buyBestOfferButton = this.page.getByTestId('@coinmarket/form/buy-button');
-        this.youPayFiatInput = this.page.getByTestId('@coinmarket/form/fiat-input');
+        this.bestOfferSection = this.page.getByTestId('@trading/best-offer');
+        this.bestOfferAmount = this.page.getByTestId('@trading/best-offer/amount');
+        this.buyBestOfferButton = this.page.getByTestId('@trading/form/buy-button');
+        this.youPayFiatInput = this.page.getByTestId('@trading/form/fiat-input');
         this.youPayCurrencyDropdown = this.page.getByTestId(
-            '@coinmarket/form/fiat-currency-select/input',
+            '@trading/form/fiat-currency-select/input',
         );
         this.youPayFiatCryptoSwitchButton = this.page.getByTestId(
-            '@coinmarket/form/switch-crypto-fiat',
+            '@trading/form/switch-crypto-fiat',
         );
-        this.youPayCryptoInput = this.page.getByTestId('@coinmarket/form/crypto-input');
+        this.youPayCryptoInput = this.page.getByTestId('@trading/form/crypto-input');
         this.customFeeInput = this.page.getByTestId('feePerUnit');
         this.countryOfResidenceDropdown = this.page.getByTestId(
-            '@coinmarket/form/country-select/input',
+            '@trading/form/country-select/input',
         );
-        this.accountDropdown = this.page.getByTestId('@coinmarket/form/select-crypto/input');
-        this.accountSearchInput = this.page.getByTestId(
-            '@coinmarket/form/select-crypto/search-input',
-        );
+        this.accountDropdown = this.page.getByTestId('@trading/form/select-crypto/input');
+        this.accountSearchInput = this.page.getByTestId('@trading/form/select-crypto/search-input');
         this.paymentMethodDropdown = this.page.getByTestId(
-            '@coinmarket/form/payment-method-select/input',
+            '@trading/form/payment-method-select/input',
         );
-        this.buyOffersPage = this.page.getByTestId('@coinmarket/buy-offers');
-        this.compareButton = this.page.getByTestId('@coinmarket/form/compare-button');
-        this.quotes = this.page.getByTestId('@coinmarket/offers/quote');
+        this.buyOffersPage = this.page.getByTestId('@trading/buy-offers');
+        this.compareButton = this.page.getByTestId('@trading/form/compare-button');
+        this.quotes = this.page.getByTestId('@trading/offers/quote');
         this.quoteAmount = this.page.getByTestId(quoteAmountLocator);
-        this.refreshTime = this.page.getByTestId('@coinmarket/refresh-time-text');
-        this.selectThisQuoteButton = this.page.getByTestId(
-            '@coinmarket/offers/get-this-deal-button',
-        );
+        this.refreshTime = this.page.getByTestId('@trading/refresh-time-text');
+        this.selectThisQuoteButton = this.page.getByTestId('@trading/offers/get-this-deal-button');
         this.modal = this.page.getByTestId('@modal');
         this.buyTermsConfirmButton = this.page.getByTestId(
-            '@coinmarket/buy/offers/buy-terms-confirm-button',
+            '@trading/buy/offers/buy-terms-confirm-button',
         );
         this.confirmOnTrezorButton = this.page.getByTestId(
-            '@coinmarket/offer/confirm-on-trezor-button',
+            '@trading/offer/confirm-on-trezor-button',
         );
-        this.confirmationSection = this.page.getByTestId('@coinmarket/selected-offer');
-        this.confirmationCryptoAmount = this.page.getByTestId(
-            '@coinmarket/form/info/crypto-amount',
-        );
-        this.confirmationFiatAmount = this.page.getByTestId('@coinmarket/form/info/fiat-amount');
-        this.confirmationProvider = this.page.getByTestId('@coinmarket/form/info/provider');
-        this.confirmationAddress = this.page.getByTestId('@coinmarket/form/verify/address');
+        this.confirmationSection = this.page.getByTestId('@trading/selected-offer');
+        this.confirmationCryptoAmount = this.page.getByTestId('@trading/form/info/crypto-amount');
+        this.confirmationFiatAmount = this.page.getByTestId('@trading/form/info/fiat-amount');
+        this.confirmationProvider = this.page.getByTestId('@trading/form/info/provider');
+        this.confirmationAddress = this.page.getByTestId('@trading/form/verify/address');
         this.confirmTradeButton = this.page.getByTestId(
-            '@coinmarket/offer/continue-transaction-button',
+            '@trading/offer/continue-transaction-button',
         );
         this.exchangeFeeDetails = this.page.getByTestId('@wallet/fee-details');
         this.broadcastButton = this.page.getByTestId('broadcast-button');
         this.sendAddressInput = this.page.getByTestId('outputs.0.address');
         this.sendAmountInput = this.page.getByTestId('outputs.0.amount');
         this.sendButton = this.page.getByTestId('@send/review-button');
-        this.transactionList = this.page.getByTestId('@coinmarket/transactions/list');
-        this.transactionInfo = this.page.getByTestId('@coinmarket/transactions/info');
-        this.transactionStatus = this.page.getByTestId('@coinmarket/transactions/status');
+        this.transactionList = this.page.getByTestId('@trading/transactions/list');
+        this.transactionInfo = this.page.getByTestId('@trading/transactions/info');
+        this.transactionStatus = this.page.getByTestId('@trading/transactions/status');
         this.transactionDetailsButton = this.page.getByRole('button', { name: 'View Details' });
-        this.transactionDetailStatus = this.page.getByTestId(
-            '@coinmarket/transaction/detail/status',
-        );
+        this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
-        this.transactionDetail = this.page.getByTestId('@coinmarket/transaction/detail');
+        this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
     }
 
     @step()
@@ -270,9 +260,9 @@ export class MarketActions {
             });
         }
 
-        const redirecteTradeResponse = createRedirectedTradeResponse(this.url);
+        const redirectedTradeResponse = createRedirectedTradeResponse(this.url);
         await this.page.route(invityEndpoint.buyTrade, async route => {
-            await route.fulfill({ json: redirecteTradeResponse });
+            await route.fulfill({ json: redirectedTradeResponse });
         });
     }
 

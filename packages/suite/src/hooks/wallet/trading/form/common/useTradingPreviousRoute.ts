@@ -1,9 +1,10 @@
+import type { TradingType } from '@suite-common/invity';
+
 import { useSelector } from 'src/hooks/suite';
 import { selectRouter } from 'src/reducers/suite/routerReducer';
-import { CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
-import { getTradeTypeByRoute } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { getTradeTypeByRoute } from 'src/utils/wallet/trading/tradingUtils';
 
-export const useCoinmarketPreviousRoute = (tradeType: CoinmarketTradeType) => {
+export const useTradingPreviousRoute = (tradeType: TradingType) => {
     const {
         settingsBackRoute: { name: previousRouteName },
     } = useSelector(selectRouter);

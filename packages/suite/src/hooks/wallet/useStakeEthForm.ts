@@ -17,7 +17,7 @@ import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/walle
 import { StakeContextValues, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
 import {
     UseStakeFormsProps,
     FIAT_INPUT,

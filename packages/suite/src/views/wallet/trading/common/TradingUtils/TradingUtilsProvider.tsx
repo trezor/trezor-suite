@@ -5,7 +5,7 @@ import { Row } from '@trezor/components';
 import { invityAPI } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
+import { TradingUtilsProvidersProps } from 'src/types/trading/trading';
 
 const Icon = styled.img`
     flex: none;
@@ -13,25 +13,21 @@ const Icon = styled.img`
     border-radius: 2px;
 `;
 
-interface CoinmarketUtilsProviderProps {
+interface TradingUtilsProviderProps {
     exchange?: string;
     className?: string;
-    providers?: CoinmarketUtilsProvidersProps;
+    providers?: TradingUtilsProvidersProps;
 }
 
-export const CoinmarketUtilsProvider = ({
+export const TradingUtilsProvider = ({
     exchange,
     providers,
     className,
-}: CoinmarketUtilsProviderProps) => {
+}: TradingUtilsProviderProps) => {
     const provider = providers && exchange ? providers[exchange] : null;
 
     return (
-        <Row
-            gap={spacings.xs}
-            className={className}
-            data-testid="@coinmarket/offers/quote/provider"
-        >
+        <Row gap={spacings.xs} className={className} data-testid="@trading/offers/quote/provider">
             {provider ? (
                 <>
                     {provider.logo && (
@@ -40,7 +36,7 @@ export const CoinmarketUtilsProvider = ({
                     {provider.brandName ?? provider.companyName}
                 </>
             ) : (
-                <>{exchange ? exchange : <Translation id="TR_COINMARKET_UNKNOWN_PROVIDER" />}</>
+                <>{exchange ? exchange : <Translation id="TR_TRADING_UNKNOWN_PROVIDER" />}</>
             )}
         </Row>
     );

@@ -3,32 +3,30 @@ import { useMemo } from 'react';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { FormState, Output } from '@suite-common/wallet-types';
 
-import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
+import { SellInfo } from 'src/actions/wallet/tradingSellActions';
 import {
     buildFiatOption,
     cryptoIdToSymbol,
     getAddressAndTokenFromAccountOptionsGroupProps,
     getDefaultCountry,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+} from 'src/utils/wallet/trading/tradingUtils';
 import { Account } from 'src/types/wallet';
-import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketSellFormDefaultValuesProps } from 'src/types/coinmarket/coinmarketForm';
+import { TradingPaymentMethodListProps } from 'src/types/trading/trading';
+import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import {
     FORM_DEFAULT_FIAT_CURRENCY,
     FORM_DEFAULT_PAYMENT_METHOD,
-} from 'src/constants/wallet/coinmarket/form';
-import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketBuildAccountGroups';
+} from 'src/constants/wallet/trading/form';
+import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import { useSelector } from 'src/hooks/suite';
 
-export const useCoinmarketSellFormDefaultValues = (
+export const useTradingSellFormDefaultValues = (
     account: Account,
     sellInfo: SellInfo | undefined,
-): CoinmarketSellFormDefaultValuesProps => {
+): TradingSellFormDefaultValuesProps => {
     const country = sellInfo?.sellList?.country;
-    const cryptoGroups = useCoinmarketBuildAccountGroups('sell');
-    const prefilledFromCryptoId = useSelector(
-        state => state.wallet.coinmarket.prefilledFromCryptoId,
-    );
+    const cryptoGroups = useTradingBuildAccountGroups('sell');
+    const prefilledFromCryptoId = useSelector(state => state.wallet.trading.prefilledFromCryptoId);
     const cryptoOptions = useMemo(
         () => cryptoGroups.flatMap(group => group.options),
         [cryptoGroups],
@@ -48,7 +46,7 @@ export const useCoinmarketSellFormDefaultValues = (
     const { address, token } =
         getAddressAndTokenFromAccountOptionsGroupProps(defaultSendCryptoSelect);
 
-    const defaultPaymentMethod: CoinmarketPaymentMethodListProps = useMemo(
+    const defaultPaymentMethod: TradingPaymentMethodListProps = useMemo(
         () => ({
             value: FORM_DEFAULT_PAYMENT_METHOD,
             label: '',

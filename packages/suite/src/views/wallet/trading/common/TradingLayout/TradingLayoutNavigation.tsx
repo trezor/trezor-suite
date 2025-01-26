@@ -5,7 +5,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { goto } from 'src/actions/suite/routerActions';
 
-type CoinmarketLayoutNavigationProps = {
+type TradingLayoutNavigationProps = {
     route?: Route['name'];
 };
 
@@ -17,23 +17,23 @@ type NavigationItem = {
 
 const navigationItems: NavigationItem[] = [
     {
-        id: 'wallet-coinmarket-buy',
+        id: 'wallet-trading-buy',
         icon: 'plus',
         translationId: 'TR_NAV_BUY',
     },
     {
-        id: 'wallet-coinmarket-sell',
+        id: 'wallet-trading-sell',
         icon: 'minus',
         translationId: 'TR_NAV_SELL',
     },
     {
-        id: 'wallet-coinmarket-dca',
+        id: 'wallet-trading-dca',
         icon: 'clock',
         translationId: 'TR_NAV_DCA',
     },
 ];
 
-export const CoinmarketLayoutNavigation = ({ route }: CoinmarketLayoutNavigationProps) => {
+export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
     const dispatch = useDispatch();
 
     const goToRoute = (route: Route['name']) => () => {
@@ -45,7 +45,7 @@ export const CoinmarketLayoutNavigation = ({ route }: CoinmarketLayoutNavigation
             {navigationItems.map(item => (
                 <SubTabs.Item
                     key={item.id}
-                    data-testid={`@coinmarket/menu/${item.id}`}
+                    data-testid={`@trading/menu/${item.id}`}
                     id={item.id}
                     iconName={item.icon}
                     onClick={goToRoute(item.id)}

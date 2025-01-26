@@ -6,21 +6,21 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketTradeDetailMapProps } from 'src/types/coinmarket/coinmarket';
+import { TradingTradeDetailMapProps } from 'src/types/trading/trading';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
     getSelectQuoteTyped,
-    isCoinmarketExchangeContext,
-    isCoinmarketSellContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketUtilsKyc } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsKyc';
-import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
-import { CoinmarketUtilsPrice } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsPrice';
-import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { useCoinmarketDeviceDisconnected } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketDeviceDisconnected';
+    isTradingExchangeContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
+import { getTagAndInfoNote } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
+import { TradingTestWrapper } from 'src/views/wallet/trading';
+import { TradingUtilsPrice } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsPrice';
+import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 
 const Offer = styled.div`
     display: flex;
@@ -76,7 +76,7 @@ const ActionsOfferColumn = styled(OfferColumn)`
     }
 `;
 
-const OfferProvider = styled(CoinmarketUtilsProvider)<{ $isMargined?: boolean }>`
+const OfferProvider = styled(TradingUtilsProvider)<{ $isMargined?: boolean }>`
     ${({ $isMargined }) => ($isMargined ? 'margin-top: auto;' : '')}
 `;
 
@@ -88,14 +88,14 @@ const ButtonWrapper = styled.div`
     }
 `;
 
-export interface CoinmarketOffersItemProps {
-    quote: CoinmarketTradeDetailMapProps[keyof CoinmarketTradeDetailMapProps];
+export interface TradingOffersItemProps {
+    quote: TradingTradeDetailMapProps[keyof TradingTradeDetailMapProps];
     isBestRate: boolean;
 }
 
-export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
+export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
     const theme = useTheme();
-    const context = useCoinmarketFormContext();
+    const context = useTradingFormContext();
     const { callInProgress } = context;
     const providers = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
@@ -105,14 +105,14 @@ export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
 
     const selectQuote = getSelectQuoteTyped(context);
 
-    const { coinmarketDeviceDisconnected } = useCoinmarketDeviceDisconnected();
+    const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     if (!cryptoAmountProps) return null;
 
     return (
-        <CoinmarketTestWrapper
-            data-testid="@coinmarket/offers/quote"
-            data-testid-alt={`@coinmarket/offers/quote-${exchange}`}
+        <TradingTestWrapper
+            data-testid="@trading/offers/quote"
+            data-testid-alt={`@trading/offers/quote-${exchange}`}
         >
             <Card margin={{ top: spacings.md }} minHeight={100}>
                 <Offer>
@@ -134,10 +134,10 @@ export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                         />
                     </ExchangeNameOfferColumn>
                     <AmountOfferColumn>
-                        <Row alignItems="flex-end" data-testid="@coinmarket/offer/amount">
-                            <CoinmarketUtilsPrice {...cryptoAmountProps} />
-                            {isCoinmarketExchangeContext(context) && (
-                                <CoinmarketUtilsKyc
+                        <Row alignItems="flex-end" data-testid="@trading/offer/amount">
+                            <TradingUtilsPrice {...cryptoAmountProps} />
+                            {isTradingExchangeContext(context) && (
+                                <TradingUtilsKyc
                                     exchange={exchange}
                                     providers={context.exchangeInfo?.providerInfos}
                                     isForComparator
@@ -155,18 +155,18 @@ export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                                 <Button
                                     isFullWidth
                                     isLoading={callInProgress}
-                                    isDisabled={!!quote.error || coinmarketDeviceDisconnected}
+                                    isDisabled={!!quote.error || tradingDeviceDisconnected}
                                     onClick={() => selectQuote(quote)}
-                                    data-testid="@coinmarket/offers/get-this-deal-button"
+                                    data-testid="@trading/offers/get-this-deal-button"
                                 >
                                     <Translation
                                         id={
-                                            isCoinmarketSellContext(context) &&
+                                            isTradingSellContext(context) &&
                                             context.needToRegisterOrVerifyBankAccount(
                                                 quote as SellFiatTrade,
                                             )
                                                 ? 'TR_SELL_REGISTER'
-                                                : 'TR_COINMARKET_OFFERS_SELECT'
+                                                : 'TR_TRADING_OFFERS_SELECT'
                                         }
                                     />
                                 </Button>
@@ -175,6 +175,6 @@ export const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                     </ActionsOfferColumn>
                 </Offer>
             </Card>
-        </CoinmarketTestWrapper>
+        </TradingTestWrapper>
     );
 };

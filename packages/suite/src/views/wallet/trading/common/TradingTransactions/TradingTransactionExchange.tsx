@@ -2,20 +2,20 @@ import { ExchangeProviderInfo } from 'invity-api';
 
 import { Button } from '@trezor/components';
 
-import { TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
+import { TradeExchange } from 'src/types/wallet/tradingCommonTypes';
 import { goto } from 'src/actions/suite/routerActions';
-import { saveTransactionId } from 'src/actions/wallet/coinmarketExchangeActions';
+import { saveTransactionId } from 'src/actions/wallet/tradingExchangeActions';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
-import { CoinmarketTransactionAmounts } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransaction/CoinmarketTransactionAmounts';
-import { CoinmarketTransactionInfo } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransaction/CoinmarketTransactionInfo';
-import { CoinmarketTransactionId } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransaction/CoinmarketTransactionId';
-import { CoinmarketTransactionProvider } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransaction/CoinmarketTransactionProvider';
-import { CoinmarketTransactionContainer } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransaction/CoinmarketTransactionContainer';
+import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
+import { TradingTransactionInfo } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionInfo';
+import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionId';
+import { TradingTransactionProvider } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionProvider';
+import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';
 
-interface CoinmarketTransactionExchangeProps {
+interface TradingTransactionExchangeProps {
     trade: TradeExchange;
     account: Account;
     providers?: {
@@ -23,40 +23,37 @@ interface CoinmarketTransactionExchangeProps {
     };
 }
 
-export const CoinmarketTransactionExchange = ({
+export const TradingTransactionExchange = ({
     trade,
     providers,
     account,
-}: CoinmarketTransactionExchangeProps) => {
+}: TradingTransactionExchangeProps) => {
     const dispatch = useDispatch();
 
     const viewDetail = () => {
         dispatch(saveTransactionId(trade.key || ''));
-        dispatch(goto('wallet-coinmarket-exchange-detail'));
+        dispatch(goto('wallet-trading-exchange-detail'));
     };
 
-    useCoinmarketWatchTrade({ account, trade });
+    useTradingWatchTrade({ account, trade });
 
     if (!trade.data.orderId) return null;
 
     return (
-        <CoinmarketTransactionContainer
+        <TradingTransactionContainer
             TradeDetail={
                 <>
-                    <CoinmarketTransactionAmounts trade={trade} />
-                    <CoinmarketTransactionInfo trade={trade} />
-                    <CoinmarketTransactionId transactionId={trade.data.orderId} />
+                    <TradingTransactionAmounts trade={trade} />
+                    <TradingTransactionInfo trade={trade} />
+                    <TradingTransactionId transactionId={trade.data.orderId} />
                 </>
             }
             TradeProviders={
-                <CoinmarketTransactionProvider
-                    exchange={trade.data.exchange}
-                    providers={providers}
-                />
+                <TradingTransactionProvider exchange={trade.data.exchange} providers={providers} />
             }
             TradeButton={
                 <Button size="small" variant="tertiary" onClick={viewDetail}>
-                    <Translation id="TR_COINMARKET_VIEW_DETAILS" />
+                    <Translation id="TR_TRADING_VIEW_DETAILS" />
                 </Button>
             }
         />

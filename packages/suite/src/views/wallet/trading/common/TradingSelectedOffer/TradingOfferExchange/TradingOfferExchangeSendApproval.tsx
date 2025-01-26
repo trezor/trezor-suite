@@ -19,13 +19,13 @@ import { spacings } from '@trezor/theme';
 import type { TradingExchangeType } from '@suite-common/invity';
 
 import { Translation, AccountLabeling } from 'src/components/suite';
-import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { useCoinmarketExchangeWatchSendApproval } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeWatchSendApproval';
+import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { useTradingExchangeWatchSendApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchSendApproval';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { saveSelectedQuote } from 'src/actions/wallet/coinmarketExchangeActions';
-import { cryptoIdToSymbol, parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { saveSelectedQuote } from 'src/actions/wallet/tradingExchangeActions';
+import { cryptoIdToSymbol, parseCryptoId } from 'src/utils/wallet/trading/tradingUtils';
 import { IOAddress } from 'src/components/suite/copy/IOAddress';
 
 // add APPROVED means no approval request is necessary
@@ -35,7 +35,7 @@ const BreakableValue = styled.span`
     word-break: break-all;
 `;
 
-export const CoinmarketOfferExchangeSendApproval = () => {
+export const TradingOfferExchangeSendApproval = () => {
     const dispatch = useDispatch();
     const {
         device,
@@ -46,17 +46,16 @@ export const CoinmarketOfferExchangeSendApproval = () => {
         confirmTrade,
         sendTransaction,
         setExchangeStep,
-    } = useCoinmarketFormContext<TradingExchangeType>();
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    } = useTradingFormContext<TradingExchangeType>();
+    const { cryptoIdToCoinSymbol } = useTradingInfo();
     const [approvalType, setApprovalType] = useState<ExtendedDexApprovalType>(
         selectedQuote?.status === 'CONFIRM' ? 'APPROVED' : 'MINIMAL',
     );
 
     const blockchain = useSelector(state => state.wallet.blockchain);
+    const { navigateToExchangeForm } = useTradingNavigation(account);
 
-    const { navigateToExchangeForm } = useCoinmarketNavigation(account);
-
-    useCoinmarketExchangeWatchSendApproval({
+    useTradingExchangeWatchSendApproval({
         selectedQuote,
         confirmTrade,
     });

@@ -1,12 +1,12 @@
 import { Column } from '@trezor/components';
 
-import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { getBestRatedQuote } from 'src/utils/wallet/trading/tradingUtils';
 import { WalletSubpageHeading } from 'src/components/wallet';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketFeaturedOffersItem } from 'src/views/wallet/coinmarket/common/CoinmarketFeaturedOffers/CoinmarketFeaturedOffersItem';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingFeaturedOffersItem } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffersItem';
 
-export const CoinmarketFeaturedOffers = () => {
-    const context = useCoinmarketFormContext();
+export const TradingFeaturedOffers = () => {
+    const context = useTradingFormContext();
     const {
         type,
         form: { state },
@@ -20,9 +20,9 @@ export const CoinmarketFeaturedOffers = () => {
 
     return (
         <Column>
-            <WalletSubpageHeading title="TR_COINMARKET_FEATURED_OFFERS_HEADING" />
+            <WalletSubpageHeading title="TR_TRADING_FEATURED_OFFERS_HEADING" />
             {featuredQuotes.map(quote => (
-                <CoinmarketFeaturedOffersItem
+                <TradingFeaturedOffersItem
                     key={quote?.orderId}
                     context={context}
                     quote={quote}

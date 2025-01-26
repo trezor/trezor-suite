@@ -2,20 +2,17 @@ import { Control, Controller } from 'react-hook-form';
 
 import { Select } from '@trezor/components';
 
+import { TradingPaymentMethodListProps, TradingTradeBuySellType } from 'src/types/trading/trading';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    CoinmarketPaymentMethodListProps,
-    CoinmarketTradeBuySellType,
-} from 'src/types/coinmarket/coinmarket';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import {
-    CoinmarketBuySellFormProps,
-    CoinmarketFormInputDefaultProps,
-} from 'src/types/coinmarket/coinmarketForm';
-import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentPlainType';
-import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/coinmarket/form';
+    TradingBuySellFormProps,
+    TradingFormInputDefaultProps,
+} from 'src/types/trading/tradingForm';
+import { TradingPaymentPlainType } from 'src/views/wallet/trading/common/TradingPaymentPlainType';
+import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/trading/form';
 import { Translation } from 'src/components/suite';
 
-export const CoinmarketFormInputPaymentMethod = ({ label }: CoinmarketFormInputDefaultProps) => {
+export const TradingFormInputPaymentMethod = ({ label }: TradingFormInputDefaultProps) => {
     const {
         control,
         paymentMethods,
@@ -24,11 +21,11 @@ export const CoinmarketFormInputPaymentMethod = ({ label }: CoinmarketFormInputD
         form: {
             state: { isFormLoading, isFormInvalid },
         },
-    } = useCoinmarketFormContext<CoinmarketTradeBuySellType>();
+    } = useTradingFormContext<TradingTradeBuySellType>();
 
     const getEmptyMethodsLabel = () => {
         if (isFormInvalid || (quotes && quotes.length === 0)) {
-            return <Translation id="TR_COINMARKET_NO_METHODS_AVAILABLE" />;
+            return <Translation id="TR_TRADING_NO_METHODS_AVAILABLE" />;
         }
 
         return '';
@@ -38,16 +35,16 @@ export const CoinmarketFormInputPaymentMethod = ({ label }: CoinmarketFormInputD
         <Controller
             name={FORM_PAYMENT_METHOD_SELECT}
             defaultValue={defaultPaymentMethod}
-            control={control as Control<CoinmarketBuySellFormProps>}
+            control={control as Control<TradingBuySellFormProps>}
             render={({ field: { onChange, value } }) => (
                 <Select
                     value={value}
                     onChange={onChange}
                     options={paymentMethods}
                     labelLeft={label && <Translation id={label} />}
-                    formatOptionLabel={(option: CoinmarketPaymentMethodListProps) =>
+                    formatOptionLabel={(option: TradingPaymentMethodListProps) =>
                         option.value !== '' && quotes && quotes.length > 0 ? (
-                            <CoinmarketPaymentPlainType
+                            <TradingPaymentPlainType
                                 method={option.value}
                                 methodName={option.label}
                             />
@@ -55,7 +52,7 @@ export const CoinmarketFormInputPaymentMethod = ({ label }: CoinmarketFormInputD
                             getEmptyMethodsLabel()
                         )
                     }
-                    data-testid="@coinmarket/form/payment-method-select"
+                    data-testid="@trading/form/payment-method-select"
                     isClearable={false}
                     isDisabled={isFormInvalid}
                     isLoading={isFormLoading}

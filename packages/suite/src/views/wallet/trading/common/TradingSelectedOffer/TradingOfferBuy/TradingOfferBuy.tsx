@@ -1,11 +1,11 @@
 import { Card } from '@trezor/components';
 
-import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
-import { CoinmarketVerify } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerify';
-import { CoinmarketOfferBuyProps } from 'src/types/coinmarket/coinmarketForm';
-import useCoinmarketVerifyAccount from 'src/hooks/wallet/coinmarket/form/useCoinmarketVerifyAccount';
+import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { TradingVerify } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerify';
+import { TradingOfferBuyProps } from 'src/types/trading/tradingForm';
+import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';
 
-export const CoinmarketOfferBuy = ({
+export const TradingOfferBuy = ({
     account,
     selectedQuote,
     providers,
@@ -13,24 +13,24 @@ export const CoinmarketOfferBuy = ({
     quoteAmounts,
     paymentMethod,
     paymentMethodName,
-}: CoinmarketOfferBuyProps) => {
+}: TradingOfferBuyProps) => {
     const cryptoId = selectedQuote?.receiveCurrency;
-    const coinmarketVerifyAccount = useCoinmarketVerifyAccount({ cryptoId });
+    const tradingVerifyAccount = useTradingVerifyAccount({ cryptoId });
 
     return (
         <>
             <Card>
                 {cryptoId && (
-                    <CoinmarketVerify
-                        coinmarketVerifyAccount={coinmarketVerifyAccount}
+                    <TradingVerify
+                        tradingVerifyAccount={tradingVerifyAccount}
                         cryptoId={cryptoId}
                     />
                 )}
             </Card>
             <Card>
-                <CoinmarketSelectedOfferInfo
+                <TradingSelectedOfferInfo
                     account={account}
-                    selectedAccount={coinmarketVerifyAccount.selectedAccountOption?.account}
+                    selectedAccount={tradingVerifyAccount.selectedAccountOption?.account}
                     selectedQuote={selectedQuote}
                     providers={providers}
                     type={type}

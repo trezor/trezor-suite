@@ -1,6 +1,6 @@
 import { test, expect } from '../../support/fixtures';
 
-test.describe('Coinmarket Exchange', { tag: ['@group=other', '@snapshot'] }, () => {
+test.describe('trading Exchange', { tag: ['@group=other', '@snapshot'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic:
@@ -33,29 +33,29 @@ test.describe('Coinmarket Exchange', { tag: ['@group=other', '@snapshot'] }, () 
         });
 
         await page
-            .getByTestId('@coinmarket/form/select-crypto/input')
+            .getByTestId('@trading/form/select-crypto/input')
             .getByRole('combobox')
             .fill('ETH');
-        await page.getByTestId('@coinmarket/form/select-crypto/option/ethereum').first().click();
+        await page.getByTestId('@trading/form/select-crypto/option/ethereum').first().click();
 
-        await page.getByTestId('@coinmarket/form/crypto-input').fill('0.005');
+        await page.getByTestId('@trading/form/crypto-input').fill('0.005');
         await expect(page.getByText('Not enough funds')).toBeVisible();
 
         // Custom fee setup
         // await page.getByTestId('select-bar/custom').click();
         // await page.getByTestId('feePerUnit').fill('1');
-        // await page.getByTestId('@coinmarket/exchange/compare-button').click();
+        // await page.getByTestId('@trading/exchange/compare-button').click();
 
         // TOOD: #16041 Once solved, Verifies the offers displayed match the mock
 
         // pass through initial run and device auth check
         // // Gets the deal
-        // await page.getByTestId('@coinmarket/exchange/offers/get-this-deal-button').first().click();
+        // await page.getByTestId('@trading/exchange/offers/get-this-deal-button').first().click();
         // await page.getByTestId('@modal').isVisible();
-        // await page.getByTestId('@coinmarket/exchange/offers/buy-terms-confirm-button').click();
+        // await page.getByTestId('@trading/exchange/offers/buy-terms-confirm-button').click();
         // // Verifies amounts, currencies and providers
         // const wrapper = await page
-        //     .locator('[class*="CoinmarketExchangeOfferInfo__Wrapper"]')
+        //     .locator('[class*="tradingExchangeOfferInfo__Wrapper"]')
         //     .first();
         // await expect(wrapper.locator('[class*="FormattedCryptoAmount__Value"]').first()).toHaveText(
         //     testData.cryptoInput,
@@ -69,7 +69,7 @@ test.describe('Coinmarket Exchange', { tag: ['@group=other', '@snapshot'] }, () 
         // await expect(
         //     wrapper.locator('[class*="FormattedCryptoAmount__Container"]').last(),
         // ).toContainText(testData.targetCrypto);
-        // await expect(wrapper.locator('[class*="CoinmarketProviderInfo__Text"]')).toHaveText(
+        // await expect(wrapper.locator('[class*="tradingProviderInfo__Text"]')).toHaveText(
         //     'ChangeHero',
         // );
         // // Verifies receiving address and its title
@@ -81,11 +81,11 @@ test.describe('Coinmarket Exchange', { tag: ['@group=other', '@snapshot'] }, () 
         //     testData.ethAddress,
         // );
         // // Confirming the transaction
-        // await page.getByTestId('@coinmarket/exchange/offers/confirm-on-trezor-button').click();
+        // await page.getByTestId('@trading/exchange/offers/confirm-on-trezor-button').click();
         // await devicePrompt.confirmOnDevicePromptIsShown();
         // await trezorUserEnvLink.pressYes();
-        // await page.getByTestId('@coinmarket/exchange/offers/continue-transaction-button').click();
-        // await page.getByTestId('@coinmarket/exchange/offers/confirm-on-trezor-and-send').click();
+        // await page.getByTestId('@trading/exchange/offers/continue-transaction-button').click();
+        // await page.getByTestId('@trading/exchange/offers/confirm-on-trezor-and-send').click();
         // // Verification modal opens
         // await page.locator('[class*="OutputElement__OutputWrapper"]').first();
     });

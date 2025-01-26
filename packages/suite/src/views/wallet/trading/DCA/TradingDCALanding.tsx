@@ -15,13 +15,13 @@ import {
     Text,
 } from '@trezor/components';
 import { borders, palette, spacings, spacingsPx } from '@trezor/theme';
-import { COINMARKET_DOWNLOAD_INVITY_APP_URL } from '@trezor/urls';
+import { TRADING_DOWNLOAD_INVITY_APP_URL } from '@trezor/urls';
 import { variables } from '@trezor/components/src/config';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayout';
-import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
+import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
+import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 
 const IconWrapper = styled.div`
     display: flex;
@@ -92,11 +92,11 @@ const FeatureItem = ({ icon, featureNumber }: FeatureItemProps) => (
         </IconWrapper>
         <div>
             <Text typographyStyle="highlight" color={palette.lightSecondaryLime500}>
-                <Translation id={`TR_COINMARKET_DCA_FEATURE_${featureNumber}_SUBHEADING`} />
+                <Translation id={`TR_TRADING_DCA_FEATURE_${featureNumber}_SUBHEADING`} />
             </Text>
             <Paragraph>
                 <Text color={palette.lightWhiteAlpha1000}>
-                    <Translation id={`TR_COINMARKET_DCA_FEATURE_${featureNumber}_DESCRIPTION`} />
+                    <Translation id={`TR_TRADING_DCA_FEATURE_${featureNumber}_DESCRIPTION`} />
                 </Text>
             </Paragraph>
         </div>
@@ -108,12 +108,12 @@ const DCALanding = () => {
     const isLightTheme = currentTheme !== 'dark';
 
     return (
-        <CoinmarketLayout>
+        <TradingLayout>
             <Card paddingType="small">
                 <ColumnsWrapper>
                     <Column1>
                         <H2>
-                            <Translation id="TR_COINMARKET_DCA_HEADING" />
+                            <Translation id="TR_TRADING_DCA_HEADING" />
                         </H2>
                         <Column gap={spacings.xxl} alignItems="start">
                             <FeatureItem icon="shieldCheck" featureNumber={1} />
@@ -123,17 +123,17 @@ const DCALanding = () => {
                         </Column>
                     </Column1>
                     <Column2>
-                        <Image image="COINMARKET_INVITY_ICON" width={48} height={48} />
+                        <Image image="TRADING_INVITY_ICON" width={48} height={48} />
                         <WrappedText>
                             <Paragraph typographyStyle="highlight">
-                                <Translation id="TR_COINMARKET_DCA_DOWNLOAD" />
+                                <Translation id="TR_TRADING_DCA_DOWNLOAD" />
                             </Paragraph>
                         </WrappedText>
-                        <TrezorLink href={COINMARKET_DOWNLOAD_INVITY_APP_URL}>
-                            <Image image="COINMARKET_DCA_INVITY_APP_QR" width={170} height={170} />
+                        <TrezorLink href={TRADING_DOWNLOAD_INVITY_APP_URL}>
+                            <Image image="TRADING_DCA_INVITY_APP_QR" width={170} height={170} />
                         </TrezorLink>
                         <Row>
-                            <TrezorLink href={COINMARKET_DOWNLOAD_INVITY_APP_URL}>
+                            <TrezorLink href={TRADING_DOWNLOAD_INVITY_APP_URL}>
                                 <StoreBadge $isLight={isLightTheme}>
                                     <Image image="PLAY_STORE_TITLE" height={26} />
                                 </StoreBadge>
@@ -145,7 +145,7 @@ const DCALanding = () => {
                                     margin={{ left: spacings.sm, right: spacings.sm }}
                                 />
                             </StoreSeparatorWrapper>
-                            <TrezorLink href={COINMARKET_DOWNLOAD_INVITY_APP_URL}>
+                            <TrezorLink href={TRADING_DOWNLOAD_INVITY_APP_URL}>
                                 <StoreBadge $isLight={isLightTheme}>
                                     <Image image="APP_STORE_TITLE" height={26} />
                                 </StoreBadge>
@@ -154,8 +154,8 @@ const DCALanding = () => {
                     </Column2>
                 </ColumnsWrapper>
             </Card>
-        </CoinmarketLayout>
+        </TradingLayout>
     );
 };
 
-export const CoinmarketDCALanding = () => <CoinmarketContainer SectionComponent={DCALanding} />;
+export const TradingDCALanding = () => <TradingContainer SectionComponent={DCALanding} />;

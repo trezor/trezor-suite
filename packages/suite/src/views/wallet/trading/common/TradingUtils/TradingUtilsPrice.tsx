@@ -4,11 +4,11 @@ import { spacingsPx, typography } from '@trezor/theme';
 import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 import { Translation } from 'src/components/suite';
-import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
-import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarket';
+import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
+import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingCryptoAmountProps } from 'src/types/trading/trading';
 
 const PriceWrap = styled.div``;
 
@@ -34,21 +34,21 @@ const PriceValue = styled.div`
     }
 `;
 
-export const CoinmarketUtilsPrice = ({
+export const TradingUtilsPrice = ({
     amountInCrypto,
     sendAmount,
     sendCurrency,
     receiveAmount,
     receiveCurrency,
-}: CoinmarketCryptoAmountProps) => {
-    const { type } = useCoinmarketFormContext();
+}: TradingCryptoAmountProps) => {
+    const { type } = useTradingFormContext();
 
     return (
         <PriceWrap>
             <PriceTitle>
                 <Translation
                     id={
-                        coinmarketGetAmountLabels({
+                        tradingGetAmountLabels({
                             type,
                             amountInCrypto: !!amountInCrypto,
                         }).labelComparatorOffer
@@ -58,11 +58,11 @@ export const CoinmarketUtilsPrice = ({
             <PriceValueWrap>
                 <PriceValue>
                     {amountInCrypto ? (
-                        <CoinmarketFiatAmount amount={sendAmount} currency={sendCurrency} />
+                        <TradingFiatAmount amount={sendAmount} currency={sendCurrency} />
                     ) : (
                         <>
                             {receiveCurrency && (
-                                <CoinmarketCryptoAmount
+                                <TradingCryptoAmount
                                     amount={receiveAmount}
                                     cryptoId={receiveCurrency}
                                     displayLogo
@@ -71,7 +71,7 @@ export const CoinmarketUtilsPrice = ({
                         </>
                     )}
                 </PriceValue>
-                {/*<CoinmarketUtilsTooltip quote={quote} />*/}
+                {/*<TradingUtilsTooltip quote={quote} />*/}
             </PriceValueWrap>
         </PriceWrap>
     );

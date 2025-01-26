@@ -3,12 +3,9 @@ import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import type { TradingType } from '@suite-common/invity';
 
-import {
-    CoinmarketTradeBuySellType,
-    CoinmarketTradeDetailBuySellType,
-} from 'src/types/coinmarket/coinmarket';
+import { TradingTradeBuySellType, TradingTradeDetailBuySellType } from 'src/types/trading/trading';
 import { Translation } from 'src/components/suite';
-import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentPlainType';
+import { TradingPaymentPlainType } from 'src/views/wallet/trading/common/TradingPaymentPlainType';
 
 const PaymentInfoWrapper = styled.div`
     display: flex;
@@ -16,20 +13,20 @@ const PaymentInfoWrapper = styled.div`
     gap: ${spacingsPx.xxs};
 `;
 
-interface CoinmarketFeaturedOffersPaymentInfoProps {
-    quote: CoinmarketTradeDetailBuySellType;
+interface TradingFeaturedOffersPaymentInfoProps {
+    quote: TradingTradeDetailBuySellType;
     type: TradingType;
 }
 
-export const CoinmarketFeaturedOffersPaymentInfo = ({
+export const TradingFeaturedOffersPaymentInfo = ({
     quote,
     type,
-}: CoinmarketFeaturedOffersPaymentInfoProps) => (
+}: TradingFeaturedOffersPaymentInfoProps) => (
     <PaymentInfoWrapper>
         <Translation
-            id={`TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_${type.toUpperCase() as Uppercase<CoinmarketTradeBuySellType>}_LABEL`}
+            id={`TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_${type.toUpperCase() as Uppercase<TradingTradeBuySellType>}_LABEL`}
         />
-        <CoinmarketPaymentPlainType
+        <TradingPaymentPlainType
             method={quote.paymentMethod}
             methodName={quote.paymentMethodName}
         />

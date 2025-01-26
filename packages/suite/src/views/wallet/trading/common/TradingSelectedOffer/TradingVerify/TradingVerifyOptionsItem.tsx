@@ -6,25 +6,25 @@ import { spacings } from '@trezor/theme';
 import { getNetwork } from '@suite-common/wallet-config';
 
 import { AccountLabeling, Translation } from 'src/components/suite';
-import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { CoinmarketVerifyOptionsItemProps } from 'src/types/coinmarket/coinmarketVerify';
-import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
+import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { TradingVerifyOptionsItemProps } from 'src/types/trading/tradingVerify';
+import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
+import { parseCryptoId } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 
 const AccountName = styled.div`
     display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-export const CoinmarketVerifyOptionsItem = ({
+export const TradingVerifyOptionsItem = ({
     option,
     receiveNetwork,
-}: CoinmarketVerifyOptionsItemProps) => {
-    const context = useCoinmarketFormContext();
-    const { cryptoIdToPlatformName, cryptoIdToCoinName } = useCoinmarketInfo();
+}: TradingVerifyOptionsItemProps) => {
+    const context = useTradingFormContext();
+    const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingInfo();
     const iconSize = 24;
 
     if (option.type === 'SUITE') {
@@ -43,12 +43,12 @@ export const CoinmarketVerifyOptionsItem = ({
                             showAccountTypeBadge
                         />
                     </AccountName>
-                    <CoinmarketBalance
+                    <TradingBalance
                         balance={formattedBalance}
                         displaySymbol={getNetwork(symbol).displaySymbol}
                         symbol={symbol}
                         sendCryptoSelect={
-                            isCoinmarketExchangeContext(context)
+                            isTradingExchangeContext(context)
                                 ? context.getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT)
                                 : undefined
                         }

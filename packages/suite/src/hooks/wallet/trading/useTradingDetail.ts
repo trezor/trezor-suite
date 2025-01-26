@@ -4,22 +4,22 @@ import type { TradingType } from '@suite-common/invity';
 
 import { useSelector } from 'src/hooks/suite';
 import {
-    CoinmarketDetailContextValues,
-    CoinmarketGetDetailDataOutputProps,
-    CoinmarketUseDetailOutputProps,
-    CoinmarketUseDetailProps,
-} from 'src/types/coinmarket/coinmarketDetail';
-import { Trade, TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
+    TradingDetailContextValues,
+    TradingGetDetailDataOutputProps,
+    TradingUseDetailOutputProps,
+    TradingUseDetailProps,
+} from 'src/types/trading/tradingDetail';
+import { Trade, TradeBuy } from 'src/types/wallet/tradingCommonTypes';
 import {
-    CoinmarketGetDetailDataProps,
-    CoinmarketGetTypedInfoTradeProps,
-    CoinmarketGetTypedTradeProps,
-    CoinmarketTradeInfoMapProps,
-    CoinmarketTradeMapProps,
-} from 'src/types/coinmarket/coinmarket';
-import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
-import { useServerEnvironment } from 'src/hooks/wallet/coinmarket/useServerEnviroment';
-import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
+    TradingGetDetailDataProps,
+    TradingGetTypedInfoTradeProps,
+    TradingGetTypedTradeProps,
+    TradingTradeInfoMapProps,
+    TradingTradeMapProps,
+} from 'src/types/trading/trading';
+import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
+import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
+import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 
 const isBuyTrade = (trade: Trade): trade is TradeBuy => trade.tradeType === 'buy';
 
@@ -27,7 +27,7 @@ const getTypedTrade = <T extends TradingType>({
     trades,
     tradeType,
     transactionId,
-}: CoinmarketGetTypedTradeProps): CoinmarketTradeMapProps[T] | undefined => {
+}: TradingGetTypedTradeProps): TradingTradeMapProps[T] | undefined => {
     const trade = trades.find(
         trade =>
             trade.tradeType === tradeType &&
@@ -39,45 +39,45 @@ const getTypedTrade = <T extends TradingType>({
         return undefined;
     }
 
-    return trade as CoinmarketTradeMapProps[T];
+    return trade as TradingTradeMapProps[T];
 };
 
-const getTypedInfoTrade = <T extends keyof CoinmarketTradeMapProps>({
-    coinmarket,
+const getTypedInfoTrade = <T extends keyof TradingTradeMapProps>({
+    trading,
     tradeType,
-}: CoinmarketGetTypedInfoTradeProps): CoinmarketTradeInfoMapProps[T] => {
+}: TradingGetTypedInfoTradeProps): TradingTradeInfoMapProps[T] => {
     switch (tradeType) {
         case 'sell': {
-            const { sellInfo } = coinmarket.sell;
+            const { sellInfo } = trading.sell;
 
-            return sellInfo as CoinmarketTradeInfoMapProps[T];
+            return sellInfo as TradingTradeInfoMapProps[T];
         }
         case 'exchange': {
-            const { exchangeInfo } = coinmarket.exchange;
+            const { exchangeInfo } = trading.exchange;
 
-            return exchangeInfo as CoinmarketTradeInfoMapProps[T];
+            return exchangeInfo as TradingTradeInfoMapProps[T];
         }
         default: {
-            const { buyInfo } = coinmarket.buy;
+            const { buyInfo } = trading.buy;
 
-            return buyInfo as CoinmarketTradeInfoMapProps[T];
+            return buyInfo as TradingTradeInfoMapProps[T];
         }
     }
 };
 
-const getCoinmarketDetailData = <T extends TradingType>({
-    coinmarket,
+const getTradingDetailData = <T extends TradingType>({
+    trading,
     tradeType,
-}: CoinmarketGetDetailDataProps): CoinmarketGetDetailDataOutputProps<T> => {
-    const { trades } = coinmarket;
-    const { transactionId } = coinmarket[tradeType];
+}: TradingGetDetailDataProps): TradingGetDetailDataOutputProps<T> => {
+    const { trades } = trading;
+    const { transactionId } = trading[tradeType];
     const trade = getTypedTrade<T>({
         trades,
         tradeType,
         transactionId,
     });
     const info = getTypedInfoTrade<T>({
-        coinmarket,
+        trading,
         tradeType,
     });
 
@@ -88,20 +88,20 @@ const getCoinmarketDetailData = <T extends TradingType>({
     };
 };
 
-export const useCoinmarketDetail = <T extends TradingType>({
+export const useTradingDetail = <T extends TradingType>({
     selectedAccount,
     tradeType,
-}: CoinmarketUseDetailProps): CoinmarketUseDetailOutputProps<T> => {
-    const coinmarket = useSelector(state => state.wallet.coinmarket);
+}: TradingUseDetailProps): TradingUseDetailOutputProps<T> => {
+    const trading = useSelector(state => state.wallet.trading);
     const { account } = selectedAccount;
-    const { info, transactionId, trade } = getCoinmarketDetailData<T>({
-        coinmarket,
+    const { info, transactionId, trade } = getTradingDetailData<T>({
+        trading,
         tradeType,
     });
 
-    useCoinmarketLoadData();
+    useTradingLoadData();
     useServerEnvironment();
-    useCoinmarketWatchTrade({ account, trade });
+    useTradingWatchTrade({ account, trade });
 
     return {
         account,
@@ -111,14 +111,12 @@ export const useCoinmarketDetail = <T extends TradingType>({
     };
 };
 
-export const CoinmarketDetailContext = createContext<CoinmarketDetailContextValues<any> | null>(
-    null,
-);
-CoinmarketDetailContext.displayName = 'CoinmarketDetailContext';
+export const TradingDetailContext = createContext<TradingDetailContextValues<any> | null>(null);
+TradingDetailContext.displayName = 'TradingDetailContext';
 
-export const useCoinmarketDetailContext = <T extends TradingType>() => {
-    const context = useContext<CoinmarketDetailContextValues<T> | null>(CoinmarketDetailContext);
-    if (context === null) throw Error('CoinmarketDetailContext used without Context');
+export const useTradingDetailContext = <T extends TradingType>() => {
+    const context = useContext<TradingDetailContextValues<T> | null>(TradingDetailContext);
+    if (context === null) throw Error('TradingDetailContext used without Context');
 
     return context;
 };

@@ -1,11 +1,11 @@
 import { useFormatters } from '@suite-common/formatters';
 
-interface CoinmarketFiatAmountProps {
+interface TradingFiatAmountProps {
     amount?: string | number;
     currency?: string;
 }
 
-export const CoinmarketFiatAmount = ({ amount, currency }: CoinmarketFiatAmountProps) => {
+export const TradingFiatAmount = ({ amount, currency }: TradingFiatAmountProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
     if (amount) {

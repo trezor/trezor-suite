@@ -20,7 +20,7 @@ import {
 } from 'src/utils/suite/storage';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
-import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
+import type { Trade } from 'src/types/wallet/tradingCommonTypes';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { GraphData } from 'src/types/wallet/graph';
 import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
@@ -209,10 +209,10 @@ export const saveAccounts = async (accounts: Account[]) => {
     return db.addItems('accounts', accounts, true);
 };
 
-export const saveCoinmarketTrade = async (trade: Trade) => {
+export const saveTradingTrade = async (trade: Trade) => {
     if (!(await db.isAccessible())) return;
 
-    return db.addItem('coinmarketTrades', trade, undefined, true);
+    return db.addItem('tradingTrades', trade, undefined, true);
 };
 
 export const saveDiscovery = async (discoveries: Discovery[]) => {

@@ -51,12 +51,12 @@ interface PaymentSuccessfulProps {
     account: Account;
 }
 
-export const CoinmarketDetailSellPaymentSuccessful = ({ account }: PaymentSuccessfulProps) => {
+export const TradingDetailSellPaymentSuccessful = ({ account }: PaymentSuccessfulProps) => {
     const dispatch = useDispatch();
 
     const goToSell = () =>
         dispatch(
-            goto('wallet-coinmarket-sell', {
+            goto('wallet-trading-sell', {
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
@@ -67,7 +67,7 @@ export const CoinmarketDetailSellPaymentSuccessful = ({ account }: PaymentSucces
 
     return (
         <Wrapper>
-            <Image image="COINMARKET_SUCCESS" />
+            <Image image="TRADING_SUCCESS" />
             <Title>
                 <Translation id="TR_SELL_DETAIL_SUCCESS_TITLE" />
             </Title>

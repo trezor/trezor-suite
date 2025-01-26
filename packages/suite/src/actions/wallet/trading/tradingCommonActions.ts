@@ -20,45 +20,41 @@ import type { TradingType } from '@suite-common/invity';
 
 import { GetState, Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
-import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/trading/tradingUtils';
 import { Account } from 'src/types/wallet';
-import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
+import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
-import {
-    COINMARKET_BUY,
-    COINMARKET_COMMON,
-    COINMARKET_EXCHANGE,
-} from 'src/actions/wallet/constants';
+import { TRADING_BUY, TRADING_COMMON, TRADING_EXCHANGE } from 'src/actions/wallet/constants';
 
-export type CoinmarketCommonAction =
+export type TradingCommonAction =
     | {
-          type: typeof COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION_INFO;
+          type: typeof TRADING_COMMON.SAVE_COMPOSED_TRANSACTION_INFO;
           info: ComposedTransactionInfo;
       }
     | {
-          type: typeof COINMARKET_COMMON.SET_LOADING;
+          type: typeof TRADING_COMMON.SET_LOADING;
           isLoading: boolean;
           lastLoadedTimestamp: number;
       }
     | {
-          type: typeof COINMARKET_COMMON.LOAD_DATA;
+          type: typeof TRADING_COMMON.LOAD_DATA;
       }
     | {
-          type: typeof COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY;
+          type: typeof TRADING_COMMON.SET_MODAL_CRYPTO_CURRENCY;
           modalCryptoId: CryptoId | undefined;
       }
     | {
-          type: typeof COINMARKET_COMMON.SET_MODAL_ACCOUNT;
+          type: typeof TRADING_COMMON.SET_MODAL_ACCOUNT;
           modalAccount: Account | undefined;
       }
     | {
-          type: typeof COINMARKET_COMMON.SET_COINMARKET_ACTIVE_SECTION;
+          type: typeof TRADING_COMMON.SET_TRADING_ACTIVE_SECTION;
           activeSection: TradingType;
       }
     | {
-          type: typeof COINMARKET_COMMON.SET_COINMARKET_FROM_PREFILLED_CRYPTO_ID;
+          type: typeof TRADING_COMMON.SET_TRADING_FROM_PREFILLED_CRYPTO_ID;
           prefilledFromCryptoId: CryptoId | undefined;
       };
 
@@ -69,18 +65,16 @@ type FormState = {
 
 /**
  * Set modalAccount to retrieve the correct account in modals.
- * Used in ConfirmAddressModal and TransactionReviewModalContent through selectAccountIncludingChosenInCoinmarket.
+ * Used in ConfirmAddressModal and TransactionReviewModalContent through selectAccountIncludingChosenInTrading.
  * Unset in middleware after modal is closed.
  */
-export const setCoinmarketModalAccount = (
-    modalAccount: Account | undefined,
-): CoinmarketCommonAction => ({
-    type: COINMARKET_COMMON.SET_MODAL_ACCOUNT,
+export const setTradingModalAccount = (modalAccount: Account | undefined): TradingCommonAction => ({
+    type: TRADING_COMMON.SET_MODAL_ACCOUNT,
     modalAccount,
 });
 
-export const setActiveSection = (activeSection: TradingType): CoinmarketCommonAction => ({
-    type: COINMARKET_COMMON.SET_COINMARKET_ACTIVE_SECTION,
+export const setActiveSection = (activeSection: TradingType): TradingCommonAction => ({
+    type: TRADING_COMMON.SET_TRADING_ACTIVE_SECTION,
     activeSection,
 });
 
@@ -89,9 +83,7 @@ export const verifyAddress =
         account: Account,
         address: string | undefined,
         path: string | undefined,
-        coinmarketAction:
-            | typeof COINMARKET_EXCHANGE.VERIFY_ADDRESS
-            | typeof COINMARKET_BUY.VERIFY_ADDRESS,
+        tradingAction: typeof TRADING_EXCHANGE.VERIFY_ADDRESS | typeof TRADING_BUY.VERIFY_ADDRESS,
     ) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectSelectedDevice(getState());
@@ -101,7 +93,7 @@ export const verifyAddress =
         path = path ?? accountAddress.path;
         if (!path || !address) return;
 
-        dispatch(setCoinmarketModalAccount(account));
+        dispatch(setTradingModalAccount(account));
 
         const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -132,7 +124,7 @@ export const verifyAddress =
 
         if (response.success) {
             dispatch({
-                type: coinmarketAction,
+                type: tradingAction,
                 addressVerified: address,
             });
         } else {
@@ -150,8 +142,8 @@ export const verifyAddress =
 
 export const saveComposedTransactionInfo = (
     info: ComposedTransactionInfo,
-): CoinmarketCommonAction => ({
-    type: COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION_INFO,
+): TradingCommonAction => ({
+    type: TRADING_COMMON.SAVE_COMPOSED_TRANSACTION_INFO,
     info,
 });
 
@@ -179,17 +171,14 @@ export const submitRequestForm =
         }
     };
 
-export const setLoading = (
-    isLoading: boolean,
-    lastLoadedTimestamp = 0,
-): CoinmarketCommonAction => ({
-    type: COINMARKET_COMMON.SET_LOADING,
+export const setLoading = (isLoading: boolean, lastLoadedTimestamp = 0): TradingCommonAction => ({
+    type: TRADING_COMMON.SET_LOADING,
     isLoading,
     lastLoadedTimestamp,
 });
 
-export const loadInvityData = (): CoinmarketCommonAction => ({
-    type: COINMARKET_COMMON.LOAD_DATA,
+export const loadInvityData = (): TradingCommonAction => ({
+    type: TRADING_COMMON.LOAD_DATA,
 });
 
 export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
@@ -229,9 +218,9 @@ export const convertDrafts = () => (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
-export const setCoinmarketPrefilledFromCryptoId = (
+export const setTradingPrefilledFromCryptoId = (
     prefilledFromCryptoId: CryptoId | undefined,
-): CoinmarketCommonAction => ({
-    type: COINMARKET_COMMON.SET_COINMARKET_FROM_PREFILLED_CRYPTO_ID,
+): TradingCommonAction => ({
+    type: TRADING_COMMON.SET_TRADING_FROM_PREFILLED_CRYPTO_ID,
     prefilledFromCryptoId,
 });

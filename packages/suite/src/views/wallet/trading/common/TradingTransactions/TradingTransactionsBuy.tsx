@@ -2,20 +2,20 @@ import { BuyProviderInfo } from 'invity-api';
 
 import { Button } from '@trezor/components';
 
-import { saveTransactionDetailId } from 'src/actions/wallet/coinmarketBuyActions';
+import { saveTransactionDetailId } from 'src/actions/wallet/tradingBuyActions';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
-import { TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
+import { TradeBuy } from 'src/types/wallet/tradingCommonTypes';
 import { useDispatch } from 'src/hooks/suite';
-import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
-import { CoinmarketTransactionId } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransaction/CoinmarketTransactionId';
-import { CoinmarketTransactionInfo } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransaction/CoinmarketTransactionInfo';
-import { CoinmarketTransactionAmounts } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransaction/CoinmarketTransactionAmounts';
-import { CoinmarketTransactionProvider } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransaction/CoinmarketTransactionProvider';
-import { CoinmarketTransactionContainer } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransaction/CoinmarketTransactionContainer';
+import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
+import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionId';
+import { TradingTransactionInfo } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionInfo';
+import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
+import { TradingTransactionProvider } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionProvider';
+import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';
 
-interface CoinmarketTransactionBuyProps {
+interface TradingTransactionBuyProps {
     trade: TradeBuy;
     account: Account;
     providers?: {
@@ -23,13 +23,13 @@ interface CoinmarketTransactionBuyProps {
     };
 }
 
-export const CoinmarketTransactionBuy = ({
+export const TradingTransactionBuy = ({
     trade,
     providers,
     account,
-}: CoinmarketTransactionBuyProps) => {
+}: TradingTransactionBuyProps) => {
     const dispatch = useDispatch();
-    const { navigateToBuyDetail } = useCoinmarketNavigation(account);
+    const { navigateToBuyDetail } = useTradingNavigation(account);
 
     const { exchange, paymentMethod, paymentMethodName } = trade.data;
 
@@ -38,7 +38,7 @@ export const CoinmarketTransactionBuy = ({
         navigateToBuyDetail();
     };
 
-    useCoinmarketWatchTrade({
+    useTradingWatchTrade({
         account,
         trade,
     });
@@ -46,16 +46,16 @@ export const CoinmarketTransactionBuy = ({
     if (!trade.data.paymentId) return null;
 
     return (
-        <CoinmarketTransactionContainer
+        <TradingTransactionContainer
             TradeDetail={
                 <>
-                    <CoinmarketTransactionAmounts trade={trade} />
-                    <CoinmarketTransactionInfo trade={trade} />
-                    <CoinmarketTransactionId transactionId={trade.data.paymentId} />
+                    <TradingTransactionAmounts trade={trade} />
+                    <TradingTransactionInfo trade={trade} />
+                    <TradingTransactionId transactionId={trade.data.paymentId} />
                 </>
             }
             TradeProviders={
-                <CoinmarketTransactionProvider
+                <TradingTransactionProvider
                     exchange={exchange}
                     providers={providers}
                     paymentMethod={paymentMethod}
@@ -64,7 +64,7 @@ export const CoinmarketTransactionBuy = ({
             }
             TradeButton={
                 <Button size="small" variant="tertiary" onClick={handleViewDetailsButtonClick}>
-                    <Translation id="TR_COINMARKET_VIEW_DETAILS" />
+                    <Translation id="TR_TRADING_VIEW_DETAILS" />
                 </Button>
             }
         />

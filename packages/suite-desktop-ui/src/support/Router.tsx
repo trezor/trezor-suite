@@ -13,21 +13,21 @@ import WalletSend from 'src/views/wallet/send';
 import { WalletStaking } from 'src/views/wallet/staking/WalletStaking';
 import WalletSignVerify from 'src/views/wallet/sign-verify';
 import WalletAnonymize from 'src/views/wallet/anonymize';
-import { CoinmarketBuyForm } from 'src/views/wallet/coinmarket/buy/CoinmarketBuyForm';
-import { CoinmarketBuyDetail } from 'src/views/wallet/coinmarket/buy/CoinmarketBuyDetail';
-import { CoinmarketBuyOffers } from 'src/views/wallet/coinmarket/buy/CoinmarketBuyOffers';
-import { CoinmarketBuyConfirm } from 'src/views/wallet/coinmarket/buy/CoinmarketBuyConfirm';
-import { CoinmarketSellForm } from 'src/views/wallet/coinmarket/sell/CoinmarketSellForm';
-import { CoinmarketSellDetail } from 'src/views/wallet/coinmarket/sell/CoinmarketSellDetail';
-import { CoinmarketSellOffers } from 'src/views/wallet/coinmarket/sell/CoinmarketSellOffers';
-import { CoinmarketSellConfirm } from 'src/views/wallet/coinmarket/sell/CoinmarketSellConfirm';
-import { CoinmarketExchangeForm } from 'src/views/wallet/coinmarket/exchange/CoinmarketExchangeForm';
-import { CoinmarketExchangeDetail } from 'src/views/wallet/coinmarket/exchange/CoinmarketExchangeDetail';
-import { CoinmarketExchangeOffers } from 'src/views/wallet/coinmarket/exchange/CoinmarketExchangeOffers';
-import { CoinmarketExchangeConfirm } from 'src/views/wallet/coinmarket/exchange/CoinmarketExchangeConfirm';
-import { CoinmarketDCALanding } from 'src/views/wallet/coinmarket/DCA/CoinmarketDCALanding';
-import { CoinmarketRedirect } from 'src/views/wallet/coinmarket/redirect/CoinmarketRedirect';
-import { CoinmarketTransactions } from 'src/views/wallet/coinmarket/transactions/CoinmarketTransactions';
+import { TradingBuyForm } from 'src/views/wallet/trading/buy/TradingBuyForm';
+import { TradingBuyDetail } from 'src/views/wallet/trading/buy/TradingBuyDetail';
+import { TradingBuyOffers } from 'src/views/wallet/trading/buy/TradingBuyOffers';
+import { TradingBuyConfirm } from 'src/views/wallet/trading/buy/TradingBuyConfirm';
+import { TradingSellForm } from 'src/views/wallet/trading/sell/TradingSellForm';
+import { TradingSellDetail } from 'src/views/wallet/trading/sell/TradingSellDetail';
+import { TradingSellOffers } from 'src/views/wallet/trading/sell/TradingSellOffers';
+import { TradingSellConfirm } from 'src/views/wallet/trading/sell/TradingSellConfirm';
+import { TradingExchangeForm } from 'src/views/wallet/trading/exchange/TradingExchangeForm';
+import { TradingExchangeDetail } from 'src/views/wallet/trading/exchange/TradingExchangeDetail';
+import { TradingExchangeOffers } from 'src/views/wallet/trading/exchange/TradingExchangeOffers';
+import { TradingExchangeConfirm } from 'src/views/wallet/trading/exchange/TradingExchangeConfirm';
+import { TradingDCALanding } from 'src/views/wallet/trading/DCA/TradingDCALanding';
+import { TradingRedirect } from 'src/views/wallet/trading/redirect/TradingRedirect';
+import { TradingTransactions } from 'src/views/wallet/trading/transactions/TradingTransactions';
 import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
@@ -49,21 +49,21 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-anonymize': WalletAnonymize,
     'wallet-tokens': Tokens,
     'wallet-nfts': Nfts,
-    'wallet-coinmarket-buy': CoinmarketBuyForm,
-    'wallet-coinmarket-buy-detail': CoinmarketBuyDetail,
-    'wallet-coinmarket-buy-offers': CoinmarketBuyOffers,
-    'wallet-coinmarket-buy-confirm': CoinmarketBuyConfirm,
-    'wallet-coinmarket-sell': CoinmarketSellForm,
-    'wallet-coinmarket-sell-detail': CoinmarketSellDetail,
-    'wallet-coinmarket-sell-offers': CoinmarketSellOffers,
-    'wallet-coinmarket-sell-confirm': CoinmarketSellConfirm,
-    'wallet-coinmarket-exchange': CoinmarketExchangeForm,
-    'wallet-coinmarket-exchange-detail': CoinmarketExchangeDetail,
-    'wallet-coinmarket-exchange-offers': CoinmarketExchangeOffers,
-    'wallet-coinmarket-exchange-confirm': CoinmarketExchangeConfirm,
-    'wallet-coinmarket-dca': CoinmarketDCALanding,
-    'wallet-coinmarket-redirect': CoinmarketRedirect,
-    'wallet-coinmarket-transactions': CoinmarketTransactions,
+    'wallet-trading-buy': TradingBuyForm,
+    'wallet-trading-buy-detail': TradingBuyDetail,
+    'wallet-trading-buy-offers': TradingBuyOffers,
+    'wallet-trading-buy-confirm': TradingBuyConfirm,
+    'wallet-trading-sell': TradingSellForm,
+    'wallet-trading-sell-detail': TradingSellDetail,
+    'wallet-trading-sell-offers': TradingSellOffers,
+    'wallet-trading-sell-confirm': TradingSellConfirm,
+    'wallet-trading-exchange': TradingExchangeForm,
+    'wallet-trading-exchange-detail': TradingExchangeDetail,
+    'wallet-trading-exchange-offers': TradingExchangeOffers,
+    'wallet-trading-exchange-confirm': TradingExchangeConfirm,
+    'wallet-trading-dca': TradingDCALanding,
+    'wallet-trading-redirect': TradingRedirect,
+    'wallet-trading-transactions': TradingTransactions,
 
     'password-manager-index': PasswordManager,
 

@@ -2,23 +2,23 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Select } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import {
-    CoinmarketVerifyOptionsProps,
-    CoinmarketVerifyFormAccountOptionProps,
-} from 'src/types/coinmarket/coinmarketVerify';
-import { parseCryptoId } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketVerifyOptionsItem } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerifyOptionsItem';
+    TradingVerifyOptionsProps,
+    TradingVerifyFormAccountOptionProps,
+} from 'src/types/trading/tradingVerify';
+import { parseCryptoId } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingVerifyOptionsItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerifyOptionsItem';
 
-export const CoinmarketVerifyOptions = ({
+export const TradingVerifyOptions = ({
     receiveNetwork,
     selectAccountOptions,
     selectedAccountOption,
     isMenuOpen,
     label,
     onChangeAccount,
-}: CoinmarketVerifyOptionsProps) => {
-    const { cryptoIdToPlatformName, cryptoIdToCoinName } = useCoinmarketInfo();
+}: TradingVerifyOptionsProps) => {
+    const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingInfo();
 
     const { networkId, contractAddress } = parseCryptoId(receiveNetwork);
     const coinSymbol = contractAddress
@@ -28,17 +28,15 @@ export const CoinmarketVerifyOptions = ({
 
     return (
         <Select
-            data-testid="@coinmarket/verify-options/account"
-            onChange={(selected: CoinmarketVerifyFormAccountOptionProps) =>
-                onChangeAccount(selected)
-            }
+            data-testid="@trading/verify-options/account"
+            onChange={(selected: TradingVerifyFormAccountOptionProps) => onChangeAccount(selected)}
             value={selectedAccountOption}
             labelLeft={label}
             isClearable={false}
             options={selectAccountOptions}
             minValueWidth="70px"
             formatOptionLabel={option => (
-                <CoinmarketVerifyOptionsItem option={option} receiveNetwork={receiveNetwork} />
+                <TradingVerifyOptionsItem option={option} receiveNetwork={receiveNetwork} />
             )}
             isMenuOpen={isMenuOpen}
             isDisabled={selectAccountOptions.length === 1}

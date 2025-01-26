@@ -8,29 +8,29 @@ import { NumberInput } from '@trezor/product-components';
 
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { validateDecimals, validateMin } from 'src/utils/suite/validation';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketFormInputCurrency } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 import {
-    CoinmarketAllFormProps,
-    CoinmarketBuyFormProps,
-    CoinmarketFormInputFiatCryptoProps,
-    CoinmarketSellExchangeFormProps,
-} from 'src/types/coinmarket/coinmarketForm';
-import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/coinmarket/form';
-import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+    TradingAllFormProps,
+    TradingBuyFormProps,
+    TradingFormInputFiatCryptoProps,
+    TradingSellExchangeFormProps,
+} from 'src/types/trading/tradingForm';
+import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/trading/form';
+import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
-export const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormProps>({
+export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
     cryptoInputName,
     fiatInputName,
     methods,
     labelLeft,
     labelRight,
-}: CoinmarketFormInputFiatCryptoProps<TFieldValues>) => {
+}: TradingFormInputFiatCryptoProps<TFieldValues>) => {
     const { translationString } = useTranslation();
     const locale = useSelector(selectLanguage);
 
-    const context = useCoinmarketFormContext();
+    const context = useTradingFormContext();
     const { amountLimits } = context;
     const {
         control,
@@ -41,15 +41,15 @@ export const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormPr
 
     const fiatInputError =
         cryptoInputName === FORM_OUTPUT_FIAT
-            ? (errors as FieldErrors<CoinmarketSellExchangeFormProps>)?.outputs?.[0]?.fiat
-            : (errors as FieldErrors<CoinmarketBuyFormProps>).fiatInput;
+            ? (errors as FieldErrors<TradingSellExchangeFormProps>)?.outputs?.[0]?.fiat
+            : (errors as FieldErrors<TradingBuyFormProps>).fiatInput;
     const cryptoInputError =
         cryptoInputName === FORM_OUTPUT_AMOUNT
-            ? (errors as FieldErrors<CoinmarketSellExchangeFormProps>)?.outputs?.[0]?.amount
+            ? (errors as FieldErrors<TradingSellExchangeFormProps>)?.outputs?.[0]?.amount
             : undefined;
 
     const fiatInputRules: UseControllerProps['rules'] = {
-        ...(isCoinmarketExchangeContext(context)
+        ...(isTradingExchangeContext(context)
             ? {
                   validate: {
                       min: validateMin(translationString),
@@ -112,8 +112,8 @@ export const CoinmarketFormInputFiat = <TFieldValues extends CoinmarketAllFormPr
             rules={fiatInputRules}
             maxLength={formInputsMaxLength.amount}
             bottomText={fiatInputError?.message ?? cryptoInputError?.message ?? null}
-            innerAddon={<CoinmarketFormInputCurrency width={100} />}
-            data-testid="@coinmarket/form/fiat-input"
+            innerAddon={<TradingFormInputCurrency width={100} />}
+            data-testid="@trading/form/fiat-input"
         />
     );
 };

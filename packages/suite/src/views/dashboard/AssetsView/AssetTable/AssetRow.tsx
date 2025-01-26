@@ -28,7 +28,7 @@ import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
-import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
+import { TradingBuyButton } from '../TradingBuyButton';
 import { AssetTokenRow } from './AssetTokenRow';
 import { AssetStakingRow } from './AssetStakingRow';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
@@ -169,7 +169,7 @@ export const AssetRow = memo(
                     <Table.Cell align="right" colSpan={2}>
                         <Row gap={spacings.md}>
                             {!isTestnet(symbol) && (
-                                <CoinmarketBuyButton
+                                <TradingBuyButton
                                     symbol={symbol}
                                     data-testid={`@dashboard/asset/${symbol}/buy-button`}
                                 />

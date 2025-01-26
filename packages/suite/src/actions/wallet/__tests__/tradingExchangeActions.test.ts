@@ -3,13 +3,13 @@ import { CryptoId, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 import { invityAPI } from '@suite-common/invity';
 
 import { configureStore } from 'src/support/tests/configureStore';
-import { coinmarketReducer } from 'src/reducers/wallet/coinmarketReducer';
+import { tradingReducer } from 'src/reducers/wallet/tradingReducer';
 
-import * as coinmarketExchangeActions from '../coinmarketExchangeActions';
+import * as tradingExchangeActions from '../tradingExchangeActions';
 
 const getInitialState = () => ({
     wallet: {
-        coinmarket: coinmarketReducer(undefined, { type: 'foo' } as any),
+        trading: tradingReducer(undefined, { type: 'foo' } as any),
     },
 });
 
@@ -21,9 +21,9 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { coinmarket } = store.getState().wallet;
+        const { trading } = store.getState().wallet;
         store.getState().wallet = {
-            coinmarket: coinmarketReducer(coinmarket, action),
+            trading: tradingReducer(trading, action),
         };
         // add action back to stack
         store.getActions().push(action);
@@ -55,7 +55,7 @@ const setFetchMock = (mocks: any) => {
     });
 };
 
-describe('Coinmarket Exchange Actions', () => {
+describe('Trading Exchange Actions', () => {
     invityAPI.createInvityAPIKey('mock');
 
     it('load and saveExchangeInfo', () => {
@@ -106,9 +106,9 @@ describe('Coinmarket Exchange Actions', () => {
 
         const store = initStore(getInitialState());
 
-        return coinmarketExchangeActions.loadExchangeInfo().then(exchangeInfo => {
-            store.dispatch(coinmarketExchangeActions.saveExchangeInfo(exchangeInfo));
-            expect(store.getState().wallet.coinmarket.exchange.exchangeInfo).toEqual({
+        return tradingExchangeActions.loadExchangeInfo().then(exchangeInfo => {
+            store.dispatch(tradingExchangeActions.saveExchangeInfo(exchangeInfo));
+            expect(store.getState().wallet.trading.exchange.exchangeInfo).toEqual({
                 exchangeList,
                 providerInfos: { changenow: exchangeList[0], changenowfr: exchangeList[1] },
                 buySymbols: new Set<string>(['XMR', 'BTC', 'ETH', 'BCH']),
@@ -119,8 +119,8 @@ describe('Coinmarket Exchange Actions', () => {
 
     it('saveTransactionDetailId', () => {
         const store = initStore(getInitialState());
-        store.dispatch(coinmarketExchangeActions.saveTransactionId('1234-4321-4321'));
-        expect(store.getState().wallet.coinmarket.exchange.transactionId).toEqual('1234-4321-4321');
+        store.dispatch(tradingExchangeActions.saveTransactionId('1234-4321-4321'));
+        expect(store.getState().wallet.trading.exchange.transactionId).toEqual('1234-4321-4321');
     });
 
     it('saveQuoteRequest', () => {
@@ -132,8 +132,8 @@ describe('Coinmarket Exchange Actions', () => {
             sendStringAmount: '12',
         };
 
-        store.dispatch(coinmarketExchangeActions.saveQuoteRequest(request));
-        expect(store.getState().wallet.coinmarket.exchange.quotesRequest).toEqual(request);
+        store.dispatch(tradingExchangeActions.saveQuoteRequest(request));
+        expect(store.getState().wallet.trading.exchange.quotesRequest).toEqual(request);
     });
 
     it('saveQuotes', () => {
@@ -141,7 +141,7 @@ describe('Coinmarket Exchange Actions', () => {
 
         const quotes: ExchangeTrade[] = [];
 
-        store.dispatch(coinmarketExchangeActions.saveQuotes(quotes));
-        expect(store.getState().wallet.coinmarket.exchange.quotes).toEqual(quotes);
+        store.dispatch(tradingExchangeActions.saveQuotes(quotes));
+        expect(store.getState().wallet.trading.exchange.quotes).toEqual(quotes);
     });
 });

@@ -8,8 +8,8 @@ import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 import { borders, spacingsPx, typography, zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketFooterLogoWrapper } from 'src/views/wallet/coinmarket';
-import { CoinmarketProvidedByInvity } from 'src/views/wallet/coinmarket/common/CoinmarketFooter/CoinmarketProvidedByInvity';
+import { TradingFooterLogoWrapper } from 'src/views/wallet/trading';
+import { TradingProvidedByInvity } from 'src/views/wallet/trading/common/TradingFooter/TradingProvidedByInvity';
 
 const Wrapper = styled.div`
     margin-top: ${spacingsPx.xxxl};
@@ -106,7 +106,7 @@ const FooterText = styled(Text)`
     padding-right: 10px;
 `;
 
-export const CoinmarketFooter = () => {
+export const TradingFooter = () => {
     const [toggled, setToggled] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const toggleRef = useRef<HTMLDivElement>(null);
@@ -122,18 +122,18 @@ export const CoinmarketFooter = () => {
             <WrapperBorder>
                 <Row justifyContent="center">
                     <Left>
-                        <CoinmarketProvidedByInvity />
+                        <TradingProvidedByInvity />
                     </Left>
                     <Right>
                         {toggled && (
                             <FooterBox ref={menuRef}>
                                 <Header>
                                     <BoxLeft>
-                                        <CoinmarketFooterLogoWrapper>
+                                        <TradingFooterLogoWrapper>
                                             <Link href={INVITY_URL} target="_blank">
                                                 <Image width={70} image="INVITY_LOGO" />
                                             </Link>
-                                        </CoinmarketFooterLogoWrapper>
+                                        </TradingFooterLogoWrapper>
                                     </BoxLeft>
                                     <BoxRight>
                                         <Link href={INVITY_URL}>invity.io</Link>

@@ -32,12 +32,12 @@ interface PaymentFailedProps {
     account: Account;
 }
 
-export const CoinmarketDetailBuyPaymentFailed = ({ supportUrl, account }: PaymentFailedProps) => {
+export const TradingDetailBuyPaymentFailed = ({ supportUrl, account }: PaymentFailedProps) => {
     const dispatch = useDispatch();
 
     const goToBuy = () =>
         dispatch(
-            goto('wallet-coinmarket-buy', {
+            goto('wallet-trading-buy', {
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
@@ -49,7 +49,7 @@ export const CoinmarketDetailBuyPaymentFailed = ({ supportUrl, account }: Paymen
     return (
         <Wrapper>
             <Image image="UNI_ERROR" />
-            <H4 data-testid="@coinmarket/transaction/detail/status" margin={{ top: spacings.xl }}>
+            <H4 data-testid="@trading/transaction/detail/status" margin={{ top: spacings.xl }}>
                 <Translation id="TR_BUY_DETAIL_ERROR_TITLE" />
             </H4>
             <Description>

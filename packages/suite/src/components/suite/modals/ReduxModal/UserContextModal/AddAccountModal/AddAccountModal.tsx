@@ -63,7 +63,7 @@ export const AddAccountModal = ({
     );
     const isBitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
 
-    // applied when changing account in coinmarket exchange receive options context
+    // applied when changing account in trading exchange receive options context
     const networkPinned = !!symbol;
     const preselectedNetwork = symbol && supportedNetworks.find(n => n.symbol === symbol);
     // or in case of only btc is enabled on bitcoin-only firmware

@@ -2,14 +2,14 @@ import { useEffect } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
+import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/tradingCommonConstants';
 import { useDispatch } from 'src/hooks/suite';
 
-interface CoinmarketModalCryptoProps {
+interface TradingModalCryptoProps {
     receiveCurrency: CryptoId | undefined;
 }
 
-export const useCoinmarketModalCrypto = ({ receiveCurrency }: CoinmarketModalCryptoProps) => {
+export const useTradingModalCrypto = ({ receiveCurrency }: TradingModalCryptoProps) => {
     const dispatch = useDispatch();
 
     useEffect(() => {

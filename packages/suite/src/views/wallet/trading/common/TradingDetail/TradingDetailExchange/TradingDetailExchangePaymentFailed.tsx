@@ -7,7 +7,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite/Translation';
 import { goto } from 'src/actions/suite/routerActions';
-import { CoinmarketTransactionId } from 'src/views/wallet/coinmarket/common/CoinmarketTransactionId';
+import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactionId';
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,7 +34,7 @@ interface PaymentFailedProps {
     account: Account;
 }
 
-export const CoinmarketDetailExchangePaymentFailed = ({
+export const TradingDetailExchangePaymentFailed = ({
     transactionId,
     supportUrl,
     account,
@@ -43,7 +43,7 @@ export const CoinmarketDetailExchangePaymentFailed = ({
 
     const goToExchange = () =>
         dispatch(
-            goto('wallet-coinmarket-exchange', {
+            goto('wallet-trading-exchange', {
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
@@ -61,7 +61,7 @@ export const CoinmarketDetailExchangePaymentFailed = ({
             <Description>
                 <Translation id="TR_EXCHANGE_DETAIL_ERROR_TEXT" />
             </Description>
-            {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
+            {transactionId && <TradingTransactionId transactionId={transactionId} />}
             {supportUrl && (
                 <Button
                     variant="tertiary"

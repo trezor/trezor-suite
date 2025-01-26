@@ -14,12 +14,12 @@ import type { Account } from 'src/types/wallet';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { useSelector } from 'src/hooks/suite';
-import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
-import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
+import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
+import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
 
 const buildOptions = (addresses: Account['addresses']) => {
     if (!addresses) return undefined;
@@ -42,11 +42,11 @@ const buildOptions = (addresses: Account['addresses']) => {
     return [unused, used];
 };
 
-type CoinmarketBuyAddressOptionsType = {
+type TradingBuyAddressOptionsType = {
     address?: string;
 };
 
-interface CoinmarketAddressOptionsProps<TFieldValues extends CoinmarketBuyAddressOptionsType>
+interface TradingAddressOptionsProps<TFieldValues extends TradingBuyAddressOptionsType>
     extends Pick<UseFormReturn<TFieldValues>, 'setValue'> {
     control: Control<TFieldValues>;
     receiveSymbol?: CryptoId;
@@ -56,18 +56,17 @@ interface CoinmarketAddressOptionsProps<TFieldValues extends CoinmarketBuyAddres
     label: ReactNode;
 }
 
-export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddressOptionsType>({
+export const TradingAddressOptions = <TFieldValues extends TradingBuyAddressOptionsType>({
     receiveSymbol,
     address,
     account,
     label,
     menuPlacement,
     ...props
-}: CoinmarketAddressOptionsProps<TFieldValues>) => {
+}: TradingAddressOptionsProps<TFieldValues>) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
-    const { control, setValue } =
-        props as unknown as UseFormReturn<CoinmarketBuyAddressOptionsType>;
-    const context = useCoinmarketFormContext();
+    const { control, setValue } = props as unknown as UseFormReturn<TradingBuyAddressOptionsType>;
+    const context = useTradingFormContext();
 
     const addresses = account?.addresses;
     const addressDictionary = useAccountAddressDictionary(account);
@@ -75,7 +74,7 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
     const accountMetadata = useSelector(state =>
         selectLabelingDataForAccount(state, account?.key || ''),
     );
-    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
 
     useEffect(() => {
         if (!address && addresses) {
@@ -99,11 +98,11 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
                     formatOptionLabel={(accountAddress: AccountAddress) => {
                         if (!accountAddress || !account || !receiveSymbol) return null;
 
-                        const sendCryptoSelect = isCoinmarketExchangeContext(context)
+                        const sendCryptoSelect = isTradingExchangeContext(context)
                             ? context.getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT)
                             : undefined;
 
-                        const networkDecimals = getCoinmarketNetworkDecimals({
+                        const networkDecimals = getTradingNetworkDecimals({
                             sendCryptoSelect,
                             network: getNetwork(account.symbol),
                         });
@@ -118,12 +117,12 @@ export const CoinmarketAddressOptions = <TFieldValues extends CoinmarketBuyAddre
 
                         return (
                             <Column>
-                                <div data-testid="@coinmarket/form/verify/address">
+                                <div data-testid="@trading/form/verify/address">
                                     {accountMetadata.addressLabels[accountAddress.address] ||
                                         accountAddress.address}
                                 </div>
                                 <InfoSegments typographyStyle="label" variant="tertiary">
-                                    <CoinmarketBalance
+                                    <TradingBalance
                                         balance={balance}
                                         displaySymbol={displaySymbol}
                                         symbol={account.symbol}

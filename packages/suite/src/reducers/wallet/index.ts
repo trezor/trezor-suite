@@ -17,7 +17,7 @@ import settingsReducer from './settingsReducer';
 import graphReducer from './graphReducer';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
-import { coinmarketReducer } from './coinmarketReducer';
+import { tradingReducer } from './tradingReducer';
 import accountSearchReducer from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';
@@ -42,7 +42,7 @@ const WalletReducers = combineReducers({
     receive: receiveReducer,
     fees: feesReducer,
     blockchain: blockchainReducer,
-    coinmarket: coinmarketReducer,
+    trading: tradingReducer,
     send: sendFormReducer,
     accountSearch: accountSearchReducer,
     formDrafts: formDraftReducer,

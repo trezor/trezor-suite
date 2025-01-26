@@ -6,36 +6,36 @@ import { spacings } from '@trezor/theme';
 import type { TradingType } from '@suite-common/invity';
 
 import { AccountLabeling, Translation } from 'src/components/suite';
-import { CoinmarketPayGetLabelType } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
-import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
-import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
+import { TradingPayGetLabelType } from 'src/types/trading/trading';
+import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
+import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
 
-interface CoinmarketInfoItemProps {
+interface TradingInfoItemProps {
     account?: Account;
     type: TradingType;
-    label: CoinmarketPayGetLabelType;
+    label: TradingPayGetLabelType;
     currency?: CryptoId;
     amount?: string;
     isReceive?: boolean;
 }
 
-export const CoinmarketInfoItem = ({
+export const TradingInfoItem = ({
     account,
     type,
     isReceive,
     label,
     currency,
     amount,
-}: CoinmarketInfoItemProps) => (
+}: TradingInfoItemProps) => (
     <InfoItem label={<Translation id={label} />} direction="row">
         {type === 'exchange' || isReceive ? (
             <Column alignItems="flex-end" gap={spacings.xxxs}>
                 <Row gap={spacings.xs}>
                     {currency && (
                         <>
-                            <CoinmarketCoinLogo cryptoId={currency} size={20} />
-                            <CoinmarketCryptoAmount amount={amount} cryptoId={currency} />
+                            <TradingCoinLogo cryptoId={currency} size={20} />
+                            <TradingCryptoAmount amount={amount} cryptoId={currency} />
                         </>
                     )}
                 </Row>
@@ -49,8 +49,8 @@ export const CoinmarketInfoItem = ({
                 )}
             </Column>
         ) : (
-            <Row data-testid="@coinmarket/form/info/fiat-amount">
-                <CoinmarketFiatAmount amount={amount} currency={currency} />
+            <Row data-testid="@trading/form/info/fiat-amount">
+                <TradingFiatAmount amount={amount} currency={currency} />
             </Row>
         )}
     </InfoItem>

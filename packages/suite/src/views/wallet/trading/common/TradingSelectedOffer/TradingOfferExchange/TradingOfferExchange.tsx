@@ -4,40 +4,37 @@ import { Divider, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import type { TradingExchangeType } from '@suite-common/invity';
 
-import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
-import { CoinmarketVerify } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerify';
-import { CoinmarketOfferExchangeProps } from 'src/types/coinmarket/coinmarketForm';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import useCoinmarketVerifyAccount from 'src/hooks/wallet/coinmarket/form/useCoinmarketVerifyAccount';
+import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { TradingVerify } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerify';
+import { TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';
 import {
-    CoinmarketSelectedOfferStepper,
-    CoinmarketSelectedOfferStepperItemProps,
-} from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferStepper';
-import { CoinmarketOfferExchangeSend } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferExchange/CoinmarketOfferExchangeSend';
-import { CoinmarketOfferExchangeSendSwap } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferExchange/CoinmarketOfferExchangeSendSwap';
-import { CoinmarketOfferExchangeSendApproval } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferExchange/CoinmarketOfferExchangeSendApproval';
+    TradingSelectedOfferStepper,
+    TradingSelectedOfferStepperItemProps,
+} from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferStepper';
+import { TradingOfferExchangeSend } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSend';
+import { TradingOfferExchangeSendSwap } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSendSwap';
+import { TradingOfferExchangeSendApproval } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSendApproval';
 
-export const CoinmarketOfferExchange = ({
+export const TradingOfferExchange = ({
     account,
     selectedQuote,
     providers,
     type,
     quoteAmounts,
-}: CoinmarketOfferExchangeProps) => {
-    const { exchangeStep } = useCoinmarketFormContext<TradingExchangeType>();
+}: TradingOfferExchangeProps) => {
+    const { exchangeStep } = useTradingFormContext<TradingExchangeType>();
     const cryptoId = selectedQuote?.receive;
-    const coinmarketVerifyAccount = useCoinmarketVerifyAccount({ cryptoId });
+    const tradingVerifyAccount = useTradingVerifyAccount({ cryptoId });
 
-    const steps: CoinmarketSelectedOfferStepperItemProps[] = [
+    const steps: TradingSelectedOfferStepperItemProps[] = [
         {
             step: 'RECEIVING_ADDRESS',
             translationId: 'TR_EXCHANGE_VERIFY_ADDRESS_STEP',
             isActive: exchangeStep === 'RECEIVING_ADDRESS',
             component: cryptoId ? (
-                <CoinmarketVerify
-                    coinmarketVerifyAccount={coinmarketVerifyAccount}
-                    cryptoId={cryptoId}
-                />
+                <TradingVerify tradingVerifyAccount={tradingVerifyAccount} cryptoId={cryptoId} />
             ) : null,
         },
         ...((selectedQuote.isDex
@@ -46,18 +43,18 @@ export const CoinmarketOfferExchange = ({
                       step: 'SEND_APPROVAL_TRANSACTION',
                       translationId: 'TR_EXCHANGE_CREATE_APPROVAL_STEP',
                       isActive: exchangeStep === 'SEND_APPROVAL_TRANSACTION',
-                      component: <CoinmarketOfferExchangeSendApproval />,
+                      component: <TradingOfferExchangeSendApproval />,
                   },
               ]
-            : []) as CoinmarketSelectedOfferStepperItemProps[]),
+            : []) as TradingSelectedOfferStepperItemProps[]),
         {
             step: 'SEND_TRANSACTION',
             translationId: 'TR_EXCHANGE_CONFIRM_SEND_STEP',
             isActive: exchangeStep === 'SEND_TRANSACTION',
             component: !selectedQuote.isDex ? (
-                <CoinmarketOfferExchangeSend />
+                <TradingOfferExchangeSend />
             ) : (
-                <CoinmarketOfferExchangeSendSwap />
+                <TradingOfferExchangeSendSwap />
             ),
         },
     ];
@@ -65,16 +62,16 @@ export const CoinmarketOfferExchange = ({
     return (
         <>
             <Card>
-                <CoinmarketSelectedOfferStepper steps={steps} />
+                <TradingSelectedOfferStepper steps={steps} />
                 <Divider margin={{ top: spacings.lg, bottom: spacings.xl }} />
                 {steps.map((step, index) => (
                     <Fragment key={index}>{step.isActive && step.component}</Fragment>
                 ))}
             </Card>
             <Card>
-                <CoinmarketSelectedOfferInfo
+                <TradingSelectedOfferInfo
                     account={account}
-                    selectedAccount={coinmarketVerifyAccount.selectedAccountOption?.account}
+                    selectedAccount={tradingVerifyAccount.selectedAccountOption?.account}
                     selectedQuote={selectedQuote}
                     providers={providers}
                     type={type}

@@ -6,29 +6,29 @@ import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core'
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getFeeInfo } from '@suite-common/wallet-utils';
 
-import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import { FORM_OUTPUT_ADDRESS, FORM_OUTPUT_AMOUNT } from 'src/constants/wallet/coinmarket/form';
+import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
+import { FORM_OUTPUT_ADDRESS, FORM_OUTPUT_AMOUNT } from 'src/constants/wallet/trading/form';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import {
-    CoinmarketExchangeFormProps,
-    CoinmarketSellExchangeFormProps,
-    CoinmarketSellFormProps,
-    CoinmarketUseComposeTransactionProps,
-    CoinmarketUseComposeTransactionReturnProps,
-    CoinmarketUseComposeTransactionStateProps,
-} from 'src/types/coinmarket/coinmarketForm';
-import { getComposeAddressPlaceholder } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+    TradingExchangeFormProps,
+    TradingSellExchangeFormProps,
+    TradingSellFormProps,
+    TradingUseComposeTransactionProps,
+    TradingUseComposeTransactionReturnProps,
+    TradingUseComposeTransactionStateProps,
+} from 'src/types/trading/tradingForm';
+import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
 
-// shareable sub-hook used in useCoinmarketSellForm & useCoinmarketExchangeForm
-export const useCoinmarketComposeTransaction = <T extends CoinmarketSellExchangeFormProps>({
+// shareable sub-hook used in useTradingSellForm & useTradingExchangeForm
+export const useTradingComposeTransaction = <T extends TradingSellExchangeFormProps>({
     account,
     network,
     values,
     methods,
-}: CoinmarketUseComposeTransactionProps<T>): CoinmarketUseComposeTransactionReturnProps => {
+}: TradingUseComposeTransactionProps<T>): TradingUseComposeTransactionReturnProps => {
     const dispatch = useDispatch();
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
@@ -37,7 +37,7 @@ export const useCoinmarketComposeTransaction = <T extends CoinmarketSellExchange
     const { translationString } = useTranslation();
 
     const { getValues, setValue, setError, clearErrors } = methods as unknown as UseFormReturn<
-        CoinmarketSellFormProps | CoinmarketExchangeFormProps
+        TradingSellFormProps | TradingExchangeFormProps
     >;
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
     const { symbol, networkType } = account;
@@ -51,7 +51,7 @@ export const useCoinmarketComposeTransaction = <T extends CoinmarketSellExchange
     );
     const initState = useMemo(() => ({ account, network, feeInfo }), [account, network, feeInfo]);
     const outputAddress = values?.outputs?.[0].address;
-    const [state, setState] = useState<CoinmarketUseComposeTransactionStateProps>(initState);
+    const [state, setState] = useState<TradingUseComposeTransactionStateProps>(initState);
 
     // sub-hook, Composing transaction
     const {

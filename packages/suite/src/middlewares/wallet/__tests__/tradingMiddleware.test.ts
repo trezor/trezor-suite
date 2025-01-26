@@ -2,11 +2,11 @@ import { UI } from '@trezor/connect';
 import { invityAPI } from '@suite-common/invity';
 
 import { configureStore } from 'src/support/tests/configureStore';
-import { coinmarketReducer, initialState } from 'src/reducers/wallet/coinmarketReducer';
+import { tradingReducer, initialState } from 'src/reducers/wallet/tradingReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
-import { coinmarketMiddleware } from 'src/middlewares/wallet/coinmarketMiddleware';
+import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
 import { Action } from 'src/types/suite';
-import { COINMARKET_COMMON } from 'src/actions/wallet/constants';
+import { TRADING_COMMON } from 'src/actions/wallet/constants';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 import routerReducer, { RouterState } from 'src/reducers/suite/routerReducer';
@@ -26,7 +26,7 @@ const ACCOUNT = {
     descriptor: 'btc-descriptor',
 };
 
-const COINMARKET_EXCHANGE_ROUTE = {
+const TRADING_EXCHANGE_ROUTE = {
     anchor: undefined,
     app: 'wallet',
     hash: '/btc/0/normal',
@@ -34,7 +34,7 @@ const COINMARKET_EXCHANGE_ROUTE = {
     params: { symbol: 'btc', accountIndex: 0, accountType: 'normal' },
     pathname: '/accounts/coinmarket/exchange',
     route: {
-        name: 'wallet-coinmarket-exchange',
+        name: 'wallet-trading-exchange',
         pattern: '/accounts/coinmarket/exchange',
         app: 'wallet',
     },
@@ -42,23 +42,23 @@ const COINMARKET_EXCHANGE_ROUTE = {
     url: '/accounts/coinmarket/exchange#/btc/0/normal',
 };
 
-type CoinmarketState = ReturnType<typeof coinmarketReducer>;
+type TradingState = ReturnType<typeof tradingReducer>;
 type SelectedAccountState = ReturnType<typeof selectedAccountReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
 
 interface Args {
-    coinmarket?: CoinmarketState;
+    trading?: TradingState;
     selectedAccount?: SelectedAccountState;
     settings?: SuiteState['settings'];
     router?: RouterState;
     modal?: ModalState;
 }
 
-const getInitialState = ({ coinmarket, selectedAccount }: Args = {}) => ({
+const getInitialState = ({ trading, selectedAccount }: Args = {}) => ({
     wallet: {
-        coinmarket:
-            coinmarket ||
-            coinmarketReducer(
+        trading:
+            trading ||
+            tradingReducer(
                 {
                     isLoading: false,
                     lastLoadedTimestamp: 0,
@@ -104,17 +104,17 @@ const getInitialState = ({ coinmarket, selectedAccount }: Args = {}) => ({
 
 type State = ReturnType<typeof getInitialState>;
 
-const mockStore = configureStore<State, Action>([coinmarketMiddleware]);
+const mockStore = configureStore<State, Action>([tradingMiddleware]);
 
 const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
         const state = store.getState();
-        const { coinmarket, selectedAccount } = state.wallet;
+        const { trading, selectedAccount } = state.wallet;
         const { settings } = state.suite;
         state.wallet = {
-            coinmarket: coinmarketReducer(coinmarket, action),
+            trading: tradingReducer(trading, action),
             selectedAccount: selectedAccountReducer(selectedAccount, action),
         };
         state.suite = suiteReducer(
@@ -143,7 +143,7 @@ const initStore = (state: State) => {
     return store;
 };
 
-describe('coinmarketMiddleware', () => {
+describe('tradingMiddleware', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -162,14 +162,14 @@ describe('coinmarketMiddleware', () => {
 
         const store = initStore(
             getInitialState({
-                coinmarket: initialState,
+                trading: initialState,
             }),
         );
 
-        store.dispatch({ type: COINMARKET_COMMON.LOAD_DATA });
+        store.dispatch({ type: TRADING_COMMON.LOAD_DATA });
         expect(store.getActions()).toEqual([
-            { type: COINMARKET_COMMON.SET_LOADING, isLoading: true, lastLoadedTimestamp: 0 },
-            { type: COINMARKET_COMMON.LOAD_DATA },
+            { type: TRADING_COMMON.SET_LOADING, isLoading: true, lastLoadedTimestamp: 0 },
+            { type: TRADING_COMMON.LOAD_DATA },
         ]);
         expect(getCurrentAccountDescriptorMock).toHaveBeenCalledTimes(1);
         expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(1);
@@ -189,14 +189,14 @@ describe('coinmarketMiddleware', () => {
 
         const store = initStore(
             getInitialState({
-                coinmarket: { ...initialState, lastLoadedTimestamp: 0 },
+                trading: { ...initialState, lastLoadedTimestamp: 0 },
             }),
         );
 
-        store.dispatch({ type: COINMARKET_COMMON.LOAD_DATA });
+        store.dispatch({ type: TRADING_COMMON.LOAD_DATA });
         expect(store.getActions()).toEqual([
-            { type: COINMARKET_COMMON.SET_LOADING, isLoading: true, lastLoadedTimestamp: 0 },
-            { type: COINMARKET_COMMON.LOAD_DATA },
+            { type: TRADING_COMMON.SET_LOADING, isLoading: true, lastLoadedTimestamp: 0 },
+            { type: TRADING_COMMON.LOAD_DATA },
         ]);
         expect(getCurrentAccountDescriptorMock).toHaveBeenCalledTimes(1);
         expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(1);
@@ -216,15 +216,15 @@ describe('coinmarketMiddleware', () => {
 
         const store = initStore(
             getInitialState({
-                coinmarket: {
+                trading: {
                     ...initialState,
                     lastLoadedTimestamp: Date.now(),
                 },
             }),
         );
 
-        store.dispatch({ type: COINMARKET_COMMON.LOAD_DATA });
-        expect(store.getActions()).toEqual([{ type: COINMARKET_COMMON.LOAD_DATA }]);
+        store.dispatch({ type: TRADING_COMMON.LOAD_DATA });
+        expect(store.getActions()).toEqual([{ type: TRADING_COMMON.LOAD_DATA }]);
         expect(getCurrentAccountDescriptorMock).toHaveBeenCalledTimes(1);
         expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(0);
     });
@@ -232,7 +232,7 @@ describe('coinmarketMiddleware', () => {
     it('Test of cleaning modalAccount property after receive modal is closed', () => {
         const store = initStore(
             getInitialState({
-                coinmarket: {
+                trading: {
                     ...initialState,
                     modalAccount: accounts[0],
                     lastLoadedTimestamp: Date.now(),
@@ -240,10 +240,10 @@ describe('coinmarketMiddleware', () => {
             }),
         );
 
-        // go to coinmarket
+        // go to trading
         store.dispatch({
             type: ROUTER.LOCATION_CHANGE,
-            payload: COINMARKET_EXCHANGE_ROUTE,
+            payload: TRADING_EXCHANGE_ROUTE,
         });
 
         // open modal
@@ -260,13 +260,13 @@ describe('coinmarketMiddleware', () => {
             type: UI.CLOSE_UI_WINDOW,
         });
 
-        expect(store.getState().wallet.coinmarket.modalAccount).toEqual(undefined);
+        expect(store.getState().wallet.trading.modalAccount).toEqual(undefined);
     });
 
     it('Test of cleaning modalAccount property after send modal is closed', () => {
         const store = initStore(
             getInitialState({
-                coinmarket: {
+                trading: {
                     ...initialState,
                     modalAccount: accounts[0],
                     lastLoadedTimestamp: Date.now(),
@@ -274,10 +274,10 @@ describe('coinmarketMiddleware', () => {
             }),
         );
 
-        // go to coinmarket
+        // go to trading
         store.dispatch({
             type: ROUTER.LOCATION_CHANGE,
-            payload: COINMARKET_EXCHANGE_ROUTE,
+            payload: TRADING_EXCHANGE_ROUTE,
         });
 
         // open modal
@@ -294,26 +294,26 @@ describe('coinmarketMiddleware', () => {
             type: MODAL.CLOSE,
         });
 
-        expect(store.getState().wallet.coinmarket.modalAccount).toEqual(undefined);
+        expect(store.getState().wallet.trading.modalAccount).toEqual(undefined);
     });
 
     it('Test of setting activeSection after changing route', () => {
         const store = initStore(
             getInitialState({
-                coinmarket: {
+                trading: {
                     ...initialState,
                 },
             }),
         );
 
-        // go to coinmarket
+        // go to trading
         store.dispatch({
             type: ROUTER.LOCATION_CHANGE,
             payload: {
-                ...COINMARKET_EXCHANGE_ROUTE,
+                ...TRADING_EXCHANGE_ROUTE,
             },
         });
 
-        expect(store.getState().wallet.coinmarket.activeSection).toBe('exchange');
+        expect(store.getState().wallet.trading.activeSection).toBe('exchange');
     });
 });

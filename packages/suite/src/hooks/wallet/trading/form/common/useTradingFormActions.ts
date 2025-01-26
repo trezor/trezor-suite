@@ -23,33 +23,33 @@ import {
     FORM_OUTPUT_MAX,
     FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     FORM_SEND_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/coinmarket/form';
+} from 'src/constants/wallet/trading/form';
 import { useSelector } from 'src/hooks/suite';
-import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
+import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 import {
-    CoinmarketExchangeFormProps,
-    CoinmarketSellExchangeFormProps,
-    CoinmarketSellFormProps,
-    CoinmarketUseFormActionsProps,
-    CoinmarketUseFormActionsReturnProps,
-} from 'src/types/coinmarket/coinmarketForm';
+    TradingExchangeFormProps,
+    TradingSellExchangeFormProps,
+    TradingSellFormProps,
+    TradingUseFormActionsProps,
+    TradingUseFormActionsReturnProps,
+} from 'src/types/trading/tradingForm';
 import {
-    coinmarketGetSortedAccounts,
+    tradingGetSortedAccounts,
     cryptoIdToSymbol,
     getAddressAndTokenFromAccountOptionsGroupProps,
-    getCoinmarketNetworkDecimals,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { coinmarketGetExchangeReceiveCryptoId } from 'src/utils/wallet/coinmarket/exchangeUtils';
+    getTradingNetworkDecimals,
+} from 'src/utils/wallet/trading/tradingUtils';
+import { tradingGetExchangeReceiveCryptoId } from 'src/utils/wallet/trading/exchangeUtils';
 
 /**
- * shareable sub-hook used in useCoinmarketSellForm & useCoinmarketExchangeForm
+ * shareable sub-hook used in useTradingSellForm & useTradingExchangeForm
  * managing effects on input changes
  * @return functions and values to handle form inputs and update fee levels
  */
-export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormProps>({
+export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     account,
     methods,
     isNotFormPage,
@@ -61,33 +61,33 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
     composeRequest,
     setAccountOnChange,
     setComposedLevels,
-}: CoinmarketUseFormActionsProps<T>): CoinmarketUseFormActionsReturnProps => {
+}: TradingUseFormActionsProps<T>): TradingUseFormActionsReturnProps => {
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
-    const accountsSorted = coinmarketGetSortedAccounts({
+    const accountsSorted = tradingGetSortedAccounts({
         accounts,
         deviceState: device?.state?.staticSessionId,
     });
     const [isUsedFractionButton, setIsUsedFractionButton] = useState(false);
-    const { buildDefaultCryptoOption } = useCoinmarketInfo();
+    const { buildDefaultCryptoOption } = useTradingInfo();
 
     const { getValues, setValue, clearErrors, handleSubmit, control } =
-        methods as unknown as UseFormReturn<CoinmarketSellExchangeFormProps>;
+        methods as unknown as UseFormReturn<TradingSellExchangeFormProps>;
     const { outputs, sendCryptoSelect } = getValues();
-    const values = useWatch<CoinmarketSellExchangeFormProps>({ control });
+    const values = useWatch<TradingSellExchangeFormProps>({ control });
     const previousValues = useRef<typeof values | null>(isNotFormPage ? draftUpdated : null);
     const tokenAddress = outputs?.[0]?.token;
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
     const isBalanceZero = tokenData
         ? isZero(tokenData.balance || '0')
         : isZero(account.formattedBalance);
-    const coinmarketFiatValues = useCoinmarketFiatValues({
+    const tradingFiatValues = useTradingFiatValues({
         sendCryptoSelect,
         fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
     });
-    const networkDecimals = getCoinmarketNetworkDecimals({
+    const networkDecimals = getTradingNetworkDecimals({
         sendCryptoSelect,
     });
 
@@ -95,9 +95,9 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
     const onFiatCurrencyChange = async (value: FiatCurrencyCode) => {
         setIsUsedFractionButton(false);
 
-        if (!coinmarketFiatValues) return;
+        if (!tradingFiatValues) return;
 
-        const rate = await coinmarketFiatValues.fiatRatesUpdater(value);
+        const rate = await tradingFiatValues.fiatRatesUpdater(value);
         const amount = getValues(FORM_OUTPUT_AMOUNT);
         const formattedAmount = new BigNumber(
             shouldSendInSats ? formatAmount(amount, networkDecimals) : amount,
@@ -122,14 +122,14 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         (fiatAmount: string | undefined) => {
             const fiatCurrency = getValues(FORM_OUTPUT_CURRENCY);
 
-            if (!coinmarketFiatValues || !fiatCurrency || !fiatAmount) {
+            if (!tradingFiatValues || !fiatCurrency || !fiatAmount) {
                 return;
             }
 
             const cryptoAmount = fromFiatCurrency(
                 fiatAmount,
                 networkDecimals,
-                coinmarketFiatValues.fiatRate?.rate,
+                tradingFiatValues.fiatRate?.rate,
             );
 
             const formattedCryptoAmount =
@@ -138,16 +138,16 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
                     : cryptoAmount ?? '';
             setValue(FORM_OUTPUT_AMOUNT, formattedCryptoAmount, { shouldValidate: true });
         },
-        [getValues, coinmarketFiatValues, networkDecimals, shouldSendInSats, setValue],
+        [getValues, tradingFiatValues, networkDecimals, shouldSendInSats, setValue],
     );
 
-    const setExchangeReceiveCrypto = (selected: CoinmarketAccountOptionsGroupOptionProps) => {
+    const setExchangeReceiveCrypto = (selected: TradingAccountOptionsGroupOptionProps) => {
         if (type !== 'exchange') return;
 
-        const valuesTyped = values as CoinmarketExchangeFormProps;
+        const valuesTyped = values as TradingExchangeFormProps;
 
         if (selected.value === valuesTyped?.receiveCryptoSelect?.value) {
-            const receiveCryptoSelect = coinmarketGetExchangeReceiveCryptoId(
+            const receiveCryptoSelect = tradingGetExchangeReceiveCryptoId(
                 selected.value,
                 valuesTyped?.receiveCryptoSelect?.value,
             );
@@ -159,7 +159,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         }
     };
 
-    const onCryptoCurrencyChange = async (selected: CoinmarketAccountOptionsGroupOptionProps) => {
+    const onCryptoCurrencyChange = async (selected: TradingAccountOptionsGroupOptionProps) => {
         const symbol = cryptoIdToSymbol(selected.value);
         const cryptoSelectedCurrent = getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT);
         const isSameCryptoSelected =
@@ -181,7 +181,7 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
         setAmountLimits(undefined);
         setComposedLevels(undefined);
 
-        await coinmarketFiatValues?.fiatRatesUpdater(
+        await tradingFiatValues?.fiatRatesUpdater(
             getValues(FORM_OUTPUT_CURRENCY)?.value as FiatCurrencyCode,
         );
 
@@ -258,8 +258,8 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
 
         if (
             isChanged(
-                (previousValues.current as CoinmarketSellFormProps | null)?.countrySelect,
-                (values as CoinmarketSellFormProps).countrySelect,
+                (previousValues.current as TradingSellFormProps | null)?.countrySelect,
+                (values as TradingSellFormProps).countrySelect,
             ) ||
             isChanged(
                 previousValues.current?.outputs?.[0]?.currency?.value,
@@ -281,8 +281,8 @@ export const useCoinmarketFormActions = <T extends CoinmarketSellExchangeFormPro
 
         if (
             isChanged(
-                (previousValues.current as CoinmarketExchangeFormProps)?.receiveCryptoSelect?.value,
-                (values as CoinmarketExchangeFormProps)?.receiveCryptoSelect?.value,
+                (previousValues.current as TradingExchangeFormProps)?.receiveCryptoSelect?.value,
+                (values as TradingExchangeFormProps)?.receiveCryptoSelect?.value,
             )
         ) {
             handleSubmit(() => {

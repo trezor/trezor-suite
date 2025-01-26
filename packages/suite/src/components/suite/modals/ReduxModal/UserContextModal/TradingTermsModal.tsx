@@ -15,19 +15,19 @@ import { mapTrezorModelToIconDeprecated } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 
-type CoinmarketTermsModalProps = {
+type TradingTermsModalProps = {
     decision: Deferred<boolean>;
     onCancel: () => void;
-    type: 'BUY' | 'SELL' | 'COINMARKET_SWAP' | 'COINMARKET_SWAP_DEX';
+    type: 'BUY' | 'SELL' | 'TRADING_SWAP' | 'TRADING_SWAP_DEX';
     provider?: string;
     cryptoCurrency?: CryptoId;
     toCryptoCurrency?: CryptoId;
     fromCryptoCurrency?: CryptoId;
 };
 
-export const CoinmarketTermsModal = ({
+export const TradingTermsModal = ({
     decision,
     onCancel,
     type,
@@ -35,11 +35,11 @@ export const CoinmarketTermsModal = ({
     cryptoCurrency,
     toCryptoCurrency,
     fromCryptoCurrency,
-}: CoinmarketTermsModalProps) => {
+}: TradingTermsModalProps) => {
     const providerName = provider || 'unknown provider';
     const lowercaseType = type.toLowerCase();
     const { device } = useDevice();
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
+    const { cryptoIdToCoinSymbol } = useTradingInfo();
     const iconProps = {
         variant: 'primary',
         size: 50,
@@ -73,7 +73,7 @@ export const CoinmarketTermsModal = ({
             }
             bottomContent={
                 <NewModal.Button
-                    data-testid={`@coinmarket/${lowercaseType}/offers/buy-terms-confirm-button`}
+                    data-testid={`@trading/${lowercaseType}/offers/buy-terms-confirm-button`}
                     onClick={() => {
                         decision.resolve(true);
                         onCancel();

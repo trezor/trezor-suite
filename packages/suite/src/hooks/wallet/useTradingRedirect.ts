@@ -10,10 +10,10 @@ import { FeeLevel } from '@trezor/connect';
 import { Account } from 'src/types/wallet';
 import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
-import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
-import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
-import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
+import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
+import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
+import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
 
 interface OfferRedirectParams {
     symbol: Account['symbol'];
@@ -61,7 +61,7 @@ interface DetailRedirectParams {
     transactionId: string;
 }
 
-export const useCoinmarketRedirect = () => {
+export const useTradingRedirect = () => {
     const dispatch = useDispatch();
 
     const redirectToOffers = (params: OfferRedirectParams) => {
@@ -91,10 +91,10 @@ export const useCoinmarketRedirect = () => {
                 fiatStringAmount: amount,
             };
         }
-        dispatch(coinmarketBuyActions.saveQuoteRequest(request));
-        dispatch(coinmarketBuyActions.setIsFromRedirect(true));
+        dispatch(tradingBuyActions.saveQuoteRequest(request));
+        dispatch(tradingBuyActions.setIsFromRedirect(true));
         dispatch(
-            goto('wallet-coinmarket-buy-confirm', {
+            goto('wallet-trading-buy-confirm', {
                 params: { symbol, accountIndex: index, accountType },
             }),
         );
@@ -131,17 +131,17 @@ export const useCoinmarketRedirect = () => {
                 fiatStringAmount: amount,
             };
         }
-        dispatch(coinmarketSellActions.saveQuoteRequest(request));
-        dispatch(coinmarketSellActions.setIsFromRedirect(true));
+        dispatch(tradingSellActions.saveQuoteRequest(request));
+        dispatch(tradingSellActions.setIsFromRedirect(true));
         const composed = {
             feeLimit,
             feePerByte: feePerByte || '',
             fee: '', // fee is not passed by redirect, will be recalculated
         };
         dispatch(saveComposedTransactionInfo({ selectedFee: selectedFee || 'normal', composed }));
-        dispatch(coinmarketSellActions.saveTransactionId(orderId));
+        dispatch(tradingSellActions.saveTransactionId(orderId));
         dispatch(
-            goto('wallet-coinmarket-sell-confirm', {
+            goto('wallet-trading-sell-confirm', {
                 params: { symbol, accountIndex: index, accountType },
             }),
         );
@@ -166,17 +166,17 @@ export const useCoinmarketRedirect = () => {
             sendStringAmount: amount,
         };
 
-        dispatch(coinmarketExchangeActions.saveQuoteRequest(request));
-        dispatch(coinmarketExchangeActions.setIsFromRedirect(true));
+        dispatch(tradingExchangeActions.saveQuoteRequest(request));
+        dispatch(tradingExchangeActions.setIsFromRedirect(true));
         const composed = {
             feeLimit,
             feePerByte: feePerByte || '',
             fee: '', // fee is not passed by redirect, will be recalculated
         };
         dispatch(saveComposedTransactionInfo({ selectedFee: selectedFee || 'normal', composed }));
-        dispatch(coinmarketExchangeActions.saveTransactionId(orderId));
+        dispatch(tradingExchangeActions.saveTransactionId(orderId));
         dispatch(
-            goto('wallet-coinmarket-exchange-confirm', {
+            goto('wallet-trading-exchange-confirm', {
                 params: { symbol, accountIndex: index, accountType },
             }),
         );
@@ -185,9 +185,9 @@ export const useCoinmarketRedirect = () => {
     const redirectToDetail = (params: DetailRedirectParams) => {
         const { transactionId } = params;
 
-        dispatch(coinmarketBuyActions.saveTransactionDetailId(transactionId));
+        dispatch(tradingBuyActions.saveTransactionDetailId(transactionId));
         dispatch(
-            goto('wallet-coinmarket-buy-detail', {
+            goto('wallet-trading-buy-detail', {
                 params: {
                     symbol: params.symbol,
                     accountIndex: params.index,

@@ -95,7 +95,7 @@ export const StakingInfo = ({ isExpanded }: StakingInfoProps) => {
     const infoRows = [
         {
             heading: <Translation id="TR_STAKE_SIGN_TRANSACTION" />,
-            content: { text: <Translation id="TR_COINMARKET_NETWORK_FEE" />, isBadge: true },
+            content: { text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true },
         },
         {
             heading: infoRowsData?.rewardsPeriodHeading,

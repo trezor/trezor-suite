@@ -4,7 +4,7 @@ import { INVITY_URL } from '@trezor/urls';
 import { variables, Link, Image } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketFooterLogoWrapper } from 'src/views/wallet/coinmarket';
+import { TradingFooterLogoWrapper } from 'src/views/wallet/trading';
 
 const Wrapper = styled.div`
     display: flex;
@@ -13,13 +13,13 @@ const Wrapper = styled.div`
     color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
 `;
 
-export const CoinmarketProvidedByInvity = () => (
+export const TradingProvidedByInvity = () => (
     <Wrapper>
         <Translation id="TR_BUY_PROVIDED_BY_INVITY" />
-        <CoinmarketFooterLogoWrapper>
+        <TradingFooterLogoWrapper>
             <Link href={INVITY_URL} target="_blank">
                 <Image width={70} image="INVITY_LOGO" />
             </Link>
-        </CoinmarketFooterLogoWrapper>
+        </TradingFooterLogoWrapper>
     </Wrapper>
 );

@@ -1,6 +1,6 @@
 import { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
+import { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
 
 const litecoin = 'litecoin' as CryptoId;
 const bitcoin = 'bitcoin' as CryptoId;

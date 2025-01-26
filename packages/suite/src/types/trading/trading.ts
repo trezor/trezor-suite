@@ -31,7 +31,7 @@ import type {
 } from '@suite-common/invity';
 
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
-import { State } from 'src/reducers/wallet/coinmarketReducer';
+import { State } from 'src/reducers/wallet/tradingReducer';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
 import type {
     Option,
@@ -40,18 +40,18 @@ import type {
     TradeExchange,
     TradeSell,
     TradeType,
-} from 'src/types/wallet/coinmarketCommonTypes';
-import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
-import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
-import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
+} from 'src/types/wallet/tradingCommonTypes';
+import type { SellInfo } from 'src/actions/wallet/tradingSellActions';
+import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
+import type { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
 
-type CoinmarketPageType = 'form' | 'offers' | 'confirm';
+type TradingPageType = 'form' | 'offers' | 'confirm';
 
-export type UseCoinmarketProps = { selectedAccount: SelectedAccountLoaded };
-export type UseCoinmarketCommonProps = UseCoinmarketProps & {
-    pageType: CoinmarketPageType;
+export type UseTradingProps = { selectedAccount: SelectedAccountLoaded };
+export type UseTradingCommonProps = UseTradingProps & {
+    pageType: TradingPageType;
 };
-export interface UseCoinmarketCommonReturnProps {
+export interface UseTradingCommonReturnProps {
     callInProgress: boolean;
     account: Account;
     timer: Timer;
@@ -59,86 +59,86 @@ export interface UseCoinmarketCommonReturnProps {
     setCallInProgress: (state: boolean) => void;
     checkQuotesTimer: (callback: () => Promise<void>) => void;
 }
-export type UseCoinmarketFormProps = UseCoinmarketProps & {
+export type UseTradingFormProps = UseTradingProps & {
     /**
      * Difference between form and offers is that on the offers page are used all data filled in the form
      * but on the form page we prefill form with only some data from draft
      *
      * default value is 'form'
      */
-    pageType?: CoinmarketPageType;
+    pageType?: TradingPageType;
 };
 
-export type CoinmarketTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
-export type CoinmarketTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
-export type CoinmarketTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;
+export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
+export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
+export type TradingTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;
 
-export type CoinmarketTradeMapProps = {
+export type TradingTradeMapProps = {
     buy: TradeBuy;
     sell: TradeSell;
     exchange: TradeExchange;
 };
 
-export type CoinmarketTradeDetailBuySellType = BuyTrade | SellFiatTrade;
+export type TradingTradeDetailBuySellType = BuyTrade | SellFiatTrade;
 
-export type CoinmarketTradeDetailMapProps = {
+export type TradingTradeDetailMapProps = {
     buy: BuyTrade;
     sell: SellFiatTrade;
     exchange: ExchangeTrade;
 };
-export type CoinmarketTradeBuySellDetailMapProps = Omit<CoinmarketTradeDetailMapProps, 'exchange'>;
+export type TradingTradeBuySellDetailMapProps = Omit<TradingTradeDetailMapProps, 'exchange'>;
 
-export type CoinmarketTradeInfoMapProps = {
+export type TradingTradeInfoMapProps = {
     buy: BuyInfo;
     sell: SellInfo;
     exchange: ExchangeInfo;
 };
 
-export interface CoinmarketGetTypedTradeProps {
+export interface TradingGetTypedTradeProps {
     trades: Trade[];
     tradeType: TradingType;
     transactionId: string | undefined;
 }
 
-export type CoinmarketTradeStatusType = BuyTradeStatus | SellTradeStatus | ExchangeTradeStatus;
+export type TradingTradeStatusType = BuyTradeStatus | SellTradeStatus | ExchangeTradeStatus;
 
-export interface CoinmarketGetDetailDataProps {
-    coinmarket: State;
+export interface TradingGetDetailDataProps {
+    trading: State;
     tradeType: TradeType;
 }
 
-export interface CoinmarketGetTypedInfoTradeProps {
-    coinmarket: State;
+export interface TradingGetTypedInfoTradeProps {
+    trading: State;
     tradeType: TradingType;
 }
 
-export interface CoinmarketUseWatchTradeProps<T extends TradingType> {
+export interface TradingUseWatchTradeProps<T extends TradingType> {
     account: Account | undefined;
-    trade: CoinmarketTradeMapProps[T] | undefined;
+    trade: TradingTradeMapProps[T] | undefined;
 }
 
-export interface CoinmarketWatchTradeProps<T extends TradingType> {
-    trade: CoinmarketTradeMapProps[T];
+export interface TradingWatchTradeProps<T extends TradingType> {
+    trade: TradingTradeMapProps[T];
     account: Account;
     refreshCount: number;
     dispatch: Dispatch<AnyAction>;
     removeDraft: (key: string) => void;
 }
 
-export type CoinmarketPaymentMethodProps = BuyCryptoPaymentMethod | '';
+export type TradingPaymentMethodProps = BuyCryptoPaymentMethod | '';
 
-export interface CoinmarketPaymentMethodListProps extends Option {
-    value: CoinmarketPaymentMethodProps;
+export interface TradingPaymentMethodListProps extends Option {
+    value: TradingPaymentMethodProps;
     label: string;
 }
 
-export interface CoinmarketCryptoListProps {
+export interface TradingCryptoListProps {
     value: CryptoId;
     label: string; // token shortcut
     cryptoName?: string | undefined; // full name
 }
 
-export type CoinmarketUtilsProvidersProps = {
+export type TradingUtilsProvidersProps = {
     [name: string]: {
         logo: string;
         companyName: string;
@@ -146,7 +146,7 @@ export type CoinmarketUtilsProvidersProps = {
     };
 };
 
-export interface CoinmarketInfoProps {
+export interface TradingInfoProps {
     cryptoIdToPlatformName: (cryptoId: CryptoId) => string | undefined;
     cryptoIdToCoinName: (cryptoId: CryptoId) => string | undefined;
     cryptoIdToCoinSymbol: (cryptoId: CryptoId) => string | undefined;
@@ -158,34 +158,34 @@ export interface CoinmarketInfoProps {
     buildCryptoOptions: (
         cryptoIds: Set<CryptoId>,
         excludedCryptoIds?: Set<CryptoId>,
-    ) => CoinmarketCryptoSelectOptionProps[];
-    buildDefaultCryptoOption: (cryptoId: CryptoId | undefined) => CoinmarketCryptoSelectItemProps;
+    ) => TradingCryptoSelectOptionProps[];
+    buildDefaultCryptoOption: (cryptoId: CryptoId | undefined) => TradingCryptoSelectItemProps;
 }
 
-export interface CoinmarketCoinLogoProps {
+export interface TradingCoinLogoProps {
     cryptoId: CryptoId;
     size?: 20 | 24;
     margin?: AssetLogoProps['margin'];
     className?: string;
 }
 
-export interface CoinmarketCryptoSelectItemProps
+export interface TradingCryptoSelectItemProps
     extends Omit<SelectAssetOptionCurrencyProps, 'value' | 'ticker'> {
     value: CryptoId;
     label: string;
     ticker?: string;
 }
-export interface CoinmarketCryptoSelectGroupProps extends SelectAssetOptionGroupProps {}
-export type CoinmarketCryptoSelectOptionProps =
-    | CoinmarketCryptoSelectItemProps
+export interface TradingCryptoSelectGroupProps extends SelectAssetOptionGroupProps {}
+export type TradingCryptoSelectOptionProps =
+    | TradingCryptoSelectItemProps
     | SelectAssetOptionGroupProps;
 
-export interface CoinmarketGetSortedAccountsProps {
+export interface TradingGetSortedAccountsProps {
     accounts: AccountsState;
     deviceState: StaticSessionId | undefined;
 }
 
-export interface CoinmarketBuildAccountOptionsProps extends CoinmarketGetSortedAccountsProps {
+export interface TradingBuildAccountOptionsProps extends TradingGetSortedAccountsProps {
     accountLabels: Record<string, string | undefined>;
     getDefaultAccountLabel: ({
         accountType,
@@ -196,7 +196,7 @@ export interface CoinmarketBuildAccountOptionsProps extends CoinmarketGetSortedA
     tokenDefinitions: Partial<TokenDefinitionsState>;
 }
 
-export interface CoinmarketAccountOptionsGroupOptionProps {
+export interface TradingAccountOptionsGroupOptionProps {
     value: CryptoId;
     label: string; // token shortcut
     cryptoName: string | undefined; // full name
@@ -207,50 +207,50 @@ export interface CoinmarketAccountOptionsGroupOptionProps {
     accountType?: AccountType;
 }
 
-export interface CoinmarketAccountsOptionsGroupProps {
+export interface TradingAccountsOptionsGroupProps {
     label: string;
-    options: CoinmarketAccountOptionsGroupOptionProps[];
+    options: TradingAccountOptionsGroupOptionProps[];
 }
 
-export type CoinmarketFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
+export type TradingFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
 
-export interface CoinmarketGetAmountLabelsProps {
+export interface TradingGetAmountLabelsProps {
     type: TradingType;
     amountInCrypto: boolean;
 }
 
-export type CoinmarketPayGetLabelType =
-    | Extract<ExtendedMessageDescriptor['id'], `TR_COINMARKET_YOU_${'PAY' | 'GET' | 'RECEIVE'}`>
-    | 'TR_COINMARKET_SWAP'
-    | 'TR_COINMARKET_SWAP_AMOUNT';
+export type TradingPayGetLabelType =
+    | Extract<ExtendedMessageDescriptor['id'], `TR_TRADING_YOU_${'PAY' | 'GET' | 'RECEIVE'}`>
+    | 'TR_TRADING_SWAP'
+    | 'TR_TRADING_SWAP_AMOUNT';
 
-export interface CoinmarketGetAmountLabelsReturnProps {
-    inputLabel: CoinmarketPayGetLabelType;
-    offerLabel: CoinmarketPayGetLabelType;
+export interface TradingGetAmountLabelsReturnProps {
+    inputLabel: TradingPayGetLabelType;
+    offerLabel: TradingPayGetLabelType;
     labelComparatorOffer: Extract<
         ExtendedMessageDescriptor['id'],
-        `TR_COINMARKET_YOU_WILL_${'PAY' | 'GET'}`
+        `TR_TRADING_YOU_WILL_${'PAY' | 'GET'}`
     >;
-    sendLabel: CoinmarketPayGetLabelType;
-    receiveLabel: CoinmarketPayGetLabelType;
+    sendLabel: TradingPayGetLabelType;
+    receiveLabel: TradingPayGetLabelType;
 }
 
-export type CoinmarketGetProvidersInfoProps =
+export type TradingGetProvidersInfoProps =
     | {
           [name: string]: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
       }
     | undefined;
 
-export type CoinmarketExchangeProvidersInfoProps = {
+export type TradingExchangeProvidersInfoProps = {
     [key: string]: ExchangeProviderInfo;
 };
 
-export interface CoinmarketGetFiatCurrenciesProps {
+export interface TradingGetFiatCurrenciesProps {
     supportedFiatCurrencies: Set<string> | undefined;
     defaultAmountsOfFiatCurrencies?: Map<FiatCurrencyCode, string>;
 }
 
-export interface CoinmarketGetCryptoQuoteAmountProps {
+export interface TradingGetCryptoQuoteAmountProps {
     amountInCrypto?: boolean | undefined;
     sendAmount: string;
     sendCurrency: CryptoId | string | undefined;
@@ -258,12 +258,12 @@ export interface CoinmarketGetCryptoQuoteAmountProps {
     receiveCurrency: CryptoId | undefined;
 }
 
-export interface CoinmarketGetPaymentMethodProps {
+export interface TradingGetPaymentMethodProps {
     paymentMethod?: TradingPaymentMethodType;
     paymentMethodName?: string;
 }
 
-export interface CoinmarketCryptoAmountProps {
+export interface TradingCryptoAmountProps {
     amountInCrypto?: boolean | undefined;
     sendAmount: string | number | undefined;
     sendCurrency: CryptoId | string | undefined;

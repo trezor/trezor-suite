@@ -3,18 +3,18 @@ import { CryptoId } from 'invity-api';
 import { Column, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { coinmarketGetAmountLabels } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketInfoHeader } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoHeader';
-import { CoinmarketInfoItem } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoItem';
-import { CoinmarketInfoProvider } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoProvider';
-import { CoinmarketInfoPaymentMethod } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoPaymentMethod';
-import { CoinmarketInfoExchangeType } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketInfo/CoinmarketInfoExchangeType';
-import { CoinmarketSelectedOfferInfoProps } from 'src/types/coinmarket/coinmarketForm';
-import { CoinmarketUtilsKyc } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsKyc';
-import { CoinmarketExchangeProvidersInfoProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketTransactionId } from 'src/views/wallet/coinmarket/common/CoinmarketTransactionId';
+import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingInfoHeader } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoHeader';
+import { TradingInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoItem';
+import { TradingInfoProvider } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoProvider';
+import { TradingInfoPaymentMethod } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoPaymentMethod';
+import { TradingInfoExchangeType } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoExchangeType';
+import { TradingSelectedOfferInfoProps } from 'src/types/trading/tradingForm';
+import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
+import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactionId';
 
-export const CoinmarketSelectedOfferInfo = ({
+export const TradingSelectedOfferInfo = ({
     account,
     selectedQuote,
     providers,
@@ -24,27 +24,27 @@ export const CoinmarketSelectedOfferInfo = ({
     transactionId,
     paymentMethod,
     paymentMethodName,
-}: CoinmarketSelectedOfferInfoProps) => {
+}: TradingSelectedOfferInfoProps) => {
     const { exchange } = selectedQuote;
 
-    const amountLabels = coinmarketGetAmountLabels({ type, amountInCrypto: true });
+    const amountLabels = tradingGetAmountLabels({ type, amountInCrypto: true });
 
     return (
-        <Column gap={spacings.xl} data-testid="@coinmarket/form/info">
+        <Column gap={spacings.xl} data-testid="@trading/form/info">
             {type !== 'exchange' && (
                 <>
-                    <CoinmarketInfoHeader receiveCurrency={quoteAmounts?.receiveCurrency} />
+                    <TradingInfoHeader receiveCurrency={quoteAmounts?.receiveCurrency} />
                     <Divider margin={{}} />
                 </>
             )}
-            <CoinmarketInfoItem
+            <TradingInfoItem
                 account={account}
                 type={type}
                 label={amountLabels.sendLabel}
                 currency={quoteAmounts?.sendCurrency as CryptoId}
                 amount={quoteAmounts?.sendAmount}
             />
-            <CoinmarketInfoItem
+            <TradingInfoItem
                 account={selectedAccount}
                 type={type}
                 label={amountLabels.receiveLabel}
@@ -55,27 +55,27 @@ export const CoinmarketSelectedOfferInfo = ({
             <Divider margin={{}} />
             {type === 'exchange' && (
                 <>
-                    <CoinmarketInfoExchangeType
+                    <TradingInfoExchangeType
                         selectedQuote={selectedQuote}
-                        providers={providers as CoinmarketExchangeProvidersInfoProps}
+                        providers={providers as TradingExchangeProvidersInfoProps}
                     />
                     <Divider margin={{}} />
                 </>
             )}
-            <CoinmarketInfoProvider providers={providers} exchange={exchange} />
+            <TradingInfoProvider providers={providers} exchange={exchange} />
             {paymentMethod && (
-                <CoinmarketInfoPaymentMethod
+                <TradingInfoPaymentMethod
                     paymentMethod={paymentMethod}
                     paymentMethodName={paymentMethodName}
                 />
             )}
             {type === 'exchange' && (
-                <CoinmarketUtilsKyc
+                <TradingUtilsKyc
                     exchange={exchange}
-                    providers={providers as CoinmarketExchangeProvidersInfoProps}
+                    providers={providers as TradingExchangeProvidersInfoProps}
                 />
             )}
-            {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
+            {transactionId && <TradingTransactionId transactionId={transactionId} />}
         </Column>
     );
 };

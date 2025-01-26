@@ -21,7 +21,7 @@ export const selectAssetModalOptions: (
 )[] = [
     {
         type: 'group',
-        label: 'TR_COINMARKET_POPULAR_CURRENCIES',
+        label: 'TR_TRADING_POPULAR_CURRENCIES',
     },
     {
         type: 'currency',
@@ -165,7 +165,7 @@ export const selectAssetModalOptions: (
     },
     {
         type: 'group',
-        label: 'TR_COINMARKET_OTHER_CURRENCIES',
+        label: 'TR_TRADING_OTHER_CURRENCIES',
     },
     {
         type: 'currency',
@@ -219,7 +219,7 @@ export const selectAssetModalOptions: (
     },
     {
         type: 'group',
-        label: 'TR_COINMARKET_NETWORK_TOKENS',
+        label: 'TR_TRADING_NETWORK_TOKENS',
         coingeckoId: 'ethereum',
         networkName: 'Ethereum',
     },
@@ -324,7 +324,7 @@ export const selectAssetModalOptions: (
     },
     {
         type: 'group',
-        label: 'TR_COINMARKET_NETWORK_TOKENS',
+        label: 'TR_TRADING_NETWORK_TOKENS',
         coingeckoId: 'solana',
         networkName: 'Solana',
     },
@@ -374,7 +374,7 @@ export const selectAssetModalOptions: (
     },
     {
         type: 'group',
-        label: 'TR_COINMARKET_NETWORK_TOKENS',
+        label: 'TR_TRADING_NETWORK_TOKENS',
         coingeckoId: 'binance-smart-chain',
         networkName: 'BNB Smart Chain',
     },
@@ -424,7 +424,7 @@ export const selectAssetModalOptions: (
     },
     {
         type: 'group',
-        label: 'TR_COINMARKET_NETWORK_TOKENS',
+        label: 'TR_TRADING_NETWORK_TOKENS',
         coingeckoId: 'base',
         networkName: 'Base',
     },

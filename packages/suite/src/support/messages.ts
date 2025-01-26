@@ -224,126 +224,126 @@ export default defineMessages({
         defaultMessage:
             'All fees included; the transaction fee is estimated at {feeAmount} ({feeAmountFiat}).',
     },
-    TR_COINMARKET_SWAP_MODAL_FOR_YOUR_SAFETY: {
+    TR_TRADING_SWAP_MODAL_FOR_YOUR_SAFETY: {
         defaultMessage: 'Swap {fromCrypto} to {toCrypto} with {provider}',
-        id: 'TR_COINMARKET_SWAP_MODAL_FOR_YOUR_SAFETY',
+        id: 'TR_TRADING_SWAP_MODAL_FOR_YOUR_SAFETY',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_MODAL_CONFIRM: {
+    TR_TRADING_SWAP_MODAL_CONFIRM: {
         defaultMessage: 'I’m ready to swap',
-        id: 'TR_COINMARKET_SWAP_MODAL_CONFIRM',
+        id: 'TR_TRADING_SWAP_MODAL_CONFIRM',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_MODAL_SECURITY_HEADER: {
+    TR_TRADING_SWAP_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
-        id: 'TR_COINMARKET_SWAP_MODAL_SECURITY_HEADER',
+        id: 'TR_TRADING_SWAP_MODAL_SECURITY_HEADER',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_MODAL_TERMS_1: {
+    TR_TRADING_SWAP_MODAL_TERMS_1: {
         defaultMessage:
             "I’m here to swap cryptocurrencies. If I were directed to this site for any other reason, I'll contact Trezor Support before proceeding. ",
-        id: 'TR_COINMARKET_SWAP_MODAL_TERMS_1',
+        id: 'TR_TRADING_SWAP_MODAL_TERMS_1',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_MODAL_TERMS_2: {
+    TR_TRADING_SWAP_MODAL_TERMS_2: {
         defaultMessage:
             "I want to swap cryptocurrencies for my own account. I understand that the provider's policies may require identity verification.",
-        id: 'TR_COINMARKET_SWAP_MODAL_TERMS_2',
+        id: 'TR_TRADING_SWAP_MODAL_TERMS_2',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_MODAL_TERMS_3: {
+    TR_TRADING_SWAP_MODAL_TERMS_3: {
         defaultMessage:
             "I understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
-        id: 'TR_COINMARKET_SWAP_MODAL_TERMS_3',
+        id: 'TR_TRADING_SWAP_MODAL_TERMS_3',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_MODAL_VERIFIED_PARTNERS_HEADER: {
+    TR_TRADING_SWAP_MODAL_VERIFIED_PARTNERS_HEADER: {
         defaultMessage: 'Verified partners by Invity',
-        id: 'TR_COINMARKET_SWAP_MODAL_VERIFIED_PARTNERS_HEADER',
+        id: 'TR_TRADING_SWAP_MODAL_VERIFIED_PARTNERS_HEADER',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_MODAL_TERMS_4: {
+    TR_TRADING_SWAP_MODAL_TERMS_4: {
         defaultMessage:
             "I understand that Invity doesn't provide this service. It's governed by {provider}’s Terms and Conditions.",
-        id: 'TR_COINMARKET_SWAP_MODAL_TERMS_4',
+        id: 'TR_TRADING_SWAP_MODAL_TERMS_4',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_MODAL_LEGAL_HEADER: {
+    TR_TRADING_SWAP_MODAL_LEGAL_HEADER: {
         defaultMessage: 'Legal notice',
-        id: 'TR_COINMARKET_SWAP_MODAL_LEGAL_HEADER',
+        id: 'TR_TRADING_SWAP_MODAL_LEGAL_HEADER',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_MODAL_TERMS_5: {
+    TR_TRADING_SWAP_MODAL_TERMS_5: {
         defaultMessage:
             "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
-        id: 'TR_COINMARKET_SWAP_MODAL_TERMS_5',
+        id: 'TR_TRADING_SWAP_MODAL_TERMS_5',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_MODAL_TERMS_6: {
+    TR_TRADING_SWAP_MODAL_TERMS_6: {
         defaultMessage:
             'I understand that cryptocurrencies are an emerging financial tool and that regulations can differ by region. This may increase the risk of fraud, theft, or market instability.',
-        id: 'TR_COINMARKET_SWAP_MODAL_TERMS_6',
+        id: 'TR_TRADING_SWAP_MODAL_TERMS_6',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_DEX_MODAL_FOR_YOUR_SAFETY: {
+    TR_TRADING_SWAP_DEX_MODAL_FOR_YOUR_SAFETY: {
         defaultMessage: 'Swap {fromCrypto} to {toCrypto} with {provider}',
-        id: 'TR_COINMARKET_SWAP_DEX_MODAL_FOR_YOUR_SAFETY',
+        id: 'TR_TRADING_SWAP_DEX_MODAL_FOR_YOUR_SAFETY',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_DEX_MODAL_CONFIRM: {
+    TR_TRADING_SWAP_DEX_MODAL_CONFIRM: {
         defaultMessage: 'I’m ready to swap',
-        id: 'TR_COINMARKET_SWAP_DEX_MODAL_CONFIRM',
+        id: 'TR_TRADING_SWAP_DEX_MODAL_CONFIRM',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_DEX_MODAL_SECURITY_HEADER: {
+    TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
-        id: 'TR_COINMARKET_SWAP_DEX_MODAL_SECURITY_HEADER',
+        id: 'TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_DEX_MODAL_TERMS_1: {
+    TR_TRADING_SWAP_DEX_MODAL_TERMS_1: {
         defaultMessage:
             "I want to swap cryptocurrencies using DEX (decentralized exchange) by using {provider}'s contract.",
-        id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_1',
+        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_1',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_DEX_MODAL_TERMS_2: {
+    TR_TRADING_SWAP_DEX_MODAL_TERMS_2: {
         defaultMessage:
             "I want to swap cryptocurrencies for my own account. I understand that the provider's policies may require identity verification.",
-        id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_2',
+        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_2',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_DEX_MODAL_TERMS_3: {
+    TR_TRADING_SWAP_DEX_MODAL_TERMS_3: {
         defaultMessage:
             "I understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
-        id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_3',
+        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_3',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_DEX_MODAL_VERIFIED_PARTNERS_HEADER: {
+    TR_TRADING_SWAP_DEX_MODAL_VERIFIED_PARTNERS_HEADER: {
         defaultMessage: 'Verified partners by Invity',
-        id: 'TR_COINMARKET_SWAP_DEX_MODAL_VERIFIED_PARTNERS_HEADER',
+        id: 'TR_TRADING_SWAP_DEX_MODAL_VERIFIED_PARTNERS_HEADER',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_DEX_MODAL_TERMS_4: {
+    TR_TRADING_SWAP_DEX_MODAL_TERMS_4: {
         defaultMessage:
             "I understand that Invity doesn't provide this service. It's governed by {provider}’s Terms and Conditions.",
-        id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_4',
+        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_4',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_DEX_MODAL_LEGAL_HEADER: {
+    TR_TRADING_SWAP_DEX_MODAL_LEGAL_HEADER: {
         defaultMessage: 'Legal notice',
-        id: 'TR_COINMARKET_SWAP_DEX_MODAL_LEGAL_HEADER',
+        id: 'TR_TRADING_SWAP_DEX_MODAL_LEGAL_HEADER',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_DEX_MODAL_TERMS_5: {
+    TR_TRADING_SWAP_DEX_MODAL_TERMS_5: {
         defaultMessage:
             "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
-        id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_5',
+        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_5',
         dynamic: true,
     },
-    TR_COINMARKET_SWAP_DEX_MODAL_TERMS_6: {
+    TR_TRADING_SWAP_DEX_MODAL_TERMS_6: {
         defaultMessage:
             'I understand that cryptocurrencies are an emerging financial tool and that regulations can differ by region. This may increase the risk of fraud, theft, or market instability.',
-        id: 'TR_COINMARKET_SWAP_DEX_MODAL_TERMS_6',
+        id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_6',
         dynamic: true,
     },
     TR_CONFIRM_ADDRESS: {
@@ -685,50 +685,50 @@ export default defineMessages({
         defaultMessage: 'Decentralized exchange offer',
         id: 'TR_EXCHANGE_DEX',
     },
-    TR_COINMARKET_EXCHANGE_FIXED_OFFERS_HEADING: {
+    TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING: {
         defaultMessage: 'Fixed-rate CEX',
-        id: 'TR_COINMARKET_EXCHANGE_FIXED_OFFERS_HEADING',
+        id: 'TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING',
         dynamic: true,
     },
-    TR_COINMARKET_EXCHANGE_FLOAT_OFFERS_HEADING: {
+    TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING: {
         defaultMessage: 'Floating-rate CEX',
-        id: 'TR_COINMARKET_EXCHANGE_FLOAT_OFFERS_HEADING',
+        id: 'TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING',
         dynamic: true,
     },
-    TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING: {
+    TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING: {
         defaultMessage: 'DEX',
-        id: 'TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING',
+        id: 'TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING',
         dynamic: true,
     },
-    TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP: {
+    TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP: {
         defaultMessage:
             'A decentralized exchange (DEX) allows you to trade crypto directly on the blockchain without the need for a central authority or intermediary.',
-        id: 'TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP',
+        id: 'TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP',
         dynamic: true,
     },
-    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_KYC_ALL: {
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_KYC_ALL: {
         defaultMessage: 'All KYC options',
-        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_KYC_ALL',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_KYC_ALL',
     },
-    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_NO_KYC: {
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_NO_KYC: {
         defaultMessage: 'KYC never required',
-        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_NO_KYC',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_NO_KYC',
     },
-    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_ALL: {
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_ALL: {
         defaultMessage: 'All CEX & DEX offers',
-        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_ALL',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_ALL',
     },
-    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX: {
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX: {
         defaultMessage: 'Fixed-rate CEX',
-        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX',
     },
-    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX: {
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX: {
         defaultMessage: 'Floating-rate CEX',
-        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX',
     },
-    TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_DEX: {
+    TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_DEX: {
         defaultMessage: 'DEX',
-        id: 'TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_DEX',
+        id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_DEX',
     },
     TR_SELL_STATUS_ERROR: {
         defaultMessage: 'Rejected',
@@ -1128,309 +1128,309 @@ export default defineMessages({
         defaultMessage: "Go to provider's site",
         id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
     },
-    TR_COINMARKET_OFFERS_EMPTY: {
+    TR_TRADING_OFFERS_EMPTY: {
         defaultMessage: 'No offers available for your request. Change country or buy amount.',
-        id: 'TR_COINMARKET_OFFERS_EMPTY',
+        id: 'TR_TRADING_OFFERS_EMPTY',
     },
-    TR_COINMARKET_UNKNOWN_PROVIDER: {
+    TR_TRADING_UNKNOWN_PROVIDER: {
         defaultMessage: 'Unknown provider',
-        id: 'TR_COINMARKET_UNKNOWN_PROVIDER',
+        id: 'TR_TRADING_UNKNOWN_PROVIDER',
     },
-    TR_COINMARKET_YOU_WILL_GET: {
+    TR_TRADING_YOU_WILL_GET: {
         defaultMessage: "You'll get",
-        id: 'TR_COINMARKET_YOU_WILL_GET',
+        id: 'TR_TRADING_YOU_WILL_GET',
     },
-    TR_COINMARKET_YOU_WILL_PAY: {
+    TR_TRADING_YOU_WILL_PAY: {
         defaultMessage: "You'll pay",
-        id: 'TR_COINMARKET_YOU_WILL_PAY',
+        id: 'TR_TRADING_YOU_WILL_PAY',
     },
-    TR_COINMARKET_SHOW_OFFERS: {
+    TR_TRADING_SHOW_OFFERS: {
         defaultMessage: 'Compare offers',
-        id: 'TR_COINMARKET_SHOW_OFFERS',
+        id: 'TR_TRADING_SHOW_OFFERS',
     },
-    TR_COINMARKET_LAST_TRANSACTIONS: {
+    TR_TRADING_LAST_TRANSACTIONS: {
         defaultMessage: 'Last transactions',
-        id: 'TR_COINMARKET_LAST_TRANSACTIONS',
+        id: 'TR_TRADING_LAST_TRANSACTIONS',
     },
-    TR_COINMARKET_BUY_AND_SELL_COUNTER: {
+    TR_TRADING_BUY_AND_SELL_COUNTER: {
         defaultMessage:
             '{totalBuys, plural, =0 {{totalBuys} buys} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sells} one {{totalSells} sell} other {{totalSells} sells} }',
-        id: 'TR_COINMARKET_BUY_AND_SELL_COUNTER',
+        id: 'TR_TRADING_BUY_AND_SELL_COUNTER',
     },
-    TR_COINMARKET_SWAP_COUNTER: {
+    TR_TRADING_SWAP_COUNTER: {
         defaultMessage:
             '{totalSwaps, plural, =0 {{totalSwaps} swaps} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',
-        id: 'TR_COINMARKET_SWAP_COUNTER',
+        id: 'TR_TRADING_SWAP_COUNTER',
     },
-    TR_COINMARKET_PAYMENT_METHOD: {
+    TR_TRADING_PAYMENT_METHOD: {
         defaultMessage: 'Payment method',
-        id: 'TR_COINMARKET_PAYMENT_METHOD',
+        id: 'TR_TRADING_PAYMENT_METHOD',
     },
-    TR_COINMARKET_RECEIVE_METHOD: {
+    TR_TRADING_RECEIVE_METHOD: {
         defaultMessage: 'Receive method',
-        id: 'TR_COINMARKET_RECEIVE_METHOD',
+        id: 'TR_TRADING_RECEIVE_METHOD',
     },
-    TR_COINMARKET_YOU_BUY: {
+    TR_TRADING_YOU_BUY: {
         defaultMessage: 'You buy',
-        id: 'TR_COINMARKET_YOU_BUY',
+        id: 'TR_TRADING_YOU_BUY',
     },
-    TR_COINMARKET_YOU_SELL: {
+    TR_TRADING_YOU_SELL: {
         defaultMessage: 'You sell',
-        id: 'TR_COINMARKET_YOU_SELL',
+        id: 'TR_TRADING_YOU_SELL',
     },
-    TR_COINMARKET_YOU_PAY: {
+    TR_TRADING_YOU_PAY: {
         defaultMessage: 'You pay',
-        id: 'TR_COINMARKET_YOU_PAY',
+        id: 'TR_TRADING_YOU_PAY',
     },
-    TR_COINMARKET_YOU_GET: {
+    TR_TRADING_YOU_GET: {
         defaultMessage: 'You get',
-        id: 'TR_COINMARKET_YOU_GET',
+        id: 'TR_TRADING_YOU_GET',
     },
-    TR_COINMARKET_YOU_RECEIVE: {
+    TR_TRADING_YOU_RECEIVE: {
         defaultMessage: 'You receive',
-        id: 'TR_COINMARKET_YOU_RECEIVE',
+        id: 'TR_TRADING_YOU_RECEIVE',
     },
-    TR_COINMARKET_COUNTRY: {
+    TR_TRADING_COUNTRY: {
         defaultMessage: 'Country of residence',
-        id: 'TR_COINMARKET_COUNTRY',
+        id: 'TR_TRADING_COUNTRY',
     },
-    TR_COINMARKET_YOUR_BEST_OFFER: {
+    TR_TRADING_YOUR_BEST_OFFER: {
         defaultMessage: 'Your best offer',
-        id: 'TR_COINMARKET_YOUR_BEST_OFFER',
+        id: 'TR_TRADING_YOUR_BEST_OFFER',
     },
-    TR_COINMARKET_COMPARE_OFFERS: {
+    TR_TRADING_COMPARE_OFFERS: {
         defaultMessage: 'Compare all offers',
-        id: 'TR_COINMARKET_COMPARE_OFFERS',
+        id: 'TR_TRADING_COMPARE_OFFERS',
     },
-    TR_COINMARKET_OFFER_LOOKING: {
+    TR_TRADING_OFFER_LOOKING: {
         defaultMessage: 'Searching for your best offer',
-        id: 'TR_COINMARKET_OFFER_LOOKING',
+        id: 'TR_TRADING_OFFER_LOOKING',
     },
-    TR_COINMARKET_OFFER_NO_FOUND: {
+    TR_TRADING_OFFER_NO_FOUND: {
         defaultMessage: 'No offers available for your request.',
-        id: 'TR_COINMARKET_OFFER_NO_FOUND',
+        id: 'TR_TRADING_OFFER_NO_FOUND',
     },
-    TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY: {
+    TR_TRADING_CHANGE_AMOUNT_OR_CURRENCY: {
         defaultMessage: 'Change amount or currency.',
-        id: 'TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY',
+        id: 'TR_TRADING_CHANGE_AMOUNT_OR_CURRENCY',
     },
-    TR_COINMARKET_BEST_RATE: {
+    TR_TRADING_BEST_RATE: {
         defaultMessage: 'Best rate',
-        id: 'TR_COINMARKET_BEST_RATE',
+        id: 'TR_TRADING_BEST_RATE',
     },
-    TR_COINMARKET_FEES_INCLUDED: {
+    TR_TRADING_FEES_INCLUDED: {
         defaultMessage: 'Fees included',
-        id: 'TR_COINMARKET_FEES_INCLUDED',
+        id: 'TR_TRADING_FEES_INCLUDED',
     },
-    TR_COINMARKET_FEES_NOT_INCLUDED: {
+    TR_TRADING_FEES_NOT_INCLUDED: {
         defaultMessage: 'Fees not included',
-        id: 'TR_COINMARKET_FEES_NOT_INCLUDED',
+        id: 'TR_TRADING_FEES_NOT_INCLUDED',
     },
-    TR_COINMARKET_FEES_ON_WEBSITE: {
+    TR_TRADING_FEES_ON_WEBSITE: {
         defaultMessage:
             "Some fees aren't included in the displayed price; the final cost is shown on the provider's website.",
-        id: 'TR_COINMARKET_FEES_ON_WEBSITE',
+        id: 'TR_TRADING_FEES_ON_WEBSITE',
     },
-    TR_COINMARKET_NETWORK_FEE: {
+    TR_TRADING_NETWORK_FEE: {
         defaultMessage: 'Network fee',
-        id: 'TR_COINMARKET_NETWORK_FEE',
+        id: 'TR_TRADING_NETWORK_FEE',
     },
-    TR_COINMARKET_TRADE_FEE: {
+    TR_TRADING_TRADE_FEE: {
         defaultMessage: 'Trade fee',
-        id: 'TR_COINMARKET_TRADE_FEE',
+        id: 'TR_TRADING_TRADE_FEE',
     },
-    TR_COINMARKET_OFFERS_REFRESH: {
+    TR_TRADING_OFFERS_REFRESH: {
         defaultMessage: 'Offers refresh in',
-        id: 'TR_COINMARKET_OFFERS_REFRESH',
+        id: 'TR_TRADING_OFFERS_REFRESH',
     },
-    TR_COINMARKET_OFFERS_SELECT: {
+    TR_TRADING_OFFERS_SELECT: {
         defaultMessage: 'Select',
-        id: 'TR_COINMARKET_OFFERS_SELECT',
+        id: 'TR_TRADING_OFFERS_SELECT',
     },
-    TR_COINMARKET_POPULAR_CURRENCIES: {
+    TR_TRADING_POPULAR_CURRENCIES: {
         defaultMessage: 'Popular currencies',
-        id: 'TR_COINMARKET_POPULAR_CURRENCIES',
+        id: 'TR_TRADING_POPULAR_CURRENCIES',
     },
-    TR_COINMARKET_OTHER_CURRENCIES: {
+    TR_TRADING_OTHER_CURRENCIES: {
         defaultMessage: 'Other currencies',
-        id: 'TR_COINMARKET_OTHER_CURRENCIES',
+        id: 'TR_TRADING_OTHER_CURRENCIES',
     },
-    TR_COINMARKET_NETWORK_TOKENS: {
+    TR_TRADING_NETWORK_TOKENS: {
         defaultMessage: '{networkName} tokens',
-        id: 'TR_COINMARKET_NETWORK_TOKENS',
+        id: 'TR_TRADING_NETWORK_TOKENS',
     },
-    TR_COINMARKET_TOKEN_NETWORK: {
+    TR_TRADING_TOKEN_NETWORK: {
         defaultMessage: '{tokenName} on {networkName} network',
-        id: 'TR_COINMARKET_TOKEN_NETWORK',
+        id: 'TR_TRADING_TOKEN_NETWORK',
     },
-    TR_COINMARKET_ENTER_AMOUNT_IN: {
+    TR_TRADING_ENTER_AMOUNT_IN: {
         defaultMessage: 'Enter amount in {currency}',
-        id: 'TR_COINMARKET_ENTER_AMOUNT_IN',
+        id: 'TR_TRADING_ENTER_AMOUNT_IN',
     },
-    TR_COINMARKET_SELL: {
-        id: 'TR_COINMARKET_SELL',
+    TR_TRADING_SELL: {
+        id: 'TR_TRADING_SELL',
         defaultMessage: 'Sell',
     },
-    TR_COINMARKET_RATE: {
-        id: 'TR_COINMARKET_RATE',
+    TR_TRADING_RATE: {
+        id: 'TR_TRADING_RATE',
         defaultMessage: 'Rate',
     },
-    TR_COINMARKET_FIX_RATE: {
-        id: 'TR_COINMARKET_FIX_RATE',
+    TR_TRADING_FIX_RATE: {
+        id: 'TR_TRADING_FIX_RATE',
         defaultMessage: 'Fixed rate',
     },
-    TR_COINMARKET_FLOATING_RATE: {
-        id: 'TR_COINMARKET_FLOATING_RATE',
+    TR_TRADING_FLOATING_RATE: {
+        id: 'TR_TRADING_FLOATING_RATE',
         defaultMessage: 'Floating rate',
     },
-    TR_COINMARKET_FIX_RATE_DESCRIPTION: {
-        id: 'TR_COINMARKET_FIX_RATE_DESCRIPTION',
+    TR_TRADING_FIX_RATE_DESCRIPTION: {
+        id: 'TR_TRADING_FIX_RATE_DESCRIPTION',
         defaultMessage: 'Lock in your rate for 15 minutes by paying a higher fee.',
     },
-    TR_COINMARKET_FLOATING_RATE_DESCRIPTION: {
-        id: 'TR_COINMARKET_FLOATING_RATE_DESCRIPTION',
+    TR_TRADING_FLOATING_RATE_DESCRIPTION: {
+        id: 'TR_TRADING_FLOATING_RATE_DESCRIPTION',
         defaultMessage: 'Get an estimated rate that may adjust with real-time market changes.',
     },
-    TR_COINMARKET_CEX_TOOLTIP: {
-        id: 'TR_COINMARKET_CEX_TOOLTIP',
+    TR_TRADING_CEX_TOOLTIP: {
+        id: 'TR_TRADING_CEX_TOOLTIP',
         defaultMessage: 'Centralized exchange',
         dynamic: true,
     },
-    TR_COINMARKET_DEX_TOOLTIP: {
-        id: 'TR_COINMARKET_DEX_TOOLTIP',
+    TR_TRADING_DEX_TOOLTIP: {
+        id: 'TR_TRADING_DEX_TOOLTIP',
         defaultMessage: 'Decentralized exchange',
         dynamic: true,
     },
-    TR_COINMARKET_NO_CEX_PROVIDER_FOUND: {
-        id: 'TR_COINMARKET_NO_CEX_PROVIDER_FOUND',
+    TR_TRADING_NO_CEX_PROVIDER_FOUND: {
+        id: 'TR_TRADING_NO_CEX_PROVIDER_FOUND',
         defaultMessage: 'No CEX provider found',
     },
-    TR_COINMARKET_NO_DEX_PROVIDER_FOUND: {
-        id: 'TR_COINMARKET_NO_DEX_PROVIDER_FOUND',
+    TR_TRADING_NO_DEX_PROVIDER_FOUND: {
+        id: 'TR_TRADING_NO_DEX_PROVIDER_FOUND',
         defaultMessage: 'No DEX provider found',
     },
-    TR_COINMARKET_FEATURED_OFFERS_HEADING: {
+    TR_TRADING_FEATURED_OFFERS_HEADING: {
         defaultMessage: 'Featured offers',
-        id: 'TR_COINMARKET_FEATURED_OFFERS_HEADING',
+        id: 'TR_TRADING_FEATURED_OFFERS_HEADING',
     },
-    TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL: {
+    TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL: {
         defaultMessage: 'Payment:',
-        id: 'TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL',
+        id: 'TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_BUY_LABEL',
         dynamic: true,
     },
-    TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL: {
+    TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL: {
         defaultMessage: 'Receive method:',
-        id: 'TR_COINMARKET_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL',
+        id: 'TR_TRADING_FEATURED_OFFER_PAYMENT_METHOD_SELL_LABEL',
         dynamic: true,
     },
-    TR_COINMARKET_NO_METHODS_AVAILABLE: {
+    TR_TRADING_NO_METHODS_AVAILABLE: {
         defaultMessage: 'No methods available',
-        id: 'TR_COINMARKET_NO_METHODS_AVAILABLE',
+        id: 'TR_TRADING_NO_METHODS_AVAILABLE',
     },
-    TR_COINMARKET_SWAP_AMOUNT: {
+    TR_TRADING_SWAP_AMOUNT: {
         defaultMessage: 'Swap amount',
-        id: 'TR_COINMARKET_SWAP_AMOUNT',
+        id: 'TR_TRADING_SWAP_AMOUNT',
     },
-    TR_COINMARKET_ON_NETWORK_CHAIN: {
+    TR_TRADING_ON_NETWORK_CHAIN: {
         defaultMessage: 'On {networkName} chain',
-        id: 'TR_COINMARKET_ON_NETWORK_CHAIN',
+        id: 'TR_TRADING_ON_NETWORK_CHAIN',
     },
-    TR_COINMARKET_KYC_POLICY: {
+    TR_TRADING_KYC_POLICY: {
         defaultMessage: 'KYC policy',
-        id: 'TR_COINMARKET_KYC_POLICY',
+        id: 'TR_TRADING_KYC_POLICY',
     },
-    TR_COINMARKET_KYC_POLICY_NEVER_REQUIRED: {
+    TR_TRADING_KYC_POLICY_NEVER_REQUIRED: {
         defaultMessage: 'KYC never required',
-        id: 'TR_COINMARKET_KYC_POLICY_NEVER_REQUIRED',
+        id: 'TR_TRADING_KYC_POLICY_NEVER_REQUIRED',
     },
-    TR_COINMARKET_KYC_REQUIRED: {
+    TR_TRADING_KYC_REQUIRED: {
         defaultMessage: 'KYC required.',
-        id: 'TR_COINMARKET_KYC_REQUIRED',
+        id: 'TR_TRADING_KYC_REQUIRED',
     },
-    TR_COINMARKET_KYC_NO_REFUND: {
+    TR_TRADING_KYC_NO_REFUND: {
         defaultMessage: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
-        id: 'TR_COINMARKET_KYC_NO_REFUND',
+        id: 'TR_TRADING_KYC_NO_REFUND',
     },
-    TR_COINMARKET_KYC_YES_REFUND: {
+    TR_TRADING_KYC_YES_REFUND: {
         defaultMessage:
             "KYC is only requested in exceptional cases. It's not required for refunds. 🤝",
-        id: 'TR_COINMARKET_KYC_YES_REFUND',
+        id: 'TR_TRADING_KYC_YES_REFUND',
     },
-    TR_COINMARKET_KYC_NO_KYC: {
+    TR_TRADING_KYC_NO_KYC: {
         defaultMessage: 'KYC never required. Exceptional cases automatically refunded. 👍',
-        id: 'TR_COINMARKET_KYC_NO_KYC',
+        id: 'TR_TRADING_KYC_NO_KYC',
     },
-    TR_COINMARKET_KYC_DEX: {
+    TR_TRADING_KYC_DEX: {
         defaultMessage: 'KYC never required. DEX swaps either succeed or fail. 👍',
-        id: 'TR_COINMARKET_KYC_DEX',
+        id: 'TR_TRADING_KYC_DEX',
     },
-    TR_COINMARKET_DCA_HEADING: {
+    TR_TRADING_DCA_HEADING: {
         defaultMessage: 'Save in Bitcoin with the Invity app',
-        id: 'TR_COINMARKET_DCA_HEADING',
+        id: 'TR_TRADING_DCA_HEADING',
     },
-    TR_COINMARKET_DCA_FEATURE_1_SUBHEADING: {
+    TR_TRADING_DCA_FEATURE_1_SUBHEADING: {
         defaultMessage: 'Developed by SatoshiLabs',
-        id: 'TR_COINMARKET_DCA_FEATURE_1_SUBHEADING',
+        id: 'TR_TRADING_DCA_FEATURE_1_SUBHEADING',
         dynamic: true,
     },
-    TR_COINMARKET_DCA_FEATURE_1_DESCRIPTION: {
+    TR_TRADING_DCA_FEATURE_1_DESCRIPTION: {
         defaultMessage: 'A safe & simple custodial DCA savings plan.',
-        id: 'TR_COINMARKET_DCA_FEATURE_1_DESCRIPTION',
+        id: 'TR_TRADING_DCA_FEATURE_1_DESCRIPTION',
         dynamic: true,
     },
-    TR_COINMARKET_DCA_FEATURE_2_SUBHEADING: {
+    TR_TRADING_DCA_FEATURE_2_SUBHEADING: {
         defaultMessage: 'Free withdrawals',
-        id: 'TR_COINMARKET_DCA_FEATURE_2_SUBHEADING',
+        id: 'TR_TRADING_DCA_FEATURE_2_SUBHEADING',
         dynamic: true,
     },
-    TR_COINMARKET_DCA_FEATURE_2_DESCRIPTION: {
+    TR_TRADING_DCA_FEATURE_2_DESCRIPTION: {
         defaultMessage: 'Withdraw to self-custody without extra fees.',
-        id: 'TR_COINMARKET_DCA_FEATURE_2_DESCRIPTION',
+        id: 'TR_TRADING_DCA_FEATURE_2_DESCRIPTION',
         dynamic: true,
     },
-    TR_COINMARKET_DCA_FEATURE_3_SUBHEADING: {
+    TR_TRADING_DCA_FEATURE_3_SUBHEADING: {
         defaultMessage: 'Easy to use',
-        id: 'TR_COINMARKET_DCA_FEATURE_3_SUBHEADING',
+        id: 'TR_TRADING_DCA_FEATURE_3_SUBHEADING',
         dynamic: true,
     },
-    TR_COINMARKET_DCA_FEATURE_3_DESCRIPTION: {
+    TR_TRADING_DCA_FEATURE_3_DESCRIPTION: {
         defaultMessage: 'A quick, streamlined, user-friendly interface.',
-        id: 'TR_COINMARKET_DCA_FEATURE_3_DESCRIPTION',
+        id: 'TR_TRADING_DCA_FEATURE_3_DESCRIPTION',
         dynamic: true,
     },
-    TR_COINMARKET_DCA_FEATURE_4_SUBHEADING: {
+    TR_TRADING_DCA_FEATURE_4_SUBHEADING: {
         defaultMessage: 'DCA Overview',
-        id: 'TR_COINMARKET_DCA_FEATURE_4_SUBHEADING',
+        id: 'TR_TRADING_DCA_FEATURE_4_SUBHEADING',
         dynamic: true,
     },
-    TR_COINMARKET_DCA_FEATURE_4_DESCRIPTION: {
+    TR_TRADING_DCA_FEATURE_4_DESCRIPTION: {
         defaultMessage: 'Monitor your investment history, amount & frequency.',
-        id: 'TR_COINMARKET_DCA_FEATURE_4_DESCRIPTION',
+        id: 'TR_TRADING_DCA_FEATURE_4_DESCRIPTION',
         dynamic: true,
     },
-    TR_COINMARKET_DCA_DOWNLOAD: {
+    TR_TRADING_DCA_DOWNLOAD: {
         defaultMessage: 'Download the Invity mobile app to start saving in Bitcoin',
-        id: 'TR_COINMARKET_DCA_DOWNLOAD',
+        id: 'TR_TRADING_DCA_DOWNLOAD',
     },
-    TR_COINMARKET_BUY_AND_SELL: {
+    TR_TRADING_BUY_AND_SELL: {
         defaultMessage: 'Buy & sell',
-        id: 'TR_COINMARKET_BUY_AND_SELL',
+        id: 'TR_TRADING_BUY_AND_SELL',
     },
-    TR_COINMARKET_SWAP: {
+    TR_TRADING_SWAP: {
         defaultMessage: 'Swap',
-        id: 'TR_COINMARKET_SWAP',
+        id: 'TR_TRADING_SWAP',
     },
-    TR_COINMARKET_SWAP_UNAVAILABLE: {
+    TR_TRADING_SWAP_UNAVAILABLE: {
         defaultMessage: 'Swap unavailable',
-        id: 'TR_COINMARKET_SWAP_UNAVAILABLE',
+        id: 'TR_TRADING_SWAP_UNAVAILABLE',
     },
-    TR_COINMARKET_TRANS_ID: {
+    TR_TRADING_TRANS_ID: {
         defaultMessage: 'Trans. ID:',
-        id: 'TR_COINMARKET_TRANS_ID',
+        id: 'TR_TRADING_TRANS_ID',
     },
-    TR_COINMARKET_VIEW_DETAILS: {
+    TR_TRADING_VIEW_DETAILS: {
         defaultMessage: 'View details',
-        id: 'TR_COINMARKET_VIEW_DETAILS',
+        id: 'TR_TRADING_VIEW_DETAILS',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',

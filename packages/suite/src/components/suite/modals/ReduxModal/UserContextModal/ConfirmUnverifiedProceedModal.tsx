@@ -1,4 +1,4 @@
-import { COINMARKET_BUY } from 'src/actions/wallet/constants';
+import { TRADING_BUY } from 'src/actions/wallet/constants';
 import { Dispatch } from 'src/types/suite';
 
 import { ConfirmUnverifiedModal } from './ConfirmUnverifiedModal';
@@ -10,7 +10,7 @@ interface ConfirmUnverifiedProceedModalProps {
 export const ConfirmUnverifiedProceedModal = ({ value }: ConfirmUnverifiedProceedModalProps) => {
     const proceedWithUnverifiedAddress = () => (dispatch: Dispatch) => {
         dispatch({
-            type: COINMARKET_BUY.VERIFY_ADDRESS,
+            type: TRADING_BUY.VERIFY_ADDRESS,
             addressVerified: value,
         });
     };

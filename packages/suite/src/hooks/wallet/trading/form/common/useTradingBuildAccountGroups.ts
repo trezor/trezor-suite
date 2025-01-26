@@ -5,13 +5,13 @@ import type { TradingType } from '@suite-common/invity';
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
-import { selectSupportedSymbols } from 'src/reducers/wallet/coinmarketReducer';
-import { CoinmarketAccountsOptionsGroupProps } from 'src/types/coinmarket/coinmarket';
-import { coinmarketBuildAccountOptions } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { selectSupportedSymbols } from 'src/reducers/wallet/tradingReducer';
+import { TradingAccountsOptionsGroupProps } from 'src/types/trading/trading';
+import { tradingBuildAccountOptions } from 'src/utils/wallet/trading/tradingUtils';
 
-export const useCoinmarketBuildAccountGroups = (
+export const useTradingBuildAccountGroups = (
     type: TradingType,
-): CoinmarketAccountsOptionsGroupProps[] => {
+): TradingAccountsOptionsGroupProps[] => {
     const accounts = useSelector(selectAccounts);
     const accountLabels = useSelector(selectAccountLabels);
     const device = useSelector(selectSelectedDevice);
@@ -21,7 +21,7 @@ export const useCoinmarketBuildAccountGroups = (
 
     const groups = useMemo(
         () =>
-            coinmarketBuildAccountOptions({
+            tradingBuildAccountOptions({
                 accounts,
                 deviceState: device?.state?.staticSessionId,
                 accountLabels,

@@ -2,22 +2,18 @@ import { MiddlewareAPI } from 'redux';
 
 import { UI } from '@trezor/connect';
 import { accountsActions } from '@suite-common/wallet-core';
-import { invityAPI, type TradingType } from '@suite-common/invity';
+import { invityAPI } from '@suite-common/invity';
 
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import {
-    COINMARKET_COMMON,
-    COINMARKET_EXCHANGE,
-    COINMARKET_SELL,
-} from 'src/actions/wallet/constants';
-import { INVITY_API_RELOAD_DATA_AFTER_MS } from 'src/constants/wallet/coinmarket/metadata';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import * as coinmarketInfoAction from 'src/actions/wallet/coinmarketInfoActions';
-import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
-import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
-import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions';
+import { TRADING_COMMON, TRADING_EXCHANGE, TRADING_SELL } from 'src/actions/wallet/constants';
+import { INVITY_API_RELOAD_DATA_AFTER_MS } from 'src/constants/wallet/trading/metadata';
+import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
+import * as tradingInfoAction from 'src/actions/wallet/tradingInfoActions';
+import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
+import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
+import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
 import { ROUTER, MODAL } from 'src/actions/suite/constants';
-import { getTradeTypeByRoute } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { getTradeTypeByRoute } from 'src/utils/wallet/trading/tradingUtils';
 
 /**
  * In the Sell and Swap section an account can be changed by a user in the select
@@ -26,8 +22,8 @@ export const getAccountAccordingToRoute = (state: AppState) => {
     const tradeType = getTradeTypeByRoute(state.router.route?.name);
 
     const { account } = state.wallet.selectedAccount;
-    const sellSelectedAccount = state.wallet.coinmarket.sell.coinmarketAccount;
-    const exchangeSelectedAccount = state.wallet.coinmarket.exchange.coinmarketAccount;
+    const sellSelectedAccount = state.wallet.trading.sell.tradingAccount;
+    const exchangeSelectedAccount = state.wallet.trading.exchange.tradingAccount;
 
     if (tradeType === 'sell' && sellSelectedAccount) return sellSelectedAccount;
     if (tradeType === 'exchange' && exchangeSelectedAccount) return exchangeSelectedAccount;
@@ -35,20 +31,20 @@ export const getAccountAccordingToRoute = (state: AppState) => {
     return account;
 };
 
-export const coinmarketMiddleware =
+export const tradingMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
         const state = api.getState();
-        const { isLoading, lastLoadedTimestamp } = state.wallet.coinmarket;
-        const { exchangeInfo } = state.wallet.coinmarket.exchange;
-        const { sellInfo } = state.wallet.coinmarket.sell;
+        const { isLoading, lastLoadedTimestamp } = state.wallet.trading;
+        const { exchangeInfo } = state.wallet.trading.exchange;
+        const { sellInfo } = state.wallet.trading.sell;
         const { router, modal } = state;
 
-        if (action.type === COINMARKET_COMMON.LOAD_DATA) {
+        if (action.type === TRADING_COMMON.LOAD_DATA) {
             const account = getAccountAccordingToRoute(state);
-            const { platforms, coins } = state.wallet.coinmarket.info;
-            const { buyInfo } = state.wallet.coinmarket.buy;
+            const { platforms, coins } = state.wallet.trading.info;
+            const { buyInfo } = state.wallet.trading.buy;
 
             const currentAccountDescriptor = invityAPI.getCurrentAccountDescriptor();
             const isDifferentAccount = currentAccountDescriptor !== account?.descriptor;
@@ -59,7 +55,7 @@ export const coinmarketMiddleware =
                 (isDifferentAccount ||
                     lastLoadedTimestamp + INVITY_API_RELOAD_DATA_AFTER_MS < Date.now())
             ) {
-                api.dispatch(coinmarketCommonActions.setLoading(true));
+                api.dispatch(tradingCommonActions.setLoading(true));
 
                 const { invityServerEnvironment } = state.suite.settings.debug;
                 if (invityServerEnvironment) {
@@ -68,7 +64,7 @@ export const coinmarketMiddleware =
 
                 const tradeType = getTradeTypeByRoute(state.router.route?.name);
                 if (tradeType) {
-                    api.dispatch(coinmarketCommonActions.setActiveSection(tradeType));
+                    api.dispatch(tradingCommonActions.setActiveSection(tradeType));
                 }
 
                 invityAPI.createInvityAPIKey(account.descriptor);
@@ -78,42 +74,42 @@ export const coinmarketMiddleware =
                 if (isDifferentAccount || !platforms || !coins) {
                     loadPromises.push(
                         invityAPI.getInfo().then(info => {
-                            api.dispatch(coinmarketInfoAction.saveInfo(info));
+                            api.dispatch(tradingInfoAction.saveInfo(info));
                         }),
                     );
                 }
 
                 if (isDifferentAccount || !buyInfo) {
                     loadPromises.push(
-                        coinmarketBuyActions.loadBuyInfo().then(buyInfo => {
-                            api.dispatch(coinmarketBuyActions.saveBuyInfo(buyInfo));
+                        tradingBuyActions.loadBuyInfo().then(buyInfo => {
+                            api.dispatch(tradingBuyActions.saveBuyInfo(buyInfo));
                         }),
                     );
                 }
 
                 if (isDifferentAccount || !exchangeInfo) {
                     loadPromises.push(
-                        coinmarketExchangeActions.loadExchangeInfo().then(exchangeInfo => {
-                            api.dispatch(coinmarketExchangeActions.saveExchangeInfo(exchangeInfo));
+                        tradingExchangeActions.loadExchangeInfo().then(exchangeInfo => {
+                            api.dispatch(tradingExchangeActions.saveExchangeInfo(exchangeInfo));
                         }),
                     );
                 }
 
                 if (isDifferentAccount || !sellInfo) {
                     loadPromises.push(
-                        coinmarketSellActions.loadSellInfo().then(sellInfo => {
-                            api.dispatch(coinmarketSellActions.saveSellInfo(sellInfo));
+                        tradingSellActions.loadSellInfo().then(sellInfo => {
+                            api.dispatch(tradingSellActions.saveSellInfo(sellInfo));
                         }),
                     );
                 }
 
                 Promise.all(loadPromises)
-                    .then(() => api.dispatch(coinmarketCommonActions.setLoading(false, Date.now())))
-                    .catch(() => api.dispatch(coinmarketCommonActions.setLoading(false)));
+                    .then(() => api.dispatch(tradingCommonActions.setLoading(false, Date.now())))
+                    .catch(() => api.dispatch(tradingCommonActions.setLoading(false)));
             }
         }
 
-        const isCoinmarketRoute = !!router.route?.name.includes('wallet-coinmarket');
+        const isTradingRoute = !!router.route?.name.includes('wallet-trading');
         const isDeviceContext = modal.context === MODAL.CONTEXT_DEVICE;
         const isUserContext = modal.context === MODAL.CONTEXT_USER;
 
@@ -135,8 +131,8 @@ export const coinmarketMiddleware =
 
         // clear modal account on close button requests
         // it is necessary to clear the state because it could affect the next modal state
-        if (isCoinmarketRoute && (isReceiveModal || isSendModal)) {
-            api.dispatch(coinmarketCommonActions.setCoinmarketModalAccount(undefined));
+        if (isTradingRoute && (isReceiveModal || isSendModal)) {
+            api.dispatch(tradingCommonActions.setTradingModalAccount(undefined));
         }
 
         next(action);
@@ -146,40 +142,40 @@ export const coinmarketMiddleware =
 
         if (action.type === ROUTER.LOCATION_CHANGE) {
             const routeName = newState.router.route?.name;
-            const isBuy = routeName === 'wallet-coinmarket-buy';
-            const isSell = routeName === 'wallet-coinmarket-sell';
-            const isExchange = routeName === 'wallet-coinmarket-exchange';
+            const isBuy = routeName === 'wallet-trading-buy';
+            const isSell = routeName === 'wallet-trading-sell';
+            const isExchange = routeName === 'wallet-trading-exchange';
 
             if (isBuy) {
-                api.dispatch(coinmarketCommonActions.setActiveSection('buy'));
+                api.dispatch(tradingCommonActions.setActiveSection('buy'));
             }
 
             if (isSell) {
-                api.dispatch(coinmarketCommonActions.setActiveSection('sell'));
+                api.dispatch(tradingCommonActions.setActiveSection('sell'));
             }
 
             if (isExchange) {
-                api.dispatch(coinmarketCommonActions.setActiveSection('exchange'));
+                api.dispatch(tradingCommonActions.setActiveSection('exchange'));
             }
 
-            const wasBuy = state.router.route?.name === 'wallet-coinmarket-buy';
-            const wasSell = state.router.route?.name === 'wallet-coinmarket-sell';
+            const wasBuy = state.router.route?.name === 'wallet-trading-buy';
+            const wasSell = state.router.route?.name === 'wallet-trading-sell';
             const isBuyToSell = wasBuy && isSell;
             const isSellToBuy = wasSell && isBuy;
 
             const cleanupPrefilledFromCryptoId =
-                !!newState.wallet.coinmarket.prefilledFromCryptoId &&
+                !!newState.wallet.trading.prefilledFromCryptoId &&
                 ((!isSell && !isExchange && !isBuy) || isBuyToSell || isSellToBuy);
 
             if (cleanupPrefilledFromCryptoId) {
-                api.dispatch(coinmarketCommonActions.setCoinmarketPrefilledFromCryptoId(undefined));
+                api.dispatch(tradingCommonActions.setTradingPrefilledFromCryptoId(undefined));
             }
         }
 
         // after an account change in the Sell or Swap update the invityAPIKey based on the account
         if (
-            action.type === COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT ||
-            action.type === COINMARKET_SELL.SET_COINMARKET_ACCOUNT
+            action.type === TRADING_EXCHANGE.SET_TRADING_ACCOUNT ||
+            action.type === TRADING_SELL.SET_TRADING_ACCOUNT
         ) {
             const account = getAccountAccordingToRoute(newState);
 
@@ -188,15 +184,15 @@ export const coinmarketMiddleware =
             }
         }
 
-        if (isCoinmarketRoute && action.type === accountsActions.updateAccount.type) {
+        if (isTradingRoute && action.type === accountsActions.updateAccount.type) {
             const account = action.payload;
 
-            if (state.wallet.coinmarket.sell.coinmarketAccount?.key === account.key) {
-                api.dispatch(coinmarketSellActions.setCoinmarketSellAccount(account));
+            if (state.wallet.trading.sell.tradingAccount?.key === account.key) {
+                api.dispatch(tradingSellActions.setTradingSellAccount(account));
             }
 
-            if (state.wallet.coinmarket.exchange.coinmarketAccount?.key === account.key) {
-                api.dispatch(coinmarketExchangeActions.setCoinmarketExchangeAccount(account));
+            if (state.wallet.trading.exchange.tradingAccount?.key === account.key) {
+                api.dispatch(tradingExchangeActions.setTradingExchangeAccount(account));
             }
         }
 

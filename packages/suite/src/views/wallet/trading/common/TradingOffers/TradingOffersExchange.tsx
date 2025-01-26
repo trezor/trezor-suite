@@ -12,13 +12,13 @@ import {
     EXCHANGE_COMPARATOR_RATE_FILTER_DEX,
     EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX,
     EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX,
-} from 'src/constants/wallet/coinmarket/form';
-import { KYC_DEX, KYC_NO_KYC } from 'src/constants/wallet/coinmarket/kyc';
-import { CoinmarketOffersExchangeQuotesByTypeSection } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersExchangeQuotesByTypeSection';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+} from 'src/constants/wallet/trading/form';
+import { KYC_DEX, KYC_NO_KYC } from 'src/constants/wallet/trading/kyc';
+import { TradingOffersExchangeQuotesByTypeSection } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersExchangeQuotesByTypeSection';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 
-export const CoinmarketOffersExchange = () => {
-    const { quotes, exchangeInfo, getValues } = useCoinmarketFormContext<TradingExchangeType>();
+export const TradingOffersExchange = () => {
+    const { quotes, exchangeInfo, getValues } = useTradingFormContext<TradingExchangeType>();
     const exchangeTypeFilter = getValues(EXCHANGE_COMPARATOR_RATE_FILTER);
     const kycFilter = getValues(EXCHANGE_COMPARATOR_KYC_FILTER);
     const showAll = exchangeTypeFilter === EXCHANGE_COMPARATOR_RATE_FILTER_ALL;
@@ -59,24 +59,24 @@ export const CoinmarketOffersExchange = () => {
     return (
         <>
             {(showAll || exchangeTypeFilter === EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX) && (
-                <CoinmarketOffersExchangeQuotesByTypeSection
+                <TradingOffersExchangeQuotesByTypeSection
                     quotes={fixed}
-                    heading="TR_COINMARKET_EXCHANGE_FIXED_OFFERS_HEADING"
-                    tooltip="TR_COINMARKET_FIX_RATE_DESCRIPTION"
+                    heading="TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING"
+                    tooltip="TR_TRADING_FIX_RATE_DESCRIPTION"
                 />
             )}
             {(showAll || exchangeTypeFilter === EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX) && (
-                <CoinmarketOffersExchangeQuotesByTypeSection
+                <TradingOffersExchangeQuotesByTypeSection
                     quotes={float}
-                    heading="TR_COINMARKET_EXCHANGE_FLOAT_OFFERS_HEADING"
-                    tooltip="TR_COINMARKET_FLOATING_RATE_DESCRIPTION"
+                    heading="TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING"
+                    tooltip="TR_TRADING_FLOATING_RATE_DESCRIPTION"
                 />
             )}
             {(showAll || exchangeTypeFilter === EXCHANGE_COMPARATOR_RATE_FILTER_DEX) && (
-                <CoinmarketOffersExchangeQuotesByTypeSection
+                <TradingOffersExchangeQuotesByTypeSection
                     quotes={dex}
-                    heading="TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING"
-                    tooltip="TR_COINMARKET_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP"
+                    heading="TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING"
+                    tooltip="TR_TRADING_EXCHANGE_DEX_OFFERS_HEADING_TOOLTIP"
                 />
             )}
         </>

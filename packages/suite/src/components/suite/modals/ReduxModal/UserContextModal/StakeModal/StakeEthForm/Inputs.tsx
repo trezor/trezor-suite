@@ -140,13 +140,13 @@ export const Inputs = () => {
                 switchTranslation={{
                     fiat: (
                         <Translation
-                            id="TR_COINMARKET_ENTER_AMOUNT_IN"
+                            id="TR_TRADING_ENTER_AMOUNT_IN"
                             values={{ currency: localCurrency.toUpperCase() }}
                         />
                     ),
                     crypto: (
                         <Translation
-                            id="TR_COINMARKET_ENTER_AMOUNT_IN"
+                            id="TR_TRADING_ENTER_AMOUNT_IN"
                             values={{ currency: networkDisplaySymbol }}
                         />
                     ),

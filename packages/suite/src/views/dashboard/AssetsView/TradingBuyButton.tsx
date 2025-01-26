@@ -8,15 +8,12 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useAccountSearch } from 'src/hooks/suite';
 
-type CoinmarketBuyButtonProps = {
+type TradingBuyButtonProps = {
     symbol: NetworkSymbol;
     'data-testid'?: string;
 };
 
-export const CoinmarketBuyButton = ({
-    symbol,
-    'data-testid': dataTest,
-}: CoinmarketBuyButtonProps) => {
+export const TradingBuyButton = ({ symbol, 'data-testid': dataTest }: TradingBuyButtonProps) => {
     const dispatch = useDispatch();
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
@@ -29,7 +26,7 @@ export const CoinmarketBuyButton = ({
         });
 
         dispatch(
-            routerActions.goto('wallet-coinmarket-buy', {
+            routerActions.goto('wallet-trading-buy', {
                 params: {
                     symbol,
                     accountIndex: 0,

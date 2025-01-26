@@ -55,9 +55,9 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         type,
                     },
                 });
-                dispatch(goto(`wallet-coinmarket-${type}`, { preserveParams: true }));
+                dispatch(goto(`wallet-trading-${type}`, { preserveParams: true }));
             }}
-            data-testid={`@coinmarket/menu/wallet-coinmarket-${type}`}
+            data-testid={`@trading/menu/wallet-trading-${type}`}
             isDisabled={isDisabled}
         >
             {children}
@@ -115,7 +115,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         </ActionButton>
                         {!hasBitcoinOnlyFirmware(device) && (
                             <ActionButton type="exchange" isDisabled={account.empty}>
-                                <Translation id="TR_COINMARKET_SWAP" />
+                                <Translation id="TR_TRADING_SWAP" />
                             </ActionButton>
                         )}
                     </Row>

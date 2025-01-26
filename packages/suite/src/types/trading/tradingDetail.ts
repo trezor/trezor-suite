@@ -1,35 +1,31 @@
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import type { TradingType } from '@suite-common/invity';
 
-import type { CoinmarketTradeCommonProps } from 'src/reducers/wallet/coinmarketReducer';
+import type { TradingTradeCommonProps } from 'src/reducers/wallet/tradingReducer';
 import type { Account } from 'src/types/wallet';
-import type { TradeType } from 'src/types/wallet/coinmarketCommonTypes';
-import {
-    CoinmarketTradeInfoMapProps,
-    CoinmarketTradeMapProps,
-} from 'src/types/coinmarket/coinmarket';
+import type { TradeType } from 'src/types/wallet/tradingCommonTypes';
+import { TradingTradeInfoMapProps, TradingTradeMapProps } from 'src/types/trading/trading';
 
-export interface CoinmarketDetailContextValues<T extends TradingType>
-    extends CoinmarketTradeCommonProps {
+export interface TradingDetailContextValues<T extends TradingType> extends TradingTradeCommonProps {
     account: Account;
-    trade: CoinmarketTradeMapProps[T] | undefined;
-    info?: CoinmarketTradeInfoMapProps[T] | undefined;
+    trade: TradingTradeMapProps[T] | undefined;
+    info?: TradingTradeInfoMapProps[T] | undefined;
 }
 
-export interface CoinmarketGetDetailDataOutputProps<T extends TradingType> {
+export interface TradingGetDetailDataOutputProps<T extends TradingType> {
     transactionId?: string;
-    info?: CoinmarketTradeInfoMapProps[T] | undefined;
-    trade?: CoinmarketTradeMapProps[T] | undefined;
+    info?: TradingTradeInfoMapProps[T] | undefined;
+    trade?: TradingTradeMapProps[T] | undefined;
 }
 
-export interface CoinmarketUseDetailProps {
+export interface TradingUseDetailProps {
     selectedAccount: SelectedAccountLoaded;
     tradeType: TradeType;
 }
 
-export interface CoinmarketUseDetailOutputProps<T extends TradingType> {
+export interface TradingUseDetailOutputProps<T extends TradingType> {
     transactionId: string | undefined;
-    info: CoinmarketTradeInfoMapProps[T] | undefined;
-    trade: CoinmarketTradeMapProps[T] | undefined;
+    info: TradingTradeInfoMapProps[T] | undefined;
+    trade: TradingTradeMapProps[T] | undefined;
     account: Account;
 }

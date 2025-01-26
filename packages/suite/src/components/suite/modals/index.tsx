@@ -6,7 +6,7 @@ export { PassphraseOnDeviceModal } from './ReduxModal/DeviceContextModal/Passphr
 export { PassphraseDuplicateModal } from './ReduxModal/UserContextModal/PassphraseDuplicateModal';
 export { ConfirmActionModal } from './ReduxModal/DeviceContextModal/ConfirmActionModal';
 export { ConfirmFingerprintModal } from './ReduxModal/DeviceContextModal/ConfirmFingerprintModal';
-export { CoinmarketTermsModal } from './ReduxModal/UserContextModal/CoinmarketTermsModal';
+export { TradingTermsModal } from './ReduxModal/UserContextModal/TradingTermsModal';
 export { WordModal } from './ReduxModal/DeviceContextModal/WordModal';
 export { WordAdvancedModal } from './ReduxModal/DeviceContextModal/WordAdvancedModal';
 export { ConfirmAddressModal } from './ReduxModal/ConfirmAddressModal';

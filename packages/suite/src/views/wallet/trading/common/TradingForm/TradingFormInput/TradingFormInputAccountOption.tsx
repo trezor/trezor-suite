@@ -5,36 +5,36 @@ import { spacings } from '@trezor/theme';
 import { HiddenPlaceholder } from 'src/components/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
-    CoinmarketAccountOptionsGroupOptionProps,
-    CoinmarketAccountsOptionsGroupProps,
-} from 'src/types/coinmarket/coinmarket';
+    TradingAccountOptionsGroupOptionProps,
+    TradingAccountsOptionsGroupProps,
+} from 'src/types/trading/trading';
 import {
-    coinmarketGetAccountLabel,
+    tradingGetAccountLabel,
     cryptoIdToNetwork,
     parseCryptoId,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
+} from 'src/utils/wallet/trading/tradingUtils';
+import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
-interface CoinmarketFormInputAccountOptionProps {
-    option: CoinmarketAccountOptionsGroupOptionProps;
-    optionGroups: CoinmarketAccountsOptionsGroupProps[];
+interface TradingFormInputAccountOptionProps {
+    option: TradingAccountOptionsGroupOptionProps;
+    optionGroups: TradingAccountsOptionsGroupProps[];
     decimals: number;
     isSelected: boolean;
 }
 
-export const CoinmarketFormInputAccountOption = ({
+export const TradingFormInputAccountOption = ({
     option,
     optionGroups,
     decimals,
     isSelected,
-}: CoinmarketFormInputAccountOptionProps) => {
+}: TradingFormInputAccountOptionProps) => {
     const { contractAddress } = parseCryptoId(option.value);
     const network = cryptoIdToNetwork(option.value);
     const { shouldSendInSats } = useBitcoinAmountUnit(network?.symbol);
 
     if (!network) return null;
 
-    const balanceLabel = coinmarketGetAccountLabel(option.label, shouldSendInSats);
+    const balanceLabel = tradingGetAccountLabel(option.label, shouldSendInSats);
     const balance = shouldSendInSats
         ? amountToSmallestUnit(option.balance, decimals)
         : option.balance;
@@ -47,7 +47,7 @@ export const CoinmarketFormInputAccountOption = ({
 
     return (
         <Row gap={spacings.sm}>
-            <CoinmarketCoinLogo cryptoId={option.value} size={20} />
+            <TradingCoinLogo cryptoId={option.value} size={20} />
             <Text>{option.label}</Text>
             <Text variant="tertiary" typographyStyle="label">
                 {option.cryptoName}

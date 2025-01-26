@@ -3,13 +3,13 @@ import { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 import { invityAPI } from '@suite-common/invity';
 
 import { configureStore } from 'src/support/tests/configureStore';
-import { coinmarketReducer } from 'src/reducers/wallet/coinmarketReducer';
+import { tradingReducer } from 'src/reducers/wallet/tradingReducer';
 
-import * as coinmarketBuyActions from '../coinmarketBuyActions';
+import * as tradingBuyActions from '../tradingBuyActions';
 
 const getInitialState = () => ({
     wallet: {
-        coinmarket: coinmarketReducer(undefined, { type: 'foo' } as any),
+        trading: tradingReducer(undefined, { type: 'foo' } as any),
     },
 });
 
@@ -21,9 +21,9 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { coinmarket } = store.getState().wallet;
+        const { trading } = store.getState().wallet;
         store.getState().wallet = {
-            coinmarket: coinmarketReducer(coinmarket, action),
+            trading: tradingReducer(trading, action),
         };
         // add action back to stack
         store.getActions().push(action);
@@ -53,7 +53,7 @@ const setFetchMock = (mock: any) => {
     });
 };
 
-describe('Coinmarket Buy Actions', () => {
+describe('Trading Buy Actions', () => {
     invityAPI.createInvityAPIKey('mock');
 
     it('load and saveBuyInfo', async () => {
@@ -94,9 +94,9 @@ describe('Coinmarket Buy Actions', () => {
 
         const store = initStore(getInitialState());
 
-        await coinmarketBuyActions.loadBuyInfo().then(buyInfo => {
-            store.dispatch(coinmarketBuyActions.saveBuyInfo(buyInfo));
-            expect(store.getState().wallet.coinmarket.buy.buyInfo).toEqual({
+        await tradingBuyActions.loadBuyInfo().then(buyInfo => {
+            store.dispatch(tradingBuyActions.saveBuyInfo(buyInfo));
+            expect(store.getState().wallet.trading.buy.buyInfo).toEqual({
                 buyInfo: {
                     country: 'CZ',
                     defaultAmountsOfFiatCurrencies: new Map([
@@ -175,8 +175,8 @@ describe('Coinmarket Buy Actions', () => {
 
     it('setIsFromRedirect', () => {
         const store = initStore(getInitialState());
-        store.dispatch(coinmarketBuyActions.setIsFromRedirect(true));
-        expect(store.getState().wallet.coinmarket.buy.isFromRedirect).toEqual(true);
+        store.dispatch(tradingBuyActions.setIsFromRedirect(true));
+        expect(store.getState().wallet.trading.buy.isFromRedirect).toEqual(true);
     });
 
     it('saveQuoteRequest', () => {
@@ -190,14 +190,14 @@ describe('Coinmarket Buy Actions', () => {
             fiatStringAmount: '1',
         };
 
-        store.dispatch(coinmarketBuyActions.saveQuoteRequest(request));
-        expect(store.getState().wallet.coinmarket.buy.quotesRequest).toEqual(request);
+        store.dispatch(tradingBuyActions.saveQuoteRequest(request));
+        expect(store.getState().wallet.trading.buy.quotesRequest).toEqual(request);
     });
 
     it('saveTransactionDetailId', () => {
         const store = initStore(getInitialState());
-        store.dispatch(coinmarketBuyActions.saveTransactionDetailId('1234-4321-4321'));
-        expect(store.getState().wallet.coinmarket.buy.transactionId).toEqual('1234-4321-4321');
+        store.dispatch(tradingBuyActions.saveTransactionDetailId('1234-4321-4321'));
+        expect(store.getState().wallet.trading.buy.transactionId).toEqual('1234-4321-4321');
     });
 
     it('saveQuotes', () => {
@@ -237,7 +237,7 @@ describe('Coinmarket Buy Actions', () => {
             },
         ];
 
-        store.dispatch(coinmarketBuyActions.saveQuotes(quotes));
-        expect(store.getState().wallet.coinmarket.buy.quotes).toEqual(quotes);
+        store.dispatch(tradingBuyActions.saveQuotes(quotes));
+        expect(store.getState().wallet.trading.buy.quotes).toEqual(quotes);
     });
 });

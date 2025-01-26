@@ -11,16 +11,16 @@ import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
     getSelectQuoteTyped,
-    isCoinmarketBuyContext,
-    isCoinmarketExchangeContext,
-    isCoinmarketSellContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
-import { CoinmarketTradeDetailBuySellType } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketFeaturedOffersAmounts } from 'src/views/wallet/coinmarket/common/CoinmarketFeaturedOffers/CoinmarketFeaturedOffersAmounts';
-import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
-import { CoinmarketFeaturedOffersPaymentInfo } from 'src/views/wallet/coinmarket/common/CoinmarketFeaturedOffers/CoinmarketFeaturedOffersPaymentInfo';
+    isTradingBuyContext,
+    isTradingExchangeContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
+import { getTagAndInfoNote } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingFormContextValues } from 'src/types/trading/tradingForm';
+import { TradingTradeDetailBuySellType } from 'src/types/trading/trading';
+import { TradingFeaturedOffersAmounts } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffersAmounts';
+import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
+import { TradingFeaturedOffersPaymentInfo } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffersPaymentInfo';
 
 const Offer = styled.div`
     display: flex;
@@ -71,31 +71,31 @@ const OfferBadgeWrap = styled.div`
     gap: ${spacingsPx.xs};
 `;
 
-interface CoinmarketOffersItemProps {
+interface TradingOffersItemProps {
     quote: TradingTradeType;
-    context: CoinmarketFormContextValues<TradingType>;
+    context: TradingFormContextValues<TradingType>;
     isBestRate: boolean;
 }
 
 const actionButtonText = (
-    context: CoinmarketFormContextValues<TradingType>,
+    context: TradingFormContextValues<TradingType>,
     quote: TradingTradeType,
 ) => {
-    if (isCoinmarketBuyContext(context)) {
+    if (isTradingBuyContext(context)) {
         return <Translation id="TR_BUY" />;
     }
-    if (isCoinmarketSellContext(context)) {
+    if (isTradingSellContext(context)) {
         if (context.needToRegisterOrVerifyBankAccount(quote as SellFiatTrade))
             return <Translation id="TR_SELL_REGISTER" />;
 
-        return <Translation id="TR_COINMARKET_SELL" />;
+        return <Translation id="TR_TRADING_SELL" />;
     }
-    if (isCoinmarketExchangeContext(context)) {
-        return <Translation id="TR_COINMARKET_SWAP" />;
+    if (isTradingExchangeContext(context)) {
+        return <Translation id="TR_TRADING_SWAP" />;
     }
 };
 
-export const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffersItemProps) => {
+export const TradingFeaturedOffersItem = ({ context, quote }: TradingOffersItemProps) => {
     const theme = useTheme();
     const { callInProgress, type } = context;
     const providers = getProvidersInfoProps(context);
@@ -117,13 +117,13 @@ export const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffer
                             </Text>
                         )}
                     </OfferBadgeWrap>
-                    <CoinmarketFeaturedOffersAmounts quote={quote} />
+                    <TradingFeaturedOffersAmounts quote={quote} />
                 </OfferColumn1>
                 <OfferColumn2>
-                    <CoinmarketUtilsProvider exchange={quote.exchange} providers={providers} />
-                    {!isCoinmarketExchangeContext(context) && (
-                        <CoinmarketFeaturedOffersPaymentInfo
-                            quote={quote as CoinmarketTradeDetailBuySellType}
+                    <TradingUtilsProvider exchange={quote.exchange} providers={providers} />
+                    {!isTradingExchangeContext(context) && (
+                        <TradingFeaturedOffersPaymentInfo
+                            quote={quote as TradingTradeDetailBuySellType}
                             type={type}
                         />
                     )}
@@ -140,7 +140,7 @@ export const CoinmarketFeaturedOffersItem = ({ context, quote }: CoinmarketOffer
                             isLoading={callInProgress}
                             isDisabled={!!quote.error || callInProgress}
                             onClick={() => selectQuote(quote)}
-                            data-testid="@coinmarket/featured-offers/get-this-deal-button"
+                            data-testid="@trading/featured-offers/get-this-deal-button"
                         >
                             {actionButtonText(context, quote)}
                         </Button>

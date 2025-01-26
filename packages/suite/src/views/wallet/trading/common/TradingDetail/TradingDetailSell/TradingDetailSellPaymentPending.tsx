@@ -17,7 +17,7 @@ interface PaymentConvertingProps {
     supportUrl?: string;
 }
 
-export const CoinmarketDetailSellPaymentPending = ({ supportUrl }: PaymentConvertingProps) => (
+export const TradingDetailSellPaymentPending = ({ supportUrl }: PaymentConvertingProps) => (
     <Wrapper>
         <Spinner />
         <H4 margin={{ top: spacings.xl }}>

@@ -4,14 +4,14 @@ import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
 
-export const useCoinmarketNavigation = (account: Account) => {
+export const useTradingNavigation = (account: Account) => {
     const dispatch = useDispatch();
 
-    type WalletCoinmarketRouteNameType = Extract<
+    type WalletTradingRouteNameType = Extract<
         Parameters<typeof goto>[0],
-        `wallet-coinmarket-${string}`
+        `wallet-trading-${string}`
     >;
-    const useNavigateToRouteName = (routeName: WalletCoinmarketRouteNameType) =>
+    const useNavigateToRouteName = (routeName: WalletTradingRouteNameType) =>
         useCallback(() => {
             dispatch(
                 goto(routeName, {
@@ -25,18 +25,18 @@ export const useCoinmarketNavigation = (account: Account) => {
         }, [routeName]);
 
     return {
-        navigateToBuyForm: useNavigateToRouteName('wallet-coinmarket-buy'),
-        navigateToBuyOffers: useNavigateToRouteName('wallet-coinmarket-buy-offers'),
-        navigateToBuyDetail: useNavigateToRouteName('wallet-coinmarket-buy-detail'),
-        navigateToBuyConfirm: useNavigateToRouteName('wallet-coinmarket-buy-confirm'),
+        navigateToBuyForm: useNavigateToRouteName('wallet-trading-buy'),
+        navigateToBuyOffers: useNavigateToRouteName('wallet-trading-buy-offers'),
+        navigateToBuyDetail: useNavigateToRouteName('wallet-trading-buy-detail'),
+        navigateToBuyConfirm: useNavigateToRouteName('wallet-trading-buy-confirm'),
 
-        navigateToExchangeForm: useNavigateToRouteName('wallet-coinmarket-exchange'),
-        navigateToExchangeOffers: useNavigateToRouteName('wallet-coinmarket-exchange-offers'),
-        navigateToExchangeDetail: useNavigateToRouteName('wallet-coinmarket-exchange-detail'),
-        navigateToExchangeConfirm: useNavigateToRouteName('wallet-coinmarket-exchange-confirm'),
+        navigateToExchangeForm: useNavigateToRouteName('wallet-trading-exchange'),
+        navigateToExchangeOffers: useNavigateToRouteName('wallet-trading-exchange-offers'),
+        navigateToExchangeDetail: useNavigateToRouteName('wallet-trading-exchange-detail'),
+        navigateToExchangeConfirm: useNavigateToRouteName('wallet-trading-exchange-confirm'),
 
-        navigateToSellForm: useNavigateToRouteName('wallet-coinmarket-sell'),
-        navigateToSellOffers: useNavigateToRouteName('wallet-coinmarket-sell-offers'),
-        navigateToSellConfirm: useNavigateToRouteName('wallet-coinmarket-sell-confirm'),
+        navigateToSellForm: useNavigateToRouteName('wallet-trading-sell'),
+        navigateToSellOffers: useNavigateToRouteName('wallet-trading-sell-offers'),
+        navigateToSellConfirm: useNavigateToRouteName('wallet-trading-sell-confirm'),
     };
 };

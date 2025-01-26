@@ -20,8 +20,8 @@ import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
+import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
+import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
 import { selectSelectedAccountKey } from 'src/reducers/wallet/selectedAccountReducer';
 
@@ -100,7 +100,7 @@ const walletMiddleware =
             api.dispatch(accountsActions.disposeAccount());
             api.dispatch(sendFormActions.dispose());
             api.dispatch(receiveActions.dispose());
-            api.dispatch(coinmarketBuyActions.dispose());
+            api.dispatch(tradingBuyActions.dispose());
             api.dispatch(stakeActions.dispose());
         }
 
@@ -111,7 +111,7 @@ const walletMiddleware =
                     selectedAccountKey: nextSelectedAccountKey,
                 }),
             );
-            api.dispatch(coinmarketCommonActions.convertDrafts());
+            api.dispatch(tradingCommonActions.convertDrafts());
         }
 
         api.dispatch(selectedAccountActions.syncSelectedAccount(action));

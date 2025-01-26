@@ -1,22 +1,22 @@
-import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
-import { useCoinmarketExchangeForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeForm';
-import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketFormLayout } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormLayout';
-import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayout';
-import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
+import { UseTradingProps } from 'src/types/trading/trading';
+import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/useTradingExchangeForm';
+import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/TradingFormLayout';
+import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
+import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 
-const CoinmarketExchangeFormComponent = ({ selectedAccount }: UseCoinmarketProps) => {
-    const coinmarketExchangeContextValue = useCoinmarketExchangeForm({ selectedAccount });
+const TradingExchangeFormComponent = ({ selectedAccount }: UseTradingProps) => {
+    const tradingExchangeContextValue = useTradingExchangeForm({ selectedAccount });
 
     return (
-        <CoinmarketLayout>
-            <CoinmarketFormContext.Provider value={coinmarketExchangeContextValue}>
-                <CoinmarketFormLayout />
-            </CoinmarketFormContext.Provider>
-        </CoinmarketLayout>
+        <TradingLayout>
+            <TradingFormContext.Provider value={tradingExchangeContextValue}>
+                <TradingFormLayout />
+            </TradingFormContext.Provider>
+        </TradingLayout>
     );
 };
 
-export const CoinmarketExchangeForm = () => (
-    <CoinmarketContainer SectionComponent={CoinmarketExchangeFormComponent} />
+export const TradingExchangeForm = () => (
+    <TradingContainer SectionComponent={TradingExchangeFormComponent} />
 );

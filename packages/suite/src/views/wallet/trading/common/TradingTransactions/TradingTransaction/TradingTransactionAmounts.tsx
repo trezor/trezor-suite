@@ -2,9 +2,9 @@ import { Icon, iconSizes, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
-import { CoinmarketTestWrapper } from 'src/views/wallet/coinmarket';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { Trade } from 'src/types/wallet/tradingCommonTypes';
+import { TradingTestWrapper } from 'src/views/wallet/trading';
 
 const Arrow = () => (
     <Row margin={{ left: spacings.xs, right: spacings.xs }}>
@@ -12,12 +12,12 @@ const Arrow = () => (
     </Row>
 );
 
-interface CoinmarketTransactionAmountsProps {
+interface TradingTransactionAmountsProps {
     trade: Trade;
 }
 
-export const CoinmarketTransactionAmounts = ({ trade }: CoinmarketTransactionAmountsProps) => {
-    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
+export const TradingTransactionAmounts = ({ trade }: TradingTransactionAmountsProps) => {
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
 
     if (trade.tradeType === 'sell') {
         const { cryptoStringAmount, cryptoCurrency, fiatStringAmount, fiatCurrency } = trade.data;
@@ -67,17 +67,17 @@ export const CoinmarketTransactionAmounts = ({ trade }: CoinmarketTransactionAmo
 
     return (
         <Row flexWrap="wrap">
-            <HiddenPlaceholder data-testid="@coinmarket/transaction/fiat-amount">
+            <HiddenPlaceholder data-testid="@trading/transaction/fiat-amount">
                 {fiatStringAmount} {fiatCurrency}
             </HiddenPlaceholder>
             <Arrow />
-            <CoinmarketTestWrapper data-testid="@coinmarket/transaction/crypto-amount">
+            <TradingTestWrapper data-testid="@trading/transaction/crypto-amount">
                 <FormattedCryptoAmount
                     value={receiveStringAmount}
                     symbol={coinSymbol}
                     contractAddress={contractAddress}
                 />
-            </CoinmarketTestWrapper>
+            </TradingTestWrapper>
         </Row>
     );
 };

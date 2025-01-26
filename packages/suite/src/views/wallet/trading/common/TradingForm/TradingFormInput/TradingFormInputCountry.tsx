@@ -4,26 +4,26 @@ import { Flag, Select, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { regional } from '@suite-common/invity';
 
-import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
-import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { CountryOption } from 'src/types/wallet/tradingCommonTypes';
+import { getCountryLabelParts } from 'src/utils/wallet/trading/tradingUtils';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    CoinmarketBuySellFormProps,
-    CoinmarketFormInputDefaultProps,
-} from 'src/types/coinmarket/coinmarketForm';
-import { FORM_COUNTRY_SELECT } from 'src/constants/wallet/coinmarket/form';
-import { CoinmarketTradeBuySellType } from 'src/types/coinmarket/coinmarket';
+    TradingBuySellFormProps,
+    TradingFormInputDefaultProps,
+} from 'src/types/trading/tradingForm';
+import { FORM_COUNTRY_SELECT } from 'src/constants/wallet/trading/form';
+import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import { Translation } from 'src/components/suite';
 
-export const CoinmarketFormInputCountry = ({ label }: CoinmarketFormInputDefaultProps) => {
+export const TradingFormInputCountry = ({ label }: TradingFormInputDefaultProps) => {
     const { control, setAmountLimits, defaultCountry } =
-        useCoinmarketFormContext<CoinmarketTradeBuySellType>();
+        useTradingFormContext<TradingTradeBuySellType>();
 
     return (
         <Controller
             name={FORM_COUNTRY_SELECT}
             defaultValue={defaultCountry}
-            control={control as Control<CoinmarketBuySellFormProps>}
+            control={control as Control<TradingBuySellFormProps>}
             render={({ field: { onChange, value } }) => (
                 <Select
                     value={value}
@@ -45,7 +45,7 @@ export const CoinmarketFormInputCountry = ({ label }: CoinmarketFormInputDefault
                             </Row>
                         );
                     }}
-                    data-testid="@coinmarket/form/country-select"
+                    data-testid="@trading/form/country-select"
                     isClearable={false}
                     minValueWidth="160px"
                     isSearchable

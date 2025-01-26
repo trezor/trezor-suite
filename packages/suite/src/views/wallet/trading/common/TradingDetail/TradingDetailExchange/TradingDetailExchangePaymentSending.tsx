@@ -17,7 +17,7 @@ interface PaymentSendingProps {
     supportUrl?: string;
 }
 
-export const CoinmarketDetailExchangePaymentSending = ({ supportUrl }: PaymentSendingProps) => (
+export const TradingDetailExchangePaymentSending = ({ supportUrl }: PaymentSendingProps) => (
     <Wrapper>
         <Spinner />
         <H4 margin={{ top: spacings.xl }}>

@@ -1,24 +1,21 @@
-import {
-    CoinmarketDetailContext,
-    useCoinmarketDetail,
-} from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
-import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
-import { CoinmarketDetailBuy } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuy';
+import { TradingDetailContext, useTradingDetail } from 'src/hooks/wallet/trading/useTradingDetail';
+import { UseTradingProps } from 'src/types/trading/trading';
+import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
+import { TradingDetailBuy } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuy';
 
-const CoinmarketBuyDetailComponent = ({ selectedAccount }: UseCoinmarketProps) => {
-    const coinmarketDetailContext = useCoinmarketDetail({
+const TradingBuyDetailComponent = ({ selectedAccount }: UseTradingProps) => {
+    const tradingDetailContext = useTradingDetail({
         selectedAccount,
         tradeType: 'buy',
     });
 
     return (
-        <CoinmarketDetailContext.Provider value={coinmarketDetailContext}>
-            <CoinmarketDetailBuy />
-        </CoinmarketDetailContext.Provider>
+        <TradingDetailContext.Provider value={tradingDetailContext}>
+            <TradingDetailBuy />
+        </TradingDetailContext.Provider>
     );
 };
 
-export const CoinmarketBuyDetail = () => (
-    <CoinmarketContainer SectionComponent={CoinmarketBuyDetailComponent} />
+export const TradingBuyDetail = () => (
+    <TradingContainer SectionComponent={TradingBuyDetailComponent} />
 );

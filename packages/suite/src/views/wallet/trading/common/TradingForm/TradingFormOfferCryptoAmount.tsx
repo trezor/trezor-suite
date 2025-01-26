@@ -4,19 +4,16 @@ import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { CoinmarketCoinLogo } from 'src/views/wallet/coinmarket/common/CoinmarketCoinLogo';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
-interface CoinmarketCryptoAmountProps {
+interface TradingCryptoAmountProps {
     amount: string | number;
     cryptoId: CryptoId;
 }
 
-export const CoinmarketFormOfferCryptoAmount = ({
-    amount,
-    cryptoId,
-}: CoinmarketCryptoAmountProps) => {
-    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
+export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCryptoAmountProps) => {
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
 
     if (!coinSymbol) {
@@ -25,9 +22,9 @@ export const CoinmarketFormOfferCryptoAmount = ({
 
     return (
         <Row gap={spacings.sm}>
-            <CoinmarketCoinLogo cryptoId={cryptoId} />
+            <TradingCoinLogo cryptoId={cryptoId} />
             <Text
-                data-testid="@coinmarket/best-offer/amount"
+                data-testid="@trading/best-offer/amount"
                 typographyStyle="titleMedium"
                 ellipsisLineCount={2}
             >

@@ -3,35 +3,35 @@ import styled from 'styled-components';
 import { Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { CoinmarketFormInputs } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInputs';
-import { CoinmarketFormOffer } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffer';
-import { CoinmarketFeaturedOffers } from 'src/views/wallet/coinmarket/common/CoinmarketFeaturedOffers/CoinmarketFeaturedOffers';
-import { CoinmarketWrapper } from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
+import { TradingFormInputs } from 'src/views/wallet/trading/common/TradingForm/TradingFormInputs';
+import { TradingFormOffer } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer';
+import { TradingFeaturedOffers } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffers';
+import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
-import { useCoinmarketDeviceDisconnected } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketDeviceDisconnected';
+import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 
-const CoinmarketFormLayoutWrapper = styled.form`
-    ${CoinmarketWrapper}
+const TradingFormLayoutWrapper = styled.form`
+    ${TradingWrapper}
 `;
 
-export const CoinmarketFormLayout = () => {
-    const { coinmarketDeviceDisconnected } = useCoinmarketDeviceDisconnected();
+export const TradingFormLayout = () => {
+    const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     return (
-        <Column gap={spacings.md} data-testid="@coinmarket/form">
-            {coinmarketDeviceDisconnected && <ConnectDeviceGenericPromo />}
+        <Column gap={spacings.md} data-testid="@trading/form">
+            {tradingDeviceDisconnected && <ConnectDeviceGenericPromo />}
 
-            <CoinmarketFormLayoutWrapper>
+            <TradingFormLayoutWrapper>
                 <Card>
                     <Column gap={spacings.lg}>
-                        <CoinmarketFormInputs />
+                        <TradingFormInputs />
                     </Column>
                 </Card>
                 <Card>
-                    <CoinmarketFormOffer />
+                    <TradingFormOffer />
                 </Card>
-            </CoinmarketFormLayoutWrapper>
-            <CoinmarketFeaturedOffers />
+            </TradingFormLayoutWrapper>
+            <TradingFeaturedOffers />
         </Column>
     );
 };

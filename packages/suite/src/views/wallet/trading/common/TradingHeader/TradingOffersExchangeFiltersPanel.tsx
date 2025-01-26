@@ -14,8 +14,8 @@ import {
     EXCHANGE_COMPARATOR_RATE_FILTER_DEX,
     EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX,
     EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX,
-} from 'src/constants/wallet/coinmarket/form';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+} from 'src/constants/wallet/trading/form';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 
 const SelectWrapper = styled.div`
     width: 224px;
@@ -23,36 +23,36 @@ const SelectWrapper = styled.div`
 
 const kycOptions = [
     {
-        label: <Translation id="TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_KYC_ALL" />,
+        label: <Translation id="TR_TRADING_EXCHANGE_COMPARATOR_FILTER_KYC_ALL" />,
         value: EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
     },
     {
-        label: <Translation id="TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_NO_KYC" />,
+        label: <Translation id="TR_TRADING_EXCHANGE_COMPARATOR_FILTER_NO_KYC" />,
         value: EXCHANGE_COMPARATOR_KYC_FILTER_NO_KYC,
     },
 ];
 
 const offerTypeOptions = [
     {
-        label: <Translation id="TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_ALL" />,
+        label: <Translation id="TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_ALL" />,
         value: EXCHANGE_COMPARATOR_RATE_FILTER_ALL,
     },
     {
-        label: <Translation id="TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX" />,
+        label: <Translation id="TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FIXED_CEX" />,
         value: EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX,
     },
     {
-        label: <Translation id="TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX" />,
+        label: <Translation id="TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_FLOATING_CEX" />,
         value: EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX,
     },
     {
-        label: <Translation id="TR_COINMARKET_EXCHANGE_COMPARATOR_FILTER_RATE_DEX" />,
+        label: <Translation id="TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_DEX" />,
         value: EXCHANGE_COMPARATOR_RATE_FILTER_DEX,
     },
 ];
 
-export const CoinmarketOffersExchangeFiltersPanel = () => {
-    const context = useCoinmarketFormContext<TradingExchangeType>();
+export const TradingOffersExchangeFiltersPanel = () => {
+    const context = useTradingFormContext<TradingExchangeType>();
     const { getValues, setValue } = context;
     const kycValue = getValues(EXCHANGE_COMPARATOR_KYC_FILTER);
     const exchangeType = getValues(EXCHANGE_COMPARATOR_RATE_FILTER);

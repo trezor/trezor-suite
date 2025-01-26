@@ -7,17 +7,17 @@ import {
     buildFiatOption,
     cryptoIdToSymbol,
     getAddressAndTokenFromAccountOptionsGroupProps,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+} from 'src/utils/wallet/trading/tradingUtils';
 import { Account } from 'src/types/wallet';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useSelector } from 'src/hooks/suite';
 import {
-    CoinmarketExchangeFormDefaultValuesProps,
+    TradingExchangeFormDefaultValuesProps,
     ExchangeType,
     KycFilter,
     RateType,
     RateTypeFilter,
-} from 'src/types/coinmarket/coinmarketForm';
+} from 'src/types/trading/tradingForm';
 import {
     EXCHANGE_COMPARATOR_KYC_FILTER,
     EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
@@ -27,21 +27,19 @@ import {
     FORM_EXCHANGE_TYPE,
     FORM_RATE_FIXED,
     FORM_RATE_TYPE,
-} from 'src/constants/wallet/coinmarket/form';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { coinmarketGetExchangeReceiveCryptoId } from 'src/utils/wallet/coinmarket/exchangeUtils';
-import { useCoinmarketBuildAccountGroups } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketBuildAccountGroups';
+} from 'src/constants/wallet/trading/form';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { tradingGetExchangeReceiveCryptoId } from 'src/utils/wallet/trading/exchangeUtils';
+import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 
-export const useCoinmarketExchangeFormDefaultValues = (
+export const useTradingExchangeFormDefaultValues = (
     account: Account,
-): CoinmarketExchangeFormDefaultValuesProps => {
-    const { buildDefaultCryptoOption } = useCoinmarketInfo();
+): TradingExchangeFormDefaultValuesProps => {
+    const { buildDefaultCryptoOption } = useTradingInfo();
     const localCurrency = useSelector(selectLocalCurrency);
-    const prefilledFromCryptoId = useSelector(
-        state => state.wallet.coinmarket.prefilledFromCryptoId,
-    );
+    const prefilledFromCryptoId = useSelector(state => state.wallet.trading.prefilledFromCryptoId);
     const defaultCurrency = useMemo(() => buildFiatOption(localCurrency), [localCurrency]);
-    const cryptoGroups = useCoinmarketBuildAccountGroups('exchange');
+    const cryptoGroups = useTradingBuildAccountGroups('exchange');
     const cryptoOptions = useMemo(
         () => cryptoGroups.flatMap(group => group.options),
         [cryptoGroups],
@@ -63,7 +61,7 @@ export const useCoinmarketExchangeFormDefaultValues = (
     const defaultReceiveCryptoSelect = useMemo(
         () =>
             buildDefaultCryptoOption(
-                coinmarketGetExchangeReceiveCryptoId(defaultSendCryptoSelect?.value),
+                tradingGetExchangeReceiveCryptoId(defaultSendCryptoSelect?.value),
             ),
         [buildDefaultCryptoOption, defaultSendCryptoSelect?.value],
     );

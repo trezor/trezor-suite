@@ -3,11 +3,8 @@ import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import { Row } from '@trezor/components';
 
-import { CoinmarketFormInputCountry } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCountry';
-import {
-    CoinmarketBuyFormProps,
-    CoinmarketSellFormProps,
-} from 'src/types/coinmarket/coinmarketForm';
+import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
+import { TradingBuyFormProps, TradingSellFormProps } from 'src/types/trading/tradingForm';
 import {
     FORM_CRYPTO_CURRENCY_SELECT,
     FORM_CRYPTO_INPUT,
@@ -15,15 +12,15 @@ import {
     FORM_OUTPUT_AMOUNT,
     FORM_OUTPUT_FIAT,
     FORM_SEND_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/coinmarket/form';
-import { CoinmarketFormInputFiatCrypto } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiatCrypto';
-import { CoinmarketOffersExchangeFiltersPanel } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketOffersExchangeFiltersPanel';
-import { CoinmarketFormInputPaymentMethod } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+} from 'src/constants/wallet/trading/form';
+import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
+import { TradingOffersExchangeFiltersPanel } from 'src/views/wallet/trading/common/TradingHeader/TradingOffersExchangeFiltersPanel';
+import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    isCoinmarketBuyContext,
-    isCoinmarketExchangeContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+    isTradingBuyContext,
+    isTradingExchangeContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
 
 const InputWrapper = styled.div`
     width: 254px;
@@ -31,22 +28,22 @@ const InputWrapper = styled.div`
     padding: ${spacingsPx.xxs} ${spacingsPx.md} ${spacingsPx.xxs} 0;
 `;
 
-export const CoinmarketHeaderFilter = () => {
-    const context = useCoinmarketFormContext();
+export const TradingHeaderFilter = () => {
+    const context = useTradingFormContext();
 
-    if (isCoinmarketExchangeContext(context)) {
+    if (isTradingExchangeContext(context)) {
         return (
-            <Row data-testid="@coinmarket/filter" flexWrap="wrap">
-                <CoinmarketOffersExchangeFiltersPanel />
+            <Row data-testid="@trading/filter" flexWrap="wrap">
+                <TradingOffersExchangeFiltersPanel />
             </Row>
         );
     }
 
     return (
-        <Row data-testid="@coinmarket/filter" flexWrap="wrap" alignItems="flex-start">
-            {isCoinmarketBuyContext(context) ? (
+        <Row data-testid="@trading/filter" flexWrap="wrap" alignItems="flex-start">
+            {isTradingBuyContext(context) ? (
                 <InputWrapper>
-                    <CoinmarketFormInputFiatCrypto<CoinmarketBuyFormProps>
+                    <TradingFormInputFiatCrypto<TradingBuyFormProps>
                         showLabel={false}
                         cryptoInputName={FORM_CRYPTO_INPUT}
                         fiatInputName={FORM_FIAT_INPUT}
@@ -56,7 +53,7 @@ export const CoinmarketHeaderFilter = () => {
                 </InputWrapper>
             ) : (
                 <InputWrapper>
-                    <CoinmarketFormInputFiatCrypto<CoinmarketSellFormProps>
+                    <TradingFormInputFiatCrypto<TradingSellFormProps>
                         showLabel={false}
                         cryptoInputName={FORM_OUTPUT_AMOUNT}
                         fiatInputName={FORM_OUTPUT_FIAT}
@@ -66,10 +63,10 @@ export const CoinmarketHeaderFilter = () => {
                 </InputWrapper>
             )}
             <InputWrapper>
-                <CoinmarketFormInputPaymentMethod />
+                <TradingFormInputPaymentMethod />
             </InputWrapper>
             <InputWrapper>
-                <CoinmarketFormInputCountry />
+                <TradingFormInputCountry />
             </InputWrapper>
         </Row>
     );

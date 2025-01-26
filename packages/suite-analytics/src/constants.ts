@@ -44,7 +44,7 @@ export enum EventType {
 
     CoinjoinAnonymityGain = 'coinjoin/anonymity-gain',
 
-    CoinmarketConfirmTrade = 'trade/confirm-trade',
+    TradingConfirmTrade = 'trade/confirm-trade',
 
     MenuGuide = 'menu/guide',
     MenuNotificationsToggle = 'menu/notifications/toggle',

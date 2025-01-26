@@ -3,23 +3,23 @@ import { Row, Spinner, Card, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
+import { TradingUtilsProvidersProps } from 'src/types/trading/trading';
+import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
 
-interface CoinmarketFormOfferItemProps {
+interface TradingFormOfferItemProps {
     bestQuote: TradingTradeType | undefined;
     isFormLoading: boolean;
     isFormInvalid: boolean;
-    providers: CoinmarketUtilsProvidersProps | undefined;
+    providers: TradingUtilsProvidersProps | undefined;
     isBestRate?: boolean;
 }
 
-export const CoinmarketFormOfferItem = ({
+export const TradingFormOfferItem = ({
     bestQuote,
     isFormLoading,
     isFormInvalid,
     providers,
-}: CoinmarketFormOfferItemProps) => {
+}: TradingFormOfferItemProps) => {
     if (!bestQuote || isFormLoading) {
         if (isFormLoading && !isFormInvalid) {
             return (
@@ -28,11 +28,11 @@ export const CoinmarketFormOfferItem = ({
                         justifyContent="center"
                         margin={{ vertical: spacings.xs }}
                         gap={spacings.sm}
-                        data-testid="@coinmarket/offers/loading-spinner"
+                        data-testid="@trading/offers/loading-spinner"
                     >
                         <Spinner size={32} isGrey={false} />
                         <Paragraph typographyStyle="hint" variant="tertiary">
-                            <Translation id="TR_COINMARKET_OFFER_LOOKING" />
+                            <Translation id="TR_TRADING_OFFER_LOOKING" />
                         </Paragraph>
                     </Row>
                 </Card>
@@ -47,9 +47,9 @@ export const CoinmarketFormOfferItem = ({
                     align="center"
                     margin={{ vertical: spacings.xs }}
                 >
-                    <Translation id="TR_COINMARKET_OFFER_NO_FOUND" />
+                    <Translation id="TR_TRADING_OFFER_NO_FOUND" />
                     <br />
-                    <Translation id="TR_COINMARKET_CHANGE_AMOUNT_OR_CURRENCY" />
+                    <Translation id="TR_TRADING_CHANGE_AMOUNT_OR_CURRENCY" />
                 </Paragraph>
             </Card>
         );
@@ -57,7 +57,7 @@ export const CoinmarketFormOfferItem = ({
 
     return (
         <Card>
-            <CoinmarketUtilsProvider providers={providers} exchange={bestQuote?.exchange} />
+            <TradingUtilsProvider providers={providers} exchange={bestQuote?.exchange} />
         </Card>
     );
 };

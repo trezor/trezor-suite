@@ -9,17 +9,17 @@ import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tok
 
 import { ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
-import { CoinmarketBuyAction } from 'src/actions/wallet/coinmarketBuyActions';
-import { CoinmarketExchangeAction } from 'src/actions/wallet/coinmarketExchangeActions';
-import { CoinmarketSellAction } from 'src/actions/wallet/coinmarketSellActions';
-import { CoinmarketCommonAction } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { TradingBuyAction } from 'src/actions/wallet/tradingBuyActions';
+import { TradingExchangeAction } from 'src/actions/wallet/tradingExchangeActions';
+import { TradingSellAction } from 'src/actions/wallet/tradingSellActions';
+import { TradingCommonAction } from 'src/actions/wallet/trading/tradingCommonActions';
 import { GraphAction } from 'src/actions/wallet/graphActions';
 import { AccountSearchAction } from 'src/actions/wallet/accountSearchActions';
 import { FormDraftAction } from 'src/actions/wallet/formDraftActions';
 import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
 import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
-import { CoinmarketInfoAction } from 'src/actions/wallet/coinmarketInfoActions';
+import { TradingInfoAction } from 'src/actions/wallet/tradingInfoActions';
 
 // reexport
 export type { Icon } from './iconTypes';
@@ -69,11 +69,11 @@ export type WalletAction =
     | SignVerifyAction
     | GraphAction
     | DiscoveryAction
-    | CoinmarketInfoAction
-    | CoinmarketExchangeAction
-    | CoinmarketBuyAction
-    | CoinmarketSellAction
-    | CoinmarketCommonAction
+    | TradingInfoAction
+    | TradingExchangeAction
+    | TradingBuyAction
+    | TradingSellAction
+    | TradingCommonAction
     | SendFormAction
     | AccountSearchAction
     | FormDraftAction

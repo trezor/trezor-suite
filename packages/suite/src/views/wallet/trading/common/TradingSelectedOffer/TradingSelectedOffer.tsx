@@ -3,38 +3,38 @@ import styled from 'styled-components';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     getCryptoQuoteAmountProps,
     getPaymentMethod,
     getProvidersInfoProps,
-    isCoinmarketBuyContext,
-    isCoinmarketExchangeContext,
-    isCoinmarketSellContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { CoinmarketOfferSell } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferSell/CoinmarketOfferSell';
-import { CoinmarketOfferBuy } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferBuy/CoinmarketOfferBuy';
-import { CoinmarketOfferExchange } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketOfferExchange/CoinmarketOfferExchange';
-import { CoinmarketWrapper } from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
-import { useCoinmarketDeviceDisconnected } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketDeviceDisconnected';
+    isTradingBuyContext,
+    isTradingExchangeContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
+import { TradingOfferSell } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSell';
+import { TradingOfferBuy } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferBuy/TradingOfferBuy';
+import { TradingOfferExchange } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchange';
+import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
+import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 import {
-    CoinmarketOfferBuyProps,
-    CoinmarketOfferExchangeProps,
-    CoinmarketOfferSellProps,
-} from 'src/types/coinmarket/coinmarketForm';
+    TradingOfferBuyProps,
+    TradingOfferExchangeProps,
+    TradingOfferSellProps,
+} from 'src/types/trading/tradingForm';
 
 const Wrapper = styled.div`
-    ${CoinmarketWrapper}
+    ${TradingWrapper}
 `;
 
-export const CoinmarketSelectedOffer = () => {
-    const context = useCoinmarketFormContext();
+export const TradingSelectedOffer = () => {
+    const context = useTradingFormContext();
     const { account, trade, selectedQuote } = context;
     const providers = getProvidersInfoProps(context);
     const selectedTrade = trade?.data || selectedQuote;
 
-    const { coinmarketDeviceDisconnected } = useCoinmarketDeviceDisconnected();
+    const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     if (!selectedTrade) return null;
 
@@ -43,35 +43,33 @@ export const CoinmarketSelectedOffer = () => {
 
     return (
         <Column gap={spacings.md}>
-            {coinmarketDeviceDisconnected && <ConnectDeviceGenericPromo />}
+            {tradingDeviceDisconnected && <ConnectDeviceGenericPromo />}
 
-            <Wrapper data-testid="@coinmarket/selected-offer">
-                {isCoinmarketBuyContext(context) && (
-                    <CoinmarketOfferBuy
+            <Wrapper data-testid="@trading/selected-offer">
+                {isTradingBuyContext(context) && (
+                    <TradingOfferBuy
                         account={account}
-                        selectedQuote={selectedTrade as CoinmarketOfferBuyProps['selectedQuote']}
+                        selectedQuote={selectedTrade as TradingOfferBuyProps['selectedQuote']}
                         providers={providers}
                         type={context.type}
                         quoteAmounts={quoteAmounts}
                         {...paymentMethod}
                     />
                 )}
-                {isCoinmarketSellContext(context) && (
-                    <CoinmarketOfferSell
+                {isTradingSellContext(context) && (
+                    <TradingOfferSell
                         account={account}
-                        selectedQuote={selectedTrade as CoinmarketOfferSellProps['selectedQuote']}
+                        selectedQuote={selectedTrade as TradingOfferSellProps['selectedQuote']}
                         providers={providers}
                         type={context.type}
                         quoteAmounts={quoteAmounts}
                         {...paymentMethod}
                     />
                 )}
-                {isCoinmarketExchangeContext(context) && (
-                    <CoinmarketOfferExchange
+                {isTradingExchangeContext(context) && (
+                    <TradingOfferExchange
                         account={account}
-                        selectedQuote={
-                            selectedTrade as CoinmarketOfferExchangeProps['selectedQuote']
-                        }
+                        selectedQuote={selectedTrade as TradingOfferExchangeProps['selectedQuote']}
                         providers={providers}
                         type={context.type}
                         quoteAmounts={quoteAmounts}

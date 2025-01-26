@@ -16,33 +16,33 @@ import { getNetworkByCoingeckoId, Network, NetworkSymbol } from '@suite-common/w
 import { spacings } from '@trezor/theme';
 
 import {
-    CoinmarketAccountOptionsGroupOptionProps,
-    CoinmarketCryptoSelectItemProps,
-    CoinmarketTradeBuyExchangeType,
+    TradingAccountOptionsGroupOptionProps,
+    TradingCryptoSelectItemProps,
+    TradingTradeBuyExchangeType,
     SelectAssetOptionProps,
-} from 'src/types/coinmarket/coinmarket';
+} from 'src/types/trading/trading';
 import { Translation } from 'src/components/suite';
 import {
-    CoinmarketBuyFormProps,
-    CoinmarketExchangeFormProps,
-    CoinmarketFormInputCryptoSelectProps,
-} from 'src/types/coinmarket/coinmarketForm';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+    TradingBuyFormProps,
+    TradingExchangeFormProps,
+    TradingFormInputCryptoSelectProps,
+} from 'src/types/trading/tradingForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import {
     cryptoIdToNetwork,
     cryptoPlatformSeparator,
     isCryptoIdForNativeToken,
     parseCryptoId,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+} from 'src/utils/wallet/trading/tradingUtils';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     FORM_CRYPTO_CURRENCY_SELECT,
     FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/coinmarket/form';
-import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+} from 'src/constants/wallet/trading/form';
+import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { useTranslation } from 'src/hooks/suite';
 
-import { CoinmarketCoinLogo } from '../../CoinmarketCoinLogo';
+import { TradingCoinLogo } from '../../TradingCoinLogo';
 
 const getNetworkCount = (options: SelectAssetOptionProps[]) => {
     const networkNetworkGroups = options
@@ -81,24 +81,24 @@ const getData = (options: SelectAssetOptionProps[]): AssetProps[] =>
             height: ITEM_HEIGHT,
         }));
 
-export const CoinmarketFormInputCryptoSelect = <
-    TFieldValues extends CoinmarketBuyFormProps | CoinmarketExchangeFormProps,
+export const TradingFormInputCryptoSelect = <
+    TFieldValues extends TradingBuyFormProps | TradingExchangeFormProps,
 >({
     label,
     cryptoSelectName,
     supportedCryptoCurrencies,
     methods,
     isDisabled,
-}: CoinmarketFormInputCryptoSelectProps<TFieldValues>) => {
-    const context = useCoinmarketFormContext<CoinmarketTradeBuyExchangeType>();
-    const { buildCryptoOptions, cryptoIdToPlatformName } = useCoinmarketInfo();
+}: TradingFormInputCryptoSelectProps<TFieldValues>) => {
+    const context = useTradingFormContext<TradingTradeBuyExchangeType>();
+    const { buildCryptoOptions, cryptoIdToPlatformName } = useTradingInfo();
     const { control } = methods;
     const [isModalActive, setIsModalActive] = useState(false);
     const [activeTab, setActiveTab] = useState<Network | null>(null);
     const [search, setSearch] = useState('');
     const { translationString } = useTranslation();
 
-    const sendCryptoSelectValue = isCoinmarketExchangeContext(context)
+    const sendCryptoSelectValue = isTradingExchangeContext(context)
         ? context.getValues()?.sendCryptoSelect?.value
         : null;
 
@@ -149,11 +149,11 @@ export const CoinmarketFormInputCryptoSelect = <
             const cryptoId = contractAddress ? tokenCryptoId : coingeckoId;
 
             return option.type === 'currency' && option.value === cryptoId;
-        }) as CoinmarketCryptoSelectItemProps | undefined;
+        }) as TradingCryptoSelectItemProps | undefined;
 
         if (!findOption) return;
 
-        if (isCoinmarketExchangeContext(context)) {
+        if (isTradingExchangeContext(context)) {
             context.setValue(FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, findOption, {
                 shouldDirty: true,
             });
@@ -195,13 +195,13 @@ export const CoinmarketFormInputCryptoSelect = <
         <>
             {isModalActive && (
                 <SelectAssetModal
-                    data-testid="@coinmarket/form/select-crypto"
+                    data-testid="@trading/form/select-crypto"
                     options={filteredData}
                     onSelectAsset={handleSelectChange}
                     onClose={() => setIsModalActive(false)}
                     searchInput={
                         <SearchAsset
-                            data-testid="@coinmarket/form/select-crypto/search-input"
+                            data-testid="@trading/form/select-crypto/search-input"
                             searchPlaceholder={translationString('TR_SELECT_NAME_OR_ADDRESS')}
                             search={search}
                             setSearch={setSearch}
@@ -220,7 +220,7 @@ export const CoinmarketFormInputCryptoSelect = <
                     }}
                     filterTabs={
                         <NetworkTabs
-                            data-testid="@coinmarket/form/select-crypto/network-tab"
+                            data-testid="@trading/form/select-crypto/network-tab"
                             tabs={quickTabs}
                             networkCount={getNetworkCount(modalOptions)}
                             activeTab={activeTab}
@@ -239,13 +239,13 @@ export const CoinmarketFormInputCryptoSelect = <
                         options={formOptions}
                         labelLeft={label && <Translation id={label} />}
                         onMenuOpen={() => setIsModalActive(true)}
-                        formatOptionLabel={(option: CoinmarketAccountOptionsGroupOptionProps) => {
+                        formatOptionLabel={(option: TradingAccountOptionsGroupOptionProps) => {
                             const { networkId, contractAddress } = parseCryptoId(option.value);
                             const platform = cryptoIdToPlatformName(networkId);
 
                             return (
                                 <Row gap={spacings.sm}>
-                                    <CoinmarketCoinLogo cryptoId={option.value} size={20} />
+                                    <TradingCoinLogo cryptoId={option.value} size={20} />
                                     <Text>{option.label}</Text>
                                     <Text variant="tertiary" typographyStyle="label">
                                         {option.cryptoName}
@@ -254,7 +254,7 @@ export const CoinmarketFormInputCryptoSelect = <
                                 </Row>
                             );
                         }}
-                        data-testid="@coinmarket/form/select-crypto"
+                        data-testid="@trading/form/select-crypto"
                         isClearable={false}
                         isMenuOpen={false}
                         isDisabled={isDisabled}

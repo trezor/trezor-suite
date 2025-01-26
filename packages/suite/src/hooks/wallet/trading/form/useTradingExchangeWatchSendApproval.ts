@@ -6,21 +6,21 @@ import { ExchangeTrade } from 'invity-api';
 import { invityAPI, type TradingExchangeType } from '@suite-common/invity';
 
 import { useDispatch } from 'src/hooks/suite';
-import { saveSelectedQuote } from 'src/actions/wallet/coinmarketExchangeActions';
+import { saveSelectedQuote } from 'src/actions/wallet/tradingExchangeActions';
 
-interface CoinmarketUseExchangeWatchSendApprovalProps {
+interface TradingUseExchangeWatchSendApprovalProps {
     selectedQuote?: ExchangeTrade;
     confirmTrade: (address: string, extraField?: string, trade?: ExchangeTrade) => Promise<boolean>;
 }
 
 /**
  * sub-hook used for watch and confirming selected trade
- * used in for CoinmarketOfferExchangeSendApproval
+ * used in for TradingOfferExchangeSendApproval
  */
-export const useCoinmarketExchangeWatchSendApproval = ({
+export const useTradingExchangeWatchSendApproval = ({
     selectedQuote,
     confirmTrade,
-}: CoinmarketUseExchangeWatchSendApprovalProps) => {
+}: TradingUseExchangeWatchSendApprovalProps) => {
     const REFRESH_SECONDS = 15;
     const shouldRefresh = (quote?: ExchangeTrade) => quote?.status === 'APPROVAL_PENDING';
 

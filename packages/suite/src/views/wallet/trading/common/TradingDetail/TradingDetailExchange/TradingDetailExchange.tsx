@@ -5,30 +5,30 @@ import type { TradingExchangeType } from '@suite-common/invity';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
-import { tradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
-import { CoinmarketGetCryptoQuoteAmountProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
-import { CoinmarketDetailExchangePaymentSuccessful } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentSuccessful';
-import { CoinmarketDetailExchangePaymentKYC } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentKYC';
-import { CoinmarketDetailExchangePaymentFailed } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentFailed';
-import { CoinmarketDetailExchangePaymentConverting } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentConverting';
-import { CoinmarketDetailExchangePaymentSending } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailExchange/CoinmarketDetailExchangePaymentSending';
-import { CoinmarketWrapper } from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
+import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
+import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { TradingDetailExchangePaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSuccessful';
+import { TradingDetailExchangePaymentKYC } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentKYC';
+import { TradingDetailExchangePaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentFailed';
+import { TradingDetailExchangePaymentConverting } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentConverting';
+import { TradingDetailExchangePaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSending';
+import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
 const Wrapper = styled.div`
-    ${CoinmarketWrapper}
+    ${TradingWrapper}
 `;
 
-export const CoinmarketDetailExchange = () => {
-    const { account, trade, info } = useCoinmarketDetailContext<TradingExchangeType>();
+export const TradingDetailExchange = () => {
+    const { account, trade, info } = useTradingDetailContext<TradingExchangeType>();
     const dispatch = useDispatch();
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
-    // go to the default coinmarket page, the trade is shown there in the previous trades
+    // go to the default trading page, the trade is shown there in the previous trades
     if (!trade) {
         dispatch(
-            goto('wallet-coinmarket-exchange', {
+            goto('wallet-trading-exchange', {
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
@@ -51,7 +51,7 @@ export const CoinmarketDetailExchange = () => {
     const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
     const supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
 
-    const quoteAmounts: CoinmarketGetCryptoQuoteAmountProps = {
+    const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
         sendAmount: trade?.data?.sendStringAmount ?? '',
         sendCurrency: trade?.data?.send,
         receiveAmount: trade?.data?.receiveStringAmount ?? '',
@@ -62,29 +62,29 @@ export const CoinmarketDetailExchange = () => {
         <Wrapper>
             <Card>
                 {tradeStatus === 'SUCCESS' && (
-                    <CoinmarketDetailExchangePaymentSuccessful account={account} />
+                    <TradingDetailExchangePaymentSuccessful account={account} />
                 )}
                 {tradeStatus === 'KYC' && (
-                    <CoinmarketDetailExchangePaymentKYC
+                    <TradingDetailExchangePaymentKYC
                         account={account}
                         provider={provider}
                         supportUrl={supportUrl}
                     />
                 )}
                 {tradeStatus === 'ERROR' && (
-                    <CoinmarketDetailExchangePaymentFailed
+                    <TradingDetailExchangePaymentFailed
                         account={account}
                         transactionId={trade.key}
                         supportUrl={supportUrl}
                     />
                 )}
                 {tradeStatus === 'CONVERTING' && (
-                    <CoinmarketDetailExchangePaymentConverting supportUrl={supportUrl} />
+                    <TradingDetailExchangePaymentConverting supportUrl={supportUrl} />
                 )}
-                {showSending && <CoinmarketDetailExchangePaymentSending supportUrl={supportUrl} />}
+                {showSending && <TradingDetailExchangePaymentSending supportUrl={supportUrl} />}
             </Card>
             <Card>
-                <CoinmarketSelectedOfferInfo
+                <TradingSelectedOfferInfo
                     selectedQuote={trade.data}
                     transactionId={trade.key}
                     providers={info?.providerInfos}

@@ -1,16 +1,16 @@
 import { InfoItem } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketGetProvidersInfoProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketProviderInfo } from 'src/views/wallet/coinmarket/common/CoinmarketProviderInfo';
+import { TradingGetProvidersInfoProps } from 'src/types/trading/trading';
+import { TradingProviderInfo } from 'src/views/wallet/trading/common/TradingProviderInfo';
 
-interface CoinmarketInfoProviderProps {
+interface TradingInfoProviderProps {
     exchange: string | undefined;
-    providers: CoinmarketGetProvidersInfoProps;
+    providers: TradingGetProvidersInfoProps;
 }
 
-export const CoinmarketInfoProvider = ({ exchange, providers }: CoinmarketInfoProviderProps) => (
+export const TradingInfoProvider = ({ exchange, providers }: TradingInfoProviderProps) => (
     <InfoItem label={<Translation id="TR_BUY_PROVIDER" />} direction="row">
-        <CoinmarketProviderInfo exchange={exchange} providers={providers} />
+        <TradingProviderInfo exchange={exchange} providers={providers} />
     </InfoItem>
 );

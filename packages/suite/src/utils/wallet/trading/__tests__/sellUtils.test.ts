@@ -3,11 +3,11 @@ import {
     formatIban,
     getAmountLimits,
     createQuoteLink,
-} from 'src/utils/wallet/coinmarket/sellUtils';
+} from 'src/utils/wallet/trading/sellUtils';
 import { Account } from 'src/types/wallet';
-import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
-import * as fixtures from 'src/utils/wallet/coinmarket/__fixtures__/sellUtils';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
+import * as fixtures from 'src/utils/wallet/trading/__fixtures__/sellUtils';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 
 const {
     QUOTE_REQUEST_FIAT,
@@ -17,13 +17,13 @@ const {
     MIN_MAX_QUOTES_LOW,
 } = fixtures;
 
-jest.mock('src/hooks/wallet/coinmarket/useCoinmarketInfo', () => ({
-    ...jest.requireActual('src/hooks/wallet/coinmarket/useCoinmarketInfo'),
-    useCoinmarketInfo: jest.fn(),
+jest.mock('src/hooks/wallet/trading/useTradingInfo', () => ({
+    ...jest.requireActual('src/hooks/wallet/trading/useTradingInfo'),
+    useTradingInfo: jest.fn(),
 }));
 
-describe('coinmarket/sell utils', () => {
-    const cryptoIdToCoinSymbol = (useCoinmarketInfo as jest.Mock).mockImplementation(() => 'BTC');
+describe('trading/sell utils', () => {
+    const cryptoIdToCoinSymbol = (useTradingInfo as jest.Mock).mockImplementation(() => 'BTC');
 
     it('getAmountLimits', () => {
         expect(

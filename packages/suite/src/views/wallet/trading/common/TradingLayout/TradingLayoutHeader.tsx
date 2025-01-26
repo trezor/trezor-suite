@@ -13,7 +13,7 @@ import { TranslationKey, Translation } from 'src/components/suite/Translation';
 import { goto } from 'src/actions/suite/routerActions';
 
 const getBackRoute = (route?: Route['name'], activeSection?: TradingType): Route['name'] => {
-    const routePrefix = 'wallet-coinmarket-';
+    const routePrefix = 'wallet-trading-';
     const match = route?.match(new RegExp(`^${routePrefix}(exchange|buy|sell)-`));
 
     if (route === `${routePrefix}transactions`) {
@@ -23,14 +23,14 @@ const getBackRoute = (route?: Route['name'], activeSection?: TradingType): Route
     return match ? (`${routePrefix}${match[1]}` as Route['name']) : 'wallet-index';
 };
 
-type CoinmarketPageHeaderProps = {
+type TradingPageHeaderProps = {
     fallbackTitle: TranslationKey;
 };
 
-const CoinmarketPageHeader = ({ fallbackTitle }: CoinmarketPageHeaderProps) => {
+const TradingPageHeader = ({ fallbackTitle }: TradingPageHeaderProps) => {
     const dispatch = useDispatch();
     const currentRouteName = useSelector(selectRouteName);
-    const activeSection = useSelector(state => state.wallet.coinmarket.activeSection);
+    const activeSection = useSelector(state => state.wallet.trading.activeSection);
 
     const goToRoute = (route: Route['name']) => () => {
         dispatch(goto(route, { preserveParams: true }));
@@ -47,16 +47,16 @@ const CoinmarketPageHeader = ({ fallbackTitle }: CoinmarketPageHeaderProps) => {
                     data-testid="@account-subpage/back"
                 />
                 <BasicName nameId={fallbackTitle} />
-                {currentRouteName !== 'wallet-coinmarket-transactions' && (
+                {currentRouteName !== 'wallet-trading-transactions' && (
                     <Box margin={{ left: 'auto' }}>
                         <Button
                             size="small"
                             variant="tertiary"
                             margin={{ left: 'auto' }}
-                            onClick={goToRoute('wallet-coinmarket-transactions')}
-                            data-testid="@coinmarket/menu/wallet-coinmarket-transactions"
+                            onClick={goToRoute('wallet-trading-transactions')}
+                            data-testid="@trading/menu/wallet-trading-transactions"
                         >
-                            <Translation id="TR_COINMARKET_LAST_TRANSACTIONS" />
+                            <Translation id="TR_TRADING_LAST_TRANSACTIONS" />
                         </Button>
                     </Box>
                 )}
@@ -65,18 +65,18 @@ const CoinmarketPageHeader = ({ fallbackTitle }: CoinmarketPageHeaderProps) => {
     );
 };
 
-export const CoinmarketLayoutHeader = ({ children }: PropsWithChildren) => {
-    const { activeSection } = useSelector(state => state.wallet.coinmarket);
+export const TradingLayoutHeader = ({ children }: PropsWithChildren) => {
+    const { activeSection } = useSelector(state => state.wallet.trading);
     const { translationString } = useTranslation();
     const fallbackTitle = useMemo(
-        () => (activeSection === 'exchange' ? 'TR_COINMARKET_SWAP' : 'TR_COINMARKET_BUY_AND_SELL'),
+        () => (activeSection === 'exchange' ? 'TR_TRADING_SWAP' : 'TR_TRADING_BUY_AND_SELL'),
         [activeSection],
     );
 
     const translatedTitle = translationString(fallbackTitle);
     const pageTitle = `Trezor Suite | ${translatedTitle}`;
 
-    useLayout(pageTitle, <CoinmarketPageHeader fallbackTitle={fallbackTitle} />);
+    useLayout(pageTitle, <TradingPageHeader fallbackTitle={fallbackTitle} />);
 
     if (!children) return null;
 

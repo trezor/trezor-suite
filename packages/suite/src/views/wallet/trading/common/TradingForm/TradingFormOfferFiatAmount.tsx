@@ -3,26 +3,26 @@ import { Row, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
-import { CoinmarketFormInputCurrency } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCurrency';
+import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 
-interface CoinmarketFormOfferFiatAmountProps {
+interface TradingFormOfferFiatAmountProps {
     amount: string | undefined;
 }
 
-export const CoinmarketFormOfferFiatAmount = ({ amount }: CoinmarketFormOfferFiatAmountProps) => {
+export const TradingFormOfferFiatAmount = ({ amount }: TradingFormOfferFiatAmountProps) => {
     const locale = useSelector(selectLanguage);
     const formattedAmount = amount ? new Intl.NumberFormat(locale).format(Number(amount)) : '';
 
     return (
         <Row gap={spacings.sm}>
             <Text
-                data-testid="@coinmarket/best-offer/amount"
+                data-testid="@trading/best-offer/amount"
                 typographyStyle="titleMedium"
                 ellipsisLineCount={1}
             >
                 {formattedAmount}
             </Text>
-            <CoinmarketFormInputCurrency isClean={false} />
+            <TradingFormInputCurrency isClean={false} />
         </Row>
     );
 };

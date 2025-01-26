@@ -38,7 +38,7 @@ export const HeaderActions = () => {
     const dispatch = useDispatch();
     const { device } = useDevice();
     const layoutSize = useSelector(selectWindowSize);
-    const showCoinmarketButtons = layoutSize === 'XLARGE';
+    const showTradingButtons = layoutSize === 'XLARGE';
 
     const accountType = account?.accountType || routerParams?.accountType || '';
 
@@ -64,19 +64,19 @@ export const HeaderActions = () => {
             isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
         },
         {
-            id: 'wallet-coinmarket-buy',
+            id: 'wallet-trading-buy',
             callback: () => {
-                goToWithAnalytics('wallet-coinmarket-buy', { preserveParams: true });
+                goToWithAnalytics('wallet-trading-buy', { preserveParams: true });
             },
-            title: <Translation id="TR_COINMARKET_BUY_AND_SELL" />,
+            title: <Translation id="TR_TRADING_BUY_AND_SELL" />,
             icon: 'currencyCircleDollar',
-            isHidden: showCoinmarketButtons,
+            isHidden: showTradingButtons,
         },
     ];
 
     const visibleAdditionalActions = additionalActions?.filter(action => !action.isHidden);
 
-    const isCoinmarketAvailable = !['coinjoin'].includes(accountType);
+    const isTradingAvailable = !['coinjoin'].includes(accountType);
     const isAccountLoading = selectedAccount.status === 'loading';
 
     const isDeviceConnected = device?.connected && device?.available;
@@ -106,7 +106,7 @@ export const HeaderActions = () => {
                 </AppNavigationTooltip>
             )}
 
-            {isCoinmarketAvailable && (
+            {isTradingAvailable && (
                 <TradeActions selectedAccount={selectedAccount} hideBuyAndSellBelowDesktop />
             )}
 

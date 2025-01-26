@@ -6,15 +6,15 @@ import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 import { Translation } from 'src/components/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
-import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from 'src/constants/wallet/coinmarket/metadata';
+import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from 'src/constants/wallet/trading/metadata';
 import {
     getCryptoQuoteAmountProps,
-    isCoinmarketExchangeContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { CoinmarketHeaderSummary } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeaderSummary';
-import { CoinmarketRefreshTime } from 'src/views/wallet/coinmarket/common';
-import { CoinmarketHeaderFilter } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeaderFilter';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+    isTradingExchangeContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
+import { TradingHeaderSummary } from 'src/views/wallet/trading/common/TradingHeader/TradingHeaderSummary';
+import { TradingRefreshTime } from 'src/views/wallet/trading/common';
+import { TradingHeaderFilter } from 'src/views/wallet/trading/common/TradingHeader/TradingHeaderFilter';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 
 const Header = styled.div`
     padding-top: ${spacingsPx.sm};
@@ -37,7 +37,7 @@ const HeaderBottom = styled.div`
     }
 `;
 
-const HeaderCoinmarketRefreshTime = styled.div`
+const HeaderTradingRefreshTime = styled.div`
     margin-left: auto;
     padding: ${spacingsPx.xxs} 0 ${spacingsPx.xxs} ${spacingsPx.lg};
 
@@ -48,19 +48,19 @@ const HeaderCoinmarketRefreshTime = styled.div`
     }
 `;
 
-const CoinmarketHeaderSummaryWrap = styled(CoinmarketHeaderSummary)`
+const TradingHeaderSummaryWrap = styled(TradingHeaderSummary)`
     ${SCREEN_QUERY.BELOW_TABLET} {
         order: -1;
     }
 `;
 
-interface CoinmarketHeaderProps {
+interface TradingHeaderProps {
     title: ExtendedMessageDescriptor['id'];
     titleTimer: ExtendedMessageDescriptor['id'];
 }
 
-export const CoinmarketHeader = ({ title, titleTimer }: CoinmarketHeaderProps) => {
-    const context = useCoinmarketFormContext();
+export const TradingHeader = ({ title, titleTimer }: TradingHeaderProps) => {
+    const context = useTradingFormContext();
     const { timer, quotes } = context;
     const headerProps = getCryptoQuoteAmountProps(quotes?.[0], context);
 
@@ -71,19 +71,19 @@ export const CoinmarketHeader = ({ title, titleTimer }: CoinmarketHeaderProps) =
                     <Translation id={title} />
                 </H2>
             </HeaderTop>
-            {headerProps && isCoinmarketExchangeContext(context) && (
-                <CoinmarketHeaderSummaryWrap {...headerProps} />
+            {headerProps && isTradingExchangeContext(context) && (
+                <TradingHeaderSummaryWrap {...headerProps} />
             )}
             <HeaderBottom>
-                <CoinmarketHeaderFilter />
-                <HeaderCoinmarketRefreshTime>
-                    <CoinmarketRefreshTime
+                <TradingHeaderFilter />
+                <HeaderTradingRefreshTime>
+                    <TradingRefreshTime
                         isLoading={timer.isLoading}
                         refetchInterval={INVITY_API_RELOAD_QUOTES_AFTER_SECONDS}
                         seconds={timer.timeSpend.seconds}
                         label={<Translation id={titleTimer} />}
                     />
-                </HeaderCoinmarketRefreshTime>
+                </HeaderTradingRefreshTime>
             </HeaderBottom>
         </Header>
     );

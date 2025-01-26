@@ -11,33 +11,33 @@ import { TradingExchangeType } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
-import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketVerifyOptions } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketVerify/CoinmarketVerifyOptions';
-import { CoinmarketVerifyAccountReturnProps } from 'src/types/coinmarket/coinmarketVerify';
-import { CoinmarketAddressOptions } from 'src/views/wallet/coinmarket/common/CoinmarketAddressOptions';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+import { ConfirmedOnTrezor } from 'src/views/wallet/trading/common/ConfirmedOnTrezor';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingVerifyOptions } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerifyOptions';
+import { TradingVerifyAccountReturnProps } from 'src/types/trading/tradingVerify';
+import { TradingAddressOptions } from 'src/views/wallet/trading/common/TradingAddressOptions';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useDispatch } from 'src/hooks/suite';
-import { COINMARKET_BUY } from 'src/actions/wallet/constants';
+import { TRADING_BUY } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
 import {
-    isCoinmarketBuyContext,
-    isCoinmarketExchangeContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { cryptoIdToNetwork } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+    isTradingBuyContext,
+    isTradingExchangeContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
+import { cryptoIdToNetwork } from 'src/utils/wallet/trading/tradingUtils';
 
-interface CoinmarketVerifyProps {
-    coinmarketVerifyAccount: CoinmarketVerifyAccountReturnProps;
+interface TradingVerifyProps {
+    tradingVerifyAccount: TradingVerifyAccountReturnProps;
     cryptoId: CryptoId;
 }
 
-export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: CoinmarketVerifyProps) => {
+export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { cryptoIdToNativeCoinSymbol, cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
-    const context = useCoinmarketFormContext<TradingExchangeType>();
+    const { cryptoIdToNativeCoinSymbol, cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const context = useTradingFormContext<TradingExchangeType>();
     const { callInProgress, device, verifyAddress, addressVerified, confirmTrade } = context;
-    const exchangeQuote = isCoinmarketExchangeContext(context) ? context.selectedQuote : null;
+    const exchangeQuote = isTradingExchangeContext(context) ? context.selectedQuote : null;
     const {
         form,
         selectedAccountOption,
@@ -46,7 +46,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: Coinmark
         isMenuOpen,
         getTranslationIds,
         onChangeAccount,
-    } = coinmarketVerifyAccount;
+    } = tradingVerifyAccount;
 
     const address = form.watch('address');
     const extraField = form.watch('extraField');
@@ -99,7 +99,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: Coinmark
     // close modals and reset addressVerified on device connection change
     useEffect(() => {
         dispatch({
-            type: COINMARKET_BUY.VERIFY_ADDRESS,
+            type: TRADING_BUY.VERIFY_ADDRESS,
             addressVerified: undefined,
         });
         dispatch(modalActions.onCancel());
@@ -113,7 +113,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: Coinmark
                     values={{ symbol: displaySymbol }}
                 />
             </Paragraph>
-            <CoinmarketVerifyOptions
+            <TradingVerifyOptions
                 receiveNetwork={cryptoId}
                 selectedAccountOption={selectedAccountOption}
                 selectAccountOptions={selectAccountOptions}
@@ -128,7 +128,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: Coinmark
             <Column gap={spacings.xxs}>
                 {selectedAccountOption?.type === 'SUITE' &&
                     selectedAccountOption?.account?.networkType === 'bitcoin' && (
-                        <CoinmarketAddressOptions
+                        <TradingAddressOptions
                             account={selectedAccountOption?.account}
                             address={address}
                             control={form.control}
@@ -189,11 +189,11 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: Coinmark
                     {(!addressVerified || addressVerified !== address) &&
                         selectedAccountOption.account && (
                             <Button
-                                data-testid="@coinmarket/offer/confirm-on-trezor-button"
+                                data-testid="@trading/offer/confirm-on-trezor-button"
                                 isLoading={callInProgress}
                                 isDisabled={
                                     callInProgress ||
-                                    (!device?.connected && !isCoinmarketBuyContext(context))
+                                    (!device?.connected && !isTradingBuyContext(context))
                                 }
                                 onClick={() => {
                                     if (selectedAccountOption.account && accountAddress) {
@@ -209,7 +209,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: Coinmark
                             >
                                 <Translation
                                     id={
-                                        device?.connected || !isCoinmarketBuyContext(context)
+                                        device?.connected || !isTradingBuyContext(context)
                                             ? 'TR_CONFIRM_ON_TREZOR'
                                             : 'TR_CONFIRM_ADDRESS'
                                     }
@@ -219,7 +219,7 @@ export const CoinmarketVerify = ({ coinmarketVerifyAccount, cryptoId }: Coinmark
                     {((addressVerified && addressVerified === address) ||
                         selectedAccountOption?.type === 'NON_SUITE') && (
                         <Button
-                            data-testid="@coinmarket/offer/continue-transaction-button"
+                            data-testid="@trading/offer/continue-transaction-button"
                             isLoading={callInProgress}
                             onClick={() => {
                                 if (address) {

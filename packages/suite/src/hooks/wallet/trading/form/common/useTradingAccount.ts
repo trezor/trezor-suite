@@ -5,37 +5,35 @@ import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import {
-    coinmarketGetSortedAccounts,
-    mapTestnetSymbol,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { tradingGetSortedAccounts, mapTestnetSymbol } from 'src/utils/wallet/trading/tradingUtils';
 
-interface CoinmarketUseAccountProps {
-    coinmarketAccount: Account | undefined;
+interface TradingUseAccountProps {
+    tradingAccount: Account | undefined;
     selectedAccount: SelectedAccountLoaded;
-    shouldUseCoinmarketAccount?: boolean;
+    shouldUseTradingAccount?: boolean;
 }
+
 /**
  * Hook used to get account for trade form (used in Sell/Swap)
  *  - coinmarketAccount is used whether user is in the trading flow (persistent)
  *  - selectedAccount is used as initial state if user entries from different page than trade
  */
-export const useCoinmarketAccount = ({
-    coinmarketAccount,
+export const useTradingAccount = ({
+    tradingAccount,
     selectedAccount,
-    shouldUseCoinmarketAccount,
-}: CoinmarketUseAccountProps): [Account, (state: Account) => void] => {
+    shouldUseTradingAccount,
+}: TradingUseAccountProps): [Account, (state: Account) => void] => {
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
 
     const [account, setAccount] = useState<Account>(() => {
-        if (coinmarketAccount && shouldUseCoinmarketAccount) {
-            return coinmarketAccount;
+        if (tradingAccount && shouldUseTradingAccount) {
+            return tradingAccount;
         }
 
         if (isTestnet(selectedAccount.account.symbol) && !selectedAccount.network.tradeCryptoId) {
             const defaultSymbol = mapTestnetSymbol(selectedAccount.account.symbol);
-            const accountsSorted = coinmarketGetSortedAccounts({
+            const accountsSorted = tradingGetSortedAccounts({
                 accounts,
                 deviceState: device?.state?.staticSessionId,
             });

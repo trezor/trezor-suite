@@ -8,29 +8,26 @@ import {
     FORM_FIAT_CURRENCY_SELECT,
     FORM_FIAT_INPUT,
     FORM_OUTPUT_CURRENCY,
-} from 'src/constants/wallet/coinmarket/form';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import {
-    CoinmarketAllFormProps,
-    CoinmarketFormInputCurrencyProps,
-} from 'src/types/coinmarket/coinmarketForm';
-import { FiatCurrencyOption } from 'src/types/wallet/coinmarketCommonTypes';
+} from 'src/constants/wallet/trading/form';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingAllFormProps, TradingFormInputCurrencyProps } from 'src/types/trading/tradingForm';
+import { FiatCurrencyOption } from 'src/types/wallet/tradingCommonTypes';
 import {
     getFiatCurrenciesProps,
     getSelectedCurrency,
-    isCoinmarketBuyContext,
-    isCoinmarketExchangeContext,
-    isCoinmarketSellContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+    isTradingBuyContext,
+    isTradingExchangeContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
+import { buildFiatOption } from 'src/utils/wallet/trading/tradingUtils';
 
-export const CoinmarketFormInputCurrency = ({
+export const TradingFormInputCurrency = ({
     isClean = true,
     width = 100,
-}: CoinmarketFormInputCurrencyProps) => {
-    const context = useCoinmarketFormContext();
+}: TradingFormInputCurrencyProps) => {
+    const context = useTradingFormContext();
     const { control, setAmountLimits, defaultCurrency } = context;
-    const name = isCoinmarketBuyContext(context) ? FORM_FIAT_CURRENCY_SELECT : FORM_OUTPUT_CURRENCY;
+    const name = isTradingBuyContext(context) ? FORM_FIAT_CURRENCY_SELECT : FORM_OUTPUT_CURRENCY;
     const currentCurrency = getSelectedCurrency(context);
     const fiatCurrencies = getFiatCurrenciesProps(context);
     const currencies = fiatCurrencies?.supportedFiatCurrencies ?? null;
@@ -45,14 +42,14 @@ export const CoinmarketFormInputCurrency = ({
     );
 
     const onChangeAdditional = (option: FiatCurrencyOption) => {
-        if (isCoinmarketBuyContext(context)) {
+        if (isTradingBuyContext(context)) {
             context.setValue(
                 FORM_FIAT_INPUT,
                 fiatCurrencies?.defaultAmountsOfFiatCurrencies?.get(option.value) ?? '',
             );
         }
 
-        if (isCoinmarketExchangeContext(context) || isCoinmarketSellContext(context)) {
+        if (isTradingExchangeContext(context) || isTradingSellContext(context)) {
             context.form.helpers.onFiatCurrencyChange(option.value);
         }
     };
@@ -61,7 +58,7 @@ export const CoinmarketFormInputCurrency = ({
         <Controller
             name={name}
             defaultValue={defaultCurrency}
-            control={control as Control<CoinmarketAllFormProps>}
+            control={control as Control<TradingAllFormProps>}
             render={({ field: { onChange, value } }) => (
                 <Select
                     value={value}
@@ -72,7 +69,7 @@ export const CoinmarketFormInputCurrency = ({
                         onChangeAdditional(selected);
                     }}
                     options={options}
-                    data-testid="@coinmarket/form/fiat-currency-select"
+                    data-testid="@trading/form/fiat-currency-select"
                     isClearable={false}
                     isClean={isClean}
                     size="small"

@@ -9,8 +9,8 @@ import { invityAPI } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite/Translation';
 import { Account } from 'src/types/wallet';
-import { createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
-import { submitRequestForm } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
+import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
@@ -58,7 +58,7 @@ interface WaitingForUserProps {
     providerName?: string;
 }
 
-export const CoinmarketDetailBuyPaymentWaitingForUser = ({
+export const TradingDetailBuyPaymentWaitingForUser = ({
     trade,
     account,
     providerName,
@@ -79,8 +79,8 @@ export const CoinmarketDetailBuyPaymentWaitingForUser = ({
 
     return (
         <Wrapper>
-            <Image image="COINMARKET_WAITING" />
-            <Title data-testid="@coinmarket/transaction/detail/status">
+            <Image image="TRADING_WAITING" />
+            <Title data-testid="@trading/transaction/detail/status">
                 <Translation id={translations.titleTranslationId} />
             </Title>
             <Description>

@@ -11,7 +11,7 @@ import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-c
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 
-interface CoinmarketRecomposeAndSignProps {
+interface TradingRecomposeAndSignProps {
     account: Account;
     address: string;
     amount: string;
@@ -23,10 +23,10 @@ interface CoinmarketRecomposeAndSignProps {
     options?: FormOptions[];
 }
 
-export const useCoinmarketRecomposeAndSign = () => {
+export const useTradingRecomposeAndSign = () => {
     const { translationString } = useTranslation();
     const { composed, selectedFee } = useSelector(
-        state => state.wallet.coinmarket.composedTransactionInfo,
+        state => state.wallet.trading.composedTransactionInfo,
     );
     const fees = useSelector(state => state.wallet.fees);
     const dispatch = useDispatch();
@@ -42,7 +42,7 @@ export const useCoinmarketRecomposeAndSign = () => {
             ethereumAdjustGasLimit,
             options = ['broadcast'],
             setMaxOutputId,
-        }: CoinmarketRecomposeAndSignProps) => {
+        }: TradingRecomposeAndSignProps) => {
             const network = networks[account.symbol];
 
             if (!composed) {

@@ -1,24 +1,24 @@
 import { CryptoId } from 'invity-api';
 
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import * as fixtures from 'src/utils/wallet/coinmarket/__fixtures__/exchangeUtils';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import * as fixtures from 'src/utils/wallet/trading/__fixtures__/exchangeUtils';
 import {
-    coinmarketGetExchangeReceiveCryptoId,
+    tradingGetExchangeReceiveCryptoId,
     getAmountLimits,
     getStatusMessage,
     getSuccessQuotesOrdered,
     isQuoteError,
-} from 'src/utils/wallet/coinmarket/exchangeUtils';
+} from 'src/utils/wallet/trading/exchangeUtils';
 
-jest.mock('src/hooks/wallet/coinmarket/useCoinmarketInfo', () => ({
-    ...jest.requireActual('src/hooks/wallet/coinmarket/useCoinmarketInfo'),
-    useCoinmarketInfo: jest.fn(),
+jest.mock('src/hooks/wallet/trading/useTradingInfo', () => ({
+    ...jest.requireActual('src/hooks/wallet/trading/useTradingInfo'),
+    useTradingInfo: jest.fn(),
 }));
 
 const { MIN_MAX_QUOTES_OK, MIN_MAX_QUOTES_LOW, MIN_MAX_QUOTES_CANNOT_TRADE } = fixtures;
 
-describe('coinmarket/exchange utils', () => {
-    const cryptoIdToCoinSymbol = (useCoinmarketInfo as jest.Mock).mockImplementation(() => 'LTC');
+describe('trading/exchange utils', () => {
+    const cryptoIdToCoinSymbol = (useTradingInfo as jest.Mock).mockImplementation(() => 'LTC');
 
     it('getAmountLimits', () => {
         expect(
@@ -68,22 +68,22 @@ describe('coinmarket/exchange utils', () => {
         expect(getStatusMessage('SUCCESS')).toBe('TR_EXCHANGE_STATUS_SUCCESS');
     });
 
-    it('coinmarketGetExchangeReceiveCryptoId', () => {
+    it('tradingGetExchangeReceiveCryptoId', () => {
         // default cryptoId
-        expect(coinmarketGetExchangeReceiveCryptoId('bitcoin' as CryptoId)).toBe('ethereum');
-        expect(coinmarketGetExchangeReceiveCryptoId('litecoin' as CryptoId)).toBe('bitcoin');
+        expect(tradingGetExchangeReceiveCryptoId('bitcoin' as CryptoId)).toBe('ethereum');
+        expect(tradingGetExchangeReceiveCryptoId('litecoin' as CryptoId)).toBe('bitcoin');
         expect(
-            coinmarketGetExchangeReceiveCryptoId(
+            tradingGetExchangeReceiveCryptoId(
                 'ethereum--0x0000000000085d4780b73119b644ae5ecd22b376' as CryptoId,
             ),
         ).toBe('bitcoin');
 
         // already selected
         expect(
-            coinmarketGetExchangeReceiveCryptoId('bitcoin' as CryptoId, 'bitcoin' as CryptoId),
+            tradingGetExchangeReceiveCryptoId('bitcoin' as CryptoId, 'bitcoin' as CryptoId),
         ).toBe('ethereum');
         expect(
-            coinmarketGetExchangeReceiveCryptoId(
+            tradingGetExchangeReceiveCryptoId(
                 'bitcoin' as CryptoId,
                 'ethereum--0x0000000000085d4780b73119b644ae5ecd22b376' as CryptoId,
             ),

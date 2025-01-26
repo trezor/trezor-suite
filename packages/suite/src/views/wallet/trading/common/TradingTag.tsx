@@ -17,11 +17,11 @@ const Tag = styled.div`
     text-transform: capitalize;
 `;
 
-interface CoinmarketTagProps {
+interface TradingTagProps {
     tag?: string;
     className?: string;
 }
 
-export const CoinmarketTag = ({ tag, className }: CoinmarketTagProps) => (
+export const TradingTag = ({ tag, className }: TradingTagProps) => (
     <TagRow className={className}>{tag && <Tag>{tag}</Tag>}</TagRow>
 );

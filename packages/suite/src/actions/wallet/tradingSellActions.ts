@@ -12,7 +12,7 @@ import { Account } from 'src/types/wallet';
 import { Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
 
-import { COINMARKET_COMMON, COINMARKET_SELL } from './constants';
+import { TRADING_COMMON, TRADING_SELL } from './constants';
 
 export interface SellInfo {
     sellList?: SellListResponse;
@@ -21,22 +21,22 @@ export interface SellInfo {
     supportedCryptoCurrencies: Set<CryptoId>;
 }
 
-export type CoinmarketSellAction =
-    | { type: typeof COINMARKET_SELL.SAVE_SELL_INFO; sellInfo: SellInfo }
-    | { type: typeof COINMARKET_SELL.SAVE_QUOTE_REQUEST; request: SellFiatTradeQuoteRequest }
-    | { type: typeof COINMARKET_SELL.SAVE_TRANSACTION_ID; transactionId?: string }
-    | { type: typeof COINMARKET_SELL.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
-    | { type: typeof COINMARKET_SELL.SET_COINMARKET_ACCOUNT; account: Account | undefined }
+export type TradingSellAction =
+    | { type: typeof TRADING_SELL.SAVE_SELL_INFO; sellInfo: SellInfo }
+    | { type: typeof TRADING_SELL.SAVE_QUOTE_REQUEST; request: SellFiatTradeQuoteRequest }
+    | { type: typeof TRADING_SELL.SAVE_TRANSACTION_ID; transactionId?: string }
+    | { type: typeof TRADING_SELL.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
+    | { type: typeof TRADING_SELL.SET_TRADING_ACCOUNT; account: Account | undefined }
     | {
-          type: typeof COINMARKET_SELL.SAVE_QUOTES;
+          type: typeof TRADING_SELL.SAVE_QUOTES;
           quotes: SellFiatTrade[];
       }
     | {
-          type: typeof COINMARKET_SELL.SAVE_QUOTE;
+          type: typeof TRADING_SELL.SAVE_QUOTE;
           quote: SellFiatTrade | undefined;
       }
     | {
-          type: typeof COINMARKET_COMMON.SAVE_TRADE;
+          type: typeof TRADING_COMMON.SAVE_TRADE;
           date: string;
           key?: string;
           tradeType: 'sell';
@@ -76,8 +76,8 @@ export const loadSellInfo = async (): Promise<SellInfo> => {
     };
 };
 
-export const saveSellInfo = (sellInfo: SellInfo): CoinmarketSellAction => ({
-    type: COINMARKET_SELL.SAVE_SELL_INFO,
+export const saveSellInfo = (sellInfo: SellInfo): TradingSellAction => ({
+    type: TRADING_SELL.SAVE_SELL_INFO,
     sellInfo,
 });
 
@@ -85,8 +85,8 @@ export const saveTrade = (
     exchangeTrade: SellFiatTrade,
     account: Account,
     date: string,
-): CoinmarketSellAction => ({
-    type: COINMARKET_COMMON.SAVE_TRADE,
+): TradingSellAction => ({
+    type: TRADING_COMMON.SAVE_TRADE,
     tradeType: 'sell',
     key: exchangeTrade.orderId,
     date,
@@ -99,43 +99,43 @@ export const saveTrade = (
     },
 });
 
-export const saveQuoteRequest = (request: SellFiatTradeQuoteRequest): CoinmarketSellAction => ({
-    type: COINMARKET_SELL.SAVE_QUOTE_REQUEST,
+export const saveQuoteRequest = (request: SellFiatTradeQuoteRequest): TradingSellAction => ({
+    type: TRADING_SELL.SAVE_QUOTE_REQUEST,
     request,
 });
 
-export const saveTransactionId = (transactionId?: string): CoinmarketSellAction => ({
-    type: COINMARKET_SELL.SAVE_TRANSACTION_ID,
+export const saveTransactionId = (transactionId?: string): TradingSellAction => ({
+    type: TRADING_SELL.SAVE_TRANSACTION_ID,
     transactionId,
 });
 
-export const saveQuotes = (quotes: SellFiatTrade[]): CoinmarketSellAction => ({
-    type: COINMARKET_SELL.SAVE_QUOTES,
+export const saveQuotes = (quotes: SellFiatTrade[]): TradingSellAction => ({
+    type: TRADING_SELL.SAVE_QUOTES,
     quotes,
 });
 
-export const saveSelectedQuote = (quote: SellFiatTrade | undefined): CoinmarketSellAction => ({
-    type: COINMARKET_SELL.SAVE_QUOTE,
+export const saveSelectedQuote = (quote: SellFiatTrade | undefined): TradingSellAction => ({
+    type: TRADING_SELL.SAVE_QUOTE,
     quote,
 });
 
-export const setIsFromRedirect = (isFromRedirect: boolean): CoinmarketSellAction => ({
-    type: COINMARKET_SELL.SET_IS_FROM_REDIRECT,
+export const setIsFromRedirect = (isFromRedirect: boolean): TradingSellAction => ({
+    type: TRADING_SELL.SET_IS_FROM_REDIRECT,
     isFromRedirect,
 });
 
-export const setCoinmarketSellAccount = (account: Account | undefined): CoinmarketSellAction => ({
-    type: COINMARKET_SELL.SET_COINMARKET_ACCOUNT,
+export const setTradingSellAccount = (account: Account | undefined): TradingSellAction => ({
+    type: TRADING_SELL.SET_TRADING_ACCOUNT,
     account,
 });
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
-// used in useCoinmarketSellOffers
-export const openCoinmarketSellConfirmModal =
+// used in useTradingSellOffers
+export const openTradingSellConfirmModal =
     (provider?: string, cryptoCurrency?: string) => (dispatch: Dispatch) =>
         dispatch(
             modalActions.openDeferredModal({
-                type: 'coinmarket-sell-terms',
+                type: 'trading-sell-terms',
                 provider,
                 cryptoCurrency,
             }),

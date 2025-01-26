@@ -27,7 +27,7 @@ import { TokenManagementAction } from '@suite-common/token-definitions';
 import { db } from 'src/storage';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { GRAPH, COINMARKET_COMMON, FORM_DRAFT } from 'src/actions/wallet/constants';
+import { GRAPH, TRADING_COMMON, FORM_DRAFT } from 'src/actions/wallet/constants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { SUITE, METADATA, STORAGE } from 'src/actions/suite/constants';
@@ -264,9 +264,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     }
                     break;
                 }
-                case COINMARKET_COMMON.SAVE_TRADE: {
+                case TRADING_COMMON.SAVE_TRADE: {
                     const { type, ...trade } = action;
-                    storageActions.saveCoinmarketTrade(trade);
+                    storageActions.saveTradingTrade(trade);
                     break;
                 }
                 case METADATA.ENABLE:

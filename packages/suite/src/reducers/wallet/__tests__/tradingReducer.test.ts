@@ -6,29 +6,29 @@ import {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
-import { coinmarketReducer, initialState } from 'src/reducers/wallet/coinmarketReducer';
-import { TradeBuy, TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
+import { tradingReducer, initialState } from 'src/reducers/wallet/tradingReducer';
+import { TradeBuy, TradeExchange } from 'src/types/wallet/tradingCommonTypes';
 import { STORAGE } from 'src/actions/suite/constants';
 import {
-    COINMARKET_BUY,
-    COINMARKET_COMMON,
-    COINMARKET_EXCHANGE,
-    COINMARKET_INFO,
-    COINMARKET_SELL,
+    TRADING_BUY,
+    TRADING_COMMON,
+    TRADING_EXCHANGE,
+    TRADING_INFO,
+    TRADING_SELL,
 } from 'src/actions/wallet/constants';
-import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
-import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
+import { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
+import { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
 import {
     buyQuotes,
     exchangeQuotes,
     sellQuotes,
-} from 'src/reducers/wallet/__fixtures__/coinmarketReducerFixtures';
+} from 'src/reducers/wallet/__fixtures__/tradingReducerFixtures';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 
 describe('settings reducer', () => {
     it('test initial state', () => {
         expect(
-            coinmarketReducer(undefined, {
+            tradingReducer(undefined, {
                 // @ts-expect-error
                 type: 'none',
             }),
@@ -37,19 +37,19 @@ describe('settings reducer', () => {
 
     it('STORAGE.LOAD', () => {
         expect(
-            coinmarketReducer(undefined, {
+            tradingReducer(undefined, {
                 type: STORAGE.LOAD,
                 payload: {
-                    coinmarketTrades: initialState.trades,
+                    tradingTrades: initialState.trades,
                 },
             } as any),
         ).toEqual(initialState);
     });
 
-    it('COINMARKET_COMMON.SET_MODAL_ACCOUNT', () => {
+    it('TRADING_COMMON.SET_MODAL_ACCOUNT', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_COMMON.SET_MODAL_ACCOUNT,
+            tradingReducer(undefined, {
+                type: TRADING_COMMON.SET_MODAL_ACCOUNT,
                 modalAccount: accounts[0],
             }),
         ).toEqual({
@@ -58,8 +58,8 @@ describe('settings reducer', () => {
         });
 
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_COMMON.SET_MODAL_ACCOUNT,
+            tradingReducer(undefined, {
+                type: TRADING_COMMON.SET_MODAL_ACCOUNT,
                 modalAccount: undefined,
             }),
         ).toEqual({
@@ -68,10 +68,10 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY', () => {
+    it('TRADING_COMMON.SET_MODAL_CRYPTO_CURRENCY', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY,
+            tradingReducer(undefined, {
+                type: TRADING_COMMON.SET_MODAL_CRYPTO_CURRENCY,
                 modalCryptoId: 'ankr' as CryptoId,
             }),
         ).toEqual({
@@ -80,8 +80,8 @@ describe('settings reducer', () => {
         });
 
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY,
+            tradingReducer(undefined, {
+                type: TRADING_COMMON.SET_MODAL_CRYPTO_CURRENCY,
                 modalCryptoId: undefined,
             }),
         ).toEqual({
@@ -90,10 +90,10 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_COMMON.SET_COINMARKET_ACTIVE_SECTION', () => {
+    it('TRADING_COMMON.SET_TRADING_ACTIVE_SECTION', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_COMMON.SET_COINMARKET_ACTIVE_SECTION,
+            tradingReducer(undefined, {
+                type: TRADING_COMMON.SET_TRADING_ACTIVE_SECTION,
                 activeSection: 'exchange',
             }),
         ).toEqual({
@@ -102,7 +102,7 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_INFO.SAVE_SYMBOLS_INFO', () => {
+    it('TRADING_INFO.SAVE_SYMBOLS_INFO', () => {
         const info: InfoResponse = {
             platforms: {
                 ethereum: {
@@ -125,14 +125,14 @@ describe('settings reducer', () => {
             },
         };
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_INFO.SAVE_INFO,
+            tradingReducer(undefined, {
+                type: TRADING_INFO.SAVE_INFO,
                 info,
             }),
         ).toEqual({ ...initialState, info: { ...initialState.info, ...info } });
     });
 
-    it('COINMARKET_BUY.SAVE_BUY_INFO', () => {
+    it('TRADING_BUY.SAVE_BUY_INFO', () => {
         const buyInfo: BuyInfo = {
             buyInfo: {
                 country: 'cz',
@@ -144,23 +144,23 @@ describe('settings reducer', () => {
             supportedFiatCurrencies: new Set(['usd']),
         };
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_BUY.SAVE_BUY_INFO,
+            tradingReducer(undefined, {
+                type: TRADING_BUY.SAVE_BUY_INFO,
                 buyInfo,
             }),
         ).toEqual({ ...initialState, buy: { ...initialState.buy, buyInfo } });
     });
 
-    it('COINMARKET_BUY.SET_IS_FROM_REDIRECT', () => {
+    it('TRADING_BUY.SET_IS_FROM_REDIRECT', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_BUY.SET_IS_FROM_REDIRECT,
+            tradingReducer(undefined, {
+                type: TRADING_BUY.SET_IS_FROM_REDIRECT,
                 isFromRedirect: true,
             } as any),
         ).toEqual({ ...initialState, buy: { ...initialState.buy, isFromRedirect: true } });
     });
 
-    it('COINMARKET_BUY.SAVE_QUOTE_REQUEST', () => {
+    it('TRADING_BUY.SAVE_QUOTE_REQUEST', () => {
         const request: BuyTradeQuoteRequest = {
             fiatCurrency: 'EUR',
             receiveCurrency: 'BTC' as CryptoId,
@@ -169,17 +169,17 @@ describe('settings reducer', () => {
             fiatStringAmount: '1',
         };
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_BUY.SAVE_QUOTE_REQUEST,
+            tradingReducer(undefined, {
+                type: TRADING_BUY.SAVE_QUOTE_REQUEST,
                 request,
             }),
         ).toEqual({ ...initialState, buy: { ...initialState.buy, quotesRequest: request } });
     });
 
-    it('COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID', () => {
+    it('TRADING_BUY.SAVE_TRANSACTION_DETAIL_ID', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID,
+            tradingReducer(undefined, {
+                type: TRADING_BUY.SAVE_TRANSACTION_DETAIL_ID,
                 transactionId: '1234-1234-1234',
             }),
         ).toEqual({
@@ -188,10 +188,10 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_BUY.SAVE_QUOTES', () => {
+    it('TRADING_BUY.SAVE_QUOTES', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_BUY.SAVE_QUOTES,
+            tradingReducer(undefined, {
+                type: TRADING_BUY.SAVE_QUOTES,
                 quotes: buyQuotes,
             }),
         ).toEqual({
@@ -200,10 +200,10 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_SELL.SELL_QUOTES', () => {
+    it('TRADING_SELL.SELL_QUOTES', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_SELL.SAVE_QUOTES,
+            tradingReducer(undefined, {
+                type: TRADING_SELL.SAVE_QUOTES,
                 quotes: sellQuotes,
             }),
         ).toEqual({
@@ -212,10 +212,10 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_EXCHANGE.EXCHANGE_QUOTES', () => {
+    it('TRADING_EXCHANGE.EXCHANGE_QUOTES', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_EXCHANGE.SAVE_QUOTES,
+            tradingReducer(undefined, {
+                type: TRADING_EXCHANGE.SAVE_QUOTES,
                 quotes: exchangeQuotes,
             }),
         ).toEqual({
@@ -224,27 +224,27 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_BUY.VERIFY_ADDRESS', () => {
+    it('TRADING_BUY.VERIFY_ADDRESS', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_BUY.VERIFY_ADDRESS,
+            tradingReducer(undefined, {
+                type: TRADING_BUY.VERIFY_ADDRESS,
                 addressVerified: '1abcdef',
             }),
         ).toEqual({ ...initialState, buy: { ...initialState.buy, addressVerified: '1abcdef' } });
     });
 
-    it('COINMARKET_BUY.DISPOSE', () => {
+    it('TRADING_BUY.DISPOSE', () => {
         expect(
-            coinmarketReducer(
+            tradingReducer(
                 { ...initialState, buy: { ...initialState.buy, addressVerified: '1abcdef' } },
                 {
-                    type: COINMARKET_BUY.DISPOSE,
+                    type: TRADING_BUY.DISPOSE,
                 },
             ),
         ).toEqual(initialState);
     });
 
-    it('COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO', () => {
+    it('TRADING_BUY.SAVE_CACHED_ACCOUNT_INFO', () => {
         const cachedAccountInfo = {
             symbol: 'btc',
             index: 1,
@@ -253,36 +253,36 @@ describe('settings reducer', () => {
         };
 
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO,
+            tradingReducer(undefined, {
+                type: TRADING_BUY.SAVE_CACHED_ACCOUNT_INFO,
                 ...cachedAccountInfo,
             } as any),
         ).toEqual({ ...initialState, buy: { ...initialState.buy, cachedAccountInfo } });
     });
 
-    it('COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO', () => {
+    it('TRADING_EXCHANGE.SAVE_EXCHANGE_INFO', () => {
         const exchangeInfo: ExchangeInfo = {
             providerInfos: {},
             buySymbols: new Set(['BTC', 'ETH']) as Set<CryptoId>,
             sellSymbols: new Set(['USDT@ETH']) as Set<CryptoId>,
         };
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO,
+            tradingReducer(undefined, {
+                type: TRADING_EXCHANGE.SAVE_EXCHANGE_INFO,
                 exchangeInfo,
             }),
         ).toEqual({ ...initialState, exchange: { ...initialState.exchange, exchangeInfo } });
     });
 
-    it('COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST', () => {
+    it('TRADING_EXCHANGE.SAVE_QUOTE_REQUEST', () => {
         const request: ExchangeTradeQuoteRequest = {
             receive: 'BTC' as CryptoId,
             send: 'LTC' as CryptoId,
             sendStringAmount: '1',
         };
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST,
+            tradingReducer(undefined, {
+                type: TRADING_EXCHANGE.SAVE_QUOTE_REQUEST,
                 request,
             }),
         ).toEqual({
@@ -291,10 +291,10 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_EXCHANGE.VERIFY_ADDRESS', () => {
+    it('TRADING_EXCHANGE.VERIFY_ADDRESS', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_EXCHANGE.VERIFY_ADDRESS,
+            tradingReducer(undefined, {
+                type: TRADING_EXCHANGE.VERIFY_ADDRESS,
                 addressVerified: '2efghi',
             }),
         ).toEqual({
@@ -356,8 +356,8 @@ describe('settings reducer', () => {
         };
 
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_COMMON.SAVE_TRADE,
+            tradingReducer(undefined, {
+                type: TRADING_COMMON.SAVE_TRADE,
                 ...tradeBuy,
             }),
         ).toEqual({
@@ -366,13 +366,13 @@ describe('settings reducer', () => {
         });
 
         expect(
-            coinmarketReducer(
+            tradingReducer(
                 {
                     ...initialState,
                     trades: [tradeExchange, tradeBuy],
                 },
                 {
-                    type: COINMARKET_COMMON.SAVE_TRADE,
+                    type: TRADING_COMMON.SAVE_TRADE,
                     ...updatedTradeExchange,
                 },
             ),
@@ -382,19 +382,19 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_SELL.SET_IS_FROM_REDIRECT', () => {
+    it('TRADING_SELL.SET_IS_FROM_REDIRECT', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_SELL.SET_IS_FROM_REDIRECT,
+            tradingReducer(undefined, {
+                type: TRADING_SELL.SET_IS_FROM_REDIRECT,
                 isFromRedirect: true,
             }),
         ).toEqual({ ...initialState, sell: { ...initialState.sell, isFromRedirect: true } });
     });
 
-    it('COINMARKET_SELL.SAVE_TRANSACTION_ID', () => {
+    it('TRADING_SELL.SAVE_TRANSACTION_ID', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_SELL.SAVE_TRANSACTION_ID,
+            tradingReducer(undefined, {
+                type: TRADING_SELL.SAVE_TRANSACTION_ID,
                 transactionId: '1234-1234-1234',
             }),
         ).toEqual({
@@ -403,7 +403,7 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_SELL.SAVE_QUOTE_REQUEST', () => {
+    it('TRADING_SELL.SAVE_QUOTE_REQUEST', () => {
         const request: SellFiatTradeQuoteRequest = {
             amountInCrypto: true,
             cryptoCurrency: 'BTC' as CryptoId,
@@ -411,8 +411,8 @@ describe('settings reducer', () => {
             cryptoStringAmount: '1',
         };
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_SELL.SAVE_QUOTE_REQUEST,
+            tradingReducer(undefined, {
+                type: TRADING_SELL.SAVE_QUOTE_REQUEST,
                 request,
             }),
         ).toEqual({
@@ -421,10 +421,10 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_BUY.CLEAR_QUOTES', () => {
+    it('TRADING_BUY.CLEAR_QUOTES', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_BUY.CLEAR_QUOTES,
+            tradingReducer(undefined, {
+                type: TRADING_BUY.CLEAR_QUOTES,
             }),
         ).toEqual({
             ...initialState,
@@ -432,10 +432,10 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_BUY.SAVE_QUOTE', () => {
+    it('TRADING_BUY.SAVE_QUOTE', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_BUY.SAVE_QUOTE,
+            tradingReducer(undefined, {
+                type: TRADING_BUY.SAVE_QUOTE,
                 quote: buyQuotes[0],
             }),
         ).toEqual({
@@ -447,10 +447,10 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_SELL.SAVE_QUOTE', () => {
+    it('TRADING_SELL.SAVE_QUOTE', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_SELL.SAVE_QUOTE,
+            tradingReducer(undefined, {
+                type: TRADING_SELL.SAVE_QUOTE,
                 quote: sellQuotes[0],
             }),
         ).toEqual({
@@ -462,10 +462,10 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_EXCHANGE.SAVE_QUOTE', () => {
+    it('TRADING_EXCHANGE.SAVE_QUOTE', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_EXCHANGE.SAVE_QUOTE,
+            tradingReducer(undefined, {
+                type: TRADING_EXCHANGE.SAVE_QUOTE,
                 quote: exchangeQuotes[0],
             }),
         ).toEqual({
@@ -477,32 +477,32 @@ describe('settings reducer', () => {
         });
     });
 
-    it('COINMARKET_SELL.SET_COINMARKET_ACCOUNT', () => {
+    it('TRADING_SELL.SET_TRADING_ACCOUNT', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_SELL.SET_COINMARKET_ACCOUNT,
+            tradingReducer(undefined, {
+                type: TRADING_SELL.SET_TRADING_ACCOUNT,
                 account: accounts[0],
             }),
         ).toEqual({
             ...initialState,
             sell: {
                 ...initialState.sell,
-                coinmarketAccount: accounts[0],
+                tradingAccount: accounts[0],
             },
         });
     });
 
-    it('COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT', () => {
+    it('TRADING_EXCHANGE.SET_TRADING_ACCOUNT', () => {
         expect(
-            coinmarketReducer(undefined, {
-                type: COINMARKET_EXCHANGE.SET_COINMARKET_ACCOUNT,
+            tradingReducer(undefined, {
+                type: TRADING_EXCHANGE.SET_TRADING_ACCOUNT,
                 account: accounts[0],
             }),
         ).toEqual({
             ...initialState,
             exchange: {
                 ...initialState.exchange,
-                coinmarketAccount: accounts[0],
+                tradingAccount: accounts[0],
             },
         });
     });

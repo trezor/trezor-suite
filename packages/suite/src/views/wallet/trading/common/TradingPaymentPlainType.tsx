@@ -2,9 +2,9 @@ import type { TradingPaymentMethodType } from '@suite-common/invity';
 import { Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { FORM_DEFAULT_PAYMENT_METHOD } from 'src/constants/wallet/coinmarket/form';
+import { FORM_DEFAULT_PAYMENT_METHOD } from 'src/constants/wallet/trading/form';
 
-interface CoinmarketPaymentTypeProps {
+interface TradingPaymentTypeProps {
     method?: TradingPaymentMethodType;
     methodName?: string;
 }
@@ -15,8 +15,8 @@ type PaymentMethodId = `TR_PAYMENT_METHOD_${Uppercase<TranslatedPaymentMethod>}`
 const getPaymentMethod = (method: TranslatedPaymentMethod): PaymentMethodId =>
     `TR_PAYMENT_METHOD_${method.toUpperCase() as Uppercase<TranslatedPaymentMethod>}`;
 
-export const CoinmarketPaymentPlainType = ({ method, methodName }: CoinmarketPaymentTypeProps) => (
-    <Text data-testid="@coinmarket/form/info/payment-method" as="div">
+export const TradingPaymentPlainType = ({ method, methodName }: TradingPaymentTypeProps) => (
+    <Text data-testid="@trading/form/info/payment-method" as="div">
         {method ? (
             <>
                 {method === 'bankTransfer' || method === FORM_DEFAULT_PAYMENT_METHOD ? (

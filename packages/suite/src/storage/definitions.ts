@@ -17,7 +17,7 @@ import { SimpleTokenStructure } from '@suite-common/token-definitions';
 
 import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 import type { Account, Discovery, WalletAccountTransaction } from 'src/types/wallet';
-import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
+import type { Trade } from 'src/types/wallet/tradingCommonTypes';
 import type { MetadataState } from 'src/types/suite/metadata';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 

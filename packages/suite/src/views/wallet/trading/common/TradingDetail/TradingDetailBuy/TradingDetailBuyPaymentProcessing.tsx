@@ -17,10 +17,10 @@ interface PaymentProcessingProps {
     supportUrl?: string;
 }
 
-export const CoinmarketDetailBuyPaymentProcessing = ({ supportUrl }: PaymentProcessingProps) => (
+export const TradingDetailBuyPaymentProcessing = ({ supportUrl }: PaymentProcessingProps) => (
     <Wrapper>
         <Spinner />
-        <H4 data-testid="@coinmarket/transaction/detail/status" margin={{ top: spacings.xl }}>
+        <H4 data-testid="@trading/transaction/detail/status" margin={{ top: spacings.xl }}>
             <Translation id="TR_BUY_DETAIL_PENDING_TITLE" />
         </H4>
         {supportUrl && (

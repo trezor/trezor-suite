@@ -10,19 +10,19 @@ import { amountToSmallestUnit, getFiatRateKey, toFiatCurrency } from '@suite-com
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
+import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 import {
     cryptoIdToSymbol,
     mapTestnetSymbol,
-    getCoinmarketNetworkDecimals,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+    getTradingNetworkDecimals,
+} from 'src/utils/wallet/trading/tradingUtils';
 
-interface CoinmarketBalanceProps {
-    sendCryptoSelect?: CoinmarketAccountOptionsGroupOptionProps;
+interface TradingBalanceProps {
+    sendCryptoSelect?: TradingAccountOptionsGroupOptionProps;
     fiatCurrency?: FiatCurrencyCode;
 }
 
-interface CoinmarketBalanceReturnProps {
+interface TradingBalanceReturnProps {
     fiatValue: string | null;
     fiatRate: Rate | undefined;
     accountBalance: string;
@@ -33,10 +33,10 @@ interface CoinmarketBalanceReturnProps {
     fiatRatesUpdater: (value: FiatCurrencyCode | undefined) => Promise<FiatRatesResult | null>;
 }
 
-export const useCoinmarketFiatValues = ({
+export const useTradingFiatValues = ({
     sendCryptoSelect,
     fiatCurrency,
-}: CoinmarketBalanceProps): CoinmarketBalanceReturnProps | null => {
+}: TradingBalanceProps): TradingBalanceReturnProps | null => {
     const dispatch = useDispatch();
     const defaultCryptoSymbol = 'btc';
     const symbol = sendCryptoSelect
@@ -91,7 +91,7 @@ export const useCoinmarketFiatValues = ({
 
     if (!balance || !fiatCurrency) return null;
 
-    const decimals = getCoinmarketNetworkDecimals({
+    const decimals = getTradingNetworkDecimals({
         sendCryptoSelect,
         network,
     });

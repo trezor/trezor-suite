@@ -3,21 +3,21 @@ import styled from 'styled-components';
 import { AssetLogo } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
-import { CoinmarketCoinLogoProps } from 'src/types/coinmarket/coinmarket';
+import { TradingCoinLogoProps } from 'src/types/trading/trading';
 import {
     cryptoIdToNetwork,
     isCryptoIdForNativeToken,
     parseCryptoId,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+} from 'src/utils/wallet/trading/tradingUtils';
 
 const Wrapper = styled.div``;
 
-export const CoinmarketCoinLogo = ({
+export const TradingCoinLogo = ({
     cryptoId,
     size = 24,
     margin,
     className,
-}: CoinmarketCoinLogoProps) => {
+}: TradingCoinLogoProps) => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const network = cryptoIdToNetwork(cryptoId);
 

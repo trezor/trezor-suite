@@ -4,19 +4,19 @@ import { Button, Column, Divider, InfoItem, Spinner, Text } from '@trezor/compon
 import { spacings } from '@trezor/theme';
 import type { TradingExchangeType } from '@suite-common/invity';
 
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { AccountLabeling, Translation } from 'src/components/suite';
-import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 
-export const CoinmarketOfferExchangeSend = () => {
+export const TradingOfferExchangeSend = () => {
     const { device, account, callInProgress, selectedQuote, exchangeInfo, sendTransaction, trade } =
-        useCoinmarketFormContext<TradingExchangeType>();
-    useCoinmarketWatchTrade({
+        useTradingFormContext<TradingExchangeType>();
+    useTradingWatchTrade({
         account,
         trade,
     });
-    const { navigateToExchangeDetail } = useCoinmarketNavigation(account);
+    const { navigateToExchangeDetail } = useTradingNavigation(account);
 
     const exchangeTrade = trade?.data || selectedQuote;
 
@@ -48,7 +48,7 @@ export const CoinmarketOfferExchangeSend = () => {
                     <Column margin={{ top: 'auto' }}>
                         <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                         <Button
-                            data-testid="@coinmarket/offer/exchange/confirm-on-trezor-and-send"
+                            data-testid="@trading/offer/exchange/confirm-on-trezor-and-send"
                             isLoading={callInProgress}
                             isDisabled={!device?.connected}
                             onClick={sendTransaction}

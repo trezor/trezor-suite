@@ -24,10 +24,10 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import type { TradingExchangeType } from '@suite-common/invity';
 
 import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/coinmarket/form';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
+import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
 
 const BreakableValue = styled.span`
     word-break: break-all;
@@ -72,7 +72,7 @@ const formatCryptoAmountAsAmount = (amount: number, baseAmount: number, decimals
     return amount.toFixed(digits);
 };
 
-export const CoinmarketOfferExchangeSendSwap = () => {
+export const TradingOfferExchangeSendSwap = () => {
     const {
         device,
         account,
@@ -82,15 +82,15 @@ export const CoinmarketOfferExchangeSendSwap = () => {
         confirmTrade,
         sendTransaction,
         getValues,
-    } = useCoinmarketFormContext<TradingExchangeType>();
-    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
+    } = useTradingFormContext<TradingExchangeType>();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage ?? '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
     const [customSlippageError, setCustomSlippageError] = useState<
         (FieldError & { message: TranslationKey }) | undefined
     >();
     const sendCryptoSelect = getValues(FORM_SEND_CRYPTO_CURRENCY_SELECT);
-    const decimals = getCoinmarketNetworkDecimals({
+    const decimals = getTradingNetworkDecimals({
         sendCryptoSelect,
     });
 

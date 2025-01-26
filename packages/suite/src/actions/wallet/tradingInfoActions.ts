@@ -1,26 +1,26 @@
 import { InfoResponse } from 'invity-api';
 
-import { COINMARKET_INFO } from 'src/actions/wallet/constants';
-import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
+import { TRADING_INFO } from 'src/actions/wallet/constants';
+import { TradingPaymentMethodListProps } from 'src/types/trading/trading';
 
-export type CoinmarketInfoAction =
+export type TradingInfoAction =
     | {
-          type: typeof COINMARKET_INFO.SAVE_INFO;
+          type: typeof TRADING_INFO.SAVE_INFO;
           info: InfoResponse;
       }
     | {
-          type: typeof COINMARKET_INFO.SAVE_PAYMENT_METHODS;
-          paymentMethods: CoinmarketPaymentMethodListProps[];
+          type: typeof TRADING_INFO.SAVE_PAYMENT_METHODS;
+          paymentMethods: TradingPaymentMethodListProps[];
       };
 
-export const saveInfo = (info: InfoResponse): CoinmarketInfoAction => ({
-    type: COINMARKET_INFO.SAVE_INFO,
+export const saveInfo = (info: InfoResponse): TradingInfoAction => ({
+    type: TRADING_INFO.SAVE_INFO,
     info,
 });
 
 export const savePaymentMethods = (
-    paymentMethods: CoinmarketPaymentMethodListProps[],
-): CoinmarketInfoAction => ({
-    type: COINMARKET_INFO.SAVE_PAYMENT_METHODS,
+    paymentMethods: TradingPaymentMethodListProps[],
+): TradingInfoAction => ({
+    type: TRADING_INFO.SAVE_PAYMENT_METHODS,
     paymentMethods,
 });

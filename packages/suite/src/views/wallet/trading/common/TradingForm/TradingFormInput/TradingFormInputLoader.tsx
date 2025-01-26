@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Spinner, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, spacingsPx, zIndices } from '@trezor/theme';
 
-const CoinmarketFormInputLoaderWrapper = styled.div<{ $elevation: Elevation }>`
+const TradingFormInputLoaderWrapper = styled.div<{ $elevation: Elevation }>`
     display: flex;
     align-items: center;
     position: absolute;
@@ -17,12 +17,12 @@ const CoinmarketFormInputLoaderWrapper = styled.div<{ $elevation: Elevation }>`
     padding: 0 ${spacingsPx.md};
 `;
 
-export const CoinmarketFormInputLoader = () => {
+export const TradingFormInputLoader = () => {
     const { elevation } = useElevation();
 
     return (
-        <CoinmarketFormInputLoaderWrapper $elevation={elevation}>
+        <TradingFormInputLoaderWrapper $elevation={elevation}>
             <Spinner size={24} isGrey={false} />
-        </CoinmarketFormInputLoaderWrapper>
+        </TradingFormInputLoaderWrapper>
     );
 };

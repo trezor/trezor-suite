@@ -66,32 +66,32 @@ export const TradeActions = ({
                     <HeaderActionButton
                         icon="currencyCircleDollar"
                         onClick={() => {
-                            goToWithAnalytics('wallet-coinmarket-buy', {
+                            goToWithAnalytics('wallet-trading-buy', {
                                 preserveParams: true,
                             });
                         }}
-                        data-testid="@wallet/menu/wallet-coinmarket-buy"
+                        data-testid="@wallet/menu/wallet-trading-buy"
                         variant="tertiary"
                         size="small"
                         isDisabled={isAccountLoading}
                     >
-                        <Translation id="TR_COINMARKET_BUY_AND_SELL" />
+                        <Translation id="TR_TRADING_BUY_AND_SELL" />
                     </HeaderActionButton>
                 </ShowOnLargeDesktopWrapper>
                 {!hasBitcoinOnlyFirmware(device) && (
                     <HeaderActionButton
                         icon="arrowsLeftRight"
                         onClick={() => {
-                            goToWithAnalytics('wallet-coinmarket-exchange', {
+                            goToWithAnalytics('wallet-trading-exchange', {
                                 preserveParams: true,
                             });
                         }}
-                        data-testid="@wallet/menu/wallet-coinmarket-exchange"
+                        data-testid="@wallet/menu/wallet-trading-exchange"
                         variant="tertiary"
                         size="small"
                         isDisabled={isAccountLoading}
                     >
-                        <Translation id="TR_COINMARKET_SWAP" />
+                        <Translation id="TR_TRADING_SWAP" />
                     </HeaderActionButton>
                 )}
             </AppNavigationTooltip>

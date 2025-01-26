@@ -1,6 +1,6 @@
-import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
-import { CoinmarketTransactionsList } from 'src/views/wallet/coinmarket/common/CoinmarketTransactions/CoinmarketTransactionsList';
+import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
+import { TradingTransactionsList } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsList';
 
-export const CoinmarketTransactions = () => (
-    <CoinmarketContainer SectionComponent={CoinmarketTransactionsList} />
+export const TradingTransactions = () => (
+    <TradingContainer SectionComponent={TradingTransactionsList} />
 );

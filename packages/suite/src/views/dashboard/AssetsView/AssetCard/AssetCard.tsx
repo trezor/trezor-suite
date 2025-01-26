@@ -35,7 +35,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
-import { CoinmarketBuyButton } from '../CoinmarketBuyButton';
+import { TradingBuyButton } from '../TradingBuyButton';
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
@@ -214,7 +214,7 @@ export const AssetCard = ({
                         >
                             <TrendTicker symbol={symbol} />
                         </InfoItem>
-                        <CoinmarketBuyButton
+                        <TradingBuyButton
                             symbol={symbol}
                             data-testid={`@dashboard/asset/${symbol}/buy-button`}
                         />

@@ -24,18 +24,18 @@ import { BigNumber } from '@trezor/utils';
 import { regional, type TradingTradeType, type TradingType } from '@suite-common/invity';
 
 import { Account } from 'src/types/wallet';
-import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
+import { ExtendedMessageDescriptor, Route, TrezorDevice } from 'src/types/suite';
 import {
-    CoinmarketAccountOptionsGroupOptionProps,
-    CoinmarketAccountsOptionsGroupProps,
-    CoinmarketBuildAccountOptionsProps,
-    CoinmarketGetAmountLabelsProps,
-    CoinmarketGetAmountLabelsReturnProps,
-    CoinmarketGetSortedAccountsProps,
-    CoinmarketTradeBuySellDetailMapProps,
-    CoinmarketTradeBuySellType,
-    CoinmarketTradeDetailMapProps,
-} from 'src/types/coinmarket/coinmarket';
+    TradingAccountOptionsGroupOptionProps,
+    TradingAccountsOptionsGroupProps,
+    TradingBuildAccountOptionsProps,
+    TradingGetAmountLabelsProps,
+    TradingGetAmountLabelsReturnProps,
+    TradingGetSortedAccountsProps,
+    TradingTradeBuySellDetailMapProps,
+    TradingTradeBuySellType,
+    TradingTradeDetailMapProps,
+} from 'src/types/trading/trading';
 
 export const cryptoPlatformSeparator = '--';
 /**
@@ -82,15 +82,15 @@ export const isCryptoIdForNativeToken = (cryptoId: CryptoId) => {
     return contractAddress === contractAddressForNativeToken;
 };
 
-export interface CoinmarketGetDecimalsProps {
-    sendCryptoSelect?: CoinmarketAccountOptionsGroupOptionProps;
+export interface TradingGetDecimalsProps {
+    sendCryptoSelect?: TradingAccountOptionsGroupOptionProps;
     network?: Network | null;
 }
 
-export const getCoinmarketNetworkDecimals = ({
+export const getTradingNetworkDecimals = ({
     sendCryptoSelect,
     network,
-}: CoinmarketGetDecimalsProps) => {
+}: TradingGetDecimalsProps) => {
     if (sendCryptoSelect) {
         return sendCryptoSelect.decimals;
     }
@@ -247,8 +247,8 @@ export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
     return { tag, infoNote };
 };
 
-export const coinmarketGetSuccessQuotes = <T extends TradingType>(
-    quotes: CoinmarketTradeDetailMapProps[T][] | undefined,
+export const tradingGetSuccessQuotes = <T extends TradingType>(
+    quotes: TradingTradeDetailMapProps[T][] | undefined,
 ) => (quotes ? quotes.filter(quote => quote.error === undefined) : undefined);
 
 export const getDefaultCountry = (country: string = regional.UNKNOWN_COUNTRY) => {
@@ -266,15 +266,15 @@ export const getDefaultCountry = (country: string = regional.UNKNOWN_COUNTRY) =>
     };
 };
 
-export const filterQuotesAccordingTags = <T extends CoinmarketTradeBuySellType>(
-    allQuotes: CoinmarketTradeBuySellDetailMapProps[T][],
+export const filterQuotesAccordingTags = <T extends TradingTradeBuySellType>(
+    allQuotes: TradingTradeBuySellDetailMapProps[T][],
 ) => allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
 
 // fill orderId for all, paymentId for sell and buy, quoteId for exchange
 export const addIdsToQuotes = <T extends TradingType>(
-    allQuotes: CoinmarketTradeDetailMapProps[T][] | undefined,
+    allQuotes: TradingTradeDetailMapProps[T][] | undefined,
     type: TradingType,
-): CoinmarketTradeDetailMapProps[T][] => {
+): TradingTradeDetailMapProps[T][] => {
     if (!allQuotes) allQuotes = [];
 
     allQuotes.forEach(q => {
@@ -317,10 +317,10 @@ export const getBestRatedQuote = (
     return bestRatedQuote;
 };
 
-export const coinmarketGetSortedAccounts = ({
+export const tradingGetSortedAccounts = ({
     accounts,
     deviceState,
-}: CoinmarketGetSortedAccountsProps) => {
+}: TradingGetSortedAccountsProps) => {
     if (!deviceState) return [];
 
     return sortByCoin(
@@ -330,20 +330,20 @@ export const coinmarketGetSortedAccounts = ({
     );
 };
 
-export const coinmarketBuildAccountOptions = ({
+export const tradingBuildAccountOptions = ({
     deviceState,
     accounts,
     accountLabels,
     tokenDefinitions,
     supportedCryptoIds,
     getDefaultAccountLabel,
-}: CoinmarketBuildAccountOptionsProps): CoinmarketAccountsOptionsGroupProps[] => {
-    const accountsSorted = coinmarketGetSortedAccounts({
+}: TradingBuildAccountOptionsProps): TradingAccountsOptionsGroupProps[] => {
+    const accountsSorted = tradingGetSortedAccounts({
         accounts,
         deviceState,
     });
 
-    const groups: CoinmarketAccountsOptionsGroupProps[] = [];
+    const groups: TradingAccountsOptionsGroupProps[] = [];
 
     accountsSorted.forEach(account => {
         const {
@@ -370,7 +370,7 @@ export const coinmarketBuildAccountOptions = ({
             });
 
         const accountDecimals = network.decimals;
-        const option: CoinmarketAccountOptionsGroupOptionProps = {
+        const option: TradingAccountOptionsGroupOptionProps = {
             value: network.tradeCryptoId as CryptoId,
             label: getNetworkDisplaySymbol(accountSymbol),
             cryptoName: getNetworkDisplaySymbolName(accountSymbol),
@@ -379,7 +379,7 @@ export const coinmarketBuildAccountOptions = ({
             accountType: account.accountType,
             decimals: accountDecimals,
         };
-        const options: CoinmarketAccountOptionsGroupOptionProps[] = [option];
+        const options: TradingAccountOptionsGroupOptionProps[] = [option];
 
         const hasNativeToken = options.length > 0;
 
@@ -441,17 +441,17 @@ export const coinmarketBuildAccountOptions = ({
     return groups.filter(group => group.options.length > 0);
 };
 
-export const coinmarketGetAmountLabels = ({
+export const tradingGetAmountLabels = ({
     type,
     amountInCrypto,
-}: CoinmarketGetAmountLabelsProps): CoinmarketGetAmountLabelsReturnProps => {
-    const youGet = 'TR_COINMARKET_YOU_GET';
-    const youPay = 'TR_COINMARKET_YOU_PAY';
-    const youWillGet = 'TR_COINMARKET_YOU_WILL_GET';
-    const youWillPay = 'TR_COINMARKET_YOU_WILL_PAY';
-    const youReceive = 'TR_COINMARKET_YOU_RECEIVE';
-    const exchange = 'TR_COINMARKET_SWAP';
-    const exchangeAmount = 'TR_COINMARKET_SWAP_AMOUNT';
+}: TradingGetAmountLabelsProps): TradingGetAmountLabelsReturnProps => {
+    const youGet = 'TR_TRADING_YOU_GET';
+    const youPay = 'TR_TRADING_YOU_PAY';
+    const youWillGet = 'TR_TRADING_YOU_WILL_GET';
+    const youWillPay = 'TR_TRADING_YOU_WILL_PAY';
+    const youReceive = 'TR_TRADING_YOU_RECEIVE';
+    const exchange = 'TR_TRADING_SWAP';
+    const exchangeAmount = 'TR_TRADING_SWAP_AMOUNT';
 
     if (type === 'exchange') {
         return {
@@ -485,7 +485,7 @@ export const coinmarketGetAmountLabels = ({
 /**
  * Rounding up to two decimal places
  */
-export const coinmarketGetRoundedFiatAmount = (amount: string | undefined): string => {
+export const tradingGetRoundedFiatAmount = (amount: string | undefined): string => {
     if (!amount) return '';
 
     const numberAmount = new BigNumber(amount);
@@ -495,19 +495,16 @@ export const coinmarketGetRoundedFiatAmount = (amount: string | undefined): stri
     return '';
 };
 
-export const coinmarketGetAccountLabel = (label: string, shouldSendInSats: boolean | undefined) =>
+export const tradingGetAccountLabel = (label: string, shouldSendInSats: boolean | undefined) =>
     label === 'BTC' && shouldSendInSats ? 'sat' : label;
 
-export const coinmarketGetSectionActionLabel = (
+export const tradingGetSectionActionLabel = (
     type: TradingType,
-): Extract<
-    ExtendedMessageDescriptor['id'],
-    'TR_BUY' | 'TR_COINMARKET_SELL' | 'TR_COINMARKET_SWAP'
-> => {
+): Extract<ExtendedMessageDescriptor['id'], 'TR_BUY' | 'TR_TRADING_SELL' | 'TR_TRADING_SWAP'> => {
     if (type === 'buy') return 'TR_BUY';
-    if (type === 'sell') return 'TR_COINMARKET_SELL';
+    if (type === 'sell') return 'TR_TRADING_SELL';
 
-    return 'TR_COINMARKET_SWAP';
+    return 'TR_TRADING_SWAP';
 };
 
 interface GetAddressAndTokenFromAccountOptionsGroupProps {
@@ -516,7 +513,7 @@ interface GetAddressAndTokenFromAccountOptionsGroupProps {
 }
 
 export const getAddressAndTokenFromAccountOptionsGroupProps = (
-    selected: CoinmarketAccountOptionsGroupOptionProps | undefined,
+    selected: TradingAccountOptionsGroupOptionProps | undefined,
 ): GetAddressAndTokenFromAccountOptionsGroupProps => {
     if (!selected) {
         return { address: '', token: null };
@@ -542,16 +539,16 @@ export const getAddressAndTokenFromAccountOptionsGroupProps = (
 
 export const getTradeTypeByRoute = (
     routeName: Route['name'] | undefined,
-): CoinmarketTradeType | undefined => {
-    if (routeName?.startsWith('wallet-coinmarket-buy')) {
+): TradingType | undefined => {
+    if (routeName?.startsWith('wallet-trading-buy')) {
         return 'buy';
     }
 
-    if (routeName?.startsWith('wallet-coinmarket-sell')) {
+    if (routeName?.startsWith('wallet-trading-sell')) {
         return 'sell';
     }
 
-    if (routeName?.startsWith('wallet-coinmarket-exchange')) {
+    if (routeName?.startsWith('wallet-trading-exchange')) {
         return 'exchange';
     }
 };

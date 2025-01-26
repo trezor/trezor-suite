@@ -8,8 +8,8 @@ import { fontWeights, spacingsPx, typography } from '@trezor/theme';
 import type { TradingSellType } from '@suite-common/invity';
 
 import { QuestionTooltip, Translation } from 'src/components/suite';
-import { formatIban } from 'src/utils/wallet/coinmarket/sellUtils';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { formatIban } from 'src/utils/wallet/trading/sellUtils';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -115,10 +115,10 @@ const IconWrapper = styled.div`
     margin-right: ${spacingsPx.xxxs};
 `;
 
-export const CoinmarketOfferSellBankAccount = () => {
+export const TradingOfferSellBankAccount = () => {
     const theme = useTheme();
     const { callInProgress, confirmTrade, addBankAccount, selectedQuote } =
-        useCoinmarketFormContext<TradingSellType>();
+        useTradingFormContext<TradingSellType>();
     const [bankAccount, setBankAccount] = useState<BankAccount | undefined>(
         selectedQuote?.bankAccounts ? selectedQuote?.bankAccounts[0] : undefined,
     );

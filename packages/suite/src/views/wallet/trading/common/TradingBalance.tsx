@@ -6,23 +6,23 @@ import { Text } from '@trezor/components';
 import { FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { CoinmarketAccountOptionsGroupOptionProps } from 'src/types/coinmarket/coinmarket';
+import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 import {
-    coinmarketGetAccountLabel,
-    getCoinmarketNetworkDecimals,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+    tradingGetAccountLabel,
+    getTradingNetworkDecimals,
+} from 'src/utils/wallet/trading/tradingUtils';
 
-interface CoinmarketBalanceProps {
+interface TradingBalanceProps {
     balance: string | undefined;
     symbol: NetworkSymbol;
     displaySymbol: string | undefined;
     tokenAddress?: TokenAddress | undefined;
     showOnlyAmount?: boolean;
     amountInCrypto?: boolean;
-    sendCryptoSelect?: CoinmarketAccountOptionsGroupOptionProps;
+    sendCryptoSelect?: TradingAccountOptionsGroupOptionProps;
 }
 
-export const CoinmarketBalance = ({
+export const TradingBalance = ({
     balance, // expects a value in full units (BTC not sats)
     symbol,
     displaySymbol,
@@ -30,10 +30,10 @@ export const CoinmarketBalance = ({
     showOnlyAmount,
     amountInCrypto,
     sendCryptoSelect,
-}: CoinmarketBalanceProps) => {
+}: TradingBalanceProps) => {
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
-    const balanceCurrency = coinmarketGetAccountLabel(displaySymbol ?? '', shouldSendInSats);
-    const networkDecimals = getCoinmarketNetworkDecimals({
+    const balanceCurrency = tradingGetAccountLabel(displaySymbol ?? '', shouldSendInSats);
+    const networkDecimals = getTradingNetworkDecimals({
         sendCryptoSelect,
         network: getNetwork(symbol),
     });

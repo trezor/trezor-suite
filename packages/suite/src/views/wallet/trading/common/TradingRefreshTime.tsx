@@ -38,19 +38,19 @@ const RefreshTime = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-interface CoinmarketRefreshTimeProps {
+interface TradingRefreshTimeProps {
     isLoading: boolean;
     seconds: number;
     refetchInterval: number;
     label: ReactElement;
 }
 
-export const CoinmarketRefreshTime = ({
+export const TradingRefreshTime = ({
     isLoading,
     seconds,
     refetchInterval,
     label,
-}: CoinmarketRefreshTimeProps) => {
+}: TradingRefreshTimeProps) => {
     const remaining = refetchInterval - seconds;
     const progress = (remaining / refetchInterval) * 100;
 
@@ -59,11 +59,11 @@ export const CoinmarketRefreshTime = ({
             {isLoading ? (
                 <Spinner size={15} />
             ) : (
-                <Wrapper data-testid="@coinmarket/refresh-time">
-                    <ProgressPieWrap data-testid="@coinmarket/refresh-time-pie">
+                <Wrapper data-testid="@trading/refresh-time">
+                    <ProgressPieWrap data-testid="@trading/refresh-time-pie">
                         <ProgressPie valueInPercents={progress} />
                     </ProgressPieWrap>
-                    <TimerText data-testid="@coinmarket/refresh-time-text">
+                    <TimerText data-testid="@trading/refresh-time-text">
                         <RefreshLabel>{label}</RefreshLabel>
                         <RefreshTime>{`0:${remaining < 10 ? '0' : ''}${remaining}`}</RefreshTime>
                     </TimerText>

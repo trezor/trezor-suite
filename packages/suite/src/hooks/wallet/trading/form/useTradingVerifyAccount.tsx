@@ -13,15 +13,15 @@ import {
     cryptoIdToSymbol,
     getUnusedAddressFromAccount,
     parseCryptoId,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+} from 'src/utils/wallet/trading/tradingUtils';
 import {
-    CoinmarketAccountType,
-    CoinmarketGetTranslationIdsProps,
-    CoinmarketVerifyAccountProps,
-    CoinmarketVerifyAccountReturnProps,
-    CoinmarketVerifyFormAccountOptionProps,
-    CoinmarketVerifyFormProps,
-} from 'src/types/coinmarket/coinmarketVerify';
+    TradingAccountType,
+    TradingGetTranslationIdsProps,
+    TradingVerifyAccountProps,
+    TradingVerifyAccountReturnProps,
+    TradingVerifyFormAccountOptionProps,
+    TradingVerifyFormProps,
+} from 'src/types/trading/tradingVerify';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 
@@ -29,8 +29,8 @@ const getSelectAccountOptions = (
     suiteReceiveAccounts: Account[] | undefined,
     device: TrezorDevice | undefined,
     isSupportedNetwork: boolean,
-): CoinmarketVerifyFormAccountOptionProps[] => {
-    const selectAccountOptions: CoinmarketVerifyFormAccountOptionProps[] = [];
+): TradingVerifyFormAccountOptionProps[] => {
+    const selectAccountOptions: TradingVerifyFormAccountOptionProps[] = [];
 
     suiteReceiveAccounts?.forEach(account => {
         selectAccountOptions.push({ type: 'SUITE', account });
@@ -46,9 +46,7 @@ const getSelectAccountOptions = (
     return selectAccountOptions;
 };
 
-const getTranslationIds = (
-    type: CoinmarketAccountType | undefined,
-): CoinmarketGetTranslationIdsProps => {
+const getTranslationIds = (type: TradingAccountType | undefined): TradingGetTranslationIdsProps => {
     if (type === 'NON_SUITE') {
         return {
             accountTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
@@ -62,9 +60,9 @@ const getTranslationIds = (
     };
 };
 
-const useCoinmarketVerifyAccount = ({
+const useTradingVerifyAccount = ({
     cryptoId,
-}: CoinmarketVerifyAccountProps): CoinmarketVerifyAccountReturnProps => {
+}: TradingVerifyAccountProps): TradingVerifyAccountReturnProps => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const accounts = useSelector(state => state.wallet.accounts);
     const isDebug = useSelector(selectIsDebugModeActive);
@@ -74,12 +72,12 @@ const useCoinmarketVerifyAccount = ({
 
     const { supportedMainnets, supportedTestnets } = useNetworkSupport();
 
-    const methods = useForm<CoinmarketVerifyFormProps>({
+    const methods = useForm<TradingVerifyFormProps>({
         mode: 'onChange',
     });
 
     const [selectedAccountOption, setSelectedAccountOption] = useState<
-        CoinmarketVerifyFormAccountOptionProps | undefined
+        TradingVerifyFormAccountOptionProps | undefined
     >();
 
     const networkId = cryptoId && parseCryptoId(cryptoId).networkId;
@@ -119,7 +117,7 @@ const useCoinmarketVerifyAccount = ({
     const addressDictionary = useAccountAddressDictionary(selectedAccountOption?.account);
     const accountAddress = address ? addressDictionary[address] : undefined;
 
-    const selectAccountOption = (option: CoinmarketVerifyFormAccountOptionProps) => {
+    const selectAccountOption = (option: TradingVerifyFormAccountOptionProps) => {
         setSelectedAccountOption(option);
         // setReceiveAccount(option.account);
         if (option.account) {
@@ -130,7 +128,7 @@ const useCoinmarketVerifyAccount = ({
         }
     };
 
-    const onChangeAccount = (account: CoinmarketVerifyFormAccountOptionProps) => {
+    const onChangeAccount = (account: TradingVerifyFormAccountOptionProps) => {
         if (account.type === 'ADD_SUITE' && device) {
             dispatch(
                 openModal({
@@ -176,4 +174,4 @@ const useCoinmarketVerifyAccount = ({
     };
 };
 
-export default useCoinmarketVerifyAccount;
+export default useTradingVerifyAccount;

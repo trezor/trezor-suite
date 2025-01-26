@@ -9,13 +9,13 @@ import type { TradingTradeType } from '@suite-common/invity';
 
 import {
     getCryptoQuoteAmountProps,
-    isCoinmarketBuyContext,
-    isCoinmarketSellContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+    isTradingBuyContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
 
 const Arrow = styled.div`
     display: flex;
@@ -29,19 +29,19 @@ const AmountsWrapper = styled.div`
     gap: ${spacingsPx.sm};
 `;
 
-interface CoinmarketFeaturedOffersAmountProps {
+interface TradingFeaturedOffersAmountProps {
     fromAmount: React.ReactNode;
     toAmount: React.ReactNode;
 }
 
-interface CoinmarketFeaturedOffersAmountsProps {
+interface TradingFeaturedOffersAmountsProps {
     quote: TradingTradeType;
 }
 
-const CoinmarketFeaturedOffersAmount = ({
+const TradingFeaturedOffersAmount = ({
     fromAmount,
     toAmount,
-}: CoinmarketFeaturedOffersAmountProps) => {
+}: TradingFeaturedOffersAmountProps) => {
     const theme = useTheme();
 
     return (
@@ -55,11 +55,9 @@ const CoinmarketFeaturedOffersAmount = ({
     );
 };
 
-export const CoinmarketFeaturedOffersAmounts = ({
-    quote,
-}: CoinmarketFeaturedOffersAmountsProps) => {
-    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
-    const context = useCoinmarketFormContext();
+export const TradingFeaturedOffersAmounts = ({ quote }: TradingFeaturedOffersAmountsProps) => {
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const context = useTradingFormContext();
     const quoteProps = getCryptoQuoteAmountProps(quote, context);
 
     if (!quoteProps?.receiveCurrency) return null;
@@ -67,11 +65,11 @@ export const CoinmarketFeaturedOffersAmounts = ({
     const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =
         cryptoIdToSymbolAndContractAddress(quoteProps.receiveCurrency);
 
-    if (isCoinmarketBuyContext(context)) {
+    if (isTradingBuyContext(context)) {
         return (
-            <CoinmarketFeaturedOffersAmount
+            <TradingFeaturedOffersAmount
                 fromAmount={
-                    <CoinmarketFiatAmount
+                    <TradingFiatAmount
                         amount={quoteProps.sendAmount}
                         currency={quoteProps.sendCurrency}
                     />
@@ -88,9 +86,9 @@ export const CoinmarketFeaturedOffersAmounts = ({
         );
     }
 
-    if (isCoinmarketSellContext(context)) {
+    if (isTradingSellContext(context)) {
         return (
-            <CoinmarketFeaturedOffersAmount
+            <TradingFeaturedOffersAmount
                 fromAmount={
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
@@ -100,7 +98,7 @@ export const CoinmarketFeaturedOffersAmounts = ({
                     />
                 }
                 toAmount={
-                    <CoinmarketFiatAmount
+                    <TradingFiatAmount
                         amount={quoteProps.sendAmount}
                         currency={quoteProps.sendCurrency}
                     />
@@ -117,7 +115,7 @@ export const CoinmarketFeaturedOffersAmounts = ({
         cryptoIdToSymbolAndContractAddress(sendCurrencyExchange);
 
     return (
-        <CoinmarketFeaturedOffersAmount
+        <TradingFeaturedOffersAmount
             fromAmount={
                 <FormattedCryptoAmount
                     disableHiddenPlaceholder

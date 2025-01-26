@@ -8,45 +8,45 @@ import { AccountAddress } from '@trezor/connect';
 import type { Account } from 'src/types/wallet';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 
-export interface CoinmarketVerifyFormProps {
+export interface TradingVerifyFormProps {
     address?: string;
     extraField?: string;
 }
 
-export type CoinmarketAccountType = 'SUITE' | 'ADD_SUITE' | 'NON_SUITE';
-export interface CoinmarketVerifyFormAccountOptionProps {
-    type: CoinmarketAccountType;
+export type TradingAccountType = 'SUITE' | 'ADD_SUITE' | 'NON_SUITE';
+export interface TradingVerifyFormAccountOptionProps {
+    type: TradingAccountType;
     account?: Account;
 }
 
-export interface CoinmarketVerifyAccountProps {
+export interface TradingVerifyAccountProps {
     cryptoId: CryptoId | undefined;
 }
 
-export interface CoinmarketGetTranslationIdsProps {
+export interface TradingGetTranslationIdsProps {
     accountTooltipTranslationId: ExtendedMessageDescriptor['id'];
     addressTooltipTranslationId: ExtendedMessageDescriptor['id'];
 }
 
-export interface CoinmarketVerifyAccountReturnProps {
-    form: UseFormReturn<CoinmarketVerifyFormProps>;
+export interface TradingVerifyAccountReturnProps {
+    form: UseFormReturn<TradingVerifyFormProps>;
     accountAddress: AccountAddress | Pick<AccountAddress, 'path' | 'address'> | undefined;
     receiveNetwork: CryptoId | undefined;
-    selectAccountOptions: CoinmarketVerifyFormAccountOptionProps[];
-    selectedAccountOption?: CoinmarketVerifyFormAccountOptionProps;
+    selectAccountOptions: TradingVerifyFormAccountOptionProps[];
+    selectedAccountOption?: TradingVerifyFormAccountOptionProps;
     isMenuOpen: boolean | undefined;
     getTranslationIds: (
-        type: CoinmarketVerifyFormAccountOptionProps['type'] | undefined,
-    ) => CoinmarketGetTranslationIdsProps;
-    onChangeAccount: (account: CoinmarketVerifyFormAccountOptionProps) => void;
+        type: TradingVerifyFormAccountOptionProps['type'] | undefined,
+    ) => TradingGetTranslationIdsProps;
+    onChangeAccount: (account: TradingVerifyFormAccountOptionProps) => void;
 }
 
-export type CoinmarketVerifyOptionsProps = { receiveNetwork: CryptoId; label: ReactNode } & Pick<
-    CoinmarketVerifyAccountReturnProps,
+export type TradingVerifyOptionsProps = { receiveNetwork: CryptoId; label: ReactNode } & Pick<
+    TradingVerifyAccountReturnProps,
     'selectAccountOptions' | 'selectedAccountOption' | 'onChangeAccount' | 'isMenuOpen'
 >;
 
-export interface CoinmarketVerifyOptionsItemProps {
-    option: CoinmarketVerifyFormAccountOptionProps;
+export interface TradingVerifyOptionsItemProps {
+    option: TradingVerifyFormAccountOptionProps;
     receiveNetwork: CryptoId;
 }

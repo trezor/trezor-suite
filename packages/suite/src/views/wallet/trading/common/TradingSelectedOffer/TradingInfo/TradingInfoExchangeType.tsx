@@ -4,17 +4,17 @@ import { Row, Tooltip, Text } from '@trezor/components';
 import type { TradingTradeType } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketExchangeProvidersInfoProps } from 'src/types/coinmarket/coinmarket';
+import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 
-interface CoinmarketInfoExchangeTypeProps {
+interface TradingInfoExchangeTypeProps {
     selectedQuote: TradingTradeType;
-    providers: CoinmarketExchangeProvidersInfoProps;
+    providers: TradingExchangeProvidersInfoProps;
 }
 
-export const CoinmarketInfoExchangeType = ({
+export const TradingInfoExchangeType = ({
     selectedQuote,
     providers,
-}: CoinmarketInfoExchangeTypeProps) => {
+}: TradingInfoExchangeTypeProps) => {
     const exchangeQuote = selectedQuote as ExchangeTrade;
 
     const provider =

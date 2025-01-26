@@ -7,29 +7,29 @@ import {
     FORM_EXCHANGE_CEX,
     FORM_EXCHANGE_DEX,
     FORM_EXCHANGE_TYPE,
-} from 'src/constants/wallet/coinmarket/form';
+} from 'src/constants/wallet/trading/form';
 import type {
-    CoinmarketExchangeFormProps,
+    TradingExchangeFormProps,
     ExchangeType,
     RateType,
-} from 'src/types/coinmarket/coinmarketForm';
-import { getCexQuotesByRateType } from 'src/utils/wallet/coinmarket/exchangeUtils';
+} from 'src/types/trading/tradingForm';
+import { getCexQuotesByRateType } from 'src/utils/wallet/trading/exchangeUtils';
 
-interface CoinmarketExchangeQuotesFilterProps {
+interface TradingExchangeQuotesFilterProps {
     quotes: ExchangeTrade[] | undefined;
     exchangeType: ExchangeType;
     rateType: RateType;
     exchangeInfo: any;
-    setValue: UseFormSetValue<CoinmarketExchangeFormProps>;
+    setValue: UseFormSetValue<TradingExchangeFormProps>;
 }
 
-export const useCoinmarketExchangeQuotesFilter = ({
+export const useTradingExchangeQuotesFilter = ({
     exchangeType,
     rateType,
     quotes,
     exchangeInfo,
     setValue,
-}: CoinmarketExchangeQuotesFilterProps) => {
+}: TradingExchangeQuotesFilterProps) => {
     const dexQuotes = useMemo(() => quotes?.filter(quote => quote.isDex), [quotes]);
     const cexQuotes = useMemo(
         () => getCexQuotesByRateType(rateType, quotes, exchangeInfo),

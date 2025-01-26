@@ -20,30 +20,30 @@ import {
     FORM_OUTPUT_FIAT,
     FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     FORM_SEND_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/coinmarket/form';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+} from 'src/constants/wallet/trading/form';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    CoinmarketBuyFormProps,
-    CoinmarketExchangeFormProps,
-    CoinmarketSellFormProps,
-    CoinmarketUseFormActionsReturnProps,
-} from 'src/types/coinmarket/coinmarketForm';
-import { CoinmarketFormInputCryptoSelect } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCryptoSelect';
-import { CoinmarketFormInputAccount } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputAccount';
-import { CoinmarketFormInputCountry } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputCountry';
-import { CoinmarketFormInputPaymentMethod } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputPaymentMethod';
-import { CoinmarketFormSwitcherExchangeRates } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormSwitcherExchangeRates';
-import { CoinmarketFormInputFiatCrypto } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputFiatCrypto/CoinmarketFormInputFiatCrypto';
-import { CoinmarketBalance } from 'src/views/wallet/coinmarket/common/CoinmarketBalance';
-import { getCoinmarketNetworkDecimals } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+    TradingBuyFormProps,
+    TradingExchangeFormProps,
+    TradingSellFormProps,
+    TradingUseFormActionsReturnProps,
+} from 'src/types/trading/tradingForm';
+import { TradingFormInputCryptoSelect } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCryptoSelect';
+import { TradingFormInputAccount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAccount';
+import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
+import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
+import { TradingFormSwitcherExchangeRates } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormSwitcherExchangeRates';
+import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
+import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
+import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 import {
-    isCoinmarketExchangeContext,
-    isCoinmarketSellContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+    isTradingExchangeContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
 import { Translation } from 'src/components/suite';
 
 const generateFractionButtons = (
-    helpers: CoinmarketUseFormActionsReturnProps,
+    helpers: TradingUseFormActionsReturnProps,
 ): FractionButtonProps[] => [
     {
         id: 'TR_FRACTION_BUTTONS_10_PERCENT',
@@ -70,10 +70,10 @@ const generateFractionButtons = (
     },
 ];
 
-export const CoinmarketFormInputs = () => {
-    const context = useCoinmarketFormContext();
+export const TradingFormInputs = () => {
+    const context = useTradingFormContext();
 
-    if (isCoinmarketSellContext(context)) {
+    if (isTradingSellContext(context)) {
         const {
             control,
             feeInfo,
@@ -93,18 +93,18 @@ export const CoinmarketFormInputs = () => {
         const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
         const outputAmount =
             shouldSendInSats && output.amount
-                ? formatAmount(output.amount, getCoinmarketNetworkDecimals({ sendCryptoSelect }))
+                ? formatAmount(output.amount, getTradingNetworkDecimals({ sendCryptoSelect }))
                 : output.amount;
 
         return (
             <>
-                <CoinmarketFormInputAccount<CoinmarketSellFormProps>
+                <TradingFormInputAccount<TradingSellFormProps>
                     accountSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                    label="TR_COINMARKET_YOU_SELL"
+                    label="TR_TRADING_YOU_SELL"
                     methods={{ ...context }}
                 />
                 <Column gap={spacings.xs}>
-                    <CoinmarketFormInputFiatCrypto<CoinmarketSellFormProps>
+                    <TradingFormInputFiatCrypto<TradingSellFormProps>
                         cryptoInputName={FORM_OUTPUT_AMOUNT}
                         fiatInputName={FORM_OUTPUT_FIAT}
                         cryptoSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
@@ -119,7 +119,7 @@ export const CoinmarketFormInputs = () => {
                                     <FractionButton key={button.id} {...button} />
                                 ))}
                             </Row>
-                            <CoinmarketBalance
+                            <TradingBalance
                                 balance={outputAmount}
                                 displaySymbol={sendCryptoSelect?.value}
                                 symbol={account.symbol}
@@ -146,13 +146,13 @@ export const CoinmarketFormInputs = () => {
                         />
                     </ElevationContext>
                 </Card>
-                <CoinmarketFormInputPaymentMethod label="TR_COINMARKET_RECEIVE_METHOD" />
-                <CoinmarketFormInputCountry label="TR_COINMARKET_COUNTRY" />
+                <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
+                <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
             </>
         );
     }
 
-    if (isCoinmarketExchangeContext(context)) {
+    if (isTradingExchangeContext(context)) {
         const {
             control,
             feeInfo,
@@ -174,18 +174,18 @@ export const CoinmarketFormInputs = () => {
         const supportedCryptoCurrencies = exchangeInfo?.buySymbols;
         const outputAmount =
             shouldSendInSats && output.amount
-                ? formatAmount(output.amount, getCoinmarketNetworkDecimals({ sendCryptoSelect }))
+                ? formatAmount(output.amount, getTradingNetworkDecimals({ sendCryptoSelect }))
                 : output.amount;
 
         return (
             <>
-                <CoinmarketFormInputAccount<CoinmarketExchangeFormProps>
+                <TradingFormInputAccount<TradingExchangeFormProps>
                     accountSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
                     label="TR_FROM"
                     methods={{ ...context }}
                 />
                 <Column gap={spacings.xs}>
-                    <CoinmarketFormInputFiatCrypto<CoinmarketExchangeFormProps>
+                    <TradingFormInputFiatCrypto<TradingExchangeFormProps>
                         cryptoInputName={FORM_OUTPUT_AMOUNT}
                         fiatInputName={FORM_OUTPUT_FIAT}
                         cryptoSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
@@ -200,7 +200,7 @@ export const CoinmarketFormInputs = () => {
                                     <FractionButton key={button.id} {...button} />
                                 ))}
                             </Row>
-                            <CoinmarketBalance
+                            <TradingBalance
                                 balance={outputAmount}
                                 displaySymbol={sendCryptoSelect?.value}
                                 symbol={account.symbol}
@@ -212,7 +212,7 @@ export const CoinmarketFormInputs = () => {
                         </Row>
                     )}
                 </Column>
-                <CoinmarketFormInputCryptoSelect<CoinmarketExchangeFormProps>
+                <TradingFormInputCryptoSelect<TradingExchangeFormProps>
                     label="TR_TO"
                     cryptoSelectName={FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
                     supportedCryptoCurrencies={supportedCryptoCurrencies}
@@ -233,7 +233,7 @@ export const CoinmarketFormInputs = () => {
                         />
                     </ElevationContext>
                 </Card>
-                <CoinmarketFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
+                <TradingFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
             </>
         );
     }
@@ -244,14 +244,14 @@ export const CoinmarketFormInputs = () => {
 
     return (
         <>
-            <CoinmarketFormInputCryptoSelect<CoinmarketBuyFormProps>
-                label="TR_COINMARKET_YOU_BUY"
+            <TradingFormInputCryptoSelect<TradingBuyFormProps>
+                label="TR_TRADING_YOU_BUY"
                 cryptoSelectName={FORM_CRYPTO_CURRENCY_SELECT}
                 supportedCryptoCurrencies={supportedCryptoCurrencies}
                 methods={{ ...context }}
                 isDisabled={hasBitcoinOnlyFirmware(device)}
             />
-            <CoinmarketFormInputFiatCrypto<CoinmarketBuyFormProps>
+            <TradingFormInputFiatCrypto<TradingBuyFormProps>
                 cryptoInputName={FORM_CRYPTO_INPUT}
                 fiatInputName={FORM_FIAT_INPUT}
                 cryptoSelectName={FORM_CRYPTO_CURRENCY_SELECT}
@@ -259,8 +259,8 @@ export const CoinmarketFormInputs = () => {
                 cryptoCurrencyLabel={cryptoSelect.value}
                 methods={{ ...context }}
             />
-            <CoinmarketFormInputPaymentMethod label="TR_COINMARKET_PAYMENT_METHOD" />
-            <CoinmarketFormInputCountry label="TR_COINMARKET_COUNTRY" />
+            <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
+            <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
         </>
     );
 };

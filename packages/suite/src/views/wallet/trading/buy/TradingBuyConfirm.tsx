@@ -1,22 +1,22 @@
-import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
-import { useCoinmarketBuyForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyForm';
-import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketSelectedOffer } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOffer';
-import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
+import { UseTradingProps } from 'src/types/trading/trading';
+import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
+import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingSelectedOffer } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOffer';
+import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 
-const CoinmarketBuyConfirmComponent = ({ selectedAccount }: UseCoinmarketProps) => {
-    const coinmarketBuyContextValues = useCoinmarketBuyForm({
+const TradingBuyConfirmComponent = ({ selectedAccount }: UseTradingProps) => {
+    const tradingBuyContextValues = useTradingBuyForm({
         selectedAccount,
         pageType: 'confirm',
     });
 
     return (
-        <CoinmarketFormContext.Provider value={coinmarketBuyContextValues}>
-            <CoinmarketSelectedOffer />
-        </CoinmarketFormContext.Provider>
+        <TradingFormContext.Provider value={tradingBuyContextValues}>
+            <TradingSelectedOffer />
+        </TradingFormContext.Provider>
     );
 };
 
-export const CoinmarketBuyConfirm = () => (
-    <CoinmarketContainer SectionComponent={CoinmarketBuyConfirmComponent} />
+export const TradingBuyConfirm = () => (
+    <TradingContainer SectionComponent={TradingBuyConfirmComponent} />
 );

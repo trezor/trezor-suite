@@ -5,27 +5,27 @@ import type { TradingBuyType } from '@suite-common/invity';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
-import { CoinmarketGetCryptoQuoteAmountProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
-import { CoinmarketDetailBuyPaymentPaymentSuccessful } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentSuccessful';
-import { CoinmarketDetailBuyPaymentFailed } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentFailed';
-import { CoinmarketDetailBuyPaymentProcessing } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentProcessing';
-import { CoinmarketDetailBuyPaymentWaitingForUser } from 'src/views/wallet/coinmarket/common/CoinmarketDetail/CoinmarketDetailBuy/CoinmarketDetailBuyPaymentWaitingForUser';
-import { CoinmarketWrapper } from 'src/views/wallet/coinmarket/common/CoinmarketWrapper';
+import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
+import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { TradingDetailBuyPaymentPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentSuccessful';
+import { TradingDetailBuyPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentFailed';
+import { TradingDetailBuyPaymentProcessing } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentProcessing';
+import { TradingDetailBuyPaymentWaitingForUser } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentWaitingForUser';
+import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
 const Wrapper = styled.div`
-    ${CoinmarketWrapper}
+    ${TradingWrapper}
 `;
 
-export const CoinmarketDetailBuy = () => {
-    const { trade, info, account } = useCoinmarketDetailContext<TradingBuyType>();
+export const TradingDetailBuy = () => {
+    const { trade, info, account } = useTradingDetailContext<TradingBuyType>();
     const dispatch = useDispatch();
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
-    // go to the default coinmarket page, the trade is shown there in the previous trades
+    // go to the default trading page, the trade is shown there in the previous trades
     if (!trade) {
         dispatch(
-            goto('wallet-coinmarket-buy', {
+            goto('wallet-trading-buy', {
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
@@ -49,7 +49,7 @@ export const CoinmarketDetailBuy = () => {
     const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
     const supportUrl = supportUrlTemplate?.replace('{{paymentId}}', trade?.data?.paymentId || '');
 
-    const quoteAmounts: CoinmarketGetCryptoQuoteAmountProps = {
+    const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
         amountInCrypto: trade?.data?.wantCrypto,
         sendAmount: trade?.data?.fiatStringAmount ?? '',
         sendCurrency: trade?.data?.fiatCurrency,
@@ -58,23 +58,23 @@ export const CoinmarketDetailBuy = () => {
     };
 
     return (
-        <Wrapper data-testid="@coinmarket/transaction/detail">
-            <Card data-testid="@coinmarket/transaction/detail/status-card">
+        <Wrapper data-testid="@trading/transaction/detail">
+            <Card data-testid="@trading/transaction/detail/status-card">
                 {showError && (
-                    <CoinmarketDetailBuyPaymentFailed account={account} supportUrl={supportUrl} />
+                    <TradingDetailBuyPaymentFailed account={account} supportUrl={supportUrl} />
                 )}
-                {showProcessing && <CoinmarketDetailBuyPaymentProcessing />}
+                {showProcessing && <TradingDetailBuyPaymentProcessing />}
                 {showWaiting && (
-                    <CoinmarketDetailBuyPaymentWaitingForUser
+                    <TradingDetailBuyPaymentWaitingForUser
                         trade={trade.data}
                         account={account}
                         providerName={provider?.brandName || provider?.companyName}
                     />
                 )}
-                {showSuccess && <CoinmarketDetailBuyPaymentPaymentSuccessful account={account} />}
+                {showSuccess && <TradingDetailBuyPaymentPaymentSuccessful account={account} />}
             </Card>
             <Card>
-                <CoinmarketSelectedOfferInfo
+                <TradingSelectedOfferInfo
                     account={account}
                     selectedQuote={trade.data}
                     transactionId={trade.key}

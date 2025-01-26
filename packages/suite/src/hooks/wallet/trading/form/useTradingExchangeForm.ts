@@ -18,53 +18,53 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { invityAPI, type TradingExchangeType } from '@suite-common/invity';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/coinmarketExchangeActions';
+import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/tradingExchangeActions';
 import {
     addIdsToQuotes,
-    coinmarketGetSuccessQuotes,
-    getCoinmarketNetworkDecimals,
+    tradingGetSuccessQuotes,
+    getTradingNetworkDecimals,
     getUnusedAddressFromAccount,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+} from 'src/utils/wallet/trading/tradingUtils';
 import {
-    coinmarketGetExchangeReceiveCryptoId,
+    tradingGetExchangeReceiveCryptoId,
     createQuoteLink,
     getAmountLimits,
     getSuccessQuotesOrdered,
-} from 'src/utils/wallet/coinmarket/exchangeUtils';
+} from 'src/utils/wallet/trading/exchangeUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
+import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
-import { UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
+import { TradeExchange } from 'src/types/wallet/tradingCommonTypes';
+import { UseTradingFormProps } from 'src/types/trading/trading';
 import {
-    CoinmarketExchangeFormContextProps,
-    CoinmarketExchangeFormProps,
-    CoinmarketExchangeStepType,
-} from 'src/types/coinmarket/coinmarketForm';
-import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/coinmarket/form';
-import { useCoinmarketExchangeFormDefaultValues } from 'src/hooks/wallet/coinmarket/form/useCoinmarketExchangeFormDefaultValues';
-import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
-import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRecomposeAndSign';
-import { useCoinmarketLoadData } from 'src/hooks/wallet/coinmarket/useCoinmarketLoadData';
-import { useCoinmarketComposeTransaction } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketComposeTransaction';
-import { useCoinmarketFormActions } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFormActions';
-import { useCoinmarketCurrencySwitcher } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketCurrencySwitcher';
-import { useCoinmarketModalCrypto } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketModalCrypto';
-import { useCoinmarketAccount } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketAccount';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
-import { useCoinmarketFiatValues } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketFiatValues';
+    TradingExchangeFormContextProps,
+    TradingExchangeFormProps,
+    TradingExchangeStepType,
+} from 'src/types/trading/tradingForm';
+import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/trading/form';
+import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
+import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
+import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
+import { useTradingRecomposeAndSign } from 'src/hooks/wallet/useTradingRecomposeAndSign';
+import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
+import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
+import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
+import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
+import { useTradingModalCrypto } from 'src/hooks/wallet/trading/form/common/useTradingModalCrypto';
+import { useTradingAccount } from 'src/hooks/wallet/trading/form/common/useTradingAccount';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
-import { useCoinmarketExchangeQuotesFilter } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketExchangeQuotesFilter';
-import { useCoinmarketPreviousRoute } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketPreviousRoute';
+import { useTradingExchangeQuotesFilter } from 'src/hooks/wallet/trading/form/common/useTradingExchangeQuotesFilter';
+import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 
-import { useCoinmarketInitializer } from './common/useCoinmarketInitializer';
+import { useTradingInitializer } from './common/useTradingInitializer';
 
-export const useCoinmarketExchangeForm = ({
+export const useTradingExchangeForm = ({
     selectedAccount,
     pageType = 'form',
-}: UseCoinmarketFormProps): CoinmarketExchangeFormContextProps => {
+}: UseTradingFormProps): TradingExchangeFormContextProps => {
     const type = 'exchange';
     const isNotFormPage = pageType !== 'form';
     const {
@@ -73,67 +73,66 @@ export const useCoinmarketExchangeForm = ({
         isFromRedirect,
         quotes,
         transactionId,
-        coinmarketAccount,
+        tradingAccount,
         selectedQuote,
         addressVerified,
-    } = useSelector(state => state.wallet.coinmarket.exchange);
-    const { cryptoIdToCoinSymbol } = useCoinmarketInfo();
-    const isPreviousRouteFromTradeSection = useCoinmarketPreviousRoute(type);
-    const [account, setAccount] = useCoinmarketAccount({
-        coinmarketAccount,
+    } = useSelector(state => state.wallet.trading.exchange);
+    const { cryptoIdToCoinSymbol } = useTradingInfo();
+    const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
+    const [account, setAccount] = useTradingAccount({
+        tradingAccount,
         selectedAccount,
-        shouldUseCoinmarketAccount: isPreviousRouteFromTradeSection,
+        shouldUseTradingAccount: isPreviousRouteFromTradeSection,
     });
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
-        useCoinmarketInitializer({ selectedAccount, pageType });
-    const { buildDefaultCryptoOption } = useCoinmarketInfo();
+        useTradingInitializer({ selectedAccount, pageType });
+    const { buildDefaultCryptoOption } = useTradingInfo();
 
     const dispatch = useDispatch();
     const {
         selectedFee: selectedFeeRecomposedAndSigned,
         composed,
         recomposeAndSign,
-    } = useCoinmarketRecomposeAndSign();
+    } = useTradingRecomposeAndSign();
 
     const [amountLimits, setAmountLimits] = useState<CryptoAmountLimitProps | undefined>(undefined);
 
     const [innerQuotes, setInnerQuotes] = useState<ExchangeTrade[] | undefined>(
-        coinmarketGetSuccessQuotes<TradingExchangeType>(quotes),
+        tradingGetSuccessQuotes<TradingExchangeType>(quotes),
     );
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
 
     const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
     const abortControllerRef = useRef<AbortController | null>(null);
 
-    const [exchangeStep, setExchangeStep] =
-        useState<CoinmarketExchangeStepType>('RECEIVING_ADDRESS');
+    const [exchangeStep, setExchangeStep] = useState<TradingExchangeStepType>('RECEIVING_ADDRESS');
     const {
         navigateToExchangeForm,
         navigateToExchangeDetail,
         navigateToExchangeOffers,
         navigateToExchangeConfirm,
-    } = useCoinmarketNavigation(account);
+    } = useTradingNavigation(account);
 
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const network = networks[account.symbol];
-    const trades = useSelector(state => state.wallet.coinmarket.trades);
+    const trades = useSelector(state => state.wallet.trading.trades);
     const trade = trades.find(
         trade =>
             trade.tradeType === 'exchange' && transactionId && trade.data.orderId === transactionId,
     ) as TradeExchange | undefined;
 
-    const { defaultCurrency, defaultValues } = useCoinmarketExchangeFormDefaultValues(account);
+    const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues(account);
     const exchangeDraftKey = 'coinmarket-exchange';
     const { getDraft, saveDraft, removeDraft } =
-        useFormDraft<CoinmarketExchangeFormProps>(exchangeDraftKey);
+        useFormDraft<TradingExchangeFormProps>(exchangeDraftKey);
     const draft = getDraft(exchangeDraftKey);
     const isDraft = !!draft;
-    const getDraftUpdated = (): CoinmarketExchangeFormProps | null => {
+    const getDraftUpdated = (): TradingExchangeFormProps | null => {
         if (!draft) return null;
         if (isPreviousRouteFromTradeSection) return draft;
 
-        const defaultReceiveCryptoSelect = coinmarketGetExchangeReceiveCryptoId(
+        const defaultReceiveCryptoSelect = tradingGetExchangeReceiveCryptoId(
             defaultValues.sendCryptoSelect?.value,
             draft.receiveCryptoSelect?.value,
         );
@@ -152,10 +151,10 @@ export const useCoinmarketExchangeForm = ({
         defaultValues: draftUpdated ?? defaultValues,
     });
     const { reset, register, getValues, setValue, formState, control } = methods;
-    const values = useWatch<CoinmarketExchangeFormProps>({ control });
+    const values = useWatch<TradingExchangeFormProps>({ control });
     const { rateType, exchangeType, sendCryptoSelect } = getValues();
     const output = values.outputs?.[0];
-    const fiatValues = useCoinmarketFiatValues({
+    const fiatValues = useTradingFiatValues({
         sendCryptoSelect,
         fiatCurrency: output?.currency?.value as FiatCurrencyCode,
     });
@@ -173,9 +172,9 @@ export const useCoinmarketExchangeForm = ({
 
     const isFormInvalid = !(formIsValid && hasValues);
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
-    const decimals = getCoinmarketNetworkDecimals({ sendCryptoSelect, network });
+    const decimals = getTradingNetworkDecimals({ sendCryptoSelect, network });
 
-    const { cexQuotes, dexQuotes } = useCoinmarketExchangeQuotesFilter({
+    const { cexQuotes, dexQuotes } = useTradingExchangeQuotesFilter({
         exchangeType,
         rateType,
         quotes,
@@ -190,14 +189,14 @@ export const useCoinmarketExchangeForm = ({
         changeFeeLevel,
         setComposedLevels,
         composeRequest,
-    } = useCoinmarketComposeTransaction<CoinmarketExchangeFormProps>({
+    } = useTradingComposeTransaction<TradingExchangeFormProps>({
         account,
         network,
-        values: values as CoinmarketExchangeFormProps,
+        values: values as TradingExchangeFormProps,
         methods,
     });
 
-    const { toggleAmountInCrypto } = useCoinmarketCurrencySwitcher({
+    const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
         account,
         methods,
         network,
@@ -306,7 +305,7 @@ export const useCoinmarketExchangeForm = ({
         ],
     );
 
-    const helpers = useCoinmarketFormActions({
+    const helpers = useTradingFormActions({
         account,
         methods,
         isNotFormPage,
@@ -318,7 +317,7 @@ export const useCoinmarketExchangeForm = ({
         composeRequest,
         setComposedLevels,
         setAccountOnChange: newAccount => {
-            dispatch(coinmarketExchangeActions.setCoinmarketExchangeAccount(newAccount));
+            dispatch(tradingExchangeActions.setTradingExchangeAccount(newAccount));
             setAccount(newAccount);
         },
     });
@@ -330,7 +329,7 @@ export const useCoinmarketExchangeForm = ({
                 : null;
         if (quotesRequest) {
             const result = await dispatch(
-                coinmarketExchangeActions.openCoinmarketExchangeConfirmModal(
+                tradingExchangeActions.openTradingExchangeConfirmModal(
                     provider?.companyName,
                     quote.isDex,
                     quote.send,
@@ -338,7 +337,7 @@ export const useCoinmarketExchangeForm = ({
                 ),
             );
             if (result) {
-                dispatch(coinmarketExchangeActions.saveSelectedQuote(quote));
+                dispatch(tradingExchangeActions.saveSelectedQuote(quote));
 
                 navigateToExchangeConfirm();
                 timer.stop();
@@ -349,7 +348,7 @@ export const useCoinmarketExchangeForm = ({
     const confirmTrade = useCallback(
         async (address: string, extraField?: string, trade?: ExchangeTrade) => {
             analytics.report({
-                type: EventType.CoinmarketConfirmTrade,
+                type: EventType.TradingConfirmTrade,
                 payload: {
                     type,
                 },
@@ -371,7 +370,7 @@ export const useCoinmarketExchangeForm = ({
             }
 
             setCallInProgress(true);
-            dispatch(coinmarketExchangeActions.saveTransactionId(undefined));
+            dispatch(tradingExchangeActions.saveTransactionId(undefined));
 
             const returnUrl = await createQuoteLink(
                 quotesRequest,
@@ -407,16 +406,16 @@ export const useCoinmarketExchangeForm = ({
                         error: response.error || 'Error response from the server',
                     }),
                 );
-                dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
+                dispatch(tradingExchangeActions.saveSelectedQuote(response));
             } else if (
                 response.status === 'APPROVAL_REQ' ||
                 response.status === 'APPROVAL_PENDING'
             ) {
-                dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
+                dispatch(tradingExchangeActions.saveSelectedQuote(response));
                 setExchangeStep('SEND_APPROVAL_TRANSACTION');
                 ok = true;
             } else if (response.status === 'CONFIRM') {
-                dispatch(coinmarketExchangeActions.saveSelectedQuote(response));
+                dispatch(tradingExchangeActions.saveSelectedQuote(response));
                 if (response.isDex) {
                     if (exchangeStep === 'RECEIVING_ADDRESS' || trade.approvalType === 'ZERO') {
                         setExchangeStep('SEND_APPROVAL_TRANSACTION');
@@ -430,15 +429,15 @@ export const useCoinmarketExchangeForm = ({
             } else {
                 // CONFIRMING, SUCCESS
                 dispatch(
-                    coinmarketExchangeActions.saveTrade(
+                    tradingExchangeActions.saveTrade(
                         response,
                         selectedAccount.account,
                         new Date().toISOString(),
                     ),
                 );
-                dispatch(coinmarketExchangeActions.saveTransactionId(response.orderId));
+                dispatch(tradingExchangeActions.saveTransactionId(response.orderId));
                 if (response.tradeForm?.form) {
-                    dispatch(coinmarketCommonActions.submitRequestForm(response.tradeForm?.form));
+                    dispatch(tradingCommonActions.submitRequestForm(response.tradeForm?.form));
 
                     return true;
                 }
@@ -497,7 +496,7 @@ export const useCoinmarketExchangeForm = ({
                     quote.receiveTxHash = txid;
                     quote.status = 'CONFIRMING';
                     dispatch(
-                        coinmarketExchangeActions.saveTrade(
+                        tradingExchangeActions.saveTrade(
                             quote,
                             selectedAccount.account,
                             new Date().toISOString(),
@@ -521,7 +520,7 @@ export const useCoinmarketExchangeForm = ({
     };
 
     const sendTransaction = async () => {
-        dispatch(coinmarketCommonActions.setCoinmarketModalAccount(account));
+        dispatch(tradingCommonActions.setTradingModalAccount(account));
 
         if (selectedQuote?.isDex) {
             sendDexTransaction();
@@ -530,7 +529,7 @@ export const useCoinmarketExchangeForm = ({
         }
 
         const selectedTrade = trade?.data || selectedQuote;
-        // sendAddress may be set by useCoinmarketWatchTrade hook to the trade object
+        // sendAddress may be set by useTradingWatchTrade hook to the trade object
         const sendAddress = selectedTrade?.sendAddress;
         if (
             selectedTrade &&
@@ -552,13 +551,13 @@ export const useCoinmarketExchangeForm = ({
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {
                 dispatch(
-                    coinmarketExchangeActions.saveTrade(
+                    tradingExchangeActions.saveTrade(
                         selectedTrade,
                         selectedAccount.account,
                         new Date().toISOString(),
                     ),
                 );
-                dispatch(coinmarketExchangeActions.saveTransactionId(selectedTrade.orderId));
+                dispatch(tradingExchangeActions.saveTransactionId(selectedTrade.orderId));
                 navigateToExchangeDetail();
             }
         } else {
@@ -577,8 +576,8 @@ export const useCoinmarketExchangeForm = ({
         navigateToExchangeOffers();
     };
 
-    useCoinmarketLoadData();
-    useCoinmarketModalCrypto({
+    useTradingLoadData();
+    useTradingModalCrypto({
         receiveCurrency: values.receiveCryptoSelect?.value as CryptoId | undefined,
     });
 
@@ -590,7 +589,7 @@ export const useCoinmarketExchangeForm = ({
                 Object.keys(formState.errors).length === 0 &&
                 !isComposing
             ) {
-                saveDraft(exchangeDraftKey, values as CoinmarketExchangeFormProps);
+                saveDraft(exchangeDraftKey, values as TradingExchangeFormProps);
             }
         },
         200,
@@ -623,10 +622,10 @@ export const useCoinmarketExchangeForm = ({
     }, [defaultValues, values, removeDraft]);
 
     useEffect(() => {
-        if (account.key === coinmarketAccount?.key) {
-            setAccount(coinmarketAccount);
+        if (account.key === tradingAccount?.key) {
+            setAccount(tradingAccount);
         }
-    }, [account, setAccount, coinmarketAccount]);
+    }, [account, setAccount, tradingAccount]);
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -650,11 +649,11 @@ export const useCoinmarketExchangeForm = ({
 
         if (isFromRedirect) {
             if (transactionId && trade) {
-                dispatch(coinmarketExchangeActions.saveSelectedQuote(trade.data));
+                dispatch(tradingExchangeActions.saveSelectedQuote(trade.data));
                 setExchangeStep('SEND_TRANSACTION');
             }
 
-            dispatch(coinmarketExchangeActions.setIsFromRedirect(false));
+            dispatch(tradingExchangeActions.setIsFromRedirect(false));
         }
 
         checkQuotesTimer(handleChange);
@@ -725,7 +724,7 @@ export const useCoinmarketExchangeForm = ({
         goToOffers,
         setExchangeStep,
         sendTransaction,
-        verifyAddress: coinmarketExchangeActions.verifyAddress,
+        verifyAddress: tradingExchangeActions.verifyAddress,
         selectQuote,
         confirmTrade,
     };

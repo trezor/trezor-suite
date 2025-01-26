@@ -1,22 +1,20 @@
-import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
-import { useCoinmarketBuyForm } from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyForm';
-import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketFormLayout } from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormLayout';
-import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common/CoinmarketLayout/CoinmarketLayout';
-import { CoinmarketContainer } from 'src/views/wallet/coinmarket/common/CoinmarketContainer';
+import { UseTradingProps } from 'src/types/trading/trading';
+import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
+import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/TradingFormLayout';
+import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
+import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 
-const CoinmarketBuyComponent = ({ selectedAccount }: UseCoinmarketProps) => {
-    const coinmarketBuyContextValues = useCoinmarketBuyForm({ selectedAccount });
+const TradingBuyComponent = ({ selectedAccount }: UseTradingProps) => {
+    const tradingBuyContextValues = useTradingBuyForm({ selectedAccount });
 
     return (
-        <CoinmarketLayout>
-            <CoinmarketFormContext.Provider value={coinmarketBuyContextValues}>
-                <CoinmarketFormLayout />
-            </CoinmarketFormContext.Provider>
-        </CoinmarketLayout>
+        <TradingLayout>
+            <TradingFormContext.Provider value={tradingBuyContextValues}>
+                <TradingFormLayout />
+            </TradingFormContext.Provider>
+        </TradingLayout>
     );
 };
 
-export const CoinmarketBuyForm = () => (
-    <CoinmarketContainer SectionComponent={CoinmarketBuyComponent} />
-);
+export const TradingBuyForm = () => <TradingContainer SectionComponent={TradingBuyComponent} />;

@@ -16,51 +16,51 @@ import {
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
-    CoinmarketAllFormProps,
-    CoinmarketBuyFormProps,
-    CoinmarketFormInputFiatCryptoProps,
-    CoinmarketSellExchangeFormProps,
-} from 'src/types/coinmarket/coinmarketForm';
+    TradingAllFormProps,
+    TradingBuyFormProps,
+    TradingFormInputFiatCryptoProps,
+    TradingSellExchangeFormProps,
+} from 'src/types/trading/tradingForm';
 import {
-    coinmarketGetAccountLabel,
-    getCoinmarketNetworkDecimals,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+    tradingGetAccountLabel,
+    getTradingNetworkDecimals,
+} from 'src/utils/wallet/trading/tradingUtils';
 import {
     FORM_OUTPUT_AMOUNT,
     FORM_OUTPUT_MAX,
     FORM_SEND_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/coinmarket/form';
+} from 'src/constants/wallet/trading/form';
 import {
-    CoinmarketAccountOptionsGroupOptionProps,
-    CoinmarketCryptoListProps,
-} from 'src/types/coinmarket/coinmarket';
-import { useCoinmarketInfo } from 'src/hooks/wallet/coinmarket/useCoinmarketInfo';
+    TradingAccountOptionsGroupOptionProps,
+    TradingCryptoListProps,
+} from 'src/types/trading/trading';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import {
-    isCoinmarketBuyContext,
-    isCoinmarketExchangeContext,
-    isCoinmarketSellContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+    isTradingBuyContext,
+    isTradingExchangeContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
-export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketAllFormProps>({
+export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllFormProps>({
     cryptoInputName,
     fiatInputName,
     cryptoSelectName,
     methods,
     labelLeft,
     labelRight,
-}: CoinmarketFormInputFiatCryptoProps<TFieldValues>) => {
+}: TradingFormInputFiatCryptoProps<TFieldValues>) => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
     const locale = useSelector(selectLanguage);
 
-    const context = useCoinmarketFormContext();
+    const context = useTradingFormContext();
     const { amountLimits, account, network } = context;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const { cryptoIdToSymbolAndContractAddress } = useCoinmarketInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const {
         control,
         formState: { errors },
@@ -69,20 +69,20 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
         clearErrors,
     } = methods;
     const cryptoSelect = getValues(cryptoSelectName) as
-        | CoinmarketCryptoListProps
-        | CoinmarketAccountOptionsGroupOptionProps
+        | TradingCryptoListProps
+        | TradingAccountOptionsGroupOptionProps
         | undefined;
     const cryptoInputError =
         cryptoInputName === FORM_OUTPUT_AMOUNT
-            ? (errors as FieldErrors<CoinmarketSellExchangeFormProps>)?.outputs?.[0]?.amount
-            : (errors as FieldErrors<CoinmarketBuyFormProps>).cryptoInput;
+            ? (errors as FieldErrors<TradingSellExchangeFormProps>)?.outputs?.[0]?.amount
+            : (errors as FieldErrors<TradingBuyFormProps>).cryptoInput;
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoSelect?.value);
-    const displaySymbol = coinmarketGetAccountLabel(
+    const displaySymbol = tradingGetAccountLabel(
         getDisplaySymbol(coinSymbol ?? '', contractAddress),
         shouldSendInSats,
     );
-    const decimals = getCoinmarketNetworkDecimals({
-        sendCryptoSelect: !isCoinmarketBuyContext(context)
+    const decimals = getTradingNetworkDecimals({
+        sendCryptoSelect: !isTradingBuyContext(context)
             ? context.getValues()[FORM_SEND_CRYPTO_CURRENCY_SELECT]
             : undefined,
         network,
@@ -99,7 +99,7 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
                 formatter: CryptoAmountFormatter,
             }),
 
-            ...(!isCoinmarketBuyContext(context)
+            ...(!isTradingBuyContext(context)
                 ? {
                       reserveOrBalance: validateReserveOrBalance(translationString, {
                           account,
@@ -124,10 +124,10 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
             labelLeft={labelLeft}
             labelRight={labelRight}
             onChange={() => {
-                if (isCoinmarketSellContext(context)) {
+                if (isTradingSellContext(context)) {
                     context.setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
                 }
-                if (isCoinmarketExchangeContext(context)) {
+                if (isTradingExchangeContext(context)) {
                     context.setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
                 }
 
@@ -139,7 +139,7 @@ export const CoinmarketFormInputCryptoAmount = <TFieldValues extends CoinmarketA
             maxLength={formInputsMaxLength.amount}
             bottomText={cryptoInputError?.message || null}
             innerAddon={<>{displaySymbol}</>}
-            data-testid="@coinmarket/form/crypto-input"
+            data-testid="@trading/form/crypto-input"
         />
     );
 };

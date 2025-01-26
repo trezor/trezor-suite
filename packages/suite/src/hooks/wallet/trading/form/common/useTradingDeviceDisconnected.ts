@@ -1,18 +1,18 @@
 import {
-    isCoinmarketExchangeContext,
-    isCoinmarketSellContext,
-} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+    isTradingExchangeContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 
-export const useCoinmarketDeviceDisconnected = () => {
-    const context = useCoinmarketFormContext();
+export const useTradingDeviceDisconnected = () => {
+    const context = useTradingFormContext();
     const { device } = context;
 
     const isSellOrExchangeContext =
-        isCoinmarketSellContext(context) || isCoinmarketExchangeContext(context);
+        isTradingSellContext(context) || isTradingExchangeContext(context);
     const isDeviceDisconnected = !device?.connected;
 
-    const coinmarketDeviceDisconnected = isSellOrExchangeContext && isDeviceDisconnected;
+    const tradingDeviceDisconnected = isSellOrExchangeContext && isDeviceDisconnected;
 
-    return { coinmarketDeviceDisconnected };
+    return { tradingDeviceDisconnected };
 };

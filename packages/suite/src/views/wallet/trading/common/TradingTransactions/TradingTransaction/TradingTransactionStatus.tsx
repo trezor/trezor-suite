@@ -4,10 +4,10 @@ import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api
 import { Icon, Row, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/coinmarket/buyUtils';
-import { getStatusMessage as getExchangeStatusMessage } from 'src/utils/wallet/coinmarket/exchangeUtils';
-import { getStatusMessage as getSellStatusMessage } from 'src/utils/wallet/coinmarket/sellUtils';
-import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
+import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/trading/buyUtils';
+import { getStatusMessage as getExchangeStatusMessage } from 'src/utils/wallet/trading/exchangeUtils';
+import { getStatusMessage as getSellStatusMessage } from 'src/utils/wallet/trading/sellUtils';
+import { Trade } from 'src/types/wallet/tradingCommonTypes';
 
 const getBuyTradeData = (status: BuyTradeStatus, theme: DefaultTheme) => {
     const message = getBuyStatusMessage(status);
@@ -119,11 +119,11 @@ const getData = (trade: Trade, theme: DefaultTheme): StatusData | null => {
     }
 };
 
-interface CoinmarketTransactionStatusProps {
+interface TradingTransactionStatusProps {
     trade: Trade;
 }
 
-export const CoinmarketTransactionStatus = ({ trade }: CoinmarketTransactionStatusProps) => {
+export const TradingTransactionStatus = ({ trade }: TradingTransactionStatusProps) => {
     const theme = useTheme();
     const data = getData(trade, theme);
 
@@ -132,7 +132,7 @@ export const CoinmarketTransactionStatus = ({ trade }: CoinmarketTransactionStat
     return (
         <Row>
             <Icon color={data.color} size={10} name={data.icon} margin={{ right: 4 }} />
-            <Text color={data.color} data-testid="@coinmarket/transactions/status">
+            <Text color={data.color} data-testid="@trading/transactions/status">
                 <Translation id={data.statusMessageId} />
             </Text>
         </Row>

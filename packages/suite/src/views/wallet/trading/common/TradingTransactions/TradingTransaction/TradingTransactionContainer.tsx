@@ -1,17 +1,17 @@
 import { Card, Column, Row, useMediaQuery, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-interface CoinmarketTransactionContainerProps {
+interface TradingTransactionContainerProps {
     TradeDetail: JSX.Element;
     TradeProviders: JSX.Element;
     TradeButton: JSX.Element;
 }
 
-export const CoinmarketTransactionContainer = ({
+export const TradingTransactionContainer = ({
     TradeDetail,
     TradeProviders,
     TradeButton,
-}: CoinmarketTransactionContainerProps) => {
+}: TradingTransactionContainerProps) => {
     const isBelowDesktop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.XL})`);
     const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
 

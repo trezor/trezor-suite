@@ -1,27 +1,27 @@
-import { useCoinmarketDeviceDisconnected } from 'src/hooks/wallet/coinmarket/form/common/useCoinmarketDeviceDisconnected';
-import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { isCoinmarketExchangeContext } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
-import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { CoinmarketHeader } from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeader';
-import { CoinmarketOffersEmpty } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersEmpty';
-import { CoinmarketOffersExchange } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersExchange';
-import { CoinmarketOffersItem } from 'src/views/wallet/coinmarket/common/CoinmarketOffers/CoinmarketOffersItem';
+import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
+import { getBestRatedQuote } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingHeader } from 'src/views/wallet/trading/common/TradingHeader/TradingHeader';
+import { TradingOffersEmpty } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersEmpty';
+import { TradingOffersExchange } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersExchange';
+import { TradingOffersItem } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
-export const CoinmarketOffers = () => {
-    const context = useCoinmarketFormContext();
+export const TradingOffers = () => {
+    const context = useTradingFormContext();
     const { type, quotes } = context;
     const hasLoadingFailed = !quotes;
     const noOffers = hasLoadingFailed || quotes.length === 0;
     const bestRatedQuote = getBestRatedQuote(quotes, type);
 
-    const { coinmarketDeviceDisconnected } = useCoinmarketDeviceDisconnected();
+    const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
-    const offers = isCoinmarketExchangeContext(context) ? (
-        <CoinmarketOffersExchange />
+    const offers = isTradingExchangeContext(context) ? (
+        <TradingOffersExchange />
     ) : (
         quotes?.map(quote => (
-            <CoinmarketOffersItem
+            <TradingOffersItem
                 key={quote?.orderId}
                 quote={quote}
                 isBestRate={bestRatedQuote?.orderId === quote?.orderId}
@@ -31,14 +31,11 @@ export const CoinmarketOffers = () => {
 
     return (
         <>
-            {coinmarketDeviceDisconnected && <ConnectDeviceGenericPromo />}
+            {tradingDeviceDisconnected && <ConnectDeviceGenericPromo />}
 
-            <CoinmarketHeader
-                title="TR_COINMARKET_SHOW_OFFERS"
-                titleTimer="TR_COINMARKET_OFFERS_REFRESH"
-            />
+            <TradingHeader title="TR_TRADING_SHOW_OFFERS" titleTimer="TR_TRADING_OFFERS_REFRESH" />
 
-            {noOffers ? <CoinmarketOffersEmpty /> : offers}
+            {noOffers ? <TradingOffersEmpty /> : offers}
         </>
     );
 };

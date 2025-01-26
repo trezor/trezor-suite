@@ -173,7 +173,7 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.CoinmarketConfirmTrade;
+          type: EventType.TradingConfirmTrade;
           payload: {
               type: 'buy' | 'sell' | 'exchange';
           };

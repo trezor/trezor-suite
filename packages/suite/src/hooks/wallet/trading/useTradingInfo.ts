@@ -12,25 +12,22 @@ import addressValidator from '@trezor/address-validator';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 import {
-    CoinmarketCryptoSelectItemProps,
-    CoinmarketCryptoSelectOptionProps,
-    CoinmarketInfoProps,
-} from 'src/types/coinmarket/coinmarket';
+    TradingCryptoSelectItemProps,
+    TradingCryptoSelectOptionProps,
+    TradingInfoProps,
+} from 'src/types/trading/trading';
 import {
     cryptoIdToNetwork,
     isCryptoIdForNativeToken,
     parseCryptoId,
     testnetToProdCryptoId,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+} from 'src/utils/wallet/trading/tradingUtils';
 
 const supportedAddressValidatorSymbols = new Set(
     addressValidator.getCurrencies().map(c => c.symbol),
 );
 
-const toCryptoOption = (
-    cryptoId: CryptoId,
-    coinInfo: CoinInfo,
-): CoinmarketCryptoSelectItemProps => {
+const toCryptoOption = (cryptoId: CryptoId, coinInfo: CoinInfo): TradingCryptoSelectItemProps => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const isNativeToken = isCryptoIdForNativeToken(cryptoId);
     const coinInfoSymbol = coinInfo.symbol.toLowerCase();
@@ -51,8 +48,8 @@ const toCryptoOption = (
 };
 
 const sortPopularCurrencies = (
-    a: CoinmarketCryptoSelectItemProps,
-    b: CoinmarketCryptoSelectItemProps,
+    a: TradingCryptoSelectItemProps,
+    b: TradingCryptoSelectItemProps,
 ) => {
     if (a.coingeckoId && b.coingeckoId) {
         const order = ['bitcoin', 'ethereum', 'litecoin', 'cardano', 'solana'];
@@ -68,8 +65,8 @@ const sortPopularCurrencies = (
     return 0;
 };
 
-export const useCoinmarketInfo = (): CoinmarketInfoProps => {
-    const { platforms = {}, coins = {} } = useSelector(state => state.wallet.coinmarket.info);
+export const useTradingInfo = (): TradingInfoProps => {
+    const { platforms = {}, coins = {} } = useSelector(state => state.wallet.trading.info);
 
     const cryptoIdToPlatformName = useCallback(
         (cryptoId: CryptoId) => platforms[cryptoId]?.name,
@@ -104,10 +101,10 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
         (
             cryptoIds: Set<CryptoId>,
             excludedCryptoIds?: Set<CryptoId>,
-        ): CoinmarketCryptoSelectOptionProps[] => {
-            const popularCurrencies: CoinmarketCryptoSelectItemProps[] = [];
-            const otherCurrencies: CoinmarketCryptoSelectItemProps[] = [];
-            const tokenGroups: CoinmarketCryptoSelectOptionProps[][] = [];
+        ): TradingCryptoSelectOptionProps[] => {
+            const popularCurrencies: TradingCryptoSelectItemProps[] = [];
+            const otherCurrencies: TradingCryptoSelectItemProps[] = [];
+            const tokenGroups: TradingCryptoSelectOptionProps[][] = [];
 
             cryptoIds.forEach(cryptoId => {
                 const coinInfo = coins[cryptoId];
@@ -155,7 +152,7 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
                         tokenGroups.push([
                             {
                                 type: 'group',
-                                label: 'TR_COINMARKET_NETWORK_TOKENS',
+                                label: 'TR_TRADING_NETWORK_TOKENS',
                                 coingeckoId: networkId,
                                 networkName,
                             },
@@ -172,9 +169,9 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
             popularCurrencies.sort(sortPopularCurrencies);
 
             return [
-                { type: 'group', label: 'TR_COINMARKET_POPULAR_CURRENCIES' },
+                { type: 'group', label: 'TR_TRADING_POPULAR_CURRENCIES' },
                 ...popularCurrencies,
-                { type: 'group', label: 'TR_COINMARKET_OTHER_CURRENCIES' },
+                { type: 'group', label: 'TR_TRADING_OTHER_CURRENCIES' },
                 ...otherCurrencies,
 
                 ...tokenGroups.flat(),
@@ -191,7 +188,7 @@ export const useCoinmarketInfo = (): CoinmarketInfoProps => {
             }
 
             const { coingeckoId, name, symbol } = getNetwork('btc');
-            const item: CoinmarketCryptoSelectItemProps = {
+            const item: TradingCryptoSelectItemProps = {
                 type: 'currency',
                 value: coingeckoId as CryptoId,
                 label: symbol.toUpperCase(),

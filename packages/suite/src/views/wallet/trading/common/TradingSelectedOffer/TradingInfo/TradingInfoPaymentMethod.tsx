@@ -2,18 +2,18 @@ import type { TradingPaymentMethodType } from '@suite-common/invity';
 import { InfoItem } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketPaymentType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentType';
+import { TradingPaymentType } from 'src/views/wallet/trading/common/TradingPaymentType';
 
-interface CoinmarketInfoPaymentMethodProps {
+interface TradingInfoPaymentMethodProps {
     paymentMethod: TradingPaymentMethodType;
     paymentMethodName?: string;
 }
 
-export const CoinmarketInfoPaymentMethod = ({
+export const TradingInfoPaymentMethod = ({
     paymentMethod,
     paymentMethodName,
-}: CoinmarketInfoPaymentMethodProps) => (
-    <InfoItem label={<Translation id="TR_COINMARKET_PAYMENT_METHOD" />} direction="row">
-        <CoinmarketPaymentType method={paymentMethod} methodName={paymentMethodName} />
+}: TradingInfoPaymentMethodProps) => (
+    <InfoItem label={<Translation id="TR_TRADING_PAYMENT_METHOD" />} direction="row">
+        <TradingPaymentType method={paymentMethod} methodName={paymentMethodName} />
     </InfoItem>
 );

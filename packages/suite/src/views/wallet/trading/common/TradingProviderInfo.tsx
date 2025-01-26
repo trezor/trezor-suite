@@ -3,9 +3,9 @@ import { spacings } from '@trezor/theme';
 import { invityAPI } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketIcon } from 'src/views/wallet/coinmarket/common/CoinmarketIcon';
+import { TradingIcon } from 'src/views/wallet/trading/common/TradingIcon';
 
-export interface CoinmarketProviderInfoProps {
+export interface TradingProviderInfoProps {
     exchange?: string;
     providers?: {
         [name: string]: {
@@ -16,16 +16,16 @@ export interface CoinmarketProviderInfoProps {
     };
 }
 
-export const CoinmarketProviderInfo = ({ exchange, providers }: CoinmarketProviderInfoProps) => {
+export const TradingProviderInfo = ({ exchange, providers }: TradingProviderInfoProps) => {
     const provider = providers && exchange ? providers[exchange] : null;
 
     return (
-        <Row data-testid="@coinmarket/form/info/provider" gap={spacings.xs}>
-            {!exchange && <Translation id="TR_COINMARKET_UNKNOWN_PROVIDER" />}
+        <Row data-testid="@trading/form/info/provider" gap={spacings.xs}>
+            {!exchange && <Translation id="TR_TRADING_UNKNOWN_PROVIDER" />}
             {provider ? (
                 <>
                     {provider.logo && (
-                        <CoinmarketIcon iconUrl={invityAPI.getProviderLogoUrl(provider.logo)} />
+                        <TradingIcon iconUrl={invityAPI.getProviderLogoUrl(provider.logo)} />
                     )}
                     {provider.brandName ?? provider.companyName}
                 </>

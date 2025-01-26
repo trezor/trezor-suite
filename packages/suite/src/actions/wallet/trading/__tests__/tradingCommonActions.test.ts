@@ -2,16 +2,16 @@ import { State as DeviceState } from '@suite-common/wallet-core';
 import type { DeepPartial } from '@trezor/type-utils';
 
 import { configureStore } from 'src/support/tests/configureStore';
-import { coinmarketReducer, ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
+import { tradingReducer, ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { transactionsReducer, accountsReducer } from 'src/reducers/wallet';
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
-import { DEFAULT_STORE } from 'src/actions/wallet/coinmarket/__fixtures__/coinmarketCommonActions/store';
+import { DEFAULT_STORE } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
 import {
     VERIFY_BUY_ADDRESS_FIXTURES,
     VERIFY_EXCHANGE_ADDRESS_FIXTURES,
-} from 'src/actions/wallet/coinmarket/__fixtures__/coinmarketCommonActions/verifyAddress';
-import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+} from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/verifyAddress';
+import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
 
 interface InitialState {
     device?: DeepPartial<DeviceState>;
@@ -20,7 +20,7 @@ interface InitialState {
         accounts?: ReturnType<typeof accountsReducer>;
         transactions?: ReturnType<typeof transactionsReducer>;
         selectedAccount?: ReturnType<typeof selectedAccountReducer>;
-        coinmarket?: ReturnType<typeof coinmarketReducer>;
+        trading?: ReturnType<typeof tradingReducer>;
     };
 }
 
@@ -40,9 +40,9 @@ const initStore = (state: State) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
-        const { coinmarket, selectedAccount, transactions, accounts } = store.getState().wallet;
+        const { trading, selectedAccount, transactions, accounts } = store.getState().wallet;
         store.getState().wallet = {
-            coinmarket: coinmarketReducer(coinmarket, action),
+            trading: tradingReducer(trading, action),
             selectedAccount: selectedAccountReducer({ ...selectedAccount }, action),
             transactions: transactionsReducer(transactions, action),
             accounts: accountsReducer(accounts, action),
@@ -53,7 +53,7 @@ const initStore = (state: State) => {
     return store;
 };
 
-describe('Coinmarket Common Actions', () => {
+describe('Trading Common Actions', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -63,14 +63,14 @@ describe('Coinmarket Common Actions', () => {
             const store = initStore(getInitialState(f.initialState));
 
             await store.dispatch(
-                coinmarketCommonActions.verifyAddress(
+                tradingCommonActions.verifyAddress(
                     f.params.account,
                     f.params.address,
                     f.params.path,
-                    f.params.coinmarketAction,
+                    f.params.tradingAction,
                 ),
             );
-            expect(store.getState().wallet.coinmarket.buy.addressVerified).toEqual(f.result.value);
+            expect(store.getState().wallet.trading.buy.addressVerified).toEqual(f.result.value);
             if (f.result && f.result.action) {
                 expect(store.getActions().pop()).toMatchObject(f.result.action);
             }
@@ -82,14 +82,14 @@ describe('Coinmarket Common Actions', () => {
             const store = initStore(getInitialState(f.initialState));
 
             await store.dispatch(
-                coinmarketCommonActions.verifyAddress(
+                tradingCommonActions.verifyAddress(
                     f.params.account,
                     f.params.address,
                     f.params.path,
-                    f.params.coinmarketAction,
+                    f.params.tradingAction,
                 ),
             );
-            expect(store.getState().wallet.coinmarket.exchange.addressVerified).toEqual(
+            expect(store.getState().wallet.trading.exchange.addressVerified).toEqual(
                 f.result.value,
             );
             if (f.result && f.result.action) {
@@ -116,7 +116,7 @@ describe('Coinmarket Common Actions', () => {
             },
         };
 
-        store.dispatch(coinmarketCommonActions.saveComposedTransactionInfo(info));
-        expect(store.getState().wallet.coinmarket.composedTransactionInfo).toEqual(info);
+        store.dispatch(tradingCommonActions.saveComposedTransactionInfo(info));
+        expect(store.getState().wallet.trading.composedTransactionInfo).toEqual(info);
     });
 });

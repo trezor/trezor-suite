@@ -6,12 +6,12 @@ import { Radio, Column, Card, Grid, Paragraph, useElevation } from '@trezor/comp
 import { borders, spacingsPx, spacings, Elevation, mapElevationToBackground } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { CoinmarketExchangeFormProps, RateType } from 'src/types/coinmarket/coinmarketForm';
+import { TradingExchangeFormProps, RateType } from 'src/types/trading/tradingForm';
 import {
     FORM_RATE_FIXED,
     FORM_RATE_FLOATING,
     FORM_RATE_TYPE,
-} from 'src/constants/wallet/coinmarket/form';
+} from 'src/constants/wallet/trading/form';
 import { TranslationKey } from 'src/components/suite/Translation';
 
 const ItemWrapper = styled.div<{ $isSelected: boolean; $elevation: Elevation }>`
@@ -51,20 +51,20 @@ const Item = ({ isSelected, onClick, title, label }: ItemProps) => {
     );
 };
 
-type CoinmarketFormSwitcherExchangeRatesProps = {
+type TradingFormSwitcherExchangeRatesProps = {
     rateType: RateType;
-    setValue: UseFormSetValue<CoinmarketExchangeFormProps>;
+    setValue: UseFormSetValue<TradingExchangeFormProps>;
 };
 
-export const CoinmarketFormSwitcherExchangeRates = ({
+export const TradingFormSwitcherExchangeRates = ({
     rateType,
     setValue,
-}: CoinmarketFormSwitcherExchangeRatesProps) => {
+}: TradingFormSwitcherExchangeRatesProps) => {
     const floatingRateSelected = rateType === FORM_RATE_FLOATING;
 
     return (
         <Column gap={spacings.xs}>
-            <Translation id="TR_COINMARKET_RATE" />
+            <Translation id="TR_TRADING_RATE" />
             <Card paddingType="none">
                 <Grid
                     columns={2}
@@ -74,14 +74,14 @@ export const CoinmarketFormSwitcherExchangeRates = ({
                     <Item
                         isSelected={!floatingRateSelected}
                         onClick={() => setValue(FORM_RATE_TYPE, FORM_RATE_FIXED)}
-                        title="TR_COINMARKET_FIX_RATE"
-                        label="TR_COINMARKET_FIX_RATE_DESCRIPTION"
+                        title="TR_TRADING_FIX_RATE"
+                        label="TR_TRADING_FIX_RATE_DESCRIPTION"
                     />
                     <Item
                         isSelected={floatingRateSelected}
                         onClick={() => setValue(FORM_RATE_TYPE, FORM_RATE_FLOATING)}
-                        title="TR_COINMARKET_FLOATING_RATE"
-                        label="TR_COINMARKET_FLOATING_RATE_DESCRIPTION"
+                        title="TR_TRADING_FLOATING_RATE"
+                        label="TR_TRADING_FLOATING_RATE_DESCRIPTION"
                     />
                 </Grid>
             </Card>

@@ -23,11 +23,11 @@ const ButtonWrapper = styled.div`
     flex: none;
 `;
 
-interface CoinmarketTransactionIdProps {
+interface TradingTransactionIdProps {
     transactionId: string;
 }
 
-export const CoinmarketTransactionId = ({ transactionId }: CoinmarketTransactionIdProps) => {
+export const TradingTransactionId = ({ transactionId }: TradingTransactionIdProps) => {
     const dispatch = useDispatch();
     const copy = () => {
         const result = copyToClipboard(transactionId);
@@ -39,7 +39,7 @@ export const CoinmarketTransactionId = ({ transactionId }: CoinmarketTransaction
     return (
         <Row alignItems="center" justifyContent="space-between" margin={{ top: spacings.sm }}>
             <LabelWrapper>
-                <Translation id="TR_COINMARKET_TRANS_ID" /> {transactionId}
+                <Translation id="TR_TRADING_TRANS_ID" /> {transactionId}
             </LabelWrapper>
             <ButtonWrapper>
                 <Button size="tiny" variant="tertiary" onClick={copy}>
