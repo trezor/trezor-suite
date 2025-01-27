@@ -1,11 +1,11 @@
-import { useEffect, ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import * as Sentry from '@sentry/react-native';
 import { captureConsoleIntegration } from '@sentry/core';
+import * as Sentry from '@sentry/react-native';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
-import { getEnv, isDebugEnv, isDevelopEnv, isDetoxTestBuild } from '@suite-native/config';
+import { getEnv, isDebugEnv, isDetoxTestBuild, isDevelopEnv } from '@suite-native/config';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 const initSentry = () => {

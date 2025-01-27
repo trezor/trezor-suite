@@ -1,22 +1,22 @@
 import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { DEVICE } from '@trezor/connect';
 import {
     accountsActions,
     authorizeDeviceThunk,
+    createDeviceInstanceThunk,
+    createImportedDeviceThunk,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
-    selectDeviceThunk,
     selectAccountsByDeviceState,
-    createDeviceInstanceThunk,
-    createImportedDeviceThunk,
+    selectDeviceThunk,
     selectIsDeviceForceRemembered,
 } from '@suite-common/wallet-core';
-import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
+import { DEVICE } from '@trezor/connect';
 
 import { isAnyDeviceEventAction, isDeviceEventAction } from '../utils';
 

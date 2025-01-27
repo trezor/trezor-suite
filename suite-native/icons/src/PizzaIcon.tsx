@@ -1,7 +1,7 @@
-import { Easing, SharedValue, useDerivedValue, withTiming } from 'react-native-reanimated';
 import { useState } from 'react';
+import { Easing, SharedValue, useDerivedValue, withTiming } from 'react-native-reanimated';
 
-import { useImage, mix, rect, Skia, Group, Image } from '@shopify/react-native-skia';
+import { Group, Image, Skia, mix, rect, useImage } from '@shopify/react-native-skia';
 
 type PIZZA_INDEX = 1 | 2 | 3;
 

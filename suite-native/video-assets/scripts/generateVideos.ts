@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import prettier from 'prettier';
-import { execSync } from 'child_process';
 
 const CONVERT_SCRIPT_PATH = './scripts/compress-videos.sh';
 const COMPRESSED_VIDEOS_PATH = '../assets/compressed';

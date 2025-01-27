@@ -3,12 +3,12 @@ import { AppState, Platform } from 'react-native';
 
 import * as LocalAuthentication from 'expo-local-authentication';
 
-import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
 import {
     useIsBiometricsEnabled,
     useIsBiometricsOverlayVisible,
     useIsUserAuthenticated,
 } from './biometricsAtoms';
+import { getIsBiometricsFeatureAvailable } from './isBiometricsFeatureAvailable';
 
 /**
  * The time period for which is user not asked to be authenticated again if returns back to the app.

@@ -1,6 +1,6 @@
 import { isDebugEnv } from '@suite-native/config';
-import { getSuiteVersion } from '@trezor/env-utils';
 import { Analytics, Event } from '@trezor/analytics';
+import { getSuiteVersion } from '@trezor/env-utils';
 
 import { SuiteNativeAnalyticsEvent } from './events';
 

@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { VStack } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -12,11 +14,9 @@ import {
     StackProps,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { VStack } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
 
-import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
+import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
 import { SendScreen } from '../components/SendScreen';
 import { useShowReviewCancellationAlert } from '../hooks/useShowReviewCancellationAlert';
 import { cleanupSendFormThunk } from '../sendFormThunks';

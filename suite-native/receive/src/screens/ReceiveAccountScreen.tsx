@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { getScreenWidth } from '@trezor/env-utils';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -10,6 +9,7 @@ import {
 } from '@suite-common/wallet-core';
 import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
 import { ReceiveStackParamList, ReceiveStackRoutes, Screen } from '@suite-native/navigation';
+import { getScreenWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ReceiveAddressScreen } from './ReceiveAddressScreen';

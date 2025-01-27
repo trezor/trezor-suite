@@ -1,17 +1,17 @@
 import { useSelector } from 'react-redux';
 
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
     selectHasOnlyEmptyPortfolioTracker,
     selectIsDeviceAuthorized,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { selectIsDeviceReadyToUse } from '@suite-native/device';
 import { Box } from '@suite-native/atoms';
+import { selectIsDeviceReadyToUse } from '@suite-native/device';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
-import { EmptyPortfolioTrackerState } from './EmptyPortfolioTrackerState';
 import { EmptyConnectedDeviceState } from './EmptyConnectedDeviceState';
 import { EmptyPortfolioCrossroads } from './EmptyPortfolioCrossroads';
+import { EmptyPortfolioTrackerState } from './EmptyPortfolioTrackerState';
 
 export const EmptyHomeRenderer = () => {
     const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);

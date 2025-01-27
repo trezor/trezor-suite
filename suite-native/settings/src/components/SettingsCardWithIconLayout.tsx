@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
-import { Icon, IconName } from '@suite-native/icons';
 import { AlertBox, AlertBoxProps, Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const contentStyle = prepareNativeStyle(() => ({

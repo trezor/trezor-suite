@@ -1,5 +1,5 @@
-import { Translation } from '@suite-native/intl';
 import { Text } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 
 import { AddressReviewHelpSheet } from './AddressReviewHelpSheet';
 import { AddressReviewSheetSection } from './AddressReviewSheetSection';

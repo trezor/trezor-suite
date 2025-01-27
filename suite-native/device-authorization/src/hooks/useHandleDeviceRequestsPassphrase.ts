@@ -3,15 +3,15 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import TrezorConnect, { UI } from '@trezor/connect';
+import { selectDeviceState } from '@suite-common/wallet-core';
 import {
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
 } from '@suite-native/navigation';
-import { selectDeviceState } from '@suite-common/wallet-core';
+import TrezorConnect, { UI } from '@trezor/connect';
 
 import {
     selectDeviceRequestedPassphrase,

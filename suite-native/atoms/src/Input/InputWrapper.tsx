@@ -4,8 +4,8 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
-import { Text } from '../Text';
 import { Hint } from '../Hint';
+import { Text } from '../Text';
 
 export type InputWrapperProps = {
     children: ReactNode;

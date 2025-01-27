@@ -1,18 +1,18 @@
-import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { EventType, analytics } from '@suite-native/analytics';
 import { AlertBox, Text, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
 import {
     finishPassphraseFlow,
     verifyPassphraseOnEmptyWalletThunk,
 } from '@suite-native/device-authorization';
-import { EventType, analytics } from '@suite-native/analytics';
+import { Translation, useTranslate } from '@suite-native/intl';
 
-import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
+import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 
 export const PassphraseVerifyEmptyWalletScreen = () => {
     const dispatch = useDispatch();

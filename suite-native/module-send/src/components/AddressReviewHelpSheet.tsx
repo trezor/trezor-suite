@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native';
 
+import { useAlert } from '@suite-native/alerts';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useAlert } from '@suite-native/alerts';
 
 type AddressReviewHelpSheetProps = {
     body: ReactNode;

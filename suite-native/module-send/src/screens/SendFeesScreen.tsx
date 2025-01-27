@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 
+import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SendFeesForm } from '../components/SendFeesForm';
 import { SendScreen } from '../components/SendScreen';
-import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 
 export const SendFeesScreen = ({
     route: { params },

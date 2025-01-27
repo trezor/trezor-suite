@@ -4,8 +4,8 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
 import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const scrollDividerStyle = prepareNativeStyle(({ borders, colors }) => ({
     marginTop: -borders.widths.small,

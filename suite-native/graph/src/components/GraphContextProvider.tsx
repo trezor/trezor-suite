@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { IntlProvider } from '@suite-native/intl';
 import { useActiveColorScheme } from '@suite-native/theme';
-import { createRenderer, StylesProvider } from '@trezor/styles';
+import { StylesProvider, createRenderer } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
 
 type ProviderProps = {

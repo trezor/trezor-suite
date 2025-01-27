@@ -2,16 +2,16 @@ import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
-import { Icon } from '@suite-native/icons';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { TransactionsRootState } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Text, VStack } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 
-import { selectTransactionInputAndOutputTransfers, TransactionTranfer } from '../../selectors';
 import { TransactionDetailInputsSheetSection } from './TransactionDetailInputsSheetSection';
 import { TransactionDetailSheet } from './TransactionDetailSheet';
+import { TransactionTranfer, selectTransactionInputAndOutputTransfers } from '../../selectors';
 
 type TransactionDetailInputsSheetProps = {
     isVisible: boolean;

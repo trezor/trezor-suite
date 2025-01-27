@@ -5,7 +5,7 @@ import {
     selectAreAllAccountTransactionsLoaded,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { Button, Box, Loader } from '@suite-native/atoms';
+import { Box, Button, Loader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type TransactionsListFooterProps = {

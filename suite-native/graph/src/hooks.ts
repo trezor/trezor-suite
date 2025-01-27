@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { captureException } from '@sentry/react-native';
 import { A } from '@mobily/ts-belt';
-import { useSetAtom, WritableAtom } from 'jotai';
+import { captureException } from '@sentry/react-native';
+import { WritableAtom, useSetAtom } from 'jotai';
 
 import {
     AccountItem,
@@ -12,19 +12,19 @@ import {
     useGetTimeFrameForHistoryHours,
     useGraphForAccounts,
 } from '@suite-common/graph';
+import { useSelectorDeepComparison } from '@suite-common/redux-utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     BlockchainRootState,
     selectAccountByKey,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
-import { analytics, EventType } from '@suite-native/analytics';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import { useSelectorDeepComparison } from '@suite-common/redux-utils';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { timeSwitchItems } from './components/TimeSwitch';
-import { TimeframeHoursValue } from './types';
+import { selectPortfolioGraphAccountItems } from './selectors';
 import {
     GraphSliceRootState,
     selectAccountGraphTimeframe,
@@ -32,7 +32,7 @@ import {
     setAccountGraphTimeframe,
     setPortfolioGraphTimeframe,
 } from './slice';
-import { selectPortfolioGraphAccountItems } from './selectors';
+import { TimeframeHoursValue } from './types';
 
 const useWatchTimeframeChangeForAnalytics = (
     timeframeHours: TimeframeHoursValue,

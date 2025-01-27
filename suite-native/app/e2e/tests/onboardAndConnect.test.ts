@@ -4,9 +4,9 @@ import { expect as detoxExpect } from 'detox';
 import { conditionalDescribe } from '@suite-common/test-utils';
 
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
-import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
+import { onOnboarding } from '../pageObjects/onboardingActions';
+import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
 
 const platform = device.getPlatform();
 

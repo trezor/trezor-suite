@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
+import { FirmwareUpdateStuckedState } from '@suite-native/analytics';
 import { BottomSheet, Box, Button, NumberedListItem, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { FirmwareUpdateStuckedState } from '@suite-native/analytics';
 
 type MayBeStuckedBottomSheetProps = {
     isOpened: boolean;

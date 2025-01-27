@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
 import {
-    selectIsFeatureEnabled,
     Feature,
     MessageSystemRootState,
+    selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 
 export const useIsFirmwareUpdateFeatureEnabled = () => {

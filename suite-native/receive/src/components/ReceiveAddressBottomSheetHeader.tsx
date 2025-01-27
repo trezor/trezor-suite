@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { VStack, Text } from '@suite-native/atoms';
+import { Text, VStack } from '@suite-native/atoms';
 
 type ReceiveAddressBottomSheetHeaderProps = {
     title: ReactNode;

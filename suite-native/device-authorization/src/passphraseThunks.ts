@@ -1,10 +1,10 @@
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    createDeviceInstanceThunk,
     deviceActions,
-    selectSelectedDevice,
     selectDeviceThunk,
     selectDevices,
-    createDeviceInstanceThunk,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 

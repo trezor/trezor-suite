@@ -1,17 +1,10 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Pressable } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    Screen,
-    ScreenHeader,
-    SettingsStackParamList,
-    SettingsStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
 import {
     Button,
     Card,
@@ -23,6 +16,13 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import {
+    Screen,
+    ScreenHeader,
+    SettingsStackParamList,
+    SettingsStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 import { setCheckFirmwareAuthenticity } from '@suite-native/settings';
 import { useToast } from '@suite-native/toasts';
 

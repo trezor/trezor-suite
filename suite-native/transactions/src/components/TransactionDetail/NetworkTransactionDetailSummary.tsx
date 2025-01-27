@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     TransactionsRootState,
     selectTransactionByAccountKeyAndTxid,
@@ -9,10 +10,9 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, ErrorMessage, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
-import { selectTransactionAddresses } from '../../selectors';
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
+import { selectTransactionAddresses } from '../../selectors';
 
 type VerticalSeparatorProps = { inputsCount: number };
 

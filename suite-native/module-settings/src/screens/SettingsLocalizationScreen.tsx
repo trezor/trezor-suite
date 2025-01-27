@@ -1,9 +1,9 @@
-import { VStack, Card } from '@suite-native/atoms';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { Card, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
-import { CurrencySelector } from '../components/CurrencySelector';
 import { CryptoUnitsSelector } from '../components/CryptoUnitsSelector';
+import { CurrencySelector } from '../components/CurrencySelector';
 
 export const SettingsLocalizationScreen = () => {
     const { translate } = useTranslate();

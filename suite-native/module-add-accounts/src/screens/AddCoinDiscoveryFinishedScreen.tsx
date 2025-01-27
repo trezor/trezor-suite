@@ -2,21 +2,21 @@ import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { AccountsListItem } from '@suite-native/accounts';
-import { Card, Button, Text, TextDivider, Box } from '@suite-native/atoms';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { Account } from '@suite-common/wallet-types';
+import { AccountsListItem } from '@suite-native/accounts';
+import { Box, Button, Card, Text, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { getNetwork } from '@suite-common/wallet-config';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useAddCoinAccount } from '../hooks/useAddCoinAccount';
 import { AccountTypeDecisionBottomSheet } from '../components/AccountTypeDecisionBottomSheet';
+import { useAddCoinAccount } from '../hooks/useAddCoinAccount';
 
 const accountsStyle = prepareNativeStyle(_ => ({ paddingHorizontal: 0, paddingTop: 0 }));
 

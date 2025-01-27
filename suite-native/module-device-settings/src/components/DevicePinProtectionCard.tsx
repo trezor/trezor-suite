@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectSelectedDevice, selectIsDeviceProtectedByPin } from '@suite-common/wallet-core';
+import { selectIsDeviceProtectedByPin, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { SettingsCardWithIconLayout } from '@suite-native/settings';

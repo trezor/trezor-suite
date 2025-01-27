@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 
-import { render, RenderOptions } from '@testing-library/react-native';
+import { RenderOptions, render } from '@testing-library/react-native';
 
 import { PreloadedState } from '@suite-native/state';
 

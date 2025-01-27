@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { getNetwork } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { VStack, Box, AlertBox, Text } from '@suite-native/atoms';
+import { AlertBox, Box, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';

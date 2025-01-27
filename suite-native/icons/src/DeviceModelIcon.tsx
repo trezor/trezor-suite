@@ -1,6 +1,6 @@
 import { DeviceModelInternal } from '@trezor/connect';
 
-import { IconName, IconSize, Icon } from './Icon';
+import { Icon, IconName, IconSize } from './Icon';
 
 type DeviceModelIconProps = {
     deviceModel: DeviceModelInternal;

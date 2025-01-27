@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
-import { KeyboardAvoidingView, Modal as RNModal, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform, Modal as RNModal } from 'react-native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
-import { getWindowWidth, getWindowHeight } from '@trezor/env-utils';
+import { getWindowHeight, getWindowWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type SheetProps = {

@@ -4,35 +4,35 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import {
+    XpubFormContext,
+    XpubFormValues,
+    xpubFormValidationSchema,
+    // TODO: This direct import is needed to avoid importing the `@suite-common/wallet-utils`
+    // to the `connect` packages. Should be revisited soon when fixing the monorepo tree shaking problems.
+} from '@suite-common/validators/src/schemas/xpubSchema';
+import { getNetworkType } from '@suite-common/wallet-config';
+import { isAddressBasedNetwork, isAddressValid } from '@suite-common/wallet-utils';
+import { SelectableNetworkItem } from '@suite-native/accounts';
+import { Alert, useAlert } from '@suite-native/alerts';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
     StackProps,
 } from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { getNetworkType } from '@suite-common/wallet-config';
-import { isAddressValid, isAddressBasedNetwork } from '@suite-common/wallet-utils';
-import { Alert, useAlert } from '@suite-native/alerts';
-import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    XpubFormContext,
-    xpubFormValidationSchema,
-    XpubFormValues,
-    // TODO: This direct import is needed to avoid importing the `@suite-common/wallet-utils`
-    // to the `connect` packages. Should be revisited soon when fixing the monorepo tree shaking problems.
-} from '@suite-common/validators/src/schemas/xpubSchema';
-import { SelectableNetworkItem } from '@suite-native/accounts';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { XpubImportSection, networkTypeToTitleMap } from '../components/XpubImportSection';
 import { AccountImportScreenHeader } from '../components/AccountImportScreenHeader';
 import { DevXpub } from '../components/DevXpub';
 import { XpubHint } from '../components/XpubHint';
 import { XpubHintBottomSheet } from '../components/XpubHintBottomSheet';
+import { XpubImportSection, networkTypeToTitleMap } from '../components/XpubImportSection';
 
 const FORM_BUTTON_FADE_IN_DURATION = 200;
 

@@ -1,10 +1,10 @@
 import { ActivityIndicator } from 'react-native';
 
-import { useHandleHardwareBackNavigation } from '@suite-native/navigation';
-import { Text, VStack, Box } from '@suite-native/atoms';
+import { Box, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
+import { useHandleHardwareBackNavigation } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectDeviceScreenView } from '../../components/connect/ConnectDeviceScreenView';
 import { useOnDeviceReadyNavigation } from '../../hooks/useOnDeviceReadyNavigation';

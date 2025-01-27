@@ -1,18 +1,18 @@
-import { useSelector } from 'react-redux';
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
-import { Card, HStack, VStack, Text, Box, Button } from '@suite-native/atoms';
+import { type NetworkType, getNetworkType } from '@suite-common/wallet-config';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import { getFeeUnits } from '@suite-common/wallet-utils';
+import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { getFeeUnits } from '@suite-common/wallet-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
-import { getNetworkType, type NetworkType } from '@suite-common/wallet-config';
-import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { SendFeesFormValues } from '../sendFeesFormSchema';
 import { selectFeeLevels } from '../sendFormSlice';

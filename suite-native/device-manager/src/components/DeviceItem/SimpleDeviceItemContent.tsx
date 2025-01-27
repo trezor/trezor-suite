@@ -1,16 +1,16 @@
-import { useSelector } from 'react-redux';
 import React, { ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
-import { HStack, Text, Box } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { TrezorDevice } from '@suite-common/suite-types';
 import {
     DeviceRootState,
-    selectHasOnlyEmptyPortfolioTracker,
     selectDeviceByState,
+    selectHasOnlyEmptyPortfolioTracker,
 } from '@suite-common/wallet-core';
+import { Box, HStack, Text } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TypographyStyle } from '@trezor/theme';
-import { TrezorDevice } from '@suite-common/suite-types';
 
 import { ConnectionDot } from './ConnectionDot';
 

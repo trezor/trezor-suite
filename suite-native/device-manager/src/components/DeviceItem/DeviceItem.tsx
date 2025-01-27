@@ -1,9 +1,9 @@
 import { Pressable } from 'react-native';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { HStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceItemContent } from './DeviceItemContent';
 

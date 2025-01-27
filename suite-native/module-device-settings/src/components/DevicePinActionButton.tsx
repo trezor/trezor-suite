@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { removeButtonRequests, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { analytics, EventType } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Button, ButtonColorScheme } from '@suite-native/atoms';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation, TxKeyPath } from '@suite-native/intl';

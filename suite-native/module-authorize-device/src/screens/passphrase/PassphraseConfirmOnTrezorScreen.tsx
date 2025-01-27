@@ -1,8 +1,17 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import {
+    deviceActions,
+    selectHasDeviceDiscovery,
+    selectIsDeviceConnectedAndAuthorized,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
+import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
+import { useHandlePassphraseMismatch } from '@suite-native/device-authorization';
+import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -10,15 +19,6 @@ import {
     Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import {
-    deviceActions,
-    selectSelectedDevice,
-    selectIsDeviceConnectedAndAuthorized,
-    selectHasDeviceDiscovery,
-} from '@suite-common/wallet-core';
-import { useHandlePassphraseMismatch } from '@suite-native/device-authorization';
 
 import { ConfirmOnTrezorAnimation } from '../../components/passphrase/ConfirmOnTrezorAnimation';
 import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';

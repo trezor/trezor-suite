@@ -1,12 +1,12 @@
-import { View, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useEvent } from 'expo';
-import { useVideoPlayer, VideoView } from 'expo-video';
+import { VideoView, useVideoPlayer } from 'expo-video';
 
-import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { videos, VideoName } from '../videos';
+import { VideoName, videos } from '../videos';
 
 type VideoProps = {
     name: VideoName;

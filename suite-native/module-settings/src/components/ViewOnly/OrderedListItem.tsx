@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
-import { Color, TypographyStyle } from '@trezor/theme';
 import { Box, Text } from '@suite-native/atoms';
+import { Color, TypographyStyle } from '@trezor/theme';
 
 type OrderedListItemProps = {
     children: ReactNode;

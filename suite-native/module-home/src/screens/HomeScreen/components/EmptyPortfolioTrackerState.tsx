@@ -2,8 +2,7 @@ import { Dimensions, View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Text, Card, Image, VStack, Button } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Button, Card, Image, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
@@ -13,6 +12,7 @@ import {
     RootStackRoutes,
     StackToTabCompositeNavigationProp,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 

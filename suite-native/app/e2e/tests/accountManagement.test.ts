@@ -1,14 +1,14 @@
 import { expect as detoxExpect } from 'detox';
 
-import { appIsFullyLoaded, openApp, restartApp } from '../utils';
 import { xpubs } from '../fixtures/xpubs';
-import { onAccountImport } from '../pageObjects/accountImportActions';
-import { onOnboarding } from '../pageObjects/onboardingActions';
-import { onHome } from '../pageObjects/homeActions';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountDetailSettings } from '../pageObjects/accountDetailSettingsActions';
+import { onAccountImport } from '../pageObjects/accountImportActions';
+import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
+import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
+import { appIsFullyLoaded, openApp, restartApp } from '../utils';
 
 describe('Account management', () => {
     beforeAll(async () => {

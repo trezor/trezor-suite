@@ -1,4 +1,4 @@
-import { BottomSheet, Button, VStack, Box, Text, BulletListItem } from '@suite-native/atoms';
+import { BottomSheet, Box, BulletListItem, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 

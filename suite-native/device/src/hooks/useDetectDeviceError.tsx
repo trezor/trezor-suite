@@ -1,40 +1,40 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import * as Sentry from '@sentry/react-native';
 import { useNavigation } from '@react-navigation/native';
+import * as Sentry from '@sentry/react-native';
 
-import { analytics, EventType } from '@suite-native/analytics';
 import {
     acquireDevice,
     deviceActions,
-    selectSelectedDevice,
-    selectIsConnectedDeviceUninitialized,
-    selectIsNoPhysicalDeviceConnected,
-    selectIsDeviceInBootloader,
-    selectIsUnacquiredDevice,
-    selectIsPortfolioTrackerDevice,
     selectHasDeviceFirmwareInstalled,
+    selectIsConnectedDeviceUninitialized,
+    selectIsDeviceInBootloader,
+    selectIsNoPhysicalDeviceConnected,
+    selectIsPortfolioTrackerDevice,
+    selectIsUnacquiredDevice,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
+import { EventType, analytics } from '@suite-native/analytics';
+import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
-    StackToStackCompositeNavigationProps,
+    AuthorizeDeviceStackRoutes,
     HomeStackParamList,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    AuthorizeDeviceStackRoutes,
+    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
-import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 
-import { selectDeviceError, selectIsDeviceFirmwareSupported } from '../selectors';
-import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';
-import { UninitializedDeviceModalAppendix } from '../components/UninitializedDeviceModalAppendix';
 import { BootloaderModalAppendix } from '../components/BootloaderModalAppendix';
+import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';
 import { UnacquiredDeviceModalAppendix } from '../components/UnacquiredDeviceModalAppendix';
+import { UninitializedDeviceModalAppendix } from '../components/UninitializedDeviceModalAppendix';
+import { selectDeviceError, selectIsDeviceFirmwareSupported } from '../selectors';
 
 export const SUITE_WEB_URL = 'https://suite.trezor.io/web/';
 

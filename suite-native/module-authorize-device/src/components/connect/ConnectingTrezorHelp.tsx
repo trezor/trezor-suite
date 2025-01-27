@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { BottomSheet, IconButton, Text, VStack } from '@suite-native/atoms';
+import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 
 import { PIN_HELP_URL } from '../../constants/pinFormConstants';
 

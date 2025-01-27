@@ -1,17 +1,17 @@
-import { useContext, ReactNode } from 'react';
+import { ReactNode, useContext } from 'react';
 import { ScrollViewProps, View } from 'react-native';
+import { SystemBars } from 'react-native-edge-to-edge';
 import { EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
-import { SystemBars } from 'react-native-edge-to-edge';
 
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
 
+import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
+import { Box } from '@suite-native/atoms';
 import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
-import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
-import { Box } from '@suite-native/atoms';
 
 import { ScreenContentWrapper } from './ScreenContentWrapper';
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';

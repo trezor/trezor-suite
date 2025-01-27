@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { BottomSheet, Box, Card, RoundedIcon, Text } from '@suite-native/atoms';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { AccountKey } from '@suite-common/wallet-types';
+import { BottomSheet, Box, Card, RoundedIcon, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
+import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailListItem } from './TransactionDetailListItem';

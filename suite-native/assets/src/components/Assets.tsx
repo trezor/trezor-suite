@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { selectIsDeviceAuthorized, selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { selectHasDeviceDiscovery, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
 import { OnSelectAccount } from '@suite-native/accounts';
 import { AnimatedCard } from '@suite-native/atoms';
 import {

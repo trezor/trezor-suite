@@ -1,13 +1,13 @@
-import { SystemBarStyle } from 'react-native-edge-to-edge';
 import { useEffect } from 'react';
-import { Platform, AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
+import { SystemBarStyle } from 'react-native-edge-to-edge';
 
-import * as SystemUI from 'expo-system-ui';
 import { useIsFocused } from '@react-navigation/native';
 import * as NavigationBar from 'expo-navigation-bar';
+import * as SystemUI from 'expo-system-ui';
 
 import { isDarkColor, useNativeStyles } from '@trezor/styles';
-import { Color, CSSColor } from '@trezor/theme';
+import { CSSColor, Color } from '@trezor/theme';
 
 const adjustSystemBarStyleToBackground = (color: CSSColor) => {
     if (Platform.OS === 'android') {

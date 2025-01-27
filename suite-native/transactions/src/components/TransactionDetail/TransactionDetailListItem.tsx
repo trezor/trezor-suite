@@ -2,14 +2,14 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, RoundedIcon, Text } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { Box, RoundedIcon, Text } from '@suite-native/atoms';
 import {
-    StackNavigationProps,
     RootStackParamList,
     RootStackRoutes,
+    StackNavigationProps,
 } from '@suite-native/navigation';
+import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TokenTransferListItemValues } from '../TransactionsList/TokenTransferListItem';

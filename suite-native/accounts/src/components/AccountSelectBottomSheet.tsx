@@ -1,14 +1,14 @@
 import React, { useCallback } from 'react';
 
 import { BottomSheetFlashList } from '@suite-native/atoms';
-import { useToast } from '@suite-native/toasts';
 import { Translation } from '@suite-native/intl';
+import { useToast } from '@suite-native/toasts';
 
 import { AccountSelectBottomSheetSection, OnSelectAccount } from '../types';
-import { AccountsListItem } from './AccountsList/AccountsListItem';
 import { AccountSectionTitle } from './AccountSectionTitle';
-import { AccountsListTokenItem } from './AccountsList/AccountsListTokenItem';
+import { AccountsListItem } from './AccountsList/AccountsListItem';
 import { AccountsListStakingItem } from './AccountsList/AccountsListStakingItem';
+import { AccountsListTokenItem } from './AccountsList/AccountsListTokenItem';
 
 type AccountSelectBottomSheetProps = {
     data: AccountSelectBottomSheetSection[];

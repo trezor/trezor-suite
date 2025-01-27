@@ -1,8 +1,8 @@
 import { Alert, Pressable, Share } from 'react-native';
 
-import { Text, Button, VStack, HStack } from '@suite-native/atoms';
+import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
-import { useTranslate, Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { QRCode } from './QRCode';

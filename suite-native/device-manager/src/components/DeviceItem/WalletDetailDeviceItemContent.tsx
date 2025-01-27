@@ -1,12 +1,12 @@
-import { useSelector } from 'react-redux';
 import { ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
+import { TrezorDevice } from '@suite-common/suite-types/src/device';
+import { DeviceRootState, selectDeviceByState } from '@suite-common/wallet-core';
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { DeviceRootState, selectDeviceByState } from '@suite-common/wallet-core';
 import { TypographyStyle } from '@trezor/theme';
-import { TrezorDevice } from '@suite-common/suite-types/src/device';
 
 import { ConnectionDot } from './ConnectionDot';
 

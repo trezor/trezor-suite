@@ -1,22 +1,22 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Keyboard } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { Button } from '@suite-native/atoms';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { Button } from '@suite-native/atoms';
+import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
-import { useDebounce } from '@trezor/react-utils';
 import { Translation } from '@suite-native/intl';
-import { selectAccountTokenBalance, TokensRootState } from '@suite-native/tokens';
+import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
+import { useDebounce } from '@trezor/react-utils';
 
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
-import { getOutputFieldName, constructFormDraft } from '../utils';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { constructFormDraft, getOutputFieldName } from '../utils';
 
 type SendMaxButtonProps = {
     outputIndex: number;

@@ -1,23 +1,23 @@
-import { LayoutChangeEvent } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { LayoutChangeEvent } from 'react-native';
 import Animated, {
-    useAnimatedStyle,
-    withTiming,
-    useSharedValue,
     FadeIn,
     FadeOut,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
 } from 'react-native-reanimated';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
+import { authorizeDeviceThunk, selectDeviceAuthFailed } from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import TrezorConnect, { UI, DEVICE } from '@trezor/connect';
-import { selectDeviceAuthFailed, authorizeDeviceThunk } from '@suite-common/wallet-core';
-import { useAlert } from '@suite-native/alerts';
 import { useOpenLink } from '@suite-native/link';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import TrezorConnect, { DEVICE, UI } from '@trezor/connect';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { PIN_HELP_URL } from '../../constants/pinFormConstants';
 

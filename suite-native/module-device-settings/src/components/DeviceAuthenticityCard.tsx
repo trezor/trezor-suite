@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { analytics, DeviceAuthenticityCheckResult, EventType } from '@suite-native/analytics';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useAlert } from '@suite-native/alerts';
+import { DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-native/analytics';
 import { Button, IconListTextItem, Text, VStack } from '@suite-native/atoms';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceAuthenticityStackParamList,

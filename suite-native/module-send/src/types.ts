@@ -2,6 +2,7 @@ import { RefObject } from 'react';
 import { TextInput, TextInputProps } from 'react-native';
 import { SharedValue } from 'react-native-reanimated';
 
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountKey,
     FeeLevelLabel,
@@ -9,7 +10,6 @@ import {
     ReviewOutputState,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 export type StatefulReviewOutput = ReviewOutput & { state: ReviewOutputState };
 

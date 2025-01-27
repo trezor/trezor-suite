@@ -2,7 +2,11 @@ import { useDispatch } from 'react-redux';
 
 import { CommonActions } from '@react-navigation/core';
 
-import { setIsOnboardingFinished } from '@suite-native/settings';
+import { EventType, analytics } from '@suite-native/analytics';
+import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { BiometricsSvg, useBiometricsSettings } from '@suite-native/biometrics';
+import { Icon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 import {
     HomeStackRoutes,
     OnboardingStackParamList,
@@ -12,11 +16,7 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { EventType, analytics } from '@suite-native/analytics';
-import { BiometricsSvg, useBiometricsSettings } from '@suite-native/biometrics';
-import { Icon } from '@suite-native/icons';
+import { setIsOnboardingFinished } from '@suite-native/settings';
 
 export const BiometricsScreen = ({
     navigation,

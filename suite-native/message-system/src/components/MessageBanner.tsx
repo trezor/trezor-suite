@@ -1,14 +1,14 @@
 import { TouchableOpacity } from 'react-native';
-import { useDispatch } from 'react-redux';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useDispatch } from 'react-redux';
 
-import { Message, Variant, CTA } from '@suite-common/suite-types';
 import { messageSystemActions } from '@suite-common/message-system';
-import { Color } from '@trezor/theme';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { HStack, Box, Text, RoundedIcon, VStack } from '@suite-native/atoms';
-import { IconName, Icon } from '@suite-native/icons';
+import { CTA, Message, Variant } from '@suite-common/suite-types';
+import { Box, HStack, RoundedIcon, Text, VStack } from '@suite-native/atoms';
+import { Icon, IconName } from '@suite-native/icons';
 import { Link } from '@suite-native/link';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 type MessageBannerProps = {
     message: Message;

@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useGraphForSingleAccount, Graph, TimeSwitch, useGraphAtoms } from '@suite-native/graph';
-import { VStack } from '@suite-native/atoms';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
 import { AccountsRootState } from '@suite-common/wallet-core';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     NativeAccountsRootState,
     selectAccountFiatBalance,
     selectAccountTokenFiatBalance,
 } from '@suite-native/accounts';
+import { VStack } from '@suite-native/atoms';
+import { Graph, TimeSwitch, useGraphAtoms, useGraphForSingleAccount } from '@suite-native/graph';
+import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 import { AccountDetailHeader } from './AccountDetailHeader';
 import { referencePointAtom, selectedPointAtom } from '../accountDetailGraphAtoms';

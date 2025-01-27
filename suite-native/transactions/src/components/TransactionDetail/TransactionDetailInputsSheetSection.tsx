@@ -1,8 +1,7 @@
-import { ReactNode, Fragment } from 'react';
+import { Fragment, ReactNode } from 'react';
 
 import { A, G } from '@mobily/ts-belt';
 
-import { Icon } from '@suite-native/icons';
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
@@ -11,6 +10,7 @@ import {
     CryptoAmountFormatter,
     TokenAmountFormatter,
 } from '@suite-native/formatters';
+import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionTranfer } from '../../selectors';

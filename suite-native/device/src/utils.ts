@@ -2,7 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { AnyAction } from '@reduxjs/toolkit';
 import * as semver from 'semver';
 
-import { Device, DEVICE, DeviceEvent, DeviceModelInternal, VersionArray } from '@trezor/connect';
+import { DEVICE, Device, DeviceEvent, DeviceModelInternal, VersionArray } from '@trezor/connect';
 
 export const minimalSupportedFirmwareVersion = {
     UNKNOWN: [0, 0, 0] as VersionArray,

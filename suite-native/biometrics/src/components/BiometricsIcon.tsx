@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
-import { Icon, IconName } from '@suite-native/icons';
 import { Box } from '@suite-native/atoms';
+import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const iconWrapperStyle = prepareNativeStyle(

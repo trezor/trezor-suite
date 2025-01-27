@@ -1,17 +1,17 @@
-import { useSelector } from 'react-redux';
 import { LayoutChangeEvent, View } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { BigNumber } from '@trezor/utils';
 import { isCoinWithTokens } from '@suite-native/tokens';
+import { BigNumber } from '@trezor/utils';
 
 import { selectReviewSummaryOutput } from '../selectors';
-import { ReviewOutputItemValues } from './ReviewOutputItemValues';
 import { ReviewOutputCard } from './ReviewOutputCard';
+import { ReviewOutputItemValues } from './ReviewOutputItemValues';
 
 type ReviewOutputSummaryItemProps = {
     accountKey: AccountKey;

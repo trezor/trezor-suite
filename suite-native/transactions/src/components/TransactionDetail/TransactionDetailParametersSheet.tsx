@@ -1,20 +1,20 @@
 import { useSelector } from 'react-redux';
 
-import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { NetworkType, networks } from '@suite-common/wallet-config';
 import {
     BlockchainRootState,
-    selectTransactionConfirmations,
     TransactionsRootState,
+    selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
-import { useCopyToClipboard } from '@suite-native/helpers';
+import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { FeeFormatter, TransactionIdFormatter } from '@suite-native/formatters';
-import { networks, NetworkType } from '@suite-common/wallet-config';
+import { useCopyToClipboard } from '@suite-native/helpers';
+import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 
-import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { TransactionDetailRow } from './TransactionDetailRow';
+import { TransactionDetailSheet } from './TransactionDetailSheet';
 
 type TransactionDetailParametersSheetProps = {
     isVisible: boolean;

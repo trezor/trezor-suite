@@ -1,10 +1,10 @@
 import { KeyboardAvoidingView, Platform } from 'react-native';
 
 import { NetworkType } from '@suite-common/wallet-config';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, TextButton } from '@suite-native/atoms';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
+import { Box, TextButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type XpubScanHintSheet = {
     networkType: NetworkType;

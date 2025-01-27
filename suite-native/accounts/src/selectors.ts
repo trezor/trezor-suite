@@ -1,5 +1,6 @@
 import { A, pipe } from '@mobily/ts-belt';
 
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     SimpleTokenStructure,
     TokenDefinitionsRootState,
@@ -29,10 +30,9 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
+import { doesCoinSupportStaking } from '@suite-native/staking';
 import { isCoinWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 import type { StaticSessionId } from '@trezor/connect';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { doesCoinSupportStaking } from '@suite-native/staking';
 
 import { AccountSelectBottomSheetSection, GroupedByTypeAccounts } from './types';
 import {

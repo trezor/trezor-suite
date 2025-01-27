@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useAlert } from '@suite-native/alerts';
-import { analytics, EventType } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import {
     useIsBiometricsEnabled,

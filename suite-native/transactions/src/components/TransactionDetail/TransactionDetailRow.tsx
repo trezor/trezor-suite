@@ -2,8 +2,8 @@ import { ReactNode } from 'react';
 
 import { G } from '@mobily/ts-belt';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
 import { Box, Text } from '@suite-native/atoms/src';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
 
 type TransactionDetailRowProps = {
     title: string;

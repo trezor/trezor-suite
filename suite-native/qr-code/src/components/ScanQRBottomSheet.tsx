@@ -2,8 +2,8 @@ import React, { ReactNode } from 'react';
 
 import { BottomSheet, VStack } from '@suite-native/atoms';
 
-import { QRCodeScanner } from './QRCodeScanner';
 import { PickQRFromGalleryButton } from './PickQRFromGalleryButton';
+import { QRCodeScanner } from './QRCodeScanner';
 
 type ScanQRBottomSheetProps = {
     title: ReactNode;

@@ -1,11 +1,11 @@
 import { expect as detoxExpect } from 'detox';
 
-import { onOnboarding } from '../pageObjects/onboardingActions';
 import { xpubs } from '../fixtures/xpubs';
-import { appIsFullyLoaded, openApp, restartApp } from '../utils';
 import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
+import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
+import { appIsFullyLoaded, openApp, restartApp } from '../utils';
 
 const goToBtcImportXpubScreen = async () => {
     await onTabBar.navigateToMyAssets();

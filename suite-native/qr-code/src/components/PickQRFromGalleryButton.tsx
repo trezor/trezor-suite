@@ -2,8 +2,8 @@ import { scanFromURLAsync } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 
 import { Button } from '@suite-native/atoms';
-import { useToast } from '@suite-native/toasts';
 import { Translation } from '@suite-native/intl';
+import { useToast } from '@suite-native/toasts';
 
 type PickQRFromGalleryButtonProps = {
     onImagePicked: (data: string) => void;

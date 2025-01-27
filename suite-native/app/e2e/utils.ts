@@ -1,5 +1,5 @@
-import { resolveConfig } from 'detox/internals';
 import { expect as detoxExpect } from 'detox';
+import { resolveConfig } from 'detox/internals';
 
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 

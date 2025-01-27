@@ -3,20 +3,20 @@ import { useSelector } from 'react-redux';
 import {
     Canvas,
     Group,
-    Text as SkiaText,
     LinearGradient,
+    Text as SkiaText,
     useFont,
     vec,
 } from '@shopify/react-native-skia';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { DeviceModelInternal } from '@trezor/connect';
 import { selectDeviceModel } from '@suite-common/wallet-core';
+import { DeviceModelInternal } from '@trezor/connect';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceScreenPagination } from './DeviceScreenPagination';
 import { DEVICE_SCREEN_BACKGROUND_COLOR, DEVICE_TEXT_COLOR } from '../constants';
-import { parseAddressToDeviceLines } from '../utils';
 import { DevicePaginationActivePage, isPaginationCompatibleDeviceModel } from '../types';
+import { parseAddressToDeviceLines } from '../utils';
 
 type DeviceScreenContentProps = {
     address: string;

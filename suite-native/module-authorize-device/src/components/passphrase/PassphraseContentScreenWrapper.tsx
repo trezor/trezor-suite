@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { VStack, Text } from '@suite-native/atoms';
+import { Text, VStack } from '@suite-native/atoms';
 import { Screen } from '@suite-native/navigation';
 
 import { PassphraseScreenHeader } from './PassphraseScreenHeader';

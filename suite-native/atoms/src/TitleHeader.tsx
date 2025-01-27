@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 
-import { TypographyStyle } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { TypographyStyle } from '@trezor/theme';
 
-import { Text } from './Text';
 import { VStack } from './Stack';
+import { Text } from './Text';
 
 type TitleHeaderProps = {
     title?: ReactNode;

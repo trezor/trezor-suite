@@ -6,10 +6,10 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { SelectNetworkScreen } from '../screens/SelectNetworkScreen';
-import { XpubScanScreen } from '../screens/XpubScanScreen';
 import { AccountImportLoadingScreen } from '../screens/AccountImportLoadingScreen';
 import { AccountImportSummaryScreen } from '../screens/AccountImportSummaryScreen';
+import { SelectNetworkScreen } from '../screens/SelectNetworkScreen';
+import { XpubScanScreen } from '../screens/XpubScanScreen';
 
 export const AccountsImportStack = createNativeStackNavigator<AccountsImportStackParamList>();
 

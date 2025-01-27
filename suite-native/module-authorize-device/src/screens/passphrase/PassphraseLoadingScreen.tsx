@@ -1,9 +1,13 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { VStack, Text, Spinner, SpinnerLoadingState } from '@suite-native/atoms';
+import { selectIsDeviceNotEmpty } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
+import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
+import { finishPassphraseFlow } from '@suite-native/device-authorization';
+import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -12,10 +16,6 @@ import {
     Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsDeviceNotEmpty } from '@suite-common/wallet-core';
-import { Translation } from '@suite-native/intl';
-import { finishPassphraseFlow } from '@suite-native/device-authorization';
-import { EventType, analytics } from '@suite-native/analytics';
 
 import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
 

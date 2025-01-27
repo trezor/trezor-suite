@@ -1,10 +1,10 @@
 import { useRoute } from '@react-navigation/native';
 
 import { Box, PictogramTitleHeader } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TxKeyPath, Translation } from '@suite-native/intl';
-import { ReceiveStackRoutes } from '@suite-native/navigation';
 import { IconName } from '@suite-native/icons';
+import { Translation, TxKeyPath } from '@suite-native/intl';
+import { ReceiveStackRoutes } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const PLACEHOLDER_HEIGHT = 380;
 

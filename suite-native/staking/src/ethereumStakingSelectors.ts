@@ -1,12 +1,12 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
+    StakeRootState,
     selectAccountByKey,
     selectAccountNetworkSymbol,
     selectAccountStakeTransactions,
     selectDeviceAccounts,
     selectPoolStatsApyData,
-    StakeRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';

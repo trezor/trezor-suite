@@ -1,10 +1,10 @@
-import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {
     FirmwareUpdateResult,
-    useFirmwareInstallation,
     UseFirmwareInstallationParams,
+    useFirmwareInstallation,
 } from '@suite-common/firmware';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import { setPriorityMode } from '@trezor/react-native-usb';

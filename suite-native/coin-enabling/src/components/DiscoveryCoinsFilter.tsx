@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { VStack, Text } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { Icon } from '@suite-native/icons';
+import { Text, VStack } from '@suite-native/atoms';
 import {
     applyDiscoveryChangesThunk,
-    selectDiscoverySupportedNetworks,
     selectDeviceEnabledDiscoveryNetworkSymbols,
+    selectDiscoverySupportedNetworks,
 } from '@suite-native/discovery';
+import { Icon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 
 import { NetworkSymbolSwitchItem } from './NetworkSymbolSwitchItem';
 

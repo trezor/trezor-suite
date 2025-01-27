@@ -1,7 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { A, pipe } from '@mobily/ts-belt';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -16,16 +17,15 @@ import {
     portfolioTrackerTestnets,
     sortNetworks,
 } from '@suite-native/config';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import {
+    TokensRootState,
     isCoinWithTokens,
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
-    TokensRootState,
 } from '@suite-native/tokens';
 
 type DiscoveryInfo = {

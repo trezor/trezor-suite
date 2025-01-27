@@ -1,12 +1,12 @@
 import { TouchableOpacity } from 'react-native';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
 import { useFormatters } from '@suite-common/formatters';
-import { Icon, IconName } from '@suite-native/icons';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Badge, Box, HStack, RoundedIcon, Text } from '@suite-native/atoms';
+import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { isCoinWithTokens } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type SelectableAssetItemProps = {
     symbol: NetworkSymbol;

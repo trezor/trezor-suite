@@ -1,5 +1,5 @@
-import { Linking } from 'react-native';
 import { useCallback } from 'react';
+import { Linking } from 'react-native';
 
 import { useToast } from '@suite-native/toasts';
 

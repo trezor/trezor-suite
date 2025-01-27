@@ -1,5 +1,5 @@
-import { render, fireEvent } from '@suite-native/test-utils';
 import { Text } from '@suite-native/atoms';
+import { fireEvent, render } from '@suite-native/test-utils';
 
 import { PickerHeader } from '../PickerHeader';
 

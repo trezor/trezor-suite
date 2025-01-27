@@ -2,8 +2,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TabBarItem } from './TabBarItem';
 import { TabsOptions } from '../types';

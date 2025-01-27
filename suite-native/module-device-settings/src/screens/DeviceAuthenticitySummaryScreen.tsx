@@ -1,4 +1,3 @@
-import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     Button,
     ButtonColorScheme,
@@ -8,6 +7,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Translation, TxKeyPath } from '@suite-native/intl';
+import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     DeviceAuthenticityStackParamList,
     DeviceAuthenticityStackRoutes,

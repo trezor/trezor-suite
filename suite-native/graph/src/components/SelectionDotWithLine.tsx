@@ -5,7 +5,7 @@ import {
     withSpring,
 } from 'react-native-reanimated';
 
-import { vec, Circle, Group, Line } from '@shopify/react-native-skia';
+import { Circle, Group, Line, vec } from '@shopify/react-native-skia';
 
 import type { SelectionDotProps } from '@suite-native/react-native-graph';
 

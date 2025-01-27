@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux';
 
+import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
-import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
 
 type AlertResolveValue = { wasReviewCanceled: boolean };
 

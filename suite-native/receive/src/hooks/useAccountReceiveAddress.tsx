@@ -3,22 +3,22 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useAlert } from '@suite-native/alerts';
-import TrezorConnect from '@trezor/connect';
 import {
     AccountsRootState,
     TransactionsRootState,
-    selectAccountNetworkSymbol,
-    selectIsPortfolioTrackerDevice,
     confirmAddressOnDeviceThunk,
+    selectAccountNetworkSymbol,
     selectIsDeviceInViewOnlyMode,
+    selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { analytics, EventType } from '@suite-native/analytics';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import { useToast } from '@suite-native/toasts';
-import { Translation } from '@suite-native/intl';
 import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
+import { useAlert } from '@suite-native/alerts';
+import { EventType, analytics } from '@suite-native/analytics';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { Translation } from '@suite-native/intl';
+import { useToast } from '@suite-native/toasts';
+import TrezorConnect from '@trezor/connect';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();

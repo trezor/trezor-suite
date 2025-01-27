@@ -1,19 +1,19 @@
 import { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { TransactionsRootState } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { BottomSheet, Box, Button, Card, Text, Toggle, VStack } from '@suite-native/atoms';
-import { TransactionsRootState } from '@suite-common/wallet-core';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
-import { selectTransactionAddresses } from '../../selectors';
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
+import { selectTransactionAddresses } from '../../selectors';
 import { AddressesType, VinVoutAddress } from '../../types';
 
 type TransactionDetailAddressesSheetProps = {

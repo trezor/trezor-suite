@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
-import { useSelector } from 'react-redux';
 import { Platform } from 'react-native';
+import { useSelector } from 'react-redux';
 
-import { analytics, EventType } from '@suite-native/analytics';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Card, DiscreetCanvas, Text, useDiscreetMode } from '@suite-native/atoms';
-import { useNativeStyles } from '@trezor/styles';
 import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { useTranslate } from '@suite-native/intl';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { useNativeStyles } from '@trezor/styles';
 
 import { TouchableSwitchRow } from '../components/TouchableSwitchRow';
 

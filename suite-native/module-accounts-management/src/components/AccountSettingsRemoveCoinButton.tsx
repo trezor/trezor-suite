@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, TrezorSuiteLiteHeader } from '@suite-native/atoms';
-import { accountsActions, AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import { useAlert } from '@suite-native/alerts';
+import { Button, TrezorSuiteLiteHeader } from '@suite-native/atoms';
+import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
 type AccountSettingsRemoveCoinButtonProps = {
     accountKey: AccountKey;

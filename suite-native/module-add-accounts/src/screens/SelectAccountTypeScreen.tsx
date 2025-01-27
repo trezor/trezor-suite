@@ -3,8 +3,19 @@ import { View } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { AccountType } from '@suite-common/wallet-config';
+import {
+    Box,
+    BulletListItem,
+    Button,
+    IconButton,
+    SelectableItem,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
+import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
+import { Translation, TxKeyPath, useTranslate } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
 import {
     AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
@@ -12,20 +23,9 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import {
-    Button,
-    VStack,
-    Text,
-    IconButton,
-    SelectableItem,
-    BulletListItem,
-    Box,
-} from '@suite-native/atoms';
-import { useTranslate, Translation, TxKeyPath } from '@suite-native/intl';
-import { useOpenLink } from '@suite-native/link';
-import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useAddCoinAccount, accountTypeTranslationKeys } from '../hooks/useAddCoinAccount';
+import { accountTypeTranslationKeys, useAddCoinAccount } from '../hooks/useAddCoinAccount';
 
 const GRADIENT_HEIGHT = 48;
 

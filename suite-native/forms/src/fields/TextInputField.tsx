@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import { TextInput } from 'react-native/types';
 import { RequireOneOrNone } from 'type-fest';
 
-import { Input, InputWrapper, InputProps, InputWrapperProps } from '@suite-native/atoms';
+import { Input, InputProps, InputWrapper, InputWrapperProps } from '@suite-native/atoms';
 
 import { useField } from '../hooks/useField';
 import { FieldName } from '../types';

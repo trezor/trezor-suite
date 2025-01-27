@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectFiatCurrencyCode } from '@suite-native/settings';
+import { SpinnerLoadingState } from '@suite-native/atoms';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
@@ -10,12 +10,12 @@ import {
     StackToStackCompositeScreenProps,
     useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { AccountInfo } from '@trezor/connect';
-import { SpinnerLoadingState } from '@suite-native/atoms';
 
+import { getAccountInfoThunk } from '../accountsImportThunks';
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
-import { getAccountInfoThunk } from '../accountsImportThunks';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 

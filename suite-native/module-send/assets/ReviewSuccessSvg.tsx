@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Svg, { G, Path, ClipPath, Defs, Rect } from 'react-native-svg';
+import Svg, { ClipPath, Defs, G, Path, Rect } from 'react-native-svg';
 
 import { useNativeStyles } from '@trezor/styles';
 

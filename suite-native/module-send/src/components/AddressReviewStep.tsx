@@ -2,14 +2,14 @@ import { ReactNode } from 'react';
 import { LayoutChangeEvent, View } from 'react-native';
 
 import {
-    OrderedListIconProps,
+    Box,
     Card,
-    Text,
     HStack,
     OrderedListIcon,
-    Box,
+    OrderedListIconProps,
+    Text,
 } from '@suite-native/atoms';
-import { TxKeyPath, Translation } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type AddressReviewStepProps = {

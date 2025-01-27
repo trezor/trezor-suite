@@ -1,9 +1,9 @@
 import { useRoute } from '@react-navigation/native';
 
 import { TokenAddress } from '@suite-common/wallet-types';
-import { HStack, VStack, Text, Box } from '@suite-native/atoms';
+import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CoinAmountFormatter, CoinToFiatAmountFormatter } from '@suite-native/formatters';
-import { TxKeyPath, Translation } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendOutputsReview>['route'];

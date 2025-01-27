@@ -1,23 +1,23 @@
-import { useSelector } from 'react-redux';
-import { Platform, Dimensions, PixelRatio } from 'react-native';
 import { useEffect, useState } from 'react';
+import { Dimensions, PixelRatio, Platform } from 'react-native';
+import { useSelector } from 'react-redux';
 
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
+import {
+    selectRememberedHiddenWalletsCount,
+    selectRememberedStandardWalletsCount,
+} from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
 import { useDiscreetMode } from '@suite-native/atoms';
+import { useIsBiometricsEnabled } from '@suite-native/biometrics';
+import { selectEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import {
     selectBitcoinUnits,
     selectFiatCurrencyCode,
     selectIsOnboardingFinished,
 } from '@suite-native/settings';
-import { useUserColorScheme } from '@suite-native/theme';
-import { analytics, EventType } from '@suite-native/analytics';
-import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { selectIsConnectInitialized } from '@suite-native/state';
-import { useIsBiometricsEnabled } from '@suite-native/biometrics';
-import {
-    selectRememberedStandardWalletsCount,
-    selectRememberedHiddenWalletsCount,
-} from '@suite-common/wallet-core';
-import { selectEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
+import { useUserColorScheme } from '@suite-native/theme';
 
 export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const [loadDuration, setLoadDuration] = useState<number | null>(null);

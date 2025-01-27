@@ -4,26 +4,26 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { isPending } from '@suite-common/wallet-utils';
+import { useFormatters } from '@suite-common/formatters';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    TransactionsRootState,
+    selectIsPhishingTransaction,
+    selectTransactionBlockTimeById,
+    selectTransactionByAccountKeyAndTxid,
+} from '@suite-common/wallet-core';
 import { AccountKey, TransactionType, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { isPending } from '@suite-common/wallet-utils';
+import { Badge, Box, DiscreetText, HStack, Text } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Badge, Box, DiscreetText, HStack, Text } from '@suite-native/atoms';
-import { useFormatters } from '@suite-common/formatters';
-import {
-    selectIsPhishingTransaction,
-    selectTransactionBlockTimeById,
-    selectTransactionByAccountKeyAndTxid,
-    TransactionsRootState,
-} from '@suite-common/wallet-core';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TypedTokenTransfer } from '@suite-native/tokens';
-import { Translation } from '@suite-native/intl';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionIcon } from './TransactionIcon';
 import { TransactionName } from '../TransactionName';

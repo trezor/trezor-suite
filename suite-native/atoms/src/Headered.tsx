@@ -2,9 +2,9 @@ import { ReactNode } from 'react';
 
 import { G } from '@mobily/ts-belt';
 
+import { Box } from './Box';
 import { VStack } from './Stack';
 import { Text } from './Text';
-import { Box } from './Box';
 
 type HeaderedProps = {
     header: ReactNode;

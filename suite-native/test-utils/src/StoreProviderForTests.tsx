@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 
 import { EnhancedStore } from '@reduxjs/toolkit';
 
-import { initStore, PreloadedState } from '@suite-native/state';
+import { PreloadedState, initStore } from '@suite-native/state';
 
 import { BasicProvider } from './BasicProvider';
 

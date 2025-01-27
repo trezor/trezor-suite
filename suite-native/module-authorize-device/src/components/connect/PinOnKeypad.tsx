@@ -1,13 +1,13 @@
-import { Form, useForm } from '@suite-native/forms';
-import { Card, HStack, VStack, Box, Text, Loader, Image } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Translation, TxKeyPath } from '@suite-native/intl';
 import { PinFormValues, pinFormSchema } from '@suite-common/validators';
+import { Box, Card, HStack, Image, Loader, Text, VStack } from '@suite-native/atoms';
+import { Form, useForm } from '@suite-native/forms';
+import { Translation, TxKeyPath } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { deviceImageMap } from '../../constants/deviceImageConstants';
-import { PinMatrixButton } from './PinMatrixButton';
-import { PinFormProgress } from './PinFormProgress';
 import { PinFormControlButtons } from './PinFormControlButtons';
+import { PinFormProgress } from './PinFormProgress';
+import { PinMatrixButton } from './PinMatrixButton';
+import { deviceImageMap } from '../../constants/deviceImageConstants';
 
 export type PinFormVariant = 'current' | 'new' | 'confirm';
 

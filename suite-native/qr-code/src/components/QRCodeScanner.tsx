@@ -3,11 +3,11 @@ import { Dimensions, Platform } from 'react-native';
 
 import { BarcodeScanningResult, CameraView, PermissionStatus } from 'expo-camera';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, HStack, Loader, VStack, Text } from '@suite-native/atoms';
-import { nativeSpacings } from '@trezor/theme';
+import { Box, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { nativeSpacings } from '@trezor/theme';
 
 import { CameraPermissionError } from './CameraPermissionError';
 import { useCameraPermission } from '../hooks/useCameraPermission';

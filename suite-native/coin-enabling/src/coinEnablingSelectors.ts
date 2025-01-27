@@ -1,10 +1,10 @@
 import {
     DeviceRootState,
-    selectSelectedDevice,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceUnlocked,
     selectIsPortfolioTrackerDevice,
     selectIsUnacquiredDevice,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import {
     DiscoveryConfigSliceRootState,

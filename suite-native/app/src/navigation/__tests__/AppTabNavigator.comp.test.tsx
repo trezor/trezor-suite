@@ -1,5 +1,5 @@
-import { renderWithStore, waitFor, PreloadedState, fireEvent } from '@suite-native/test-utils';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { PreloadedState, fireEvent, renderWithStore, waitFor } from '@suite-native/test-utils';
 
 import { AppTabNavigator } from '../AppTabNavigator';
 

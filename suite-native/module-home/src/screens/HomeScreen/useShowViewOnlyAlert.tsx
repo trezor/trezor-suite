@@ -3,16 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     deviceActions,
-    selectSelectedDevice,
     selectHasDeviceDiscovery,
     selectIsDeviceRemembered,
     selectIsPortfolioTrackerDevice,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { analytics, EventType } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, LottieAnimation, VStack } from '@suite-native/atoms';
 import { getIsBiometricsFeatureAvailable } from '@suite-native/biometrics';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
+import { selectIsCreatingNewPassphraseWallet } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     selectViewOnlyCancelationTimestamp,
@@ -20,7 +21,6 @@ import {
 } from '@suite-native/settings';
 import { useToast } from '@suite-native/toasts';
 import { TimerId } from '@trezor/type-utils';
-import { selectIsCreatingNewPassphraseWallet } from '@suite-native/device-authorization';
 
 import viewOnlyLottie from '../../assets/view-only-lottie.json';
 

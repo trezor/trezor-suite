@@ -1,8 +1,8 @@
 import { useAtom } from 'jotai';
 
-import { ThemeColorVariant } from '@trezor/theme';
+import { EventType, analytics } from '@suite-native/analytics';
 import { atomWithUnecryptedStorage } from '@suite-native/storage';
-import { analytics, EventType } from '@suite-native/analytics';
+import { ThemeColorVariant } from '@trezor/theme';
 
 export type AppColorScheme = ThemeColorVariant | 'system';
 

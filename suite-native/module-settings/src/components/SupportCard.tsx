@@ -1,7 +1,7 @@
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useOpenLink } from '@suite-native/link';
 import { Button, Card, HStack, PictogramTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const supportCardStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp32,

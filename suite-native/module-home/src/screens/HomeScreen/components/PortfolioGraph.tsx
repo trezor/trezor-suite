@@ -7,9 +7,9 @@ import { selectSelectedDeviceTotalFiatBalance } from '@suite-native/device';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 import {
     Graph,
+    TimeSwitch,
     selectHasDeviceHistoryEnabledAccounts,
     selectHasDeviceHistoryIgnoredAccounts,
-    TimeSwitch,
     useGraphAtoms,
     useGraphForAllDeviceAccounts,
 } from '@suite-native/graph';

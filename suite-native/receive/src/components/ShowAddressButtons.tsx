@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { VStack, TextButton, Button } from '@suite-native/atoms';
-import { useOpenLink } from '@suite-native/link';
-import { Translation } from '@suite-native/intl';
 import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
+import { Button, TextButton, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
 
 import { ShowAddressViewOnlyBottomSheet } from './ShowAddressViewOnlyBottomSheet';
 

@@ -4,8 +4,8 @@ import { Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import {
-    AccountFormValues,
     ALMOST_MAX_ACCOUNT_LABEL_LENGTH,
+    AccountFormValues,
     MAX_ACCOUNT_LABEL_LENGTH,
 } from '../hooks/useAccountLabelForm';
 

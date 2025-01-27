@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
-import { ErrorMessage, VStack, Box } from '@suite-native/atoms';
 import {
     AccountsRootState,
     removeButtonRequests,
@@ -10,15 +9,16 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { Translation } from '@suite-native/intl';
+import { Box, ErrorMessage, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorImage } from '@suite-native/device';
+import { Translation } from '@suite-native/intl';
 import { CloseActionType, Screen } from '@suite-native/navigation';
 
-import { useAccountReceiveAddress } from '../hooks/useAccountReceiveAddress';
-import { ReceiveAddressCard } from '../components/ReceiveAddressCard';
 import { ReceiveAccountDetailsCard } from '../components/ReceiveAccountDetailsCard';
-import { hasReceiveAddressButtonRequest } from '../hooks/receiveSelectors';
+import { ReceiveAddressCard } from '../components/ReceiveAddressCard';
 import { ReceiveScreenHeader } from '../components/ReceiveScreenHeader';
+import { hasReceiveAddressButtonRequest } from '../hooks/receiveSelectors';
+import { useAccountReceiveAddress } from '../hooks/useAccountReceiveAddress';
 
 type ReceiveAddressScreenProps = {
     accountKey: AccountKey;

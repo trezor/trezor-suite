@@ -1,14 +1,14 @@
-import type { BottomTabScreenProps, BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { BottomTabNavigationProp, BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type {
-    NativeStackScreenProps,
-    NativeStackNavigationProp,
-} from '@react-navigation/native-stack';
-import type {
-    ParamListBase,
     CompositeScreenProps,
     NavigationHelpers,
+    ParamListBase,
 } from '@react-navigation/native';
 import { CompositeNavigationProp } from '@react-navigation/native';
+import type {
+    NativeStackNavigationProp,
+    NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 
 import { IconName } from '@suite-native/icons';
 

@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { FiatCurrency, FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
-import { FiatCurrency, fiatCurrencies, FiatCurrencyCode } from '@suite-common/suite-config';
-import { analytics, EventType } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/settings';
 

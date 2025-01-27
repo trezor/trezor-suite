@@ -2,28 +2,28 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { useReportDeviceConnectToAnalytics } from '@suite-native/device';
+import {
+    selectDeviceRequestedPin,
+    useHandleDuplicatePassphrase,
+} from '@suite-native/device-authorization';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import {
-    selectDeviceRequestedPin,
-    useHandleDuplicatePassphrase,
-} from '@suite-native/device-authorization';
-import { useReportDeviceConnectToAnalytics } from '@suite-native/device';
 
 import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnlockDeviceScreen';
-import { PinScreen } from '../screens/connect/PinScreen';
 import { ConnectingDeviceScreen } from '../screens/connect/ConnectingDeviceScreen';
+import { PinScreen } from '../screens/connect/PinScreen';
+import { PassphraseConfirmOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmOnTrezorScreen';
+import { PassphraseEmptyWalletScreen } from '../screens/passphrase/PassphraseEmptyWalletScreen';
+import { PassphraseEnableOnDeviceScreen } from '../screens/passphrase/PassphraseEnableOnDeviceScreen';
+import { PassphraseEnterOnTrezorScreen } from '../screens/passphrase/PassphraseEnterOnTrezorScreen';
+import { PassphraseFeatureUnlockFormScreen } from '../screens/passphrase/PassphraseFeatureUnlockFormScreen';
 import { PassphraseFormScreen } from '../screens/passphrase/PassphraseFormScreen';
 import { PassphraseLoadingScreen } from '../screens/passphrase/PassphraseLoadingScreen';
-import { PassphraseEmptyWalletScreen } from '../screens/passphrase/PassphraseEmptyWalletScreen';
-import { PassphraseEnterOnTrezorScreen } from '../screens/passphrase/PassphraseEnterOnTrezorScreen';
 import { PassphraseVerifyEmptyWalletScreen } from '../screens/passphrase/PassphraseVerifyEmptyWalletScreen';
-import { PassphraseEnableOnDeviceScreen } from '../screens/passphrase/PassphraseEnableOnDeviceScreen';
-import { PassphraseConfirmOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmOnTrezorScreen';
-import { PassphraseFeatureUnlockFormScreen } from '../screens/passphrase/PassphraseFeatureUnlockFormScreen';
 
 export const AuthorizeDeviceStack = createNativeStackNavigator<AuthorizeDeviceStackParamList>();
 

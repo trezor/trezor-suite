@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
-import { useNavigateToInitialScreen } from '@suite-native/navigation';
+import { EventType, analytics } from '@suite-native/analytics';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     selectDeviceRequestedAuthorization,
@@ -11,7 +11,7 @@ import {
     selectHasVerificationCancelledError,
     selectPassphraseError,
 } from '@suite-native/device-authorization';
-import { EventType, analytics } from '@suite-native/analytics';
+import { useNavigateToInitialScreen } from '@suite-native/navigation';
 
 export const useRedirectOnPassphraseCompletion = () => {
     const hasDeviceRequestedAuthorization = useSelector(selectDeviceRequestedAuthorization);

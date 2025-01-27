@@ -7,11 +7,11 @@ import {
 } from '@suite-native/navigation';
 
 import { SendAccountsScreen } from '../screens/SendAccountsScreen';
-import { SendOutputsScreen } from '../screens/SendOutputsScreen';
-import { SendFeesScreen } from '../screens/SendFeesScreen';
 import { SendAddressReviewScreen } from '../screens/SendAddressReviewScreen';
-import { SendOutputsReviewScreen } from '../screens/SendOutputsReviewScreen';
 import { SendDestinationTagReviewScreen } from '../screens/SendDestinationTagReviewScreen';
+import { SendFeesScreen } from '../screens/SendFeesScreen';
+import { SendOutputsReviewScreen } from '../screens/SendOutputsReviewScreen';
+import { SendOutputsScreen } from '../screens/SendOutputsScreen';
 
 const SendStack = createNativeStackNavigator<SendStackParamList>();
 

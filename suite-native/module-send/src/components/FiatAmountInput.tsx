@@ -3,16 +3,16 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { Input } from '@suite-native/atoms';
-import { useFormContext, useField } from '@suite-native/forms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
-import { useNativeStyles } from '@trezor/styles';
+import { useField, useFormContext } from '@suite-native/forms';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
+import { useNativeStyles } from '@trezor/styles';
 
 import { SendAmountCurrencyLabelWrapper, sendAmountInputWrapperStyle } from './CryptoAmountInput';
-import { SendAmountInputProps } from '../types';
 import { useSendAmountTransformers } from '../hooks/useSendAmountTransformers';
-import { getOutputFieldName } from '../utils';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { SendAmountInputProps } from '../types';
+import { getOutputFieldName } from '../utils';
 
 export const FiatAmountInput = ({
     recipientIndex,

@@ -1,4 +1,4 @@
-import { VStack, Text, BottomSheetListItem } from '@suite-native/atoms';
+import { BottomSheetListItem, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const UninitializedDeviceModalAppendix = () => (

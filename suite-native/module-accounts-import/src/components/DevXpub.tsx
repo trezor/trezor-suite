@@ -1,7 +1,7 @@
 import { G } from '@mobily/ts-belt';
 
-import { Button, VStack } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Button, VStack } from '@suite-native/atoms';
 
 type DevXpubProps = {
     symbol: NetworkSymbol;

@@ -2,29 +2,29 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
+import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import {
     AccountDetailScreen,
     AccountSettingsScreen,
 } from '@suite-native/module-accounts-management';
-import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
+import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
+import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
+import { ConnectPopupScreen } from '@suite-native/module-connect-popup';
+import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
+import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
+import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
+import { SendStackNavigator } from '@suite-native/module-send';
+import { SettingsStackNavigator } from '@suite-native/module-settings';
+import { StakingDetailScreen } from '@suite-native/module-staking-management';
 import {
     RootStackParamList,
     RootStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import { selectIsOnboardingFinished } from '@suite-native/settings';
-import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
-import { TransactionDetailScreen } from '@suite-native/transactions';
-import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { ReceiveStackNavigator } from '@suite-native/receive';
-import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
-import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
-import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
-import { SendStackNavigator } from '@suite-native/module-send';
-import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
-import { ConnectPopupScreen } from '@suite-native/module-connect-popup';
-import { StakingDetailScreen } from '@suite-native/module-staking-management';
-import { SettingsStackNavigator } from '@suite-native/module-settings';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
+import { TransactionDetailScreen } from '@suite-native/transactions';
 
 import { AppTabNavigator } from './AppTabNavigator';
 import { useGlobalHooks } from '../hooks/useGlobalHooks';

@@ -1,4 +1,4 @@
-import { getEnrolledLevelAsync, SecurityLevel } from 'expo-local-authentication';
+import { SecurityLevel, getEnrolledLevelAsync } from 'expo-local-authentication';
 
 export const getIsBiometricsFeatureAvailable = async () => {
     const enrolledLevelAsync = await getEnrolledLevelAsync();

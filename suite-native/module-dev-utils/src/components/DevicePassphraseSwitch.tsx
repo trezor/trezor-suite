@@ -1,15 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import TrezorConnect from '@trezor/connect';
-import { Box, HStack, Switch, Text } from '@suite-native/atoms';
 import {
     removeButtonRequests,
-    selectSelectedDevice,
     selectDeviceButtonRequestsCodes,
     selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
+import { Box, HStack, Switch, Text } from '@suite-native/atoms';
 import { useToast } from '@suite-native/toasts';
+import TrezorConnect from '@trezor/connect';
 
 export const DevicePassphraseSwitch = () => {
     const dispatch = useDispatch();

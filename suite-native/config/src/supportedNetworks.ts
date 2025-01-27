@@ -1,6 +1,5 @@
 import { A } from '@mobily/ts-belt';
 
-import { isTestnet } from '@suite-common/wallet-utils';
 import {
     type AccountType,
     type Network,
@@ -9,6 +8,7 @@ import {
     getTestnets,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
+import { isTestnet } from '@suite-common/wallet-utils';
 
 export const orderedAccountTypes: AccountType[] = [
     'normal',

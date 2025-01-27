@@ -1,4 +1,4 @@
-import { pipe, A } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 import { createTransform } from 'redux-persist';
 
 import { TrezorDevice } from '@suite-common/suite-types';

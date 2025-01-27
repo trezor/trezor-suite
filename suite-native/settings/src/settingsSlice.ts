@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { PROTO } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { PROTO } from '@trezor/connect';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;

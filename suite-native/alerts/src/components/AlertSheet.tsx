@@ -2,20 +2,20 @@ import { useEffect } from 'react';
 import { Modal, Pressable } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
+    Box,
     Button,
     Card,
+    Pictogram,
+    TitleHeader,
     VStack,
     useBottomSheetAnimation,
-    TitleHeader,
-    Pictogram,
-    Box,
 } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useShakeAnimation } from '../useShakeAnimation';
 import { Alert } from '../alertsAtoms';
 import { useAlert } from '../useAlert';
+import { useShakeAnimation } from '../useShakeAnimation';
 
 type AlertSheetProps = {
     alert: Alert;

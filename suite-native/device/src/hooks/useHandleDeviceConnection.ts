@@ -4,6 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
+    authorizeDeviceThunk,
+    selectIsDeviceConnected,
+    selectIsDeviceConnectedAndAuthorized,
+    selectIsDeviceRemembered,
+    selectIsDeviceUsingPassphrase,
+    selectIsNoPhysicalDeviceConnected,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/wallet-core';
+import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
+import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
+import {
     AppTabsRoutes,
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -12,20 +25,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import {
-    selectIsPortfolioTrackerDevice,
-    selectIsDeviceConnected,
-    selectIsDeviceConnectedAndAuthorized,
-    selectIsNoPhysicalDeviceConnected,
-    selectIsDeviceUsingPassphrase,
-    authorizeDeviceThunk,
-    selectIsDeviceRemembered,
-} from '@suite-common/wallet-core';
-import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
-import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList | RootStackParamList,

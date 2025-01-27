@@ -1,13 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Translation } from '@suite-native/intl';
 
 import { NoTransactionsSvg } from './NoTransactionsSvg';
 

@@ -1,4 +1,4 @@
-import { AccordionItem, BulletListItem, VStack, Text } from '@suite-native/atoms';
+import { AccordionItem, BulletListItem, Text, VStack } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
 

@@ -1,6 +1,6 @@
 import { TouchableOpacity } from 'react-native';
 
-import { Box, Text, CheckBox } from '@suite-native/atoms';
+import { Box, CheckBox, Text } from '@suite-native/atoms';
 
 export const DevCheckBoxListItem = ({
     title,

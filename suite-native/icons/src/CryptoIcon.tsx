@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 
 import { Image } from 'expo-image';
 
-import { cryptoIcons, genericTokenIcon, CryptoIconName } from '@suite-common/icons';
-import { getCoingeckoId, NetworkSymbol } from '@suite-common/wallet-config';
+import { CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-common/icons';
+import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

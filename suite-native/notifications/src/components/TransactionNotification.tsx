@@ -1,30 +1,30 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { TransactionType } from '@suite-common/wallet-types';
-import { TransactionIcon } from '@suite-native/transactions';
 import {
-    TransactionsRootState,
-    selectTransactionFirstTargetAddress,
+    NotificationId,
+    NotificationsRootState,
+    TransactionNotificationType,
+    notificationsActions,
+    selectTransactionNotificationById,
+} from '@suite-common/toast-notifications';
+import {
     AccountsRootState,
+    DeviceRootState,
+    TransactionsRootState,
     selectDeviceAccountKeyByDescriptorAndNetworkSymbol,
     selectTransactionByAccountKeyAndTxid,
-    DeviceRootState,
+    selectTransactionFirstTargetAddress,
 } from '@suite-common/wallet-core';
-import {
-    RootStackRoutes,
-    StackNavigationProps,
-    RootStackParamList,
-} from '@suite-native/navigation';
+import { TransactionType } from '@suite-common/wallet-types';
 import { Icon } from '@suite-native/icons';
 import {
-    notificationsActions,
-    TransactionNotificationType,
-    NotificationId,
-    selectTransactionNotificationById,
-    NotificationsRootState,
-} from '@suite-common/toast-notifications';
+    RootStackParamList,
+    RootStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
+import { TransactionIcon } from '@suite-native/transactions';
 
 import { Notification } from './Notification';
 import { TransactionNotificationDescription } from './TransactionNotificationDescription';

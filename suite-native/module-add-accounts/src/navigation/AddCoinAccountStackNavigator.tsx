@@ -7,9 +7,9 @@ import {
 } from '@suite-native/navigation';
 
 import { AddCoinAccountScreen } from '../screens/AddCoinAccountScreen';
-import { SelectAccountTypeScreen } from '../screens/SelectAccountTypeScreen';
 import { AddCoinDiscoveryFinishedScreen } from '../screens/AddCoinDiscoveryFinishedScreen';
 import { AddCoinDiscoveryRunningScreen } from '../screens/AddCoinDiscoveryRunningScreen';
+import { SelectAccountTypeScreen } from '../screens/SelectAccountTypeScreen';
 
 const AddCoinAccountStack = createNativeStackNavigator<AddCoinAccountStackParamList>();
 

@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 import Animated, {
+    useAnimatedStyle,
     useSharedValue,
     withRepeat,
     withTiming,
-    useAnimatedStyle,
 } from 'react-native-reanimated';
 
-import { Icon } from '@suite-native/icons';
 import { ReviewOutputState } from '@suite-common/wallet-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const BADGE_SIZE = 14;
 const ANIMATION_DURATION = 550;

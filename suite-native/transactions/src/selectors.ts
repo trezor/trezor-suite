@@ -1,19 +1,19 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
+    TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
     isTokenDefinitionKnown,
     selectTokenDefinitions,
-    TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
-import { getNetworkType, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
+    TransactionsRootState,
     selectTransactionByAccountKeyAndTxid,
     selectTransactionTargets,
-    TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { AddressesType, VinVoutAddress } from './types';
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from './utils';

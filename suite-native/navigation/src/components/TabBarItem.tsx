@@ -1,7 +1,7 @@
 import { TouchableOpacity, View } from 'react-native';
 
+import { TITLE_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
-import { Text, TITLE_MAX_FONT_MULTIPLIER } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TabBarItemProps = {

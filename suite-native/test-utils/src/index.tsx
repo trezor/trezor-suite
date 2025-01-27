@@ -1,6 +1,6 @@
-import { createRender } from './createRender';
 import { BasicProvider } from './BasicProvider';
 import { StoreProviderForTests } from './StoreProviderForTests';
+import { createRender } from './createRender';
 
 export type { PreloadedState } from '@suite-native/state';
 

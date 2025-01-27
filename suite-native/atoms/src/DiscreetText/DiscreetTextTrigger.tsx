@@ -1,5 +1,5 @@
-import { Pressable } from 'react-native';
 import { ReactNode } from 'react';
+import { Pressable } from 'react-native';
 
 import { useDiscreetMode } from './useDiscreetMode';
 

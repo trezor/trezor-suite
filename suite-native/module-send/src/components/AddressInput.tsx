@@ -2,24 +2,24 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { formInputsMaxLength } from '@suite-common/validators';
-import { VStack, Text, HStack, Button } from '@suite-native/atoms';
-import { TextInputField, useFormContext } from '@suite-native/forms';
-import { Translation } from '@suite-native/intl';
-import { analytics, EventType } from '@suite-native/analytics';
-import { isAddressValid } from '@suite-common/wallet-utils';
-import { AccountKey } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
-    selectAccountNetworkSymbol,
     TransactionsRootState,
+    selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
+import { isAddressValid } from '@suite-common/wallet-utils';
 import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
+import { EventType, analytics } from '@suite-native/analytics';
+import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
+import { TextInputField, useFormContext } from '@suite-native/forms';
+import { Translation } from '@suite-native/intl';
 
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
-import { getOutputFieldName } from '../utils';
-import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts';
+import { SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { getOutputFieldName } from '../utils';
 import { AddressChecksumMessage } from './AddressChecksumMessage';
 
 type AddressInputProps = {

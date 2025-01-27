@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { Box, CardDivider, Text, VStack } from '@suite-native/atoms';
-import { AccountAddressFormatter } from '@suite-native/formatters';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CryptoIcon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { Box, CardDivider, Text, VStack } from '@suite-native/atoms';
+import { AccountAddressFormatter } from '@suite-native/formatters';
+import { CryptoIcon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { SummaryRow } from './TransactionSummaryRow';
-import { formatAddressLabel } from './TransactionDetailAddressesSheet';
-import { VinVoutAddress } from '../../types';
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
+import { formatAddressLabel } from './TransactionDetailAddressesSheet';
+import { SummaryRow } from './TransactionSummaryRow';
+import { VinVoutAddress } from '../../types';
 
 type TransactionDetailAddressesSectionProps = {
     addresses: VinVoutAddress[];

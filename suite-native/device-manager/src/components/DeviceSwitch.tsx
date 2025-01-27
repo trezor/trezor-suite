@@ -1,11 +1,11 @@
 import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/wallet-core';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { selectDeviceState, selectNumberOfDeviceInstances } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
 import { useDeviceManager } from '../hooks/useDeviceManager';

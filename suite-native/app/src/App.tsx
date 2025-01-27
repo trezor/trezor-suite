@@ -3,24 +3,24 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 
-import * as SplashScreen from 'expo-splash-screen';
-import * as Sentry from '@sentry/react-native';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import * as Sentry from '@sentry/react-native';
+import * as SplashScreen from 'expo-splash-screen';
 
-import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 import { FormatterProvider } from '@suite-common/formatters';
-import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
-import { KillswitchMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
-import { configureNetInfo, OfflineBanner } from '@suite-native/connection-status';
+import { OfflineBanner, configureNetInfo } from '@suite-native/connection-status';
 import { IntlProvider } from '@suite-native/intl';
+import { KillswitchMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
+import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
+import { StoreProvider, selectIsAppReady, selectIsConnectInitialized } from '@suite-native/state';
 
-import { RootStackNavigator } from './navigation/RootStackNavigator';
+import { ModalsRenderer } from './ModalsRenderer';
+import { SentryProvider } from './SentryProvider';
 import { StylesProvider } from './StylesProvider';
 import { useFormattersConfig } from './hooks/useFormattersConfig';
-import { applicationInit } from './initActions';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
-import { SentryProvider } from './SentryProvider';
-import { ModalsRenderer } from './ModalsRenderer';
+import { applicationInit } from './initActions';
+import { RootStackNavigator } from './navigation/RootStackNavigator';
 
 if (__DEV__) {
     require('./LogBox');

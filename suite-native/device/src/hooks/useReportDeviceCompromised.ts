@@ -1,10 +1,10 @@
-import { useSelector } from 'react-redux';
 import { useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import * as Sentry from '@sentry/react-native';
 
-import { getFirmwareVersion } from '@trezor/device-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { selectFirmwareRevisionCheckError } from '../selectors';
 

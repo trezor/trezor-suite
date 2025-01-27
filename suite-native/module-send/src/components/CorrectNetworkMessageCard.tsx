@@ -1,10 +1,10 @@
-import { CryptoIcon } from '@suite-native/icons';
-import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Card, HStack, Text } from '@suite-native/atoms';
+import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { isCoinWithTokens } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,

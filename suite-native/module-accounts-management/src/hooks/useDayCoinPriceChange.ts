@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { G } from '@mobily/ts-belt';
 import { getUnixTime } from 'date-fns';
 
-import { percentageDiff } from '@suite-native/graph';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { BlockchainRootState, selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
+import { percentageDiff } from '@suite-native/graph';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 const UNIX_DAY = 24 * 60 * 60;
 const REFRESH_INTERVAL = 30_000;

@@ -1,11 +1,11 @@
 import { useDispatch } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
 import { CommonActions } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 
-import { setIsOnboardingFinished } from '@suite-native/settings';
-import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { TextButton } from '@suite-native/atoms';
+import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
+import { setIsOnboardingFinished } from '@suite-native/settings';
 
 export const E2ESkipOnboardingButton = () => {
     const dispatch = useDispatch();

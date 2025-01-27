@@ -2,8 +2,8 @@ import React, { ReactNode } from 'react';
 import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { RequireAllOrNone } from 'type-fest';
 import { G } from '@mobily/ts-belt';
+import { RequireAllOrNone } from 'type-fest';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';

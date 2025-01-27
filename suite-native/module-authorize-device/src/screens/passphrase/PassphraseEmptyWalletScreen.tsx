@@ -3,22 +3,22 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
+import { Box, Button, Card, Text, TextDivider, VStack } from '@suite-native/atoms';
+import { retryPassphraseAuthenticationThunk } from '@suite-native/device-authorization';
+import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     RootStackParamList,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
-import { VStack, Card, Text, Button, Box, TextDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Translation } from '@suite-native/intl';
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
-import { retryPassphraseAuthenticationThunk } from '@suite-native/device-authorization';
-import { EventType, analytics } from '@suite-native/analytics';
 
+import { EmptyWalletSvg } from '../../assets/passphrase/EmptyWalletSvg';
 import { EmptyWalletInfoSheet } from '../../components/passphrase/EmptyWalletInfoSheet';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
-import { EmptyWalletSvg } from '../../assets/passphrase/EmptyWalletSvg';
 
 const cardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderElevation0,

@@ -3,23 +3,23 @@ import { PixelRatio } from 'react-native';
 
 import * as Haptics from 'expo-haptics';
 
-import { GraphPoint, LineGraph } from '@suite-native/react-native-graph';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Loader } from '@suite-native/atoms';
 import {
     FiatGraphPoint,
     GroupedBalanceMovementEvent,
     GroupedBalanceMovementEventPayload,
 } from '@suite-common/graph';
+import { Box, Loader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { GraphPoint, LineGraph } from '@suite-native/react-native-graph';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TimerId } from '@trezor/type-utils';
 
 import { getExtremaFromGraphPoints } from '../utils';
 import { AxisLabel } from './AxisLabel';
 import { GraphError } from './GraphError';
-import { TransactionEventTooltip } from './TransactionEventTooltip';
 import { SelectionDotWithLine } from './SelectionDotWithLine';
 import { TransactionEvent } from './TransactionEvent';
+import { TransactionEventTooltip } from './TransactionEventTooltip';
 
 type GraphProps<TGraphPoint extends GraphPoint> = {
     points: TGraphPoint[];

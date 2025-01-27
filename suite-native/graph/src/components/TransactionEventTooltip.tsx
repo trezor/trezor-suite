@@ -1,22 +1,22 @@
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Dimensions } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { G, N } from '@mobily/ts-belt';
 
-import { Card, Box, Text } from '@suite-native/atoms';
-import {
-    CryptoAmountFormatter,
-    TokenAmountFormatter,
-    SignValueFormatter,
-} from '@suite-native/formatters';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { GroupedBalanceMovementEventPayload } from '@suite-common/graph';
-import { EventTooltipComponentProps } from '@suite-native/react-native-graph/src/LineGraphProps';
 import { SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { selectAccountTokenInfo, TokensRootState } from '@suite-native/tokens';
+import { Box, Card, Text } from '@suite-native/atoms';
+import {
+    CryptoAmountFormatter,
+    SignValueFormatter,
+    TokenAmountFormatter,
+} from '@suite-native/formatters';
+import { EventTooltipComponentProps } from '@suite-native/react-native-graph/src/LineGraphProps';
+import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type TransactionEventTooltipProps =
     EventTooltipComponentProps<GroupedBalanceMovementEventPayload>;

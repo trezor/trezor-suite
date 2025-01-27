@@ -4,8 +4,8 @@ import { Account, AccountKey } from '@suite-common/wallet-types';
 import { getEthereumCryptoBalanceWithStaking } from '@suite-common/wallet-utils';
 
 import {
-    selectEthereumAccountHasStaking,
     selectEthereumAPYByAccountKey,
+    selectEthereumAccountHasStaking,
     selectEthereumIsStakeConfirmingByAccountKey,
     selectEthereumIsStakePendingByAccountKey,
     selectEthereumRewardsBalanceByAccountKey,

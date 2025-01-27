@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { Box, VStack } from '@suite-native/atoms';
 import { selectOpenedTransactionNotifications } from '@suite-common/toast-notifications';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Box, VStack } from '@suite-native/atoms';
 import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionNotification } from './TransactionNotification';
 

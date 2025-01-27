@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
-import { PROTO } from '@trezor/connect';
-import { analytics, EventType } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { selectBitcoinUnits, setBitcoinUnits } from '@suite-native/settings';
-import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
+import { PROTO } from '@trezor/connect';
 
 const bitcoinUnitsItems = [
     { label: 'Bitcoin', value: PROTO.AmountUnit.BITCOIN },

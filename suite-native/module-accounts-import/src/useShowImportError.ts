@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 
-import { getNetworkType, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { useAlert } from '@suite-native/alerts';
+import { IconName } from '@suite-native/icons';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
@@ -9,7 +10,6 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { IconName } from '@suite-native/icons';
 
 type AlertError = 'invalidXpub' | 'invalidReceiveAddress' | 'networkError' | 'unknownError';
 type AlertErrorOptions = {

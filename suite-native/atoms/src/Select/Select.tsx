@@ -1,8 +1,8 @@
-import { useMemo, useState, ReactNode } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 
-import { BottomSheet } from '../Sheet/BottomSheet';
-import { SelectItemValue, SelectItem } from './SelectItem';
+import { SelectItem, SelectItemValue } from './SelectItem';
 import { SelectTrigger } from './SelectTrigger';
+import { BottomSheet } from '../Sheet/BottomSheet';
 
 export type SelectItemType<TItemValue extends SelectItemValue> = {
     value: TItemValue;

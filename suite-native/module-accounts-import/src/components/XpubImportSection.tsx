@@ -1,6 +1,6 @@
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import { Box, Button } from '@suite-native/atoms';
-import { getNetworkType, type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { QrWithLaser } from './QRWithLaser';
 

@@ -1,40 +1,40 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Animated, { SlideInDown } from 'react-native-reanimated';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useAtomValue } from 'jotai';
-import { CommonActions, useNavigation } from '@react-navigation/native';
 import { G } from '@mobily/ts-belt';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
+import { useAtomValue } from 'jotai';
 
 import {
     AccountsRootState,
+    SendRootState,
+    TransactionsRootState,
     pushSendFormTransactionThunk,
     selectAccountByKey,
     selectSendFormDraftByKey,
     selectTransactionByAccountKeyAndTxid,
-    SendRootState,
-    TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { useAlert } from '@suite-native/alerts';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import {
-    RootStackRoutes,
     AppTabsRoutes,
     RootStackParamList,
-    SendStackRoutes,
+    RootStackRoutes,
     SendStackParamList,
+    SendStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { Translation } from '@suite-native/intl';
-import { analytics, EventType } from '@suite-native/analytics';
-import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
-import { useAlert } from '@suite-native/alerts';
+import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 import { SendConfirmOnDeviceImage } from './SendConfirmOnDeviceImage';
-import { cleanupSendFormThunk } from '../sendFormThunks';
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 import { selectIsTransactionAlreadySigned } from '../selectors';
+import { cleanupSendFormThunk } from '../sendFormThunks';
 import { SignSuccessMessage } from './SignSuccessMessage';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

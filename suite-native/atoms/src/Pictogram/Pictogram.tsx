@@ -11,9 +11,9 @@ import { InfoIconSvg } from './InfoIconSvg';
 import { InfoShapeSvg } from './InfoShapeSvg';
 import { SuccessIconSvg } from './SuccessIconSvg';
 import { SuccessShapeSvg } from './SuccessShapeSvg';
-import { PictogramIconSvgProps } from './types';
 import { WarningIconSvg } from './WarningIconSvg';
 import { WarningShapeSvg } from './WarningShapeSvg';
+import { PictogramIconSvgProps } from './types';
 
 export type PictogramVariant = 'success' | 'info' | 'warning' | 'critical';
 

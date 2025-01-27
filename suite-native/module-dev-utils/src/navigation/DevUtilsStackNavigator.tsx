@@ -6,8 +6,8 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { DevUtilsScreen } from '../screens/DevUtilsScreen';
 import { DemoScreen } from '../screens/DemoScreen';
+import { DevUtilsScreen } from '../screens/DevUtilsScreen';
 
 const DevUtilsStack = createNativeStackNavigator<DevUtilsStackParamList>();
 

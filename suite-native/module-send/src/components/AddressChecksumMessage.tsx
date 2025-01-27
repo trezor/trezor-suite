@@ -1,9 +1,9 @@
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { Link } from '@suite-native/link';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { Link } from '@suite-native/link';
 
 const LINK_URL = 'https://trezor.io/learn/a/evm-address-checksum-in-trezor-suite';
 

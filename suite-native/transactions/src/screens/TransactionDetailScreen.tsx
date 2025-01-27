@@ -3,13 +3,15 @@ import { useSelector } from 'react-redux';
 
 import {
     BlockchainRootState,
+    TransactionsRootState,
     selectBlockchainExplorerBySymbol,
     selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
-    TransactionsRootState,
 } from '@suite-common/wallet-core';
-import { analytics, EventType } from '@suite-native/analytics';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Text, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
     RootStackParamList,
@@ -19,8 +21,6 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { Translation } from '@suite-native/intl';
 
 import { TransactionDetailData } from '../components/TransactionDetail/TransactionDetailData';
 import { TransactionDetailHeader } from '../components/TransactionDetail/TransactionDetailHeader';

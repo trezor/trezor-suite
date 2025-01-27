@@ -6,14 +6,14 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { SettingsLocalizationScreen } from '../screens/SettingsLocalizationScreen';
+import { SettingsAboutUsScreen } from '../screens/SettingsAboutUsScreen';
+import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
 import { SettingsCustomizationScreen } from '../screens/SettingsCustomizationScreen';
+import { SettingsDeviceChecksScreen } from '../screens/SettingsDeviceChecksScreen';
+import { SettingsFAQScreen } from '../screens/SettingsFAQScreen';
+import { SettingsLocalizationScreen } from '../screens/SettingsLocalizationScreen';
 import { SettingsPrivacyAndSecurity } from '../screens/SettingsPrivacyAndSecurity';
 import { SettingsViewOnly } from '../screens/SettingsViewOnly';
-import { SettingsAboutUsScreen } from '../screens/SettingsAboutUsScreen';
-import { SettingsFAQScreen } from '../screens/SettingsFAQScreen';
-import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
-import { SettingsDeviceChecksScreen } from '../screens/SettingsDeviceChecksScreen';
 import { TurnOffFirmwareAuthenticityCheckModalScreen } from '../screens/TurnOffFirmwareAuthenticityCheckModalScreen';
 
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();

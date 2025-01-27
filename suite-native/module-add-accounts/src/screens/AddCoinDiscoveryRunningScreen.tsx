@@ -4,21 +4,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import { VStack, Text, Spinner, SpinnerLoadingState } from '@suite-native/atoms';
-import { AddCoinAccountStackRoutes, Screen } from '@suite-native/navigation';
-import { Translation } from '@suite-native/intl';
-import { Account } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
     DeviceRootState,
     selectDeviceAccountsByNetworkSymbol,
     selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
 import {
     applyDiscoveryChangesThunk,
     selectDeviceEnabledDiscoveryNetworkSymbols,
     toggleEnabledDiscoveryNetworkSymbol,
 } from '@suite-native/discovery';
+import { Translation } from '@suite-native/intl';
+import { AddCoinAccountStackRoutes, Screen } from '@suite-native/navigation';
 
 import { AddCoinAccountNavigationProps, useAddCoinAccount } from '../hooks/useAddCoinAccount';
 

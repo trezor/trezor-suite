@@ -1,8 +1,8 @@
-import { TextProps } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TextProps } from '@suite-native/atoms';
 
-import { FormatterProps } from '../types';
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
+import { FormatterProps } from '../types';
 import { FiatAmountFormatter } from './FiatAmountFormatter';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &

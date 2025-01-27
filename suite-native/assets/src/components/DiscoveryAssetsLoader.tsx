@@ -1,7 +1,7 @@
 import React from 'react';
 import Animated, { FadeInDown, LinearTransition } from 'react-native-reanimated';
 
-import { ListItemSkeleton, HStack, Text } from '@suite-native/atoms';
+import { HStack, ListItemSkeleton, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 

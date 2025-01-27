@@ -6,17 +6,17 @@ import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import { selectDevices } from '@suite-common/wallet-core';
 import {
+    selectEnabledDiscoveryNetworkSymbols,
+    selectTokenDefinitionsEnabledNetworks,
+} from '@suite-native/discovery';
+import {
     selectAreSatsAmountUnit,
     selectBitcoinUnits,
     selectFiatCurrencyCode,
     setFiatCurrency,
 } from '@suite-native/settings';
-import { mergeDeepObject } from '@trezor/utils';
 import { NativeUsbTransport } from '@trezor/transport-native';
-import {
-    selectEnabledDiscoveryNetworkSymbols,
-    selectTokenDefinitionsEnabledNetworks,
-} from '@suite-native/discovery';
+import { mergeDeepObject } from '@trezor/utils';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 

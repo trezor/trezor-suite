@@ -1,13 +1,13 @@
-import { useNavigation, RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { IconButton } from '@suite-native/atoms';
 import {
     AccountsStackParamList,
+    GoBackIcon,
     RootStackParamList,
     RootStackRoutes,
     ScreenHeader,
     StackToStackCompositeNavigationProps,
-    GoBackIcon,
 } from '@suite-native/navigation';
 
 type AccountDetailScreenHeaderProps = {

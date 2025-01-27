@@ -1,4 +1,4 @@
-import { SkPath, Skia, SkPoint } from '@shopify/react-native-skia';
+import { SkPath, SkPoint, Skia } from '@shopify/react-native-skia';
 
 import type { GraphPoint, GraphRange } from './LineGraphProps';
 

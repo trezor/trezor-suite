@@ -5,11 +5,11 @@ import { G } from '@mobily/ts-belt';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { FeesRootState, selectNetworkFeeInfo } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
-import { VStack, Hint, Text } from '@suite-native/atoms';
+import { Hint, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
-import { useTranslate, Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
-import { useSendAmountTransformers, integerTransformer } from '../hooks/useSendAmountTransformers';
+import { integerTransformer, useSendAmountTransformers } from '../hooks/useSendAmountTransformers';
 import { SendFeesFormValues } from '../sendFeesFormSchema';
 
 type CustomFeeInputsProps = {

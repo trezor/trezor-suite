@@ -12,10 +12,11 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { authorizeDeviceThunk } from '@suite-common/wallet-core';
-import { Box, Button, Text, VStack, IconButton } from '@suite-native/atoms';
+import { Box, Button, IconButton, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorImage, setDeviceForceRememberedThunk } from '@suite-native/device';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
+import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     DeviceSettingsStackParamList,
     DeviceStackRoutes,
@@ -24,14 +25,13 @@ import {
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useOpenLink, SUITE_LITE_SUPPORT_URL } from '@suite-native/link';
 
+import { MayBeStuckedBottomSheet } from '../components/MayBeStuckedBottomSheet';
 import {
     UpdateProgressIndicator,
     UpdateProgressIndicatorStatus,
 } from '../components/UpdateProgressIndicator';
 import { useFirmware } from '../hooks/useFirmware';
-import { MayBeStuckedBottomSheet } from '../components/MayBeStuckedBottomSheet';
 import { useFirmwareAnalytics } from '../hooks/useFirmwareAnalytics';
 
 type NavigationProp = StackNavigationProps<

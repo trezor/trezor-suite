@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useFormatters } from '@suite-common/formatters';
-import { CryptoIconWithPercentage, Icon } from '@suite-native/icons';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
 import { Badge, Box, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
+import { CryptoIconWithPercentage, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsParamList,
@@ -19,10 +19,10 @@ import {
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 import {
-    selectHasAnyDeviceAccountsWithStaking,
     NativeStakingRootState,
+    selectHasAnyDeviceAccountsWithStaking,
 } from '@suite-native/staking';
-import { selectHasDeviceAnyTokensForNetwork, TokensRootState } from '@suite-native/tokens';
+import { TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
 
 import {
     AssetsRootState,

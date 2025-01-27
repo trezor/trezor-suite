@@ -1,6 +1,6 @@
-import { useOpenLink } from '@suite-native/link';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
 
 export const useAddCoinAccountAlerts = () => {
     const { translate } = useTranslate();

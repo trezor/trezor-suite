@@ -1,19 +1,19 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { useTranslate } from '@suite-native/intl';
-import { BtcOnlyCoinEnablingContent, DiscoveryCoinsFilter } from '@suite-native/coin-enabling';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import { BtcOnlyCoinEnablingContent, DiscoveryCoinsFilter } from '@suite-native/coin-enabling';
+import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
 import {
     selectDiscoveryNetworkSymbols,
     selectEnabledDiscoveryNetworkSymbols,
     setEnabledDiscoveryNetworkSymbols,
     setIsCoinEnablingInitFinished,
 } from '@suite-native/discovery';
-import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
+import { useTranslate } from '@suite-native/intl';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 export const SettingsCoinEnablingScreen = () => {
     const dispatch = useDispatch();

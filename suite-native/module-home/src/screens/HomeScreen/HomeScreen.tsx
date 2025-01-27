@@ -12,8 +12,8 @@ import { Screen } from '@suite-native/navigation';
 
 import { EmptyHomeRenderer } from './components/EmptyHomeRenderer';
 import { PortfolioContent } from './components/PortfolioContent';
-import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { PortfolioGraphRef } from './components/PortfolioGraph';
+import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { useShowViewOnlyAlert } from './useShowViewOnlyAlert';
 
 export const HomeScreen = () => {

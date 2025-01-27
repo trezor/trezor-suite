@@ -1,34 +1,34 @@
 import { useContext } from 'react';
 import { Pressable } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
     useDerivedValue,
     withTiming,
 } from 'react-native-reanimated';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { getNetworkType, type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
-import {
-    AccountKey,
-    GeneralPrecomposedTransaction,
-    GeneralPrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
-    TokenAddress,
-} from '@suite-common/wallet-types';
-import { Text, HStack, VStack, Radio, Box } from '@suite-native/atoms';
-import { CryptoToFiatAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
-import { FormContext } from '@suite-native/forms';
-import { TxKeyPath, Translation } from '@suite-native/intl';
+import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     FeesRootState,
     selectNetworkFeeLevelFeePerUnit,
     selectNetworkFeeLevelTimeEstimate,
 } from '@suite-common/wallet-core';
-import { Color } from '@trezor/theme';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    AccountKey,
+    GeneralPrecomposedTransaction,
+    GeneralPrecomposedTransactionFinal,
+    TokenAddress,
+    isFinalPrecomposedTransaction,
+} from '@suite-common/wallet-types';
 import { getFeeUnits } from '@suite-common/wallet-utils';
-import { analytics, EventType } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
+import { Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { FormContext } from '@suite-native/forms';
+import { Translation, TxKeyPath } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 import { SendFeesFormValues } from '../sendFeesFormSchema';
 import { NativeSupportedFeeLevel } from '../types';

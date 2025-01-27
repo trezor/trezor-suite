@@ -1,19 +1,19 @@
-import { useEffect, ReactNode } from 'react';
-import Animated, {
-    SlideOutUp,
-    useAnimatedGestureHandler,
-    useSharedValue,
-    useAnimatedStyle,
-    withTiming,
-    runOnJS,
-    EntryAnimationsValues,
-} from 'react-native-reanimated';
-import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
+import { ReactNode, useEffect } from 'react';
 import { TouchableWithoutFeedback } from 'react-native';
+import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
+import Animated, {
+    EntryAnimationsValues,
+    SlideOutUp,
+    runOnJS,
+    useAnimatedGestureHandler,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
+} from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { InvertedThemeProvider } from '@suite-native/theme';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type NotificationProps = {
     iconLeft?: ReactNode;

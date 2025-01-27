@@ -1,8 +1,8 @@
 import {
     FieldValues,
-    useForm as hookFormUseForm,
-    UseFormReturn,
     UseFormProps,
+    UseFormReturn,
+    useForm as hookFormUseForm,
 } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';

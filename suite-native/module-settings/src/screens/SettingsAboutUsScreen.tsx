@@ -1,12 +1,12 @@
-import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { VStack, Divider } from '@suite-native/atoms';
-import { useOpenLink } from '@suite-native/link';
+import { Divider, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
+import { AppVersion } from '../components/AppVersion';
 import { SettingsSection } from '../components/SettingsSection';
 import { SettingsSectionItem } from '../components/SettingsSectionItem';
-import { AppVersion } from '../components/AppVersion';
 
 export const SettingsAboutUsScreen = () => {
     const openLink = useOpenLink();

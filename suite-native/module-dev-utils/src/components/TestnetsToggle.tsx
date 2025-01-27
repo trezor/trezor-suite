@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectAreTestnetsEnabled, toggleAreTestnetsEnabled } from '@suite-native/discovery';
 import { Box, HStack, Switch, Text } from '@suite-native/atoms';
+import { selectAreTestnetsEnabled, toggleAreTestnetsEnabled } from '@suite-native/discovery';
 
 export const TestnetsToggle = () => {
     const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);

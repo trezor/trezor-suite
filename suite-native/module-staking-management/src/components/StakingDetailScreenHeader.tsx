@@ -3,17 +3,17 @@ import { useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
+import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 import { HStack, Text } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 import {
+    GoBackIcon,
     RootStackParamList,
     RootStackRoutes,
     ScreenHeader,
-    GoBackIcon,
 } from '@suite-native/navigation';
-import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@suite-native/icons';
-import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 
 const headerStyle = prepareNativeStyle(utils => ({
     flexShrink: 1,

@@ -1,18 +1,18 @@
 import { useEffect } from 'react';
 import Animated, {
+    Easing,
+    cancelAnimation,
     useAnimatedStyle,
     useSharedValue,
     withRepeat,
     withTiming,
-    cancelAnimation,
-    Easing,
 } from 'react-native-reanimated';
 
-import { Canvas, Circle, vec, SweepGradient } from '@shopify/react-native-skia';
+import { Canvas, Circle, SweepGradient, vec } from '@shopify/react-native-skia';
 
-import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import { Color } from '@trezor/theme';
 import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 type TransactionIconSpinnerProps = {
     size: number;

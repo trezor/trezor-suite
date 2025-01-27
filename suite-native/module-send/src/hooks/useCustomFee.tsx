@@ -1,24 +1,24 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { isRejected } from '@reduxjs/toolkit';
 import { G } from '@mobily/ts-belt';
+import { isRejected } from '@reduxjs/toolkit';
 
 import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
 import {
     AccountKey,
-    isFinalPrecomposedTransaction,
     TokenAddress,
+    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
-import { useFormContext } from '@suite-native/forms';
 
 import { SendFeesFormValues } from '../sendFeesFormSchema';
 import {
-    selectCustomFeeLevel,
     NativeSendRootState,
+    selectCustomFeeLevel,
     selectFeeLevelTransactionBytes,
 } from '../sendFormSlice';
 import { calculateCustomFeeLevelThunk } from '../sendFormThunks';

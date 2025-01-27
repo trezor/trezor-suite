@@ -1,7 +1,7 @@
-import { Blur, Canvas, useFont, Text as SkiaText } from '@shopify/react-native-skia';
+import { Blur, Canvas, Text as SkiaText, useFont } from '@shopify/react-native-skia';
 
-import { Color } from '@trezor/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 const satoshiFont = require('../../../../packages/theme/fonts/TTSatoshi-Medium.otf');
 

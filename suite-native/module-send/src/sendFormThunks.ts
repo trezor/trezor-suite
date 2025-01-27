@@ -1,34 +1,34 @@
-import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { D, pipe } from '@mobily/ts-belt';
+import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    SignTransactionError,
+    composeSendFormTransactionFeeLevelsThunk,
     deviceActions,
     enhancePrecomposedTransactionThunk,
     selectAccountByKey,
+    selectNetworkFeeInfo,
     selectSelectedDevice,
     selectSendFormDraftByKey,
+    selectSendFormDrafts,
     sendFormActions,
     signTransactionThunk,
-    selectSendFormDrafts,
-    composeSendFormTransactionFeeLevelsThunk,
-    selectNetworkFeeInfo,
-    SignTransactionError,
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
     FormState,
     GeneralPrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
     TokenAddress,
+    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 
-import { FeeLevelsMaxAmount, NativeSupportedFeeLevel } from './types';
 import { storeFeeLevels } from './sendFormSlice';
+import { FeeLevelsMaxAmount, NativeSupportedFeeLevel } from './types';
 
 const SEND_MODULE_PREFIX = '@suite-native/send';
 

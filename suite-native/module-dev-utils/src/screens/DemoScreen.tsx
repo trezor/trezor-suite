@@ -2,8 +2,6 @@ import { useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 
 import {
-    // Card,
-    // ListItemSkeleton,
     AlertBox,
     Badge,
     BadgeVariant,
@@ -13,8 +11,8 @@ import {
     ButtonSize,
     CheckBox,
     Divider,
-    Hint,
     HStack,
+    Hint,
     IconButton,
     Input,
     InputWrapper,
@@ -28,12 +26,12 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
+import { UpdateProgressIndicatorDemo } from '@suite-native/firmware';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Link } from '@suite-native/link';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TypographyStyle } from '@trezor/theme';
-import { UpdateProgressIndicatorDemo } from '@suite-native/firmware';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.r16,

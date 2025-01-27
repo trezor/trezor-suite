@@ -1,13 +1,13 @@
+import React from 'react';
 import { View, ViewProps, ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
-import React from 'react';
 
 import { D, pipe } from '@mobily/ts-belt';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeSpacing } from '@trezor/theme';
 
-import { useDebugView, DebugView } from './DebugView';
+import { DebugView, useDebugView } from './DebugView';
 import { TestProps } from './types';
 
 const layoutStylePropsKeys = [

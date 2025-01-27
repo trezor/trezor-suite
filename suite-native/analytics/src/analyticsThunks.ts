@@ -1,13 +1,13 @@
 import {
+    analyticsActions,
     selectAnalyticsInstanceId,
     selectHasUserAllowedTracking,
-    analyticsActions,
-    selectIsAnalyticsEnabled,
     selectIsAnalyticsConfirmed,
+    selectIsAnalyticsEnabled,
 } from '@suite-common/analytics';
 import { createThunk } from '@suite-common/redux-utils';
-import { getTrackingRandomId } from '@trezor/analytics';
 import { isDevelopEnv } from '@suite-native/config';
+import { getTrackingRandomId } from '@trezor/analytics';
 import { getCommitHash } from '@trezor/env-utils';
 
 import { analytics } from './analytics';

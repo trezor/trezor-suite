@@ -2,27 +2,28 @@ import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { A, pipe } from '@mobily/ts-belt';
-import { isRejected } from '@reduxjs/toolkit';
 import { CommonActions, useNavigation } from '@react-navigation/native';
+import { isRejected } from '@reduxjs/toolkit';
 
 import {
     type AccountType,
-    type NetworkSymbol,
-    networks,
     NORMAL_ACCOUNT_TYPE,
-    networkSymbolCollection,
+    type NetworkSymbol,
     getNetwork,
+    networkSymbolCollection,
+    networks,
 } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
     DeviceRootState,
     LIMIT,
-    selectSelectedDevice,
+    accountsActions,
     selectDeviceAccounts,
     selectIsDeviceInViewOnlyMode,
-    accountsActions,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { useAccountAlerts } from '@suite-native/accounts';
 import {
     addAndDiscoverNetworkAccountThunk,
     selectDeviceEnabledDiscoveryNetworkSymbols,
@@ -30,16 +31,15 @@ import {
 } from '@suite-native/discovery';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 import {
-    RootStackParamList,
-    AddCoinAccountStackRoutes,
     AddCoinAccountStackParamList,
-    StackToStackCompositeNavigationProps,
-    RootStackRoutes,
+    AddCoinAccountStackRoutes,
     AddCoinFlowType,
     AppTabsRoutes,
     ReceiveStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
+    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useAccountAlerts } from '@suite-native/accounts';
 
 import { useAddCoinAccountAlerts } from './useAddCoinAccountAlerts';
 

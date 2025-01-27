@@ -1,20 +1,4 @@
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    accountsActions,
-    PORTFOLIO_TRACKER_DEVICE_STATE,
-    selectAccountsByNetworkAndDeviceState,
-    updateFiatRatesThunk,
-} from '@suite-common/wallet-core';
-import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import {
-    type NetworkSymbol,
-    type AccountType,
-    type Bip43Path,
-    getNetworkType,
-} from '@suite-common/wallet-config';
-import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
-import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
     getSupportedDefinitionTypes,
@@ -23,7 +7,23 @@ import {
     selectFilterKnownTokens,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
+import {
+    type AccountType,
+    type Bip43Path,
+    type NetworkSymbol,
+    getNetworkType,
+} from '@suite-common/wallet-config';
+import {
+    PORTFOLIO_TRACKER_DEVICE_STATE,
+    accountsActions,
+    selectAccountsByNetworkAndDeviceState,
+    updateFiatRatesThunk,
+} from '@suite-common/wallet-core';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
 import { isCoinWithTokens } from '@suite-native/tokens';
+import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 
 import { paymentTypeToAccountType } from './constants';
 

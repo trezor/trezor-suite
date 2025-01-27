@@ -1,4 +1,4 @@
-import type { Vector, PathCommand } from '@shopify/react-native-skia';
+import type { PathCommand, Vector } from '@shopify/react-native-skia';
 import { PathVerb, vec } from '@shopify/react-native-skia';
 
 // code from William Candillon

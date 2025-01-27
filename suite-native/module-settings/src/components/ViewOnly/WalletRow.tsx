@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, HStack, Loader, Text } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { TrezorDevice } from '@suite-common/suite-types';
 import {
     ConnectDeviceSettings,
     DeviceRootState,
@@ -9,13 +8,14 @@ import {
     selectDeviceLabelOrNameById,
     selectHasDeviceDiscovery,
 } from '@suite-common/wallet-core';
-import { analytics, EventType } from '@suite-native/analytics';
 import { useAlert } from '@suite-native/alerts';
-import { useToast } from '@suite-native/toasts';
+import { EventType, analytics } from '@suite-native/analytics';
+import { Button, HStack, Loader, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Translation } from '@suite-native/intl';
 import { setViewOnlyCancelationTimestamp } from '@suite-native/settings';
+import { useToast } from '@suite-native/toasts';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type WalletRowProps = {
     device: TrezorDevice;

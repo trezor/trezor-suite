@@ -1,4 +1,4 @@
-import { pipe, S, A } from '@mobily/ts-belt';
+import { A, S, pipe } from '@mobily/ts-belt';
 
 export const splitAddressToChunks = (address: string): readonly string[] => {
     if (S.isEmpty(address)) return [];

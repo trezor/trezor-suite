@@ -2,15 +2,15 @@ import React from 'react';
 
 import { G } from '@mobily/ts-belt';
 
-import { TextProps } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { TextProps } from '@suite-native/atoms';
 
 import { FormatterProps } from '../types';
-import { EmptyAmountText } from './EmptyAmountText';
 import { AmountText } from './AmountText';
 import { formatNumberWithThousandCommas } from '../utils';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
+import { EmptyAmountText } from './EmptyAmountText';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
     TextProps & {

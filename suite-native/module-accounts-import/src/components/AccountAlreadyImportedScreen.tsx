@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/core';
 
-import { Button, Card, VStack } from '@suite-native/atoms';
-import { AccountsListItem } from '@suite-native/accounts';
 import { Account } from '@suite-common/wallet-types';
+import { AccountsListItem } from '@suite-native/accounts';
+import { Button, Card, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackParamList,

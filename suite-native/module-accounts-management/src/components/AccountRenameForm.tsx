@@ -3,20 +3,20 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { TextInput } from 'react-native/types';
 
-import { Box, Button, VStack } from '@suite-native/atoms';
-import { Form, TextInputField } from '@suite-native/forms';
+import {
+    AccountsRootState,
+    accountsActions,
+    selectAccountByKey,
+    selectAccountLabel,
+} from '@suite-common/wallet-core';
 import {
     AccountFormValues,
     AccountLabelFieldHint,
     MAX_ACCOUNT_LABEL_LENGTH,
     useAccountLabelForm,
 } from '@suite-native/accounts';
-import {
-    accountsActions,
-    AccountsRootState,
-    selectAccountByKey,
-    selectAccountLabel,
-} from '@suite-common/wallet-core';
+import { Box, Button, VStack } from '@suite-native/atoms';
+import { Form, TextInputField } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
 type AccountRenameFormProps = {

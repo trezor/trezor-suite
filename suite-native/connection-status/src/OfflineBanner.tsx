@@ -1,8 +1,8 @@
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Text, HStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

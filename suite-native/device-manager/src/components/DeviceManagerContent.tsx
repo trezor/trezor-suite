@@ -1,24 +1,24 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { Dimensions, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { VStack, Stack, ACCESSIBILITY_FONTSIZE_MULTIPLIER } from '@suite-native/atoms';
+import { TrezorDevice } from '@suite-common/suite-types';
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
-    selectSelectedDevice,
     selectDeviceThunk,
     selectHasDeviceDiscovery,
     selectIsPortfolioTrackerDevice,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Stack, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AddHiddenWalletButton } from './AddHiddenWalletButton';
 import { DeviceList } from './DeviceList';
-import { DeviceSettingsButton } from './DeviceSettingsButton';
 import { DeviceManagerModal, MANAGER_MODAL_BOTTOM_RADIUS } from './DeviceManagerModal';
+import { DeviceSettingsButton } from './DeviceSettingsButton';
 import { DevicesToggleButton } from './DevicesToggleButton';
 import { WalletList } from './WalletList';
 import { useDeviceManager } from '../hooks/useDeviceManager';

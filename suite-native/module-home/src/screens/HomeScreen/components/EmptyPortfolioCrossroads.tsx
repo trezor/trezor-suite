@@ -2,6 +2,9 @@ import { View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { EventType, analytics } from '@suite-native/analytics';
+import { Box, Button, Card, Text, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
     AuthorizeDeviceStackRoutes,
@@ -11,10 +14,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { VStack, Card, Button, Text, Box } from '@suite-native/atoms';
-import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import { Translation } from '@suite-native/intl';
-import { analytics, EventType } from '@suite-native/analytics';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
 

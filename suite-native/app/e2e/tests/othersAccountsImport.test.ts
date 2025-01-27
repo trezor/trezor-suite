@@ -1,9 +1,9 @@
-import { openApp } from '../utils';
 import { xpubs } from '../fixtures/xpubs';
 import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
+import { openApp } from '../utils';
 
 describe('Import accounts of other networks.', () => {
     beforeAll(async () => {

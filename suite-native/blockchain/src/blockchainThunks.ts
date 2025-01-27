@@ -1,11 +1,11 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol, isNetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     blockchainActions,
     fetchAndUpdateAccountThunk,
+    selectAccountsSymbols,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
     selectDeviceAccountsByNetworkSymbol,
-    selectAccountsSymbols,
     subscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';

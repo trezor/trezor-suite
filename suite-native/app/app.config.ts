@@ -1,6 +1,6 @@
 /* eslint-disable import/no-default-export */
 /* eslint-disable import/no-anonymous-default-export */
-import { ExpoConfig, ConfigContext } from 'expo/config';
+import { ConfigContext, ExpoConfig } from 'expo/config';
 
 import { suiteNativeVersion } from './package.json';
 

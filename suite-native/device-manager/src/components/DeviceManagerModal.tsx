@@ -1,12 +1,12 @@
-import { Dimensions, GestureResponderEvent, Modal, Pressable, StatusBar } from 'react-native';
 import { ReactNode } from 'react';
-import { useSafeAreaInsets, EdgeInsets } from 'react-native-safe-area-context';
+import { Dimensions, GestureResponderEvent, Modal, Pressable, StatusBar } from 'react-native';
 import Animated, { FadeIn, SlideInUp } from 'react-native-reanimated';
+import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
-import { ScreenHeaderWrapper, Box, HStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectDeviceState } from '@suite-common/wallet-core';
+import { Box, HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { nativeBorders } from '@trezor/theme';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';

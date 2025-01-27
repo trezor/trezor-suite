@@ -1,22 +1,22 @@
 import { useSelector } from 'react-redux';
 
-import { CryptoIcon } from '@suite-native/icons';
 import {
     AccountsRootState,
+    selectAccountFormattedBalance,
     selectAccountLabel,
     selectAccountNetworkSymbol,
-    selectAccountFormattedBalance,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { VStack, HStack, Text } from '@suite-native/atoms';
+import { isTestnet } from '@suite-common/wallet-utils';
+import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CoinAmountFormatter, CoinToFiatAmountFormatter } from '@suite-native/formatters';
-import { ScreenHeader, GoBackIcon } from '@suite-native/navigation';
+import { CryptoIcon } from '@suite-native/icons';
+import { GoBackIcon, ScreenHeader } from '@suite-native/navigation';
 import {
+    TokensRootState,
     selectAccountTokenBalance,
     selectAccountTokenSymbol,
-    TokensRootState,
 } from '@suite-native/tokens';
-import { isTestnet } from '@suite-common/wallet-utils';
 
 type AccountBalanceScreenHeaderProps = {
     accountKey: AccountKey;

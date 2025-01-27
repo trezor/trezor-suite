@@ -1,5 +1,5 @@
-import { Text } from '@suite-native/atoms';
 import { ReviewOutputType } from '@suite-common/wallet-types';
+import { Text } from '@suite-native/atoms';
 import { splitAddressToChunks } from '@suite-native/helpers';
 
 import { ReviewOutputItemValues } from './ReviewOutputItemValues';

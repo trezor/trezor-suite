@@ -1,14 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    Screen,
-    ScreenFooterGradient,
-    useHandleHardwareBackNavigation,
-} from '@suite-native/navigation';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
     applyDiscoveryChangesThunk,
@@ -16,7 +12,11 @@ import {
     setIsCoinEnablingInitFinished,
 } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
-import { analytics, EventType } from '@suite-native/analytics';
+import {
+    Screen,
+    ScreenFooterGradient,
+    useHandleHardwareBackNavigation,
+} from '@suite-native/navigation';
 
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
 

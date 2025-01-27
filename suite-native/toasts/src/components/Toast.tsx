@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
 import { Toast as ToastInterface, ToastVariant } from '../toastsAtoms';

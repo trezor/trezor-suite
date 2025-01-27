@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai';
 
-import { showAlertAtom, hideAlertAtom } from './alertsAtoms';
+import { hideAlertAtom, showAlertAtom } from './alertsAtoms';
 
 export const useAlert = () => {
     const showAlert = useSetAtom(showAlertAtom);

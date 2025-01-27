@@ -1,26 +1,28 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { VStack, Text } from '@suite-native/atoms';
-import { Form, useForm } from '@suite-native/forms';
+import { getNetworkType } from '@suite-common/wallet-config';
+import {
+    AccountsRootState,
+    FeesRootState,
+    SendRootState,
+    selectAccountByKey,
+    selectNetworkFeeInfo,
+    selectNetworkFeeLevelFeePerUnit,
+    selectSendFormDraftByKey,
+} from '@suite-common/wallet-core';
 import {
     AccountKey,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import {
-    AccountsRootState,
-    FeesRootState,
-    selectAccountByKey,
-    selectNetworkFeeInfo,
-    selectNetworkFeeLevelFeePerUnit,
-    selectSendFormDraftByKey,
-    SendRootState,
-} from '@suite-common/wallet-core';
+import { Text, VStack } from '@suite-native/atoms';
+import { Form, useForm } from '@suite-native/forms';
+import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
     RootStackParamList,
@@ -29,21 +31,19 @@ import {
     SendStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { Translation } from '@suite-native/intl';
-import { getNetworkType } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils';
 
 import { SendFeesFormValues, sendFeesFormValidationSchema } from '../sendFeesFormSchema';
-import { FeesFooter } from './FeesFooter';
-import { FeeOptionsList } from './FeeOptionsList';
-import { RecipientsSummary } from './RecipientsSummary';
 import { CustomFee } from './CustomFee';
-import { NativeSupportedFeeLevel } from '../types';
+import { FeeOptionsList } from './FeeOptionsList';
+import { FeesFooter } from './FeesFooter';
+import { RecipientsSummary } from './RecipientsSummary';
 import {
     NativeSendRootState,
     selectFeeLevels,
     selectRippleDestinationTagFromDraft,
 } from '../sendFormSlice';
+import { NativeSupportedFeeLevel } from '../types';
 
 type SendFormProps = {
     accountKey: AccountKey;

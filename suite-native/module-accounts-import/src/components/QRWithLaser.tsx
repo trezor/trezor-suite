@@ -23,8 +23,8 @@ import {
     vec,
 } from '@shopify/react-native-skia';
 
-import { useNativeStyles } from '@trezor/styles';
 import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
+import { useNativeStyles } from '@trezor/styles';
 
 const ROUNDED_CORNER_SIZE = 15;
 

@@ -2,12 +2,12 @@ import { useSelector } from 'react-redux';
 
 import { Atom, useAtomValue } from 'jotai';
 
+import { useFormatters } from '@suite-common/formatters';
 import { FiatGraphPoint } from '@suite-common/graph';
-import { Box, BoxSkeleton, DiscreetTextTrigger, HStack, VStack, Text } from '@suite-native/atoms';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { Box, BoxSkeleton, DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
 import { FiatBalanceFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useFormatters } from '@suite-common/formatters';
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 
 import { GraphDateFormatter } from './GraphDateFormatter';
 import { PriceChangeIndicator } from './PriceChangeIndicator';

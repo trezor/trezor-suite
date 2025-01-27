@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { Box, Text, PictogramTitleHeader, TrezorSuiteLiteHeader } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
+import { Box, PictogramTitleHeader, Text, TrezorSuiteLiteHeader } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 
 const pictogramContent = {
     portfolioTracker: {

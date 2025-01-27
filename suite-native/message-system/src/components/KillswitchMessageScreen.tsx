@@ -2,11 +2,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
-import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { messageSystemActions } from '@suite-common/message-system';
+import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { selectActiveKillswitchMessage } from '../messageSystemSelectors';
 

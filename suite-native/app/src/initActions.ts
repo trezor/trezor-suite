@@ -1,5 +1,7 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { connectInitThunk } from '@suite-common/connect-init';
+import { initMessageSystemThunk } from '@suite-common/message-system';
+import { createThunk } from '@suite-common/redux-utils';
+import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
     createImportedDeviceThunk,
     initBlockchainThunk,
@@ -9,9 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
-import { initMessageSystemThunk } from '@suite-common/message-system';
 import { setIsAppReady, setIsConnectInitialized } from '@suite-native/state/src/appSlice';
-import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 
 let isAlreadyInitialized = false;
 

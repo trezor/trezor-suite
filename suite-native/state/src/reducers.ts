@@ -1,6 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
+import { prepareAnalyticsReducer } from '@suite-common/analytics';
+import { prepareFirmwareReducer } from '@suite-common/firmware';
+import { logsSlice } from '@suite-common/logger';
+import {
+    messageSystemPersistedWhitelist,
+    prepareMessageSystemReducer,
+} from '@suite-common/message-system';
+import { notificationsReducer } from '@suite-common/toast-notifications';
+import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import {
     feesReducer,
     prepareAccountsReducer,
@@ -11,43 +19,35 @@ import {
     prepareStakeReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
-import { prepareFirmwareReducer } from '@suite-common/firmware';
-import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/settings';
-import { sendFormSlice } from '@suite-native/module-send';
-import { logsSlice } from '@suite-common/logger';
+import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import {
-    migrateAccountLabel,
-    deriveAccountTypeFromPaymentType,
-    preparePersistReducer,
-    walletPersistTransform,
-    devicePersistTransform,
-    walletStopPersistTransform,
-    migrateDeviceState,
-    migrateEnabledDiscoveryNetworkSymbols,
-    migrateAccountBnbToBsc,
-    migrateTransactionsBnbToBsc,
-    migrateDiscoveryDeprecateNetworks,
-    migrateAccountsDeprecateNetworks,
-    migrateTransactionsDeprecateNetworks,
-} from '@suite-native/storage';
-import { prepareAnalyticsReducer } from '@suite-common/analytics';
-import {
-    messageSystemPersistedWhitelist,
-    prepareMessageSystemReducer,
-} from '@suite-common/message-system';
-import { notificationsReducer } from '@suite-common/toast-notifications';
-import { graphReducer, graphPersistTransform } from '@suite-native/graph';
-import {
+    DiscoveryConfigState,
     discoveryConfigPersistWhitelist,
     discoveryConfigReducer,
-    DiscoveryConfigState,
 } from '@suite-native/discovery';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
-import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
+import { graphPersistTransform, graphReducer } from '@suite-native/graph';
+import { sendFormSlice } from '@suite-native/module-send';
+import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
+import {
+    deriveAccountTypeFromPaymentType,
+    devicePersistTransform,
+    migrateAccountBnbToBsc,
+    migrateAccountLabel,
+    migrateAccountsDeprecateNetworks,
+    migrateDeviceState,
+    migrateDiscoveryDeprecateNetworks,
+    migrateEnabledDiscoveryNetworkSymbols,
+    migrateTransactionsBnbToBsc,
+    migrateTransactionsDeprecateNetworks,
+    preparePersistReducer,
+    walletPersistTransform,
+    walletStopPersistTransform,
+} from '@suite-native/storage';
 
-import { extraDependencies } from './extraDependencies';
 import { appReducer } from './appSlice';
+import { extraDependencies } from './extraDependencies';
 
 const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 const accountsReducer = prepareAccountsReducer(extraDependencies);

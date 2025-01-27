@@ -1,5 +1,5 @@
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation, TxKeyPath } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
 import { Box } from './Box';

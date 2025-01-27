@@ -1,14 +1,14 @@
-import { useMemo, useRef, ReactNode } from 'react';
+import { ReactNode, useMemo, useRef } from 'react';
 
-import * as Sentry from '@sentry/react-native';
 import {
+    DarkTheme,
+    DefaultTheme,
     NavigationContainer,
     useNavigationContainerRef,
-    DefaultTheme,
-    DarkTheme,
 } from '@react-navigation/native';
+import * as Sentry from '@sentry/react-native';
 
-import { analytics, EventType } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 import { useNativeStyles } from '@trezor/styles';
 
 import { useReportSendFlowExitToAnalytics } from '../useReportSendFlowExitToAnalytics';

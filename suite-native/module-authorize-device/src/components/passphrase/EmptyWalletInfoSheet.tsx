@@ -11,13 +11,13 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type EmptyWalletInfoSheetProps = {
     onClose: () => void;

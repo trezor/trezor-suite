@@ -1,9 +1,9 @@
 import { GestureResponderEvent } from 'react-native';
 import Animated, {
-    useAnimatedStyle,
     interpolateColor,
-    withTiming,
+    useAnimatedStyle,
     useSharedValue,
+    withTiming,
 } from 'react-native-reanimated';
 
 import { RequireExactlyOne } from 'type-fest';

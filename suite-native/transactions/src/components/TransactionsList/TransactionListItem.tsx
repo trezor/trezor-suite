@@ -1,26 +1,26 @@
 import { useSelector } from 'react-redux';
 
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import {
+    AccountsRootState,
+    TransactionsRootState,
+    selectIsPhishingTransaction,
+    selectIsTestnetAccount,
+} from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
+import { Box } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     SignValueFormatter,
 } from '@suite-native/formatters';
-import { Box } from '@suite-native/atoms';
-import {
-    AccountsRootState,
-    selectIsPhishingTransaction,
-    selectIsTestnetAccount,
-    TransactionsRootState,
-} from '@suite-common/wallet-core';
 import { EmptyAmountText } from '@suite-native/formatters/src/components/EmptyAmountText';
 import { WalletAccountTransaction } from '@suite-native/tokens';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListItemContainer } from './TransactionListItemContainer';
+import { useTransactionFiatRate } from '../../hooks/useTransactionFiatRate';
 import { getTransactionValueSign } from '../../utils';
 
 type TransactionListItemProps = {

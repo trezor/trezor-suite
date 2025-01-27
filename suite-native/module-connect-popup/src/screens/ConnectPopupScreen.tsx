@@ -1,10 +1,20 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 
+import {
+    deviceActions,
+    selectIsDeviceConnectedAndAuthorized,
+    selectIsDeviceDiscoveryActive,
+    selectIsPortfolioTrackerDevice,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import { Box, Button, ErrorMessage, IconButton, Loader, Text, VStack } from '@suite-native/atoms';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
+import { DeviceManager } from '@suite-native/device-manager';
+import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -12,17 +22,7 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { DeviceManager } from '@suite-native/device-manager';
-import {
-    deviceActions,
-    selectSelectedDevice,
-    selectIsDeviceConnectedAndAuthorized,
-    selectIsDeviceDiscoveryActive,
-    selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
-import { isDevelopOrDebugEnv } from '@suite-native/config';
-import { Translation } from '@suite-native/intl';
 
 import { ButtonRequestsOverlay } from '../components/ButtonRequestsOverlay';
 import { ConnectPopupDebugOptions } from '../components/ConnectPopupDebugOptions';

@@ -1,5 +1,8 @@
 import { G } from '@mobily/ts-belt';
 
+import { SelectableNetworkItem } from '@suite-native/accounts';
+import { Card, VStack } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 import {
     AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
@@ -7,12 +10,9 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { Card, VStack } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
-import { SelectableNetworkItem } from '@suite-native/accounts';
 
-import { useAddCoinAccount } from '../hooks/useAddCoinAccount';
 import { AccountTypeDecisionBottomSheet } from '../components/AccountTypeDecisionBottomSheet';
+import { useAddCoinAccount } from '../hooks/useAddCoinAccount';
 
 export const AddCoinAccountScreen = ({
     route,

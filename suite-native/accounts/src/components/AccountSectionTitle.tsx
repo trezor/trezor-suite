@@ -9,8 +9,8 @@ import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/format
 import { selectFiatCurrencyCode } from '@suite-native/settings';
 import {
     NativeStakingRootState,
-    selectAccountCryptoBalanceWithStaking,
     doesCoinSupportStaking,
+    selectAccountCryptoBalanceWithStaking,
 } from '@suite-native/staking';
 
 type AccountSectionTitleProps = {

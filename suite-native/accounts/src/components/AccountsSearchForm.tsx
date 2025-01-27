@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, HStack, SearchInput, TextButton } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type AccountsSearchFormProps = {
     onPressCancel: () => void;

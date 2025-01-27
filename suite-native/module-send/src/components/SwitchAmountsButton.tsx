@@ -1,8 +1,8 @@
 import { TouchableOpacity } from 'react-native';
 
+import { Box } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box } from '@suite-native/atoms';
 
 type SwitchAmountsButtonProps = { onPress: () => void };
 

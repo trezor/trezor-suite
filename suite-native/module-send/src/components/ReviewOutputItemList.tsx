@@ -1,15 +1,15 @@
-import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
+import { useSelector } from 'react-redux';
 
-import { ErrorMessage, VStack } from '@suite-native/atoms';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
     DeviceRootState,
     SendRootState,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { ErrorMessage, VStack } from '@suite-native/atoms';
 import { nativeSpacings } from '@trezor/theme';
 
 import { ReviewOutputItem } from './ReviewOutputItem';

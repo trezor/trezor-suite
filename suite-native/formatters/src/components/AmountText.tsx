@@ -1,6 +1,6 @@
 import { DiscreetText, Text, TextProps } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { isAndroid } from '@trezor/env-utils';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type AmountTextProps = {
     isDiscreetText?: boolean;

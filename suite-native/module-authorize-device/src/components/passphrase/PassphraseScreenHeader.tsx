@@ -1,28 +1,28 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
+import { useAlert } from '@suite-native/alerts';
+import { EventType, analytics } from '@suite-native/analytics';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import TrezorConnect from '@trezor/connect';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     selectIsCreatingNewPassphraseWallet,
 } from '@suite-native/device-authorization';
+import { Translation } from '@suite-native/intl';
 import {
-    RootStackRoutes,
     AppTabsRoutes,
-    HomeStackRoutes,
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
+    HomeStackRoutes,
     RootStackParamList,
+    RootStackRoutes,
     StackToTabCompositeProps,
-    useNavigateToInitialScreen,
     useHandleHardwareBackNavigation,
+    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
+import TrezorConnect from '@trezor/connect';
 
 type NavigationProp = StackToTabCompositeProps<
     AuthorizeDeviceStackParamList,

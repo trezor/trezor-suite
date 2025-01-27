@@ -1,9 +1,17 @@
-import { useSelector } from 'react-redux';
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import {
+    DeviceRootState,
+    DiscoveryRootState,
+    selectDeviceState,
+    selectIsDiscoveryActiveByDeviceState,
+} from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Text } from '@suite-native/atoms';
+import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
@@ -13,14 +21,6 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import {
-    DeviceRootState,
-    selectIsDiscoveryActiveByDeviceState,
-    DiscoveryRootState,
-    selectDeviceState,
-} from '@suite-common/wallet-core';
-import { useAlert } from '@suite-native/alerts';
-import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 
 import { FirmwareUpdateVersionCard } from './FirmwareVersionCard';
 

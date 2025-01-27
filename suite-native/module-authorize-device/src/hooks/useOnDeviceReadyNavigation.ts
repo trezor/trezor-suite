@@ -9,6 +9,8 @@ import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectIsCoinEnablingInitFinished,
 } from '@suite-native/discovery';
+import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
+import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
 import {
     AppTabsRoutes,
     AuthorizeDeviceStackParamList,
@@ -18,8 +20,6 @@ import {
     RootStackRoutes,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
-import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
-import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 
 const LOADING_TIMEOUT = 2500;
 

@@ -3,9 +3,9 @@ import { A, F, G, pipe } from '@mobily/ts-belt';
 import { calculateAssetsPercentage } from '@suite-common/assets';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
+    TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
-    TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
@@ -20,11 +20,11 @@ import {
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { getAccountListSections } from '@suite-native/accounts';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
-import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
+import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 import {
+    NativeStakingRootState,
     doesCoinSupportStaking,
     getAccountCryptoBalanceWithStaking,
-    NativeStakingRootState,
 } from '@suite-native/staking';
 
 export interface AssetType {

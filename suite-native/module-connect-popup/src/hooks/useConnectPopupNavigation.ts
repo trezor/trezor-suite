@@ -3,13 +3,13 @@ import { useCallback, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 
-import {
-    StackToStackCompositeNavigationProps,
-    RootStackParamList,
-    RootStackRoutes,
-} from '@suite-native/navigation';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList,

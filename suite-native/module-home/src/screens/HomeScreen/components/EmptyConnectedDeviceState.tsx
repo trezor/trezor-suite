@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import {
     AddCoinAccountStackRoutes,
@@ -9,6 +8,7 @@ import {
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const cardStyle = prepareNativeStyle(utils => ({
     flex: 1,

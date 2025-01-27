@@ -3,8 +3,8 @@ import { A, D, G } from '@mobily/ts-belt';
 import {
     AccountType,
     getNetwork,
-    networks,
     networkSymbolCollection,
+    networks,
 } from '@suite-common/wallet-config';
 import { formattedAccountTypeMap } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';

@@ -2,22 +2,22 @@ import { useSelector } from 'react-redux';
 
 import {
     AccountsRootState,
+    SendRootState,
     selectAccountNetworkSymbol,
     selectSendFormDraftOutputsByAccountKey,
-    SendRootState,
 } from '@suite-common/wallet-core';
 import {
     AccountKey,
     GeneralPrecomposedTransaction,
-    isFinalPrecomposedTransaction,
     Output,
     TokenAddress,
+    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { Text, VStack, Card, HStack } from '@suite-native/atoms';
-import { CoinToFiatAmountFormatter, CoinAmountFormatter } from '@suite-native/formatters';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { CoinAmountFormatter, CoinToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/settings';
+import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type FeesRecipientsProps = {
     accountKey: AccountKey;

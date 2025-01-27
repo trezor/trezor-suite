@@ -1,31 +1,31 @@
-import Animated, { LinearTransition, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useRef, useState } from 'react';
 import { TextInput, View, findNodeHandle } from 'react-native';
+import Animated, { LinearTransition, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
-import { VStack, HStack, Text } from '@suite-native/atoms';
 import {
     AccountsRootState,
     selectAccountNetworkSymbol,
     selectIsTestnetAccount,
 } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
+import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { analytics, EventType } from '@suite-native/analytics';
 import {
     SendStackParamList,
     SendStackRoutes,
     StackProps,
     useScrollView,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { AmountErrorMessage } from './AmountErrorMessage';
 import { CryptoAmountInput } from './CryptoAmountInput';
 import { FiatAmountInput } from './FiatAmountInput';
-import { AmountErrorMessage } from './AmountErrorMessage';
-import { SwitchAmountsButton } from './SwitchAmountsButton';
 import { SendMaxButton } from './SendMaxButton';
+import { SwitchAmountsButton } from './SwitchAmountsButton';
 
 type AmountInputProps = {
     index: number;

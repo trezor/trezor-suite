@@ -2,13 +2,13 @@ import { useSelector } from 'react-redux';
 
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { HomeStackNavigator } from '@suite-native/module-home';
-import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
-import { SettingsScreen } from '@suite-native/module-settings';
-import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 import { useHandleDeviceRequestsPassphrase } from '@suite-native/device-authorization';
-import { createSelectIsFeatureFlagEnabled, FeatureFlag } from '@suite-native/feature-flags';
+import { FeatureFlag, createSelectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
+import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
+import { HomeStackNavigator } from '@suite-native/module-home';
+import { SettingsScreen } from '@suite-native/module-settings';
 import { TradingStackNavigator } from '@suite-native/module-trading';
+import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 
 import { rootTabsOptions } from './routes';
 

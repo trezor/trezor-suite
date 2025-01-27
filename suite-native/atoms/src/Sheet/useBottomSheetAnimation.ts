@@ -1,3 +1,6 @@
+import { useCallback, useEffect } from 'react';
+import { NativeScrollEvent } from 'react-native';
+import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import {
     Easing,
     interpolateColor,
@@ -7,12 +10,9 @@ import {
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
-import { useCallback, useEffect } from 'react';
-import { PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
-import { NativeScrollEvent } from 'react-native';
 
-import { useNativeStyles } from '@trezor/styles';
 import { getScreenHeight } from '@trezor/env-utils';
+import { useNativeStyles } from '@trezor/styles';
 
 type GestureHandlerContext = {
     translatePanY: number;

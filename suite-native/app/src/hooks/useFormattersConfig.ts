@@ -1,5 +1,5 @@
-import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { getCalendars } from 'expo-localization';
 

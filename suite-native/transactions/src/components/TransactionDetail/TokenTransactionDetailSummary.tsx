@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { AccountKey } from '@suite-common/wallet-types';
-import { TypedTokenTransfer } from '@suite-native/tokens';
-import { VStack } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
+import { VStack } from '@suite-native/atoms';
+import { TypedTokenTransfer } from '@suite-native/tokens';
 
+import { VerticalSeparator } from './NetworkTransactionDetailSummary';
 import { TransactionDetailAddressesSection } from './TransactionDetailAddressesSection';
 import { VinVoutAddress } from '../../types';
-import { VerticalSeparator } from './NetworkTransactionDetailSummary';
 
 export const TokenTransactionDetailSummary = ({
     accountKey,

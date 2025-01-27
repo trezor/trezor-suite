@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, TextInput, TouchableOpacity } from 'react-native';
 
 import { Icon } from '@suite-native/icons';

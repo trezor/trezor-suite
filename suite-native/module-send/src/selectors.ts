@@ -1,23 +1,23 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
 import {
-    SendRootState,
     AccountsRootState,
     DeviceRootState,
+    SendRootState,
     selectAccountByKey,
     selectSelectedDevice,
-    selectSendPrecomposedTx,
     selectSendFormDraftByKey,
     selectSendFormReviewButtonRequestsCount,
+    selectSendPrecomposedTx,
     selectSendSerializedTx,
 } from '@suite-common/wallet-core';
+import { AccountKey, ReviewOutputState, TokenAddress } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,
     getIsUpdatedSendFlow,
     getTransactionReviewOutputState,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
-import { AccountKey, ReviewOutputState, TokenAddress } from '@suite-common/wallet-types';
 
 import { StatefulReviewOutput } from './types';
 

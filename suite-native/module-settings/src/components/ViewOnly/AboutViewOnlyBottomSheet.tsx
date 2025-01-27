@@ -1,4 +1,4 @@
-import { BottomSheet, Button, TitleHeader, VStack, Text, Box } from '@suite-native/atoms';
+import { BottomSheet, Box, Button, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { OrderedListItem } from './OrderedListItem';

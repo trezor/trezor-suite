@@ -6,9 +6,9 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { WelcomeScreen } from '../screens/WelcomeScreen';
 import { AnalyticsConsentScreen } from '../screens/AnalyticsConsentScreen';
 import { BiometricsScreen } from '../screens/BiometricsScreen';
+import { WelcomeScreen } from '../screens/WelcomeScreen';
 
 export const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
 

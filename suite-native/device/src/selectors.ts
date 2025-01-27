@@ -1,16 +1,19 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import {
     AccountsRootState,
     DeviceRootState,
     DiscoveryRootState,
     FiatRatesRootState,
-    getAccountsByDeviceState,
     PORTFOLIO_TRACKER_DEVICE_ID,
+    getAccountsByDeviceState,
     selectAccounts,
+    selectAccountsByDeviceState,
     selectCurrentFiatRates,
-    selectSelectedDevice,
+    selectDeviceAccounts,
     selectDeviceFirmwareVersion,
     selectDeviceInstances,
     selectDeviceModel,
@@ -19,24 +22,21 @@ import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsDiscoveredDeviceAccountless,
     selectIsUnacquiredDevice,
-    selectDeviceAccounts,
-    selectAccountsByDeviceState,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { getAccountFiatBalance } from '@suite-common/wallet-utils';
-import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
-import { BigNumber } from '@trezor/utils';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { doesCoinSupportStaking } from '@suite-native/staking';
+import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
+import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
+import { doesCoinSupportStaking } from '@suite-native/staking';
+import { BigNumber } from '@trezor/utils';
 
-import { isFirmwareVersionSupported } from './utils';
 import { revisionCheckErrorScenarios } from './config/firmware';
+import { isFirmwareVersionSupported } from './utils';
 
 type NativeDeviceRootState = DeviceRootState &
     AccountsRootState &

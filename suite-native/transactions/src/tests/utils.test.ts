@@ -1,8 +1,8 @@
 import { VinVoutAddress } from '../types';
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from '../utils';
 import {
-    transactionWithTargetInOutputs,
     transactionWithChangeAddress,
+    transactionWithTargetInOutputs,
 } from './fixtures/transactions';
 
 describe('mapTransactionInputsOutputsToAddresses', () => {

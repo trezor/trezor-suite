@@ -2,12 +2,12 @@ import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { selectAccountTokenInfo, TokensRootState } from '@suite-native/tokens';
 import { TextProps } from '@suite-native/atoms';
+import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 import { FormatterProps } from '../types';
-import { TokenToFiatAmountFormatter } from './TokenToFiatAmountFormatter';
 import { CryptoToFiatAmountFormatter } from './CryptoToFiatAmountFormatter';
+import { TokenToFiatAmountFormatter } from './TokenToFiatAmountFormatter';
 
 type CoinToFiatAmountFormatterProps = FormatterProps<string | null | number> &
     TextProps & {

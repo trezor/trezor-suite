@@ -1,9 +1,9 @@
-import { Box, RoundedIcon } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TokenAddress, TransactionType } from '@suite-common/wallet-types';
-import { CryptoIcon, IconName, IconSize } from '@suite-native/icons';
-import { Color } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenAddress, TransactionType } from '@suite-common/wallet-types';
+import { Box, RoundedIcon } from '@suite-native/atoms';
+import { CryptoIcon, IconName, IconSize } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 import { TransactionIconSpinner } from './TransactionIconSpinner';
 

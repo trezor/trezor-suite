@@ -1,30 +1,30 @@
+import { useRef, useState } from 'react';
+import { TextInput, View, findNodeHandle } from 'react-native';
 import Animated, {
     FadeIn,
     FadeOut,
     LinearTransition,
     useSharedValue,
 } from 'react-native-reanimated';
-import { useRef, useState } from 'react';
-import { findNodeHandle, TextInput, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
-import { Text, IconButton, Box } from '@suite-native/atoms';
+import { Box, IconButton, Text } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { useDebounce } from '@trezor/react-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     SendStackParamList,
     SendStackRoutes,
     StackProps,
     useScrollView,
 } from '@suite-native/navigation';
+import { useDebounce } from '@trezor/react-utils';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { SendFieldName, SendOutputsFormValues } from '../sendOutputsFormSchema';
-import { NativeSendRootState, selectRippleDestinationTagFromDraft } from '../sendFormSlice';
 import { integerTransformer } from '../hooks/useSendAmountTransformers';
+import { NativeSendRootState, selectRippleDestinationTagFromDraft } from '../sendFormSlice';
+import { SendFieldName, SendOutputsFormValues } from '../sendOutputsFormSchema';
 
 const inputWrapperStyle = prepareNativeStyle<{ isInputDisplayed: boolean }>(
     (utils, { isInputDisplayed }) => ({

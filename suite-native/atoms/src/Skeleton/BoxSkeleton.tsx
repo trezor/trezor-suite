@@ -9,12 +9,12 @@ import {
 
 import {
     Canvas,
-    vec,
-    RoundedRect,
-    LinearGradient,
     Group,
-    rrect,
+    LinearGradient,
+    RoundedRect,
     rect,
+    rrect,
+    vec,
 } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';

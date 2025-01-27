@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 
 import { fromWei } from 'web3-utils';
 
-import { Text } from '@suite-native/atoms';
+import { networks } from '@suite-common/wallet-config';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getFeeRate, getFeeUnits } from '@suite-common/wallet-utils';
-import { networks } from '@suite-common/wallet-config';
+import { Text } from '@suite-native/atoms';
 
 type FeeFormatterProps = {
     transaction: WalletAccountTransaction;

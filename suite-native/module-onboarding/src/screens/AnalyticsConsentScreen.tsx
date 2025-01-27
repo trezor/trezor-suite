@@ -1,16 +1,16 @@
 import { useState } from 'react';
 
+import { EventType, analytics } from '@suite-native/analytics';
+import { Box, Button, Card, Switch, Text, TitleHeader, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
 import {
     OnboardingStackParamList,
     OnboardingStackRoutes,
     Screen,
     StackProps,
 } from '@suite-native/navigation';
-import { Box, Button, Card, Switch, Text, TitleHeader, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { EventType, analytics } from '@suite-native/analytics';
-import { useOpenLink } from '@suite-native/link';
 
 import { AnalyticsInfoRow } from '../components/AnalyticsInfoRow';
 

@@ -3,7 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import TrezorConnect from '@trezor/connect';
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
+import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
+import {
+    cancelPassphraseAndSelectStandardDeviceThunk,
+    selectDeviceRequestedPin,
+    selectIsCreatingNewPassphraseWallet,
+} from '@suite-native/device-authorization';
+import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -12,15 +20,7 @@ import {
     StackToTabCompositeProps,
     useHandleHardwareBackNavigation,
 } from '@suite-native/navigation';
-import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
-import { useAlert } from '@suite-native/alerts';
-import { Translation } from '@suite-native/intl';
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
-import {
-    cancelPassphraseAndSelectStandardDeviceThunk,
-    selectIsCreatingNewPassphraseWallet,
-    selectDeviceRequestedPin,
-} from '@suite-native/device-authorization';
+import TrezorConnect from '@trezor/connect';
 
 import { ConnectingTrezorHelp } from './ConnectingTrezorHelp';
 

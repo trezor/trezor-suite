@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { BottomSheet, Button, VStack, Box, Text } from '@suite-native/atoms';
+import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type ConfirmOnTrezorBottomSheetProps = {

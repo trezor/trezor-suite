@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 import { ReviewOutputState } from '@suite-common/wallet-types';
-import { Card, VStack, HStack, CardDivider, Box, Text } from '@suite-native/atoms';
+import { Box, Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ReviewOutputStatusBadge } from './ReviewOutputStatusBadge';

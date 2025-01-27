@@ -1,10 +1,10 @@
-import { UI } from '@trezor/connect';
 import { createDeviceInstanceThunk } from '@suite-common/wallet-core';
+import { UI } from '@trezor/connect';
 
 import {
+    DeviceAuthorizationState,
     deviceAuthorizationInitialState,
     deviceAuthorizationReducer,
-    DeviceAuthorizationState,
 } from '../deviceAuthorizationSlice';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,

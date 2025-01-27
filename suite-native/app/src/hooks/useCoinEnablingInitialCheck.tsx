@@ -1,12 +1,12 @@
-import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
-import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
 import { selectShouldShowCoinEnablingInitFlow } from '@suite-native/coin-enabling';
+import { selectViewOnlyDevicesAccountsNetworkSymbols } from '@suite-native/device';
 import {
     applyDiscoveryChangesThunk,
     setEnabledDiscoveryNetworkSymbols,

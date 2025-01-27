@@ -1,13 +1,13 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { createMiddleware } from '@suite-common/redux-utils';
 import {
-    messageSystemActions,
     categorizeMessages,
-    getValidMessages,
-    selectMessageSystemConfig,
     getValidExperimentIds,
+    getValidMessages,
+    messageSystemActions,
+    selectMessageSystemConfig,
 } from '@suite-common/message-system';
+import { createMiddleware } from '@suite-common/redux-utils';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,

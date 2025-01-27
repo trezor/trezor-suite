@@ -1,16 +1,16 @@
 import { useSelector } from 'react-redux';
 
-import { Badge, Box, ErrorMessage, RoundedIcon, Text, VStack } from '@suite-native/atoms';
-import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
     selectAccountLabel,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { getTokenName, selectAccountTokenInfo, TokensRootState } from '@suite-native/tokens';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { Badge, Box, ErrorMessage, RoundedIcon, Text, VStack } from '@suite-native/atoms';
+import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
+import { TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TokenReceiveCardProps = {
     accountKey: AccountKey;

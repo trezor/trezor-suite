@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import {
     AccountsRootState,
     DeviceRootState,
     selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
 } from '@suite-common/wallet-core';
+import { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 
 import { AccountDetailContentScreen } from './AccountDetailContentScreen';
 import { AccountDetailLoadingScreen } from './AccountDetailLoadingScreen';

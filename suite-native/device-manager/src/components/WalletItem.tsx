@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import { selectSelectedDevice, selectDeviceByState } from '@suite-common/wallet-core';
+import { selectDeviceByState, selectSelectedDevice } from '@suite-common/wallet-core';
 import { selectDeviceTotalFiatBalanceByDeviceState } from '@suite-native/device';
 
 import { WalletItemBase } from './WalletItemBase';

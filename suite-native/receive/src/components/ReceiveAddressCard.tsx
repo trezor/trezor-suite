@@ -1,14 +1,14 @@
 import Animated, { Layout } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { Box, Card } from '@suite-native/atoms';
-import { AddressQRCode } from '@suite-native/qr-code';
-import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
+import { Box, Card } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { AddressQRCode } from '@suite-native/qr-code';
 
 import { UnverifiedAddress } from './UnverifiedAddress';
 

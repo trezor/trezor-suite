@@ -11,18 +11,18 @@ import {
     FiatAmountFormatter,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
+import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import {
+    TokensRootState,
     isCoinWithTokens,
     selectAccountHasAnyKnownToken,
     selectNumberOfAccountTokensWithFiatRates,
-    TokensRootState,
 } from '@suite-native/tokens';
-import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 
-import { NativeAccountsRootState, selectAccountFiatBalance } from '../../selectors';
-import { OnSelectAccount } from '../../types';
 import { AccountsListItemBase } from './AccountsListItemBase';
 import { StakingBadge } from './StakingBadge';
+import { NativeAccountsRootState, selectAccountFiatBalance } from '../../selectors';
+import { OnSelectAccount } from '../../types';
 
 export type AccountListItemProps = {
     account: Account;

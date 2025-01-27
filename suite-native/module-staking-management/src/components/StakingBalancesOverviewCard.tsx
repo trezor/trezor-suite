@@ -1,18 +1,18 @@
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { Icon } from '@suite-native/icons';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { Box, Card, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     NativeStakingRootState,
     selectAPYByAccountKey,
     selectRewardsBalanceByAccountKey,
     selectStakedBalanceByAccountKey,
 } from '@suite-native/staking';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const stakingItemStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',

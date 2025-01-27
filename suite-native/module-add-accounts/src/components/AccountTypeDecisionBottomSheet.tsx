@@ -1,7 +1,7 @@
-import { BottomSheet, Button, VStack, Text } from '@suite-native/atoms';
+import { BottomSheet, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const ACCOUNT_TYPES_URL = 'https://trezor.io/learn/a/multiple-accounts-in-trezor-suite';
 

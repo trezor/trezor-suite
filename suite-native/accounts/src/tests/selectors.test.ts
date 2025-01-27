@@ -1,8 +1,8 @@
 import { Account } from '@suite-common/wallet-types';
 
 import {
-    isFilterValueMatchingAccount,
     groupAccountsByNetworkAccountType,
+    isFilterValueMatchingAccount,
     sortAccountsByNetworksAndAccountTypes,
 } from '../utils';
 

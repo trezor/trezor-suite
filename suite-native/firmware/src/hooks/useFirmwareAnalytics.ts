@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { selectDeviceUpdateFirmwareVersion } from '@suite-common/wallet-core';
 import {
-    analytics,
     EventType,
     FirmwareUpdatePayload,
     FirmwareUpdateStartType,
+    analytics,
 } from '@suite-native/analytics';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { getFirmwareVersion, getBootloaderVersion } from '@trezor/device-utils';
-import { selectDeviceUpdateFirmwareVersion } from '@suite-common/wallet-core';
+import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
+import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
 export const useFirmwareAnalytics = ({
     device,

@@ -1,26 +1,26 @@
-import { useSelector } from 'react-redux';
 import { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
+import { Text, VStack } from '@suite-native/atoms';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
-import { VStack, Text } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 
-import {
-    selectIsTransactionReviewInProgress,
-    selectIsDestinationTagOutputConfirmed,
-} from '../selectors';
-import { SendScreen } from '../components/SendScreen';
-import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 import { ReviewDestinationTagCard } from '../components/ReviewDestinationTagCard';
+import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
+import { SendScreen } from '../components/SendScreen';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
+import {
+    selectIsDestinationTagOutputConfirmed,
+    selectIsTransactionReviewInProgress,
+} from '../selectors';
 
 export const SendDestinationTagReviewScreen = ({
     route,

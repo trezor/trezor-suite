@@ -1,20 +1,20 @@
-import { ImageBackground, StyleSheet, Image } from 'react-native';
 import { useEffect, useState } from 'react';
+import { Image, ImageBackground, StyleSheet } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
+import { hexToRgba } from '@suite-common/suite-utils';
+import { Box, Button, Text, VStack } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 import {
     OnboardingStackParamList,
     OnboardingStackRoutes,
     Screen,
     StackProps,
 } from '@suite-native/navigation';
-import { Box, Button, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { Icon } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { hexToRgba } from '@suite-common/suite-utils';
 import { getWindowHeight } from '@trezor/env-utils';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { colorVariants } from '@trezor/theme';
 
 import { E2ESkipOnboardingButton } from '../components/E2ESkipOnboardingButton';

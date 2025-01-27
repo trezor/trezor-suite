@@ -3,8 +3,8 @@ import { A } from '@mobily/ts-belt';
 import { AccountItem } from '@suite-common/graph';
 import { isIgnoredBalanceHistoryCoin } from '@suite-common/graph/src/constants';
 import {
-    selectFilterKnownTokens,
     TokenDefinitionsRootState,
+    selectFilterKnownTokens,
 } from '@suite-common/token-definitions';
 import {
     AccountsRootState,

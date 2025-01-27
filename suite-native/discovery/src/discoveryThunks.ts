@@ -1,50 +1,50 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
-import { getWeakRandomId, isArrayMember } from '@trezor/utils';
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    accountsActions,
+    type AccountType,
+    type Network,
+    type NetworkAccount,
+    type NetworkSymbol,
+    getNetworkType,
+    isNetworkSymbol,
+    normalizeNetworkAccounts,
+} from '@suite-common/wallet-config';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import {
     DISCOVERY_MODULE_PREFIX,
-    selectDeviceDiscovery,
-    updateDiscovery,
-    createDiscovery,
-    removeDiscovery,
-    getAvailableCardanoDerivationsThunk,
-    selectDeviceAccountByDescriptorAndNetworkSymbol,
-    selectSelectedDevice,
     LIMIT,
-    selectDeviceAccountsForNetworkSymbolAndAccountType,
+    accountsActions,
+    createDiscovery,
     disableAccountsThunk,
+    filterUnavailableAccountTypes,
+    getAvailableCardanoDerivationsThunk,
+    removeDiscovery,
+    selectDeviceAccountByDescriptorAndNetworkSymbol,
+    selectDeviceAccountsForNetworkSymbolAndAccountType,
+    selectDeviceByStaticSessionId,
+    selectDeviceDiscovery,
+    selectDeviceStaticSessionId,
     selectFirstNormalAccountForNetworkSymbol,
     selectHasDeviceDiscovery,
-    filterUnavailableAccountTypes,
-    selectDeviceStaticSessionId,
-    selectDeviceByStaticSessionId,
+    selectSelectedDevice,
+    updateDiscovery,
 } from '@suite-common/wallet-core';
-import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { Account, DiscoveryItem } from '@suite-common/wallet-types';
 import {
     getDerivationType,
     substituteBip43Path,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import {
-    type AccountType,
-    type Network,
-    type NetworkSymbol,
-    getNetworkType,
-    type NetworkAccount,
-    normalizeNetworkAccounts,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
+import { EventType, analytics } from '@suite-native/analytics';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
-import { analytics, EventType } from '@suite-native/analytics';
+import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import { getWeakRandomId, isArrayMember } from '@trezor/utils';
 
 import {
-    selectDiscoveryInfo,
     selectDeviceEnabledDiscoveryNetworkSymbols,
+    selectDiscoveryInfo,
     setDiscoveryInfo,
 } from './discoveryConfigSlice';
 import {

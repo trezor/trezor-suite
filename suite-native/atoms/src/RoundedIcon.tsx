@@ -1,10 +1,10 @@
 import { G } from '@mobily/ts-belt';
 
-import { CryptoIcon, Icon, IconName, icons, IconSize } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { CryptoIcon, Icon, IconName, IconSize, icons } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 import { Box, BoxProps } from './Box';
 

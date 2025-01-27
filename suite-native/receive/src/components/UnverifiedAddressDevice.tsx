@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { Pressable } from 'react-native';
 import {
     GestureEvent,
     PanGestureHandler,
@@ -6,12 +7,11 @@ import {
 } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
-import { Pressable } from 'react-native';
 
-import { Box, VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectDeviceModel } from '@suite-common/wallet-core';
+import { Box, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { UnverifiedAddressDeviceHint } from './UnverifiedAddressDeviceHint';
 import { DEVICE_SCREEN_BACKGROUND_COLOR } from '../constants';

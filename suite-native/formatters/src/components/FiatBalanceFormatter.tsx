@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { Box, Text } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
+import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { FormatterProps } from '../types';
-import { EmptyAmountText } from './EmptyAmountText';
 import { AmountText } from './AmountText';
+import { EmptyAmountText } from './EmptyAmountText';
 import { parseBalanceAmount } from '../utils';
 
 type BalanceFormatterProps = FormatterProps<string | null> & { isForcedDiscreetMode?: boolean };

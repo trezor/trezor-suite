@@ -1,20 +1,20 @@
 import { TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CryptoIcon } from '@suite-native/icons';
-import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
-import { Card, HStack, Text, Switch, VStack } from '@suite-native/atoms';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
+import { EventType, analytics } from '@suite-native/analytics';
+import { Card, HStack, Switch, Text, VStack } from '@suite-native/atoms';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     toggleEnabledDiscoveryNetworkSymbol,
 } from '@suite-native/discovery';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useToast } from '@suite-native/toasts';
+import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { useToast } from '@suite-native/toasts';
 import { isCoinWithTokens } from '@suite-native/tokens';
-import { useAlert } from '@suite-native/alerts';
-import { selectIsDeviceConnected } from '@suite-common/wallet-core';
-import { analytics, EventType } from '@suite-native/analytics';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type NetworkSymbolSwitchItemProps = {
     symbol: NetworkSymbol;

@@ -3,8 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useAlert } from '@suite-native/alerts';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { switchDuplicatedDevice } from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
+import { EventType, analytics } from '@suite-native/analytics';
+import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
     AuthorizeDeviceStackParamList,
@@ -14,9 +17,6 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { useTranslate } from '@suite-native/intl';
-import { EventType, analytics } from '@suite-native/analytics';
 
 import { selectPassphraseDuplicateError } from '../deviceAuthorizationSlice';
 

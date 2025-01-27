@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import { BottomSheet, Box, Button, Text } from '@suite-native/atoms/src';
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
-import { BottomSheet, Box, Button, Text } from '@suite-native/atoms/src';
 
 type TransactionDetailSheetProps = {
     isVisible: boolean;

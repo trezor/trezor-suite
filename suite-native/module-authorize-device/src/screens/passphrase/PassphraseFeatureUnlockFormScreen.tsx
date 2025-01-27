@@ -1,8 +1,8 @@
-import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 import { IconButton, ScreenHeaderWrapper, Text, VStack } from '@suite-native/atoms';
-import TrezorConnect from '@trezor/connect';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
+import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
+import TrezorConnect from '@trezor/connect';
 
 import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 

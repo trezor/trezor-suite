@@ -1,13 +1,10 @@
+import { useMemo } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
-import { useMemo } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
-import { Box, Button, HStack, VStack, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     DeviceRootState,
     DiscoveryRootState,
@@ -19,14 +16,17 @@ import {
     selectIsDiscoveryActiveByDeviceState,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
+import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
+import { Icon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 import {
+    DeviceStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
-    DeviceStackRoutes,
 } from '@suite-native/navigation';
-import { Translation } from '@suite-native/intl';
-import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const containerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',

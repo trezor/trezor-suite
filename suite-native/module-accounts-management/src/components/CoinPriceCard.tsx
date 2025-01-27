@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import { Box, Text, Card, RoundedIcon, Badge, BoxSkeleton } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { FiatAmountFormatter } from '@suite-native/formatters';
-import { AccountKey } from '@suite-common/wallet-types';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
+import { Badge, Box, BoxSkeleton, Card, RoundedIcon, Text } from '@suite-native/atoms';
+import { FiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useDayCoinPriceChange } from '../hooks/useDayCoinPriceChange';
 

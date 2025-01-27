@@ -3,15 +3,17 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
-    selectIsTestnetAccount,
-    selectHasAccountTransactions,
     selectAccountByKey,
+    selectHasAccountTransactions,
     selectIsPortfolioTrackerDevice,
+    selectIsTestnetAccount,
 } from '@suite-common/wallet-core';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { FeatureFlag, FeatureFlagsRootState, useFeatureFlag } from '@suite-native/feature-flags';
+import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
     RootStackParamList,
@@ -19,11 +21,9 @@ import {
     SendStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Translation } from '@suite-native/intl';
-import { FeatureFlag, FeatureFlagsRootState, useFeatureFlag } from '@suite-native/feature-flags';
 
-import { AccountDetailGraph } from './AccountDetailGraph';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
+import { AccountDetailGraph } from './AccountDetailGraph';
 import { CoinPriceCard } from './CoinPriceCard';
 import { selectIsNetworkSendFlowEnabled } from '../selectors';
 

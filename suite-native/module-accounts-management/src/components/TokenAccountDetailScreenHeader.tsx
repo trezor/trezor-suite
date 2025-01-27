@@ -2,20 +2,20 @@ import { useSelector } from 'react-redux';
 
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { Box, HStack, Text } from '@suite-native/atoms';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    ScreenHeader,
-    GoBackIcon,
-} from '@suite-native/navigation';
 import {
     AccountsRootState,
     selectAccountLabel,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
+import { Box, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
+import {
+    GoBackIcon,
+    RootStackParamList,
+    RootStackRoutes,
+    ScreenHeader,
+} from '@suite-native/navigation';
 
 type TokenAccountDetailScreenHeaderProps = {
     accountKey: string;

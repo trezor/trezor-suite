@@ -2,17 +2,17 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { analytics, EventType } from '@suite-native/analytics';
+import { selectIsDiscoveredDeviceAccountless } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
 import {
     AccountsImportStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsDiscoveredDeviceAccountless } from '@suite-common/wallet-core';
-import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceManagerModal } from './DeviceManagerModal';

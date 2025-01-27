@@ -1,10 +1,10 @@
 import { G } from '@mobily/ts-belt';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { createTransform } from 'redux-persist';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { selectDeviceStatesNotRemembered, filterKeysByPartialMatch } from '@suite-native/storage';
+import { filterKeysByPartialMatch, selectDeviceStatesNotRemembered } from '@suite-native/storage';
 
 import { TimeframeHoursValue } from './types';
 

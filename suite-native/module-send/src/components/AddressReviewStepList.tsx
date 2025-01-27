@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
-import { LayoutChangeEvent, View, AppState } from 'react-native';
+import { AppState, LayoutChangeEvent, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { useSetAtom } from 'jotai';
-import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 
+import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
+import { Button, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
     SendStackParamList,
@@ -12,21 +15,18 @@ import {
     StackProps,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { Button, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 import { nativeSpacings } from '@trezor/theme';
 
+import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
+import { AddressOriginHelpButton } from '../components/AddressOriginHelpButton';
+import { AddressReviewStep } from '../components/AddressReviewStep';
+import { CompareAddressHelpButton } from '../components/CompareAddressHelpButton';
+import { SlidingFooterOverlay } from '../components/SlidingFooterOverlay';
+import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
 import {
     selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionReviewInProgress,
 } from '../selectors';
-import { SlidingFooterOverlay } from '../components/SlidingFooterOverlay';
-import { AddressReviewStep } from '../components/AddressReviewStep';
-import { CompareAddressHelpButton } from '../components/CompareAddressHelpButton';
-import { AddressOriginHelpButton } from '../components/AddressOriginHelpButton';
-import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
-import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 
 const NUMBER_OF_STEPS = 3;
 const OVERLAY_INITIAL_POSITION = 170;

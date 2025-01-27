@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { Box, Button, BottomSheet, BottomSheetProps, VStack } from '@suite-native/atoms';
-import { getNetworkType, type NetworkSymbol } from '@suite-common/wallet-config';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useCopyToClipboard } from '@suite-native/helpers';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
-import { useTranslate, Translation } from '@suite-native/intl';
+import { BottomSheet, BottomSheetProps, Box, Button, VStack } from '@suite-native/atoms';
+import { useCopyToClipboard } from '@suite-native/helpers';
+import { Translation, useTranslate } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { XpubQRCodeCard } from './XpubQRCodeCard';
 

@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-import { Card } from '@suite-native/atoms';
 import { AccountKey } from '@suite-common/wallet-types';
+import { Card } from '@suite-native/atoms';
 import { TypedTokenTransfer } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { TransactionDetailAddressesSheet } from './TransactionDetailAddressesSheet';
 import { NetworkTransactionDetailSummary } from './NetworkTransactionDetailSummary';
 import { TokenTransactionDetailSummary } from './TokenTransactionDetailSummary';
+import { TransactionDetailAddressesSheet } from './TransactionDetailAddressesSheet';
 
 type TransactionDetailSummaryProps = {
     txid: string;

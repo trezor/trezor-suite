@@ -1,7 +1,9 @@
 import { G } from '@mobily/ts-belt';
 
-import { BigNumber } from '@trezor/utils';
-import { getNetworkType, type NetworkSymbol } from '@suite-common/wallet-config';
+import { yup } from '@suite-common/validators';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { U_INT_32 } from '@suite-common/wallet-constants';
+import { FeeInfo } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     isAddressDeprecated,
@@ -10,9 +12,7 @@ import {
     isDecimalsValid,
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
-import { FeeInfo } from '@suite-common/wallet-types';
-import { yup } from '@suite-common/validators';
-import { U_INT_32 } from '@suite-common/wallet-constants';
+import { BigNumber } from '@trezor/utils';
 
 import { FeeLevelsMaxAmount } from './types';
 

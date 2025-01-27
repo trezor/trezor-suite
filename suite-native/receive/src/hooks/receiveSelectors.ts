@@ -1,4 +1,4 @@
-import { pipe, A } from '@mobily/ts-belt';
+import { A, pipe } from '@mobily/ts-belt';
 
 import { DeviceRootState, selectDeviceButtonRequestsCodes } from '@suite-common/wallet-core';
 

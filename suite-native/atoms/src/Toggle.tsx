@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
+import { LayoutChangeEvent, Pressable } from 'react-native';
 import Animated, {
     Easing,
     interpolateColor,
@@ -6,7 +7,6 @@ import Animated, {
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
-import { LayoutChangeEvent, Pressable } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

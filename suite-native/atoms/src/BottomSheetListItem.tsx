@@ -1,9 +1,9 @@
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { OrderedListIcon, OrderedListIconProps } from './OrderedListIcon';
 import { HStack } from './Stack';
 import { Text } from './Text';
-import { OrderedListIcon, OrderedListIconProps } from './OrderedListIcon';
 
 const listItemStyle = prepareNativeStyle(() => ({
     width: '90%',

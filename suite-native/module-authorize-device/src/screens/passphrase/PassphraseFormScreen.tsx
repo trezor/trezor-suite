@@ -1,15 +1,15 @@
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { LayoutChangeEvent, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { useOpenLink } from '@suite-native/link';
-import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@suite-native/icons';
 import { EventType, analytics } from '@suite-native/analytics';
+import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
+import { Translation, useTranslate } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
+import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 
 const ANIMATION_DURATION = 300;
 

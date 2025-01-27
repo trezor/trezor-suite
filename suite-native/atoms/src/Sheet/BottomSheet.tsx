@@ -1,15 +1,15 @@
-import { useEffect, useRef, useState, ReactNode } from 'react';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated from 'react-native-reanimated';
-import { ScrollView, PanGestureHandler } from 'react-native-gesture-handler';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { GestureResponderEvent, Pressable } from 'react-native';
+import { PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box, BoxProps } from '../Box';
 import { BottomSheetContainer } from './BottomSheetContainer';
-import { useBottomSheetAnimation } from './useBottomSheetAnimation';
 import { BottomSheetHeader } from './BottomSheetHeader';
+import { useBottomSheetAnimation } from './useBottomSheetAnimation';
 
 export type BottomSheetProps = {
     isVisible: boolean;

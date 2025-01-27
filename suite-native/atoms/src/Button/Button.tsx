@@ -5,14 +5,14 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { MergeExclusive } from 'type-fest';
 
 import { AnimatedIconColor, Icon, IconName, IconSize, icons } from '@suite-native/icons';
-import { Color, TypographyStyle, nativeSpacings } from '@trezor/theme';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color, TypographyStyle, nativeSpacings } from '@trezor/theme';
 
 import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
-import { TestProps } from '../types';
-import { HStack } from '../Stack';
 import { Loader } from '../Loader';
+import { HStack } from '../Stack';
+import { TestProps } from '../types';
 
 // Using ReactElement instead of ReactNode to exclude string and have type check on IconName
 // and also because string needs to be rendered in the <Text> element anyway

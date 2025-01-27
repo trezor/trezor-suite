@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 
-import { typographyStylesBase } from '@trezor/theme';
 import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { typographyStylesBase } from '@trezor/theme';
 
-import { Text, TextProps } from '../Text';
 import { Box } from '../Box';
+import { Text, TextProps } from '../Text';
 import { DiscreetCanvas } from './DiscreetCanvas';
 import { useDiscreetMode } from './useDiscreetMode';
 

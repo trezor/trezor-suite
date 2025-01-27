@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 
-import { createRenderer, StylesProvider as StylesStyleProvider } from '@trezor/styles';
-import { prepareNativeTheme } from '@trezor/theme';
 import { useActiveColorScheme } from '@suite-native/theme';
+import { StylesProvider as StylesStyleProvider, createRenderer } from '@trezor/styles';
+import { prepareNativeTheme } from '@trezor/theme';
 
 type StylesProviderProps = {
     children: ReactNode;

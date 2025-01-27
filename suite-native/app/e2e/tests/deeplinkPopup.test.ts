@@ -1,12 +1,15 @@
-import http from 'http';
 import { exec } from 'child_process';
+import http from 'http';
 
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import TrezorConnect from '@trezor/connect-mobile';
 import { conditionalDescribe } from '@suite-common/test-utils';
+import TrezorConnect from '@trezor/connect-mobile';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
+import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
+import { onHome } from '../pageObjects/homeActions';
+import { onOnboarding } from '../pageObjects/onboardingActions';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
@@ -14,9 +17,6 @@ import {
     prepareTrezorEmulator,
     restartApp,
 } from '../utils';
-import { onOnboarding } from '../pageObjects/onboardingActions';
-import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
-import { onHome } from '../pageObjects/homeActions';
 
 const SERVER_PORT = 8080;
 const SERVER_URL = `http://localhost:${SERVER_PORT}`;

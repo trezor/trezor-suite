@@ -3,24 +3,24 @@ import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 
+import { Button, Card, TitleHeader, VStack } from '@suite-native/atoms';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
-import { Button, Card, VStack, TitleHeader } from '@suite-native/atoms';
 import {
-    Screen,
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
+    RootStackParamList,
+    Screen,
     ScreenHeader,
     StackToStackCompositeNavigationProps,
-    RootStackParamList,
 } from '@suite-native/navigation';
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 
-import { RenderingUtils } from '../components/RenderingUtils';
-import { FeatureFlags } from '../components/FeatureFlags';
-import { TestnetsToggle } from '../components/TestnetsToggle';
 import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';
+import { FeatureFlags } from '../components/FeatureFlags';
 import { MessageSystemInfo } from '../components/MessageSystemInfo';
+import { RenderingUtils } from '../components/RenderingUtils';
+import { TestnetsToggle } from '../components/TestnetsToggle';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     DevUtilsStackParamList,

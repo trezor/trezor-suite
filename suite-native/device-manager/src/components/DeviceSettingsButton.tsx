@@ -2,9 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { analytics, EventType } from '@suite-native/analytics';
-import { HStack, Text } from '@suite-native/atoms';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
+import { HStack, Text } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceStackRoutes,
@@ -12,11 +13,10 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useDeviceManager } from '../hooks/useDeviceManager';
 import { DeviceAction } from './DeviceAction';
+import { useDeviceManager } from '../hooks/useDeviceManager';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList,

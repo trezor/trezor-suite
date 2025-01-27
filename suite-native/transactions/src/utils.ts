@@ -1,10 +1,10 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
-import { EnhancedVinVout, Target } from '@trezor/blockchain-link-types';
 import { SignValue } from '@suite-common/suite-types';
 import { TransactionType } from '@suite-common/wallet-types';
+import { EnhancedVinVout, Target } from '@trezor/blockchain-link-types';
 
-import { VinVoutAddress, AddressesType } from './types';
+import { AddressesType, VinVoutAddress } from './types';
 
 export const mapTransactionInputsOutputsToAddresses = ({
     inputsOutputs,

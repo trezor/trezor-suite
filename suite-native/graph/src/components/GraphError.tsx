@@ -1,10 +1,10 @@
-import Animated, { FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimated';
 import { Pressable } from 'react-native';
+import Animated, { FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimated';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@suite-native/icons';
 import { Text, VStack } from '@suite-native/atoms';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type GraphErrorProps = {
     error: string;

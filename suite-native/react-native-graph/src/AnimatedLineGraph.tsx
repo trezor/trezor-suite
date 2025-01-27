@@ -1,54 +1,54 @@
-import { useCallback, useEffect, useMemo, useRef, useState, ReactElement } from 'react';
-import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
+import { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import { GestureDetector } from 'react-native-gesture-handler';
 import Reanimated, {
+    FadeInDown,
+    FadeInUp,
+    cancelAnimation,
     runOnJS,
     useAnimatedReaction,
-    useSharedValue,
     useDerivedValue,
-    cancelAnimation,
+    useSharedValue,
+    withDelay,
     withRepeat,
     withSequence,
-    withTiming,
-    withDelay,
     withSpring,
-    FadeInUp,
-    FadeInDown,
+    withTiming,
 } from 'react-native-reanimated';
-import { GestureDetector } from 'react-native-gesture-handler';
 
 import {
     Canvas,
-    SkPath,
+    Circle,
+    Group,
     LinearGradient,
     Path,
-    Skia,
-    vec,
-    Group,
     PathCommand,
-    mix,
-    Circle,
     Shadow,
+    SkPath,
+    Skia,
+    mix,
+    vec,
 } from '@shopify/react-native-skia';
 
 import { hexToRgba } from '@suite-common/suite-utils';
 
-import type { AnimatedLineGraphProps, GraphEventWithCords } from './LineGraphProps';
-import { SelectionDot as DefaultSelectionDot } from './SelectionDot';
+import { BlurOverlay } from './BlurOverlay';
 import {
+    GraphPathRange,
     createGraphPath,
     createGraphPathWithGradient,
     getGraphPathRange,
-    GraphPathRange,
-    getXInRange,
     getPointsInRange,
+    getXInRange,
 } from './CreateGraphPath';
-import { getSixDigitHex } from './utils/getSixDigitHex';
-import { usePanGesture } from './hooks/usePanGesture';
-import { getYForX } from './GetYForX';
 import { DefaultGraphEvent } from './DefaultGraphEvent';
-import { useEventTooltipProps } from './hooks/useEventTooltipProps';
+import { getYForX } from './GetYForX';
+import type { AnimatedLineGraphProps, GraphEventWithCords } from './LineGraphProps';
 import { LoadingLine } from './LoadingLine';
-import { BlurOverlay } from './BlurOverlay';
+import { SelectionDot as DefaultSelectionDot } from './SelectionDot';
+import { useEventTooltipProps } from './hooks/useEventTooltipProps';
+import { usePanGesture } from './hooks/usePanGesture';
+import { getSixDigitHex } from './utils/getSixDigitHex';
 
 const INDICATOR_RADIUS = 7;
 const INDICATOR_BORDER_MULTIPLIER = 1.3;

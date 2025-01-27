@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
 import { RoundedIcon } from '@suite-native/atoms';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { getTokenName, selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
+import { TokensRootState, getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 

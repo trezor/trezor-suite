@@ -1,6 +1,6 @@
-import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { FAQInfoPanel } from '../components/FAQInfoPanel';
 import { SupportCard } from '../components/SupportCard';

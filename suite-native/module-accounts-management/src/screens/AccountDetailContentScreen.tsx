@@ -8,8 +8,8 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
-import { selectAccountTokenInfo, TokensRootState } from '@suite-native/tokens';
 import { Screen } from '@suite-native/navigation';
+import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
 
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';

@@ -1,5 +1,5 @@
-import { ActivityIndicator, ActivityIndicatorProps } from 'react-native';
 import { ReactNode } from 'react';
+import { ActivityIndicator, ActivityIndicatorProps } from 'react-native';
 
 import { useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';

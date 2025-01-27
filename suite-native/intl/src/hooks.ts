@@ -1,5 +1,5 @@
-import { useIntl } from 'react-intl';
 import { useCallback } from 'react';
+import { useIntl } from 'react-intl';
 
 import { TxKeyPath } from './types';
 

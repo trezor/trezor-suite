@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { VStack, Button, HStack } from '@suite-native/atoms';
+import { Button, HStack, VStack } from '@suite-native/atoms';
 
 import { UpdateProgressIndicator, UpdateProgressIndicatorStatus } from './UpdateProgressIndicator';
 

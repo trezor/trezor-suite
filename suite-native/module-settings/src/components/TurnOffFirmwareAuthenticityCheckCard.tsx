@@ -1,14 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
+import { SettingsStackRoutes } from '@suite-native/navigation';
 import {
+    SettingsCardWithIconLayout,
     selectIsFirmwareAuthenticityCheckEnabled,
     setCheckFirmwareAuthenticity,
-    SettingsCardWithIconLayout,
 } from '@suite-native/settings';
-import { Translation } from '@suite-native/intl';
-import { Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { SettingsStackRoutes } from '@suite-native/navigation';
-import { useOpenLink } from '@suite-native/link';
 import { useToast } from '@suite-native/toasts';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

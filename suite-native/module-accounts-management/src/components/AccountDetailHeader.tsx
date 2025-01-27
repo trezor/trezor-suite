@@ -2,24 +2,24 @@ import { useSelector } from 'react-redux';
 
 import { useAtomValue } from 'jotai';
 
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
+    TransactionsRootState,
     selectAccountByKey,
     selectAccountFormattedBalance,
-    TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
-import {
-    selectAccountTokenBalance,
-    selectAccountTokenSymbol,
-    TokensRootState,
-} from '@suite-native/tokens';
 import { GraphFiatBalance } from '@suite-native/graph';
 import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import {
+    TokensRootState,
+    selectAccountTokenBalance,
+    selectAccountTokenSymbol,
+} from '@suite-native/tokens';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import {

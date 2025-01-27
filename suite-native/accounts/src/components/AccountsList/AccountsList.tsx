@@ -7,12 +7,12 @@ import { atom, useSetAtom } from 'jotai';
 import { Account } from '@suite-common/wallet-types';
 import { Card, VStack } from '@suite-native/atoms';
 
+import { AccountsListEmptyPlaceholder } from './AccountsListEmptyPlaceholder';
 import {
     NativeAccountsRootState,
     selectFilteredDeviceAccountsGroupedByNetworkAccountType,
 } from '../../selectors';
 import { OnSelectAccount } from '../../types';
-import { AccountsListEmptyPlaceholder } from './AccountsListEmptyPlaceholder';
 import { TokenSelectBottomSheet } from '../TokenSelectBottomSheet';
 import { AccountsListItem } from './AccountsListItem';
 

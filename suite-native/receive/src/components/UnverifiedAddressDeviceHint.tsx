@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
-import { Box, VStack, Button, Text } from '@suite-native/atoms';
+import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { AddressMismatchBottomSheet } from './AddressMismatchBottomSheet';

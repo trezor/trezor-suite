@@ -1,10 +1,10 @@
-import { forwardRef, ReactNode, useEffect, useState } from 'react';
+import { ReactNode, forwardRef, useEffect, useState } from 'react';
 import {
-    TextInput,
     NativeSyntheticEvent,
-    TextInputProps,
-    TextInputFocusEventData,
     Platform,
+    TextInput,
+    TextInputFocusEventData,
+    TextInputProps,
 } from 'react-native';
 import Animated, {
     Easing,
@@ -16,8 +16,8 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { RequireOneOrNone } from 'type-fest';
 import { D, G, S } from '@mobily/ts-belt';
+import { RequireOneOrNone } from 'type-fest';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { nativeSpacings } from '@trezor/theme';

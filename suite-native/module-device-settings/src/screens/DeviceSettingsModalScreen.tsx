@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
-    selectSelectedDevice,
     selectDeviceModel,
     selectDeviceReleaseInfo,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';

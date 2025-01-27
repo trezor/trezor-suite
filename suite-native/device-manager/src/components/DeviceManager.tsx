@@ -1,8 +1,8 @@
 import { Box } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
-import { DeviceSwitch } from './DeviceSwitch';
 import { DeviceManagerContent } from './DeviceManagerContent';
+import { DeviceSwitch } from './DeviceSwitch';
 import { PortfolioTrackerDeviceManagerContent } from './PortfolioTrackerDeviceManagerContent';
 
 export const DeviceManager = () => {

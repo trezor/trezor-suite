@@ -1,15 +1,15 @@
-import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
-import { Screen, ScreenHeader } from '@suite-native/navigation';
-import { useTranslate } from '@suite-native/intl';
 import { selectPhysicalDevices } from '@suite-common/wallet-core';
+import { useTranslate } from '@suite-native/intl';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { AboutViewOnlyBottomSheet } from '../components/ViewOnly/AboutViewOnlyBottomSheet';
-import { DevicesManagement } from '../components/ViewOnly/DevicesManagement';
 import { DevicesEmpty } from '../components/ViewOnly/DevicesEmpty';
+import { DevicesManagement } from '../components/ViewOnly/DevicesManagement';
 
 export const SettingsViewOnly = () => {
     const { translate } = useTranslate();

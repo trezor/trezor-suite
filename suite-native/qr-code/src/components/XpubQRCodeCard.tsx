@@ -1,9 +1,9 @@
 import { Pressable } from 'react-native';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Card, Text } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { QRCode } from './QRCode';
 import { XpubOverlayWarning } from './XpubQRCodeWarningOverlay';

@@ -1,4 +1,4 @@
-import { VStack, Box, Text } from '@suite-native/atoms';
+import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const BootloaderModalAppendix = () => (

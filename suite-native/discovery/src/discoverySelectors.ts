@@ -1,8 +1,8 @@
-import { A, D, O, pipe, S } from '@mobily/ts-belt';
+import { A, D, O, S, pipe } from '@mobily/ts-belt';
 
 import {
-    selectIsSpecificCoinDefinitionKnown,
     TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -13,11 +13,11 @@ import {
     selectAccountsByNetworkAndDeviceState,
     selectDeviceAccounts,
     selectDeviceAuthFailed,
-    selectHasDeviceDiscovery,
     selectDeviceFirmwareVersion,
     selectDeviceModel,
     selectDeviceState,
     selectHasDeviceAuthConfirm,
+    selectHasDeviceDiscovery,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInViewOnlyMode,
     selectIsDeviceUnlocked,
@@ -30,8 +30,8 @@ import { StaticSessionId } from '@trezor/connect';
 
 import {
     DiscoveryConfigSliceRootState,
-    selectDiscoverySupportedNetworks,
     selectDeviceEnabledDiscoveryNetworkSymbols,
+    selectDiscoverySupportedNetworks,
     selectIsCoinEnablingInitFinished,
 } from './discoveryConfigSlice';
 import { getNetworksWithUnfinishedDiscovery } from './utils';

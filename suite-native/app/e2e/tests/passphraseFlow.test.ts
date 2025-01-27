@@ -1,9 +1,14 @@
-import { expect as detoxExpect } from 'detox';
 import { expect as jestExpect } from '@jest/globals';
+import { expect as detoxExpect } from 'detox';
 
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { conditionalDescribe } from '@suite-common/test-utils';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { onAlertSheet } from '../pageObjects/alertSheetActions';
+import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
+import { onConnectingDevice } from '../pageObjects/connectingDevice';
+import { onOnboarding } from '../pageObjects/onboardingActions';
+import { onPassphrase } from '../pageObjects/passphraseModule';
 import {
     appIsFullyLoaded,
     disconnectTrezorUserEnv,
@@ -12,11 +17,6 @@ import {
     restartApp,
     wait,
 } from '../utils';
-import { onOnboarding } from '../pageObjects/onboardingActions';
-import { onConnectingDevice } from '../pageObjects/connectingDevice';
-import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
-import { onAlertSheet } from '../pageObjects/alertSheetActions';
-import { onPassphrase } from '../pageObjects/passphraseModule';
 
 const INITIAL_ACCOUNT_BALANCE = 3.14;
 

@@ -5,10 +5,10 @@ import { RequireAllOrNone } from 'type-fest';
 import { IconName } from '@suite-native/icons';
 
 import { Card, CardProps } from './Card';
-import { Text } from '../Text';
+import { TextButton } from '../Button/TextButton';
 import { Headered } from '../Headered';
 import { HStack } from '../Stack';
-import { TextButton } from '../Button/TextButton';
+import { Text } from '../Text';
 
 type HeaderedCardProps = CardProps & CardHeaderProps;
 

@@ -1,9 +1,9 @@
-import { TouchableOpacity } from 'react-native';
 import { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
 
 import { Icon } from '@suite-native/icons';
-import { ScanQRBottomSheet } from '@suite-native/qr-code';
 import { Translation } from '@suite-native/intl';
+import { ScanQRBottomSheet } from '@suite-native/qr-code';
 import { useNativeStyles } from '@trezor/styles';
 
 type QrCodeBottomSheetIconProps = {

@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 
 import { Icon, IconName } from '@suite-native/icons';
-import { useNativeStyles, prepareNativeStyle, NativeStyleObject } from '@trezor/styles';
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { Text } from './Text';
 import { HStack } from './Stack';
+import { Text } from './Text';
 
 type HintVariant = 'hint' | 'error' | 'info';
 

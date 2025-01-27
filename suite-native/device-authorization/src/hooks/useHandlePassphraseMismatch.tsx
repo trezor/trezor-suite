@@ -1,22 +1,22 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { EventType, analytics } from '@suite-native/analytics';
 import { useAlert } from '@suite-native/alerts';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
-import { StackToStackCompositeNavigationProps } from '@suite-native/navigation/src/types';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     RootStackParamList,
 } from '@suite-native/navigation';
+import { StackToStackCompositeNavigationProps } from '@suite-native/navigation/src/types';
 
 import { selectHasPassphraseMismatchError } from '../deviceAuthorizationSlice';
 import {
-    retryPassphraseAuthenticationThunk,
     cancelPassphraseAndSelectStandardDeviceThunk,
+    retryPassphraseAuthenticationThunk,
 } from '../passphraseThunks';
 
 type NavigationProp = StackToStackCompositeNavigationProps<

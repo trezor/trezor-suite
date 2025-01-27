@@ -1,4 +1,4 @@
-import { useRef, forwardRef } from 'react';
+import { forwardRef, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
 import Animated, {
     interpolateColor,
@@ -8,8 +8,8 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { atom, useAtom } from 'jotai';
 import { A, G } from '@mobily/ts-belt';
+import { atom, useAtom } from 'jotai';
 
 import { useNativeStyles } from '@trezor/styles';
 

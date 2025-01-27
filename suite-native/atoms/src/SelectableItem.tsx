@@ -1,14 +1,14 @@
-import { TouchableOpacity, View } from 'react-native';
 import { ReactNode } from 'react';
+import { TouchableOpacity, View } from 'react-native';
 
 import { Translation } from '@suite-native/intl';
-import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { VStack } from './Stack';
-import { Box } from './Box';
 import { Badge } from './Badge';
-import { Text } from './Text';
+import { Box } from './Box';
 import { Radio } from './Radio';
+import { VStack } from './Stack';
+import { Text } from './Text';
 
 const cardStyle = prepareNativeStyle((utils, { isSelected }: { isSelected: boolean }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,

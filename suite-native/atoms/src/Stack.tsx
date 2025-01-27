@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import Animated from 'react-native-reanimated';
 import { View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeSpacing } from '@trezor/theme';

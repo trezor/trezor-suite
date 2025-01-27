@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { ParsedURL } from 'expo-linking';
 
 import TrezorConnect from '@trezor/connect';
+import { TrezorError, TypedError } from '@trezor/connect/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
-import { TypedError, TrezorError } from '@trezor/connect/src/constants/errors';
 
 type UseConnectParseParamsType =
     | {

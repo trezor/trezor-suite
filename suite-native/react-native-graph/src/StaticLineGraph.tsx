@@ -1,16 +1,16 @@
-import { useCallback, useMemo, useState, ReactElement } from 'react';
-import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
+import { ReactElement, useCallback, useMemo, useState } from 'react';
+import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
 
 import { Canvas, LinearGradient, Path, vec } from '@shopify/react-native-skia';
 
-import { getSixDigitHex } from './utils/getSixDigitHex';
 import {
+    GraphPathRange,
     createGraphPath,
     getGraphPathRange,
     getPointsInRange,
-    GraphPathRange,
 } from './CreateGraphPath';
 import type { StaticLineGraphProps } from './LineGraphProps';
+import { getSixDigitHex } from './utils/getSixDigitHex';
 
 export function StaticLineGraph({
     points: allPoints,

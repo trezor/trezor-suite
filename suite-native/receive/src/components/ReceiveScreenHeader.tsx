@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
     selectAccountLabel,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -18,7 +18,7 @@ import {
     ScreenHeader,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
+import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import TrezorConnect from '@trezor/connect';
 
 type ReceiveScreenHeaderProps = {

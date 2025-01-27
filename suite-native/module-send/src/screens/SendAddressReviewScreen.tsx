@@ -1,23 +1,23 @@
-import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
+import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
+import { Box, Text, VStack } from '@suite-native/atoms';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
-import { Box, VStack, Text } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
-import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common/wallet-core';
 
+import { AddressReviewStepList } from '../components/AddressReviewStepList';
+import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
+import { SendScreen } from '../components/SendScreen';
 import {
     selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionReviewInProgress,
 } from '../selectors';
-import { AddressReviewStepList } from '../components/AddressReviewStepList';
-import { SendScreen } from '../components/SendScreen';
-import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
 
 export const SendAddressReviewScreen = ({
     route,

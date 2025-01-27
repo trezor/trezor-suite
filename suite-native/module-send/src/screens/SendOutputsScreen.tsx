@@ -1,13 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { Keyboard } from 'react-native';
+import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
-import { D, pipe } from '@mobily/ts-belt';
 
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     FeesRootState,
@@ -20,6 +21,10 @@ import {
     sendFormActions,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { Box, Button } from '@suite-native/atoms';
+import { Form, useForm } from '@suite-native/forms';
+import { Translation } from '@suite-native/intl';
 import {
     ScreenFooterGradient,
     SendStackParamList,
@@ -27,24 +32,19 @@ import {
     StackNavigationProps,
     StackProps,
 } from '@suite-native/navigation';
-import { getNetwork } from '@suite-common/wallet-config';
-import { Box, Button } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
+import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
-import { useForm, Form } from '@suite-native/forms';
-import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/settings';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { selectAccountTokenInfo, TokensRootState } from '@suite-native/tokens';
 
-import { SendScreen } from '../components/SendScreen';
-import { SendOutputFields } from '../components/SendOutputFields';
-import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
-import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
-import { constructFormDraft } from '../utils';
-import { FeeLevelsMaxAmount } from '../types';
-import { storeFeeLevels } from '../sendFormSlice';
+import { SendOutputFields } from '../components/SendOutputFields';
+import { SendScreen } from '../components/SendScreen';
 import { useSubscribeForSolanaBlockUpdates } from '../hooks/useSubscribeForSolanaBlockUpdates';
+import { storeFeeLevels } from '../sendFormSlice';
+import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
+import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
+import { FeeLevelsMaxAmount } from '../types';
+import { constructFormDraft } from '../utils';
 
 const getDefaultValues = ({
     tokenContract,

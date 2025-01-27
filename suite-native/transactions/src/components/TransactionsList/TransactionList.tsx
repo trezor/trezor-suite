@@ -1,31 +1,31 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { RefreshControl } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { FlashList } from '@shopify/flash-list';
 
+import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     AccountsRootState,
+    TransactionsRootState,
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountByKey,
     selectIsLoadingAccountTransactions,
     selectIsPageAlreadyFetched,
-    TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { groupTransactionsByDate, isPending, MonthKey } from '@suite-common/wallet-utils';
+import { MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
+import { useScrollDivider } from '@suite-native/navigation';
 import {
-    TypedTokenTransfer,
-    selectAccountTransactionsWithTokenTransfers,
-    WalletAccountTransaction,
     TokensRootState,
+    TypedTokenTransfer,
+    WalletAccountTransaction,
+    selectAccountTransactionsWithTokenTransfers,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { arrayPartition } from '@trezor/utils';
-import { getTxsPerPage } from '@suite-common/suite-utils';
-import { useScrollDivider } from '@suite-native/navigation';
 
 import { TransactionsEmptyState } from '../TransactionsEmptyState';
 import { TokenTransferListItem } from './TokenTransferListItem';

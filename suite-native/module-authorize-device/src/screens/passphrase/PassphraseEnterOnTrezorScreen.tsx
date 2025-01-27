@@ -1,8 +1,17 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
+import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
+import {
+    cancelPassphraseAndSelectStandardDeviceThunk,
+    selectIsCreatingNewPassphraseWallet,
+    useHandlePassphraseMismatch,
+} from '@suite-native/device-authorization';
+import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -10,21 +19,12 @@ import {
     StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
-import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
-import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import {
-    cancelPassphraseAndSelectStandardDeviceThunk,
-    selectIsCreatingNewPassphraseWallet,
-    useHandlePassphraseMismatch,
-} from '@suite-native/device-authorization';
 import TrezorConnect from '@trezor/connect';
-import { EventType, analytics } from '@suite-native/analytics';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
-import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
 import { ConfirmOnTrezorAnimation } from '../../components/passphrase/ConfirmOnTrezorAnimation';
+import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
+import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',

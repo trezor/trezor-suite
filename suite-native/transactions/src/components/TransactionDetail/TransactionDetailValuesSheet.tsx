@@ -3,21 +3,21 @@ import { useSelector } from 'react-redux';
 import { pipe } from '@mobily/ts-belt';
 
 import { convertCryptoToFiatAmount } from '@suite-common/formatters';
-import { Timestamp, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     FiatRatesRootState,
     selectFiatRatesByFiatRateKey,
     selectHistoricFiatRatesByTimestamp,
 } from '@suite-common/wallet-core';
+import { Timestamp, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { selectFiatCurrencyCode } from '@suite-native/settings';
+import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
     PercentageDifferenceFormatter,
 } from '@suite-native/formatters';
 import { useTranslate } from '@suite-native/intl';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 

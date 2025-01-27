@@ -5,29 +5,29 @@ import { G } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
-import { deviceModelToIconName } from '@suite-native/icons';
 import {
     DeviceRootState,
     DiscoveryRootState,
-    selectSelectedDevice,
     selectDeviceModel,
     selectDeviceReleaseInfo,
-    selectIsDiscoveryActiveByDeviceState,
     selectIsDeviceBackedUp,
     selectIsDeviceConnected,
+    selectIsDiscoveryActiveByDeviceState,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import {
-    DeviceStackRoutes,
-    StackNavigationProps,
-    DeviceSettingsStackParamList,
-} from '@suite-native/navigation';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
+import { deviceModelToIconName } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
+import {
+    DeviceSettingsStackParamList,
+    DeviceStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 import { SettingsCardWithIconLayout } from '@suite-native/settings';
+import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const firmwareInfoStyle = prepareNativeStyle(() => ({
     flexGrow: 1,

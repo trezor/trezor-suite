@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    stackNavigationOptionsConfig,
     TradingStackParamList,
     TradingStackRoutes,
+    stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
 import { TradingScreen } from '../screens/TradingScreen';

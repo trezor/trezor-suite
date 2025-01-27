@@ -1,4 +1,4 @@
-import { A, pipe, S } from '@mobily/ts-belt';
+import { A, S, pipe } from '@mobily/ts-belt';
 import { RequireAllOrNone } from 'type-fest';
 
 import { splitAddressToChunks } from '@suite-native/helpers';

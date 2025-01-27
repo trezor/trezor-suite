@@ -5,10 +5,10 @@ import Animated, { runOnUI } from 'react-native-reanimated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
-import { Text } from '../Text';
 import { IconButton } from '../Button/IconButton';
 import { Divider } from '../Divider';
 import { VStack } from '../Stack';
+import { Text } from '../Text';
 import { useAccordionAnimation } from './useAccordionAnimation';
 
 type AccordionItemProps = {

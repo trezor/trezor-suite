@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 
+import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 
 type AnalyticsInfoRowProps = {
     iconName: IconName;

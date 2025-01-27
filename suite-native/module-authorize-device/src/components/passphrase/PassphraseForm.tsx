@@ -1,23 +1,23 @@
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import {
-    passphraseFormSchema,
     PassphraseFormValues,
     formInputsMaxLength,
+    passphraseFormSchema,
 } from '@suite-common/validators';
-import { Button, Card, VStack, TextDivider } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Translation } from '@suite-native/intl';
 import {
     onPassphraseSubmit,
     selectHasDevicePassphraseEntryCapability,
 } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
+import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
+import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
+import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -25,7 +25,7 @@ import {
     StackToStackCompositeNavigationProps,
     useScrollView,
 } from '@suite-native/navigation';
-import { EventType, analytics } from '@suite-native/analytics';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
 import { NoPassphraseButton } from './NoPassphraseButton';

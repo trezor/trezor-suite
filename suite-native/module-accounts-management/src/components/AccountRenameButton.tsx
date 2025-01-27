@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Box, BottomSheet, IconButton } from '@suite-native/atoms';
+import { BottomSheet, Box, IconButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { AccountRenameForm } from './AccountRenameForm';

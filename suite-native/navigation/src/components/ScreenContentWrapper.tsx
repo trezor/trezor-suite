@@ -1,6 +1,6 @@
 import React, { ReactNode, useRef } from 'react';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ScrollView, ScrollViewProps } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

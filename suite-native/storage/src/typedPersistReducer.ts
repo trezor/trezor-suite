@@ -1,7 +1,7 @@
-import { createMigrate, persistReducer, Transform } from 'redux-persist';
+import { Reducer } from '@reduxjs/toolkit';
+import { Transform, createMigrate, persistReducer } from 'redux-persist';
 import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
-import { Reducer } from '@reduxjs/toolkit';
 
 import { initMmkvStorage } from './storage';
 

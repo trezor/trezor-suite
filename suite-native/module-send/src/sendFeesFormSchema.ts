@@ -1,7 +1,7 @@
 import { yup } from '@suite-common/validators';
-import { isDecimalsValid } from '@suite-common/wallet-utils';
-import { FeeInfo } from '@suite-common/wallet-types';
 import { NetworkType } from '@suite-common/wallet-config';
+import { FeeInfo } from '@suite-common/wallet-types';
+import { isDecimalsValid } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { NativeSupportedFeeLevel } from './types';

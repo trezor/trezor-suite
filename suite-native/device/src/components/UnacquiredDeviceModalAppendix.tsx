@@ -1,4 +1,4 @@
-import { VStack, BulletListItem } from '@suite-native/atoms';
+import { BulletListItem, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const UnacquiredDeviceModalAppendix = () => (

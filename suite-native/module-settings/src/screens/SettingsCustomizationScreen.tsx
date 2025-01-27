@@ -1,6 +1,6 @@
 import { Card } from '@suite-native/atoms';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { useTranslate } from '@suite-native/intl';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { ColorSchemePicker } from '../components/ColorSchemePicker';
 

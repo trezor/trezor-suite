@@ -3,8 +3,8 @@ import { ReactNode } from 'react';
 import { Color, TypographyStyle } from '@trezor/theme';
 
 import { Box } from './Box';
-import { Text } from './Text';
 import { HStack } from './Stack';
+import { Text } from './Text';
 
 type NumberedListItemProps = {
     children: ReactNode;

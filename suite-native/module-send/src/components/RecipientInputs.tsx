@@ -1,13 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import Animated, { LinearTransition } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
-import { VStack, CardDivider } from '@suite-native/atoms';
-import { AccountKey } from '@suite-common/wallet-types';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
+import { CardDivider, VStack } from '@suite-native/atoms';
 
-import { AmountInputs } from './AmountInputs';
 import { AddressInput } from './AddressInput';
+import { AmountInputs } from './AmountInputs';
 import { DestinationTagInput } from './DestinationTagInput';
 
 type RecipientInputsProps = {

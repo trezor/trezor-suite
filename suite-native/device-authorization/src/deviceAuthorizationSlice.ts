@@ -1,20 +1,20 @@
 import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 
-import { UI } from '@trezor/connect';
 import {
     AuthorizeDeviceError,
     CreateDeviceInstanceError,
     authorizeDeviceThunk,
     createDeviceInstanceThunk,
 } from '@suite-common/wallet-core';
+import { UI } from '@trezor/connect';
 
-import { isPinButtonRequestCode } from './utils';
 import {
     VerifyPassphraseOnEmptyWalletError,
     cancelPassphraseAndSelectStandardDeviceThunk,
     retryPassphraseAuthenticationThunk,
     verifyPassphraseOnEmptyWalletThunk,
 } from './passphraseThunks';
+import { isPinButtonRequestCode } from './utils';
 
 export type DeviceAuthorizationState = {
     hasDeviceRequestedPin: boolean;

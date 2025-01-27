@@ -1,8 +1,8 @@
-import { TextProps, Box } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
-import { TokenAddress } from '@suite-common/wallet-types';
 import { SignValue } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { Box, TextProps } from '@suite-native/atoms';
 
 import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';

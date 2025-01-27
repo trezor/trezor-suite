@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { XpubQRCodeBottomSheet } from '@suite-native/qr-code';
-import { Button } from '@suite-native/atoms';
-import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
+import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { XpubQRCodeBottomSheet } from '@suite-native/qr-code';
 
 export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: string }) => {
     const account = useSelector((state: AccountsRootState) =>

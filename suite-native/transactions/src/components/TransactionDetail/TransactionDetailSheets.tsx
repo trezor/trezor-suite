@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { Card, VStack } from '@suite-native/atoms';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { analytics, EventType } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
+import { Card, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { TransactionDetailInputsSheet } from './TransactionDetailInputsSheet';
 import { TransactionDetailParametersSheet } from './TransactionDetailParametersSheet';
 import { TransactionDetailValuesSheet } from './TransactionDetailValuesSheet';
-import { TransactionDetailInputsSheet } from './TransactionDetailInputsSheet';
 
 type SheetType = 'parameters' | 'values' | 'inputs';
 type TransactionSheetAnalyticsEventType =

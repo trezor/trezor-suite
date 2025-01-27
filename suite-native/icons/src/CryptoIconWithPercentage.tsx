@@ -1,20 +1,20 @@
 import { useEffect } from 'react';
-import { Easing, useDerivedValue, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Pressable } from 'react-native';
+import { Easing, useDerivedValue, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import {
     Canvas,
     Circle,
     Group,
     ImageSVG,
-    mix,
     Path,
     Skia,
+    mix,
     useSVG,
 } from '@shopify/react-native-skia';
 
-import { useNativeStyles } from '@trezor/styles';
 import { CryptoIconName, cryptoIcons } from '@suite-common/icons';
+import { useNativeStyles } from '@trezor/styles';
 
 import { PizzaIcon, usePizzaAnimation } from './PizzaIcon';
 

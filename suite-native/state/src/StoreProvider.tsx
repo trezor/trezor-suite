@@ -1,8 +1,8 @@
-import { useEffect, useState, ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 
-import * as Sentry from '@sentry/react-native';
 import { EnhancedStore } from '@reduxjs/toolkit';
+import * as Sentry from '@sentry/react-native';
 import { Persistor, persistStore } from 'redux-persist';
 
 import { StorageProvider } from '@suite-native/storage';

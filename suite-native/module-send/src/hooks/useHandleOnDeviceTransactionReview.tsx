@@ -1,18 +1,18 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { Translation } from '@suite-native/intl';
-import { useAlert } from '@suite-native/alerts';
 import {
     AccountsRootState,
     DeviceRootState,
+    SendRootState,
     selectIsDeviceRemembered,
     sendFormActions,
-    SendRootState,
 } from '@suite-common/wallet-core';
+import { useAlert } from '@suite-native/alerts';
+import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -24,8 +24,8 @@ import {
 import { TRANSPORT_ERROR } from '@trezor/transport';
 
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
-import { signTransactionNativeThunk } from '../sendFormThunks';
 import { selectIsTransactionReviewInProgress } from '../selectors';
+import { signTransactionNativeThunk } from '../sendFormThunks';
 import { useShowReviewCancellationAlert } from './useShowReviewCancellationAlert';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

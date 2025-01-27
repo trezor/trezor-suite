@@ -1,19 +1,19 @@
 import { forwardRef } from 'react';
-import { useSelector } from 'react-redux';
 import { LinearTransition } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { selectHasDeviceDiscovery, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
-import { AnimatedVStack, Button, VStack } from '@suite-native/atoms';
 import { Assets } from '@suite-native/assets';
+import { AnimatedVStack, Button, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Translation } from '@suite-native/intl';
 
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
 

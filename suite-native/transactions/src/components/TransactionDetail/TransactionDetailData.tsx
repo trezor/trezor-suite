@@ -1,28 +1,28 @@
 import { useSelector } from 'react-redux';
 
-import { AlertBox, Box, Card, Text, VStack } from '@suite-native/atoms';
-import { AccountKey, Timestamp } from '@suite-common/wallet-types';
 import { useFormatters } from '@suite-common/formatters';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
-    TransactionsRootState,
-    selectIsPhishingTransaction,
     FiatRatesRootState,
+    TransactionsRootState,
     selectHistoricFiatRatesByTimestamp,
+    selectIsPhishingTransaction,
     selectTransactionBlockTimeById,
 } from '@suite-common/wallet-core';
+import { AccountKey, Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { AlertBox, Box, Card, Text, VStack } from '@suite-native/atoms';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
+import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles';
 
-import { cardStyle, TransactionDetailSummary } from './TransactionDetailSummary';
-import { TransactionDetailRow } from './TransactionDetailRow';
 import { TransactionDetailIncludedCoins } from './TransactionDetailIncludedCoins';
+import { TransactionDetailRow } from './TransactionDetailRow';
 import { TransactionDetailSheets } from './TransactionDetailSheets';
+import { TransactionDetailSummary, cardStyle } from './TransactionDetailSummary';
 
 type TransactionDetailDataProps = {
     transaction: WalletAccountTransaction;

@@ -1,5 +1,5 @@
-import { Dimensions } from 'react-native';
 import React from 'react';
+import { Dimensions } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

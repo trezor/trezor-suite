@@ -1,10 +1,10 @@
 import { Pressable } from 'react-native';
 
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HStack, Radio, Text } from '@suite-native/atoms';
 import { FiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type WalletItemBaseVariant = 'standard' | 'passphrase';
 

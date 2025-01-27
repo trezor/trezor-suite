@@ -1,17 +1,17 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { FirmwareUpdateInProgressScreen } from '@suite-native/firmware';
 import {
     DeviceSettingsStackParamList,
     DeviceStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import { FirmwareUpdateInProgressScreen } from '@suite-native/firmware';
 
-import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
 import { DeviceAuthenticityStackNavigator } from './DeviceAuthenticityStackNavigator';
 import { DevicePinProtectionStackNavigator } from './DevicePinProtectionStackNavigator';
-import { FirmwareUpdateScreen } from '../screens/FirmwareUpdateScreen/FirmwareUpdateScreen';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
+import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
+import { FirmwareUpdateScreen } from '../screens/FirmwareUpdateScreen/FirmwareUpdateScreen';
 const DeviceSettingsStack = createNativeStackNavigator<DeviceSettingsStackParamList>();
 
 export const DeviceSettingsStackNavigator = () => (

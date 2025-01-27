@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import React, { useCallback, useEffect } from 'react';
-import { StyleSheet, Dimensions, DimensionValue } from 'react-native';
+import { DimensionValue, Dimensions, StyleSheet } from 'react-native';
 import Animated, {
     Easing,
     interpolate,

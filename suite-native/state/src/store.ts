@@ -1,13 +1,13 @@
-import { configureStore, Middleware, StoreEnhancer } from '@reduxjs/toolkit';
+import { Middleware, StoreEnhancer, configureStore } from '@reduxjs/toolkit';
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 import { logger } from 'redux-logger';
 
-import { sendFormMiddleware } from '@suite-native/module-send/src/sendFormMiddleware';
 import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
-import { messageSystemMiddleware } from '@suite-native/message-system';
+import { blockchainMiddleware } from '@suite-native/blockchain';
 import { prepareButtonRequestMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
-import { blockchainMiddleware } from '@suite-native/blockchain';
+import { messageSystemMiddleware } from '@suite-native/message-system';
+import { sendFormMiddleware } from '@suite-native/module-send/src/sendFormMiddleware';
 
 import { extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';

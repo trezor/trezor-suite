@@ -5,7 +5,7 @@ import { G } from '@mobily/ts-belt';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
-import { ErrorMessage, VStack, Card } from '@suite-native/atoms';
+import { Card, ErrorMessage, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { TokenReceiveCard } from './TokenReceiveCard';

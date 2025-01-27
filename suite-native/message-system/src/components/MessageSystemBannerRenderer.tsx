@@ -2,10 +2,10 @@ import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
-import { VStack } from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectActiveBannerMessages } from '@suite-common/message-system';
+import { VStack } from '@suite-native/atoms';
 import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { MessageBanner } from './MessageBanner';
 

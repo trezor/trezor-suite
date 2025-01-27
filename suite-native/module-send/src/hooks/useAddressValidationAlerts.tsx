@@ -1,23 +1,23 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import { G } from '@mobily/ts-belt';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
-import { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
-import { Translation } from '@suite-native/intl';
-import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
+import { getNetworkType } from '@suite-common/wallet-config';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { isAddressValid } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useFormContext } from '@suite-native/forms';
-import { isAddressValid } from '@suite-common/wallet-utils';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
+import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
+import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import TrezorConnect from '@trezor/connect';
 
-import { getOutputFieldName } from '../utils';
 import { TokenOfNetworkAlertBody } from '../components/TokenOfNetworkAlertContent';
+import { getOutputFieldName } from '../utils';
 
 type UseAddressValidationAlertsArgs = {
     inputIndex: number;

@@ -1,7 +1,7 @@
 import { render, renderHook } from '@suite-native/test-utils';
 
-import { AccountLabelFieldHint, AccountLabelFieldHintProps } from '../AccountLabelFieldHint';
 import { useAccountLabelForm } from '../../hooks/useAccountLabelForm';
+import { AccountLabelFieldHint, AccountLabelFieldHintProps } from '../AccountLabelFieldHint';
 
 describe('AccountLabelFieldHint', () => {
     const renderComponent = (props: AccountLabelFieldHintProps) =>

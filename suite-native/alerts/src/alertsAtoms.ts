@@ -2,8 +2,8 @@ import { ReactNode } from 'react';
 
 import { atom } from 'jotai';
 
-import { IconName } from '@suite-native/icons';
 import { ButtonAccessory, ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
+import { IconName } from '@suite-native/icons';
 import { NativeSpacing } from '@trezor/theme';
 
 export type Alert = {

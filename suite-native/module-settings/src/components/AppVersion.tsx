@@ -1,7 +1,7 @@
 import { S } from '@mobily/ts-belt';
 
-import { Text, Box, HStack } from '@suite-native/atoms';
-import { getSuiteVersion, getCommitHash } from '@trezor/env-utils';
+import { Box, HStack, Text } from '@suite-native/atoms';
+import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 
 import { ProductionDebug } from './ProductionDebug';
 

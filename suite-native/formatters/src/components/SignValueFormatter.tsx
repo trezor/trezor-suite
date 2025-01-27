@@ -1,6 +1,6 @@
-import { Text, TextProps } from '@suite-native/atoms';
 import { isSignValuePositive, useFormatters } from '@suite-common/formatters';
 import { SignValue } from '@suite-common/suite-types';
+import { Text, TextProps } from '@suite-native/atoms';
 
 import { FormatterProps } from '../types';
 

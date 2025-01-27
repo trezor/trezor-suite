@@ -1,7 +1,6 @@
-import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import { analytics, EventType } from '@suite-native/analytics';
 import {
     selectDeviceFirmwareVersion,
     selectDeviceLanguage,
@@ -9,6 +8,7 @@ import {
     selectHasBitcoinOnlyFirmware,
     selectIsDeviceProtectedByPin,
 } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
 
 import { selectIsDeviceReadyToUseAndAuthorized } from '../selectors';
 

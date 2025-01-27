@@ -3,19 +3,19 @@ import { Pressable } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { Text, Input } from '@suite-native/atoms';
-import { useFormContext, useField } from '@suite-native/forms';
-import { useCryptoFiatConverters } from '@suite-native/formatters';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useFormatters } from '@suite-common/formatters';
-import { Color } from '@trezor/theme';
+import { Input, Text } from '@suite-native/atoms';
+import { useCryptoFiatConverters } from '@suite-native/formatters';
+import { useField, useFormContext } from '@suite-native/forms';
+import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
-import { selectAccountTokenSymbol, TokensRootState } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
-import { SendAmountInputProps } from '../types';
 import { useSendAmountTransformers } from '../hooks/useSendAmountTransformers';
-import { getOutputFieldName } from '../utils';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { SendAmountInputProps } from '../types';
+import { getOutputFieldName } from '../utils';
 
 export const sendAmountInputWrapperStyle = prepareNativeStyle<{ isDisabled: boolean }>(
     (_, { isDisabled }) => ({

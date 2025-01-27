@@ -1,36 +1,36 @@
-import { useSelector } from 'react-redux';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { TrezorDevice } from '@suite-common/suite-types';
+import {
+    selectHasDeviceDiscovery,
+    selectInstacelessUnselectedDevices,
+    selectIsDeviceConnected,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
+import { EventType, analytics } from '@suite-native/analytics';
+import {
+    ACCESSIBILITY_FONTSIZE_MULTIPLIER,
+    Box,
+    Button,
+    TextDivider,
+    VStack,
+} from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { analytics, EventType } from '@suite-native/analytics';
-import {
-    selectSelectedDevice,
-    selectIsDeviceConnected,
-    selectInstacelessUnselectedDevices,
-    selectHasDeviceDiscovery,
-} from '@suite-common/wallet-core';
-import {
-    Button,
-    Box,
-    TextDivider,
-    VStack,
-    ACCESSIBILITY_FONTSIZE_MULTIPLIER,
-} from '@suite-native/atoms';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
-import { useDeviceManager } from '../hooks/useDeviceManager';
 import { MANAGER_MODAL_BOTTOM_RADIUS } from './DeviceManagerModal';
+import { useDeviceManager } from '../hooks/useDeviceManager';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList,

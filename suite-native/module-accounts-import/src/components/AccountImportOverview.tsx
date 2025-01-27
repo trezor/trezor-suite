@@ -1,20 +1,20 @@
 import { Control } from 'react-hook-form';
 
-import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    CryptoAmountFormatter,
-    FiatBalanceFormatter,
-    useFiatFromCryptoValue,
-} from '@suite-native/formatters';
-import { RoundedIcon, VStack } from '@suite-native/atoms';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
-import { TextInputField } from '@suite-native/forms';
-import { useTranslate } from '@suite-native/intl';
 import {
     AccountFormValues,
     AccountLabelFieldHint,
     MAX_ACCOUNT_LABEL_LENGTH,
 } from '@suite-native/accounts';
+import { RoundedIcon, VStack } from '@suite-native/atoms';
+import {
+    CryptoAmountFormatter,
+    FiatBalanceFormatter,
+    useFiatFromCryptoValue,
+} from '@suite-native/formatters';
+import { TextInputField } from '@suite-native/forms';
+import { useTranslate } from '@suite-native/intl';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 

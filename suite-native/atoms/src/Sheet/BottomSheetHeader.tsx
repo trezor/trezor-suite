@@ -1,11 +1,11 @@
-import { View } from 'react-native';
 import { ReactNode } from 'react';
+import { View } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Text } from '../Text';
-import { IconButton } from '../Button/IconButton';
 import { Box } from '../Box';
+import { IconButton } from '../Button/IconButton';
+import { Text } from '../Text';
 
 type BottomSheetHeaderProps = {
     title: ReactNode;

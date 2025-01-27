@@ -1,5 +1,5 @@
-import { useSharedValue, withTiming } from 'react-native-reanimated';
 import { useEffect } from 'react';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { BlurMask } from '@shopify/react-native-skia';
 

@@ -1,15 +1,7 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { networks, NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    ScreenHeader,
-    StackProps,
-} from '@suite-native/navigation';
-import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     selectAccountByKey,
@@ -17,11 +9,19 @@ import {
     selectFormattedAccountType,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
+import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    ScreenHeader,
+    StackProps,
+} from '@suite-native/navigation';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
-import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
 import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
+import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
 
 const AccountDetailSettingsRow = ({ title, children }: { title: string; children: ReactNode }) => (
     <Box

@@ -1,9 +1,9 @@
-import { TokenTransfer as BlockchainLinkTokenTransfer } from '@trezor/blockchain-link';
 import {
+    WalletAccountTransaction as CommonWalletAccountTransaction,
     TokenAddress,
     TokenSymbol,
-    WalletAccountTransaction as CommonWalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import { TokenTransfer as BlockchainLinkTokenTransfer } from '@trezor/blockchain-link';
 
 export type TypedTokenTransfer = Omit<BlockchainLinkTokenTransfer, 'symbol' | 'contract'> & {
     symbol: TokenSymbol;

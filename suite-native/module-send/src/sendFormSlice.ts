@@ -1,23 +1,23 @@
-import { isAnyOf, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     SendState as CommonSendState,
-    prepareSendFormReducer as prepareCommonSendFormReducer,
+    SendFormError,
     initialState as commonInitialState,
     composeSendFormTransactionFeeLevelsThunk,
-    signTransactionThunk,
+    prepareSendFormReducer as prepareCommonSendFormReducer,
     pushSendFormTransactionThunk,
-    SendFormError,
+    signTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
+    AccountKey,
     GeneralPrecomposedLevels,
     GeneralPrecomposedTransaction,
-    AccountKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import { BigNumber } from '@trezor/utils';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { NativeSupportedFeeLevel } from './types';
 

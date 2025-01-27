@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 import { ActivityIndicator } from 'react-native';
 
+import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, NativeRadius } from '@trezor/theme';
-import { Icon, IconName } from '@suite-native/icons';
 
 import { Box } from './Box';
 import { Text } from './Text';

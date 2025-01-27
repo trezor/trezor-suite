@@ -1,10 +1,10 @@
-import { SettingsStackRoutes } from '@suite-native/navigation';
 import { TrezorSuiteLiteHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { SettingsStackRoutes } from '@suite-native/navigation';
 
-import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
+import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 
 export const SupportSettings = () => {
     const navigateTo = useSettingsNavigateTo();

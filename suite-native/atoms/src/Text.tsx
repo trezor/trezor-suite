@@ -1,17 +1,17 @@
+import React from 'react';
 import {
-    TextProps as RNTextProps,
-    Text as RNText,
-    TextStyle,
     PixelRatio,
     Platform,
+    Text as RNText,
+    TextProps as RNTextProps,
+    TextStyle,
 } from 'react-native';
 import Animated from 'react-native-reanimated';
-import React from 'react';
 
 // @ts-expect-error This is not public RN API but it will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
 import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
 
-import { useNativeStyles, prepareNativeStyle, NativeStyleObject } from '@trezor/styles';
+import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, TypographyStyle } from '@trezor/theme';
 
 import { TestProps } from './types';

@@ -2,15 +2,15 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Translation } from '@suite-native/intl';
-import { HStack, Text } from '@suite-native/atoms';
 import {
     createDeviceInstanceThunk,
-    selectSelectedDevice,
     selectIsDeviceProtectedByPassphrase,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { EventType, analytics } from '@suite-native/analytics';
+import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -18,10 +18,10 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { EventType, analytics } from '@suite-native/analytics';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useDeviceManager } from '../hooks/useDeviceManager';
 import { DeviceAction } from './DeviceAction';
+import { useDeviceManager } from '../hooks/useDeviceManager';
 
 const textStyle = prepareNativeStyle(_ => ({
     flex: 1,
