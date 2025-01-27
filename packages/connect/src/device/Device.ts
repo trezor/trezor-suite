@@ -61,21 +61,11 @@ import { cancelPrompt } from './prompts';
 // custom log
 const _log = initLog('Device');
 
-export type RunOptions = {
+type RunOptions = {
     // skipFinalReload - normally, after action, features are reloaded again
     //                   because some actions modify the features
     //                   but sometimes, you don't need that and can skip that
     skipFinalReload?: boolean;
-    // waiting - if waiting and someone else holds the session, it waits until it's free
-    //          and if it fails on acquire (because of more tabs acquiring simultaneously),
-    //          it tries repeatedly
-    waiting?: boolean;
-    onlyOneActivity?: boolean;
-
-    // cancel popup request when we are sure that there is no need to authenticate
-    // Method gets called after run() fetch new Features but before trezor-link dispatch "acquire" event
-    cancelPopupRequest?: () => any;
-
     keepSession?: boolean;
     useCardanoDerivation?: boolean;
 };
