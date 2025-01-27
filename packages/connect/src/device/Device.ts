@@ -69,6 +69,8 @@ type RunOptions = {
     skipFinalReload?: boolean;
     keepSession?: boolean;
     useCardanoDerivation?: boolean;
+    skipFirmwareChecks?: boolean;
+    skipLanguageChecks?: boolean;
 };
 
 export const GET_FEATURES_TIMEOUT = 3_000;
@@ -202,6 +204,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private readonly emitLifecycle;
 
     private sessionDfd?: Deferred<Session | null>;
+
+    // todo: marek will solve this
+    public handshakeFinished = false;
 
     constructor({ id, transport, descriptor, listener }: DeviceParams) {
         super();
@@ -384,6 +389,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     }
                 }
             }
+
+            this.handshakeFinished = true;
 
             return;
         }
@@ -590,10 +597,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
             }
         }
 
-        await this.checkFirmwareHashWithRetries();
-        await this.checkFirmwareRevisionWithRetries();
+        if (!options.skipFirmwareChecks) {
+            await this.checkFirmwareHashWithRetries();
+            await this.checkFirmwareRevisionWithRetries();
+        }
 
         if (
+            !options.skipLanguageChecks &&
             this.features?.language &&
             !this.features.language_version_matches &&
             this.atLeast('2.7.0')

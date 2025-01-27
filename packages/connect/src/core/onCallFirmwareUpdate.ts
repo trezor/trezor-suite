@@ -96,8 +96,37 @@ const waitForReconnectedDevice = async (
         } catch {
             /* empty */
         }
+
+        // general logic (DeviceList/Device) refuses to call getFeatures if the reported descriptor has a session.
+        // the reason for session to be still there is this scenario:
+        // 1. reboot to bootloader is called
+        // 2. old bridge uses cca 200ms enumeration loop. If device appears on usb in the right time, bridge does not consider it
+        //    a disconnect and it does not flush sessions
+        // 3. listen now reported a new device in bootloader mode but it still has the session from the previous device in normal mode
+        // 4. now we automatically take the device, as if user clicked on the "use device here button"
+
+        if (
+            reconnectedDevice &&
+            !reconnectedDevice.features &&
+            reconnectedDevice.handshakeFinished
+        ) {
+            log.debug(
+                'onCallFirmwareUpdate',
+                'we were unable to read device.features on the first interaction after seeing it, retrying...',
+            );
+            try {
+                // todo: it keeps printing warning "Previous call is still running" on reconnect from bl to normal
+                await reconnectedDevice.run(undefined, {
+                    skipFirmwareChecks: true,
+                    skipLanguageChecks: true,
+                });
+            } catch {
+                // empty
+            }
+        }
+
         i++;
-        log.debug('onCallFirmwareUpdate', 'waiting for device to reconnect', i);
+        log.debug('onCallFirmwareUpdate', '...still waiting for device to reconnect', i);
     } while (
         !abortSignal.aborted &&
         (!reconnectedDevice?.features ||
@@ -123,7 +152,10 @@ const waitForReconnectedDevice = async (
 
     registerEvents(reconnectedDevice, postMessage);
     await reconnectedDevice.waitForFirstRun();
-    await reconnectedDevice.acquire();
+
+    if (!reconnectedDevice.isUsedHere()) {
+        await reconnectedDevice.acquire();
+    }
 
     return reconnectedDevice;
 };
@@ -267,6 +299,7 @@ const firmwareCheck = async (
             progress: 0,
         }),
     );
+
     const { hash, challenge } = calculateFirmwareHash(
         device.features.major_version,
         stripped,
