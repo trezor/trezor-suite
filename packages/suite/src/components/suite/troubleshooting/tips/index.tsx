@@ -105,6 +105,7 @@ export const TROUBLESHOOTING_TIP_UDEV: TipItem = {
     heading: <Translation id="TR_UDEV_DOWNLOAD_TITLE" />,
     description: <UdevDescription />,
     hide: !isLinux(),
+    // blabla
 };
 
 export const TROUBLESHOOTING_TIP_RECONNECT: TipItem = {
