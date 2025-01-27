@@ -15,6 +15,20 @@ export default {
     },
     tests: [
         {
+            description: 'todo',
+            params: {
+                coin: 'Bitcoin',
+                path: "m/86'/0'/0'/0/0",
+                message: 'This is an example of a signed message.',
+                no_script_type: true,
+            },
+            result: {
+                address: '13FjFn4bUyhCHN7T1bnUdLPXMhKiuUQuPF',
+                signature:
+                    'H9bskp0sdlvgNV5tVtLQMLK9u9FEyba1qlNfryKfhkyIHbYJJkQDZV5UAevudZgFnbdu7AyASK5sOp/Ss84NKTg=',
+            },
+        },
+        {
             description: 'BTC: p2pkh',
             params: {
                 coin: 'Bitcoin',

@@ -48,6 +48,11 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
             script_type: scriptType && scriptType !== 'SPENDMULTISIG' ? scriptType : 'SPENDADDRESS', // script_type 'SPENDMULTISIG' throws Failure_FirmwareError
             no_script_type: payload.no_script_type,
         };
+
+        // wip..
+        if (payload.no_script_type) {
+            delete this.params.script_type;
+        }
     }
 
     get info() {
