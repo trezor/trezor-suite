@@ -620,8 +620,6 @@ const handleAccountNotification = async (
             if (account.subscriptionId) abortSubscription(account.subscriptionId);
             state.removeAccounts([account]);
             context.onNetworkDisconnect();
-        } else {
-            console.error('Solana subscription error:', error);
         }
     }
 };
