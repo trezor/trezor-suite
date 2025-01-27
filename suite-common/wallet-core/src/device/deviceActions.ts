@@ -87,6 +87,11 @@ const dismissFirmwareAuthenticityCheck = createAction(
     (payload: string) => ({ payload }),
 );
 
+const setEntropyCheckFail = createAction(
+    `${DEVICE_MODULE_PREFIX}/setEntropyCheckFail`,
+    (payload: string) => ({ payload }),
+);
+
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
@@ -102,4 +107,5 @@ export const deviceActions = {
     selectDevice,
     updateSelectedDevice,
     removeButtonRequests,
+    setEntropyCheckFail,
 };

@@ -37,6 +37,7 @@ export type State = {
     devices: TrezorDevice[];
     selectedDevice?: TrezorDevice;
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
+    devicesWithFailedEntropyCheck?: string[];
     dismissedSecurityChecks?: {
         firmwareAuthenticity?: string[];
     };
@@ -638,6 +639,12 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             extra.reducers.setDeviceMetadataPasswordsReducer,
         )
         .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
+        .addCase(deviceActions.setEntropyCheckFail, (state, { payload }) => {
+            if (!state.devicesWithFailedEntropyCheck) {
+                state.devicesWithFailedEntropyCheck = [];
+            }
+            state.devicesWithFailedEntropyCheck.push(payload);
+        })
         .addMatcher(
             isAnyOf(createDeviceInstanceThunk.fulfilled, createImportedDeviceThunk.fulfilled),
             (state, { payload }) => {
@@ -843,6 +850,12 @@ export const selectSelectedDeviceAuthenticity = createMemoizedSelector(
 export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector(
     [selectSelectedDevice, state => state.device.dismissedSecurityChecks?.firmwareAuthenticity],
     (device, dismissedChecks) => !!(device?.id && dismissedChecks?.includes(device.id)),
+);
+
+export const selectIsEntropyCheckFailed = createMemoizedSelector(
+    [selectSelectedDevice, state => state.device.devicesWithFailedEntropyCheck],
+    (device, devicesWithFailedEntropyCheck) =>
+        device?.id && devicesWithFailedEntropyCheck?.includes(device.id),
 );
 
 export const selectIsPortfolioTrackerDevice = createMemoizedSelector(
