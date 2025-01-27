@@ -34,6 +34,7 @@ export const createTestTransport = (apiMethods = {}) =>
     new TestTransport({
         api: createTransportApi(apiMethods),
         id: 'foo-bar-id',
+        messages: {},
     });
 
 export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({

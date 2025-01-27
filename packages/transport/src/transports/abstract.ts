@@ -31,7 +31,7 @@ export type ReleaseInput = {
 };
 
 export interface AbstractTransportParams {
-    messages?: Record<string, any>;
+    messages: Record<string, any>;
     logger?: Logger;
     debugLink?: boolean;
     id: string;
@@ -137,7 +137,7 @@ export abstract class AbstractTransport extends TransportEmitter {
     constructor({ messages, logger, id }: AbstractTransportParams) {
         super();
         this.descriptors = [];
-        this.messages = protobuf.Root.fromJSON(messages || {});
+        this.messages = protobuf.Root.fromJSON(messages);
         this.abortController = new AbortController();
         this.logger = logger;
         this.id = id;

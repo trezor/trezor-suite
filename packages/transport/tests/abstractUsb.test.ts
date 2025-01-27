@@ -88,6 +88,7 @@ describe('Usb', () => {
             const transport = new TestUsbTransport({
                 api: testUsbApi,
                 id: 'test',
+                messages: {},
             });
 
             await transport.init();
