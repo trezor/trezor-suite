@@ -97,6 +97,7 @@ const usedIcons = [
     'swap',
     'trashSimple',
     'treeStructure',
+    'trezorDevices',
     'trezorLogo',
     'trezorModelOne',
     'trezorModelOneFilled',
@@ -112,7 +113,6 @@ const usedIcons = [
     'warningCircle',
     'wifiSlash',
     'wifiX',
-    'wrench',
     'x',
     'xCircle',
 ] as const satisfies AllAvailableIcons[];

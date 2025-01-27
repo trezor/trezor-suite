@@ -18,7 +18,7 @@ This package contains source assets for icons used in the app.
 ## In case some icons are not rendering correctly in icon font
 
 1. Copy path from svg file of broken icon.
-2. Open `https://codepen.io/herrstrietzel/pen/MWQVoLp` and paste path there.
+2. Open `https://codepen.io/herrstrietzel/pen/GRGexdb` and paste path there.
 3. Uncheck `directions` checkbox.
 4. Inspect fix path output preview SVG in Chrome DevTools.
 5. Copy SVG code from Chrome DevTools and replace original SVG code (do not use that fixed path directly, it won't work for some reason).
