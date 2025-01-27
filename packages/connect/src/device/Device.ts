@@ -234,10 +234,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     private getSessionChangePromise() {
         if (!this.sessionDfd) {
-            this.sessionDfd = createDeferred<Session | null>();
-            this.sessionDfd.promise.finally(() => {
-                this.sessionDfd = undefined;
-            });
+            this.sessionDfd = createDeferred();
+            this.sessionDfd.promise
+                .catch(() => {}) // So there isn't potential unhandled reject
+                .finally(() => {
+                    this.sessionDfd = undefined;
+                });
         }
 
         return this.sessionDfd.promise;
