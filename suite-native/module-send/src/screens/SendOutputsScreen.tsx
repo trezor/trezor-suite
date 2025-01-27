@@ -21,6 +21,7 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import {
+    ScreenFooterGradient,
     SendStackParamList,
     SendStackRoutes,
     StackNavigationProps,
@@ -30,7 +31,6 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useForm, Form } from '@suite-native/forms';
 import { selectIsAmountInSats, SettingsSliceRootState } from '@suite-native/settings';
 import { TokenAddress } from '@suite-common/wallet-types';
@@ -45,11 +45,6 @@ import { constructFormDraft } from '../utils';
 import { FeeLevelsMaxAmount } from '../types';
 import { storeFeeLevels } from '../sendFormSlice';
 import { useSubscribeForSolanaBlockUpdates } from '../hooks/useSubscribeForSolanaBlockUpdates';
-
-const buttonWrapperStyle = prepareNativeStyle(utils => ({
-    width: '100%',
-    padding: utils.spacings.sp16,
-}));
 
 const getDefaultValues = ({
     tokenContract,
@@ -72,7 +67,6 @@ export const SendOutputsScreen = ({
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputs>) => {
     const { accountKey, tokenContract } = params;
     const dispatch = useDispatch();
-    const { applyStyle } = useNativeStyles();
     const debounce = useDebounce();
     const navigation =
         useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendOutputs>>();
@@ -275,20 +269,19 @@ export const SendOutputsScreen = ({
             }
             footer={
                 isValid && (
-                    <Animated.View
-                        entering={SlideInDown}
-                        exiting={SlideOutDown}
-                        style={applyStyle(buttonWrapperStyle)}
-                    >
-                        <Button
-                            accessibilityRole="button"
-                            accessibilityLabel="validate send form"
-                            testID="@send/form-submit-button"
-                            onPress={handleNavigateToReviewScreen}
-                            isDisabled={isSubmitting}
-                        >
-                            <Translation id="generic.buttons.continue" />
-                        </Button>
+                    <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
+                        <ScreenFooterGradient />
+                        <Box marginHorizontal="sp16">
+                            <Button
+                                accessibilityRole="button"
+                                accessibilityLabel="validate send form"
+                                testID="@send/form-submit-button"
+                                onPress={handleNavigateToReviewScreen}
+                                isDisabled={isSubmitting}
+                            >
+                                <Translation id="generic.buttons.continue" />
+                            </Button>
+                        </Box>
                     </Animated.View>
                 )
             }

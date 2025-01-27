@@ -1,12 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
-import { View } from 'react-native';
 
 import { A } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
 
-import { Screen, useHandleHardwareBackNavigation } from '@suite-native/navigation';
+import {
+    Screen,
+    ScreenFooterGradient,
+    useHandleHardwareBackNavigation,
+} from '@suite-native/navigation';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import {
     applyDiscoveryChangesThunk,
@@ -14,46 +16,15 @@ import {
     setIsCoinEnablingInitFinished,
 } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
-import { hexToRgba } from '@suite-common/suite-utils';
 
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
-
-const BOTTOM_OFFSET = 12;
-const BUTTON_HEIGHT = 48;
-
-const contentStyle = prepareNativeStyle(_ => ({
-    paddingBottom: BOTTOM_OFFSET,
-}));
-
-const gradientBackgroundBottomStyle = prepareNativeStyle<{ showButton: boolean }>(
-    (utils, { showButton }) => ({
-        width: '100%',
-        height: utils.spacings.sp16,
-        position: 'absolute',
-        bottom: -BOTTOM_OFFSET,
-        pointerEvents: 'none',
-        extend: [{ condition: showButton, style: { bottom: BUTTON_HEIGHT } }],
-    }),
-);
-
-const buttonWrapperStyle = prepareNativeStyle(utils => ({
-    bottom: BOTTOM_OFFSET,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    width: '100%',
-}));
-
-const buttonStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.sp16,
-}));
 
 export const CoinEnablingInitScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     useHandleHardwareBackNavigation();
 
-    const { applyStyle, utils } = useNativeStyles();
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
 
     const handleSave = () => {
@@ -68,9 +39,6 @@ export const CoinEnablingInitScreen = () => {
             navigation.goBack();
         }
     };
-
-    // 'transparent' color is not working in context of LinearGradient on iOS. RGBA has to be used instead.
-    const transparentColor = hexToRgba(utils.colors.backgroundSurfaceElevation0, 0.01);
 
     const canBeSaved = A.isNotEmpty(enabledNetworkSymbols);
 
@@ -87,29 +55,19 @@ export const CoinEnablingInitScreen = () => {
                 </VStack>
             }
             footer={
-                <View style={applyStyle(buttonWrapperStyle)}>
-                    <LinearGradient
-                        dither={false}
-                        colors={[transparentColor, utils.colors.backgroundSurfaceElevation0]}
-                        style={applyStyle(gradientBackgroundBottomStyle, {
-                            showButton: canBeSaved,
-                        })}
-                    />
-                    {canBeSaved && (
-                        <Animated.View
-                            entering={SlideInDown}
-                            exiting={SlideOutDown}
-                            style={applyStyle(buttonStyle)}
-                        >
+                canBeSaved && (
+                    <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
+                        <ScreenFooterGradient />
+                        <Box marginHorizontal="sp16">
                             <Button onPress={handleSave} testID="@coin-enabling/button-save">
                                 <Translation id="moduleSettings.coinEnabling.initialSetup.button" />
                             </Button>
-                        </Animated.View>
-                    )}
-                </View>
+                        </Box>
+                    </Animated.View>
+                )
             }
         >
-            <Box style={applyStyle(contentStyle)}>
+            <Box>
                 <DiscoveryCoinsFilter allowDeselectLastCoin={true} allowChangeAnalytics={false} />
             </Box>
         </Screen>

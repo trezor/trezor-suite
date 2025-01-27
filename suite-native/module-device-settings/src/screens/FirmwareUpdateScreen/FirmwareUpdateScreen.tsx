@@ -26,6 +26,7 @@ import { FirmwareUpdateVersionCard } from './FirmwareVersionCard';
 
 const firmwareUpdateButtonStyle = prepareNativeStyle(utils => ({
     marginHorizontal: utils.spacings.sp16,
+    marginBottom: utils.spacings.sp16,
 }));
 
 type NavigationProp = StackNavigationProps<
