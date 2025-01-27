@@ -8,6 +8,9 @@
         {
             "path": "../../suite-common/wallet-config"
         },
-        { "path": "../../packages/connect" }
+        { "path": "../atoms" },
+        { "path": "../icons" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/styles" }
     ]
 }

@@ -27,8 +27,7 @@ import {
 } from '@suite-native/navigation';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
-
-import { DeviceSettingsCardLayout } from './DeviceSettingsCardLayout';
+import { SettingsCardWithIconLayout } from '@suite-native/settings';
 
 const firmwareInfoStyle = prepareNativeStyle(() => ({
     flexGrow: 1,
@@ -125,7 +124,7 @@ export const DeviceFirmwareCard = () => {
     })();
 
     return (
-        <DeviceSettingsCardLayout
+        <SettingsCardWithIconLayout
             icon={deviceModelToIconName(deviceModel)}
             title={<Translation id="moduleDeviceSettings.firmware.title" />}
             alertBoxProps={firmwareUpdateProps}
@@ -140,6 +139,6 @@ export const DeviceFirmwareCard = () => {
                     value={<Translation id={firmwareTypeTranslationId} />}
                 />
             </HStack>
-        </DeviceSettingsCardLayout>
+        </SettingsCardWithIconLayout>
     );
 };

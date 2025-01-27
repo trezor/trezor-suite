@@ -16,9 +16,8 @@ import {
     DeviceStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { SettingsCardWithIconLayout } from '@suite-native/settings';
 import TrezorConnect from '@trezor/connect';
-
-import { DeviceSettingsCardLayout } from './DeviceSettingsCardLayout';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     DeviceAuthenticityStackParamList,
@@ -103,7 +102,7 @@ export const DeviceAuthenticityCard = () => {
     }, [showAlert, checkAuthenticity]);
 
     return (
-        <DeviceSettingsCardLayout
+        <SettingsCardWithIconLayout
             icon="shieldCheck"
             title={<Translation id="moduleDeviceSettings.authenticity.title" />}
         >
@@ -120,6 +119,6 @@ export const DeviceAuthenticityCard = () => {
                     <Translation id="moduleDeviceSettings.authenticity.checkButton" />
                 </Button>
             </VStack>
-        </DeviceSettingsCardLayout>
+        </SettingsCardWithIconLayout>
     );
 };

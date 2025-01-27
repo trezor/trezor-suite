@@ -16,7 +16,7 @@ type DeviceSettingsCardProps = {
     alertBoxProps?: Omit<AlertBoxProps, 'borderRadius'>;
 };
 
-export const DeviceSettingsCardLayout = ({
+export const SettingsCardWithIconLayout = ({
     icon,
     title,
     children,
