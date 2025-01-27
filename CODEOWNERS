@@ -14,7 +14,9 @@
 
 /packages/coinjoin @marekrjpolak @szymonlesisz
 
-/packages/components @jvaclavik @adamhavel
+/packages/components @trezor/suite-engagement
+
+/packages/product-components @trezor/suite-engagement
 
 /packages/connect @mroz22 @szymonlesisz @martykan @marekrjpolak
 
@@ -70,7 +72,7 @@
 
 /packages/transport-native @trezor/suite-mobile @Nodonisko
 
-/packages/theme @Nodonisko @jvaclavik @adamhavel
+/packages/theme @Nodonisko @trezor/suite-engagement
 
 /packages/urls @marekrjpolak
 
@@ -80,7 +82,7 @@
 
 /packages/utxo-lib @szymonlesisz
 
-/packages/styles @Nodonisko @jvaclavik @adamhavel
+/packages/styles @Nodonisko @trezor/suite-engagement
 
 /packages/suite/src/support/messages.ts @MiroslavProchazka
 
