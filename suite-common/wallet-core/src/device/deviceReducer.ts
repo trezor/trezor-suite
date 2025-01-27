@@ -855,7 +855,7 @@ export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector
 export const selectIsEntropyCheckFailed = createMemoizedSelector(
     [selectSelectedDevice, state => state.device.devicesWithFailedEntropyCheck],
     (device, devicesWithFailedEntropyCheck) =>
-        device?.id && devicesWithFailedEntropyCheck?.includes(device.id),
+        !!(device?.id && devicesWithFailedEntropyCheck?.includes(device.id)),
 );
 
 export const selectIsPortfolioTrackerDevice = createMemoizedSelector(

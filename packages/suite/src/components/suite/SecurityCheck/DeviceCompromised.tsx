@@ -1,6 +1,6 @@
 import { deviceActions } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
-import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
+import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { WelcomeLayout } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
@@ -12,10 +12,19 @@ import {
 import { SecurityCheckFail, SecurityCheckFailProps } from './SecurityCheckFail';
 import { hardFailureChecklistItems, softFailureChecklistItems } from './checklistItems';
 
-const useSecurityCheckFailProps = (): Partial<SecurityCheckFailProps> => {
+const useSecurityCheckFailProps = (
+    isEntropyCheckFailed: boolean,
+): Partial<SecurityCheckFailProps> => {
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const hashCheckError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
 
+    if (isEntropyCheckFailed) {
+        return {
+            heading: 'TR_DEVICE_COMPROMISED_HEADING',
+            text: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
+            checklistItems: hardFailureChecklistItems,
+        };
+    }
     // revision check has precedence over hash check, because it does not have the ambiguous other-error state
     if (revisionCheckError !== null) {
         return {
@@ -45,11 +54,15 @@ const useSecurityCheckFailProps = (): Partial<SecurityCheckFailProps> => {
     return {};
 };
 
-export const DeviceCompromised = () => {
+type DeviceCompromisedProps = {
+    isEntropyCheckFailed: boolean;
+};
+
+export const DeviceCompromised = ({ isEntropyCheckFailed }: DeviceCompromisedProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
 
-    const securityCheckFailProps = useSecurityCheckFailProps();
+    const securityCheckFailProps = useSecurityCheckFailProps(isEntropyCheckFailed);
 
     const goToSuite = () => {
         // Condition to satisfy TypeScript, device.id is always defined at this point.
@@ -62,8 +75,13 @@ export const DeviceCompromised = () => {
         <WelcomeLayout>
             <Card data-testid="@device-compromised">
                 <SecurityCheckFail
-                    goBack={goToSuite}
-                    supportUrl={TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL}
+                    // Only let user access the wallet if it may have been initiated before so that they can access the funds and send them to safety.
+                    goBack={isEntropyCheckFailed ? undefined : goToSuite}
+                    supportUrl={
+                        isEntropyCheckFailed
+                            ? TREZOR_SUPPORT_URL // TODO: add specific URL when it is created
+                            : TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL
+                    }
                     {...securityCheckFailProps}
                 />
             </Card>

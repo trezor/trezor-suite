@@ -37,33 +37,22 @@ jest.mock('@trezor/env-utils', () => ({
     isLinux: () => true,
 }));
 
-// jest.mock('@firmware-components/ReconnectDevicePrompt', () => ({
-//     __esModule: true, // export as module
-//     default: ({ children }: any) => <div data-testid="box">{children}</div>,
-// }));
-// jest.mock('src/components/onboarding/DeviceAnimation', () => ({
-//     __esModule: true, // export as module
-//     default: ({ children }: any) => <div data-testid="box">{children}</div>,
-// }));
-// do not render animations
-// jest.mock('lottie-react', () => ({
-//     // Lottie: ({ trezorVersion }: any) => <div>{trezorVersion}</div>,
-//     __esModule: true, // export as module
-//     default: ({ trezorVersion }: any) => <div data-testid="lottie-image">{trezorVersion}</div>,
-// }));
-// jest.mock('react-use/lib/useMeasure', () => ({
-//     // Lottie: ({ trezorVersion }: any) => <div>{trezorVersion}</div>,
-//     __esModule: true, // export as module
-//     default: () => ['ref', { height: 0 }],
-// }));
-
 const getInitialState = ({ suite, router, device }: any = {}) => ({
     suite: {
         lifecycle: {
             status: 'ready',
         },
         transport: { transports: [] },
-        settings: { debug: {}, theme: { variant: 'light' } },
+        settings: {
+            debug: {},
+            theme: { variant: 'light' },
+            enabledSecurityChecks: {
+                deviceAuthenticity: true,
+                entropy: true,
+                firmwareRevision: true,
+                firmwareHash: true,
+            },
+        },
         online: true,
         locks: [],
         flags: {},
@@ -117,6 +106,47 @@ const initStore = (state: State) => {
 };
 
 const Index = ({ app }: any) => <Preloader>{app || 'foo'}</Preloader>;
+
+const deviceCompromisedFixtures = [
+    {
+        description: 'Failed entropy check',
+        device: {
+            devicesWithFailedEntropyCheck: ['deviceId'],
+            selectedDevice: {
+                id: 'deviceId',
+            },
+        },
+        result: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
+    },
+    {
+        description: 'Failed firmware hash check',
+        device: {
+            selectedDevice: {
+                authenticityChecks: {
+                    firmwareHash: {
+                        error: 'hash-mismatch',
+                    },
+                },
+                features: {},
+            },
+        },
+        result: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
+    },
+    {
+        description: 'Failed firmware revision check',
+        device: {
+            selectedDevice: {
+                authenticityChecks: {
+                    firmwareRevision: {
+                        error: 'revision-mismatch',
+                    },
+                },
+                features: {},
+            },
+        },
+        result: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',
+    },
+];
 
 describe('Preloader component', () => {
     it('Loading: suite is loading', () => {
@@ -500,5 +530,19 @@ describe('Preloader component', () => {
         expect(findByTestId('TR_SEE_DETAILS')).not.toBeNull();
 
         unmount();
+    });
+
+    deviceCompromisedFixtures.forEach(({ description, device, result }) => {
+        it(description, () => {
+            const store = initStore(getInitialState({ device }));
+            const { getByText, unmount } = renderWithProviders(
+                store,
+                <Index app={store.getState().router.app} />,
+            );
+
+            expect(getByText(result)).not.toBeNull();
+
+            unmount();
+        });
     });
 });

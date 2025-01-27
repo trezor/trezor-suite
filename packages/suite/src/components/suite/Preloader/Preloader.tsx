@@ -1,6 +1,8 @@
 import { FC, PropsWithChildren, useEffect } from 'react';
 
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import {
+    selectIsEntropyCheckFailed,
     selectIsFirmwareAuthenticityCheckDismissed,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -10,6 +12,7 @@ import { useGuideKeyboard } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 import {
+    selectIsEntropyCheckEnabled,
     selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
     selectIsLoggedOut,
     selectIsTransportInitialized,
@@ -66,6 +69,8 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const isFirmwareAuthenticityCheckDismissed = useSelector(
         selectIsFirmwareAuthenticityCheckDismissed,
     );
+    const isEntropyCheckEnabled = useSelector(selectIsEntropyCheckEnabled);
+    const isEntropyCheckFailed = useSelector(selectIsEntropyCheckFailed);
 
     // report firmware authenticity failures even when the UI is disabled
     useReportDeviceCompromised();
@@ -93,13 +98,15 @@ export const Preloader = ({ children }: PropsWithChildren) => {
         return <InitialLoading timeout={90} />;
     }
 
+    const isEntropyCheckEnabledAndFailed = isEntropyCheckEnabled && isEntropyCheckFailed;
+
     if (
         (router.route?.app === undefined ||
             !ROUTES_TO_SKIP_FIRMWARE_CHECK.includes(router.route?.app)) &&
-        !isFirmwareAuthenticityCheckDismissed &&
-        isFirmwareCheckFailed
+        ((!isFirmwareAuthenticityCheckDismissed && isFirmwareCheckFailed) ||
+            isEntropyCheckEnabledAndFailed)
     ) {
-        return <DeviceCompromised />;
+        return <DeviceCompromised isEntropyCheckFailed={isEntropyCheckEnabledAndFailed} />;
     }
 
     if (

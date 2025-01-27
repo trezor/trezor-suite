@@ -6890,6 +6890,10 @@ export default defineMessages({
         id: 'TR_FAILED_VERIFY_DEVICE_TEXT',
         defaultMessage: 'Avoid using this device or sending any funds to it.',
     },
+    TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT: {
+        id: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
+        defaultMessage: 'Security check verifying entropy failed during wallet creation.',
+    },
     TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
         defaultMessage: 'Your device firmware hash check failed.',
