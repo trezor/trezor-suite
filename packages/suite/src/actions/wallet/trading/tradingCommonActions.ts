@@ -16,7 +16,7 @@ import {
     selectSelectedDevice,
     toggleRememberDevice,
 } from '@suite-common/wallet-core';
-import type { TradingType } from '@suite-common/invity';
+import type { TradingType } from '@suite-common/trading';
 
 import { GetState, Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';

@@ -1,6 +1,6 @@
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { invityAPI, type TradingPaymentMethodType } from '@suite-common/invity';
+import { invityAPI, type TradingPaymentMethodType } from '@suite-common/trading';
 
 import { TradingPaymentPlainType } from 'src/views/wallet/trading/common/TradingPaymentPlainType';
 import { TradingIcon } from 'src/views/wallet/trading/common/TradingIcon';

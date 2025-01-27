@@ -3,7 +3,7 @@ import { PropsWithChildren, useMemo } from 'react';
 import { IconButton, Row, Box, Button } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Route } from '@suite-common/suite-types';
-import type { TradingType } from '@suite-common/invity';
+import type { TradingType } from '@suite-common/trading';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';

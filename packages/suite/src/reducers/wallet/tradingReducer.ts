@@ -13,7 +13,7 @@ import type {
 
 import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import type { FeeLevel } from '@trezor/connect';
-import type { TradingType } from '@suite-common/invity';
+import type { TradingType } from '@suite-common/trading';
 
 import type { WalletAction, Account } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/tradingBuyActions';

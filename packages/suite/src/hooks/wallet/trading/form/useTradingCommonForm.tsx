@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import type { TradingType } from '@suite-common/invity';
+import type { TradingType } from '@suite-common/trading';
 
 import { TradingFormContextValues } from 'src/types/trading/tradingForm';
 

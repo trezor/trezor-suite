@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 
 import { Divider, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import type { TradingExchangeType } from '@suite-common/invity';
+import type { TradingExchangeType } from '@suite-common/trading';
 
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 import { TradingVerify } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerify';

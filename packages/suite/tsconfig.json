@@ -33,7 +33,6 @@
         {
             "path": "../../suite-common/intl-types"
         },
-        { "path": "../../suite-common/invity" },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
@@ -66,6 +65,7 @@
         {
             "path": "../../suite-common/token-definitions"
         },
+        { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/validators"
         },

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Button, Column, Divider, InfoItem, Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import type { TradingExchangeType } from '@suite-common/invity';
+import type { TradingExchangeType } from '@suite-common/trading';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';

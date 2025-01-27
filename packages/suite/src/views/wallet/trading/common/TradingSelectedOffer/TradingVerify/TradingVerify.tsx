@@ -7,7 +7,7 @@ import { Input, Button, Paragraph, Divider, Column, Tooltip } from '@trezor/comp
 import { spacings } from '@trezor/theme';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { TradingExchangeType } from '@suite-common/invity';
+import { TradingExchangeType } from '@suite-common/trading';
 
 import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';

@@ -28,7 +28,7 @@ import type {
     TradingSellType,
     TradingTradeType,
     TradingType,
-} from '@suite-common/invity';
+} from '@suite-common/trading';
 
 import {
     TradingAccountOptionsGroupOptionProps,

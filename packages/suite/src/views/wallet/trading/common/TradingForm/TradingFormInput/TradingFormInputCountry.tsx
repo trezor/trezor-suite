@@ -2,7 +2,7 @@ import { Control, Controller } from 'react-hook-form';
 
 import { Flag, Select, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { regional } from '@suite-common/invity';
+import { regional } from '@suite-common/trading';
 
 import { CountryOption } from 'src/types/wallet/tradingCommonTypes';
 import { getCountryLabelParts } from 'src/utils/wallet/trading/tradingUtils';

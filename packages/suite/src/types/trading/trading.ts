@@ -28,7 +28,7 @@ import type {
     TradingPaymentMethodType,
     TradingSellType,
     TradingType,
-} from '@suite-common/invity';
+} from '@suite-common/trading';
 
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 import { State } from 'src/reducers/wallet/tradingReducer';

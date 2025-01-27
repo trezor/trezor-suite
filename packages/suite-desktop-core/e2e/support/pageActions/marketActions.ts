@@ -2,7 +2,7 @@ import { Locator, Page } from '@playwright/test';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { regional } from '@suite-common/invity';
+import { regional } from '@suite-common/trading';
 
 import { expect } from '../customMatchers';
 import { step, TrezorUserEnvLinkProxy } from '../common';

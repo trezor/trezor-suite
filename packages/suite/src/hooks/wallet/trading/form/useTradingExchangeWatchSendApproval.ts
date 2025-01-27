@@ -3,7 +3,7 @@ import { useTimeoutFn, useUnmount } from 'react-use';
 
 import { ExchangeTrade } from 'invity-api';
 
-import { invityAPI, type TradingExchangeType } from '@suite-common/invity';
+import { invityAPI, type TradingExchangeType } from '@suite-common/trading';
 
 import { useDispatch } from 'src/hooks/suite';
 import { saveSelectedQuote } from 'src/actions/wallet/tradingExchangeActions';

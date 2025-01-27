@@ -4,7 +4,7 @@ import { CryptoId } from 'invity-api';
 
 import { Button, TextButton, Row, Column, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import type { TradingTradeType, TradingType } from '@suite-common/invity';
+import type { TradingTradeType, TradingType } from '@suite-common/trading';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {

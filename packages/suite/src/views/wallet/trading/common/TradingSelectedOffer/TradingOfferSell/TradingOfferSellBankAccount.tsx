@@ -5,7 +5,7 @@ import { BankAccount } from 'invity-api';
 
 import { Button, Select, Icon, Row } from '@trezor/components';
 import { fontWeights, spacingsPx, typography } from '@trezor/theme';
-import type { TradingSellType } from '@suite-common/invity';
+import type { TradingSellType } from '@suite-common/trading';
 
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { formatIban } from 'src/utils/wallet/trading/sellUtils';

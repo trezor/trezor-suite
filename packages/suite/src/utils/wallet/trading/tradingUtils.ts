@@ -21,7 +21,7 @@ import {
     sortByCoin,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
-import { regional, type TradingTradeType, type TradingType } from '@suite-common/invity';
+import { regional, type TradingTradeType, type TradingType } from '@suite-common/trading';
 
 import { Account } from 'src/types/wallet';
 import { ExtendedMessageDescriptor, Route, TrezorDevice } from 'src/types/suite';

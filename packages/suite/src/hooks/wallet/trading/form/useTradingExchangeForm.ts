@@ -15,7 +15,7 @@ import { Account } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networks } from '@suite-common/wallet-config';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { invityAPI, type TradingExchangeType } from '@suite-common/invity';
+import { invityAPI, type TradingExchangeType } from '@suite-common/trading';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/tradingExchangeActions';

@@ -1,4 +1,4 @@
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI } from '@suite-common/trading';
 
 import { useSelector } from 'src/hooks/suite';
 

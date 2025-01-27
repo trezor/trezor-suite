@@ -4,7 +4,7 @@ import { SellFiatTrade } from 'invity-api';
 import { Badge, Button, Card, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import type { TradingTradeType, TradingType } from '@suite-common/invity';
+import type { TradingTradeType, TradingType } from '@suite-common/trading';
 
 import { Translation } from 'src/components/suite';
 import {

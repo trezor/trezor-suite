@@ -16,7 +16,7 @@ import {
     Card,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import type { TradingExchangeType } from '@suite-common/invity';
+import type { TradingExchangeType } from '@suite-common/trading';
 
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';

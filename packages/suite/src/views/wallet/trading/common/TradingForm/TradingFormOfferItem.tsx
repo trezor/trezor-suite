@@ -1,4 +1,4 @@
-import type { TradingTradeType } from '@suite-common/invity';
+import type { TradingTradeType } from '@suite-common/trading';
 import { Row, Spinner, Card, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

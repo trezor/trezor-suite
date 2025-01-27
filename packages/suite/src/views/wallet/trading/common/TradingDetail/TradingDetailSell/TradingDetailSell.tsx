@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Card } from '@trezor/components';
-import type { TradingSellType } from '@suite-common/invity';
+import type { TradingSellType } from '@suite-common/trading';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';

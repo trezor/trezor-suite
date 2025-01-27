@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { Button, Column, Spinner, Text } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-import type { TradingSellType } from '@suite-common/invity';
+import type { TradingSellType } from '@suite-common/trading';
 
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';

@@ -3,7 +3,7 @@ import { CryptoId } from 'invity-api';
 import { Account } from '@suite-common/wallet-types';
 import { Column, Row, InfoItem, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import type { TradingType } from '@suite-common/invity';
+import type { TradingType } from '@suite-common/trading';
 
 import { AccountLabeling, Translation } from 'src/components/suite';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';

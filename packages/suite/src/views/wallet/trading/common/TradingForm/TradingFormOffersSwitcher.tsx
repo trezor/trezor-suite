@@ -1,6 +1,6 @@
 import { spacings } from '@trezor/theme';
 import { Row, Card, Column, Spinner, Paragraph } from '@trezor/components';
-import type { TradingTradeType } from '@suite-common/invity';
+import type { TradingTradeType } from '@suite-common/trading';
 
 import { Translation } from 'src/components/suite';
 import { TradingUtilsProvidersProps } from 'src/types/trading/trading';

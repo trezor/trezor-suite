@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { Row, Select } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import type { TradingExchangeType } from '@suite-common/invity';
+import type { TradingExchangeType } from '@suite-common/trading';
 
 import { Translation } from 'src/components/suite';
 import {

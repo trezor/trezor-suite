@@ -5,7 +5,7 @@ import { CryptoId } from 'invity-api';
 
 import { spacingsPx } from '@trezor/theme';
 import { Icon } from '@trezor/components';
-import type { TradingTradeType } from '@suite-common/invity';
+import type { TradingTradeType } from '@suite-common/trading';
 
 import {
     getCryptoQuoteAmountProps,

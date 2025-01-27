@@ -6,7 +6,7 @@ import {
     CryptoId,
 } from 'invity-api';
 
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI } from '@suite-common/trading';
 
 import { Account } from 'src/types/wallet';
 import { Dispatch } from 'src/types/suite';
