@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
@@ -14,6 +14,7 @@ import {
     TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
     TREZOR_URL,
 } from '@trezor/urls';
+import { models } from '@trezor/connect/src/data/models';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
@@ -209,6 +210,14 @@ const SecurityCheckContent = ({
         }
     }, [initialized, isRecoveryInProgress, updateAnalytics]);
 
+    const humanizedModelColor = useMemo(
+        () =>
+            device?.features?.internal_model && device?.features?.unit_color
+                ? models[device?.features?.internal_model]?.colors?.[device?.features?.unit_color]
+                : null,
+        [device],
+    );
+
     return isFailed ? (
         <SecurityCheckFail
             goBack={toggleView}
@@ -223,7 +232,11 @@ const SecurityCheckContent = ({
                     <Text variant="tertiary">
                         <Translation id="TR_YOU_HAVE_CONNECTED" />
                     </Text>
-                    <DeviceName>{device?.name}</DeviceName>
+                    <DeviceName>
+                        {device?.name}
+                        {humanizedModelColor && <Text> {humanizedModelColor}</Text>}
+                    </DeviceName>
+
                     <OnboardingButtonSkip onClick={toggleView}>
                         <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
                     </OnboardingButtonSkip>
