@@ -12,7 +12,9 @@ export const preloadStore = async () => {
         db.onBlocked = () => resolve('blocked');
         db.onBlocking = () => resolve('blocking');
         // initialize
-        db.getDB().then(() => resolve(undefined));
+        db.getDB()
+            .then(() => resolve(undefined))
+            .catch(() => {}); // So there isn't unhandled rejection
     });
 
     if (dbError) {
