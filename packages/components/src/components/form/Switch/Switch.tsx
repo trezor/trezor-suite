@@ -1,9 +1,8 @@
-import { ReactNode } from 'react';
+import { ReactNode, useId } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { borders, spacingsPx, typography } from '@trezor/theme';
-import { getWeakRandomId } from '@trezor/utils';
 
 import {
     getInputColor,
@@ -135,11 +134,20 @@ export const Switch = ({
     className,
     labelPosition = 'right',
 }: SwitchProps) => {
-    const id = getWeakRandomId(10);
+    const id = useId();
 
     const handleChange = () => {
         if (isDisabled) return;
         onChange(!isChecked);
+    };
+
+    const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        // Prevent handling clicks that originate from the input or label
+        const target = e.target as HTMLElement;
+        if (target.tagName === 'INPUT' || target.tagName === 'LABEL') return;
+
+        e.preventDefault();
+        handleChange();
     };
 
     return (
@@ -150,10 +158,7 @@ export const Switch = ({
                 $isChecked={isChecked}
                 $isDisabled={isDisabled}
                 $isAlert={isAlert}
-                onClick={e => {
-                    e.preventDefault();
-                    handleChange();
-                }}
+                onClick={handleContainerClick}
                 data-testid={dataTest}
                 $isSmall={isSmall}
             >
