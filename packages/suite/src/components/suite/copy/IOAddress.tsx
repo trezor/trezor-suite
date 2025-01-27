@@ -2,10 +2,11 @@ import { useState } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { Icon, Link, Text } from '@trezor/components';
+import { Icon, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
+import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 const IconWrapper = styled.div`
     display: none;
@@ -124,13 +125,13 @@ export const IOAddress = ({
                     ) : null}
                     {explorerUrl ? (
                         <IconWrapper>
-                            <Link
+                            <TrezorLink
                                 typographyStyle="label"
                                 variant="nostyle"
                                 href={`${explorerUrl}${txAddress}${explorerUrlQueryString}`}
                             >
                                 <Icon name="arrowUpRight" size={12} color={theme.iconOnPrimary} />
-                            </Link>
+                            </TrezorLink>
                         </IconWrapper>
                     ) : null}
                 </TextOverflowContainer>
