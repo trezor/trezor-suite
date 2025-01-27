@@ -96,4 +96,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
             await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
         },
     );
+
+    // todo: test what happens if you steal session and navigate directly to device settings (web)
+    // todo: test the same for other routes as well (/recovery, /backup, etc..)
 });

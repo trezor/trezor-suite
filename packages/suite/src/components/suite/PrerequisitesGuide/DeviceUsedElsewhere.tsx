@@ -1,35 +1,20 @@
 import { MouseEventHandler } from 'react';
 
-import { acquireDevice } from '@suite-common/wallet-core';
-import { Button } from '@trezor/components';
-
 import { Translation, TroubleshootingTips } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice } from 'src/hooks/suite';
 import {
     TROUBLESHOOTING_TIP_RECONNECT,
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
 } from 'src/components/suite/troubleshooting/tips';
 
-export const DeviceUsedElsewhere = () => {
-    const { isLocked, device } = useDevice();
-    const dispatch = useDispatch();
+import { AcquireDeviceButton } from '../AcquireDeviceButton';
 
-    const isDeviceLocked = isLocked();
+export const DeviceUsedElsewhere = () => {
+    const { device } = useDevice();
 
     const handleClick: MouseEventHandler = e => {
         e.stopPropagation();
-        dispatch(acquireDevice());
     };
-
-    const ctaButton = (
-        <Button
-            data-testid="@device-used-elsewhere"
-            isLoading={isDeviceLocked}
-            onClick={handleClick}
-        >
-            <Translation id="TR_ACQUIRE_DEVICE" />
-        </Button>
-    );
 
     const tips = [
         {
@@ -51,7 +36,7 @@ export const DeviceUsedElsewhere = () => {
     return (
         <TroubleshootingTips
             label={<Translation id="TR_ACQUIRE_DEVICE_TITLE" />}
-            cta={ctaButton}
+            cta={<AcquireDeviceButton onClick={handleClick} />}
             items={tips}
         />
     );

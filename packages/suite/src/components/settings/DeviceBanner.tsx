@@ -2,25 +2,24 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Card, LottieAnimation, Paragraph, Row, variables, Text } from '@trezor/components';
+import { Card, Column, LottieAnimation, Paragraph, Row, variables, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
 import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
 
+import { AcquireDeviceButton } from '../suite/AcquireDeviceButton';
+
+const StyledAcquireDeviceButton = styled(AcquireDeviceButton)`
+    margin-left: auto;
+`;
+
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledLottieAnimation = styled(LottieAnimation)`
     margin: 8px 16px 8px 0;
     min-width: 64px;
     background: ${({ theme }) => theme.legacy.BG_GREY};
-`;
-
-const Column = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
@@ -38,10 +37,10 @@ const Title = styled(Paragraph)`
     }
 `;
 
-interface DeviceBannerProps {
+type DeviceBannerProps = {
     title: ReactNode;
     description?: ReactNode;
-}
+};
 
 export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
     const { device } = useDevice();
@@ -69,6 +68,8 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
                     </Row>
                     {description && <Text color="textSubdued">{description}</Text>}
                 </Column>
+
+                {!device?.features && <StyledAcquireDeviceButton />}
             </Row>
         </Card>
     );
