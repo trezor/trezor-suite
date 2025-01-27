@@ -104,7 +104,7 @@ const EthereumDetails = ({
 };
 
 const RippleDetails = ({ networkType, selectedLevel, showFee }: DetailsProps) =>
-    showFee && <Item label={selectedLevel.feePerUnit}>{getFeeUnits(networkType)}</Item>;
+    showFee && <Item label={getFeeUnits(networkType)}>{selectedLevel.feePerUnit}</Item>;
 
 export const FeeDetails = (props: DetailsProps) => {
     const { networkType } = props;
