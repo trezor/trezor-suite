@@ -124,7 +124,7 @@ export const getAccountInfoThunk = createThunk<
                 if (!tokenDefinitions && isCoinWithTokens(symbol)) {
                     const definitionTypes = getSupportedDefinitionTypes(symbol);
 
-                    definitionTypes.forEach(async type => {
+                    const promises = definitionTypes.map(async type => {
                         await dispatch(
                             getTokenDefinitionThunk({
                                 symbol,
@@ -132,6 +132,7 @@ export const getAccountInfoThunk = createThunk<
                             }),
                         );
                     });
+                    await Promise.all(promises);
                 }
                 // fetch fiat rates for all tokens of newly discovered account
                 // Even that there is check in updateFiatRatesThunk, it is better to do it here and do not dispatch thunk at all because it has some overhead and sometimes there could be lot of tokens
