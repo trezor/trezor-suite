@@ -1,3 +1,5 @@
+import mockSafeAreaContext from 'react-native-safe-area-context/jest/mock';
+
 jest.mock('expo-localization', () => {
     const Localization = {
         getLocales: () => [
@@ -403,3 +405,5 @@ jest.mock('expo-constants', () => {
 });
 
 jest.mock('redux-devtools-expo-dev-plugin', () => () => next => next);
+
+jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
