@@ -1,5 +1,6 @@
 /* eslint-disable import/order */
 import { AccountLabel } from './AccountLabel';
+import { Address } from './Address';
 import { DeviceConfirmImage } from './DeviceConfirmImage';
 import { CheckItem } from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide/PrerequisitesGuide';
@@ -55,6 +56,7 @@ import { StakingFeature } from './StakingFeature';
 import { StakeAmountWrapper } from './StakeAmountWrapper';
 
 export {
+    Address,
     AccountLabel,
     DeviceConfirmImage,
     CheckItem,

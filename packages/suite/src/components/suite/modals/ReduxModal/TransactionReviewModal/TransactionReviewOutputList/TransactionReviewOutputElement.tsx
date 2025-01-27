@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import {
-    Address,
     H4,
     Column,
     Row,
@@ -24,7 +23,7 @@ import { spacings } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Account } from 'src/types/wallet';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { FiatValue, FormattedCryptoAmount, Translation, Address } from 'src/components/suite';
 
 // token name is fingerprint in Cardano
 const getFingerprint = (
@@ -170,62 +169,60 @@ export const TransactionReviewOutputElement = ({
                         />
                     );
 
-                            return (
-                                <div data-testid={`@modal/output-${line.id}`} key={line.id}>
-                                    <Text typographyStyle="hint" as="div">
-                                        {line.label ? (
-                                            <InfoItem
-                                                label={
-                                                    <Text
-                                                        variant="default"
-                                                        data-testid="@modal/output-headline"
-                                                    >
-                                                        {line.label}
-                                                    </Text>
-                                                }
-                                                direction="row"
+                    return (
+                        <div data-testid={`@modal/output-${line.id}`} key={line.id}>
+                            <Text typographyStyle="hint" as="div">
+                                {line.label ? (
+                                    <InfoItem
+                                        label={
+                                            <Text
+                                                variant="default"
+                                                data-testid="@modal/output-headline"
                                             >
-                                                <Column
-                                                    alignItems="flex-end"
-                                                    data-testid="@modal/output-value"
-                                                >
-                                                    {value}
-                                                </Column>
-                                            </InfoItem>
-                                        ) : (
-                                            <Text data-testid="@modal/output-value">{value}</Text>
-                                        )}
-                                    </Text>
-                                    {networkType === 'cardano' && cardanoFingerprint && (
-                                        <InfoItem
-                                            label={
-                                                <Text variant="default" typographyStyle="hint">
-                                                    <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
-                                                </Text>
-                                            }
-                                            direction="row"
+                                                {line.label}
+                                            </Text>
+                                        }
+                                        direction="row"
+                                    >
+                                        <Column
+                                            alignItems="flex-end"
+                                            data-testid="@modal/output-value"
                                         >
-                                            {cardanoFingerprint}
-                                        </InfoItem>
-                                    )}
-                                    {networkType === 'cardano' && token && token.decimals !== 0 && (
-                                        <InfoItem
-                                            label={
-                                                <Text variant="default" typographyStyle="hint">
-                                                    <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
-                                                </Text>
-                                            }
-                                            direction="row"
-                                        >
-                                            {amountToSmallestUnit(line.value, token.decimals)}
-                                        </InfoItem>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </Column>
-                </>
-            )}
+                                            {value}
+                                        </Column>
+                                    </InfoItem>
+                                ) : (
+                                    <Text data-testid="@modal/output-value">{value}</Text>
+                                )}
+                            </Text>
+                            {networkType === 'cardano' && cardanoFingerprint && (
+                                <InfoItem
+                                    label={
+                                        <Text variant="default" typographyStyle="hint">
+                                            <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
+                                        </Text>
+                                    }
+                                    direction="row"
+                                >
+                                    {cardanoFingerprint}
+                                </InfoItem>
+                            )}
+                            {networkType === 'cardano' && token && token.decimals !== 0 && (
+                                <InfoItem
+                                    label={
+                                        <Text variant="default" typographyStyle="hint">
+                                            <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
+                                        </Text>
+                                    }
+                                    direction="row"
+                                >
+                                    {amountToSmallestUnit(line.value, token.decimals)}
+                                </InfoItem>
+                            )}
+                        </div>
+                    );
+                })}
+            </Column>
         </Card>
     );
 };
