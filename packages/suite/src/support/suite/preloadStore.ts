@@ -44,6 +44,7 @@ export const preloadStore = async () => {
     const coinjoinAccounts = await db.getItemsExtended('coinjoinAccounts');
     const coinjoinDebugSettings = await db.getItemByPK('coinjoinDebugSettings', 'debug');
     const tokenManagement = await db.getItemsWithKeys('tokenManagement');
+    const security = await db.getItemByPK('security', 'security');
 
     return {
         type: STORAGE.LOAD,
@@ -67,6 +68,7 @@ export const preloadStore = async () => {
             coinjoinAccounts,
             coinjoinDebugSettings,
             tokenManagement,
+            security,
         },
     } as const;
 };

@@ -5,7 +5,7 @@ import { reloadApp } from 'src/utils/suite/reload';
 import type { SuiteDBSchema } from './definitions';
 import { migrate } from './migrations';
 
-const VERSION = 53; // don't forget to add migration and CHANGELOG when changing versions!
+const VERSION = 52; // don't forget to add migration and CHANGELOG when changing versions!
 
 /**
  *  If the object stores don't already exist then creates them.

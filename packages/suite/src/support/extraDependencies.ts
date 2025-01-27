@@ -205,6 +205,7 @@ export const extraDependencies: ExtraDependencies = {
         },
         storageLoadDevices: (state, { payload }: StorageLoadAction) => {
             state.devices = payload.devices;
+            state.devicesWithFailedEntropyCheck = payload.security?.devicesWithFailedEntropyCheck;
         },
         storageLoadFormDrafts: (state, { payload }: StorageLoadAction) => {
             payload.sendFormDrafts.forEach(d => {

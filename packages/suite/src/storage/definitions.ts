@@ -131,6 +131,12 @@ export interface SuiteDBSchema extends DBSchema {
             firmwareHashInvalid: string[];
         };
     };
+    security: {
+        key: 'security';
+        value: {
+            devicesWithFailedEntropyCheck: string[];
+        };
+    };
 }
 
 export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;

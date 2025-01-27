@@ -463,6 +463,14 @@ export const saveFirmware = () => async (_dispatch: Dispatch, getState: GetState
     db.addItem('firmware', { firmwareHashInvalid: firmware.firmwareHashInvalid }, 'firmware', true);
 };
 
+export const saveEntropyCheckFail = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!(await db.isAccessible())) return;
+    const { devicesWithFailedEntropyCheck } = getState().device;
+    if (!devicesWithFailedEntropyCheck) return;
+
+    db.addItem('security', { devicesWithFailedEntropyCheck }, 'security', true);
+};
+
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
 
