@@ -6,7 +6,7 @@ import { step } from '../common';
 
 export class DevicePromptActions {
     readonly confirmOnDevicePrompt: Locator;
-    private readonly connectDevicePrompt: Locator;
+    readonly connectDevicePrompt: Locator;
     readonly modal: Locator;
     private readonly paginatedText: Locator;
     private readonly paginatedTextSeparator: Locator;
