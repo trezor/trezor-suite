@@ -14,6 +14,7 @@ import { Address } from './Address';
 import { Amount } from './Amount/Amount';
 import { OpReturn } from './OpReturn';
 import { TokenSelect } from './TokenSelect/TokenSelect';
+import { DestinationTag } from '../Options/RippleOptions/DestinationTag';
 
 const Container = styled.div<{ $height: number }>`
     height: ${({ $height }) => ($height ? `${$height}px` : 'auto')};
@@ -30,7 +31,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
 
     const {
         outputs,
-        account: { symbol },
+        account: { symbol, networkType },
     } = useSendFormContext();
 
     const ref = useRef<HTMLDivElement>(null);
@@ -90,6 +91,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                                 outputsCount={outputs.length}
                                             />
                                             <Amount output={outputs[index]} outputId={index} />
+                                            {networkType === 'ripple' && <DestinationTag />}
                                         </Column>
                                     )}
                                 </Card>

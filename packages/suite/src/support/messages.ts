@@ -5467,6 +5467,20 @@ export default defineMessages({
         defaultMessage: 'Memo/Tag',
         id: 'DESTINATION_TAG_SHORT',
     },
+    DESTINATION_TAG_SWITCH: {
+        defaultMessage: 'Add Memo/Destination tag',
+        id: 'DESTINATION_TAG_SWITCH',
+    },
+    DESTINATION_TAG_NOTE: {
+        defaultMessage:
+            'Online exchanges require this to identify your account. Get your destination tag from your exchange.',
+        id: 'DESTINATION_TAG_NOTE',
+    },
+    DESTINATION_TAG_BANNER_SEND: {
+        defaultMessage:
+            'Most exchanges require you to include a memo/destination tag to identify your Ripple account. Make sure you really don’t need it.',
+        id: 'DESTINATION_TAG_BANNER_SEND',
+    },
     DESTINATION_TAG_TOOLTIP: {
         id: 'DESTINATION_TAG_TOOLTIP',
         defaultMessage:

@@ -5,7 +5,6 @@ import { Button, Tooltip } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Translation } from 'src/components/suite';
 
-import { DestinationTag } from './DestinationTag';
 import { OnOffSwitcher } from '../OnOffSwitcher';
 
 const Wrapper = styled.div`
@@ -20,44 +19,21 @@ const Left = styled.div`
     justify-content: flex-start;
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    margin-right: 8px;
+const Inline = styled.span`
+    display: inline-flex;
 `;
 
 export const RippleOptions = () => {
-    const { getDefaultValue, toggleOption, composeTransaction, resetDefaultValue } =
-        useSendFormContext();
+    const { getDefaultValue, toggleOption, composeTransaction } = useSendFormContext();
 
     const options = getDefaultValue('options', []);
-    const destinationEnabled = options.includes('rippleDestinationTag');
     const broadcastEnabled = options.includes('broadcast');
 
     return (
         <Wrapper>
             <Left>
-                {!destinationEnabled && (
-                    <Tooltip
-                        content={<Translation id="DESTINATION_TAG_TOOLTIP" />}
-                        cursor="pointer"
-                    >
-                        <StyledButton
-                            variant="tertiary"
-                            size="small"
-                            icon="database"
-                            onClick={() => {
-                                // open additional form
-                                toggleOption('rippleDestinationTag');
-                                composeTransaction();
-                            }}
-                        >
-                            <Translation id="DESTINATION_TAG" />
-                        </StyledButton>
-                    </Tooltip>
-                )}
-
                 <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
-                    <StyledButton
+                    <Button
                         variant="tertiary"
                         size="small"
                         icon="broadcast"
@@ -66,22 +42,13 @@ export const RippleOptions = () => {
                             composeTransaction();
                         }}
                     >
-                        <Translation id="BROADCAST" />
-                        <OnOffSwitcher isOn={broadcastEnabled} />
-                    </StyledButton>
+                        <Inline>
+                            <Translation id="BROADCAST" />
+                            <OnOffSwitcher isOn={broadcastEnabled} />
+                        </Inline>
+                    </Button>
                 </Tooltip>
             </Left>
-
-            {destinationEnabled && (
-                <DestinationTag
-                    close={() => {
-                        resetDefaultValue('rippleDestinationTag');
-                        // close additional form
-                        toggleOption('rippleDestinationTag');
-                        composeTransaction();
-                    }}
-                />
-            )}
         </Wrapper>
     );
 };

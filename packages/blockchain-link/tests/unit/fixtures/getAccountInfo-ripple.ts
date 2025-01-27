@@ -326,6 +326,7 @@ export default [
                             totalInput: '0',
                             totalOutput: '0',
                         },
+                        rippleSpecific: { destinationTag: undefined },
                     },
                 ],
             },

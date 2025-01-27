@@ -71,6 +71,7 @@ export type FrameProps = {
     overflow?: Overflow;
     pointerEvents?: PointerEvent;
     flex?: Flex;
+    gap?: SpacingValues;
     position?: Position;
     cursor?: Cursor;
     zIndex?: number;

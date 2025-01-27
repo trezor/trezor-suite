@@ -64,6 +64,7 @@ const SecondLine = styled.p`
 export const ReviewButton = () => {
     const { device, isLocked } = useDevice();
     const {
+        account: { networkType },
         control,
         formState: { errors },
         online,
@@ -90,6 +91,11 @@ export const ReviewButton = () => {
     const values = getValues();
     const broadcastEnabled = options.includes('broadcast');
     const coinControlOpen = options.includes('utxoSelection');
+    const requireDestinationTag =
+        networkType === 'ripple' &&
+        options.includes('rippleDestinationTag') &&
+        values.rippleDestinationTag === '';
+
     const isDeviceConnected = device?.connected && device?.available;
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
     const isLowAnonymity =
@@ -103,7 +109,7 @@ export const ReviewButton = () => {
         !isLowAnonymity;
     const confirmationRequired =
         possibleToSubmit && isLowAnonymityUtxoSelected && !anonymityWarningChecked;
-    const isDisabled = !possibleToSubmit || confirmationRequired;
+    const isDisabled = requireDestinationTag || !possibleToSubmit || confirmationRequired;
     const showCoinControlWarning = possibleToSubmit && isLowAnonymityUtxoSelected;
     const buttonHasTwoLines = isLowAnonymity || showCoinControlWarning;
     const secondaryText = isCoinControlEnabled
