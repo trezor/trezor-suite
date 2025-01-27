@@ -178,6 +178,12 @@ export const BasicTxDetails = ({
                         </Item>
                     </>
                 )}
+
+                {tx.rippleSpecific && (
+                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} iconName="tag">
+                        {tx.rippleSpecific.destinationTag ?? '-'}
+                    </Item>
+                )}
             </Grid>
         </Card>
     );

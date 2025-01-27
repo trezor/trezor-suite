@@ -5462,6 +5462,10 @@ export default defineMessages({
         defaultMessage: 'Destination tag',
         id: 'DESTINATION_TAG',
     },
+    DESTINATION_TAG_SHORT: {
+        defaultMessage: 'Memo/Tag',
+        id: 'DESTINATION_TAG_SHORT',
+    },
     DESTINATION_TAG_TOOLTIP: {
         id: 'DESTINATION_TAG_TOOLTIP',
         defaultMessage:

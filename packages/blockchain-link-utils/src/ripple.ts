@@ -25,6 +25,7 @@ export const transformTransaction = (tx: any, descriptor?: string): Transaction 
     const addresses = [tx.Destination];
     const amount = tx.Amount;
     const fee = tx.Fee;
+    const destinationTag = tx.DestinationTag;
 
     // TODO: https://github.com/ripple/ripple-lib/blob/develop/docs/index.md#transaction-types
     return {
@@ -55,6 +56,9 @@ export const transformTransaction = (tx: any, descriptor?: string): Transaction 
             size: 0,
             totalInput: '0',
             totalOutput: '0',
+        },
+        rippleSpecific: {
+            destinationTag,
         },
     };
 };

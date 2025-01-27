@@ -123,6 +123,9 @@ const xrpTx = {
     tokens: [],
     internalTransfers: [],
     details: { size: 0, totalInput: '0', totalOutput: '0', vin: [], vout: [] },
+    rippleSpecific: {
+        destinationTag: xrpFixture.DestinationTag,
+    },
 };
 
 export default {

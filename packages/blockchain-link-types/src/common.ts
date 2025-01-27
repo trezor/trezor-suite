@@ -157,6 +157,9 @@ export interface Transaction {
     details: TransactionDetail;
     vsize?: number;
     feeRate?: string;
+    rippleSpecific?: {
+        destinationTag?: number;
+    };
 }
 
 /* Account */

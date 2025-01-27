@@ -106,6 +106,7 @@ export default [
                             totalInput: '0',
                             totalOutput: '0',
                         },
+                        rippleSpecific: { destinationTag: undefined },
                     },
                 ],
             },
@@ -200,6 +201,7 @@ export default [
                             totalInput: '0',
                             totalOutput: '0',
                         },
+                        rippleSpecific: { destinationTag: undefined },
                     },
                     {
                         type: 'recv',
@@ -227,6 +229,7 @@ export default [
                             totalInput: '0',
                             totalOutput: '0',
                         },
+                        rippleSpecific: { destinationTag: undefined },
                     },
                 ],
             },
