@@ -1,4 +1,5 @@
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -154,7 +155,10 @@ export const resetDevice =
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectSelectedDevice(getState());
         const isEntropyCheckEnabled = selectIsEntropyCheckEnabled(getState());
-
+        const isEntropyCheckDisabledByMessageSystem = selectIsFeatureDisabled(
+            getState(),
+            Feature.entropyCheck,
+        );
         if (!device || !device.features) return;
 
         const defaults = {
@@ -169,7 +173,7 @@ export const resetDevice =
             },
             ...defaults,
             ...params,
-            entropy_check: isEntropyCheckEnabled,
+            entropy_check: isEntropyCheckEnabled && !isEntropyCheckDisabledByMessageSystem,
         });
 
         if (!result.success) {

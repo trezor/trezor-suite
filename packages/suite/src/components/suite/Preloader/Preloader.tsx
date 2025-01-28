@@ -70,6 +70,10 @@ export const Preloader = ({ children }: PropsWithChildren) => {
         selectIsFirmwareAuthenticityCheckDismissed,
     );
     const isEntropyCheckEnabled = useSelector(selectIsEntropyCheckEnabled);
+    // Entropy check won't be performed if disabled but we also have to check it here to avoid showing the UI when the failed state is stored in database.
+    const isEntropyCheckDisabledByMessageSystem = useSelector(state =>
+        selectIsFeatureDisabled(state, Feature.entropyCheck),
+    );
     const isEntropyCheckFailed = useSelector(selectIsEntropyCheckFailed);
 
     // report firmware authenticity failures even when the UI is disabled
@@ -98,7 +102,8 @@ export const Preloader = ({ children }: PropsWithChildren) => {
         return <InitialLoading timeout={90} />;
     }
 
-    const isEntropyCheckEnabledAndFailed = isEntropyCheckEnabled && isEntropyCheckFailed;
+    const isEntropyCheckEnabledAndFailed =
+        isEntropyCheckEnabled && !isEntropyCheckDisabledByMessageSystem && isEntropyCheckFailed;
 
     if (
         (router.route?.app === undefined ||
