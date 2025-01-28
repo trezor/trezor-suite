@@ -8,6 +8,7 @@ import {
     TypedEmitter,
     createTimeoutPromise,
     isArrayMember,
+    serializeError,
 } from '@trezor/utils';
 import { Session } from '@trezor/transport';
 import { TransportProtocol, v1 as v1Protocol } from '@trezor/protocol';
@@ -831,7 +832,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
             return { success: true };
         } catch (errorPayload) {
-            return createFailResult('other-error', errorPayload);
+            return createFailResult('other-error', serializeError(errorPayload));
         }
     }
 
