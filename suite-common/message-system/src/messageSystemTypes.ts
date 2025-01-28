@@ -40,6 +40,9 @@ export type ContextDomain = (typeof Context)[keyof typeof Context];
 
 export const Experiment = {
     // e.g. orangeSendButton: 'fb0eb1bc-8ec3-44d4-98eb-53301d73d981',
+    hellowEthWorld: 'cb31d5e2-7c18-4b3e-a605-66df7bb8ae05',
+    hellowPolWorld: 'cb31d5e2-7c18-4b3e-a605-66df7bb8ae06',
+    hellowBNBWorld: '8872d5d5-bc06-4f2c-84d3-f2f27d0e817b',
 } as const;
 
 export type ExperimentId = (typeof Experiment)[keyof typeof Experiment];

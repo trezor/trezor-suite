@@ -61,5 +61,5 @@ export const selectActiveExperimentGroup = ({
         inclusion: inclusionFromInstanceId,
     });
 
-    return experimentRange;
+    return experimentRange ? { ...experimentRange, inclusion: inclusionFromInstanceId } : undefined;
 };

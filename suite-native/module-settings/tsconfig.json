@@ -6,6 +6,9 @@
             "path": "../../suite-common/analytics"
         },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/suite-config"
         },
         {

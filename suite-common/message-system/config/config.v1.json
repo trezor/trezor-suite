@@ -1,7 +1,7 @@
 {
     "version": 1,
     "timestamp": "2024-01-03T00:00:00+00:00",
-    "sequence": 74,
+    "sequence": 75,
     "actions": [
         {
             "conditions": [
@@ -1251,6 +1251,80 @@
                     {
                         "domain": "security.firmware.hashCheck",
                         "flag": false
+                    }
+                ]
+            }
+        }
+    ],
+    "experiments": [
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "eth": true
+                        }
+                    ]
+                }
+            ],
+            "experiment": {
+                "id": "cb31d5e2-7c18-4b3e-a605-66df7bb8ae05",
+                "groups": [
+                    {
+                        "variant": "Base",
+                        "percentage": 45
+                    },
+                    {
+                        "variant": "Custom",
+                        "percentage": 55
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "pol": true
+                        }
+                    ]
+                }
+            ],
+            "experiment": {
+                "id": "cb31d5e2-7c18-4b3e-a605-66df7bb8ae06",
+                "groups": [
+                    {
+                        "variant": "Base",
+                        "percentage": 45
+                    },
+                    {
+                        "variant": "Custom",
+                        "percentage": 55
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "bsc": true
+                        }
+                    ]
+                }
+            ],
+            "experiment": {
+                "id": "8872d5d5-bc06-4f2c-84d3-f2f27d0e817b",
+                "groups": [
+                    {
+                        "variant": "Base",
+                        "percentage": 45
+                    },
+                    {
+                        "variant": "Custom",
+                        "percentage": 55
                     }
                 ]
             }
