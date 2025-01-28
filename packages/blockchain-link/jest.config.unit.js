@@ -18,4 +18,5 @@ module.exports = {
         'unit/worker/index.ts',
     ],
     setupFiles: ['./tests/setup.js'],
+    testEnvironment: '../../JestCustomEnv.js',
 };
