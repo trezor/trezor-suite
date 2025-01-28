@@ -5481,6 +5481,11 @@ export default defineMessages({
             'Most exchanges require you to include a memo/destination tag to identify your Ripple account. Make sure you really don’t need it.',
         id: 'DESTINATION_TAG_BANNER_SEND',
     },
+    DESTINATION_TAG_BANNER_RECEIVE: {
+        defaultMessage:
+            'Most exchanges require you to include memo/destination tag to send a transaction to your Trezor. You can fill in any sequence of numbers (e.g., 12345)',
+        id: 'DESTINATION_TAG_BANNER_RECEIVE',
+    },
     DESTINATION_TAG_TOOLTIP: {
         id: 'DESTINATION_TAG_TOOLTIP',
         defaultMessage:

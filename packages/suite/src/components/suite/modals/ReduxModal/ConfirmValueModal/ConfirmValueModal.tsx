@@ -128,6 +128,11 @@ export const ConfirmValueModal = ({
                             </Paragraph>
                         </Banner>
                     )}
+                    {account.networkType === 'ripple' && (
+                        <Banner variant="info" icon="info">
+                            <Translation id="DESTINATION_TAG_BANNER_RECEIVE" />
+                        </Banner>
+                    )}
                     <Row gap={spacings.xl} alignItems="stretch">
                         <Column flex="1 1 50%" alignItems="center">
                             <Card>
