@@ -28,25 +28,39 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         }) => {
             await page.clock.install();
             await metadataProviderMock.start(p.provider);
-            await metadataProviderMock.setFileContent(p.file, metadataProviderMock.defaultFileContent, metadataProviderMock.defaultAesKey)
+            await metadataProviderMock.setFileContent(
+                p.file,
+                metadataProviderMock.defaultFileContent,
+                metadataProviderMock.defaultAesKey,
+            );
 
             await onboardingPage.completeOnboarding({ enableViewOnly: true });
-    
+
             await dashboardPage.discoveryShouldFinish();
-    
+
             await page.getByTestId('@account-menu/btc/normal/0/label').click();
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText('Bitcoin #1');
+            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
+                'Bitcoin #1',
+            );
             await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
             await metadataPage.passThroughInitMetadata(p.provider);
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText('already existing label');
+            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
+                'already existing label',
+            );
 
-            await metadataProviderMock.setFileContent(p.file, {
-                ...metadataProviderMock.defaultFileContent,
-                accountLabel: 'label from another window'
-            }, metadataProviderMock.defaultAesKey);
+            await metadataProviderMock.setFileContent(
+                p.file,
+                {
+                    ...metadataProviderMock.defaultFileContent,
+                    accountLabel: 'label from another window',
+                },
+                metadataProviderMock.defaultAesKey,
+            );
 
             await page.clock.fastForward(METADATA_LABELING.FETCH_INTERVAL);
-            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText('label from another window');
+            await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
+                'label from another window',
+            );
         });
     });
 

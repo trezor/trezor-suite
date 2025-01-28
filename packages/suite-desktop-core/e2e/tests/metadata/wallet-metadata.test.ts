@@ -12,10 +12,10 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
     });
 
     test.use({
-        emulatorSetupConf: { 
-            mnemonic: 'mnemonic_all', 
-            passphrase_protection: true 
-        }, 
+        emulatorSetupConf: {
+            mnemonic: 'mnemonic_all',
+            passphrase_protection: true,
+        },
     });
 
     test('persists wallet labels', async ({
@@ -34,8 +34,10 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
         await metadataPage.wallet.clickAddLabel(standardWalletIndex);
         await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
         await metadataPage.wallet.fillLabelInput('label for standard wallet');
-        expect(await metadataPage.wallet.getLabel(standardWalletIndex)).toBe('label for standard wallet');
-        
+        expect(await metadataPage.wallet.getLabel(standardWalletIndex)).toBe(
+            'label for standard wallet',
+        );
+
         await metadataPage.wallet.clickEditLabel(standardWalletIndex);
         await metadataPage.wallet.fillLabelInput('wallet for drugs');
 
@@ -67,11 +69,11 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
     });
 
     test('labels can be enabled and edited when different wallet is open', async ({
-        page, 
-        dashboardPage, 
+        page,
+        dashboardPage,
         metadataPage,
         devicePrompt,
-        trezorUserEnvLink
+        trezorUserEnvLink,
     }) => {
         // Setup standard wallet with label and edit it
         await page.getByTestId('@account-menu/btc/normal/0/label').click();
@@ -94,11 +96,17 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
         await metadataPage.wallet.clickAddLabel(hiddenWalletIndex);
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
-        await metadataPage.wallet.fillLabelInput('still works, metadata enabled for currently not selected device');
+        await metadataPage.wallet.fillLabelInput(
+            'still works, metadata enabled for currently not selected device',
+        );
 
         // Verify wallet labels
-        expect(await metadataPage.wallet.getLabel(standardWalletIndex)).toBe('label for standard wallet');
-        expect(await metadataPage.wallet.getLabel(hiddenWalletIndex)).toBe('still works, metadata enabled for currently not selected device');
+        expect(await metadataPage.wallet.getLabel(standardWalletIndex)).toBe(
+            'label for standard wallet',
+        );
+        expect(await metadataPage.wallet.getLabel(hiddenWalletIndex)).toBe(
+            'still works, metadata enabled for currently not selected device',
+        );
     });
 
     test.afterEach(async ({ metadataProviderMock }) => {

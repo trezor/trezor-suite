@@ -1,5 +1,5 @@
-import { step } from "../../common";
-import { MetadataBaseActions } from "./metadataBaseActions";
+import { step } from '../../common';
+import { MetadataBaseActions } from './metadataBaseActions';
 
 export class AccountMetadataActions extends MetadataBaseActions {
     readonly addLabelButton = (accountId: string) =>
@@ -10,7 +10,6 @@ export class AccountMetadataActions extends MetadataBaseActions {
         this.page.getByTestId(`${this.getLabelTestId(accountId)}/success`);
     readonly accountLabel = (accountId: string) =>
         this.page.getByTestId(`${this.getLabelTestId(accountId)}/hover-container`);
-
 
     private getLabelTestId(accountId: string): string {
         return `@metadata/accountLabel/${accountId}`;

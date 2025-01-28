@@ -82,7 +82,9 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         await page.getByTestId('@account-menu/btc/segwit/0').click();
 
         await metadataPage.account.addLabel(AccountLabelId.BitcoinSegwit1, 'typing into one input');
-        await expect(metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit1)).toBeVisible();
+        await expect(
+            metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit1),
+        ).toBeVisible();
 
         await page.getByTestId('@account-menu/btc/segwit/1').click();
 

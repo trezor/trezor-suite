@@ -32,7 +32,10 @@ export class DashboardActions {
     readonly deviceStatusOnSwitchDevice: Locator;
     readonly solveIssuesButton: Locator;
 
-    constructor(private readonly page: Page, private readonly devicePrompt: DevicePromptActions) {
+    constructor(
+        private readonly page: Page,
+        private readonly devicePrompt: DevicePromptActions,
+    ) {
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
         this.discoveryHeader = this.page.getByRole('heading', { name: 'Dashboard' });
         this.discoveryBar = this.page.getByTestId('@wallet/discovery-progress-bar');
@@ -84,7 +87,7 @@ export class DashboardActions {
         await this.modal.waitFor({ state: 'detached' });
         await this.discoveryShouldFinish();
     }
-    
+
     @step()
     async addHiddenWallet(passphrase: string) {
         await this.page.getByTestId('@switch-device/add-hidden-wallet-button').click();
@@ -116,14 +119,18 @@ export class DashboardActions {
 
     @step()
     async setViewOnlyForWallet(walletIndex: number, desiredState: 'enabled' | 'disabled') {
-        const walletContainer = this.page.getByTestId(`@switch-device/wallet-on-index/${walletIndex}`);
-        const viewOnlyStatus = await walletContainer.getByTestId(`@viewOnlyStatus/${desiredState}`).isVisible();
+        const walletContainer = this.page.getByTestId(
+            `@switch-device/wallet-on-index/${walletIndex}`,
+        );
+        const viewOnlyStatus = await walletContainer
+            .getByTestId(`@viewOnlyStatus/${desiredState}`)
+            .isVisible();
 
         // check if change is even necessary
         if (viewOnlyStatus) {
             return;
         }
-            
+
         // if it is, open view-only settings container and change the state
         await walletContainer.getByTestId('@collapsible-box/icon-collapsed').click();
         await walletContainer.getByTestId('@collapsible-box/body').waitFor({ state: 'visible' });

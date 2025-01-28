@@ -1,17 +1,13 @@
-import { step } from "../../common";
-import { MetadataBaseActions } from "./metadataBaseActions";
+import { step } from '../../common';
+import { MetadataBaseActions } from './metadataBaseActions';
 
 export class OutputMetadataActions extends MetadataBaseActions {
     readonly outputLabel = (outputId: string, txNumber: number) =>
         this.page.getByTestId(`${this.getLabelTestId(outputId, txNumber)}/hover-container`);
     readonly outputDropdownCopyAddress = (outputId: string, txNumber: number) =>
-        this.page.getByTestId(
-            `${this.getLabelTestId(outputId, txNumber)}/dropdown/copy-address`,
-        );
+        this.page.getByTestId(`${this.getLabelTestId(outputId, txNumber)}/dropdown/copy-address`);
     readonly outputDropdownEditLabel = (outputId: string, txNumber: number) =>
-        this.page.getByTestId(
-            `${this.getLabelTestId(outputId, txNumber)}/dropdown/edit-label`,
-        );
+        this.page.getByTestId(`${this.getLabelTestId(outputId, txNumber)}/dropdown/edit-label`);
 
     private getLabelTestId(outputId: string, txNumber: number): string {
         return `@metadata/outputLabel/${outputId}-${txNumber}`;

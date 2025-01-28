@@ -61,8 +61,9 @@ export class MetadataProviderMock {
         outputLabels: {},
         addressLabels: {},
     };
-    
-    public readonly defaultAesKey = 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d';
+
+    public readonly defaultAesKey =
+        'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d';
 
     private providerMock: ProviderMocks | undefined;
 
@@ -96,7 +97,7 @@ export class MetadataProviderMock {
 
     /**
      * You should almost never need to call this method directly, use only after manual page reload
-     */    
+     */
     @step()
     async setupWindowStubs() {
         await this.page.evaluate(rerouteFetch);

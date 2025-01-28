@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page } from '@playwright/test';
 
 import { step } from '../../common';
 
@@ -10,7 +10,7 @@ export class MetadataBaseActions {
     readonly metadataSubmitButton: Locator;
     readonly metadataCancelButton: Locator;
     readonly metadataInput: Locator;
-    
+
     constructor(protected readonly page: Page) {
         this.metadataSubmitButton = page.getByTestId('@metadata/submit');
         this.metadataCancelButton = page.getByTestId('@metadata/cancel');

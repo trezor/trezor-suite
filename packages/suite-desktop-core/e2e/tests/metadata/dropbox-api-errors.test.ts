@@ -3,8 +3,6 @@ import { test, expect } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
 
 test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, () => {
-
-
     test.use({
         emulatorSetupConf: { mnemonic: 'mnemonic_all' },
     });
@@ -58,9 +56,9 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
             'Error: Failed to save labeling data: Error in call to API function "files/upload": The given OAuth 2 access token is malformed.',
         );
 
-        await expect(metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1)).toContainText(
-            'Bitcoin #1',
-        );
+        await expect(
+            metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1),
+        ).toContainText('Bitcoin #1');
     });
 
     test.skip('Success after retrying GET request', async ({
@@ -116,9 +114,9 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
 
         await page.getByTestId('@account-menu/btc/normal/0').click();
         await metadataPage.account.editLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
-        await expect(metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1)).toContainText(
-            'Kvooo',
-        );
+        await expect(
+            metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1),
+        ).toContainText('Kvooo');
     });
 
     test('Incomplete data returned from provider', async ({

@@ -34,22 +34,22 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata', '@webOnly
         await expect(metadataPage.output.metadataInput).toHaveCount(1);
 
         await metadataPage.output.addLabel(OutputLabelId.BitcoinLegacy6, 2, 'output 3');
-        await expect(metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy6, 2)).toContainText(
-            'output 3',
-        );
+        await expect(
+            metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy6, 2),
+        ).toContainText('output 3');
 
         // label "send to myself tx"
         await page.getByTestId('@account-menu/btc/legacy/9/label').click();
         await metadataPage.output.addLabel(OutputLabelId.BitcoinLegacy10, 0, 'really to myself');
-        await expect(metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0)).toContainText(
-            'really to myself',
-        );
+        await expect(
+            metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0),
+        ).toContainText('really to myself');
 
         // Test that label can be edited and submitted by enter
         await metadataPage.output.editLabel(OutputLabelId.BitcoinLegacy10, 0, 'edited');
-        await expect(metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0)).toContainText(
-            'edited',
-        );
+        await expect(
+            metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0),
+        ).toContainText('edited');
 
         // Check that there is a copy address button
         await metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0).click();
@@ -60,18 +60,18 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata', '@webOnly
         // Test that label can be edited and submitted by submit button
         await metadataPage.output.outputDropdownEditLabel(OutputLabelId.BitcoinLegacy10, 0).click();
         await metadataPage.output.fillLabelInput('submitted by button', { useButton: true });
-        await expect(metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0)).toContainText(
-            'submitted by button',
-        );
+        await expect(
+            metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0),
+        ).toContainText('submitted by button');
 
         await metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0).click();
         await metadataPage.output.outputDropdownEditLabel(OutputLabelId.BitcoinLegacy10, 0).click();
         await metadataPage.output.metadataInput.clear();
         await metadataPage.output.metadataInput.fill('write something that wont be saved');
         await metadataPage.output.metadataCancelButton.click();
-        await expect(metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0)).toContainText(
-            'submitted by button',
-        );
+        await expect(
+            metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0),
+        ).toContainText('submitted by button');
 
         await page.getByTestId('@wallet/accounts/export-transactions/dropdown').click();
         await page.getByTestId('@wallet/accounts/export-transactions/csv').click();
