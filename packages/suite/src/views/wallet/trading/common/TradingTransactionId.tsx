@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { Button, Row } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 const LabelWrapper = styled.div`
     width: 100%;

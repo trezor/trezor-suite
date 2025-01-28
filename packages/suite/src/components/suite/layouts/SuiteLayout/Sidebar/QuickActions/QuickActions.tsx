@@ -2,12 +2,12 @@ import styled from 'styled-components';
 
 import { spacingsPx } from '@trezor/theme';
 
-import { Tor } from './Tor';
 import { CustomBackend } from './CustomBackend';
 import { DebugAndExperimental } from './DebugAndExperimental';
 import { HideBalances } from './HideBalances';
-import { UpdateStatusActionBarIcon } from './Update/UpdateStatusActionBarIcon';
+import { Tor } from './Tor';
 import { isCollapsedSidebar } from '../consts';
+import { UpdateStatusActionBarIcon } from './Update/UpdateStatusActionBarIcon';
 
 const ActionsContainer = styled.div`
     display: flex;

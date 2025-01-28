@@ -1,20 +1,5 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import {
-    Badge,
-    Button,
-    Card,
-    Icon,
-    Row,
-    Grid,
-    Column,
-    Tooltip,
-    InfoItem,
-    Paragraph,
-    IconName,
-    useMediaQuery,
-    variables,
-} from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import {
     calculateSolanaStakingReward,
@@ -22,18 +7,33 @@ import {
     getStakingDataForNetwork,
     isPending,
 } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { getNetworkDisplaySymbol, type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    Badge,
+    Button,
+    Card,
+    Column,
+    Grid,
+    Icon,
+    IconName,
+    InfoItem,
+    Paragraph,
+    Row,
+    Tooltip,
+    useMediaQuery,
+    variables,
+} from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { FiatValue, Translation, FormattedCryptoAmount } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
-import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
+import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 
 type ItemProps = {
     label: React.ReactNode;

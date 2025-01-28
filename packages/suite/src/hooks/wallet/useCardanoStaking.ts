@@ -1,29 +1,29 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
-import {
-    isTestnet,
-    getDerivationType,
-    getStakingPath,
-    getProtocolMagic,
-    getNetworkId,
-    getUnusedChangeAddress,
-    getDelegationCertificates,
-    getVotingCertificates,
-    isPoolOverSaturated,
-    getStakePoolForDelegation,
-    getAddressParameters,
-    getNetworkName,
-} from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import trezorConnect, { PROTO } from '@trezor/connect';
 import { addFakePendingCardanoTxThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { CardanoAction } from '@suite-common/wallet-types';
+import {
+    getAddressParameters,
+    getDelegationCertificates,
+    getDerivationType,
+    getNetworkId,
+    getNetworkName,
+    getProtocolMagic,
+    getStakePoolForDelegation,
+    getStakingPath,
+    getUnusedChangeAddress,
+    getVotingCertificates,
+    isPoolOverSaturated,
+    isTestnet,
+} from '@suite-common/wallet-utils';
+import trezorConnect, { PROTO } from '@trezor/connect';
 
-import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setPendingStakeTx } from 'src/actions/wallet/cardanoStakingActions';
-import { AppState } from 'src/types/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
+import { AppState } from 'src/types/suite';
+import { ActionAvailability, CardanoStaking } from 'src/types/wallet/cardanoStaking';
 
 const getDeviceAvailability = (
     device: AppState['device']['selectedDevice'],

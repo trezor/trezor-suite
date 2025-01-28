@@ -6,8 +6,8 @@ import { Icon, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/signVerifyActions';
-import { useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 const RevealText = styled.div`
     max-width: 0;

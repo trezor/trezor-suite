@@ -1,18 +1,18 @@
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 
+import { Translation } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import {
     TradingBuyFormProps,
     TradingExchangeFormProps,
     TradingFormInputFiatCryptoWrapProps,
     TradingSellFormProps,
 } from 'src/types/trading/tradingForm';
-import { TradingFormSwitcherCryptoFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormSwitcherCryptoFiat';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
-import { Translation } from 'src/components/suite';
+import { TradingFormSwitcherCryptoFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormSwitcherCryptoFiat';
 
 export const TradingFormInputFiatCrypto = <
     TFieldValues extends TradingSellFormProps | TradingBuyFormProps | TradingExchangeFormProps,

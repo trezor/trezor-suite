@@ -1,9 +1,9 @@
 import styled, { useTheme } from 'styled-components';
 
+import { FirmwareOperationStatus, useFirmwareInstallation } from '@suite-common/firmware';
+import { TranslationKey } from '@suite-common/intl-types';
 import { Box, Column, Icon, ProgressBar, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { TranslationKey } from '@suite-common/intl-types';
-import { FirmwareOperationStatus, useFirmwareInstallation } from '@suite-common/firmware';
 
 import { Translation } from '../suite';
 

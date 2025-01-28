@@ -1,28 +1,28 @@
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
-import { SettingsSection, SettingsLayout } from 'src/components/settings';
-import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { useSelector } from 'src/hooks/suite';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
-import { TranslationMode } from './TranslationMode';
-import { GithubIssue } from './GithubIssue';
-import { WipeData } from './WipeData';
-import { ThrowTestingError } from './ThrowTestingError';
-import { InvityApi } from './InvityApi';
-import { CoinjoinApi } from './CoinjoinApi';
-import { OAuthApi } from './OAuthApi';
+import { Backends } from './Backends';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
+import { CoinjoinApi } from './CoinjoinApi';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
+import { GithubIssue } from './GithubIssue';
+import { InvityApi } from './InvityApi';
+import { MessageSystemDebugInfo } from './MessageSystemDebugInfo';
+import { Metadata } from './Metadata';
+import { OAuthApi } from './OAuthApi';
+import { PreField } from './PreField';
+import { ThrowTestingError } from './ThrowTestingError';
+import { Tor } from './Tor';
+import { TranslationMode } from './TranslationMode';
 import { Transport } from './Transport';
 import { TransportBackends } from './TransportBackends';
-import { ViewOnlySettings } from './ViewOnlySettings';
 import { TriggerHighlight } from './TriggerHighlight';
-import { Backends } from './Backends';
-import { PreField } from './PreField';
-import { Tor } from './Tor';
-import { Metadata } from './Metadata';
-import { MessageSystemDebugInfo } from './MessageSystemDebugInfo';
+import { ViewOnlySettings } from './ViewOnlySettings';
+import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
     const flags = useSelector(selectSuiteFlags);

@@ -2,11 +2,11 @@ import styled from 'styled-components';
 
 import { desktopApi } from '@trezor/suite-desktop-api';
 
+import { openEarlyAccessSetup } from 'src/actions/suite/desktopUpdateActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { openEarlyAccessSetup } from 'src/actions/suite/desktopUpdateActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const Version = styled.div`
     span {

@@ -3,12 +3,12 @@ import { useMemo, useState } from 'react';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
-import { Icon, Banner, motionEasing } from '@trezor/components';
+import { Banner, Icon, motionEasing } from '@trezor/components';
 
+import { coinjoinAccountUpdateAnonymity } from 'src/actions/wallet/coinjoinAccountActions';
 import { Translation } from 'src/components/suite';
 import { AnonymityStatus } from 'src/constants/suite/coinjoin';
 import { useAnonymityStatus, useDispatch } from 'src/hooks/suite';
-import { coinjoinAccountUpdateAnonymity } from 'src/actions/wallet/coinjoinAccountActions';
 
 import { SetupSlider } from './SetupSlider/SetupSlider';
 

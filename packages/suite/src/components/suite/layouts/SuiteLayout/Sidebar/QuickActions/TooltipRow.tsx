@@ -4,13 +4,13 @@ import styled, { useTheme } from 'styled-components';
 
 import {
     Column,
-    Row,
     Icon,
-    iconSizes,
+    IconName,
+    IconVariant,
+    Row,
     Text,
     getColorForIconVariant,
-    IconVariant,
-    IconName,
+    iconSizes,
 } from '@trezor/components';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 

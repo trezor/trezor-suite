@@ -1,8 +1,8 @@
 import { useTheme } from 'styled-components';
 
+import { coinjoinAccountUpdateMaxMiningFee } from 'src/actions/wallet/coinjoinAccountActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { coinjoinAccountUpdateMaxMiningFee } from 'src/actions/wallet/coinjoinAccountActions';
 import {
     selectDefaultMaxMiningFeeByAccountKey,
     selectFeeRateMedianByAccountKey,

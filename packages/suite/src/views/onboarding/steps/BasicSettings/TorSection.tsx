@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import { variables, Switch } from '@trezor/components';
+import { Switch, variables } from '@trezor/components';
 
+import { toggleTor } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { toggleTor } from 'src/actions/suite/suiteActions';
-import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 import { TorStatus } from 'src/types/suite';
+import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 const TorWrapper = styled.div`
     width: 100%;

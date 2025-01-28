@@ -1,8 +1,13 @@
 import { CryptoId } from 'invity-api';
 
-import { isDesktop } from '@trezor/env-utils';
+import type { TradingType } from '@suite-common/invity';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { PROTO } from '@trezor/connect';
+import {
+    confirmAddressOnDeviceThunk,
+    selectSelectedDevice,
+    toggleRememberDevice,
+} from '@suite-common/wallet-core';
+import { AddressDisplayOptions, Output } from '@suite-common/wallet-types/src';
 import {
     amountToSmallestUnit,
     formatAmount,
@@ -10,23 +15,18 @@ import {
     hasNetworkFeatures,
     parseFormDraftKey,
 } from '@suite-common/wallet-utils';
-import { Output, AddressDisplayOptions } from '@suite-common/wallet-types/src';
-import {
-    confirmAddressOnDeviceThunk,
-    selectSelectedDevice,
-    toggleRememberDevice,
-} from '@suite-common/wallet-core';
-import type { TradingType } from '@suite-common/invity';
+import { PROTO } from '@trezor/connect';
+import { isDesktop } from '@trezor/env-utils';
 
-import { GetState, Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
-import { getUnusedAddressFromAccount } from 'src/utils/wallet/trading/tradingUtils';
-import { Account } from 'src/types/wallet';
-import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
-import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
+import { TRADING_BUY, TRADING_COMMON, TRADING_EXCHANGE } from 'src/actions/wallet/constants';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
-import { TRADING_BUY, TRADING_COMMON, TRADING_EXCHANGE } from 'src/actions/wallet/constants';
+import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
+import { Dispatch, GetState } from 'src/types/suite';
+import { Account } from 'src/types/wallet';
+import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/trading/tradingUtils';
 
 export type TradingCommonAction =
     | {

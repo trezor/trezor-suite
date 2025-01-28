@@ -5,7 +5,7 @@ import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { tradingGetSortedAccounts, mapTestnetSymbol } from 'src/utils/wallet/trading/tradingUtils';
+import { mapTestnetSymbol, tradingGetSortedAccounts } from 'src/utils/wallet/trading/tradingUtils';
 
 interface TradingUseAccountProps {
     tradingAccount: Account | undefined;

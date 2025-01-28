@@ -4,24 +4,24 @@ import styled from 'styled-components';
 
 import { Banner, Column } from '@trezor/components';
 import { breakpointMediaQueries } from '@trezor/styles';
-import { spacingsPx, spacings } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
-import { WalletLayout } from 'src/components/wallet';
-import { useSendForm, SendContext, UseSendFormProps } from 'src/hooks/wallet/useSendForm';
-import {
-    selectTargetAnonymityByAccountKey,
-    selectRegisteredUtxosByAccountKey,
-} from 'src/reducers/wallet/coinjoinReducer';
 import { Translation } from 'src/components/suite';
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals';
+import { WalletLayout } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
+import { SendContext, UseSendFormProps, useSendForm } from 'src/hooks/wallet/useSendForm';
+import {
+    selectRegisteredUtxosByAccountKey,
+    selectTargetAnonymityByAccountKey,
+} from 'src/reducers/wallet/coinjoinReducer';
 
-import { SendHeader } from './SendHeader';
-import { Outputs } from './Outputs/Outputs';
 import { Options } from './Options/Options';
+import { Outputs } from './Outputs/Outputs';
 import { SendFees } from './SendFees';
-import { TotalSent } from './TotalSent/TotalSent';
+import { SendHeader } from './SendHeader';
 import { SendRaw } from './SendRaw';
+import { TotalSent } from './TotalSent/TotalSent';
 
 const FormGrid = styled.div`
     gap: ${spacingsPx.md};

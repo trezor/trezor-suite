@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { useFormatters } from '@suite-common/formatters';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectHistoricFiatRates } from '@suite-common/wallet-core';
+import { Timestamp } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     getFiatRateKey,
@@ -9,22 +12,19 @@ import {
     sumTransactions,
     sumTransactionsFiat,
 } from '@suite-common/wallet-utils';
-import { useFormatters } from '@suite-common/formatters';
 import { Box, CollapsibleBox, Row } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectHistoricFiatRates } from '@suite-common/wallet-core';
-import { Timestamp } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { WalletAccountTransaction } from 'src/types/wallet/index';
-import { HiddenPlaceholder, Translation, FormattedCryptoAmount } from 'src/components/suite';
+import { FormattedCryptoAmount, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { WalletAccountTransaction } from 'src/types/wallet/index';
 
-import { TransactionTypeIcon } from './TransactionTypeIcon';
-import { TransactionTargetLayout } from './TransactionTargetLayout';
 import { Content, Description, TimestampWrapper, TxTypeIconWrapper } from './CommonComponents';
+import { TransactionTargetLayout } from './TransactionTargetLayout';
+import { TransactionTypeIcon } from './TransactionTypeIcon';
 
 const CryptoAmount = styled(FormattedCryptoAmount)`
     width: unset;

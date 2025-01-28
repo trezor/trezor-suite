@@ -1,20 +1,20 @@
-import { PROTO } from '@trezor/connect';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions, notificationsReducer } from '@suite-common/toast-notifications';
 import {
+    feesReducer,
     initBlockchainThunk,
+    onBlockMinedThunk,
     onBlockchainConnectThunk,
     onBlockchainDisconnectThunk,
-    onBlockMinedThunk,
     onBlockchainNotificationThunk,
     preloadFeeInfoThunk,
     setCustomBackendThunk,
     updateFeeInfoThunk,
-    feesReducer,
 } from '@suite-common/wallet-core';
+import { PROTO } from '@trezor/connect';
 
+import { accountsReducer, blockchainReducer, transactionsReducer } from 'src/reducers/wallet';
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
-import { accountsReducer, transactionsReducer, blockchainReducer } from 'src/reducers/wallet';
 
 import * as fixtures from '../__fixtures__/blockchainActions';
 

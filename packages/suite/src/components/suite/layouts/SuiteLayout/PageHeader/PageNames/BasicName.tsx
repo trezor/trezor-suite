@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { H2 } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
+import { H2 } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 

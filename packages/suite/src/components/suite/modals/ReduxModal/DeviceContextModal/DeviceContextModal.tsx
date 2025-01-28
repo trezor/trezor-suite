@@ -1,24 +1,24 @@
 import { useIntl } from 'react-intl';
 
-import TrezorConnect, { UI } from '@trezor/connect';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import TrezorConnect, { UI } from '@trezor/connect';
 
-import messages from 'src/support/messages';
 import { MODAL } from 'src/actions/suite/constants';
-import { useSelector } from 'src/hooks/suite';
 import {
-    PinModal,
-    PinInvalidModal,
+    ConfirmActionModal,
+    ConfirmAddressModal,
+    ConfirmFingerprintModal,
+    ConfirmXpubModal,
     PassphraseModal,
     PassphraseOnDeviceModal,
-    ConfirmActionModal,
-    ConfirmFingerprintModal,
-    WordModal,
-    WordAdvancedModal,
+    PinInvalidModal,
+    PinModal,
     TransactionReviewModal,
-    ConfirmAddressModal,
-    ConfirmXpubModal,
+    WordAdvancedModal,
+    WordModal,
 } from 'src/components/suite/modals';
+import { useSelector } from 'src/hooks/suite';
+import messages from 'src/support/messages';
 
 import type { ReduxModalProps } from '../ReduxModal';
 

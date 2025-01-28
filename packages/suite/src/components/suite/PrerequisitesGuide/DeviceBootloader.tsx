@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { isDeviceWithButtons } from '@suite-common/suite-utils';
 import { IconButton } from '@trezor/components';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 import { TrezorDevice } from 'src/types/suite';
 
 const WhiteSpace = styled.div`

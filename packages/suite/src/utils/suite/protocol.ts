@@ -1,6 +1,6 @@
 import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
-import { analytics, EventType } from '@trezor/suite-analytics';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { parseQuery, parseUri } from './parseUri';
 

@@ -2,8 +2,8 @@ import { MouseEvent, ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { mediaQueries } from '@trezor/styles';
 
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';

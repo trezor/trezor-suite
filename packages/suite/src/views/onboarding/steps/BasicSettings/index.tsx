@@ -1,10 +1,10 @@
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
-import { Translation } from 'src/components/suite';
 import { OnboardingButtonCta } from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
-import { getIsTorLoading } from 'src/utils/suite/tor';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+import { getIsTorLoading } from 'src/utils/suite/tor';
 
 import { AdvancedSetup } from './AdvancedSetup';
 import { BasicSettingsStepBox } from './BasicSettingsStepBox';

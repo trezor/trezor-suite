@@ -14,8 +14,8 @@ import {
     EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX,
 } from 'src/constants/wallet/trading/form';
 import { KYC_DEX, KYC_NO_KYC } from 'src/constants/wallet/trading/kyc';
-import { TradingOffersExchangeQuotesByTypeSection } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersExchangeQuotesByTypeSection';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingOffersExchangeQuotesByTypeSection } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersExchangeQuotesByTypeSection';
 
 export const TradingOffersExchange = () => {
     const { quotes, exchangeInfo, getValues } = useTradingFormContext<TradingExchangeType>();

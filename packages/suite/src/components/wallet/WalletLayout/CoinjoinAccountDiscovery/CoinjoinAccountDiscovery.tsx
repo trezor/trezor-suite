@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { toggleRememberDevice } from '@suite-common/wallet-core';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
+import { toggleRememberDevice } from '@suite-common/wallet-core';
 
-import { useDispatch, useDevice } from 'src/hooks/suite';
-import { TrezorDevice } from 'src/types/suite';
 import { CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { TrezorDevice } from 'src/types/suite';
 
 import { RememberWallet } from './RememberWallet';
 

@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Paragraph } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { DeviceConfirmImage, Modal, ModalProps } from 'src/components/suite';
-import { TrezorDevice } from 'src/types/suite';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
+import { TrezorDevice } from 'src/types/suite';
 
 const Divider = styled.div`
     margin-bottom: 10px;

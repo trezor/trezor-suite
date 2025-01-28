@@ -1,6 +1,6 @@
+import { Network } from '@suite-common/wallet-config';
 import { Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { Network } from '@suite-common/wallet-config';
 
 import { FiatValue, Translation } from 'src/components/suite';
 

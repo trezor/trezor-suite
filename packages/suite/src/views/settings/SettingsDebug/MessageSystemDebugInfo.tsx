@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import { Box, Button, ButtonGroup, Column, NewModal, Paragraph, Row } from '@trezor/components';
 import { selectAllValidMessages, selectMessageSystemConfig } from '@suite-common/message-system';
-import { copyToClipboard } from '@trezor/dom-utils';
 import { Message } from '@suite-common/suite-types';
+import { Box, Button, ButtonGroup, Column, NewModal, Paragraph, Row } from '@trezor/components';
+import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';

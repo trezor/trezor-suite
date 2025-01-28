@@ -4,11 +4,11 @@ import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
-import { findRouteByName } from 'src/utils/suite/router';
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { MAIN_MENU_ITEMS } from 'src/constants/suite/menu';
-import { useAccountSearch, useSelector, useDispatch } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
+import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
+import { findRouteByName } from 'src/utils/suite/router';
 
 interface ComponentProps {
     isActive: boolean;

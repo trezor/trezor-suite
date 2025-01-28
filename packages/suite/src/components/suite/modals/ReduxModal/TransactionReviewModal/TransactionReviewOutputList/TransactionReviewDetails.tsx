@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
-import { variables, Card, Icon } from '@trezor/components';
 import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { Card, Icon, variables } from '@trezor/components';
 import { borders, typography, zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';

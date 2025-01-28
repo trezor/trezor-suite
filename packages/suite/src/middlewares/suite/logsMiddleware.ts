@@ -1,12 +1,13 @@
 import { MiddlewareAPI } from 'redux';
 
-import { authorizeDeviceThunk, deviceActions, discoveryActions } from '@suite-common/wallet-core';
-import { addLog } from '@suite-common/logger';
-import { TRANSPORT, DEVICE } from '@trezor/connect';
-import { redactUserPathFromString } from '@trezor/utils';
 import { analyticsActions } from '@suite-common/analytics';
+import { addLog } from '@suite-common/logger';
+import { authorizeDeviceThunk, deviceActions, discoveryActions } from '@suite-common/wallet-core';
+import { DEVICE, TRANSPORT } from '@trezor/connect';
+import { redactUserPathFromString } from '@trezor/utils';
 
-import { AppState, Action, Dispatch } from 'src/types/suite';
+import { WALLET_SETTINGS } from 'src/actions/settings/constants';
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import {
     DESKTOP_UPDATE,
     METADATA,
@@ -15,8 +16,7 @@ import {
     ROUTER,
     SUITE,
 } from 'src/actions/suite/constants';
-import { WALLET_SETTINGS } from 'src/actions/settings/constants';
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { Action, AppState, Dispatch } from 'src/types/suite';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 
 const log =

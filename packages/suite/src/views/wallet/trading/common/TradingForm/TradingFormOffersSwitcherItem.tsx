@@ -1,13 +1,13 @@
 import { ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import { Badge, Radio, Tooltip, Row, Text, useElevation } from '@trezor/components';
-import { borders, spacings, spacingsPx, mapElevationToBackground, Elevation } from '@trezor/theme';
+import { Badge, Radio, Row, Text, Tooltip, useElevation } from '@trezor/components';
+import { Elevation, borders, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 
-import { TradingUtilsProvidersProps } from 'src/types/trading/trading';
 import { Translation } from 'src/components/suite';
-import { ExchangeType } from 'src/types/trading/tradingForm';
 import { FORM_EXCHANGE_CEX, FORM_EXCHANGE_DEX } from 'src/constants/wallet/trading/form';
+import { TradingUtilsProvidersProps } from 'src/types/trading/trading';
+import { ExchangeType } from 'src/types/trading/tradingForm';
 import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
 
 const Offer = styled.div<{ $isSelected: boolean; $elevation: Elevation }>`

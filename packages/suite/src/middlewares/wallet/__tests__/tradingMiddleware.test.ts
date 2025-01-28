@@ -1,17 +1,17 @@
-import { UI } from '@trezor/connect';
 import { invityAPI } from '@suite-common/invity';
+import { UI } from '@trezor/connect';
 
-import { configureStore } from 'src/support/tests/configureStore';
-import { tradingReducer, initialState } from 'src/reducers/wallet/tradingReducer';
-import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
-import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
-import { Action } from 'src/types/suite';
+import { MODAL, ROUTER } from 'src/actions/suite/constants';
 import { TRADING_COMMON } from 'src/actions/wallet/constants';
+import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
+import modalReducer, { State as ModalState } from 'src/reducers/suite/modalReducer';
+import routerReducer, { RouterState } from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
-import routerReducer, { RouterState } from 'src/reducers/suite/routerReducer';
-import modalReducer, { State as ModalState } from 'src/reducers/suite/modalReducer';
-import { MODAL, ROUTER } from 'src/actions/suite/constants';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import { initialState, tradingReducer } from 'src/reducers/wallet/tradingReducer';
+import { configureStore } from 'src/support/tests/configureStore';
+import { Action } from 'src/types/suite';
 
 jest.mock('@suite-common/invity');
 invityAPI.setInvityServersEnvironment = () => {};

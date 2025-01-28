@@ -1,10 +1,10 @@
-import styled from 'styled-components';
 import { getUnixTime } from 'date-fns';
+import styled from 'styled-components';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
-import { variables, Button, Card, Row, Column } from '@trezor/components';
+import { Button, Card, Column, Row, variables } from '@trezor/components';
 
-import { Account } from 'src/types/wallet';
+import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
 import {
     GraphRangeSelector,
     HiddenPlaceholder,
@@ -12,12 +12,12 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
-import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/wallet/graph';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { Account } from 'src/types/wallet';
+import { aggregateBalanceHistory, getMinMaxValueFromData } from 'src/utils/wallet/graph';
 
-import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
 import { SummaryCards } from './SummaryCards';
+import { TransactionSummaryDropdown } from './TransactionSummaryDropdown';
 
 const ErrorMessage = styled.div`
     display: flex;

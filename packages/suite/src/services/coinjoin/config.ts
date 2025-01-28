@@ -1,12 +1,12 @@
-import {
-    PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
-    COORDINATOR_FEE_RATE_FALLBACK,
-    MIN_ALLOWED_AMOUNT_FALLBACK,
-    MAX_ALLOWED_AMOUNT_FALLBACK,
-} from '@trezor/coinjoin/src/constants';
-import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
-import type { PartialRecord } from '@trezor/type-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
+import {
+    COORDINATOR_FEE_RATE_FALLBACK,
+    MAX_ALLOWED_AMOUNT_FALLBACK,
+    MIN_ALLOWED_AMOUNT_FALLBACK,
+    PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
+} from '@trezor/coinjoin/src/constants';
+import type { PartialRecord } from '@trezor/type-utils';
 
 import type { CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
 

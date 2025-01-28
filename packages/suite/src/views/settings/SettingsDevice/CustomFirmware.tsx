@@ -1,10 +1,10 @@
 import { getFirmwareDowngradeUrl } from '@suite-common/suite-utils';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const CustomFirmware = () => {
     const dispatch = useDispatch();

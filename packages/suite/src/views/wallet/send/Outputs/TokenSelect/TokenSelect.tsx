@@ -1,59 +1,59 @@
-import { useMemo, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { AssetLogo, Column, Row, Text, Card, IconButton } from '@trezor/components';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import {
+    TokenDefinitions,
+    selectCoinDefinitions,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
+import {
+    type NetworkSymbol,
+    getCoingeckoId,
+    getNetwork,
+    getNetworkDisplaySymbolName,
+} from '@suite-common/wallet-config';
 import { selectCurrentFiatRates, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { Account, Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import {
-    CoinLogo,
-    SearchAsset,
-    SelectAssetModal,
-    TokenTabs,
-    TokenTab,
-    AssetProps,
-    ITEM_HEIGHT,
-    AssetOptionBaseProps,
-} from '@trezor/product-components';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     hasNetworkFeatures,
     isNftToken,
 } from '@suite-common/wallet-utils';
-import { spacings } from '@trezor/theme';
-import {
-    selectCoinDefinitions,
-    selectIsSpecificCoinDefinitionKnown,
-    TokenDefinitions,
-} from '@suite-common/token-definitions';
-import {
-    getCoingeckoId,
-    getNetwork,
-    getNetworkDisplaySymbolName,
-    type NetworkSymbol,
-} from '@suite-common/wallet-config';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TokenInfo } from '@trezor/blockchain-link-types';
+import { AssetLogo, Card, Column, IconButton, Row, Text } from '@trezor/components';
+import {
+    AssetOptionBaseProps,
+    AssetProps,
+    CoinLogo,
+    ITEM_HEIGHT,
+    SearchAsset,
+    SelectAssetModal,
+    TokenTab,
+    TokenTabs,
+} from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
 
-import { selectIsCopyAddressModalShown } from 'src/reducers/suite/suiteReducer';
+import { SUITE } from 'src/actions/suite/constants';
+import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import {
     FiatValue,
     FormattedCryptoAmount,
     HiddenPlaceholder,
     Translation,
 } from 'src/components/suite';
-import { SUITE } from 'src/actions/suite/constants';
+import { TokenAddressRow } from 'src/components/suite/copy/TokenAddressRow';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { selectIsCopyAddressModalShown } from 'src/reducers/suite/suiteReducer';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
     enhanceTokensWithRates,
     getTokens,
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { TokenAddressRow } from 'src/components/suite/copy/TokenAddressRow';
-import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 
 export const IconCursorWrapper = styled.div`
     cursor: pointer;

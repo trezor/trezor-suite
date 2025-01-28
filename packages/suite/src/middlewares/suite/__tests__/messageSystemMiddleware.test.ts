@@ -1,14 +1,14 @@
-import { combineReducers, Reducer } from '@reduxjs/toolkit';
+import { Reducer, combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore } from '@suite-common/test-utils';
-import { prepareMessageSystemReducer, messageSystemActions } from '@suite-common/message-system';
+import { messageSystemActions, prepareMessageSystemReducer } from '@suite-common/message-system';
 import * as messageSystemUtils from '@suite-common/message-system/src/messageSystemUtils';
+import { configureMockStore } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
-import WalletReducers from 'src/reducers/wallet';
 import { AppState } from 'src/reducers/store';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import WalletReducers from 'src/reducers/wallet';
+import { extraDependencies } from 'src/support/extraDependencies';
 
 import messageSystemMiddleware from '../messageSystemMiddleware';
 

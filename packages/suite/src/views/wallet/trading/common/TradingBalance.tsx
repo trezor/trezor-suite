@@ -1,4 +1,4 @@
-import { getNetwork, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
@@ -8,8 +8,8 @@ import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 import {
-    tradingGetAccountLabel,
     getTradingNetworkDecimals,
+    tradingGetAccountLabel,
 } from 'src/utils/wallet/trading/tradingUtils';
 
 interface TradingBalanceProps {

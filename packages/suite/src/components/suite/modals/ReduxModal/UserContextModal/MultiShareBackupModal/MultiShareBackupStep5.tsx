@@ -1,16 +1,16 @@
+import { TranslationKey } from '@suite-common/intl-types';
 import {
+    Banner,
     Card,
     Column,
-    Paragraph,
-    Icon,
-    H4,
     Grid,
-    List,
-    Banner,
+    H4,
+    Icon,
     IconName,
+    List,
+    Paragraph,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { TranslationKey } from '@suite-common/intl-types';
 
 import { Translation } from 'src/components/suite';
 

@@ -1,43 +1,43 @@
-import { createContext, useContext, useCallback, useState, useEffect, useRef } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
 
-import { useDidUpdate } from '@trezor/react-utils';
-import { FormState } from '@suite-common/wallet-types';
-import {
-    getDefaultValues,
-    amountToSmallestUnit,
-    formatAmount,
-    getFeeInfo,
-} from '@suite-common/wallet-utils';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { FormState } from '@suite-common/wallet-types';
+import {
+    amountToSmallestUnit,
+    formatAmount,
+    getDefaultValues,
+    getFeeInfo,
+} from '@suite-common/wallet-utils';
+import { useDidUpdate } from '@trezor/react-utils';
 
-import { useSelector, useDispatch } from 'src/hooks/suite';
+import {
+    getLastUsedFeeLevel,
+    setLastUsedFeeLevel,
+} from 'src/actions/settings/walletSettingsActions';
+import { fillSendForm } from 'src/actions/suite/protocolActions';
+import { goto } from 'src/actions/suite/routerActions';
 import {
     getSendFormDraftThunk,
     removeSendFormDraftThunk,
     saveSendFormDraftThunk,
     signAndPushSendFormTransactionThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
-import {
-    getLastUsedFeeLevel,
-    setLastUsedFeeLevel,
-} from 'src/actions/settings/walletSettingsActions';
-import { goto } from 'src/actions/suite/routerActions';
-import { fillSendForm } from 'src/actions/suite/protocolActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { AppState } from 'src/types/suite';
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 
-import { useSendFormOutputs } from './useSendFormOutputs';
-import { useSendFormFields } from './useSendFormFields';
-import { useSendFormCompose } from './useSendFormCompose';
-import { useSendFormImport } from './useSendFormImport';
-import { useFees } from './form/useFees';
-import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-import { useUtxoSelection } from './form/useUtxoSelection';
 import { useExcludedUtxos } from './form/useExcludedUtxos';
+import { useFees } from './form/useFees';
+import { useUtxoSelection } from './form/useUtxoSelection';
+import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useSendFormChangeHandlers } from './useSendFormChangeHandlers';
+import { useSendFormCompose } from './useSendFormCompose';
+import { useSendFormFields } from './useSendFormFields';
+import { useSendFormImport } from './useSendFormImport';
+import { useSendFormOutputs } from './useSendFormOutputs';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';

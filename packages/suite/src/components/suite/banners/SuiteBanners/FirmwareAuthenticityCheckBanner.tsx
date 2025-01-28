@@ -1,15 +1,15 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { Banner, Row } from '@trezor/components';
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 import {
     HELP_CENTER_FIRMWARE_REVISION_CHECK,
     TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
 } from '@trezor/urls';
-import { spacings } from '@trezor/theme';
 
 import { Translation, TrezorLink } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { SkippedHashCheckError } from 'src/constants/suite/firmware';
+import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,

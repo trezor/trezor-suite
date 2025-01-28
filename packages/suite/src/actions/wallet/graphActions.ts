@@ -1,27 +1,27 @@
-import { isWithinInterval, fromUnixTime } from 'date-fns';
+import { fromUnixTime, isWithinInterval } from 'date-fns';
 
-import { tryGetAccountIdentity, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
+import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 
+import { State } from 'src/reducers/wallet/graphReducer';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 import { GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 import {
-    ensureHistoryRates,
-    enhanceBlockchainAccountHistory,
     accountGraphDataFilterFn,
     deviceGraphDataFilterFn,
+    enhanceBlockchainAccountHistory,
+    ensureHistoryRates,
 } from 'src/utils/wallet/graph';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { State } from 'src/reducers/wallet/graphReducer';
 
 import {
-    ACCOUNT_GRAPH_SUCCESS,
     ACCOUNT_GRAPH_FAIL,
+    ACCOUNT_GRAPH_START,
+    ACCOUNT_GRAPH_SUCCESS,
     AGGREGATED_GRAPH_START,
     AGGREGATED_GRAPH_SUCCESS,
-    ACCOUNT_GRAPH_START,
     SET_SELECTED_RANGE,
     SET_SELECTED_VIEW,
 } from './constants/graphConstants';

@@ -3,28 +3,28 @@ import produce from 'immer';
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { discoveryActions, DeviceRootState, selectSelectedDevice } from '@suite-common/wallet-core';
-import { versionUtils } from '@trezor/utils';
-import { isWeb } from '@trezor/env-utils';
-import { TRANSPORT, TransportInfo, ConnectSettings, InstallerInfo } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { DeviceRootState, discoveryActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
+import { ConnectSettings, InstallerInfo, TRANSPORT, TransportInfo } from '@trezor/connect';
+import { isWeb } from '@trezor/env-utils';
+import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { versionUtils } from '@trezor/utils';
 
-import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
-import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
-import { ensureLocale } from 'src/utils/suite/l10n';
+import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import type { Locale } from 'src/config/suite/languages';
-import { SUITE, STORAGE } from 'src/actions/suite/constants';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
-import { Action, AppState, TorBootstrap, TorStatus } from 'src/types/suite';
-import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
-import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import {
     hashCheckErrorScenarios,
     isSkippedHashCheckError,
     revisionCheckErrorScenarios,
 } from 'src/constants/suite/firmware';
+import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
+import { Action, AppState, TorBootstrap, TorStatus } from 'src/types/suite';
+import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
+import { ensureLocale } from 'src/utils/suite/l10n';
+import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
+import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 import { RouterRootState, selectRouter } from './routerReducer';
 

@@ -1,7 +1,7 @@
-import { Account } from 'src/types/wallet';
-import { tradingReducer } from 'src/reducers/wallet/tradingReducer';
-import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { transactionsReducer } from 'src/reducers/wallet';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import { tradingReducer } from 'src/reducers/wallet/tradingReducer';
+import { Account } from 'src/types/wallet';
 
 export const ACCOUNT: Account = {
     networkType: 'bitcoin',

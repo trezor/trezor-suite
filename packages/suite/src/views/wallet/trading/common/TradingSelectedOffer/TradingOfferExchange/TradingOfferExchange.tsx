@@ -1,21 +1,21 @@
 import { Fragment } from 'react';
 
-import { Divider, Card } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import type { TradingExchangeType } from '@suite-common/invity';
+import { Card, Divider } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
-import { TradingVerify } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerify';
-import { TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';
+import { TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
+import { TradingOfferExchangeSend } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSend';
+import { TradingOfferExchangeSendApproval } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSendApproval';
+import { TradingOfferExchangeSendSwap } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSendSwap';
+import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 import {
     TradingSelectedOfferStepper,
     TradingSelectedOfferStepperItemProps,
 } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferStepper';
-import { TradingOfferExchangeSend } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSend';
-import { TradingOfferExchangeSendSwap } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSendSwap';
-import { TradingOfferExchangeSendApproval } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSendApproval';
+import { TradingVerify } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerify';
 
 export const TradingOfferExchange = ({
     account,

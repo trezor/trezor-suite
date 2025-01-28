@@ -1,13 +1,13 @@
+import { getNetwork } from '@suite-common/wallet-config';
+import { selectAccountByKey, selectIsPhishingTransaction } from '@suite-common/wallet-core';
 import { Account, ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getAccountKey } from '@suite-common/wallet-utils';
-import { selectAccountByKey, selectIsPhishingTransaction } from '@suite-common/wallet-core';
-import { getNetwork } from '@suite-common/wallet-config';
 import { NewModal } from '@trezor/components';
 
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { useSelector } from '../../../../../../../hooks/suite';
-import { TxDetailModalBase } from '../TxDetailModalBase';
 import { Translation } from '../../../../../Translation';
+import { TxDetailModalBase } from '../TxDetailModalBase';
 
 type DetailModalProps = {
     tx: WalletAccountTransaction;

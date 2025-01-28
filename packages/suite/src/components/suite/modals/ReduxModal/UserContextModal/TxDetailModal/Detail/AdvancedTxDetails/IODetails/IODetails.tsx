@@ -2,27 +2,27 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
+import { type NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
 import {
-    Icon,
     CollapsibleBox,
-    Divider,
     Column,
+    Divider,
+    Grid,
+    H4,
+    Icon,
+    InfoSegments,
     Row,
     Text,
-    Grid,
-    InfoSegments,
-    H4,
 } from '@trezor/components';
-import { isNetworkSymbol, type NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount, FormattedNftAmount, Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
-import { UtxoAnonymity } from 'src/components/wallet';
 import { IOAddress } from 'src/components/suite/copy/IOAddress';
+import { UtxoAnonymity } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite/useSelector';
 
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 

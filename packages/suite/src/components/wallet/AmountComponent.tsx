@@ -1,9 +1,9 @@
-import { isNftTokenTransfer, formatAmount, getTxOperation } from '@suite-common/wallet-utils';
+import { formatAmount, getTxOperation, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { TokenTransfer } from '@trezor/connect';
 import { TypographyStyle } from '@trezor/theme';
 
-import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 
 type AmountComponentProps = {
     transfer: TokenTransfer;

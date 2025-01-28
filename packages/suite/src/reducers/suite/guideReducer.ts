@@ -3,8 +3,8 @@ import produce from 'immer';
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 import * as indexNodeJSON from '@trezor/suite-data/files/guide/index.json';
 
-import { Action } from 'src/types/suite';
 import { GUIDE } from 'src/actions/suite/constants';
+import { Action } from 'src/types/suite';
 
 export interface State {
     open: boolean;

@@ -1,8 +1,8 @@
 import { IconButton } from '@trezor/components';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 
 export const NavSettings = () => {
     const dispatch = useDispatch();

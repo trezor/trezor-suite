@@ -1,22 +1,22 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import {
+    AccountsRootState,
+    StakeRootState,
+    TransactionsRootState,
+    selectAccountStakeTransactions,
+    selectPoolStatsApyData,
+    selectValidatorsQueue,
+} from '@suite-common/wallet-core';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import {
-    selectAccountStakeTransactions,
-    selectValidatorsQueue,
-    TransactionsRootState,
-    StakeRootState,
-    selectPoolStatsApyData,
-    AccountsRootState,
-} from '@suite-common/wallet-core';
-import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import { getNetworkDisplaySymbol, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
-import { getDaysToAddToPool } from 'src/utils/suite/ethereumStaking';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
+import { getDaysToAddToPool } from 'src/utils/suite/ethereumStaking';
 
 import { InfoRow } from './InfoRow';
 

@@ -1,11 +1,11 @@
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 
-import { SettingsAnchor } from '../../../constants/suite/anchors';
-import { useDevice, useDispatch } from '../../../hooks/suite';
 import { changeLanguage } from '../../../actions/settings/deviceSettingsActions';
 import { LANGUAGES } from '../../../config/suite';
 import { Locale } from '../../../config/suite/languages';
+import { SettingsAnchor } from '../../../constants/suite/anchors';
+import { useDevice, useDispatch } from '../../../hooks/suite';
 
 const BASE_TRANSLATIONS = [{ value: 'en-US', label: LANGUAGES['en'].name }];
 

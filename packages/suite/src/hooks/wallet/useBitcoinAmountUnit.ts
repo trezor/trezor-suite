@@ -1,10 +1,10 @@
-import { PROTO } from '@trezor/connect';
+import { NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import { selectDeviceUnavailableCapabilities } from '@suite-common/wallet-core';
-import { getNetworkOptional, NetworkSymbol } from '@suite-common/wallet-config';
+import { PROTO } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
-import { useActions } from 'src/hooks/suite/useActions';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { useActions } from 'src/hooks/suite/useActions';
+import { useSelector } from 'src/hooks/suite/useSelector';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const bitcoinAmountUnit = useSelector(state => state.wallet.settings.bitcoinAmountUnit);

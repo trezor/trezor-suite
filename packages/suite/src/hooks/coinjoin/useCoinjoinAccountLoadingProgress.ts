@@ -2,14 +2,14 @@ import { useEffect, useReducer } from 'react';
 
 import { ScanProgressInfo } from '@trezor/coinjoin';
 
-import { CoinjoinService } from 'src/services/coinjoin';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { TranslationKey } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { CoinjoinService } from 'src/services/coinjoin';
 import {
     getAccountProgressHandle,
     isCoinjoinSupportedSymbol,
 } from 'src/utils/wallet/coinjoinUtils';
-import { TranslationKey } from 'src/components/suite/Translation';
 
 const INIT_THRESHOLD = 0.05;
 const MEMPOOL_THRESHOLD = 0.85;

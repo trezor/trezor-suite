@@ -4,9 +4,9 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { Checkbox, Row, Spinner, TextButton, Tooltip } from '@trezor/components';
+import { CheckContainer } from '@trezor/components/src/components/form/Checkbox/Checkbox';
 import { AccountUtxo } from '@trezor/connect';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
-import { CheckContainer } from '@trezor/components/src/components/form/Checkbox/Checkbox';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import {
@@ -15,15 +15,15 @@ import {
     MetadataLabeling,
     Translation,
 } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
-import { WalletAccountTransaction } from 'src/types/wallet';
 import {
     selectIsLabelingInitPossible,
     selectLabelingDataForSelectedAccount,
 } from 'src/reducers/suite/metadataReducer';
+import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { UtxoTag } from './UtxoTag';
 

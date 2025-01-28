@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 
-import styled from 'styled-components';
 import { transparentize } from 'polished';
+import styled from 'styled-components';
 
 import { selectAccountTransactions } from '@suite-common/wallet-core';
-import { Icon, variables, IconName } from '@trezor/components';
+import { Icon, IconName, variables } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
 import { CSSColor } from '@trezor/theme';
 

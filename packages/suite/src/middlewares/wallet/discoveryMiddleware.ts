@@ -1,26 +1,26 @@
-import { connectPopupCallThunk } from '@trezor/suite-desktop-connect-popup';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
-    authorizeDeviceThunk,
-    deviceActions,
-    selectSelectedDevice,
-    selectDeviceDiscovery,
     accountsActions,
-    disableAccountsThunk,
+    authorizeDeviceThunk,
     createDiscoveryThunk,
+    deviceActions,
+    disableAccountsThunk,
+    selectDeviceDiscovery,
+    selectSelectedDevice,
     startDiscoveryThunk,
     stopDiscoveryThunk,
     updateNetworkSettingsThunk,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { connectPopupCallThunk } from '@trezor/suite-desktop-connect-popup';
 
-import { SUITE, ROUTER, MODAL } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { getApp } from 'src/utils/suite/router';
+import { MODAL, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
+import { getApp } from 'src/utils/suite/router';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }) => {

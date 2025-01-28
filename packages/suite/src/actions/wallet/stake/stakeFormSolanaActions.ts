@@ -1,15 +1,4 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
-import {
-    StakeFormState,
-    PrecomposedTransaction,
-    PrecomposedTransactionFinal,
-    ExternalOutput,
-    AddressDisplayOptions,
-} from '@suite-common/wallet-types';
-import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     MIN_SOL_AMOUNT_FOR_STAKING,
@@ -17,9 +6,20 @@ import {
     MIN_SOL_FOR_WITHDRAWALS,
     SOL_STAKING_OPERATION_FEE,
 } from '@suite-common/wallet-constants';
+import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    AddressDisplayOptions,
+    ExternalOutput,
+    PrecomposedTransaction,
+    PrecomposedTransactionFinal,
+    StakeFormState,
+} from '@suite-common/wallet-types';
+import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
+import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Dispatch, GetState } from 'src/types/suite';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { Dispatch, GetState } from 'src/types/suite';
 import {
     getPubKeyFromAddress,
     prepareClaimSolTx,

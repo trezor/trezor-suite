@@ -1,28 +1,28 @@
 import { useMemo } from 'react';
 
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import {
     Button,
     Card,
     Column,
+    Divider,
+    Grid,
+    IconName,
     Paragraph,
     Text,
     Tooltip,
-    variables,
-    Divider,
-    Grid,
     useMediaQuery,
-    IconName,
+    variables,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
-import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { DashboardSection } from 'src/components/dashboard';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { StakingFeature, Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 export const EmptyStakingCard = () => {
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);

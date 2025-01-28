@@ -7,28 +7,28 @@ import {
     isDeviceAcquired,
     isDeviceWithButtons,
 } from '@suite-common/suite-utils';
-import { Card, H2, H3, Image, BulletList, NewModal, Paragraph } from '@trezor/components';
-import { pickByDeviceModel } from '@trezor/device-utils';
+import { BulletList, Card, H2, H3, Image, NewModal, Paragraph } from '@trezor/components';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
+import { pickByDeviceModel } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
-import { SelectRecoveryType, SelectWordCount } from 'src/components/recovery';
-import { CheckItem, Loading, Translation } from 'src/components/suite';
 import {
     checkSeed,
     setAdvancedRecovery,
     setStatus,
     setWordsCount,
 } from 'src/actions/recovery/recoveryActions';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import type { ForegroundAppProps } from 'src/types/suite';
-import type { WordCount } from 'src/types/recovery';
-import messages from 'src/support/messages';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { MODAL } from 'src/actions/suite/constants';
+import { SelectRecoveryType, SelectWordCount } from 'src/components/recovery';
+import { CheckItem, Loading, Translation } from 'src/components/suite';
+import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import messages from 'src/support/messages';
+import type { WordCount } from 'src/types/recovery';
+import type { ForegroundAppProps } from 'src/types/suite';
 
-import { T1B1InputStep } from './steps/T1B1InputStep';
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';
+import { T1B1InputStep } from './steps/T1B1InputStep';
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const recovery = useSelector(state => state.recovery);

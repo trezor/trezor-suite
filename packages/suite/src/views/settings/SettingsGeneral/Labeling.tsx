@@ -1,13 +1,13 @@
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { LoadingContent, Switch, Tooltip } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
-import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { useSelector, useDispatch, useDevice, useDiscovery } from 'src/hooks/suite';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 
 export const Labeling = () => {
     const metadata = useSelector(state => state.metadata);

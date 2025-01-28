@@ -1,8 +1,8 @@
 import { CryptoId } from 'invity-api';
 
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';

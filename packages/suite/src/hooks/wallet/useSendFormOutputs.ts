@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from 'react';
-import { useFieldArray, UseFormReturn } from 'react-hook-form';
+import { UseFormReturn, useFieldArray } from 'react-hook-form';
 
+import { DEFAULT_OPRETURN, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FormState } from '@suite-common/wallet-types';
-import { DEFAULT_PAYMENT, DEFAULT_OPRETURN } from '@suite-common/wallet-constants';
 
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 

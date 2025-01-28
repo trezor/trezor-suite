@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 
-import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import type { NotificationRendererProps } from 'src/components/suite';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
 const Header = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

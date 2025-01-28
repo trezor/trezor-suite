@@ -1,11 +1,11 @@
 import { MouseEventHandler } from 'react';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';
-import { useDevice } from 'src/hooks/suite';
 import {
-    TROUBLESHOOTING_TIP_RECONNECT,
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
+    TROUBLESHOOTING_TIP_RECONNECT,
 } from 'src/components/suite/troubleshooting/tips';
+import { useDevice } from 'src/hooks/suite';
 
 import { AcquireDeviceButton } from '../AcquireDeviceButton';
 

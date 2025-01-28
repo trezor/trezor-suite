@@ -1,7 +1,7 @@
 import { QRCodeSVG } from 'qrcode.react';
 import styled from 'styled-components';
 
-import { Icon, Tooltip, variables, intermediaryTheme } from '@trezor/components';
+import { Icon, Tooltip, intermediaryTheme, variables } from '@trezor/components';
 import { CSSColor } from '@trezor/theme';
 
 import { Translation } from './Translation';

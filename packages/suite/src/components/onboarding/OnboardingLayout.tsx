@@ -1,20 +1,20 @@
-import { useMemo, ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { selectBannerMessage } from '@suite-common/message-system';
 import { Button, variables } from '@trezor/components';
 import { TrezorLogo } from '@trezor/product-components';
-import { TREZOR_SUPPORT_URL } from '@trezor/urls';
-import { selectBannerMessage } from '@suite-common/message-system';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
+import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
-import { OnboardingProgressBar } from 'src/components/onboarding';
-import { useSelector, useOnboarding } from 'src/hooks/suite';
-import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
-import steps from 'src/config/onboarding/steps';
 import { GuideButton, GuideRouter } from 'src/components/guide';
+import { OnboardingProgressBar } from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
 import { MessageSystemBanner } from 'src/components/suite/banners';
+import steps from 'src/config/onboarding/steps';
+import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import { TrafficLightOffset } from '../suite/TrafficLightOffset';

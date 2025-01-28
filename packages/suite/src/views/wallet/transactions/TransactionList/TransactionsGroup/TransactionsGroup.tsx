@@ -1,8 +1,12 @@
-import { useState, ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { selectHistoricFiatRates } from '@suite-common/wallet-core';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
     isNftTokenTransfer,
@@ -10,10 +14,6 @@ import {
     sumTransactions,
     sumTransactionsFiat,
 } from '@suite-common/wallet-utils';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectHistoricFiatRates } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 
 import { useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';

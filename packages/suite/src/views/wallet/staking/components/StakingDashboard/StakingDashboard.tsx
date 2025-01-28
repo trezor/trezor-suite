@@ -1,6 +1,6 @@
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectEthAccountHasStaked, selectSolAccountHasStaked } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';

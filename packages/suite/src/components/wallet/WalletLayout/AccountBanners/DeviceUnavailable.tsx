@@ -1,8 +1,8 @@
 import { Banner } from '@trezor/components';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { Translation } from 'src/components/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const DeviceUnavailable = () => {
     const dispatch = useDispatch();

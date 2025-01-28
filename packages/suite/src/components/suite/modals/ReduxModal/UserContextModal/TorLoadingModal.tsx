@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { UserContextPayload } from '@suite-common/suite-types';
 
-import { TorLoader, Modal } from 'src/components/suite';
+import { Modal, TorLoader } from 'src/components/suite';
 
 const SmallModal = styled(Modal)`
     width: 560px;

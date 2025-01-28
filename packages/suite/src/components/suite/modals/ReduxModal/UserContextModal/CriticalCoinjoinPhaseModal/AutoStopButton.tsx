@@ -2,15 +2,15 @@ import { useState } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { Icon, IconName } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
+import { Icon, IconName } from '@trezor/components';
 import { borders, typography } from '@trezor/theme';
 
+import { toggleAutostopCoinjoin } from 'src/actions/wallet/coinjoinAccountActions';
 import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsSessionAutostopped } from 'src/reducers/wallet/coinjoinReducer';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { toggleAutostopCoinjoin } from 'src/actions/wallet/coinjoinAccountActions';
 
 const TRANSITION_CONFIG = '0.1s ease';
 

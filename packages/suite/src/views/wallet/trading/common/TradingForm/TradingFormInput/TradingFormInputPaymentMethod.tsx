@@ -2,15 +2,15 @@ import { Control, Controller } from 'react-hook-form';
 
 import { Select } from '@trezor/components';
 
-import { TradingPaymentMethodListProps, TradingTradeBuySellType } from 'src/types/trading/trading';
+import { Translation } from 'src/components/suite';
+import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingPaymentMethodListProps, TradingTradeBuySellType } from 'src/types/trading/trading';
 import {
     TradingBuySellFormProps,
     TradingFormInputDefaultProps,
 } from 'src/types/trading/tradingForm';
 import { TradingPaymentPlainType } from 'src/views/wallet/trading/common/TradingPaymentPlainType';
-import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/trading/form';
-import { Translation } from 'src/components/suite';
 
 export const TradingFormInputPaymentMethod = ({ label }: TradingFormInputDefaultProps) => {
     const {

@@ -2,18 +2,18 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 
-import {
-    GuideHeader,
-    GuideContent,
-    GuideViewWrapper,
-    GuideNode,
-    GuideCategories,
-} from 'src/components/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
-import { getNodeTitle } from 'src/utils/suite/guide';
+import {
+    GuideCategories,
+    GuideContent,
+    GuideHeader,
+    GuideNode,
+    GuideViewWrapper,
+} from 'src/components/guide';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { getNodeTitle } from 'src/utils/suite/guide';
 
 const Section = styled.div`
     margin-bottom: 20px;

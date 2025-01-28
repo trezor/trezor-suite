@@ -1,16 +1,16 @@
-import { forwardRef, ReactNode } from 'react';
+import { ReactNode, forwardRef } from 'react';
 
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenInfo } from '@trezor/connect';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
+import { variables } from '@trezor/components';
+import { TokenInfo } from '@trezor/connect';
 import { zIndices } from '@trezor/theme';
 
-import { Account } from 'src/types/wallet';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { DisplayMode } from 'src/types/suite';
+import { Account } from 'src/types/wallet';
 
 import { TransactionReviewStepIndicatorProps } from './TransactionReviewStepIndicator';
 import { DeviceDisplay } from '../../../../DeviceDisplay/DeviceDisplay';

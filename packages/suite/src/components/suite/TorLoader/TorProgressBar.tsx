@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button, ProgressBar, Icon, variables } from '@trezor/components';
+import { Button, Icon, ProgressBar, variables } from '@trezor/components';
 import { borders } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';

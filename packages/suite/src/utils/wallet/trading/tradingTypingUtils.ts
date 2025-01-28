@@ -1,6 +1,5 @@
 import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import { CurrencyOption } from '@suite-common/wallet-types';
 import type {
     TradingBuyType,
     TradingExchangeType,
@@ -8,6 +7,7 @@ import type {
     TradingTradeType,
     TradingType,
 } from '@suite-common/invity';
+import { CurrencyOption } from '@suite-common/wallet-types';
 
 import { FORM_FIAT_CURRENCY_SELECT, FORM_OUTPUT_CURRENCY } from 'src/constants/wallet/trading/form';
 import {

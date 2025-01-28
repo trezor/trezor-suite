@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 
-import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
+import styled from 'styled-components';
 
-import { Icon, variables, Radio, motionAnimation } from '@trezor/components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { Icon, Radio, motionAnimation, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';

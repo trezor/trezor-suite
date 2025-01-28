@@ -3,16 +3,16 @@ import { ReactNode, useMemo } from 'react';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useDiscovery, useDispatch, useLayout, useSelector } from 'src/hooks/suite';
-import { SettingsLoading } from 'src/views/settings/SettingsLoader';
+import { goto } from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite';
 import {
-    PageHeader,
     NavigationItem,
+    PageHeader,
     SubpageNavigation,
 } from 'src/components/suite/layouts/SuiteLayout';
-import { goto } from 'src/actions/suite/routerActions';
+import { useDiscovery, useDispatch, useLayout, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { Translation } from 'src/components/suite';
+import { SettingsLoading } from 'src/views/settings/SettingsLoader';
 
 type SettingsLayoutProps = {
     title?: string;

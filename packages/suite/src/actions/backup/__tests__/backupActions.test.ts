@@ -1,13 +1,13 @@
-import { mergeDeepObject } from '@trezor/utils';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { CommonParams, DeviceModelInternal } from '@trezor/connect';
+import { mergeDeepObject } from '@trezor/utils';
 
-import { configureStore } from 'src/support/tests/configureStore';
-import { SUITE } from 'src/actions/suite/constants';
-import { BACKUP } from 'src/actions/backup/constants';
 import * as backupActions from 'src/actions/backup/backupActions';
+import { BACKUP } from 'src/actions/backup/constants';
+import { SUITE } from 'src/actions/suite/constants';
+import { configureStore } from 'src/support/tests/configureStore';
 
 const getInitialState = (override: any) => {
     const defaults = {

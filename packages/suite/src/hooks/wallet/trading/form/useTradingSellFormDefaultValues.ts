@@ -5,20 +5,20 @@ import { FormState, Output } from '@suite-common/wallet-types';
 
 import { SellInfo } from 'src/actions/wallet/tradingSellActions';
 import {
+    FORM_DEFAULT_FIAT_CURRENCY,
+    FORM_DEFAULT_PAYMENT_METHOD,
+} from 'src/constants/wallet/trading/form';
+import { useSelector } from 'src/hooks/suite';
+import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
+import { TradingPaymentMethodListProps } from 'src/types/trading/trading';
+import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
+import { Account } from 'src/types/wallet';
+import {
     buildFiatOption,
     cryptoIdToSymbol,
     getAddressAndTokenFromAccountOptionsGroupProps,
     getDefaultCountry,
 } from 'src/utils/wallet/trading/tradingUtils';
-import { Account } from 'src/types/wallet';
-import { TradingPaymentMethodListProps } from 'src/types/trading/trading';
-import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
-import {
-    FORM_DEFAULT_FIAT_CURRENCY,
-    FORM_DEFAULT_PAYMENT_METHOD,
-} from 'src/constants/wallet/trading/form';
-import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
-import { useSelector } from 'src/hooks/suite';
 
 export const useTradingSellFormDefaultValues = (
     account: Account,

@@ -1,9 +1,9 @@
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { openGithubIssue } from 'src/services/github';
 import { selectActiveTransports } from 'src/reducers/suite/suiteReducer';
+import { openGithubIssue } from 'src/services/github';
 
 export const GithubIssue = () => {
     const transports = useSelector(selectActiveTransports);

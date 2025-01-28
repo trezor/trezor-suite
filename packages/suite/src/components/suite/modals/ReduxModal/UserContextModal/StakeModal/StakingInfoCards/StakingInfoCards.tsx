@@ -1,8 +1,8 @@
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { StakingInfo } from 'src/components/suite/StakingProcess/StakingInfo';
+import { Translation } from 'src/components/suite/Translation';
 
 import { EstimatedGains } from './EstimatedGains';
 

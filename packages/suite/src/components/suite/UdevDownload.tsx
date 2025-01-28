@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 import { Button, Select, Spinner } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
+import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';

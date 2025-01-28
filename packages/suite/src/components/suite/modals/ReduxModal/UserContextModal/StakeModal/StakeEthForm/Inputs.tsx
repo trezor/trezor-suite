@@ -1,25 +1,25 @@
-import { Banner, Column, Text } from '@trezor/components';
-import { getInputState, getStakingLimitsByNetwork } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { spacings } from '@trezor/theme';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { BigNumber } from '@trezor/utils';
-import { InputWithOptions } from '@trezor/product-components';
 import { StakeFormState } from '@suite-common/wallet-types';
+import { getInputState, getStakingLimitsByNetwork } from '@suite-common/wallet-utils';
+import { Banner, Column, Text } from '@trezor/components';
+import { InputWithOptions } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { FiatValue, Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
+import { validateStakingMax } from 'src/utils/suite/staking';
 import {
-    validateDecimals,
     validateCryptoLimits,
+    validateDecimals,
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
-import { FIAT_INPUT, CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
-import { validateStakingMax } from 'src/utils/suite/staking';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 export const Inputs = () => {
     const { translationString } = useTranslation();

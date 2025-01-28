@@ -1,46 +1,46 @@
-import { Controller } from 'react-hook-form';
 import { useMemo, useState } from 'react';
+import { Controller } from 'react-hook-form';
 
 import { CryptoId } from 'invity-api';
 
+import { Network, NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { Badge, Row, Select, Text } from '@trezor/components';
 import {
-    SearchAsset,
-    SelectAssetModal,
-    NetworkTabs,
+    AssetOptionBaseProps,
     AssetProps,
     ITEM_HEIGHT,
-    AssetOptionBaseProps,
+    NetworkTabs,
+    SearchAsset,
+    SelectAssetModal,
 } from '@trezor/product-components';
-import { getNetworkByCoingeckoId, Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { spacings } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite';
 import {
+    FORM_CRYPTO_CURRENCY_SELECT,
+    FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+} from 'src/constants/wallet/trading/form';
+import { useTranslation } from 'src/hooks/suite';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import {
+    SelectAssetOptionProps,
     TradingAccountOptionsGroupOptionProps,
     TradingCryptoSelectItemProps,
     TradingTradeBuyExchangeType,
-    SelectAssetOptionProps,
 } from 'src/types/trading/trading';
-import { Translation } from 'src/components/suite';
 import {
     TradingBuyFormProps,
     TradingExchangeFormProps,
     TradingFormInputCryptoSelectProps,
 } from 'src/types/trading/tradingForm';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 import {
     cryptoIdToNetwork,
     cryptoPlatformSeparator,
     isCryptoIdForNativeToken,
     parseCryptoId,
 } from 'src/utils/wallet/trading/tradingUtils';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import {
-    FORM_CRYPTO_CURRENCY_SELECT,
-    FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/trading/form';
-import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { useTranslation } from 'src/hooks/suite';
 
 import { TradingCoinLogo } from '../../TradingCoinLogo';
 

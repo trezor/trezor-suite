@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
+import * as languageActions from 'src/actions/settings/languageActions';
+import { setTheme as setThemeAction } from 'src/actions/suite/suiteActions';
+import { useActions, useSelector } from 'src/hooks/suite';
 import { getOsTheme, watchOsTheme } from 'src/utils/suite/env';
 import { getOsLocale, watchOsLocale } from 'src/utils/suite/l10n';
-import { useActions, useSelector } from 'src/hooks/suite';
-import { setTheme as setThemeAction } from 'src/actions/suite/suiteActions';
-import * as languageActions from 'src/actions/settings/languageActions';
 
 const Autodetect = () => {
     const autodetectTheme = useSelector(state => state.suite.settings.autodetect.theme);

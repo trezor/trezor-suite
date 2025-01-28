@@ -1,7 +1,7 @@
-import { ArrayElement } from '@trezor/type-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { ArrayElement } from '@trezor/type-utils';
 
-import { Translation, AddressLabeling } from 'src/components/suite';
+import { AddressLabeling, Translation } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { BlurWrapper } from '../TransactionItemBlurWrapper';

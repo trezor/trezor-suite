@@ -3,11 +3,11 @@ import { prepareDeviceReducer } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/connect';
 import { DeepPartial } from '@trezor/type-utils';
 
+import suiteReducer from '../../../../reducers/suite/suiteReducer';
+import { extraDependencies } from '../../../../support/extraDependencies';
+import { renderWithProviders } from '../../../../support/tests/hooksHelper';
 import { DisplayMode } from '../../../../types/suite';
 import { DeviceDisplay } from '../DeviceDisplay';
-import { renderWithProviders } from '../../../../support/tests/hooksHelper';
-import { extraDependencies } from '../../../../support/extraDependencies';
-import suiteReducer from '../../../../reducers/suite/suiteReducer';
 
 const _deviceReducer = prepareDeviceReducer(extraDependencies);
 

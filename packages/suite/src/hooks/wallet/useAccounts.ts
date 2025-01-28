@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import type { AccountAddress } from '@trezor/connect';
-import * as accountUtils from '@suite-common/wallet-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import * as accountUtils from '@suite-common/wallet-utils';
+import type { AccountAddress } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 import type { Account, Discovery } from 'src/types/wallet';

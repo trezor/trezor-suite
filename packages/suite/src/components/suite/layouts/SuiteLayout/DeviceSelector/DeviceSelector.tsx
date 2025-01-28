@@ -1,22 +1,22 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { selectDevicesCount, selectSelectedDevice } from '@suite-common/wallet-core';
-import type { TimerId } from '@trezor/type-utils';
-import { borders, spacingsPx } from '@trezor/theme';
-import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { Icon, Tooltip } from '@trezor/components';
+import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
+import { borders, spacingsPx } from '@trezor/theme';
+import type { TimerId } from '@trezor/type-utils';
 
-import { SHAKE } from 'src/support/suite/styles/animations';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
+import { SHAKE } from 'src/support/suite/styles/animations';
 import { ViewOnlyTooltip } from 'src/views/view-only/ViewOnlyTooltip';
 
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
-import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 import { Translation } from '../../../Translation';
+import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
 
 const CaretContainer = styled.div`
     background: transparent;

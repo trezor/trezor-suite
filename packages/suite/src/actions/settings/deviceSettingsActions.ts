@@ -1,17 +1,17 @@
-import { selectDevices, selectSelectedDevice, deviceActions } from '@suite-common/wallet-core';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
-import * as deviceUtils from '@suite-common/suite-utils';
-import TrezorConnect, { ERRORS } from '@trezor/connect';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { createThunk } from '@suite-common/redux-utils';
+import * as deviceUtils from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
+import TrezorConnect, { ERRORS } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
-import { Dispatch, GetState } from 'src/types/suite';
-import * as DEVICE from 'src/constants/suite/device';
 import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
+import * as DEVICE from 'src/constants/suite/device';
+import { Dispatch, GetState } from 'src/types/suite';
 
 import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';
 

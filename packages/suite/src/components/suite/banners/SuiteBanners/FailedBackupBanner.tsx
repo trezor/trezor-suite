@@ -1,9 +1,9 @@
 import { Banner } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch } from 'src/hooks/suite';
+import { Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch } from 'src/hooks/suite';
 
 export const FailedBackup = () => {
     const dispatch = useDispatch();

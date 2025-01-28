@@ -1,31 +1,31 @@
 import { useState } from 'react';
 
 import {
-    selectDiscoveryByDeviceState,
+    createDiscoveryThunk,
     selectCurrentFiatRates,
     selectDeviceThunk,
+    selectDiscoveryByDeviceState,
     selectSelectedDevice,
-    createDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { Card, Icon, Tooltip, Row, Column, Text, Divider, Box } from '@trezor/components';
 import { getAllAccounts } from '@suite-common/wallet-utils';
-import { spacings, negativeSpacings } from '@trezor/theme';
+import { Box, Card, Column, Divider, Icon, Row, Text, Tooltip } from '@trezor/components';
+import { negativeSpacings, spacings } from '@trezor/theme';
 
-import { WalletLabeling, Translation, MetadataLabeling } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
-import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { METADATA_LABELING } from 'src/actions/suite/constants';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
+import { MetadataLabeling, Translation, WalletLabeling } from 'src/components/suite';
+import { FiatHeader } from 'src/components/wallet/FiatHeader';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
+import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 
-import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { EjectConfirmation, EjectConfirmationDisableViewOnly } from './EjectConfirmation';
+import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { ContentType } from '../types';
-import { ViewOnly } from './ViewOnly';
 import { EjectButton } from './EjectButton';
+import { ViewOnly } from './ViewOnly';
 
 interface WalletInstanceProps {
     instance: AcquiredDevice;

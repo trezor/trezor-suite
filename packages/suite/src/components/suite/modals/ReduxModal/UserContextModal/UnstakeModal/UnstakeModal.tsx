@@ -1,3 +1,4 @@
+import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import {
     CollapsibleBox,
     Column,
@@ -8,11 +9,10 @@ import {
     variables,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
+import { useSelector } from 'src/hooks/suite';
 import { UnstakeEthFormContext, useUnstakeEthForm } from 'src/hooks/wallet/useUnstakeEthForm';
 
 import { UnstakeButton } from './UnstakeEthForm/UnstakeButton';

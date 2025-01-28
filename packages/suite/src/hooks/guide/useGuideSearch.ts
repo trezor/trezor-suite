@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { GuideCategory, GuideArticle } from '@suite-common/suite-types';
+import { GuideArticle, GuideCategory } from '@suite-common/suite-types';
 
 import { loadPageMarkdownFile } from 'src/hooks/guide/useGuideLoadArticle';
 

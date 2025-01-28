@@ -2,8 +2,8 @@ import { Switch } from '@trezor/components';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { isTranslationMode, setTranslationMode } from 'src/utils/suite/l10n';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { isTranslationMode, setTranslationMode } from 'src/utils/suite/l10n';
 
 export const TranslationMode = () => (
     <SettingsSectionItem anchorId={SettingsAnchor.TranslationMode}>

@@ -1,8 +1,8 @@
 import { openModal } from 'src/actions/suite/modalActions';
-import { useDispatch } from 'src/hooks/suite';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch } from 'src/hooks/suite';
 
 export const ShowApplicationLog = () => {
     const dispatch = useDispatch();

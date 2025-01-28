@@ -1,10 +1,10 @@
-import { findChainedTransactions, findTransactions } from '@suite-common/wallet-utils';
 import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { findChainedTransactions, findTransactions } from '@suite-common/wallet-utils';
 
+import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { Dispatch, GetState } from 'src/types/suite';
-import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
 type DeleteAllOutputLabelsParams = {

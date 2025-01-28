@@ -1,17 +1,17 @@
 import { ReactNode } from 'react';
 
-import { Divider, Card, InfoItem, Row, Text } from '@trezor/components';
-import { formatNetworkAmount, getFeeUnits } from '@suite-common/wallet-utils';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { formatNetworkAmount, getFeeUnits } from '@suite-common/wallet-utils';
+import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { useRbfContext, UseRbfProps } from 'src/hooks/wallet/useRbfForm';
+import { UseRbfProps, useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
-import { RbfFees } from './RbfFees';
 import { AffectedTransactions } from './AffectedTransactions';
 import { DecreasedOutputs } from './DecreasedOutputs';
+import { RbfFees } from './RbfFees';
 
 /* children are only for test purposes, this prop is not available in regular build */
 interface ChangeFeeProps extends UseRbfProps {

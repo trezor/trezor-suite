@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-import { Button, NewModal, Row, Paragraph } from '@trezor/components';
-import type { Deferred } from '@trezor/utils';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { Button, NewModal, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import type { Deferred } from '@trezor/utils';
 
+import { connectProvider } from 'src/actions/suite/metadataProviderActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { connectProvider } from 'src/actions/suite/metadataProviderActions';
 import { MetadataProviderType } from 'src/types/suite/metadata';
 
 import { DropboxLogo } from './DropboxLogo';

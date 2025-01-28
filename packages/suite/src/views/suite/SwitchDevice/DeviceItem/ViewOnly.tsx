@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
-import { CollapsibleBox, Text, Row } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
-import { toggleRememberDevice } from '@suite-common/wallet-core';
 import { AcquiredDevice } from '@suite-common/suite-types';
+import { toggleRememberDevice } from '@suite-common/wallet-core';
+import { CollapsibleBox, Row, Text } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';

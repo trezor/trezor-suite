@@ -1,25 +1,25 @@
 import { useDispatch } from 'react-redux';
 
-import styled, { css, DefaultTheme, useTheme } from 'styled-components';
+import styled, { DefaultTheme, css, useTheme } from 'styled-components';
 
-import { ComponentWithSubIcon, getIconSize, Icon, IconSize, iconSizes } from '@trezor/components';
-import { borders, Color, CSSColor } from '@trezor/theme';
+import { ComponentWithSubIcon, Icon, IconSize, getIconSize, iconSizes } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
+import { CSSColor, Color, borders } from '@trezor/theme';
 
 import { useDevice } from '../../../../../../../hooks/suite';
 import { QuickActionButton } from '../QuickActionButton';
 import { UpdateIconGroup } from './UpdateIconGroup';
-import { useUpdateStatus } from './useUpdateStatus';
 import { UpdateTooltip } from './UpdateTooltip';
 import {
+    UpdateStatus,
+    UpdateVariant,
     mapDeviceUpdateToClick,
     mapSuiteUpdateToClick,
     mapUpdateStatusToIcon,
     mapUpdateStatusToVariant,
-    UpdateStatus,
-    UpdateVariant,
 } from './updateQuickActionTypes';
+import { useUpdateStatus } from './useUpdateStatus';
 
 type MapArgs = {
     $variant: UpdateVariant;

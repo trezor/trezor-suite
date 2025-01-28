@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
+import type { TradingExchangeType } from '@suite-common/invity';
 import { Button, Column, Divider, InfoItem, Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import type { TradingExchangeType } from '@suite-common/invity';
 
+import { AccountLabeling, Translation } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { AccountLabeling, Translation } from 'src/components/suite';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 
 export const TradingOfferExchangeSend = () => {

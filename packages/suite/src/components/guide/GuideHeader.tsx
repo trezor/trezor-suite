@@ -1,15 +1,15 @@
 import { useContext } from 'react';
 
-import styled, { css } from 'styled-components';
 import { transparentize } from 'polished';
+import styled, { css } from 'styled-components';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { IconButton, variables } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { typography, zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
+import { ContentScrolledContext, HeaderBreadcrumb } from 'src/components/guide';
 import { useDispatch } from 'src/hooks/suite';
-import { HeaderBreadcrumb, ContentScrolledContext } from 'src/components/guide';
 
 const HeaderWrapper = styled.div<{ $noLabel?: boolean; $isScrolled: boolean }>`
     display: flex;

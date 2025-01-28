@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 import { Button, Tooltip } from '@trezor/components';
 
-import { useSendFormContext } from 'src/hooks/wallet';
 import { Translation } from 'src/components/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
 
 import { OnOffSwitcher } from '../OnOffSwitcher';
 

@@ -1,6 +1,9 @@
 import { useCallback } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { FormOptions, FormState, Rate, TokenAddress } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
     formatNetworkAmount,
@@ -8,9 +11,6 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { FormState, FormOptions, TokenAddress, Rate } from '@suite-common/wallet-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';

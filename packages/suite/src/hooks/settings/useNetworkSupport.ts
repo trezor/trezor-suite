@@ -1,15 +1,15 @@
 import { Network, getMainnets, getTestnets } from '@suite-common/wallet-config';
-import { selectSelectedDevice, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
+import { selectDeviceSupportedNetworks, selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { arrayPartition } from '@trezor/utils';
 
+import { EXPERIMENTAL_L2_NETWORKS } from 'src/actions/suite/constants/suiteConstants';
 import { useSelector } from 'src/hooks/suite';
 import {
-    selectIsDebugModeActive,
     selectHasExperimentalFeature,
+    selectIsDebugModeActive,
 } from 'src/reducers/suite/suiteReducer';
-import { EXPERIMENTAL_L2_NETWORKS } from 'src/actions/suite/constants/suiteConstants';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 export const useNetworkSupport = () => {

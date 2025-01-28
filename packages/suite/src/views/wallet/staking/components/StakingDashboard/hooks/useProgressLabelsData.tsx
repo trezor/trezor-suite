@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { Paragraph, Column } from '@trezor/components';
-import { Account } from '@suite-common/wallet-types';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import { Account } from '@suite-common/wallet-types';
+import { Column, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 

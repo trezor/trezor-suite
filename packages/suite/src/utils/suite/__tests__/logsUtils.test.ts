@@ -1,14 +1,14 @@
 import { testMocks } from '@suite-common/test-utils';
-import { discoveryActions } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { discoveryActions } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
 import {
+    REDACTED_REPLACEMENT,
     redactAccount,
     redactAction,
     redactDevice,
     redactDiscovery,
-    REDACTED_REPLACEMENT,
 } from 'src/utils/suite/logsUtils';
 
 describe('logsUtils', () => {

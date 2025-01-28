@@ -1,14 +1,14 @@
 import { useEffect, useMemo } from 'react';
 
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { isArrayMember } from '@trezor/utils';
 
-import { useDevice, useSelector } from 'src/hooks/suite';
-import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
-import { selectFirmwareRevisionCheckError } from 'src/reducers/suite/suiteReducer';
 import { hashCheckErrorScenarios } from 'src/constants/suite/firmware';
+import { useDevice, useSelector } from 'src/hooks/suite';
+import { selectFirmwareRevisionCheckError } from 'src/reducers/suite/suiteReducer';
+import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
 
 export const reportCheckFail = (
     checkType: 'Firmware revision' | 'Firmware hash' | 'Entropy',

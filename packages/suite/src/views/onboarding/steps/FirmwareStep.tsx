@@ -1,19 +1,19 @@
-import { getFirmwareVersion } from '@trezor/device-utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useFirmwareInstallation } from '@suite-common/firmware';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { MODAL } from 'src/actions/suite/constants';
+import {
+    Fingerprint,
+    FirmwareContinueButton,
+    FirmwareInitial,
+    FirmwareInstallation,
+    FirmwareRetryButton,
+    FirmwareUpdateHashCheckError,
+} from 'src/components/firmware';
 import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
 import { PrerequisitesGuide, Translation } from 'src/components/suite';
-import {
-    FirmwareContinueButton,
-    FirmwareRetryButton,
-    FirmwareInstallation,
-    FirmwareInitial,
-    FirmwareUpdateHashCheckError,
-    Fingerprint,
-} from 'src/components/firmware';
-import { useSelector, useOnboarding } from 'src/hooks/suite';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 export const FirmwareStep = () => {

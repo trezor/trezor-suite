@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-import { Translation } from 'src/components/suite';
 import {
     OnboardingButtonCta,
     OnboardingButtonSkip,
     OnboardingStepBox,
     SkipStepConfirmation,
 } from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
 import { useOnboarding } from 'src/hooks/suite';
 
 const SecurityStep = () => {

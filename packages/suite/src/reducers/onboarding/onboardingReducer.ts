@@ -5,8 +5,8 @@ import { OnboardingAnalytics } from '@trezor/suite-analytics';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import * as STEP from 'src/constants/onboarding/steps';
+import type { AnyPath, AnyStepId } from 'src/types/onboarding';
 import { Action, TrezorDevice } from 'src/types/suite';
-import type { AnyStepId, AnyPath } from 'src/types/onboarding';
 
 export interface OnboardingRootState {
     onboarding: OnboardingState;

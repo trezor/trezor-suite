@@ -1,17 +1,17 @@
 import { FunctionComponent } from 'react';
 
-import { FirmwareUpdate } from 'src/views/firmware/FirmwareUpdate';
-import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';
-import { Recovery } from 'src/views/recovery';
-import { Backup } from 'src/views/backup/Backup';
-import { useDispatch } from 'src/hooks/suite';
 import { closeModalApp } from 'src/actions/suite/routerActions';
+import { useDispatch } from 'src/hooks/suite';
+import type { ForegroundAppRoute } from 'src/types/suite';
+import { Backup } from 'src/views/backup/Backup';
+import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';
+import { FirmwareUpdate } from 'src/views/firmware/FirmwareUpdate';
+import { Recovery } from 'src/views/recovery';
+import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 import { BridgeUnavailable } from 'src/views/suite/bridge';
+import { BridgeRequested } from 'src/views/suite/bridge-requested';
 import { UdevRules } from 'src/views/suite/udev';
 import { Version } from 'src/views/suite/version';
-import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
-import type { ForegroundAppRoute } from 'src/types/suite';
-import { BridgeRequested } from 'src/views/suite/bridge-requested';
 
 import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
 

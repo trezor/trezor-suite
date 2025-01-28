@@ -1,13 +1,13 @@
 import { networks } from '@suite-common/wallet-config';
 
-import { Account } from 'src/types/wallet';
-import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { SUITE } from 'src/actions/suite/constants';
+import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { Account } from 'src/types/wallet';
 
-import { CloseableBanner } from './CloseableBanner';
 import { BannerPoints } from './BannerPoints';
+import { CloseableBanner } from './CloseableBanner';
 
 interface EvmExplanationBannerProps {
     account?: Account;

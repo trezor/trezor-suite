@@ -1,24 +1,24 @@
 import { ReactNode, forwardRef } from 'react';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { formatNetworkAmount, formatAmount, isTestnet } from '@suite-common/wallet-utils';
-import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
-import { getNetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
-import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import { TranslationKey } from '@suite-common/intl-types';
+import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
+import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
+import { formatAmount, formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import type { Account } from 'src/types/wallet';
-import { useDisplayMode, useTranslation } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
+import { useDisplayMode, useTranslation } from 'src/hooks/suite';
+import type { Account } from 'src/types/wallet';
 
+import {
+    OutputElementLine,
+    TransactionReviewOutputElement,
+} from './TransactionReviewOutputElement';
 import {
     TransactionReviewStepIndicator,
     TransactionReviewStepIndicatorProps,
 } from './TransactionReviewStepIndicator';
-import {
-    TransactionReviewOutputElement,
-    OutputElementLine,
-} from './TransactionReviewOutputElement';
 
 const getFeeLabel = (networkType: Account['networkType']) => {
     switch (networkType) {

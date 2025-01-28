@@ -1,11 +1,11 @@
-import { useState, useEffect, ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 
-import enMessages from '@trezor/suite-data/files/translations/en.json';
 import { isDevEnv } from '@suite-common/suite-utils';
+import enMessages from '@trezor/suite-data/files/translations/en.json';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
 import type { Locale } from 'src/config/suite/languages';
+import { useSelector } from 'src/hooks/suite/useSelector';
 
 const useFetchMessages = (locale: Locale) => {
     const [messages, setMessages] = useState<{ [key: string]: any }>({});

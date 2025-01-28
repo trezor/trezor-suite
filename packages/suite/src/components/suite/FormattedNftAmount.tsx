@@ -2,15 +2,15 @@ import { useTheme } from 'styled-components';
 
 import { SignValue } from '@suite-common/suite-types';
 import { isNftMultitokenTransfer } from '@suite-common/wallet-utils';
-import { TokenTransfer } from '@trezor/connect';
 import { Box, Column, Row, Text } from '@trezor/components';
-import { spacings, TypographyStyle } from '@trezor/theme';
+import { TokenTransfer } from '@trezor/connect';
+import { TypographyStyle, spacings } from '@trezor/theme';
 
 import { HiddenPlaceholder, Sign, Translation } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { TrezorLink } from 'src/components/suite/TrezorLink';
-import { useSelector } from 'src/hooks/suite/useSelector';
 import { useTranslation } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 export interface FormattedNftAmountProps {

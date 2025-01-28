@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
-import { Textarea, IconButton, Row, Tooltip, variables } from '@trezor/components';
-import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { getInputState, isHexValid } from '@suite-common/wallet-utils';
+import { IconButton, Row, Textarea, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
-import { useSendFormContext } from 'src/hooks/wallet';
-import { Translation } from 'src/components/suite';
 import { OpenGuideFromTooltip } from 'src/components/guide';
+import { Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
 
 const Inputs = styled.div`
     display: flex;

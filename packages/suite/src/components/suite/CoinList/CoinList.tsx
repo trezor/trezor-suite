@@ -1,15 +1,15 @@
 import styled from 'styled-components';
 
 import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useDiscovery, useSelector } from 'src/hooks/suite';
-import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 
 import { Coin } from './Coin';
 

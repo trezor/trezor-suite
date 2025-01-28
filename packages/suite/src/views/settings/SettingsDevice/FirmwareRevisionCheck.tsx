@@ -1,5 +1,7 @@
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 
+import { openModal } from 'src/actions/suite/modalActions';
+import { toggleCheckFirmwareAuthenticity } from 'src/actions/suite/suiteActions';
 import {
     ActionButton,
     ActionColumn,
@@ -8,8 +10,6 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { openModal } from 'src/actions/suite/modalActions';
-import { toggleCheckFirmwareAuthenticity } from 'src/actions/suite/suiteActions';
 
 export const FirmwareRevisionCheck = () => {
     const dispatch = useDispatch();

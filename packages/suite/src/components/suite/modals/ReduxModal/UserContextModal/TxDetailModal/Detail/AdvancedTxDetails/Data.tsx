@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { Paragraph, InfoItem, Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Column, InfoItem, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 

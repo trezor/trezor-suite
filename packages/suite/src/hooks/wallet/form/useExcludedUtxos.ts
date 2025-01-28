@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { Account } from '@suite-common/wallet-types';
-import { getExcludedUtxos, GetExcludedUtxosProps } from '@suite-common/wallet-utils';
+import { GetExcludedUtxosProps, getExcludedUtxos } from '@suite-common/wallet-utils';
 
 interface UseExcludedUtxosProps extends GetExcludedUtxosProps {
     account: Account;

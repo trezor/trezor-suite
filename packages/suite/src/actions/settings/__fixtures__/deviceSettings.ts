@@ -1,5 +1,6 @@
 import assert from 'assert';
 
+import { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -7,7 +8,6 @@ import {
     deviceActions,
     prepareDeviceReducer,
 } from '@suite-common/wallet-core';
-import { TrezorDevice } from '@suite-common/suite-types';
 import { Response } from '@trezor/connect';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';

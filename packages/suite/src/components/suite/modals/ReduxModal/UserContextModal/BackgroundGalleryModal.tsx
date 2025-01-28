@@ -1,4 +1,4 @@
-import { Translation, Modal, HomescreenGallery } from 'src/components/suite';
+import { HomescreenGallery, Modal, Translation } from 'src/components/suite';
 
 type BackgroundGalleryModalProps = {
     onCancel: () => void;

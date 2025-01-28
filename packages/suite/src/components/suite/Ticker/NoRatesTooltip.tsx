@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { typography } from '@trezor/theme';
 
-import { Translation, TooltipSymbol } from 'src/components/suite';
+import { TooltipSymbol, Translation } from 'src/components/suite';
 
 import { TranslationKey } from '../Translation';
 

@@ -1,4 +1,4 @@
-import { H2, Paragraph, NewModal } from '@trezor/components';
+import { H2, NewModal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';

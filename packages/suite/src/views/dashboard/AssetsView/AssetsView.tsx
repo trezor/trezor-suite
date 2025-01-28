@@ -1,36 +1,36 @@
 import styled, { useTheme } from 'styled-components';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Icon, Button, LoadingContent, Card, Row } from '@trezor/components';
-import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { TokenInfo } from '@trezor/blockchain-link-types';
 import { AssetFiatBalance } from '@suite-common/assets';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
-    getFiatRateKey,
-    toFiatCurrency,
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-} from '@suite-common/wallet-utils';
-import {
+    type Network,
     type NetworkSymbol,
     getNetwork,
-    type Network,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { RatesByKey } from '@suite-common/wallet-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import {
+    getFiatRateKey,
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
+import { TokenInfo } from '@trezor/blockchain-link-types';
+import { Button, Card, Icon, LoadingContent, Row } from '@trezor/components';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { PartialRecord } from '@trezor/type-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { goto } from 'src/actions/suite/routerActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
-import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
-import { setFlag } from 'src/actions/suite/suiteActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { selectEnabledNetworks, selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { Account } from 'src/types/wallet';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { AssetTable } from './AssetTable/AssetTable';

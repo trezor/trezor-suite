@@ -2,11 +2,11 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
 import { DataAnalytics } from '@trezor/components';
 import { analytics } from '@trezor/suite-analytics';
-import { DOCS_ANALYTICS_URL, DATA_TOS_URL } from '@trezor/urls';
-import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
 import { typography } from '@trezor/theme';
+import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
 
 import { rerun } from 'src/actions/recovery/recoveryActions';
 import { PrerequisitesGuide, TrezorLink } from 'src/components/suite';

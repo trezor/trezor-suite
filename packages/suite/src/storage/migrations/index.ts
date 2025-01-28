@@ -1,28 +1,28 @@
 import { toWei } from 'web3-utils';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { isDesktop } from '@trezor/env-utils';
 import {
+    type NetworkSymbol,
     getNetwork,
     isNetworkSymbol,
-    type NetworkSymbol,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import type { BackendSettings } from '@suite-common/wallet-types';
-import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import {
+    amountToSmallestUnit,
     formatNetworkAmount,
     networkAmountToSmallestUnit,
-    amountToSmallestUnit,
 } from '@suite-common/wallet-utils';
-import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
+import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
+import { isDesktop } from '@trezor/env-utils';
+import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import { PartialRecord } from '@trezor/type-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import type { CustomBackend, BlockbookUrl } from 'src/types/wallet/backend';
 import type { State } from 'src/reducers/wallet/settingsReducer';
 import { migrationOfBnbNetwork } from 'src/storage/migrations/networks/bnb';
 import { migrationCoinmarketToTrading } from 'src/storage/migrations/trading/migrationCoinmarketToTrading';
+import type { BlockbookUrl, CustomBackend } from 'src/types/wallet/backend';
 
 import { updateAll } from './utils';
 import type { DBWalletAccountTransaction, SuiteDBSchema } from '../definitions';

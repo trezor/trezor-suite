@@ -2,17 +2,17 @@ import { useState } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { H2, variables, Icon } from '@trezor/components';
-import { zIndices, spacingsPx } from '@trezor/theme';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { H2, Icon, variables } from '@trezor/components';
+import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 
 import { AccountSearchBox } from './AccountSearchBox';
+import { AccountsList } from './AccountsList';
 import { AddAccountButton } from './AddAccountButton';
 import { CoinsFilter } from './CoinsFilter';
-import { AccountsList } from './AccountsList';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,6 +1,6 @@
+import { isDevEnv } from '@suite-common/suite-utils';
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { FilterPropertiesByType } from '@trezor/type-utils';
-import { isDevEnv } from '@suite-common/suite-utils';
 
 /*
  * Various scenarios how firmware authenticity check errors are handled in Suite

@@ -1,10 +1,10 @@
 import TrezorConnect from '@trezor/connect';
-import { analytics, EventType } from '@trezor/suite-analytics';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import {
-    SectionItem,
     ActionButton,
     ActionColumn,
+    SectionItem,
     TextColumn,
     Translation,
 } from 'src/components/suite';

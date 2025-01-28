@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 
-import { Paragraph, Tooltip, Banner, Card, Column, InfoItem, NewModal } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import { Banner, Card, Column, InfoItem, NewModal, Paragraph, Tooltip } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useClaimEthForm } from 'src/hooks/wallet/useClaimEthForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 interface ClaimModalModalProps {
     onCancel?: () => void;

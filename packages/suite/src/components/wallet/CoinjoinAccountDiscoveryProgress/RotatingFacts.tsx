@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
+import styled from 'styled-components';
 
 import { motionEasing, variables } from '@trezor/components';
 

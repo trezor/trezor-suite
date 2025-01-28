@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 
 import { SectionItem } from 'src/components/suite';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
 
 interface SettingsSectionItemProps {
     anchorId: SettingsAnchor;

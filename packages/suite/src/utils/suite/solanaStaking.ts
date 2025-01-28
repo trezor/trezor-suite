@@ -1,13 +1,13 @@
-import { VersionedTransaction, PublicKey } from '@solana/web3.js-version1';
+import { PublicKey, VersionedTransaction } from '@solana/web3.js-version1';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
+import { Blockchain } from '@suite-common/wallet-types';
 import {
     networkAmountToSmallestUnit,
     selectSolanaWalletSdkNetwork,
 } from '@suite-common/wallet-utils';
 import type { SolanaSignTransaction } from '@trezor/connect';
-import { Blockchain } from '@suite-common/wallet-types';
 
 type SolanaTx = SolanaSignTransaction & {
     versionedTx: VersionedTransaction;

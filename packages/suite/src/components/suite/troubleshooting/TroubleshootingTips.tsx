@@ -1,13 +1,13 @@
-import { useMemo, ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { variables, Button, CollapsibleBox, useElevation } from '@trezor/components';
-import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
+import { Button, CollapsibleBox, useElevation, variables } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
 import { isAndroid } from '@trezor/env-utils';
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
+import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 

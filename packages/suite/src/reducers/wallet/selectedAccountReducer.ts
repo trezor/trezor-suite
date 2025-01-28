@@ -1,8 +1,8 @@
 import { accountsActions } from '@suite-common/wallet-core';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
-import type { Action } from 'src/types/suite';
 import { State as TradingState } from 'src/reducers/wallet/tradingReducer';
+import type { Action } from 'src/types/suite';
 
 export type State = SelectedAccountStatus;
 

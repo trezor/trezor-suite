@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
-import { pickByDeviceModel } from '@trezor/device-utils';
-import { DeviceModelInternal } from '@trezor/connect';
 import { isDeviceWithButtons } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { DeviceModelInternal } from '@trezor/connect';
+import { pickByDeviceModel } from '@trezor/device-utils';
 
-import { OnboardingButtonCta } from 'src/components/onboarding';
-import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from 'src/components/recovery';
-import { Translation } from 'src/components/suite';
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
+import { OnboardingButtonCta } from 'src/components/onboarding';
+import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
+import { Translation } from 'src/components/suite';
 import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 

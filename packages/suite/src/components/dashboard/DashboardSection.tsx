@@ -1,6 +1,6 @@
-import { Ref, forwardRef, ReactElement, HTMLAttributes } from 'react';
+import { HTMLAttributes, ReactElement, Ref, forwardRef } from 'react';
 
-import { H3, Column, Row } from '@trezor/components';
+import { Column, H3, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 type DashboardSectionProps = HTMLAttributes<HTMLDivElement> & {

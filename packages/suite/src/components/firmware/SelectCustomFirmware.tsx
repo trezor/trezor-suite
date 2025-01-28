@@ -8,10 +8,10 @@ import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { DropZone } from 'src/components/suite/DropZone';
-import type { ExtendedMessageDescriptor } from 'src/types/suite';
-import { validateFirmware } from 'src/utils/firmware';
 import { InstructionStep } from 'src/components/suite/InstructionStep';
 import { useDevice } from 'src/hooks/suite';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
+import { validateFirmware } from 'src/utils/firmware';
 
 const Container = styled.div`
     width: 100%;

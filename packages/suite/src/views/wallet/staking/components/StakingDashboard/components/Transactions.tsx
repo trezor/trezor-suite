@@ -4,8 +4,8 @@ import {
     selectIsLoadingAccountTransactions,
 } from '@suite-common/wallet-core';
 
-import { TransactionList } from 'src/views/wallet/transactions/TransactionList/TransactionList';
 import { useSelector } from 'src/hooks/suite';
+import { TransactionList } from 'src/views/wallet/transactions/TransactionList/TransactionList';
 
 export const Transactions = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);

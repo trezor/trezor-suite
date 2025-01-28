@@ -1,12 +1,12 @@
+import { WalletType } from '@suite-common/wallet-types';
 import { Button, Column, HotkeyBadge, Row, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { WalletType } from '@suite-common/wallet-types';
 
-import { Translation } from 'src/components/suite';
-import { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDeviceOrUiLocked } from 'src/reducers/suite/suiteReducer';
+import { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 interface AddWalletButtonProps {
     device: TrezorDevice;

@@ -2,16 +2,16 @@ import type { ComponentType } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { NotificationViewProps } from 'src/components/suite';
 import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
 import { ActionRenderer } from './ActionRenderer';
-import { TransactionRenderer } from './TransactionRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';
+import { TransactionRenderer } from './TransactionRenderer';
 
 const simple = (
     View: NotificationRendererProps['render'],

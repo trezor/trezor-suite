@@ -1,41 +1,41 @@
-import TrezorConnect from '@trezor/connect';
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
+import { getDeviceInstances } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectAccountByKey, selectDevices } from '@suite-common/wallet-core';
+import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {
-    CoinjoinStatusEvent,
+    CoinjoinClientEvents,
     CoinjoinClientVersion,
-    CoinjoinRoundEvent,
-    SerializedCoinjoinRound,
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,
-    CoinjoinClientEvents,
+    CoinjoinRoundEvent,
+    CoinjoinStatusEvent,
     RoundPhase,
+    SerializedCoinjoinRound,
 } from '@trezor/coinjoin';
-import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
+import TrezorConnect from '@trezor/connect';
 import { getOsName } from '@trezor/env-utils';
-import { selectAccountByKey, selectDevices } from '@suite-common/wallet-core';
-import { getUtxoOutpoint } from '@suite-common/wallet-utils';
-import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { getDeviceInstances } from '@suite-common/suite-utils';
-import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
+import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 
+import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
+import { selectAddressDisplayType, selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 import {
-    prepareCoinjoinTransaction,
-    getSessionDeadline,
-    getEstimatedTimePerRound,
-    isCoinjoinSupportedSymbol,
-} from 'src/utils/wallet/coinjoinUtils';
+    selectCoinjoinAccounts,
+    selectRoundsDurationInHours,
+    selectRoundsLeftByAccountKey,
+    selectRoundsNeededByAccountKey,
+} from 'src/reducers/wallet/coinjoinReducer';
 import type { CoinjoinSymbol } from 'src/services/coinjoin';
 import { CoinjoinService, getCoinjoinConfig } from 'src/services/coinjoin';
 import { Dispatch, GetState } from 'src/types/suite';
-import { CoinjoinAccount, EndRoundState, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
-import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
+import { CoinjoinAccount, CoinjoinDebugSettings, EndRoundState } from 'src/types/wallet/coinjoin';
 import {
-    selectRoundsNeededByAccountKey,
-    selectRoundsLeftByAccountKey,
-    selectRoundsDurationInHours,
-    selectCoinjoinAccounts,
-} from 'src/reducers/wallet/coinjoinReducer';
-import { selectAddressDisplayType, selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
+    getEstimatedTimePerRound,
+    getSessionDeadline,
+    isCoinjoinSupportedSymbol,
+    prepareCoinjoinTransaction,
+} from 'src/utils/wallet/coinjoinUtils';
 
 import * as COINJOIN from './constants/coinjoinConstants';
 

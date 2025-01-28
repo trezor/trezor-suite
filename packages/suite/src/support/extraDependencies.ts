@@ -1,44 +1,44 @@
-import { saveAs } from 'file-saver';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { saveAs } from 'file-saver';
 
-import { getAccountKey, buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
-import {
-    DeviceRootState,
-    selectIsPendingTransportEvent,
-    TransactionsState,
-    BlockchainState,
-    DiscoveryRootState,
-    selectDiscoveryByDeviceState,
-    deviceActions,
-    FiatRatesState,
-} from '@suite-common/wallet-core';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
-import { PROTO, StaticSessionId } from '@trezor/connect';
 import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    BlockchainState,
+    DeviceRootState,
+    DiscoveryRootState,
+    FiatRatesState,
+    TransactionsState,
+    deviceActions,
+    selectDiscoveryByDeviceState,
+    selectIsPendingTransportEvent,
+} from '@suite-common/wallet-core';
+import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
+import { PROTO, StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
+import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import * as metadataActions from 'src/actions/suite/metadataActions';
+import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
+import * as modalActions from 'src/actions/suite/modalActions';
+import { StorageLoadAction } from 'src/actions/suite/storageActions';
+import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
+import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import {
     findLabelsToBeMovedOrDeleted,
     moveLabelsForRbfAction,
 } from 'src/actions/wallet/moveLabelsForRbfActions';
-import { StorageLoadAction } from 'src/actions/suite/storageActions';
-import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
-import * as metadataActions from 'src/actions/suite/metadataActions';
-import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
-import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
-import * as modalActions from 'src/actions/suite/modalActions';
-import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
+import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
-import * as suiteActions from '../actions/suite/suiteActions';
-import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
 import { METADATA, STORAGE } from '../actions/suite/constants';
+import * as suiteActions from '../actions/suite/suiteActions';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
+import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
 
 const connectSrc = '../';
 // 'https://localhost:8088/';

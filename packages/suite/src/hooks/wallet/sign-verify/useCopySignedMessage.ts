@@ -1,5 +1,5 @@
-import { copyToClipboard } from '@trezor/dom-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { copyToClipboard } from '@trezor/dom-utils';
 
 import { useDispatch } from 'src/hooks/suite';
 

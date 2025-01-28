@@ -4,7 +4,7 @@ import { variables } from '@trezor/components';
 
 import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 import { Translation } from 'src/components/suite/Translation';
-import { useSelector, useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { BackupSeedCard } from './BackupSeedCard';
 

@@ -1,11 +1,11 @@
-import { testMocks } from '@suite-common/test-utils';
 import { NETWORK_TO_PROTOCOLS } from '@suite-common/suite-constants';
+import { testMocks } from '@suite-common/test-utils';
 
-import { configureStore } from 'src/support/tests/configureStore';
 import protocolReducer, { State as ProtocolState } from 'src/reducers/suite/protocolReducer';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import * as protocolActions from '../protocolActions';
 import * as protocolConstants from '../constants/protocolConstants';
+import * as protocolActions from '../protocolActions';
 
 jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 

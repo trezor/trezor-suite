@@ -5,8 +5,8 @@ import { CryptoId } from 'invity-api';
 
 import { AccountAddress } from '@trezor/connect';
 
-import type { Account } from 'src/types/wallet';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
+import type { Account } from 'src/types/wallet';
 
 export interface TradingVerifyFormProps {
     address?: string;

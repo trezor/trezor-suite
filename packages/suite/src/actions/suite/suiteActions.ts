@@ -1,24 +1,24 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getCustomBackends } from '@suite-common/wallet-utils';
-import { desktopApi, HandshakeElectron } from '@trezor/suite-desktop-api';
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { deviceActions } from '@suite-common/wallet-core';
+import { getCustomBackends } from '@suite-common/wallet-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';
 
-import { TorStatus } from 'src/types/suite';
-import { isOnionUrl } from 'src/utils/suite/tor';
 import * as modalActions from 'src/actions/suite/modalActions';
-import { ExperimentalFeature } from 'src/constants/suite/experimental';
-import type { Locale } from 'src/config/suite/languages';
-import type { Dispatch, GetState, AppState, TorBootstrap } from 'src/types/suite';
-import {
-    DebugModeOptions,
-    AutodetectSettings,
-    selectTorState,
-    EvmSettings,
-} from 'src/reducers/suite/suiteReducer';
 import type { TranslationKey } from 'src/components/suite/Translation';
+import type { Locale } from 'src/config/suite/languages';
+import { ExperimentalFeature } from 'src/constants/suite/experimental';
+import {
+    AutodetectSettings,
+    DebugModeOptions,
+    EvmSettings,
+    selectTorState,
+} from 'src/reducers/suite/suiteReducer';
+import { TorStatus } from 'src/types/suite';
+import type { AppState, Dispatch, GetState, TorBootstrap } from 'src/types/suite';
+import { isOnionUrl } from 'src/utils/suite/tor';
 
 import { SUITE } from './constants';
 

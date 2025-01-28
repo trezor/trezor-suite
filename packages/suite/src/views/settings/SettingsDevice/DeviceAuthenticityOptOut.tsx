@@ -1,5 +1,7 @@
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
+import { openModal } from 'src/actions/suite/modalActions';
+import { deviceAuthenticityOptOut } from 'src/actions/suite/suiteActions';
 import {
     ActionButton,
     ActionColumn,
@@ -8,8 +10,6 @@ import {
     Translation,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { openModal } from 'src/actions/suite/modalActions';
-import { deviceAuthenticityOptOut } from 'src/actions/suite/suiteActions';
 
 export const DeviceAuthenticityOptOut = () => {
     const dispatch = useDispatch();

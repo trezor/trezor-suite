@@ -1,8 +1,8 @@
+import { openModal } from 'src/actions/suite/modalActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
-import { openModal } from 'src/actions/suite/modalActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch } from 'src/hooks/suite';
 
 interface SafetyChecksProps {
     isDeviceLocked: boolean;

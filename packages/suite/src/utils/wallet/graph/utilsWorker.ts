@@ -1,8 +1,8 @@
 import { fromUnixTime, getUnixTime, startOfMonth } from 'date-fns';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import type { FiatRatesBySymbol } from '@trezor/connect';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
+import type { FiatRatesBySymbol } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
     AggregatedAccountHistory,

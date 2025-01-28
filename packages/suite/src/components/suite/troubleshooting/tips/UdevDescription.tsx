@@ -2,10 +2,10 @@ import styled from 'styled-components';
 
 import { typography } from '@trezor/theme';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 
 const Wrapper = styled.div`
     a {

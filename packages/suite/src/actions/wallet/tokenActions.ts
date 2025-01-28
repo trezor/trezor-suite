@@ -1,7 +1,7 @@
-import { TokenInfo } from '@trezor/connect';
-import * as accountUtils from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
+import * as accountUtils from '@suite-common/wallet-utils';
+import { TokenInfo } from '@trezor/connect';
 
 import { Dispatch } from 'src/types/suite';
 import { Account } from 'src/types/wallet';

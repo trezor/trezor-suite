@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import { CollapsibleBox } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboarding';
 import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 const Separator = styled.hr`

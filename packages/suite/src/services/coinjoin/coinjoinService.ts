@@ -1,7 +1,7 @@
 import { CoinjoinBackend, CoinjoinClient, CoinjoinPrisonInmate } from '@trezor/coinjoin';
+import { isDesktop } from '@trezor/env-utils';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { PartialRecord } from '@trezor/type-utils';
-import { isDesktop } from '@trezor/env-utils';
 
 import type { CoinjoinNetworksConfig, CoinjoinSymbol } from './config';
 import { getCoinjoinConfig } from './config';

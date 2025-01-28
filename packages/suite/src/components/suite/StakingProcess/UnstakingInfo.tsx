@@ -1,15 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import { StakeRootState, selectValidatorsQueue } from '@suite-common/wallet-core';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { selectValidatorsQueue, StakeRootState } from '@suite-common/wallet-core';
-import { getNetworkDisplaySymbol, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
-import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 
 import { Translation } from 'src/components/suite';
-import { getUnstakingPeriodInDays } from 'src/utils/suite/ethereumStaking';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
+import { getUnstakingPeriodInDays } from 'src/utils/suite/ethereumStaking';
 
 import { InfoRow } from './InfoRow';
 

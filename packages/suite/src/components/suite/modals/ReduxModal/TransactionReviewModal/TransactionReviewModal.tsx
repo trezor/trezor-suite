@@ -1,5 +1,5 @@
 import { UserContextPayload } from '@suite-common/suite-types';
-import { selectStake, cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
+import { cancelSignSendFormTransactionThunk, selectStake } from '@suite-common/wallet-core';
 
 import { cancelSignTx as cancelSignStakingTx } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';

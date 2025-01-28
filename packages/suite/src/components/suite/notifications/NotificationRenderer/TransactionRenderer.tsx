@@ -1,28 +1,28 @@
 import {
-    selectSelectedDevice as selectDeviceSelector,
-    selectDevices,
     selectAccounts,
     selectBlockchainState,
-    selectTransactions,
+    selectSelectedDevice as selectDeviceSelector,
     selectDeviceThunk,
+    selectDevices,
+    selectTransactions,
 } from '@suite-common/wallet-core';
 import {
-    findAccountsByNetwork,
-    findAccountsByDescriptor,
     findAccountDevice,
-    getAccountTransactions,
+    findAccountsByDescriptor,
+    findAccountsByNetwork,
     findTransaction,
+    getAccountTransactions,
     getConfirmations,
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
 
+import { goto } from 'src/actions/suite/routerActions';
 import {
     AccountLabeling,
     HiddenPlaceholder,
     NotificationRendererProps,
     NotificationViewProps,
 } from 'src/components/suite';
-import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTxAnchor } from 'src/utils/suite/anchor';
 

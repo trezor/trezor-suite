@@ -1,12 +1,14 @@
-import styled, { useTheme } from 'styled-components';
 import { SellFiatTrade } from 'invity-api';
+import styled, { useTheme } from 'styled-components';
 
-import { Badge, Button, Card, Text } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
-import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import type { TradingTradeType, TradingType } from '@suite-common/invity';
+import { Badge, Button, Card, Text } from '@trezor/components';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
+import { TradingTradeDetailBuySellType } from 'src/types/trading/trading';
+import { TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
@@ -16,11 +18,9 @@ import {
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingFormContextValues } from 'src/types/trading/tradingForm';
-import { TradingTradeDetailBuySellType } from 'src/types/trading/trading';
 import { TradingFeaturedOffersAmounts } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffersAmounts';
-import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
 import { TradingFeaturedOffersPaymentInfo } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffersPaymentInfo';
+import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
 
 const Offer = styled.div`
     display: flex;

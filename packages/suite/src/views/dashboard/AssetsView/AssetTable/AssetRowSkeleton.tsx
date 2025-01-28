@@ -1,4 +1,4 @@
-import { Row, Table, SkeletonRectangle } from '@trezor/components';
+import { Row, SkeletonRectangle, Table } from '@trezor/components';
 
 import { useLoadingSkeleton } from 'src/hooks/suite';
 

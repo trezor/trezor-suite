@@ -1,8 +1,8 @@
 import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
-import { useDispatch } from 'src/hooks/suite';
 import { NotificationRendererProps, NotificationViewProps } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 type ActionRendererProps = NotificationViewProps & NotificationRendererProps;
 

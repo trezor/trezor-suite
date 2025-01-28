@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Image, variables } from '@trezor/components';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Image, variables } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 

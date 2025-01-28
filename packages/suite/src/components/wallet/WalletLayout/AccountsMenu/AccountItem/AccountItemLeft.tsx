@@ -1,9 +1,9 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { CoinLogo } from '@trezor/product-components';
 import { Column, Icon } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
 
-import { TokenIconSetWrapper } from '../../../TokenIconSetWrapper';
 import { Account, AccountItemType } from '../../../../../types/wallet';
+import { TokenIconSetWrapper } from '../../../TokenIconSetWrapper';
 
 const ICON_SIZE = 24;
 type AccountItemLeftProps = {

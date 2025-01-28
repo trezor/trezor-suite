@@ -11,9 +11,9 @@ import {
     Translation,
     TrezorLink,
 } from 'src/components/suite';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { DesktopUpdateState, UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getReleaseUrl } from 'src/services/github';
 
 const getUpdateStateMessage = (state: UpdateState) => {

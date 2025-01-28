@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { FeeLevel } from '@trezor/connect';
 import {
     FeeInfo,
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
+import { FeeLevel } from '@trezor/connect';
 
 import { setLastUsedFeeLevel } from 'src/actions/settings/walletSettingsActions';
 import { useDispatch } from 'src/hooks/suite';

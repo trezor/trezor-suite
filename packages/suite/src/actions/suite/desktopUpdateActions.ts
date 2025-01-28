@@ -1,10 +1,10 @@
-import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analytics';
-import { desktopApi, UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { AppUpdateEventStatus, EventType, analytics } from '@trezor/suite-analytics';
+import { UpdateInfo, UpdateProgress, desktopApi } from '@trezor/suite-desktop-api';
 
 import { DESKTOP_UPDATE } from 'src/actions/suite/constants';
+import { UpdateModalVisibility, UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { Dispatch, GetState } from 'src/types/suite';
-import { UpdateState, UpdateModalVisibility } from 'src/reducers/suite/desktopUpdateReducer';
 import { getAppUpdatePayload } from 'src/utils/suite/analytics';
 
 export type DesktopUpdateAction =

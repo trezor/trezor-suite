@@ -1,9 +1,9 @@
-import { useState, ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Icon, Column, Text, Row, Box } from '@trezor/components';
-import { spacingsPx, spacings } from '@trezor/theme';
+import { Box, Column, Icon, Row, Text } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';

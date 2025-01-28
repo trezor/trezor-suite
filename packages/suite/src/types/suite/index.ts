@@ -1,30 +1,30 @@
-import type { ThunkDispatch, ThunkAction as TAction } from 'redux-thunk';
 import type { Store as ReduxStore } from 'redux';
+import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
-import { deviceActions, discoveryActions, transactionsActions } from '@suite-common/wallet-core';
-import { firmwareActions } from '@suite-common/firmware';
 import { analyticsActions } from '@suite-common/analytics';
-import type { UiEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { messageSystemActions } from '@suite-common/message-system';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
+import { firmwareActions } from '@suite-common/firmware';
+import { messageSystemActions } from '@suite-common/message-system';
 import type { Route } from '@suite-common/suite-types';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { deviceActions, discoveryActions, transactionsActions } from '@suite-common/wallet-core';
+import type { BlockchainEvent, TransportEvent, UiEvent } from '@trezor/connect';
 
+import type { BackupAction } from 'src/actions/backup/backupActions';
+import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
+import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
+import type { WalletSettingsAction } from 'src/actions/settings/walletSettingsActions';
+import type { DesktopUpdateAction } from 'src/actions/suite/desktopUpdateActions';
+import type { GuideAction } from 'src/actions/suite/guideActions';
+import type { MetadataAction } from 'src/actions/suite/metadataActions';
+import type { ModalAction } from 'src/actions/suite/modalActions';
+import type { ProtocolAction } from 'src/actions/suite/protocolActions';
 import type { RouterAction } from 'src/actions/suite/routerActions';
-import type { AppState } from 'src/reducers/store';
 import type { StorageAction } from 'src/actions/suite/storageActions';
 import type { SuiteAction } from 'src/actions/suite/suiteActions';
 import type { WindowAction } from 'src/actions/suite/windowActions';
-import type { ModalAction } from 'src/actions/suite/modalActions';
-import type { MetadataAction } from 'src/actions/suite/metadataActions';
-import type { ProtocolAction } from 'src/actions/suite/protocolActions';
-import type { DesktopUpdateAction } from 'src/actions/suite/desktopUpdateActions';
-import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
-import type { WalletSettingsAction } from 'src/actions/settings/walletSettingsActions';
+import type { AppState } from 'src/reducers/store';
 import type { WalletAction } from 'src/types/wallet';
-import type { BackupAction } from 'src/actions/backup/backupActions';
-import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
-import type { GuideAction } from 'src/actions/suite/guideActions';
 
 // reexport
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation';

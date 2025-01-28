@@ -1,14 +1,14 @@
 import React from 'react';
 
-import styled from 'styled-components';
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
+import styled from 'styled-components';
 
-import { Button, IconButton, motionEasing, Row, Tooltip } from '@trezor/components';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { Button, IconButton, Row, Tooltip, motionEasing } from '@trezor/components';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { useRediscoveryNeeded, useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
+import { useDispatch, useRediscoveryNeeded, useSelector } from 'src/hooks/suite';
 
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';

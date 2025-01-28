@@ -1,27 +1,27 @@
 import { toWei } from 'web3-utils';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { calculateEthFee, isPending, getAccountIdentity } from '@suite-common/wallet-utils';
-import {
-    StakeFormState,
-    PrecomposedTransaction,
-    PrecomposedTransactionFinal,
-    ExternalOutput,
-    AddressDisplayOptions,
-} from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_ETH_BALANCE_FOR_STAKING,
     MIN_ETH_FOR_WITHDRAWALS,
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
-import { selectSelectedDevice, ComposeActionContext } from '@suite-common/wallet-core';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    AddressDisplayOptions,
+    ExternalOutput,
+    PrecomposedTransaction,
+    PrecomposedTransactionFinal,
+    StakeFormState,
+} from '@suite-common/wallet-types';
+import { calculateEthFee, getAccountIdentity, isPending } from '@suite-common/wallet-utils';
+import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Dispatch, GetState } from 'src/types/suite';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { Dispatch, GetState } from 'src/types/suite';
 import {
     getStakeTxGasLimit,
     prepareClaimEthTx,

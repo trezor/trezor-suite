@@ -1,21 +1,21 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
-import { Spinner, Dropdown } from '@trezor/components';
-import { analytics, EventType } from '@trezor/suite-analytics';
+import { AccountLabels } from '@suite-common/metadata-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
-import { AccountLabels } from '@suite-common/metadata-types';
-import { getNetwork } from '@suite-common/wallet-config';
+import { Dropdown, Spinner } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
+import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
-import { Account } from 'src/types/wallet';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { Account } from 'src/types/wallet';
 
 export interface ExportActionProps {
     account: Account;

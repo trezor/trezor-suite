@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { Switch, variables } from '@trezor/components';
 
+import { coinjoinAccountToggleSkipRounds } from 'src/actions/wallet/coinjoinAccountActions';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { coinjoinAccountToggleSkipRounds } from 'src/actions/wallet/coinjoinAccountActions';
 import { selectCurrentCoinjoinSession } from 'src/reducers/wallet/coinjoinReducer';
 
 const Row = styled.div`

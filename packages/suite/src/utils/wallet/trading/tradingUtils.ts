@@ -1,6 +1,8 @@
-import { BuyTrade, SellFiatTrade, CryptoId, ExchangeTrade } from 'invity-api';
+import { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import { v4 as uuidv4 } from 'uuid';
 
+import { type TradingTradeType, type TradingType, regional } from '@suite-common/invity';
+import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import {
     Network,
     NetworkSymbol,
@@ -13,17 +15,14 @@ import {
     getNetworkFeatures,
     getNetworkType,
 } from '@suite-common/wallet-config';
-import TrezorConnect from '@trezor/connect';
-import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import {
     getContractAddressForNetworkSymbol,
-    substituteBip43Path,
     sortByCoin,
+    substituteBip43Path,
 } from '@suite-common/wallet-utils';
+import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
-import { regional, type TradingTradeType, type TradingType } from '@suite-common/invity';
 
-import { Account } from 'src/types/wallet';
 import { ExtendedMessageDescriptor, Route, TrezorDevice } from 'src/types/suite';
 import {
     TradingAccountOptionsGroupOptionProps,
@@ -36,6 +35,7 @@ import {
     TradingTradeBuySellType,
     TradingTradeDetailMapProps,
 } from 'src/types/trading/trading';
+import { Account } from 'src/types/wallet';
 
 export const cryptoPlatformSeparator = '--';
 /**

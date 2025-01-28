@@ -1,19 +1,19 @@
 import { Control, Controller } from 'react-hook-form';
 
-import { Flag, Select, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { regional } from '@suite-common/invity';
+import { Flag, Row, Select } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { CountryOption } from 'src/types/wallet/tradingCommonTypes';
-import { getCountryLabelParts } from 'src/utils/wallet/trading/tradingUtils';
+import { Translation } from 'src/components/suite';
+import { FORM_COUNTRY_SELECT } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import {
     TradingBuySellFormProps,
     TradingFormInputDefaultProps,
 } from 'src/types/trading/tradingForm';
-import { FORM_COUNTRY_SELECT } from 'src/constants/wallet/trading/form';
-import { TradingTradeBuySellType } from 'src/types/trading/trading';
-import { Translation } from 'src/components/suite';
+import { CountryOption } from 'src/types/wallet/tradingCommonTypes';
+import { getCountryLabelParts } from 'src/utils/wallet/trading/tradingUtils';
 
 export const TradingFormInputCountry = ({ label }: TradingFormInputDefaultProps) => {
     const { control, setAmountLimits, defaultCountry } =

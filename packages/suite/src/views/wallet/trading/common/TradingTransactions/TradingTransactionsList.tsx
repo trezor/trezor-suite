@@ -6,9 +6,9 @@ import { spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
-import { TradingTransactionSell } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsSell';
-import { TradingTransactionBuy } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsBuy';
 import { TradingTransactionExchange } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionExchange';
+import { TradingTransactionBuy } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsBuy';
+import { TradingTransactionSell } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsSell';
 
 const Wrapper = styled.div`
     padding: ${spacingsPx.zero} ${spacingsPx.lg};

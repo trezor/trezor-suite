@@ -1,6 +1,6 @@
-import { configureStore } from 'src/support/tests/configureStore';
-import windowReducer, { State as WindowState } from 'src/reducers/suite/windowReducer';
 import * as windowActions from 'src/actions/suite/windowActions';
+import windowReducer, { State as WindowState } from 'src/reducers/suite/windowReducer';
+import { configureStore } from 'src/support/tests/configureStore';
 
 const getInitialState = (state?: WindowState) => ({
     window: {

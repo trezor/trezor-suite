@@ -1,26 +1,31 @@
+import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { isDeviceRemembered, isDeviceWithButtons } from '@suite-common/suite-utils';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 
 import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
+import { selectHasActiveTransport } from 'src/reducers/suite/suiteReducer';
 import type { TrezorDevice } from 'src/types/suite';
 import { isRecoveryInProgress } from 'src/utils/device/isRecoveryInProgress';
-import { selectHasActiveTransport } from 'src/reducers/suite/suiteReducer';
 
 import { AuthenticateDevice } from './AuthenticateDevice';
 import { AutoLock } from './AutoLock';
 import { BackupFailed } from './BackupFailed';
 import { BackupRecoverySeed } from './BackupRecoverySeed';
+import { Brightness } from './Brightness';
+import { ChangeLanguage } from './ChangeLanguage';
 import { ChangePin } from './ChangePin';
 import { CheckRecoverySeed } from './CheckRecoverySeed';
 import { CustomFirmware } from './CustomFirmware';
+import { DefaultWalletLoading } from './DefaultWalletLoading';
 import { DeviceAuthenticityOptOut } from './DeviceAuthenticityOptOut';
 import { DeviceLabel } from './DeviceLabel';
 import { DisplayRotation } from './DisplayRotation';
+import { FirmwareRevisionCheck } from './FirmwareRevisionCheck';
 import { FirmwareTypeChange } from './FirmwareTypeChange';
 import { FirmwareVersion } from './FirmwareVersion';
+import { HapticFeedback } from './HapticFeedback';
 import { Homescreen } from './Homescreen';
 import { MultiShareBackup } from './MultiShareBackup';
 import { Passphrase } from './Passphrase';
@@ -28,11 +33,6 @@ import { PinProtection } from './PinProtection';
 import { SafetyChecks } from './SafetyChecks';
 import { WipeCode } from './WipeCode';
 import { WipeDevice } from './WipeDevice';
-import { ChangeLanguage } from './ChangeLanguage';
-import { HapticFeedback } from './HapticFeedback';
-import { Brightness } from './Brightness';
-import { DefaultWalletLoading } from './DefaultWalletLoading';
-import { FirmwareRevisionCheck } from './FirmwareRevisionCheck';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice) => {
     const wrongDeviceType = device?.type && ['unacquired', 'unreadable'].includes(device.type);

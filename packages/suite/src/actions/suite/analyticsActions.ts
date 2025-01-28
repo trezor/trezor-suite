@@ -3,16 +3,16 @@
  * @docs docs/misc/analytics.md
  */
 
-import { getEnvironment, getCommitHash, isCodesignBuild } from '@trezor/env-utils';
 import {
     analyticsActions,
-    selectHasUserAllowedTracking,
     selectAnalyticsInstanceId,
-    selectIsAnalyticsEnabled,
+    selectHasUserAllowedTracking,
     selectIsAnalyticsConfirmed,
+    selectIsAnalyticsEnabled,
 } from '@suite-common/analytics';
 import { getTrackingRandomId } from '@trezor/analytics';
-import { analytics, EventType } from '@trezor/suite-analytics';
+import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import type { Dispatch, GetState } from 'src/types/suite';
 import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';

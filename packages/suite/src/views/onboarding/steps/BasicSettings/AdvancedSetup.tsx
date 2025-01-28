@@ -1,14 +1,14 @@
-import { useState, ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
 import { Icon } from '@trezor/components';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { Translation } from 'src/components/suite';
-import { getIsTorEnabled } from 'src/utils/suite/tor';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
+import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
+import { getIsTorEnabled } from 'src/utils/suite/tor';
 
 import { TorSection } from './TorSection';
 

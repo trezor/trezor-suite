@@ -2,16 +2,16 @@ import { MouseEventHandler } from 'react';
 
 import styled from 'styled-components';
 
-import { DeviceModelInternal } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
-import { Row, Tooltip } from '@trezor/components';
-import { RotateDeviceImage } from '@trezor/product-components';
 import { selectDeviceLabelOrNameById } from '@suite-common/wallet-core';
+import { Row, Tooltip } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/connect';
+import { RotateDeviceImage } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
 
-import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
+import { useSelector } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
-import { useSelector } from 'src/hooks/suite';
+import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
 
 type DeviceStatusProps = {
     deviceModel: DeviceModelInternal;

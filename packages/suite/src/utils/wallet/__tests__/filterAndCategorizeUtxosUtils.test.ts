@@ -1,5 +1,5 @@
-import * as filterAndCategorizeUtxos from '../filterAndCategorizeUtxosUtils';
 import * as fixtures from '../__fixtures__/filterAndCategorizeUtxosFixture';
+import * as filterAndCategorizeUtxos from '../filterAndCategorizeUtxosUtils';
 
 describe('filterAndCategorizeUtxos', () => {
     it('filter and categorizes correctly while searching by address', () => {

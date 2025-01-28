@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { Checkbox, Paragraph, Column } from '@trezor/components';
+import { Checkbox, Column, Paragraph } from '@trezor/components';
 
 interface CheckItemProps {
     title: ReactNode;

@@ -1,5 +1,5 @@
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
-import { Row, Text, Badge } from '@trezor/components';
+import { Badge, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { HiddenPlaceholder } from 'src/components/suite';
@@ -9,9 +9,9 @@ import {
     TradingAccountsOptionsGroupProps,
 } from 'src/types/trading/trading';
 import {
-    tradingGetAccountLabel,
     cryptoIdToNetwork,
     parseCryptoId,
+    tradingGetAccountLabel,
 } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 

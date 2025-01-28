@@ -1,11 +1,11 @@
 import { desktopApi } from '@trezor/suite-desktop-api';
 
+import { goto } from 'src/actions/suite/routerActions';
+import { removeDatabase } from 'src/actions/suite/storageActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { removeDatabase } from 'src/actions/suite/storageActions';
-import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch } from 'src/hooks/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch } from 'src/hooks/suite';
 import { reloadApp } from 'src/utils/suite/reload';
 
 export const ClearStorage = () => {

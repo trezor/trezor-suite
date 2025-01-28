@@ -1,8 +1,8 @@
-import { FormattedRelativeTime } from 'react-intl';
 import { ReactNode } from 'react';
+import { FormattedRelativeTime } from 'react-intl';
 
-import styled from 'styled-components';
 import { differenceInMinutes } from 'date-fns';
+import styled from 'styled-components';
 
 import { Tooltip } from '@trezor/components';
 

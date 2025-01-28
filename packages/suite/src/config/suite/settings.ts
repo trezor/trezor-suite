@@ -1,5 +1,5 @@
-import { NotificationEntry } from '@suite-common/toast-notifications';
 import { settingsCommonConfig } from '@suite-common/suite-config';
+import { NotificationEntry } from '@suite-common/toast-notifications';
 
 const IMPORTANT_NOTIFICATION_TYPES: Array<NotificationEntry['type']> = [
     'tx-sent',

@@ -8,6 +8,7 @@ import {
 } from '@trezor/device-utils';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import {
     ActionButton,
@@ -16,9 +17,8 @@ import {
     Translation,
     TrezorLink,
 } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 const Version = styled.div`

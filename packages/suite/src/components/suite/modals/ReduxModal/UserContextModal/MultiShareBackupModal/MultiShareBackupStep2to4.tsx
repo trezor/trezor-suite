@@ -1,21 +1,21 @@
 import { ReactNode } from 'react';
 
+import { TranslationKey } from '@suite-common/intl-types';
 import {
     BulletList,
     BulletListItemState,
-    Paragraph,
-    Grid,
     Card,
+    Flex,
+    FlexDirection,
+    Grid,
     Icon,
     IconName,
-    Flex,
     Note,
+    Paragraph,
     Row,
-    FlexDirection,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { ESHOP_KEEP_METAL_SINGLE_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
-import { TranslationKey } from '@suite-common/intl-types';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 

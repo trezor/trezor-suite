@@ -1,9 +1,9 @@
-import { lazy, Suspense, useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { UserContextPayload } from '@suite-common/suite-types';
-import { Icon, Paragraph, NewModalProps, NewModal, Row, Column, Card } from '@trezor/components';
+import { Card, Column, Icon, NewModal, NewModalProps, Paragraph, Row } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
 

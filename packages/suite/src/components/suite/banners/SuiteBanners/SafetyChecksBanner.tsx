@@ -1,9 +1,9 @@
-import { Row, Banner as WarningComponent, Banner } from '@trezor/components';
+import { Banner, Row, Banner as WarningComponent } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch } from 'src/hooks/suite';
 
 interface SafetyChecksBannerProps {
     onDismiss?: () => void;

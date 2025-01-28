@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Box, iconSizes, Image } from '@trezor/components';
+import { Box, Image, iconSizes } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';

@@ -1,7 +1,7 @@
-import { Row, Column, Icon, Divider, Text } from '@trezor/components';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { spacings } from '@trezor/theme';
 import { Account } from '@suite-common/wallet-types';
+import { Column, Divider, Icon, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { CoinBalance, FiatValue, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';

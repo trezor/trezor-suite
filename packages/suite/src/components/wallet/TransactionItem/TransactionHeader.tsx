@@ -1,17 +1,17 @@
+import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { StakeType } from '@suite-common/wallet-types';
 import {
     getTxHeaderSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { AccountTransaction } from '@trezor/connect';
 import { Row } from '@trezor/components';
+import { AccountTransaction } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
-import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { StakeType } from '@suite-common/wallet-types';
 
+import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 import { useTranslation } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 type TransactionHeaderProps = {

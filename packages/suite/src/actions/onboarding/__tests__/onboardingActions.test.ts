@@ -1,7 +1,7 @@
-import { configureStore } from 'src/support/tests/configureStore';
 import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
 import recoveryReducer from 'src/reducers/recovery/recoveryReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { configureStore } from 'src/support/tests/configureStore';
 import { Action } from 'src/types/suite';
 
 import fixtures from '../__fixtures__/onboardingActions';

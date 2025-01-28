@@ -1,8 +1,8 @@
-import { spacings } from '@trezor/theme';
 import { Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { ProgressLabelData } from './types';
 import { ProgressLabel } from './ProgressLabel';
+import { ProgressLabelData } from './types';
 
 interface ProgressLabelsProps {
     labels: ProgressLabelData[];

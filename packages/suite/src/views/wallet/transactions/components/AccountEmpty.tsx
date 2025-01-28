@@ -1,11 +1,11 @@
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
+import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
-import { goto } from 'src/actions/suite/routerActions';
-import { AccountExceptionLayout } from 'src/components/wallet';
 
 interface AccountEmptyProps {
     account: Account;

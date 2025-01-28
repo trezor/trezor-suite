@@ -1,5 +1,5 @@
-import { configureStore } from 'src/support/tests/configureStore';
 import formDraftReducer, { FormDraftState } from 'src/reducers/wallet/formDraftReducer';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import * as formDraftActions from '../formDraftActions';
 

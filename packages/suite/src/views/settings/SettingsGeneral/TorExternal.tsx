@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { TorSettings } from '@trezor/suite-desktop-api/src/messages';
 import { desktopApi } from '@trezor/suite-desktop-api';
+import { TorSettings } from '@trezor/suite-desktop-api/src/messages';
 
-import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
-import { useSelector } from 'src/hooks/suite';
 import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useSelector } from 'src/hooks/suite';
+import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 const options = [
     {

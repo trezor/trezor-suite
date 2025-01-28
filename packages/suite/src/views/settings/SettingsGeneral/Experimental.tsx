@@ -1,16 +1,16 @@
-import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
+import styled from 'styled-components';
 
-import { Checkbox, Switch, Banner, Button } from '@trezor/components';
+import { Banner, Button, Checkbox, Switch } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 
 import { SUITE } from 'src/actions/suite/constants';
+import { goto } from 'src/actions/suite/routerActions';
 import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
 import { EXPERIMENTAL_FEATURES, ExperimentalFeature } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { goto } from 'src/actions/suite/routerActions';
 
 const FeatureLineWrapper = styled.div`
     display: flex;

@@ -2,16 +2,16 @@ import React, { ReactNode, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { Dropdown, DropdownRef } from '@trezor/components';
 import { BlockchainState } from '@suite-common/wallet-core';
-import { spacingsPx, typography } from '@trezor/theme';
+import { Dropdown, DropdownRef } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { spacingsPx, typography } from '@trezor/theme';
 
-import { Translation, StatusLight } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
-import type { CustomBackend } from 'src/types/wallet';
 import { openModal } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { StatusLight, Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import type { CustomBackend } from 'src/types/wallet';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledDropdown = styled(Dropdown)`

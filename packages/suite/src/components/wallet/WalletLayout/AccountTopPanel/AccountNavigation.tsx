@@ -1,17 +1,17 @@
-import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { getNetworkOptional } from '@suite-common/wallet-config';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { WalletParams } from 'src/types/wallet';
-import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { Translation } from 'src/components/suite/Translation';
 import { NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
-    selectIsDebugModeActive,
     selectHasExperimentalFeature,
+    selectIsDebugModeActive,
 } from 'src/reducers/suite/suiteReducer';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { WalletParams } from 'src/types/wallet';
 
 export const ACCOUNT_TABS = [
     'wallet-index',

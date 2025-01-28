@@ -1,15 +1,15 @@
-import { useTheme } from 'styled-components';
 import { CryptoId } from 'invity-api';
+import { useTheme } from 'styled-components';
 
-import { H3, Icon, Row, Text } from '@trezor/components';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { spacings } from '@trezor/theme';
 import type { TradingExchangeType } from '@suite-common/invity';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { H3, Icon, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 
 interface TradingExchangeHeaderSummaryProps {
     sendAmount: string | number | undefined;

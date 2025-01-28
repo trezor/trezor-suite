@@ -1,15 +1,15 @@
-import * as STORAGE from './storageConstants';
-import * as SUITE from './suiteConstants';
-import * as MODAL from './modalConstants';
-import * as ROUTER from './routerConstants';
-import * as WINDOW from './windowConstants';
-import * as METADATA from './metadataConstants';
-import * as METADATA_LABELING from './metadataLabelingConstants';
-import * as METADATA_PROVIDER from './metadataProviderConstants';
-import * as METADATA_PASSWORDS from './metadataPasswordsConstants';
 import * as DESKTOP_UPDATE from './desktopUpdateConstants';
 import * as GUIDE from './guideConstants';
+import * as METADATA from './metadataConstants';
+import * as METADATA_LABELING from './metadataLabelingConstants';
+import * as METADATA_PASSWORDS from './metadataPasswordsConstants';
+import * as METADATA_PROVIDER from './metadataProviderConstants';
+import * as MODAL from './modalConstants';
 import * as PROTOCOL from './protocolConstants';
+import * as ROUTER from './routerConstants';
+import * as STORAGE from './storageConstants';
+import * as SUITE from './suiteConstants';
+import * as WINDOW from './windowConstants';
 
 export {
     STORAGE,

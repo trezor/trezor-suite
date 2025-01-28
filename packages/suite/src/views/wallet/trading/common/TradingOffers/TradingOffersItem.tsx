@@ -1,11 +1,13 @@
-import styled, { useTheme } from 'styled-components';
 import { SellFiatTrade } from 'invity-api';
+import styled, { useTheme } from 'styled-components';
 
 import { Badge, Button, Card, Row, Text } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
+import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingTradeDetailMapProps } from 'src/types/trading/trading';
 import {
     getCryptoQuoteAmountProps,
@@ -15,12 +17,10 @@ import {
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
 import { TradingTestWrapper } from 'src/views/wallet/trading';
+import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
 import { TradingUtilsPrice } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsPrice';
 import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 
 const Offer = styled.div`
     display: flex;

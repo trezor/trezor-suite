@@ -1,24 +1,24 @@
 import { useTheme } from 'styled-components';
 
-import { Button, Text, IconButton, Row, Banner, Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-import { Account } from '@suite-common/wallet-types';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_SOL_AMOUNT_FOR_STAKING,
 } from '@suite-common/wallet-constants';
+import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { getNetworkDisplaySymbol, NetworkType } from '@suite-common/wallet-config';
+import { Banner, Button, Column, IconButton, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { selectSuiteFlags, selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectIsDebugModeActive, selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 interface StakingBannerProps {
     account: Account;

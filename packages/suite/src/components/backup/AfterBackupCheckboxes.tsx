@@ -1,9 +1,9 @@
-import { spacings } from '@trezor/theme';
 import { Card, Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { CheckItem, Translation } from 'src/components/suite';
 import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
+import { CheckItem, Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const AfterBackupCheckboxes = () => {
     const backup = useSelector(state => state.backup);

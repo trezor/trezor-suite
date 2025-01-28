@@ -1,15 +1,15 @@
 import { useState } from 'react';
 
-import styled, { useTheme } from 'styled-components';
 import { BankAccount } from 'invity-api';
+import styled, { useTheme } from 'styled-components';
 
-import { Button, Select, Icon, Row } from '@trezor/components';
-import { fontWeights, spacingsPx, typography } from '@trezor/theme';
 import type { TradingSellType } from '@suite-common/invity';
+import { Button, Icon, Row, Select } from '@trezor/components';
+import { fontWeights, spacingsPx, typography } from '@trezor/theme';
 
 import { QuestionTooltip, Translation } from 'src/components/suite';
-import { formatIban } from 'src/utils/wallet/trading/sellUtils';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { formatIban } from 'src/utils/wallet/trading/sellUtils';
 
 const Wrapper = styled.div`
     display: flex;

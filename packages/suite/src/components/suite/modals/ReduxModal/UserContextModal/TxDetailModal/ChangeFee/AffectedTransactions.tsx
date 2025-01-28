@@ -5,9 +5,9 @@ import { Button } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
+import { AffectedTransactionItem } from './AffectedTransactionItem';
 import { GreyCard } from './GreyCard';
 import { WarnHeader } from './WarnHeader';
-import { AffectedTransactionItem } from './AffectedTransactionItem';
 
 const ChainedTxs = styled.div`
     display: flex;

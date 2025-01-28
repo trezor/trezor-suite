@@ -1,5 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { Image, ImageProps, ImageKey } from '@trezor/components';
+import { Image, ImageKey, ImageProps } from '@trezor/components';
 import { Device } from '@trezor/connect';
 
 interface DeviceConfirmImageProps extends Omit<ImageProps, 'image'> {

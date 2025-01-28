@@ -1,8 +1,8 @@
 import { MetadataState } from '@suite-common/metadata-types';
 
 import {
-    originalTransactionSpendAccount,
     chainSpendingReceivedCoins,
+    originalTransactionSpendAccount,
 } from './moveLabelsForRbfTransactions.fixture';
 
 export const moveLabelsForRbfMetadataStateFixture: MetadataState = {

@@ -1,13 +1,13 @@
 import { differenceInMonths } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { resetTime } from '@suite-common/suite-utils';
-import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { CommonAggregatedHistory, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 

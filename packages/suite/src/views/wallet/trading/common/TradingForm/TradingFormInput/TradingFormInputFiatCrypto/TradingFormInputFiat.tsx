@@ -1,24 +1,24 @@
 import { FieldErrors, UseControllerProps } from 'react-hook-form';
 
-import { getInputState } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { getInputState } from '@suite-common/wallet-utils';
+import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
-import { NumberInput } from '@trezor/product-components';
 
+import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/trading/form';
 import { useSelector, useTranslation } from 'src/hooks/suite';
-import { validateDecimals, validateMin } from 'src/utils/suite/validation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import {
     TradingAllFormProps,
     TradingBuyFormProps,
     TradingFormInputFiatCryptoProps,
     TradingSellExchangeFormProps,
 } from 'src/types/trading/tradingForm';
-import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/trading/form';
+import { validateDecimals, validateMin } from 'src/utils/suite/validation';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 
 export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
     cryptoInputName,

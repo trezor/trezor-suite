@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import { spacingsPx, zIndices, typography } from '@trezor/theme';
 import { H2 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { spacingsPx, typography, zIndices } from '@trezor/theme';
 
 import {
-    MetadataLabeling,
     AccountLabel,
-    FormattedCryptoAmount,
-    FiatValue,
     AmountUnitSwitchWrapper,
+    FiatValue,
+    FormattedCryptoAmount,
+    MetadataLabeling,
 } from 'src/components/suite';
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';

@@ -14,14 +14,6 @@ import {
 } from 'invity-api';
 import { AnyAction, Dispatch } from 'redux';
 
-import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { AccountType, NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { Timer } from '@trezor/react-utils';
-import { AccountsState } from '@suite-common/wallet-core';
-import { TokenDefinitionsState } from '@suite-common/token-definitions';
-import { AssetLogoProps } from '@trezor/components';
-import { StaticSessionId } from '@trezor/connect';
-import { AssetOptionBaseProps } from '@trezor/product-components';
 import type {
     TradingBuyType,
     TradingExchangeType,
@@ -29,7 +21,18 @@ import type {
     TradingSellType,
     TradingType,
 } from '@suite-common/invity';
+import { TokenDefinitionsState } from '@suite-common/token-definitions';
+import { AccountType, NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { AccountsState } from '@suite-common/wallet-core';
+import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { AssetLogoProps } from '@trezor/components';
+import { StaticSessionId } from '@trezor/connect';
+import { AssetOptionBaseProps } from '@trezor/product-components';
+import { Timer } from '@trezor/react-utils';
 
+import type { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
+import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
+import type { SellInfo } from 'src/actions/wallet/tradingSellActions';
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 import { State } from 'src/reducers/wallet/tradingReducer';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
@@ -41,9 +44,6 @@ import type {
     TradeSell,
     TradeType,
 } from 'src/types/wallet/tradingCommonTypes';
-import type { SellInfo } from 'src/actions/wallet/tradingSellActions';
-import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
-import type { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
 
 type TradingPageType = 'form' | 'offers' | 'confirm';
 

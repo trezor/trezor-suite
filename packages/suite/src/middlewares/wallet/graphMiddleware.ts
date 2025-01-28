@@ -1,15 +1,15 @@
 import { MiddlewareAPI } from 'redux';
 
-import {
-    discoveryActions,
-    accountsActions,
-    transactionsActions,
-    selectDeviceDiscovery,
-} from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import {
+    accountsActions,
+    discoveryActions,
+    selectDeviceDiscovery,
+    transactionsActions,
+} from '@suite-common/wallet-core';
 
 import * as graphActions from 'src/actions/wallet/graphActions';
-import { AppState, Action, Dispatch } from 'src/types/suite';
+import { Action, AppState, Dispatch } from 'src/types/suite';
 
 const graphMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

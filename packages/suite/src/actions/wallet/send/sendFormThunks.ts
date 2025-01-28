@@ -1,35 +1,35 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
+import {
+    cancelSignSendFormTransactionThunk,
+    enhancePrecomposedTransactionThunk,
+    pushSendFormTransactionThunk,
+    replaceTransactionThunk,
+    selectPrecomposedSendForm,
+    selectSelectedDevice,
+    selectSendFormDrafts,
+    sendFormActions,
+    signTransactionThunk,
+} from '@suite-common/wallet-core';
 import {
     Account,
     FormState,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinalRbf,
 } from '@suite-common/wallet-types';
-import {
-    enhancePrecomposedTransactionThunk,
-    pushSendFormTransactionThunk,
-    replaceTransactionThunk,
-    selectSelectedDevice,
-    selectSendFormDrafts,
-    signTransactionThunk,
-    sendFormActions,
-    selectPrecomposedSendForm,
-    cancelSignSendFormTransactionThunk,
-} from '@suite-common/wallet-core';
 import { isCardanoTx, isRbfTransaction } from '@suite-common/wallet-utils';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { getSynchronize } from '@trezor/utils';
 
-import {
-    selectSelectedAccountKey,
-    selectIsSelectedAccountLoaded,
-} from 'src/reducers/wallet/selectedAccountReducer';
-import { selectMetadata } from 'src/reducers/suite/metadataReducer';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
+import { selectMetadata } from 'src/reducers/suite/metadataReducer';
+import {
+    selectIsSelectedAccountLoaded,
+    selectSelectedAccountKey,
+} from 'src/reducers/wallet/selectedAccountReducer';
 import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
 import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { NewModal, List, IconName, Paragraph, Icon } from '@trezor/components';
-import { selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
 import { TranslationKey } from '@suite-common/intl-types';
+import { selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
+import { Icon, IconName, List, NewModal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { onCancel, openModal } from 'src/actions/suite/modalActions';

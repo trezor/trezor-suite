@@ -1,13 +1,13 @@
 import {
-    transactionsInitialState,
-    transactionsActions,
-    prepareTransactionsReducer,
     fetchTransactionsPageThunk,
+    prepareTransactionsReducer,
+    transactionsActions,
+    transactionsInitialState,
 } from '@suite-common/wallet-core';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import { transactions, accounts } from '../__fixtures__/transactionConstants';
+import { accounts, transactions } from '../__fixtures__/transactionConstants';
 
 const reducer = prepareTransactionsReducer(extraDependencies);
 

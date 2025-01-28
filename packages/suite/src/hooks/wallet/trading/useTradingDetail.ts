@@ -3,13 +3,9 @@ import { createContext, useContext } from 'react';
 import type { TradingType } from '@suite-common/invity';
 
 import { useSelector } from 'src/hooks/suite';
-import {
-    TradingDetailContextValues,
-    TradingGetDetailDataOutputProps,
-    TradingUseDetailOutputProps,
-    TradingUseDetailProps,
-} from 'src/types/trading/tradingDetail';
-import { Trade, TradeBuy } from 'src/types/wallet/tradingCommonTypes';
+import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
+import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
+import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import {
     TradingGetDetailDataProps,
     TradingGetTypedInfoTradeProps,
@@ -17,9 +13,13 @@ import {
     TradingTradeInfoMapProps,
     TradingTradeMapProps,
 } from 'src/types/trading/trading';
-import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
-import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
-import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import {
+    TradingDetailContextValues,
+    TradingGetDetailDataOutputProps,
+    TradingUseDetailOutputProps,
+    TradingUseDetailProps,
+} from 'src/types/trading/tradingDetail';
+import { Trade, TradeBuy } from 'src/types/wallet/tradingCommonTypes';
 
 const isBuyTrade = (trade: Trade): trade is TradeBuy => trade.tradeType === 'buy';
 

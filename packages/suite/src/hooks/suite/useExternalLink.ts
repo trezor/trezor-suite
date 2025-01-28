@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
 import { useSelector } from 'src/hooks/suite';
-import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 
 /**
  * Returns plain url or onion url if available and tor is active

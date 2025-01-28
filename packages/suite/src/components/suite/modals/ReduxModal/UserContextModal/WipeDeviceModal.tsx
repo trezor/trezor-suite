@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { NewModal, Card, Column, H3, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Card, Column, H3, NewModal, Paragraph } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
+import { spacings } from '@trezor/theme';
 
-import { Translation, CheckItem } from 'src/components/suite';
 import { wipeDevice } from 'src/actions/settings/deviceSettingsActions';
+import { CheckItem, Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 type WipeDeviceModalProps = {

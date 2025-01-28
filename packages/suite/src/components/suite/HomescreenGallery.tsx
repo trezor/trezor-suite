@@ -4,10 +4,10 @@ import { getNarrowedDeviceModelInternal, resolveStaticPath } from '@suite-common
 import { DeviceModelInternal } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
-import { getHomescreens } from 'src/constants/suite/homescreens';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { imagePathToHex } from 'src/utils/suite/homescreen';
+import { getHomescreens } from 'src/constants/suite/homescreens';
 import { useDevice, useDispatch } from 'src/hooks/suite';
+import { imagePathToHex } from 'src/utils/suite/homescreen';
 
 type HomescreensType = ReturnType<typeof getHomescreens>;
 type AnyImageName = HomescreensType[keyof HomescreensType][number];

@@ -1,6 +1,6 @@
 import {
-    canLocktimeTxBeBroadcast,
     CanLocktimeTxBeBroadcastParams,
+    canLocktimeTxBeBroadcast,
 } from '../canLocktimeTxBeBroadcast';
 
 const data: Array<{ it: string; input: CanLocktimeTxBeBroadcastParams; result: boolean }> = [

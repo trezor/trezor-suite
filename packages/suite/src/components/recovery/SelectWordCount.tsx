@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { OnboardingOption, OptionsWrapper, OptionsDivider } from 'src/components/onboarding';
-import { WordCount } from 'src/types/recovery';
+import { OnboardingOption, OptionsDivider, OptionsWrapper } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
+import { WordCount } from 'src/types/recovery';
 
 const StyledOption = styled(OnboardingOption)`
     justify-content: center;

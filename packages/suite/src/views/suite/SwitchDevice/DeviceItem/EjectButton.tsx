@@ -1,6 +1,6 @@
 import { useTheme } from 'styled-components';
 
-import { Tooltip, Icon } from '@trezor/components';
+import { Icon, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 

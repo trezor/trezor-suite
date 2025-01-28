@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
-import { ButtonProps, Tooltip, NewModal } from '@trezor/components';
 import { Network } from '@suite-common/wallet-config';
+import { ButtonProps, NewModal, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 

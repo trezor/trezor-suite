@@ -2,13 +2,13 @@ import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { Checkbox, Button, Banner, variables, Tooltip } from '@trezor/components';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
+import { Banner, Button, Checkbox, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { Translation } from 'src/components/suite/Translation';
 
 const Container = styled.div`
     display: flex;

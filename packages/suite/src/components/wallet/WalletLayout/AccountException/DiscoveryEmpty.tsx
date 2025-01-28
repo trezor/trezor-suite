@@ -1,7 +1,7 @@
 import { goto } from 'src/actions/suite/routerActions';
-import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 /**
  * Handler for invalid wallet setting, no coins in discovery

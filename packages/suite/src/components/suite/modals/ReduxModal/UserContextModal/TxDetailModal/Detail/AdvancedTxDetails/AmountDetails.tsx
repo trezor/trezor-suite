@@ -1,4 +1,8 @@
-import { Table, Text } from '@trezor/components';
+import {
+    selectHistoricFiatRates,
+    selectHistoricFiatRatesByTimestamp,
+} from '@suite-common/wallet-core';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     formatAmount,
     formatCardanoDeposit,
@@ -6,22 +10,18 @@ import {
     formatNetworkAmount,
     getFiatRateKey,
     getTxOperation,
+    isStakeTypeTx,
     isTxFeePaid,
     roundTimestampToNearestPastHour,
-    isStakeTypeTx,
 } from '@suite-common/wallet-utils';
+import { Table, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
-import {
-    selectHistoricFiatRates,
-    selectHistoricFiatRatesByTimestamp,
-} from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
+import { FiatValue, FormattedCryptoAmount, FormattedDate, Translation } from 'src/components/suite';
+import { AmountComponent } from 'src/components/wallet/AmountComponent';
 import { useSelector } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from 'src/components/suite';
-import { AmountComponent } from 'src/components/wallet/AmountComponent';
 
 type AmountDetailsProps = {
     tx: WalletAccountTransaction;

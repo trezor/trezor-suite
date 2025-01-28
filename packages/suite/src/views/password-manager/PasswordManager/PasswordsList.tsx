@@ -2,17 +2,17 @@ import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
-import type { PasswordEntry as PasswordEntryType } from 'src/types/suite/metadata';
-import { useSelector } from 'src/hooks/suite';
 import { TextColumn } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
+import type { PasswordEntry as PasswordEntryType } from 'src/types/suite/metadata';
 
 import { AddEntryButton } from './AddEntryButton';
+import { EntryForm } from './EntryForm';
 import {
-    PasswordEntry as PasswordEntryComponent,
     PasswordEntryCol,
+    PasswordEntry as PasswordEntryComponent,
     PasswordEntryRow,
 } from './PasswordEntry';
-import { EntryForm } from './EntryForm';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,8 +1,8 @@
 import { authorizeDeviceThunk } from '@suite-common/wallet-core';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const AuthFailed = () => {
     const dispatch = useDispatch();

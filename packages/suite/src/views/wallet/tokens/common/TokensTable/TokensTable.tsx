@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import { Account } from '@suite-common/wallet-types';
-import { Network } from '@suite-common/wallet-config';
 import { EnhancedTokenInfo, TokenManagementAction } from '@suite-common/token-definitions';
+import { Network } from '@suite-common/wallet-config';
+import { Account } from '@suite-common/wallet-types';
+import { Card, Paragraph, Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { Table, Paragraph, Card } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';

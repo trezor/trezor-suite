@@ -1,8 +1,8 @@
-import { forwardRef, HTMLAttributes } from 'react';
+import { HTMLAttributes, forwardRef } from 'react';
 
 import styled from 'styled-components';
 
-import { Flex, variables, useMediaQuery } from '@trezor/components';
+import { Flex, useMediaQuery, variables } from '@trezor/components';
 
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';

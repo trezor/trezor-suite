@@ -1,13 +1,13 @@
-import { Paragraph, Column } from '@trezor/components';
 import {
-    Bip43PathTemplate,
     AccountType,
+    Bip43PathTemplate,
     NetworkType,
     getNetwork,
 } from '@suite-common/wallet-config';
-import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
-import { spacings } from '@trezor/theme';
 import { Account } from '@suite-common/wallet-types';
+import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
+import { Column, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';

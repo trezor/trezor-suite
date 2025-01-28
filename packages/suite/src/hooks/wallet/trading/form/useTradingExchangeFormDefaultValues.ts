@@ -4,21 +4,6 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import { FormState, Output } from '@suite-common/wallet-types';
 
 import {
-    buildFiatOption,
-    cryptoIdToSymbol,
-    getAddressAndTokenFromAccountOptionsGroupProps,
-} from 'src/utils/wallet/trading/tradingUtils';
-import { Account } from 'src/types/wallet';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { useSelector } from 'src/hooks/suite';
-import {
-    TradingExchangeFormDefaultValuesProps,
-    ExchangeType,
-    KycFilter,
-    RateType,
-    RateTypeFilter,
-} from 'src/types/trading/tradingForm';
-import {
     EXCHANGE_COMPARATOR_KYC_FILTER,
     EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
     EXCHANGE_COMPARATOR_RATE_FILTER,
@@ -28,9 +13,24 @@ import {
     FORM_RATE_FIXED,
     FORM_RATE_TYPE,
 } from 'src/constants/wallet/trading/form';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
-import { tradingGetExchangeReceiveCryptoId } from 'src/utils/wallet/trading/exchangeUtils';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import {
+    ExchangeType,
+    KycFilter,
+    RateType,
+    RateTypeFilter,
+    TradingExchangeFormDefaultValuesProps,
+} from 'src/types/trading/tradingForm';
+import { Account } from 'src/types/wallet';
+import { tradingGetExchangeReceiveCryptoId } from 'src/utils/wallet/trading/exchangeUtils';
+import {
+    buildFiatOption,
+    cryptoIdToSymbol,
+    getAddressAndTokenFromAccountOptionsGroupProps,
+} from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingExchangeFormDefaultValues = (
     account: Account,

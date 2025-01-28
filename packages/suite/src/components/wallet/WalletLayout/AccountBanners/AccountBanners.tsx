@@ -3,20 +3,20 @@ import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Account } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';
+import { Account } from 'src/types/wallet';
 
-import { AuthConfirmFailed } from './AuthConfirmFailed';
-import { BackendDisconnected } from './BackendDisconnected';
-import { DeviceUnavailable } from './DeviceUnavailable';
-import { XRPReserve } from './XRPReserve';
 import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';
-import { TorDisconnected } from './TorDisconnected';
+import { AuthConfirmFailed } from './AuthConfirmFailed';
+import { BackendDisconnected } from './BackendDisconnected';
 import { ContextMessage } from './ContextMessage';
-import { StakingBanner } from './StakingBanner';
+import { DeviceUnavailable } from './DeviceUnavailable';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
+import { StakingBanner } from './StakingBanner';
 import { TaprootBanner } from './TaprootBanner';
+import { TorDisconnected } from './TorDisconnected';
+import { XRPReserve } from './XRPReserve';
 
 type AccountBannersProps = {
     account?: Account;

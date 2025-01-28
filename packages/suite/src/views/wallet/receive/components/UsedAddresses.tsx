@@ -2,28 +2,28 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { AccountAddress } from '@trezor/connect';
-import {
-    Card,
-    Button,
-    Column,
-    Row,
-    GradientOverlay,
-    Tooltip,
-    Table,
-    Text,
-} from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import {
+    Button,
+    Card,
+    Column,
+    GradientOverlay,
+    Row,
+    Table,
+    Text,
+    Tooltip,
+} from '@trezor/components';
+import { AccountAddress } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
-import { Translation, MetadataLabeling, FormattedCryptoAmount } from 'src/components/suite';
-import { AppState } from 'src/types/suite';
-import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { showAddress } from 'src/actions/wallet/receiveActions';
+import { FormattedCryptoAmount, MetadataLabeling, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/reducers/suite/suiteReducer';
+import { AppState } from 'src/types/suite';
+import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 const AddressActions = styled.div<{ $isVisible?: boolean }>`
     opacity: ${({ $isVisible }) => ($isVisible ? '1' : '0')};

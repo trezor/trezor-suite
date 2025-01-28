@@ -1,12 +1,12 @@
 import type { Action } from 'src/types/suite';
 
+import { actionFixtures, selectorFixtures } from '../__fixtures__/coinjoinReducer';
 import {
-    coinjoinReducer,
-    CoinjoinState,
     CoinjoinRootState,
+    CoinjoinState,
+    coinjoinReducer,
     selectRegisteredUtxosByAccountKey,
 } from '../coinjoinReducer';
-import { actionFixtures, selectorFixtures } from '../__fixtures__/coinjoinReducer';
 
 describe('Coinjoin reducer actions', () => {
     actionFixtures.forEach(f => {

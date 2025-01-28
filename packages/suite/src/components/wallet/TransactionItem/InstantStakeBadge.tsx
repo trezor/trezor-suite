@@ -1,17 +1,17 @@
-import { useSelector } from 'react-redux';
 import { memo } from 'react';
+import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
+import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { StakeType } from '@suite-common/wallet-types';
-import { Badge, Icon } from '@trezor/components';
-import { isNetworkSymbol, NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { Badge, Icon } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation, FormattedCryptoAmount } from 'src/components/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { WalletAccountTransaction } from 'src/types/wallet';
 import { getInstantStakeType } from 'src/utils/suite/ethereumStaking';
 
 const Wrapper = styled.div`

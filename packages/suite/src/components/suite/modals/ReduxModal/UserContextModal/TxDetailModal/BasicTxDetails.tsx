@@ -1,28 +1,28 @@
 import styled from 'styled-components';
 import { fromWei } from 'web3-utils';
 
+import { Network } from '@suite-common/wallet-config';
+import { getFeeRate, getFeeUnits, getTxIcon, isPending } from '@suite-common/wallet-utils';
 import {
-    Icon,
-    Text,
-    H3,
-    useElevation,
     Card,
+    Divider,
+    Grid,
+    H3,
+    Icon,
     InfoItem,
+    InfoItemProps,
     InfoSegments,
     Row,
-    InfoItemProps,
-    Grid,
-    Divider,
+    Text,
+    useElevation,
 } from '@trezor/components';
-import { Network } from '@suite-common/wallet-config';
-import { getTxIcon, isPending, getFeeUnits, getFeeRate } from '@suite-common/wallet-utils';
-import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 import { CoinLogo } from '@trezor/product-components';
+import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation, FormattedDateWithBullet } from 'src/components/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
-import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
+import { FormattedDateWithBullet, Translation } from 'src/components/suite';
 import { IOAddress } from 'src/components/suite/copy/IOAddress';
+import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
+import { WalletAccountTransaction } from 'src/types/wallet';
 
 const IconWrapper = styled.div<{ $elevation: Elevation }>`
     display: flex;

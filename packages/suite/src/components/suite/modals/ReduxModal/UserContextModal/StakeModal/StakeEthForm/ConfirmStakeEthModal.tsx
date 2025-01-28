@@ -1,15 +1,15 @@
 import { useState } from 'react';
 
-import { Checkbox, NewModal, Column, Banner, Card } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
-import { getNetworkDisplaySymbol, type NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { Banner, Card, Checkbox, Column, NewModal } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
 
+import { openModal } from 'src/actions/suite/modalActions';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getDaysToAddToPoolInitial } from 'src/utils/suite/ethereumStaking';
 

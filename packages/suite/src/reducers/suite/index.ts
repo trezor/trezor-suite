@@ -1,21 +1,21 @@
 import { Reducer } from '@reduxjs/toolkit';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
+import { logsSlice } from '@suite-common/logger';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
-import { logsSlice } from '@suite-common/logger';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import router from './routerReducer';
-import suite from './suiteReducer';
-import modal from './modalReducer';
-import window from './windowReducer';
-import metadata from './metadataReducer';
 import desktopUpdate from './desktopUpdateReducer';
 import guide from './guideReducer';
+import metadata from './metadataReducer';
+import modal from './modalReducer';
 import protocol from './protocolReducer';
+import router from './routerReducer';
+import suite from './suiteReducer';
+import window from './windowReducer';
 
 const analytics = prepareAnalyticsReducer(extraDependencies);
 // Type annotation as workaround for type-check error "The inferred type of 'default' cannot be named..."

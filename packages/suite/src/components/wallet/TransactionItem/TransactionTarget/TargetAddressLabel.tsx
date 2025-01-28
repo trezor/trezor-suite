@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
-import { ArrayElement } from '@trezor/type-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { ArrayElement } from '@trezor/type-utils';
 
-import { WalletAccountTransaction } from 'src/types/wallet';
-import { Translation, AddressLabeling } from 'src/components/suite';
+import { AddressLabeling, Translation } from 'src/components/suite';
 import { AccountLabels } from 'src/types/suite/metadata';
+import { WalletAccountTransaction } from 'src/types/wallet';
 
 const TruncatedSpan = styled.span<{ $isBlurred?: boolean }>`
     overflow: hidden;

@@ -1,17 +1,17 @@
 import { useState } from 'react';
 
-import { Tabs, Card } from '@trezor/components';
-import { isTestnet } from '@suite-common/wallet-utils';
-import { WalletAccountTransaction, ChainedTransactions } from '@suite-common/wallet-types';
 import { AccountType, Network } from '@suite-common/wallet-config';
+import { ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { isTestnet } from '@suite-common/wallet-utils';
+import { Card, Tabs } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
 import { AmountDetails } from './AmountDetails';
+import { Data } from './Data';
 import { IODetails } from './IODetails/IODetails';
 import { ChainedTxs } from '../../ChainedTxs';
-import { Data } from './Data';
 
 export type TabID = 'amount' | 'io' | 'chained' | 'data';
 

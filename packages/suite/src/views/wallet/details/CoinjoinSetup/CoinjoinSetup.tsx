@@ -3,11 +3,11 @@ import { useDispatch } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Card, Radio, motionAnimation, motionEasing, Banner } from '@trezor/components';
+import { Banner, Card, Radio, motionAnimation, motionEasing } from '@trezor/components';
 
+import { coinjoinAccountUpdateSetupOption } from 'src/actions/wallet/coinjoinAccountActions';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { coinjoinAccountUpdateSetupOption } from 'src/actions/wallet/coinjoinAccountActions';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 
 import { AnonymityLevelSetup } from './AnonymityLevelSetup';

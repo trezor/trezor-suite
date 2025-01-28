@@ -8,20 +8,20 @@ import {
     UseFormSetValue,
 } from 'react-hook-form';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Note, Banner, variables, Grid, Column, useMediaQuery, Text } from '@trezor/components';
-import { getInputState, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
-import { FeeInfo, FormState } from '@suite-common/wallet-types';
 import { NetworkType } from '@suite-common/wallet-config';
+import { FeeInfo, FormState } from '@suite-common/wallet-types';
+import { getFeeUnits, getInputState, isInteger } from '@suite-common/wallet-utils';
+import { Banner, Column, Grid, Note, Text, useMediaQuery, variables } from '@trezor/components';
+import { NumberInput } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
-import { NumberInput } from '@trezor/product-components';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { validateDecimals } from 'src/utils/suite/validation';
-import { useSelector, useTranslation } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { useSelector, useTranslation } from 'src/hooks/suite';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { validateDecimals } from 'src/utils/suite/validation';
 
 import { InputError } from '../InputError';
 

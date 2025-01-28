@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
+import type { TradingSellType } from '@suite-common/invity';
 import { Button, Column, Spinner, Text } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-import type { TradingSellType } from '@suite-common/invity';
 
-import { Translation, AccountLabeling } from 'src/components/suite';
-import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { AccountLabeling, Translation } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 
 const Wrapper = styled.div`
     display: flex;

@@ -4,10 +4,10 @@ import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
-import { PinMatrix, PrerequisitesGuide, Translation } from 'src/components/suite';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
+import { PinMatrix, PrerequisitesGuide, Translation } from 'src/components/suite';
 import steps from 'src/config/onboarding/steps';
+import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 import IsSameDevice from './components/IsSameDevice';

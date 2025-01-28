@@ -1,22 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { DeepPartial } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
-import { PROTO } from '@trezor/connect';
 import { FormState } from '@suite-common/wallet-types';
+import { PROTO } from '@trezor/connect';
 
 import { filterThunkActionTypes } from 'src/support/tests/configureStore';
 import {
-    renderWithProviders,
-    waitForLoader,
-    findByTestId,
     UserAction,
     actionSequence,
+    findByTestId,
+    renderWithProviders,
+    waitForLoader,
 } from 'src/support/tests/hooksHelper';
-import SendIndex from 'src/views/wallet/send';
 import { SendContextValues } from 'src/types/wallet/sendForm';
+import SendIndex from 'src/views/wallet/send';
 
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';

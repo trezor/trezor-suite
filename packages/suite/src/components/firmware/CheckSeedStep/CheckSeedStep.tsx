@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { selectIsDeviceBackedUp, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Button, Checkbox, Column, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { selectIsDeviceBackedUp, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 
-import { useDevice, useSelector } from 'src/hooks/suite';
-import { Translation } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
 
 import { FirmwareButtonsRow } from '../Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from '../FirmwareSwitchWarning';

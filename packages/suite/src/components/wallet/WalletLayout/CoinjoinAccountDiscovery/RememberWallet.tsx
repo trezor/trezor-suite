@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { spacings, spacingsPx } from '@trezor/theme';
 import { Card, Image, Note, Paragraph, Row, Switch } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { Tabs, Row, Divider, IconButton } from '@trezor/components';
+import { Divider, IconButton, Row, Tabs } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { SETTINGS } from 'src/config/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { NotificationGroup } from './NotificationGroup/NotificationGroup';
 

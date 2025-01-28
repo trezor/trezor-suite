@@ -1,16 +1,16 @@
 import { TooltipProps } from 'recharts';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Formatters, useFormatters } from '@suite-common/formatters';
 import { SignOperator } from '@suite-common/suite-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
-import type { CryptoGraphProps } from './TransactionsGraph';
 import { GraphTooltipBase } from './GraphTooltipBase';
+import type { CryptoGraphProps } from './TransactionsGraph';
 
 const formatAmount = (
     amount: string | undefined,

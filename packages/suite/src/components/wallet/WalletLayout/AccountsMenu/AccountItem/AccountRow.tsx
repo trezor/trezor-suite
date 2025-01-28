@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { spacingsPx, typography } from '@trezor/theme';
 
-import { Account, AccountItemType } from '../../../../../types/wallet';
 import { Left } from './AccountItem';
-import { NavigationItemBase } from '../../../../suite/layouts/SuiteLayout/Sidebar/NavigationItem';
-import { AccountItemLeft } from './AccountItemLeft';
 import { AccountItemContent } from './AccountItemContent';
+import { AccountItemLeft } from './AccountItemLeft';
+import { Account, AccountItemType } from '../../../../../types/wallet';
+import { NavigationItemBase } from '../../../../suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 
 type AccountRowProps = {
     isSelected: boolean;

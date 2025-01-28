@@ -3,16 +3,16 @@ import React, { useState } from 'react';
 import { randomBytes } from 'crypto';
 import styled from 'styled-components';
 
-import TrezorConnect from '@trezor/connect';
-import { Button, Checkbox, Input } from '@trezor/components';
 import type { PasswordEntry, PasswordEntryDecoded } from '@suite-common/metadata-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { isUrl } from '@trezor/utils';
+import { Button, Checkbox, Input } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
+import { isUrl } from '@trezor/utils';
 
+import { PATH } from 'src/actions/suite/constants/metadataPasswordsConstants';
 import { usePasswords, useSelector } from 'src/hooks/suite';
 import * as metadataUtils from 'src/utils/suite/metadata';
-import { PATH } from 'src/actions/suite/constants/metadataPasswordsConstants';
 import { getDisplayKey } from 'src/utils/suite/passwords';
 
 const FormWrapper = styled.div`

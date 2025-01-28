@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import { Button } from '@trezor/components';
 
+import { exportMetadataToLocalFile } from 'src/actions/suite/metadataActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { exportMetadataToLocalFile } from 'src/actions/suite/metadataActions';
 
 export const Metadata = () => {
     const dispatch = useDispatch();

@@ -1,4 +1,4 @@
-import { ProgressBar, Box } from '@trezor/components';
+import { Box, ProgressBar } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
 import { useDiscovery } from 'src/hooks/suite';

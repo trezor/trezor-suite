@@ -1,11 +1,11 @@
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { Switch } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { setOnionLinks } from 'src/actions/suite/suiteActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 /* keep torOnionLinks value as it is but hide this section when tor is off.
    when tor is off this value has no effect anyway (handled by ExternalLink hook) */

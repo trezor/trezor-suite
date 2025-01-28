@@ -7,13 +7,13 @@ import {
 
 import { FeeLevel } from '@trezor/connect';
 
-import { Account } from 'src/types/wallet';
-import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
-import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
-import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
+import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
+import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
+import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
+import { useDispatch } from 'src/hooks/suite';
+import { Account } from 'src/types/wallet';
 
 interface OfferRedirectParams {
     symbol: Account['symbol'];

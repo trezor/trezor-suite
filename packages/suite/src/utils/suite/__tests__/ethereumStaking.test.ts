@@ -1,3 +1,5 @@
+import { ValidatorsQueue } from '@suite-common/wallet-core';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, {
     AccountInfo,
     InternalTransfer,
@@ -9,49 +11,47 @@ import {
     BlockchainEstimatedFee,
     BlockchainEstimatedFeeLevel,
 } from '@trezor/connect/src/types/api/blockchainEstimateFee';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { ValidatorsQueue } from '@suite-common/wallet-core';
 
 import {
-    transformTx,
-    stake,
-    unstake,
-    claimWithdrawRequest,
-    getStakeFormsDefaultValues,
-    StakeTxBaseArgs,
-    GetStakeFormsDefaultValuesParams,
-    GetStakeTxGasLimitParams,
-    getStakeTxGasLimit,
-    getUnstakingPeriodInDays,
-    getDaysToAddToPool,
-    getDaysToUnstake,
-    getDaysToAddToPoolInitial,
-    getAdjustedGasLimitConsumption,
-    getEthNetworkForWalletSdk,
-    getInstantStakeType,
-    getChangedInternalTx,
-    simulateUnstake,
-} from '../ethereumStaking';
-import {
-    transformTxFixtures,
-    stakeFixture,
-    stakeFailedFixture,
-    unstakeFixture,
-    unstakeFailedFixture,
-    claimFixture,
     claimFailedFixture,
+    claimFixture,
+    getAdjustedGasLimitConsumptionFixture,
+    getChangedInternalTxFixture,
+    getDaysToAddToPoolFixture,
+    getDaysToAddToPoolInitialFixture,
+    getDaysToUnstakeFixture,
+    getEthNetworkForWalletSdkFixture,
+    getInstantStakeTypeFixture,
     getStakeFormsDefaultValuesFixture,
     getStakeTxGasLimitFixture,
     getUnstakingPeriodInDaysFixture,
-    getDaysToAddToPoolFixture,
-    getDaysToUnstakeFixture,
-    getDaysToAddToPoolInitialFixture,
-    getAdjustedGasLimitConsumptionFixture,
-    getEthNetworkForWalletSdkFixture,
-    getInstantStakeTypeFixture,
-    getChangedInternalTxFixture,
     simulateUnstakeFixture,
+    stakeFailedFixture,
+    stakeFixture,
+    transformTxFixtures,
+    unstakeFailedFixture,
+    unstakeFixture,
 } from '../__fixtures__/ethereumStaking';
+import {
+    GetStakeFormsDefaultValuesParams,
+    GetStakeTxGasLimitParams,
+    StakeTxBaseArgs,
+    claimWithdrawRequest,
+    getAdjustedGasLimitConsumption,
+    getChangedInternalTx,
+    getDaysToAddToPool,
+    getDaysToAddToPoolInitial,
+    getDaysToUnstake,
+    getEthNetworkForWalletSdk,
+    getInstantStakeType,
+    getStakeFormsDefaultValues,
+    getStakeTxGasLimit,
+    getUnstakingPeriodInDays,
+    simulateUnstake,
+    stake,
+    transformTx,
+    unstake,
+} from '../ethereumStaking';
 
 describe('transformTx', () => {
     transformTxFixtures.forEach(test => {

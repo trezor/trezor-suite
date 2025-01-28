@@ -1,6 +1,6 @@
+import { invityAPI } from '@suite-common/invity';
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { invityAPI } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
 import { TradingIcon } from 'src/views/wallet/trading/common/TradingIcon';

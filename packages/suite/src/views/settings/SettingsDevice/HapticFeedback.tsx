@@ -1,10 +1,10 @@
 import { Switch } from '@trezor/components';
-import { analytics, EventType } from '@trezor/suite-analytics';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';
 

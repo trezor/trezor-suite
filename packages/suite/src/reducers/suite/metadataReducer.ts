@@ -2,35 +2,35 @@ import produce from 'immer';
 
 import {
     AccountsRootState,
-    selectAccountByKey,
     DeviceRootState,
-    selectSelectedDevice,
     State,
-    selectDeviceByState,
     deviceActions,
+    selectAccountByKey,
+    selectDeviceByState,
     selectDeviceByStaticSessionId,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import {
-    STORAGE,
     METADATA,
     METADATA_LABELING,
     METADATA_PASSWORDS,
+    STORAGE,
 } from 'src/actions/suite/constants';
-import { Action, TrezorDevice } from 'src/types/suite';
-import {
-    MetadataState,
-    WalletLabels,
-    AccountLabels,
-    PasswordManagerState,
-} from 'src/types/suite/metadata';
-import { Account } from 'src/types/wallet';
 import {
     DEFAULT_ACCOUNT_METADATA,
     DEFAULT_WALLET_METADATA,
 } from 'src/actions/suite/constants/metadataLabelingConstants';
+import { Action, TrezorDevice } from 'src/types/suite';
+import {
+    AccountLabels,
+    MetadataState,
+    PasswordManagerState,
+    WalletLabels,
+} from 'src/types/suite/metadata';
+import { Account } from 'src/types/wallet';
 
 import { SuiteRootState } from './suiteReducer';
 

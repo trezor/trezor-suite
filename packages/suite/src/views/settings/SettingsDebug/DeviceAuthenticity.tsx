@@ -1,8 +1,8 @@
 import { Switch } from '@trezor/components';
 
-import { useSelector, useDispatch } from 'src/hooks/suite';
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const DeviceAuthenticity = () => {
     const dispatch = useDispatch();

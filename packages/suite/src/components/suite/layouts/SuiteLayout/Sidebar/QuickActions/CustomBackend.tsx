@@ -2,10 +2,10 @@ import { useTheme } from 'styled-components';
 
 import { ComponentWithSubIcon, Icon, iconSizes } from '@trezor/components';
 
-import { useTranslation } from '../../../../../../hooks/suite';
-import { useEnabledBackends } from '../../utils';
 import { NavBackends } from './NavBackends';
 import { QuickActionButton } from './QuickActionButton';
+import { useTranslation } from '../../../../../../hooks/suite';
+import { useEnabledBackends } from '../../utils';
 
 export const CustomBackend = () => {
     const theme = useTheme();

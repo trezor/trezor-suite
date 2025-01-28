@@ -1,18 +1,18 @@
-import styled from 'styled-components';
 import { transparentize } from 'polished';
+import styled from 'styled-components';
 
 import { selectIsAccountWithRatesByKey } from '@suite-common/wallet-core';
-import { Button, variables } from '@trezor/components';
 import { formatAmount, getAccountDecimals } from '@suite-common/wallet-utils';
+import { Button, variables } from '@trezor/components';
 
-import { FiatValue, FormattedCryptoAmount, Modal, Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { FiatValue, FormattedCryptoAmount, Modal, Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';
 
 const StyledModal = styled(Modal)`
     width: 500px;

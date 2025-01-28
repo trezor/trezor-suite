@@ -1,19 +1,19 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Account, Rate, TokenAddress, RatesByKey } from '@suite-common/wallet-types';
-import { TokenInfo } from '@trezor/connect';
-import {
-    getFiatRateKey,
-    isNftMatchesSearch,
-    isNftToken,
-    isTokenMatchesSearch,
-} from '@suite-common/wallet-utils';
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
     EnhancedTokenInfo,
     TokenDefinition,
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
+import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { Account, Rate, RatesByKey, TokenAddress } from '@suite-common/wallet-types';
+import {
+    getFiatRateKey,
+    isNftMatchesSearch,
+    isNftToken,
+    isTokenMatchesSearch,
+} from '@suite-common/wallet-utils';
+import { TokenInfo } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export interface TokensWithRates extends TokenInfo {
     fiatValue: BigNumber;

@@ -1,8 +1,8 @@
 import { testMocks } from '@suite-common/test-utils';
 import { isUnlocked, prepareDeviceReducer } from '@suite-common/wallet-core';
 
-import { Action } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { Action } from 'src/types/suite';
 
 import fixtures from '../__fixtures__/deviceReducer';
 

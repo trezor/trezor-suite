@@ -1,10 +1,10 @@
 import { MiddlewareAPI } from 'redux';
 
-import { selectSelectedDevice, selectDevices, deviceActions } from '@suite-common/wallet-core';
+import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import * as routerActions from 'src/actions/suite/routerActions';
-import { AppState, Action, Dispatch, TrezorDevice } from 'src/types/suite';
 import { selectIsRouterLocked } from 'src/reducers/suite/suiteReducer';
+import { Action, AppState, Dispatch, TrezorDevice } from 'src/types/suite';
 
 const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
     // no device, no redirect

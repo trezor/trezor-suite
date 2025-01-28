@@ -1,5 +1,5 @@
-import type { FieldValues, UseFormReturn, FieldPath } from 'react-hook-form';
 import React from 'react';
+import type { FieldPath, FieldValues, UseFormReturn } from 'react-hook-form';
 
 import type {
     BankAccount,
@@ -11,16 +11,6 @@ import type {
     SellFiatTrade,
 } from 'invity-api';
 
-import { Network } from '@suite-common/wallet-config';
-import { Timer } from '@trezor/react-utils';
-import {
-    FeeInfo,
-    FormState,
-    PrecomposedLevels,
-    PrecomposedLevelsCardano,
-} from '@suite-common/wallet-types';
-import { FeeLevel } from '@trezor/connect';
-import { AccountsState } from '@suite-common/wallet-core';
 import type {
     TradingBuyType,
     TradingExchangeType,
@@ -29,25 +19,21 @@ import type {
     TradingTradeType,
     TradingType,
 } from '@suite-common/invity';
-
+import { Network } from '@suite-common/wallet-config';
+import { AccountsState } from '@suite-common/wallet-core';
 import {
-    TradingAccountOptionsGroupOptionProps,
-    TradingCryptoSelectItemProps,
-    TradingGetCryptoQuoteAmountProps,
-    TradingGetProvidersInfoProps,
-    TradingPaymentMethodListProps,
-    TradingPaymentMethodProps,
-    TradingTradeDetailMapProps,
-    TradingTradeSellExchangeType,
-} from 'src/types/trading/trading';
-import type { Account } from 'src/types/wallet';
+    FeeInfo,
+    FormState,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
+} from '@suite-common/wallet-types';
+import { FeeLevel } from '@trezor/connect';
+import { Timer } from '@trezor/react-utils';
+
 import type { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
-import { AppState } from 'src/reducers/store';
-import { Dispatch, GetState } from 'src/types/suite';
-import { Option, TradeBuy, TradeExchange, TradeSell } from 'src/types/wallet/tradingCommonTypes';
-import { SendContextValues } from 'src/types/wallet/sendForm';
-import { SellInfo } from 'src/actions/wallet/tradingSellActions';
 import { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
+import { SellInfo } from 'src/actions/wallet/tradingSellActions';
+import type { TranslationKey } from 'src/components/suite/Translation';
 import {
     EXCHANGE_COMPARATOR_KYC_FILTER,
     EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
@@ -64,7 +50,21 @@ import {
     FORM_RATE_FLOATING,
     FORM_RATE_TYPE,
 } from 'src/constants/wallet/trading/form';
-import type { TranslationKey } from 'src/components/suite/Translation';
+import { AppState } from 'src/reducers/store';
+import { Dispatch, GetState } from 'src/types/suite';
+import {
+    TradingAccountOptionsGroupOptionProps,
+    TradingCryptoSelectItemProps,
+    TradingGetCryptoQuoteAmountProps,
+    TradingGetProvidersInfoProps,
+    TradingPaymentMethodListProps,
+    TradingPaymentMethodProps,
+    TradingTradeDetailMapProps,
+    TradingTradeSellExchangeType,
+} from 'src/types/trading/trading';
+import type { Account } from 'src/types/wallet';
+import { SendContextValues } from 'src/types/wallet/sendForm';
+import { Option, TradeBuy, TradeExchange, TradeSell } from 'src/types/wallet/tradingCommonTypes';
 import { AmountLimitProps, CryptoAmountLimitProps } from 'src/utils/suite/validation';
 
 export interface TradingBuyFormProps {

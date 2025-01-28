@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Paragraph, H2, Button, Link, Image } from '@trezor/components';
+import { Button, H2, Image, Link, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 

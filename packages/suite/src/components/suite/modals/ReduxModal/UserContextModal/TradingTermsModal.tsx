@@ -2,16 +2,16 @@ import { CryptoId } from 'invity-api';
 
 import {
     Column,
+    H4,
     IconCircle,
     IconCircleProps,
-    Paragraph,
-    NewModal,
     List,
-    H4,
+    NewModal,
+    Paragraph,
 } from '@trezor/components';
-import type { Deferred } from '@trezor/utils';
-import { spacings } from '@trezor/theme';
 import { mapTrezorModelToIconDeprecated } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
+import type { Deferred } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';

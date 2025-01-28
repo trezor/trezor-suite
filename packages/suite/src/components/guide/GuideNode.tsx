@@ -2,16 +2,16 @@ import { ReactNode } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
+import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Icon, variables } from '@trezor/components';
-import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { borders, spacings } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openNode } from 'src/actions/suite/guideActions';
-import { getNodeTitle } from 'src/utils/suite/guide';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { getNodeTitle } from 'src/utils/suite/guide';
 
 const NodeButton = styled.button`
     display: flex;

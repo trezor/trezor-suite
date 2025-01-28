@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-import { Checkbox, NewModal, Column, Banner, Card, IconName } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { Banner, Card, Checkbox, Column, IconName, NewModal } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
+import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 interface EverstakeModalProps {

@@ -4,12 +4,12 @@ import styled from 'styled-components';
 
 import { Select, SelectProps } from '@trezor/components';
 
-import type { Account } from 'src/types/wallet';
-import type { State as RevealedAddresses } from 'src/reducers/wallet/receiveReducer';
 import {
-    useSignAddressOptions,
     AddressItem,
+    useSignAddressOptions,
 } from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
+import type { State as RevealedAddresses } from 'src/reducers/wallet/receiveReducer';
+import type { Account } from 'src/types/wallet';
 
 import { HiddenAddressRow } from './HiddenAddressRow';
 import { VerifyAddressButton } from './VerifyAddressButton';

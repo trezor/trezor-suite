@@ -1,5 +1,5 @@
-import { UI, DEVICE, Device, UiRequestButtonData } from '@trezor/connect';
 import { UserContextPayload } from '@suite-common/suite-types';
+import { DEVICE, Device, UI, UiRequestButtonData } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
 import type { Action, TrezorDevice } from 'src/types/suite';

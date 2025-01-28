@@ -6,8 +6,6 @@ import {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
-import { tradingReducer, initialState } from 'src/reducers/wallet/tradingReducer';
-import { TradeBuy, TradeExchange } from 'src/types/wallet/tradingCommonTypes';
 import { STORAGE } from 'src/actions/suite/constants';
 import {
     TRADING_BUY,
@@ -24,6 +22,8 @@ import {
     sellQuotes,
 } from 'src/reducers/wallet/__fixtures__/tradingReducerFixtures';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
+import { initialState, tradingReducer } from 'src/reducers/wallet/tradingReducer';
+import { TradeBuy, TradeExchange } from 'src/types/wallet/tradingCommonTypes';
 
 describe('settings reducer', () => {
     it('test initial state', () => {

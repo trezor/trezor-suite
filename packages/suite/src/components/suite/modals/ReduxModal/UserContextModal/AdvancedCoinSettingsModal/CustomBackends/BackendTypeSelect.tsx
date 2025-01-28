@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { Network } from '@suite-common/wallet-config';
 import { Select } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { Network } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import type { BackendOption } from 'src/hooks/settings/backends';

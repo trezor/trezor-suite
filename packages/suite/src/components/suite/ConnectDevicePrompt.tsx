@@ -1,13 +1,13 @@
-import styled, { useTheme } from 'styled-components';
 import { motion } from 'framer-motion';
+import styled, { useTheme } from 'styled-components';
 
 import {
-    variables,
-    motionEasing,
-    LottieAnimation,
-    useElevation,
     ElevationUp,
     Icon,
+    LottieAnimation,
+    motionEasing,
+    useElevation,
+    variables,
 } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';

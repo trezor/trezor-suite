@@ -1,7 +1,7 @@
 import {
-    selectIsFeatureDisabled,
     Feature,
     selectFeatureMessageContent,
+    selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';

@@ -1,44 +1,44 @@
-import type { MiddlewareAPI } from 'redux';
 import { isAnyOf } from '@reduxjs/toolkit';
+import type { MiddlewareAPI } from 'redux';
 
 import {
-    discoveryActions,
+    Feature,
+    messageSystemActions,
+    selectFeatureConfig,
+    selectIsFeatureDisabled,
+} from '@suite-common/message-system';
+import { addToast } from '@suite-common/toast-notifications';
+import {
     accountsActions,
     blockchainActions,
+    discoveryActions,
     selectAccountByKey,
     transactionsActions,
 } from '@suite-common/wallet-core';
-import {
-    Feature,
-    selectFeatureConfig,
-    selectIsFeatureDisabled,
-    messageSystemActions,
-} from '@suite-common/message-system';
-import { addToast } from '@suite-common/toast-notifications';
 import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
-import { UI, DEVICE } from '@trezor/connect';
+import { DEVICE, UI } from '@trezor/connect';
 import { arrayDistinct } from '@trezor/utils';
 
-import { SUITE, ROUTER } from 'src/actions/suite/constants';
-import {
-    SESSION_ROUND_CHANGED,
-    SET_DEBUG_SETTINGS,
-    SESSION_TX_BROADCASTED,
-} from 'src/actions/wallet/constants/coinjoinConstants';
-import { COINJOIN } from 'src/actions/wallet/constants';
+import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import * as storageActions from 'src/actions/suite/storageActions';
 import * as coinjoinAccountActions from 'src/actions/wallet/coinjoinAccountActions';
 import * as coinjoinClientActions from 'src/actions/wallet/coinjoinClientActions';
-import * as storageActions from 'src/actions/suite/storageActions';
-import { CoinjoinService } from 'src/services/coinjoin';
-import type { AppState, Action, Dispatch } from 'src/types/suite';
-import { CoinjoinConfig } from 'src/types/wallet/coinjoin';
+import { COINJOIN } from 'src/actions/wallet/constants';
+import {
+    SESSION_ROUND_CHANGED,
+    SESSION_TX_BROADCASTED,
+    SET_DEBUG_SETTINGS,
+} from 'src/actions/wallet/constants/coinjoinConstants';
+import { selectIsDeviceOrUiLocked, selectTorState } from 'src/reducers/suite/suiteReducer';
 import {
     selectCoinjoinAccountByKey,
-    selectIsAnySessionInCriticalPhase,
-    selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectCoinjoinSessionBlockerByAccountKey,
+    selectIsAccountWithSessionInCriticalPhaseByAccountKey,
+    selectIsAnySessionInCriticalPhase,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { selectIsDeviceOrUiLocked, selectTorState } from 'src/reducers/suite/suiteReducer';
+import { CoinjoinService } from 'src/services/coinjoin';
+import type { Action, AppState, Dispatch } from 'src/types/suite';
+import { CoinjoinConfig } from 'src/types/wallet/coinjoin';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 export const coinjoinMiddleware =

@@ -1,11 +1,11 @@
 import { Translation, TroubleshootingTips, WebUsbButton } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
-    TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_CABLE,
-    TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
+    TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_UDEV,
+    TROUBLESHOOTING_TIP_USB,
 } from 'src/components/suite/troubleshooting/tips';
 
 interface DeviceConnectProps {

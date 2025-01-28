@@ -1,4 +1,4 @@
-import { SkeletonCircle, SkeletonRectangle, Row, Column } from '@trezor/components';
+import { Column, Row, SkeletonCircle, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useLoadingSkeleton } from 'src/hooks/suite';

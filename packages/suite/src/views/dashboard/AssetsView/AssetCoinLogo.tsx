@@ -3,13 +3,13 @@ import {
     AssetFiatBalanceWithPercentage,
     calculateAssetsPercentage,
 } from '@suite-common/assets';
-import { Row, SkeletonCircle, Tooltip } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { localizePercentage } from '@suite-common/wallet-utils';
+import { Row, SkeletonCircle, Tooltip } from '@trezor/components';
 import { AssetShareIndicator } from '@trezor/product-components';
 
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 type AssetCoinLogoProps = {
     symbol: NetworkSymbol;

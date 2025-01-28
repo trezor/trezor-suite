@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 
-import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import styled from 'styled-components';
 
-import { Card, motionEasing, Column } from '@trezor/components';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
+import { Card, Column, motionEasing } from '@trezor/components';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
 import { spacings } from '@trezor/theme';
-import { getNetworkFeatures } from '@suite-common/wallet-config';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 

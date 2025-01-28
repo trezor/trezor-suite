@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Paragraph, Image, variables } from '@trezor/components';
+import { Image, Paragraph, variables } from '@trezor/components';
 import { borders } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';

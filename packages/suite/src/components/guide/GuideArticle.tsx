@@ -2,10 +2,10 @@ import styled from 'styled-components';
 
 import { spacingsPx } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
-import { GuideHeader, GuideContent, GuideViewWrapper, GuideMarkdown } from 'src/components/guide';
+import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from 'src/components/guide';
 import { Translation } from 'src/components/suite';
 import { useGuideLoadArticle } from 'src/hooks/guide';
+import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const ArticleWrapper = styled.div`

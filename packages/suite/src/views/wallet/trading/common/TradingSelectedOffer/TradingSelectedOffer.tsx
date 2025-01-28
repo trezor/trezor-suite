@@ -3,7 +3,13 @@ import styled from 'styled-components';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import {
+    TradingOfferBuyProps,
+    TradingOfferExchangeProps,
+    TradingOfferSellProps,
+} from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getPaymentMethod,
@@ -12,17 +18,11 @@ import {
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { TradingOfferSell } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSell';
+import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 import { TradingOfferBuy } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferBuy/TradingOfferBuy';
 import { TradingOfferExchange } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchange';
+import { TradingOfferSell } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferSell/TradingOfferSell';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
-import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
-import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
-import {
-    TradingOfferBuyProps,
-    TradingOfferExchangeProps,
-    TradingOfferSellProps,
-} from 'src/types/trading/tradingForm';
 
 const Wrapper = styled.div`
     ${TradingWrapper}

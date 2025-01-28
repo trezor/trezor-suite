@@ -2,18 +2,18 @@ import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
+import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { Button, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
-import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 
-import { Translation } from 'src/components/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
+import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
 
-import { Locktime } from './Locktime/Locktime';
-import { CoinControl } from './CoinControl/CoinControl';
 import { OnOffSwitcher } from '../OnOffSwitcher';
+import { CoinControl } from './CoinControl/CoinControl';
+import { Locktime } from './Locktime/Locktime';
 import { canLocktimeTxBeBroadcast } from './Locktime/canLocktimeTxBeBroadcast';
 
 const Wrapper = styled.div`

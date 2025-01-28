@@ -2,23 +2,23 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { getFwUpdateVersion } from '@suite-common/suite-utils';
-import { Note, variables } from '@trezor/components';
-import { AcquiredDevice } from '@suite-common/suite-types';
-import { getFirmwareVersion, isBitcoinOnlyDevice } from '@trezor/device-utils';
-import { FirmwareType } from '@trezor/connect';
-import { selectDevices } from '@suite-common/wallet-core';
-import { spacingsPx } from '@trezor/theme';
 import { useFirmwareInstallation } from '@suite-common/firmware';
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { AcquiredDevice } from '@suite-common/suite-types';
+import { getFwUpdateVersion } from '@suite-common/suite-utils';
+import { selectDevices } from '@suite-common/wallet-core';
+import { Note, variables } from '@trezor/components';
+import { FirmwareType } from '@trezor/connect';
+import { getFirmwareVersion, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { spacingsPx } from '@trezor/theme';
 
+import { FirmwareInstallButton, FirmwareOffer } from 'src/components/firmware';
 import {
-    OnboardingStepBox,
     OnboardingButtonSkip,
+    OnboardingStepBox,
     SkipStepConfirmation,
 } from 'src/components/onboarding';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
-import { FirmwareInstallButton, FirmwareOffer } from 'src/components/firmware';
 
 import { PrerequisitesGuide, Translation } from '../suite';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';

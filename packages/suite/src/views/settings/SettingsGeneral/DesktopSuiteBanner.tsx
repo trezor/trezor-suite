@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
+import styled from 'styled-components';
 
 import {
+    Box,
     Button,
     H2,
     Icon,
@@ -11,15 +12,14 @@ import {
     Image,
     Paragraph,
     motionEasing,
-    Box,
 } from '@trezor/components';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { SUITE_URL } from '@trezor/urls';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { SUITE_URL } from '@trezor/urls';
 
-import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 import { useExternalLink } from '../../../hooks/suite';
 

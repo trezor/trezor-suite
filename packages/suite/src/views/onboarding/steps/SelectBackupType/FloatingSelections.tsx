@@ -3,13 +3,13 @@ import { CSSProperties, forwardRef, useRef } from 'react';
 import styled from 'styled-components';
 
 import {
-    useElevation,
-    Divider,
+    Banner,
     CollapsibleBox,
     Column,
-    Banner,
-    variables,
+    Divider,
     Text,
+    useElevation,
+    variables,
 } from '@trezor/components';
 import {
     Elevation,
@@ -25,8 +25,8 @@ import { Translation, TrezorLink } from 'src/components/suite';
 
 import { LegacyOptions } from './LegacyOptions';
 import { isShamirBackupType } from './SelectBackupType';
-import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 import { ShamirOptions } from './ShamirOptions';
+import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 
 const OptionGroupHeading = styled.div`
     display: flex;

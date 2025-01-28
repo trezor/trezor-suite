@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useState, ChangeEvent } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
+import { isAddressValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { Button, Input } from '@trezor/components';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { Input, Button } from '@trezor/components';
-import { tryGetAccountIdentity, isAddressValid } from '@suite-common/wallet-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { addToken } from 'src/actions/wallet/tokenActions';
 import { Modal } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { Account } from 'src/types/wallet';
 
 interface AddTokenModalProps {
     onCancel: () => void;

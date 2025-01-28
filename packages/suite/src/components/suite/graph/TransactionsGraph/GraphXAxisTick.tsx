@@ -1,7 +1,7 @@
 import { FormattedDate } from 'react-intl';
 
-import { useTheme } from 'styled-components';
 import { differenceInMonths } from 'date-fns';
+import { useTheme } from 'styled-components';
 
 import { GraphRange } from 'src/types/wallet/graph';
 

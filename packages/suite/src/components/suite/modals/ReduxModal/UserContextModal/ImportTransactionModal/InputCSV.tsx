@@ -2,7 +2,7 @@ import { useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { Textarea, Button } from '@trezor/components';
+import { Button, Textarea } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 

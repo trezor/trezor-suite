@@ -1,28 +1,28 @@
-import { spacings } from '@trezor/theme';
-import {
-    Card,
-    Row,
-    variables,
-    Flex,
-    Text,
-    InfoItem,
-    Button,
-    useMediaQuery,
-} from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
 import {
     getNetwork,
     getNetworkDisplaySymbol,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
+import {
+    Button,
+    Card,
+    Flex,
+    InfoItem,
+    Row,
+    Text,
+    useMediaQuery,
+    variables,
+} from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { CoinLogo } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Account } from 'src/types/wallet';
-import { Translation, PriceTicker, TrendTicker } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
 import { DashboardSection } from 'src/components/dashboard';
+import { PriceTicker, Translation, TrendTicker } from 'src/components/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { Account } from 'src/types/wallet';
 
 type TradeBoxProps = {
     account: Account;

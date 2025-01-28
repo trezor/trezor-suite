@@ -1,17 +1,17 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
+import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 
-import { extraDependencies } from 'src/support/extraDependencies';
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
+import { extraDependencies } from 'src/support/extraDependencies';
 
+import * as fixtures from '../__fixtures__/coinjoinAccountActions';
 import * as coinjoinAccountActions from '../coinjoinAccountActions';
 import * as coinjoinClientActions from '../coinjoinClientActions';
-import * as fixtures from '../__fixtures__/coinjoinAccountActions';
 
 jest.mock('src/services/coinjoin/coinjoinService', () => {
     const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');

@@ -1,16 +1,16 @@
 import styled from 'styled-components';
 
-import { variables, Image } from '@trezor/components';
+import { Image, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import { Modal, Translation } from 'src/components/suite';
-import { useSelector, useDevice } from 'src/hooks/suite';
-import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
+import { useDevice, useSelector } from 'src/hooks/suite';
+import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 
-import { CoinjoinPhaseProgress } from './CoinjoinPhaseProgress';
 import { AutoStopButton } from './AutoStopButton';
+import { CoinjoinPhaseProgress } from './CoinjoinPhaseProgress';
 
 const StyledModal = styled(Modal)`
     width: 520px;

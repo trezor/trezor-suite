@@ -1,32 +1,32 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
 import { DexApprovalType } from 'invity-api';
+import styled from 'styled-components';
 
+import type { TradingExchangeType } from '@suite-common/invity';
 import {
-    Button,
     Banner,
-    Spinner,
-    Radio,
-    Paragraph,
+    Button,
+    Card,
     Column,
     Divider,
     InfoItem,
+    Paragraph,
+    Radio,
+    Spinner,
     Text,
-    Card,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import type { TradingExchangeType } from '@suite-common/invity';
 
-import { Translation, AccountLabeling } from 'src/components/suite';
-import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
-import { useTradingExchangeWatchSendApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchSendApproval';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { saveSelectedQuote } from 'src/actions/wallet/tradingExchangeActions';
-import { cryptoIdToSymbol, parseCryptoId } from 'src/utils/wallet/trading/tradingUtils';
+import { AccountLabeling, Translation } from 'src/components/suite';
 import { IOAddress } from 'src/components/suite/copy/IOAddress';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingExchangeWatchSendApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchSendApproval';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
+import { cryptoIdToSymbol, parseCryptoId } from 'src/utils/wallet/trading/tradingUtils';
 
 // add APPROVED means no approval request is necessary
 type ExtendedDexApprovalType = DexApprovalType | 'APPROVED';

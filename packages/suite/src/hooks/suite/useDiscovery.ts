@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
-import { selectDiscoveryByDeviceState, selectSelectedDevice } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { selectDiscoveryByDeviceState, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { DiscoveryStatusType } from 'src/types/wallet';
 

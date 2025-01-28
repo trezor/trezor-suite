@@ -1,20 +1,23 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
 import {
     FloatingFocusManager,
+    FloatingPortal,
     autoUpdate,
-    useFloating,
+    offset,
+    size,
     useClick,
     useDismiss,
-    useRole,
+    useFloating,
     useInteractions,
-    FloatingPortal,
-    size,
-    offset,
+    useRole,
 } from '@floating-ui/react';
+import styled from 'styled-components';
 
-import { ElevationUp, Text, Banner, useElevation } from '@trezor/components';
+import { TranslationKey } from '@suite-common/intl-types';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Banner, ElevationUp, Text, useElevation } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/connect';
 import {
     Elevation,
     borders,
@@ -22,16 +25,13 @@ import {
     mapElevationToBorder,
     spacingsPx,
 } from '@trezor/theme';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { TranslationKey } from '@suite-common/intl-types';
-import { DeviceModelInternal } from '@trezor/connect';
 
-import { useLayoutSize, useSelector } from '../../../../hooks/suite';
-import { Translation } from '../../../../components/suite';
-import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
-import { OptionText, SelectedOption } from './OptionWithContent';
 import { FloatingSelections } from './FloatingSelections';
+import { OptionText, SelectedOption } from './OptionWithContent';
 import { typesToLabelMap } from './typesToLabelMap';
+import { Translation } from '../../../../components/suite';
+import { useLayoutSize, useSelector } from '../../../../hooks/suite';
+import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 
 const SELECT_ELEMENT_HEIGHT = 84;
 const SELECT_ELEMENT_HEIGHT_MOBILE = 62;

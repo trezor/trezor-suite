@@ -2,34 +2,34 @@ import { useState } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import { Button, TextButton, Row, Column, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import type { TradingTradeType, TradingType } from '@suite-common/invity';
+import { Button, Column, Paragraph, Row, TextButton } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite';
+import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/trading/form';
+import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
-    getSelectedCrypto,
     getSelectQuoteTyped,
+    getSelectedCrypto,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { Translation } from 'src/components/suite';
-import { TradingFormOfferItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferItem';
-import { TradingFormOfferCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferCryptoAmount';
 import {
+    getBestRatedQuote,
+    parseCryptoId,
     tradingGetAmountLabels,
     tradingGetRoundedFiatAmount,
     tradingGetSectionActionLabel,
-    getBestRatedQuote,
-    parseCryptoId,
 } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingFormOfferCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferCryptoAmount';
 import { TradingFormOfferFiatAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferFiatAmount';
-import { TradingFormContextValues } from 'src/types/trading/tradingForm';
-import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/trading/form';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { TradingFormOfferItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferItem';
 import { TradingFormOffersSwitcher } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcher';
-import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 
 const getSelectedQuote = (
     context: TradingFormContextValues<TradingType>,

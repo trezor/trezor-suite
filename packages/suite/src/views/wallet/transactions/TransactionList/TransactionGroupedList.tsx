@@ -1,16 +1,16 @@
+import { getNetwork } from '@suite-common/wallet-config';
 import {
-    getTransactionWithLowestNonce,
     GroupedTransactionsByDate,
+    getTransactionWithLowestNonce,
     groupJointTransactions,
 } from '@suite-common/wallet-utils';
-import { getNetwork } from '@suite-common/wallet-config';
 
 import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/CoinjoinBatchItem';
-import { useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
+import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { Account, WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';
 

@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
-import styled from 'styled-components';
 import { TooltipProps } from 'recharts';
+import styled from 'styled-components';
 
-import { variables, Row } from '@trezor/components';
+import { Row, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation, FormattedDate } from 'src/components/suite';
+import { FormattedDate, Translation } from 'src/components/suite';
 import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
 // Used for triggering custom Tooltip alignment

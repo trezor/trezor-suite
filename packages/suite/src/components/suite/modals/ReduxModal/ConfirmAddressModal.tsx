@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     getDisplaySymbol,
     getNetwork,
     getNetworkDisplaySymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite';

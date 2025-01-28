@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
-import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
+import styled, { css } from 'styled-components';
 
 import { motionAnimation } from '@trezor/components';
 import { borders, spacingsPx, typography } from '@trezor/theme';

@@ -2,6 +2,8 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/wallet-core';
 import {
     Button,
     Card,
@@ -13,22 +15,20 @@ import {
     useElevation,
     variables,
 } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { Elevation, borders, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
-import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/wallet-core';
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 
-import { FormattedCryptoAmount, Translation } from '../../components/suite';
-import { PriceChartLine } from './images/PriceChartLine';
-import { DeviceConnectionText } from '../suite/SwitchDevice/DeviceItem/DeviceConnectionText';
-import { DeviceDetail } from '../suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { MacWindow } from './MacWindow';
-import { useDispatch, useSelector } from '../../hooks/suite';
-import { setFlag } from '../../actions/suite/suiteActions';
 import { IllustrativeExample } from './images/IllustrativeExample';
 import { IllustrativeExampleArrow } from './images/IllustrativeExampleArrow';
+import { PriceChartLine } from './images/PriceChartLine';
+import { setFlag } from '../../actions/suite/suiteActions';
+import { FormattedCryptoAmount, Translation } from '../../components/suite';
+import { useDispatch, useSelector } from '../../hooks/suite';
+import { DeviceConnectionText } from '../suite/SwitchDevice/DeviceItem/DeviceConnectionText';
+import { DeviceDetail } from '../suite/SwitchDevice/DeviceItem/DeviceDetail';
 
 const Callout = styled.div`
     display: flex;

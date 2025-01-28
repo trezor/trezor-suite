@@ -2,15 +2,15 @@ import { isDesktop } from '@trezor/env-utils';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import {
-    TROUBLESHOOTING_TIP_SUITE_DESKTOP,
-    TROUBLESHOOTING_TIP_RESTART_COMPUTER,
-    TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,
     TROUBLESHOOTING_ENABLE_IN_DEBUG,
+    TROUBLESHOOTING_TIP_RESTART_COMPUTER,
+    TROUBLESHOOTING_TIP_SUITE_DESKTOP,
+    TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,
     TipItem,
 } from 'src/components/suite/troubleshooting/tips';
 
-import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
 import { useSelector } from '../../../hooks/suite';
+import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
 import { selectIsDebugModeActive } from '../../../reducers/suite/suiteReducer';
 
 const tipItems: TipItem[] = [

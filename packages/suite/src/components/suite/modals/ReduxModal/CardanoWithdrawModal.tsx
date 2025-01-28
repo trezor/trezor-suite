@@ -1,10 +1,10 @@
-import { Icon, Link, NewModal, Row, Column, Text, Card, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { getNetworkName } from '@suite-common/wallet-utils';
+import { Card, Column, Icon, Link, NewModal, Paragraph, Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
-import { Translation } from 'src/components/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 export const CardanoWithdrawModal = ({ onCancel }: { onCancel: () => void }) => {

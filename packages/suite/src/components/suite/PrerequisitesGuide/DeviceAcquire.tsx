@@ -4,11 +4,11 @@ import { acquireDevice } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
 import {
-    TROUBLESHOOTING_TIP_RECONNECT,
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
+    TROUBLESHOOTING_TIP_RECONNECT,
 } from 'src/components/suite/troubleshooting/tips';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const DeviceAcquire = () => {
     const { isLocked } = useDevice();

@@ -2,35 +2,35 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
-import { Deferred } from '@trezor/utils';
+import { networks } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
-    selectSelectedDevice,
+    SendState,
+    StakeState,
     selectPrecomposedSendForm,
+    selectSelectedDevice,
     selectSendFormReviewButtonRequestsCount,
     selectStakePrecomposedForm,
-    StakeState,
-    SendState,
 } from '@suite-common/wallet-core';
 import { FormState, StakeFormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,
-    isRbfTransaction,
     getTxStakeNameByDataHex,
+    isRbfTransaction,
 } from '@suite-common/wallet-utils';
+import { variables } from '@trezor/components';
 import { ConfirmOnDevice } from '@trezor/product-components';
-import { networks } from '@suite-common/wallet-config';
+import { Deferred } from '@trezor/utils';
 
+import { Modal, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
-import { Modal, Translation } from 'src/components/suite';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
+import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
 
-import { TransactionReviewSummary } from './TransactionReviewSummary';
-import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
 import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
+import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
+import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
 
 const StyledModal = styled(Modal)`

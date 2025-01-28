@@ -3,16 +3,16 @@ import { CryptoId } from 'invity-api';
 import { Column, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import { TradingSelectedOfferInfoProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingInfoExchangeType } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoExchangeType';
 import { TradingInfoHeader } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoHeader';
 import { TradingInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoItem';
-import { TradingInfoProvider } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoProvider';
 import { TradingInfoPaymentMethod } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoPaymentMethod';
-import { TradingInfoExchangeType } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoExchangeType';
-import { TradingSelectedOfferInfoProps } from 'src/types/trading/tradingForm';
-import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
-import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import { TradingInfoProvider } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoProvider';
 import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactionId';
+import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
 
 export const TradingSelectedOfferInfo = ({
     account,

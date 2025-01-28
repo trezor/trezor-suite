@@ -1,12 +1,12 @@
 import { testMocks } from '@suite-common/test-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    discoveryActions,
-    deviceActions,
     authorizeDeviceThunk,
     createDeviceInstanceThunk,
+    deviceActions,
+    discoveryActions,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
-import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { TorStatus } from 'src/types/suite';

@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 
-import { TokensNavigation } from '../tokens/TokensNavigation';
 import { NftsTablesSection } from './NftsTablesSection';
+import { TokensNavigation } from '../tokens/TokensNavigation';
 
 export const Nfts = () => {
     const [searchQuery, setSearchQuery] = useState('');

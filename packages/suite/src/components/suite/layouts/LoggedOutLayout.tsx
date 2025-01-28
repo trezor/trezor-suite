@@ -2,15 +2,15 @@ import { ReactNode, useRef, useState } from 'react';
 
 import { ElevationContext, ElevationUp, NewModal } from '@trezor/components';
 
-import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
-import { ModalContextProvider } from 'src/support/suite/ModalContext';
-import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useLayoutSize } from 'src/hooks/suite';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
+import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
+import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
+import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import { Metadata } from '../Metadata';
-import { ModalSwitcher } from '../modals/ModalSwitcher/ModalSwitcher';
+import { TrafficLightOffset } from '../TrafficLightOffset';
 import {
     AppWrapper,
     Body,
@@ -19,7 +19,7 @@ import {
     PageWrapper,
     Wrapper,
 } from './SuiteLayout/SuiteLayout';
-import { TrafficLightOffset } from '../TrafficLightOffset';
+import { ModalSwitcher } from '../modals/ModalSwitcher/ModalSwitcher';
 
 interface LoggedOutLayout {
     children: ReactNode;

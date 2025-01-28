@@ -2,15 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 
 import { fromWei } from 'web3-utils';
 
-import { Banner, Column, H3, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Banner, Column, H3, Paragraph } from '@trezor/components';
 import { InternalTransfer } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
-import { getChangedInternalTx, getInstantStakeType } from 'src/utils/suite/ethereumStaking';
+import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { getChangedInternalTx, getInstantStakeType } from 'src/utils/suite/ethereumStaking';
 
 const getSubheadingTranslationId = (stakeType: StakeType) => {
     if (stakeType === 'stake') return 'TR_STAKING_INSTANTLY_STAKED';

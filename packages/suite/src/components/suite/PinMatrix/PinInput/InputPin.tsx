@@ -2,7 +2,7 @@ import { MouseEvent } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { variables, Icon, Input } from '@trezor/components';
+import { Icon, Input, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

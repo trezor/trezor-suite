@@ -1,23 +1,27 @@
 import { FieldErrors } from 'react-hook-form';
 
-import { getInputState } from '@suite-common/wallet-utils';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { useFormatters } from '@suite-common/formatters';
-import { FormState } from '@suite-common/wallet-types';
-import { useDidUpdate } from '@trezor/react-utils';
-import { NumberInput } from '@trezor/product-components';
+import { formInputsMaxLength } from '@suite-common/validators';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { FormState } from '@suite-common/wallet-types';
+import { getInputState } from '@suite-common/wallet-utils';
+import { NumberInput } from '@trezor/product-components';
+import { useDidUpdate } from '@trezor/react-utils';
 
-import { useSelector, useTranslation } from 'src/hooks/suite';
 import {
-    validateDecimals,
-    validateInteger,
-    validateCryptoLimits,
-    validateMin,
-    validateReserveOrBalance,
-} from 'src/utils/suite/validation';
+    FORM_OUTPUT_AMOUNT,
+    FORM_OUTPUT_MAX,
+    FORM_SEND_CRYPTO_CURRENCY_SELECT,
+} from 'src/constants/wallet/trading/form';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import {
+    TradingAccountOptionsGroupOptionProps,
+    TradingCryptoListProps,
+} from 'src/types/trading/trading';
 import {
     TradingAllFormProps,
     TradingBuyFormProps,
@@ -25,25 +29,21 @@ import {
     TradingSellExchangeFormProps,
 } from 'src/types/trading/tradingForm';
 import {
-    tradingGetAccountLabel,
-    getTradingNetworkDecimals,
-} from 'src/utils/wallet/trading/tradingUtils';
-import {
-    FORM_OUTPUT_AMOUNT,
-    FORM_OUTPUT_MAX,
-    FORM_SEND_CRYPTO_CURRENCY_SELECT,
-} from 'src/constants/wallet/trading/form';
-import {
-    TradingAccountOptionsGroupOptionProps,
-    TradingCryptoListProps,
-} from 'src/types/trading/trading';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+    validateCryptoLimits,
+    validateDecimals,
+    validateInteger,
+    validateMin,
+    validateReserveOrBalance,
+} from 'src/utils/suite/validation';
 import {
     isTradingBuyContext,
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import {
+    getTradingNetworkDecimals,
+    tradingGetAccountLabel,
+} from 'src/utils/wallet/trading/tradingUtils';
 
 export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllFormProps>({
     cryptoInputName,

@@ -1,19 +1,19 @@
 import {
+    CryptoId,
     ExchangeListResponse,
     ExchangeProviderInfo,
-    ExchangeTradeQuoteRequest,
     ExchangeTrade,
-    CryptoId,
+    ExchangeTradeQuoteRequest,
 } from 'invity-api';
 
 import { invityAPI } from '@suite-common/invity';
 
-import { Account } from 'src/types/wallet';
-import { Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { verifyAddress as verifyExchangeAddress } from 'src/actions/wallet/trading/tradingCommonActions';
+import { Dispatch } from 'src/types/suite';
+import { Account } from 'src/types/wallet';
 
-import { TRADING_EXCHANGE, TRADING_COMMON } from './constants';
+import { TRADING_COMMON, TRADING_EXCHANGE } from './constants';
 
 export interface ExchangeInfo {
     exchangeList?: ExchangeListResponse;

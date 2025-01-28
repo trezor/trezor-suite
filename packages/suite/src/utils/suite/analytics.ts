@@ -1,24 +1,24 @@
-import { AppUpdateEvent, SuiteAnalyticsEventSuiteReady } from '@trezor/suite-analytics';
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
-    getScreenWidth,
-    getScreenHeight,
+    selectRememberedHiddenWalletsCount,
+    selectRememberedStandardWalletsCount,
+} from '@suite-common/wallet-core';
+import { getCustomBackends } from '@suite-common/wallet-utils';
+import {
     getBrowserName,
     getBrowserVersion,
     getOsName,
     getOsVersion,
-    getWindowWidth,
-    getWindowHeight,
     getPlatformLanguages,
+    getScreenHeight,
+    getScreenWidth,
+    getWindowHeight,
+    getWindowWidth,
     isDesktop,
 } from '@trezor/env-utils';
-import { getCustomBackends } from '@suite-common/wallet-utils';
-import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
+import { AppUpdateEvent, SuiteAnalyticsEventSuiteReady } from '@trezor/suite-analytics';
+import { UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
 import { GetSystemInformationResponse } from '@trezor/suite-desktop-api/src/messages';
-import {
-    selectRememberedStandardWalletsCount,
-    selectRememberedHiddenWalletsCount,
-} from '@suite-common/wallet-core';
 
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { AppState } from 'src/types/suite';

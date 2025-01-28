@@ -2,28 +2,28 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { getNetwork } from '@suite-common/wallet-config';
+import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
+import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import {
+    Banner,
     Button,
     Card,
+    GradientOverlay,
+    H4,
+    InfoItem,
+    Paragraph,
+    Row,
     Text,
     Tooltip,
-    GradientOverlay,
-    Row,
-    InfoItem,
-    H4,
-    Banner,
-    Paragraph,
 } from '@trezor/components';
-import { getFirstFreshAddress } from '@suite-common/wallet-utils';
-import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { spacings } from '@trezor/theme';
-import { getNetwork } from '@suite-common/wallet-config';
 
-import { Translation, ReadMoreLink } from 'src/components/suite';
-import { AppState } from 'src/types/suite';
 import { showAddress } from 'src/actions/wallet/receiveActions';
+import { ReadMoreLink, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { selectIsFirmwareAuthenticityCheckEnabledAndHardFailed } from 'src/reducers/suite/suiteReducer';
+import { AppState } from 'src/types/suite';
 
 const FreshAddressWrapper = styled.div`
     position: relative;

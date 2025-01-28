@@ -1,13 +1,13 @@
 import React, { MouseEventHandler } from 'react';
 
+import { TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
-import { TrezorDevice } from '@suite-common/suite-types';
 
 import { Translation } from 'src/components/suite';
-import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
-import { useSelector } from 'src/hooks/suite';
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
+import { useSelector } from 'src/hooks/suite';
+import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
 

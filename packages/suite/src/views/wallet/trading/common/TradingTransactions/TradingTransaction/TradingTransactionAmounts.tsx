@@ -1,4 +1,4 @@
-import { Icon, iconSizes, Row } from '@trezor/components';
+import { Icon, Row, iconSizes } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';

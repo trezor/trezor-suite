@@ -1,4 +1,4 @@
-import { ReactNode, Fragment } from 'react';
+import { Fragment, ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 

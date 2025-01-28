@@ -6,11 +6,11 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Divider, Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 
-import * as STEP from 'src/constants/onboarding/steps';
-import { OnboardingButtonBack, OptionsWrapper, OnboardingStepBox } from 'src/components/onboarding';
-import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector, useOnboarding, useDevice } from 'src/hooks/suite';
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
+import { OnboardingButtonBack, OnboardingStepBox, OptionsWrapper } from 'src/components/onboarding';
+import { Translation } from 'src/components/suite';
+import * as STEP from 'src/constants/onboarding/steps';
+import { useDevice, useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 import {

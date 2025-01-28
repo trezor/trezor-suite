@@ -1,15 +1,15 @@
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
-import { configureStore } from 'src/support/tests/configureStore';
 import { ROUTER } from 'src/actions/suite/constants';
+import { appChanged } from 'src/actions/suite/suiteActions';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import modalReducer from 'src/reducers/suite/modalReducer';
-import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
-import type { Action } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
-import { appChanged } from 'src/actions/suite/suiteActions';
+import { configureStore } from 'src/support/tests/configureStore';
+import type { Action } from 'src/types/suite';
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;

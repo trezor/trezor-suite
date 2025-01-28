@@ -1,16 +1,16 @@
-import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import styled from 'styled-components';
 
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { IconButton, IconName, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 
-import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 import { Translation, WebUsbButton } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 import { WebUsbIconButton } from 'src/components/suite/WebUsbButton';
+import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
+import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
+import { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 const Container = styled.div<{ $isFullHeaderVisible: boolean }>`
     display: flex;

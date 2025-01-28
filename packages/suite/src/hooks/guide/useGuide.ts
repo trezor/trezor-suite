@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
-import { useDispatch, useSelector, useLayoutSize } from 'src/hooks/suite';
 import { close, open } from 'src/actions/suite/guideActions';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
 import { usePreferredModal } from '../suite/usePreferredModal';
 

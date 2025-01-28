@@ -1,18 +1,18 @@
 import styled from 'styled-components';
 
+import { useFirmwareInstallation } from '@suite-common/firmware';
 import {
     getChangelogUrl,
     getFwUpdateVersion,
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
 import { Icon, Markdown, Tooltip, variables } from '@trezor/components';
-import { getFirmwareVersion } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/connect';
+import { getFirmwareVersion } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
-import { useFirmwareInstallation } from '@suite-common/firmware';
 
 import { Translation, TrezorLink } from 'src/components/suite';
-import { useTranslation, useSelector } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 const FwVersionWrapper = styled.div`

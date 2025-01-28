@@ -1,10 +1,10 @@
 import * as deviceUtils from '@suite-common/suite-utils';
-import { selectSelectedDevice, selectDevices } from '@suite-common/wallet-core';
+import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { ForegroundAppProps } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
+import { ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';

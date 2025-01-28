@@ -1,30 +1,30 @@
 import React from 'react';
 
+import { TranslationKey } from '@suite-common/intl-types';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import {
+    Badge,
+    CollapsibleBox,
+    Column,
+    Divider,
     Icon,
     IconName,
-    Paragraph,
-    NewModal,
-    Badge,
     List,
-    Column,
+    NewModal,
+    Paragraph,
     Row,
     Text,
-    Divider,
-    CollapsibleBox,
 } from '@trezor/components';
-import { TranslationKey } from '@suite-common/intl-types';
 import { spacings } from '@trezor/theme';
-import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
-import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { getUnstakingPeriodInDays } from 'src/utils/suite/ethereumStaking';
+import { Translation } from 'src/components/suite';
 import { StakingInfo } from 'src/components/suite/StakingProcess/StakingInfo';
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { getUnstakingPeriodInDays } from 'src/utils/suite/ethereumStaking';
 
 interface StakingDetails {
     id: number;

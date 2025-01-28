@@ -4,15 +4,15 @@ import { H3, Icon, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacingsPx } from '@trezor/theme';
 
-import { TradingExchangeHeaderSummary } from 'src/views/wallet/trading/common/TradingHeader/TradingExchangeHeaderSummary';
-import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
-import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingCryptoAmountProps } from 'src/types/trading/trading';
 import {
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { TradingCryptoAmountProps } from 'src/types/trading/trading';
+import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
+import { TradingExchangeHeaderSummary } from 'src/views/wallet/trading/common/TradingHeader/TradingExchangeHeaderSummary';
 
 const IconWrapper = styled.div`
     margin-left: ${spacingsPx.sm};

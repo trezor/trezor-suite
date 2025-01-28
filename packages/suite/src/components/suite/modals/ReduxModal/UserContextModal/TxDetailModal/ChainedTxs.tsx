@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
-import { ChainedTransactions } from '@suite-common/wallet-types';
 import { AccountType, Network } from '@suite-common/wallet-config';
+import { ChainedTransactions } from '@suite-common/wallet-types';
+import { variables } from '@trezor/components';
 
-import { TrezorLink, Translation } from 'src/components/suite';
+import { Translation, TrezorLink } from 'src/components/suite';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
 
 import { AffectedTransactionItem } from './ChangeFee/AffectedTransactionItem';

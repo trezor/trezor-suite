@@ -3,10 +3,10 @@ import styled, { useTheme } from 'styled-components';
 import { Button, Icon, Text, Tooltip } from '@trezor/components';
 import { borders, palette, spacingsPx, zIndices } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 type ViewOnlyTooltipProps = {
     children: React.ReactNode;

@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import type {
@@ -9,55 +9,55 @@ import type {
 } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { amountToSmallestUnit, formatAmount, toFiatCurrency } from '@suite-common/wallet-utils';
+import { type TradingExchangeType, invityAPI } from '@suite-common/invity';
 import { isChanged } from '@suite-common/suite-utils';
-import { Account } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networks } from '@suite-common/wallet-config';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { invityAPI, type TradingExchangeType } from '@suite-common/invity';
+import { Account } from '@suite-common/wallet-types';
+import { amountToSmallestUnit, formatAmount, toFiatCurrency } from '@suite-common/wallet-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
 import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/tradingExchangeActions';
-import {
-    addIdsToQuotes,
-    tradingGetSuccessQuotes,
-    getTradingNetworkDecimals,
-    getUnusedAddressFromAccount,
-} from 'src/utils/wallet/trading/tradingUtils';
-import {
-    tradingGetExchangeReceiveCryptoId,
-    createQuoteLink,
-    getAmountLimits,
-    getSuccessQuotesOrdered,
-} from 'src/utils/wallet/trading/exchangeUtils';
+import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
+import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/trading/form';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
+import { useTradingAccount } from 'src/hooks/wallet/trading/form/common/useTradingAccount';
+import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
+import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
+import { useTradingExchangeQuotesFilter } from 'src/hooks/wallet/trading/form/common/useTradingExchangeQuotesFilter';
+import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
+import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
+import { useTradingModalCrypto } from 'src/hooks/wallet/trading/form/common/useTradingModalCrypto';
+import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
+import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradeExchange } from 'src/types/wallet/tradingCommonTypes';
+import { useTradingRecomposeAndSign } from 'src/hooks/wallet/useTradingRecomposeAndSign';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import {
     TradingExchangeFormContextProps,
     TradingExchangeFormProps,
     TradingExchangeStepType,
 } from 'src/types/trading/tradingForm';
-import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/trading/form';
-import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
-import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
-import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
-import { useTradingRecomposeAndSign } from 'src/hooks/wallet/useTradingRecomposeAndSign';
-import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
-import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
-import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
-import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
-import { useTradingModalCrypto } from 'src/hooks/wallet/trading/form/common/useTradingModalCrypto';
-import { useTradingAccount } from 'src/hooks/wallet/trading/form/common/useTradingAccount';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
-import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
+import { TradeExchange } from 'src/types/wallet/tradingCommonTypes';
 import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
-import { useTradingExchangeQuotesFilter } from 'src/hooks/wallet/trading/form/common/useTradingExchangeQuotesFilter';
-import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
-import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
+import {
+    createQuoteLink,
+    getAmountLimits,
+    getSuccessQuotesOrdered,
+    tradingGetExchangeReceiveCryptoId,
+} from 'src/utils/wallet/trading/exchangeUtils';
+import {
+    addIdsToQuotes,
+    getTradingNetworkDecimals,
+    getUnusedAddressFromAccount,
+    tradingGetSuccessQuotes,
+} from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
 

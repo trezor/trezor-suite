@@ -1,19 +1,19 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { FeeLevel } from '@trezor/connect';
+import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { ComposeActionContext } from '@suite-common/wallet-core';
 import {
-    calculateTotal,
-    calculateMax,
-    getExternalComposeOutput,
-    formatAmount,
-} from '@suite-common/wallet-utils';
-import {
-    StakeFormState,
+    ExternalOutput,
     PrecomposedLevels,
     PrecomposedTransaction,
-    ExternalOutput,
+    StakeFormState,
 } from '@suite-common/wallet-types';
-import { ComposeActionContext } from '@suite-common/wallet-core';
-import { getNetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    calculateMax,
+    calculateTotal,
+    formatAmount,
+    getExternalComposeOutput,
+} from '@suite-common/wallet-utils';
+import { FeeLevel } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 type StakingParams = {
     feeInBaseUnits: string;

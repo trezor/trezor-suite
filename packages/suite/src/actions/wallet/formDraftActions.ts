@@ -1,7 +1,7 @@
 import { FieldValues } from 'react-hook-form';
 
-import { getFormDraftKey } from '@suite-common/wallet-utils';
 import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
 
 import { Dispatch, GetState } from 'src/types/suite';
 

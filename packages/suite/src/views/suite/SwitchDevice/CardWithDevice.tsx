@@ -3,11 +3,11 @@ import { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Card, IconName, motionAnimation, useElevation } from '@trezor/components';
 import * as deviceUtils from '@suite-common/suite-utils';
+import { Card, IconName, motionAnimation, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
-import type { TrezorDevice, ForegroundAppProps } from 'src/types/suite';
+import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { DeviceHeader } from './DeviceItem/DeviceHeader';
 

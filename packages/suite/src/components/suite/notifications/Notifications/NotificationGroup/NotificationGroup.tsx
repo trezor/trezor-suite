@@ -1,8 +1,8 @@
-import { Paragraph, H4, Column } from '@trezor/components';
+import { Column, H4, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { AppState } from 'src/types/suite';
 import { Translation } from 'src/components/suite';
+import { AppState } from 'src/types/suite';
 import { getSeenAndUnseenNotifications } from 'src/utils/suite/notification';
 
 import { NotificationList } from './NotificationList/NotificationList';

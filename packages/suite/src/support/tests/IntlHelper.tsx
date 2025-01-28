@@ -1,7 +1,7 @@
 import { ReactChild } from 'react';
-import renderer from 'react-test-renderer';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
+import renderer from 'react-test-renderer';
 
 import { configureStore } from 'src/support/tests/configureStore';
 

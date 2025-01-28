@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Tooltip, TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL } from '@trezor/components';
+import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { mediaQueries } from '@trezor/styles';
 
 import { goto } from 'src/actions/suite/routerActions';

@@ -1,10 +1,10 @@
-import { Tooltip, Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
-import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
+import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 
 export const UnstakeButton = () => {
     const { device, isLocked } = useDevice();

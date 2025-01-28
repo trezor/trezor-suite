@@ -1,22 +1,22 @@
 import { MiddlewareAPI } from 'redux';
 
-import {
-    selectDevices,
-    selectSelectedDevice,
-    accountsActions,
-    deviceActions,
-    authorizeDeviceThunk,
-} from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { DEVICE } from '@trezor/connect';
 import {
     AUTH_DEVICE,
     notificationsActions,
     removeAccountEventsThunk,
 } from '@suite-common/toast-notifications';
+import {
+    accountsActions,
+    authorizeDeviceThunk,
+    deviceActions,
+    selectDevices,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
+import { DEVICE } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { AppState, Action, Dispatch } from 'src/types/suite';
+import { Action, AppState, Dispatch } from 'src/types/suite';
 
 /*
  * Middleware for event notifications.

@@ -2,8 +2,6 @@ import { useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { variables, Icon, Row } from '@trezor/components';
-import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import {
     formatNetworkAmount,
     getTargetAmount,
@@ -11,8 +9,10 @@ import {
     getTxOperation,
     isSupportedEthStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { Icon, Row, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
     FormattedCryptoAmount,
@@ -22,9 +22,9 @@ import {
 } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
+import { InstantStakeBadge } from './InstantStakeBadge';
 import { TransactionHeader } from './TransactionHeader';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
-import { InstantStakeBadge } from './InstantStakeBadge';
 
 const Wrapper = styled.span`
     display: flex;

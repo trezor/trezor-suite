@@ -1,36 +1,36 @@
-import { FC, useEffect, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren, useEffect } from 'react';
 
 import {
-    selectSelectedDevice,
     selectIsFirmwareAuthenticityCheckDismissed,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Onboarding } from 'src/views/onboarding';
-import { ErrorPage } from 'src/views/suite/ErrorPage';
-import { useGuideKeyboard } from 'src/hooks/guide';
 import { init } from 'src/actions/suite/initAction';
-import type { AppState } from 'src/types/suite';
-import {
-    selectPrerequisite,
-    selectIsLoggedOut,
-    selectSuiteFlags,
-    selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
-    selectIsTransportInitialized,
-} from 'src/reducers/suite/suiteReducer';
-import { SuiteStart } from 'src/views/start/SuiteStart';
-import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
+import { useGuideKeyboard } from 'src/hooks/guide';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
+import {
+    selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
+    selectIsLoggedOut,
+    selectIsTransportInitialized,
+    selectPrerequisite,
+    selectSuiteFlags,
+} from 'src/reducers/suite/suiteReducer';
+import type { AppState } from 'src/types/suite';
+import { Onboarding } from 'src/views/onboarding';
+import { SuiteStart } from 'src/views/start/SuiteStart';
+import { ErrorPage } from 'src/views/suite/ErrorPage';
+import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
 
-import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
-import { InitialLoading } from './InitialLoading';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
-import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
-import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
-import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
-import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
+import { InitialLoading } from './InitialLoading';
 import { RouterAppWithParams } from '../../../constants/suite/routes';
+import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
+import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { useReportDeviceCompromised } from '../SecurityCheck/useReportDeviceCompromised';
+import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
+import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
+import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const ROUTES_TO_SKIP_FIRMWARE_CHECK: RouterAppWithParams['app'][] = [
     'settings',

@@ -1,14 +1,14 @@
-import { Button, H3, Column, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { passwordMismatchResetThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
+import { Button, Column, H3, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { useDevice, useDispatch } from 'src/hooks/suite';
-import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import {
     addWalletThunk,
     redirectAfterWalletSelectedThunk,
 } from 'src/actions/wallet/addWalletThunk';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 import { Translation } from '../../../Translation';

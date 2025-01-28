@@ -1,43 +1,43 @@
 import { memo, useMemo, useState } from 'react';
 
-import styled from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
+import styled from 'styled-components';
 
+import { AccountType, Network } from '@suite-common/wallet-config';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
-import { Button, Card, Link, Tooltip, Row, Column } from '@trezor/components';
 import {
     formatNetworkAmount,
+    isStakeTypeTx,
     isTestnet,
     isTxFeePaid,
-    isStakeTypeTx,
 } from '@suite-common/wallet-utils';
-import { AccountType, Network } from '@suite-common/wallet-config';
-import { HELP_CENTER_REPLACE_BY_FEE } from '@trezor/urls';
+import { Button, Card, Column, Link, Row, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { HELP_CENTER_REPLACE_BY_FEE } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
+import { OutlineHighlight } from 'src/components/OutlineHighlight';
+import { Translation } from 'src/components/suite';
+import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
+import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
+import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
-import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
-import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
-import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getInstantStakeType } from 'src/utils/suite/ethereumStaking';
-import { OutlineHighlight } from 'src/components/OutlineHighlight';
 
-import { TransactionTypeIcon } from './TransactionTypeIcon';
-import { TransactionHeading } from './TransactionHeading';
-import {
-    TransactionTarget,
-    TokenTransfer,
-    InternalTransfer,
-} from './TransactionTarget/TransactionTarget';
-import { FeeRow, WithdrawalRow, DepositRow, CoinjoinRow } from './TransactionRow';
 import { Content, TimestampWrapper, TxTypeIconWrapper } from './CommonComponents';
+import { TransactionHeading } from './TransactionHeading';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
+import { CoinjoinRow, DepositRow, FeeRow, WithdrawalRow } from './TransactionRow';
+import {
+    InternalTransfer,
+    TokenTransfer,
+    TransactionTarget,
+} from './TransactionTarget/TransactionTarget';
+import { TransactionTypeIcon } from './TransactionTypeIcon';
 
 const Wrapper = styled.div<{
     $isPhishingTransaction: boolean;

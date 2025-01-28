@@ -3,15 +3,15 @@ import { useEffect, useState } from 'react';
 import { LoadingContent, Switch } from '@trezor/components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
-import { TorStatus } from 'src/types/suite';
-import { openDeferredModal } from 'src/actions/suite/modalActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectCoinjoinAccounts } from 'src/reducers/wallet/coinjoinReducer';
+import { TorStatus } from 'src/types/suite';
+import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
 export const Tor = () => {
     const [hasTorError, setHasTorError] = useState(false);

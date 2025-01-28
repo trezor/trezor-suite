@@ -1,6 +1,6 @@
 import { Input, Spinner, Tooltip } from '@trezor/components';
 
-import { Translation, StatusLight } from 'src/components/suite';
+import { StatusLight, Translation } from 'src/components/suite';
 
 const ActiveStatus = (
     <Tooltip content={<Translation id="TR_ACTIVE" />}>

@@ -1,10 +1,10 @@
 import { UI } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import * as routerActions from 'src/actions/suite/routerActions';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import * as suiteActions from 'src/actions/suite/suiteActions';
-import { useActions, useSelector, useDispatch } from 'src/hooks/suite';
+import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useOnboarding = () => {
     const dispatch = useDispatch();

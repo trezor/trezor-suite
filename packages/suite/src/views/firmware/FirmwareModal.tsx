@@ -3,12 +3,12 @@ import { useIntl } from 'react-intl';
 
 import styled from 'styled-components';
 
+import { useFirmwareInstallation } from '@suite-common/firmware';
 import { TranslationKey } from '@suite-common/intl-types';
 import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
-import { useFirmwareInstallation } from '@suite-common/firmware';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import {
@@ -17,8 +17,8 @@ import {
     FirmwareInstallation,
     FirmwareUpdateHashCheckError,
 } from 'src/components/firmware';
-import { Translation, Modal, PrerequisitesGuide } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
+import { Modal, PrerequisitesGuide, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
 

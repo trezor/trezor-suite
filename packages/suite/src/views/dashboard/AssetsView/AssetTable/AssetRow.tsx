@@ -2,17 +2,18 @@ import { memo } from 'react';
 
 import { useTheme } from 'styled-components';
 
-import { Network } from '@suite-common/wallet-config';
-import { Icon, Table, Row, IconButton, Column, Text } from '@trezor/components';
-import { isTestnet } from '@suite-common/wallet-utils';
-import { spacings } from '@trezor/theme';
-import { TokenInfo } from '@trezor/blockchain-link-types';
-import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { selectDebugFilteredAssetAccountsThatStaked } from '@suite-common/wallet-core';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import { Network } from '@suite-common/wallet-config';
+import { selectDebugFilteredAssetAccountsThatStaked } from '@suite-common/wallet-core';
+import { Account, RatesByKey } from '@suite-common/wallet-types';
+import { isTestnet } from '@suite-common/wallet-utils';
+import { TokenInfo } from '@trezor/blockchain-link-types';
+import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
+import { goto } from 'src/actions/suite/routerActions';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
@@ -21,17 +22,16 @@ import {
     Translation,
     TrendTicker,
 } from 'src/components/suite';
-import { goto } from 'src/actions/suite/routerActions';
-import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
+import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
 import { TradingBuyButton } from '../TradingBuyButton';
-import { AssetTokenRow } from './AssetTokenRow';
 import { AssetStakingRow } from './AssetStakingRow';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
+import { AssetTokenRow } from './AssetTokenRow';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 export interface AssetTableRowProps {

@@ -1,13 +1,13 @@
-import { useEffect, useRef, memo, Children, ReactElement } from 'react';
-import { FixedSizeList as List } from 'react-window';
+import { Children, ReactElement, memo, useEffect, useRef } from 'react';
 import { MenuListProps, SelectInstance, createFilter } from 'react-select';
 import { useKeyPress } from 'react-use';
+import { FixedSizeList as List } from 'react-window';
 
 import styled from 'styled-components';
 
 import { Select, variables } from '@trezor/components';
-import { bip39 } from '@trezor/crypto-utils';
 import TrezorConnect, { UI } from '@trezor/connect';
+import { bip39 } from '@trezor/crypto-utils';
 import { createTimeoutPromise } from '@trezor/utils';
 
 import { useTranslation } from 'src/hooks/suite/useTranslation';

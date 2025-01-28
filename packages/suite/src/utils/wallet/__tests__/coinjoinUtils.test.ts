@@ -1,5 +1,5 @@
-import * as coinjoinUtils from '../coinjoinUtils';
 import * as fixtures from '../__fixtures__/coinjoinUtils';
+import * as coinjoinUtils from '../coinjoinUtils';
 
 describe('breakdownCoinjoinBalance', () => {
     it('works without session', () => {

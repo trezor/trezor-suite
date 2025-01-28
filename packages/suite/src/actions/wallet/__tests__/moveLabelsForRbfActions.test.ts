@@ -2,23 +2,23 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 
+import metadataReducer, {
+    selectLabelingDataForAccount,
+} from '../../../reducers/suite/metadataReducer';
+import suiteReducer from '../../../reducers/suite/suiteReducer';
 import { accountsReducer, transactionsReducer } from '../../../reducers/wallet';
-import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
 import {
     accountReceivingCoins,
     accountSpendingCoins,
     moveLabelsForRbfAccountsFixture,
 } from '../__fixtures__/moveLabelsForRbf/moveLabelsForRbfAccounts.fixture';
+import { moveLabelsForRbfMetadataStateFixture } from '../__fixtures__/moveLabelsForRbf/moveLabelsForRbfMetadataState.fixture';
 import {
     moveLabelsForRbfTransactionsFixture,
     originalTransactionSpendAccount,
     transactionSendingCoinsReplacement,
 } from '../__fixtures__/moveLabelsForRbf/moveLabelsForRbfTransactions.fixture';
-import metadataReducer, {
-    selectLabelingDataForAccount,
-} from '../../../reducers/suite/metadataReducer';
-import { moveLabelsForRbfMetadataStateFixture } from '../__fixtures__/moveLabelsForRbf/moveLabelsForRbfMetadataState.fixture';
-import suiteReducer from '../../../reducers/suite/suiteReducer';
+import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
 
 const rootReducer = combineReducers({
     wallet: combineReducers({

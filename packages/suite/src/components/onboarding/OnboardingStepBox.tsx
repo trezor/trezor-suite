@@ -3,11 +3,11 @@ import { useIntl } from 'react-intl';
 
 import styled from 'styled-components';
 
-import TrezorConnect from '@trezor/connect';
-import { Backdrop } from '@trezor/components';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { Backdrop } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
+import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import messages from 'src/support/messages';

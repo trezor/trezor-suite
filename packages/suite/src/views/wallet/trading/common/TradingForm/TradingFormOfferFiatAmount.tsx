@@ -1,5 +1,5 @@
-import { spacings } from '@trezor/theme';
 import { Row, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';

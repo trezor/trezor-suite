@@ -1,16 +1,16 @@
 import styled from 'styled-components';
 
+import { useFirmwareInstallation } from '@suite-common/firmware';
 import { Button } from '@trezor/components';
 import { UI } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
-import { useFirmwareInstallation } from '@suite-common/firmware';
 
-import { Translation, WebUsbButton } from 'src/components/suite';
 import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { TrezorDevice } from 'src/types/suite';
-import { selectIsActionAbortable, selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
+import { Translation, WebUsbButton } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectHasTransportOfType, selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { TrezorDevice } from 'src/types/suite';
 
 const SelectDevice = styled.div`
     display: flex;

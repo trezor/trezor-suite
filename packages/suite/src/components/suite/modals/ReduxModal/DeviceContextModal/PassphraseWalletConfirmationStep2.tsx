@@ -1,6 +1,6 @@
 import { Dispatch } from 'react';
 
-import { Button, Text, Banner, Card, Icon, H3, Column, List } from '@trezor/components';
+import { Banner, Button, Card, Column, H3, Icon, List, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';

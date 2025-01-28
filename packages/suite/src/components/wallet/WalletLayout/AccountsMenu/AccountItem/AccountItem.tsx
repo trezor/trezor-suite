@@ -1,18 +1,18 @@
-import { forwardRef, Ref } from 'react';
+import { Ref, forwardRef } from 'react';
 
 import styled from 'styled-components';
 
-import { Column, Tooltip, TOOLTIP_DELAY_NORMAL } from '@trezor/components';
+import { Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
-import { Account, AccountItemType } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
+import { useDispatch } from 'src/hooks/suite';
+import { Account, AccountItemType } from 'src/types/wallet';
 
-import { ExpandedSidebarOnly } from '../../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { CollapsedSidebarOnly } from '../../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
-import { AccountRow } from './AccountRow';
 import { AccountItemLeft } from './AccountItemLeft';
+import { AccountRow } from './AccountRow';
+import { CollapsedSidebarOnly } from '../../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
+import { ExpandedSidebarOnly } from '../../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 
 export const CollapsedItem = styled(NavigationItemBase)<{ $isSelected: boolean }>`
     background: ${({ theme, $isSelected }) => $isSelected && theme.backgroundSurfaceElevation1};

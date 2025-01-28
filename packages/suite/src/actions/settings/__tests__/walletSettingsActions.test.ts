@@ -1,8 +1,8 @@
 import { testMocks } from '@suite-common/test-utils';
 
-import { configureStore } from 'src/support/tests/configureStore';
-import settingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
+import settingsReducer from 'src/reducers/wallet/settingsReducer';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import fixtures from '../__fixtures__/walletSettings';
 

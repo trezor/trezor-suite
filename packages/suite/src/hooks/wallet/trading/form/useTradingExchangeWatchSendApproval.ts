@@ -3,10 +3,10 @@ import { useTimeoutFn, useUnmount } from 'react-use';
 
 import { ExchangeTrade } from 'invity-api';
 
-import { invityAPI, type TradingExchangeType } from '@suite-common/invity';
+import { type TradingExchangeType, invityAPI } from '@suite-common/invity';
 
-import { useDispatch } from 'src/hooks/suite';
 import { saveSelectedQuote } from 'src/actions/wallet/tradingExchangeActions';
+import { useDispatch } from 'src/hooks/suite';
 
 interface TradingUseExchangeWatchSendApprovalProps {
     selectedQuote?: ExchangeTrade;

@@ -1,5 +1,5 @@
-import { spacings } from '@trezor/theme';
 import { Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { FirmwareCloseButton } from './FirmwareCloseButton';
 

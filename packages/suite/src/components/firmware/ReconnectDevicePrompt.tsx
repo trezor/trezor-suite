@@ -1,17 +1,17 @@
 import * as semver from 'semver';
 
-import { getFirmwareVersion } from '@trezor/device-utils';
-import { H2, DeviceAnimation, NewModal, Paragraph, BulletList, Column } from '@trezor/components';
-import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
-import { ConfirmOnDevice } from '@trezor/product-components';
-import { TranslationKey } from '@suite-common/intl-types';
-import { spacings } from '@trezor/theme';
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { useFirmwareInstallation } from '@suite-common/firmware';
+import { TranslationKey } from '@suite-common/intl-types';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import { BulletList, Column, DeviceAnimation, H2, NewModal, Paragraph } from '@trezor/components';
+import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
+import { getFirmwareVersion } from '@trezor/device-utils';
+import { ConfirmOnDevice } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
 
-import { useDevice, useSelector } from 'src/hooks/suite';
-import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { Translation, WebUsbButton } from 'src/components/suite';
+import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
 
 const RebootDeviceGraphics = ({

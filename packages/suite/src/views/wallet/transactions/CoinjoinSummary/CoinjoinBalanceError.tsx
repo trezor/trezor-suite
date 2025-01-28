@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
 import { TranslationKey } from '@suite-common/intl-types';
+import { variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 

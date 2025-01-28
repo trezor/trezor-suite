@@ -3,8 +3,8 @@ import React from 'react';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
-    isUnstakeTx,
     getUnstakeAmountByEthereumDataHex,
+    isUnstakeTx,
 } from '@suite-common/wallet-utils';
 
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';

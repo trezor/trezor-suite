@@ -1,17 +1,17 @@
 import styled, { css } from 'styled-components';
 
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { Row, variables } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 
 // instant without computing the layout

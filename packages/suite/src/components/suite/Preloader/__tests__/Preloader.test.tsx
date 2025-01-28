@@ -2,10 +2,10 @@ import * as envUtils from '@trezor/env-utils';
 import { DeepPartial } from '@trezor/type-utils';
 
 import { configureStore } from 'src/support/tests/configureStore';
-import { renderWithProviders, findByTestId } from 'src/support/tests/hooksHelper';
+import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { Preloader } from '../Preloader';
 import { AppState } from '../../../../reducers/store';
+import { Preloader } from '../Preloader';
 
 // render only Translation.id in data-test attribute
 jest.mock('src/components/suite/Translation', () => ({

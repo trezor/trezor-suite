@@ -1,8 +1,8 @@
-import { configureStore } from 'src/support/tests/configureStore';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import routerReducer from 'src/reducers/suite/routerReducer';
-import modalReducer from 'src/reducers/suite/modalReducer';
 import { AppState } from 'src/reducers/store';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import * as fixtures from '../__fixtures__/routerActions';
 import * as routerActions from '../routerActions';

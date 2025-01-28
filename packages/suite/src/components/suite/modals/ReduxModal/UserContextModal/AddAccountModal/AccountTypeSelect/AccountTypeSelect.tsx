@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import { Column, Paragraph, Select } from '@trezor/components';
-import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
 import { NetworkAccount, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
+import { Column, Paragraph, Select } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';

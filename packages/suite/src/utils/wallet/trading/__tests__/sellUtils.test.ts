@@ -1,13 +1,13 @@
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
+import { Account } from 'src/types/wallet';
+import * as fixtures from 'src/utils/wallet/trading/__fixtures__/sellUtils';
 import {
-    getStatusMessage,
+    createQuoteLink,
     formatIban,
     getAmountLimits,
-    createQuoteLink,
+    getStatusMessage,
 } from 'src/utils/wallet/trading/sellUtils';
-import { Account } from 'src/types/wallet';
-import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
-import * as fixtures from 'src/utils/wallet/trading/__fixtures__/sellUtils';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 
 const {
     QUOTE_REQUEST_FIAT,

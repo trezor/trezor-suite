@@ -1,17 +1,17 @@
 import { State as DeviceState } from '@suite-common/wallet-core';
 import type { DeepPartial } from '@trezor/type-utils';
 
-import { configureStore } from 'src/support/tests/configureStore';
-import { tradingReducer, ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
-import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
-import { transactionsReducer, accountsReducer } from 'src/reducers/wallet';
-import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { DEFAULT_STORE } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
 import {
     VERIFY_BUY_ADDRESS_FIXTURES,
     VERIFY_EXCHANGE_ADDRESS_FIXTURES,
 } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/verifyAddress';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
+import { SuiteState } from 'src/reducers/suite/suiteReducer';
+import { accountsReducer, transactionsReducer } from 'src/reducers/wallet';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import { ComposedTransactionInfo, tradingReducer } from 'src/reducers/wallet/tradingReducer';
+import { configureStore } from 'src/support/tests/configureStore';
 
 interface InitialState {
     device?: DeepPartial<DeviceState>;

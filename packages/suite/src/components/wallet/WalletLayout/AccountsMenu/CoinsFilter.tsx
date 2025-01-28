@@ -1,14 +1,14 @@
+import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
-import { motion, AnimatePresence, MotionProps } from 'framer-motion';
 
+import { getNetwork } from '@suite-common/wallet-config';
 import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { borders, spacingsPx } from '@trezor/theme';
-import { getNetwork } from '@suite-common/wallet-config';
 
-import { useSelector, useAccountSearch } from 'src/hooks/suite';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { useAccountSearch, useSelector } from 'src/hooks/suite';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCoinLogo = styled(CoinLogo)<{ $isSelected?: boolean }>`

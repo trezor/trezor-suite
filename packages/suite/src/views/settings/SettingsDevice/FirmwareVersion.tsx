@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 
 import { getChangelogUrl, getFwUpdateVersion } from '@suite-common/suite-utils';
-import { getFirmwareVersion } from '@trezor/device-utils';
 import { Button, Tooltip } from '@trezor/components';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import {
     ActionButton,
@@ -12,10 +13,9 @@ import {
     Translation,
     TrezorLink,
 } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
-import { AcquiredDevice } from 'src/types/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDevice, useDispatch } from 'src/hooks/suite';
+import { AcquiredDevice } from 'src/types/suite';
 
 const Version = styled.div`
     span {

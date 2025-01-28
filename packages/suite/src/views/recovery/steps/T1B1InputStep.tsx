@@ -1,7 +1,8 @@
 import { Paragraph } from '@trezor/components';
-import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { UI } from '@trezor/connect';
+import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
+import { MODAL } from 'src/actions/suite/constants';
 import {
     PinMatrix,
     Translation,
@@ -10,7 +11,6 @@ import {
     WordInputAdvanced,
 } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
-import { MODAL } from 'src/actions/suite/constants';
 
 const RequestConfirmationStep = () => (
     <Paragraph>

@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
-import { spacingsPx, typography } from '@trezor/theme';
 import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
-import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingCryptoAmountProps } from 'src/types/trading/trading';
+import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
 
 const PriceWrap = styled.div``;
 

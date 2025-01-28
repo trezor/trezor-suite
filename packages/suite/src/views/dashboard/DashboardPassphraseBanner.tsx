@@ -4,8 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Banner, Text, Button, IconButton, Row, Column } from '@trezor/components';
 import { WalletType } from '@suite-common/wallet-types';
+import { Banner, Button, Column, IconButton, Row, Text } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';

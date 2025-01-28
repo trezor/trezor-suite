@@ -1,17 +1,17 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
 import { BuyTrade, BuyTradeStatus } from 'invity-api';
+import styled from 'styled-components';
 
-import { Button, variables, Image } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { invityAPI } from '@suite-common/invity';
+import { Button, Image, variables } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
+import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { Translation } from 'src/components/suite/Translation';
+import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
-import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;

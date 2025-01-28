@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { ExcludedUtxos, FormState, UtxoSorting } from '@suite-common/wallet-types';
-import type { AccountUtxo, PROTO } from '@trezor/connect';
-import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
+import { ExcludedUtxos, FormState, UtxoSorting } from '@suite-common/wallet-types';
+import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
+import type { AccountUtxo, PROTO } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 import { sortUtxos } from 'src/utils/wallet/utxoSortingUtils';

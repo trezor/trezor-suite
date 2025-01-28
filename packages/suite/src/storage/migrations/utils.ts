@@ -1,4 +1,4 @@
-import type { StoreNames, StoreValue, IDBPTransaction } from 'idb';
+import type { IDBPTransaction, StoreNames, StoreValue } from 'idb';
 
 import type { SuiteDBSchema } from '../definitions';
 

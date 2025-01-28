@@ -1,28 +1,28 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
+import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { promiseAllSequence } from '@trezor/utils';
-import { prepareMessageSystemReducer } from '@suite-common/message-system';
 
-import { db } from 'src/storage';
+import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
+import modalReducer from 'src/reducers/suite/modalReducer';
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
-import modalReducer from 'src/reducers/suite/modalReducer';
-import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
 import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
+import { db } from 'src/storage';
+import { extraDependencies } from 'src/support/extraDependencies';
 
+import * as fixtures from '../__fixtures__/coinjoinClientActions';
 import {
-    initCoinjoinService,
-    onCoinjoinRoundChanged,
-    onCoinjoinClientRequest,
-    setDebugSettings,
     clientEmitException,
+    initCoinjoinService,
+    onCoinjoinClientRequest,
+    onCoinjoinRoundChanged,
     pauseCoinjoinSession,
+    setDebugSettings,
     stopCoinjoinSession,
 } from '../coinjoinClientActions';
-import * as fixtures from '../__fixtures__/coinjoinClientActions';
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 jest.mock('src/services/coinjoin/coinjoinService', () => {

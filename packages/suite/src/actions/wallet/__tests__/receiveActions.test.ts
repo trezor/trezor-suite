@@ -1,15 +1,15 @@
 import { connectInitThunk } from '@suite-common/connect-init';
 import { testMocks } from '@suite-common/test-utils';
+import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 
-import { configureStore } from 'src/support/tests/configureStore';
-import receiveReducer from 'src/reducers/wallet/receiveReducer';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import modalReducer from 'src/reducers/suite/modalReducer';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import receiveReducer from 'src/reducers/wallet/receiveReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import fixtures from '../__fixtures__/receiveActions';
 

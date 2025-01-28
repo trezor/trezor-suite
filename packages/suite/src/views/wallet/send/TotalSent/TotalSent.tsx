@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
+import { formatAmount, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, InfoItem } from '@trezor/components';
-import { formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
 import { spacings } from '@trezor/theme';
 
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 
 import { ReviewButton } from './ReviewButton';
 

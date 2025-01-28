@@ -1,15 +1,26 @@
+import { LogEntry } from '@suite-common/logger';
+import { getPhysicalDeviceUniqueIds } from '@suite-common/suite-utils';
 import {
+    accountsActions,
+    authorizeDeviceThunk,
     deviceActions,
     discoveryActions,
-    accountsActions,
     selectDevices,
-    authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
+import { Discovery } from '@suite-common/wallet-types';
+import { getCustomBackends } from '@suite-common/wallet-utils';
+import { DEVICE } from '@trezor/connect';
 import {
-    getEnvironment,
+    getBootloaderHash,
+    getBootloaderVersion,
+    getFirmwareRevision,
+    getFirmwareVersion,
+} from '@trezor/device-utils';
+import {
     getBrowserName,
     getBrowserVersion,
     getCommitHash,
+    getEnvironment,
     getOsName,
     getOsVersion,
     getPlatformLanguages,
@@ -20,24 +31,13 @@ import {
     getWindowWidth,
     isCodesignBuild,
 } from '@trezor/env-utils';
-import { LogEntry } from '@suite-common/logger';
-import { DEVICE } from '@trezor/connect';
-import { getCustomBackends } from '@suite-common/wallet-utils';
-import {
-    getBootloaderHash,
-    getBootloaderVersion,
-    getFirmwareRevision,
-    getFirmwareVersion,
-} from '@trezor/device-utils';
 import { DeepPartial } from '@trezor/type-utils';
-import { Discovery } from '@suite-common/wallet-types';
-import { getPhysicalDeviceUniqueIds } from '@suite-common/suite-utils';
 
-import { getIsTorEnabled } from 'src/utils/suite/tor';
-import { AppState, TrezorDevice } from 'src/types/suite';
 import { METADATA_LABELING } from 'src/actions/suite/constants';
-import { Account } from 'src/types/wallet';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
+import { AppState, TrezorDevice } from 'src/types/suite';
+import { Account } from 'src/types/wallet';
+import { getIsTorEnabled } from 'src/utils/suite/tor';
 
 export const REDACTED_REPLACEMENT = '[redacted]';
 

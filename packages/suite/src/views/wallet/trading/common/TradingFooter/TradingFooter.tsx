@@ -1,11 +1,11 @@
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Icon, Link, Image, Row } from '@trezor/components';
+import { Icon, Image, Link, Row } from '@trezor/components';
 import { useOnClickOutside } from '@trezor/react-utils';
-import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 import { borders, spacingsPx, typography, zIndices } from '@trezor/theme';
+import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
 import { TradingFooterLogoWrapper } from 'src/views/wallet/trading';

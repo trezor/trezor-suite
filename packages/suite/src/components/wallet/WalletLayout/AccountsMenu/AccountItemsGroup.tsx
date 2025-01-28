@@ -1,17 +1,17 @@
 import styled from 'styled-components';
 
-import { borders, spacingsPx, spacings } from '@trezor/theme';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import {
-    getAccountTotalStakingBalance,
     getAccountTokensFiatBalance,
+    getAccountTotalStakingBalance,
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
+import { borders, spacings, spacingsPx } from '@trezor/theme';
 
-import { Account } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { Account } from 'src/types/wallet';
 
 import { AccountItem } from './AccountItem/AccountItem';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';

@@ -9,28 +9,28 @@ import {
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { FeeLevel } from '@trezor/connect';
+import { TranslationKey } from '@suite-common/intl-types';
 import {
-    Banner,
-    SelectBar,
-    Tooltip,
-    Column,
-    Note,
-    motionEasing,
-    InfoItem,
-    Row,
-    Text,
-} from '@trezor/components';
-import {
-    FormState,
     FeeInfo,
+    FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { spacings } from '@trezor/theme';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { TranslationKey } from '@suite-common/intl-types';
+import {
+    Banner,
+    Column,
+    InfoItem,
+    Note,
+    Row,
+    SelectBar,
+    Text,
+    Tooltip,
+    motionEasing,
+} from '@trezor/components';
+import { FeeLevel } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';

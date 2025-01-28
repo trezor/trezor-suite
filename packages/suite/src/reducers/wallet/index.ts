@@ -1,27 +1,27 @@
 import { combineReducers } from 'redux';
 
 import {
+    feesReducer,
     prepareAccountsReducer,
-    prepareFiatRatesReducer,
-    prepareTransactionsReducer,
     prepareBlockchainReducer,
     prepareDiscoveryReducer,
-    prepareStakeReducer,
+    prepareFiatRatesReducer,
     prepareSendFormReducer,
-    feesReducer,
+    prepareStakeReducer,
+    prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import settingsReducer from './settingsReducer';
-import graphReducer from './graphReducer';
-import selectedAccountReducer from './selectedAccountReducer';
-import receiveReducer from './receiveReducer';
-import { tradingReducer } from './tradingReducer';
 import accountSearchReducer from './accountSearchReducer';
-import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';
 import { coinjoinReducer } from './coinjoinReducer';
+import formDraftReducer from './formDraftReducer';
+import graphReducer from './graphReducer';
+import receiveReducer from './receiveReducer';
+import selectedAccountReducer from './selectedAccountReducer';
+import settingsReducer from './settingsReducer';
+import { tradingReducer } from './tradingReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);

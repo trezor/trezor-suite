@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { useForm, useController } from 'react-hook-form';
+import { useController, useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { yup } from '@suite-common/validators';
-import { isAddressValid } from '@suite-common/wallet-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { isAddressValid } from '@suite-common/wallet-utils';
 
 import type { Account } from 'src/types/wallet';
 

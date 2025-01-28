@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
-import { H2, Paragraph } from '@trezor/components';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { H2, Paragraph } from '@trezor/components';
 
-import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
+import { Account } from 'src/types/wallet';
 
 const Content = styled.div`
     margin: 0 0 24px;

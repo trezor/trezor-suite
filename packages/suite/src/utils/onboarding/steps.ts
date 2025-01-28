@@ -2,9 +2,9 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { AnyStepId, AnyPath, Step } from 'src/types/onboarding';
-import { GetState } from 'src/types/suite';
 import { ID_AUTHENTICATE_DEVICE_STEP } from 'src/constants/onboarding/steps';
+import { AnyPath, AnyStepId, Step } from 'src/types/onboarding';
+import { GetState } from 'src/types/suite';
 
 export const isStepUsed = (step: Step, getState: GetState): boolean => {
     const state = getState();

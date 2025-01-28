@@ -1,11 +1,11 @@
 import {
+    findRouteByName,
     getApp,
     getAppWithParams,
-    findRouteByName,
-    getRoute,
     getPrefixedURL,
-    stripPrefixedPathname,
+    getRoute,
     getTopLevelRoute,
+    stripPrefixedPathname,
 } from '../router';
 
 const OLD_ENV = { ...process.env };

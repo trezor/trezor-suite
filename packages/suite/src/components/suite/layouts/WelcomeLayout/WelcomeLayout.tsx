@@ -1,32 +1,32 @@
 import { ReactNode } from 'react';
 
-import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
+import styled from 'styled-components';
 
+import { selectBannerMessage } from '@suite-common/message-system';
 import {
     Button,
-    variables,
-    useElevation,
-    ElevationUp,
-    ElevationDown,
-    ElevationContext,
     Column,
+    ElevationContext,
+    ElevationDown,
+    ElevationUp,
     Row,
+    useElevation,
+    variables,
 } from '@trezor/components';
-import { useOnce } from '@trezor/react-utils';
-import { selectBannerMessage } from '@suite-common/message-system';
 import { isWeb } from '@trezor/env-utils';
-import { TREZOR_URL, SUITE_URL } from '@trezor/urls';
-import { Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 import { TrezorLogo } from '@trezor/product-components';
+import { useOnce } from '@trezor/react-utils';
+import { Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
+import { SUITE_URL, TREZOR_URL } from '@trezor/urls';
 
+import { GuideButton, GuideRouter } from 'src/components/guide';
 import { Translation } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
-import { useSelector } from 'src/hooks/suite';
 import { MessageSystemBanner } from 'src/components/suite/banners';
-import { GuideButton, GuideRouter } from 'src/components/guide';
-import { useGuide } from 'src/hooks/guide';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
+import { useGuide } from 'src/hooks/guide';
+import { useSelector } from 'src/hooks/suite';
 
 import { NavSettings } from './NavSettings';
 import { TrafficLightOffset } from '../../TrafficLightOffset';

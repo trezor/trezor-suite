@@ -3,12 +3,12 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, Card, Image, Text } from '@trezor/components';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { isDesktop } from '@trezor/env-utils';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
-import { Translation, Modal, Metadata } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { Metadata, Modal, Translation } from 'src/components/suite';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
 

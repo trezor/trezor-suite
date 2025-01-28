@@ -1,16 +1,16 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { useDebounce } from '@trezor/react-utils';
-import { findComposeErrors } from '@suite-common/wallet-utils';
-import {
-    StakeFormState,
-    PrecomposedTransaction,
-    PrecomposedLevels,
-} from '@suite-common/wallet-types';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { FeeLevel } from '@trezor/connect';
 import { ComposeActionContext, StakeContextValues } from '@suite-common/wallet-core';
+import {
+    PrecomposedLevels,
+    PrecomposedTransaction,
+    StakeFormState,
+} from '@suite-common/wallet-types';
+import { findComposeErrors } from '@suite-common/wallet-utils';
+import { FeeLevel } from '@trezor/connect';
+import { useDebounce } from '@trezor/react-utils';
 
 import { composeTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useTranslation } from 'src/hooks/suite';

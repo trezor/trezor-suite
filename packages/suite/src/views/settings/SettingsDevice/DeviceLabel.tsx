@@ -1,8 +1,8 @@
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { ChangeDeviceLabel } from 'src/components/suite/ChangeDeviceLabel';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 
 interface DeviceLabelProps {
     isDeviceLocked: boolean;

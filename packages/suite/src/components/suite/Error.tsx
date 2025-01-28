@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { H2, Paragraph, Button, variables } from '@trezor/components';
+import { Button, H2, Paragraph, variables } from '@trezor/components';
 
 import { db } from 'src/storage';
 import { reloadApp } from 'src/utils/suite/reload';

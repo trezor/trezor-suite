@@ -1,10 +1,10 @@
 import { DeviceModelInternal } from '@trezor/connect';
 
 import {
-    MAX_ROWS_PER_PAGE,
-    MAX_CHARACTERS_ON_ROW,
     CHARACTER_OFFSET_FOR_CONTINUES_ARROW,
     CHARACTER_OFFSET_FOR_NEXT_ARROW,
+    MAX_CHARACTERS_ON_ROW,
+    MAX_ROWS_PER_PAGE,
 } from '../../../constants/suite/device';
 
 export type ParseTextToLinesParams = {

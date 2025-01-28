@@ -7,10 +7,10 @@ import type { Route } from '@suite-common/suite-types';
 import { setDiscreetMode } from 'src/actions/settings/walletSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useGuide } from 'src/hooks/guide/useGuide';
-import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
+import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 
 import { MobileActionItem } from './MobileActionItem';
 import { useEnabledBackends } from '../utils';

@@ -1,10 +1,10 @@
-import { analytics, EventType } from '@trezor/suite-analytics';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
+import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
-import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch } from 'src/hooks/suite';
 
 interface ChangePinProps {
     isDeviceLocked: boolean;

@@ -1,49 +1,49 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import useDebounce from 'react-use/lib/useDebounce';
 import type { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
+import useDebounce from 'react-use/lib/useDebounce';
 
+import { type TradingBuyType, invityAPI } from '@suite-common/invity';
 import { isChanged } from '@suite-common/suite-utils';
-import { formatAmount } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { isDesktop } from '@trezor/env-utils';
 import { networks } from '@suite-common/wallet-config';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { invityAPI, type TradingBuyType } from '@suite-common/invity';
+import { formatAmount } from '@suite-common/wallet-utils';
+import { isDesktop } from '@trezor/env-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { createQuoteLink, createTxLink, getAmountLimits } from 'src/utils/wallet/trading/buyUtils';
-import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-import { UseTradingFormProps } from 'src/types/trading/trading';
-import {
-    addIdsToQuotes,
-    tradingGetSuccessQuotes,
-    cryptoIdToNetwork,
-    filterQuotesAccordingTags,
-    getTradingNetworkDecimals,
-} from 'src/utils/wallet/trading/tradingUtils';
-import { TradingBuyFormContextProps, TradingBuyFormProps } from 'src/types/trading/tradingForm';
-import * as tradingInfoActions from 'src/actions/wallet/tradingInfoActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
 import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
-import * as routerActions from 'src/actions/suite/routerActions';
-import useTradingPaymentMethod from 'src/hooks/wallet/trading/form/useTradingPaymentMethod';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
+import * as tradingInfoActions from 'src/actions/wallet/tradingInfoActions';
 import {
     FORM_CRYPTO_INPUT,
     FORM_DEFAULT_CRYPTO_CURRENCY,
     FORM_FIAT_INPUT,
     FORM_PAYMENT_METHOD_SELECT,
 } from 'src/constants/wallet/trading/form';
-import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useTradingModalCrypto } from 'src/hooks/wallet/trading/form/common/useTradingModalCrypto';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
-import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
-import type { AmountLimitProps } from 'src/utils/suite/validation';
 import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
+import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
+import useTradingPaymentMethod from 'src/hooks/wallet/trading/form/useTradingPaymentMethod';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
+import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
+import { UseTradingFormProps } from 'src/types/trading/trading';
+import { TradingBuyFormContextProps, TradingBuyFormProps } from 'src/types/trading/tradingForm';
+import type { AmountLimitProps } from 'src/utils/suite/validation';
+import { createQuoteLink, createTxLink, getAmountLimits } from 'src/utils/wallet/trading/buyUtils';
+import {
+    addIdsToQuotes,
+    cryptoIdToNetwork,
+    filterQuotesAccordingTags,
+    getTradingNetworkDecimals,
+    tradingGetSuccessQuotes,
+} from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
 

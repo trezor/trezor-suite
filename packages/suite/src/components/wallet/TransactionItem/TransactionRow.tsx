@@ -1,19 +1,19 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { SignOperator } from '@suite-common/suite-types';
+import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
+import { Timestamp } from '@suite-common/wallet-types';
 import {
-    formatCardanoWithdrawal,
     formatCardanoDeposit,
+    formatCardanoWithdrawal,
     formatNetworkAmount,
     getFiatRateKey,
 } from '@suite-common/wallet-utils';
-import { SignOperator } from '@suite-common/suite-types';
-import { Timestamp } from '@suite-common/wallet-types';
-import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { FiatValue, Translation, FormattedCryptoAmount } from 'src/components/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
+import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionTargetLayout } from './TransactionTargetLayout';
 

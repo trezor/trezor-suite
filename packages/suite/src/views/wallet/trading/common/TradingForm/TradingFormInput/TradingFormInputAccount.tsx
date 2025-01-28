@@ -6,6 +6,10 @@ import { FiatCurrencyCode } from 'invity-api';
 import { Row, Select, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite';
+import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
+import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
+import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     TradingAccountOptionsGroupOptionProps,
@@ -17,12 +21,8 @@ import {
     TradingFormInputAccountProps,
     TradingSellFormProps,
 } from 'src/types/trading/tradingForm';
-import { TradingFormInputAccountOption } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAccountOption';
-import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
-import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
-import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
-import { Translation } from 'src/components/suite';
+import { TradingFormInputAccountOption } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAccountOption';
 
 export const TradingFormInputAccount = <
     TFieldValues extends TradingSellFormProps | TradingExchangeFormProps,

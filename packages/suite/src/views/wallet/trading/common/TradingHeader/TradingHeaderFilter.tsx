@@ -1,10 +1,8 @@
 import styled from 'styled-components';
 
-import { spacingsPx } from '@trezor/theme';
 import { Row } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
-import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
-import { TradingBuyFormProps, TradingSellFormProps } from 'src/types/trading/tradingForm';
 import {
     FORM_CRYPTO_CURRENCY_SELECT,
     FORM_CRYPTO_INPUT,
@@ -13,14 +11,16 @@ import {
     FORM_OUTPUT_FIAT,
     FORM_SEND_CRYPTO_CURRENCY_SELECT,
 } from 'src/constants/wallet/trading/form';
-import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
-import { TradingOffersExchangeFiltersPanel } from 'src/views/wallet/trading/common/TradingHeader/TradingOffersExchangeFiltersPanel';
-import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingBuyFormProps, TradingSellFormProps } from 'src/types/trading/tradingForm';
 import {
     isTradingBuyContext,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
+import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
+import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
+import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
+import { TradingOffersExchangeFiltersPanel } from 'src/views/wallet/trading/common/TradingHeader/TradingOffersExchangeFiltersPanel';
 
 const InputWrapper = styled.div`
     width: 254px;

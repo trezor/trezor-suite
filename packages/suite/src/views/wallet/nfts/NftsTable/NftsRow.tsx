@@ -1,17 +1,19 @@
 import { useState } from 'react';
 
-import { Network } from '@suite-common/wallet-config';
 import {
     DefinitionType,
-    tokenDefinitionsActions,
-    TokenManagementAction,
     EnhancedTokenInfo,
+    TokenManagementAction,
+    tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { Badge, Button, Dropdown, Icon, Row, Table, Text, IconCircle } from '@trezor/components';
+import { Network } from '@suite-common/wallet-config';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
-import { getNftExplorerUrl, getNftContractExplorerUrl } from '@suite-common/wallet-utils';
+import { getNftContractExplorerUrl, getNftExplorerUrl } from '@suite-common/wallet-utils';
+import { Badge, Button, Dropdown, Icon, IconCircle, Row, Table, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { SUITE } from 'src/actions/suite/constants';
+import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import { goto } from 'src/actions/suite/routerActions';
 import {
     HiddenPlaceholder,
@@ -20,12 +22,10 @@ import {
     TrezorLink,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { SUITE } from 'src/actions/suite/constants';
 import { selectIsCopyAddressModalShown } from 'src/reducers/suite/suiteReducer';
-import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 
-import { BlurUrls } from '../../tokens/common/BlurUrls';
 import { DropdownRow } from '../../tokens/DropdownRow';
+import { BlurUrls } from '../../tokens/common/BlurUrls';
 
 type NftsRowProps = {
     nft: EnhancedTokenInfo;

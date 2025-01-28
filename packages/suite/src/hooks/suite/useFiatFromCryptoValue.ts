@@ -1,10 +1,10 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useSelector } from 'src/hooks/suite';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 interface CommonOwnProps {
     amount: string;

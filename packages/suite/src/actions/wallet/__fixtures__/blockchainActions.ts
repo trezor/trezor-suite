@@ -1,6 +1,6 @@
-import { analyzeTransactions } from '@suite-common/wallet-utils/src/__fixtures__/transactionUtils';
-import { blockchainActions, transactionsActions, accountsActions } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { accountsActions, blockchainActions, transactionsActions } from '@suite-common/wallet-core';
+import { analyzeTransactions } from '@suite-common/wallet-utils/src/__fixtures__/transactionUtils';
 
 const DEFAULT_ACCOUNT = {
     deviceState: '1stTestnetAddress@device_id:0',

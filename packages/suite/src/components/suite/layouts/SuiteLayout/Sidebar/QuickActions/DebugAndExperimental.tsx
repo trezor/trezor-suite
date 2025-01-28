@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
-import { Column, getIconSize, Icon, iconSizes } from '@trezor/components';
+import { Column, Icon, getIconSize, iconSizes } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 import { QuickActionButton } from './QuickActionButton';

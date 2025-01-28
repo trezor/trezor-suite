@@ -2,20 +2,20 @@ import { useIntl } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { H2, NewModal, Paragraph } from '@trezor/components';
-import { ConfirmOnDevice } from '@trezor/product-components';
 import {
-    selectSelectedDeviceLabelOrName,
     selectIsDiscoveryAuthConfirmationRequired,
+    selectSelectedDeviceLabelOrName,
 } from '@suite-common/wallet-core';
+import { H2, NewModal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
+import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
-import type { TrezorDevice } from 'src/types/suite';
 import messages from 'src/support/messages';
+import type { TrezorDevice } from 'src/types/suite';
 
 const ImageWrapper = styled.div`
     display: flex;

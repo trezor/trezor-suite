@@ -1,7 +1,7 @@
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 
-import { updateAll } from '../utils';
 import type { SuiteDBSchema } from '../../definitions';
+import { updateAll } from '../utils';
 
 export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
     _db,

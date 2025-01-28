@@ -1,10 +1,10 @@
-import { configureStore } from 'src/support/tests/configureStore';
 import { SUITE } from 'src/actions/suite/constants';
+import onboardingMiddlewares from 'src/middlewares/onboarding';
+import onboardingReducer from 'src/reducers/onboarding/index';
+import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import modalReducer from 'src/reducers/suite/modalReducer';
-import onboardingReducer from 'src/reducers/onboarding/index';
-import onboardingMiddlewares from 'src/middlewares/onboarding';
+import { configureStore } from 'src/support/tests/configureStore';
 
 const middlewares = [...onboardingMiddlewares];
 

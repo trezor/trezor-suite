@@ -1,10 +1,10 @@
-import { Tooltip, ButtonProps, IconButton, Button, TOOLTIP_DELAY_NORMAL } from '@trezor/components';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { Button, ButtonProps, IconButton, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 
-import { Translation } from 'src/components/suite';
-import { TrezorDevice } from 'src/types/suite';
-import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
+import { Translation } from 'src/components/suite';
+import { useDiscovery, useDispatch } from 'src/hooks/suite';
+import { TrezorDevice } from 'src/types/suite';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
     let message;

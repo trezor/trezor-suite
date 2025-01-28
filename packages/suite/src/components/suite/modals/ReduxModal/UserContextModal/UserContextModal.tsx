@@ -1,56 +1,56 @@
 import { CryptoId } from 'invity-api';
 
-import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
 import { MODAL } from 'src/actions/suite/constants';
-import { useDispatch } from 'src/hooks/suite';
+import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
 import {
-    PinMismatchModal,
-    PassphraseDuplicateModal,
-    TradingTermsModal,
-    ConfirmAddressModal,
-    ConfirmXpubModal,
-    TransactionReviewModal,
-    ImportTransactionModal,
     AddAccountModal,
-    QrScannerModal,
-    BackgroundGalleryModal,
-    TxDetailModal,
-    ApplicationLogModal,
-    WipeDeviceModal,
-    MetadataProviderModal,
-    AdvancedCoinSettingsModal,
     AddTokenModal,
-    SafetyChecksModal,
+    AdvancedCoinSettingsModal,
+    ApplicationLogModal,
+    AuthenticateDeviceFailModal,
+    AuthenticateDeviceModal,
+    BackgroundGalleryModal,
+    CancelCoinjoinModal,
+    ClaimModal,
+    CoinjoinSuccessModal,
+    ConfirmAddressModal,
+    ConfirmUnverifiedAddressModal,
+    ConfirmUnverifiedProceedModal,
+    ConfirmUnverifiedXpubModal,
+    ConfirmXpubModal,
+    ConnectPopupModal,
+    CopyAddressModal,
+    CriticalCoinjoinPhaseModal,
+    DeviceAuthenticityOptOutModal,
     DisableTorModal,
     DisableTorStopCoinjoinModal,
-    RequestEnableTorModal,
-    TorLoadingModal,
-    CancelCoinjoinModal,
-    CriticalCoinjoinPhaseModal,
-    CoinjoinSuccessModal,
+    ImportTransactionModal,
+    MetadataProviderModal,
     MoreRoundsNeededModal,
-    UnecoCoinjoinModal,
-    AuthenticateDeviceModal,
-    AuthenticateDeviceFailModal,
-    DeviceAuthenticityOptOutModal,
+    PassphraseDuplicateModal,
+    PinMismatchModal,
+    QrScannerModal,
+    RequestEnableTorModal,
+    SafetyChecksModal,
     StakeInANutshellModal,
     StakeModal,
-    UnstakeModal,
-    ClaimModal,
-    CopyAddressModal,
+    TorLoadingModal,
+    TradingTermsModal,
+    TransactionReviewModal,
+    TxDetailModal,
+    UnecoCoinjoinModal,
     UnhideTokenModal,
-    ConfirmUnverifiedAddressModal,
-    ConfirmUnverifiedXpubModal,
-    ConfirmUnverifiedProceedModal,
-    ConnectPopupModal,
+    UnstakeModal,
+    WipeDeviceModal,
 } from 'src/components/suite/modals';
+import { useDispatch } from 'src/hooks/suite';
 import type { AcquiredDevice } from 'src/types/suite';
 
 import type { ReduxModalProps } from '../ReduxModal';
-import { EverstakeModal } from './UnstakeModal/EverstakeModal';
-import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
+import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
+import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({

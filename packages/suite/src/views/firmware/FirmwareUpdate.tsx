@@ -1,7 +1,7 @@
 import { useFirmwareInstallation } from '@suite-common/firmware';
 
-import { FirmwareInitial } from 'src/components/firmware';
 import { closeModalApp } from 'src/actions/suite/routerActions';
+import { FirmwareInitial } from 'src/components/firmware';
 import { useDispatch } from 'src/hooks/suite';
 
 import { FirmwareModal } from './FirmwareModal';

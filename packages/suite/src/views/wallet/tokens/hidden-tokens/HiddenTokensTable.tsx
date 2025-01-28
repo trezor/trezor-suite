@@ -1,12 +1,12 @@
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
-import { spacings } from '@trezor/theme';
-import { Banner, H3, Column } from '@trezor/components';
+import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
+import { Banner, Column, H3 } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { getTokens } from 'src/utils/wallet/tokenUtils';
-import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
+import { getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { NoTokens } from '../common/NoTokens';
 import { NoSearchResultsWrapped, TokensTable } from '../common/TokensTable/TokensTable';

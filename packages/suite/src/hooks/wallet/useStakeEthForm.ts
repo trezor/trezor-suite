@@ -4,7 +4,9 @@ import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
 import { fromWei } from 'web3-utils';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { isChanged } from '@suite-common/suite-utils';
+import { StakeContextValues, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
 import {
     fromFiatCurrency,
     getFeeInfo,
@@ -12,29 +14,27 @@ import {
     getStakingLimitsByNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { isChanged } from '@suite-common/suite-utils';
-import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
-import { StakeContextValues, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
-import {
-    UseStakeFormsProps,
-    FIAT_INPUT,
-    CRYPTO_INPUT,
-    OUTPUT_AMOUNT,
-} from 'src/types/wallet/stakeForms';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { signTransaction } from 'src/actions/wallet/stakeActions';
+import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import {
+    CRYPTO_INPUT,
+    FIAT_INPUT,
+    OUTPUT_AMOUNT,
+    UseStakeFormsProps,
+} from 'src/types/wallet/stakeForms';
 import {
     getEthNetworkAddresses,
     getStakeFormsDefaultValues,
 } from 'src/utils/suite/ethereumStaking';
 import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
 
+import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
 import { useFormDraft } from './useFormDraft';
-import { useFees } from './form/useFees';
 
 export const StakeEthFormContext = createContext<StakeContextValues | null>(null);
 StakeEthFormContext.displayName = 'StakeEthFormContext';

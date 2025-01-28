@@ -1,14 +1,14 @@
 import { useTheme } from 'styled-components';
 
-import { isDesktop } from '@trezor/env-utils';
 import {
     Column,
     ComponentWithSubIcon,
     Icon,
     IconName,
-    iconSizes,
     IconVariant,
+    iconSizes,
 } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -16,9 +16,9 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TorStatus } from 'src/types/suite';
 
-import { selectTorState } from '../../../../../../reducers/suite/suiteReducer';
 import { QuickActionButton } from './QuickActionButton';
 import { TooltipRow } from './TooltipRow';
+import { selectTorState } from '../../../../../../reducers/suite/suiteReducer';
 import { Translation, TranslationKey } from '../../../../Translation';
 
 const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {

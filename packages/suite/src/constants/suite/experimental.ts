@@ -1,8 +1,8 @@
 import { TranslationKey } from '@suite-common/intl-types';
-import { desktopApi } from '@trezor/suite-desktop-api';
-import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, HELP_CENTER_TOR_URL, Url } from '@trezor/urls';
 import { Route } from '@suite-common/suite-types';
 import { isDesktop } from '@trezor/env-utils';
+import { desktopApi } from '@trezor/suite-desktop-api';
+import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, HELP_CENTER_TOR_URL, Url } from '@trezor/urls';
 
 import { Dispatch } from '../../types/suite';
 

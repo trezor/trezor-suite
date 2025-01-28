@@ -1,10 +1,10 @@
 import { SellFiatTrade, SellFiatTradeQuoteRequest, SellTradeStatus } from 'invity-api';
 
+import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
 
-import { Account } from 'src/types/wallet';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
+import { Account } from 'src/types/wallet';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 type GetAmountLimitsProps = {

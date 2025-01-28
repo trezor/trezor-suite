@@ -16,8 +16,8 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TradingAllFormProps, TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
 import { SendContextValues } from 'src/types/wallet/sendForm';
 import {
-    tradingGetRoundedFiatAmount,
     getTradingNetworkDecimals,
+    tradingGetRoundedFiatAmount,
 } from 'src/utils/wallet/trading/tradingUtils';
 
 interface TradingUseCurrencySwitcherProps<T extends TradingAllFormProps> {

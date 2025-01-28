@@ -2,10 +2,10 @@ import { MouseEvent } from 'react';
 
 import { Button } from '@trezor/components';
 
+import { enableOnboardingReducer, resetOnboarding } from 'src/actions/onboarding/onboardingActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
-import { enableOnboardingReducer, resetOnboarding } from 'src/actions/onboarding/onboardingActions';
 
 export const DeviceInitialize = () => {
     const dispatch = useDispatch();

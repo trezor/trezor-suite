@@ -5,17 +5,17 @@ import {
     selectIsLoadingAccountTransactions,
 } from '@suite-common/wallet-core';
 
-import { WalletLayout, CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
+import { CoinjoinAccountDiscoveryProgress, WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { AppState } from 'src/types/suite';
 
-import { NoTransactions } from './components/NoTransactions';
-import { AccountEmpty } from './components/AccountEmpty';
-import { TransactionList } from './TransactionList/TransactionList';
-import { TransactionSummary } from './components/TransactionSummary';
 import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 import { TradeBox } from './TradeBox/TradeBox';
+import { TransactionList } from './TransactionList/TransactionList';
+import { AccountEmpty } from './components/AccountEmpty';
+import { NoTransactions } from './components/NoTransactions';
+import { TransactionSummary } from './components/TransactionSummary';
 
 interface LayoutProps {
     selectedAccount: AppState['wallet']['selectedAccount'];

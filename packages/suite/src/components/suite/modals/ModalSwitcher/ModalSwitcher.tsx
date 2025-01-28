@@ -1,8 +1,8 @@
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
-import { ReduxModal } from '../ReduxModal/ReduxModal';
-import { ForegroundAppModal } from './ForegroundAppModal';
 import { DiscoveryLoader } from './DiscoveryLoader';
+import { ForegroundAppModal } from './ForegroundAppModal';
+import { ReduxModal } from '../ReduxModal/ReduxModal';
 
 /** Displays whichever redux modal or foreground app should be displayed */
 export const ModalSwitcher = () => {

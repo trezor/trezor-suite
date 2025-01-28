@@ -3,17 +3,17 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { UserContextPayload } from '@suite-common/suite-types';
-import { parseCSV } from '@suite-common/wallet-utils';
 import { networksCollection } from '@suite-common/wallet-config';
+import { parseCSV } from '@suite-common/wallet-utils';
 
-import { Translation, Modal } from 'src/components/suite';
-import type { ExtendedMessageDescriptor } from 'src/types/suite';
+import { Modal, Translation } from 'src/components/suite';
 import { DropZone } from 'src/components/suite/DropZone';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
 import { DelimiterForm } from './DelimiterForm';
 import { ExampleCSV } from './ExampleCSV';
-import { TabSelection, TabId } from './TabSelection';
 import { InputCSV } from './InputCSV';
+import { TabId, TabSelection } from './TabSelection';
 
 const StyledModal = styled(Modal)`
     width: 600px;

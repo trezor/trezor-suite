@@ -1,13 +1,13 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-import { FeeLevel, PROTO } from '@trezor/connect';
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { FeeLevel, PROTO } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { Dispatch, GetState } from 'src/types/suite';
 import * as suiteActions from 'src/actions/suite/suiteActions';
+import { Dispatch, GetState } from 'src/types/suite';
 
 import { WALLET_SETTINGS } from './constants';
 

@@ -3,24 +3,24 @@ import { MouseEvent } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
 import { ExtendedMessageDescriptor, TranslationKey } from '@suite-common/intl-types';
+import { Route } from '@suite-common/suite-types';
+import { Icon, IconName, IconSize, Paragraph, Tooltip, useElevation } from '@trezor/components';
+import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import {
     Elevation,
+    TypographyStyle,
     borders,
     mapElevationToBackground,
     spacingsPx,
-    TypographyStyle,
 } from '@trezor/theme';
-import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
-import { Route } from '@suite-common/suite-types';
-import { Icon, IconName, IconSize, useElevation, Paragraph, Tooltip } from '@trezor/components';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
-import { ExpandedSidebarOnly } from './ExpandedSidebarOnly';
 import { CollapsedSidebarOnly } from './CollapsedSidebarOnly';
+import { ExpandedSidebarOnly } from './ExpandedSidebarOnly';
 
 export const NavigationItemBase = styled.div.attrs(() => ({
     tabIndex: 0,

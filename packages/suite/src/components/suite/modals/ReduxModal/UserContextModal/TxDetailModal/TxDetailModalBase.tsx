@@ -1,18 +1,18 @@
 import { ReactNode } from 'react';
 
-import { NewModal, Column, Banner } from '@trezor/components';
-import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
-import { getAccountKey } from '@suite-common/wallet-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
-    selectTransactionConfirmations,
     selectIsPhishingTransaction,
+    selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
+import { getAccountKey } from '@suite-common/wallet-utils';
+import { Banner, Column, NewModal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
-import { useSelector } from 'src/hooks/suite';
 import { Translation, TrezorLink } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 
 import { BasicTxDetails } from './BasicTxDetails';

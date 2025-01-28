@@ -1,6 +1,6 @@
-import { Discovery } from '@suite-common/wallet-types';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { DeviceWithEmptyPath } from '@suite-common/suite-types';
+import { Discovery } from '@suite-common/wallet-types';
 
 import { AcquiredDevice } from 'src/types/suite';
 import { CoinjoinAccount } from 'src/types/wallet/coinjoin';

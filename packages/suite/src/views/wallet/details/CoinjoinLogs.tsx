@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { Card } from '@trezor/components';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite/useSelector';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { CoinjoinLogsAnchor } from 'src/constants/suite/anchors';
-import { anchorOutlineStyles } from 'src/utils/suite/anchor';
+import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const SetupCard = styled(Card)<{ $shouldHighlight?: boolean }>`

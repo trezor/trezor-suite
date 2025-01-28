@@ -1,11 +1,11 @@
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
+import { setLocalCurrency } from 'src/actions/settings/walletSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { setLocalCurrency } from 'src/actions/settings/walletSettingsActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const buildCurrencyOption = (currency: string) => ({

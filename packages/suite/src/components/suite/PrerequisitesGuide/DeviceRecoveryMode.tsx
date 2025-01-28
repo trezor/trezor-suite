@@ -2,8 +2,8 @@ import { MouseEventHandler } from 'react';
 
 import { Button } from '@trezor/components';
 
-import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { rerun } from 'src/actions/recovery/recoveryActions';
+import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
 export const DeviceRecoveryMode = () => {

@@ -5,11 +5,11 @@ import styled, { css } from 'styled-components';
 import { Button, LoadingContent } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
-import { GraphRangeSelector, Translation } from 'src/components/suite';
 import { updateGraphData } from 'src/actions/wallet/graphActions';
+import { GraphRangeSelector, Translation } from 'src/components/suite';
+import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
-import { FiatHeader } from 'src/components/wallet/FiatHeader';
 
 const Wrapper = styled.div<{ $hideBorder: boolean }>`
     display: flex;

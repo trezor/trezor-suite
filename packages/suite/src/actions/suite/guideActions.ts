@@ -1,4 +1,3 @@
-import { analytics, EventType } from '@trezor/suite-analytics';
 import type {
     ActiveView,
     Feedback,
@@ -8,6 +7,7 @@ import type {
 } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isCodesignBuild } from '@trezor/env-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Dispatch } from 'src/types/suite';
 

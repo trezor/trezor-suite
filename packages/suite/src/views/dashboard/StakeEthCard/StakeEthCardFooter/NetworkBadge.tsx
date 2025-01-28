@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 
-import { Paragraph, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-import { CoinLogo } from '@trezor/product-components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Paragraph, Row } from '@trezor/components';
+import { CoinLogo } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
 
 type NetworkBadgeProps = {
     symbol: NetworkSymbol;

@@ -1,29 +1,29 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { MIN_ETH_BALANCE_FOR_STAKING } from '@suite-common/wallet-constants';
+import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import {
-    variables,
-    Divider,
-    H3,
     Card,
     Column,
-    Tooltip,
+    Divider,
     Grid,
-    useMediaQuery,
-    Paragraph,
+    H3,
     IconName,
+    Paragraph,
+    Tooltip,
+    useMediaQuery,
+    variables,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-import { selectPoolStatsApyData } from '@suite-common/wallet-core';
-import { MIN_ETH_BALANCE_FOR_STAKING } from '@suite-common/wallet-constants';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { spacings } from '@trezor/theme';
 
+import { setFlag } from 'src/actions/suite/suiteActions';
+import { DashboardSection } from 'src/components/dashboard';
+import { StakingFeature, Translation } from 'src/components/suite';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
-import { setFlag } from 'src/actions/suite/suiteActions';
-import { Translation, StakingFeature } from 'src/components/suite';
-import { DashboardSection } from 'src/components/dashboard';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 import { StakeEthCardFooter } from './StakeEthCardFooter/StakeEthCardFooter';
 

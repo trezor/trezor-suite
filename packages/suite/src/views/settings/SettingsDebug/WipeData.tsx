@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const UserDataLink = styled.span`
     cursor: pointer;

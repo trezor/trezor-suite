@@ -2,8 +2,8 @@ import { MODAL } from 'src/actions/suite/constants';
 import type { AppState } from 'src/types/suite';
 
 import type { ModalProps } from '../Modal/Modal';
-import { DeviceContextModal } from './DeviceContextModal/DeviceContextModal';
 import { DeviceConfirmationModal } from './DeviceConfirmationModal/DeviceConfirmationModal';
+import { DeviceContextModal } from './DeviceContextModal/DeviceContextModal';
 import { UserContextModal } from './UserContextModal/UserContextModal';
 
 export type ReduxModalProps<

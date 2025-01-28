@@ -1,12 +1,12 @@
-import { DEVICE_EVENT, UI_EVENT, TRANSPORT_EVENT, BLOCKCHAIN_EVENT } from '@trezor/connect';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { testMocks } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
+import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 
-import { configureStore } from 'src/support/tests/configureStore';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { SUITE } from 'src/actions/suite/constants';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { configureStore } from 'src/support/tests/configureStore';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 

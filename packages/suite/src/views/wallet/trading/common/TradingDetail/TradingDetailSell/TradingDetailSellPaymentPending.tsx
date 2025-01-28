@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Spinner, Button, H4 } from '@trezor/components';
+import { Button, H4, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';

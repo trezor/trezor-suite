@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
 import { Button } from '@trezor/components';
+import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 
-import { DialogModal } from 'src/components/suite/modals/Modal/DialogRenderer';
-import * as metadataUtils from 'src/utils/suite/metadata';
-import type { PasswordEntry as PasswordEntryType } from 'src/types/suite/metadata';
 import { PATH } from 'src/actions/suite/constants/metadataPasswordsConstants';
-import { getDisplayKey } from 'src/utils/suite/passwords';
+import { DialogModal } from 'src/components/suite/modals/Modal/DialogRenderer';
 import { usePasswords } from 'src/hooks/suite';
+import type { PasswordEntry as PasswordEntryType } from 'src/types/suite/metadata';
+import * as metadataUtils from 'src/utils/suite/metadata';
+import { getDisplayKey } from 'src/utils/suite/passwords';
 
 import { EntryForm } from './EntryForm';
 

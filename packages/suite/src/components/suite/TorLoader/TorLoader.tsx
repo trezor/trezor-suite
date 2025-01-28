@@ -1,14 +1,14 @@
-import { useState, useEffect, ComponentType } from 'react';
+import { ComponentType, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { Button, ModalProps } from '@trezor/components';
 
-import { TorStatus } from 'src/types/suite';
+import { toggleTor, updateTorStatus } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
-import { toggleTor, updateTorStatus } from 'src/actions/suite/suiteActions';
+import { TorStatus } from 'src/types/suite';
 
 import { TorProgressBar } from './TorProgressBar';
 

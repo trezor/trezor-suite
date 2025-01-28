@@ -1,8 +1,8 @@
-import { useCallback, useRef, Dispatch, SetStateAction, ChangeEvent, KeyboardEvent } from 'react';
+import { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction, useCallback, useRef } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { Input, Icon, KEYBOARD_CODE } from '@trezor/components';
+import { Icon, Input, KEYBOARD_CODE } from '@trezor/components';
 
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 

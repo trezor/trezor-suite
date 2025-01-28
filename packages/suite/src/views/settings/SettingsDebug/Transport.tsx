@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 
-import TrezorConnect from '@trezor/connect';
 import { Checkbox } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { ArrayElement } from '@trezor/type-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
-import { DebugModeOptions, selectActiveTransports } from 'src/reducers/suite/suiteReducer';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { DebugModeOptions, selectActiveTransports } from 'src/reducers/suite/suiteReducer';
 
 type TransportMenuItem = {
     name: ArrayElement<NonNullable<DebugModeOptions['transports']>>;

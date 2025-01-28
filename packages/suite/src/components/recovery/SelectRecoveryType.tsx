@@ -1,4 +1,4 @@
-import { OnboardingOption, OptionsWrapper, OptionsDivider } from 'src/components/onboarding';
+import { OnboardingOption, OptionsDivider, OptionsWrapper } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 
 interface SelectRecoveryTypeProps {

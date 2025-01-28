@@ -1,34 +1,34 @@
-import { notificationsActions, ToastPayload } from '@suite-common/toast-notifications';
+import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
+import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
-    getTxOperation,
-    getTargetAmount,
-    isTestnet,
     formatAmount,
     formatNetworkAmount,
     getFiatRateKey,
+    getTargetAmount,
+    getTxOperation,
+    isTestnet,
 } from '@suite-common/wallet-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { ArrayElement } from '@trezor/type-utils';
-import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
 import {
-    FiatValue,
-    Translation,
-    MetadataLabeling,
     AddressLabeling,
+    FiatValue,
     FormattedCryptoAmount,
+    MetadataLabeling,
+    Translation,
 } from 'src/components/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { AccountLabels } from 'src/types/suite/metadata';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectLabelingValueBeingEdited } from 'src/reducers/suite/metadataReducer';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { AccountLabels } from 'src/types/suite/metadata';
+import { WalletAccountTransaction } from 'src/types/wallet';
 
-import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { TargetAddressLabel } from './TargetAddressLabel';
-import { TransactionTargetLayout } from '../TransactionTargetLayout';
+import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { AmountComponent } from '../../AmountComponent';
+import { TransactionTargetLayout } from '../TransactionTargetLayout';
 
 interface BaseTransfer {
     singleRowLayout?: boolean;

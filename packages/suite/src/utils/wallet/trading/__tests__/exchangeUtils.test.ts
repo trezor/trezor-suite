@@ -3,11 +3,11 @@ import { CryptoId } from 'invity-api';
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import * as fixtures from 'src/utils/wallet/trading/__fixtures__/exchangeUtils';
 import {
-    tradingGetExchangeReceiveCryptoId,
     getAmountLimits,
     getStatusMessage,
     getSuccessQuotesOrdered,
     isQuoteError,
+    tradingGetExchangeReceiveCryptoId,
 } from 'src/utils/wallet/trading/exchangeUtils';
 
 jest.mock('src/hooks/wallet/trading/useTradingInfo', () => ({

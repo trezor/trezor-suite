@@ -1,25 +1,10 @@
 import { CryptoId } from 'invity-api';
 
+import { useDefaultAccountLabel } from 'src/hooks/suite/useDefaultAccountLabel';
 import { Account } from 'src/types/wallet';
-import {
-    buildFiatOption,
-    getUnusedAddressFromAccount,
-    getCountryLabelParts,
-    mapTestnetSymbol,
-    getTagAndInfoNote,
-    getBestRatedQuote,
-    addIdsToQuotes,
-    filterQuotesAccordingTags,
-    tradingGetSortedAccounts,
-    tradingBuildAccountOptions,
-    tradingGetRoundedFiatAmount,
-    tradingGetAmountLabels,
-    tradingGetAccountLabel,
-    testnetToProdCryptoId,
-    getAddressAndTokenFromAccountOptionsGroupProps,
-    isCryptoIdForNativeToken,
-    getTradeTypeByRoute,
-} from 'src/utils/wallet/trading/tradingUtils';
+import * as BUY_FIXTURE from 'src/utils/wallet/trading/__fixtures__/buyUtils';
+import * as EXCHANGE_FIXTURE from 'src/utils/wallet/trading/__fixtures__/exchangeUtils';
+import * as SELL_FIXTURE from 'src/utils/wallet/trading/__fixtures__/sellUtils';
 import {
     FIXTURE_ACCOUNTS,
     FIXTURE_ACCOUNT_OPTIONS,
@@ -27,10 +12,25 @@ import {
     accountEth,
     coinDefinitions,
 } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
-import * as BUY_FIXTURE from 'src/utils/wallet/trading/__fixtures__/buyUtils';
-import * as SELL_FIXTURE from 'src/utils/wallet/trading/__fixtures__/sellUtils';
-import * as EXCHANGE_FIXTURE from 'src/utils/wallet/trading/__fixtures__/exchangeUtils';
-import { useDefaultAccountLabel } from 'src/hooks/suite/useDefaultAccountLabel';
+import {
+    addIdsToQuotes,
+    buildFiatOption,
+    filterQuotesAccordingTags,
+    getAddressAndTokenFromAccountOptionsGroupProps,
+    getBestRatedQuote,
+    getCountryLabelParts,
+    getTagAndInfoNote,
+    getTradeTypeByRoute,
+    getUnusedAddressFromAccount,
+    isCryptoIdForNativeToken,
+    mapTestnetSymbol,
+    testnetToProdCryptoId,
+    tradingBuildAccountOptions,
+    tradingGetAccountLabel,
+    tradingGetAmountLabels,
+    tradingGetRoundedFiatAmount,
+    tradingGetSortedAccounts,
+} from 'src/utils/wallet/trading/tradingUtils';
 
 jest.mock('src/hooks/suite/useDefaultAccountLabel', () => ({
     ...jest.requireActual('src/hooks/suite/useDefaultAccountLabel'),

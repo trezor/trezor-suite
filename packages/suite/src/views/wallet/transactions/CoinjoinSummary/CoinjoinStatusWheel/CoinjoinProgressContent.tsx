@@ -2,18 +2,18 @@ import { FormattedNumber } from 'react-intl';
 
 import styled, { useTheme } from 'styled-components';
 
-import { Spinner, Icon, Tooltip } from '@trezor/components';
+import { Icon, Spinner, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
+import { Translation } from 'src/components/suite/Translation';
+import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import {
     selectCurrentCoinjoinWheelStates,
     selectCurrentSessionDeadlineInfo,
     selectRoundsDurationInHours,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 
 export const Container = styled.div<{ $isWide: boolean }>`
     width: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};

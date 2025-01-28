@@ -1,23 +1,23 @@
 import { useMemo } from 'react';
 
+import { MODAL } from 'src/actions/suite/constants';
 import { OnboardingLayout } from 'src/components/onboarding';
 import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
-import CreateOrRecover from 'src/views/onboarding/steps/CreateOrRecover';
-import { FirmwareStep } from 'src/views/onboarding/steps/FirmwareStep';
-import { ResetDeviceStep } from 'src/views/onboarding/steps/ResetDevice';
-import { RecoveryStep } from 'src/views/onboarding/steps/Recovery';
-import { BackupStep } from 'src/views/onboarding/steps/Backup';
-import SecurityStep from 'src/views/onboarding/steps/Security';
-import SetPinStep from 'src/views/onboarding/steps/Pin';
-import BasicSettingsStep from 'src/views/onboarding/steps/BasicSettings';
-import { FinalStep } from 'src/views/onboarding/steps/Final';
-import UnexpectedState from 'src/views/onboarding/UnexpectedState';
-import { useOnboarding, useFilteredModal } from 'src/hooks/suite';
-import { MODAL } from 'src/actions/suite/constants';
 import * as STEP from 'src/constants/onboarding/steps';
+import { useFilteredModal, useOnboarding } from 'src/hooks/suite';
+import UnexpectedState from 'src/views/onboarding/UnexpectedState';
+import { BackupStep } from 'src/views/onboarding/steps/Backup';
+import BasicSettingsStep from 'src/views/onboarding/steps/BasicSettings';
+import CreateOrRecover from 'src/views/onboarding/steps/CreateOrRecover';
+import { FinalStep } from 'src/views/onboarding/steps/Final';
+import { FirmwareStep } from 'src/views/onboarding/steps/FirmwareStep';
+import SetPinStep from 'src/views/onboarding/steps/Pin';
+import { RecoveryStep } from 'src/views/onboarding/steps/Recovery';
+import { ResetDeviceStep } from 'src/views/onboarding/steps/ResetDevice';
+import SecurityStep from 'src/views/onboarding/steps/Security';
 
-import { DeviceAuthenticity } from './steps/SecurityCheck/DeviceAuthenticity';
 import { DeviceTutorial } from './steps/DeviceTutorial';
+import { DeviceAuthenticity } from './steps/SecurityCheck/DeviceAuthenticity';
 
 export const Onboarding = () => {
     const { activeStepId, goToNextStep } = useOnboarding();

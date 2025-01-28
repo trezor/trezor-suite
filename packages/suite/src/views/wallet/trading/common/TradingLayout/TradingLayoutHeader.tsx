@@ -1,16 +1,16 @@
 import { PropsWithChildren, useMemo } from 'react';
 
-import { IconButton, Row, Box, Button } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-import { Route } from '@suite-common/suite-types';
 import type { TradingType } from '@suite-common/invity';
+import { Route } from '@suite-common/suite-types';
+import { Box, Button, IconButton, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
+import { goto } from 'src/actions/suite/routerActions';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
-import { useLayout, useSelector, useTranslation, useDispatch } from 'src/hooks/suite';
+import { useDispatch, useLayout, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { TranslationKey, Translation } from 'src/components/suite/Translation';
-import { goto } from 'src/actions/suite/routerActions';
 
 const getBackRoute = (route?: Route['name'], activeSection?: TradingType): Route['name'] => {
     const routePrefix = 'wallet-trading-';

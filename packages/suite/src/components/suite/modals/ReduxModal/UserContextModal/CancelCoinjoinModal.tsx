@@ -2,11 +2,11 @@ import styled from 'styled-components';
 
 import { Button } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
-import { Modal, Translation } from 'src/components/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useDispatch } from 'src/hooks/suite';
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
+import { Modal, Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const StyledModal = styled(Modal)`
     width: 435px;

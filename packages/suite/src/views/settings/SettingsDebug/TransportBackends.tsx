@@ -1,6 +1,6 @@
+import { isDevEnv } from '@suite-common/suite-utils';
 import { Checkbox } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { isDevEnv } from '@suite-common/suite-utils';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';

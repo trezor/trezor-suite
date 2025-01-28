@@ -4,16 +4,16 @@ import styled from 'styled-components';
 
 import { selectLogs } from '@suite-common/logger';
 import {
-    Switch,
-    NewModal,
     Card,
-    Paragraph,
-    Text,
-    Row,
     Column,
     H4,
-    variables,
+    NewModal,
+    Paragraph,
+    Row,
+    Switch,
+    Text,
     useScrollShadow,
+    variables,
 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 

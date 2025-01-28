@@ -3,8 +3,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Card, Column, variables } from '@trezor/components';
-import { getWeakRandomNumberInRange } from '@trezor/utils';
 import { typography } from '@trezor/theme';
+import { getWeakRandomNumberInRange } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite';
 

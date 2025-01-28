@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { Button, H4, Image } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
+import { goto } from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
-import { Translation } from 'src/components/suite/Translation';
-import { goto } from 'src/actions/suite/routerActions';
 import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactionId';
 
 const Wrapper = styled.div`

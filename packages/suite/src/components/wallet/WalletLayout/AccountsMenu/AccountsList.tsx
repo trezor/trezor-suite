@@ -1,25 +1,25 @@
-import { sortByCoin, getFailedAccounts, accountSearchFn } from '@suite-common/wallet-utils';
-import { Account } from '@suite-common/wallet-types';
-import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
-import { spacings } from '@trezor/theme';
-import { Column } from '@trezor/components';
 import { AccountType } from '@suite-common/wallet-config';
+import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { accountSearchFn, getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
+import { Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite';
 import {
     useAccountSearch,
+    useDefaultAccountLabel,
     useDiscovery,
     useSelector,
-    useDefaultAccountLabel,
 } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
-import { Translation } from 'src/components/suite';
 
-import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountGroup } from './AccountGroup';
-import { AccountsMenuNotice } from './AccountsMenuNotice';
+import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountSection } from './AccountSection';
-import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
+import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
+import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
 
 interface AccountListProps {

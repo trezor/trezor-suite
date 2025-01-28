@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Button, Paragraph } from '@trezor/components';
 import { UserContextPayload } from '@suite-common/suite-types';
+import { Button, Paragraph } from '@trezor/components';
 
 import { Modal, Translation } from 'src/components/suite';
 

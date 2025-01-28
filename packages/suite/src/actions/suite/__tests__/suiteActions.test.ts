@@ -1,38 +1,38 @@
 // unit test for suite actions
 // data provided by TrezorConnect are mocked
+import { connectInitThunk } from '@suite-common/connect-init';
+import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { testMocks } from '@suite-common/test-utils';
 import {
-    prepareDeviceReducer,
-    selectSelectedDevice,
-    selectDevices,
-    selectDevicesCount,
-    deviceActions,
+    ConnectDeviceSettings,
     acquireDevice,
     authConfirm,
     authorizeDeviceThunk,
+    createDeviceInstanceThunk,
+    deviceActions,
     forgetDisconnectedDevices,
     handleDeviceConnect,
-    observeSelectedDevice,
-    switchDuplicatedDevice,
-    selectDeviceThunk,
     handleDeviceDisconnect,
-    createDeviceInstanceThunk,
-    ConnectDeviceSettings,
+    observeSelectedDevice,
+    prepareDeviceReducer,
+    selectDeviceThunk,
+    selectDevices,
+    selectDevicesCount,
+    selectSelectedDevice,
+    switchDuplicatedDevice,
 } from '@suite-common/wallet-core';
-import { prepareFirmwareReducer } from '@suite-common/firmware';
-import { connectInitThunk } from '@suite-common/connect-init';
 import { DEVICE } from '@trezor/connect';
 
-import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import routerReducer from 'src/reducers/suite/routerReducer';
 import modalReducer from 'src/reducers/suite/modalReducer';
-import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
+import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
+import fixtures from '../__fixtures__/suiteActions';
 import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
-import fixtures from '../__fixtures__/suiteActions';
 
 const { getSuiteDevice } = testMocks;
 

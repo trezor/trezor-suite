@@ -1,11 +1,11 @@
-import TrezorConnect, { Unsuccessful, Success } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
 
+import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
-import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
 import { SIGN_VERIFY } from './constants';
 

@@ -1,23 +1,22 @@
-import { MiddlewareAPI } from 'redux';
 import { isAnyOf } from '@reduxjs/toolkit';
+import { MiddlewareAPI } from 'redux';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import {
+    INVALID_HASH_ERROR,
+    firmwareActions,
+    firmwareUpdate,
+    handleFwHashError,
+} from '@suite-common/firmware';
 import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
 import {
+    authorizeDeviceThunk,
+    deviceActions,
     discoveryActions,
     selectDevices,
     selectDevicesCount,
-    authorizeDeviceThunk,
-    deviceActions,
 } from '@suite-common/wallet-core';
-import {
-    firmwareActions,
-    handleFwHashError,
-    INVALID_HASH_ERROR,
-    firmwareUpdate,
-} from '@suite-common/firmware';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { TRANSPORT, DEVICE } from '@trezor/connect';
+import { Account } from '@suite-common/wallet-types';
+import { DEVICE, TRANSPORT } from '@trezor/connect';
 import {
     getBootloaderHash,
     getBootloaderVersion,
@@ -26,21 +25,22 @@ import {
     hasBitcoinOnlyFirmware,
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
-import { Account } from '@suite-common/wallet-types';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { SUITE, ROUTER } from 'src/actions/suite/constants';
+import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 import { COINJOIN } from 'src/actions/wallet/constants';
+import {
+    selectAnonymityGainToReportByAccountKey,
+    selectCoinjoinAccountByKey,
+} from 'src/reducers/wallet/coinjoinReducer';
+import type { Action, AppState, Dispatch } from 'src/types/suite';
 import {
     getSuiteReadyPayload,
     redactRouterUrl,
     redactTransactionIdFromAnchor,
 } from 'src/utils/suite/analytics';
-import type { AppState, Action, Dispatch } from 'src/types/suite';
-import {
-    selectAnonymityGainToReportByAccountKey,
-    selectCoinjoinAccountByKey,
-} from 'src/reducers/wallet/coinjoinReducer';
-import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:

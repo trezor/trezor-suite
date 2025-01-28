@@ -1,20 +1,20 @@
-import { memo, useState, useEffect, useCallback } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
-import { variables, Button } from '@trezor/components';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Button, variables } from '@trezor/components';
 
-import GraphWorker from 'src/support/workers/graph';
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
+import { HiddenPlaceholder, TransactionsGraph, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import GraphWorker from 'src/support/workers/graph';
 import { Account } from 'src/types/wallet';
-import { TransactionsGraph, Translation, HiddenPlaceholder } from 'src/components/suite';
 import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData } from 'src/utils/wallet/graph';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { Network } from '@suite-common/wallet-config';
-import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 import {
     Account,
     AccountKey,
@@ -17,13 +17,13 @@ import {
     UtxoSorting,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 
-import { GetCurrentRateParams } from 'src/hooks/wallet/useSendFormFields';
 import {
     HandleAmountChangeParams,
     HandleFiatChangeParams,
 } from 'src/hooks/wallet/useSendFormChangeHandlers';
+import { GetCurrentRateParams } from 'src/hooks/wallet/useSendFormFields';
 
 export type ExportFileType = 'csv' | 'pdf' | 'json';
 

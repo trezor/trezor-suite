@@ -1,23 +1,18 @@
 import styled from 'styled-components';
 
-import { Account } from '@suite-common/wallet-types';
-import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { useFormatters } from '@suite-common/formatters';
-import { spacings } from '@trezor/theme';
+import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { Account } from '@suite-common/wallet-types';
+import { isTestnet } from '@suite-common/wallet-utils';
 import {
+    Column,
+    Row,
     SkeletonRectangle,
     TOOLTIP_DELAY_LONG,
     TruncateWithTooltip,
-    Column,
-    Row,
 } from '@trezor/components';
-import { isTestnet } from '@suite-common/wallet-utils';
+import { spacings } from '@trezor/theme';
 
-import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
-import {
-    selectIsDiscreteModeActive,
-    selectLocalCurrency,
-} from 'src/reducers/wallet/settingsReducer';
 import {
     AccountLabel,
     CoinBalance,
@@ -25,6 +20,11 @@ import {
     HiddenPlaceholder,
     Translation,
 } from 'src/components/suite';
+import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import {
+    selectIsDiscreteModeActive,
+    selectLocalCurrency,
+} from 'src/reducers/wallet/settingsReducer';
 import { AccountItemType } from 'src/types/wallet';
 
 const AccountLabelContainer = styled.div`

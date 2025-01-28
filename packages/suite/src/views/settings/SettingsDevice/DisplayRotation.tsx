@@ -1,16 +1,16 @@
+import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import {
     DeviceModelInternal,
     type DisplayRotation as DisplayRotationType,
     PROTO,
 } from '@trezor/connect';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { Icon, SelectBar, Tooltip } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 type Rotation = { label: JSX.Element; value: DisplayRotationType };
 

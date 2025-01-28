@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import { IconButton } from '@trezor/components';
-import { Account } from '@suite-common/wallet-types';
-import { spacingsPx } from '@trezor/theme';
 import { Route } from '@suite-common/suite-types';
+import { Account } from '@suite-common/wallet-types';
+import { IconButton } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
-import { useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { useDispatch } from 'src/hooks/suite';
 
 import { AccountDetails } from './AccountDetails';
 

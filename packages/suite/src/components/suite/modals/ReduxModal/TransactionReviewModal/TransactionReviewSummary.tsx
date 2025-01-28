@@ -1,19 +1,19 @@
 import styled, { useTheme } from 'styled-components';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { getFeeUnits, formatNetworkAmount, formatAmount, getFee } from '@suite-common/wallet-utils';
-import { Icon, variables } from '@trezor/components';
-import { formatDuration } from '@suite-common/suite-utils';
-import { borders, spacingsPx, typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
+import { formatDuration } from '@suite-common/suite-utils';
 import { Network, NetworkType } from '@suite-common/wallet-config';
 import { GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
+import { formatAmount, formatNetworkAmount, getFee, getFeeUnits } from '@suite-common/wallet-utils';
+import { Icon, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { borders, spacingsPx, typography } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Translation, FormattedCryptoAmount, AccountLabel } from 'src/components/suite';
-import { Account } from 'src/types/wallet';
+import { AccountLabel, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { Account } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     padding: 20px 15px 12px;

@@ -1,16 +1,16 @@
-import styled from 'styled-components';
 import { transparentize } from 'polished';
+import styled from 'styled-components';
 
-import { Button, Icon, variables } from '@trezor/components';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
+import { Button, Icon, variables } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
+import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
+import { Modal, Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';
-import { onCancel as closeModal } from 'src/actions/suite/modalActions';
-import { Modal, Translation } from 'src/components/suite';
 
 const StyledModal = styled(Modal)`
     width: 435px;

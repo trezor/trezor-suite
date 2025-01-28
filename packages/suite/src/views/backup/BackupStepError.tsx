@@ -1,4 +1,4 @@
-import { Paragraph, NewModal } from '@trezor/components';
+import { NewModal, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 

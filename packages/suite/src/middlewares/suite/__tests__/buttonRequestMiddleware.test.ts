@@ -1,15 +1,15 @@
-import { deviceActions } from '@suite-common/wallet-core';
 import { connectInitThunk } from '@suite-common/connect-init';
-import { UI_EVENT, UI } from '@trezor/connect';
 import { testMocks } from '@suite-common/test-utils';
+import { deviceActions } from '@suite-common/wallet-core';
+import { UI, UI_EVENT } from '@trezor/connect';
 
-import { configureStore } from 'src/support/tests/configureStore';
+import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import { SUITE } from 'src/actions/suite/constants';
+import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
-import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
-import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
+import { configureStore } from 'src/support/tests/configureStore';
 import { Action } from 'src/types/suite';
 
 const { getSuiteDevice } = testMocks;

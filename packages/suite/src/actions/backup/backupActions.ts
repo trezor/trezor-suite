@@ -1,7 +1,7 @@
-import TrezorConnect from '@trezor/connect';
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import TrezorConnect from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { BACKUP } from 'src/actions/backup/constants';
 import type { Dispatch, GetState } from 'src/types/suite';

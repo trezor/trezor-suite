@@ -1,8 +1,8 @@
-import { Switch } from '@trezor/components';
 import { firmwareActions, selectUseDevkit } from '@suite-common/firmware';
+import { Switch } from '@trezor/components';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useSelector, useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const Devkit = () => {
     const dispatch = useDispatch();

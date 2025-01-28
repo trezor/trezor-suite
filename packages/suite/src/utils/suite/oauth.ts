@@ -1,9 +1,9 @@
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Deferred, createDeferred } from '@trezor/utils';
 
-import { getPrefixedURL } from 'src/utils/suite/router';
 import { METADATA_PROVIDER } from 'src/actions/suite/constants';
 import { urlHashParams, urlSearchParams } from 'src/utils/suite/metadata';
+import { getPrefixedURL } from 'src/utils/suite/router';
 
 /**
  * For web, use oauth_receiver.html hosted on the same origin (localhost/sldev/trezor.io)

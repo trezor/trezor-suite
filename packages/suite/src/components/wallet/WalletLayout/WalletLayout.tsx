@@ -1,19 +1,19 @@
 import { ReactNode } from 'react';
 
-import { SkeletonRectangle, Column } from '@trezor/components';
+import { Column, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { PrimitiveType } from '@trezor/type-utils';
 
-import { AppState } from 'src/types/suite';
-import { useTranslation, useLayout } from 'src/hooks/suite';
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { TranslationKey } from 'src/components/suite/Translation';
+import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
+import { useLayout, useTranslation } from 'src/hooks/suite';
+import { AppState } from 'src/types/suite';
 
 import { AccountBanners } from './AccountBanners/AccountBanners';
 import { AccountException } from './AccountException/AccountException';
-import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
-import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
 import { AccountNavigation } from './AccountTopPanel/AccountNavigation';
+import { AccountTopPanel } from './AccountTopPanel/AccountTopPanel';
+import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAccountDiscovery';
 
 type WalletPageHeaderProps = {
     isSubpage?: boolean;

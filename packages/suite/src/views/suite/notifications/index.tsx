@@ -1,7 +1,7 @@
 import { Card } from '@trezor/components';
 
-import { Notifications, Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
+import { Notifications, Translation } from 'src/components/suite';
 import { useLayout } from 'src/hooks/suite';
 
 const NotificationsView = () => {

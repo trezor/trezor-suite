@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
+import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
 
-import { Paragraph, Icon, motionAnimation } from '@trezor/components';
-import { borders, spacingsPx, typography } from '@trezor/theme';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { Icon, Paragraph, motionAnimation } from '@trezor/components';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';

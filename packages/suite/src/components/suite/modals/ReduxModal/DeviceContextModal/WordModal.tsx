@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import TrezorConnect from '@trezor/connect';
 
-import { Translation, WordInput, Modal, ModalProps } from 'src/components/suite';
+import { Modal, ModalProps, Translation, WordInput } from 'src/components/suite';
 import messages from 'src/support/messages';
 
 const StyledModal = styled(Modal)`

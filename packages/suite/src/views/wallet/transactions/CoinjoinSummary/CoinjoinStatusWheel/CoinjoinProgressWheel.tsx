@@ -1,26 +1,26 @@
 import { useCallback, useState } from 'react';
 
-import styled, { css, DefaultTheme, keyframes } from 'styled-components';
 import { lighten, rgba } from 'polished';
+import styled, { DefaultTheme, css, keyframes } from 'styled-components';
 
 import { Tooltip } from '@trezor/components';
 
+import { openModal } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
+import {
+    coinjoinSessionAutostop,
+    startCoinjoinSession,
+} from 'src/actions/wallet/coinjoinAccountActions';
+import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
+import { Translation } from 'src/components/suite/Translation';
+import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import {
     selectCurrentCoinjoinWheelStates,
     selectSessionProgressByAccountKey,
     selectStartCoinjoinSessionArguments,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
-import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
-import { openModal } from 'src/actions/suite/modalActions';
-import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
-import {
-    startCoinjoinSession,
-    coinjoinSessionAutostop,
-} from 'src/actions/wallet/coinjoinAccountActions';
 
 import {
     CoinjoinProgressContent,

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { localizeNumber } from '@suite-common/wallet-utils';
 import {
     Card,
     Column,
@@ -11,7 +12,6 @@ import {
     ProgressBar,
     variables,
 } from '@trezor/components';
-import { localizeNumber } from '@suite-common/wallet-utils';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';

@@ -1,9 +1,9 @@
 import { Card } from '@trezor/components';
 
+import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';
+import { TradingOfferBuyProps } from 'src/types/trading/tradingForm';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 import { TradingVerify } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerify';
-import { TradingOfferBuyProps } from 'src/types/trading/tradingForm';
-import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';
 
 export const TradingOfferBuy = ({
     account,

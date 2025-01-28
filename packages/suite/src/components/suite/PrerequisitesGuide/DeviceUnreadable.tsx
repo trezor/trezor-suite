@@ -3,13 +3,13 @@ import { isLinux } from '@trezor/env-utils';
 
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import {
-    TROUBLESHOOTING_TIP_SUITE_DESKTOP,
-    TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-    TROUBLESHOOTING_TIP_UNREADABLE_HID,
-    TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE,
-    TROUBLESHOOTING_TIP_RECONNECT,
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
+    TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
+    TROUBLESHOOTING_TIP_RECONNECT,
+    TROUBLESHOOTING_TIP_SUITE_DESKTOP,
+    TROUBLESHOOTING_TIP_SUITE_DESKTOP_TOGGLE_BRIDGE,
     TROUBLESHOOTING_TIP_UDEV,
+    TROUBLESHOOTING_TIP_UNREADABLE_HID,
 } from 'src/components/suite/troubleshooting/tips';
 import { useSelector } from 'src/hooks/suite';
 import type { TrezorDevice } from 'src/types/suite';

@@ -2,9 +2,9 @@ import { MouseEventHandler } from 'react';
 
 import { Button } from '@trezor/components';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 
 export const DeviceUpdateRequired = () => {
     const dispatch = useDispatch();

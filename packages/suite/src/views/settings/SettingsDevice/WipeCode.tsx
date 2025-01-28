@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 import { selectIsDeviceProtectedByWipeCode } from '@suite-common/wallet-core';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 
 import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings';

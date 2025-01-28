@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { spacingsPx } from '@trezor/theme';
 
-import { isCollapsedSidebar } from './consts';
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
+import { isCollapsedSidebar } from './consts';
 
 const Nav = styled.nav`
     display: flex;

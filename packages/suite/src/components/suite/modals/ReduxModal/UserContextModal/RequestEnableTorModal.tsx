@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, Paragraph } from '@trezor/components';
-import { UserContextPayload } from '@suite-common/suite-types';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
+import { UserContextPayload } from '@suite-common/suite-types';
+import { Button, Paragraph } from '@trezor/components';
 
 import { Modal, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';

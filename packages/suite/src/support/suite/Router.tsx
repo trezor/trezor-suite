@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 
 import { useDidUpdate } from '@trezor/react-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { onBeforePopState, onLocationChange } from 'src/actions/suite/routerActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import history from 'src/support/history';
 
 const RouterComponent = () => {

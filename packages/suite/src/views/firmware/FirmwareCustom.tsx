@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import { useFirmwareInstallation } from '@suite-common/firmware';
 
-import { useDevice } from 'src/hooks/suite';
 import { SelectCustomFirmware } from 'src/components/firmware';
+import { useDevice } from 'src/hooks/suite';
 
 import { FirmwareModal } from './FirmwareModal';
 

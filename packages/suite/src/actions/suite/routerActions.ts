@@ -3,22 +3,22 @@
  */
 import { Route } from '@suite-common/suite-types';
 
-import * as suiteActions from 'src/actions/suite/suiteActions';
 import { ROUTER } from 'src/actions/suite/constants';
+import * as suiteActions from 'src/actions/suite/suiteActions';
+import type { AnchorType } from 'src/constants/suite/anchors';
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
+import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/reducers/suite/suiteReducer';
+import history from 'src/support/history';
+import { Dispatch, GetState } from 'src/types/suite';
 import {
-    getAppWithParams,
-    getPrefixedURL,
-    getRoute,
-    getBackgroundRoute,
+    RouteParams,
     findRoute,
     findRouteByName,
-    RouteParams,
+    getAppWithParams,
+    getBackgroundRoute,
+    getPrefixedURL,
+    getRoute,
 } from 'src/utils/suite/router';
-import { Dispatch, GetState } from 'src/types/suite';
-import history from 'src/support/history';
-import type { AnchorType } from 'src/constants/suite/anchors';
-import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/reducers/suite/suiteReducer';
 
 export type RouterAction =
     | {

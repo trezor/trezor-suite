@@ -2,9 +2,9 @@ import styled, { useTheme } from 'styled-components';
 
 import { Button, Icon, variables } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
 import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { Modal, Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 const StyledModal = styled(Modal)`
     width: 435px;

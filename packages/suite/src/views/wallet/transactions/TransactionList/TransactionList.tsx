@@ -2,33 +2,33 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
 } from '@suite-common/wallet-core';
-import { arrayPartition } from '@trezor/utils';
 import {
     advancedSearchTransactions,
     groupTransactionsByDate,
     isPending,
 } from '@suite-common/wallet-utils';
-import { getTxsPerPage } from '@suite-common/suite-utils';
 import { SkeletonStack } from '@trezor/components';
+import { arrayPartition } from '@trezor/utils';
 
-import { Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import { Translation } from 'src/components/suite';
 import { Pagination } from 'src/components/wallet';
-import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
+import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
 
-import { TransactionListActions } from './TransactionListActions/TransactionListActions';
-import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { NoSearchResults } from './NoSearchResults';
+import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { TransactionCandidates } from './TransactionCandidates';
-import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
 import { TransactionGroupedList } from './TransactionGroupedList';
+import { TransactionListActions } from './TransactionListActions/TransactionListActions';
+import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
 
 interface TransactionListProps {
     transactions: WalletAccountTransaction[];

@@ -1,18 +1,18 @@
-import { useState, ChangeEventHandler } from 'react';
+import { ChangeEventHandler, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { Button, Input } from '@trezor/components';
-import { isAscii } from '@trezor/utils';
-import { spacingsPx } from '@trezor/theme';
-import { breakpointMediaQueries } from '@trezor/styles';
 import { selectDeviceLabel, selectDeviceName } from '@suite-common/wallet-core';
+import { Button, Input } from '@trezor/components';
+import { breakpointMediaQueries } from '@trezor/styles';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacingsPx } from '@trezor/theme';
+import { isAscii } from '@trezor/utils';
 
-import { Translation } from 'src/components/suite';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { Translation } from 'src/components/suite';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 
 const Container = styled.div<{ $isVertical?: boolean }>`
     display: flex;

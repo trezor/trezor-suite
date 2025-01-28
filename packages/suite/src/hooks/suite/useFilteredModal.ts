@@ -1,7 +1,7 @@
 import { UserContextPayload } from '@suite-common/suite-types';
 
-import { useSelector } from 'src/hooks/suite';
 import { MODAL } from 'src/actions/suite/constants';
+import { useSelector } from 'src/hooks/suite';
 import type { State as ModalState } from 'src/reducers/suite/modalReducer';
 
 type ModalContext = ModalState['context'];

@@ -1,9 +1,9 @@
+import { UpdateStatus, UpdateStatusDevice, UpdateStatusSuite } from './updateQuickActionTypes';
 import { useDevice, useSelector } from '../../../../../../../hooks/suite';
 import {
     DesktopUpdateState,
     UpdateState,
 } from '../../../../../../../reducers/suite/desktopUpdateReducer';
-import { UpdateStatus, UpdateStatusSuite, UpdateStatusDevice } from './updateQuickActionTypes';
 
 type UpdateStatusData = {
     updateStatus: UpdateStatus;

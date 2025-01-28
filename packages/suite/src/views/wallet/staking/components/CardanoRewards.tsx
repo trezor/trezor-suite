@@ -1,31 +1,31 @@
 import { useEffect } from 'react';
 
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, Icon } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
+import { openModal } from 'src/actions/suite/modalActions';
+import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
-import { Translation } from 'src/components/suite/Translation';
 import { Account } from 'src/types/wallet';
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { openModal } from 'src/actions/suite/modalActions';
 
-import { DeviceButton } from './DeviceButton';
+import { CardanoActionPending } from './CardanoActionPending';
 import {
-    StyledH2,
     Actions,
+    Column as CardanoColumn,
+    Content,
     Heading,
     Row,
+    StyledH2,
     Text,
-    Value,
     Title,
-    Content,
-    Column as CardanoColumn,
+    Value,
 } from './CardanoPrimitives';
-import { CardanoActionPending } from './CardanoActionPending';
+import { DeviceButton } from './DeviceButton';
 
 interface CardanoRewardsProps {
     account: Account;

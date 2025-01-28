@@ -1,5 +1,5 @@
-import { AbstractMetadataProvider, OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
 import GoogleClient from 'src/services/google';
+import { AbstractMetadataProvider, OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
 
 class GoogleProvider extends AbstractMetadataProvider {
     connected = false;

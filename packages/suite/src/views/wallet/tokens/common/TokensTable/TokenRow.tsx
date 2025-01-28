@@ -1,8 +1,5 @@
 import styled from 'styled-components';
 
-import { selectSelectedDevice, sendFormActions } from '@suite-common/wallet-core';
-import { Account, TokenAddress } from '@suite-common/wallet-types';
-import { Network, getCoingeckoId } from '@suite-common/wallet-config';
 import {
     DefinitionType,
     EnhancedTokenInfo,
@@ -10,26 +7,35 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import {
-    Dropdown,
-    IconButton,
-    ButtonGroup,
-    Button,
-    Icon,
-    Table,
-    GroupedMenuItems,
-    AssetLogo,
-    Row,
-    Column,
-    Text,
-} from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { Network, getCoingeckoId } from '@suite-common/wallet-config';
+import { selectSelectedDevice, sendFormActions } from '@suite-common/wallet-core';
+import { Account, TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
 } from '@suite-common/wallet-utils';
+import {
+    AssetLogo,
+    Button,
+    ButtonGroup,
+    Column,
+    Dropdown,
+    GroupedMenuItems,
+    Icon,
+    IconButton,
+    Row,
+    Table,
+    Text,
+} from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacings, spacingsPx } from '@trezor/theme';
 
+import { SUITE } from 'src/actions/suite/constants';
+import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
+import { openModal } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { showAddress } from 'src/actions/wallet/receiveActions';
+import { setTradingPrefilledFromCryptoId } from 'src/actions/wallet/trading/tradingCommonActions';
 import {
     FiatValue,
     FormattedCryptoAmount,
@@ -45,21 +51,15 @@ import {
     useSelector,
     useTranslation,
 } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
-import { showAddress } from 'src/actions/wallet/receiveActions';
-import {
-    getUnusedAddressFromAccount,
-    toTokenCryptoId,
-} from 'src/utils/wallet/trading/tradingUtils';
-import { openModal } from 'src/actions/suite/modalActions';
-import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
 import {
     selectIsCopyAddressModalShown,
     selectIsUnhideTokenModalShown,
 } from 'src/reducers/suite/suiteReducer';
-import { SUITE } from 'src/actions/suite/constants';
-import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
-import { setTradingPrefilledFromCryptoId } from 'src/actions/wallet/trading/tradingCommonActions';
+import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
+import {
+    getUnusedAddressFromAccount,
+    toTokenCryptoId,
+} from 'src/utils/wallet/trading/tradingUtils';
 
 import { BlurUrls } from '../BlurUrls';
 

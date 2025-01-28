@@ -1,13 +1,13 @@
 import { ReactNode } from 'react';
 
-import { isWeb, isDesktop, isLinux, isAndroid } from '@trezor/env-utils';
-import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 import { Text } from '@trezor/components';
+import { isAndroid, isDesktop, isLinux, isWeb } from '@trezor/env-utils';
+import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
 import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 
-import { BridgeStatus, SuiteDesktopTip, BridgeToggle, Wrapper } from './BridgeTip';
+import { BridgeStatus, BridgeToggle, SuiteDesktopTip, Wrapper } from './BridgeTip';
 import { UdevDescription } from './UdevDescription';
 
 export type TipItem = {

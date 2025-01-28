@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { variables } from '@trezor/components';
-import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
 import { CoinLogo } from '@trezor/product-components';
 
 import { Modal, Translation } from 'src/components/suite';
-import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 
 import { CustomBackends } from './CustomBackends/CustomBackends';
 

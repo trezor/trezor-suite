@@ -1,35 +1,35 @@
 // unit test for discovery actions
 // data provided by TrezorConnect are mocked
 
-import {
-    prepareDiscoveryReducer,
-    accountsActions,
-    createDiscoveryThunk,
-    restartDiscoveryThunk,
-    startDiscoveryThunk,
-    stopDiscoveryThunk,
-    updateNetworkSettingsThunk,
-    selectIsDiscoveryAuthConfirmationRequired,
-} from '@suite-common/wallet-core';
-import { ArrayElement } from '@trezor/type-utils';
+import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import {
+    accountsActions,
+    createDiscoveryThunk,
+    prepareDiscoveryReducer,
+    restartDiscoveryThunk,
+    selectIsDiscoveryAuthConfirmationRequired,
+    startDiscoveryThunk,
+    stopDiscoveryThunk,
+    updateNetworkSettingsThunk,
+} from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
 import TrezorConnect, { ERRORS } from '@trezor/connect';
-import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
+import { ArrayElement } from '@trezor/type-utils';
 
-import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
-import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
-import { accountsReducer } from 'src/reducers/wallet';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
+import { accountsReducer } from 'src/reducers/wallet';
+import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 
 import {
-    paramsError,
+    changeNetworksFixtures,
     fixtures,
     interruptionFixtures,
-    changeNetworksFixtures,
+    paramsError,
     unavailableCapabilities,
 } from '../__fixtures__/discoveryActions';
 

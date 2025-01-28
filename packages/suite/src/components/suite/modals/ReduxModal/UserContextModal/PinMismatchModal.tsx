@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 import { Button, Image } from '@trezor/components';
 
-import { Translation, Modal, ModalProps } from 'src/components/suite';
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
+import { Modal, ModalProps, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

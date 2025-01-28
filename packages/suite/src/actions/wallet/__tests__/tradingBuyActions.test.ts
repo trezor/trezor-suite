@@ -2,8 +2,8 @@ import { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 
 import { invityAPI } from '@suite-common/invity';
 
-import { configureStore } from 'src/support/tests/configureStore';
 import { tradingReducer } from 'src/reducers/wallet/tradingReducer';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import * as tradingBuyActions from '../tradingBuyActions';
 

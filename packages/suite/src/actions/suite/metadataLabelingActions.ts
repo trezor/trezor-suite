@@ -1,28 +1,28 @@
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
-import { cloneObject } from '@trezor/utils';
 import {
+    selectDeviceByStaticSessionId,
     selectDevices,
     selectSelectedDevice,
-    selectDeviceByStaticSessionId,
 } from '@suite-common/wallet-core';
+import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import { cloneObject } from '@trezor/utils';
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
-import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
-import {
-    MetadataProvider,
-    MetadataAddPayload,
-    ProviderErrorAction,
-    MetadataEncryptionVersion,
-    WalletLabels,
-    AccountLabels,
-} from 'src/types/suite/metadata';
-import { Account } from 'src/types/wallet';
-import * as metadataUtils from 'src/utils/suite/metadata';
 import {
     selectLabelableEntities,
     selectMetadata,
     selectSelectedProviderForLabels,
 } from 'src/reducers/suite/metadataReducer';
+import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import {
+    AccountLabels,
+    MetadataAddPayload,
+    MetadataEncryptionVersion,
+    MetadataProvider,
+    ProviderErrorAction,
+    WalletLabels,
+} from 'src/types/suite/metadata';
+import { Account } from 'src/types/wallet';
+import * as metadataUtils from 'src/utils/suite/metadata';
 
 import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';

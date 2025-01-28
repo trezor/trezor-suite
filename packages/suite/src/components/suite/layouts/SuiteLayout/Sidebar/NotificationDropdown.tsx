@@ -1,12 +1,12 @@
-import { useRef, useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Box, useMediaQuery, variables, Popover, Menu } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { Box, Menu, Popover, useMediaQuery, variables } from '@trezor/components';
 import { useOnClickOutside } from '@trezor/react-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacings } from '@trezor/theme';
 
 import { Notifications } from 'src/components/suite/notifications';
 import { useDispatch } from 'src/hooks/suite';

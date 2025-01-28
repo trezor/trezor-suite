@@ -1,19 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { TrezorDevice } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { TrezorDevice } from '@suite-common/suite-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { openModal } from 'src/actions/suite/modalActions';
-import {
-    cryptoIdToSymbol,
-    getUnusedAddressFromAccount,
-    parseCryptoId,
-} from 'src/utils/wallet/trading/tradingUtils';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import {
     TradingAccountType,
     TradingGetTranslationIdsProps,
@@ -22,8 +19,11 @@ import {
     TradingVerifyFormAccountOptionProps,
     TradingVerifyFormProps,
 } from 'src/types/trading/tradingVerify';
-import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import {
+    cryptoIdToSymbol,
+    getUnusedAddressFromAccount,
+    parseCryptoId,
+} from 'src/utils/wallet/trading/tradingUtils';
 
 const getSelectAccountOptions = (
     suiteReceiveAccounts: Account[] | undefined,

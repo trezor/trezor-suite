@@ -1,6 +1,6 @@
+import { firmwareActions, firmwareUpdate } from '@suite-common/firmware';
 import { testMocks } from '@suite-common/test-utils';
-import { firmwareUpdate, firmwareActions } from '@suite-common/firmware';
-import { UI, DeviceModelInternal, FirmwareType } from '@trezor/connect';
+import { DeviceModelInternal, FirmwareType, UI } from '@trezor/connect';
 
 const { getSuiteDevice, getFirmwareRelease } = testMocks;
 

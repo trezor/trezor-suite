@@ -2,14 +2,14 @@ import { DefaultTheme } from 'styled-components';
 
 import { IconName } from '@trezor/components';
 import { UIVariant } from '@trezor/components/src/config/types';
-import { Color, CSSColor } from '@trezor/theme';
+import { CSSColor, Color } from '@trezor/theme';
 
-import { goto } from '../../../../../../../actions/suite/routerActions';
 import {
     installUpdate,
     openJustUpdatedChangelog,
     setUpdateModalVisibility,
 } from '../../../../../../../actions/suite/desktopUpdateActions';
+import { goto } from '../../../../../../../actions/suite/routerActions';
 import { Dispatch } from '../../../../../../../types/suite';
 
 export const updateVariants = ['tertiary', 'info', 'purple'] as const;

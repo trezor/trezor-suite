@@ -3,8 +3,8 @@ import { useCallback, useEffect } from 'react';
 import { KEYBOARD_CODE } from '@trezor/components';
 
 import { setLanguage } from 'src/actions/settings/languageActions';
-import LANGUAGES, { Locale } from 'src/config/suite/languages';
 import { setAutodetect } from 'src/actions/suite/suiteActions';
+import LANGUAGES, { Locale } from 'src/config/suite/languages';
 import { selectIsDebugModeActive, selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 import { useDispatch } from './useDispatch';

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Button } from '@trezor/components';
 
-import { TextColumn, ActionColumn } from 'src/components/suite';
+import { ActionColumn, TextColumn } from 'src/components/suite';
 import { useDevice, usePasswords } from 'src/hooks/suite';
 import { getNextId } from 'src/utils/suite/passwords';
 

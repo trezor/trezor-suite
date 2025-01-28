@@ -1,10 +1,10 @@
-import styled from 'styled-components';
 import { darken } from 'polished';
+import styled from 'styled-components';
 
 import { Card, Icon, variables } from '@trezor/components';
-import { HELP_CENTER_COINJOIN_URL } from '@trezor/urls';
 import { mediaQueries } from '@trezor/styles';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { HELP_CENTER_COINJOIN_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';

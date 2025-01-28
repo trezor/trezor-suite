@@ -1,41 +1,41 @@
-import {
-    prepareMessageSystemReducer,
-    messageSystemActions,
-    initMessageSystemThunk,
-    fetchConfigThunk,
-} from '@suite-common/message-system';
-import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
+import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
 import { connectInitThunk } from '@suite-common/connect-init';
 import {
-    prepareDeviceReducer,
-    initDevices,
-    blockchainActions,
-    fetchFiatRatesThunk,
-    initBlockchainThunk,
-    periodicFetchFiatRatesThunk,
-    preloadFeeInfoThunk,
-    initStakeDataThunk,
-    periodicCheckStakeDataThunk,
-    updateMissingTxFiatRatesThunk,
-} from '@suite-common/wallet-core';
+    fetchConfigThunk,
+    initMessageSystemThunk,
+    messageSystemActions,
+    prepareMessageSystemReducer,
+} from '@suite-common/message-system';
+import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import {
     initTokenDefinitionsThunk,
     periodicCheckTokenDefinitionsThunk,
 } from '@suite-common/token-definitions';
-import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+import {
+    blockchainActions,
+    fetchFiatRatesThunk,
+    initBlockchainThunk,
+    initDevices,
+    initStakeDataThunk,
+    periodicCheckStakeDataThunk,
+    periodicFetchFiatRatesThunk,
+    preloadFeeInfoThunk,
+    prepareDeviceReducer,
+    updateMissingTxFiatRatesThunk,
+} from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { configureStore } from 'src/support/tests/configureStore';
-import { SUITE, ROUTER } from 'src/actions/suite/constants';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import modalReducer from 'src/reducers/suite/modalReducer';
-import routerReducer from 'src/reducers/suite/routerReducer';
-import metadataReducer from 'src/reducers/suite/metadataReducer';
-import walletReducers from 'src/reducers/wallet';
+import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { init } from 'src/actions/suite/initAction';
 import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
-import type { AppState } from 'src/types/suite';
+import metadataReducer from 'src/reducers/suite/metadataReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import walletReducers from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { configureStore } from 'src/support/tests/configureStore';
+import type { AppState } from 'src/types/suite';
 
 import { appChanged } from '../suiteActions';
 

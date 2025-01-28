@@ -1,5 +1,5 @@
-import * as crypto from 'crypto';
 import base58check from 'bs58check';
+import * as crypto from 'crypto';
 
 import { DataType, MetadataProvider } from '@suite-common/metadata-types';
 import { StaticSessionId } from '@trezor/connect';

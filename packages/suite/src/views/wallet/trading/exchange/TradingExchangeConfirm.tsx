@@ -1,8 +1,8 @@
-import { UseTradingProps } from 'src/types/trading/trading';
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingSelectedOffer } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOffer';
 import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/useTradingExchangeForm';
+import { UseTradingProps } from 'src/types/trading/trading';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
+import { TradingSelectedOffer } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOffer';
 
 const TradingExchangeConfirmComponent = ({ selectedAccount }: UseTradingProps) => {
     const tradingExchangeContextValues = useTradingExchangeForm({

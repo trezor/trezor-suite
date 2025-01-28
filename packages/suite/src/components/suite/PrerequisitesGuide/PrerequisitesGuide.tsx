@@ -1,31 +1,31 @@
 import { useMemo } from 'react';
 
-import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import styled from 'styled-components';
 
-import { getStatus, deviceNeedsAttention } from '@suite-common/suite-utils';
-import { Button, motionEasing } from '@trezor/components';
+import { deviceNeedsAttention, getStatus } from '@suite-common/suite-utils';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
+import { Button, motionEasing } from '@trezor/components';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { ConnectDevicePrompt, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType, selectPrerequisite } from 'src/reducers/suite/suiteReducer';
-import { goto } from 'src/actions/suite/routerActions';
 
-import { Transport } from './Transport';
-import { DeviceConnect } from './DeviceConnect';
 import { DeviceAcquire } from './DeviceAcquire';
-import { DeviceUnreadable } from './DeviceUnreadable';
-import { DeviceUnknown } from './DeviceUnknown';
-import { DeviceSeedless } from './DeviceSeedless';
-import { DeviceRecoveryMode } from './DeviceRecoveryMode';
-import { DeviceInitialize } from './DeviceInitialize';
 import { DeviceBootloader } from './DeviceBootloader';
-import { DeviceNoFirmware } from './DeviceNoFirmware';
-import { DeviceUpdateRequired } from './DeviceUpdateRequired';
+import { DeviceConnect } from './DeviceConnect';
 import { DeviceDisconnectRequired } from './DeviceDisconnectRequired';
-import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
+import { DeviceInitialize } from './DeviceInitialize';
+import { DeviceNoFirmware } from './DeviceNoFirmware';
+import { DeviceRecoveryMode } from './DeviceRecoveryMode';
+import { DeviceSeedless } from './DeviceSeedless';
+import { DeviceUnknown } from './DeviceUnknown';
+import { DeviceUnreadable } from './DeviceUnreadable';
+import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceUsedElsewhere } from './DeviceUsedElsewhere';
+import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
+import { Transport } from './Transport';
 
 const Wrapper = styled.div`
     display: flex;

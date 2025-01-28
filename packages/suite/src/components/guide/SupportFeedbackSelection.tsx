@@ -1,18 +1,18 @@
 import styled from 'styled-components';
 
-import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { resolveStaticPath, isDevEnv } from '@suite-common/suite-utils';
-import { Icon, Link, variables } from '@trezor/components';
-import { isDesktop } from '@trezor/env-utils';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { isDevEnv, resolveStaticPath } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Icon, Link, variables } from '@trezor/components';
+import { getFirmwareVersion } from '@trezor/device-utils';
+import { isDesktop } from '@trezor/env-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { borders } from '@trezor/theme';
+import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
+import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
+import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { GuideViewWrapper, GuideHeader, GuideContent } from 'src/components/guide';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 
 const Section = styled.div`

@@ -1,26 +1,26 @@
-import { useState, useCallback, ReactNode, ChangeEvent } from 'react';
+import { ChangeEvent, ReactNode, useCallback, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
+import { FeedbackCategory, FeedbackType, Rating, UserData } from '@suite-common/suite-types';
+import { Button, CollapsibleBox, Select, Textarea, variables } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { Textarea, Select, variables, Button, CollapsibleBox } from '@trezor/components';
-import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-common/suite-types';
 import {
+    getCommitHash,
     getEnvironment,
+    getOsName,
+    getSuiteVersion,
     getUserAgent,
     getWindowHeight,
     getWindowWidth,
-    getOsName,
-    getCommitHash,
-    getSuiteVersion,
 } from '@trezor/env-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx } from '@trezor/theme';
 
+import { sendFeedback, setView } from 'src/actions/suite/guideActions';
+import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { sendFeedback, setView } from 'src/actions/suite/guideActions';
-import { GuideViewWrapper, GuideHeader, GuideContent } from 'src/components/guide';
 
 const Headline = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};

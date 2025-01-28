@@ -3,13 +3,13 @@ import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import { DEVICE, StaticSessionId } from '@trezor/connect';
 
-import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import { CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
-import { CoinjoinAccount, CoinjoinSession } from 'src/types/wallet/coinjoin';
-import { Account } from 'src/types/wallet';
 import { RouterState } from 'src/reducers/suite/routerReducer';
+import { SuiteState } from 'src/reducers/suite/suiteReducer';
+import { CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
+import { Account } from 'src/types/wallet';
+import { CoinjoinAccount, CoinjoinSession } from 'src/types/wallet/coinjoin';
 
 const DEVICE_A = {
     available: true,

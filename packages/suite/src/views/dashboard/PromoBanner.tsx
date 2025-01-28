@@ -2,16 +2,16 @@ import { useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@trezor/urls';
-import { EventType, analytics } from '@trezor/suite-analytics';
-import { Button, Icon, Image, Tooltip, variables, Row, Column } from '@trezor/components';
+import { Button, Column, Icon, Image, Row, Tooltip, variables } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
+import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE, SUITE_URL } from '@trezor/urls';
 
-import { Translation, QrCode, TrezorLink } from 'src/components/suite';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { QrCode, Translation, TrezorLink } from 'src/components/suite';
 import { HORIZONTAL_LAYOUT_PADDINGS, MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 import { useResponsiveContext } from '../../support/suite/ResponsiveContext';
 

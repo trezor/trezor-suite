@@ -1,27 +1,27 @@
 import { memo, useState } from 'react';
 
+import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts';
 import styled, { useTheme } from 'styled-components';
-import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid, Cell } from 'recharts';
 
 import { Icon, variables } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
+import { GraphRangeSelector, GraphSkeleton } from 'src/components/suite';
 import { useGraph } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import {
-    GraphRange,
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
+    GraphRange,
 } from 'src/types/wallet/graph';
-import { calcYDomain, calcFakeGraphDataForTimestamps, calcXDomain } from 'src/utils/wallet/graph';
-import { GraphSkeleton, GraphRangeSelector } from 'src/components/suite';
+import { calcFakeGraphDataForTimestamps, calcXDomain, calcYDomain } from 'src/utils/wallet/graph';
 
+import { GraphBar } from './GraphBar';
 import { GraphResponsiveContainer } from './GraphResponsiveContainer';
+import { GraphTooltipAccount } from './GraphTooltipAccount';
+import { GraphTooltipDashboard } from './GraphTooltipDashboard';
 import { GraphXAxisTick } from './GraphXAxisTick';
 import { GraphYAxisTick } from './GraphYAxisTick';
-import { GraphBar } from './GraphBar';
-import { GraphTooltipDashboard } from './GraphTooltipDashboard';
-import { GraphTooltipAccount } from './GraphTooltipAccount';
 
 const Wrapper = styled.div`
     display: flex;

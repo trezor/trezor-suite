@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { IconName, Card, Column, useMediaQuery, variables, InfoItem } from '@trezor/components';
+import { Card, Column, IconName, InfoItem, useMediaQuery, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 type SettingsSectionProps = {

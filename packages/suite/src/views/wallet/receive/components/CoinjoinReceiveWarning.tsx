@@ -1,8 +1,8 @@
-import { Banner, H4, Column } from '@trezor/components';
+import { Banner, Column, H4 } from '@trezor/components';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Translation } from 'src/components/suite';
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 export const CoinjoinReceiveWarning = () => {

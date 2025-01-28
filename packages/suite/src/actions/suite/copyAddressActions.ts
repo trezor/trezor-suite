@@ -1,8 +1,8 @@
 import { Dispatch } from 'redux';
 
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { AddressType } from '@suite-common/wallet-types';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { openModal } from 'src/actions/suite/modalActions';
 

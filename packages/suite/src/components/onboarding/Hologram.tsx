@@ -2,12 +2,12 @@ import { useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getPackagingUrl } from '@suite-common/suite-utils';
-import { DeviceAnimation, Banner, variables } from '@trezor/components';
-import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
-import { typography } from '@trezor/theme';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Banner, DeviceAnimation, variables } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
+import { typography } from '@trezor/theme';
+import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';

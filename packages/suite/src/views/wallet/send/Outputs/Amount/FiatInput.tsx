@@ -1,32 +1,32 @@
 import { Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { formInputsMaxLength } from '@suite-common/validators';
+import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
+    CurrencyOption,
+    FiatRatesResult,
+    Output,
     Timestamp,
     TokenAddress,
-    FiatRatesResult,
-    CurrencyOption,
-    Output,
 } from '@suite-common/wallet-types';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Select } from '@trezor/components';
 import {
-    getInputState,
-    findToken,
-    isLowAnonymityWarning,
-    formatAmount,
     buildCurrencyOptions,
+    findToken,
+    formatAmount,
+    getInputState,
+    isLowAnonymityWarning,
 } from '@suite-common/wallet-utils';
-import { formInputsMaxLength } from '@suite-common/validators';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { Select } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useTranslation } from 'src/hooks/suite';
-import { validateDecimals } from 'src/utils/suite/validation';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { validateDecimals } from 'src/utils/suite/validation';
 
 type FiatInputProps = {
     output: Partial<Output>;

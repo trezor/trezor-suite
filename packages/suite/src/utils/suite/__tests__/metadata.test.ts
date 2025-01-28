@@ -1,12 +1,12 @@
 import fs from 'fs';
 
 import {
-    encrypt,
+    arrayBufferToBuffer,
     decrypt,
-    deriveMetadataKey,
     deriveAesKey,
     deriveFilename,
-    arrayBufferToBuffer,
+    deriveMetadataKey,
+    encrypt,
     urlSearchParams,
 } from '../metadata';
 

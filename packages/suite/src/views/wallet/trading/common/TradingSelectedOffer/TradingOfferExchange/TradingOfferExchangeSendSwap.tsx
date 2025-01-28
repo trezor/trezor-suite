@@ -1,33 +1,33 @@
-import { useState, ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { FieldError } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
 import styled from 'styled-components';
 
+import { TranslationKey } from '@suite-common/intl-types';
+import type { TradingExchangeType } from '@suite-common/invity';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Button,
-    Input,
-    InfoItem,
-    Column,
     Card,
-    Row,
+    Column,
     Divider,
+    ElevationContext,
+    InfoItem,
+    Input,
+    Row,
     SelectBar,
     Tooltip,
-    ElevationContext,
 } from '@trezor/components';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
-import { TranslationKey } from '@suite-common/intl-types';
 import { spacings } from '@trezor/theme';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
-import type { TradingExchangeType } from '@suite-common/invity';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
+import { AccountLabeling, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
-import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
 
 const BreakableValue = styled.span`
     word-break: break-all;

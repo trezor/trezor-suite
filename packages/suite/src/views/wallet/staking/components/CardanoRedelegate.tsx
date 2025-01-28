@@ -4,10 +4,10 @@ import { Card, Column, Icon } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { Translation } from 'src/components/suite/Translation';
+import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 
-import { Actions, Title, Heading, Text } from './CardanoPrimitives';
+import { Actions, Heading, Text, Title } from './CardanoPrimitives';
 import { DeviceButton } from './DeviceButton';
 
 interface CardanoRedelegateProps {

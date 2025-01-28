@@ -1,13 +1,13 @@
-import { Grid, NewModal, useMediaQuery, variables } from '@trezor/components';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Grid, NewModal, useMediaQuery, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { StakeEthFormContext, useStakeEthForm } from 'src/hooks/wallet/useStakeEthForm';
 
-import { StakeEthForm } from './StakeEthForm/StakeEthForm';
 import { StakeButton } from './StakeEthForm/StakeButton';
+import { StakeEthForm } from './StakeEthForm/StakeEthForm';
 import { StakingInfoCards } from './StakingInfoCards/StakingInfoCards';
 
 interface StakeModalModalProps {

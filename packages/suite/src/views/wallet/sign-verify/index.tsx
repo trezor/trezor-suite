@@ -3,36 +3,36 @@ import { FieldError } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import {
-    Input,
-    Button,
-    Textarea,
-    Card,
-    Switch,
-    variables,
-    SelectBar,
-    Tooltip,
-} from '@trezor/components';
 import { getInputState } from '@suite-common/wallet-utils';
+import {
+    Button,
+    Card,
+    Input,
+    SelectBar,
+    Switch,
+    Textarea,
+    Tooltip,
+    variables,
+} from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
-import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
-import { Translation } from 'src/components/suite';
-import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { sign, verify } from 'src/actions/wallet/signVerifyActions';
 import { goto } from 'src/actions/suite/routerActions';
+import { sign, verify } from 'src/actions/wallet/signVerifyActions';
+import { Translation } from 'src/components/suite';
 import { TranslationKey } from 'src/components/suite/Translation';
+import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
+import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useCopySignedMessage } from 'src/hooks/wallet/sign-verify/useCopySignedMessage';
 import {
-    useSignVerifyForm,
-    SignVerifyFields,
     MAX_LENGTH_MESSAGE,
     MAX_LENGTH_SIGNATURE,
+    SignVerifyFields,
+    useSignVerifyForm,
 } from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
 
-import { Navigation, NavPages } from './components/Navigation';
-import { SignAddressInput } from './components/SignAddressInput';
 import { ButtonRow, Row } from './components/ButtonRow';
+import { NavPages, Navigation } from './components/Navigation';
+import { SignAddressInput } from './components/SignAddressInput';
 
 const SwitchWrapper = styled.label`
     display: flex;

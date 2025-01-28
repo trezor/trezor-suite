@@ -1,16 +1,16 @@
-import { FormState, PrecomposedTransactionFinal, Account } from '@suite-common/wallet-types';
 import {
     SerializedTx,
     accountsActions,
-    prepareSendFormReducer,
     initialState,
+    prepareSendFormReducer,
     sendFormActions,
 } from '@suite-common/wallet-core';
+import { Account, FormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import { STORAGE } from 'src/actions/suite/constants';
-import { Action } from 'src/types/suite';
-import { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { PreloadStoreAction } from 'src/support/suite/preloadStore';
+import { Action } from 'src/types/suite';
 
 // Since these mocked values are only used for assigning them and deleting from the state,
 // their shape is completely irrelevant for these test. So to make this test file

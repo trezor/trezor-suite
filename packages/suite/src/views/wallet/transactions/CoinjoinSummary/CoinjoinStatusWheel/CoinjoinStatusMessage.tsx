@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
-import { typography, spacingsPx } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 
-import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { Translation } from 'src/components/suite/Translation';
 import { CountdownTimer } from 'src/components/suite';
+import { Translation } from 'src/components/suite/Translation';
+import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import {

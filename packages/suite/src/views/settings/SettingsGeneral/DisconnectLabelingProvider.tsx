@@ -1,10 +1,10 @@
 import { capitalizeFirstLetter } from '@trezor/utils';
 
+import { disconnectProvider } from 'src/actions/suite/metadataProviderActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { useSelector, useDispatch } from 'src/hooks/suite';
-import { disconnectProvider } from 'src/actions/suite/metadataProviderActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 
 export const DisconnectLabelingProvider = () => {

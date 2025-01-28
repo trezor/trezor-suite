@@ -1,10 +1,10 @@
 import { FormattedDate } from 'react-intl';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { useFormatters } from '@suite-common/formatters';
-import { isTestnet, parseTransactionDateKey } from '@suite-common/wallet-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { isTestnet, parseTransactionDateKey } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 

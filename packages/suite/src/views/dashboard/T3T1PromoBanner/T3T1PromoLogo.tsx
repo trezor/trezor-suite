@@ -2,8 +2,8 @@ import React from 'react';
 
 import styled from 'styled-components';
 
-import { borders, colorVariants, typography } from '@trezor/theme';
 import { variables } from '@trezor/components';
+import { borders, colorVariants, typography } from '@trezor/theme';
 
 const LogoContainer = styled.div`
     display: flex;

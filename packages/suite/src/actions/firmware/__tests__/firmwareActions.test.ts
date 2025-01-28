@@ -1,11 +1,11 @@
+import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { testMocks } from '@suite-common/test-utils';
 import { State as DeviceState } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/connect';
-import { prepareFirmwareReducer } from '@suite-common/firmware';
 
-import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 
 import { actions, reducerActions } from '../__fixtures__/firmwareActions';
 

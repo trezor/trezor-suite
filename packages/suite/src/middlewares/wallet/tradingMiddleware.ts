@@ -1,18 +1,18 @@
 import { MiddlewareAPI } from 'redux';
 
-import { UI } from '@trezor/connect';
-import { accountsActions } from '@suite-common/wallet-core';
 import { invityAPI } from '@suite-common/invity';
+import { accountsActions } from '@suite-common/wallet-core';
+import { UI } from '@trezor/connect';
 
-import { AppState, Action, Dispatch } from 'src/types/suite';
+import { MODAL, ROUTER } from 'src/actions/suite/constants';
 import { TRADING_COMMON, TRADING_EXCHANGE, TRADING_SELL } from 'src/actions/wallet/constants';
-import { INVITY_API_RELOAD_DATA_AFTER_MS } from 'src/constants/wallet/trading/metadata';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
-import * as tradingInfoAction from 'src/actions/wallet/tradingInfoActions';
 import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
 import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
+import * as tradingInfoAction from 'src/actions/wallet/tradingInfoActions';
 import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
-import { ROUTER, MODAL } from 'src/actions/suite/constants';
+import { INVITY_API_RELOAD_DATA_AFTER_MS } from 'src/constants/wallet/trading/metadata';
+import { Action, AppState, Dispatch } from 'src/types/suite';
 import { getTradeTypeByRoute } from 'src/utils/wallet/trading/tradingUtils';
 
 /**

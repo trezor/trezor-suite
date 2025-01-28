@@ -2,11 +2,11 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Card, Column, LottieAnimation, Paragraph, Row, variables, Text } from '@trezor/components';
+import { Card, Column, LottieAnimation, Paragraph, Row, Text, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useDevice, useSelector } from 'src/hooks/suite';
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/reducers/suite/suiteReducer';
 
 import { AcquireDeviceButton } from '../suite/AcquireDeviceButton';

@@ -8,10 +8,10 @@ import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } f
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { useActions } from 'src/hooks/suite';
 
-import { QuickActions } from './QuickActions/QuickActions';
 import { Navigation } from './Navigation';
-import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
+import { QuickActions } from './QuickActions/QuickActions';
 import { TrafficLightOffset } from '../../../TrafficLightOffset';
+import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 import { UpdateNotificationBanner } from './QuickActions/Update/UpdateNotificationBanner';
 import { useUpdateStatus } from './QuickActions/Update/useUpdateStatus';
 import { setSidebarWidth as setSidebarWidthInRedux } from '../../../../../actions/suite/suiteActions';

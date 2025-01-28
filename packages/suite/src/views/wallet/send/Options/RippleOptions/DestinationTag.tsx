@@ -1,13 +1,13 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Input, Switch, Note, Column, Banner } from '@trezor/components';
-import { getInputState, isInteger } from '@suite-common/wallet-utils';
-import { U_INT_32 } from '@suite-common/wallet-constants';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { U_INT_32 } from '@suite-common/wallet-constants';
+import { getInputState, isInteger } from '@suite-common/wallet-utils';
+import { Banner, Column, Input, Note, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
 import { useTranslation } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
 
 export const DestinationTag = () => {
     const {

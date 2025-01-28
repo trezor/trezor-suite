@@ -2,17 +2,17 @@ import { UseFormSetValue } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { Radio, Column, Card, Grid, Paragraph, useElevation } from '@trezor/components';
-import { borders, spacingsPx, spacings, Elevation, mapElevationToBackground } from '@trezor/theme';
+import { Card, Column, Grid, Paragraph, Radio, useElevation } from '@trezor/components';
+import { Elevation, borders, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { TradingExchangeFormProps, RateType } from 'src/types/trading/tradingForm';
+import { TranslationKey } from 'src/components/suite/Translation';
 import {
     FORM_RATE_FIXED,
     FORM_RATE_FLOATING,
     FORM_RATE_TYPE,
 } from 'src/constants/wallet/trading/form';
-import { TranslationKey } from 'src/components/suite/Translation';
+import { RateType, TradingExchangeFormProps } from 'src/types/trading/tradingForm';
 
 const ItemWrapper = styled.div<{ $isSelected: boolean; $elevation: Elevation }>`
     padding: ${spacingsPx.sm} ${spacingsPx.md};

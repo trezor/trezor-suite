@@ -2,8 +2,8 @@ import React from 'react';
 
 import styled from 'styled-components';
 
-import { zIndices } from '@trezor/theme';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
+import { zIndices } from '@trezor/theme';
 
 type Props = {
     children?: React.ReactNode;

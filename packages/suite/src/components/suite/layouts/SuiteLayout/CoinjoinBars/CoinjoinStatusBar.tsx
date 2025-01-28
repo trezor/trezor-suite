@@ -1,25 +1,25 @@
 import styled, { css } from 'styled-components';
 
 import {
-    selectSelectedDevice,
-    selectDevices,
     selectAccountByKey,
     selectDeviceThunk,
+    selectDevices,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { ProgressPie, variables } from '@trezor/components';
 import { WalletParams } from '@suite-common/wallet-types';
+import { ProgressPie, variables } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
-import { CoinjoinSession } from 'src/types/wallet/coinjoin';
-import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { goto } from 'src/actions/suite/routerActions';
+import { CountdownTimer, Translation, WalletLabeling } from 'src/components/suite';
+import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
+import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';
 import {
-    selectSessionProgressByAccountKey,
     selectRoundsDurationInHours,
+    selectSessionProgressByAccountKey,
 } from 'src/reducers/wallet/coinjoinReducer';
-import { CountdownTimer, Translation, WalletLabeling } from 'src/components/suite';
+import { CoinjoinSession } from 'src/types/wallet/coinjoin';
 
 const SPACING = 6;
 

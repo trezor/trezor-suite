@@ -1,12 +1,12 @@
 import { DeviceModelInternal } from '@trezor/connect';
 
+import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
+import { setStatus } from 'src/actions/recovery/recoveryActions';
 import {
     OnboardingButtonBack,
     OnboardingStepBox,
     OnboardingStepBoxProps,
 } from 'src/components/onboarding';
-import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
-import { setStatus } from 'src/actions/recovery/recoveryActions';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
 const RecoveryStepBox = (props: OnboardingStepBoxProps) => {

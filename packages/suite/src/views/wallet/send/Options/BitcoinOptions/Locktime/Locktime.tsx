@@ -2,16 +2,16 @@ import { useEffect } from 'react';
 
 import styled from 'styled-components';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Card, Icon, IconButton } from '@trezor/components';
-import { getInputState, isInteger } from '@suite-common/wallet-utils';
-import { spacingsPx } from '@trezor/theme';
 import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { getInputState, isInteger } from '@suite-common/wallet-utils';
+import { Card, Icon, IconButton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
+import { spacingsPx } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { Translation } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { Translation } from 'src/components/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 import { canLocktimeTxBeBroadcast } from './canLocktimeTxBeBroadcast';

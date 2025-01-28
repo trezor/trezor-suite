@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { useFormatters } from '@suite-common/formatters';
-import { variables } from '@trezor/components';
 import { DISCREET_PLACEHOLDER, useShouldRedactNumbers } from '@suite-common/wallet-utils';
+import { variables } from '@trezor/components';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Translation, HiddenPlaceholder, FormattedDate } from 'src/components/suite';
+import { FormattedDate, HiddenPlaceholder, Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';
 import { sumFiatValueMap } from 'src/utils/wallet/graph';

@@ -1,10 +1,10 @@
+import { getNetwork } from '@suite-common/wallet-config';
 import { Button, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { getNetwork } from '@suite-common/wallet-config';
 
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useAccountSearch, useDispatch } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 
 import { NetworkBadge } from './NetworkBadge';
 

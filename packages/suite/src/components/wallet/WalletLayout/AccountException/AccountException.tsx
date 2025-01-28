@@ -1,12 +1,12 @@
-import { H2, Column } from '@trezor/components';
 import { SelectedAccountException } from '@suite-common/wallet-types';
+import { Column, H2 } from '@trezor/components';
 
-import { AuthFailed } from './AuthFailed';
-import { DiscoveryFailed } from './DiscoveryFailed';
-import { DiscoveryEmpty } from './DiscoveryEmpty';
 import { AccountNotEnabled } from './AccountNotEnabled';
-import { AccountNotLoaded } from './AccountNotLoaded';
 import { AccountNotExists } from './AccountNotExists';
+import { AccountNotLoaded } from './AccountNotLoaded';
+import { AuthFailed } from './AuthFailed';
+import { DiscoveryEmpty } from './DiscoveryEmpty';
+import { DiscoveryFailed } from './DiscoveryFailed';
 
 const getExceptionPage = (
     loader: SelectedAccountException['loader'],

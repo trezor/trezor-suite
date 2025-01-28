@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
+import { Image, Link, variables } from '@trezor/components';
 import { INVITY_URL } from '@trezor/urls';
-import { variables, Link, Image } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { TradingFooterLogoWrapper } from 'src/views/wallet/trading';

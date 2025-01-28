@@ -1,30 +1,30 @@
 import { FieldValues } from 'react-hook-form';
 
-import { cloneObject } from '@trezor/utils';
-import { Discovery, FormDraftKeyPrefix } from '@suite-common/wallet-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectHistoricRatesByTransactions, getFormDraftKey } from '@suite-common/wallet-utils';
-import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { selectDevices, deviceActions } from '@suite-common/wallet-core';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
 import { MetadataState } from '@suite-common/metadata-types';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { DefinitionType, TokenManagementAction } from '@suite-common/token-definitions';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
+import { deviceActions, selectDevices } from '@suite-common/wallet-core';
+import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
+import { Discovery, FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import { getFormDraftKey, selectHistoricRatesByTransactions } from '@suite-common/wallet-utils';
+import { cloneObject } from '@trezor/utils';
 
+import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 import { db } from 'src/storage';
-import {
-    serializeDiscovery,
-    serializeDevice,
-    serializeCoinjoinAccount,
-} from 'src/utils/suite/storage';
+import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
-import type { Trade } from 'src/types/wallet/tradingCommonTypes';
-import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { GraphData } from 'src/types/wallet/graph';
+import type { Trade } from 'src/types/wallet/tradingCommonTypes';
+import {
+    serializeCoinjoinAccount,
+    serializeDevice,
+    serializeDiscovery,
+} from 'src/utils/suite/storage';
 import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
-import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 
 import { STORAGE } from './constants';
 import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';

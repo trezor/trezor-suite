@@ -1,8 +1,8 @@
 import { Fragment } from 'react';
 
-import { Divider, Card } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import type { TradingSellType } from '@suite-common/invity';
+import { Card, Divider } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingOfferSellProps } from 'src/types/trading/tradingForm';

@@ -1,13 +1,13 @@
 import { Route } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectIsAccountTabPage } from 'src/reducers/suite/routerReducer';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-import { SettingsName } from './SettingsName';
-import { BasicName } from './BasicName';
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
+import { BasicName } from './BasicName';
+import { SettingsName } from './SettingsName';
 
 interface PageNameProps {
     backRoute?: Route['name'];

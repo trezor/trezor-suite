@@ -9,15 +9,15 @@ import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
-import { RateType } from 'src/types/trading/tradingForm';
 import {
     FORM_DEFAULT_CRYPTO_CURRENCY,
     FORM_DEFAULT_CRYPTO_SECONDARY_CURRENCY,
     FORM_RATE_FIXED,
     FORM_RATE_FLOATING,
 } from 'src/constants/wallet/trading/form';
-import { Account } from 'src/types/wallet';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
+import { RateType } from 'src/types/trading/tradingForm';
+import { Account } from 'src/types/wallet';
 import { CryptoAmountLimitProps } from 'src/utils/suite/validation';
 
 type GetAmountLimitsProps = {

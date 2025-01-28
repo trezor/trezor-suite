@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { H2, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { TranslationKey, Translation } from 'src/components/suite/Translation';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
 
 type WalletSubpageHeadingProps = {
     title: TranslationKey;

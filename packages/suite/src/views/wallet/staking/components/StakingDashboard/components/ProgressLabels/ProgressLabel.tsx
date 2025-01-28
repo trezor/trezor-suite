@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 
 import styled, { DefaultTheme } from 'styled-components';
 
-import { IconCircle, Text, Row } from '@trezor/components';
+import { IconCircle, Row, Text } from '@trezor/components';
 import { IconCirclePaddingType } from '@trezor/components/src/components/IconCircle/types';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 

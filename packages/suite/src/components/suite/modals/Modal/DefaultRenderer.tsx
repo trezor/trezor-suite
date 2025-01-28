@@ -1,7 +1,7 @@
 import { ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 
-import { Modal, ModalProps, Icon, intermediaryTheme } from '@trezor/components';
+import { Icon, Modal, ModalProps, intermediaryTheme } from '@trezor/components';
 
 import { useGuide } from 'src/hooks/guide';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';

@@ -1,6 +1,16 @@
-import { Ethereum, ETH_NETWORK_ADDRESSES, EthNetworkAddresses } from '@everstake/wallet-sdk';
+import { ETH_NETWORK_ADDRESSES, EthNetworkAddresses, Ethereum } from '@everstake/wallet-sdk';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    DEFAULT_PAYMENT,
+    MIN_ETH_AMOUNT_FOR_STAKING,
+    STAKE_GAS_LIMIT_RESERVE,
+    UNSTAKE_INTERCHANGES,
+    UNSTAKING_ETH_PERIOD,
+    WALLET_SDK_SOURCE,
+} from '@suite-common/wallet-constants';
+import { ValidatorsQueue } from '@suite-common/wallet-core';
 import {
     PrecomposedLevels,
     StakeFormState,
@@ -8,25 +18,15 @@ import {
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
-    DEFAULT_PAYMENT,
-    STAKE_GAS_LIMIT_RESERVE,
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    UNSTAKE_INTERCHANGES,
-    WALLET_SDK_SOURCE,
-    UNSTAKING_ETH_PERIOD,
-} from '@suite-common/wallet-constants';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-import {
     getEthereumEstimateFeeParams,
     isPending,
     isSupportedEthStakingNetworkSymbol,
     sanitizeHex,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { EthereumTransaction, Success, InternalTransfer } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { ValidatorsQueue } from '@suite-common/wallet-core';
+import TrezorConnect, { EthereumTransaction, InternalTransfer, Success } from '@trezor/connect';
 import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
 import { PartialRecord } from '@trezor/type-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 

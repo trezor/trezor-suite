@@ -2,18 +2,18 @@ import { useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { NewModal, NewModalProps } from '@trezor/components';
+import TrezorConnect, { PROTO } from '@trezor/connect';
+import { ConfirmOnDevice } from '@trezor/product-components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import {
     HELP_CENTER_KEEPING_SEED_SAFE_URL,
-    TREZOR_SUPPORT_RECOVERY_ISSUES_URL,
     HELP_CENTER_UPGRADING_TO_MULTI_SHARE_URL,
+    TREZOR_SUPPORT_RECOVERY_ISSUES_URL,
 } from '@trezor/urls';
-import TrezorConnect, { PROTO } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
-import { ConfirmOnDevice } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { useSelector } from 'src/hooks/suite';
 
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';
 import { MultiShareBackupStep2to4 } from './MultiShareBackupStep2to4';

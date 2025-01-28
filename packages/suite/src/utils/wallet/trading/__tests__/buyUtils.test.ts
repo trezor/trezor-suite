@@ -1,10 +1,10 @@
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import * as fixtures from 'src/utils/wallet/trading/__fixtures__/buyUtils';
 import {
-    getAmountLimits,
     createQuoteLink,
-    getStatusMessage,
     createTxLink,
+    getAmountLimits,
+    getStatusMessage,
 } from 'src/utils/wallet/trading/buyUtils';
 
 const {

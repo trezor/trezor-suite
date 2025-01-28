@@ -1,16 +1,17 @@
-import { spacings } from '@trezor/theme';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { formatAmount } from '@suite-common/wallet-utils';
 import {
-    Row,
-    Column,
     Card,
+    Column,
     ElevationContext,
     FractionButton,
     FractionButtonProps,
+    Row,
 } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { formatAmount } from '@suite-common/wallet-utils';
+import { spacings } from '@trezor/theme';
 
+import { Translation } from 'src/components/suite';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import {
     FORM_CRYPTO_CURRENCY_SELECT,
@@ -28,19 +29,18 @@ import {
     TradingSellFormProps,
     TradingUseFormActionsReturnProps,
 } from 'src/types/trading/tradingForm';
-import { TradingFormInputCryptoSelect } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCryptoSelect';
-import { TradingFormInputAccount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAccount';
-import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
-import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
-import { TradingFormSwitcherExchangeRates } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormSwitcherExchangeRates';
-import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
-import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
-import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 import {
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { Translation } from 'src/components/suite';
+import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
+import { TradingFormInputAccount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAccount';
+import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry';
+import { TradingFormInputCryptoSelect } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCryptoSelect';
+import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
+import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
+import { TradingFormSwitcherExchangeRates } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormSwitcherExchangeRates';
 
 const generateFractionButtons = (
     helpers: TradingUseFormActionsReturnProps,

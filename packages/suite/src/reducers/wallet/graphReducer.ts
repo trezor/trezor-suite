@@ -2,12 +2,12 @@ import produce from 'immer';
 
 import { accountsActions } from '@suite-common/wallet-core';
 
-import { GRAPH } from 'src/actions/wallet/constants';
 import { STORAGE } from 'src/actions/suite/constants';
-import { WalletAction, Account } from 'src/types/wallet';
-import { Action as SuiteAction } from 'src/types/suite';
+import { GRAPH } from 'src/actions/wallet/constants';
 import { SETTINGS } from 'src/config/suite';
-import { GraphData, AccountIdentifier, GraphRange, GraphScale } from 'src/types/wallet/graph';
+import { Action as SuiteAction } from 'src/types/suite';
+import { Account, WalletAction } from 'src/types/wallet';
+import { AccountIdentifier, GraphData, GraphRange, GraphScale } from 'src/types/wallet/graph';
 
 export interface State {
     data: GraphData[];

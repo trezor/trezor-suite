@@ -1,17 +1,17 @@
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { TokenIconSet } from '@trezor/product-components';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenIconSet } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useSelector } from 'src/hooks/suite';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
+    TokensWithRates,
     enhanceTokensWithRates,
     getTokens,
     sortTokensWithRates,
-    TokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 
 type TokenIconSetWrapperProps = {

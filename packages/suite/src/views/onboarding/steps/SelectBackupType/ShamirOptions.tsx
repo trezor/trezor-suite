@@ -1,15 +1,15 @@
 import { satisfies } from 'semver';
 
-import { Badge, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Badge, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
+import { spacings } from '@trezor/theme';
 
+import { DefaultTag } from './DefaultTag';
+import { OptionWithContent } from './OptionWithContent';
 import { Translation } from '../../../../components/suite';
 import { useLayoutSize, useSelector } from '../../../../hooks/suite';
 import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
-import { DefaultTag } from './DefaultTag';
-import { OptionWithContent } from './OptionWithContent';
 
 const UpgradableToMultiTag = () => {
     const { isMobileLayout } = useLayoutSize();

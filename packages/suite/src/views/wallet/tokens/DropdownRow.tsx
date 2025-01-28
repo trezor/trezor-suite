@@ -2,8 +2,8 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Row, Icon, Text, TextVariant, Badge } from '@trezor/components';
-import { spacings, TypographyStyle } from '@trezor/theme';
+import { Badge, Icon, Row, Text, TextVariant } from '@trezor/components';
+import { TypographyStyle, spacings } from '@trezor/theme';
 
 import { HiddenPlaceholder, Translation } from 'src/components/suite';
 import { TranslationKey } from 'src/components/suite/Translation';

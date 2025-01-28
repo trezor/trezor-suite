@@ -1,8 +1,8 @@
-import styled from 'styled-components';
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
+import styled from 'styled-components';
 
-import { startDiscoveryThunk, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
-import { Button, motionEasing, Tooltip } from '@trezor/components';
+import { selectDeviceSupportedNetworks, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { Button, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { spacingsPx } from '@trezor/theme';
 
@@ -13,14 +13,14 @@ import {
     SettingsSectionItem,
 } from 'src/components/settings';
 import { CoinGroup, Translation } from 'src/components/suite';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import {
     useDevice,
-    useRediscoveryNeeded,
-    useDispatch,
-    useSelector,
     useDiscovery,
+    useDispatch,
+    useRediscoveryNeeded,
+    useSelector,
 } from 'src/hooks/suite';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';

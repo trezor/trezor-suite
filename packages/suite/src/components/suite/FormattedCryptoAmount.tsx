@@ -1,23 +1,23 @@
 import styled from 'styled-components';
 
+import { isSignValuePositive } from '@suite-common/formatters';
+import { SignValue } from '@suite-common/suite-types';
 import {
+    type NetworkSymbolExtended,
     getDisplaySymbol,
     getNetworkOptional,
-    type NetworkSymbolExtended,
 } from '@suite-common/wallet-config';
-import { SignValue } from '@suite-common/suite-types';
 import {
     formatCoinBalance,
     localizeNumber,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
-import { isSignValuePositive } from '@suite-common/formatters';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useSelector } from 'src/hooks/suite';
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 

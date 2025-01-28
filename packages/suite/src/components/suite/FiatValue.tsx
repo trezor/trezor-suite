@@ -1,17 +1,17 @@
 import { ReactElement } from 'react';
 
-import styled from 'styled-components';
 import type { FormatNumberOptions } from '@formatjs/intl';
+import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
-import { SkeletonRectangle } from '@trezor/components';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { SkeletonRectangle } from '@trezor/components';
 
+import { HiddenPlaceholder } from 'src/components/suite';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import type { UseFiatFromCryptoValueParams } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { HiddenPlaceholder } from 'src/components/suite';
 
 import { HiddenPlaceholderProps } from './HiddenPlaceholder';
 

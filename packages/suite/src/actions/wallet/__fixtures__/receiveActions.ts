@@ -3,8 +3,8 @@ import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 
-import * as receiveActions from 'src/actions/wallet/receiveActions';
 import { MODAL, SUITE } from 'src/actions/suite/constants';
+import * as receiveActions from 'src/actions/wallet/receiveActions';
 
 import { RECEIVE } from '../constants';
 

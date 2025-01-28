@@ -2,14 +2,14 @@ import { useEffect } from 'react';
 
 import styled from 'styled-components';
 
-import { Textarea, Icon } from '@trezor/components';
-import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { getInputState, isHexValid } from '@suite-common/wallet-utils';
+import { Icon, Textarea } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
 import { useTranslation } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
 
 const inputAsciiName = 'ethereumDataAscii';
 const inputHexName = 'ethereumDataHex';

@@ -2,24 +2,24 @@ import { FieldValues } from 'react-hook-form';
 
 import type { DBSchema } from 'idb';
 
-import type {
-    FormState,
-    RatesByTimestamps,
-    BackendSettings,
-    WalletSettings,
-} from '@suite-common/wallet-types';
+import { AnalyticsState } from '@suite-common/analytics';
 import type { MessageState } from '@suite-common/message-system';
 import type { DeviceWithEmptyPath, MessageSystem } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import type { StorageUpdateMessage } from '@trezor/suite-storage';
-import { AnalyticsState } from '@suite-common/analytics';
 import { SimpleTokenStructure } from '@suite-common/token-definitions';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import type {
+    BackendSettings,
+    FormState,
+    RatesByTimestamps,
+    WalletSettings,
+} from '@suite-common/wallet-types';
+import type { StorageUpdateMessage } from '@trezor/suite-storage';
 
-import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
-import type { Account, Discovery, WalletAccountTransaction } from 'src/types/wallet';
-import type { Trade } from 'src/types/wallet/tradingCommonTypes';
-import type { MetadataState } from 'src/types/suite/metadata';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
+import type { MetadataState } from 'src/types/suite/metadata';
+import type { Account, Discovery, WalletAccountTransaction } from 'src/types/wallet';
+import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
+import type { Trade } from 'src/types/wallet/tradingCommonTypes';
 
 import { GraphData } from '../types/wallet/graph';
 

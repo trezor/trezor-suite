@@ -1,26 +1,26 @@
 import { getUnixTime } from 'date-fns';
 
-import { BlockchainBlock } from '@trezor/connect';
-import {
-    CARDANO_STAKE_POOL_PREVIEW_URL,
-    CARDANO_STAKE_POOL_MAINNET_URL,
-    CARDANO_MAINNET_DREP,
-    CARDANO_PREVIEW_DREP,
-} from '@trezor/urls';
-import { isPending, getAccountTransactions, getNetworkName } from '@suite-common/wallet-utils';
+import { getNetworkOptional } from '@suite-common/wallet-config';
 import { CARDANO_DEFAULT_TTL_OFFSET } from '@suite-common/wallet-constants';
 import { transactionsActions } from '@suite-common/wallet-core';
-import { getNetworkOptional } from '@suite-common/wallet-config';
+import { getAccountTransactions, getNetworkName, isPending } from '@suite-common/wallet-utils';
+import { BlockchainBlock } from '@trezor/connect';
+import {
+    CARDANO_MAINNET_DREP,
+    CARDANO_PREVIEW_DREP,
+    CARDANO_STAKE_POOL_MAINNET_URL,
+    CARDANO_STAKE_POOL_PREVIEW_URL,
+} from '@trezor/urls';
 
 import { CARDANO_STAKING } from 'src/actions/wallet/constants';
+import { Dispatch, GetState } from 'src/types/suite';
+import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import {
-    PendingStakeTx,
-    PoolsResponse,
     CardanoNetwork,
     DRepResponse,
+    PendingStakeTx,
+    PoolsResponse,
 } from 'src/types/wallet/cardanoStaking';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
-import { Dispatch, GetState } from 'src/types/suite';
 
 export type CardanoStakingAction =
     | { type: typeof CARDANO_STAKING.ADD_PENDING_STAKE_TX; pendingStakeTx: PendingStakeTx }

@@ -1,26 +1,26 @@
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { createDeferred } from '@trezor/utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Device } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { createDeferred } from '@trezor/utils';
 
 import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
-import { Dispatch, GetState } from 'src/types/suite';
-import {
-    MetadataProviderType,
-    MetadataProvider,
-    Tokens,
-    Error as MetadataProviderError,
-    OAuthServerEnvironment,
-    ProviderErrorAction,
-    DataType,
-} from 'src/types/suite/metadata';
 import * as modalActions from 'src/actions/suite/modalActions';
 import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
-import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
+import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
+import { Dispatch, GetState } from 'src/types/suite';
+import {
+    DataType,
+    MetadataProvider,
+    Error as MetadataProviderError,
+    MetadataProviderType,
+    OAuthServerEnvironment,
+    ProviderErrorAction,
+    Tokens,
+} from 'src/types/suite/metadata';
 
-import { InMemoryTestProvider } from '../../services/suite/metadata/InMemoryTestProvider';
 import * as metadataActions from './metadataActions';
+import { InMemoryTestProvider } from '../../services/suite/metadata/InMemoryTestProvider';
 
 export type MetadataAction = {
     type: typeof METADATA.SET_SELECTED_PROVIDER;

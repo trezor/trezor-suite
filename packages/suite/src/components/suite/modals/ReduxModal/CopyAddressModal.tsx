@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
-import { copyToClipboard } from '@trezor/dom-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { H2, Card, Paragraph, NewModal, Checkbox } from '@trezor/components';
 import { AddressType } from '@suite-common/wallet-types';
+import { Card, Checkbox, H2, NewModal, Paragraph } from '@trezor/components';
+import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
 
-import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { Translation } from 'src/components/suite';
 import { setFlag } from 'src/actions/suite/suiteActions';
+import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 const getAddressTypeText = (addressType: AddressType) => {
     switch (addressType) {

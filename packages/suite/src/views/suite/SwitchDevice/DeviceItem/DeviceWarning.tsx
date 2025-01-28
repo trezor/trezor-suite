@@ -2,8 +2,8 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { Banner } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { TrezorDevice } from 'src/types/suite';
 import { useDevice } from 'src/hooks/suite';
+import { TrezorDevice } from 'src/types/suite';
 
 interface DeviceWarningProps {
     needsAttention: boolean;

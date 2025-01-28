@@ -1,8 +1,8 @@
-import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
 import { ROUTER } from 'src/actions/suite/constants';
-import { Action } from 'src/types/suite';
-import type { AnchorType } from 'src/constants/suite/anchors';
 import { ACCOUNT_TABS } from 'src/components/wallet/WalletLayout/AccountTopPanel/AccountNavigation';
+import type { AnchorType } from 'src/constants/suite/anchors';
+import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
+import { Action } from 'src/types/suite';
 
 export type RouterState = {
     loaded: boolean;

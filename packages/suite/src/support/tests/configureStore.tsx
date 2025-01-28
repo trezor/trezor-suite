@@ -1,4 +1,4 @@
-import { AnyAction, isFulfilled, isPending, Middleware } from '@reduxjs/toolkit';
+import { AnyAction, Middleware, isFulfilled, isPending } from '@reduxjs/toolkit';
 import reduxMockStore, { MockStoreCreator } from 'redux-mock-store';
 import thunk from 'redux-thunk';
 

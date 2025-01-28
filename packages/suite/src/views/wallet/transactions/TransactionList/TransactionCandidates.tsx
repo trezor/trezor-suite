@@ -4,13 +4,13 @@ import { resolveStaticPath } from '@suite-common/suite-utils';
 import { Card, SVG_IMAGES, variables } from '@trezor/components';
 import { zIndices } from '@trezor/theme';
 
+import TooltipSymbol from 'src/components/suite/TooltipSymbol';
+import { Translation } from 'src/components/suite/Translation';
+import { TxTypeIconWrapper } from 'src/components/wallet/TransactionItem/CommonComponents';
+import { TransactionTypeIcon } from 'src/components/wallet/TransactionItem/TransactionTypeIcon';
+import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
-import { TransactionTypeIcon } from 'src/components/wallet/TransactionItem/TransactionTypeIcon';
-import { TxTypeIconWrapper } from 'src/components/wallet/TransactionItem/CommonComponents';
-import { Translation } from 'src/components/suite/Translation';
-import TooltipSymbol from 'src/components/suite/TooltipSymbol';
-import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 
 const Header = styled.div`
     position: sticky;

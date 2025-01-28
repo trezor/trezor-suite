@@ -1,10 +1,8 @@
-import { spacings } from '@trezor/theme';
-import { Row, Card, Column, Spinner, Paragraph } from '@trezor/components';
 import type { TradingTradeType } from '@suite-common/invity';
+import { Card, Column, Paragraph, Row, Spinner } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { TradingUtilsProvidersProps } from 'src/types/trading/trading';
-import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 import {
     FORM_EXCHANGE_CEX,
     FORM_EXCHANGE_DEX,
@@ -12,6 +10,8 @@ import {
     FORM_RATE_FLOATING,
     FORM_RATE_TYPE,
 } from 'src/constants/wallet/trading/form';
+import { TradingUtilsProvidersProps } from 'src/types/trading/trading';
+import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 import { TradingFormOffersSwitcherItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcherItem';
 
 interface TradingFormOffersSwitcherProps {

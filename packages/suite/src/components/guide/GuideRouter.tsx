@@ -1,21 +1,21 @@
 import { FreeFocusInside } from 'react-focus-lock';
 
-import styled, { css, keyframes } from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
+import styled, { css, keyframes } from 'styled-components';
 
-import { variables, Backdrop } from '@trezor/components';
+import { Backdrop, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { zIndices } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
 import {
-    SupportFeedbackSelection,
+    Feedback,
     Guide,
     GuideArticle,
     GuideCategory,
-    Feedback,
+    SupportFeedbackSelection,
 } from 'src/components/guide';
-import { useGuide, GUIDE_ANIMATION_DURATION_MS } from 'src/hooks/guide';
+import { GUIDE_ANIMATION_DURATION_MS, useGuide } from 'src/hooks/guide';
+import { useSelector } from 'src/hooks/suite';
 
 const fullHeightStyle = css`
     position: absolute;

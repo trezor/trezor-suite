@@ -1,40 +1,40 @@
-import { MiddlewareAPI } from 'redux';
 import { isAnyOf } from '@reduxjs/toolkit';
+import { MiddlewareAPI } from 'redux';
 
+import { analyticsActions } from '@suite-common/analytics';
+import { firmwareActions } from '@suite-common/firmware';
+import { messageSystemActions } from '@suite-common/message-system';
+import { isDeviceRemembered } from '@suite-common/suite-utils';
+import { TokenManagementAction } from '@suite-common/token-definitions';
+import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import {
-    selectDevices,
-    selectSelectedDevice,
-    selectDiscoveryByDeviceState,
-    discoveryActions,
     accountsActions,
     blockchainActions,
-    transactionsActions,
-    selectAccountByKey,
     deviceActions,
-    selectHistoricFiatRates,
-    updateTxsFiatRatesThunk,
+    discoveryActions,
+    selectAccountByKey,
     selectDeviceByStaticSessionId,
+    selectDevices,
+    selectDiscoveryByDeviceState,
+    selectHistoricFiatRates,
+    selectSelectedDevice,
     sendFormActions,
+    transactionsActions,
+    updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { firmwareActions } from '@suite-common/firmware';
-import { isDeviceRemembered } from '@suite-common/suite-utils';
-import { messageSystemActions } from '@suite-common/message-system';
 import { findAccountDevice } from '@suite-common/wallet-utils';
-import { analyticsActions } from '@suite-common/analytics';
-import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
-import { TokenManagementAction } from '@suite-common/token-definitions';
 
-import { db } from 'src/storage';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { GRAPH, TRADING_COMMON, FORM_DRAFT } from 'src/actions/wallet/constants';
-import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
-import * as storageActions from 'src/actions/suite/storageActions';
-import { SUITE, METADATA, STORAGE } from 'src/actions/suite/constants';
+import { METADATA, STORAGE, SUITE } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
-import { serializeDiscovery } from 'src/utils/suite/storage';
-import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
+import * as storageActions from 'src/actions/suite/storageActions';
+import { FORM_DRAFT, GRAPH, TRADING_COMMON } from 'src/actions/wallet/constants';
+import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
+import { db } from 'src/storage';
+import type { AppState, Dispatch, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
+import { serializeDiscovery } from 'src/utils/suite/storage';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });

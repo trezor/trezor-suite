@@ -1,19 +1,19 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
+import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { IconButton, IconName, Row, SubTabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { Route } from '@suite-common/suite-types';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { getTokens, GetTokensOutputType } from 'src/utils/wallet/tokenUtils';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { SearchAction } from 'src/components/wallet/SearchAction';
 import { openModal } from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite';
+import { SearchAction } from 'src/components/wallet/SearchAction';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { TranslationKey } from '../../../components/suite/Translation';
 

@@ -1,18 +1,18 @@
 import { Middleware } from 'redux';
 
+import { testMocks } from '@suite-common/test-utils';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
-import { testMocks } from '@suite-common/test-utils';
 
-import { configureStore } from 'src/support/tests/configureStore';
 import * as routerActions from 'src/actions/suite/routerActions';
+import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
+import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import modalReducer from 'src/reducers/suite/modalReducer';
-import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
-import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
-import { Action } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { configureStore } from 'src/support/tests/configureStore';
+import { Action } from 'src/types/suite';
 
 const { getSuiteDevice, getConnectDevice } = testMocks;
 

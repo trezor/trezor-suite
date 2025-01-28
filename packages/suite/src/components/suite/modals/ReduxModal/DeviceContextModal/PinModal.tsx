@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
-import TrezorConnect from '@trezor/connect';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import TrezorConnect from '@trezor/connect';
 
 import { Modal, ModalProps, PinMatrix, Translation } from 'src/components/suite';
 import { PIN_MATRIX_MAX_WIDTH } from 'src/components/suite/PinMatrix/PinMatrix';
+import { useSelector } from 'src/hooks/suite';
 import { usePin } from 'src/hooks/suite/usePinModal';
 import { TrezorDevice } from 'src/types/suite';
-import { useSelector } from 'src/hooks/suite';
 
 const StyledModal = styled(Modal)<{ $isExtended: boolean }>`
     width: unset;

@@ -1,8 +1,8 @@
 import produce from 'immer';
 
+import { networkSymbolCollection } from '@suite-common/wallet-config';
 import type { WalletSettings } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
 
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';

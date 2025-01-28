@@ -1,15 +1,15 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
-import { useSelector, useDispatch } from 'src/hooks/suite';
-import * as metadataProviderActions from 'src/actions/suite/metadataProviderActions';
 import * as metadataPasswordsActions from 'src/actions/suite/metadataPasswordsActions';
-import type { PasswordEntry } from 'src/types/suite/metadata';
+import * as metadataProviderActions from 'src/actions/suite/metadataProviderActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectPasswordManagerState,
     selectSelectedProviderForPasswords,
 } from 'src/reducers/suite/metadataReducer';
+import type { PasswordEntry } from 'src/types/suite/metadata';
 
 export const usePasswords = () => {
     const dispatch = useDispatch();

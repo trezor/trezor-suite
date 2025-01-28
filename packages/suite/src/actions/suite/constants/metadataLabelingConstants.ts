@@ -1,6 +1,6 @@
 import {
-    MetadataEncryptionVersion,
     AccountLabels,
+    MetadataEncryptionVersion,
     WalletLabels,
 } from '@suite-common/metadata-types';
 import { TrezorConnect } from '@trezor/connect';

@@ -1,13 +1,13 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import TrezorConnect, { UI, RecoveryDevice, DeviceModelInternal, PROTO } from '@trezor/connect';
-import { analytics, EventType } from '@trezor/suite-analytics';
+import TrezorConnect, { DeviceModelInternal, PROTO, RecoveryDevice, UI } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { RECOVERY } from 'src/actions/recovery/constants';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { RECOVERY } from 'src/actions/recovery/constants';
 import * as routerActions from 'src/actions/suite/routerActions';
-import { Dispatch, GetState } from 'src/types/suite';
-import { WordCount } from 'src/types/recovery';
 import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
+import { WordCount } from 'src/types/recovery';
+import { Dispatch, GetState } from 'src/types/suite';
 
 import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
 

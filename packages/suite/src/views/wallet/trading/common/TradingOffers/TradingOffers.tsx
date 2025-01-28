@@ -2,11 +2,11 @@ import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/comm
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { getBestRatedQuote } from 'src/utils/wallet/trading/tradingUtils';
+import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 import { TradingHeader } from 'src/views/wallet/trading/common/TradingHeader/TradingHeader';
 import { TradingOffersEmpty } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersEmpty';
 import { TradingOffersExchange } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersExchange';
 import { TradingOffersItem } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
-import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 export const TradingOffers = () => {
     const context = useTradingFormContext();

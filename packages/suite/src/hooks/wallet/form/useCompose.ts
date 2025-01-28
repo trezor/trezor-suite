@@ -1,23 +1,23 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { FeeLevel } from '@trezor/connect';
-import { useDebounce } from '@trezor/react-utils';
+import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
     ComposeActionContext,
     composeSendFormTransactionFeeLevelsThunk,
 } from '@suite-common/wallet-core';
-import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
     FormState,
-    PrecomposedTransaction,
-    PrecomposedTransactionCardano,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
+    PrecomposedTransaction,
+    PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
-import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
+import { findComposeErrors } from '@suite-common/wallet-utils';
+import { FeeLevel } from '@trezor/connect';
+import { useDebounce } from '@trezor/react-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';

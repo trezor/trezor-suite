@@ -2,7 +2,7 @@ import { DefinedUnionMember } from '@trezor/type-utils';
 
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import type { TransportState } from 'src/reducers/suite/suiteReducer';
-import type { TrezorDevice, AppState } from 'src/types/suite';
+import type { AppState, TrezorDevice } from 'src/types/suite';
 
 import {
     isAdditionalShamirBackupInProgress,

@@ -2,22 +2,22 @@ import React from 'react';
 
 import styled from 'styled-components';
 
-import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
-import { useScrollShadow, Row, Column } from '@trezor/components';
+import { Column, Row, useScrollShadow } from '@trezor/components';
+import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 
-import { useDiscovery, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
+import { useDiscovery, useSelector } from 'src/hooks/suite';
 
 import { AccountSearchBox } from './AccountSearchBox';
-import { AddAccountButton } from './AddAccountButton';
-import { CoinsFilter } from './CoinsFilter';
 import { AccountsList } from './AccountsList';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
+import { AddAccountButton } from './AddAccountButton';
+import { CoinsFilter } from './CoinsFilter';
 import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
-import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
+import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
 import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
 
 const Wrapper = styled.div`

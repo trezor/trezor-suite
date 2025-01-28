@@ -1,20 +1,20 @@
 import styled from 'styled-components';
 
 import { H2 } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { ExtendedMessageDescriptor } from 'src/types/suite';
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from 'src/constants/wallet/trading/metadata';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
 import {
     getCryptoQuoteAmountProps,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { TradingHeaderSummary } from 'src/views/wallet/trading/common/TradingHeader/TradingHeaderSummary';
 import { TradingRefreshTime } from 'src/views/wallet/trading/common';
 import { TradingHeaderFilter } from 'src/views/wallet/trading/common/TradingHeader/TradingHeaderFilter';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingHeaderSummary } from 'src/views/wallet/trading/common/TradingHeader/TradingHeaderSummary';
 
 const Header = styled.div`
     padding-top: ${spacingsPx.sm};

@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
-import { BadgeSize, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import type {
     AccountType,
-    NetworkSymbol,
     Bip43Path,
+    NetworkSymbol,
     NetworkType,
 } from '@suite-common/wallet-config';
+import { BadgeSize, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { useDefaultAccountLabel } from 'src/hooks/suite';
 

@@ -2,29 +2,29 @@ import { useEffect } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import addressValidator from '@trezor/address-validator';
-import { Input, Button, Paragraph, Divider, Column, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-import { isHexValid, isInteger } from '@suite-common/wallet-utils';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { TradingExchangeType } from '@suite-common/invity';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { isHexValid, isInteger } from '@suite-common/wallet-utils';
+import addressValidator from '@trezor/address-validator';
+import { Button, Column, Divider, Input, Paragraph, Tooltip } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
-import { useTranslation } from 'src/hooks/suite/useTranslation';
-import { ConfirmedOnTrezor } from 'src/views/wallet/trading/common/ConfirmedOnTrezor';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingVerifyOptions } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerifyOptions';
-import { TradingVerifyAccountReturnProps } from 'src/types/trading/tradingVerify';
-import { TradingAddressOptions } from 'src/views/wallet/trading/common/TradingAddressOptions';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
-import { useDispatch } from 'src/hooks/suite';
-import { TRADING_BUY } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
+import { TRADING_BUY } from 'src/actions/wallet/constants';
+import { Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
+import { useTranslation } from 'src/hooks/suite/useTranslation';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { TradingVerifyAccountReturnProps } from 'src/types/trading/tradingVerify';
 import {
     isTradingBuyContext,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { cryptoIdToNetwork } from 'src/utils/wallet/trading/tradingUtils';
+import { ConfirmedOnTrezor } from 'src/views/wallet/trading/common/ConfirmedOnTrezor';
+import { TradingAddressOptions } from 'src/views/wallet/trading/common/TradingAddressOptions';
+import { TradingVerifyOptions } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerifyOptions';
 
 interface TradingVerifyProps {
     tradingVerifyAccount: TradingVerifyAccountReturnProps;

@@ -1,63 +1,63 @@
 import produce from 'immer';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { getInputSize, getOutputSize, RoundPhase } from '@trezor/coinjoin';
-import { PartialRecord } from '@trezor/type-utils';
-import { Account, AccountKey } from '@suite-common/wallet-types';
-import {
-    accountsActions,
-    AccountsRootState,
-    selectAccountByKey,
-    DeviceRootState,
-    selectDeviceStatus,
-} from '@suite-common/wallet-core';
 import {
     Feature,
     MessageSystemRootState,
-    selectIsFeatureDisabled,
     selectFeatureConfig,
+    selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
+import {
+    AccountsRootState,
+    DeviceRootState,
+    accountsActions,
+    selectAccountByKey,
+    selectDeviceStatus,
+} from '@suite-common/wallet-core';
+import { Account, AccountKey } from '@suite-common/wallet-types';
+import { RoundPhase, getInputSize, getOutputSize } from '@trezor/coinjoin';
+import { PartialRecord } from '@trezor/type-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { STORAGE } from 'src/actions/suite/constants';
-import {
-    CoinjoinAccount,
-    CoinjoinDebugSettings,
-    CoinjoinConfig,
-    CoinjoinClientInstance,
-} from 'src/types/wallet/coinjoin';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import { Action } from 'src/types/suite';
 import {
+    SuiteRootState,
     selectIsDeviceOrUiLocked,
     selectTorState,
-    SuiteRootState,
 } from 'src/reducers/suite/suiteReducer';
+import {
+    CLIENT_STATUS_FALLBACK,
+    DEFAULT_TARGET_ANONYMITY,
+    ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
+    ESTIMATED_HOURS_PER_ROUND,
+    ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
+    FEE_RATE_MEDIAN_FALLBACK,
+    MAX_MINING_FEE_MODIFIER,
+    MIN_ANONYMITY_GAINED_PER_ROUND,
+    SKIP_ROUNDS_BY_DEFAULT,
+    TREZOR_LEGAL_DOCUMENTS_VERSION,
+    UNECONOMICAL_COINJOIN_THRESHOLD,
+    ZKSNACKS_LEGAL_DOCUMENTS_VERSION,
+} from 'src/services/coinjoin';
+import { Action } from 'src/types/suite';
+import {
+    CoinjoinAccount,
+    CoinjoinClientInstance,
+    CoinjoinConfig,
+    CoinjoinDebugSettings,
+} from 'src/types/wallet/coinjoin';
 import {
     breakdownCoinjoinBalance,
     calculateAnonymityProgress,
-    getMaxFeePerVbyte,
-    cleanAnonymityGains,
-    getRoundPhaseFromSessionPhase,
-    transformCoinjoinStatus,
     calculateAverageAnonymityGainPerRound,
+    cleanAnonymityGains,
+    getMaxFeePerVbyte,
     getMaxRounds,
+    getRoundPhaseFromSessionPhase,
     getSkipRounds,
+    transformCoinjoinStatus,
 } from 'src/utils/wallet/coinjoinUtils';
-import {
-    CLIENT_STATUS_FALLBACK,
-    ESTIMATED_ANONYMITY_GAINED_PER_ROUND,
-    MIN_ANONYMITY_GAINED_PER_ROUND,
-    ESTIMATED_ROUNDS_FAIL_RATE_BUFFER,
-    ESTIMATED_HOURS_PER_ROUND,
-    UNECONOMICAL_COINJOIN_THRESHOLD,
-    DEFAULT_TARGET_ANONYMITY,
-    SKIP_ROUNDS_BY_DEFAULT,
-    FEE_RATE_MEDIAN_FALLBACK,
-    MAX_MINING_FEE_MODIFIER,
-    ZKSNACKS_LEGAL_DOCUMENTS_VERSION,
-    TREZOR_LEGAL_DOCUMENTS_VERSION,
-} from 'src/services/coinjoin';
 
 import { SelectedAccountRootState, selectSelectedAccount } from './selectedAccountReducer';
 

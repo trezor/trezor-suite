@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
-import { Icon, IconProps } from '@trezor/components';
 import { getTxIcon } from '@suite-common/wallet-utils';
+import { Icon, IconProps } from '@trezor/components';
 
 import { WalletAccountTransaction } from 'src/types/wallet';
 

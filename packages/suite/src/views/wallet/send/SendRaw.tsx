@@ -1,15 +1,15 @@
 import { useForm } from 'react-hook-form';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { Card, Textarea, Button, Tooltip, H3, IconButton, Row } from '@trezor/components';
-import { sendFormActions, pushSendFormRawTransactionThunk } from '@suite-common/wallet-core';
-import { tryGetAccountIdentity, getInputState, isHexValid } from '@suite-common/wallet-utils';
+import { pushSendFormRawTransactionThunk, sendFormActions } from '@suite-common/wallet-core';
+import { getInputState, isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
+import { OpenGuideFromTooltip } from 'src/components/guide';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
-import { OpenGuideFromTooltip } from 'src/components/guide';
 
 const INPUT_NAME = 'rawTx';
 

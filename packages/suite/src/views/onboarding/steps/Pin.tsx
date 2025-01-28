@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
-import { PinMatrix, Translation } from 'src/components/suite';
+import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import {
     OnboardingButtonCta,
     OnboardingButtonSkip,
     OnboardingStepBox,
     SkipStepConfirmation,
 } from 'src/components/onboarding';
-import { changePin } from 'src/actions/settings/deviceSettingsActions';
-import { useDispatch, useSelector, useOnboarding } from 'src/hooks/suite';
+import { PinMatrix, Translation } from 'src/components/suite';
+import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 
 const SetPinStep = () => {

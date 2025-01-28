@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { Button, Link } from '@trezor/components';
 import { DATA_URL } from '@trezor/urls';
 
-import { Translation, Modal, Metadata } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
+import { Metadata, Modal, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import {

@@ -6,7 +6,7 @@ import { DialogModal as BaseDialogModal, DialogModalProps } from '@trezor/compon
 import { useModalTarget } from 'src/support/suite/ModalContext';
 
 import { ModalEnvironment } from '../ModalEnvironment';
-import { ModalProps, Modal } from './Modal';
+import { Modal, ModalProps } from './Modal';
 
 /**
  * @deprecated Use NewModal.

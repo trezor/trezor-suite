@@ -1,23 +1,23 @@
 import { useCallback } from 'react';
 
-import { Paragraph, Column, H3, List, Icon } from '@trezor/components';
 import {
-    selectIsDiscoveryAuthConfirmationRequired,
     onPassphraseSubmit,
     selectDeviceModel,
+    selectIsDiscoveryAuthConfirmationRequired,
 } from '@suite-common/wallet-core';
+import { Column, H3, Icon, List, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+import { PassphraseTypeCard } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
-import { PassphraseTypeCard } from '@trezor/product-components';
 
-import { useSelector, useDispatch } from 'src/hooks/suite';
-import { Translation } from 'src/components/suite';
-import type { TrezorDevice } from 'src/types/suite';
 import { OpenGuideFromTooltip } from 'src/components/guide';
+import { Translation } from 'src/components/suite';
+import { TrezorLink } from 'src/components/suite/TrezorLink';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import type { TrezorDevice } from 'src/types/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
 

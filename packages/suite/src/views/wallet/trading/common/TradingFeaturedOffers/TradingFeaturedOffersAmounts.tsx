@@ -1,20 +1,20 @@
 import React from 'react';
 
-import styled, { useTheme } from 'styled-components';
 import { CryptoId } from 'invity-api';
+import styled, { useTheme } from 'styled-components';
 
-import { spacingsPx } from '@trezor/theme';
-import { Icon } from '@trezor/components';
 import type { TradingTradeType } from '@suite-common/invity';
+import { Icon } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
+import { FormattedCryptoAmount } from 'src/components/suite';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import {
     getCryptoQuoteAmountProps,
     isTradingBuyContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
 
 const Arrow = styled.div`

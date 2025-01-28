@@ -4,11 +4,11 @@ import {
     WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 
-import { RbfContext, useRbf } from '../../../../../../../hooks/wallet/useRbfForm';
-import { TxDetailModalBase } from '../TxDetailModalBase';
-import { Translation } from '../../../../../Translation';
-import { ReplaceTxButton } from './ReplaceTxButton';
 import { ChangeFee } from './ChangeFee';
+import { ReplaceTxButton } from './ReplaceTxButton';
+import { RbfContext, useRbf } from '../../../../../../../hooks/wallet/useRbfForm';
+import { Translation } from '../../../../../Translation';
+import { TxDetailModalBase } from '../TxDetailModalBase';
 
 type BumpFeeModalProps = {
     tx: WalletAccountTransactionWithRequiredRbfParams;

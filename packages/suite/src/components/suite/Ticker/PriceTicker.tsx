@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
-import { typography } from '@trezor/theme';
-import type { TokenAddress } from '@suite-common/wallet-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { TokenAddress } from '@suite-common/wallet-types';
+import { typography } from '@trezor/theme';
 
 import { FiatValue } from 'src/components/suite';
 
-import { NoRatesTooltip } from './NoRatesTooltip';
 import { LastUpdateTooltip } from './LastUpdateTooltip';
+import { NoRatesTooltip } from './NoRatesTooltip';
 
 const FiatRateWrapper = styled.span`
     ${typography.callout}

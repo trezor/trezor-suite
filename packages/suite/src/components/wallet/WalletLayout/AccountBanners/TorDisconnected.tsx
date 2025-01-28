@@ -1,8 +1,8 @@
 import { Banner } from '@trezor/components';
 
+import { toggleTor } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { toggleTor } from 'src/actions/suite/suiteActions';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

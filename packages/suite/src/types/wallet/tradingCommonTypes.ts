@@ -1,4 +1,4 @@
-import type { BuyTrade, SellFiatTrade, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
+import type { BuyTrade, ExchangeTrade, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import type { FlagProps } from '@trezor/components';
 

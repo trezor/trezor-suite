@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
-import { SignValue } from '@suite-common/suite-types';
 import { isSignValuePositive } from '@suite-common/formatters';
+import { SignValue } from '@suite-common/suite-types';
 
 const StyledSign = styled.span<{ $color: string }>`
     color: ${({ $color }) => $color};

@@ -2,25 +2,25 @@ import { useEffect, useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { getTxsPerPage } from '@suite-common/suite-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { getTxsPerPage } from '@suite-common/suite-utils';
 import { amountToSmallestUnit, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Checkbox, Column, Icon, Row, Switch, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Pagination } from 'src/components/wallet';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
 import { filterAndCategorizeUtxos } from 'src/utils/wallet/filterAndCategorizeUtxosUtils';
 
-import { UtxoSortingSelect } from './UtxoSortingSelect';
-import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
 import { UtxoSearch } from './UtxoSearch';
+import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
+import { UtxoSortingSelect } from './UtxoSortingSelect';
 
 const Header = styled.header`
     border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};

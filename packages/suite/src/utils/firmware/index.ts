@@ -1,9 +1,9 @@
-import { valid, satisfies } from 'semver';
+import { satisfies, valid } from 'semver';
 
-import { getFirmwareVersion } from '@trezor/device-utils';
 import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
-import { type TrezorDevice, type ExtendedMessageDescriptor } from 'src/types/suite';
+import { type ExtendedMessageDescriptor, type TrezorDevice } from 'src/types/suite';
 
 export const getFormattedFingerprint = (fingerprint: string) =>
     [

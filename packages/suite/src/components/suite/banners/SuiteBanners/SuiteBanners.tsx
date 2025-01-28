@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -7,24 +7,24 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
 
-import { isTranslationMode } from 'src/utils/suite/l10n';
-import { useSelector } from 'src/hooks/suite';
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
+import { useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
     selectTransportOfType,
 } from 'src/reducers/suite/suiteReducer';
+import { isTranslationMode } from 'src/utils/suite/l10n';
 
 import { MessageSystemBanner } from '../MessageSystemBanner';
-import { NoConnectionBanner } from './NoConnectionBanner';
-import { UpdateBridge } from './UpdateBridgeBanner';
-import { NoBackup } from './NoBackupBanner';
 import { FailedBackup } from './FailedBackupBanner';
+import { FirmwareAuthenticityCheckBanner } from './FirmwareAuthenticityCheckBanner';
+import { FirmwareHashMismatchOnLastUpdateBanner } from './FirmwareHashMismatchOnLastUpdateBanner';
+import { NoBackup } from './NoBackupBanner';
+import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
-import { FirmwareHashMismatchOnLastUpdateBanner } from './FirmwareHashMismatchOnLastUpdateBanner';
-import { FirmwareAuthenticityCheckBanner } from './FirmwareAuthenticityCheckBanner';
+import { UpdateBridge } from './UpdateBridgeBanner';
 
 const Container = styled.div<{ $isVisible?: boolean }>`
     width: 100%;

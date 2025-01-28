@@ -2,14 +2,14 @@ import { forwardRef } from 'react';
 
 import styled from 'styled-components';
 
-import { spacingsPx, zIndices } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { SkeletonCircle, SkeletonRectangle } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { spacingsPx, zIndices } from '@trezor/theme';
 
-import { FormattedCryptoAmount, AmountUnitSwitchWrapper } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
+import { useSelector } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 export const ACCOUNT_INFO_HEIGHT = 80;

@@ -2,8 +2,8 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import * as publicKeyActions from 'src/actions/wallet/publicKeyActions';
 import { MODAL } from 'src/actions/suite/constants';
+import * as publicKeyActions from 'src/actions/wallet/publicKeyActions';
 
 const { getSuiteDevice } = testMocks;
 

@@ -2,20 +2,20 @@ import { useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { spacingsPx, typography, zIndices } from '@trezor/theme';
 import { Column, Divider, Icon } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacingsPx, typography, zIndices } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
 import { setView } from 'src/actions/suite/guideActions';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
-    GuideHeader,
-    GuideContent,
-    GuideViewWrapper,
     GuideCategories,
+    GuideContent,
+    GuideHeader,
     GuideSearch,
+    GuideViewWrapper,
 } from 'src/components/guide';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const FeedbackLinkWrapper = styled.div`
     padding: ${spacingsPx.md};

@@ -36,13 +36,13 @@ import {
     TradingUseFormActionsProps,
     TradingUseFormActionsReturnProps,
 } from 'src/types/trading/tradingForm';
+import { tradingGetExchangeReceiveCryptoId } from 'src/utils/wallet/trading/exchangeUtils';
 import {
-    tradingGetSortedAccounts,
     cryptoIdToSymbol,
     getAddressAndTokenFromAccountOptionsGroupProps,
     getTradingNetworkDecimals,
+    tradingGetSortedAccounts,
 } from 'src/utils/wallet/trading/tradingUtils';
-import { tradingGetExchangeReceiveCryptoId } from 'src/utils/wallet/trading/exchangeUtils';
 
 /**
  * shareable sub-hook used in useTradingSellForm & useTradingExchangeForm

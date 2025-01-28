@@ -3,9 +3,9 @@ import { deviceActions } from '@suite-common/wallet-core';
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants/';
 
+import * as metadataActions from '../metadataActions';
 import * as metadataLabelingActions from '../metadataLabelingActions';
 import * as metadataProviderActions from '../metadataProviderActions';
-import * as metadataActions from '../metadataActions';
 
 const { getSuiteDevice, getWalletAccount } = testMocks;
 

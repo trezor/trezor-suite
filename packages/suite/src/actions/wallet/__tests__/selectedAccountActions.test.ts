@@ -1,8 +1,8 @@
-import { configureStore } from 'src/support/tests/configureStore';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import { syncSelectedAccount } from '../selectedAccountActions';
 import fixtures from '../__fixtures__/selectedAccountActions';
+import { syncSelectedAccount } from '../selectedAccountActions';
 
 const getInitialState = (_settings?: any) => ({
     wallet: {

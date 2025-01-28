@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useRef } from 'react';
 
-import { Button, Paragraph, Tooltip, Card, Column, InfoItem } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
-import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
+import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
+import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 export const ClaimCard = () => {
     const selectedAccount = useSelector(selectSelectedAccount);

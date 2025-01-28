@@ -1,13 +1,13 @@
-import { Column, Card } from '@trezor/components';
+import { Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import { Translation } from 'src/components/suite';
 import { Fees } from 'src/components/wallet/Fees/Fees';
+import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 
-import { Inputs } from './Inputs';
-import { ConfirmStakeEthModal } from './ConfirmStakeEthModal';
 import { AvailableBalance } from './AvailableBalance';
+import { ConfirmStakeEthModal } from './ConfirmStakeEthModal';
+import { Inputs } from './Inputs';
 
 export const StakeEthForm = () => {
     const {

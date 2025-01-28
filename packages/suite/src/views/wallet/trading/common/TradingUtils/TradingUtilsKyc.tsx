@@ -1,11 +1,9 @@
-import { useTheme } from 'styled-components';
 import { ExchangeKYCType } from 'invity-api';
+import { useTheme } from 'styled-components';
 
 import { Banner, Icon, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { TooltipIcon, TooltipText, TooltipWrap } from 'src/views/wallet/trading';
-import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import {
     KYC_DEX,
     KYC_NO_KYC,
@@ -13,6 +11,8 @@ import {
     KYC_REQUIRED,
     KYC_YES_REFUND,
 } from 'src/constants/wallet/trading/kyc';
+import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import { TooltipIcon, TooltipText, TooltipWrap } from 'src/views/wallet/trading';
 
 interface TradingUtilsProviderProps {
     exchange?: string;

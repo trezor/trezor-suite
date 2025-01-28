@@ -1,12 +1,12 @@
-import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { Switch } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 interface PassphraseProps {
     isDeviceLocked: boolean;

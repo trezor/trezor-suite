@@ -1,6 +1,7 @@
-import { MiddlewareAPI } from 'redux';
 import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
+import { MiddlewareAPI } from 'redux';
 
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     authConfirm,
     authorizeDeviceThunk,
@@ -13,13 +14,12 @@ import {
     restartDiscoveryThunk,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEVICE, DeviceModelInternal } from '@trezor/connect';
 
-import { SUITE, ROUTER, METADATA } from 'src/actions/suite/constants';
-import { AppState, Action, Dispatch } from 'src/types/suite';
+import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { appChanged, setFlag } from 'src/actions/suite/suiteActions';
+import { Action, AppState, Dispatch } from 'src/types/suite';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (

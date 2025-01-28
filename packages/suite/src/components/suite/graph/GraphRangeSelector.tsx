@@ -1,23 +1,23 @@
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 
-import styled, { css } from 'styled-components';
 import {
+    differenceInMonths,
+    endOfToday,
     startOfDay,
     startOfToday,
-    endOfToday,
     subDays,
     subMonths,
     subYears,
-    differenceInMonths,
 } from 'date-fns';
+import styled, { css } from 'styled-components';
 
 import {
-    variables,
     Dropdown,
     DropdownRef,
+    PopoverPlacement,
     Timerange,
     intermediaryTheme,
-    PopoverPlacement,
+    variables,
 } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';

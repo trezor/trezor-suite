@@ -1,15 +1,15 @@
 import {
-    useEffect,
-    useState,
-    useCallback,
-    useRef,
     FunctionComponent,
     PropsWithChildren,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
 } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { Icon, AutoScalingInput } from '@trezor/components';
+import { AutoScalingInput, Icon } from '@trezor/components';
 
 const IconWrapper = styled.div<{ $bgColor: string }>`
     display: flex;

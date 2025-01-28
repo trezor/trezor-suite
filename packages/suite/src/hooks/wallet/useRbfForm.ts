@@ -1,22 +1,22 @@
-import { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { DEFAULT_PAYMENT, DEFAULT_OPRETURN, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { calculateChainedTransactionsFeeForRbf, getFeeInfo } from '@suite-common/wallet-utils';
+import type { NetworkType } from '@suite-common/wallet-config';
+import { DEFAULT_OPRETURN, DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
-    SelectedAccountLoaded,
-    RbfTransactionParams,
     ChainedTransactions,
-    FormState,
     FeeInfo,
     FormOptions,
+    FormState,
+    RbfTransactionParams,
+    SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
-import type { NetworkType } from '@suite-common/wallet-config';
+import { calculateChainedTransactionsFeeForRbf, getFeeInfo } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
 import { useCoinjoinRegisteredUtxos } from 'src/hooks/wallet/form/useCoinjoinRegisteredUtxos';
+import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
 
 import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';

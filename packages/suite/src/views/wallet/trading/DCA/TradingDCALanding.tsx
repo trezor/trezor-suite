@@ -14,14 +14,14 @@ import {
     Row,
     Text,
 } from '@trezor/components';
+import { variables } from '@trezor/components/src/config';
 import { borders, palette, spacings, spacingsPx } from '@trezor/theme';
 import { TRADING_DOWNLOAD_INVITY_APP_URL } from '@trezor/urls';
-import { variables } from '@trezor/components/src/config';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
+import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
 
 const IconWrapper = styled.div`
     display: flex;

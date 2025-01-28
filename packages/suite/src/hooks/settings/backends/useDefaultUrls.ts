@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import TrezorConnect, { BlockchainLink } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import TrezorConnect, { BlockchainLink } from '@trezor/connect';
 
 export const useDefaultUrls = (
     symbol: NetworkSymbol,

@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
-import { Column, Flex, Grid, useMediaQuery, variables } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     fetchAllTransactionsForAccountThunk,
     selectAccountStakeTransactions,
@@ -10,22 +9,23 @@ import {
     selectPoolStatsNextRewardPayout,
     selectValidatorsQueue,
 } from '@suite-common/wallet-core';
-import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import { Column, Flex, Grid, useMediaQuery, variables } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getDaysToAddToPool, getDaysToUnstake } from 'src/utils/suite/ethereumStaking';
 
-import { StakingCard } from '../../StakingDashboard/components/StakingCard';
-import { ClaimCard } from '../../StakingDashboard/components/ClaimCard';
+import { InstantStakeBanner } from './InstantStakeBanner';
 import { StakingDashboard } from '../../StakingDashboard/StakingDashboard';
 import { ApyCard } from '../../StakingDashboard/components/ApyCard';
+import { ClaimCard } from '../../StakingDashboard/components/ClaimCard';
 import { PayoutCard } from '../../StakingDashboard/components/PayoutCard';
+import { StakingCard } from '../../StakingDashboard/components/StakingCard';
 import { Transactions } from '../../StakingDashboard/components/Transactions';
-import { InstantStakeBanner } from './InstantStakeBanner';
 
 interface EthStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;

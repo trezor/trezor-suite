@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
-import { DropdownMenuItemProps } from '@trezor/components';
 import { AccountType, Bip43Path, NetworkType } from '@suite-common/wallet-config';
+import { DropdownMenuItemProps } from '@trezor/components';
 
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 

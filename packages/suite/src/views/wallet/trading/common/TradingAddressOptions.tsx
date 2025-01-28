@@ -1,25 +1,25 @@
-import { useEffect, ReactElement, ReactNode } from 'react';
-import { UseFormReturn, Control, Controller } from 'react-hook-form';
+import { ReactElement, ReactNode, useEffect } from 'react';
+import { Control, Controller, UseFormReturn } from 'react-hook-form';
 import type { MenuPlacement } from 'react-select';
 
 import { CryptoId } from 'invity-api';
 
-import type { AccountAddress } from '@trezor/connect';
-import { Select, InfoSegments, Column } from '@trezor/components';
-import { formatAmount } from '@suite-common/wallet-utils';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { formatAmount } from '@suite-common/wallet-utils';
+import { Column, InfoSegments, Select } from '@trezor/components';
+import type { AccountAddress } from '@trezor/connect';
 
 import { Translation } from 'src/components/suite';
-import type { Account } from 'src/types/wallet';
+import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
+import { useSelector } from 'src/hooks/suite';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
-import { useSelector } from 'src/hooks/suite';
-import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
-import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import type { Account } from 'src/types/wallet';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
+import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
+import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 
 const buildOptions = (addresses: Account['addresses']) => {
     if (!addresses) return undefined;

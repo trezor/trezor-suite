@@ -1,29 +1,29 @@
-import type { MiddlewareAPI } from 'redux';
 import { isAnyOf } from '@reduxjs/toolkit';
+import type { MiddlewareAPI } from 'redux';
 
+import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     accountsActions,
     blockchainActions,
+    convertSendFormDraftsBtcAmountUnitsThunk,
+    deviceActions,
+    sendFormActions,
     setCustomBackendThunk,
+    stakeActions,
     subscribeBlockchainThunk,
     transactionsActions,
     unsubscribeBlockchainThunk,
-    deviceActions,
-    stakeActions,
-    sendFormActions,
-    convertSendFormDraftsBtcAmountUnitsThunk,
 } from '@suite-common/wallet-core';
-import { getTxsPerPage } from '@suite-common/suite-utils';
 
-import { ROUTER } from 'src/actions/suite/constants';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
-import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
-import * as receiveActions from 'src/actions/wallet/receiveActions';
+import { ROUTER } from 'src/actions/suite/constants';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
+import * as receiveActions from 'src/actions/wallet/receiveActions';
+import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
 import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
-import type { AppState, Action, Dispatch } from 'src/types/suite';
 import { selectSelectedAccountKey } from 'src/reducers/wallet/selectedAccountReducer';
+import type { Action, AppState, Dispatch } from 'src/types/suite';
 
 const walletMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import { Provider } from 'react-redux';
 import { IntlProvider } from 'react-intl';
+import { Provider } from 'react-redux';
 
 import { act, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

@@ -1,8 +1,8 @@
 import { MouseEventHandler } from 'react';
 
 import { Button, Paragraph, Row } from '@trezor/components';
-import { Url } from '@trezor/urls';
 import { spacings } from '@trezor/theme';
+import { Url } from '@trezor/urls';
 
 import { LearnMoreButton } from '../suite/LearnMoreButton';
 

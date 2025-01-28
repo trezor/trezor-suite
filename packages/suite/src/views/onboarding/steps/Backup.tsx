@@ -2,26 +2,26 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Image } from '@trezor/components';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Image } from '@trezor/components';
 
+import { backupDevice } from 'src/actions/backup/backupActions';
+import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
+import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { BackupSeedCards } from 'src/components/backup';
 import {
     OnboardingButtonCta,
     OnboardingButtonSkip,
-    OptionsWrapper,
     OnboardingStepBox,
+    OptionsWrapper,
     SkipStepConfirmation,
 } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
-import { BackupSeedCards } from 'src/components/backup';
-import { canContinue } from 'src/utils/backup';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
-import { backupDevice } from 'src/actions/backup/backupActions';
-import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable, selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { canContinue } from 'src/utils/backup';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledImage = styled(Image)`

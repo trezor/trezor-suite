@@ -1,18 +1,18 @@
 import { useState } from 'react';
 
-import { H2, Paragraph, Card, Checkbox, NewModal } from '@trezor/components';
 import {
     DefinitionType,
-    tokenDefinitionsActions,
     TokenManagementAction,
+    tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
+import { Card, Checkbox, H2, NewModal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useSelector } from 'src/hooks/suite';
-import { setFlag } from 'src/actions/suite/suiteActions';
 
 interface UnhideTokenModalProps {
     address: string;

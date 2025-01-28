@@ -1,23 +1,23 @@
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { Button, DropdownMenuItemProps, Row } from '@trezor/components';
-import type { TimerId } from '@trezor/type-utils';
 import { StaticSessionId } from '@trezor/connect';
+import type { TimerId } from '@trezor/type-utils';
 
-import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
-import { MetadataAddPayload } from 'src/types/suite/metadata';
 import { Translation } from 'src/components/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from 'src/reducers/suite/metadataReducer';
+import { MetadataAddPayload } from 'src/types/suite/metadata';
 
-import { Props, ExtendedProps } from './definitions';
-import { withEditable } from './withEditable';
+import { ExtendedProps, Props } from './definitions';
 import { withDropdown } from './withDropdown';
+import { withEditable } from './withEditable';
 import { AccountTypeBadge } from '../../AccountTypeBadge';
 
 const LabelValue = styled.div`

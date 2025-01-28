@@ -1,7 +1,7 @@
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus } from 'invity-api';
 
+import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { isDesktop, getLocationOrigin } from '@trezor/env-utils';
 
 import { Account } from 'src/types/wallet';
 import { AmountLimitProps } from 'src/utils/suite/validation';

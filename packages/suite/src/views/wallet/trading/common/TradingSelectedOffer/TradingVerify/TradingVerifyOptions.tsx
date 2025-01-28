@@ -4,8 +4,8 @@ import { Select } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import {
-    TradingVerifyOptionsProps,
     TradingVerifyFormAccountOptionProps,
+    TradingVerifyOptionsProps,
 } from 'src/types/trading/tradingVerify';
 import { parseCryptoId } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingVerifyOptionsItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerifyOptionsItem';

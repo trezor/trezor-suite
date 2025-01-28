@@ -1,20 +1,20 @@
 import { useState } from 'react';
 
-import { createTimeoutPromise } from '@trezor/utils';
+import { RequestEnableTorResponse } from '@suite-common/suite-config';
+import { isDevEnv } from '@suite-common/suite-utils';
+import { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
-import { isDevEnv } from '@suite-common/suite-utils';
-import { RequestEnableTorResponse } from '@suite-common/suite-config';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
+import { createTimeoutPromise } from '@trezor/utils';
 
-import { Translation } from 'src/components/suite';
-import { useSelector, useDispatch } from 'src/hooks/suite';
-import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
-import { toggleTor } from 'src/actions/suite/suiteActions';
 import { openDeferredModal, openModal } from 'src/actions/suite/modalActions';
-import { Account } from 'src/types/wallet';
+import { toggleTor } from 'src/actions/suite/suiteActions';
+import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
+import { Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';
 

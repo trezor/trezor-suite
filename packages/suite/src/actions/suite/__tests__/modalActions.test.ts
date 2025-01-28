@@ -1,5 +1,5 @@
-import * as modalActions from '../modalActions';
 import { MODAL } from '../constants';
+import * as modalActions from '../modalActions';
 
 describe('Modal Actions', () => {
     it('cancel actions', () => {

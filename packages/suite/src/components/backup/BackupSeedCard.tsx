@@ -2,7 +2,7 @@ import { ReactNode, SyntheticEvent } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { variables, Checkbox, Card, Icon, IconName } from '@trezor/components';
+import { Card, Checkbox, Icon, IconName, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

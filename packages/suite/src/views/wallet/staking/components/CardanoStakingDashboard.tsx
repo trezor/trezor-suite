@@ -2,12 +2,12 @@ import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { DeviceModelInternal } from '@trezor/connect';
 
 import { WalletLayout } from 'src/components/wallet';
-import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { useDevice } from 'src/hooks/suite';
+import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 
+import { CardanoRedelegate } from './CardanoRedelegate';
 import { CardanoRewards } from './CardanoRewards';
 import { CardanoStake } from './CardanoStake';
-import { CardanoRedelegate } from './CardanoRedelegate';
 
 interface CardanoStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;

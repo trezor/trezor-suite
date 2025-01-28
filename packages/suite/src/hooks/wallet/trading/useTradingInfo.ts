@@ -3,10 +3,10 @@ import { useCallback } from 'react';
 import { CoinInfo, CryptoId } from 'invity-api';
 
 import {
+    NetworkSymbolExtended,
     getDisplaySymbol,
     getNetwork,
     getNetworkByTradeCryptoId,
-    NetworkSymbolExtended,
 } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
 

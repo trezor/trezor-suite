@@ -1,9 +1,8 @@
-import { ReactNode, HTMLAttributes } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 
-import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
+import styled, { css } from 'styled-components';
 
-import { Elevation, borders, mapElevationToBackground, zIndices, spacings } from '@trezor/theme';
 import {
     ElevationUp,
     H2,
@@ -15,6 +14,7 @@ import {
     useElevation,
     variables,
 } from '@trezor/components';
+import { Elevation, borders, mapElevationToBackground, spacings, zIndices } from '@trezor/theme';
 
 const headerVariants = {
     closed: {

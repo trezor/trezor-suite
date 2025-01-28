@@ -1,9 +1,9 @@
-import { IconName, SubTabs } from '@trezor/components';
 import { Route } from '@suite-common/suite-types';
+import { IconName, SubTabs } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { goto } from 'src/actions/suite/routerActions';
+import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import { useDispatch } from 'src/hooks/suite';
 
 type TradingLayoutNavigationProps = {
     route?: Route['name'];

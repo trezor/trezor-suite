@@ -2,8 +2,8 @@ import { testMocks } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { configureStore } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { configureStore } from 'src/support/tests/configureStore';
 
 import fixtures, {
     DeviceSettingsFixtureState,

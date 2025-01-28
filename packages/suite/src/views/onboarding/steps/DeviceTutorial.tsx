@@ -4,8 +4,8 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
 import { Button } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 
 import {
@@ -16,8 +16,8 @@ import {
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { selectOnboardingTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import messages from 'src/support/messages';
 
 const StyledOnboardingStepBox = styled(OnboardingStepBox)`

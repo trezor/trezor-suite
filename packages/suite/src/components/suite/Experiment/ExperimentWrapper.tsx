@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 
-import { useExperiment, ExperimentId } from '@suite-common/message-system';
+import { ExperimentId, useExperiment } from '@suite-common/message-system';
 
 interface ExperimentWrapperProps {
     id: ExperimentId;

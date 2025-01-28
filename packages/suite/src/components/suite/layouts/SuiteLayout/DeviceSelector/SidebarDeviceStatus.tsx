@@ -1,12 +1,12 @@
 import { MouseEventHandler } from 'react';
 
-import { acquireDevice, selectSelectedDevice, selectDevices } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
+import { acquireDevice, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { TrezorDevice } from 'src/types/suite';
 
-import { useDispatch, useSelector } from '../../../../../hooks/suite';
 import { DeviceStatus } from './DeviceStatus';
+import { useDispatch, useSelector } from '../../../../../hooks/suite';
 import { useIsSidebarCollapsed } from '../Sidebar/utils';
 
 const needsRefresh = (device?: TrezorDevice) => {

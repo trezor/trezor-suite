@@ -1,30 +1,39 @@
-import { ScanAccountProgress, BroadcastedTransactionDetails } from '@trezor/coinjoin';
-import TrezorConnect from '@trezor/connect';
-import { promiseAllSequence } from '@trezor/utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDevEnv } from '@suite-common/suite-utils';
-import type { NetworkAccount, Network, NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import type { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountByKey,
-    transactionsActions,
-    selectSelectedDevice,
     selectDevices,
+    selectSelectedDevice,
+    transactionsActions,
 } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 import {
     getAccountTransactions,
     sortByBIP44AddressIndex,
     substituteBip43Path,
 } from '@suite-common/wallet-utils';
+import { BroadcastedTransactionDetails, ScanAccountProgress } from '@trezor/coinjoin';
+import TrezorConnect from '@trezor/connect';
+import { promiseAllSequence } from '@trezor/utils';
 
-import { CoinjoinService, COORDINATOR_FEE_RATE_MULTIPLIER } from 'src/services/coinjoin';
-import type { CoinjoinSymbol } from 'src/services/coinjoin';
+import { openModal } from 'src/actions/suite/modalActions';
+import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 import {
-    getAccountProgressHandle,
-    getRegisterAccountParams,
-    isCoinjoinSupportedSymbol,
-} from 'src/utils/wallet/coinjoinUtils';
+    selectCoinjoinAccountByKey,
+    selectCoinjoinAccounts,
+    selectCoinjoinSessionBlockerByAccountKey,
+    selectHasAnonymitySetError,
+    selectIsAccountWithSessionByAccountKey,
+    selectIsAccountWithSessionInCriticalPhaseByAccountKey,
+    selectIsAnySessionInCriticalPhase,
+    selectIsNothingToAnonymizeByAccountKey,
+    selectSessionByAccountKey,
+    selectWeightedAnonymityByAccountKey,
+} from 'src/reducers/wallet/coinjoinReducer';
+import { COORDINATOR_FEE_RATE_MULTIPLIER, CoinjoinService } from 'src/services/coinjoin';
+import type { CoinjoinSymbol } from 'src/services/coinjoin';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     CoinjoinAccount,
@@ -33,19 +42,10 @@ import {
     CoinjoinSessionParameters,
 } from 'src/types/wallet/coinjoin';
 import {
-    selectCoinjoinAccounts,
-    selectCoinjoinAccountByKey,
-    selectCoinjoinSessionBlockerByAccountKey,
-    selectIsAccountWithSessionByAccountKey,
-    selectIsAccountWithSessionInCriticalPhaseByAccountKey,
-    selectIsAnySessionInCriticalPhase,
-    selectHasAnonymitySetError,
-    selectIsNothingToAnonymizeByAccountKey,
-    selectSessionByAccountKey,
-    selectWeightedAnonymityByAccountKey,
-} from 'src/reducers/wallet/coinjoinReducer';
-import { openModal } from 'src/actions/suite/modalActions';
-import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
+    getAccountProgressHandle,
+    getRegisterAccountParams,
+    isCoinjoinSupportedSymbol,
+} from 'src/utils/wallet/coinjoinUtils';
 
 import * as coinjoinClientActions from './coinjoinClientActions';
 import { goto } from '../suite/routerActions';

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
+import type { TradingExchangeType } from '@suite-common/invity';
 import { Row, Select } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import type { TradingExchangeType } from '@suite-common/invity';
 
 import { Translation } from 'src/components/suite';
 import {

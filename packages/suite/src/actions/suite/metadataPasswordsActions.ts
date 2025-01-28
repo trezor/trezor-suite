@@ -1,14 +1,14 @@
 import crypto from 'crypto';
 
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
 
-import { METADATA, METADATA_PROVIDER, METADATA_PASSWORDS } from 'src/actions/suite/constants';
-import { Dispatch, GetState } from 'src/types/suite';
-import { ProviderErrorAction, PasswordEntry, LabelableEntityKeys } from 'src/types/suite/metadata';
-import * as metadataUtils from 'src/utils/suite/metadata';
+import { METADATA, METADATA_PASSWORDS, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import { selectSelectedProviderForPasswords } from 'src/reducers/suite/metadataReducer';
+import { Dispatch, GetState } from 'src/types/suite';
+import { LabelableEntityKeys, PasswordEntry, ProviderErrorAction } from 'src/types/suite/metadata';
+import * as metadataUtils from 'src/utils/suite/metadata';
 
 import * as metadataActions from './metadataActions';
 import * as metadataProviderActions from './metadataProviderActions';

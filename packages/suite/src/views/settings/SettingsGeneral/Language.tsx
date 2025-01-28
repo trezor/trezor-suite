@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { getPlatformLanguages } from '@trezor/env-utils';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { CROWDIN_URL } from '@trezor/urls';
 
+import { setLanguage } from 'src/actions/settings/languageActions';
+import { setAutodetect } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
-import { isTranslationMode, getOsLocale } from 'src/utils/suite/l10n';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import LANGUAGES, { Locale, LocaleInfo } from 'src/config/suite/languages';
-import { setAutodetect } from 'src/actions/suite/suiteActions';
-import { setLanguage } from 'src/actions/settings/languageActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { getOsLocale, isTranslationMode } from 'src/utils/suite/l10n';
 
 const onlyOfficial = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
     locale[1].type === 'official';

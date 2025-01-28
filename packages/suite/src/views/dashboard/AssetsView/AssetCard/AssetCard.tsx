@@ -3,26 +3,27 @@ import { useDispatch } from 'react-redux';
 
 import styled, { useTheme } from 'styled-components';
 
+import { AssetFiatBalance } from '@suite-common/assets';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { selectDebugFilteredAssetAccountsThatStaked } from '@suite-common/wallet-core';
+import { Account, RatesByKey } from '@suite-common/wallet-types';
+import { isTestnet } from '@suite-common/wallet-utils';
 import {
     Card,
     Column,
     H2,
     Icon,
+    InfoItem,
     Row,
     SkeletonRectangle,
     variables,
-    InfoItem,
 } from '@trezor/components';
-import { AssetFiatBalance } from '@suite-common/assets';
 import { TokenInfo } from '@trezor/connect';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
-import { selectDebugFilteredAssetAccountsThatStaked } from '@suite-common/wallet-core';
-import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 
+import { goto } from 'src/actions/suite/routerActions';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
@@ -30,9 +31,8 @@ import {
     Translation,
     TrendTicker,
 } from 'src/components/suite';
-import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
+import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 import { TradingBuyButton } from '../TradingBuyButton';

@@ -11,9 +11,9 @@ import { TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL } from '@trezor/urls';
 import { OnboardingButtonCta, OnboardingStepBox } from 'src/components/onboarding';
 import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 import { DeviceAuthenticationExplainer, Translation } from 'src/components/suite';
+import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
     padding: ${spacingsPx.md};

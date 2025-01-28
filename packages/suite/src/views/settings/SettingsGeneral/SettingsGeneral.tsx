@@ -1,39 +1,39 @@
-import { isDesktop, isWeb } from '@trezor/env-utils';
 import { getNetwork } from '@suite-common/wallet-config';
+import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 import {
+    selectHasExperimentalFeature,
     selectIsSettingsDesktopAppPromoBannerShown,
     selectTorState,
-    selectHasExperimentalFeature,
 } from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
-import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 
-import { Language } from './Language';
-import { Fiat } from './Fiat';
-import { Labeling } from './Labeling';
-import { DisconnectLabelingProvider } from './DisconnectLabelingProvider';
-import { ConnectLabelingProvider } from './ConnectLabelingProvider';
-import { Tor } from './Tor';
-import { TorOnionLinks } from './TorOnionLinks';
-import { Theme } from './Theme';
-import { Analytics } from './Analytics';
-import { ShowApplicationLog } from './ShowApplicationLog';
-import { ClearStorage } from './ClearStorage';
-import { VersionWithUpdate } from './VersionWithUpdate';
-import { EarlyAccess } from './EarlyAccess';
-import { BitcoinAmountUnit } from './BitcoinAmountUnit';
-import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { AddressDisplay } from './AddressDisplay';
+import { Analytics } from './Analytics';
+import { AutoStart } from './AutoStart';
+import { AutomaticUpdate } from './AutomaticUpdate';
+import { BitcoinAmountUnit } from './BitcoinAmountUnit';
+import { ClearStorage } from './ClearStorage';
+import { ConnectLabelingProvider } from './ConnectLabelingProvider';
+import { DesktopSuiteBanner } from './DesktopSuiteBanner';
+import { DisconnectLabelingProvider } from './DisconnectLabelingProvider';
+import { EarlyAccess } from './EarlyAccess';
 import { EnableViewOnly } from './EnableViewOnly';
 import { Experimental } from './Experimental';
-import { AutomaticUpdate } from './AutomaticUpdate';
-import { AutoStart } from './AutoStart';
+import { Fiat } from './Fiat';
+import { Labeling } from './Labeling';
+import { Language } from './Language';
+import { ShowApplicationLog } from './ShowApplicationLog';
 import { ShowOnTray } from './ShowOnTray';
+import { Theme } from './Theme';
+import { Tor } from './Tor';
 import { TorExternal } from './TorExternal';
+import { TorOnionLinks } from './TorOnionLinks';
+import { VersionWithUpdate } from './VersionWithUpdate';
 
 export const SettingsGeneral = () => {
     const shouldShowSettingsDesktopAppPromoBanner = useSelector(

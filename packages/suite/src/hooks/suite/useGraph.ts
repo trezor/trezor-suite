@@ -1,5 +1,5 @@
-import { useSelector, useActions } from 'src/hooks/suite';
 import * as graphActions from 'src/actions/wallet/graphActions';
+import { useActions, useSelector } from 'src/hooks/suite';
 
 export const useGraph = () => {
     const selectedRange = useSelector(state => state.wallet.graph.selectedRange);

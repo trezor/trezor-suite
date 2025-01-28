@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import { Column, NewModal, Banner, Card, H3, Paragraph } from '@trezor/components';
+import { Banner, Card, Column, H3, NewModal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation, CheckItem } from 'src/components/suite';
 import { toggleCheckFirmwareAuthenticity } from 'src/actions/suite/suiteActions';
+import { CheckItem, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 
 type DeviceAuthenticityOptOutModalProps = {

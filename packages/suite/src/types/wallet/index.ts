@@ -1,25 +1,25 @@
+import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import {
-    discoveryActions,
     accountsActions,
     blockchainActions,
-    stakeActions,
+    discoveryActions,
     sendFormActions,
+    stakeActions,
 } from '@suite-common/wallet-core';
-import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 
-import { ReceiveAction } from 'src/actions/wallet/receiveActions';
-import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
-import { TradingBuyAction } from 'src/actions/wallet/tradingBuyActions';
-import { TradingExchangeAction } from 'src/actions/wallet/tradingExchangeActions';
-import { TradingSellAction } from 'src/actions/wallet/tradingSellActions';
-import { TradingCommonAction } from 'src/actions/wallet/trading/tradingCommonActions';
-import { GraphAction } from 'src/actions/wallet/graphActions';
 import { AccountSearchAction } from 'src/actions/wallet/accountSearchActions';
-import { FormDraftAction } from 'src/actions/wallet/formDraftActions';
 import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
 import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
+import { FormDraftAction } from 'src/actions/wallet/formDraftActions';
+import { GraphAction } from 'src/actions/wallet/graphActions';
+import { ReceiveAction } from 'src/actions/wallet/receiveActions';
+import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
+import { TradingCommonAction } from 'src/actions/wallet/trading/tradingCommonActions';
+import { TradingBuyAction } from 'src/actions/wallet/tradingBuyActions';
+import { TradingExchangeAction } from 'src/actions/wallet/tradingExchangeActions';
 import { TradingInfoAction } from 'src/actions/wallet/tradingInfoActions';
+import { TradingSellAction } from 'src/actions/wallet/tradingSellActions';
 
 // reexport
 export type { Icon } from './iconTypes';

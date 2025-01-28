@@ -1,19 +1,19 @@
 import styled from 'styled-components';
 
-import { EventType, analytics } from '@trezor/suite-analytics';
-import { ButtonGroup, Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { ButtonGroup, Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacingsPx } from '@trezor/theme';
 
-import { WalletParams } from 'src/types/wallet';
-import { Translation } from 'src/components/suite/Translation';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
+import { Translation } from 'src/components/suite/Translation';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
+import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectWindowSize } from 'src/reducers/suite/windowReducer';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { WalletParams } from 'src/types/wallet';
 
 const Container = styled.div`
     display: flex;

@@ -2,34 +2,34 @@ import produce from 'immer';
 import type {
     BuyTrade,
     BuyTradeQuoteRequest,
-    ExchangeTradeQuoteRequest,
-    ExchangeTrade,
-    SellFiatTrade,
-    SellFiatTradeQuoteRequest,
     Coins,
     CryptoId,
+    ExchangeTrade,
+    ExchangeTradeQuoteRequest,
     Platforms,
+    SellFiatTrade,
+    SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
+import type { TradingType } from '@suite-common/invity';
 import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import type { FeeLevel } from '@trezor/connect';
-import type { TradingType } from '@suite-common/invity';
 
-import type { WalletAction, Account } from 'src/types/wallet';
-import type { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
-import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
+import { STORAGE } from 'src/actions/suite/constants';
 import {
     TRADING_BUY,
-    TRADING_EXCHANGE,
     TRADING_COMMON,
-    TRADING_SELL,
+    TRADING_EXCHANGE,
     TRADING_INFO,
+    TRADING_SELL,
 } from 'src/actions/wallet/constants';
-import { STORAGE } from 'src/actions/suite/constants';
-import type { AppState, Action as SuiteAction } from 'src/types/suite';
+import type { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
+import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
 import type { SellInfo } from 'src/actions/wallet/tradingSellActions';
-import type { Trade } from 'src/types/wallet/tradingCommonTypes';
+import type { AppState, Action as SuiteAction } from 'src/types/suite';
 import { TradingPaymentMethodListProps } from 'src/types/trading/trading';
+import type { Account, WalletAction } from 'src/types/wallet';
+import type { Trade } from 'src/types/wallet/tradingCommonTypes';
 
 export interface ComposedTransactionInfo {
     composed?: Pick<

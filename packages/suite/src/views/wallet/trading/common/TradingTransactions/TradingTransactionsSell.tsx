@@ -9,16 +9,16 @@ import {
     saveTransactionId,
     setIsFromRedirect,
 } from 'src/actions/wallet/tradingSellActions';
-import { TradingTransactionId } from 'src/views/wallet/trading/common';
-import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
-import { TradeSell } from 'src/types/wallet/tradingCommonTypes';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { Account } from 'src/types/wallet';
+import { TradeSell } from 'src/types/wallet/tradingCommonTypes';
+import { TradingTransactionId } from 'src/views/wallet/trading/common';
 import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
+import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';
 import { TradingTransactionInfo } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionInfo';
 import { TradingTransactionProvider } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionProvider';
-import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';
 
 interface TradingTransactionSellProps {
     trade: TradeSell;

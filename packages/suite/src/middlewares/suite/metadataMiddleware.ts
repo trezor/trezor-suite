@@ -2,9 +2,9 @@ import { MiddlewareAPI } from 'redux';
 
 import { accountsActions, deviceActions } from '@suite-common/wallet-core';
 
-import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
-import { AppState, Action, Dispatch } from 'src/types/suite';
 import { METADATA_LABELING, ROUTER } from 'src/actions/suite/constants';
+import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
+import { Action, AppState, Dispatch } from 'src/types/suite';
 
 const metadata =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

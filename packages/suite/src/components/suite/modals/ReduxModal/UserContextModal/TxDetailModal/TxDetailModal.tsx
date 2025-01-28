@@ -1,15 +1,15 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
-import { isPending, findChainedTransactions, getAccountKey } from '@suite-common/wallet-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectAccountByKey, selectAllPendingTransactions } from '@suite-common/wallet-core';
 import { WalletAccountTransactionWithRequiredRbfParams } from '@suite-common/wallet-types';
+import { findChainedTransactions, getAccountKey, isPending } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 
-import { TabID } from './Detail/AdvancedTxDetails/AdvancedTxDetails';
 import { BumpFeeModal } from './ChangeFee/BumpFeeModal';
+import { TabID } from './Detail/AdvancedTxDetails/AdvancedTxDetails';
 import { DetailModal } from './Detail/DetailModal';
 
 const hasRbfParams = (

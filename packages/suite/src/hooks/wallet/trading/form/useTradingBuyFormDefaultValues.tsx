@@ -1,20 +1,20 @@
 import { useMemo } from 'react';
 
-import { FiatCurrencyCode, CryptoId } from 'invity-api';
+import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { networks } from '@suite-common/wallet-config';
 
 import { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
-import { Account } from 'src/types/wallet';
-import { buildFiatOption, getDefaultCountry } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
-import { TradingPaymentMethodListProps } from 'src/types/trading/trading';
 import {
     FORM_DEFAULT_FIAT_CURRENCY,
     FORM_DEFAULT_PAYMENT_METHOD,
 } from 'src/constants/wallet/trading/form';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useSelector } from 'src/hooks/suite';
+import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { TradingPaymentMethodListProps } from 'src/types/trading/trading';
+import { TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
+import { Account } from 'src/types/wallet';
+import { buildFiatOption, getDefaultCountry } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],

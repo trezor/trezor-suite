@@ -2,10 +2,12 @@ import { useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Button, ButtonGroup, Tooltip, variables } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
-import { Button, ButtonGroup, Tooltip, variables } from '@trezor/components';
 
+import { applySettings } from 'src/actions/settings/deviceSettingsActions';
+import { openModal } from 'src/actions/suite/modalActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import {
     ActionButton,
@@ -14,19 +16,17 @@ import {
     TextColumn,
     Translation,
 } from 'src/components/suite';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { openModal } from 'src/actions/suite/modalActions';
-import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import {
-    deviceModelInformation,
-    imagePathToHex,
-    fileToDataUrl,
     ImageValidationError,
-    validateImage,
+    deviceModelInformation,
+    fileToDataUrl,
+    imagePathToHex,
     isHomescreenSupportedOnDevice,
+    validateImage,
 } from 'src/utils/suite/homescreen';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const HiddenInput = styled.input`
     display: none;

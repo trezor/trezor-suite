@@ -2,34 +2,34 @@ import { Middleware } from 'redux';
 
 import { testMocks } from '@suite-common/test-utils';
 import {
-    prepareDeviceReducer,
-    selectDevices,
-    selectDevicesCount,
-    prepareDiscoveryReducer,
-    disableAccountsThunk,
-    transactionsActions,
     createDiscoveryThunk,
     deviceActions,
+    disableAccountsThunk,
+    prepareDeviceReducer,
+    prepareDiscoveryReducer,
     prepareSendFormReducer,
+    selectDevices,
+    selectDevicesCount,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
-import { getAccountTransactions, getAccountIdentifier } from '@suite-common/wallet-utils';
+import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
-import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
-import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import graphReducer from 'src/reducers/wallet/graphReducer';
+import { SETTINGS } from 'src/config/suite';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
+import graphReducer from 'src/reducers/wallet/graphReducer';
+import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
+import { extraDependencies } from 'src/support/extraDependencies';
+import { preloadStore } from 'src/support/suite/preloadStore';
 import { configureStore } from 'src/support/tests/configureStore';
 import { AcquiredDevice, AppState } from 'src/types/suite';
-import { SETTINGS } from 'src/config/suite';
-import { preloadStore } from 'src/support/suite/preloadStore';
-import { extraDependencies } from 'src/support/extraDependencies';
 
-import * as suiteActions from '../suiteActions';
 import * as storageActions from '../storageActions';
+import * as suiteActions from '../suiteActions';
 
 const { getSuiteDevice, getWalletAccount, getWalletTransaction } = testMocks;
 

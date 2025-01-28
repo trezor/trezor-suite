@@ -1,38 +1,38 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import styled from 'styled-components';
+import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
-import { Input, Button, IconButton, Icon, Link, Row } from '@trezor/components';
-import { capitalizeFirstLetter } from '@trezor/utils';
-import * as URLS from '@trezor/urls';
+import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { formInputsMaxLength } from '@suite-common/validators';
 import type { Output } from '@suite-common/wallet-types';
-import TrezorConnect from '@trezor/connect';
 import {
-    isAddressValid,
-    isAddressDeprecated,
-    isTaprootAddress,
-    isBech32AddressUppercase,
-    getInputState,
     checkIsAddressNotUsedNotChecksummed,
+    getInputState,
+    isAddressDeprecated,
+    isAddressValid,
+    isBech32AddressUppercase,
+    isTaprootAddress,
 } from '@suite-common/wallet-utils';
-import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
-import { spacings } from '@trezor/theme';
+import { Button, Icon, IconButton, Input, Link, Row } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
+import * as URLS from '@trezor/urls';
 import {
     HELP_CENTER_EVM_ADDRESS_CHECKSUM,
     HELP_CENTER_EVM_SEND_TO_CONTRACT_URL,
 } from '@trezor/urls';
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { getProtocolInfo } from 'src/utils/suite/protocol';
+import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
-import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
-import { useSelector, useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useSendFormContext } from 'src/hooks/wallet';
+import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
 import { Translation } from '../../../../components/suite/Translation';

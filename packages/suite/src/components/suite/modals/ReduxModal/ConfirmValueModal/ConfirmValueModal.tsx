@@ -1,31 +1,31 @@
-import { useEffect, ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 import {
-    Tooltip,
-    NewModal,
     Banner,
+    Card,
+    Column,
+    NewModal,
     NewModalProps,
     Paragraph,
     Row,
-    Column,
-    Card,
+    Tooltip,
 } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { palette, spacings } from '@trezor/theme';
 import { ConfirmOnDevice } from '@trezor/product-components';
+import { palette, spacings } from '@trezor/theme';
 
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { MODAL } from 'src/actions/suite/constants';
+import { Translation } from 'src/components/suite';
 import { QrCode } from 'src/components/suite/QrCode';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Translation } from 'src/components/suite';
-import { MODAL } from 'src/actions/suite/constants';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { DisplayMode, ThunkAction } from 'src/types/suite';
 
-import { TransactionReviewStepIndicator } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewStepIndicator';
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
+import { TransactionReviewStepIndicator } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewStepIndicator';
 
 export interface ConfirmValueModalProps
     extends Pick<NewModalProps, 'onCancel' | 'heading' | 'description'> {

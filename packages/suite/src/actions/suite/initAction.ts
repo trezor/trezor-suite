@@ -1,21 +1,21 @@
-import { initMessageSystemThunk } from '@suite-common/message-system';
 import * as trezorConnectActions from '@suite-common/connect-init';
+import { initMessageSystemThunk } from '@suite-common/message-system';
+import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
     initBlockchainThunk,
     initDevices,
-    periodicFetchFiatRatesThunk,
     periodicCheckStakeDataThunk,
+    periodicFetchFiatRatesThunk,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
+import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import * as trezorConnectPopupActions from '@trezor/suite-desktop-connect-popup';
-import { isDesktop } from '@trezor/env-utils';
 
-import * as routerActions from 'src/actions/suite/routerActions';
+import * as languageActions from 'src/actions/settings/languageActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
-import * as languageActions from 'src/actions/settings/languageActions';
+import * as routerActions from 'src/actions/suite/routerActions';
 import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';

@@ -9,9 +9,9 @@ import {
     FORM_EXCHANGE_TYPE,
 } from 'src/constants/wallet/trading/form';
 import type {
-    TradingExchangeFormProps,
     ExchangeType,
     RateType,
+    TradingExchangeFormProps,
 } from 'src/types/trading/tradingForm';
 import { getCexQuotesByRateType } from 'src/utils/wallet/trading/exchangeUtils';
 

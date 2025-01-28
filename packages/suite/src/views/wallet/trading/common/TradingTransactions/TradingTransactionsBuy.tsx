@@ -3,17 +3,17 @@ import { BuyProviderInfo } from 'invity-api';
 import { Button } from '@trezor/components';
 
 import { saveTransactionDetailId } from 'src/actions/wallet/tradingBuyActions';
-import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
-import { TradeBuy } from 'src/types/wallet/tradingCommonTypes';
 import { useDispatch } from 'src/hooks/suite';
-import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
+import { Account } from 'src/types/wallet';
+import { TradeBuy } from 'src/types/wallet/tradingCommonTypes';
+import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
+import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';
 import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionId';
 import { TradingTransactionInfo } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionInfo';
-import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
 import { TradingTransactionProvider } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionProvider';
-import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';
 
 interface TradingTransactionBuyProps {
     trade: TradeBuy;

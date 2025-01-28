@@ -1,22 +1,22 @@
 import fs from 'fs';
 import path from 'path';
 
-import { prepareDeviceReducer } from '@suite-common/wallet-core';
 import { testMocks } from '@suite-common/test-utils';
+import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
-import { configureStore } from 'src/support/tests/configureStore';
+import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
-import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
-import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import { accountsReducer } from 'src/reducers/wallet';
+import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { configureStore } from 'src/support/tests/configureStore';
 
-import { STORAGE, MODAL } from '../constants';
-import * as metadataActions from '../metadataActions';
-import * as metadataProviderActions from '../metadataProviderActions';
-import * as metadataLabelingActions from '../metadataLabelingActions';
 import * as fixtures from '../__fixtures__/metadataActions';
+import { MODAL, STORAGE } from '../constants';
+import * as metadataActions from '../metadataActions';
+import * as metadataLabelingActions from '../metadataLabelingActions';
+import * as metadataProviderActions from '../metadataProviderActions';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 

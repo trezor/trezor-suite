@@ -1,14 +1,14 @@
-import { Banner, H3, Column } from '@trezor/components';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { selectNftDefinitions } from '@suite-common/token-definitions';
+import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Banner, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 
-import { NoTokens } from '../tokens/common/NoTokens';
 import NftsTable from './NftsTable/NftsTable';
+import { NoTokens } from '../tokens/common/NoTokens';
 import { NoSearchResultsWrapped } from '../tokens/common/TokensTable/TokensTable';
 
 type EvmNftsTablesProps = {

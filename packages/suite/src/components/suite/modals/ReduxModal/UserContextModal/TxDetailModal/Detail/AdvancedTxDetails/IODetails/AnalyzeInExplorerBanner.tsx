@@ -1,9 +1,9 @@
-import { Banner, Paragraph, H4, Column } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBlockchainExplorerBySymbol } from '@suite-common/wallet-core';
+import { Banner, Column, H4, Paragraph } from '@trezor/components';
 
-import { useExternalLink, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
+import { useExternalLink, useSelector } from 'src/hooks/suite';
 
 type AnalyzeInExplorerBannerProps = {
     txid: string;

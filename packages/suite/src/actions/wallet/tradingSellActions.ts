@@ -8,9 +8,9 @@ import {
 
 import { invityAPI } from '@suite-common/invity';
 
-import { Account } from 'src/types/wallet';
-import { Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
+import { Dispatch } from 'src/types/suite';
+import { Account } from 'src/types/wallet';
 
 import { TRADING_COMMON, TRADING_SELL } from './constants';
 

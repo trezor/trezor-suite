@@ -1,17 +1,17 @@
 import React, { ReactNode } from 'react';
 
 import {
-    H2,
     Button,
-    Card,
     ButtonProps,
+    Card,
     Column,
-    Row,
-    Paragraph,
     Divider,
-    IconName,
+    H2,
     IconCircle,
     IconCircleVariant,
+    IconName,
+    Paragraph,
+    Row,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

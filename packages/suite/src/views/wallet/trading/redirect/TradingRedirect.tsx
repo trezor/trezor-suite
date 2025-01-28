@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 
-import styled from 'styled-components';
 import { CryptoId } from 'invity-api';
+import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
-import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
 import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
+import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
+import { Account } from 'src/types/wallet';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,5 +1,5 @@
 import { Route } from '@suite-common/suite-types';
-import { isAccountOfNetwork, getNetworkOptional } from '@suite-common/wallet-config';
+import { getNetworkOptional, isAccountOfNetwork } from '@suite-common/wallet-config';
 import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
 import routes, { RouterAppWithParams } from 'src/constants/suite/routes';

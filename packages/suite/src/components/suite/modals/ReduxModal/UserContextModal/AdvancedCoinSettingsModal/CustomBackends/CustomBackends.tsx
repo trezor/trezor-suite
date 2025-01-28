@@ -2,19 +2,19 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Input, Button, H3, CollapsibleBox, Column } from '@trezor/components';
 import { Network } from '@suite-common/wallet-config';
+import { Button, CollapsibleBox, Column, H3, Input } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation, TooltipSymbol } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import { toggleTor } from 'src/actions/suite/suiteActions';
-import { useDefaultUrls, useBackendsForm } from 'src/hooks/settings/backends';
+import { TooltipSymbol, Translation } from 'src/components/suite';
+import { useBackendsForm, useDefaultUrls } from 'src/hooks/settings/backends';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
-import ConnectionInfo from './ConnectionInfo';
 import { BackendInput } from './BackendInput';
 import { BackendTypeSelect } from './BackendTypeSelect';
+import ConnectionInfo from './ConnectionInfo';
 import { TorModal, TorResult } from './TorModal';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

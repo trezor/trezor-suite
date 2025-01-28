@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { FormState } from '@suite-common/wallet-types';
-import { getFeeInfo } from '@suite-common/wallet-utils';
 import { networks } from '@suite-common/wallet-config';
-import type { Account, FormOptions } from '@suite-common/wallet-types';
+import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
+import { FormState } from '@suite-common/wallet-types';
+import type { Account, FormOptions } from '@suite-common/wallet-types';
+import { getFeeInfo } from '@suite-common/wallet-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';

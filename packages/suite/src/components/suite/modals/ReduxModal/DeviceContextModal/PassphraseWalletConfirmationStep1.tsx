@@ -1,15 +1,15 @@
 import { Dispatch } from 'react';
 
-import { spacings } from '@trezor/theme';
-import { Column, Card, Row, Button, H3, Paragraph } from '@trezor/components';
-import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
+import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
+import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { goto } from 'src/actions/suite/routerActions';
 import { onCancel as onCancelModal } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite/Translation';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 
 import { ContentType } from './types';

@@ -1,12 +1,12 @@
-import { InfoItem, Tooltip, Banner, Column, Card } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import { Banner, Card, Column, InfoItem, Tooltip } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { Fees } from 'src/components/wallet/Fees/Fees';
+import { useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';

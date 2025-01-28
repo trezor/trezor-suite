@@ -1,6 +1,6 @@
 import { Network } from '@suite-common/wallet-config';
 import { selectVisibleNonEmptyDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
-import { SkeletonRectangle, Note, Column } from '@trezor/components';
+import { Column, Note, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';

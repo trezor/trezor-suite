@@ -1,8 +1,8 @@
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
 import { CoinjoinConfirmation } from 'src/views/wallet/anonymize/components/CoinjoinConfirmation';
 
 const Anonymize = () => {

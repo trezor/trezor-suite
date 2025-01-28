@@ -1,10 +1,10 @@
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 
+import { openModal } from 'src/actions/suite/modalActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
-import { openModal } from 'src/actions/suite/modalActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 
 interface WipeDeviceProps {
     isDeviceLocked: boolean;

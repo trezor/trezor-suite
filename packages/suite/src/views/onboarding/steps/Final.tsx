@@ -1,25 +1,25 @@
 import { useRef, useState } from 'react';
 
-import styled, { css } from 'styled-components';
 import useMeasure from 'react-use/lib/useMeasure';
+import styled, { css } from 'styled-components';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
 import {
     Button,
-    variables,
+    DeviceAnimation,
     Dropdown,
     DropdownRef,
     Tooltip,
-    DeviceAnimation,
+    variables,
 } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx, typography } from '@trezor/theme';
 
-import { Translation, HomescreenGallery } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
-import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
-import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { HomescreenGallery, Translation } from 'src/components/suite';
 import { ChangeDeviceLabel } from 'src/components/suite/ChangeDeviceLabel';
+import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { isHomescreenSupportedOnDevice } from 'src/utils/suite/homescreen';
 
 const Content = styled.div`
     flex-direction: column;

@@ -1,41 +1,41 @@
 import { MiddlewareAPI } from 'redux';
 
+import { analyticsActions } from '@suite-common/analytics';
+import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import {
-    discoveryActions,
     accountsActions,
-    blockchainActions,
-    selectSelectedDevice,
-    deviceActions,
     authorizeDeviceThunk,
+    blockchainActions,
+    deviceActions,
+    discoveryActions,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
+import { DEVICE, TRANSPORT } from '@trezor/connect';
 import {
     getBootloaderVersion,
     getFirmwareVersion,
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
-import { DEVICE, TRANSPORT } from '@trezor/connect';
-import { analyticsActions } from '@suite-common/analytics';
-import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import {
-    SUITE,
-    ROUTER,
     DESKTOP_UPDATE,
     METADATA,
     MODAL,
     PROTOCOL,
+    ROUTER,
+    SUITE,
 } from 'src/actions/suite/constants';
+import { Action, AppState, Dispatch } from 'src/types/suite';
 import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
 import {
     addSentryBreadcrumb,
+    captureSentryMessage,
     setSentryContext,
     setSentryTag,
     withSentryScope,
-    captureSentryMessage,
 } from 'src/utils/suite/sentry';
-import { AppState, Action, Dispatch } from 'src/types/suite';
 
 const deviceContextName = 'trezor-device';
 

@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
+import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
+import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { FiatRates, FiatRatesResult, Output, Rate, Timestamp } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
     formatAmount,
@@ -9,12 +11,10 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { Output, Timestamp, FiatRatesResult, Rate, FiatRates } from '@suite-common/wallet-types';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useDispatch } from 'src/hooks/suite';
 import { importSendFormRequestThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { useDispatch } from 'src/hooks/suite';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { UseSendFormState } from 'src/types/wallet/sendForm';
 
 type useSendFormImportProps = {

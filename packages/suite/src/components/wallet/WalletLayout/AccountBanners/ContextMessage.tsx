@@ -1,5 +1,5 @@
+import { Context, selectContextMessageContent } from '@suite-common/message-system';
 import { Banner } from '@trezor/components';
-import { selectContextMessageContent, Context } from '@suite-common/message-system';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';

@@ -1,15 +1,15 @@
-import { Paragraph, NewModal } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { NewModal, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { backupDevice, ConfirmKey } from 'src/actions/backup/backupActions';
-import { Translation } from 'src/components/suite';
+import { ConfirmKey, backupDevice } from 'src/actions/backup/backupActions';
 import { PreBackupCheckboxes } from 'src/components/backup';
+import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDeviceLocked } from 'src/reducers/suite/suiteReducer';
 
-import { BackupState } from '../../reducers/backup/backupReducer';
 import { BackupStepDescription } from './BackupStepDescription';
+import { BackupState } from '../../reducers/backup/backupReducer';
 
 const canStart = (userConfirmed: ConfirmKey[], isDeviceLocked: boolean) =>
     (['has-enough-time', 'is-in-private', 'understands-what-seed-is'] as const).every(e =>

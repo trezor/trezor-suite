@@ -1,8 +1,8 @@
 import { Row } from '@trezor/components';
 
+import { rescanCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { rescanCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
 import type { Account } from 'src/types/wallet';
 
 type RescanAccountProps = {

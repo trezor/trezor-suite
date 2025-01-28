@@ -1,24 +1,24 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Icon, Banner, Flex, Row, Text, variables, useMediaQuery } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Output, TokenAddress } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
+    findToken,
     formatNetworkAmount,
+    getInputState,
     hasNetworkFeatures,
     isLowAnonymityWarning,
-    getInputState,
-    findToken,
 } from '@suite-common/wallet-utils';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { Banner, Flex, Icon, Row, Text, useMediaQuery, variables } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FiatValue, Translation } from 'src/components/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import {
     validateDecimals,

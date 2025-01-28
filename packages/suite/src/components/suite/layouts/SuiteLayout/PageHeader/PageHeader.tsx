@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import { Route } from '@suite-common/suite-types';
 import { spacingsPx, zIndices } from '@trezor/theme';
 
-import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
+import { useSelector } from 'src/hooks/suite';
+import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { HeaderActions } from './HeaderActions';
 import { PageName } from './PageNames/PageName';

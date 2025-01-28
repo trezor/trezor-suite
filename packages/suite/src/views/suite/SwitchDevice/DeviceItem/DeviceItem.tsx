@@ -1,16 +1,16 @@
 import styled from 'styled-components';
 
-import { variables, Column } from '@trezor/components';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { selectSelectedDevice, selectDeviceThunk, acquireDevice } from '@suite-common/wallet-core';
+import { acquireDevice, selectDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
+import { Column, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
-import { WalletInstance } from './WalletInstance';
 import { AddWalletButton } from './AddWalletButton';
+import { WalletInstance } from './WalletInstance';
 import { CardWithDevice } from '../CardWithDevice';
 import { DeviceWarning } from './DeviceWarning';
 

@@ -1,8 +1,8 @@
 import { Column } from '@trezor/components';
 
-import { getBestRatedQuote } from 'src/utils/wallet/trading/tradingUtils';
 import { WalletSubpageHeading } from 'src/components/wallet';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { getBestRatedQuote } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFeaturedOffersItem } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffersItem';
 
 export const TradingFeaturedOffers = () => {

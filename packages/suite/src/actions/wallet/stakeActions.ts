@@ -1,13 +1,12 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import TrezorConnect from '@trezor/connect';
-import {
-    selectSelectedDevice,
-    replaceTransactionThunk,
-    syncAccountsWithBlockchainThunk,
-    stakeActions,
-    ComposeActionContext,
-} from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    ComposeActionContext,
+    replaceTransactionThunk,
+    selectSelectedDevice,
+    stakeActions,
+    syncAccountsWithBlockchainThunk,
+} from '@suite-common/wallet-core';
+import { PrecomposedTransactionFinal, StakeFormState, StakeType } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     isRbfTransaction,
@@ -15,13 +14,14 @@ import {
     isSupportedSolStakingNetworkSymbol,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { StakeFormState, PrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
+import TrezorConnect from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Dispatch, GetState } from 'src/types/suite';
 
-import * as modalActions from '../suite/modalActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
+import * as modalActions from '../suite/modalActions';
 import { openModal } from '../suite/modalActions';
 
 export const composeTransaction =
