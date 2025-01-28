@@ -2,7 +2,24 @@
 
 set -euxo pipefail
 
-REGEX="s/@trezor\/([^/]+)\/src/@trezor\/\1\/lib/g"
+if [ $# -ge 2 ]; then
+    LIB_TYPE="$2"
+else
+    LIB_TYPE="lib"  # Default value
+fi
+
+# Set the regex based on the LIB_TYPE argument
+if [[ "$LIB_TYPE" == "libESM" ]]; then
+    REGEX="s/@trezor\/([^/]+)\/src/@trezor\/\1\/libESM/g"
+else
+    REGEX="s/@trezor\/([^/]+)\/src/@trezor\/\1\/lib/g"
+fi
+
+if [[ "$LIB_TYPE" == "libESM" ]]; then
+    REGEX="s/@trezor\/([^/]+)\/src/@trezor\/\1\/libESM/g"
+else
+    REGEX="s/@trezor\/([^/]+)\/src/@trezor\/\1\/lib/g"
+fi
 
 # Determine the operating system
 OS="$(uname)"

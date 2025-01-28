@@ -15,6 +15,7 @@
     "exclude": [
         "**/node_modules",
         "**/lib",
+        "**/libESM",
         "**/libDev",
         "**/build",
         "**/build-electron",
