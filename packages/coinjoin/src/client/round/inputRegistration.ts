@@ -4,9 +4,9 @@ import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
 import { confirmationInterval } from './connectionConfirmation';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 /**
  * RoundPhase: 0, InputRegistration

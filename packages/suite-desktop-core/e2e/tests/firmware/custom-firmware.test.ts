@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 const firmwarePath = path.join(__dirname, '../../fixtures/trezor-2.5.1.bin');
 

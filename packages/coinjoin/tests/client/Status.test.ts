@@ -1,13 +1,13 @@
 import { Status } from '../../src/client/Status';
 import * as http from '../../src/client/coordinatorRequest';
 import { STATUS_TIMEOUT } from '../../src/constants';
-import { createServer } from '../mocks/server';
 import {
     AFFILIATE_INFO,
     DEFAULT_ROUND,
     STATUS_EVENT,
     createCoinjoinRound,
 } from '../fixtures/round.fixture';
+import { createServer } from '../mocks/server';
 
 // using fakeTimers and async callbacks
 const fastForward = (time: number) => jest.advanceTimersByTimeAsync(time);

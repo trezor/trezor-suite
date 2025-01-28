@@ -1,4 +1,4 @@
-import { ReactNode, Component, ErrorInfo } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 
 interface StateProps {
     error: Error | null | undefined;

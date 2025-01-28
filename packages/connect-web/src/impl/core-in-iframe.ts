@@ -3,38 +3,38 @@ import EventEmitter from 'events';
 // NOTE: @trezor/connect part is intentionally not imported from the index due to NormalReplacementPlugin
 // in packages/suite-build/configs/web.webpack.config.ts
 import * as ERRORS from '@trezor/connect/src/constants/errors';
+import { config } from '@trezor/connect/src/data/config';
 import {
-    POPUP,
+    BLOCKCHAIN_EVENT,
+    CallMethodPayload,
+    CoreEventMessage,
+    DEVICE_EVENT,
     IFRAME,
+    POPUP,
+    RESPONSE_EVENT,
+    TRANSPORT,
+    TRANSPORT_EVENT,
     UI,
     UI_EVENT,
-    DEVICE_EVENT,
-    RESPONSE_EVENT,
-    TRANSPORT_EVENT,
-    BLOCKCHAIN_EVENT,
-    TRANSPORT,
-    parseMessage,
-    createErrorMessage,
     UiResponseEvent,
-    CoreEventMessage,
-    CallMethodPayload,
+    createErrorMessage,
+    parseMessage,
 } from '@trezor/connect/src/events';
+import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import type {
     ConnectSettings,
     ConnectSettingsWeb,
     DeviceIdentity,
     Manifest,
 } from '@trezor/connect/src/types';
-import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import { Log, initLog } from '@trezor/connect/src/utils/debug';
-import { config } from '@trezor/connect/src/data/config';
-import { DeferredManager, createDeferredManager } from '@trezor/utils/src/createDeferredManager';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
+import { Log, initLog } from '@trezor/connect/src/utils/debug';
+import { DeferredManager, createDeferredManager } from '@trezor/utils/src/createDeferredManager';
 
+import { parseConnectSettings } from '../connectSettings';
 import * as iframe from '../iframe';
 import * as popup from '../popup';
 import webUSBButton from '../webusb/button';
-import { parseConnectSettings } from '../connectSettings';
 
 export class CoreInIframe implements ConnectFactoryDependencies<ConnectSettingsWeb> {
     public eventEmitter = new EventEmitter();

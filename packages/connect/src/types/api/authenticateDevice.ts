@@ -1,7 +1,7 @@
 import { Static, Type } from '@trezor/schema-utils';
 
-import type { Params, Response } from '../params';
 import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfigTypes';
+import type { Params, Response } from '../params';
 
 export type AuthenticateDeviceParams = Static<typeof AuthenticateDeviceParams>;
 export const AuthenticateDeviceParams = Type.Object({

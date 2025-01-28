@@ -2,8 +2,8 @@ import { networks } from '@trezor/utxo-lib';
 
 import {
     getScriptPubKeyFromAddress,
-    sortOutputs,
     mergePubkeys,
+    sortOutputs,
 } from '../../src/utils/coordinatorUtils';
 
 describe('coordinatorUtils', () => {

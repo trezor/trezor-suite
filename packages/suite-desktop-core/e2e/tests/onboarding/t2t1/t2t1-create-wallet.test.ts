@@ -1,5 +1,5 @@
 import { SeedType } from '../../../support/enums/seedType';
-import { test, expect } from '../../../support/fixtures';
+import { expect, test } from '../../../support/fixtures';
 
 test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] }, () => {
     // This test always needs to run the newest possible emulator version

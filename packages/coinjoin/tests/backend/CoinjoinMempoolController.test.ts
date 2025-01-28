@@ -1,13 +1,13 @@
 import { networks } from '@trezor/utxo-lib';
 
-import { AccountAddress } from '../../src/types/backend';
 import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolController';
-import { MockMempoolClient } from '../mocks/MockMempoolClient';
+import { AccountAddress } from '../../src/types/backend';
 import {
     BLOCKS,
     SEGWIT_CHANGE_ADDRESSES,
     SEGWIT_RECEIVE_ADDRESSES,
 } from '../fixtures/methods.fixture';
+import { MockMempoolClient } from '../mocks/MockMempoolClient';
 
 const TXS = BLOCKS.flatMap(block => block.txs); // There is 6 of them
 const ADDRESS = SEGWIT_RECEIVE_ADDRESSES[1];

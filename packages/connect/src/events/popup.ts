@@ -1,5 +1,5 @@
-import { UI_EVENT } from './ui-request';
 import type { TransportInfo } from './transport';
+import { UI_EVENT } from './ui-request';
 import type { ConnectSettings, SystemInfo } from '../types';
 import type { MessageFactoryFn } from '../types/utils';
 

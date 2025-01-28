@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Meta, StoryFn } from '@storybook/react';
+import styled from 'styled-components';
 
 import { Flag, FlagType } from './Flag';
 import { FLAGS } from './flags';

@@ -1,7 +1,7 @@
 import type {
+    Address as AccountAddress,
     AccountAddresses,
     Utxo as AccountUtxo,
-    Address as AccountAddress,
 } from '@trezor/blockchain-link';
 import type {
     ComposeInput as ComposeInputBase,

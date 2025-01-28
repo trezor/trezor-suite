@@ -1,6 +1,6 @@
+import type { PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
-import type { PROTO } from '../constants';
 
 export default class ChangeWipeCode extends AbstractMethod<'changeWipeCode', PROTO.ChangeWipeCode> {
     init() {

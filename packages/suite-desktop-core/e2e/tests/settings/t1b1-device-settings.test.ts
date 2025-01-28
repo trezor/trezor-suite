@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
     test.use({ emulatorStartConf: { model: 'T1B1', version: '1-main', wipe: true } });

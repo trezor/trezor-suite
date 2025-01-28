@@ -1,7 +1,7 @@
+import { ERRORS } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
-import { ERRORS } from '../constants';
-import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
+import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
 import type { CoinInfo } from '../types';
 

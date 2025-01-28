@@ -1,28 +1,28 @@
+import { BrowserWindow, app } from 'electron';
 import path from 'path';
-import { app, BrowserWindow } from 'electron';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import type { HandshakeClient } from '@trezor/suite-desktop-api';
-import { validateIpcMessage } from '@trezor/ipc-proxy';
-import { createDeferred, createTimeoutPromise } from '@trezor/utils';
 import { isMacOs } from '@trezor/env-utils';
+import { validateIpcMessage } from '@trezor/ipc-proxy';
+import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { TimerId } from '@trezor/type-utils';
+import { createDeferred, createTimeoutPromise } from '@trezor/utils';
 
-import { ipcMain } from './typed-electron';
-import { APP_NAME } from './libs/constants';
-import { Store } from './libs/store';
-import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
-import { getBuildInfo, getComputerInfo } from './libs/info';
-import { restartApp, processStatePatch } from './libs/app-utils';
-import { clearAppCache, initUserData } from './libs/user-data';
-import { initSentry } from './libs/sentry';
-import { initModules, initBackgroundModules, mainThreadEmitter } from './modules';
-import { init as initTorModule } from './modules/tor';
-import { createInterceptor } from './libs/request-interceptor';
 import { hangDetect } from './hang-detect';
+import { processStatePatch, restartApp } from './libs/app-utils';
+import { APP_NAME } from './libs/constants';
+import { getBuildInfo, getComputerInfo } from './libs/info';
 import { Logger } from './libs/logger';
 import { MainWindowProxy } from './libs/main-window-proxy';
+import { createInterceptor } from './libs/request-interceptor';
+import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
+import { initSentry } from './libs/sentry';
+import { Store } from './libs/store';
+import { clearAppCache, initUserData } from './libs/user-data';
+import { initBackgroundModules, initModules, mainThreadEmitter } from './modules';
 import { isAutoStartEnabled } from './modules/auto-start';
+import { init as initTorModule } from './modules/tor';
+import { ipcMain } from './typed-electron';
 
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDevEnv) app.setVersion(process.env.VERSION);

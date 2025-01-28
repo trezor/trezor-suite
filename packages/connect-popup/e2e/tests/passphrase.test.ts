@@ -1,4 +1,4 @@
-import { test, Page, BrowserContext } from '@playwright/test';
+import { BrowserContext, Page, test } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 

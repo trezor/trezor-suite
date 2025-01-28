@@ -1,19 +1,19 @@
-import { TypedEmitter } from '@trezor/utils';
 import { TimerId } from '@trezor/type-utils';
+import { TypedEmitter } from '@trezor/utils';
 
 import * as coordinator from './coordinator';
-import { transformStatus } from '../utils/roundUtils';
-import { patchResponse } from '../utils/http';
 import { coordinatorRequest } from './coordinatorRequest';
 import { STATUS_TIMEOUT } from '../constants';
 import { RoundPhase } from '../enums';
 import {
     CoinjoinClientSettings,
+    CoinjoinClientVersion,
     CoinjoinStatusEvent,
     LogEvent,
-    CoinjoinClientVersion,
 } from '../types';
 import { Round } from '../types/coordinator';
+import { patchResponse } from '../utils/http';
+import { transformStatus } from '../utils/roundUtils';
 
 type StatusMode = keyof typeof STATUS_TIMEOUT;
 

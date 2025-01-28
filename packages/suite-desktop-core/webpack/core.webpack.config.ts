@@ -1,16 +1,16 @@
 /* eslint-disable import/no-default-export */
 
-import fs from 'fs';
-import path from 'path';
-import { sync } from 'glob';
-import webpack from 'webpack';
-import childProcess from 'child_process';
-import TerserPlugin from 'terser-webpack-plugin';
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
+import childProcess from 'child_process';
+import fs from 'fs';
+import { sync } from 'glob';
+import path from 'path';
+import TerserPlugin from 'terser-webpack-plugin';
+import webpack from 'webpack';
 
-import uriSchemes from '../../suite-desktop/uriSchemes.json';
 import { suiteVersion } from '../../suite/package.json';
 import pkg from '../../suite-desktop/package.json';
+import uriSchemes from '../../suite-desktop/uriSchemes.json';
 
 const { NODE_ENV, IS_CODESIGN_BUILD, SENTRY_AUTH_TOKEN } = process.env;
 

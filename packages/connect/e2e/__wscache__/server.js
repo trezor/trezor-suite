@@ -1,8 +1,8 @@
 const WebSocket = require('ws');
 
 const { blockbookFixtures } = require('./blockbook');
-const { rippleFixtures } = require('./ripple');
 const { blockfrostFixtures } = require('./blockfrost');
+const { rippleFixtures } = require('./ripple');
 
 const DEFAULT_RESPONSES = {
     blockbook: blockbookFixtures,

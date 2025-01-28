@@ -1,5 +1,5 @@
-import { SortingStrategy } from './sortingStrategy';
 import { convertOutput } from './convertOutput';
+import { SortingStrategy } from './sortingStrategy';
 
 export const noneSortingStrategy: SortingStrategy = ({ result, request, convertedInputs }) => {
     const convertedOutputs = result.outputs.map((output, index) => {

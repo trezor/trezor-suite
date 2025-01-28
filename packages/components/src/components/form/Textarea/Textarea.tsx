@@ -1,21 +1,21 @@
-import { Ref, ReactNode, TextareaHTMLAttributes } from 'react';
+import { ReactNode, Ref, TextareaHTMLAttributes } from 'react';
 
 import styled from 'styled-components';
 
-import { spacingsPx, Elevation } from '@trezor/theme';
+import { Elevation, spacingsPx } from '@trezor/theme';
 
-import { InputState } from '../types';
-import {
-    baseInputStyle,
-    InputWrapper,
-    Label,
-    getInputStateBgColor,
-    INPUT_PADDING_TOP,
-    LABEL_TRANSFORM,
-} from '../styles';
-import { FormCell, FormCellProps, pickFormCellProps } from '../FormCell/FormCell';
 import { CharacterCount, CharacterCountProps } from './CharacterCount';
 import { useElevation } from '../../ElevationContext/ElevationContext';
+import { FormCell, FormCellProps, pickFormCellProps } from '../FormCell/FormCell';
+import {
+    INPUT_PADDING_TOP,
+    InputWrapper,
+    LABEL_TRANSFORM,
+    Label,
+    baseInputStyle,
+    getInputStateBgColor,
+} from '../styles';
+import { InputState } from '../types';
 
 const TextareaWrapper = styled(InputWrapper)<{
     disabled?: boolean; // intentionally not transient, disabled is HTML <input> prop

@@ -1,19 +1,19 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-import { Meta, StoryObj } from '@storybook/react';
 import { Placement } from '@floating-ui/react';
+import { Meta, StoryObj } from '@storybook/react';
+import styled from 'styled-components';
 
 import { Elevation, mapElevationToBackground, spacingsPx, zIndices } from '@trezor/theme';
 
 import { Tooltip as TooltipComponent, TooltipProps } from './Tooltip';
-import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 import {
     TOOLTIP_DELAY_LONG,
     TOOLTIP_DELAY_NONE,
     TOOLTIP_DELAY_NORMAL,
     TOOLTIP_DELAY_SHORT,
 } from './TooltipDelay';
+import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 import { Button } from '../buttons/Button/Button';
 
 const Center = styled.div`

@@ -1,6 +1,6 @@
+import { convertOutput } from './convertOutput';
 import { SortingStrategy } from './sortingStrategy';
 import { CoinSelectOutputFinal, ComposeInput } from '../../types';
-import { convertOutput } from './convertOutput';
 
 function inputComparator(a: ComposeInput, b: ComposeInput) {
     return Buffer.from(a.txid, 'hex').compare(Buffer.from(b.txid, 'hex')) || a.vout - b.vout;

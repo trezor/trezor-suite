@@ -1,5 +1,5 @@
-import { WorkerState } from '../../src/workers/state';
 import fixtures from './fixtures/state';
+import { WorkerState } from '../../src/workers/state';
 
 const state = new WorkerState();
 

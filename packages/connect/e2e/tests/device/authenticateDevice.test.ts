@@ -1,7 +1,7 @@
 import { DeviceAuthenticityConfig } from '@trezor/connect/src/data/deviceAuthenticityConfigTypes';
 
 import TrezorConnect from '../../../src';
-import { getController, setup, initTrezorConnect } from '../../common.setup';
+import { getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();
 

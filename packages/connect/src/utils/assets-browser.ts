@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch';
 
-import { HttpRequestType, HttpRequestReturnType, HttpRequestOptions } from './assetsTypes';
+import { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
 
 export const httpRequest = async <T extends HttpRequestType>(
     url: string,

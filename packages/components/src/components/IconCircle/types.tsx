@@ -1,4 +1,4 @@
-import { UIVariant, UISize } from '../../config/types';
+import { UISize, UIVariant } from '../../config/types';
 
 export const iconCircleVariants = [
     'primary',

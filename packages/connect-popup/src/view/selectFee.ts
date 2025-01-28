@@ -1,16 +1,16 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/selectFee.js
 
 import {
-    UI,
-    createUiResponse,
-    UiRequestSelectFee,
-    UpdateCustomFee,
     BitcoinNetworkInfo,
     SelectFeeLevel,
+    UI,
+    UiRequestSelectFee,
+    UpdateCustomFee,
+    createUiResponse,
 } from '@trezor/connect';
 import { formatAmount, formatTime } from '@trezor/connect/src/utils/formatUtils';
 
-import { container, showView, postMessage } from './common';
+import { container, postMessage, showView } from './common';
 
 const fees: SelectFeeLevel[] = [];
 // reference to currently selected button

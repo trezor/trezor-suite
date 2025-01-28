@@ -1,6 +1,6 @@
 import { throwError } from '@trezor/utils';
 
-import type { Utxo, VinVout, Transaction, AccountAddresses } from '../types/backend';
+import type { AccountAddresses, Transaction, Utxo, VinVout } from '../types/backend';
 
 type AddressPaths = {
     [address: string]: string;

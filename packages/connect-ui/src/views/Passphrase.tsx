@@ -2,13 +2,13 @@ import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { analytics, EventType } from '@trezor/connect-analytics';
-import { UI, UiEvent, CoreRequestMessage } from '@trezor/connect';
 import { variables } from '@trezor/components';
+import { CoreRequestMessage, UI, UiEvent } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/connect-analytics';
 import { spacingsPx } from '@trezor/theme';
 
-import { View } from '../components/View';
 import { PassphraseTypeCard } from '../components/Passphrase/PassphraseTypeCard';
+import { View } from '../components/View';
 
 const Wrapper = styled.div`
     display: flex;

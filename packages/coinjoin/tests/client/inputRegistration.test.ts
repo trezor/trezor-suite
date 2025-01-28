@@ -1,7 +1,7 @@
 import { inputRegistration } from '../../src/client/round/inputRegistration';
-import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
+import { createServer } from '../mocks/server';
 
 // mock random delay function
 jest.mock('@trezor/utils', () => {

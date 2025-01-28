@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Meta } from '@storybook/react';
+import styled from 'styled-components';
 
 import { AutoScalingInput as Input } from './AutoScalingInput';
 

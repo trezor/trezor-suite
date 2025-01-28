@@ -1,11 +1,11 @@
 import { AccountRole } from '@solana/web3.js';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
-    TOKEN_PROGRAM_PUBLIC_KEY,
     SYSTEM_PROGRAM_PUBLIC_KEY,
     TOKEN_2022_PROGRAM_PUBLIC_KEY,
+    TOKEN_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/src/solana';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const fixtures = {
     getMinimumRequiredTokenAccountsForTransfer: [

@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
-import type { Manifest, ConnectSettings } from '../types';
-import { VERSION, DEFAULT_DOMAIN, DEEPLINK_VERSION } from './version';
+import type { ConnectSettings, Manifest } from '../types';
+import { DEEPLINK_VERSION, DEFAULT_DOMAIN, VERSION } from './version';
 
 /*
  * Initial settings for connect.

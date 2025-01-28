@@ -1,6 +1,6 @@
 import { devices } from '@playwright/test';
 
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.use({ startEmulator: false, ...devices['Desktop Firefox'], channel: 'firefox' });
 test.describe('Firefox', { tag: ['@group=other', '@webOnly'] }, () => {

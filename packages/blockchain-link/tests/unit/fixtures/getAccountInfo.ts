@@ -1,6 +1,6 @@
 import blockbook from './getAccountInfo-blockbook';
-import ripple from './getAccountInfo-ripple';
 import blockfrost from './getAccountInfo-blockfrost';
+import ripple from './getAccountInfo-ripple';
 
 export default {
     blockbook,

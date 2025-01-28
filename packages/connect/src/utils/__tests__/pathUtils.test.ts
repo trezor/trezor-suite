@@ -1,4 +1,4 @@
-import { getHDPath, getScriptType, getOutputScriptType, getAccountType } from '../pathUtils';
+import { getAccountType, getHDPath, getOutputScriptType, getScriptType } from '../pathUtils';
 
 describe('utils/pathUtils', () => {
     it('getScriptType', () => {

@@ -1,10 +1,10 @@
 import type { ReactElement, ReactNode } from 'react';
 import { useMemo } from 'react';
 
+import cn from 'clsx';
 import { useRouter } from 'next/router';
 import type { NextraThemeLayoutProps, PageOpts } from 'nextra';
 import 'focus-visible';
-import cn from 'clsx';
 import { useFSRoute, useMounted } from 'nextra/hooks';
 import { MDXProvider } from 'nextra/mdx';
 import './polyfill';

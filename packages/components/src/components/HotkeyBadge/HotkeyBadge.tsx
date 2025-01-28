@@ -10,8 +10,8 @@ import {
     typography,
 } from '@trezor/theme';
 
-import { ElevationDown, useElevation } from '../ElevationContext/ElevationContext';
 import { Keys, keyboardKeys } from './keyboardKeys';
+import { ElevationDown, useElevation } from '../ElevationContext/ElevationContext';
 
 export const Container = styled.div<{ $elevation: Elevation; $isActive: boolean }>`
     display: flex;

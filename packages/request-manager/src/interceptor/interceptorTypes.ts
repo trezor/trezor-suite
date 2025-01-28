@@ -1,6 +1,6 @@
-import { InterceptorOptions } from '../types';
 import { createRequestPool } from '../httpPool';
 import { TorIdentities } from '../torIdentities';
+import { InterceptorOptions } from '../types';
 
 export type InterceptorContext = InterceptorOptions & {
     requestPool: ReturnType<typeof createRequestPool>;

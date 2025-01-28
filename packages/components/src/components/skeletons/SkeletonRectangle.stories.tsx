@@ -4,8 +4,8 @@ import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import {
-    borders,
     Elevation,
+    borders,
     mapElevationToBackground,
     mapElevationToBorder,
     spacingsPx,

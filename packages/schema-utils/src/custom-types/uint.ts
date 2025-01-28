@@ -1,4 +1,4 @@
-import { TypeRegistry, Kind, TSchema, JavaScriptTypeBuilder, CreateType } from '@sinclair/typebox';
+import { CreateType, JavaScriptTypeBuilder, Kind, TSchema, TypeRegistry } from '@sinclair/typebox';
 
 export interface TUintOptions {
     allowNegative?: boolean;

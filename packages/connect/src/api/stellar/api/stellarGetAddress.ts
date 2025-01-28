@@ -2,14 +2,14 @@
 
 import { Assert } from '@trezor/schema-utils';
 
+import { ERRORS, PROTO } from '../../../constants';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
-import { PROTO, ERRORS } from '../../../constants';
 import { UI, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';
 import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
+import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
 
 type Params = PROTO.StellarGetAddress & {
     address?: string;

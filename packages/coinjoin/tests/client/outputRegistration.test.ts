@@ -1,8 +1,8 @@
-import { outputRegistration } from '../../src/client/round/outputRegistration';
 import * as decomposition from '../../src/client/round/outputDecomposition';
-import { createServer } from '../mocks/server';
+import { outputRegistration } from '../../src/client/round/outputRegistration';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
+import { createServer } from '../mocks/server';
 
 // mock random delay function
 jest.mock('@trezor/utils', () => {

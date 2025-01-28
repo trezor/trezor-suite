@@ -1,21 +1,29 @@
-import { useState, ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import {
-    spacingsPx,
-    borders,
     Elevation,
+    borders,
     mapElevationToBackground,
     mapElevationToBorder,
     spacings,
+    spacingsPx,
 } from '@trezor/theme';
 
-import { Icon, IconName } from '../Icon/Icon';
-import { Row, Column } from '../Flex/Flex';
-import { Text } from '../typography/Text/Text';
-import { Collapsible } from '../Collapsible/Collapsible';
+import { FillType, HeadingSize, PaddingType } from './types';
+import {
+    mapPaddingTypeToContentPadding,
+    mapPaddingTypeToHeaderPadding,
+    mapSizeToHeadingTypography,
+    mapSizeToIconSize,
+    mapSizeToSubheadingTypography,
+} from './utils';
 import { motionEasing } from '../../config/motion';
+import { Collapsible } from '../Collapsible/Collapsible';
+import { Column, Row } from '../Flex/Flex';
+import { Icon, IconName } from '../Icon/Icon';
+import { Text } from '../typography/Text/Text';
 import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
 import {
     FrameProps,
@@ -24,14 +32,6 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { PaddingType, FillType, HeadingSize } from './types';
-import {
-    mapPaddingTypeToHeaderPadding,
-    mapPaddingTypeToContentPadding,
-    mapSizeToHeadingTypography,
-    mapSizeToSubheadingTypography,
-    mapSizeToIconSize,
-} from './utils';
 
 export const allowedCollapsibleBoxFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCollapsibleBoxFrameProps)[number]>;

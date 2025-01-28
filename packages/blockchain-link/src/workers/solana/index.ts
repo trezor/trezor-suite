@@ -1,9 +1,20 @@
-import { getTokenSize as _getTokenSize } from '@solana-program/token';
-import { getTokenSize as _getToken2022Size } from '@solana-program/token-2022';
 import {
+    AccountInfoBase,
+    ClusterUrl,
+    RpcMainnet,
+    RpcSubscriptionsMainnet,
+    SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED,
+    SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED,
+    SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_FAILED_TO_CONNECT,
+    SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR,
+    Signature,
+    Slot,
+    SolanaRpcApiMainnet,
+    SolanaRpcResponse,
+    SolanaRpcSubscriptionsApi,
+    TransactionWithBlockhashLifetime,
     address,
     assertTransactionIsFullySigned,
-    ClusterUrl,
     createDefaultRpcTransport,
     createSolanaRpcFromTransport,
     createSolanaRpcSubscriptions,
@@ -17,50 +28,39 @@ import {
     isSolanaError,
     mainnet,
     pipe,
-    RpcMainnet,
-    RpcSubscriptionsMainnet,
     sendAndConfirmTransactionFactory,
-    Signature,
-    Slot,
-    SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED,
-    SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_FAILED_TO_CONNECT,
-    SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_CONNECTION_CLOSED,
-    SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR,
-    SolanaRpcApiMainnet,
-    SolanaRpcSubscriptionsApi,
-    TransactionWithBlockhashLifetime,
-    AccountInfoBase,
-    SolanaRpcResponse,
 } from '@solana/web3.js';
+import { getTokenSize as _getTokenSize } from '@solana-program/token';
+import { getTokenSize as _getToken2022Size } from '@solana-program/token-2022';
 
 import type {
-    Response,
     AccountInfo,
-    Transaction,
+    Response,
     SubscriptionAccountInfo,
     TokenInfo,
+    Transaction,
 } from '@trezor/blockchain-link-types';
+import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
+import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
+import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import type {
-    SolanaValidParsedTxWithMeta,
     ParsedTransactionWithMeta,
     SolanaTokenAccountInfo,
+    SolanaValidParsedTxWithMeta,
     TokenDetailByMint,
 } from '@trezor/blockchain-link-types/src/solana';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
-import { BigNumber, createDeferred, createLazy } from '@trezor/utils';
 import {
-    transformTokenInfo,
-    tokenProgramsInfo,
     type TokenProgramName,
+    tokenProgramsInfo,
+    transformTokenInfo,
 } from '@trezor/blockchain-link-utils/src/solana';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { IntervalId } from '@trezor/type-utils';
+import { BigNumber, createDeferred, createLazy } from '@trezor/utils';
 
 import { getBaseFee, getPriorityFee } from './fee';
-import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
+import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 import { getSolanaStakingData } from '../utils';
 
 export type SolanaAPI = Readonly<{

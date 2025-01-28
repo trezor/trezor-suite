@@ -1,7 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+import { TrezorUserEnvLinkProxy, step } from '../../common';
 import { DevicePromptActions } from '../devicePromptActions';
-import { step, TrezorUserEnvLinkProxy } from '../../common';
 
 export class BackupActions {
     readonly startButton: Locator;

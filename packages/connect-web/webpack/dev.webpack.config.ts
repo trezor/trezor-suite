@@ -1,13 +1,13 @@
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 import { merge } from 'webpack-merge';
 import { WebpackPluginServe } from 'webpack-plugin-serve';
 
 // todo: https://github.com/trezor/trezor-suite/issues/5305
+import prod from './prod.webpack.config';
+import iframe from '../../connect-iframe/webpack/iframe.webpack.config';
 import popup from '../../connect-popup/webpack/prod.webpack.config';
 // todo: https://github.com/trezor/trezor-suite/issues/5305
-import iframe from '../../connect-iframe/webpack/iframe.webpack.config';
-import prod from './prod.webpack.config';
 
 const dev = {
     mode: 'development',

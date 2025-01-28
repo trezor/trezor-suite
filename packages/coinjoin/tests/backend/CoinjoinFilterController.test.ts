@@ -1,6 +1,6 @@
 import { CoinjoinFilterController } from '../../src/backend/CoinjoinFilterController';
-import { MockBlockFilter, mockFilterSequence } from '../fixtures/filters.fixture';
 import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
+import { MockBlockFilter, mockFilterSequence } from '../fixtures/filters.fixture';
 import { MockFilterClient } from '../mocks/MockFilterClient';
 
 const FILTER_COUNT = 16;

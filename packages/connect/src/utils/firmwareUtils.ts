@@ -1,6 +1,6 @@
 import { versionUtils } from '@trezor/utils';
 
-import type { Features, StrictFeatures, FirmwareRelease, VersionArray } from '../types';
+import type { Features, FirmwareRelease, StrictFeatures, VersionArray } from '../types';
 
 export const isStrictFeatures = (extFeatures: Features): extFeatures is StrictFeatures =>
     [1, 2].includes(extFeatures.major_version) &&

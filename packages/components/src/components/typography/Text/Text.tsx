@@ -4,20 +4,20 @@ import styled from 'styled-components';
 
 import { CSSColor, Color, Colors } from '@trezor/theme';
 
-import { TransientProps } from '../../../utils/transientProps';
+import { uiVariants } from '../../../config/types';
 import {
     FrameProps,
     FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
+import { TransientProps } from '../../../utils/transientProps';
 import {
-    TextPropsKeys,
-    withTextProps,
     TextProps as TextPropsCommon,
+    TextPropsKeys,
     pickAndPrepareTextProps,
+    withTextProps,
 } from '../utils';
-import { uiVariants } from '../../../config/types';
 
 export const allowedTextTextProps = [
     'typographyStyle',

@@ -1,6 +1,6 @@
-import webpack from 'webpack';
-import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from 'path';
+import webpack from 'webpack';
 
 const DIST = path.resolve(__dirname, '../dist/ui');
 

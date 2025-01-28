@@ -4,21 +4,21 @@ import styled from 'styled-components';
 
 import { Color, borders } from '@trezor/theme';
 
+import { UIVariant } from '../../../config/types';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
+import { pickAndPrepareFrameProps } from '../../../utils/frameProps';
 import { getFocusShadowStyle } from '../../../utils/utils';
 import {
+    AllowedCheckboxFrameProps,
+    CheckContainer,
+    Container,
+    HiddenInput,
     Label,
     LabelAlignment,
     VerticalAlignment,
-    variantStyles,
-    Container,
-    HiddenInput,
-    CheckContainer,
-    AllowedCheckboxFrameProps,
     allowedCheckboxFrameProps,
+    variantStyles,
 } from '../Checkbox/Checkbox';
-import { UIVariant } from '../../../config/types';
-import { pickAndPrepareFrameProps } from '../../../utils/frameProps';
 
 interface VariantStyles {
     borderChecked: Color;

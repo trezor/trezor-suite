@@ -1,9 +1,9 @@
 import {
+    isEqual,
     isNewer,
     isNewerOrEqual,
-    isEqual,
-    normalizeVersion,
     isVersionArray,
+    normalizeVersion,
 } from '../src/versionUtils';
 
 const fixture = [

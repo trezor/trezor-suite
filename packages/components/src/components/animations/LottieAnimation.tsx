@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import styled from 'styled-components';
 import Lottie, { LottieOptions } from 'lottie-react';
+import styled from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { getNarrowedDeviceModelInternal } from '@suite-common/suite-utils';

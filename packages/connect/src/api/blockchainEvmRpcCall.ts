@@ -1,8 +1,8 @@
-import { AbstractMethod, Payload } from '../core/AbstractMethod';
-import { validateParams } from './common/paramsValidator';
-import { ERRORS } from '../constants';
-import { CoinInfo } from '../types';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { ERRORS } from '../constants';
+import { AbstractMethod, Payload } from '../core/AbstractMethod';
+import { CoinInfo } from '../types';
+import { validateParams } from './common/paramsValidator';
 import { getCoinInfo } from '../data/coinInfo';
 
 type Params = {

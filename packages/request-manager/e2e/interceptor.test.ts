@@ -1,5 +1,5 @@
-import path from 'path';
 import http from 'http';
+import path from 'path';
 import WebSocket from 'ws';
 
 import { TorController, createInterceptor } from '../src';

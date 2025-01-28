@@ -1,21 +1,21 @@
 import { TypedEmitter } from '@trezor/utils';
 
-import { Status } from './Status';
 import { Account } from './Account';
 import { CoinjoinPrison } from './CoinjoinPrison';
 import { CoinjoinRound } from './CoinjoinRound';
-import { getCoinjoinNetwork } from '../utils/settingsUtils';
-import { redacted } from '../utils/redacted';
-import { analyzeTransactions, AnalyzeTransactionsResult } from './analyzeTransactions';
+import { Status } from './Status';
+import { AnalyzeTransactionsResult, analyzeTransactions } from './analyzeTransactions';
 import type {
-    CoinjoinClientSettings,
-    RegisterAccountParams,
-    CoinjoinStatusEvent,
-    CoinjoinResponseEvent,
     CoinjoinClientEvents,
-    Logger,
+    CoinjoinClientSettings,
+    CoinjoinResponseEvent,
+    CoinjoinStatusEvent,
     LogLevel,
+    Logger,
+    RegisterAccountParams,
 } from '../types';
+import { redacted } from '../utils/redacted';
+import { getCoinjoinNetwork } from '../utils/settingsUtils';
 
 export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
     readonly settings: CoinjoinClientSettings;

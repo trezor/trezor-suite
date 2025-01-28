@@ -8,11 +8,11 @@
 import ecc from 'tiny-secp256k1';
 import * as wif from 'wif';
 
-import { typeforce } from './types/typeforce';
 import * as bs58check from './bs58check';
 import * as crypto from './crypto';
 import { bitcoin as BITCOIN, isNetworkType } from './networks';
 import type { Network } from './networks';
+import { typeforce } from './types/typeforce';
 
 const UINT256_TYPE = typeforce.BufferN(32);
 const NETWORK_TYPE = typeforce.compile({

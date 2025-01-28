@@ -1,13 +1,13 @@
 import styled, { css } from 'styled-components';
 
-import { borders, spacings, mapElevationToBackground, Elevation } from '@trezor/theme';
+import { Elevation, borders, mapElevationToBackground, spacings } from '@trezor/theme';
 
-import { Row } from '../Flex/Flex';
-import { Text } from '../typography/Text/Text';
-import { Icon, IconName } from '../Icon/Icon';
 import { useSubTabsContext } from './SubTabsContext';
-import { mapSizeToTypography, mapSizeToIconSize } from './utils';
+import { mapSizeToIconSize, mapSizeToTypography } from './utils';
 import { useElevation } from '../ElevationContext/ElevationContext';
+import { Row } from '../Flex/Flex';
+import { Icon, IconName } from '../Icon/Icon';
+import { Text } from '../typography/Text/Text';
 
 const Item = styled.div<{ $isActive: boolean; $elevation: Elevation }>`
     border-radius: ${borders.radii.full};

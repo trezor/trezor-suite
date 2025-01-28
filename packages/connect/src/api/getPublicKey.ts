@@ -2,16 +2,16 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateCoinPath, getFirmwareRange } from './common/paramsValidator';
-import { validatePath } from '../utils/pathUtils';
-import { UI, createUiMessage } from '../events';
-import { getBitcoinNetwork } from '../data/coinInfo';
-import { getPublicKeyLabel } from '../utils/accountUtils';
-import type { BitcoinNetworkInfo } from '../types';
 import type { PROTO } from '../constants';
+import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
+import { getBitcoinNetwork } from '../data/coinInfo';
+import { UI, createUiMessage } from '../events';
+import type { BitcoinNetworkInfo } from '../types';
 import { Bundle } from '../types';
+import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import { GetPublicKey as GetPublicKeySchema } from '../types/api/getPublicKey';
+import { getPublicKeyLabel } from '../utils/accountUtils';
+import { validatePath } from '../utils/pathUtils';
 
 type Params = PROTO.GetPublicKey & {
     coinInfo?: BitcoinNetworkInfo;

@@ -1,18 +1,18 @@
 import { IntlProvider } from 'react-intl';
 
+import { action } from '@storybook/addon-actions';
 import { Meta, StoryObj } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
-import { action } from '@storybook/addon-actions';
 
-import { intermediaryTheme, NewModal } from '@trezor/components';
+import { NewModal, intermediaryTheme } from '@trezor/components';
 
-import { selectAssetModalOptions } from './SelectAssetModal.storiesData';
 import {
-    SelectAssetModalProps,
-    SelectAssetModal as SelectAssetModalComponent,
     AssetProps,
     ITEM_HEIGHT,
+    SelectAssetModal as SelectAssetModalComponent,
+    SelectAssetModalProps,
 } from './SelectAssetModal';
+import { selectAssetModalOptions } from './SelectAssetModal.storiesData';
 
 const meta: Meta = {
     title: 'SelectAssetModal',

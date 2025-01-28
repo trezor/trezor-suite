@@ -1,4 +1,4 @@
-import { address as a, crypto as c, Network } from '@trezor/utxo-lib';
+import { Network, address as a, crypto as c } from '@trezor/utxo-lib';
 
 export const btcToSat = (btc: number) => Math.round(100000000 * btc).toString();
 

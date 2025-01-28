@@ -1,15 +1,15 @@
-import { analytics, EventType, getRandomId } from '@trezor/connect-analytics';
+import { EventType, analytics, getRandomId } from '@trezor/connect-analytics';
 import { storage } from '@trezor/connect-common';
 import {
     getBrowserName,
     getBrowserVersion,
     getOsName,
     getOsVersion,
-    getScreenWidth,
-    getScreenHeight,
-    getWindowWidth,
-    getWindowHeight,
     getPlatformLanguages,
+    getScreenHeight,
+    getScreenWidth,
+    getWindowHeight,
+    getWindowWidth,
 } from '@trezor/env-utils';
 
 const saveTrackingEnablement = (enablement: boolean) => {

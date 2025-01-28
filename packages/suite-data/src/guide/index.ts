@@ -1,14 +1,14 @@
-import { join } from 'path';
 import * as fs from 'fs-extra';
+import { join } from 'path';
 import simpleGit from 'simple-git';
 
 import {
-    TMP,
-    GITBOOK_SOURCE,
-    GITBOOK_REVISION,
-    DESTINATION,
-    ASSETS_DIR_SOURCE,
     ASSETS_DIR_DESTINATION,
+    ASSETS_DIR_SOURCE,
+    DESTINATION,
+    GITBOOK_REVISION,
+    GITBOOK_SOURCE,
+    TMP,
 } from './constants';
 import { Parser } from './parser';
 import { transform } from './transformer';

@@ -1,22 +1,22 @@
-import { bufferutils, Transaction, Network } from '@trezor/utxo-lib';
 import { getWeakRandomNumberInRange } from '@trezor/utils';
+import { Network, Transaction, bufferutils } from '@trezor/utxo-lib';
 
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
     MAX_ALLOWED_AMOUNT_FALLBACK,
     MIN_ALLOWED_AMOUNT_FALLBACK,
     PLEBS_DONT_PAY_THRESHOLD_FALLBACK,
-    ROUND_REGISTRATION_END_OFFSET,
     ROUND_MAXIMUM_REQUEST_DELAY,
+    ROUND_REGISTRATION_END_OFFSET,
 } from '../constants';
 import { RoundPhase } from '../enums';
 import { CoinjoinTransactionData } from '../types';
 import {
-    Round,
-    CoinjoinStateEvent,
     CoinjoinRoundParameters,
-    CoinjoinStatus,
     CoinjoinState,
+    CoinjoinStateEvent,
+    CoinjoinStatus,
+    Round,
 } from '../types/coordinator';
 import { Credentials } from '../types/middleware';
 

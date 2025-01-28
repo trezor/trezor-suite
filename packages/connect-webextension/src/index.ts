@@ -1,16 +1,16 @@
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
 import {
-    POPUP,
     ConnectSettings,
-    Manifest,
     ConnectSettingsWebextension,
+    Manifest,
+    POPUP,
 } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
+import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { initLog } from '@trezor/connect/src/utils/debug';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-web/src/channels/serviceworker-window';
 import { CoreInPopup } from '@trezor/connect-web/src/impl/core-in-popup';
-import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 
 import { parseConnectSettings } from './connectSettings';
 

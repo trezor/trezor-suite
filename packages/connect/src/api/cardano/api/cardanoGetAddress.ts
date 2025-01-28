@@ -2,20 +2,20 @@
 
 import { Assert } from '@trezor/schema-utils';
 
+import { ERRORS, PROTO } from '../../../constants';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import { UI, createUiMessage } from '../../../events';
+import { Bundle } from '../../../types';
+import { CardanoGetAddress as CardanoGetAddressSchema } from '../../../types/api/cardano';
 import { fromHardened, getSerializedPath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import {
     addressParametersFromProto,
     addressParametersToProto,
     modifyAddressParametersForBackwardsCompatibility,
     validateAddressParameters,
 } from '../cardanoAddressParameters';
-import { PROTO, ERRORS } from '../../../constants';
-import { UI, createUiMessage } from '../../../events';
-import { Bundle } from '../../../types';
-import { CardanoGetAddress as CardanoGetAddressSchema } from '../../../types/api/cardano';
 
 type Params = PROTO.CardanoGetAddress & {
     address?: string;

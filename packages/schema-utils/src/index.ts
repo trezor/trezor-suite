@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import {
-    JavaScriptTypeBuilder,
-    Static,
-    TSchema,
-    TObject,
-    Optional,
-    Kind,
-    OptionalKind,
     CloneType,
+    JavaScriptTypeBuilder,
+    Kind,
+    Optional,
+    OptionalKind,
+    Static,
+    TObject,
+    TSchema,
 } from '@sinclair/typebox';
-import { ValueErrorType, Errors, ValueError } from '@sinclair/typebox/errors';
+import { Errors, ValueError, ValueErrorType } from '@sinclair/typebox/errors';
 import { Mixin } from 'ts-mixer';
 
 import { ArrayBufferBuilder, BufferBuilder, KeyofEnumBuilder, UintBuilder } from './custom-types';

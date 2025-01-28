@@ -1,7 +1,7 @@
-import webpack from 'webpack';
-import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
+import webpack from 'webpack';
 
 // Generate additional files hosted on https://connect.trezor.io/X/
 

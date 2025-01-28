@@ -1,6 +1,6 @@
 import UDP from 'dgram';
 
-import { createTimeoutPromise, isNotUndefined, arrayPartition } from '@trezor/utils';
+import { arrayPartition, createTimeoutPromise, isNotUndefined } from '@trezor/utils';
 
 import {
     AbstractApi,
@@ -8,8 +8,8 @@ import {
     AbstractApiConstructorParams,
     DEVICE_TYPE,
 } from './abstract';
-import { DescriptorApiLevel, PathInternal } from '../types';
 import * as ERRORS from '../errors';
+import { DescriptorApiLevel, PathInternal } from '../types';
 
 export class UdpApi extends AbstractApi {
     chunkSize = 64;

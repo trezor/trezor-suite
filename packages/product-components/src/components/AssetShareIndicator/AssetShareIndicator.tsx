@@ -1,11 +1,11 @@
 import { SVGProps } from 'react';
 
-import { motion, AnimationProps, SVGMotionProps } from 'framer-motion';
+import { AnimationProps, SVGMotionProps, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
-import { coinsColors } from '@trezor/theme';
-import { motionEasing } from '@trezor/components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { motionEasing } from '@trezor/components';
+import { coinsColors } from '@trezor/theme';
 
 import { CoinLogo, CoinLogoProps } from '../CoinLogo/CoinLogo';
 

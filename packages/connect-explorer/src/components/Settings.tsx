@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { Button } from '@trezor/components';
 
 import * as trezorConnectActions from '../actions/trezorConnectActions';
-import { useSelector, useActions } from '../hooks';
-import { getField } from '../components/Method';
 import { isBetaOnly } from '../components/BetaOnly';
+import { getField } from '../components/Method';
+import { useActions, useSelector } from '../hooks';
 
 export const SettingsContent = styled.section`
     flex: 1;

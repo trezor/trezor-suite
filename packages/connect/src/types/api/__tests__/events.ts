@@ -1,14 +1,14 @@
 import {
-    TrezorConnect,
-    UI_EVENT,
-    DEVICE_EVENT,
-    TRANSPORT_EVENT,
-    BLOCKCHAIN_EVENT,
-    BLOCKCHAIN,
-    TRANSPORT,
-    UI,
     AccountInfo,
     Address,
+    BLOCKCHAIN,
+    BLOCKCHAIN_EVENT,
+    DEVICE_EVENT,
+    TRANSPORT,
+    TRANSPORT_EVENT,
+    TrezorConnect,
+    UI,
+    UI_EVENT,
 } from '../../..';
 
 export const events = (api: TrezorConnect) => {

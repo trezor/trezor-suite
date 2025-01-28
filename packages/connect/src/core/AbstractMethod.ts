@@ -1,23 +1,23 @@
 import { storage } from '@trezor/connect-common';
-import { versionUtils } from '@trezor/utils';
 import { Capability } from '@trezor/protobuf/src/messages';
+import { versionUtils } from '@trezor/utils';
 
-import { NETWORK, ERRORS } from '../constants';
+import { ERRORS, NETWORK } from '../constants';
+import { config } from '../data/config';
+import type { Device } from '../device/Device';
 import {
-    UI,
-    DEVICE,
-    createDeviceMessage,
     CallMethodPayload,
     CallMethodResponse,
-    UiRequestButtonData,
-    UiPromiseCreator,
     CoreEventMessage,
+    DEVICE,
+    UI,
+    UiPromiseCreator,
+    UiRequestButtonData,
     UiRequestConfirmation,
+    createDeviceMessage,
 } from '../events';
+import type { ConnectSettings, DeviceState, FirmwareRange, StaticSessionId } from '../types';
 import { getHost } from '../utils/urlUtils';
-import type { Device } from '../device/Device';
-import type { FirmwareRange, DeviceState, StaticSessionId, ConnectSettings } from '../types';
-import { config } from '../data/config';
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;

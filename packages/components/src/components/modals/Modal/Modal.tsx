@@ -1,17 +1,17 @@
-import { useCallback, useState, ReactNode, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { useEvent } from 'react-use';
 
 import styled, { css, useTheme } from 'styled-components';
 
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { Stepper } from '../../loaders/Stepper/Stepper';
-import { IconButton } from '../../buttons/IconButton/IconButton';
-import { H3 } from '../../typography/Heading/Heading';
-import { ButtonSize } from '../../buttons/buttonStyleUtils';
-import { ElevationContext } from '../../ElevationContext/ElevationContext';
 import { useScrollShadow } from '../../../utils/useScrollShadow';
+import { ElevationContext } from '../../ElevationContext/ElevationContext';
 import { Icon, IconName } from '../../Icon/Icon';
+import { IconButton } from '../../buttons/IconButton/IconButton';
+import { ButtonSize } from '../../buttons/buttonStyleUtils';
+import { Stepper } from '../../loaders/Stepper/Stepper';
+import { H3 } from '../../typography/Heading/Heading';
 
 const CLOSE_ICON_SIZE = spacings.xxl;
 const CLOSE_ICON_MARGIN = 16;

@@ -1,64 +1,64 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 import { randomBytes } from 'crypto';
 
+import { TransportProtocol, v1 as v1Protocol } from '@trezor/protocol';
+import { Session } from '@trezor/transport';
+import { type Descriptor, TRANSPORT_ERROR, type Transport } from '@trezor/transport';
 import {
-    versionUtils,
-    createDeferred,
     Deferred,
     TypedEmitter,
+    createDeferred,
     createTimeoutPromise,
     isArrayMember,
     serializeError,
+    versionUtils,
 } from '@trezor/utils';
-import { Session } from '@trezor/transport';
-import { TransportProtocol, v1 as v1Protocol } from '@trezor/protocol';
-import { type Transport, type Descriptor, TRANSPORT_ERROR } from '@trezor/transport';
 
 import { DeviceCommands } from './DeviceCommands';
-import { PROTO, ERRORS, FIRMWARE } from '../constants';
+import { ERRORS, FIRMWARE, PROTO } from '../constants';
+import { IStateStorage } from './StateStorage';
+import { checkFirmwareRevision } from './checkFirmwareRevision';
+import type { PromptCallback } from './prompts';
+import { cancelPrompt } from './prompts';
+import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
+import { DataManager } from '../data/DataManager';
+import { getAllNetworks } from '../data/coinInfo';
+import { getFirmwareStatus, getRelease, getReleases } from '../data/firmwareInfo';
+import { getLanguage } from '../data/getLanguage';
+import { models } from '../data/models';
 import {
     DEVICE,
     DeviceButtonRequestPayload,
-    UI,
-    UiResponsePin,
-    UiResponsePassphrase,
-    UiResponseWord,
     DeviceVersionChanged,
+    UI,
+    UiResponsePassphrase,
+    UiResponsePin,
+    UiResponseWord,
 } from '../events';
-import { getAllNetworks } from '../data/coinInfo';
-import { DataManager } from '../data/DataManager';
-import { getFirmwareStatus, getRelease, getReleases } from '../data/firmwareInfo';
 import {
-    parseCapabilities,
-    getUnavailableCapabilities,
-    parseRevision,
-    ensureInternalModelFeature,
-} from '../utils/deviceFeaturesUtils';
+    DeviceFirmwareStatus,
+    DeviceModelInternal,
+    DeviceState,
+    DeviceStatus,
+    Device as DeviceTyped,
+    DeviceUniquePath,
+    Features,
+    FirmwareHashCheckError,
+    FirmwareHashCheckResult,
+    FirmwareType,
+    KnownDevice,
+    ReleaseInfo,
+    StaticSessionId,
+    UnavailableCapabilities,
+    VersionArray,
+} from '../types';
 import { initLog } from '../utils/debug';
 import {
-    Device as DeviceTyped,
-    DeviceFirmwareStatus,
-    DeviceStatus,
-    DeviceState,
-    Features,
-    ReleaseInfo,
-    UnavailableCapabilities,
-    FirmwareType,
-    VersionArray,
-    KnownDevice,
-    StaticSessionId,
-    FirmwareHashCheckResult,
-    FirmwareHashCheckError,
-    DeviceUniquePath,
-    DeviceModelInternal,
-} from '../types';
-import { models } from '../data/models';
-import { getLanguage } from '../data/getLanguage';
-import { checkFirmwareRevision } from './checkFirmwareRevision';
-import { IStateStorage } from './StateStorage';
-import type { PromptCallback } from './prompts';
-import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
-import { cancelPrompt } from './prompts';
+    ensureInternalModelFeature,
+    getUnavailableCapabilities,
+    parseCapabilities,
+    parseRevision,
+} from '../utils/deviceFeaturesUtils';
 // custom log
 const _log = initLog('Device');
 

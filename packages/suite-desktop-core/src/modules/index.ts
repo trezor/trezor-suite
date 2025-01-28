@@ -1,40 +1,40 @@
 import path from 'path';
 
-import { isNotUndefined, TypedEmitter } from '@trezor/utils';
-import { InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
-import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';
 import type { DeviceEvent } from '@trezor/connect';
+import { InterceptedEvent } from '@trezor/request-manager';
+import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';
+import { TypedEmitter, isNotUndefined } from '@trezor/utils';
 
-import type { Store } from '../libs/store';
+import * as autoStart from './auto-start';
+import * as autoUpdater from './auto-updater';
+import * as bridge from './bridge';
+import * as coinjoin from './coinjoin';
+import * as crashRecover from './crash-recover';
+import * as csp from './csp';
+import * as customProtocols from './custom-protocols';
+import * as devTools from './dev-tools';
 import * as eventLogging from './event-logging';
-import * as eventLoggingProcess from './event-logging/process';
+import { MainWindowProxy } from '../libs/main-window-proxy';
+import type { Store } from '../libs/store';
 import * as eventLoggingApp from './event-logging/app';
 import * as eventLoggingContents from './event-logging/contents';
-import * as crashRecover from './crash-recover';
-import * as menu from './menu';
-import * as shortcuts from './shortcuts';
-import * as requestFilter from './request-filter';
+import * as eventLoggingProcess from './event-logging/process';
 import * as externalLinks from './external-links';
-import * as windowControls from './window-controls';
-import * as theme from './theme';
-import * as httpReceiverModule from './http-receiver';
-import * as metadata from './metadata';
-import * as customProtocols from './custom-protocols';
-import * as autoUpdater from './auto-updater';
-import * as store from './store';
-import * as userData from './user-data';
-import * as trezorConnect from './trezor-connect';
-import * as devTools from './dev-tools';
-import * as requestInterceptor from './request-interceptor';
-import * as coinjoin from './coinjoin';
-import * as csp from './csp';
 import * as fileProtocol from './file-protocol';
-import * as autoStart from './auto-start';
-import * as tray from './tray';
-import * as bridge from './bridge';
+import * as httpReceiverModule from './http-receiver';
+import * as menu from './menu';
+import * as metadata from './metadata';
+import * as requestFilter from './request-filter';
+import * as requestInterceptor from './request-interceptor';
+import * as shortcuts from './shortcuts';
+import * as store from './store';
 import * as systemInformation from './system-information';
-import { MainWindowProxy } from '../libs/main-window-proxy';
+import * as theme from './theme';
+import * as tray from './tray';
+import * as trezorConnect from './trezor-connect';
+import * as userData from './user-data';
+import * as windowControls from './window-controls';
 
 // General modules (both dev & prod)
 const MODULES: Module[] = [

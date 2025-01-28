@@ -1,9 +1,9 @@
-import { createInterceptor } from '@trezor/request-manager';
-import { CoinjoinBackend, CoinjoinBackendSettings } from '@trezor/coinjoin';
 import { isDevEnv } from '@suite-common/suite-utils';
+import { CoinjoinBackend, CoinjoinBackendSettings } from '@trezor/coinjoin';
+import { createInterceptor } from '@trezor/request-manager';
 
-import { createThread } from '../libs/thread';
 import { onionDomain } from '../config';
+import { createThread } from '../libs/thread';
 
 type BackgroundCoinjoinBackendSettings = CoinjoinBackendSettings & {
     torSettings: TorSettings;

@@ -4,7 +4,6 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { spacings } from '@trezor/theme';
 
-import { Icon, IconProps } from '../Icon/Icon';
 import {
     List as ListComponent,
     allowedListFrameProps,
@@ -13,6 +12,7 @@ import {
     listVariants,
 } from './List';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { Icon, IconProps } from '../Icon/Icon';
 import { getTextPropsStory } from '../typography/utils';
 
 const meta: Meta = {

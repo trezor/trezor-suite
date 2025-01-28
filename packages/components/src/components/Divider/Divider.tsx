@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 
 import { Color, Elevation, mapElevationToBorder, spacings } from '@trezor/theme';
 
-import { useElevation } from '../ElevationContext/ElevationContext';
 import {
     FrameProps,
     FramePropsKeys,
@@ -10,6 +9,7 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
+import { useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedDividerFrameProps = [
     'margin',

@@ -1,12 +1,14 @@
-import { useRef, useState, useEffect, useCallback, ReactNode } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { spacings, mapElevationToBorder, Elevation, borders } from '@trezor/theme';
 import { Row, useElevation } from '@trezor/components';
+import { Elevation, borders, mapElevationToBorder, spacings } from '@trezor/theme';
 
-import { mapSizeToContainerPaddingBottom, TRANSFORM_OPTIONS } from './utils';
+import { TabsContext } from './TabsContext';
+import { TabsItem } from './TabsItem';
 import { TabsSize } from './types';
+import { TRANSFORM_OPTIONS, mapSizeToContainerPaddingBottom } from './utils';
 import {
     FrameProps,
     FramePropsKeys,
@@ -14,8 +16,6 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { TabsContext } from './TabsContext';
-import { TabsItem } from './TabsItem';
 
 export const allowedTabsFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTabsFrameProps)[number]>;

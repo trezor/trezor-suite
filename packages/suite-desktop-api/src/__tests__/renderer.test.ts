@@ -1,5 +1,5 @@
-import { getDesktopApi, desktopApi } from '../renderer';
 import { factory } from '../factory';
+import { desktopApi, getDesktopApi } from '../renderer';
 import { ipcRenderer } from './ipcRenderer';
 
 describe('Renderer', () => {

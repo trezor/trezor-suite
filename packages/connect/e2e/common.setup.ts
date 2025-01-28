@@ -1,14 +1,14 @@
-import { versionUtils } from '@trezor/utils';
+import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
 import {
-    TrezorUserEnvLink,
-    type TrezorUserEnvLinkClass,
     EmuStartOptsType,
     MNEMONICS,
+    TrezorUserEnvLink,
+    type TrezorUserEnvLinkClass,
 } from '@trezor/trezor-user-env-link';
-import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
+import { versionUtils } from '@trezor/utils';
 
-import { UI } from '../src/events';
 import TrezorConnect from '../src';
+import { UI } from '../src/events';
 
 const emulatorStartOpts: EmuStartOptsType =
     (process.env.emulatorStartOpts as any) || global.emulatorStartOpts || {};

@@ -3,14 +3,14 @@ import path from 'path';
 
 import { ScheduleActionParams, ScheduledAction, scheduleAction } from '@trezor/utils';
 
+import { BOOTSTRAP_EVENT_PROGRESS, bootstrapParser } from './events/bootstrap';
 import { TorControlPort } from './torControlPort';
 import {
-    TorConnectionOptions,
     BootstrapEvent,
-    TorControllerStatus,
     TOR_CONTROLLER_STATUS,
+    TorConnectionOptions,
+    TorControllerStatus,
 } from './types';
-import { bootstrapParser, BOOTSTRAP_EVENT_PROGRESS } from './events/bootstrap';
 
 const WAITING_TIME = 1000;
 const MAX_TRIES_WAITING = 200;

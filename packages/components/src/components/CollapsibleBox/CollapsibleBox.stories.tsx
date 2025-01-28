@@ -4,9 +4,9 @@ import {
     CollapsibleBox as CollapsibleBoxComponent,
     allowedCollapsibleBoxFrameProps,
 } from './CollapsibleBox';
-import { paddingTypes, fillTypes, headingSizes } from './types';
-import { getFramePropsStory } from '../../utils/frameProps';
+import { fillTypes, headingSizes, paddingTypes } from './types';
 import { variables } from '../../config';
+import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {
     title: 'CollapsibleBox',

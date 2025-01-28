@@ -3,19 +3,19 @@ auto_sections: false
 icon: lightning
 ---
 
-import { Cards, Card, Steps, Tabs } from 'nextra/components';
-import styled from 'styled-components';
 import Link from 'next/link';
+import { Card, Cards, Steps, Tabs } from 'nextra/components';
+import styled from 'styled-components';
 
+import { Button, CollapsibleBox, Card as TrezorCard, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { Button, Card as TrezorCard, CollapsibleBox, variables } from '@trezor/components';
 
-import IconNode from '../components/icons/IconNode';
-import IconWeb from '../components/icons/IconWeb';
+import { BetaOnly } from '../components/BetaOnly';
+import ZoomableIllustration from '../components/ZoomableIllustration';
 import IconExtension from '../components/icons/IconExtension';
 import IconMobile from '../components/icons/IconMobile';
-import ZoomableIllustration from '../components/ZoomableIllustration';
-import { BetaOnly } from '../components/BetaOnly';
+import IconNode from '../components/icons/IconNode';
+import IconWeb from '../components/icons/IconWeb';
 
 export const SectionCard = ({ children }) => (
     <TrezorCard margin={{ bottom: spacings.xl }}>{children}</TrezorCard>

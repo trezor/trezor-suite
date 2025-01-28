@@ -1,8 +1,8 @@
 import type { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
 import type {
-    EthereumSignTypedDataTypes,
     EthereumSignTypedData,
+    EthereumSignTypedDataTypes,
     EthereumSignTypedHash,
 } from './ethereum';
 

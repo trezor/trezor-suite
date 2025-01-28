@@ -5,9 +5,9 @@
 import { bech32, bech32m } from 'bech32';
 
 import * as bs58check from './bs58check';
-import * as bscript from './script';
-import * as payments from './payments';
 import { bitcoin as BITCOIN_NETWORK, Network } from './networks';
+import * as payments from './payments';
+import * as bscript from './script';
 
 export interface Base58CheckResult {
     hash: Buffer;

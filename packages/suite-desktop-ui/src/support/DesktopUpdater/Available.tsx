@@ -1,12 +1,12 @@
-import { Card, Checkbox, Column, Markdown, NewModal, Paragraph, H4 } from '@trezor/components';
-import { desktopApi, UpdateInfo } from '@trezor/suite-desktop-api';
+import { Card, Checkbox, Column, H4, Markdown, NewModal, Paragraph } from '@trezor/components';
+import { UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
+import { download } from 'src/actions/suite/desktopUpdateActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { download } from 'src/actions/suite/desktopUpdateActions';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
-import { setFlag } from 'src/actions/suite/suiteActions';
 
 import { getVersionName } from './getVersionName';
 

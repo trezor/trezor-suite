@@ -2,9 +2,9 @@ import type { ThunkDispatch } from 'redux-thunk';
 
 import type { KnownDevice, UnknownDevice, UnreadableDevice } from '@trezor/connect-web';
 
-import type { AppState as AppState$ } from '../reducers';
 import type { MethodAction } from '../actions/methodActions';
 import type { TrezorConnectAction } from '../actions/trezorConnectActions';
+import type { AppState as AppState$ } from '../reducers';
 
 export type Action = MethodAction | TrezorConnectAction;
 

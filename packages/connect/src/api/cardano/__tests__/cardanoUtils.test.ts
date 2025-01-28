@@ -1,5 +1,5 @@
-import { composeTxPlan, getTtl, transformUtxos, prepareCertificates } from '../cardanoUtils';
 import * as fixtures from '../__fixtures__/cardanoUtils';
+import { composeTxPlan, getTtl, prepareCertificates, transformUtxos } from '../cardanoUtils';
 
 describe('cardano utils', () => {
     let dateSpy: any;

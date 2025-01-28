@@ -1,7 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 
+import { H1, H2, Link, Paragraph } from '../../index';
 import { StoryColumn } from '../../support/Story';
-import { H1, H2, Paragraph, Link } from '../../index';
 
 const meta: Meta = {
     title: 'Typography',

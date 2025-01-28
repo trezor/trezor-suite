@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
+import { Card, Column, H3, NewModal, Paragraph, Tooltip } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { Paragraph, Tooltip, NewModal, H3, Column, Card } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { CheckItem, Translation } from 'src/components/suite';

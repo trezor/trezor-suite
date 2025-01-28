@@ -2,17 +2,17 @@
 
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
-import { AbstractMethod, MethodReturnType, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
-import { Discovery } from './common/Discovery';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { validatePath, getSerializedPath } from '../utils/pathUtils';
-import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
+import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { ERRORS, PROTO } from '../constants';
+import { AbstractMethod, DEFAULT_FIRMWARE_RANGE, MethodReturnType } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { PROTO, ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
-import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
-import type { CoinInfo, AccountInfo, AccountUtxo, DerivationPath } from '../types';
+import type { AccountInfo, AccountUtxo, CoinInfo, DerivationPath } from '../types';
+import { Discovery } from './common/Discovery';
+import { getFirmwareRange, validateParams } from './common/paramsValidator';
 import type { GetAccountInfo as GetAccountInfoParams } from '../types/api/getAccountInfo';
+import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
+import { getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Request = GetAccountInfoParams & { address_n: number[]; coinInfo: CoinInfo };
 

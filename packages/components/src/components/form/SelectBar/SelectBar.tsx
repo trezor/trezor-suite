@@ -1,20 +1,18 @@
-import { useState, useEffect, ReactNode, useCallback, KeyboardEvent } from 'react';
+import { KeyboardEvent, ReactNode, useCallback, useEffect, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { breakpointMediaQueries } from '@trezor/styles';
 import {
+    Elevation,
     borders,
+    mapElevationToBackground,
+    nextElevation,
     spacings,
     spacingsPx,
     typography,
-    Elevation,
-    mapElevationToBackground,
-    nextElevation,
 } from '@trezor/theme';
 
-import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
-import { useElevation } from '../../ElevationContext/ElevationContext';
 import {
     FrameProps,
     FramePropsKeys,
@@ -22,6 +20,8 @@ import {
     withFrameProps,
 } from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
+import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
+import { useElevation } from '../../ElevationContext/ElevationContext';
 
 export const allowedSelectBarFrameProps = ['margin', 'width'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectBarFrameProps)[number]>;

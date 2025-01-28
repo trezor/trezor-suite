@@ -1,11 +1,11 @@
 import { arrayToDictionary, getWeakRandomId } from '@trezor/utils';
 
-import * as coordinator from '../coordinator';
-import * as middleware from '../middleware';
-import { getRoundEvents, compareOutpoint, sumCredentials } from '../../utils/roundUtils';
 import { getExternalOutputSize } from '../../utils/coordinatorUtils';
+import { compareOutpoint, getRoundEvents, sumCredentials } from '../../utils/roundUtils';
 import type { Account } from '../Account';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
+import * as coordinator from '../coordinator';
+import * as middleware from '../middleware';
 
 /**
  * RoundPhase: 2, step 1

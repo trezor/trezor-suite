@@ -1,4 +1,4 @@
-import { getOrigin, getHost, getOnionDomain } from '../urlUtils';
+import { getHost, getOnionDomain, getOrigin } from '../urlUtils';
 
 describe('utils/urlUtils', () => {
     it('getOrigin', () => {

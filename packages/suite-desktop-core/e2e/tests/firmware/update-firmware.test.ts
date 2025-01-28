@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 // Skip due to minimal value of this test at current state
 test.describe.skip('Firmware update', { tag: ['@group=device-management'] }, () => {

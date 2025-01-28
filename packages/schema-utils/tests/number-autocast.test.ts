@@ -1,4 +1,4 @@
-import { Type, Assert } from '../src';
+import { Assert, Type } from '../src';
 
 describe('number-autocast', () => {
     it('should string to number if needed', () => {

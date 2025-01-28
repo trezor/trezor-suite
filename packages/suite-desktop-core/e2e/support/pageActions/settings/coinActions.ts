@@ -2,8 +2,8 @@ import { Locator, Page } from '@playwright/test';
 
 import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
-import { expect } from '../../customMatchers';
 import { step } from '../../common';
+import { expect } from '../../customMatchers';
 
 export class CoinsActions {
     readonly networkButton = (symbol: NetworkSymbol) =>

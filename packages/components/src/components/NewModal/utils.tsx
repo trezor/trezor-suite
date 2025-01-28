@@ -1,5 +1,5 @@
-import { NewModalSize, NewModalAlignment } from './types';
-import { UIVerticalAlignment, UIHorizontalAlignment } from '../../config/types';
+import { NewModalAlignment, NewModalSize } from './types';
+import { UIHorizontalAlignment, UIVerticalAlignment } from '../../config/types';
 
 export const mapModalSizeToWidth = (size: NewModalSize) => {
     const widthMap: Record<NewModalSize, number> = {

@@ -1,7 +1,7 @@
-import { split } from '../../src/coinselect/outputs/split';
-import fixtures from '../__fixtures__/coinselect/split';
 import * as utils from './test.utils';
+import { split } from '../../src/coinselect/outputs/split';
 import { CoinSelectOptions } from '../../src/types';
+import fixtures from '../__fixtures__/coinselect/split';
 
 describe('coinselect split', () => {
     fixtures.forEach(f => {

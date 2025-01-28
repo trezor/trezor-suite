@@ -1,7 +1,7 @@
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 
 import type { BroadcastedTransactionDetails } from '../types';
-import type { Transaction, AccountAddresses } from '../types/backend';
+import type { AccountAddresses, Transaction } from '../types/backend';
 
 // create pending transaction, the result of successfully broadcasted CoinjoinRound
 export const createPendingTransaction = (

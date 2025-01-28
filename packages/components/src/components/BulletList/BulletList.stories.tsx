@@ -5,8 +5,8 @@ import { Meta, StoryObj } from '@storybook/react';
 import { spacings } from '@trezor/theme';
 
 import { BulletList as BulletListComponent, allowedBulletListFrameProps } from './BulletList';
-import { getFramePropsStory } from '../../utils/frameProps';
 import { bulletSizes } from './types';
+import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {
     title: 'BulletList',

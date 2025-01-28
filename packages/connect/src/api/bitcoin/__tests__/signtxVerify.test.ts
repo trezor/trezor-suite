@@ -1,7 +1,7 @@
 import { networks } from '@trezor/utxo-lib';
 
-import { verifyTx } from '../signtxVerify';
 import fixtures from '../__fixtures__/signtxVerify';
+import { verifyTx } from '../signtxVerify';
 
 const getHDNode = () => ({
     xpub: '',

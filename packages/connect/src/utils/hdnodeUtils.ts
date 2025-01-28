@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/hdnodeUtils.js
 
 import { bip32 } from '@trezor/utxo-lib';
-import type { Network, BIP32Interface } from '@trezor/utxo-lib';
+import type { BIP32Interface, Network } from '@trezor/utxo-lib';
 
-import { PROTO, ERRORS } from '../constants';
+import { ERRORS, PROTO } from '../constants';
 
 const pubNode2bjsNode = (node: PROTO.HDNodeType, network?: Network) => {
     const chainCode = Buffer.from(node.chain_code, 'hex');

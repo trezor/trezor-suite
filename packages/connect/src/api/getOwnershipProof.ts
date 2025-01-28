@@ -1,13 +1,13 @@
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
-import { validatePath, getScriptType, getSerializedPath } from '../utils/pathUtils';
-import { getBitcoinNetwork } from '../data/coinInfo';
 import { PROTO } from '../constants';
+import { getFirmwareRange } from './common/paramsValidator';
+import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
+import { getBitcoinNetwork } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
 import { Bundle } from '../exports';
 import { GetOwnershipProof as GetOwnershipProofSchema } from '../types/api/getOwnershipProof';
+import { getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 export default class GetOwnershipProof extends AbstractMethod<
     'getOwnershipProof',

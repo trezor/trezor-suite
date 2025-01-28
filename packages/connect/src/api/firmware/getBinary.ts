@@ -1,5 +1,5 @@
-import { httpRequest } from '../../utils/assets';
 import { FirmwareRelease } from '../../types';
+import { httpRequest } from '../../utils/assets';
 
 const ALL_SLASHES_AT_THE_END_REGEX = /\/+$/;
 

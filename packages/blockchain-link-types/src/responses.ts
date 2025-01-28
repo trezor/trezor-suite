@@ -1,15 +1,15 @@
+import type { Block, MempoolTransactionNotification } from './blockbook';
+import type {
+    AccountBalanceHistory,
+    AccountInfo,
+    ChannelMessage,
+    FiatRatesBySymbol,
+    ServerInfo,
+    Transaction,
+    Utxo,
+} from './common';
 import { HANDSHAKE } from './constants/messages';
 import * as RESPONSES from './constants/responses';
-import type {
-    ServerInfo,
-    AccountInfo,
-    Utxo,
-    FiatRatesBySymbol,
-    Transaction,
-    AccountBalanceHistory,
-    ChannelMessage,
-} from './common';
-import type { MempoolTransactionNotification, Block } from './blockbook';
 
 // messages sent from worker to blockchain.js
 

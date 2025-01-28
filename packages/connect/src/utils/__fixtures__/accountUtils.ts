@@ -1,13 +1,13 @@
-import coinsJSON from '@trezor/connect-common/files/coins.json';
 import coinsJSONEth from '@trezor/connect-common/files/coins-eth.json';
+import coinsJSON from '@trezor/connect-common/files/coins.json';
 
-import { getAccountLabel, isUtxoBased } from '../accountUtils';
 import {
-    parseCoinsJson,
     getBitcoinNetwork,
     getEthereumNetwork,
     getMiscNetwork,
+    parseCoinsJson,
 } from '../../data/coinInfo';
+import { getAccountLabel, isUtxoBased } from '../accountUtils';
 
 parseCoinsJson({
     ...coinsJSON,

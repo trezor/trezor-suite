@@ -1,11 +1,11 @@
 import { Assert } from '@trezor/schema-utils';
 
+import { PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
-import { validatePath, getScriptType } from '../utils/pathUtils';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import { PROTO } from '../constants';
 import { AuthorizeCoinjoin as AuthorizeCoinjoinSchema } from '../types/api/authorizeCoinjoin';
+import { getScriptType, validatePath } from '../utils/pathUtils';
 
 export default class AuthorizeCoinjoin extends AbstractMethod<
     'authorizeCoinjoin',

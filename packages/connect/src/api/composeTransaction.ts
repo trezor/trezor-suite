@@ -4,38 +4,38 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { ERRORS } from '../constants';
+import { DEFAULT_SORTING_STRATEGY } from '../constants/utxo';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
-import { Discovery } from './common/Discovery';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import * as pathUtils from '../utils/pathUtils';
-import { formatAmount } from '../utils/formatUtils';
-import { getBitcoinNetwork, fixCoinInfoNetwork } from '../data/coinInfo';
-import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import {
     TransactionComposer,
-    requireReferencedTransactions,
-    getReferencedTransactions,
-    transformReferencedTransactions,
-    inputToTrezor,
-    validateHDOutput,
-    outputToTrezor,
     enhanceSignTx,
+    getReferencedTransactions,
+    inputToTrezor,
+    outputToTrezor,
+    parseTransactionHexes,
+    requireReferencedTransactions,
     signTx,
     signTxLegacy,
+    transformReferencedTransactions,
+    validateHDOutput,
     verifyTx,
-    parseTransactionHexes,
 } from './bitcoin';
-import type { BitcoinNetworkInfo, DiscoveryAccount, AccountUtxo } from '../types';
-import type {
-    SignedTransaction,
-    PrecomposeParams,
-    ComposeResult,
-    PrecomposedResult,
-} from '../types/api/composeTransaction';
+import type { AccountUtxo, BitcoinNetworkInfo, DiscoveryAccount } from '../types';
+import { Discovery } from './common/Discovery';
+import { getFirmwareRange, validateParams } from './common/paramsValidator';
+import { fixCoinInfoNetwork, getBitcoinNetwork } from '../data/coinInfo';
 import type { RefTransaction } from '../types/api/bitcoin';
-import { DEFAULT_SORTING_STRATEGY } from '../constants/utxo';
+import type {
+    ComposeResult,
+    PrecomposeParams,
+    PrecomposedResult,
+    SignedTransaction,
+} from '../types/api/composeTransaction';
+import { formatAmount } from '../utils/formatUtils';
+import * as pathUtils from '../utils/pathUtils';
 
 type Params = {
     outputs: ComposeOutput[];

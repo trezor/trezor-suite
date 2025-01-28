@@ -1,13 +1,13 @@
-import { discovery } from '@trezor/utxo-lib';
-import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
-import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
+import type { Address, Transaction } from '@trezor/blockchain-link-types';
+import type { VinVout } from '@trezor/blockchain-link-types/src/blockbook';
 import type { ElectrumAPI } from '@trezor/blockchain-link-types/src/electrum';
 import type { GetAccountInfo as Req } from '@trezor/blockchain-link-types/src/messages';
 import type { GetAccountInfo as Res } from '@trezor/blockchain-link-types/src/responses';
-import type { VinVout } from '@trezor/blockchain-link-types/src/blockbook';
-import type { Address, Transaction } from '@trezor/blockchain-link-types';
+import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
+import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
+import { discovery } from '@trezor/utxo-lib';
 
-import { Api, tryGetScripthash, discoverAddress, AddressHistory, getTransactions } from '../utils';
+import { AddressHistory, Api, discoverAddress, getTransactions, tryGetScripthash } from '../utils';
 
 // const PAGE_DEFAULT = 0;
 const PAGE_SIZE_DEFAULT = 25;

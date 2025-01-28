@@ -1,8 +1,8 @@
-import { WebSocketServer } from 'ws';
 import { ipcMain } from 'electron';
+import { WebSocketServer } from 'ws';
 
 import { IFRAME, POPUP } from '@trezor/connect';
-import { createDeferred, Deferred } from '@trezor/utils';
+import { Deferred, createDeferred } from '@trezor/utils';
 
 import { createHttpReceiver } from './http-receiver';
 import { Dependencies } from '../modules';

@@ -1,12 +1,12 @@
 import bs58 from 'bs58';
 
-import { PROTO, ERRORS } from '../../constants';
-import type {
-    EosSDKTransaction,
-    EosTxAction as $EosTxAction,
-    EosAuthorization as $EosAuthorization,
-} from '../../types/api/eos';
+import { ERRORS, PROTO } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
+import type {
+    EosAuthorization as $EosAuthorization,
+    EosTxAction as $EosTxAction,
+    EosSDKTransaction,
+} from '../../types/api/eos';
 
 type Action = $EosTxAction; // | $EosActionCommon & { name: string; data: string };
 

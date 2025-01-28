@@ -1,7 +1,7 @@
-import WebSocket from 'ws';
-import nodeFetch from 'node-fetch';
 import net, { Socket } from 'net';
+import nodeFetch from 'node-fetch';
 import tls, { TLSSocket } from 'tls';
+import WebSocket from 'ws';
 
 import { createInterceptor } from '../src';
 import { InterceptorOptions } from '../src/types';

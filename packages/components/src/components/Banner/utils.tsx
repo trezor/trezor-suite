@@ -1,6 +1,6 @@
 import { DefaultTheme } from 'styled-components';
 
-import { Color, CSSColor, Elevation, mapElevationToBackgroundToken } from '@trezor/theme';
+import { CSSColor, Color, Elevation, mapElevationToBackgroundToken } from '@trezor/theme';
 
 import { BannerVariant } from './types';
 import { IconName } from '../Icon/Icon';

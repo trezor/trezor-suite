@@ -1,14 +1,14 @@
-import path from 'path';
-import webpack from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from 'path';
+import webpack from 'webpack';
 
 import { FLAGS } from '@suite-common/suite-config';
 
-import { assetPrefix, isDev, launchElectron, isCodesignBuild } from '../utils/env';
-import { getPathForProject } from '../utils/path';
 import { NixosInterpreterPlugin } from '../plugins/nixos-interpreter-plugin';
 import ShellSpawnPlugin from '../plugins/shell-spawn-plugin';
+import { assetPrefix, isCodesignBuild, isDev, launchElectron } from '../utils/env';
+import { getPathForProject } from '../utils/path';
 
 const electronArgsIndex = process.argv.indexOf('./webpack.config.ts') + 1;
 const electronArgs = process.argv.slice(electronArgsIndex);

@@ -3,9 +3,9 @@
 import fs from 'fs';
 import http from 'http';
 
+import { getAccountInfo, getAccountInfoParams } from './discovery';
 import { getAnonymityScores } from '../../src/client/analyzeTransactions';
 import { getCoinjoinNetwork } from '../../src/utils/settingsUtils';
-import { getAccountInfo, getAccountInfoParams } from './discovery';
 
 const [network, descriptor] = process.argv.slice(2);
 

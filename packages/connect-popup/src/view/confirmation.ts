@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/confirmation.js
 
-import { UI, createUiResponse, UiRequestConfirmation } from '@trezor/connect';
+import { UI, UiRequestConfirmation, createUiResponse } from '@trezor/connect';
 
-import { container, showView, postMessage } from './common';
+import { container, postMessage, showView } from './common';
 
 export const initConfirmationView = (data: UiRequestConfirmation['payload']) => {
     // Confirmation views:

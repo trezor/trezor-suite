@@ -1,17 +1,17 @@
-import { FormattedMessage, useIntl } from 'react-intl';
 import { ChangeEvent, MutableRefObject, ReactNode, RefObject } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
+import { Button, Card, Column, Icon, Input, Row, motionAnimation } from '@trezor/components';
 import { isAndroid } from '@trezor/env-utils';
-import { Card, Column, Row, Input, Button, motionAnimation, Icon } from '@trezor/components';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { useKeyPress } from '@trezor/react-utils';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { WalletType } from './types';
 import { DOT } from './consts';
+import { WalletType } from './types';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const PassphraseInput = styled(Input)`

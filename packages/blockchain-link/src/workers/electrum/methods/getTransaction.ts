@@ -1,6 +1,6 @@
-import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 import type { GetTransaction as Req } from '@trezor/blockchain-link-types/src/messages';
 import type { GetTransaction as Res } from '@trezor/blockchain-link-types/src/responses';
+import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 
 import { Api, getTransactions } from '../utils';
 

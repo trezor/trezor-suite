@@ -1,14 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/selectAccount.js
 
 import {
-    UI,
-    createUiResponse,
     DiscoveryAccount,
-    UiRequestSelectAccount,
     DiscoveryAccountType,
+    UI,
+    UiRequestSelectAccount,
+    createUiResponse,
 } from '@trezor/connect';
 
-import { container, showView, postMessage } from './common';
+import { container, postMessage, showView } from './common';
 
 const setHeader = (payload: UiRequestSelectAccount['payload']) => {
     const h3 = container.getElementsByTagName('h3')[0];

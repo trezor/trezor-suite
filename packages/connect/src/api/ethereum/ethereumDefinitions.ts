@@ -1,12 +1,12 @@
 import fetch from 'cross-fetch';
 
-import { MessagesSchema, parseConfigure, decode as decodeProtobuf } from '@trezor/protobuf';
+import { MessagesSchema, decode as decodeProtobuf, parseConfigure } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
-import { Type, Static, Assert } from '@trezor/schema-utils';
+import { Assert, Static, Type } from '@trezor/schema-utils';
 
 import { DataManager } from '../../data/DataManager';
-import { EthereumNetworkInfoDefinitionValues } from '../../types';
 import { ethereumNetworkInfoBase } from '../../data/coinInfo';
+import { EthereumNetworkInfoDefinitionValues } from '../../types';
 
 interface GetEthereumDefinitions {
     chainId?: number;

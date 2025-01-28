@@ -5,19 +5,19 @@ import styled, { useTheme } from 'styled-components';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import {
-    ExclusiveColorOrVariant,
-    getColorForIconVariant,
-    getIconSize,
-    Icon,
-    IconProps,
-} from '../Icon/Icon';
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 import {
-    FramePropsKeys,
-    FrameProps,
-    withFrameProps,
-    pickAndPrepareFrameProps,
-} from '../../utils/frameProps';
+    ExclusiveColorOrVariant,
+    Icon,
+    IconProps,
+    getColorForIconVariant,
+    getIconSize,
+} from '../Icon/Icon';
 
 export const allowedComponentWithSubIconFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedComponentWithSubIconFrameProps)[number]>;

@@ -1,11 +1,11 @@
+import type { ConnectSettingsPublic, ConnectSettingsWeb } from '@trezor/connect';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
-import type { ConnectSettingsPublic, ConnectSettingsWeb } from '@trezor/connect';
 
+import { getEnv } from './connectSettings';
 import { CoreInIframe } from './impl/core-in-iframe';
 import { CoreInPopup } from './impl/core-in-popup';
 import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
-import { getEnv } from './connectSettings';
 
 const IFRAME_ERRORS = ['Init_IframeBlocked', 'Init_IframeTimeout', 'Transport_Missing'];
 

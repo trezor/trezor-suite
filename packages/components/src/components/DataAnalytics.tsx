@@ -1,4 +1,4 @@
-import { Fragment, useState, ReactNode } from 'react';
+import { Fragment, ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
@@ -6,9 +6,9 @@ import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 
 import { variables } from '../config';
-import { Button } from './buttons/Button/Button';
-import { CollapsibleBox } from './CollapsibleBox/CollapsibleBox';
 import { Card } from './Card/Card';
+import { CollapsibleBox } from './CollapsibleBox/CollapsibleBox';
+import { Button } from './buttons/Button/Button';
 import { Switch } from './form/Switch/Switch';
 
 const Wrapper = styled.div`

@@ -2,8 +2,8 @@ import styled, { DefaultTheme } from 'styled-components';
 
 import { UIVariant } from '@trezor/components/src/config/types';
 import {
-    borders,
     Elevation,
+    borders,
     mapElevationToBackground,
     mapElevationToBorder,
     spacingsPx,

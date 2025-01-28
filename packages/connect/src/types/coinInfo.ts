@@ -1,7 +1,7 @@
-import { Type, Static } from '@trezor/schema-utils';
+import { Static, Type } from '@trezor/schema-utils';
 
-import { FeeLevel } from './fees';
 import { DeviceModelInternal } from './device';
+import { FeeLevel } from './fees';
 
 // TODO: refactor in utxo-lib
 // import { Network } from '@trezor/utxo-lib';

@@ -1,3 +1,4 @@
+import type { SolDelegation } from '@everstake/wallet-sdk';
 import type {
     AccountInfoBase,
     AccountInfoWithBase58EncodedData,
@@ -7,7 +8,6 @@ import type {
     GetTransactionApi,
     Signature,
 } from '@solana/web3.js';
-import type { SolDelegation } from '@everstake/wallet-sdk';
 
 import type {
     GetObjectWithKey,

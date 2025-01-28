@@ -1,15 +1,15 @@
 import { getWeakRandomNumberInRange } from '@trezor/utils';
 
-import {
-    getCommitmentData,
-    readTimeSpan,
-    estimatePhaseDeadline,
-    transformStatus,
-    getRoundParams,
-    getAffiliateRequest,
-    scheduleDelay,
-} from '../../src/utils/roundUtils';
 import { ROUND_REGISTRATION_END_OFFSET } from '../../src/constants';
+import {
+    estimatePhaseDeadline,
+    getAffiliateRequest,
+    getCommitmentData,
+    getRoundParams,
+    readTimeSpan,
+    scheduleDelay,
+    transformStatus,
+} from '../../src/utils/roundUtils';
 import { DEFAULT_ROUND, STATUS_EVENT, STATUS_TRANSFORMED } from '../fixtures/round.fixture';
 
 // mock random delay function

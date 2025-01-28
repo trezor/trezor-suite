@@ -1,18 +1,18 @@
 import { WebUSB } from 'usb';
 
-import { v1 as protocolV1, bridge as protocolBridge, TransportProtocol } from '@trezor/protocol';
-import { receive as receiveUtil } from '@trezor/transport/src/utils/receive';
-import { createChunks, sendChunks } from '@trezor/transport/src/utils/send';
+import { TransportProtocol, bridge as protocolBridge, v1 as protocolV1 } from '@trezor/protocol';
+import { AbstractApi } from '@trezor/transport/src/api/abstract';
+import { UdpApi } from '@trezor/transport/src/api/udp';
+import { UsbApi } from '@trezor/transport/src/api/usb';
 import { SessionsBackground } from '@trezor/transport/src/sessions/background';
 import { SessionsClient } from '@trezor/transport/src/sessions/client';
-import { UsbApi } from '@trezor/transport/src/api/usb';
-import { UdpApi } from '@trezor/transport/src/api/udp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
-import { Session, BridgeProtocolMessage, PathInternal } from '@trezor/transport/src/types';
+import { BridgeProtocolMessage, PathInternal, Session } from '@trezor/transport/src/types';
 import { createProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
-import { Log } from '@trezor/utils';
-import { AbstractApi } from '@trezor/transport/src/api/abstract';
+import { receive as receiveUtil } from '@trezor/transport/src/utils/receive';
 import { success, unknownError } from '@trezor/transport/src/utils/result';
+import { createChunks, sendChunks } from '@trezor/transport/src/utils/send';
+import { Log } from '@trezor/utils';
 
 export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {
     let api: AbstractApi;

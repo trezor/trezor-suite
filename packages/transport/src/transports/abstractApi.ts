@@ -1,19 +1,19 @@
 import { v1 as v1Protocol } from '@trezor/protocol';
 
-import { SessionsBackground } from '../sessions/background';
 import {
     AbstractTransport,
-    AbstractTransportParams,
     AbstractTransportMethodParams,
+    AbstractTransportParams,
 } from './abstract';
 import { AbstractApi } from '../api/abstract';
-import { buildMessage, createChunks, sendChunks } from '../utils/send';
-import { receiveAndParse } from '../utils/receive';
-import { SessionsClient } from '../sessions/client';
-import * as ERRORS from '../errors';
-import { Session } from '../types';
-import { SessionsBackgroundInterface } from '../sessions/types';
 import { TRANSPORT } from '../constants';
+import * as ERRORS from '../errors';
+import { SessionsBackground } from '../sessions/background';
+import { SessionsClient } from '../sessions/client';
+import { SessionsBackgroundInterface } from '../sessions/types';
+import { Session } from '../types';
+import { receiveAndParse } from '../utils/receive';
+import { buildMessage, createChunks, sendChunks } from '../utils/send';
 
 interface ConstructorParams extends AbstractTransportParams {
     api: AbstractApi;

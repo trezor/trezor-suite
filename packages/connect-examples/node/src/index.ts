@@ -1,4 +1,4 @@
-import TrezorConnect, { TRANSPORT_EVENT, DEVICE_EVENT } from '@trezor/connect';
+import TrezorConnect, { DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/connect';
 
 /**
  * Please note, that this example needs:

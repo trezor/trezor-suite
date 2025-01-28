@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/signtx-legacy.js
 
-import { PROTO, ERRORS } from '../../constants';
-import type { SignedTransaction } from '../../types/api/bitcoin';
 import type { SignTxHelperParams, SignTxHelperProps } from './signtx';
+import { ERRORS, PROTO } from '../../constants';
+import type { SignedTransaction } from '../../types/api/bitcoin';
 
 const requestPrevTxInfo = ({
     txRequest: { request_type, details },

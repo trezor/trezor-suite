@@ -3,7 +3,7 @@ import { BridgeTransport, Descriptor } from '@trezor/transport';
 import { Session } from '@trezor/transport/src/types';
 
 import { controller as TrezorUserEnvLink, env } from './controller';
-import { descriptor as fixtureDescriptor, errorCase1 } from './expect';
+import { errorCase1, descriptor as fixtureDescriptor } from './expect';
 
 const wait = (ms = 1000) =>
     new Promise(resolve => {

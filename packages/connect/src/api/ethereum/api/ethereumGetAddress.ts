@@ -2,22 +2,22 @@
 
 import { Assert } from '@trezor/schema-utils';
 
+import { ERRORS, PROTO } from '../../../constants';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
-import { validatePath, getSerializedPath, getSlip44ByPath } from '../../../utils/pathUtils';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
-import { stripHexPrefix } from '../../../utils/formatUtils';
-import { PROTO, ERRORS } from '../../../constants';
 import { UI, createUiMessage } from '../../../events';
 import type { EthereumNetworkInfoDefinitionValues } from '../../../types';
-import {
-    getEthereumDefinitions,
-    decodeEthereumDefinition,
-    ethereumNetworkInfoFromDefinition,
-} from '../ethereumDefinitions';
 import { Bundle } from '../../../types';
 import { GetAddress as GetAddressSchema } from '../../../types/api/getAddress';
+import { getNetworkLabel } from '../../../utils/ethereumUtils';
+import { stripHexPrefix } from '../../../utils/formatUtils';
+import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
+import {
+    decodeEthereumDefinition,
+    ethereumNetworkInfoFromDefinition,
+    getEthereumDefinitions,
+} from '../ethereumDefinitions';
 
 type Params = PROTO.EthereumGetAddress & {
     address?: string;

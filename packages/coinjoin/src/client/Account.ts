@@ -1,11 +1,11 @@
 import { Network } from '@trezor/utxo-lib';
 
-import { getScriptPubKeyFromAddress, prefixScriptPubKey } from '../utils/coordinatorUtils';
-import { getRoundEvents, compareOutpoint } from '../utils/roundUtils';
+import { RegisterAccountParams } from '../types';
+import { AccountAddress, AccountUtxo } from '../types/account';
 import { AllowedScriptTypes, Round } from '../types/coordinator';
 import { RawLiquidityClue } from '../types/middleware';
-import { RegisterAccountParams } from '../types';
-import { AccountUtxo, AccountAddress } from '../types/account';
+import { getScriptPubKeyFromAddress, prefixScriptPubKey } from '../utils/coordinatorUtils';
+import { compareOutpoint, getRoundEvents } from '../utils/roundUtils';
 
 const enhanceAccountUtxo = (
     utxos: Omit<AccountUtxo, 'scriptPubKey'>[],

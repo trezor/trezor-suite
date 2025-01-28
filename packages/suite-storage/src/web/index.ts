@@ -1,16 +1,16 @@
-import {
-    openDB,
-    IDBPDatabase,
-    unwrap,
-    StoreNames,
-    StoreKey,
-    IndexNames,
-    IndexKey,
-    StoreValue,
-    IDBPTransaction,
-    deleteDB,
-} from 'idb';
 import { BroadcastChannel } from 'broadcast-channel';
+import {
+    IDBPDatabase,
+    IDBPTransaction,
+    IndexKey,
+    IndexNames,
+    StoreKey,
+    StoreNames,
+    StoreValue,
+    deleteDB,
+    openDB,
+    unwrap,
+} from 'idb';
 
 import { isFirefox } from '@trezor/env-utils';
 import { createLazy } from '@trezor/utils';

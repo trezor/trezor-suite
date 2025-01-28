@@ -2,8 +2,8 @@ import bchaddrjs from 'bchaddrjs';
 import bs58 from 'bs58';
 import bs58check from 'bs58check';
 
-import { bitcoin as BITCOIN_NETWORK, isNetworkType } from './networks';
 import { blake256 } from './crypto';
+import { bitcoin as BITCOIN_NETWORK, isNetworkType } from './networks';
 
 export function decodeBlake(buffer: Buffer) {
     const want = buffer.subarray(-4);

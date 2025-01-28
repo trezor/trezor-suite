@@ -1,5 +1,5 @@
-import { requireNativeModule } from 'expo-modules-core';
 import { NativeModule } from 'expo';
+import { requireNativeModule } from 'expo-modules-core';
 
 import { NativeDevice } from './ReactNativeUsb.types';
 

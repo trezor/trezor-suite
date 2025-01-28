@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 import { graphRangeOptions } from '../../support/pageActions/dashboardActions';
 
 const rangeData: { range: graphRangeOptions; label: string }[] = [

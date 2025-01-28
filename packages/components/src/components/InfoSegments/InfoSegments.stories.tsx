@@ -2,13 +2,13 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import {
     InfoSegments as InfoSegmentsComponent,
+    InfoSegmentsProps,
     allowedInfoSegmentsFrameProps,
     allowedInfoSegmentsTextProps,
-    InfoSegmentsProps,
 } from './InfoSegments';
 import { getFramePropsStory } from '../../utils/frameProps';
-import { getTextPropsStory } from '../typography/utils';
 import { textVariants } from '../typography/Text/Text';
+import { getTextPropsStory } from '../typography/utils';
 
 const meta: Meta = {
     title: 'InfoSegments',

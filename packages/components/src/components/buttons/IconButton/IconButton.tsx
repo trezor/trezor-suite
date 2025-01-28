@@ -2,12 +2,12 @@ import React from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { Spinner } from '../../loaders/Spinner/Spinner';
-import { ButtonContainer, ButtonProps, getIcon, IconOrComponent } from '../Button/Button';
-import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
-import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_SHORT } from '../../Tooltip/TooltipDelay';
-import { Tooltip } from '../../Tooltip/Tooltip';
 import { useElevation } from '../../ElevationContext/ElevationContext';
+import { Tooltip } from '../../Tooltip/Tooltip';
+import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_SHORT } from '../../Tooltip/TooltipDelay';
+import { Spinner } from '../../loaders/Spinner/Spinner';
+import { ButtonContainer, ButtonProps, IconOrComponent, getIcon } from '../Button/Button';
+import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
 
 const IconButtonContainer = styled(ButtonContainer)`
     position: relative;

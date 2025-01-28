@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.describe(
     'Settings changes persist when device disconnected',

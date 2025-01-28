@@ -3,8 +3,8 @@ import { Meta, StoryObj } from '@storybook/react';
 import { spacings } from '@trezor/theme';
 
 import { Collapsible as CollapsibleComponent } from './Collapsible';
-import { Button } from '../buttons/Button/Button';
 import { Row } from '../Flex/Flex';
+import { Button } from '../buttons/Button/Button';
 
 const meta: Meta = {
     title: 'Collapsible',

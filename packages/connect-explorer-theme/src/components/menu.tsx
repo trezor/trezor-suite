@@ -3,12 +3,12 @@ import type { ReactElement } from 'react';
 import { createContext, memo, useContext, useEffect, useRef, useState } from 'react';
 
 import cn from 'clsx';
+import { useRouter } from 'next/router';
 import type { Heading } from 'nextra';
 import { useFSRoute } from 'nextra/hooks';
 import { ArrowRightIcon } from 'nextra/icons';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
 
 import { Select, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';

@@ -1,9 +1,9 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
+import { applyMiddleware, compose, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
+import thunk from 'redux-thunk';
 
-import { reducers } from '../reducers';
 import { trezorConnectMiddleware } from '../middlewares/trezorConnectMiddleware';
+import { reducers } from '../reducers';
 
 const enhancers: any[] = [];
 const middleware = [thunk, trezorConnectMiddleware];

@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/uploadFirmware.js
 
-import { UI, DEVICE, createUiMessage, CoreEventMessage } from '../../events';
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS, PROTO } from '../../constants';
 import type { Device } from '../../device/Device';
 import type { TypedCall } from '../../device/DeviceCommands';
+import { CoreEventMessage, DEVICE, UI, createUiMessage } from '../../events';
 
 // firmware does not send button message but user still must press button to continue
 // with fw update.

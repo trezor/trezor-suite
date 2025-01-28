@@ -1,5 +1,5 @@
-import { SUITE_URL, CHROME_URL, CHROME_UPDATE_URL, CHROME_ANDROID_URL } from '@trezor/urls';
-import { getDeviceType, getBrowserName, getBrowserVersion, getOsNameWeb } from '@trezor/env-utils';
+import { getBrowserName, getBrowserVersion, getDeviceType, getOsNameWeb } from '@trezor/env-utils';
+import { CHROME_ANDROID_URL, CHROME_UPDATE_URL, CHROME_URL, SUITE_URL } from '@trezor/urls';
 
 import style from './styles.css';
 import iconChrome from '../../files/images/browsers/chrome.svg';

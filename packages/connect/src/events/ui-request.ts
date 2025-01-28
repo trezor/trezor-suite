@@ -4,11 +4,11 @@
 import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
 
 import type { PROTO } from '../constants';
-import type { Device, CoinInfo, BitcoinNetworkInfo, SelectFeeLevel } from '../types';
-import type { DiscoveryAccountType, DiscoveryAccount } from '../types/account';
-import type { MessageFactoryFn } from '../types/utils';
+import type { BitcoinNetworkInfo, CoinInfo, Device, SelectFeeLevel } from '../types';
 import type { DeviceButtonRequest } from './device';
 import { MethodPermission } from '../core/AbstractMethod';
+import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';
+import type { MessageFactoryFn } from '../types/utils';
 
 export const UI_EVENT = 'UI_EVENT';
 export const UI_REQUEST = {

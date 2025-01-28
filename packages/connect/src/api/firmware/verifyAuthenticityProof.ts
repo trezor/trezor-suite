@@ -2,10 +2,10 @@ import * as crypto from 'crypto';
 
 import { bufferUtils } from '@trezor/utils';
 
+import { fixSignature, parseCertificate } from './x509certificate';
 import { PROTO } from '../../constants';
-import { AuthenticateDeviceResult } from '../../types/api/authenticateDevice';
-import { parseCertificate, fixSignature } from './x509certificate';
 import { DeviceAuthenticityConfig } from '../../data/deviceAuthenticityConfigTypes';
+import { AuthenticateDeviceResult } from '../../types/api/authenticateDevice';
 
 // There is incomparability in results between nodejs and window SubtleCrypto api.
 // window.crypto.subtle.importKey (CryptoKey) cannot be used by `crypto-browserify`.Verify

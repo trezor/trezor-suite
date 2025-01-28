@@ -2,28 +2,28 @@ import { ButtonHTMLAttributes } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { borders, CSSColor, Elevation, spacingsPx, typography } from '@trezor/theme';
+import { CSSColor, Elevation, borders, spacingsPx, typography } from '@trezor/theme';
 
-import { Spinner } from '../../loaders/Spinner/Spinner';
-import {
-    ButtonSize,
-    ButtonVariant,
-    getIconColor,
-    getIconSize,
-    getPadding,
-    IconAlignment,
-    useVariantStyle,
-} from '../buttonStyleUtils';
-import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
-import { TransientProps } from '../../../utils/transientProps';
 import {
     FrameProps,
     FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { Icon, IconName } from '../../Icon/Icon';
+import { TransientProps } from '../../../utils/transientProps';
+import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { useElevation } from '../../ElevationContext/ElevationContext';
+import { Icon, IconName } from '../../Icon/Icon';
+import { Spinner } from '../../loaders/Spinner/Spinner';
+import {
+    ButtonSize,
+    ButtonVariant,
+    IconAlignment,
+    getIconColor,
+    getIconSize,
+    getPadding,
+    useVariantStyle,
+} from '../buttonStyleUtils';
 
 export const allowedButtonFrameProps = [
     'margin',

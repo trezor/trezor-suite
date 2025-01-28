@@ -1,3 +1,4 @@
+import { bitcoincash, doge } from '../../src/networks';
 import {
     ComposeChangeAddress,
     ComposeInput,
@@ -6,7 +7,6 @@ import {
     ComposeResult,
     ComposeResultFinal,
 } from '../../src/types/compose';
-import { bitcoincash, doge } from '../../src/networks';
 
 export const UTXO: ComposeInput & { path: number[] } = {
     path: [44, 1, 0, 0, 0], // NOTE: this field is not required by the ComposeInput interface, yet it is accepted in and received out

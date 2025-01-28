@@ -9,9 +9,9 @@ import {
     nextElevation,
 } from '@trezor/theme';
 
-import { useElevation } from '../ElevationContext/ElevationContext';
 import { useTable } from './Table';
 import { useTableHeader } from './TableHeader';
+import { useElevation } from '../ElevationContext/ElevationContext';
 
 export const Row = styled.tr<{
     $elevation: Elevation;

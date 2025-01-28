@@ -1,6 +1,6 @@
 import { devices } from '@playwright/test';
 
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 const safariAria = `
     - heading "Your browser is not supported" [level=1]

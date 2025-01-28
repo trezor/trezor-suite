@@ -1,11 +1,11 @@
 import { TSchema } from '@sinclair/typebox';
 import JSON5 from 'json5';
 
-import TrezorConnect, { TrezorConnect as TrezorConnectType } from '@trezor/connect-web';
 import TrezorConnectMobile from '@trezor/connect-mobile';
+import TrezorConnect, { TrezorConnect as TrezorConnectType } from '@trezor/connect-web';
 import { getDeepValue } from '@trezor/schema-utils/src/utils';
 
-import { GetState, Dispatch, Field } from '../types';
+import { Dispatch, Field, GetState } from '../types';
 
 export const SET_METHOD = 'method_set';
 export const SET_SCHEMA = 'schema_set';

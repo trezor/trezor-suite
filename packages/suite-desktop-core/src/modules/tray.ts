@@ -1,16 +1,16 @@
 /**
  * Tray icon handler
  */
-import path from 'path';
 import { Menu, Tray } from 'electron';
+import path from 'path';
 
 import { DEVICE, DeviceEvent } from '@trezor/connect';
-import { Status, TraySettings } from '@trezor/suite-desktop-api/src/messages';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
+import { Status, TraySettings } from '@trezor/suite-desktop-api/src/messages';
 
 import { app, ipcMain } from '../typed-electron';
 
-import { mainThreadEmitter, ModuleInitBackground } from './index';
+import { ModuleInitBackground, mainThreadEmitter } from './index';
 
 export const SERVICE_NAME = 'tray';
 

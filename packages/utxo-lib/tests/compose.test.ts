@@ -1,8 +1,8 @@
 import { getRandomInt } from '@trezor/utils';
 
+import { verifyTxBytes } from './compose.utils';
 import { composeTx } from '../src/compose';
 import * as NETWORKS from '../src/networks';
-import { verifyTxBytes } from './compose.utils';
 import { composeTxFixture } from './__fixtures__/compose';
 import { fixturesCrossCheck } from './__fixtures__/compose.crosscheck';
 

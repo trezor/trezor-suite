@@ -4,16 +4,16 @@
 // https://github.com/trezor/trezor-firmware/blob/1fceca73da523c5bf2bb0f398c91e00c728bdbe0/core/src/apps/bitcoin/sign_tx/tx_weight.py
 // https://github.com/trezor/trezor-firmware/blob/1fceca73da523c5bf2bb0f398c91e00c728bdbe0/core/tests/test_apps.bitcoin.txweight.py
 
-import * as baddress from '../src/address';
-import { OUTPUT_SCRIPT_LENGTH } from '../src/coinselect/coinselectUtils';
 import {
-    Network,
+    CoinSelectPaymentType,
+    ComposeChangeAddress,
     ComposeInput,
     ComposeOutput,
-    ComposeChangeAddress,
     ComposeResultFinal,
-    CoinSelectPaymentType,
+    Network,
 } from '../src';
+import * as baddress from '../src/address';
+import { OUTPUT_SCRIPT_LENGTH } from '../src/coinselect/coinselectUtils';
 
 // transaction header size: 4 byte version
 const _TXSIZE_HEADER = 4;

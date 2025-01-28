@@ -3,8 +3,8 @@ import { FieldValues } from 'react-hook-form';
 
 import styled from 'styled-components';
 
+import { Column, FractionButton, FractionButtonProps, Row, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { Column, Row, FractionButtonProps, FractionButton, TextButton } from '@trezor/components';
 
 import { NumberInput, NumberInputProps } from '../NumberInput/NumberInput';
 

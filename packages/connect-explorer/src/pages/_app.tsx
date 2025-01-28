@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 
-import { ThemeProvider as NextThemeProvider, useTheme } from 'next-themes';
-import { ThemeProvider } from 'styled-components';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { ThemeProvider as NextThemeProvider, useTheme } from 'next-themes';
+import { ThemeProvider } from 'styled-components';
 
 import { intermediaryTheme } from '@trezor/components';
 
 import '../styles/globals.css';
 import '@trezor/connect-explorer-theme/style.css';
-import { store } from '../store';
 import StyledComponentsRegistry from '../components/util/StyledComponentsRegistry';
+import { store } from '../store';
 
 const ThemeComponent = ({ Component, pageProps }: AppProps) => {
     const { resolvedTheme } = useTheme();

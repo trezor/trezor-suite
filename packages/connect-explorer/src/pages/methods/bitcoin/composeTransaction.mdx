@@ -1,9 +1,9 @@
 import { Type } from '@sinclair/typebox';
 
-import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
-import composeTransaction from '../../../data/methods/bitcoin/composeTransaction';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
+import composeTransaction from '../../../data/methods/bitcoin/composeTransaction';
 
 <ApiPlayground options={[{ title: 'composeTransaction', legacyConfig: composeTransaction[0] }]} />
 

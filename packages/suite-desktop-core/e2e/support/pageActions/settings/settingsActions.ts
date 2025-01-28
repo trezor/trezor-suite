@@ -2,9 +2,9 @@ import { Locator, Page, test } from '@playwright/test';
 
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { expect } from '../../customMatchers';
-import { step, TrezorUserEnvLinkProxy } from '../../common';
 import { CoinsActions } from './coinActions';
+import { TrezorUserEnvLinkProxy, step } from '../../common';
+import { expect } from '../../customMatchers';
 
 export enum Theme {
     System = 'system',

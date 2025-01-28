@@ -1,12 +1,11 @@
-import { EventHandler, SyntheticEvent, KeyboardEvent, ReactNode } from 'react';
+import { EventHandler, KeyboardEvent, ReactNode, SyntheticEvent } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { borders, Color, spacingsPx, typography } from '@trezor/theme';
+import { Color, borders, spacingsPx, typography } from '@trezor/theme';
 
+import { UIHorizontalAlignment, UIVariant, UIVerticalAlignment } from '../../../config/types';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
-import { getFocusShadowStyle } from '../../../utils/utils';
-import { UIHorizontalAlignment, UIVerticalAlignment, UIVariant } from '../../../config/types';
 import {
     FrameProps,
     FramePropsKeys,
@@ -14,6 +13,7 @@ import {
     withFrameProps,
 } from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
+import { getFocusShadowStyle } from '../../../utils/utils';
 import { Icon } from '../../Icon/Icon';
 
 export const allowedCheckboxFrameProps = ['margin'] as const satisfies FramePropsKeys[];

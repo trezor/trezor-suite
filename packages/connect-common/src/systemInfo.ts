@@ -1,9 +1,9 @@
 import {
-    getBrowserVersion,
     getBrowserName,
+    getBrowserVersion,
     getDeviceType,
-    getUserAgent,
     getOsFamily,
+    getUserAgent,
 } from '@trezor/env-utils';
 
 export type InstallerPackage = 'rpm32' | 'rpm64' | 'deb32' | 'deb64' | 'mac' | 'win32' | 'win64';

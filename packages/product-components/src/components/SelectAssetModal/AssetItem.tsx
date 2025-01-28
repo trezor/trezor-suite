@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import { spacings, spacingsPx } from '@trezor/theme';
-import { AssetLogo, Badge, Column, Row, Text } from '@trezor/components';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { AssetLogo, Badge, Column, Row, Text } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 
-import { CoinLogo } from '../CoinLogo/CoinLogo';
 import { AssetOptionBaseProps } from './SelectAssetModal';
+import { CoinLogo } from '../CoinLogo/CoinLogo';
 import { isCoinSymbol } from '../CoinLogo/coins';
 
 const ClickableContainer = styled.div`

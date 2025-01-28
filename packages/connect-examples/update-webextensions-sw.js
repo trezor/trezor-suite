@@ -3,8 +3,8 @@
  */
 
 const fs = require('fs');
-const path = require('path');
 const fetch = require('node-fetch');
+const path = require('path');
 
 const rootPaths = ['webextension-mv3-sw'];
 

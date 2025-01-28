@@ -1,9 +1,9 @@
-import * as coordinator from '../coordinator';
-import * as middleware from '../middleware';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 import { readTimeSpan } from '../../utils/roundUtils';
 import type { Alice, AliceConfirmationInterval } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import * as coordinator from '../coordinator';
+import * as middleware from '../middleware';
 
 /**
  * usage in RoundPhase: 0, InputRegistration

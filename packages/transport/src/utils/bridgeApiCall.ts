@@ -2,7 +2,7 @@ import fetch from 'cross-fetch';
 
 import { PROTOCOL_MALFORMED } from '@trezor/protocol/src/errors';
 
-import { success, error, unknownError } from './result';
+import { error, success, unknownError } from './result';
 import * as ERRORS from '../errors';
 import { applyBridgeApiCallHeaders } from './applyBridgeApiCallHeaders';
 

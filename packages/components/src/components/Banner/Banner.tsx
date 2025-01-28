@@ -2,34 +2,34 @@ import { ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { Elevation, borders, spacingsPx, typography, spacings } from '@trezor/theme';
+import { Elevation, borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { BannerContext } from './BannerContext';
 import { BannerButton } from './BannerButton';
-import { BannerVariant } from './types';
-import { DEFAULT_VARIANT } from './consts';
+import { BannerContext } from './BannerContext';
 import { BannerIconButton } from './BannerIconButton';
+import { DEFAULT_VARIANT } from './consts';
+import { BannerVariant } from './types';
 import {
     mapVariantToBackgroundColor,
     mapVariantToIcon,
     mapVariantToIconColor,
     mapVariantToTextColor,
 } from './utils';
-import { Icon, IconName, IconSize } from '../Icon/Icon';
+import { variables } from '../../config';
+import { uiVerticalAlignments } from '../../config/types';
 import { SCREEN_SIZE } from '../../config/variables';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 import { useMediaQuery } from '../../utils/useMediaQuery';
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Column, FlexAlignItems, Row } from '../Flex/Flex';
+import { Icon, IconName, IconSize } from '../Icon/Icon';
 import { Spinner } from '../loaders/Spinner/Spinner';
-import { variables } from '../../config';
-import { uiVerticalAlignments } from '../../config/types';
 
 export const allowedBannerFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;

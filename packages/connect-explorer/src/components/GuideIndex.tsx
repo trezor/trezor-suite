@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 
-import { getPagesUnderRoute } from 'nextra/context';
 import Link from 'next/link';
+import { getPagesUnderRoute } from 'nextra/context';
 import styled from 'styled-components';
 
-import { Card as TrezorCard, H3, Paragraph, Button } from '@trezor/components';
+import { Button, H3, Paragraph, Card as TrezorCard } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 // eslint-disable-next-line local-rules/no-override-ds-component

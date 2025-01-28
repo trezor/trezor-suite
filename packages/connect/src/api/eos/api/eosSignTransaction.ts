@@ -2,13 +2,13 @@
 
 import { AssertWeak } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
-import { getMiscNetwork } from '../../../data/coinInfo';
-import { validatePath } from '../../../utils/pathUtils';
-import * as helper from '../eosSignTx';
 import type { PROTO } from '../../../constants';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getMiscNetwork } from '../../../data/coinInfo';
 import { EosSignTransaction as EosSignTransactionSchema } from '../../../types/api/eos';
+import { validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
+import * as helper from '../eosSignTx';
 
 type Params = {
     path: number[];

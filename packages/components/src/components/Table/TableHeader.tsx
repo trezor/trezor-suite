@@ -1,11 +1,11 @@
-import { createContext, useContext, ReactNode } from 'react';
+import { ReactNode, createContext, useContext } from 'react';
 
 import styled from 'styled-components';
 
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
-import { useElevation } from '../ElevationContext/ElevationContext';
 import { useTable } from './Table';
+import { useElevation } from '../ElevationContext/ElevationContext';
 
 const HeaderContext = createContext(false);
 

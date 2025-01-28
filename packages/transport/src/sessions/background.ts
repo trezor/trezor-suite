@@ -9,23 +9,23 @@
  * - we can say we trust the caller but not really thats why we implement auto-unlock
  */
 
-import { createDeferred, Deferred, TypedEmitter } from '@trezor/utils';
 import { TimerId } from '@trezor/type-utils';
+import { Deferred, TypedEmitter, createDeferred } from '@trezor/utils';
 
 import type {
-    EnumerateDoneRequest,
-    AcquireIntentRequest,
     AcquireDoneRequest,
-    ReleaseIntentRequest,
-    ReleaseDoneRequest,
+    AcquireIntentRequest,
+    EnumerateDoneRequest,
     GetPathBySessionRequest,
     HandleMessageParams,
     HandleMessageResponse,
+    ReleaseDoneRequest,
+    ReleaseIntentRequest,
     SessionsBackgroundInterface,
 } from './types';
+import * as ERRORS from '../errors';
 import type { Descriptor, PathInternal, Success } from '../types';
 import { PathPublic, Session } from '../types';
-import * as ERRORS from '../errors';
 
 function typedObjectKeys<T extends Record<any, any>>(obj: T): Array<keyof T> {
     return Object.keys(obj) as Array<keyof T>;

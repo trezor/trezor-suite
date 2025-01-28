@@ -2,14 +2,14 @@
 
 import { Assert } from '@trezor/schema-utils';
 
+import type { PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { validateCoinPath, getFirmwareRange } from './common/paramsValidator';
-import { validatePath, getLabel, getScriptType } from '../utils/pathUtils';
+import type { BitcoinNetworkInfo } from '../types';
+import { SignMessage as SignMessageSchema } from '../types';
+import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { messageToHex } from '../utils/formatUtils';
-import type { BitcoinNetworkInfo } from '../types';
-import type { PROTO } from '../constants';
-import { SignMessage as SignMessageSchema } from '../types';
+import { getLabel, getScriptType, validatePath } from '../utils/pathUtils';
 
 export default class SignMessage extends AbstractMethod<'signMessage', PROTO.SignMessage> {
     init() {

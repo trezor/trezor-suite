@@ -1,13 +1,13 @@
+import type { BlockchainSettings, ChannelMessage, SubscriptionAccountInfo } from './common';
 import * as MESSAGES from './constants/messages';
-import type { SubscriptionAccountInfo, BlockchainSettings, ChannelMessage } from './common';
 import type {
     AccountBalanceHistoryParams,
+    AccountInfoParams,
+    EstimateFeeParams,
     GetCurrentFiatRatesParams,
     GetFiatRatesForTimestampsParams,
     GetFiatRatesTickersListParams,
-    EstimateFeeParams,
     RpcCallParams,
-    AccountInfoParams,
 } from './params';
 
 // messages sent from blockchain.js to worker

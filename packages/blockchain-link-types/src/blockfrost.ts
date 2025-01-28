@@ -1,5 +1,5 @@
-import type { AccountInfoParams, EstimateFeeParams, AccountBalanceHistoryParams } from './params';
 import type { AccountBalanceHistory } from './common';
+import type { AccountBalanceHistoryParams, AccountInfoParams, EstimateFeeParams } from './params';
 
 type TxContentUtxo = {
     /** Transaction hash */

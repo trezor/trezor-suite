@@ -5,10 +5,10 @@ import styled, { ThemeProvider as SCThemeProvider } from 'styled-components';
 import { intermediaryTheme } from '@trezor/components/src/config/colors';
 
 import { IntlProvider } from './components/IntlProvider';
-import { GlobalStyle } from './styles/GlobalStyle';
-import { defaultMessages } from './translations/default';
-import { messages as cs } from './translations/cs';
 import { useTheme } from './hooks/useTheme';
+import { GlobalStyle } from './styles/GlobalStyle';
+import { messages as cs } from './translations/cs';
+import { defaultMessages } from './translations/default';
 
 type AppProps = {
     children: ReactNode;

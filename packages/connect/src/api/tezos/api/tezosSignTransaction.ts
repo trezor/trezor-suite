@@ -2,13 +2,13 @@
 
 import { AssertWeak } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
-import { getMiscNetwork } from '../../../data/coinInfo';
-import { validatePath } from '../../../utils/pathUtils';
-import * as helper from '../tezosSignTx';
 import type { PROTO } from '../../../constants';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getMiscNetwork } from '../../../data/coinInfo';
 import { TezosSignTransaction as TezosSignTransactionSchema } from '../../../types/api/tezos';
+import { validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
+import * as helper from '../tezosSignTx';
 
 export default class TezosSignTransaction extends AbstractMethod<
     'tezosSignTransaction',

@@ -1,6 +1,6 @@
 /* eslint no-await-in-loop: 0 */
 
-import { test, expect, Page } from '@playwright/test';
+import { Page, expect, test } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 

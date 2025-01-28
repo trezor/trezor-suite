@@ -1,8 +1,8 @@
 import url from 'url';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import { TOR_URLS } from '@trezor/urls';
 import { isCodesignBuild } from '@trezor/env-utils';
+import { TOR_URLS } from '@trezor/urls';
 
 const getAppName = () => {
     const appName = 'Trezor Suite';

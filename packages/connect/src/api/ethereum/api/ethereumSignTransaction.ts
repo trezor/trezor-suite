@@ -4,22 +4,22 @@ import { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
-import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getEthereumNetwork } from '../../../data/coinInfo';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
-import { deepTransform, stripHexPrefix } from '../../../utils/formatUtils';
-import * as helper from '../ethereumSignTx';
-import {
-    getEthereumDefinitions,
-    decodeEthereumDefinition,
-    ethereumNetworkInfoFromDefinition,
-} from '../ethereumDefinitions';
-import type { EthereumTransaction, EthereumTransactionEIP1559 } from '../../../types/api/ethereum';
 import {
     EthereumNetworkInfoDefinitionValues,
     EthereumSignTransaction as EthereumSignTransactionSchema,
 } from '../../../types';
+import type { EthereumTransaction, EthereumTransactionEIP1559 } from '../../../types/api/ethereum';
+import { getNetworkLabel } from '../../../utils/ethereumUtils';
+import { deepTransform, stripHexPrefix } from '../../../utils/formatUtils';
+import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
+import {
+    decodeEthereumDefinition,
+    ethereumNetworkInfoFromDefinition,
+    getEthereumDefinitions,
+} from '../ethereumDefinitions';
+import * as helper from '../ethereumSignTx';
 
 type Params = {
     path: number[];

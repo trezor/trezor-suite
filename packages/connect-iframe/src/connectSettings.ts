@@ -1,4 +1,4 @@
-import { parseConnectSettings as parseSettings, ConnectSettings } from '@trezor/connect';
+import { ConnectSettings, parseConnectSettings as parseSettings } from '@trezor/connect';
 import { config } from '@trezor/connect/src/data/config';
 import { DEFAULT_PRIORITY } from '@trezor/connect/src/data/connectSettings';
 import { getHost } from '@trezor/connect/src/utils/urlUtils';

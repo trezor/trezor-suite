@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainEstimateFee.js
 
-import { Payload, MethodReturnType, AbstractMethod } from '../core/AbstractMethod';
-import { validateParams } from './common/paramsValidator';
 import { ERRORS } from '../constants';
+import { AbstractMethod, MethodReturnType, Payload } from '../core/AbstractMethod';
 import { FeeLevels } from './bitcoin/Fees';
-import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
+import { validateParams } from './common/paramsValidator';
+import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
 import type { CoinInfo } from '../types';
 

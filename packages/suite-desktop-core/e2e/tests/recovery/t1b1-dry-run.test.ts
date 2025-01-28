@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 const mnemonic =
     'nasty answer gentle inform unaware abandon regret supreme dragon gravity behind lava dose pilot garden into dynamic outer hard speed luxury run truly armed';

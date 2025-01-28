@@ -1,12 +1,12 @@
 import { createCooldown } from '@trezor/utils';
 
 import { PROGRESS_INFO_COOLDOWN } from '../constants';
+import type { CoinjoinBackendSettings } from '../types';
 import type {
     FilterClient,
-    FilterControllerParams,
     FilterControllerContext,
+    FilterControllerParams,
 } from '../types/backend';
-import type { CoinjoinBackendSettings } from '../types';
 
 export type FilterController = Pick<CoinjoinFilterController, 'getFilterIterator'>;
 

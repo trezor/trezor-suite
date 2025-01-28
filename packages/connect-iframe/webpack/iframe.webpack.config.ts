@@ -1,7 +1,7 @@
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 import merge from 'webpack-merge';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import { config as baseConfig } from './base.webpack.config';
 

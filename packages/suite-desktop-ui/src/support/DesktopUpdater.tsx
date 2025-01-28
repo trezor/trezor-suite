@@ -1,30 +1,30 @@
-import { useCallback, useEffect, useMemo, ReactNode } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo } from 'react';
 
-import { analytics, AppUpdateEventStatus, EventType } from '@trezor/suite-analytics';
+import { AppUpdateEventStatus, EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     allowPrerelease,
-    setAutomaticUpdates,
-    checking,
     available,
-    notAvailable,
-    ready,
+    checking,
     downloading,
     error,
+    notAvailable,
+    ready,
+    setAutomaticUpdates,
     setUpdateModalVisibility,
 } from 'src/actions/suite/desktopUpdateActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { getAppUpdatePayload } from 'src/utils/suite/analytics';
 
 import { Available } from './DesktopUpdater/Available';
 import { Downloading } from './DesktopUpdater/Downloading';
-import { Ready } from './DesktopUpdater/Ready';
-import { EarlyAccessEnable } from './DesktopUpdater/EarlyAccessEnable';
 import { EarlyAccessDisable } from './DesktopUpdater/EarlyAccessDisable';
+import { EarlyAccessEnable } from './DesktopUpdater/EarlyAccessEnable';
 import { JustUpdated } from './DesktopUpdater/JustUpdated';
+import { Ready } from './DesktopUpdater/Ready';
 
 interface DesktopUpdaterProps {
     children: ReactNode;

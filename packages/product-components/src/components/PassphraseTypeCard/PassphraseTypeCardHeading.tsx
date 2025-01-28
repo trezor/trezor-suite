@@ -1,10 +1,10 @@
-import { FormattedMessage } from 'react-intl';
 import { ReactNode } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import styled, { useTheme } from 'styled-components';
 
+import { Column, Icon, Row, Tooltip, TooltipProps } from '@trezor/components';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
-import { Tooltip, TooltipProps, Column, Row, Icon } from '@trezor/components';
 
 import { WalletType } from './types';
 

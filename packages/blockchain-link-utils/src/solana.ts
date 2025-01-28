@@ -1,8 +1,7 @@
 import { A, D, F, pipe } from '@mobily/ts-belt';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Target, TokenTransfer, Transaction } from '@trezor/blockchain-link-types/src';
-import { arrayPartition } from '@trezor/utils';
+import type { StakeType, TokenInfo, TokenStandard } from '@trezor/blockchain-link-types/src';
 import type {
     AccountInfo,
     Address,
@@ -14,8 +13,9 @@ import type {
     SolanaValidParsedTxWithMeta,
     TokenDetailByMint,
 } from '@trezor/blockchain-link-types/src/solana';
-import type { TokenInfo, TokenStandard, StakeType } from '@trezor/blockchain-link-types/src';
 import { isCodesignBuild } from '@trezor/env-utils';
+import { arrayPartition } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { formatTokenSymbol } from './utils';
 

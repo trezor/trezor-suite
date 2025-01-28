@@ -1,18 +1,18 @@
-import { createCooldown } from '@trezor/utils';
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
+import { createCooldown } from '@trezor/utils';
 
-import { getMultiFilter } from './filters';
-import { doesTxContainAddress } from './backendUtils';
 import { CoinjoinAddressController } from './CoinjoinAddressController';
+import { doesTxContainAddress } from './backendUtils';
+import { getMultiFilter } from './filters';
+import { CHECKPOINT_COOLDOWN } from '../constants';
 import type {
-    Transaction,
     BlockbookTransaction,
-    ScanAccountParams,
     ScanAccountCheckpoint,
     ScanAccountContext,
+    ScanAccountParams,
     ScanAccountResult,
+    Transaction,
 } from '../types/backend';
-import { CHECKPOINT_COOLDOWN } from '../constants';
 
 const transformTx =
     ({ receive, change }: CoinjoinAddressController) =>

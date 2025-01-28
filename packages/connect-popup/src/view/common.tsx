@@ -3,12 +3,12 @@
 import { createRoot } from 'react-dom/client';
 
 import {
-    POPUP,
+    CoreEventMessage,
+    CoreRequestMessage,
     ERRORS,
+    POPUP,
     PopupInit,
     createUiResponse,
-    CoreRequestMessage,
-    CoreEventMessage,
 } from '@trezor/connect';
 import { ConnectUI, State, getDefaultState } from '@trezor/connect-ui';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';

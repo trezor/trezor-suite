@@ -2,15 +2,15 @@
 
 import { Assert } from '@trezor/schema-utils';
 
+import type { PROTO } from '../../../constants';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
-import { validatePath } from '../../../utils/pathUtils';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { UI, createUiMessage } from '../../../events';
-import type { PROTO } from '../../../constants';
 import type { EthereumNetworkInfo } from '../../../types';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
+import { getNetworkLabel } from '../../../utils/ethereumUtils';
+import { validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
 
 type Params = PROTO.EthereumGetPublicKey & {
     network?: EthereumNetworkInfo;

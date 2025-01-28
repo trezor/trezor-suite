@@ -1,23 +1,23 @@
-import {
-    scheduleAction,
-    arrayShuffle,
-    urlToOnion,
-    getWeakRandomInt,
-    TypedEmitter,
-} from '@trezor/utils';
 import type { BlockbookAPI } from '@trezor/blockchain-link/src/workers/blockbook/websocket';
+import {
+    TypedEmitter,
+    arrayShuffle,
+    getWeakRandomInt,
+    scheduleAction,
+    urlToOnion,
+} from '@trezor/utils';
 
-import { RequestOptions, resetIdentityCircuit } from '../utils/http';
-import type {
-    BlockbookBlock,
-    BlockFilterResponse,
-    MempoolFilterResponse,
-    BlockbookTransaction,
-} from '../types/backend';
-import type { CoinjoinBackendSettings, Logger } from '../types';
 import { FILTERS_REQUEST_TIMEOUT, HTTP_REQUEST_GAP, HTTP_REQUEST_TIMEOUT } from '../constants';
+import type { CoinjoinBackendSettings, Logger } from '../types';
 import { CoinjoinWebsocketController } from './CoinjoinWebsocketController';
 import { identifyWsError } from './backendUtils';
+import type {
+    BlockFilterResponse,
+    BlockbookBlock,
+    BlockbookTransaction,
+    MempoolFilterResponse,
+} from '../types/backend';
+import { RequestOptions, resetIdentityCircuit } from '../utils/http';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;

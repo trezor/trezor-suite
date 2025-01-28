@@ -1,10 +1,10 @@
 /**
  * Helps pointing to the right folder to load
  */
-import path from 'path';
 import { session } from 'electron';
+import path from 'path';
 
-import { FILE_PROTOCOL, APP_SRC } from '../libs/constants';
+import { APP_SRC, FILE_PROTOCOL } from '../libs/constants';
 
 import type { ModuleInit } from './index';
 

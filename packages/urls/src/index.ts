@@ -1,5 +1,5 @@
-import * as Urls from './urls';
 import * as GithubUrls from './github';
+import * as Urls from './urls';
 
 export * from './urls';
 export * from './github';

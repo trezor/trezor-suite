@@ -1,45 +1,45 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/popup.js/
-import {
-    POPUP,
-    IFRAME,
-    UI_REQUEST,
-    RESPONSE_EVENT,
-    parseMessage,
-    createPopupMessage,
-    UiEvent,
-    PopupEvent,
-    PopupInit,
-    PopupHandshake,
-    MethodResponseMessage,
-    IFrameCallMessage,
-    IFrameLogRequest,
-    CoreEventMessage,
-    PopupContentScriptLoaded,
-} from '@trezor/connect/src/exports';
 import type { Core } from '@trezor/connect/src/core';
 import { config } from '@trezor/connect/src/data/config';
+import { DEFAULT_DOMAIN } from '@trezor/connect/src/data/version';
+import {
+    CoreEventMessage,
+    IFRAME,
+    IFrameCallMessage,
+    IFrameLogRequest,
+    MethodResponseMessage,
+    POPUP,
+    PopupContentScriptLoaded,
+    PopupEvent,
+    PopupHandshake,
+    PopupInit,
+    RESPONSE_EVENT,
+    UI_REQUEST,
+    UiEvent,
+    createPopupMessage,
+    parseMessage,
+} from '@trezor/connect/src/exports';
+import { LogWriter, initLog, setLogWriter } from '@trezor/connect/src/utils/debug';
+import { EventType, analytics } from '@trezor/connect-analytics';
+import { getSystemInfo } from '@trezor/connect-common';
 import { parseConnectSettings } from '@trezor/connect-iframe/src/connectSettings';
 import { initLogWriterWithSrcPath } from '@trezor/connect-iframe/src/sharedLoggerUtils';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 import { ErrorViewProps } from '@trezor/connect-ui/src/views/Error';
-import { analytics, EventType } from '@trezor/connect-analytics';
-import { getSystemInfo } from '@trezor/connect-common';
-import { initLog, setLogWriter, LogWriter } from '@trezor/connect/src/utils/debug';
-import { DEFAULT_DOMAIN } from '@trezor/connect/src/data/version';
 import { TimerId } from '@trezor/type-utils';
 
+import { isPhishingDomain } from './utils/isPhishingDomain';
 import * as view from './view';
 import {
     getState,
-    setState,
     initMessageChannelWithIframe,
     postMessageToParent,
     renderConnectUI,
+    setState,
     showView,
 } from './view/common';
-import { isPhishingDomain } from './utils/isPhishingDomain';
 
 const INTERVAL_CHECK_PARENT_ALIVE_MS = 1000;
 const INTERVAL_HANDSHAKE_TIMEOUT_MS = 90 * 1000;

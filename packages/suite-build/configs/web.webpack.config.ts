@@ -1,8 +1,8 @@
+import CopyPlugin from 'copy-webpack-plugin';
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
-import CopyPlugin from 'copy-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
 import { FLAGS, routes } from '@suite-common/suite-config';
 

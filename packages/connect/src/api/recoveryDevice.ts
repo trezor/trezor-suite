@@ -2,9 +2,9 @@
 
 import { Assert } from '@trezor/schema-utils';
 
+import type { PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
-import type { PROTO } from '../constants';
 import { RecoveryDevice as RecoveryDeviceSchema } from '../types/api/recoveryDevice';
 
 export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PROTO.RecoveryDevice> {

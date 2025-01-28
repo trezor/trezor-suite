@@ -1,8 +1,8 @@
-import { serializeError } from '../constants/errors';
 import type { IFRAME } from './iframe';
+import { serializeError } from '../constants/errors';
+import { Device } from '../device/Device';
 import type { TrezorConnect } from '../types/api';
 import type { CommonParams, DeviceIdentity } from '../types/params';
-import { Device } from '../device/Device';
 
 // conditionally unwrap TrezorConnect api method Success<T> response
 type UnwrappedResponse<Response> =

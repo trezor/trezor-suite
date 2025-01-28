@@ -1,23 +1,23 @@
 import WebSocket from 'ws';
 
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type {
-    BlockNotification,
-    MempoolTransactionNotification,
     AddressNotification,
-    Send,
+    BlockNotification,
     FiatRatesNotification,
     FilterRequestParams,
+    MempoolTransactionNotification,
+    Send,
 } from '@trezor/blockchain-link-types/src/blockbook';
+import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type {
+    GetCurrentFiatRates,
     GetFiatRatesForTimestamps,
     GetFiatRatesTickersList,
-    GetCurrentFiatRates,
 } from '@trezor/blockchain-link-types/src/messages';
 import type {
+    AccountBalanceHistoryParams,
     AccountInfoParams,
     EstimateFeeParams,
-    AccountBalanceHistoryParams,
     RpcCallParams,
 } from '@trezor/blockchain-link-types/src/params';
 import { getSuiteVersion } from '@trezor/env-utils';

@@ -1,5 +1,5 @@
-import { parseConnectSettings } from '../../data/connectSettings';
 import { DataManager } from '../../data/DataManager';
+import { parseConnectSettings } from '../../data/connectSettings';
 import * as downloadReleasesMetadata from '../../data/downloadReleasesMetadata';
 import { DeviceList } from '../DeviceList';
 

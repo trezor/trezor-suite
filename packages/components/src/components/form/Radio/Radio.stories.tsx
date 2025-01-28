@@ -1,10 +1,10 @@
 import { useArgs } from '@storybook/client-api';
-import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+import styled from 'styled-components';
 
 import { Radio as RadioComponent, RadioProps, radioVariants } from './Radio';
-import { H2 } from '../../typography/Heading/Heading';
 import { getFramePropsStory } from '../../../utils/frameProps';
+import { H2 } from '../../typography/Heading/Heading';
 import { allowedCheckboxFrameProps } from '../Checkbox/Checkbox';
 
 const Wrapper = styled.div`

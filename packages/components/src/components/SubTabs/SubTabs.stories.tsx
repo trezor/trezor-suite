@@ -6,10 +6,10 @@ import { spacings } from '@trezor/theme';
 
 import { SubTabs as SubTabsComponent, SubTabsProps, allowedSubTabsFrameProps } from './SubTabs';
 import { subtabsSizes } from './types';
+import { variables } from '../../config';
+import { getFramePropsStory } from '../../utils/frameProps';
 import { Column } from '../Flex/Flex';
 import { IconName } from '../Icon/Icon';
-import { getFramePropsStory } from '../../utils/frameProps';
-import { variables } from '../../config';
 
 const meta: Meta = {
     title: 'SubTabs',

@@ -1,4 +1,4 @@
-import { spacingsPx, spacings, TypographyStyle } from '@trezor/theme';
+import { TypographyStyle, spacings, spacingsPx } from '@trezor/theme';
 
 import { TabsSize } from './types';
 

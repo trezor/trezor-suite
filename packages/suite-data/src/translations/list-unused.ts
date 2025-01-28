@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 
 // See comment in list-duplicates.ts
 import messages from '@trezor/suite/src/support/messages';

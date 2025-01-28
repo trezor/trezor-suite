@@ -5,10 +5,10 @@ import type * as CSS from 'csstype';
 // TODO: In the future, we might want to move the `theme` to a standalone module and instead
 // use an ambient module declaration instead of importing it here, just like Emotion does.
 // https://emotion.sh/docs/typescript#define-a-theme
-import type { Theme, NativeTheme, CSSColor } from '@trezor/theme';
+import type { CSSColor, NativeTheme, Theme } from '@trezor/theme';
 
-import type { multiply, getValueAndUnit, sum, negative, isDarkColor } from './utils';
 import type { mediaQueries } from './mediaQueries';
+import type { getValueAndUnit, isDarkColor, multiply, negative, sum } from './utils';
 
 export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
 

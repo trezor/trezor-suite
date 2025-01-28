@@ -1,5 +1,5 @@
-import webpack from 'webpack';
 import { spawn, spawnSync } from 'child_process';
+import webpack from 'webpack';
 
 interface Command {
     command: string;

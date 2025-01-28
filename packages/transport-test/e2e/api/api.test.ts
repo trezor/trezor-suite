@@ -1,7 +1,7 @@
 import { UsbApi } from '@trezor/transport/src/api/usb';
 
-import { buildMessage, assertMessage, assertSuccess, assertFailure, assertEquals } from './utils';
-import { sharedTest, success, info, debug, error } from './shared';
+import { debug, error, info, sharedTest, success } from './shared';
+import { assertEquals, assertFailure, assertMessage, assertSuccess, buildMessage } from './utils';
 
 /**
  * create api for both node and browser and return it

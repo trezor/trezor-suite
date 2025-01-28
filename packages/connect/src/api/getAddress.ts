@@ -2,14 +2,14 @@
 
 import { Assert } from '@trezor/schema-utils';
 
+import { ERRORS, PROTO } from '../constants';
+import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
-import { validateCoinPath, getFirmwareRange } from './common/paramsValidator';
-import { validatePath, getLabel, getSerializedPath } from '../utils/pathUtils';
-import { getBitcoinNetwork, fixCoinInfoNetwork, getUniqueNetworks } from '../data/coinInfo';
-import { PROTO, ERRORS } from '../constants';
+import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
-import { Bundle, type BitcoinNetworkInfo } from '../types';
+import { type BitcoinNetworkInfo, Bundle } from '../types';
 import { GetAddress as GetAddressSchema } from '../types/api/getAddress';
+import { getLabel, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 type Params = PROTO.GetAddress & {
     address?: string;

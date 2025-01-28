@@ -1,6 +1,6 @@
 import { devices } from '@playwright/test';
 
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 const iosAria = `
     - heading "Suite doesn’t work on iOS yet" [level=1]

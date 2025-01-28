@@ -1,14 +1,14 @@
-import { getWeakRandomId, arrayShuffle, getWeakRandomInt } from '@trezor/utils';
+import { arrayShuffle, getWeakRandomId, getWeakRandomInt } from '@trezor/utils';
 
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import { AccountAddress } from '../../types';
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
-import { outputDecomposition, Bob } from './outputDecomposition';
+import { Bob, outputDecomposition } from './outputDecomposition';
+import { scheduleDelay } from '../../utils/roundUtils';
 import type { Account } from '../Account';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { AccountAddress } from '../../types';
-import { scheduleDelay } from '../../utils/roundUtils';
-import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 /**
  * RoundPhase: 2, OutputRegistration

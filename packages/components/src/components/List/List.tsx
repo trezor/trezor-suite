@@ -2,24 +2,24 @@ import { createContext, useContext } from 'react';
 
 import styled from 'styled-components';
 
-import { spacings, SpacingValues } from '@trezor/theme';
+import { SpacingValues, spacings } from '@trezor/theme';
 
+import { ListItem } from './ListItem';
+import { uiVerticalAlignments } from '../../config/types';
 import {
     FrameProps,
     FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import {
-    TextPropsKeys,
-    withTextProps,
-    TextProps,
-    pickAndPrepareTextProps,
-} from '../typography/utils';
-import { makePropsTransient, TransientProps } from '../../utils/transientProps';
-import { uiVerticalAlignments } from '../../config/types';
-import { ListItem } from './ListItem';
+import { TransientProps, makePropsTransient } from '../../utils/transientProps';
 import { Text, textVariants } from '../typography/Text/Text';
+import {
+    TextProps,
+    TextPropsKeys,
+    pickAndPrepareTextProps,
+    withTextProps,
+} from '../typography/utils';
 
 export const allowedListFrameProps = [
     'margin',

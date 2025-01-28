@@ -2,8 +2,8 @@ import { FormattedMessage } from 'react-intl';
 
 import { Button, Image } from '@trezor/components';
 import { type UiEvent } from '@trezor/connect';
-import { SUITE_URL, SUITE_BRIDGE_DEEPLINK } from '@trezor/urls';
 import { useWindowFocus } from '@trezor/react-utils';
+import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 
 import { View } from '../components/View';
 import imageSrc from '../images/man_with_laptop.svg';

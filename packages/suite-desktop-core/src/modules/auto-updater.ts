@@ -1,19 +1,19 @@
-import { unlinkSync } from 'fs';
 import {
-    autoUpdater,
     CancellationToken,
-    UpdateInfo,
-    UpdateDownloadedEvent,
     ProgressInfo,
+    UpdateDownloadedEvent,
+    UpdateInfo,
+    autoUpdater,
 } from 'electron-updater';
+import { unlinkSync } from 'fs';
 
-import { bytesToHumanReadable } from '@trezor/utils';
-import { isFeatureFlagEnabled, isDevEnv } from '@suite-common/suite-utils';
+import { isDevEnv, isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { HandshakeElectron } from '@trezor/suite-desktop-api';
+import { bytesToHumanReadable } from '@trezor/utils';
 
-import { app, ipcMain } from '../typed-electron';
-import { b2t } from '../libs/utils';
 import { verifySignature } from '../libs/update-checker';
+import { b2t } from '../libs/utils';
+import { app, ipcMain } from '../typed-electron';
 
 import type { ModuleInit } from './index';
 

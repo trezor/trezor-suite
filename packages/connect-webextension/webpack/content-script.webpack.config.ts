@@ -1,5 +1,5 @@
-import webpack from 'webpack';
 import path from 'path';
+import webpack from 'webpack';
 
 import prod from './prod.webpack.config';
 

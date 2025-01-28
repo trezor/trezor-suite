@@ -1,6 +1,6 @@
 import { css, keyframes } from 'styled-components';
 
-import { spacingsPx, borders, typography, zIndices } from '@trezor/theme';
+import { borders, spacingsPx, typography, zIndices } from '@trezor/theme';
 
 export const DROPDOWN_MENU = keyframes`
     0% {

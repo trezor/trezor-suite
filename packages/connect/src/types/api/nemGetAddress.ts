@@ -1,6 +1,6 @@
 import { Static, Type } from '@trezor/schema-utils';
 
-import { GetAddress, Address, Params, BundledParams, Response } from '../params';
+import { Address, BundledParams, GetAddress, Params, Response } from '../params';
 
 export type NEMGetAddress = Static<typeof NEMGetAddress>;
 export const NEMGetAddress = Type.Composite([

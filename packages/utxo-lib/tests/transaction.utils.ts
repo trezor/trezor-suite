@@ -1,6 +1,6 @@
-import { Transaction, TxOptions } from '../src/transaction';
 import * as NETWORKS from '../src/networks';
 import * as bscript from '../src/script';
+import { Transaction, TxOptions } from '../src/transaction';
 
 const DEFAULT_SEQUENCE = 0xffffffff;
 const EMPTY_SCRIPT = Buffer.allocUnsafe(0);

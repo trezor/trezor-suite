@@ -1,5 +1,5 @@
-import { OPTIONS, fixtures } from './__fixtures__/modelUtils';
 import { pickByDeviceModel } from '../src';
+import { OPTIONS, fixtures } from './__fixtures__/modelUtils';
 
 describe('pickByDeviceModel', () => {
     fixtures.forEach(f => {

@@ -1,7 +1,7 @@
-import BlockbookWorker from '@trezor/blockchain-link/src/workers/blockbook';
-import RippleWorker from '@trezor/blockchain-link/src/workers/ripple';
-import BlockfrostWorker from '@trezor/blockchain-link/src/workers/blockfrost';
 import type { BaseWorker } from '@trezor/blockchain-link/src/workers/baseWorker';
+import BlockbookWorker from '@trezor/blockchain-link/src/workers/blockbook';
+import BlockfrostWorker from '@trezor/blockchain-link/src/workers/blockfrost';
+import RippleWorker from '@trezor/blockchain-link/src/workers/ripple';
 
 type WorkerAsyncImporter = () => Promise<BaseWorker<unknown>>;
 

@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { borders, Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
+import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
+import { AssetInitials } from './AssetInitials';
 import {
     FrameProps,
     FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { AssetInitials } from './AssetInitials';
 import { TransientProps } from '../../utils/transientProps';
 import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 

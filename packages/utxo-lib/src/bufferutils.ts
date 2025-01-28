@@ -6,9 +6,9 @@
 // - `BufferWritter.writeUInt64` is accepting string or number.
 
 import BN from 'bn.js';
+import { Int64LE } from 'int64-buffer';
 import pushdata from 'pushdata-bitcoin';
 import * as varuint from 'varuint-bitcoin';
-import { Int64LE } from 'int64-buffer';
 
 import { bufferUtils } from '@trezor/utils';
 

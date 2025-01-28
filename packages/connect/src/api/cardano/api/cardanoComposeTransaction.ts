@@ -1,14 +1,14 @@
-import { trezorUtils, CoinSelectionError } from '@fivebinaries/coin-selection';
+import { CoinSelectionError, trezorUtils } from '@fivebinaries/coin-selection';
 
 import { AssertWeak } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { composeTxPlan } from '../cardanoUtils';
 import {
-    CardanoComposeTransactionParamsSchema,
     type CardanoComposeTransactionParams,
+    CardanoComposeTransactionParamsSchema,
     type PrecomposedTransactionCardano,
 } from '../../../types/api/cardanoComposeTransaction';
+import { composeTxPlan } from '../cardanoUtils';
 
 export default class CardanoComposeTransaction extends AbstractMethod<
     'cardanoComposeTransaction',

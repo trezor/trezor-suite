@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
 test.beforeEach(async ({ onboardingPage, dashboardPage }) => {

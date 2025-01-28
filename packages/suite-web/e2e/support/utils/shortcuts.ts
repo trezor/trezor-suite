@@ -1,9 +1,9 @@
-import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
-import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
+import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 
-import { EventPayload, Requests } from '../types';
 import { onNavBar } from '../pageObjects/topBarObject';
+import { EventPayload, Requests } from '../types';
 
 /**
  * Shortcut to click device menu

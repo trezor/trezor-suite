@@ -1,12 +1,12 @@
 import EventEmitter from 'events';
 
-import { ConnectFactoryDependencies } from '../factory';
-import type { Manifest } from '../types/settings';
-import { CallMethodPayload } from '../events';
 import { ERRORS } from '../constants';
-import { ProxyEventEmitter } from '../utils/proxy-event-emitter';
+import { CallMethodPayload } from '../events';
+import { ConnectFactoryDependencies } from '../factory';
 import { InitFullSettings } from '../types/api/init';
 import type { SetTransports } from '../types/api/setTransports';
+import type { Manifest } from '../types/settings';
+import { ProxyEventEmitter } from '../utils/proxy-event-emitter';
 
 type TrezorConnectDynamicParams<
     ImplType,

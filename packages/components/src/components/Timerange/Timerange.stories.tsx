@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+import styled from 'styled-components';
 
 import { Timerange as TimerangeComponent, TimerangeProps } from './Timerange';
 

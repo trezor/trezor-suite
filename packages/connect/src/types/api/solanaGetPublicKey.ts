@@ -1,4 +1,4 @@
-import type { GetPublicKey, Params, BundledParams, Response } from '../params';
+import type { BundledParams, GetPublicKey, Params, Response } from '../params';
 import type { SolanaPublicKey } from './solana';
 
 export declare function solanaGetPublicKey(params: Params<GetPublicKey>): Response<SolanaPublicKey>;

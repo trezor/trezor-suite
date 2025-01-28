@@ -1,14 +1,14 @@
 import WebSocket from 'ws';
 
 import type {
-    Send,
     BlockContent,
     BlockfrostTransaction,
+    Send,
 } from '@trezor/blockchain-link-types/src/blockfrost';
 import type {
+    AccountBalanceHistoryParams,
     AccountInfoParams,
     EstimateFeeParams,
-    AccountBalanceHistoryParams,
 } from '@trezor/blockchain-link-types/src/params';
 import { getSuiteVersion } from '@trezor/env-utils';
 

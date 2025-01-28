@@ -3,12 +3,12 @@
 import { AssertWeak } from '@trezor/schema-utils';
 
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { validatePath } from '../../../utils/pathUtils';
-import * as helper from '../binanceSignTx';
 import { BinanceSignTransaction as BinanceSignTransactionSchema } from '../../../types/api/binance';
 import type { BinancePreparedTransaction } from '../../../types/api/binance';
+import { validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
+import * as helper from '../binanceSignTx';
 
 type Params = {
     path: number[];

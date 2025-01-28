@@ -1,10 +1,9 @@
 import React from 'react';
 
-import styled, { css, DefaultTheme, useTheme } from 'styled-components';
+import styled, { DefaultTheme, css, useTheme } from 'styled-components';
 
-import { borders, Color, CSSColor, spacings, spacingsPx, typography } from '@trezor/theme';
+import { CSSColor, Color, borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
 import type { UISize, UIVariant } from '../../config/types';
 import {
     FrameProps,
@@ -13,6 +12,7 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
+import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
 import { Icon, IconName } from '../Icon/Icon';
 
 export const badgeSizes = ['medium', 'small', 'tiny'] as const satisfies UISize[];

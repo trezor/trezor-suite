@@ -1,7 +1,7 @@
-import { coinselect } from '../../src/coinselect';
-import { coinselectIndexFixture } from '../__fixtures__/coinselect/coinselect-index';
-import { coinselectFixturesErrors } from '../__fixtures__/coinselect/coinselect-errors';
 import * as utils from './test.utils';
+import { coinselect } from '../../src/coinselect';
+import { coinselectFixturesErrors } from '../__fixtures__/coinselect/coinselect-errors';
+import { coinselectIndexFixture } from '../__fixtures__/coinselect/coinselect-index';
 
 describe('coinselect errors', () => {
     coinselectFixturesErrors.forEach(f => {

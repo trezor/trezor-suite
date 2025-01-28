@@ -1,7 +1,7 @@
 import { Static, Type } from '@trezor/schema-utils';
 
-import type { Params, Response } from '../params';
 import type { VersionArray } from '../firmware';
+import type { Params, Response } from '../params';
 
 export type FirmwareUpdate = Static<typeof FirmwareUpdate>;
 export const FirmwareUpdate = Type.Union([

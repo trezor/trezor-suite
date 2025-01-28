@@ -2,14 +2,14 @@ import React from 'react';
 
 import { Meta, StoryObj } from '@storybook/react';
 
-import { icons, IconName } from '@suite-common/icons/src/icons';
+import { IconName, icons } from '@suite-common/icons/src/icons';
 
 import {
     IconCircle as IconCircleComponent,
     IconCircleProps,
     allowedIconCircleFrameProps,
 } from './IconCircle';
-import { iconCircleVariants, iconCirclePaddingTypes } from './types';
+import { iconCirclePaddingTypes, iconCircleVariants } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {

@@ -1,10 +1,6 @@
-import { cloneObject } from '@trezor/utils';
-import { factory } from '@trezor/connect/src/factory';
 import { config } from '@trezor/connect/src/data/config';
-import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
-import { CoreInModule } from '@trezor/connect/src/impl/core-in-module';
-import type { ConnectSettingsPublic } from '@trezor/connect/src/types';
-import type { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
+import { suggestBridgeInstaller } from '@trezor/connect/src/data/transportInfo';
+import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
 import {
     CoreEventMessage,
     CoreRequestMessage,
@@ -12,9 +8,13 @@ import {
     TRANSPORT,
     TRANSPORT_EVENT,
 } from '@trezor/connect/src/exports';
+import { factory } from '@trezor/connect/src/factory';
+import type { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
+import { CoreInModule } from '@trezor/connect/src/impl/core-in-module';
+import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
+import type { ConnectSettingsPublic } from '@trezor/connect/src/types';
 import { getInstallerPackage } from '@trezor/connect-common';
-import { suggestBridgeInstaller } from '@trezor/connect/src/data/transportInfo';
-import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
+import { cloneObject } from '@trezor/utils';
 
 interface ConnectWebDynamicImplementation
     extends ConnectFactoryDependencies<ConnectSettingsPublic> {

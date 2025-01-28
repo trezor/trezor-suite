@@ -1,12 +1,12 @@
 import React from 'react';
 
-import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+import styled from 'styled-components';
 
 import {
-    allowedDropdownFrameProps,
     Dropdown as DropdownComponent,
     DropdownProps,
+    allowedDropdownFrameProps,
 } from './Dropdown';
 import { getFramePropsStory } from '../../utils/frameProps';
 

@@ -2,12 +2,12 @@
 
 import { AssertWeak } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
-import { getMiscNetwork } from '../../../data/coinInfo';
-import { validatePath } from '../../../utils/pathUtils';
 import type { PROTO } from '../../../constants';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getMiscNetwork } from '../../../data/coinInfo';
 import { RippleSignTransaction as RippleSignTransactionSchema } from '../../../types/api/ripple';
+import { validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
 
 export default class RippleSignTransaction extends AbstractMethod<
     'rippleSignTransaction',

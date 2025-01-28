@@ -1,10 +1,10 @@
-import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+import styled from 'styled-components';
 
 import { H1, H2, H3, H4 } from './Heading';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { getTextPropsStory } from '../utils';
 import { allowedTextFrameProps, allowedTextTextProps, textVariants } from '../Text/Text';
+import { getTextPropsStory } from '../utils';
 
 const Wrapper = styled.div`
     display: flex;

@@ -2,13 +2,13 @@
 
 import { AssertWeak } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
-import { getMiscNetwork } from '../../../data/coinInfo';
-import { validatePath } from '../../../utils/pathUtils';
-import * as helper from '../nemSignTx';
 import type { PROTO } from '../../../constants';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getMiscNetwork } from '../../../data/coinInfo';
 import { NEMSignTransaction as NEMSignTransactionSchema } from '../../../types/api/nem';
+import { validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
+import * as helper from '../nemSignTx';
 
 export default class NEMSignTransaction extends AbstractMethod<
     'nemSignTransaction',

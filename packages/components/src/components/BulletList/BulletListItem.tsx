@@ -3,10 +3,10 @@ import styled, { css, useTheme } from 'styled-components';
 import { SpacingValues, borders, typography } from '@trezor/theme';
 
 import { useBulletList } from './BulletList';
-import { Text } from '../typography/Text/Text';
+import { BulletListItemState, BulletSize } from './types';
+import { mapSizeToDimension, mapStateToColor } from './utils';
 import { IconCircle } from '../IconCircle/IconCircle';
-import { BulletSize, BulletListItemState } from './types';
-import { mapStateToColor, mapSizeToDimension } from './utils';
+import { Text } from '../typography/Text/Text';
 
 const Item = styled.li<{ $bulletGap: SpacingValues; $size: BulletSize }>`
     display: grid;

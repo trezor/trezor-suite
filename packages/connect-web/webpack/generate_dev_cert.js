@@ -1,6 +1,6 @@
-const selfsigned = require('selfsigned');
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
+const selfsigned = require('selfsigned');
 
 const crtPath = path.join(__dirname, 'connect_dev.crt');
 const keyPath = path.join(__dirname, 'connect_dev.key');

@@ -2,9 +2,9 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { validatePath } from '../../utils/pathUtils';
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS, PROTO } from '../../constants';
 import { CardanoAddressParameters } from '../../types/api/cardano';
+import { validatePath } from '../../utils/pathUtils';
 
 export const validateAddressParameters = (addressParameters: CardanoAddressParameters) => {
     Assert(CardanoAddressParameters, addressParameters);

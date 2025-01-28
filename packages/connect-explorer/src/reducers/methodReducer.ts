@@ -1,16 +1,16 @@
 import {
+    ADD_BATCH,
     FIELD_CHANGE,
     FIELD_DATA_CHANGE,
-    ADD_BATCH,
     REMOVE_BATCH,
     RESPONSE,
+    SET_MANUAL_MODE,
     SET_METHOD,
+    SET_METHOD_PROCESSING,
     SET_SCHEMA,
     SET_UNION,
-    SET_MANUAL_MODE,
-    SET_METHOD_PROCESSING,
 } from '../actions/methodActions';
-import { isFieldBasic, type Action, type Field } from '../types';
+import { type Action, type Field, isFieldBasic } from '../types';
 import {
     MethodState,
     initialState,

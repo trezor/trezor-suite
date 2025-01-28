@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/DataManager.js
 
-import coins from '@trezor/connect-common/files/coins.json';
 import coinsEth from '@trezor/connect-common/files/coins-eth.json';
+import coins from '@trezor/connect-common/files/coins.json';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';

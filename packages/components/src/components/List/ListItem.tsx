@@ -2,8 +2,8 @@ import styled from 'styled-components';
 
 import { SpacingValues } from '@trezor/theme';
 
+import { BulletVerticalAlignment, useList } from './List';
 import { FlexAlignItems } from '../Flex/Flex';
-import { useList, BulletVerticalAlignment } from './List';
 
 type MapArgs = {
     $bulletAlignment: BulletVerticalAlignment;

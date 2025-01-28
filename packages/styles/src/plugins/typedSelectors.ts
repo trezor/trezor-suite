@@ -1,4 +1,4 @@
-import { G, D } from '@mobily/ts-belt';
+import { D, G } from '@mobily/ts-belt';
 
 import { StyleObject } from '../types';
 

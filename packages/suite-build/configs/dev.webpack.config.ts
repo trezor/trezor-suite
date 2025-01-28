@@ -1,10 +1,10 @@
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 import { WebpackPluginServe } from 'webpack-plugin-serve';
-import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
-import { project } from '../utils/env';
 import { DEV_PORTS } from '../utils/constants';
+import { project } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 
 const distPath = path.join(getPathForProject(project), 'build');

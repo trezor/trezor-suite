@@ -1,34 +1,34 @@
-import { TypedEmitter, scheduleAction, arrayDistinct, arrayPartition } from '@trezor/utils';
+import { TypedEmitter, arrayDistinct, arrayPartition, scheduleAction } from '@trezor/utils';
 import { Network } from '@trezor/utxo-lib';
 
-import {
-    getCommitmentData,
-    getRoundParameters,
-    getCoinjoinRoundDeadlines,
-} from '../utils/roundUtils';
-import { ROUND_PHASE_PROCESS_TIMEOUT, ACCOUNT_BUSY_TIMEOUT } from '../constants';
+import { ACCOUNT_BUSY_TIMEOUT, ROUND_PHASE_PROCESS_TIMEOUT } from '../constants';
 import { EndRoundState, RoundPhase, SessionPhase } from '../enums';
-import { AccountAddress, RegisterAccountParams } from '../types/account';
-import {
-    SerializedCoinjoinRound,
-    CoinjoinRoundEvent,
-    CoinjoinTransactionData,
-    CoinjoinTransactionLiquidityClue,
-    CoinjoinRequestEvent,
-    CoinjoinResponseEvent,
-    BroadcastedTransactionDetails,
-} from '../types/round';
-import { Round, CoinjoinRoundParameters, AffiliationId } from '../types/coordinator';
 import { Account } from './Account';
 import { Alice } from './Alice';
 import { CoinjoinPrison } from './CoinjoinPrison';
-import { selectRound } from './round/selectRound';
-import { inputRegistration } from './round/inputRegistration';
-import { connectionConfirmation } from './round/connectionConfirmation';
-import { outputRegistration } from './round/outputRegistration';
-import { transactionSigning } from './round/transactionSigning';
-import { ended } from './round/endedRound';
 import { CoinjoinClientEvents, Logger } from '../types';
+import { AccountAddress, RegisterAccountParams } from '../types/account';
+import { AffiliationId, CoinjoinRoundParameters, Round } from '../types/coordinator';
+import {
+    BroadcastedTransactionDetails,
+    CoinjoinRequestEvent,
+    CoinjoinResponseEvent,
+    CoinjoinRoundEvent,
+    CoinjoinTransactionData,
+    CoinjoinTransactionLiquidityClue,
+    SerializedCoinjoinRound,
+} from '../types/round';
+import { connectionConfirmation } from './round/connectionConfirmation';
+import { ended } from './round/endedRound';
+import { inputRegistration } from './round/inputRegistration';
+import { outputRegistration } from './round/outputRegistration';
+import { selectRound } from './round/selectRound';
+import { transactionSigning } from './round/transactionSigning';
+import {
+    getCoinjoinRoundDeadlines,
+    getCommitmentData,
+    getRoundParameters,
+} from '../utils/roundUtils';
 
 export interface CoinjoinRoundOptions {
     network: Network;

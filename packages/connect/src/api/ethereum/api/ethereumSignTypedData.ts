@@ -3,21 +3,21 @@
 import { MessagesSchema } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
+import { ERRORS, PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
-import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getEthereumNetwork } from '../../../data/coinInfo';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
-import { PROTO, ERRORS } from '../../../constants';
+import { DeviceModelInternal, EthereumNetworkInfo } from '../../../types';
 import {
-    EthereumSignTypedDataTypes,
     EthereumSignTypedData as EthereumSignTypedDataParams,
+    EthereumSignTypedDataTypes,
     EthereumSignTypedHash as EthereumSignTypedHashParams,
 } from '../../../types/api/ethereum';
-import { getFieldType, parseArrayType, encodeData } from '../ethereumSignTypedData';
+import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { messageToHex } from '../../../utils/formatUtils';
+import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
-import { EthereumNetworkInfo, DeviceModelInternal } from '../../../types';
+import { encodeData, getFieldType, parseArrayType } from '../ethereumSignTypedData';
 
 // This type is not inferred, because it internally uses types that are generic
 type Params = (

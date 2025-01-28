@@ -1,8 +1,8 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
 
-import { parseCoinsJson, getBitcoinNetwork } from '../../data/coinInfo';
-import * as utils from '../addressUtils';
+import { getBitcoinNetwork, parseCoinsJson } from '../../data/coinInfo';
 import * as fixtures from '../__fixtures__/addressUtils';
+import * as utils from '../addressUtils';
 
 describe('utils/addressUtils', () => {
     beforeAll(() => {

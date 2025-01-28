@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { createDeferred } from '@trezor/utils';
 import type { TimerId } from '@trezor/type-utils';
+import { createDeferred } from '@trezor/utils';
 
 type AsyncFunction = (...args: any) => Promise<any>;
 type SyncFunction = (...args: any) => any;

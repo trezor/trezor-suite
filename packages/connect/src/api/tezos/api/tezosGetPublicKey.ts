@@ -2,13 +2,13 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
-import { getMiscNetwork } from '../../../data/coinInfo';
-import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
-import { UI, createUiMessage } from '../../../events';
 import type { PROTO } from '../../../constants';
+import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import { getMiscNetwork } from '../../../data/coinInfo';
+import { UI, createUiMessage } from '../../../events';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
+import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
 
 export default class TezosGetPublicKey extends AbstractMethod<
     'tezosGetPublicKey',

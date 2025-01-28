@@ -5,14 +5,14 @@ import { parseConnectSettings } from '@trezor/connect/src/data/connectSettings';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import type {
-    ConnectSettingsMobile,
     ConnectSettings,
+    ConnectSettingsMobile,
     Manifest,
     Response,
 } from '@trezor/connect/src/types';
+import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { Deferred, createDeferred } from '@trezor/utils';
-import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectSettingsMobile> {
     public eventEmitter = new EventEmitter();

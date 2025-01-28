@@ -4,11 +4,11 @@ import styled, { keyframes } from 'styled-components';
 
 import { spacings } from '@trezor/theme';
 
-import { IconName, Icon, IconVariant } from '../Icon/Icon';
 import { InputState } from './types';
-import { Row } from '../Flex/Flex';
-import { Text, TextVariant } from '../typography/Text/Text';
 import { UIVariant } from '../../config/types';
+import { Row } from '../Flex/Flex';
+import { Icon, IconName, IconVariant } from '../Icon/Icon';
+import { Text, TextVariant } from '../typography/Text/Text';
 
 export const mapInputStateToUIVariant = (inputState: InputState): UIVariant => {
     const variantMap: Record<InputState, UIVariant> = {

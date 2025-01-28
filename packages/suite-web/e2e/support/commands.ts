@@ -2,36 +2,36 @@
 
 import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 
+import { EventPayload, Requests } from './types';
 import {
-    onboardingShouldLoad,
     dashboardShouldLoad,
-    discoveryShouldFinish,
     discoveryMightAppearAndShouldFinish,
+    discoveryShouldFinish,
+    onboardingShouldLoad,
 } from './utils/assertions';
-import { getTestElement, getConfirmActionOnDeviceModal, hoverTestElement } from './utils/selectors';
-import { resetDb } from './utils/test-env';
+import { interceptInvityApi } from './utils/intercept-invity-api';
+import { getConfirmActionOnDeviceModal, getTestElement, hoverTestElement } from './utils/selectors';
 import {
-    toggleDeviceMenu,
-    enableDebugMode,
+    addHiddenWallet,
+    changeViewOnlyState,
+    clearInput,
+    createAccountFromMyAccounts,
     disableFirmwareHashCheck,
-    toggleDebugModeInSettings,
-    passThroughInitialRun,
+    enableDebugMode,
+    enableRegtestAndGetCoins,
+    enterPinOnBlindMatrix,
+    findAnalyticsEventByType,
+    interceptDataTrezorIo,
     passThroughAuthenticityCheck,
     passThroughBackup,
     passThroughBackupShamir,
     passThroughInitMetadata,
+    passThroughInitialRun,
     passThroughSetPin,
-    enableRegtestAndGetCoins,
-    createAccountFromMyAccounts,
-    interceptDataTrezorIo,
-    findAnalyticsEventByType,
-    enterPinOnBlindMatrix,
-    addHiddenWallet,
-    changeViewOnlyState,
-    clearInput,
+    toggleDebugModeInSettings,
+    toggleDeviceMenu,
 } from './utils/shortcuts';
-import { interceptInvityApi } from './utils/intercept-invity-api';
-import { EventPayload, Requests } from './types';
+import { resetDb } from './utils/test-env';
 
 const command = require('cypress-image-snapshot/command');
 

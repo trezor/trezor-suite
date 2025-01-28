@@ -3,7 +3,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, Icon } from '@trezor/components';
-import { SUITE_FIRMWARE_URL, SUITE_URL, SUITE_BACKUP_URL } from '@trezor/urls';
+import { SUITE_BACKUP_URL, SUITE_FIRMWARE_URL, SUITE_URL } from '@trezor/urls';
 
 const NotificationBox = styled.div`
     background-color: ${({ color }) => color};

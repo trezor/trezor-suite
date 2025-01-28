@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
-import FocusLock from 'react-focus-lock';
 import { createPortal } from 'react-dom';
+import FocusLock from 'react-focus-lock';
 
 import styled from 'styled-components';
 
-import { zIndices, spacings } from '@trezor/theme';
+import { spacings, zIndices } from '@trezor/theme';
 
+import { useModalTarget } from './NewModalProvider';
 import { NewModalAlignment } from './types';
 import { mapAlignmentToAlignItems, mapAlignmentToJustifyContent } from './utils';
-import { useModalTarget } from './NewModalProvider';
 
 export type NewModalBackdropProps = {
     onClick?: () => void;

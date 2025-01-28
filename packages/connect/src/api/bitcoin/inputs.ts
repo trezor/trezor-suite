@@ -2,18 +2,18 @@
 
 import { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
 
-import {
-    validatePath,
-    isSegwitPath,
-    getScriptType,
-    fixPath,
-    getHDPath,
-} from '../../utils/pathUtils';
-import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
-import { validateParams } from '../common/paramsValidator';
+import type { PROTO } from '../../constants';
 import type { BitcoinNetworkInfo, ProtoWithDerivationPath } from '../../types';
 import type { ComposeUtxo } from '../../types/api/composeTransaction';
-import type { PROTO } from '../../constants';
+import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
+import {
+    fixPath,
+    getHDPath,
+    getScriptType,
+    isSegwitPath,
+    validatePath,
+} from '../../utils/pathUtils';
+import { validateParams } from '../common/paramsValidator';
 
 /** *****
  * SignTx: validation

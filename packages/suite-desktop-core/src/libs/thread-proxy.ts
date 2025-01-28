@@ -1,10 +1,10 @@
-import path from 'path';
-import { EventEmitter } from 'events';
 import { UtilityProcess, utilityProcess } from 'electron';
+import { EventEmitter } from 'events';
+import path from 'path';
 
-import { createDeferred, Deferred, promiseAllSequence } from '@trezor/utils';
+import { Deferred, createDeferred, promiseAllSequence } from '@trezor/utils';
 
-import { isValidThreadResponse, isValidThreadEvent, ThreadRequestType } from './thread';
+import { ThreadRequestType, isValidThreadEvent, isValidThreadResponse } from './thread';
 
 const THREADS_DIR_PATH = path.join(__dirname, 'threads');
 

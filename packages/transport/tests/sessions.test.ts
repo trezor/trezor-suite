@@ -1,5 +1,5 @@
-import { SessionsClient } from '../src/sessions/client';
 import { SessionsBackground } from '../src/sessions/background';
+import { SessionsClient } from '../src/sessions/client';
 import { PathInternal, PathPublic, Session } from '../src/types';
 
 describe('sessions', () => {

@@ -1,9 +1,9 @@
 import * as trezorUtils from '@trezor/utils';
 
-import { createServer } from '../mocks/server';
-import { DEFAULT_ROUND, createCoinjoinRound } from '../fixtures/round.fixture';
-import { createInput } from '../fixtures/input.fixture';
 import * as CONSTANTS from '../../src/constants';
+import { createInput } from '../fixtures/input.fixture';
+import { DEFAULT_ROUND, createCoinjoinRound } from '../fixtures/round.fixture';
+import { createServer } from '../mocks/server';
 
 // mock random delay function
 jest.mock('@trezor/utils', () => {

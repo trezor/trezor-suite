@@ -1,13 +1,13 @@
-import { arrayToDictionary, arrayDistinct } from '@trezor/utils';
 import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/src/blockbook';
 import type {
     ElectrumAPI,
-    TransactionVerbose,
-    TxIn,
-    TxCoinbase,
-    TxOut,
     HistoryTx,
+    TransactionVerbose,
+    TxCoinbase,
+    TxIn,
+    TxOut,
 } from '@trezor/blockchain-link-types/src/electrum';
+import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
 import { btcToSat } from './transform';
 

@@ -1,5 +1,5 @@
-import { ReactNativeUsbModule } from './ReactNativeUsbModule';
 import { NativeDevice, OnConnectEvent, WebUSBDevice } from './ReactNativeUsb.types';
+import { ReactNativeUsbModule } from './ReactNativeUsbModule';
 
 const DEBUG_LOGS = false;
 

@@ -1,5 +1,5 @@
-import { Meta, StoryFn } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import { Meta, StoryFn } from '@storybook/react';
 
 import { capitalizeFirstLetter } from '@trezor/utils';
 

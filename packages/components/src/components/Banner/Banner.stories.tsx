@@ -1,14 +1,14 @@
 import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
+import { allowedBannerFrameProps } from './Banner';
 import {
     Banner as BannerComponent,
     BannerProps,
-    variables,
     Row,
     iconVerticalAlignments,
+    variables,
 } from '../../index';
-import { allowedBannerFrameProps } from './Banner';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Wrapper = styled.div`

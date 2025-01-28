@@ -1,10 +1,17 @@
-import { forwardRef, HTMLAttributes, ReactNode } from 'react';
+import { HTMLAttributes, ReactNode, forwardRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { borders, Elevation, spacingsPx } from '@trezor/theme';
+import { Elevation, borders, spacingsPx } from '@trezor/theme';
 
-import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
+import { CardVariant, FillType, PaddingType } from './types';
+import {
+    mapFillTypeToCSS,
+    mapPaddingTypeToLabelPadding,
+    mapPaddingTypeToPadding,
+    mapVariantToColor,
+} from './utils';
+import { AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
 import {
     FrameProps,
     FramePropsKeys,
@@ -12,14 +19,7 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
-import { PaddingType, FillType, CardVariant } from './types';
-import {
-    mapPaddingTypeToLabelPadding,
-    mapPaddingTypeToPadding,
-    mapFillTypeToCSS,
-    mapVariantToColor,
-} from './utils';
+import { ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedCardFrameProps = [
     'margin',

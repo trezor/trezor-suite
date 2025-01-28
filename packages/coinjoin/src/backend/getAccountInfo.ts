@@ -1,18 +1,18 @@
-import type { Network } from '@trezor/utxo-lib';
-import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
 import { sumAddressValues } from '@trezor/blockchain-link/src/workers/electrum/methods/getAccountInfo';
+import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
+import type { Network } from '@trezor/utxo-lib';
 
-import { isTxConfirmed, doesTxContainAddress } from './backendUtils';
-import type {
-    Transaction,
-    AccountInfo,
-    ScanAccountCheckpoint,
-    PrederivedAddress,
-    AccountCache,
-    Address,
-} from '../types/backend';
-import { getAccountUtxo } from './getAccountUtxo';
 import { CoinjoinAddressController } from './CoinjoinAddressController';
+import { doesTxContainAddress, isTxConfirmed } from './backendUtils';
+import { getAccountUtxo } from './getAccountUtxo';
+import type {
+    AccountCache,
+    AccountInfo,
+    Address,
+    PrederivedAddress,
+    ScanAccountCheckpoint,
+    Transaction,
+} from '../types/backend';
 
 const PAGE_SIZE_DEFAULT = 25;
 

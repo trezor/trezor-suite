@@ -7,13 +7,13 @@
 
 import { SocksProxyAgent } from 'socks-proxy-agent';
 
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
+import type { BlockchainSettings, Response } from '@trezor/blockchain-link-types';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import type { Response, BlockchainSettings } from '@trezor/blockchain-link-types';
+import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type { Message } from '@trezor/blockchain-link-types/src/messages';
 
-import { prioritizeEndpoints } from './utils';
 import { WorkerState } from './state';
+import { prioritizeEndpoints } from './utils';
 
 // self is not declared in TS Webworker lib typings
 declare const self: { postMessage: (...args: any[]) => any };

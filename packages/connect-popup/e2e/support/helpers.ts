@@ -1,5 +1,5 @@
+import { BrowserContext, Page, chromium } from '@playwright/test';
 import path from 'path';
-import { BrowserContext, chromium, Page } from '@playwright/test';
 
 // Waits and clicks for an array on buttons in serial order.
 export const waitAndClick = async (page: Page, buttons: string[]) => {

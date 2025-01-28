@@ -2,8 +2,10 @@ import { createContext, useContext } from 'react';
 
 import styled from 'styled-components';
 
-import { spacings, SpacingValues } from '@trezor/theme';
+import { SpacingValues, spacings } from '@trezor/theme';
 
+import { BulletListItem } from './BulletListItem';
+import { BulletSize } from './types';
 import {
     FrameProps,
     FramePropsKeys,
@@ -11,8 +13,6 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
-import { BulletListItem } from './BulletListItem';
-import { BulletSize } from './types';
 
 export type { BulletListItemState } from './types';
 

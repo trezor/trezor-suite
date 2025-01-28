@@ -1,10 +1,10 @@
 import {
     HttpServer,
+    ParamsValidatorHandler,
+    RequestHandler,
+    allowReferers,
     parseBodyJSON,
     parseBodyText,
-    allowReferers,
-    RequestHandler,
-    ParamsValidatorHandler,
 } from '../http';
 
 type Events = {

@@ -1,10 +1,10 @@
 import { versionUtils } from '@trezor/utils';
 
+import { getBinary } from './getBinary';
+import { GetInfoProps, getInfo } from '../../data/firmwareInfo';
+import { IntermediaryVersion, VersionArray } from '../../types';
 import { httpRequest } from '../../utils/assets';
 import { isStrictFeatures } from '../../utils/firmwareUtils';
-import { getInfo, GetInfoProps } from '../../data/firmwareInfo';
-import { IntermediaryVersion, VersionArray } from '../../types';
-import { getBinary } from './getBinary';
 
 interface GetBinaryForFirmwareUpgradeProps extends GetInfoProps {
     baseUrl: string;

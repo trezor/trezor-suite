@@ -1,12 +1,12 @@
 import { Locator, Page, TestInfo, expect } from '@playwright/test';
 
-import { Model } from '@trezor/trezor-user-env-link';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
+import { Model } from '@trezor/trezor-user-env-link';
 
-import { AnalyticsActions } from '../analyticsActions';
-import { isWebProject, step, TrezorUserEnvLinkProxy } from '../../common';
-import { DevicePromptActions } from '../devicePromptActions';
+import { TrezorUserEnvLinkProxy, isWebProject, step } from '../../common';
 import { SeedType } from '../../enums/seedType';
+import { AnalyticsActions } from '../analyticsActions';
+import { DevicePromptActions } from '../devicePromptActions';
 import { BackupActions } from './backupActions';
 import { FirmwareActions } from './firmwareActions';
 import { PinActions } from './pinActions';

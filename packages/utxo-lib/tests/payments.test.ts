@@ -1,6 +1,6 @@
+import * as utils from './payments.utils';
 import * as PAYMENTS from '../src/payments';
 import type { PaymentCreator } from '../src/types';
-import * as utils from './payments.utils';
 
 (
     [

@@ -1,8 +1,8 @@
 import { Assert } from '@trezor/schema-utils';
 
+import { PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
-import { PROTO } from '../constants';
 import { CancelCoinjoinAuthorization as CancelCoinjoinAuthorizationSchema } from '../types/api/cancelCoinjoinAuthorization';
 
 export default class CancelCoinjoinAuthorization extends AbstractMethod<

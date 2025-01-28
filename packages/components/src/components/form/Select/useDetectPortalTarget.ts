@@ -1,8 +1,8 @@
-import { useState, useEffect, RefObject } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 import { SelectInstance } from 'react-select';
 
-import { MODAL_CONTENT_ID } from '../../modals/Modal/Modal';
 import type { Option } from './Select';
+import { MODAL_CONTENT_ID } from '../../modals/Modal/Modal';
 
 export const useDetectPortalTarget = (selectRef: RefObject<SelectInstance<Option, boolean>>) => {
     const [menuPortalTarget, setMenuPortalTarget] = useState<HTMLElement | null>(null);

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // todo: duplicity
 export const useKeyPress = (targetKey: string) => {

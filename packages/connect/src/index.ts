@@ -2,28 +2,28 @@ import EventEmitter from 'events';
 
 import { createDeferredManager } from '@trezor/utils';
 
-import { initCoreState } from './core';
-import { factory } from './factory';
-import { parseConnectSettings } from './data/connectSettings';
-import { initLog } from './utils/debug';
-import {
-    CORE_EVENT,
-    UI_EVENT,
-    DEVICE_EVENT,
-    RESPONSE_EVENT,
-    TRANSPORT_EVENT,
-    BLOCKCHAIN_EVENT,
-    POPUP,
-    IFRAME,
-    createErrorMessage,
-    CoreEventMessage,
-    UI,
-    UiResponseEvent,
-    CallMethod,
-    TRANSPORT,
-} from './events';
 import { ERRORS } from './constants';
+import { initCoreState } from './core';
+import { parseConnectSettings } from './data/connectSettings';
+import {
+    BLOCKCHAIN_EVENT,
+    CORE_EVENT,
+    CallMethod,
+    CoreEventMessage,
+    DEVICE_EVENT,
+    IFRAME,
+    POPUP,
+    RESPONSE_EVENT,
+    TRANSPORT,
+    TRANSPORT_EVENT,
+    UI,
+    UI_EVENT,
+    UiResponseEvent,
+    createErrorMessage,
+} from './events';
+import { factory } from './factory';
 import type { ConnectSettings, Manifest } from './types';
+import { initLog } from './utils/debug';
 
 export const eventEmitter = new EventEmitter();
 const _log = initLog('@trezor/connect');

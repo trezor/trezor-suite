@@ -4,13 +4,13 @@ import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { validatePath } from '../../../utils/pathUtils';
 import {
     CardanoGetNativeScriptHash as CardanoGetNativeScriptHashSchema,
     CardanoNativeScript,
 } from '../../../types/api/cardano';
+import { validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
 
 export default class CardanoGetNativeScriptHash extends AbstractMethod<
     'cardanoGetNativeScriptHash',

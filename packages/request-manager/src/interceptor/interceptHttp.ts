@@ -1,9 +1,9 @@
 import http from 'http';
 import https from 'https';
 
+import { Interceptor } from './interceptorTypes';
 import { overloadHttpRequest } from './overloadHttpRequest';
 import { overloadWebsocketHandshake } from './overloadWebsocketHandshake';
-import { Interceptor } from './interceptorTypes';
 
 export const interceptHttp: Interceptor = ({ context, validateRequest }) => {
     const originalHttpRequest = http.request;

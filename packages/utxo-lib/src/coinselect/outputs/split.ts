@@ -1,21 +1,21 @@
 import BN from 'bn.js';
 
 import {
-    bignumberOrNaN,
-    sumOrNaN,
-    filterCoinbase,
-    getDustAmount,
-    getFee,
-    finalize,
-    ZERO,
-    MINIMAL_COINBASE_CONFIRMATIONS,
-} from '../coinselectUtils';
-import {
     CoinSelectInput,
-    CoinSelectOutput,
     CoinSelectOptions,
+    CoinSelectOutput,
     CoinSelectResult,
 } from '../../types';
+import {
+    MINIMAL_COINBASE_CONFIRMATIONS,
+    ZERO,
+    bignumberOrNaN,
+    filterCoinbase,
+    finalize,
+    getDustAmount,
+    getFee,
+    sumOrNaN,
+} from '../coinselectUtils';
 
 // split utxos between each output, ignores outputs with .value defined
 export function split(

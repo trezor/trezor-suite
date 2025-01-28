@@ -1,14 +1,14 @@
 import { arrayPartition, arrayToDictionary } from '@trezor/utils';
 
-import { Account } from '../Account';
-import { Alice } from '../Alice';
-import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { CoinjoinPrison } from '../CoinjoinPrison';
-import * as middleware from '../middleware';
-import { Round } from '../coordinator';
-import { ROUND_SELECTION_REGISTRATION_OFFSET, ROUND_SELECTION_MAX_OUTPUTS } from '../../constants';
+import { ROUND_SELECTION_MAX_OUTPUTS, ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import { RoundPhase, SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 import { getInputSize, getOutputSize } from '../../utils/coordinatorUtils';
+import { Account } from '../Account';
+import { Alice } from '../Alice';
+import { CoinjoinPrison } from '../CoinjoinPrison';
+import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
+import { Round } from '../coordinator';
+import * as middleware from '../middleware';
 
 export type CoinjoinRoundGenerator = (
     ...args: ConstructorParameters<typeof CoinjoinRound>

@@ -3,7 +3,7 @@
 // Logic of "call" is broken to two parts - sending and receiving
 import { Root } from 'protobufjs/light';
 
-import { encode as encodeProtobuf, createMessageFromName } from '@trezor/protobuf';
+import { createMessageFromName, encode as encodeProtobuf } from '@trezor/protobuf';
 import { TransportProtocolEncode } from '@trezor/protocol';
 
 import { AsyncResultWithTypedError } from '../types';

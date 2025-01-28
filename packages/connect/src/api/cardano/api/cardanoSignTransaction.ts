@@ -6,10 +6,18 @@ import { trezorUtils } from '@fivebinaries/coin-selection';
 
 import { AssertWeak, Type } from '@trezor/schema-utils';
 
+import { ERRORS, PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import {
+    type CardanoAuxiliaryDataSupplement,
+    CardanoSignTransactionExtended,
+    CardanoSignTransaction as CardanoSignTransactionSchema,
+    type CardanoSignedTxData,
+    type CardanoSignedTxWitness,
+} from '../../../types/api/cardano';
 import { validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import {
     modifyAuxiliaryDataForBackwardsCompatibility,
     transformAuxiliaryData,
@@ -17,26 +25,18 @@ import {
 import { transformCertificate } from '../cardanoCertificate';
 import type { CertificateWithPoolOwnersAndRelays } from '../cardanoCertificate';
 import {
-    Path,
-    InputWithPath,
     CollateralInputWithPath,
-    transformReferenceInput,
-    transformInput,
+    InputWithPath,
+    Path,
     transformCollateralInput,
+    transformInput,
+    transformReferenceInput,
 } from '../cardanoInputs';
 import { sendOutput, transformOutput } from '../cardanoOutputs';
 import type { OutputWithData } from '../cardanoOutputs';
-import { PROTO, ERRORS } from '../../../constants';
-import {
-    CardanoSignTransaction as CardanoSignTransactionSchema,
-    CardanoSignTransactionExtended,
-    type CardanoAuxiliaryDataSupplement,
-    type CardanoSignedTxData,
-    type CardanoSignedTxWitness,
-} from '../../../types/api/cardano';
-import { gatherWitnessPaths } from '../cardanoWitnesses';
 import type { AssetGroupWithTokens } from '../cardanoTokenBundle';
 import { tokenBundleToProto } from '../cardanoTokenBundle';
+import { gatherWitnessPaths } from '../cardanoWitnesses';
 
 const CardanoSignTransactionFeatures = Object.freeze({
     // FW <2.6.0 is not supported by Connect at all

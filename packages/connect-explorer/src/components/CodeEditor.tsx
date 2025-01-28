@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 
-import { json5Schema } from 'codemirror-json-schema/json5';
-import CodeMirror from '@uiw/react-codemirror';
-import { useTheme } from 'styled-components';
 import { TSchema } from '@sinclair/typebox';
+import CodeMirror from '@uiw/react-codemirror';
+import { json5Schema } from 'codemirror-json-schema/json5';
+import { useTheme } from 'styled-components';
 
 interface CodeEditorProps {
     code: string;

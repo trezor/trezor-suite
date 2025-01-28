@@ -1,6 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { Markdown, NewModal, Card } from '@trezor/components';
+import { Card, Markdown, NewModal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 

@@ -11,15 +11,15 @@ import {
     spacingsPx,
 } from '@trezor/theme';
 
-import { Card } from '../Card/Card';
-import { Modal } from '../modals/Modal/Modal';
-import { Textarea } from '../form/Textarea/Textarea';
 import {
-    useElevation,
     ElevationContext as ElevationContextComponent,
     ElevationDown,
     ElevationUp,
+    useElevation,
 } from './ElevationContext';
+import { Card } from '../Card/Card';
+import { Textarea } from '../form/Textarea/Textarea';
+import { Modal } from '../modals/Modal/Modal';
 
 const UiBox = styled.div<{ $elevation: Elevation }>`
     background-color: ${mapElevationToBackground};

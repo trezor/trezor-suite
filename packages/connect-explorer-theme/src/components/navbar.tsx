@@ -1,15 +1,15 @@
 import type { ReactElement, ReactNode } from 'react';
 
 import { Menu, Transition } from '@headlessui/react';
-import styled from 'styled-components';
 import cn from 'clsx';
 import { useFSRoute } from 'nextra/hooks';
 import { ArrowRightIcon, MenuIcon } from 'nextra/icons';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
+import styled from 'styled-components';
 
-import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { useElevation } from '@trezor/components';
 import { TrezorLogo } from '@trezor/product-components';
+import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 
 import { useConfig, useMenu } from '../contexts';
 import { renderComponent } from '../utils';

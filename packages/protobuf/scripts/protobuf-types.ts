@@ -3,15 +3,15 @@ import path from 'path';
 
 import json from '../messages.json';
 import {
-    RULE_PATCH,
-    TYPE_PATCH,
     DEFINITION_PATCH,
-    SKIP,
-    UINT_TYPE,
-    SINT_TYPE,
-    FIELD_TYPES,
     ENUM_KEYS,
+    FIELD_TYPES,
     ORDER,
+    RULE_PATCH,
+    SINT_TYPE,
+    SKIP,
+    TYPE_PATCH,
+    UINT_TYPE,
     readPatch,
 } from './protobuf-patches';
 

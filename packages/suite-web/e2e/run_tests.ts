@@ -2,11 +2,11 @@
     Heavily inspired by Mattermost,
     https://github.com/mattermost/mattermost-webapp/blob/master/e2e/run_tests.js good job guys.
 */
-import cypress from 'cypress';
 import child_process from 'child_process';
-import yargs from 'yargs/yargs';
-import path from 'path';
+import cypress from 'cypress';
 import fs from 'fs';
+import path from 'path';
+import yargs from 'yargs/yargs';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 

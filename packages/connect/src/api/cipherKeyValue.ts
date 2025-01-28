@@ -2,13 +2,13 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { UI, createUiMessage } from '../events';
-import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
-import { validatePath } from '../utils/pathUtils';
 import type { PROTO } from '../constants';
-import { Bundle } from '../types/params';
+import { AbstractMethod } from '../core/AbstractMethod';
+import { UI, createUiMessage } from '../events';
+import { getFirmwareRange } from './common/paramsValidator';
 import { CipherKeyValue as CipherKeyValueSchema } from '../types/api/cipherKeyValue';
+import { Bundle } from '../types/params';
+import { validatePath } from '../utils/pathUtils';
 
 export default class CipherKeyValue extends AbstractMethod<
     'cipherKeyValue',

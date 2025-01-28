@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.describe('Safety Checks Settings', { tag: ['@group=settings'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {

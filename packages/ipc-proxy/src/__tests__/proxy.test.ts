@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events';
 
+import { createIpcProxy } from '../proxy';
 import { exposeIpcProxy } from '../proxy-generator';
 import { createIpcProxyHandler } from '../proxy-handler';
-import { createIpcProxy } from '../proxy';
-import { ipcRenderer, ipcMain, exposeInMainWorld } from './mockedElectron';
+import { exposeInMainWorld, ipcMain, ipcRenderer } from './mockedElectron';
 
 class TestApi extends EventEmitter {
     field = 'some-static-field';

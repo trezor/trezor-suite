@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Tooltip, Cursor } from '../../Tooltip/Tooltip';
+import { Cursor, Tooltip } from '../../Tooltip/Tooltip';
 import { TooltipDelay } from '../../Tooltip/TooltipDelay';
 
 const EllipsisContainer = styled.div`

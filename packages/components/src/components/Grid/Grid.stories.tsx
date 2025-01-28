@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { spacings } from '@trezor/theme';
 
-import { GridProps, Grid as GridComponent, allowedGridFrameProps } from './Grid';
+import { Grid as GridComponent, GridProps, allowedGridFrameProps } from './Grid';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Container = styled.div`

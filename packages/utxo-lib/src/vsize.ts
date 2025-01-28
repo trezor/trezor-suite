@@ -1,6 +1,6 @@
 import * as BitcoinJsAddress from './address';
-import { transactionBytes, INPUT_SCRIPT_LENGTH } from './coinselect/coinselectUtils';
 import { getAddressType } from './address';
+import { INPUT_SCRIPT_LENGTH, transactionBytes } from './coinselect/coinselectUtils';
 import type { Network } from './networks';
 
 const isKnownInputAddress = (type: string): type is keyof typeof INPUT_SCRIPT_LENGTH =>

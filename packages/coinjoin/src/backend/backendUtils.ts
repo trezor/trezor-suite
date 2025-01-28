@@ -1,8 +1,8 @@
 import { arrayDistinct } from '@trezor/utils';
-import { deriveAddresses as deriveNewAddresses, Network } from '@trezor/utxo-lib';
+import { Network, deriveAddresses as deriveNewAddresses } from '@trezor/utxo-lib';
 import { getAddressType } from '@trezor/utxo-lib/src/address';
 
-import type { VinVout, PrederivedAddress } from '../types/backend';
+import type { PrederivedAddress, VinVout } from '../types/backend';
 
 export const isTxConfirmed = ({ blockHeight = -1 }: { blockHeight?: number }) => blockHeight > 0;
 

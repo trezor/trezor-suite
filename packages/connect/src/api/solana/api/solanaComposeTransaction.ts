@@ -1,12 +1,12 @@
-import { Assert } from '@trezor/schema-utils';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
+import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../../../core/AbstractMethod';
-import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '../../../types/api/solana';
-import { ERRORS } from '../../../constants';
-import { CoinInfo } from '../../../types';
 import { initBlockchain, isBackendSupported } from '../../../backend/BlockchainLink';
+import { ERRORS } from '../../../constants';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getCoinInfo } from '../../../data/coinInfo';
+import { CoinInfo } from '../../../types';
+import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '../../../types/api/solana';
 import {
     buildTokenTransferTransaction,
     buildTransferTransaction,

@@ -1,21 +1,21 @@
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 import path from 'path';
+import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import TerserPlugin from 'terser-webpack-plugin';
-import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 
+// Get Suite App version from the Suite package.json
+import { suiteVersion } from '../../suite/package.json';
 import {
     assetPrefix,
-    project,
-    isDev,
     isAnalyzing,
     isCodesignBuild,
+    isDev,
+    project,
     sentryAuthToken,
 } from '../utils/env';
 import { getRevision } from '../utils/git';
 import { getPathForProject } from '../utils/path';
-// Get Suite App version from the Suite package.json
-import { suiteVersion } from '../../suite/package.json';
 
 const gitRevision = getRevision();
 

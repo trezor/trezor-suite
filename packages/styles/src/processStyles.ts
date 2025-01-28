@@ -1,5 +1,5 @@
-import { mergeStyleObjects, mergeNativeStyleObjects } from './mergeStyleObjects';
-import { Style, NativeStyle, Styles, NativeStyles } from './types';
+import { mergeNativeStyleObjects, mergeStyleObjects } from './mergeStyleObjects';
+import { NativeStyle, NativeStyles, Style, Styles } from './types';
 
 type BasicRecord = Record<string, unknown>;
 

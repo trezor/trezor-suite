@@ -1,4 +1,4 @@
-import type { Params, GetPublicKey, BundledParams, Response } from '../params';
+import type { BundledParams, GetPublicKey, Params, Response } from '../params';
 import { EosPublicKey } from './eos';
 
 export declare function eosGetPublicKey(params: Params<GetPublicKey>): Response<EosPublicKey>;

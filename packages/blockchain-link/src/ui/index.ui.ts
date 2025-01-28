@@ -1,9 +1,9 @@
-import BlockbookWorker from '../workers/blockbook/index';
-import RippleWorker from '../workers/ripple/index';
-import BlockfrostWorker from '../workers/blockfrost/index';
 import CONFIG from './config';
 import BlockchainLink from '../index';
-import { getInputValue, fillValues, onClear } from './utils';
+import { fillValues, getInputValue, onClear } from './utils';
+import BlockbookWorker from '../workers/blockbook/index';
+import BlockfrostWorker from '../workers/blockfrost/index';
+import RippleWorker from '../workers/ripple/index';
 import SolanaWorker from '../workers/solana';
 
 const instances: BlockchainLink[] = [];

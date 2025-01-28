@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { createInterceptor, TorController } from '../src';
+import { TorController, createInterceptor } from '../src';
 import { torRunner } from './torRunner';
 import { InterceptorOptions } from '../src/types';
 

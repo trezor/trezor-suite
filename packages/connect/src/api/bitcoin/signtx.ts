@@ -1,12 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/signtx.js
 
-import { PROTO, ERRORS } from '../../constants';
-import type { BitcoinNetworkInfo } from '../../types';
+import { ERRORS, PROTO } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
+import type { BitcoinNetworkInfo } from '../../types';
 import type {
     RefTransaction,
-    TransactionOptions,
     SignedTransaction,
+    TransactionOptions,
 } from '../../types/api/bitcoin';
 
 export interface SignTxHelperProps {

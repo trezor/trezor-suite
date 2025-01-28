@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 
-import styled, { useTheme } from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+import styled, { useTheme } from 'styled-components';
 
-import { typography } from '@trezor/theme';
-import { icons, IconName } from '@suite-common/icons/src/icons';
+import { IconName, icons } from '@suite-common/icons/src/icons';
 import {
-    icons as iconsDeprecated,
     IconName as IconNameDeprecated,
+    icons as iconsDeprecated,
 } from '@suite-common/icons-deprecated';
+import { typography } from '@trezor/theme';
 
-import { Icon, IconProps, allowedIconFrameProps, iconVariants, iconSizes } from './Icon';
+import { Icon, IconProps, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
 import { getFramePropsStory } from '../../utils/frameProps';
-import { Input } from '../form/Input/Input';
 import { Checkbox } from '../form/Checkbox/Checkbox';
+import { Input } from '../form/Input/Input';
 import { Text } from '../typography/Text/Text';
 
 const CopiedText = styled.div`

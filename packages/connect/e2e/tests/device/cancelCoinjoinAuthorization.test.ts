@@ -1,5 +1,5 @@
-import TrezorConnect, { Success, PROTO, Unsuccessful } from '../../../src';
-import { getController, setup, conditionalTest, initTrezorConnect } from '../../common.setup';
+import TrezorConnect, { PROTO, Success, Unsuccessful } from '../../../src';
+import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 describe('TrezorConnect.cancelCoinjoinAuthorization', () => {
     const controller = getController();

@@ -1,5 +1,5 @@
-import { formatAmount } from '../formatUtils';
 import * as fixtures from '../__fixtures__/formatUtils';
+import { formatAmount } from '../formatUtils';
 
 describe('utils/formatUtils', () => {
     describe('formatAmount', () => {

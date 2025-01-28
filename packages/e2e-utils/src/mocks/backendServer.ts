@@ -1,5 +1,5 @@
-import WebSocket from 'ws';
 import * as net from 'net';
+import WebSocket from 'ws';
 
 import { blockbook } from '../fixtures/blockbook';
 import { blockfrost } from '../fixtures/blockfrost';

@@ -4,28 +4,20 @@ import { useEvent } from 'react-use';
 import styled from 'styled-components';
 
 import {
-    borders,
     Elevation,
+    borders,
     mapElevationToBackground,
+    negativeSpacings,
     prevElevation,
     spacings,
-    negativeSpacings,
     spacingsPx,
 } from '@trezor/theme';
 
-import { IconButton } from '../buttons/IconButton/IconButton';
-import { Text } from '../typography/Text/Text';
-import { H3 } from '../typography/Heading/Heading';
-import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
-import { useScrollShadow } from '../../utils/useScrollShadow';
-import { IconCircle } from '../IconCircle/IconCircle';
-import { IconName } from '../Icon/Icon';
-import { Box } from '../Box/Box';
+import { NewModalBackdrop } from './NewModalBackdrop';
 import { NewModalButton } from './NewModalButton';
 import { NewModalContext } from './NewModalContext';
-import { NewModalBackdrop } from './NewModalBackdrop';
 import { NewModalProvider } from './NewModalProvider';
-import { NewModalSize, NewModalAlignment, NewModalVariant } from './types';
+import { NewModalAlignment, NewModalSize, NewModalVariant } from './types';
 import { mapModalSizeToWidth } from './utils';
 import {
     FrameProps,
@@ -34,6 +26,14 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
+import { useScrollShadow } from '../../utils/useScrollShadow';
+import { Box } from '../Box/Box';
+import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
+import { IconName } from '../Icon/Icon';
+import { IconCircle } from '../IconCircle/IconCircle';
+import { IconButton } from '../buttons/IconButton/IconButton';
+import { H3 } from '../typography/Heading/Heading';
+import { Text } from '../typography/Text/Text';
 
 export const allowedNewModalFrameProps = ['height'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedNewModalFrameProps)[number]>;

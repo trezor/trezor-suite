@@ -4,16 +4,16 @@ import type { DeviceEventMessage } from './device';
 import type { IFrameEventMessage, IFrameInit, IFrameLogRequest } from './iframe';
 import type { PopupAnalyticsResponse, PopupClosedMessage, PopupEventMessage } from './popup';
 import type {
-    TransportEventMessage,
     TransportDisableWebUSB,
+    TransportEventMessage,
+    TransportGetInfo,
     TransportRequestWebUSBDevice,
     TransportSetTransports,
-    TransportGetInfo,
 } from './transport';
 import type { UiEventMessage } from './ui-request';
 import type { UiResponseEvent } from './ui-response';
-import type { Unsuccessful } from '../types/params';
 import { ErrorCode, TrezorError } from '../constants/errors';
+import type { Unsuccessful } from '../types/params';
 
 export const CORE_EVENT = 'CORE_EVENT';
 

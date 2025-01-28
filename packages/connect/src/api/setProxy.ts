@@ -2,8 +2,8 @@
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
-import { DataManager } from '../data/DataManager';
 import { reconnectAllBackends } from '../backend/BlockchainLink';
+import { DataManager } from '../data/DataManager';
 
 export default class SetProxy extends AbstractMethod<'setProxy'> {
     init() {

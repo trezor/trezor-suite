@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.describe('Passphrase', { tag: ['@group=settings'] }, () => {
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {

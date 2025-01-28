@@ -3,13 +3,13 @@ import React, { forwardRef, useEffect, useState } from 'react';
 import styled, { css, keyframes, useTheme } from 'styled-components';
 
 import {
+    Elevation,
     borders,
+    mapElevationToBackground,
+    nextElevation,
     spacings,
     spacingsPx,
     typography,
-    Elevation,
-    mapElevationToBackground,
-    nextElevation,
 } from '@trezor/theme';
 
 import { menuStyle } from './menuStyle';

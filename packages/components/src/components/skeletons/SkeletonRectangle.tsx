@@ -4,8 +4,8 @@ import { Elevation, borders, mapElevationToBackground } from '@trezor/theme';
 
 import { SkeletonBaseProps } from './types';
 import { getValue, shimmerEffect } from './utils';
-import { useElevation } from '../ElevationContext/ElevationContext';
 import { TransientProps } from '../../utils/transientProps';
+import { useElevation } from '../ElevationContext/ElevationContext';
 
 export type SkeletonRectangleProps = SkeletonBaseProps & {
     width?: string | number;

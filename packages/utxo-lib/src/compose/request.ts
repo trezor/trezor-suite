@@ -1,25 +1,25 @@
 import { toOutputScript } from '../address';
-import { p2data } from '../payments/embed';
 import {
     INPUT_SCRIPT_LENGTH,
     OUTPUT_SCRIPT_LENGTH,
+    bignumberOrNaN,
+    getFeePolicy,
     inputWeight,
     outputWeight,
-    getFeePolicy,
-    bignumberOrNaN,
 } from '../coinselect/coinselectUtils';
+import type { Network } from '../networks';
+import { p2data } from '../payments/embed';
 import type {
-    ComposeInput,
-    ComposeOutput,
-    ComposeChangeAddress,
-    ComposeRequest,
-    ComposeResultError,
-    CoinSelectPaymentType,
-    CoinSelectRequest,
     CoinSelectInput,
     CoinSelectOutput,
+    CoinSelectPaymentType,
+    CoinSelectRequest,
+    ComposeChangeAddress,
+    ComposeInput,
+    ComposeOutput,
+    ComposeRequest,
+    ComposeResultError,
 } from '../types';
-import type { Network } from '../networks';
 
 type Request = ComposeRequest<ComposeInput, ComposeOutput, ComposeChangeAddress>;
 

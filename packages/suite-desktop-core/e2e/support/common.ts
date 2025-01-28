@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 
-import test, { _electron as electron, TestInfo } from '@playwright/test';
-import path from 'path';
+import test, { TestInfo, _electron as electron } from '@playwright/test';
 import { readdirSync, removeSync } from 'fs-extra';
 import { isEqual, omit } from 'lodash';
+import path from 'path';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 

@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 // todo: direct imports to avoid SyntaxError: Unexpected token '<' from svgs
 import { H1 } from '@trezor/components/src/components/typography/Heading/Heading';
 
-import { Logs, LogsProps } from '../components/Logs';
-import { Devices, DevicesProps } from '../components/Devices';
 import { Card } from '../components/Card';
+import { Devices, DevicesProps } from '../components/Devices';
+import { Logs, LogsProps } from '../components/Logs';
 import { Translation } from '../components/Translation';
 
 export type StatusProps = LogsProps &

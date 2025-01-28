@@ -1,9 +1,9 @@
+import * as fixtures from '../__fixtures__/refTx';
 import {
-    requireReferencedTransactions,
     getReferencedTransactions,
+    requireReferencedTransactions,
     validateReferencedTransactions,
 } from '../refTx';
-import * as fixtures from '../__fixtures__/refTx';
 
 describe('core/methods/tx/refTx', () => {
     it('requireReferencedTransactions', () => {

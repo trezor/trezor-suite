@@ -1,12 +1,10 @@
 import styled, { css } from 'styled-components';
 
-import { Icon, IconName, IconSize, getIconSize } from '../Icon/Icon';
-import { TransientProps } from '../../utils/transientProps';
-import { IconCircleVariant, IconCirclePaddingType } from './types';
+import { IconCirclePaddingType, IconCircleVariant } from './types';
 import {
+    mapPaddingTypeToDimensions,
     mapVariantToIconBackground,
     mapVariantToIconBorderColor,
-    mapPaddingTypeToDimensions,
 } from './utils';
 import {
     FrameProps,
@@ -14,6 +12,8 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
+import { TransientProps } from '../../utils/transientProps';
+import { Icon, IconName, IconSize, getIconSize } from '../Icon/Icon';
 
 export const allowedIconCircleFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconCircleFrameProps)[number]>;

@@ -2,32 +2,32 @@
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { AbstractMethod } from '../core/AbstractMethod';
-import { validateParams, getFirmwareRange } from './common/paramsValidator';
-import { getBitcoinNetwork } from '../data/coinInfo';
-import { getLabel } from '../utils/pathUtils';
-import { PROTO, ERRORS } from '../constants';
-import { isBackendSupported, initBlockchain, Blockchain } from '../backend/BlockchainLink';
+import { ERRORS, PROTO } from '../constants';
 import {
-    requireReferencedTransactions,
-    getReferencedTransactions,
-    validateReferencedTransactions,
-    transformReferencedTransactions,
-    getOrigTransactions,
-    transformOrigTransactions,
-    validateTrezorInputs,
-    validateTrezorOutputs,
-    enhanceTrezorInputs,
+    createPendingTransaction,
     enhanceSignTx,
+    enhanceTrezorInputs,
+    getOrigTransactions,
+    getReferencedTransactions,
+    parseTransactionHexes,
+    requireReferencedTransactions,
     signTx,
     signTxLegacy,
-    verifyTx,
+    transformOrigTransactions,
+    transformReferencedTransactions,
+    validateReferencedTransactions,
+    validateTrezorInputs,
+    validateTrezorOutputs,
     verifyTicketTx,
-    createPendingTransaction,
-    parseTransactionHexes,
+    verifyTx,
 } from './bitcoin';
-import type { BitcoinNetworkInfo, AccountAddresses } from '../types';
+import { Blockchain, initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { AbstractMethod } from '../core/AbstractMethod';
+import type { AccountAddresses, BitcoinNetworkInfo } from '../types';
+import { getFirmwareRange, validateParams } from './common/paramsValidator';
+import { getBitcoinNetwork } from '../data/coinInfo';
 import type { RefTransaction, TransactionOptions } from '../types/api/bitcoin';
+import { getLabel } from '../utils/pathUtils';
 
 type Params = {
     inputs: PROTO.TxInputType[];

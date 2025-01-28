@@ -1,4 +1,4 @@
-import { test, chromium, Page } from '@playwright/test';
+import { Page, chromium, test } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 

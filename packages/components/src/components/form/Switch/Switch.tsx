@@ -4,13 +4,13 @@ import styled, { css } from 'styled-components';
 
 import { borders, spacingsPx, typography } from '@trezor/theme';
 
+import { UIHorizontalAlignment } from '../../../config/types';
 import {
+    focusStyleTransition,
+    getFocusShadowStyle,
     getInputColor,
     getLabelColor,
-    getFocusShadowStyle,
-    focusStyleTransition,
 } from '../../../utils/utils';
-import { UIHorizontalAlignment } from '../../../config/types';
 
 const Wrapper = styled.div<{
     $isSmall?: boolean; // TODO: legacy prop

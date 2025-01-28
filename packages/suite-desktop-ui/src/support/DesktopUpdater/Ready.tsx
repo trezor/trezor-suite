@@ -1,9 +1,9 @@
-import { NewModal, Paragraph, H3, Column } from '@trezor/components';
+import { Column, H3, NewModal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import { installUpdate } from 'src/actions/suite/desktopUpdateActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
-import { installUpdate } from 'src/actions/suite/desktopUpdateActions';
 
 interface ReadyProps {
     hideWindow: () => void;

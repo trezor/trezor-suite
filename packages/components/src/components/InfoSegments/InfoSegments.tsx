@@ -1,11 +1,11 @@
-import { ReactNode, Children, useId, Fragment } from 'react';
+import { Children, Fragment, ReactNode, useId } from 'react';
 
 import { spacings } from '@trezor/theme';
 
 import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
-import { TextPropsKeys, TextProps } from '../typography/utils';
-import { Text, TextVariant } from '../typography/Text/Text';
 import { Row } from '../Flex/Flex';
+import { Text, TextVariant } from '../typography/Text/Text';
+import { TextProps, TextPropsKeys } from '../typography/utils';
 
 export const allowedInfoSegmentsTextProps = ['typographyStyle'] as const satisfies TextPropsKeys[];
 type AllowedTextProps = Pick<TextProps, (typeof allowedInfoSegmentsTextProps)[number]>;

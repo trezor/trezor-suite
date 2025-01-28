@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 
-import semverValid from 'semver/functions/valid';
 import semverRSort from 'semver/functions/rsort';
+import semverValid from 'semver/functions/valid';
 
 import { TypedEmitter } from '@trezor/utils';
 
-import { Model, Firmwares } from './types';
+import { Firmwares, Model } from './types';
 import { WebsocketClient, WebsocketClientEvents } from './websocket-client';
 export interface SetupEmu {
     mnemonic?: string;

@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils';
 
-import { FeeLevel, FeeInfo } from '../types';
+import { FeeInfo, FeeLevel } from '../types';
 
 // this is workaround for the lack of information from 'trezor-common'
 // we need to declare what does "high/normal/low" mean in block time (eg: normal BTC = 6 blocks = ~1 hour)

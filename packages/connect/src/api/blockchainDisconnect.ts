@@ -2,11 +2,11 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
+import { findBackend, isBackendSupported } from '../backend/BlockchainLink';
 import { ERRORS } from '../constants';
-import { isBackendSupported, findBackend } from '../backend/BlockchainLink';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { CoinObj, CoinInfo } from '../types';
+import { CoinInfo, CoinObj } from '../types';
 
 type Params = {
     coinInfo: CoinInfo;

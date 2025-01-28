@@ -1,5 +1,5 @@
-import { HttpRequestType, HttpRequestReturnType, HttpRequestOptions } from './assetsTypes';
 import { tryLocalAssetRequire } from './assetUtils';
+import { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
 
 export function httpRequest<T extends HttpRequestType>(
     url: string,

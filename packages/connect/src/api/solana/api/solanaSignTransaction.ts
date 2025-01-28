@@ -2,12 +2,12 @@ import { AssertWeak } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import { SolanaSignTransaction as SolanaSignTransactionSchema } from '../../../types/api/solana';
 import { validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
 import { transformAdditionalInfo } from '../additionalInfo';
 import { createTransactionShimFromHex } from '../solanaUtils';
-import { SolanaSignTransaction as SolanaSignTransactionSchema } from '../../../types/api/solana';
 
 type Params = PROTO.SolanaSignTx & { serialize: boolean };
 

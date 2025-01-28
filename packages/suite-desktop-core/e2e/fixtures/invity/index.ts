@@ -1,15 +1,15 @@
 import { cloneDeep } from 'lodash';
 
+import buyList from './buy/list.json';
+import buyQuotes from './buy/quotes.json';
+import buyTrade from './buy/trade.json';
+import buyWatch from './buy/watch.json';
 import exchangeCoins from './exchange/coins.json';
 import exchangeList from './exchange/list.json';
 import exchangeQuotes from './exchange/quotes.json';
 import exchangeTrade from './exchange/trade.json';
 import exchangeWatch from './exchange/watch.json';
 import info from './info.json';
-import buyList from './buy/list.json';
-import buyQuotes from './buy/quotes.json';
-import buyTrade from './buy/trade.json';
-import buyWatch from './buy/watch.json';
 import sellList from './sell/list.json';
 
 const invityUrl = 'https://exchange.trezor.io';

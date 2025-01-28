@@ -1,5 +1,5 @@
-import { transformTransaction } from '../src/index';
 import * as fixtures from '../__fixtures__/inputs';
+import { transformTransaction } from '../src/index';
 
 describe('plugins/stellar', () => {
     describe('transformTransaction', () => {

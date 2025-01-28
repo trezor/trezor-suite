@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.describe('Look up a BTC account', { tag: ['@group=wallet'] }, () => {
     test.use({

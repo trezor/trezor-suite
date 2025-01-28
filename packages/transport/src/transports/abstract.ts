@@ -1,23 +1,23 @@
 import * as protobuf from 'protobufjs/light';
 
-import { scheduleAction, ScheduleActionParams, ScheduledAction, TypedEmitter } from '@trezor/utils';
-import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
 import { MessageFromTrezor } from '@trezor/protobuf';
+import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
+import { ScheduleActionParams, ScheduledAction, TypedEmitter, scheduleAction } from '@trezor/utils';
 
+import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
+import * as ERRORS from '../errors';
 import {
-    Session,
-    Descriptor,
     AbortableParam,
-    AsyncResultWithTypedError,
-    ResultWithTypedError,
-    Success,
     AnyError,
+    AsyncResultWithTypedError,
+    Descriptor,
     Logger,
     PathPublic,
+    ResultWithTypedError,
+    Session,
+    Success,
 } from '../types';
-import { success, error, unknownError } from '../utils/result';
-import * as ERRORS from '../errors';
-import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
+import { error, success, unknownError } from '../utils/result';
 
 export type AcquireInput = {
     path: PathPublic;

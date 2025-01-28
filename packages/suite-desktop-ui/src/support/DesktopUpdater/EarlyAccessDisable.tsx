@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
 
-import { SUITE_URL } from '@trezor/urls';
-import { analytics, EventType } from '@trezor/suite-analytics';
+import { Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { NewModal, Paragraph, H3, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { SUITE_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 

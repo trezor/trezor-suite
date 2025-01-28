@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 
-import { bignumberOrNaN, getFee, getDustAmount } from '../../src/coinselect/coinselectUtils';
+import { bignumberOrNaN, getDustAmount, getFee } from '../../src/coinselect/coinselectUtils';
 
 describe('coinselectUtils', () => {
     it('bignumberOrNaN', () => {

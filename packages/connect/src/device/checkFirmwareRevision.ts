@@ -3,8 +3,8 @@ import { isEqual } from '@trezor/utils/src/versionUtils';
 import { PROTO } from '../constants';
 import { downloadReleasesMetadata } from '../data/downloadReleasesMetadata';
 import { FirmwareRelease, VersionArray } from '../types';
-import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
+import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
 
 /*
  * error names that signify unavailable internet connection, see https://github.com/node-fetch/node-fetch/blob/main/docs/ERROR-HANDLING.md

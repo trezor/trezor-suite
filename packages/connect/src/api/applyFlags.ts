@@ -2,8 +2,8 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
 import { PROTO } from '../constants';
+import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class ApplyFlags extends AbstractMethod<'applyFlags', PROTO.ApplyFlags> {
     init() {

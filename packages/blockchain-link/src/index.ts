@@ -1,16 +1,16 @@
+import type { BlockchainSettings } from '@trezor/blockchain-link-types';
+import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
+import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
+import type { Events } from '@trezor/blockchain-link-types/src/events';
+import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
+import type * as ResponseTypes from '@trezor/blockchain-link-types/src/responses';
 import {
+    Throttler,
+    TypedEmitter,
     createDeferred,
     createDeferredManager,
     createLazy,
-    TypedEmitter,
-    Throttler,
 } from '@trezor/utils';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import type { BlockchainSettings } from '@trezor/blockchain-link-types';
-import type * as ResponseTypes from '@trezor/blockchain-link-types/src/responses';
-import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
-import type { Events } from '@trezor/blockchain-link-types/src/events';
 
 const workerWrapper = (factory: BlockchainSettings['worker']): Worker | Promise<Worker> => {
     if (typeof factory === 'function') return factory();

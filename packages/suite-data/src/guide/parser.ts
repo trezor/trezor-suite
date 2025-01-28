@@ -1,7 +1,7 @@
-import { join } from 'path';
 import * as fs from 'fs-extra';
+import { join } from 'path';
 
-import type { GuideNode, GuideCategory } from '@suite-common/suite-types';
+import type { GuideCategory, GuideNode } from '@suite-common/suite-types';
 
 import { GITBOOK_ASSETS_DIR_PREFIX } from './constants';
 import { transformImagesMarkdown } from './transformer';

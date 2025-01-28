@@ -1,8 +1,8 @@
 import https from 'https';
 
+import { Interceptor } from './interceptorTypes';
 import { overloadHttpRequest } from './overloadHttpRequest';
 import { overloadWebsocketHandshake } from './overloadWebsocketHandshake';
-import { Interceptor } from './interceptorTypes';
 
 export const interceptHttps: Interceptor = ({ context, validateRequest }) => {
     const originalHttpsRequest = https.request;

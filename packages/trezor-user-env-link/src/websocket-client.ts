@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 
-import WebSocket, { RawData } from 'ws';
 import fetch from 'cross-fetch';
+import WebSocket, { RawData } from 'ws';
 
-import { createDeferred, Deferred, TypedEmitter } from '@trezor/utils';
+import { Deferred, TypedEmitter, createDeferred } from '@trezor/utils';
 
 import { Firmwares } from './types';
 

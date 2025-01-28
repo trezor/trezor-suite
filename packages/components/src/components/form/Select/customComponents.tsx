@@ -1,4 +1,4 @@
-import { components, ControlProps, OptionProps, GroupHeadingProps } from 'react-select';
+import { ControlProps, GroupHeadingProps, OptionProps, components } from 'react-select';
 
 import type { Option as OptionType } from './Select';
 

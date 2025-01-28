@@ -1,4 +1,4 @@
-import { inHTML, inSingleQuotes, inDoubleQuotes } from '../src/xssFilters';
+import { inDoubleQuotes, inHTML, inSingleQuotes } from '../src/xssFilters';
 
 describe('XSS filters', () => {
     describe('in HTML data', () => {

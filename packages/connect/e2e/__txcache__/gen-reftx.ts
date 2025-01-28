@@ -1,6 +1,6 @@
+import { bufferUtils } from '@trezor/utils';
 import * as BitcoinJs from '@trezor/utxo-lib';
 import type { TxInput, TxOutput } from '@trezor/utxo-lib/src/transaction/base';
-import { bufferUtils } from '@trezor/utils';
 
 import { RefTransaction } from '../../src';
 

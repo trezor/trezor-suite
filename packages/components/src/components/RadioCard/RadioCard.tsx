@@ -2,10 +2,8 @@ import { ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { palette, borders, spacingsPx } from '@trezor/theme';
+import { borders, palette, spacingsPx } from '@trezor/theme';
 
-import { Icon } from '../Icon/Icon';
-import { Box } from '../Box/Box';
 import {
     FrameProps,
     FramePropsKeys,
@@ -13,6 +11,8 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
+import { Box } from '../Box/Box';
+import { Icon } from '../Icon/Icon';
 
 export const allowedRadioCardFrameProps = [
     'margin',

@@ -1,7 +1,7 @@
 import { networks } from '@trezor/utxo-lib';
 
-import { validateTrezorInputs } from '../inputs';
 import * as fixtures from '../__fixtures__/inputs';
+import { validateTrezorInputs } from '../inputs';
 
 describe('core/methods/tx/inputs', () => {
     describe('validateTrezorInputs', () => {

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { test as base, Page } from '@playwright/test';
+import { Page, test as base } from '@playwright/test';
 
 import {
     Model,
@@ -9,29 +9,29 @@ import {
     TrezorUserEnvLinkClass,
 } from '@trezor/trezor-user-env-link';
 
-import { DashboardActions } from './pageActions/dashboardActions';
+import { AnalyticsFixture } from './analytics';
 import {
-    getUrl,
+    TrezorUserEnvLinkProxy,
     getElectronVideoPath,
+    getUrl,
     isDesktopProject,
     launchSuite,
-    TrezorUserEnvLinkProxy,
 } from './common';
+import { IndexedDbFixture } from './indexedDb';
+import { BlockbookMock } from './mocks/blockBookMock';
+import { MetadataProviderMock } from './mocks/metadataProviderMock';
+import { AnalyticsActions } from './pageActions/analyticsActions';
+import { AssetsActions } from './pageActions/assetsActions';
+import { DashboardActions } from './pageActions/dashboardActions';
+import { DevicePromptActions } from './pageActions/devicePromptActions';
+import { MarketActions } from './pageActions/marketActions';
+import { MetadataActions } from './pageActions/metadata/metadataActions';
+import { OnboardingActions } from './pageActions/onboarding/onboardingActions';
+import { RecoveryActions } from './pageActions/recoveryActions';
 import { SettingsActions } from './pageActions/settings/settingsActions';
 import { SuiteGuide } from './pageActions/suiteGuideActions';
-import { WalletActions } from './pageActions/walletActions';
-import { OnboardingActions } from './pageActions/onboarding/onboardingActions';
-import { AnalyticsFixture } from './analytics';
-import { DevicePromptActions } from './pageActions/devicePromptActions';
-import { AnalyticsActions } from './pageActions/analyticsActions';
-import { IndexedDbFixture } from './indexedDb';
-import { RecoveryActions } from './pageActions/recoveryActions';
 import { TrezorInputActions } from './pageActions/trezorInputActions';
-import { MarketActions } from './pageActions/marketActions';
-import { AssetsActions } from './pageActions/assetsActions';
-import { MetadataProviderMock } from './mocks/metadataProviderMock';
-import { BlockbookMock } from './mocks/blockBookMock';
-import { MetadataActions } from './pageActions/metadata/metadataActions';
+import { WalletActions } from './pageActions/walletActions';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 

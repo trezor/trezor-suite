@@ -3,8 +3,8 @@ import {
     buildCreateAssociatedTokenAccountInstruction,
     buildTokenTransferInstruction,
     buildTokenTransferTransaction,
-    getMinimumRequiredTokenAccountsForTransfer,
     getLamportsFromSol,
+    getMinimumRequiredTokenAccountsForTransfer,
 } from '../solanaUtils';
 
 describe('solana utils', () => {

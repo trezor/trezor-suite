@@ -1,25 +1,25 @@
-import { useState, useRef, useEffect, useCallback, ReactNode, ChangeEvent } from 'react';
+import { ChangeEvent, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { css, useTheme } from 'styled-components';
 
-import { useKeyPress } from '@trezor/react-utils';
-import { setCaretPosition } from '@trezor/dom-utils';
-import { borders, spacingsPx, typography } from '@trezor/theme';
-import { countBytesInString } from '@trezor/utils';
-import { isAndroid } from '@trezor/env-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
     Button,
     Checkbox,
+    Icon,
     Input,
     Tooltip,
     TooltipProps,
     motionAnimation,
-    Icon,
 } from '@trezor/components';
+import { setCaretPosition } from '@trezor/dom-utils';
+import { isAndroid } from '@trezor/env-utils';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
+import { useKeyPress } from '@trezor/react-utils';
+import { borders, spacingsPx, typography } from '@trezor/theme';
+import { countBytesInString } from '@trezor/utils';
 
 import { WalletType } from './types';
 

@@ -1,5 +1,5 @@
-import { parseConnectSettings } from '../../data/connectSettings';
 import { DataManager } from '../../data/DataManager';
+import { parseConnectSettings } from '../../data/connectSettings';
 import { ConnectSettings } from '../../exports';
 import { initCoreState } from '../index';
 

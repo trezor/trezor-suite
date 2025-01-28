@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
     const address = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';

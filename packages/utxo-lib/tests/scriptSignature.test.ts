@@ -1,5 +1,5 @@
-import * as bscriptSig from '../src/script/scriptSignature';
 import { fixtures } from './__fixtures__/scriptSignature';
+import * as bscriptSig from '../src/script/scriptSignature';
 
 describe('Script Signatures', () => {
     function fromRaw(signature: { r: string; s: string }): Buffer {

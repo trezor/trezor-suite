@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoInputs.js
 
-import { Assert, Type, Static } from '@trezor/schema-utils';
+import { Assert, Static, Type } from '@trezor/schema-utils';
 
-import { validatePath } from '../../utils/pathUtils';
 import { PROTO } from '../../constants';
 import { DerivationPath } from '../../exports';
+import { validatePath } from '../../utils/pathUtils';
 
 export type Path = number[];
 export const Path = Type.Array(Type.Number());

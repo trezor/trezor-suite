@@ -1,9 +1,9 @@
 import { pipe } from '@mobily/ts-belt';
-import { join } from 'path';
 import * as fs from 'fs-extra';
+import { join } from 'path';
 
-import { resolveStaticPath } from '@suite-common/suite-utils';
 import { GuideNode } from '@suite-common/suite-types';
+import { resolveStaticPath } from '@suite-common/suite-utils';
 
 /** Removes the front-matter from beginning of a string. */
 const clean = (markdown: string): string => markdown.replace(/^---\n.*?\n---\n/s, '');

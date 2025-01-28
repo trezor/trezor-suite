@@ -1,9 +1,9 @@
-import * as net from 'net';
 import * as http from 'http';
+import * as net from 'net';
 
-import { DEFAULT_ROUND, FEE_RATE_MEDIANS, AFFILIATE_INFO } from '../fixtures/round.fixture';
 import { CoinjoinClientEvents } from '../../src/types/client';
 import { Logger } from '../../src/types/logger';
+import { AFFILIATE_INFO, DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../fixtures/round.fixture';
 
 // Mock coordinator and middleware responses
 

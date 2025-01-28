@@ -1,7 +1,7 @@
 import { deriveAddresses as deriveAddressesOriginal, networks } from '@trezor/utxo-lib';
 
-import { deriveAddresses, isTaprootTx, doesTxContainAddress } from '../../src/backend/backendUtils';
-import { SEGWIT_XPUB, SEGWIT_RECEIVE_ADDRESSES } from '../fixtures/methods.fixture';
+import { deriveAddresses, doesTxContainAddress, isTaprootTx } from '../../src/backend/backendUtils';
+import { SEGWIT_RECEIVE_ADDRESSES, SEGWIT_XPUB } from '../fixtures/methods.fixture';
 
 const PARAMS = [SEGWIT_XPUB, 'receive', 0, 10] as const;
 const ADDRESSES = deriveAddressesOriginal(...PARAMS);

@@ -1,12 +1,12 @@
 import { Borders, NativeBorders, nativeBorders } from './borders';
 import { BoxShadows, NativeBoxShadows, nativeBoxShadows } from './boxShadows';
-import { Colors, colorVariants, ThemeColorVariant } from './colors';
 import { CoinsColors, coinsColors } from './coinsColors';
+import { Colors, ThemeColorVariant, colorVariants } from './colors';
 import { FontFamilies, NativeFontFamilies, nativeFontFamilies } from './fontFamilies';
-import { fontWeights, FontWeights } from './fontWeights';
+import { FontWeights, fontWeights } from './fontWeights';
 import { Sizes } from './sizes';
-import { NativeSpacings, nativeSpacings, Spacings } from './spacings';
-import { nativeTypography, NativeTypographyStyles, TypographyStyles } from './typography';
+import { NativeSpacings, Spacings, nativeSpacings } from './spacings';
+import { NativeTypographyStyles, TypographyStyles, nativeTypography } from './typography';
 import { ZIndices } from './zIndices';
 
 export interface Theme {

@@ -1,4 +1,4 @@
-import { Type, Enum } from 'protobufjs/light';
+import { Enum, Type } from 'protobufjs/light';
 
 import { isPrimitiveField } from './utils';
 

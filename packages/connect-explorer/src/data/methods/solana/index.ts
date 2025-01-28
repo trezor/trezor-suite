@@ -1,6 +1,6 @@
-import getPublicKey from './getPublicKey';
-import getAddress from './getAddress';
-import signTransaction from './signTransaction';
 import getAccountInfo from './getAccountInfo';
+import getAddress from './getAddress';
+import getPublicKey from './getPublicKey';
+import signTransaction from './signTransaction';
 
 export default [...getPublicKey, ...getAddress, ...signTransaction, ...getAccountInfo];

@@ -2,13 +2,13 @@
 
 import { Assert } from '@trezor/schema-utils';
 
+import { ERRORS, PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import { getLabel } from '../utils/pathUtils';
-import { messageToHex } from '../utils/formatUtils';
-import { PROTO, ERRORS } from '../constants';
 import { VerifyMessage as VerifyMessageSchema } from '../types';
+import { messageToHex } from '../utils/formatUtils';
+import { getLabel } from '../utils/pathUtils';
 
 export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO.VerifyMessage> {
     init() {

@@ -1,4 +1,4 @@
-import type { GetPublicKey, Params, BundledParams, Response } from '../params';
+import type { BundledParams, GetPublicKey, Params, Response } from '../params';
 import type { HDNodeResponse } from './getPublicKey';
 
 export declare function ethereumGetPublicKey(

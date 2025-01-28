@@ -1,8 +1,8 @@
-import { v1 as v1Protocol } from '@trezor/protocol';
 import * as messages from '@trezor/protobuf/messages.json';
+import { v1 as v1Protocol } from '@trezor/protocol';
 
-import { AbstractApiTransport } from '../src/transports/abstractApi';
 import { UsbApi } from '../src/api/usb';
+import { AbstractApiTransport } from '../src/transports/abstractApi';
 import { PathPublic, Session } from '../src/types';
 
 // create devices otherwise returned from navigator.usb.getDevices

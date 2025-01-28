@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import { Card as CardComponent, allowedCardFrameProps } from './Card';
-import { paddingTypes, fillTypes, cardVariants } from './types';
+import { cardVariants, fillTypes, paddingTypes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {

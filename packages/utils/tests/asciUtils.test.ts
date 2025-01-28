@@ -1,4 +1,4 @@
-import { isAscii, getNonAsciiChars } from '../src/asciiUtils';
+import { getNonAsciiChars, isAscii } from '../src/asciiUtils';
 
 describe('isAscii', () => {
     it('should return true for ASCII only string', () => {

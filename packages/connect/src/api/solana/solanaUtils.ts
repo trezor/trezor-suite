@@ -1,16 +1,16 @@
 import { A, F, pipe } from '@mobily/ts-belt';
 import {
-    type SignatureBytes,
     type Blockhash,
     type CompilableTransactionMessage,
-    type TransactionMessage,
+    type SignatureBytes,
     type Transaction,
+    type TransactionMessage,
 } from '@solana/web3.js';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type { TokenAccount } from '@trezor/blockchain-link-types';
 import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
 import type { TokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Blockchain } from '../../backend/Blockchain';
 

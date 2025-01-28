@@ -1,13 +1,13 @@
-import path from 'path';
-import { runCLI, getVersion as getJestVersion } from 'jest';
-import webpack from 'webpack';
+import { getVersion as getJestVersion, runCLI } from 'jest';
 import karma from 'karma';
+import path from 'path';
+import webpack from 'webpack';
 
 import {
-    TrezorUserEnvLink,
+    EmuStartOptsType,
     Firmwares,
     Model,
-    EmuStartOptsType,
+    TrezorUserEnvLink,
 } from '@trezor/trezor-user-env-link';
 
 import argv from './jest.config';

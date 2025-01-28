@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Column, Row, IconButton, Text } from '@trezor/components';
+import { Column, IconButton, Row, Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 

@@ -1,7 +1,7 @@
-import path from 'path';
 import rehypeSectionize from '@hbsnow/rehype-sectionize';
-import nextra from 'nextra';
 import { execSync } from 'child_process';
+import nextra from 'nextra';
+import path from 'path';
 import remarkGemoji from 'remark-gemoji';
 
 const withNextra = nextra({

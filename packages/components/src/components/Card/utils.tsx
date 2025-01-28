@@ -1,15 +1,15 @@
-import { css, DefaultTheme, RuleSet } from 'styled-components';
+import { DefaultTheme, RuleSet, css } from 'styled-components';
 
 import {
-    spacingsPx,
+    CSSColor,
     Elevation,
+    SpacingPxValues,
     mapElevationToBackground,
     mapElevationToBorder,
-    SpacingPxValues,
-    CSSColor,
+    spacingsPx,
 } from '@trezor/theme';
 
-import { PaddingType, FillType, CardVariant } from './types';
+import { CardVariant, FillType, PaddingType } from './types';
 
 type PaddingMapArgs = {
     $paddingType: PaddingType;

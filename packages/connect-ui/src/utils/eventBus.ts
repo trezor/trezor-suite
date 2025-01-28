@@ -1,9 +1,9 @@
-import { UI_REQUEST, Device } from '@trezor/connect';
+import { Device, UI_REQUEST } from '@trezor/connect';
 
-import { TransportEventProps } from '../views/Transport';
-import { PassphraseEventProps } from '../views/Passphrase';
-import { ErrorViewProps } from '../views/Error';
 import { State } from '../types';
+import { ErrorViewProps } from '../views/Error';
+import { PassphraseEventProps } from '../views/Passphrase';
+import { TransportEventProps } from '../views/Transport';
 
 export type ConnectUIEventProps =
     // connect-core events

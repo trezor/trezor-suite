@@ -1,19 +1,19 @@
-import { coordinatorRequest as request, RequestOptions } from './coordinatorRequest';
+import { RequestOptions, coordinatorRequest as request } from './coordinatorRequest';
 import {
     AllowedRange,
     AllowedScriptTypes,
-    IssuerParameter,
-    ZeroCredentials,
-    RealCredentials,
-    CredentialsResponseValidation,
     CoordinationFeeRate,
+    CredentialsResponseValidation,
+    IssuerParameter,
+    RealCredentials,
+    ZeroCredentials,
 } from '../types/coordinator';
 import {
-    Credentials,
-    UtxoForRound,
-    AnalyzeTransactionDetails,
     AnalyzeResult,
+    AnalyzeTransactionDetails,
+    Credentials,
     RawLiquidityClue,
+    UtxoForRound,
 } from '../types/middleware';
 
 export const getRealCredentials = async (

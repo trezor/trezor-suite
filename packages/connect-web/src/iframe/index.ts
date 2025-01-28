@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/iframe/builder.js
 
-import { createDeferred } from '@trezor/utils';
 import * as ERRORS from '@trezor/connect/src/constants/errors';
-import { IFRAME, CoreRequestMessage } from '@trezor/connect/src/events';
+import { CoreRequestMessage, IFRAME } from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
+import { LogMessage, LogWriter, setLogWriter } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
-import { setLogWriter, LogMessage, LogWriter } from '@trezor/connect/src/utils/debug';
+import { createDeferred } from '@trezor/utils';
 
 import css from './inlineStyles';
 

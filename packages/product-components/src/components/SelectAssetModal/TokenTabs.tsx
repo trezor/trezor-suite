@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Icon, Row, useElevation } from '@trezor/components';
-import { borders, Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 
 import { CheckableTag } from './CheckableTag';
 

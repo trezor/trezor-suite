@@ -1,10 +1,10 @@
-import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+import styled from 'styled-components';
 
 import { StoryColumn } from '@trezor/components';
 
-import { CoinLogo } from '../../index';
 import { COINS, isCoinSymbol } from './coins';
+import { CoinLogo } from '../../index';
 
 const CoinName = styled.div`
     margin-bottom: 0.5rem;

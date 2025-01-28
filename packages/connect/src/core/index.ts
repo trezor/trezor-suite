@@ -1,47 +1,47 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import EventEmitter from 'events';
 
-import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { createLazy, createDeferred, throwError, getSynchronize } from '@trezor/utils';
 import { storage } from '@trezor/connect-common';
+import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
+import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
 
-import { DataManager } from '../data/DataManager';
-import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
-import { enhanceMessageWithAnalytics } from '../data/analyticsInfo';
 import { ERRORS } from '../constants';
+import { AbstractMethod } from './AbstractMethod';
+import { getMethod } from './method';
+import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
+import { dispose as disposeBackend } from '../backend/BlockchainLink';
+import { DataManager } from '../data/DataManager';
+import { enhanceMessageWithAnalytics } from '../data/analyticsInfo';
+import type { Device, DeviceEvents } from '../device/Device';
+import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
+import { WebextensionStateStorage } from '../device/StateStorage';
 import {
     CORE_EVENT,
-    RESPONSE_EVENT,
-    UI,
-    POPUP,
-    IFRAME,
-    DEVICE,
-    createUiMessage,
-    createPopupMessage,
-    createDeviceMessage,
-    createTransportMessage,
-    createResponseMessage,
-    TransportInfo,
-    IFrameCallMessage,
-    CoreRequestMessage,
     CoreEventMessage,
+    CoreRequestMessage,
+    DEVICE,
+    IFRAME,
+    IFrameCallMessage,
+    POPUP,
+    RESPONSE_EVENT,
+    TransportInfo,
+    UI,
+    createDeviceMessage,
+    createPopupMessage,
+    createResponseMessage,
+    createTransportMessage,
+    createUiMessage,
 } from '../events';
-import { getMethod } from './method';
-import { AbstractMethod } from './AbstractMethod';
-import { createUiPromiseManager } from '../utils/uiPromiseManager';
-import { createPopupPromiseManager } from '../utils/popupPromiseManager';
-import { initLog, enableLog, setLogWriter, LogWriter } from '../utils/debug';
-import { dispose as disposeBackend } from '../backend/BlockchainLink';
-import { InteractionTimeout } from '../utils/interactionTimeout';
-import type { DeviceEvents, Device } from '../device/Device';
 import type {
     ConnectSettings,
     DeviceIdentity,
     Device as DeviceTyped,
     StaticSessionId,
 } from '../types';
-import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
-import { WebextensionStateStorage } from '../device/StateStorage';
+import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
+import { InteractionTimeout } from '../utils/interactionTimeout';
+import { createPopupPromiseManager } from '../utils/popupPromiseManager';
+import { createUiPromiseManager } from '../utils/uiPromiseManager';
 
 // custom log
 const _log = initLog('Core');

@@ -7,13 +7,13 @@ import {
     modifyAddressParametersForBackwardsCompatibility,
     validateAddressParameters,
 } from './cardanoAddressParameters';
-import { validatePath } from '../../utils/pathUtils';
 import { ERRORS, PROTO } from '../../constants';
 import {
     CardanoAuxiliaryData,
     CardanoCVoteRegistrationDelegation,
     CardanoCVoteRegistrationParameters,
 } from '../../types/api/cardano';
+import { validatePath } from '../../utils/pathUtils';
 
 const MAX_DELEGATION_COUNT = 32;
 

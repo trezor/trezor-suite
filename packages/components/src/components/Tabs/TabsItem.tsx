@@ -2,10 +2,10 @@ import styled, { css } from 'styled-components';
 
 import { borders } from '@trezor/theme';
 
-import { mapSizeToItemPadding, mapSizeToTypography, TRANSFORM_OPTIONS } from './utils';
-import { TabsSize } from './types';
-import { Text } from '../typography/Text/Text';
 import { useTabsContext } from './TabsContext';
+import { TabsSize } from './types';
+import { TRANSFORM_OPTIONS, mapSizeToItemPadding, mapSizeToTypography } from './utils';
+import { Text } from '../typography/Text/Text';
 
 const Item = styled.div<{ $isActive: boolean; $isDisabled: boolean; $size: TabsSize }>`
     position: relative;

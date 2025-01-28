@@ -1,10 +1,10 @@
 // @group_device-management
 // @retry=2
 
-import { onNavBar } from '../../support/pageObjects/topBarObject';
-import { onSettingsMenu } from '../../support/pageObjects/settings/settingsMenuObject';
-import { onSettingsDevicePage } from '../../support/pageObjects/settings/settingsDeviceObject';
 import { onMultiShareBackupModal } from '../../support/pageObjects/multiShareBackupObject';
+import { onSettingsDevicePage } from '../../support/pageObjects/settings/settingsDeviceObject';
+import { onSettingsMenu } from '../../support/pageObjects/settings/settingsMenuObject';
+import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 const mnemonic =
     'academic again academic academic academic academic academic academic academic academic academic academic academic academic academic academic academic pecan provide remember';

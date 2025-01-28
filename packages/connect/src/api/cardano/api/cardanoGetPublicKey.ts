@@ -4,12 +4,12 @@ import { Assert } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { validatePath, fromHardened, getSerializedPath } from '../../../utils/pathUtils';
 import { UI, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';
 import { CardanoGetPublicKey as CardanoGetPublicKeySchema } from '../../../types/api/cardano';
+import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
 
 interface Params extends PROTO.CardanoGetPublicKey {
     suppressBackupWarning?: boolean;

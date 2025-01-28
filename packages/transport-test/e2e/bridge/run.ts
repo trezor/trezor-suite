@@ -1,5 +1,5 @@
-import { runCLI } from 'jest';
 import { Config } from '@jest/types';
+import { runCLI } from 'jest';
 
 import { controller as TrezorUserEnvLink } from './controller';
 import { config } from './jest.config';

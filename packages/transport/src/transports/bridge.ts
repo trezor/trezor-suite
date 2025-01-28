@@ -1,29 +1,29 @@
-import { versionUtils, createTimeoutPromise } from '@trezor/utils';
 import {
     PROTOCOL_MALFORMED,
+    TransportProtocol,
     bridge as protocolBridge,
     v1 as protocolV1,
-    TransportProtocol,
 } from '@trezor/protocol';
+import { createTimeoutPromise, versionUtils } from '@trezor/utils';
 
-import { bridgeApiCall } from '../utils/bridgeApiCall';
-import * as bridgeApiResult from '../utils/bridgeApiResult';
-import { createProtocolMessage } from '../utils/bridgeProtocolMessage';
-import { buildMessage } from '../utils/send';
-import { receiveAndParse } from '../utils/receive';
 import {
     AbstractTransport,
-    AbstractTransportParams,
     AbstractTransportMethodParams,
+    AbstractTransportParams,
 } from './abstract';
 import * as ERRORS from '../errors';
 import {
     AnyError,
     AsyncResultWithTypedError,
+    BridgeProtocolMessage,
     Descriptor,
     Session,
-    BridgeProtocolMessage,
 } from '../types';
+import { bridgeApiCall } from '../utils/bridgeApiCall';
+import * as bridgeApiResult from '../utils/bridgeApiResult';
+import { createProtocolMessage } from '../utils/bridgeProtocolMessage';
+import { receiveAndParse } from '../utils/receive';
+import { buildMessage } from '../utils/send';
 
 const DEFAULT_URL = 'http://127.0.0.1:21325';
 

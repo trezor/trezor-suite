@@ -2,13 +2,13 @@
 
 import { Assert, Type } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { ERRORS } from '../constants';
+import type { PROTO } from '../constants';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
+import { getFirmwareRange } from './common/paramsValidator';
 import { DataManager } from '../data/DataManager';
 import type { ConnectSettings } from '../types';
-import type { PROTO } from '../constants';
 import { RequestLoginSchema } from '../types/api/requestLogin';
 
 export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.SignIdentity> {

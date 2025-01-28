@@ -1,17 +1,17 @@
-import { Log } from '@trezor/utils';
-import { v1 as protocolV1 } from '@trezor/protocol';
-import { parseConfigure } from '@trezor/protobuf';
-import { buildMessage } from '@trezor/transport/src/utils/send';
-import releasesT2T1 from '@trezor/connect-common/files/firmware/t2t1/releases.json';
 import releasesT1B1 from '@trezor/connect-common/files/firmware/t1b1/releases.json';
+import releasesT2T1 from '@trezor/connect-common/files/firmware/t2t1/releases.json';
+import { parseConfigure } from '@trezor/protobuf';
+import { v1 as protocolV1 } from '@trezor/protocol';
+import { buildMessage } from '@trezor/transport/src/utils/send';
+import { Log } from '@trezor/utils';
 
-import { onCallFirmwareUpdate } from '../onCallFirmwareUpdate';
-import { parseConnectSettings } from '../../data/connectSettings';
+import * as mockFwHash from '../../api/firmware/calculateFirmwareHash';
 import { DataManager } from '../../data/DataManager';
+import { parseConnectSettings } from '../../data/connectSettings';
 import { DeviceList } from '../../device/DeviceList';
 // mocks
-import * as mockFwHash from '../../api/firmware/calculateFirmwareHash';
 import * as mockAssets from '../../utils/assets';
+import { onCallFirmwareUpdate } from '../onCallFirmwareUpdate';
 
 // NOTE:
 // to disable asset mock and work with the real binaries (tests takes longer):

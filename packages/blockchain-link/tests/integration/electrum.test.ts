@@ -1,6 +1,6 @@
+import { GET_ACCOUNT_INFO, HANDSHAKE } from '@trezor/blockchain-link-types/src/constants/messages';
 import type { Message } from '@trezor/blockchain-link-types/src/messages';
 import type { Response } from '@trezor/blockchain-link-types/src/responses';
-import { GET_ACCOUNT_INFO, HANDSHAKE } from '@trezor/blockchain-link-types/src/constants/messages';
 
 import ElectrumWorker from '../../src/workers/electrum';
 

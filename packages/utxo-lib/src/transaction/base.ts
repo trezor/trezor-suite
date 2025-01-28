@@ -1,10 +1,10 @@
 import * as varuint from 'varuint-bitcoin';
 
-import { reverseBuffer, getChunkSize } from '../bufferutils';
+import { getChunkSize, reverseBuffer } from '../bufferutils';
 import * as bcrypto from '../crypto';
-import * as types from '../types';
-import * as bscript from '../script';
 import { bitcoin as BITCOIN_NETWORK, Network, isNetworkType } from '../networks';
+import * as bscript from '../script';
+import * as types from '../types';
 
 export function varSliceSize(someScript: Buffer) {
     const { length } = someScript;

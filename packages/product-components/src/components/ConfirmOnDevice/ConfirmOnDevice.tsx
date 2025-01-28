@@ -2,9 +2,9 @@ import { ReactNode } from 'react';
 
 import styled, { css, keyframes } from 'styled-components';
 
+import { ElevationUp } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { borders, spacingsPx } from '@trezor/theme';
-import { ElevationUp } from '@trezor/components';
 
 import { ConfirmOnDeviceContent } from './ConfirmOnDeviceContent';
 

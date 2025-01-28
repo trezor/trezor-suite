@@ -1,13 +1,13 @@
 import * as address from './address';
 import * as bip32 from './bip32';
 import * as bufferutils from './bufferutils';
-import * as crypto from './crypto';
-import * as payments from './payments';
-import * as script from './script';
-import * as networks from './networks';
 import { composeTx } from './compose';
+import * as crypto from './crypto';
 import { deriveAddresses, getXpubOrDescriptorInfo } from './derivation';
 import { discovery } from './discovery';
+import * as networks from './networks';
+import * as payments from './payments';
+import * as script from './script';
 
 export { Transaction } from './transaction';
 

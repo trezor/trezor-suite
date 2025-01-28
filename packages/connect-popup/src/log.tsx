@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-import styled, { ThemeProvider } from 'styled-components';
 import { createRoot } from 'react-dom/client';
+import styled, { ThemeProvider } from 'styled-components';
 
-import { ErrorBoundary } from '@trezor/connect-ui/src/support/ErrorBoundary';
-import { GlobalStyle } from '@trezor/connect-ui/src/support/GlobalStyle';
-import { InfoPanel } from '@trezor/connect-ui/src/components/InfoPanel';
-import { View } from '@trezor/connect-ui/src/components/View';
 import { Button, Paragraph, intermediaryTheme } from '@trezor/components';
 import { LogMessage } from '@trezor/connect/src/utils/debug';
+import { InfoPanel } from '@trezor/connect-ui/src/components/InfoPanel';
+import { View } from '@trezor/connect-ui/src/components/View';
+import { ErrorBoundary } from '@trezor/connect-ui/src/support/ErrorBoundary';
+import { GlobalStyle } from '@trezor/connect-ui/src/support/GlobalStyle';
 import { TimerId } from '@trezor/type-utils';
 
 interface ReactWrapperProps {

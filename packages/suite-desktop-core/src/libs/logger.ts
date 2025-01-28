@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
-import fs from 'fs';
-import path from 'path';
 import chalk from 'chalk';
 import { app } from 'electron';
+import fs from 'fs';
+import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { ensureDirectoryExists } from '@trezor/node-utils';

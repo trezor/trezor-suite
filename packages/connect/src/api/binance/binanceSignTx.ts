@@ -2,13 +2,13 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS, PROTO } from '../../constants';
+import type { TypedCall } from '../../device/DeviceCommands';
 import {
-    BinanceSDKTransaction,
     BinancePreparedMessage,
     BinancePreparedTransaction,
+    BinanceSDKTransaction,
 } from '../../types/api/binance';
-import type { TypedCall } from '../../device/DeviceCommands';
 
 const processTxRequest = async (
     typedCall: TypedCall,

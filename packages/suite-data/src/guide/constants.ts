@@ -1,4 +1,4 @@
-import { resolve, join } from 'path';
+import { join, resolve } from 'path';
 
 export const GITBOOK_SOURCE = 'https://github.com/trezor/trezor-suite-guide.git';
 export const GITBOOK_REVISION = '4b814751eb8ffdd98f26b2bfc5819572d41a903b';

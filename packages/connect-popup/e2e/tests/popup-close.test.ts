@@ -1,19 +1,19 @@
-import { test, Page, BrowserContext } from '@playwright/test';
+import { BrowserContext, Page, test } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { addDashesToSpaces, createTimeoutPromise } from '@trezor/utils';
 
 import {
-    findElementByDataTest,
-    waitAndClick,
-    log,
-    downloadLogs,
     checkHasLogs,
-    openPopup,
-    waitForPopup,
-    getContexts,
-    setConnectSettings,
+    downloadLogs,
+    findElementByDataTest,
     formatUrl,
+    getContexts,
+    log,
+    openPopup,
+    setConnectSettings,
+    waitAndClick,
+    waitForPopup,
 } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';

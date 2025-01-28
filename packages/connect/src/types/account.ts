@@ -1,6 +1,6 @@
 import type {
-    AccountInfo as AccountInfoBase,
     AccountAddresses,
+    AccountInfo as AccountInfoBase,
     Utxo as AccountUtxo,
 } from '@trezor/blockchain-link';
 

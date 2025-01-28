@@ -1,15 +1,15 @@
-import { Transaction } from '../src/transaction';
-import * as NETWORKS from '../src/networks';
 import * as utils from './transaction.utils';
+import * as NETWORKS from '../src/networks';
+import { Transaction } from '../src/transaction';
 import fixturesBitcoin from './__fixtures__/transaction/bitcoin';
 import fixturesBitcoinCash from './__fixtures__/transaction/bitcoinCash';
 import fixturesDash from './__fixtures__/transaction/dash';
 import fixturesDecred from './__fixtures__/transaction/decred';
 import fixturesDoge from './__fixtures__/transaction/doge';
 import fixturesKomodo from './__fixtures__/transaction/komodo';
+import fixturesLitecoin from './__fixtures__/transaction/litecoin';
 import fixturesPeercoin from './__fixtures__/transaction/peercoin';
 import fixturesZcash from './__fixtures__/transaction/zcash';
-import fixturesLitecoin from './__fixtures__/transaction/litecoin';
 
 describe('Transaction', () => {
     describe('import fromBuffer/fromHex', () => {

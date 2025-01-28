@@ -1,11 +1,11 @@
-import { encodeDataToQueryString, getRandomId, getUrl, reportEvent } from './utils';
 import type {
-    InitOptions,
     Event as AnalyticsEvent,
-    App,
-    ReportConfig,
     AnalyticsOptions,
+    App,
+    InitOptions,
+    ReportConfig,
 } from './types';
+import { encodeDataToQueryString, getRandomId, getUrl, reportEvent } from './utils';
 
 export class Analytics<T extends AnalyticsEvent> {
     private enabled?: boolean;

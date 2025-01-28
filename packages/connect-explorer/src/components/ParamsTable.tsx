@@ -3,8 +3,8 @@ import React from 'react';
 import { Kind, OptionalKind, TIntersect, TObject, TSchema } from '@sinclair/typebox';
 
 import { Param } from './Param';
-import { getTypeName } from '../utils/getTypeName';
 import { descriptionDictionary } from '../constants/descriptions';
+import { getTypeName } from '../utils/getTypeName';
 
 interface SingleParamProps {
     name: string;

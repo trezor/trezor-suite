@@ -1,28 +1,28 @@
 import { arrayShuffle, getWeakRandomInt } from '@trezor/utils';
 
-import * as coordinator from '../coordinator';
-import * as middleware from '../middleware';
+import { TX_SIGNING_DELAY } from '../../constants';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
+import { CoinjoinTransactionData } from '../../types';
 import {
-    getRoundEvents,
-    compareOutpoint,
-    getRoundParams,
-    getAffiliateRequest,
-    scheduleDelay,
-} from '../../utils/roundUtils';
-import {
+    getAddressFromScriptPubKey,
     mergePubkeys,
+    prefixScriptPubKey,
+    readOutpoint,
     sortInputs,
     sortOutputs,
-    readOutpoint,
-    prefixScriptPubKey,
-    getAddressFromScriptPubKey,
 } from '../../utils/coordinatorUtils';
+import {
+    compareOutpoint,
+    getAffiliateRequest,
+    getRoundEvents,
+    getRoundParams,
+    scheduleDelay,
+} from '../../utils/roundUtils';
 import type { Account } from '../Account';
 import type { Alice } from '../Alice';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { CoinjoinTransactionData } from '../../types';
-import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
-import { TX_SIGNING_DELAY } from '../../constants';
+import * as coordinator from '../coordinator';
+import * as middleware from '../middleware';
 
 const getTransactionData = (
     round: CoinjoinRound,

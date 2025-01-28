@@ -2,18 +2,18 @@
  * Uses @trezor/coinjoin package in nodejs context
  */
 
-import { ipcMain } from 'electron';
 import { captureMessage, withScope } from '@sentry/electron/main';
+import { ipcMain } from 'electron';
 
-import { coinjoinReportTag, coinjoinNetworkTag } from '@suite-common/sentry';
-import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
-import { CoinjoinClient, CoinjoinBackend, CoinjoinBackendSettings } from '@trezor/coinjoin';
-import { getSynchronize } from '@trezor/utils';
+import { coinjoinNetworkTag, coinjoinReportTag } from '@suite-common/sentry';
+import { CoinjoinBackend, CoinjoinBackendSettings, CoinjoinClient } from '@trezor/coinjoin';
+import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
 import { InterceptedEvent } from '@trezor/request-manager';
+import { getSynchronize } from '@trezor/utils';
 
-import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
+import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { ThreadProxy } from '../libs/thread-proxy';
 
 import type { ModuleInit } from './index';

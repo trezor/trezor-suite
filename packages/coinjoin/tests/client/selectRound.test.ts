@@ -1,17 +1,17 @@
 import { Alice } from '../../src/client/Alice';
-import { ROUND_SELECTION_MAX_OUTPUTS } from '../../src/constants';
-import { SessionPhase, WabiSabiProtocolErrorCode } from '../../src/enums';
-import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
+import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import {
-    getRoundCandidates,
-    getAccountCandidates,
-    selectInputsForRound,
-    selectRound,
     AliceGenerator,
     CoinjoinRoundGenerator,
+    getAccountCandidates,
+    getRoundCandidates,
     getUnregisteredAccounts,
+    selectInputsForRound,
+    selectRound,
 } from '../../src/client/round/selectRound';
+import { ROUND_SELECTION_MAX_OUTPUTS } from '../../src/constants';
+import { SessionPhase, WabiSabiProtocolErrorCode } from '../../src/enums';
 import {
     DEFAULT_ROUND,
     ROUND_CREATION_EVENT,

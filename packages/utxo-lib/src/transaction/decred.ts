@@ -4,7 +4,7 @@ import * as varuint from 'varuint-bitcoin';
 
 import { BufferReader, BufferWriter } from '../bufferutils';
 import * as bcrypto from '../crypto';
-import { TransactionBase, TransactionOptions, varSliceSize, EMPTY_SCRIPT } from './base';
+import { EMPTY_SCRIPT, TransactionBase, TransactionOptions, varSliceSize } from './base';
 
 const DECRED_TX_VERSION = 1;
 const DECRED_TX_SERIALIZE_FULL = 0;

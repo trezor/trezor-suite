@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { allowedButtonFrameProps, Button as ButtonComponent, ButtonProps } from './Button';
-import { getFramePropsStory } from '../../../utils/frameProps';
+import { Button as ButtonComponent, ButtonProps, allowedButtonFrameProps } from './Button';
 import { variables } from '../../../config';
+import { getFramePropsStory } from '../../../utils/frameProps';
 import { buttonSizes, buttonVariants, subtleButtonVariants } from '../buttonStyleUtils';
 
 const meta: Meta<ButtonProps> = {

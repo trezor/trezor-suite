@@ -1,12 +1,12 @@
-import { throwError } from '@trezor/utils';
 import { RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 import type {
     ElectrumAPI,
     HistoryTx,
     StatusChange,
 } from '@trezor/blockchain-link-types/src/electrum';
 import type { Subscribe, Unsubscribe } from '@trezor/blockchain-link-types/src/messages';
+import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
+import { throwError } from '@trezor/utils';
 
 import type { BaseWorker } from '../../baseWorker';
 import { createAddressManager, getTransactions } from '../utils';

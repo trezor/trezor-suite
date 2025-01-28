@@ -3,8 +3,8 @@
  */
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 
+import { read, readDir, rename, save } from '../libs/user-data';
 import { ipcMain } from '../typed-electron';
-import { save, read, readDir, rename } from '../libs/user-data';
 
 import type { ModuleInit } from './index';
 

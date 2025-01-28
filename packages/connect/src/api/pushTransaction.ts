@@ -2,10 +2,10 @@
 
 import { Assert } from '@trezor/schema-utils';
 
+import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { ERRORS } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { ERRORS } from '../constants';
-import { isBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { CoinInfo } from '../types';
 import { PushTransaction as PushTransactionSchema } from '../types/api/pushTransaction';
 

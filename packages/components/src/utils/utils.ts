@@ -1,4 +1,4 @@
-import { css, DefaultTheme } from 'styled-components';
+import { DefaultTheme, css } from 'styled-components';
 
 type InputColorOptions = {
     checked?: boolean;

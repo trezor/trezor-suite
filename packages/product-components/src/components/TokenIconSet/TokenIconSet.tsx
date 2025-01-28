@@ -1,10 +1,10 @@
 import styled, { css } from 'styled-components';
 
-import { AssetLogo, useElevation } from '@trezor/components';
-import { getCoingeckoId, NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenInfo } from '@trezor/connect';
+import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
-import { borders, Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+import { AssetLogo, useElevation } from '@trezor/components';
+import { TokenInfo } from '@trezor/connect';
+import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 export type TokenIconSetProps = {
     symbol: NetworkSymbol;

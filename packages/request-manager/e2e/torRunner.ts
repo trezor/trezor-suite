@@ -1,5 +1,5 @@
-import path from 'path';
 import { spawn } from 'child_process';
+import path from 'path';
 
 const customTorProcessDir = process.env.TOR_BINARY_PATH;
 const processDir = path.join(__dirname, './../../suite-data/files/bin/tor/linux-x64/');

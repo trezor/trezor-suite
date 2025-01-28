@@ -1,16 +1,16 @@
-import bitcoin from './bitcoin';
-import ethereum from './ethereum';
-import ripple from './ripple/index';
-import stellar from './stellar/index';
-import nem from './nem/index';
-import cardano from './cardano/index';
-import tezos from './tezos';
-import eos from './eos';
 import binance from './binance';
-import solana from './solana';
-import other from './other';
-import management from './management';
+import bitcoin from './bitcoin';
 import blockchain from './blockchain';
+import cardano from './cardano/index';
+import eos from './eos';
+import ethereum from './ethereum';
+import management from './management';
+import nem from './nem/index';
+import other from './other';
+import ripple from './ripple/index';
+import solana from './solana';
+import stellar from './stellar/index';
+import tezos from './tezos';
 
 export default [
     ...bitcoin,

@@ -1,11 +1,11 @@
 import { validateAndParseRequest } from './request';
-import { getResult, getErrorResult } from './result';
+import { getErrorResult, getResult } from './result';
 import { coinselect } from '../coinselect';
 import {
-    ComposeRequest,
+    ComposeChangeAddress,
     ComposeInput,
     ComposeOutput,
-    ComposeChangeAddress,
+    ComposeRequest,
     ComposeResult,
 } from '../types';
 

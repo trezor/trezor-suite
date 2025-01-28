@@ -2,9 +2,9 @@ import { Callout } from 'nextra/components';
 
 import { PROTO } from '@trezor/connect/src/constants';
 
-import { ParamsTable } from '../../../components/ParamsTable';
-import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
 import loadDevice from '../../../data/methods/management/loadDevice.ts';
 
 <ApiPlayground options={[{ title: 'Load device', legacyConfig: loadDevice[0] }]} />

@@ -1,5 +1,5 @@
-import { validateParams } from '../paramsValidator';
 import * as fixtures from '../__fixtures__/paramsValidator';
+import { validateParams } from '../paramsValidator';
 
 describe('helpers/paramsValidator', () => {
     describe('validateParams', () => {

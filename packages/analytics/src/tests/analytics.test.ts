@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
-import { fixtures } from './fixtures/encodeDataToQueryString';
 import { Analytics } from '../analytics';
 import { encodeDataToQueryString, getRandomId } from '../utils';
+import { fixtures } from './fixtures/encodeDataToQueryString';
 
 jest.mock('@trezor/utils', () => ({
     __esModule: true,

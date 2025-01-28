@@ -1,7 +1,7 @@
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../enums';
 import { Round } from './coordinator';
-import { CoinjoinRequestEvent, CoinjoinRoundEvent } from './round';
 import { LogEvent } from './logger';
+import { CoinjoinRequestEvent, CoinjoinRoundEvent } from './round';
 
 export interface CoinjoinStatusEvent {
     rounds: Round[];

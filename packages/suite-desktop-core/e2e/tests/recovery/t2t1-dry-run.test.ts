@@ -1,6 +1,6 @@
 import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 const pin = '1';
 

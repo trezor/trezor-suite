@@ -5,17 +5,17 @@ import {
 } from '@trezor/blockchain-link-types/src/solana';
 
 import {
+    ApiTokenAccount,
     extractAccountBalanceDiff,
     getAmount,
     getDetails,
-    getTargets,
-    getTokens,
     getNativeEffects,
-    getTxType,
-    transformTransaction,
+    getTargets,
     getTokenNameAndSymbol,
+    getTokens,
+    getTxType,
     transformTokenInfo,
-    ApiTokenAccount,
+    transformTransaction,
 } from '../solana';
 import { fixtures } from './fixtures/solana';
 

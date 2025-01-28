@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { DialogModal as ModalComponent, Button, DialogModalProps } from '../../../index';
 import { variables } from '../../../config';
+import { Button, DialogModalProps, DialogModal as ModalComponent } from '../../../index';
 
 const Buttons = () => (
     <>

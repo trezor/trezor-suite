@@ -1,7 +1,7 @@
-import { AbstractMethod } from '../core/AbstractMethod';
-import { getFirmwareRange } from './common/paramsValidator';
 import { PROTO } from '../constants';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
+import { getFirmwareRange } from './common/paramsValidator';
 
 export default class ShowDeviceTutorial extends AbstractMethod<
     'showDeviceTutorial',

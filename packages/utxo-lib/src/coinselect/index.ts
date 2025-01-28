@@ -1,7 +1,7 @@
+import { anyOf, sortByScore } from './coinselectUtils';
 import { accumulative } from './inputs/accumulative';
 import { branchAndBound } from './inputs/branchAndBound';
 import { split } from './outputs/split';
-import { sortByScore, anyOf } from './coinselectUtils';
 import { tryConfirmed } from './tryconfirmed';
 import { CoinSelectRequest } from '../types';
 

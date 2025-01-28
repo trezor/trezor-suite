@@ -1,6 +1,6 @@
-import { IconButton, IconButtonProps } from '../buttons/IconButton/IconButton';
-import { useBannerContext, BannerContext } from './BannerContext';
+import { BannerContext, useBannerContext } from './BannerContext';
 import { DEFAULT_VARIANT } from './consts';
+import { IconButton, IconButtonProps } from '../buttons/IconButton/IconButton';
 
 export const BannerIconButton = ({ icon, ...rest }: IconButtonProps) => {
     const { variant } = useBannerContext();

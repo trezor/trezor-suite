@@ -2,10 +2,10 @@ import styled, { css } from 'styled-components';
 
 import { Elevation, mapElevationToBackground } from '@trezor/theme';
 
-import { getValue, shimmerEffect } from './utils';
 import { SkeletonBaseProps } from './types';
-import { useElevation } from '../ElevationContext/ElevationContext';
+import { getValue, shimmerEffect } from './utils';
 import { TransientProps } from '../../utils/transientProps';
+import { useElevation } from '../ElevationContext/ElevationContext';
 
 export type SkeletonCircleProps = SkeletonBaseProps & {
     size?: string | number;

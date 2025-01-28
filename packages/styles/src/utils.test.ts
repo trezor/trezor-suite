@@ -1,4 +1,4 @@
-import { multiply, getValueAndUnit, sum, negative } from './utils';
+import { getValueAndUnit, multiply, negative, sum } from './utils';
 
 describe('multiply', () => {
     it('handles various units', () => {

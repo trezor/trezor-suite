@@ -5,10 +5,10 @@
 import { Assert, Type } from '@trezor/schema-utils';
 
 import { addressParametersToProto, validateAddressParameters } from './cardanoAddressParameters';
-import { tokenBundleToProto, AssetGroupWithTokens } from './cardanoTokenBundle';
-import { PROTO } from '../../constants';
+import { AssetGroupWithTokens, tokenBundleToProto } from './cardanoTokenBundle';
 import { hexStringByteLength, sendChunkedHexString } from './cardanoUtils';
-import { CardanoAssetGroup, CardanoAddressParameters } from '../../types/api/cardano';
+import { PROTO } from '../../constants';
+import { CardanoAddressParameters, CardanoAssetGroup } from '../../types/api/cardano';
 
 export type OutputWithData = {
     output: PROTO.CardanoTxOutput;

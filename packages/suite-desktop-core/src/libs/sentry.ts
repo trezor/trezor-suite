@@ -1,8 +1,8 @@
-import { init, ElectronMainOptions, IPCMode } from '@sentry/electron/main';
+import { ElectronMainOptions, IPCMode, init } from '@sentry/electron/main';
 import { session } from 'electron';
 
-import { TorStatus } from '@trezor/suite-desktop-api';
 import { SENTRY_CONFIG } from '@suite-common/sentry';
+import { TorStatus } from '@trezor/suite-desktop-api';
 
 import type { Store } from './store';
 import type { MainThreadEmitter } from '../modules';

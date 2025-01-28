@@ -1,18 +1,18 @@
 import { Locator, Page } from '@playwright/test';
 
+import { regional } from '@suite-common/invity';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { regional } from '@suite-common/invity';
 
-import { expect } from '../customMatchers';
-import { step, TrezorUserEnvLinkProxy } from '../common';
 import {
+    buyQuotes,
     createRedirectedTradeResponse,
     invityEndpoint,
     invityResponses,
-    buyQuotes,
 } from '../../fixtures/invity';
 import expectedTradeRequestPayload from '../../fixtures/invity/buy/trade-request.json';
+import { TrezorUserEnvLinkProxy, step } from '../common';
+import { expect } from '../customMatchers';
 import { DevicePromptActions } from './devicePromptActions';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';

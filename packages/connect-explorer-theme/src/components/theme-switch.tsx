@@ -1,10 +1,10 @@
 import type { ReactElement } from 'react';
 
+import cn from 'clsx';
 import { useTheme } from 'next-themes';
 import { useMounted } from 'nextra/hooks';
 import { MoonIcon, SunIcon } from 'nextra/icons';
 import { z } from 'zod';
-import cn from 'clsx';
 
 import { Select } from '@trezor/components';
 

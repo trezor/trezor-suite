@@ -2,8 +2,8 @@ import http from 'http';
 
 import { isWhitelistedHost } from '@trezor/utils';
 
-import { overloadHttpRequest } from './overloadHttpRequest';
 import { InterceptorContext } from './interceptorTypes';
+import { overloadHttpRequest } from './overloadHttpRequest';
 
 type OverloadWebsocketHandshakeParams = {
     context: InterceptorContext;

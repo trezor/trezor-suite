@@ -1,7 +1,7 @@
 import * as ProtoBuf from 'protobufjs/light';
 
-import { encode } from '../src/encode';
 import { decode } from '../src/decode';
+import { encode } from '../src/encode';
 
 const HDNodeType = {
     fields: {

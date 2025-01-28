@@ -1,19 +1,19 @@
 import { arrayDistinct } from '@trezor/utils';
 import { networks } from '@trezor/utxo-lib';
 
-import { DISCOVERY_LOOKOUT } from '../../src/constants';
-import { scanAccount } from '../../src/backend/scanAccount';
-import { getAccountInfo } from '../../src/backend/getAccountInfo';
 import { CoinjoinFilterController } from '../../src/backend/CoinjoinFilterController';
 import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolController';
-import * as FIXTURES from '../fixtures/methods.fixture';
-import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
-import { MockBackendClient } from '../mocks/MockBackendClient';
+import { getAccountInfo } from '../../src/backend/getAccountInfo';
+import { scanAccount } from '../../src/backend/scanAccount';
+import { DISCOVERY_LOOKOUT } from '../../src/constants';
 import type {
     BlockFilterResponse,
     ScanAccountProgress,
     Transaction,
 } from '../../src/types/backend';
+import { COINJOIN_BACKEND_SETTINGS } from '../fixtures/config.fixture';
+import * as FIXTURES from '../fixtures/methods.fixture';
+import { MockBackendClient } from '../mocks/MockBackendClient';
 
 const EMPTY_CHECKPOINT = {
     blockHash: FIXTURES.BASE_HASH,

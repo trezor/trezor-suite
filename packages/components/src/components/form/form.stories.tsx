@@ -1,7 +1,7 @@
-import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
+import styled from 'styled-components';
 
-import { Input, Textarea, Select, Checkbox, Radio, Switch, Button, Range } from '../../index';
+import { Button, Checkbox, Input, Radio, Range, Select, Switch, Textarea } from '../../index';
 import { StoryColumn } from '../../support/Story';
 
 const Heading = styled.h2``;

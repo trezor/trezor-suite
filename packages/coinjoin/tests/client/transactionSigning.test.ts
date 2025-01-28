@@ -1,10 +1,10 @@
-import { networks } from '@trezor/utxo-lib';
 import { getWeakRandomNumberInRange } from '@trezor/utils';
+import { networks } from '@trezor/utxo-lib';
 
 import { transactionSigning } from '../../src/client/round/transactionSigning';
-import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
+import { createServer } from '../mocks/server';
 
 // mock random delay function
 jest.mock('@trezor/utils', () => {

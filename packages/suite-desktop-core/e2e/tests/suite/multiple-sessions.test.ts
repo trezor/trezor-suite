@@ -1,7 +1,7 @@
-import { BridgeTransport } from '@trezor/transport';
 import * as messages from '@trezor/protobuf/src/messages';
+import { BridgeTransport } from '@trezor/transport';
 
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 import { DashboardActions } from '../../support/pageActions/dashboardActions';
 
 const stealBridgeSession = async () => {

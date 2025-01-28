@@ -2,15 +2,15 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { validatePath } from '../../utils/pathUtils';
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS, PROTO } from '../../constants';
 import {
     CardanoCertificate,
-    CardanoPoolParameters,
-    CardanoPoolOwner,
-    CardanoPoolRelay,
     CardanoDRep,
+    CardanoPoolOwner,
+    CardanoPoolParameters,
+    CardanoPoolRelay,
 } from '../../types/api/cardano';
+import { validatePath } from '../../utils/pathUtils';
 
 const ipv4AddressToHex = (ipv4Address: string) =>
     Buffer.from(ipv4Address.split('.').map(ipPart => parseInt(ipPart, 10))).toString('hex');

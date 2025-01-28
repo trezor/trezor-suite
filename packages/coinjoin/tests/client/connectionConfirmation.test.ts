@@ -1,10 +1,10 @@
 import {
-    connectionConfirmation,
     confirmationInterval,
+    connectionConfirmation,
 } from '../../src/client/round/connectionConfirmation';
-import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
+import { createServer } from '../mocks/server';
 
 let server: Awaited<ReturnType<typeof createServer>>;
 

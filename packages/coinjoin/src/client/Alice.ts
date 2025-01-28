@@ -1,13 +1,13 @@
-import { getInputSize, getOutputSize, getWitnessFromSignature } from '../utils/coordinatorUtils';
+import { AccountUtxo } from '../types/account';
 import {
     AllowedScriptTypes,
-    RegistrationData,
     ConfirmationData,
     RealCredentials,
+    RegistrationData,
 } from '../types/coordinator';
-import { AccountUtxo } from '../types/account';
 import { Credentials } from '../types/middleware';
-import { SerializedAlice, CoinjoinRequestEvent } from '../types/round';
+import { CoinjoinRequestEvent, SerializedAlice } from '../types/round';
+import { getInputSize, getOutputSize, getWitnessFromSignature } from '../utils/coordinatorUtils';
 
 interface AlicePendingRequest {
     type: CoinjoinRequestEvent['type'];

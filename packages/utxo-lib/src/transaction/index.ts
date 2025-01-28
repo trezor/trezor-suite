@@ -8,7 +8,7 @@
 // - added new methods: getExtraData, getSpecificData.
 
 import { isNetworkType } from '../networks';
-import { isCoinbaseHash, TransactionBase, TransactionOptions } from './base';
+import { TransactionBase, TransactionOptions, isCoinbaseHash } from './base';
 import * as bitcoin from './bitcoin';
 import * as dash from './dash';
 import * as decred from './decred';

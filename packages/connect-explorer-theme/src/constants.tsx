@@ -2,8 +2,8 @@
 import type { FC, ReactNode } from 'react';
 import { isValidElement } from 'react';
 
-import type { NextSeoProps } from 'next-seo';
 import { useRouter } from 'next/router';
+import type { NextSeoProps } from 'next-seo';
 import { DiscordIcon, GitHubIcon } from 'nextra/icons';
 import type { Item } from 'nextra/normalize-pages';
 import { z } from 'zod';
@@ -13,7 +13,7 @@ import { Icon, IconName } from '@trezor/components';
 import { Anchor, Flexsearch, Footer, Navbar, TOC } from './components';
 import { MatchSorterSearch } from './components/match-sorter-search';
 import type { NavBarProps } from './components/navbar';
-import { themeOptionsSchema, ThemeSwitch } from './components/theme-switch';
+import { ThemeSwitch, themeOptionsSchema } from './components/theme-switch';
 import type { TOCProps } from './components/toc';
 import { useConfig } from './contexts/config';
 import { getGitIssueUrl, useGitEditUrl } from './utils';

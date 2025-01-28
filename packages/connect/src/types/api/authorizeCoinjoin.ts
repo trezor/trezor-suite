@@ -1,8 +1,8 @@
 import { Static, Type } from '@trezor/schema-utils';
 
+import { PROTO } from '../../constants';
 import type { Params, Response } from '../params';
 import { DerivationPath } from '../params';
-import { PROTO } from '../../constants';
 
 export type AuthorizeCoinjoin = Static<typeof AuthorizeCoinjoin>;
 export const AuthorizeCoinjoin = Type.Object({

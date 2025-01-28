@@ -1,5 +1,5 @@
-import { conditionalTest, initTrezorConnect, getController, setup } from '../../common.setup';
 import TrezorConnect from '../../../src';
+import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const getAddress = (showOnTrezor: boolean, coin: string = 'regtest') =>
     TrezorConnect.getAddress({

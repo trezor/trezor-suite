@@ -1,5 +1,5 @@
-import { BufferWriter } from '../bufferutils';
 import * as bs58check from '../bs58check';
+import { BufferWriter } from '../bufferutils';
 import { decred as DECRED_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';

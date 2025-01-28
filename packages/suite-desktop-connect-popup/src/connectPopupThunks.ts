@@ -1,9 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils';
-import TrezorConnect, { ERRORS } from '@trezor/connect';
-import { createDeferred } from '@trezor/utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { desktopApi } from '@trezor/suite-desktop-api';
+import TrezorConnect, { ERRORS } from '@trezor/connect';
 import { serializeError } from '@trezor/connect/src/constants/errors';
+import { desktopApi } from '@trezor/suite-desktop-api';
+import { createDeferred } from '@trezor/utils';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 

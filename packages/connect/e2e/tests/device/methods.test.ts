@@ -1,11 +1,11 @@
 import TrezorConnect from '../../../src';
 import * as fixtures from '../../__fixtures__';
 import {
-    getController,
-    skipTest,
-    setup,
     conditionalTest,
+    getController,
     initTrezorConnect,
+    setup,
+    skipTest,
 } from '../../common.setup';
 
 let controller: ReturnType<typeof getController> | undefined;

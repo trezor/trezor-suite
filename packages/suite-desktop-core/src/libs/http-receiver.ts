@@ -1,8 +1,8 @@
 import * as url from 'url';
 
-import { xssFilters } from '@trezor/utils';
-import { HttpServer, allowReferers } from '@trezor/node-utils';
 import { trezorLogo } from '@suite-common/suite-constants';
+import { HttpServer, allowReferers } from '@trezor/node-utils';
+import { xssFilters } from '@trezor/utils';
 
 import { convertILoggerToLog } from '../utils/IloggerToLog';
 

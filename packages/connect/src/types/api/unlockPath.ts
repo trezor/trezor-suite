@@ -1,7 +1,7 @@
 import { Static, Type } from '@trezor/schema-utils';
 
-import { Params, Response, DerivationPath } from '../params';
 import type { PROTO } from '../../constants';
+import { DerivationPath, Params, Response } from '../params';
 
 export type UnlockPathParams = Static<typeof UnlockPathParams>;
 export const UnlockPathParams = Type.Object({

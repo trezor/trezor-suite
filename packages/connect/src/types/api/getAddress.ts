@@ -2,10 +2,10 @@ import { Static, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../constants';
 import {
-    GetAddress as GetAddressShared,
     Address as AddressShared,
-    Params,
     BundledParams,
+    GetAddress as GetAddressShared,
+    Params,
     Response,
 } from '../params';
 

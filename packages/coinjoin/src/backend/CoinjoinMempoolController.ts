@@ -1,14 +1,14 @@
 /* eslint no-underscore-dangle: ["error", { "allowAfterThis": true }] */
 
-import type { Network } from '@trezor/utxo-lib';
 import { arrayDistinct, createCooldown, promiseAllSequence } from '@trezor/utils';
+import type { Network } from '@trezor/utxo-lib';
 
 import type { Logger } from '../types';
-import type { BlockbookTransaction, MempoolClient, OnProgressInfo } from '../types/backend';
 import type { AddressController } from './CoinjoinAddressController';
-import { getAddressScript, getMultiFilter } from './filters';
 import { getAllTxAddresses, isDoublespend } from './backendUtils';
+import { getAddressScript, getMultiFilter } from './filters';
 import { MEMPOOL_PURGE_CYCLE, PROGRESS_INFO_COOLDOWN } from '../constants';
+import type { BlockbookTransaction, MempoolClient, OnProgressInfo } from '../types/backend';
 
 type MempoolStatus = 'stopped' | 'running';
 

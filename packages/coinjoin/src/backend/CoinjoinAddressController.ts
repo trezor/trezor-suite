@@ -4,8 +4,8 @@ import type { Network } from '@trezor/utxo-lib';
 
 import { deriveAddresses } from './backendUtils';
 import { getAddressScript } from './filters';
-import type { AccountAddress, ScanAccountCheckpoint, AccountCache } from '../types/backend';
 import { DISCOVERY_LOOKOUT, DISCOVERY_LOOKOUT_EXTENDED } from '../constants';
+import type { AccountAddress, AccountCache, ScanAccountCheckpoint } from '../types/backend';
 
 export type AddressController = Pick<CoinjoinAddressController, 'receive' | 'change' | 'analyze'>;
 

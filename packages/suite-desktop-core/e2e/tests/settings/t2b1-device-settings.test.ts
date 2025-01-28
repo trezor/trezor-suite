@@ -3,7 +3,7 @@
 // - implement these differences in suite in the first place. both suite and T2B1 will happily accept
 //   request to change display rotation but it has no effect. It should be at least hidden on client.
 // https://github.com/trezor/trezor-suite/issues/6567
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () => {
     test.use({

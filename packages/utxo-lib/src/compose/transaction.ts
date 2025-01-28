@@ -1,16 +1,16 @@
 import {
-    ComposeRequest,
     CoinSelectSuccess,
-    ComposeInput,
     ComposeChangeAddress,
     ComposeFinalOutput,
+    ComposeInput,
+    ComposeRequest,
     ComposedTransaction,
     TransactionInputOutputSortingStrategy,
 } from '../types';
-import { noneSortingStrategy } from './sorting/noneSortingStrategy';
-import { SortingStrategy } from './sorting/sortingStrategy';
 import { bip69SortingStrategy } from './sorting/bip69SortingStrategy';
+import { noneSortingStrategy } from './sorting/noneSortingStrategy';
 import { randomSortingStrategy } from './sorting/randomSortingStrategy';
+import { SortingStrategy } from './sorting/sortingStrategy';
 
 const strategyMap: Record<TransactionInputOutputSortingStrategy, SortingStrategy> = {
     bip69: bip69SortingStrategy,

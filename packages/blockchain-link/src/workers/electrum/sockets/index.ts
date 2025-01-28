@@ -1,10 +1,10 @@
-import { parseElectrumUrl } from '@trezor/utils';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
+import { parseElectrumUrl } from '@trezor/utils';
 
+import type { SocketBase, SocketOptions } from './base';
 import { TcpSocket } from './tcp';
 import { TlsSocket } from './tls';
 import { TorSocket } from './tor';
-import type { SocketBase, SocketOptions } from './base';
 
 export const createSocket = (url: string, options?: SocketOptions): SocketBase => {
     const parsed = parseElectrumUrl(url);

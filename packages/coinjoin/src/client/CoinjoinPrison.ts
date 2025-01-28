@@ -1,8 +1,8 @@
-import { TypedEmitter } from '@trezor/utils';
 import { ImmediateId, TimerId } from '@trezor/type-utils';
+import { TypedEmitter } from '@trezor/utils';
 
-import { CoinjoinPrisonInmate, CoinjoinPrisonEvents } from '../types/client';
 import { WabiSabiProtocolErrorCode } from '../enums';
+import { CoinjoinPrisonEvents, CoinjoinPrisonInmate } from '../types/client';
 
 export type DetainObject =
     | {

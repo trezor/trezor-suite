@@ -1,11 +1,11 @@
 // https://zips.z.cash/zip-0243
 // https://zips.z.cash/zip-0225 version 5 format
 
-import * as varuint from 'varuint-bitcoin';
 import { blake2b } from 'blakejs';
+import * as varuint from 'varuint-bitcoin';
 
 import { BufferReader, BufferWriter, varIntSize } from '../bufferutils';
-import { TransactionBase, TransactionOptions, varSliceSize, EMPTY_SCRIPT } from './base';
+import { EMPTY_SCRIPT, TransactionBase, TransactionOptions, varSliceSize } from './base';
 import { hash256 } from '../crypto';
 
 const ZCASH_JOINSPLITS_SUPPORT_VERSION = 2;

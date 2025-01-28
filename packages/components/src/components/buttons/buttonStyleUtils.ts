@@ -1,7 +1,7 @@
 import { DefaultTheme, css, useTheme } from 'styled-components';
 
-import { Color, Colors, Elevation, spacings, spacingsPx } from '@trezor/theme';
 import { hexToRgba } from '@suite-common/suite-utils';
+import { Color, Colors, Elevation, spacings, spacingsPx } from '@trezor/theme';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import type { UIHorizontalAlignment, UISize, UIVariant } from '../../config/types';

@@ -1,7 +1,7 @@
 import TrezorConnect, { DEVICE } from '@trezor/connect-web';
 
 import * as ACTIONS from '../actions/index';
-import { TrezorConnectDevice, Action, Field } from '../types';
+import { Action, Field, TrezorConnectDevice } from '../types';
 
 export type ConnectState = {
     devices: TrezorConnectDevice[];

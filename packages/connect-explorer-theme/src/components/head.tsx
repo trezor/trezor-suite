@@ -1,9 +1,9 @@
 import type { ReactElement } from 'react';
 
+import NextHead from 'next/head';
 import type { NextSeoProps } from 'next-seo';
 import { NextSeo } from 'next-seo';
 import { useTheme } from 'next-themes';
-import NextHead from 'next/head';
 import { useMounted } from 'nextra/hooks';
 
 import { useConfig } from '../contexts';

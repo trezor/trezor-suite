@@ -4,20 +4,20 @@ import { CoinjoinBackendClient } from './CoinjoinBackendClient';
 import { CoinjoinFilterController } from './CoinjoinFilterController';
 import { CoinjoinMempoolController } from './CoinjoinMempoolController';
 import { DISCOVERY_LOOKOUT, DISCOVERY_LOOKOUT_EXTENDED } from '../constants';
-import { scanAccount } from './scanAccount';
-import { getAccountInfo } from './getAccountInfo';
-import { createPendingTransaction } from './createPendingTx';
 import { deriveAddresses, isTaprootAddress } from './backendUtils';
-import { getCoinjoinNetwork } from '../utils/settingsUtils';
-import type { CoinjoinBackendSettings, LogEvent, Logger, LogLevel } from '../types';
+import { createPendingTransaction } from './createPendingTx';
+import { getAccountInfo } from './getAccountInfo';
+import { scanAccount } from './scanAccount';
+import type { CoinjoinBackendSettings, LogEvent, LogLevel, Logger } from '../types';
 import type {
-    ScanAccountParams,
+    AccountCache,
     ScanAccountCheckpoint,
+    ScanAccountParams,
     ScanAccountProgress,
     ScanProgressInfo,
     Transaction,
-    AccountCache,
 } from '../types/backend';
+import { getCoinjoinNetwork } from '../utils/settingsUtils';
 
 interface Events {
     log: LogEvent;

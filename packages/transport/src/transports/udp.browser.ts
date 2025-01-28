@@ -1,6 +1,6 @@
 import { AbstractTransport } from './abstract';
-import { error } from '../utils/result';
 import { WRONG_ENVIRONMENT } from '../errors';
+import { error } from '../utils/result';
 
 const empty = () => Promise.resolve(error({ error: WRONG_ENVIRONMENT }));
 

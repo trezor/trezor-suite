@@ -3,9 +3,9 @@ import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 
 import { FormCell as FormCellComponent, allowedFormCellFrameProps } from './FormCell';
-import { SkeletonRectangle } from '../../skeletons/SkeletonRectangle';
 import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
+import { SkeletonRectangle } from '../../skeletons/SkeletonRectangle';
 
 const meta: Meta = {
     title: 'Form',

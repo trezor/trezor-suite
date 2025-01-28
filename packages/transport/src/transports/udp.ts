@@ -1,8 +1,8 @@
 import { TimerId } from '@trezor/type-utils';
 
 import { AbstractTransportParams } from './abstract';
-import { UdpApi } from '../api/udp';
 import { AbstractApiTransport } from './abstractApi';
+import { UdpApi } from '../api/udp';
 
 export class UdpTransport extends AbstractApiTransport {
     public name = 'UdpTransport' as const;

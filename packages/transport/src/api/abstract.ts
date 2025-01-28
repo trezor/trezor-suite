@@ -1,15 +1,15 @@
 import { TypedEmitter, getSynchronize } from '@trezor/utils';
 
+import * as ERRORS from '../errors';
 import type {
     AnyError,
     AsyncResultWithTypedError,
-    Success,
-    Logger,
     DescriptorApiLevel,
+    Logger,
     PathInternal,
+    Success,
 } from '../types';
-import { success, error, unknownError } from '../utils/result';
-import * as ERRORS from '../errors';
+import { error, success, unknownError } from '../utils/result';
 
 export interface AbstractApiConstructorParams {
     logger?: Logger;

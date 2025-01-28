@@ -1,6 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
     test.beforeEach(async ({ analytics, onboardingPage, dashboardPage, settingsPage }) => {

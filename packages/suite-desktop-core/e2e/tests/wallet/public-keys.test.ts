@@ -1,6 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 const testCases: { symbol: NetworkSymbol; xpub: string }[] = [
     {

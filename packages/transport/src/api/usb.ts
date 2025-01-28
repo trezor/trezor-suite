@@ -1,19 +1,19 @@
 import { createDeferred, createTimeoutPromise, getSynchronize } from '@trezor/utils';
 
 import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
-import { DescriptorApiLevel, PathInternal } from '../types';
 import {
     CONFIGURATION_ID,
-    ENDPOINT_ID,
-    INTERFACE_ID,
     DEBUGLINK_ENDPOINT_ID,
     DEBUGLINK_INTERFACE_ID,
+    ENDPOINT_ID,
+    INTERFACE_ID,
+    T1_HID_PRODUCT,
     T1_HID_VENDOR,
     TREZOR_USB_DESCRIPTORS,
     WEBUSB_BOOTLOADER_PRODUCT,
-    T1_HID_PRODUCT,
 } from '../constants';
 import * as ERRORS from '../errors';
+import { DescriptorApiLevel, PathInternal } from '../types';
 
 interface ConstructorParams extends AbstractApiConstructorParams {
     usbInterface: USB;

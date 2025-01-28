@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Meta, StoryObj } from '@storybook/react';
 
-import { StoryColumn } from '../../../support/Story';
-import { Button } from '../Button/Button';
 import { ButtonGroup } from './ButtonGroup';
-import { IconButton } from '../IconButton/IconButton';
+import { StoryColumn } from '../../../support/Story';
 import { Tooltip } from '../../Tooltip/Tooltip';
+import { Button } from '../Button/Button';
+import { IconButton } from '../IconButton/IconButton';
 
 const meta: Meta = {
     title: 'Buttons',

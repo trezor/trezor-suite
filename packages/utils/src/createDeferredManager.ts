@@ -1,6 +1,6 @@
 import { TimerId } from '@trezor/type-utils';
 
-import { createDeferred, Deferred } from './createDeferred';
+import { Deferred, createDeferred } from './createDeferred';
 
 type ManagedDeferred<T> = Deferred<T, number> & { deadline: number };
 

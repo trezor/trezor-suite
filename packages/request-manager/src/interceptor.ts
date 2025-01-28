@@ -1,14 +1,14 @@
 import { isWhitelistedHost } from '@trezor/utils';
 
-import { TorIdentities } from './torIdentities';
-import { InterceptorOptions } from './types';
 import { createRequestPool } from './httpPool';
-import { interceptTlsConnect } from './interceptor/interceptTlsConnect';
-import { interceptHttps } from './interceptor/interceptHttps';
+import { interceptFetch } from './interceptor/interceptFetch';
 import { interceptHttp } from './interceptor/interceptHttp';
+import { interceptHttps } from './interceptor/interceptHttps';
 import { interceptNetConnect } from './interceptor/interceptNetConnect';
 import { interceptNetSocketConnect } from './interceptor/interceptNetSocketConnect';
-import { interceptFetch } from './interceptor/interceptFetch';
+import { interceptTlsConnect } from './interceptor/interceptTlsConnect';
+import { TorIdentities } from './torIdentities';
+import { InterceptorOptions } from './types';
 
 export const createInterceptor = (interceptorOptions: InterceptorOptions) => {
     const requestPool = createRequestPool(interceptorOptions);

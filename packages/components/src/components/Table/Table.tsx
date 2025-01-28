@@ -1,18 +1,18 @@
-import { createContext, ReactNode, useContext } from 'react';
+import { ReactNode, createContext, useContext } from 'react';
 
 import styled from 'styled-components';
 
-import { mapElevationToBackgroundToken, TypographyStyle } from '@trezor/theme';
+import { TypographyStyle, mapElevationToBackgroundToken } from '@trezor/theme';
 
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { makePropsTransient, TransientProps } from '../../utils/transientProps';
-import { TableHeader } from './TableHeader';
-import { TableCell } from './TableCell';
-import { TableRow } from './TableRow';
 import { TableBody } from './TableBody';
+import { TableCell } from './TableCell';
+import { TableHeader } from './TableHeader';
+import { TableRow } from './TableRow';
+import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import { TransientProps, makePropsTransient } from '../../utils/transientProps';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { useElevation } from '../ElevationContext/ElevationContext';
-import { TextPropsKeys, TextProps } from '../typography/utils';
+import { TextProps, TextPropsKeys } from '../typography/utils';
 
 export const allowedTableFrameProps = [
     'margin',

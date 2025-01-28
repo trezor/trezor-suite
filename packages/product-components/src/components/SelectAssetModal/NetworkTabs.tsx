@@ -2,14 +2,14 @@ import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
+import {
+    type Network,
+    NetworkSymbol,
+    getNetwork,
+    networkSymbolCollection,
+} from '@suite-common/wallet-config';
 import { Row, Tooltip, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
-import {
-    getNetwork,
-    NetworkSymbol,
-    networkSymbolCollection,
-    type Network,
-} from '@suite-common/wallet-config';
 
 import { CheckableTag } from './CheckableTag';
 import { CoinLogo } from '../CoinLogo/CoinLogo';

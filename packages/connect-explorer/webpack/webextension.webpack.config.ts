@@ -1,7 +1,7 @@
+import CopyPlugin from 'copy-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import CopyPlugin from 'copy-webpack-plugin';
 
 const DIST = path.resolve(__dirname, '../build-webextension');
 const CONNECT_WEB_PATH = path.join(__dirname, '..', '..', 'connect-web');

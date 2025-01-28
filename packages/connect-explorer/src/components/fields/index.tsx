@@ -1,10 +1,10 @@
-import Input from './Input';
-import TextArea from './TextArea';
-import Checkbox from './Checkbox';
-import CoinSelect from './CoinSelect';
 import { ArrayWrapper } from './ArrayWrapper';
 import { BatchWrapper } from './BatchWrapper';
-import { UnionWrapper } from './UnionWrapper';
+import Checkbox from './Checkbox';
+import CoinSelect from './CoinSelect';
 import File from './File';
+import Input from './Input';
+import TextArea from './TextArea';
+import { UnionWrapper } from './UnionWrapper';
 
 export { Input, TextArea, Checkbox, CoinSelect, ArrayWrapper, BatchWrapper, UnionWrapper, File };

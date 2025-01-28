@@ -1,5 +1,5 @@
 import { AccountLabelId } from '../../support/enums/accountLabelId';
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
 
 test.describe('Google API errors', { tag: ['@group=metadata', '@webOnly'] }, () => {

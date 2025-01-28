@@ -3,18 +3,18 @@
 import { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
-import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
-import { getEthereumNetwork } from '../../../data/coinInfo';
-import { getNetworkLabel } from '../../../utils/ethereumUtils';
-import { messageToHex } from '../../../utils/formatUtils';
 import type { PROTO } from '../../../constants';
-import { getEthereumDefinitions } from '../ethereumDefinitions';
+import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getEthereumNetwork } from '../../../data/coinInfo';
 import {
     EthereumNetworkInfo,
     EthereumSignMessage as EthereumSignMessageSchema,
 } from '../../../types';
+import { getNetworkLabel } from '../../../utils/ethereumUtils';
+import { messageToHex } from '../../../utils/formatUtils';
+import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
+import { getEthereumDefinitions } from '../ethereumDefinitions';
 
 type Params = PROTO.EthereumSignMessage & {
     network?: EthereumNetworkInfo;

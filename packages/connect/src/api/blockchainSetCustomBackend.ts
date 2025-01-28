@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainSetCustomBackend.js
 
+import { ERRORS } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
-import { ERRORS } from '../constants';
-import { setCustomBackend, reconnectAllBackends } from '../backend/BlockchainLink';
+import { reconnectAllBackends, setCustomBackend } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
 import type { CoinInfo } from '../types';
 

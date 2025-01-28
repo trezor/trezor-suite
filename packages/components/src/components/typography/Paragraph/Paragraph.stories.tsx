@@ -2,8 +2,8 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { Paragraph as P } from './Paragraph';
 import { getFramePropsStory } from '../../../utils/frameProps';
+import { TextProps, allowedTextFrameProps, allowedTextTextProps, textVariants } from '../Text/Text';
 import { getTextPropsStory } from '../utils';
-import { allowedTextFrameProps, allowedTextTextProps, TextProps, textVariants } from '../Text/Text';
 
 const meta: Meta = {
     title: 'Typography',

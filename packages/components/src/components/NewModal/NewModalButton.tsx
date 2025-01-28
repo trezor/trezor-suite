@@ -1,5 +1,5 @@
+import { NewModalContext, useNewModalContext } from './NewModalContext';
 import { Button, ButtonProps } from '../buttons/Button/Button';
-import { useNewModalContext, NewModalContext } from './NewModalContext';
 
 export const NewModalButton = ({ children, ...rest }: ButtonProps) => {
     const { variant } = useNewModalContext();

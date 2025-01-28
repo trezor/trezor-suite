@@ -4,8 +4,8 @@ import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { ElectronIpcMainInvokeEvent } from '@trezor/ipc-proxy/src/proxy-handler';
 import { TimerId } from '@trezor/type-utils';
 
-import { ipcMain } from './typed-electron';
 import { APP_SRC } from './libs/constants';
+import { ipcMain } from './typed-electron';
 
 const HANG_WAIT = 30000;
 

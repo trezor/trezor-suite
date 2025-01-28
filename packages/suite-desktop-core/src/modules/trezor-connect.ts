@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 
 import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect';
-import { createIpcProxyHandler, IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
+import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { parseElectrumUrl } from '@trezor/utils';
 
 import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './index';

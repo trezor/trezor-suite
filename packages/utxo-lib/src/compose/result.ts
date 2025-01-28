@@ -1,20 +1,20 @@
 import BN from 'bn.js';
 
-import { transactionBytes } from '../coinselect/coinselectUtils';
 import { createTransaction } from './transaction';
+import { transactionBytes } from '../coinselect/coinselectUtils';
 import {
+    COMPOSE_ERROR_TYPES,
     CoinSelectRequest,
     CoinSelectResult,
-    ComposeRequest,
-    ComposeInput,
-    ComposeOutput,
     ComposeChangeAddress,
     ComposeFinalOutput,
+    ComposeInput,
     ComposeNotFinalOutput,
+    ComposeOutput,
+    ComposeRequest,
     ComposeResult,
-    ComposeResultFinal,
     ComposeResultError,
-    COMPOSE_ERROR_TYPES,
+    ComposeResultFinal,
 } from '../types';
 
 export function getErrorResult(error: unknown): ComposeResultError {

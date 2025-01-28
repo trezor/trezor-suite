@@ -1,8 +1,8 @@
 import { Card, Checkbox as CheckboxComponent } from '@trezor/components';
 
-import type { FieldBasic } from '../../types';
-import { onFieldChange } from '../../actions/methodActions';
 import { Row } from './Row';
+import { onFieldChange } from '../../actions/methodActions';
+import type { FieldBasic } from '../../types';
 
 interface CheckboxProps {
     field: FieldBasic<boolean>;

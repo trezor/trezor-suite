@@ -1,4 +1,4 @@
-import { test, expect } from '../../../support/fixtures';
+import { expect, test } from '../../../support/fixtures';
 
 test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-management'] }, () => {
     test.use({

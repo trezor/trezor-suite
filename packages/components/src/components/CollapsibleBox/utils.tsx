@@ -1,4 +1,4 @@
-import { spacingsPx, TypographyStyle } from '@trezor/theme';
+import { TypographyStyle, spacingsPx } from '@trezor/theme';
 
 import { HeadingSize, PaddingType } from './types';
 import { IconSize } from '../Icon/Icon';

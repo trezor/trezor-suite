@@ -12,8 +12,8 @@ import {
     variables,
 } from '@trezor/components';
 import { isFirefox } from '@trezor/env-utils';
-import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 import { spacings } from '@trezor/theme';
+import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
 export interface ErrorViewProps {
     type: 'error';

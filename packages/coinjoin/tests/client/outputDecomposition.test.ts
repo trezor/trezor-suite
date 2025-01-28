@@ -1,8 +1,8 @@
 import { outputDecomposition } from '../../src/client/round/outputDecomposition';
-import { createServer } from '../mocks/server';
 import { createInput } from '../fixtures/input.fixture';
 import { outputDecomposition as fixtures } from '../fixtures/outputDecomposition.fixture';
-import { createCoinjoinRound, INPUT_ADDED_EVENT } from '../fixtures/round.fixture';
+import { INPUT_ADDED_EVENT, createCoinjoinRound } from '../fixtures/round.fixture';
+import { createServer } from '../mocks/server';
 
 let server: Awaited<ReturnType<typeof createServer>>;
 

@@ -1,12 +1,12 @@
 import {
-    JavaScriptTypeBuilder,
-    TUnion,
     Hint,
+    JavaScriptTypeBuilder,
     SchemaOptions,
-    TLiteral,
     TEnum,
     TEnumKey,
     TEnumValue,
+    TLiteral,
+    TUnion,
 } from '@sinclair/typebox';
 
 // UnionToIntersection<A | B> = A & B

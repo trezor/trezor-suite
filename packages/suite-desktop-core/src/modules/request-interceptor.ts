@@ -7,8 +7,8 @@
  * Differences from request-filter module is that it intercepts all requests from electron nodejs main process,
  * whereas request-filter logs and filters allowed requests from electron renderer process.
  */
-import { createInterceptor, InterceptedEvent } from '@trezor/request-manager';
 import { isDevEnv } from '@suite-common/suite-utils';
+import { InterceptedEvent, createInterceptor } from '@trezor/request-manager';
 import { TorStatus } from '@trezor/suite-desktop-api';
 
 import { allowedDomains } from '../config';

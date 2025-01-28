@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 import styled from 'styled-components';
 
-import { LogMessage } from '@trezor/utils';
 import { H2 } from '@trezor/components/src/components/typography/Heading/Heading';
+import { LogMessage } from '@trezor/utils';
 
 import { Card } from './Card';
 import { Translation } from './Translation';

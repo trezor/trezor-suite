@@ -1,6 +1,6 @@
 import * as Methods from '../api';
 import { TypedError } from '../constants/errors';
-import { ModuleName, MODULES } from '../constants/network';
+import { MODULES, ModuleName } from '../constants/network';
 import type { IFrameCallMessage } from '../events';
 
 const moduleMethods = {

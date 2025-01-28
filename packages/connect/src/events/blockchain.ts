@@ -1,8 +1,8 @@
 import type {
-    ServerInfo,
     BlockEvent,
     FiatRatesBySymbol,
     NotificationEvent,
+    ServerInfo,
 } from '@trezor/blockchain-link';
 
 import type { CoinInfo } from '../types/coinInfo';

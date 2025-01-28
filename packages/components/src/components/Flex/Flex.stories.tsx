@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import { spacings } from '@trezor/theme';
 
 import {
+    Column as ColumnComponent,
     FlexProps,
+    Row as RowComponent,
+    allowedFlexFrameProps,
     flexAlignItems,
     flexJustifyContent,
     flexWrap,
-    Row as RowComponent,
-    Column as ColumnComponent,
-    allowedFlexFrameProps,
 } from './Flex';
 import { getFramePropsStory } from '../../utils/frameProps';
 

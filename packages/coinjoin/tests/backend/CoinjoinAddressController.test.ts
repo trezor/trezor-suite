@@ -2,9 +2,9 @@ import { networks } from '@trezor/utxo-lib';
 
 import { CoinjoinAddressController } from '../../src/backend/CoinjoinAddressController';
 import {
-    SEGWIT_XPUB,
-    SEGWIT_RECEIVE_ADDRESSES,
     SEGWIT_CHANGE_ADDRESSES,
+    SEGWIT_RECEIVE_ADDRESSES,
+    SEGWIT_XPUB,
 } from '../fixtures/methods.fixture';
 
 const getAddress = ({ address }: { address: string }) => address;

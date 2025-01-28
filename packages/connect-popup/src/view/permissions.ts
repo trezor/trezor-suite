@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/permissions.js
 
-import { UI, createUiResponse, UiRequestPermission } from '@trezor/connect';
-import { analytics, EventType } from '@trezor/connect-analytics';
+import { UI, UiRequestPermission, createUiResponse } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/connect-analytics';
 
-import { container, showView, postMessage, createTooltip, getState } from './common';
+import { container, createTooltip, getState, postMessage, showView } from './common';
 
 const getPermissionText = (permissionType: string, _deviceName: string) => {
     switch (permissionType) {

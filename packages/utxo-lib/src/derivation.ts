@@ -2,9 +2,9 @@ import bs58 from 'bs58';
 
 import { throwError } from '@trezor/utils';
 
-import { p2pkh, p2sh, p2wpkh, p2tr } from './payments';
 import { fromBase58 } from './bip32';
-import { bitcoin, Network } from './networks';
+import { Network, bitcoin } from './networks';
+import { p2pkh, p2sh, p2tr, p2wpkh } from './payments';
 
 const BIP32_PAYMENT_TYPES = {
     0x0488b21e: 'p2pkh', // 76067358, xpub

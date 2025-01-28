@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });

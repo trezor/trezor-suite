@@ -1,7 +1,7 @@
 /**
  * Opens external links in the default browser (displays a warning when using Tor)
  */
-import { shell, dialog } from 'electron';
+import { dialog, shell } from 'electron';
 import { HandlerDetails } from 'electron/main';
 
 import * as config from '../config';

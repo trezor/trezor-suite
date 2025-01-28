@@ -1,20 +1,20 @@
 import BlockchainLink, {
-    ServerInfo,
-    SubscriptionAccountInfo,
     BlockchainLinkParams,
     BlockchainLinkResponse,
+    ServerInfo,
+    SubscriptionAccountInfo,
 } from '@trezor/blockchain-link';
 
-import { createBlockchainMessage, BLOCKCHAIN, CoreEventMessage } from '../events';
 import { ERRORS } from '../constants';
+import { BLOCKCHAIN, CoreEventMessage, createBlockchainMessage } from '../events';
+import type { CoinInfo, Proxy } from '../types';
 import {
     BlockbookWorker,
-    RippleWorker,
     BlockfrostWorker,
     ElectrumWorker,
+    RippleWorker,
     SolanaWorker,
 } from '../workers/workers';
-import type { CoinInfo, Proxy } from '../types';
 
 const getWorker = (type: string) => {
     switch (type) {

@@ -1,28 +1,28 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/refTx.js
 
+import { Assert, Type } from '@trezor/schema-utils';
+import { bufferUtils } from '@trezor/utils';
 import {
     address as BitcoinJsAddress,
     payments as BitcoinJsPayments,
     Transaction as BitcoinJsTransaction,
     Network,
 } from '@trezor/utxo-lib';
-import { bufferUtils } from '@trezor/utils';
 import type {
     TxInput as BitcoinJsInput,
     TxOutput as BitcoinJsOutput,
 } from '@trezor/utxo-lib/src/transaction/base';
-import { Assert, Type } from '@trezor/schema-utils';
 
-import { getHDPath, getScriptType, getOutputScriptType } from '../../utils/pathUtils';
+import { PROTO } from '../../constants';
 import { TypedError } from '../../constants/errors';
 import type {
-    CoinInfo,
     AccountAddresses,
     AccountTransaction,
     BitcoinNetworkInfo,
+    CoinInfo,
 } from '../../types';
 import type { RefTransaction, TransactionOptions } from '../../types/api/bitcoin';
-import { PROTO } from '../../constants';
+import { getHDPath, getOutputScriptType, getScriptType } from '../../utils/pathUtils';
 
 // Referenced transactions are not required if:
 // - all internal inputs script_type === SPENDTAPROOT

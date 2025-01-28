@@ -4,10 +4,10 @@ import styled from 'styled-components';
 
 import { borders } from '@trezor/theme';
 
-import { ButtonProps } from '../Button/Button';
-import { ButtonSize, ButtonVariant } from '../buttonStyleUtils';
-import { IconButtonProps } from '../IconButton/IconButton';
 import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
+import { ButtonProps } from '../Button/Button';
+import { IconButtonProps } from '../IconButton/IconButton';
+import { ButtonSize, ButtonVariant } from '../buttonStyleUtils';
 
 const Container = styled.div<{
     $variant?: Exclude<ButtonVariant, 'danger'>;

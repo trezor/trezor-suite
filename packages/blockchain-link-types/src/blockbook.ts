@@ -1,31 +1,31 @@
 import type { RequiredKey } from '@trezor/type-utils';
 
 import type {
+    AddressAlias,
+    Token as BlockbookToken,
+    TokenTransfer as BlockbookTokenTransfer,
+    Tx as BlockbookTx,
+    Utxo as BlockbookUtxo,
+    ContractInfo,
+    MempoolTxidFilterEntries,
+    StakingPool,
+    Vin,
+    Vout,
+    WsBlockFilterReq,
+    WsBlockFiltersBatchReq,
+    WsBlockHashRes,
+    WsInfoRes,
+} from './blockbook-api';
+import type { AccountBalanceHistory, FiatRatesBySymbol, TokenStandard } from './common';
+import type {
     AccountBalanceHistoryParams,
+    AccountInfoParams,
+    EstimateFeeParams,
     GetCurrentFiatRatesParams,
     GetFiatRatesForTimestampsParams,
     GetFiatRatesTickersListParams,
-    EstimateFeeParams,
     RpcCallParams,
-    AccountInfoParams,
 } from './params';
-import type { AccountBalanceHistory, FiatRatesBySymbol, TokenStandard } from './common';
-import type {
-    Tx as BlockbookTx,
-    Vin,
-    Vout,
-    Utxo as BlockbookUtxo,
-    WsInfoRes,
-    WsBlockHashRes,
-    WsBlockFilterReq,
-    WsBlockFiltersBatchReq,
-    MempoolTxidFilterEntries,
-    Token as BlockbookToken,
-    TokenTransfer as BlockbookTokenTransfer,
-    AddressAlias,
-    ContractInfo,
-    StakingPool,
-} from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
 

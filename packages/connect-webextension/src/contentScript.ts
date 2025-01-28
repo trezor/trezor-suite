@@ -1,6 +1,6 @@
-import { WindowServiceWorkerChannel } from '@trezor/connect-web/src/channels/window-serviceworker';
-import { POPUP } from '@trezor/connect/src/events/popup';
 import { CONTENT_SCRIPT_VERSION } from '@trezor/connect/src/data/version';
+import { POPUP } from '@trezor/connect/src/events/popup';
+import { WindowServiceWorkerChannel } from '@trezor/connect-web/src/channels/window-serviceworker';
 
 function trezorContentScript() {
     // Check if extension ID matches the popup URL

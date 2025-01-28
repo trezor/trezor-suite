@@ -1,5 +1,5 @@
-import webpack from 'webpack';
 import { spawnSync } from 'child_process';
+import webpack from 'webpack';
 
 interface Options {
     cwd: string;

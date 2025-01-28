@@ -3,7 +3,7 @@ import { BridgeTransport, Descriptor } from '@trezor/transport';
 import { Session } from '@trezor/transport/src/types';
 
 import { controller as TrezorUserEnvLink, env } from './controller';
-import { pathLength, descriptor as expectedDescriptor } from './expect';
+import { descriptor as expectedDescriptor, pathLength } from './expect';
 import { assertSuccess } from '../api/utils';
 
 const emulatorStartOpts = { model: 'T2T1', version: '2-latest', wipe: true } as const;

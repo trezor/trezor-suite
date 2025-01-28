@@ -1,13 +1,13 @@
-import coinsJSON from '@trezor/connect-common/files/coins.json';
 import coinsJSONEth from '@trezor/connect-common/files/coins-eth.json';
+import coinsJSON from '@trezor/connect-common/files/coins.json';
 
-import { parseCoinsJson, getAllNetworks } from '../../data/coinInfo';
+import { getAllNetworks, parseCoinsJson } from '../../data/coinInfo';
+import { CoinInfo, DeviceModelInternal, Features } from '../../types';
 import {
     getUnavailableCapabilities,
     parseCapabilities,
     parseRevision,
 } from '../deviceFeaturesUtils';
-import { Features, DeviceModelInternal, CoinInfo } from '../../types';
 
 describe('utils/deviceFeaturesUtils', () => {
     beforeEach(() => {

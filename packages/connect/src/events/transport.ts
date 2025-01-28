@@ -2,10 +2,10 @@ import type { Transport } from '@trezor/transport';
 import { TRANSPORT } from '@trezor/transport/src/constants';
 
 import { serializeError } from '../constants/errors';
-import type { MessageFactoryFn } from '../types/utils';
-import { ConnectSettings } from '../exports';
 import { suggestBridgeInstaller } from '../data/transportInfo';
 import { suggestUdevInstaller } from '../data/udevInfo';
+import { ConnectSettings } from '../exports';
+import type { MessageFactoryFn } from '../types/utils';
 
 export { TRANSPORT } from '@trezor/transport/src/constants';
 

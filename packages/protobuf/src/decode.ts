@@ -1,4 +1,4 @@
-import { Type, Message, Field } from 'protobufjs/light';
+import { Field, Message, Type } from 'protobufjs/light';
 
 import { isPrimitiveField } from './utils';
 

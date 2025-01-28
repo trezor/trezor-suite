@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { TrezorError } from '../../../constants/errors';
 import { PROTO } from '../../../constants';
+import { TrezorError } from '../../../constants/errors';
 
 export const parseArrayType = [
     {

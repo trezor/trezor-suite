@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
+import { languageMap } from '../../constants/languageMap';
 import { Currency } from '../../enums/currency';
 import { Language } from '../../enums/language';
-import { languageMap } from '../../constants/languageMap';
 import { Theme } from '../../enums/theme';
 
 class SettingsGeneral {

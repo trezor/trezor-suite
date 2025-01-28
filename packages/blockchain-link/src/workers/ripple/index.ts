@@ -1,13 +1,13 @@
-import { RippleAPI, APIOptions } from 'ripple-lib';
+import { APIOptions, RippleAPI } from 'ripple-lib';
 import { RippleError } from 'ripple-lib/dist/npm/common/errors';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
+import type { AccountInfo, Response, SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import * as utils from '@trezor/blockchain-link-utils/src/ripple';
-import type { Response, SubscriptionAccountInfo, AccountInfo } from '@trezor/blockchain-link-types';
+import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
+import * as utils from '@trezor/blockchain-link-utils/src/ripple';
 import { TimerId } from '@trezor/type-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 

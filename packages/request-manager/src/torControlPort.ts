@@ -1,12 +1,12 @@
-import net, { Socket } from 'net';
-import fs from 'fs';
 import crypto from 'crypto';
-import util from 'util';
+import fs from 'fs';
+import net, { Socket } from 'net';
 import path from 'path';
+import util from 'util';
 
 import { promiseAllSequence } from '@trezor/utils';
 
-import { TorConnectionOptions, TorCommandResponse } from './types';
+import { TorCommandResponse, TorConnectionOptions } from './types';
 
 const readFile = util.promisify(fs.readFile);
 const randomBytes = util.promisify(crypto.randomBytes);

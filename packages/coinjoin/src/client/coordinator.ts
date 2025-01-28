@@ -1,14 +1,14 @@
-import { coordinatorRequest, RequestOptions } from './coordinatorRequest';
-import { patchResponse } from '../utils/http';
+import { RequestOptions, coordinatorRequest } from './coordinatorRequest';
+import { AFFILIATION_ID } from '../constants';
 import {
     CoinjoinStatus,
-    ZeroCredentials,
-    RealCredentials,
     ConfirmationData,
     IssuanceData,
+    RealCredentials,
     RegistrationData,
+    ZeroCredentials,
 } from '../types/coordinator';
-import { AFFILIATION_ID } from '../constants';
+import { patchResponse } from '../utils/http';
 
 const request = <T>(...args: Parameters<typeof coordinatorRequest>) =>
     coordinatorRequest<T>(...args).then<T>(patchResponse);

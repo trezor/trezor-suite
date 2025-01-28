@@ -1,5 +1,5 @@
-import { assignStyle as untypedAssignStyle } from 'css-in-js-utils';
 import { A } from '@mobily/ts-belt';
+import { assignStyle as untypedAssignStyle } from 'css-in-js-utils';
 import felaPluginExtend from 'fela-plugin-extend';
 
 import { NativeStyleObject, StyleObject } from './types';

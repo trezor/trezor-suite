@@ -1,6 +1,6 @@
 import {
-    parseConnectSettings as parseSettings,
     ConnectSettings,
+    parseConnectSettings as parseSettings,
 } from '@trezor/connect/src/exports';
 
 export const getEnv = () => 'webextension' as const;

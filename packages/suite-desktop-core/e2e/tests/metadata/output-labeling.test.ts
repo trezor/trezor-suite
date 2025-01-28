@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 import { OutputLabelId } from '../../support/enums/outputLabelId';
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
 
 test.describe.skip('Metadata - Output labeling', { tag: ['@group=metadata', '@webOnly'] }, () => {

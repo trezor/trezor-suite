@@ -1,10 +1,10 @@
 import TrezorConnect, {
+    DEVICE,
+    DEVICE_EVENT,
+    TRANSPORT,
     TRANSPORT_EVENT,
     UI,
     UI_EVENT,
-    DEVICE_EVENT,
-    TRANSPORT,
-    DEVICE,
 } from '@trezor/connect-web';
 
 // print log helper

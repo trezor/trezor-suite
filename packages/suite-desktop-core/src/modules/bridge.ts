@@ -1,16 +1,16 @@
 /**
  * Bridge runner
  */
-import { TrezordNode } from '@trezor/transport-bridge';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
-import { scheduleAction } from '@trezor/utils';
 import { InvokeResult } from '@trezor/suite-desktop-api';
+import { TrezordNode } from '@trezor/transport-bridge';
+import { scheduleAction } from '@trezor/utils';
 
-import { app, ipcMain } from '../typed-electron';
 import { BridgeProcess } from '../libs/processes/BridgeProcess';
-import { b2t } from '../libs/utils';
 import { ThreadProxy } from '../libs/thread-proxy';
+import { b2t } from '../libs/utils';
+import { app, ipcMain } from '../typed-electron';
 
 import type { Dependencies } from './index';
 

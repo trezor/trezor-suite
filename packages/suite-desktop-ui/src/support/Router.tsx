@@ -1,40 +1,40 @@
-import { memo, ComponentType } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { ComponentType, memo } from 'react';
+import { Route, Switch } from 'react-router-dom';
 
 import { PageName } from '@suite-common/suite-types';
 
 import routes from 'src/constants/suite/routes';
 import { Dashboard } from 'src/views/dashboard';
-import Notification from 'src/views/suite/notifications';
-import { Transactions } from 'src/views/wallet/transactions/Transactions';
-import { Receive } from 'src/views/wallet/receive/Receive';
-import WalletDetails from 'src/views/wallet/details';
-import WalletSend from 'src/views/wallet/send';
-import { WalletStaking } from 'src/views/wallet/staking/WalletStaking';
-import WalletSignVerify from 'src/views/wallet/sign-verify';
-import WalletAnonymize from 'src/views/wallet/anonymize';
-import { TradingBuyForm } from 'src/views/wallet/trading/buy/TradingBuyForm';
-import { TradingBuyDetail } from 'src/views/wallet/trading/buy/TradingBuyDetail';
-import { TradingBuyOffers } from 'src/views/wallet/trading/buy/TradingBuyOffers';
-import { TradingBuyConfirm } from 'src/views/wallet/trading/buy/TradingBuyConfirm';
-import { TradingSellForm } from 'src/views/wallet/trading/sell/TradingSellForm';
-import { TradingSellDetail } from 'src/views/wallet/trading/sell/TradingSellDetail';
-import { TradingSellOffers } from 'src/views/wallet/trading/sell/TradingSellOffers';
-import { TradingSellConfirm } from 'src/views/wallet/trading/sell/TradingSellConfirm';
-import { TradingExchangeForm } from 'src/views/wallet/trading/exchange/TradingExchangeForm';
-import { TradingExchangeDetail } from 'src/views/wallet/trading/exchange/TradingExchangeDetail';
-import { TradingExchangeOffers } from 'src/views/wallet/trading/exchange/TradingExchangeOffers';
-import { TradingExchangeConfirm } from 'src/views/wallet/trading/exchange/TradingExchangeConfirm';
-import { TradingDCALanding } from 'src/views/wallet/trading/DCA/TradingDCALanding';
-import { TradingRedirect } from 'src/views/wallet/trading/redirect/TradingRedirect';
-import { TradingTransactions } from 'src/views/wallet/trading/transactions/TradingTransactions';
-import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
+import PasswordManager from 'src/views/password-manager';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
-import { Tokens } from 'src/views/wallet/tokens';
+import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
+import Notification from 'src/views/suite/notifications';
+import WalletAnonymize from 'src/views/wallet/anonymize';
+import WalletDetails from 'src/views/wallet/details';
 import { Nfts } from 'src/views/wallet/nfts';
-import PasswordManager from 'src/views/password-manager';
+import { Receive } from 'src/views/wallet/receive/Receive';
+import WalletSend from 'src/views/wallet/send';
+import WalletSignVerify from 'src/views/wallet/sign-verify';
+import { WalletStaking } from 'src/views/wallet/staking/WalletStaking';
+import { Tokens } from 'src/views/wallet/tokens';
+import { TradingDCALanding } from 'src/views/wallet/trading/DCA/TradingDCALanding';
+import { TradingBuyConfirm } from 'src/views/wallet/trading/buy/TradingBuyConfirm';
+import { TradingBuyDetail } from 'src/views/wallet/trading/buy/TradingBuyDetail';
+import { TradingBuyForm } from 'src/views/wallet/trading/buy/TradingBuyForm';
+import { TradingBuyOffers } from 'src/views/wallet/trading/buy/TradingBuyOffers';
+import { TradingExchangeConfirm } from 'src/views/wallet/trading/exchange/TradingExchangeConfirm';
+import { TradingExchangeDetail } from 'src/views/wallet/trading/exchange/TradingExchangeDetail';
+import { TradingExchangeForm } from 'src/views/wallet/trading/exchange/TradingExchangeForm';
+import { TradingExchangeOffers } from 'src/views/wallet/trading/exchange/TradingExchangeOffers';
+import { TradingRedirect } from 'src/views/wallet/trading/redirect/TradingRedirect';
+import { TradingSellConfirm } from 'src/views/wallet/trading/sell/TradingSellConfirm';
+import { TradingSellDetail } from 'src/views/wallet/trading/sell/TradingSellDetail';
+import { TradingSellForm } from 'src/views/wallet/trading/sell/TradingSellForm';
+import { TradingSellOffers } from 'src/views/wallet/trading/sell/TradingSellOffers';
+import { TradingTransactions } from 'src/views/wallet/trading/transactions/TradingTransactions';
+import { Transactions } from 'src/views/wallet/transactions/Transactions';
 
 const components: { [key: string]: ComponentType<any> } = {
     'suite-index': Dashboard,

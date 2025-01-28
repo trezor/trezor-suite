@@ -10,12 +10,12 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
-import { Column } from '../../Flex/Flex';
-import { InputState } from '../types';
-import { TopAddons } from '../TopAddons';
-import { BottomText } from '../BottomText';
-import { IconName } from '../../Icon/Icon';
 import { TransientProps } from '../../../utils/transientProps';
+import { Column } from '../../Flex/Flex';
+import { IconName } from '../../Icon/Icon';
+import { BottomText } from '../BottomText';
+import { TopAddons } from '../TopAddons';
+import { InputState } from '../types';
 
 export const allowedFormCellFrameProps = [
     'margin',

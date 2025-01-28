@@ -1,8 +1,8 @@
 import React from 'react';
 
-import styled, { css, DefaultTheme } from 'styled-components';
+import styled, { DefaultTheme, css } from 'styled-components';
 
-import { Elevation, mapElevationToBorder, SpacingValues } from '@trezor/theme';
+import { Elevation, SpacingValues, mapElevationToBorder } from '@trezor/theme';
 
 import {
     FrameProps,
@@ -10,7 +10,7 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { makePropsTransient, TransientProps } from '../../utils/transientProps';
+import { TransientProps, makePropsTransient } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedFlexFrameProps = [

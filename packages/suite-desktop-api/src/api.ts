@@ -1,25 +1,25 @@
-import { ListenerMethod, SendMethod, InvokeMethod } from './methods';
 import {
-    SuiteThemeVariant,
-    HandshakeInit,
+    BootstrapTorEvent,
+    BridgeSettings,
+    ConnectPopupCall,
+    ConnectPopupResponse,
+    GetSystemInformationResponse,
     HandshakeClient,
     HandshakeElectron,
     HandshakeEvent,
+    HandshakeInit,
+    HandshakeTorModule,
+    InvokeResult,
     LoggerConfig,
+    Status,
+    SuiteThemeVariant,
+    TorSettings,
+    TorStatusEvent,
+    TraySettings,
     UpdateInfo,
     UpdateProgress,
-    InvokeResult,
-    BootstrapTorEvent,
-    HandshakeTorModule,
-    TorStatusEvent,
-    Status,
-    BridgeSettings,
-    TorSettings,
-    TraySettings,
-    ConnectPopupResponse,
-    ConnectPopupCall,
-    GetSystemInformationResponse,
 } from './messages';
+import { InvokeMethod, ListenerMethod, SendMethod } from './methods';
 
 // Event messages from renderer to main process
 // Sent by DesktopApi.[method] via ipcRenderer.send (see ./main)

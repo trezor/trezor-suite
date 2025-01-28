@@ -1,10 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
 
 import {
-    allowedAssetLogoFrameProps,
-    allowedAssetLogoSizes,
     AssetLogo as AssetLogoComponent,
     AssetLogoProps,
+    allowedAssetLogoFrameProps,
+    allowedAssetLogoSizes,
 } from './AssetLogo';
 import { getFramePropsStory } from '../../utils/frameProps';
 

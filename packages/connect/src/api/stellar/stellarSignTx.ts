@@ -2,12 +2,12 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS, PROTO } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
 import {
-    StellarTransaction,
     StellarOperation,
     StellarOperationMessage,
+    StellarTransaction,
 } from '../../types/api/stellar';
 
 const processTxRequest = async (

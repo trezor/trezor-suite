@@ -1,7 +1,7 @@
 import { networks } from '@trezor/utxo-lib';
 
-import { RoundPhase, EndRoundState, WabiSabiProtocolErrorCode } from '../../src/enums';
 import { ended } from '../../src/client/round/endedRound';
+import { EndRoundState, RoundPhase, WabiSabiProtocolErrorCode } from '../../src/enums';
 import { createInput } from '../fixtures/input.fixture';
 import { createCoinjoinRound } from '../fixtures/round.fixture';
 

@@ -1,6 +1,6 @@
+import { ChildProcess, spawn } from 'child_process';
 import { app } from 'electron';
 import path from 'path';
-import { spawn, ChildProcess } from 'child_process';
 
 import { TimerId } from '@trezor/type-utils';
 

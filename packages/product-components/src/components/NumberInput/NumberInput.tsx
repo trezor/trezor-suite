@@ -7,12 +7,12 @@ import {
     useRef,
     useState,
 } from 'react';
-import { Control, FieldValues, useController, UseControllerProps } from 'react-hook-form';
+import { Control, FieldValues, UseControllerProps, useController } from 'react-hook-form';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { Input, InputProps } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { Input, InputProps } from '@trezor/components';
 import { getLocaleSeparators } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);
 const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);

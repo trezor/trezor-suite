@@ -1,6 +1,6 @@
 import { Root } from 'protobufjs/light';
 
-import { decode as decodeProtobuf, createMessageFromType } from '@trezor/protobuf';
+import { createMessageFromType, decode as decodeProtobuf } from '@trezor/protobuf';
 import { TransportProtocol } from '@trezor/protocol';
 
 import { success } from './result';

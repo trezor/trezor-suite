@@ -1,8 +1,8 @@
 import { enumUtils, getWeakRandomNumberInRange } from '@trezor/utils';
 
-import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 import { EndRoundState, WabiSabiProtocolErrorCode } from '../../enums';
 import { getBroadcastedTxDetails } from '../../utils/roundUtils';
+import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
 
 /**
  * RoundPhase: 4, Ending

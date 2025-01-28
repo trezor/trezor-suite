@@ -1,12 +1,12 @@
 /**
  * Local web server for handling requests to app
  */
-import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { isDevEnv } from '@suite-common/suite-utils';
+import { validateIpcMessage } from '@trezor/ipc-proxy';
 
-import { app, ipcMain } from '../typed-electron';
-import { createHttpReceiver } from '../libs/http-receiver';
 import { exposeConnectWs } from '../libs/connect-ws';
+import { createHttpReceiver } from '../libs/http-receiver';
+import { app, ipcMain } from '../typed-electron';
 
 import type { ModuleInitBackground } from './index';
 

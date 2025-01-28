@@ -2,8 +2,8 @@
 // @ts-nocheck
 /* eslint-disable no-console */
 
-import express from 'express';
 import { EventEmitter } from 'events';
+import express from 'express';
 
 const port = 21325;
 const listenTimeout = 10000;

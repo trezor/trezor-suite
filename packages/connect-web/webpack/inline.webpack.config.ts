@@ -1,6 +1,6 @@
-import webpack from 'webpack';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
+import webpack from 'webpack';
 
 import prod from './prod.webpack.config';
 

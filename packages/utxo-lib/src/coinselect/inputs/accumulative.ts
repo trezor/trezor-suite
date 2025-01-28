@@ -1,15 +1,15 @@
 import BN from 'bn.js';
 
+import { CoinSelectAlgorithm, CoinSelectInput, CoinSelectResult } from '../../types';
 import {
+    ZERO,
     bignumberOrNaN,
-    sumOrNaN,
-    inputBytes,
+    finalize,
     getFee,
     getFeeForBytes,
-    finalize,
-    ZERO,
+    inputBytes,
+    sumOrNaN,
 } from '../coinselectUtils';
-import { CoinSelectInput, CoinSelectResult, CoinSelectAlgorithm } from '../../types';
 
 // add inputs until we reach or surpass the target value (or deplete)
 // worst-case: O(n)

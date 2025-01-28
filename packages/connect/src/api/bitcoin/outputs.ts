@@ -2,13 +2,13 @@
 
 import { ComposeOutput as ComposeOutputBase } from '@trezor/utxo-lib';
 
-import { getOutputScriptType, fixPath, getHDPath } from '../../utils/pathUtils';
-import { isValidAddress } from '../../utils/addressUtils';
-import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
-import { validateParams } from '../common/paramsValidator';
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS, PROTO } from '../../constants';
 import type { BitcoinNetworkInfo, ProtoWithDerivationPath } from '../../types';
 import type { ComposeOutput, ComposeResultFinal } from '../../types/api/composeTransaction';
+import { isValidAddress } from '../../utils/addressUtils';
+import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
+import { fixPath, getHDPath, getOutputScriptType } from '../../utils/pathUtils';
+import { validateParams } from '../common/paramsValidator';
 
 /** *****
  * SignTransaction: validation

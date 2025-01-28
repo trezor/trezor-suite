@@ -3,7 +3,7 @@ import { Locator } from '@playwright/test';
 import { EventType } from '@trezor/suite-analytics';
 import { ExtractByEventType } from '@trezor/suite-web/e2e/support/types';
 
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 const verifyHiddenAndRevealedValue = async ({
     locator,

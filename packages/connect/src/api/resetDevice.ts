@@ -2,13 +2,13 @@
 import { Assert } from '@trezor/schema-utils';
 import { getRandomInt } from '@trezor/utils';
 
+import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
+import { ERRORS, PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
+import { cancelPrompt } from '../device/prompts';
 import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
-import { PROTO, ERRORS } from '../constants';
 import { validatePath } from '../utils/pathUtils';
-import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
-import { cancelPrompt } from '../device/prompts';
 
 type EntropyRequestData = PROTO.EntropyRequest & { host_entropy: string };
 

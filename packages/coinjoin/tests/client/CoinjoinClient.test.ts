@@ -1,7 +1,7 @@
 import { CoinjoinClient } from '../../src';
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
-import { createServer } from '../mocks/server';
 import { AFFILIATE_INFO, DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../fixtures/round.fixture';
+import { createServer } from '../mocks/server';
 
 describe(`CoinjoinClient`, () => {
     let server: Awaited<ReturnType<typeof createServer>>;

@@ -1,14 +1,14 @@
+import * as ERRORS from '../errors';
 import type { AcquireInput } from '../transports/abstract';
 import type {
     Descriptor,
     DescriptorApiLevel,
+    PathInternal,
+    PathPublic,
     ResultWithTypedError,
     Session,
     Success,
-    PathPublic,
-    PathInternal,
 } from '../types';
-import * as ERRORS from '../errors';
 
 type BackgroundResponseWithError<T, E> = ResultWithTypedError<T, E> & { id: number };
 type BackgroundResponse<T> = Success<T> & { id: number };

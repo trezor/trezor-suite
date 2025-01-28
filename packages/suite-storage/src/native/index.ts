@@ -1,11 +1,11 @@
 import {
-    StoreNames,
-    StoreValue,
-    StoreKey,
-    IndexNames,
-    IndexKey,
     IDBPDatabase,
     IDBPTransaction,
+    IndexKey,
+    IndexNames,
+    StoreKey,
+    StoreNames,
+    StoreValue,
 } from 'idb';
 
 import { StorageMessageEvent } from './types';

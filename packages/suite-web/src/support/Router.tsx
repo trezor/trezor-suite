@@ -1,10 +1,10 @@
-import { lazy, memo, Suspense, LazyExoticComponent, ComponentType } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { ComponentType, LazyExoticComponent, Suspense, lazy, memo } from 'react';
+import { Route, Switch } from 'react-router-dom';
 
 import { PageName } from '@suite-common/suite-types';
 
-import routes from 'src/constants/suite/routes';
 import { BundleLoader } from 'src/components/suite';
+import routes from 'src/constants/suite/routes';
 
 const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
     'suite-index': lazy(() =>

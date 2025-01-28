@@ -1,10 +1,10 @@
-import { address as addressBjs, Network } from '@trezor/utxo-lib';
 import { arrayPartition } from '@trezor/utils';
+import { Network, address as addressBjs } from '@trezor/utxo-lib';
 
-import * as middleware from './middleware';
-import { Transaction, EnhancedVinVout } from '../types/backend';
-import { AnalyzeInternalVinVout, AnalyzeExternalVinVout } from '../types/middleware';
 import type { CoinjoinClient } from './CoinjoinClient';
+import * as middleware from './middleware';
+import { EnhancedVinVout, Transaction } from '../types/backend';
+import { AnalyzeExternalVinVout, AnalyzeInternalVinVout } from '../types/middleware';
 
 interface AnalyzeTransactionsOptions {
     network: Network;

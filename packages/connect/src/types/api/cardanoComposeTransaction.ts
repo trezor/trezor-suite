@@ -1,16 +1,16 @@
-import type { types, trezorUtils } from '@fivebinaries/coin-selection';
+import type { trezorUtils, types } from '@fivebinaries/coin-selection';
 
 import { Static, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../exports';
 import type { AccountUtxo } from '../../exports';
 import { DerivationPath, type Params, type Response } from '../params';
-import { CardanoCertificatePointer, CardanoCertificate } from './cardano';
+import { CardanoCertificate, CardanoCertificatePointer } from './cardano';
 import type { CardanoInput, CardanoOutput } from './cardano';
 import type {
+    PrecomposeResultError,
     PrecomposeResultFinal,
     PrecomposeResultNonFinal,
-    PrecomposeResultError,
 } from './composeTransaction';
 
 export type PrecomposedTransactionFinalCardano = Omit<

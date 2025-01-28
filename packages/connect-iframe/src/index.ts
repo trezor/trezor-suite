@@ -3,35 +3,35 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/iframe/iframe.js
 
 import {
-    RESPONSE_EVENT,
-    DEVICE_EVENT,
-    TRANSPORT_EVENT,
-    TRANSPORT,
-    POPUP,
-    IFRAME,
-    UI,
+    CoreEventMessage,
+    CoreRequestMessage,
     DEVICE,
-    parseMessage,
-    createResponseMessage,
+    DEVICE_EVENT,
+    DeviceEvent,
+    IFRAME,
+    IFrameInit,
+    POPUP,
+    RESPONSE_EVENT,
+    TRANSPORT,
+    TRANSPORT_EVENT,
+    UI,
     createIFrameMessage,
     createPopupMessage,
-    IFrameInit,
-    DeviceEvent,
-    CoreRequestMessage,
-    CoreEventMessage,
+    createResponseMessage,
+    parseMessage,
 } from '@trezor/connect';
 import { initCoreState } from '@trezor/connect/src/core';
 import { DataManager } from '@trezor/connect/src/data/DataManager';
 import { config } from '@trezor/connect/src/data/config';
-import { initLog, LogWriter } from '@trezor/connect/src/utils/debug';
+import { LogWriter, initLog } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
-import { storage, getSystemInfo } from '@trezor/connect-common';
-import { analytics, EventType } from '@trezor/connect-analytics';
+import { EventType, analytics } from '@trezor/connect-analytics';
+import { getSystemInfo, storage } from '@trezor/connect-common';
 
-import { parseConnectSettings, isOriginWhitelisted } from './connectSettings';
+import { isOriginWhitelisted, parseConnectSettings } from './connectSettings';
+import { initLogWriterWithWorker } from './sharedLoggerUtils';
 // @ts-expect-error (typescript does not know this is worker constructor, this is done by webpack)
 import LogWorker from './sharedLoggerWorker';
-import { initLogWriterWithWorker } from './sharedLoggerUtils';
 
 const coreManager = initCoreState();
 

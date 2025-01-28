@@ -9,11 +9,11 @@ import {
     allowedInfoItemFrameProps,
     allowedInfoItemTextProps,
 } from './InfoItem';
-import { infoItemVerticalAlignments, infoItemVariants } from './types';
-import { flexDirection } from '../Flex/Flex';
-import { getFramePropsStory } from '../../utils/frameProps';
-import { getTextPropsStory } from '../typography/utils';
+import { infoItemVariants, infoItemVerticalAlignments } from './types';
 import { variables } from '../../config';
+import { getFramePropsStory } from '../../utils/frameProps';
+import { flexDirection } from '../Flex/Flex';
+import { getTextPropsStory } from '../typography/utils';
 
 const meta: Meta = {
     title: 'InfoItem',

@@ -1,4 +1,4 @@
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 const veryDarkGreyColor = 'rgb(23, 23, 23)';
 const darkGreyColor = 'rgb(31, 31, 31)';

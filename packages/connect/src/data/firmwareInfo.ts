@@ -2,21 +2,21 @@
 
 import { versionUtils } from '@trezor/utils';
 
+import type {
+    Features,
+    FirmwareRelease,
+    IntermediaryVersion,
+    ReleaseInfo,
+    StrictFeatures,
+    VersionArray,
+} from '../types';
+import { DeviceModelInternal } from '../types';
 import {
-    filterSafeListByFirmware,
     filterSafeListByBootloader,
+    filterSafeListByFirmware,
     isStrictFeatures,
     isValidReleases,
 } from '../utils/firmwareUtils';
-import type {
-    Features,
-    StrictFeatures,
-    FirmwareRelease,
-    ReleaseInfo,
-    VersionArray,
-    IntermediaryVersion,
-} from '../types';
-import { DeviceModelInternal } from '../types';
 
 // undefined releases should never happen for official firmware, only custom
 const releases = Object.values(DeviceModelInternal).reduce(

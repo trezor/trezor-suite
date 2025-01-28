@@ -1,6 +1,17 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
 import {
+    BridgeTransport,
+    NodeUsbTransport,
+    TRANSPORT,
+    Transport,
+    UdpTransport,
+    WebUsbTransport,
+    isTransportInstance,
+} from '@trezor/transport';
+import type { TransportApiType } from '@trezor/transport/src/transports/abstract';
+import { Descriptor, PathPublic } from '@trezor/transport/src/types';
+import {
     TypedEmitter,
     arrayDistinct,
     arrayPartition,
@@ -8,26 +19,15 @@ import {
     getSynchronize,
     isNotUndefined,
 } from '@trezor/utils';
-import {
-    BridgeTransport,
-    WebUsbTransport,
-    NodeUsbTransport,
-    UdpTransport,
-    Transport,
-    TRANSPORT,
-    isTransportInstance,
-} from '@trezor/transport';
-import { Descriptor, PathPublic } from '@trezor/transport/src/types';
-import type { TransportApiType } from '@trezor/transport/src/transports/abstract';
 
 import { ERRORS } from '../constants';
 import { DEVICE, TransportError, TransportInfo } from '../events';
 import { Device } from './Device';
-import { ConnectSettings, DeviceUniquePath, StaticSessionId } from '../types';
 import { getBridgeInfo } from '../data/transportInfo';
-import { initLog } from '../utils/debug';
-import { abortablePromise } from '../utils/abortablePromise';
+import { ConnectSettings, DeviceUniquePath, StaticSessionId } from '../types';
 import { typedObjectKeys } from '../types/utils';
+import { abortablePromise } from '../utils/abortablePromise';
+import { initLog } from '../utils/debug';
 
 const createAuthPenaltyManager = (priority: number) => {
     const penalizedDevices: { [deviceID: string]: number } = {};

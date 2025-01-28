@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Modal as ModalComponent, Button, ModalProps } from '../../../index';
+import { Button, Modal as ModalComponent, ModalProps } from '../../../index';
 import { Icon } from '../../Icon/Icon';
 
 const Buttons = () => (

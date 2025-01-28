@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 
-import { ScheduleActionParams, ScheduledAction, scheduleAction } from '@trezor/utils';
 import { checkSocks5Proxy } from '@trezor/node-utils';
+import { ScheduleActionParams, ScheduledAction, scheduleAction } from '@trezor/utils';
 
 import { TOR_CONTROLLER_STATUS, TorControllerStatus, TorExternalConnectionOptions } from './types';
 

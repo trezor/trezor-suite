@@ -1,9 +1,9 @@
 import { ReactNode, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { Column, NewModal, useScrollShadow, VirtualizedList } from '@trezor/components';
-import { mapElevationToBackgroundToken, spacings } from '@trezor/theme';
 import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { Column, NewModal, VirtualizedList, useScrollShadow } from '@trezor/components';
+import { mapElevationToBackgroundToken, spacings } from '@trezor/theme';
 
 import { AssetItem } from './AssetItem';
 import { AssetItemNotFound } from './AssetItemNotFound';

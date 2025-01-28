@@ -1,25 +1,25 @@
 import { ETH_NETWORK_ADDRESSES } from '@everstake/wallet-sdk';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type {
-    Utxo,
-    Transaction,
-    TokenTransfer,
-    TokenInfo,
-    Address,
     AccountAddresses,
     AccountInfo,
+    Address,
     InternalTransfer,
+    TokenInfo,
+    TokenTransfer,
+    Transaction,
+    Utxo,
 } from '@trezor/blockchain-link-types';
 import type {
-    ServerInfo,
     AccountInfo as BlockbookAccountInfo,
     AccountUtxo as BlockbookAccountUtxo,
     Transaction as BlockbookTransaction,
+    ServerInfo,
     VinVout,
 } from '@trezor/blockchain-link-types/src/blockbook';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Addresses, filterTargets, enhanceVinVout, sumVinVout, transformTarget } from './utils';
+import { Addresses, enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './utils';
 
 export const transformServerInfo = (payload: ServerInfo) => ({
     name: payload.name,

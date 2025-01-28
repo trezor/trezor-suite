@@ -1,8 +1,8 @@
-import { entropyToMnemonic, mnemonicToSeed } from '@scure/bip39';
-import { hmac } from '@noble/hashes/hmac';
 import { crypto } from '@noble/hashes/crypto';
+import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha256';
 import { randomBytes } from '@noble/hashes/utils';
+import { entropyToMnemonic, mnemonicToSeed } from '@scure/bip39';
 
 import { bip39 } from '@trezor/crypto-utils';
 import { bip32 } from '@trezor/utxo-lib';

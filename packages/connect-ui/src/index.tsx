@@ -1,30 +1,30 @@
-import { useCallback, useEffect, useState, useMemo, ReactNode } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { UI, UI_REQUEST, POPUP, CoreRequestMessage } from '@trezor/connect';
-import { storage, OriginBoundState } from '@trezor/connect-common';
+import { CoreRequestMessage, POPUP, UI, UI_REQUEST } from '@trezor/connect';
+import { OriginBoundState, storage } from '@trezor/connect-common';
 
 // views
-import { Transport } from './views/Transport';
-import { Passphrase } from './views/Passphrase';
-import { ErrorView } from './views/Error';
-import { ThemeWrapper } from './support/ThemeWrapper';
-import { IntlWrapper } from './support/IntlWrapper';
-import { ErrorBoundary } from './support/ErrorBoundary';
-import { GlobalStyle } from './support/GlobalStyle';
-import { initAnalytics } from './utils/analytics';
 import { BottomRightFloatingBar } from './components/BottomRightFloatingBar';
-import { ConnectUIEventProps, reactEventBus } from './utils/eventBus';
 import { InfoPanel } from './components/InfoPanel';
 import { Loader } from './components/Loader';
 import {
-    FirmwareUpdateNotification,
     BackupNotification,
     BridgeUpdateNotification,
+    FirmwareUpdateNotification,
     SuspiciousOriginNotification,
 } from './components/Notification';
+import { ErrorBoundary } from './support/ErrorBoundary';
+import { GlobalStyle } from './support/GlobalStyle';
+import { IntlWrapper } from './support/IntlWrapper';
+import { ThemeWrapper } from './support/ThemeWrapper';
 import { State, getDefaultState } from './types';
+import { initAnalytics } from './utils/analytics';
+import { ConnectUIEventProps, reactEventBus } from './utils/eventBus';
+import { ErrorView } from './views/Error';
+import { Passphrase } from './views/Passphrase';
+import { Transport } from './views/Transport';
 
 export type { State } from './types';
 export { getDefaultState } from './types';

@@ -1,7 +1,7 @@
 import { AccountAddress } from './account';
 import { CoinjoinAffiliateRequest } from './coordinator';
 import { RawLiquidityClue } from './middleware';
-import { RoundPhase, EndRoundState } from '../enums';
+import { EndRoundState, RoundPhase } from '../enums';
 
 export interface SerializedAlice {
     accountKey: string;

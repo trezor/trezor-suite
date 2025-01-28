@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-import styled from 'styled-components';
 import { Object, type TSchema } from '@sinclair/typebox';
+import styled from 'styled-components';
 
 import { CollapsibleBox, Select, Switch, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { Method, MethodContent } from './Method';
-import { useActions, useSelector } from '../hooks';
 import * as methodActions from '../actions/methodActions';
+import { useActions, useSelector } from '../hooks';
 import { MethodState } from '../reducers/methodCommon';
 
 const ApiPlaygroundWrapper = styled.div`

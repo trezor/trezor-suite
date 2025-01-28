@@ -1,7 +1,7 @@
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../core/AbstractMethod';
 import { PROTO } from '../constants';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { validatePath } from '../utils/pathUtils';
 import { getFirmwareRange } from './common/paramsValidator';
 import { UnlockPathParams } from '../types/api/unlockPath';

@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
+import { useCallback, useEffect, useState } from 'react';
 import { Inspector } from 'react-inspector';
-import { useState, useCallback, useEffect } from 'react';
 
-import styled, { useTheme } from 'styled-components';
 import { CopyToClipboard } from 'nextra/components';
+import styled, { useTheme } from 'styled-components';
 
-import { Button as TrezorButton, ButtonProps, H3, Card, variables } from '@trezor/components';
+import { ButtonProps, Card, H3, Button as TrezorButton, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
-import type { Field, FieldWithBundle, FieldWithUnion } from '../types';
 import * as methodActions from '../actions/methodActions';
-import { useSelector, useActions } from '../hooks';
+import { useActions, useSelector } from '../hooks';
+import type { Field, FieldWithBundle, FieldWithUnion } from '../types';
+import { CodeEditor } from './CodeEditor';
 import {
-    Input,
-    TextArea,
-    Checkbox,
-    CoinSelect,
     ArrayWrapper,
     BatchWrapper,
-    UnionWrapper,
+    Checkbox,
+    CoinSelect,
     File,
+    Input,
+    TextArea,
+    UnionWrapper,
 } from './fields';
-import { CodeEditor } from './CodeEditor';
 
 interface Props {
     actions: {

@@ -1,4 +1,4 @@
-import { Solana, SolNetwork } from '@everstake/wallet-sdk';
+import { SolNetwork, Solana } from '@everstake/wallet-sdk';
 
 import { parseHostname } from '@trezor/utils';
 

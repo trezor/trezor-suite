@@ -1,18 +1,18 @@
 import BN from 'bn.js';
 
+import { CoinSelectAlgorithm, CoinSelectInput, CoinSelectResult } from '../../types';
 import {
+    OUTPUT_SCRIPT_LENGTH,
+    ZERO,
     bignumberOrNaN,
-    sumOrNaN,
+    finalize,
+    getDustAmount,
+    getFeeForBytes,
     inputBytes,
     outputBytes,
+    sumOrNaN,
     transactionBytes,
-    getFeeForBytes,
-    getDustAmount,
-    finalize,
-    ZERO,
-    OUTPUT_SCRIPT_LENGTH,
 } from '../coinselectUtils';
-import { CoinSelectInput, CoinSelectResult, CoinSelectAlgorithm } from '../../types';
 
 const MAX_TRIES = 1000000;
 

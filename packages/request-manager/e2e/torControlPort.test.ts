@@ -1,10 +1,10 @@
-import util from 'util';
-import path from 'path';
 import fs from 'fs';
 import net, { Socket } from 'net';
+import path from 'path';
+import util from 'util';
 
+import { TorControlPort, createHmacSignature, getCookieString } from '../src/torControlPort';
 import type { TorConnectionOptions } from '../src/types';
-import { createHmacSignature, getCookieString, TorControlPort } from '../src/torControlPort';
 
 const writeFile = util.promisify(fs.writeFile);
 const existsDirectory = util.promisify(fs.exists);

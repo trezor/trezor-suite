@@ -1,8 +1,8 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
 
-import { StatusBar } from 'expo-status-bar';
 import * as Linking from 'expo-linking';
+import { StatusBar } from 'expo-status-bar';
 
 import TrezorConnect from '@trezor/connect-mobile';
 

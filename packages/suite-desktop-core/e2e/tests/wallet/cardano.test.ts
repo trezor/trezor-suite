@@ -2,7 +2,7 @@ import {
     cardanoAccountDetails,
     cardanoStaking,
 } from '../../snapshots/web/wallet/cardano.test.ts/cardano-aria';
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 const receiveAddress =
     'addr_test1qphsv6vspp4l3nvmqzw529teq2ha08s0fgjvzghzh628uccfey0wtrgp5rmxvld7khc745x9mk7gts5ctuzerlf4edrq5at0x5';

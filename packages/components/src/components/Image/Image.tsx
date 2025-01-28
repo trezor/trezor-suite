@@ -2,15 +2,15 @@ import { ImgHTMLAttributes } from 'react';
 
 import styled from 'styled-components';
 
+import { PNG_IMAGES, PngImage, SVG_IMAGES, SvgImage } from './images';
 import {
     FrameProps,
     FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
-import { PNG_IMAGES, SVG_IMAGES, PngImage, SvgImage } from './images';
-import { TransientProps } from '../../utils/transientProps';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
+import { TransientProps } from '../../utils/transientProps';
 
 export const allowedImageFrameProps = [
     'margin',

@@ -1,7 +1,7 @@
 import type { BlockchainEvent, BlockchainEventListenerFn } from '../../events/blockchain';
 import type { DeviceEvent, DeviceEventListenerFn } from '../../events/device';
 import type { TransportEvent, TransportEventListenerFn } from '../../events/transport';
-import type { UiEvent, UiEventListenerFn, ProgressEventListenerFn } from '../../events/ui-request';
+import type { ProgressEventListenerFn, UiEvent, UiEventListenerFn } from '../../events/ui-request';
 import type { UnionToIntersection } from '../utils';
 
 type DetailedEvent<Event> = Event extends { type: string }

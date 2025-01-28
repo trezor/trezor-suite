@@ -1,16 +1,16 @@
-import styled, { css, DefaultTheme } from 'styled-components';
+import styled, { DefaultTheme, css } from 'styled-components';
 
 import {
+    Elevation,
     borders,
+    mapElevationToBackground,
     spacingsPx,
     typography,
-    Elevation,
-    mapElevationToBackground,
 } from '@trezor/theme';
 
-import { FONT_WEIGHT, FONT_SIZE } from '../../config/variables';
-import { InputState, InputSize } from './types';
+import { InputSize, InputState } from './types';
 import { motionEasingStrings } from '../../config/motion';
+import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 
 export const INPUT_HEIGHTS: Record<InputSize, number> = {
     small: 36,

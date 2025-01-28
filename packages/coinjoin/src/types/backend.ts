@@ -1,21 +1,21 @@
-import type { Network } from '@trezor/utxo-lib';
 import type {
-    Address,
-    Utxo,
-    Transaction,
     AccountAddresses,
     AccountInfo as AccountInfoBase,
+    Address,
     EnhancedVinVout,
+    Transaction,
+    Utxo,
 } from '@trezor/blockchain-link-types';
 import type {
     Transaction as BlockbookTransaction,
-    VinVout,
     FilterResponse,
+    VinVout,
 } from '@trezor/blockchain-link-types/src/blockbook';
+import type { Network } from '@trezor/utxo-lib';
 
 import type { CoinjoinBackendClient } from '../backend/CoinjoinBackendClient';
-import type { MempoolController } from '../backend/CoinjoinMempoolController';
 import type { FilterController } from '../backend/CoinjoinFilterController';
+import type { MempoolController } from '../backend/CoinjoinMempoolController';
 
 export type { BlockbookTransaction, VinVout, EnhancedVinVout };
 export type { Address, Utxo, Transaction, AccountAddresses };

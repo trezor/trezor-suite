@@ -2,13 +2,13 @@
 
 import EventEmitter from 'events';
 
-import { PROTO, ERRORS } from '../../constants';
 import { Blockchain } from '../../backend/BlockchainLink';
+import { ERRORS, PROTO } from '../../constants';
 import { DeviceCommands } from '../../device/DeviceCommands';
+import type { CoinInfo, DiscoveryAccount, DiscoveryAccountType } from '../../types';
+import type { GetAccountInfo } from '../../types/api/getAccountInfo';
 import { getAccountAddressN } from '../../utils/accountUtils';
 import { formatAmount } from '../../utils/formatUtils';
-import type { CoinInfo, DiscoveryAccountType, DiscoveryAccount } from '../../types';
-import type { GetAccountInfo } from '../../types/api/getAccountInfo';
 
 type DiscoveryType = {
     type: DiscoveryAccountType;

@@ -1,15 +1,15 @@
-import { Meta, StoryObj } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import { Meta, StoryObj } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
 
+import { newModalSizes, newModalVariants } from './types';
 import {
-    allowedNewModalFrameProps,
     NewModal as ModalComponent,
     NewModalProps,
-    variables,
+    allowedNewModalFrameProps,
     intermediaryTheme,
+    variables,
 } from '../../index';
-import { newModalVariants, newModalSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Buttons = () => (

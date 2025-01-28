@@ -1,5 +1,5 @@
 import TrezorConnect from '../../../src';
-import { getController, setup, initTrezorConnect, conditionalTest } from '../../common.setup';
+import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();
 

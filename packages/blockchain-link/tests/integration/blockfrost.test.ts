@@ -1,10 +1,10 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
-import BlockchainLink from '../../src';
 import {
     //  blockfrostWorkerFactory,
     blockfrostModuleFactory,
 } from './worker';
+import BlockchainLink from '../../src';
 
 const backends = [
     // TODO: nodejs tests are failing, fix it.

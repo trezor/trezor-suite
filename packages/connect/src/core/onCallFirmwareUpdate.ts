@@ -1,25 +1,25 @@
 import { randomBytes } from 'crypto';
 
 import { createTimeoutPromise } from '@trezor/utils';
-import { isNewer, isEqual } from '@trezor/utils/src/versionUtils';
+import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
-import { DeviceList } from '../device/DeviceList';
-import { UI, DEVICE, createUiMessage, createDeviceMessage, CoreEventMessage } from '../events';
 import {
-    getBinaryForFirmwareUpgrade,
-    uploadFirmware,
-    getLanguage,
     calculateFirmwareHash,
+    getBinaryForFirmwareUpgrade,
+    getLanguage,
     parseFirmwareHeaders,
     shouldStripFwHeaders,
     stripFwHeaders,
+    uploadFirmware,
 } from '../api/firmware';
+import { ERRORS, FIRMWARE, PROTO } from '../constants';
 import { getReleases } from '../data/firmwareInfo';
+import type { Device } from '../device/Device';
+import { DeviceList } from '../device/DeviceList';
+import { CoreEventMessage, DEVICE, UI, createDeviceMessage, createUiMessage } from '../events';
 import { CommonParams, DeviceUniquePath } from '../types';
 import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
-import { FIRMWARE, PROTO, ERRORS } from '../constants';
 import type { Log } from '../utils/debug';
-import type { Device } from '../device/Device';
 
 type PostMessage = (message: CoreEventMessage) => void;
 

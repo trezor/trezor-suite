@@ -1,14 +1,15 @@
 import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-import {
-    IFRAME,
-    UiResponseEvent,
-    CallMethodPayload,
-    CallMethodAnyResponse,
-    POPUP,
-} from '@trezor/connect/src/events';
 import * as ERRORS from '@trezor/connect/src/constants/errors';
+import {
+    CallMethodAnyResponse,
+    CallMethodPayload,
+    IFRAME,
+    POPUP,
+    UiResponseEvent,
+} from '@trezor/connect/src/events';
+import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import type {
     ConnectSettings,
     ConnectSettingsPublic,
@@ -16,9 +17,8 @@ import type {
     Manifest,
     Response,
 } from '@trezor/connect/src/types';
-import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
-import { createDeferred, createDeferredManager, DeferredManager } from '@trezor/utils';
+import { DeferredManager, createDeferred, createDeferredManager } from '@trezor/utils';
 
 import { parseConnectSettings } from '../connectSettings';
 

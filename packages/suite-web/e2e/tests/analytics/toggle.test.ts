@@ -1,8 +1,8 @@
 // @group_other
 // @retry=2
 
-import { EventType } from '@trezor/suite-analytics';
 import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { EventType } from '@trezor/suite-analytics';
 
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 

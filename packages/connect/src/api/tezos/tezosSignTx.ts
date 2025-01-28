@@ -2,7 +2,7 @@ import bs58check from 'bs58check';
 
 import { Assert } from '@trezor/schema-utils';
 
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS, PROTO } from '../../constants';
 import { TezosOperation } from '../../types/api/tezos';
 
 const PREFIX = {

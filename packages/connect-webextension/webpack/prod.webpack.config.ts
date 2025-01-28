@@ -1,6 +1,6 @@
-import webpack from 'webpack';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
+import webpack from 'webpack';
 
 // Generate single entry javascript bundle in build/js folder
 

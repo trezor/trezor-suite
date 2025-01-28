@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs-extra';
 
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 test.describe('Application Logs', { tag: ['@group=settings'] }, () => {
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {

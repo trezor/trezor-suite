@@ -2,11 +2,11 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getFirmwareRange } from '../../common/paramsValidator';
-import { stripHexPrefix, messageToHex } from '../../../utils/formatUtils';
 import type { PROTO } from '../../../constants';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { EthereumVerifyMessage as EthereumVerifyMessageSchema } from '../../../types';
+import { messageToHex, stripHexPrefix } from '../../../utils/formatUtils';
+import { getFirmwareRange } from '../../common/paramsValidator';
 
 export default class EthereumVerifyMessage extends AbstractMethod<
     'ethereumVerifyMessage',

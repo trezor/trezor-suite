@@ -1,4 +1,4 @@
-import { TSchema, Kind, OptionalKind } from '@sinclair/typebox';
+import { Kind, OptionalKind, TSchema } from '@sinclair/typebox';
 
 import type { TrezorConnect } from '@trezor/connect-web';
 
@@ -9,8 +9,8 @@ import {
     setAffectedValues,
     updateParams,
 } from './methodCommon';
-import { Field, FieldBasic, isFieldBasic } from '../types';
 import { coinsSelect } from '../constants/coins';
+import { Field, FieldBasic, isFieldBasic } from '../types';
 
 // Convert TypeBox schema to our fields
 const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {

@@ -1,5 +1,5 @@
-import * as scriptNumber from '../src/script/scriptNumber';
 import { fixtures } from './__fixtures__/scriptNumber';
+import * as scriptNumber from '../src/script/scriptNumber';
 
 describe('scriptNumber', () => {
     describe('decode', () => {

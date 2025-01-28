@@ -1,12 +1,12 @@
-import path from 'path';
-import webpack, { DefinePlugin } from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import TerserPlugin from 'terser-webpack-plugin';
-import CopyPlugin from 'copy-webpack-plugin';
 import { execSync } from 'child_process';
+import CopyPlugin from 'copy-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from 'path';
+import TerserPlugin from 'terser-webpack-plugin';
+import webpack, { DefinePlugin } from 'webpack';
 
-import * as URLS from '@trezor/urls';
 import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
+import * as URLS from '@trezor/urls';
 
 import { version } from '../package.json';
 

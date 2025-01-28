@@ -1,5 +1,5 @@
-import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
+import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 
 export type Requests = ReturnType<typeof urlSearchParams>[];
 

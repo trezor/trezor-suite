@@ -1,10 +1,10 @@
 import {
     CoinSelectSuccess,
     ComposeChangeAddress,
-    ComposedTransaction,
     ComposeFinalOutput,
     ComposeInput,
     ComposeRequest,
+    ComposedTransaction,
 } from '../../types';
 
 type SortingStrategyParams<Input extends ComposeInput, Change extends ComposeChangeAddress> = {

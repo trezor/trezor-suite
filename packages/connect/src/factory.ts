@@ -1,8 +1,8 @@
 import type { EventEmitter } from 'events';
 
 import { UI } from './events';
-import type { TrezorConnect } from './types';
 import type { CallMethod } from './events/call';
+import type { TrezorConnect } from './types';
 import type { InitType } from './types/api/init';
 
 export interface ConnectFactoryDependencies<SettingsType extends Record<string, any>> {

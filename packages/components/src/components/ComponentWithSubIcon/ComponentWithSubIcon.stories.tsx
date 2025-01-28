@@ -1,12 +1,12 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Icon, iconVariants } from '../Icon/Icon';
 import {
-    allowedComponentWithSubIconFrameProps,
     ComponentWithSubIcon as ComponentWithSubIconComponent,
     ComponentWithSubIconProps,
+    allowedComponentWithSubIconFrameProps,
 } from './ComponentWithSubIcon';
 import { getFramePropsStory } from '../../utils/frameProps';
+import { Icon, iconVariants } from '../Icon/Icon';
 
 const meta: Meta = {
     title: 'ComponentWithSubIcon',

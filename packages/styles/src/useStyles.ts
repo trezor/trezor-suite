@@ -3,9 +3,11 @@ import { RendererContext, ThemeContext } from 'react-fela';
 
 import { darken, lighten, transparentize } from 'polished';
 
-import { Theme, NativeTheme } from '@trezor/theme';
+import { NativeTheme, Theme } from '@trezor/theme';
 
 import { breakpointMediaQueries } from './breakpoints';
+import { mediaQueries } from './mediaQueries';
+import { processNativeStyles, processStyles } from './processStyles';
 import {
     ColorTransformFunction,
     NativeStyle,
@@ -16,10 +18,8 @@ import {
     StyleOrStylesParam,
     StyleUtils,
 } from './types';
-import { multiply, getValueAndUnit, sum, negative, isDarkColor } from './utils';
-import { processStyles, processNativeStyles } from './processStyles';
-import { mediaQueries } from './mediaQueries';
 import { useDirection } from './useDirection';
+import { getValueAndUnit, isDarkColor, multiply, negative, sum } from './utils';
 
 const sharedUtils = {
     darken: darken as ColorTransformFunction,

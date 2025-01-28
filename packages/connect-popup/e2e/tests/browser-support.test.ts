@@ -1,4 +1,4 @@
-import { test, expect, Page, devices } from '@playwright/test';
+import { Page, devices, expect, test } from '@playwright/test';
 
 import { ensureDirectoryExists } from '@trezor/node-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';

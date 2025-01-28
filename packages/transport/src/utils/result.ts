@@ -1,5 +1,5 @@
-import type { Success } from '../types';
 import { UNEXPECTED_ERROR } from '../errors';
+import type { Success } from '../types';
 
 export const success = <T>(payload: T): Success<T> => ({
     success: true as const,

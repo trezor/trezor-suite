@@ -1,8 +1,8 @@
 import TinyWorker from 'tiny-worker';
 
 const BlockbookWorkerModule = require('../../../build/module/blockbook-worker');
-const RippleWorkerModule = require('../../../build/module/ripple-worker');
 const BlockfrostWorkerModule = require('../../../build/module/blockfrost-worker');
+const RippleWorkerModule = require('../../../build/module/ripple-worker');
 
 export const rippleWorkerFactory = () => {
     if (typeof Worker === 'undefined') {

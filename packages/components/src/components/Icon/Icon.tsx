@@ -1,23 +1,23 @@
+import { MouseEvent, Ref, forwardRef } from 'react';
 import { ReactSVG } from 'react-svg';
-import { forwardRef, MouseEvent, Ref } from 'react';
 
-import styled, { css, DefaultTheme } from 'styled-components';
+import styled, { DefaultTheme, css } from 'styled-components';
 
+import { IconName as IconNameNew, icons } from '@suite-common/icons/src/icons';
 import {
-    icons as iconsDeprecated,
     IconName as IconNameDeprecated,
+    icons as iconsDeprecated,
 } from '@suite-common/icons-deprecated';
-import { icons, IconName as IconNameNew } from '@suite-common/icons/src/icons';
 import { CSSColor, Color } from '@trezor/theme';
 
 import { UIVariant } from '../../config/types';
-import { TransientProps } from '../../utils/transientProps';
 import {
     FrameProps,
     FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
+import { TransientProps } from '../../utils/transientProps';
 
 export const iconVariants = [
     'primary',

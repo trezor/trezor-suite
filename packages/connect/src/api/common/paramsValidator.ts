@@ -2,9 +2,9 @@
 import { versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../../constants';
-import { fromHardened } from '../../utils/pathUtils';
 import { config } from '../../data/config';
-import type { CoinInfo, FirmwareRange, DeviceModelInternal } from '../../types';
+import type { CoinInfo, DeviceModelInternal, FirmwareRange } from '../../types';
+import { fromHardened } from '../../utils/pathUtils';
 
 type ParamType = 'string' | 'number' | 'array' | 'array-buffer' | 'boolean' | 'uint' | 'object';
 

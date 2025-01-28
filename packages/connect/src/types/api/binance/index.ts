@@ -1,4 +1,4 @@
-import { Type, Static } from '@trezor/schema-utils';
+import { Static, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
 import { DerivationPath } from '../../params';

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { SpacingValues } from '@trezor/theme';
 
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { makePropsTransient, TransientProps } from '../../utils/transientProps';
+import { TransientProps, makePropsTransient } from '../../utils/transientProps';
 
 export const allowedGridFrameProps: FramePropsKeys[] = ['margin', 'width', 'height'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedGridFrameProps)[number]>;
