@@ -34,8 +34,6 @@ test.describe('Assets', { tag: ['@group=suite'] }, () => {
             await assetsPage.tableIcon.click();
             await expect(assetsPage.section).toHaveScreenshot('new-asset-table.png', {
                 mask: [assetsPage.assetExchangeRate, assetsPage.assetWeekChange],
-                //The width of the table is not fixed -> higher maxDiffPixelRatio
-                maxDiffPixelRatio: 0.025,
             });
         },
     );

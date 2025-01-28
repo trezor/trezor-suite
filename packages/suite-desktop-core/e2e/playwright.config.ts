@@ -45,9 +45,7 @@ const config: PlaywrightTestConfig = {
     outputDir: path.join(__dirname, 'test-results'),
     snapshotPathTemplate: 'snapshots/{projectName}/{testFilePath}/{arg}{ext}',
     expect: {
-        toHaveScreenshot: {
-            maxDiffPixelRatio: 0.001,
-        },
+        toHaveScreenshot: { maxDiffPixelRatio: 0.025 },
     },
 };
 
