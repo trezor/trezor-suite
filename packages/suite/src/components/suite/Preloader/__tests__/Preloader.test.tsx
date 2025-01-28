@@ -32,6 +32,11 @@ jest.mock('@trezor/suite-desktop-api', () => ({
     },
 }));
 
+jest.mock('@trezor/env-utils', () => ({
+    ...jest.requireActual('@trezor/env-utils'),
+    isLinux: () => true,
+}));
+
 // jest.mock('@firmware-components/ReconnectDevicePrompt', () => ({
 //     __esModule: true, // export as module
 //     default: ({ children }: any) => <div data-testid="box">{children}</div>,
