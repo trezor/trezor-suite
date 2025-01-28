@@ -20,6 +20,7 @@ on:
       - ".github/workflows/build-desktop*"
       - ".github/workflows/release*"
       - ".github/workflows/template*"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
