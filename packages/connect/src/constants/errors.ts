@@ -69,6 +69,11 @@ export class TrezorError extends Error {
         this.code = code;
         this.message = message;
     }
+
+    // Error.prototype.toString() does not include custom property `code`
+    toString() {
+        return `${this.name} (code: ${this.code}): ${this.message}`;
+    }
 }
 
 export const TypedError = (id: ErrorCode, message?: string) =>
