@@ -9,7 +9,6 @@
             "chain_id": 1,
             "coingecko_id": "ethereum",
             "is_testnet": false,
-            "label": "ETH",
             "name": "Ethereum",
             "shortcut": "ETH",
             "slip44": 60,
@@ -20,7 +19,8 @@
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
-            }
+            },
+            "symbol": "ETH"
         },
         {
             "blockchain_link": {
@@ -31,7 +31,6 @@
             "chain_id": 10,
             "coingecko_id": "optimistic-ethereum",
             "is_testnet": false,
-            "label": "ETH",
             "name": "Optimism",
             "shortcut": "OP",
             "slip44": 614,
@@ -42,7 +41,8 @@
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
-            }
+            },
+            "symbol": "ETH"
         },
         {
             "blockchain_link": {
@@ -53,7 +53,6 @@
             "chain_id": 56,
             "coingecko_id": "binance-smart-chain",
             "is_testnet": false,
-            "label": "BNB",
             "name": "BNB Smart Chain",
             "shortcut": "BSC",
             "slip44": 714,
@@ -64,7 +63,8 @@
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
-            }
+            },
+            "symbol": "BNB"
         },
         {
             "blockchain_link": {
@@ -75,7 +75,6 @@
             "chain_id": 61,
             "coingecko_id": "ethereum-classic",
             "is_testnet": false,
-            "label": "ETC",
             "name": "Ethereum Classic",
             "shortcut": "ETC",
             "slip44": 61,
@@ -86,7 +85,8 @@
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
-            }
+            },
+            "symbol": "ETC"
         },
         {
             "blockchain_link": {
@@ -97,7 +97,6 @@
             "chain_id": 137,
             "coingecko_id": "polygon-pos",
             "is_testnet": false,
-            "label": "POL",
             "name": "Polygon",
             "shortcut": "POL",
             "slip44": 966,
@@ -108,7 +107,8 @@
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
-            }
+            },
+            "symbol": "POL"
         },
         {
             "blockchain_link": {
@@ -119,7 +119,6 @@
             "chain_id": 8453,
             "coingecko_id": "base",
             "is_testnet": false,
-            "label": "ETH",
             "name": "Base",
             "shortcut": "BASE",
             "slip44": 8453,
@@ -130,7 +129,8 @@
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
-            }
+            },
+            "symbol": "ETH"
         },
         {
             "blockchain_link": {
@@ -140,7 +140,6 @@
             "chain": "hol",
             "chain_id": 17000,
             "is_testnet": true,
-            "label": "tHOL",
             "name": "Holesky",
             "shortcut": "tHOL",
             "slip44": 1,
@@ -151,7 +150,8 @@
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
-            }
+            },
+            "symbol": "tHOL"
         },
         {
             "blockchain_link": {
@@ -162,7 +162,6 @@
             "chain_id": 42161,
             "coingecko_id": "arbitrum-one",
             "is_testnet": false,
-            "label": "ETH",
             "name": "Arbitrum One",
             "shortcut": "ARB",
             "slip44": 9001,
@@ -173,7 +172,8 @@
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
-            }
+            },
+            "symbol": "ETH"
         },
         {
             "blockchain_link": {
@@ -183,7 +183,6 @@
             "chain": "sep",
             "chain_id": 11155111,
             "is_testnet": true,
-            "label": "tSEP",
             "name": "Sepolia",
             "shortcut": "tSEP",
             "slip44": 1,
@@ -194,7 +193,8 @@
                 "T3B1": "2.8.1",
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
-            }
+            },
+            "symbol": "tSEP"
         }
     ]
 }
