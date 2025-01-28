@@ -109,7 +109,7 @@ export const AssetRow = memo(
 
         return (
             <>
-                <Table.Row onClick={handleRowClick} data-testid={`@dashboard/asset-row/${symbol}`}>
+                <Table.Row onClick={handleRowClick} data-testid={`@dashboard/asset-item/${symbol}`}>
                     <Table.Cell align="center">
                         <Section
                             $dashedLinePosition={

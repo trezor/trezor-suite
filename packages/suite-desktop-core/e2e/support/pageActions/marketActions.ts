@@ -1,12 +1,11 @@
 import { Locator, Page } from '@playwright/test';
 
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { regional } from '@suite-common/invity';
 
 import { expect } from '../customMatchers';
-import { step } from '../common';
+import { step, TrezorUserEnvLinkProxy } from '../common';
 import {
     createRedirectedTradeResponse,
     invityEndpoint,
@@ -14,6 +13,7 @@ import {
     buyQuotes,
 } from '../../fixtures/invity';
 import expectedTradeRequestPayload from '../../fixtures/invity/buy/trade-request.json';
+import { DevicePromptActions } from './devicePromptActions';
 
 const quoteProviderLocator = '@coinmarket/offers/quote/provider';
 const quoteAmountLocator = '@coinmarket/offers/quote/crypto-amount';
@@ -41,6 +41,8 @@ type PaymentMethods =
     | 'revolutPay';
 
 export class MarketActions {
+    devicePrompt: DevicePromptActions;
+
     // Input and general
     readonly offerSpinner: Locator;
     readonly section: Locator;
@@ -54,6 +56,7 @@ export class MarketActions {
     readonly youPayCurrencyOption = (currency: FiatCurrencyCode) =>
         this.page.getByTestId(`@coinmarket/form/fiat-currency-select/option/${currency}`);
     readonly youPayFiatCryptoSwitchButton: Locator;
+    readonly youPayCryptoInput: Locator;
     readonly youPayFractionButton = (amount: '10%' | '25%' | '50%' | 'Max') =>
         this.page.getByRole('button', { name: amount });
     readonly feeButton = (fee: 'economy' | 'normal' | 'high' | 'custom') =>
@@ -84,10 +87,11 @@ export class MarketActions {
     readonly modal: Locator;
     readonly buyTermsConfirmButton: Locator;
     readonly confirmOnTrezorButton: Locator;
-    readonly confirmOnDevicePrompt: Locator;
     readonly confirmationSection: Locator;
     readonly confirmationCryptoAmount: Locator;
+    readonly confirmationFiatAmount: Locator;
     readonly confirmationProvider: Locator;
+    readonly confirmationAddress: Locator;
     readonly confirmTradeButton: Locator;
     // Exchange
     readonly exchangeFeeDetails: Locator;
@@ -109,6 +113,8 @@ export class MarketActions {
         private page: Page,
         private url: string,
     ) {
+        this.devicePrompt = new DevicePromptActions(page);
+
         this.offerSpinner = this.page.getByTestId('@coinmarket/offers/loading-spinner');
         this.section = this.page.getByTestId('@coinmarket');
         this.form = this.page.getByTestId('@coinmarket/form');
@@ -123,6 +129,7 @@ export class MarketActions {
         this.youPayFiatCryptoSwitchButton = this.page.getByTestId(
             '@coinmarket/form/switch-crypto-fiat',
         );
+        this.youPayCryptoInput = this.page.getByTestId('@coinmarket/form/crypto-input');
         this.customFeeInput = this.page.getByTestId('feePerUnit');
         this.countryOfResidenceDropdown = this.page.getByTestId(
             '@coinmarket/form/country-select/input',
@@ -138,7 +145,7 @@ export class MarketActions {
         this.compareButton = this.page.getByTestId('@coinmarket/form/compare-button');
         this.quotes = this.page.getByTestId('@coinmarket/offers/quote');
         this.quoteAmount = this.page.getByTestId(quoteAmountLocator);
-        this.refreshTime = this.page.getByTestId('@coinmarket/refresh-time');
+        this.refreshTime = this.page.getByTestId('@coinmarket/refresh-time-text');
         this.selectThisQuoteButton = this.page.getByTestId(
             '@coinmarket/offers/get-this-deal-button',
         );
@@ -149,12 +156,13 @@ export class MarketActions {
         this.confirmOnTrezorButton = this.page.getByTestId(
             '@coinmarket/offer/confirm-on-trezor-button',
         );
-        this.confirmOnDevicePrompt = this.page.getByTestId('@prompts/confirm-on-device');
         this.confirmationSection = this.page.getByTestId('@coinmarket/selected-offer');
         this.confirmationCryptoAmount = this.page.getByTestId(
             '@coinmarket/form/info/crypto-amount',
         );
+        this.confirmationFiatAmount = this.page.getByTestId('@coinmarket/form/info/fiat-amount');
         this.confirmationProvider = this.page.getByTestId('@coinmarket/form/info/provider');
+        this.confirmationAddress = this.page.getByTestId('@coinmarket/form/verify/address');
         this.confirmTradeButton = this.page.getByTestId(
             '@coinmarket/offer/continue-transaction-button',
         );
@@ -218,7 +226,7 @@ export class MarketActions {
     }
 
     @step()
-    async setYouPayAmount(
+    async setYouPayFiatAmount(
         amount: string,
         currency: FiatCurrencyCode = 'czk',
         country: string = 'CZ',
@@ -233,13 +241,16 @@ export class MarketActions {
     }
 
     @step()
-    async confirmTrade() {
+    async confirmTrade(addressToCheck?: string) {
         await expect(this.modal).toBeVisible();
         await this.buyTermsConfirmButton.click();
         await this.confirmOnTrezorButton.click();
-        await expect(this.confirmOnDevicePrompt).toBeVisible();
-        await TrezorUserEnvLink.pressYes();
-        await expect(this.confirmOnDevicePrompt).not.toBeVisible();
+        if (addressToCheck) {
+            await expect(this.devicePrompt.chunkedText).toHaveText(addressToCheck);
+        }
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLinkProxy.pressYes();
+        await this.devicePrompt.confirmOnDevicePromptIsHidden();
     }
 
     @step()

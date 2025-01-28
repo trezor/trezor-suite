@@ -4,6 +4,9 @@ import {
 } from '../../snapshots/web/wallet/cardano.test.ts/cardano-aria';
 import { test, expect } from '../../support/fixtures';
 
+const receiveAddress =
+    'addr_test1qphsv6vspp4l3nvmqzw529teq2ha08s0fgjvzghzh628uccfey0wtrgp5rmxvld7khc745x9mk7gts5ctuzerlf4edrq5at0x5';
+
 // todo: setup emu with 24 words mnemonic so that we can test different cardano derivation and its 'auto-discovery; feature
 //mnemonic: 'clot trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',
 
@@ -54,6 +57,7 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
             await walletPage.revealAddressButton.click();
             await devicePrompt.waitForPromptAndConfirm();
             await expect(walletPage.copyAddressButton).toBeEnabled();
+            await expect(devicePrompt.outputValue).toHaveText(receiveAddress);
             await expect(settingsPage.modal).toHaveScreenshot('cardano-receive.png');
             await settingsPage.modalCloseButton.click();
             await page.getByTestId('@account-subpage/back').click();

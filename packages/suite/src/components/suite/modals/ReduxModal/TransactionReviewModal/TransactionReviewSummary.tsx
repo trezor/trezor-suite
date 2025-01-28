@@ -261,6 +261,7 @@ export const TransactionReviewSummary = ({
                     {!isZeroAmount && (
                         <HeadlineAmount>
                             <FormattedCryptoAmount
+                                data-testid="@modal/transaction-review/amount"
                                 disableHiddenPlaceholder
                                 value={amount}
                                 symbol={tx.token?.symbol ?? symbol}

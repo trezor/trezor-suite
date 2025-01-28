@@ -78,6 +78,7 @@ export interface TableRowProps {
     onClick?: () => void;
     onHover?: (isHovering: boolean) => void;
     hasBorderTop?: boolean;
+    'data-testid'?: string;
 }
 
 export const TableRow = ({
@@ -87,6 +88,7 @@ export const TableRow = ({
     onHover,
     isHighlightedOnHover,
     hasBorderTop,
+    'data-testid': dataTestId,
 }: TableRowProps) => {
     const { elevation } = useElevation();
     const isHeader = useTableHeader();
@@ -102,6 +104,7 @@ export const TableRow = ({
             onClick={onClick}
             onMouseEnter={() => onHover?.(true)}
             onMouseLeave={() => onHover?.(false)}
+            data-testid={dataTestId}
         >
             {children}
         </Row>

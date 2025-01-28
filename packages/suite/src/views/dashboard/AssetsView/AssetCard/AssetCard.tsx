@@ -149,7 +149,7 @@ export const AssetCard = ({
         <Card
             paddingType="small"
             onClick={handleCardClick}
-            data-testid={`@dashboard/asset-card/${symbol}`}
+            data-testid={`@dashboard/asset-item/${symbol}`}
         >
             <Column gap={spacings.xxxl} flex="1" margin={spacings.xs}>
                 <Row justifyContent="space-between">

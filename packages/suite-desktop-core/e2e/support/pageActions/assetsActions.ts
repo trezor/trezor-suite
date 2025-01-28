@@ -1,6 +1,8 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+
+import { step } from '../common';
 
 export class AssetsActions {
     readonly section: Locator;
@@ -27,5 +29,19 @@ export class AssetsActions {
         this.bottomInfo = this.page.getByTestId('@dashboard/asset/bottom-info');
         this.assetExchangeRate = this.page.getByTestId('@dashboard/asset/exchange-rate');
         this.assetWeekChange = this.page.getByTestId('@dashboard/asset/week-change');
+    }
+
+    @step()
+    async verifyAssetContents() {
+        await expect(
+            this.page.getByTestId('@dashboard/asset-item/btc').getByTestId('@dashboard/asset/name'),
+        ).toHaveText('Bitcoin');
+        await expect(
+            this.page.getByTestId('@dashboard/asset-item/eth').getByTestId('@dashboard/asset/name'),
+        ).toHaveText('Ethereum');
+        await expect(this.page.getByTestId('@dashboard/asset/btc/fiat-amount')).toHaveText('$0.00');
+        await expect(this.page.getByTestId('@dashboard/asset/eth/fiat-amount')).toContainText(
+            '$0.00',
+        );
     }
 }

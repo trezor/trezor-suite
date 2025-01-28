@@ -30,11 +30,13 @@ test.describe('Assets', { tag: ['@group=suite'] }, () => {
             await expect(assetsPage.section).toHaveScreenshot('new-asset-grid.png', {
                 mask: [assetsPage.bottomInfo],
             });
+            await assetsPage.verifyAssetContents();
 
             await assetsPage.tableIcon.click();
             await expect(assetsPage.section).toHaveScreenshot('new-asset-table.png', {
                 mask: [assetsPage.assetExchangeRate, assetsPage.assetWeekChange],
             });
+            await assetsPage.verifyAssetContents();
         },
     );
 });

@@ -10,13 +10,21 @@ export class DevicePromptActions {
     readonly modal: Locator;
     private readonly paginatedText: Locator;
     private readonly paginatedTextSeparator: Locator;
+    readonly chunkedText: Locator;
+    readonly outputValue: Locator;
+    readonly outputValueOf = (section: string) =>
+        this.page.getByTestId(`@modal/output-${section}`).getByTestId('@modal/output-value');
+    readonly reviewAmount: Locator;
 
-    constructor(page: Page) {
+    constructor(private page: Page) {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
         this.modal = page.getByTestId('@modal');
         this.paginatedText = page.locator("[data-testid-alt='@device-display/paginated-text']");
         this.paginatedTextSeparator = page.getByTestId('@device-display/paginated-text/separator');
+        this.chunkedText = page.getByTestId('@device-display/chunked-text');
+        this.outputValue = page.getByTestId('@modal/output-value');
+        this.reviewAmount = page.getByTestId('@modal/transaction-review/amount');
     }
 
     @step()
