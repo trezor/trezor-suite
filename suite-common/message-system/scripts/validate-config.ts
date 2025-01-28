@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import * as fs from 'fs';
 import Ajv from 'ajv';
+import * as fs from 'fs';
 
 import { CONFIG_PATH, SCHEMA_PATH } from './constants';
 

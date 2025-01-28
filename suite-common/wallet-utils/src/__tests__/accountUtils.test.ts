@@ -1,30 +1,30 @@
-import { Account } from '@suite-common/wallet-types';
 import { testMocks } from '@suite-common/test-utils';
+import { Account } from '@suite-common/wallet-types';
 
+import * as fixtures from '../__fixtures__/accountUtils';
 import {
     accountSearchFn,
+    enhanceAddresses,
     findAccountDevice,
     formatNetworkAmount,
     getAccountIdentifier,
     getAccountKey,
     getBip43Type,
-    substituteBip43Path,
     getFiatValue,
     getFirstFreshAddress,
+    getNetworkAccountFeatures,
     getTitleForCoinjoinAccount,
     getUtxoFromSignedTransaction,
-    getNetworkAccountFeatures,
+    getUtxoOutpoint,
     hasNetworkFeatures,
     isTestnet,
     networkAmountToSmallestUnit,
     parseBIP44Path,
-    sortByCoin,
-    getUtxoOutpoint,
     readUtxoOutpoint,
     sortByBIP44AddressIndex,
-    enhanceAddresses,
+    sortByCoin,
+    substituteBip43Path,
 } from '../accountUtils';
-import * as fixtures from '../__fixtures__/accountUtils';
 
 const { getSuiteDevice, getWalletAccount } = testMocks;
 

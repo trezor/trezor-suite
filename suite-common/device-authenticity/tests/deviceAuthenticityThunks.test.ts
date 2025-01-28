@@ -1,6 +1,6 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { deviceAuthenticityActions } from '../src/deviceAuthenticityActions';
 import { checkDeviceAuthenticityThunk } from '../src/deviceAuthenticityThunks';

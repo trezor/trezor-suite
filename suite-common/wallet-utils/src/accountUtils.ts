@@ -1,52 +1,52 @@
-import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { TrezorDevice } from '@suite-common/suite-types';
 import {
-    AccountInfo,
-    AccountAddresses,
-    AccountAddress,
-    AccountTransaction,
-    AccountUtxo,
-    PrecomposedTransactionFinalCardano,
-    TokenTransfer,
-    TokenInfo,
-    DeviceState,
-    StaticSessionId,
-} from '@trezor/connect';
-import { arrayDistinct, bufferUtils } from '@trezor/utils';
-import {
-    type NetworkFeature,
-    type NetworkSymbol,
-    type NetworkType,
-    networks,
     type AccountType,
     type Bip43Path,
     type Bip43PathTemplate,
-    getNetwork,
+    type NetworkFeature,
+    type NetworkSymbol,
     type NetworkSymbolExtended,
-    networkSymbolCollection,
+    type NetworkType,
+    getNetwork,
     getNetworkDisplaySymbol,
+    networkSymbolCollection,
+    networks,
 } from '@suite-common/wallet-config';
 import {
     Account,
     Discovery,
+    GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
+    RatesByKey,
     ReceiveInfo,
     TokenAddress,
-    GeneralPrecomposedTransactionFinal,
-    RatesByKey,
 } from '@suite-common/wallet-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
+import {
+    AccountAddress,
+    AccountAddresses,
+    AccountInfo,
+    AccountTransaction,
+    AccountUtxo,
+    DeviceState,
+    PrecomposedTransactionFinalCardano,
+    StaticSessionId,
+    TokenInfo,
+    TokenTransfer,
+} from '@trezor/connect';
 import {
     HELP_CENTER_ADDRESSES_URL,
     HELP_CENTER_COINJOIN_URL,
     HELP_CENTER_TAPROOT_URL,
 } from '@trezor/urls';
-import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
+import { arrayDistinct, bufferUtils } from '@trezor/utils';
+import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
-import { isRbfTransaction } from './transactionUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
+import { isRbfTransaction } from './transactionUtils';
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';

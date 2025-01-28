@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import {
-    FormState,
     AccountKey,
+    FormState,
     GeneralPrecomposedTransactionFinal,
     TokenAddress,
 } from '@suite-common/wallet-types';

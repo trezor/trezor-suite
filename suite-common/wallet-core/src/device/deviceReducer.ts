@@ -1,8 +1,19 @@
-import { isAnyOf } from '@reduxjs/toolkit';
 import { A, pipe } from '@mobily/ts-belt';
+import { isAnyOf } from '@reduxjs/toolkit';
 
+import {
+    StoredAuthenticateDeviceResult,
+    deviceAuthenticityActions,
+} from '@suite-common/device-authenticity';
+import {
+    createReducerWithExtraDeps,
+    createWeakMapSelector,
+    returnStableArrayIfEmpty,
+} from '@suite-common/redux-utils';
+import { AcquiredDevice, ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInstances, getFwUpdateVersion, getStatus } from '@suite-common/suite-utils';
+import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { Device, DeviceState, Features, StaticSessionId, UI } from '@trezor/connect';
 import {
     getFirmwareVersion,
@@ -10,26 +21,15 @@ import {
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
-import {
-    createReducerWithExtraDeps,
-    createWeakMapSelector,
-    returnStableArrayIfEmpty,
-} from '@suite-common/redux-utils';
-import { TrezorDevice, AcquiredDevice, ButtonRequest } from '@suite-common/suite-types';
-import {
-    deviceAuthenticityActions,
-    StoredAuthenticateDeviceResult,
-} from '@suite-common/device-authenticity';
 import { isNative } from '@trezor/env-utils';
 
+import { ConnectDeviceSettings, deviceActions } from './deviceActions';
+import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 import {
     authorizeDeviceThunk,
     createDeviceInstanceThunk,
     createImportedDeviceThunk,
 } from './deviceThunks';
-import { ConnectDeviceSettings, deviceActions } from './deviceActions';
-import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 

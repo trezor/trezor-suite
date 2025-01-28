@@ -2,8 +2,9 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 import { ActionsFromAsyncThunk } from '@reduxjs/toolkit/dist/matchers';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { createThunk } from '@suite-common/redux-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     Account,
     AccountKey,
@@ -15,64 +16,63 @@ import {
     PrecomposedTransactionFinalCardano,
     PrecomposedTransactionFinalRbf,
 } from '@suite-common/wallet-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork, NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    hasNetworkFeatures,
     amountToSmallestUnit,
     formatAmount,
+    formatNetworkAmount,
     getAccountDecimals,
     getAreSatoshisUsed,
-    formatNetworkAmount,
     getPendingAccount,
+    hasNetworkFeatures,
     isCardanoTx,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
+import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { Success } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import {
-    addFakePendingCardanoTxThunk,
-    addFakePendingTxThunk,
-} from '../transactions/transactionsThunks';
-import { accountsActions } from '../accounts/accountsActions';
-import { selectAccountByKey } from '../accounts/accountsReducer';
-import { selectSelectedDevice } from '../device/deviceReducer';
-import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
-import {
-    selectSendFormDrafts,
-    selectSendSerializedTx,
-    selectSendPrecomposedTx,
-} from './sendFormReducer';
 import { sendFormActions } from './sendFormActions';
 import {
-    signBitcoinSendFormTransactionThunk,
     composeBitcoinTransactionFeeLevelsThunk,
+    signBitcoinSendFormTransactionThunk,
 } from './sendFormBitcoinThunks';
 import {
-    signEthereumSendFormTransactionThunk,
+    composeCardanoTransactionFeeLevelsThunk,
+    signCardanoSendFormTransactionThunk,
+} from './sendFormCardanoThunks';
+import { SEND_MODULE_PREFIX } from './sendFormConstants';
+import {
     composeEthereumTransactionFeeLevelsThunk,
+    signEthereumSendFormTransactionThunk,
 } from './sendFormEthereumThunks';
 import {
-    signCardanoSendFormTransactionThunk,
-    composeCardanoTransactionFeeLevelsThunk,
-} from './sendFormCardanoThunks';
+    selectSendFormDrafts,
+    selectSendPrecomposedTx,
+    selectSendSerializedTx,
+} from './sendFormReducer';
 import {
     composeRippleTransactionFeeLevelsThunk,
     signRippleSendFormTransactionThunk,
 } from './sendFormRippleThunks';
 import {
-    signSolanaSendFormTransactionThunk,
     composeSolanaTransactionFeeLevelsThunk,
+    signSolanaSendFormTransactionThunk,
 } from './sendFormSolanaThunks';
-import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
     ComposeActionContext,
     ComposeFeeLevelsError,
     PushTransactionError,
     SignTransactionError,
 } from './sendFormTypes';
+import { accountsActions } from '../accounts/accountsActions';
+import { selectAccountByKey } from '../accounts/accountsReducer';
+import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
+import { selectSelectedDevice } from '../device/deviceReducer';
+import {
+    addFakePendingCardanoTxThunk,
+    addFakePendingTxThunk,
+} from '../transactions/transactionsThunks';
 
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,

@@ -1,10 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
-import { createThunk, ExtraDependencies } from '@suite-common/redux-utils';
-import { PROTO } from '@trezor/connect';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { Route } from '@suite-common/suite-types';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { PROTO } from '@trezor/connect';
 
 import { testMocks } from './mocks';
 

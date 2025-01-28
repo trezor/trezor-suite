@@ -1,10 +1,10 @@
+import { TranslationKey } from '@suite-common/intl-types';
 import { testMocks } from '@suite-common/test-utils';
 import type {
     Bip43Path,
     Bip43PathTemplate,
     NetworkSymbolExtended,
 } from '@suite-common/wallet-config';
-import { TranslationKey } from '@suite-common/intl-types';
 
 import { ACCOUNTS } from './accounts';
 

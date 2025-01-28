@@ -1,26 +1,17 @@
 import { AnyAction } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
-import TrezorConnect, {
-    Device,
-    CardanoAddress,
-    Address,
-    Response as ConnectResponse,
-    UI,
-    DEVICE,
-    DeviceState,
-} from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    sortByTimestamp,
-    isChanged,
-    getSelectedDevice,
-    getNewInstanceNumber,
     getDeviceInstances,
     getFirstDeviceInstance,
+    getNewInstanceNumber,
+    getSelectedDevice,
+    isChanged,
     isDeviceAcquired,
+    sortByTimestamp,
 } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { AccountKey, WalletType } from '@suite-common/wallet-types';
 import {
     getAddressType,
@@ -29,16 +20,25 @@ import {
     getProtocolMagic,
     getStakingPath,
 } from '@suite-common/wallet-utils';
+import TrezorConnect, {
+    Address,
+    CardanoAddress,
+    Response as ConnectResponse,
+    DEVICE,
+    Device,
+    DeviceState,
+    UI,
+} from '@trezor/connect';
 import { getEnvironment } from '@trezor/env-utils';
 
-import {
-    selectSelectedDevice,
-    selectSelectedDevice as selectDeviceSelector,
-    selectDeviceById,
-    selectDevices,
-} from './deviceReducer';
-import { deviceActions, DEVICE_MODULE_PREFIX, DeviceConnectActionPayload } from './deviceActions';
+import { DEVICE_MODULE_PREFIX, DeviceConnectActionPayload, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
+import {
+    selectDeviceById,
+    selectSelectedDevice as selectDeviceSelector,
+    selectDevices,
+    selectSelectedDevice,
+} from './deviceReducer';
 import { selectAccountByKey } from '../accounts/accountsReducer';
 
 type SelectDeviceThunkParams = {

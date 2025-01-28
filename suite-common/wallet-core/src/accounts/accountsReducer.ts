@@ -1,25 +1,25 @@
-import { isAnyOf } from '@reduxjs/toolkit';
 import { A, F, G, pipe } from '@mobily/ts-belt';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 import {
     createReducerWithExtraDeps,
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
-import { enhanceHistory, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
+import { type AccountType, type NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { Account, AccountKey } from '@suite-common/wallet-types';
-import { type AccountType, networks, type NetworkSymbol } from '@suite-common/wallet-config';
+import { enhanceHistory, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import { accountsActions } from './accountsActions';
 import { formattedAccountTypeMap } from './accountsConstants';
+import { deviceActions } from '../device/deviceActions';
 import {
     DeviceRootState,
-    selectSelectedDevice,
     selectDeviceState,
     selectHasOnlyPortfolioDevice,
+    selectSelectedDevice,
 } from '../device/deviceReducer';
-import { deviceActions } from '../device/deviceActions';
 import {
     DiscoveryRootState,
     selectHasDeviceDiscovery,

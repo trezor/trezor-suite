@@ -2,7 +2,7 @@ import { testMocks } from '@suite-common/test-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
-import { isDebugOnlyAccountType, filterReceiveAccounts } from '../filterReceiveAccounts';
+import { filterReceiveAccounts, isDebugOnlyAccountType } from '../filterReceiveAccounts';
 
 const { getSuiteDevice, getWalletAccount } = testMocks;
 

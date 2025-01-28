@@ -1,16 +1,17 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { createThunk } from '@suite-common/redux-utils';
-import { TimerId } from '@trezor/type-utils';
+import {
+    SupportedEthereumNetworkSymbol,
+    SupportedSolanaNetworkSymbols,
+} from '@suite-common/wallet-types';
 import {
     getSolanaStakingSymbols,
     getStakingSymbols,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import {
-    SupportedEthereumNetworkSymbol,
-    SupportedSolanaNetworkSymbols,
-} from '@suite-common/wallet-types';
+import { TimerId } from '@trezor/type-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import { EVERSTAKE_ENDPOINT_PREFIX } from './stakeConstants';
 import { selectEverstakeData } from './stakeSelectors';
 import {
     EVERSTAKE_ASSET_ENDPOINT_TYPES,
@@ -19,7 +20,6 @@ import {
     EverstakeEndpointType,
     ValidatorsQueue,
 } from './stakeTypes';
-import { EVERSTAKE_ENDPOINT_PREFIX } from './stakeConstants';
 import { selectAllNetworkSymbolsOfVisibleAccounts } from '../accounts/accountsReducer';
 
 const STAKE_MODULE = '@common/wallet-core/stake';

@@ -1,4 +1,3 @@
-import { Account, StakingPoolExtended } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     MAX_ETH_AMOUNT_FOR_STAKING,
@@ -10,6 +9,7 @@ import {
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
 } from '@suite-common/wallet-constants';
+import { Account, StakingPoolExtended } from '@suite-common/wallet-types';
 
 import {
     getAccountEverstakeStakingPool,

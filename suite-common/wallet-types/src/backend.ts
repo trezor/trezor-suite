@@ -1,4 +1,4 @@
-import { Explorer, NetworkSymbol, BackendType } from '@suite-common/wallet-config';
+import { BackendType, Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { TimerId } from '@trezor/type-utils';
 
 /**

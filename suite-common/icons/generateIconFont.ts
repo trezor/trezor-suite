@@ -1,14 +1,13 @@
 /* eslint-disable no-console */
-// disable eslint import for this file because this whole file is using only devDependencies
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { generateFonts, FontAssetType, OtherAssetType } from 'fantasticon';
-import fs, { constants } from 'fs';
-import path from 'path';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import chalk from 'chalk';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { FontAssetType, OtherAssetType, generateFonts } from 'fantasticon';
+import fs, { constants } from 'fs';
+import path from 'path';
 
-import { type IconName as AllAvailableIcons } from './src/icons';
 import { MOBILE_ICON_FONT_NAME } from './src/constants';
+import { type IconName as AllAvailableIcons } from './src/icons';
 
 const usedIcons = [
     'arrowDown',

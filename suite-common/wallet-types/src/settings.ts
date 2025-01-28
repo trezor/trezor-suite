@@ -1,6 +1,6 @@
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FeeLevel, PROTO } from '@trezor/connect';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 export const AddressDisplayOptions = {
     ORIGINAL: 'original',

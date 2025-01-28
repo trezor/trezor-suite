@@ -1,17 +1,17 @@
 import { fromWei, toWei } from 'web3-utils';
 
-import { CardanoOutput } from '@trezor/connect';
-import { getFirmwareVersion } from '@trezor/device-utils';
-import { versionUtils } from '@trezor/utils';
+import { TrezorDevice } from '@suite-common/suite-types';
 import {
     Account,
     FormState,
     GeneralPrecomposedTransactionFinal,
+    ReviewOutput,
     ReviewOutputState,
     StakeFormState,
-    ReviewOutput,
 } from '@suite-common/wallet-types';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { CardanoOutput } from '@trezor/connect';
+import { getFirmwareVersion } from '@trezor/device-utils';
+import { versionUtils } from '@trezor/utils';
 
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
 import { isRbfTransaction } from './transactionUtils';

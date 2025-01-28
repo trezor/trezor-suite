@@ -1,4 +1,4 @@
-import { ActionCreatorWithoutPayload, ActionCreatorWithPayload, AnyAction } from '@reduxjs/toolkit';
+import { ActionCreatorWithPayload, ActionCreatorWithoutPayload, AnyAction } from '@reduxjs/toolkit';
 
 export * from './device';
 export * from './guide';

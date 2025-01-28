@@ -1,7 +1,7 @@
 import { Network } from '@suite-common/wallet-config';
 
-import { Discovery } from './discovery';
 import { Account, WalletParams } from './account';
+import { Discovery } from './discovery';
 
 // 100% view
 // // Account loaders

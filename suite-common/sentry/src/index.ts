@@ -1,4 +1,4 @@
-import { captureConsoleIntegration, Options, Event as SentryEvent } from '@sentry/core';
+import { Options, Event as SentryEvent, captureConsoleIntegration } from '@sentry/core';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { redactUserPathFromString } from '@trezor/utils';

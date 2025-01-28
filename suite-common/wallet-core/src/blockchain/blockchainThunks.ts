@@ -1,24 +1,26 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    NetworkSymbol,
     getNetworkOptional,
     isBlockbookBasedNetwork,
     isNetworkSymbol,
     networksCollection,
-    NetworkSymbol,
 } from '@suite-common/wallet-config';
+import type { Account, CustomBackend, NetworksFees } from '@suite-common/wallet-types';
 import {
     findAccountDevice,
     findAccountsByDescriptor,
     findAccountsByNetwork,
     formatNetworkAmount,
     formatTokenAmount,
+    getAccountIdentity,
     getAreSatoshisUsed,
     getBackendFromSettings,
     getCustomBackends,
     isTrezorConnectBackendType,
-    shouldUseIdentities,
-    getAccountIdentity,
     shouldSubscribeBlocks,
+    shouldUseIdentities,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     BlockchainBlock,
@@ -26,15 +28,13 @@ import TrezorConnect, {
     BlockchainNotification,
     FeeLevel,
 } from '@trezor/connect';
-import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
-import type { Account, CustomBackend, NetworksFees } from '@suite-common/wallet-types';
 import type { TimerId } from '@trezor/type-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
-import { selectAccounts } from '../accounts/accountsReducer';
-import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
+import { selectAccounts } from '../accounts/accountsReducer';
+import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { selectNetworkFeeInfo } from '../fees/feesReducer';
 
 export const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000; // 1 minute

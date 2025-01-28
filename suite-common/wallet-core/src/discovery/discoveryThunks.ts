@@ -1,24 +1,24 @@
-import { createThunk, ExtraDependencies } from '@suite-common/redux-utils';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect, { AccountInfo, BundleProgress, StaticSessionId, UI } from '@trezor/connect';
+import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { getTxsPerPage } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    tryGetAccountIdentity,
+    Network,
+    type NetworkAccount,
+    type NetworkSymbol,
+    type NormalizedNetworkAccount,
+    networksCollection,
+    normalizeNetworkAccounts,
+} from '@suite-common/wallet-config';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
+import {
     getDerivationType,
     isTrezorConnectBackendType,
     substituteBip43Path,
+    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
-import { getTxsPerPage } from '@suite-common/suite-utils';
-import {
-    type NetworkAccount,
-    type NetworkSymbol,
-    Network,
-    networksCollection,
-    normalizeNetworkAccounts,
-    type NormalizedNetworkAccount,
-} from '@suite-common/wallet-config';
+import TrezorConnect, { AccountInfo, BundleProgress, StaticSessionId, UI } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
@@ -32,12 +32,12 @@ import {
     updateDiscovery,
 } from './discoveryActions';
 import {
-    selectDiscoveryByDeviceState,
-    selectDiscovery,
     selectDeviceDiscovery,
+    selectDiscovery,
+    selectDiscoveryByDeviceState,
 } from './discoveryReducer';
-import { selectAccounts } from '../accounts/accountsReducer';
 import { accountsActions } from '../accounts/accountsActions';
+import { selectAccounts } from '../accounts/accountsReducer';
 import { selectDeviceByStaticSessionId } from '../device/deviceReducer';
 
 type ProgressEvent = BundleProgress<AccountInfo | null>['payload'];

@@ -1,15 +1,15 @@
 import { fromWei, hexToNumberString } from 'web3-utils';
 
+import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     Account,
-    StakingPoolExtended,
     StakeType,
-    supportedNetworkSymbols,
+    StakingPoolExtended,
     SupportedEthereumNetworkSymbol,
+    supportedNetworkSymbols,
 } from '@suite-common/wallet-types';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { isArrayMember } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const getEverstakePool = (account?: Account) => {
     if (account?.networkType !== 'ethereum') {

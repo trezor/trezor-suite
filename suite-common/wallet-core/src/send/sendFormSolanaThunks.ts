@@ -1,14 +1,11 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
-import type { TokenInfo } from '@trezor/blockchain-link-types';
-import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
-import {
-    ExternalOutput,
-    PrecomposedTransaction,
-    PrecomposedLevels,
-    Account,
-} from '@suite-common/wallet-types';
 import { createThunk } from '@suite-common/redux-utils';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    Account,
+    ExternalOutput,
+    PrecomposedLevels,
+    PrecomposedTransaction,
+} from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
     calculateMax,
@@ -17,16 +14,19 @@ import {
     getAccountIdentity,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import type { TokenInfo } from '@trezor/blockchain-link-types';
+import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
+import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
-import {
-    ComposeTransactionThunkArguments,
-    ComposeFeeLevelsError,
-    SignTransactionThunkArguments,
-    SignTransactionError,
-} from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
+import {
+    ComposeFeeLevelsError,
+    ComposeTransactionThunkArguments,
+    SignTransactionError,
+    SignTransactionThunkArguments,
+} from './sendFormTypes';
+import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
 
 const calculate = (
     availableBalance: string,

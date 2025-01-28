@@ -1,10 +1,10 @@
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { networks } from '@suite-common/wallet-config';
 import { HistoricRates, TickerId } from '@suite-common/wallet-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
-import { RateLimiter } from './limiter';
 import { fetchUrl } from './fetch';
+import { RateLimiter } from './limiter';
 
 // a proxy for https://api.coingecko.com/api/v3
 const COINGECKO_API_BASE_URL = 'https://cdn.trezor.io/dynamic/coingecko/api/v3';

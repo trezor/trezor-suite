@@ -1,9 +1,13 @@
 import {
-    ActionCreatorWithoutPayload,
     ActionCreatorWithPayload,
     ActionCreatorWithPreparedPayload,
+    ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
+import { MetadataAddPayload } from '@suite-common/metadata-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { AcquiredDevice, Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     Account,
     AccountKey,
@@ -13,8 +17,6 @@ import {
     WalletAccountTransaction,
     WalletType,
 } from '@suite-common/wallet-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AcquiredDevice, Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
 import {
     BlockchainBlock,
     ConnectSettings,
@@ -22,8 +24,6 @@ import {
     PROTO,
     StaticSessionId,
 } from '@trezor/connect';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { MetadataAddPayload } from '@suite-common/metadata-types';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 

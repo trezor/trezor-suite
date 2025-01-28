@@ -1,7 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 
-import type { TransactionsState } from '../transactionsReducer';
 import type { transactionsActions } from '../transactionsActions';
+import type { TransactionsState } from '../transactionsReducer';
 
 const ACCOUNT = testMocks.getWalletAccount();
 

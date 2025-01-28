@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { AccountInfo, StaticSessionId } from '@trezor/connect';
-import { Account, SelectedAccountStatus, DiscoveryItem } from '@suite-common/wallet-types';
+import { getNetwork } from '@suite-common/wallet-config';
+import { Account, DiscoveryItem, SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
     enhanceAddresses,
     enhanceTokens,
@@ -10,7 +10,7 @@ import {
     getAccountKey,
     getAccountSpecific,
 } from '@suite-common/wallet-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { AccountInfo, StaticSessionId } from '@trezor/connect';
 
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 

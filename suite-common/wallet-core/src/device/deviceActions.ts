@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { Device, DEVICE } from '@trezor/connect';
 import { ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
 import { WalletType } from '@suite-common/wallet-types';
+import { DEVICE, Device } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 

@@ -1,44 +1,44 @@
 import { fromWei, toWei } from 'web3-utils';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    calculateTotal,
-    calculateMax,
-    calculateEthFee,
-    getEthereumEstimateFeeParams,
-    prepareEthereumTransaction,
-    getExternalComposeOutput,
-    amountToSmallestUnit,
-    formatAmount,
-    isPending,
-    getAccountIdentity,
-    getTxStakeNameByDataHex,
-    getUnstakeAmountByEthereumDataHex,
-} from '@suite-common/wallet-utils';
 import { createThunk } from '@suite-common/redux-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     ERC20_BACKUP_GAS_LIMIT,
     ETH_BACKUP_GAS_LIMIT,
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
 import {
+    AddressDisplayOptions,
+    ExternalOutput,
     PrecomposedLevels,
     PrecomposedTransaction,
-    ExternalOutput,
-    AddressDisplayOptions,
 } from '@suite-common/wallet-types';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-
-import { selectTransactions } from '../transactions/transactionsReducer';
 import {
-    ComposeTransactionThunkArguments,
-    ComposeFeeLevelsError,
-    SignTransactionThunkArguments,
-    SignTransactionError,
-} from './sendFormTypes';
+    amountToSmallestUnit,
+    calculateEthFee,
+    calculateMax,
+    calculateTotal,
+    formatAmount,
+    getAccountIdentity,
+    getEthereumEstimateFeeParams,
+    getExternalComposeOutput,
+    getTxStakeNameByDataHex,
+    getUnstakeAmountByEthereumDataHex,
+    isPending,
+    prepareEthereumTransaction,
+} from '@suite-common/wallet-utils';
+import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
+import {
+    ComposeFeeLevelsError,
+    ComposeTransactionThunkArguments,
+    SignTransactionError,
+    SignTransactionThunkArguments,
+} from './sendFormTypes';
+import { selectTransactions } from '../transactions/transactionsReducer';
 
 const calculate = (
     availableBalance: string,

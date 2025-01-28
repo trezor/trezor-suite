@@ -1,7 +1,7 @@
 import {
+    buildTokenDefinitionsFromStorageFixtures,
     getSupportedDefinitionTypesFixtures,
     isTokenDefinitionKnownFixtures,
-    buildTokenDefinitionsFromStorageFixtures,
 } from '../__fixtures__/utils';
 import {
     buildTokenDefinitionsFromStorage,

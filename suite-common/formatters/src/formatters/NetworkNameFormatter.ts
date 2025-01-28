@@ -1,4 +1,4 @@
-import { getNetwork, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
 import { makeFormatter } from '../makeFormatter';
 

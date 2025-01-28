@@ -1,9 +1,9 @@
 import { FirmwareRelease } from '@trezor/connect';
 
 import {
-    parseFirmwareChangelog,
     ParseFirmwareChangelogParams,
     ParseFirmwareChangelogResult,
+    parseFirmwareChangelog,
 } from '../parseFirmwareChangelog';
 
 const CHANGELOG_STRING =

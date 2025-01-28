@@ -1,19 +1,19 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
-import type {
-    TickerId,
-    HistoricRates,
-    Timestamp,
-    FiatRatesResult,
-} from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { isBlockbookBasedNetwork } from '@suite-common/wallet-config';
+import type {
+    FiatRatesResult,
+    HistoricRates,
+    TickerId,
+    Timestamp,
+} from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { scheduleAction } from '@trezor/utils';
-import { isBlockbookBasedNetwork } from '@suite-common/wallet-config';
 
-import * as coingeckoService from './coingecko';
 import * as blockbookService from './blockbook';
 import { ParallelRequestsCache } from './cache';
+import * as coingeckoService from './coingecko';
 
 const CONNECT_FETCH_TIMEOUT = 10_000;
 

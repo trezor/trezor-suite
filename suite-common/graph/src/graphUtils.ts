@@ -1,8 +1,8 @@
 import { A, D, pipe } from '@mobily/ts-belt';
 import { differenceInMinutes, eachMinuteOfInterval, fromUnixTime, getUnixTime } from 'date-fns';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
     AccountHistoryBalancePoint,

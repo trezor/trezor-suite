@@ -1,20 +1,20 @@
+import { TranslationKey } from '@suite-common/intl-types';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    AccountAddress,
     AccountTransaction,
     AccountUtxo,
-    AccountAddress,
-    FeeLevel,
-    TokenInfo,
     ComposeOutput,
-    PrecomposeResultError as PrecomposedTransactionConnectResponseError,
-    PrecomposeResultNonFinal as PrecomposedTransactionConnectResponseNonFinal,
-    PrecomposeResultFinal as PrecomposedTransactionConnectResponseFinal,
+    FeeLevel,
     PrecomposedTransactionErrorCardano as PrecomposedTransactionCardanoConnectResponseError,
-    PrecomposedTransactionNonFinalCardano as PrecomposedTransactionCardanoConnectResponseNonFinal,
     PrecomposedTransactionFinalCardano as PrecomposedTransactionCardanoConnectResponseFinal,
+    PrecomposedTransactionNonFinalCardano as PrecomposedTransactionCardanoConnectResponseNonFinal,
+    PrecomposeResultError as PrecomposedTransactionConnectResponseError,
+    PrecomposeResultFinal as PrecomposedTransactionConnectResponseFinal,
+    PrecomposeResultNonFinal as PrecomposedTransactionConnectResponseNonFinal,
     StaticSessionId,
+    TokenInfo,
 } from '@trezor/connect';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
-import { TranslationKey } from '@suite-common/intl-types';
 import { RequiredKey } from '@trezor/type-utils';
 
 import { Account } from './account';

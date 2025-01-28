@@ -1,14 +1,14 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { AccountType } from '@suite-common/wallet-config';
 import {
     Account,
     Output,
+    PoolsResponse,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
-    PoolsResponse,
     StakePool,
 } from '@suite-common/wallet-types';
 import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/connect';
-import { AccountType } from '@suite-common/wallet-config';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
     amountToSmallestUnit,

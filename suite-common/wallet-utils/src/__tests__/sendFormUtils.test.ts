@@ -1,5 +1,5 @@
-import { networks } from '@suite-common/wallet-config';
 import { testMocks } from '@suite-common/test-utils';
+import { networks } from '@suite-common/wallet-config';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';
 import { getUtxoOutpoint } from '../accountUtils';

@@ -1,6 +1,6 @@
 import {
-    getMyInputsFromTransaction,
     GetMyInputsFromTransactionParams,
+    getMyInputsFromTransaction,
 } from '../getMyInputsFromTransaction';
 
 describe(getMyInputsFromTransaction.name, () => {

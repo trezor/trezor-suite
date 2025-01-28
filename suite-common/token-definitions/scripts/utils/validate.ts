@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
-import * as fs from 'fs';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Ajv from 'ajv';
+import * as fs from 'fs';
 import { join } from 'path';
 
-import { SCHEMA_FILENAME_SUFFIX, SCHEMA_PATH } from '../constants';
 import { TokenStructure } from '../../src/tokenDefinitionsTypes';
+import { SCHEMA_FILENAME_SUFFIX, SCHEMA_PATH } from '../constants';
 
 // checks that a config meets the criteria specified by the schema
 export const validateStructure = (nftData: TokenStructure, structure: string) => {

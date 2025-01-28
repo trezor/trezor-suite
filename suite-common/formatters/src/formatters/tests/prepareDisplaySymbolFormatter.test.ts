@@ -1,5 +1,5 @@
-import { PROTO } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { PROTO } from '@trezor/connect';
 
 import { prepareDisplaySymbolFormatter } from '../prepareDisplaySymbolFormatter';
 

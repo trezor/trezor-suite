@@ -1,8 +1,8 @@
-import { createDeferred } from '@trezor/utils';
-import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
+import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
+import { createDeferred } from '@trezor/utils';
 
 import { discoveryActions } from './discoveryActions';
 import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';

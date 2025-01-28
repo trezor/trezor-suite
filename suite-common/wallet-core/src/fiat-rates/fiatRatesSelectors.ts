@@ -2,17 +2,21 @@ import { A, D, F, pipe } from '@mobily/ts-belt';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
+    TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
+import {
     Account,
     AccountKey,
-    WalletAccountTransaction,
     FiatRateKey,
     Rate,
-    TickerId,
     RateTypeWithoutHistoric,
-    Timestamp,
-    TokenAddress,
     RatesByKey,
     RatesByTimestamps,
+    TickerId,
+    Timestamp,
+    TokenAddress,
+    WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
@@ -20,19 +24,15 @@ import {
     isNftTokenTransfer,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
-import {
-    TokenDefinitionsRootState,
-    selectIsSpecificCoinDefinitionKnown,
-} from '@suite-common/token-definitions';
 
+import { MAX_AGE } from './fiatRatesConstants';
+import { FiatRatesRootState } from './fiatRatesTypes';
 import {
     AccountsRootState,
     selectAccountByKey,
     selectDeviceAccounts,
 } from '../accounts/accountsReducer';
 import { TransactionsRootState, selectTransactions } from '../transactions/transactionsReducer';
-import { MAX_AGE } from './fiatRatesConstants';
-import { FiatRatesRootState } from './fiatRatesTypes';
 
 type UnixTimestamp = number;
 

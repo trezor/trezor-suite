@@ -1,4 +1,4 @@
-import { NetworkType, Explorer } from './types';
+import { Explorer, NetworkType } from './types';
 
 type NetworkTypeExplorerMap = {
     [key in NetworkType]: Explorer;

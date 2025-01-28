@@ -1,5 +1,5 @@
-import { Action, AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 import { ThunkDispatch } from '@reduxjs/toolkit';
+import { Action, AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
 import { ExtraDependencies } from './extraDependenciesType';
 

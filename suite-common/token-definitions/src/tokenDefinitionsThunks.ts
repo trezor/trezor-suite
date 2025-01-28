@@ -1,17 +1,17 @@
-import { decode, verify } from 'jws';
 import { D, G } from '@mobily/ts-belt';
+import { decode, verify } from 'jws';
 
-import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
+import { getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
 import { TimerId } from '@trezor/type-utils';
 
-import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
 import {
+    JWS_SIGN_ALGORITHM,
     TOKEN_DEFINITIONS_PREFIX_URL,
     TOKEN_DEFINITIONS_SUFFIX_URL,
-    JWS_SIGN_ALGORITHM,
 } from './tokenDefinitionsConstants';
+import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
 import { DefinitionType } from './tokenDefinitionsTypes';
 import { getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
 

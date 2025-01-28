@@ -1,5 +1,7 @@
 import { G } from '@mobily/ts-belt';
 
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     AccountKey,
     FormState,
@@ -8,21 +10,19 @@ import {
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import { cloneObject } from '@trezor/utils';
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { DeviceModelInternal } from '@trezor/connect';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
+import { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { DeviceModelInternal } from '@trezor/connect';
+import { cloneObject } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
+import { SerializedTx } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 import {
     DeviceRootState,
     selectDeviceButtonRequestsCodes,
     selectDeviceModel,
 } from '../device/deviceReducer';
-import { SerializedTx } from './sendFormTypes';
 
 export type SendState = {
     drafts: {

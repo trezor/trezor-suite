@@ -1,14 +1,14 @@
 import { getUnixTime } from 'date-fns';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS, BlockchainEvent } from '@trezor/connect';
+import { BlockchainEvent, BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
 
 import {
-    onBlockchainConnectThunk,
     onBlockMinedThunk,
+    onBlockchainConnectThunk,
+    onBlockchainDisconnectThunk,
     onBlockchainNotificationThunk,
     updateFeeInfoThunk,
-    onBlockchainDisconnectThunk,
 } from './blockchainThunks';
 
 export const prepareBlockchainMiddleware = createMiddlewareWithExtraDeps(

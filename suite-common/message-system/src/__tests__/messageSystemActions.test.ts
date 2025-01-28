@@ -2,13 +2,13 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
-import {
-    prepareMessageSystemReducer,
-    messageSystemActions,
-    initMessageSystemThunk,
-    MessageSystemState,
-} from '../index';
 import * as fixtures from '../__fixtures__/messageSystemActions';
+import {
+    MessageSystemState,
+    initMessageSystemThunk,
+    messageSystemActions,
+    prepareMessageSystemReducer,
+} from '../index';
 
 const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesMock);
 

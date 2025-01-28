@@ -1,28 +1,28 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import TrezorConnect, { FeeLevel, RipplePayment } from '@trezor/connect';
-import {
-    calculateTotal,
-    calculateMax,
-    getExternalComposeOutput,
-    networkAmountToSmallestUnit,
-    formatNetworkAmount,
-} from '@suite-common/wallet-utils';
+import { createThunk } from '@suite-common/redux-utils';
 import { XRP_FLAG } from '@suite-common/wallet-constants';
 import {
+    AddressDisplayOptions,
+    ExternalOutput,
     PrecomposedLevels,
     PrecomposedTransaction,
-    ExternalOutput,
-    AddressDisplayOptions,
 } from '@suite-common/wallet-types';
-import { createThunk } from '@suite-common/redux-utils';
-
 import {
-    ComposeTransactionThunkArguments,
-    ComposeFeeLevelsError,
-    SignTransactionThunkArguments,
-    SignTransactionError,
-} from './sendFormTypes';
+    calculateMax,
+    calculateTotal,
+    formatNetworkAmount,
+    getExternalComposeOutput,
+    networkAmountToSmallestUnit,
+} from '@suite-common/wallet-utils';
+import TrezorConnect, { FeeLevel, RipplePayment } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
+import {
+    ComposeFeeLevelsError,
+    ComposeTransactionThunkArguments,
+    SignTransactionError,
+    SignTransactionThunkArguments,
+} from './sendFormTypes';
 
 const calculate = (
     availableBalance: string,

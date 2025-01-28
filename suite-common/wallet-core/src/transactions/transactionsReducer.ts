@@ -1,42 +1,42 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import {
+    createReducerWithExtraDeps,
     createWeakMapSelector,
     returnStableArrayIfEmpty,
-    createReducerWithExtraDeps,
 } from '@suite-common/redux-utils';
-import { Account, WalletAccountTransaction, AccountKey } from '@suite-common/wallet-types';
+import {
+    TokenDefinitionsRootState,
+    getIsPhishingTransaction,
+} from '@suite-common/token-definitions';
+import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
+import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     findTransaction,
     getConfirmations,
-    isPending,
     getEverstakePool,
     isClaimTx,
+    isPending,
     isStakeTx,
     isStakeTypeTx,
     isUnstakeTx,
 } from '@suite-common/wallet-utils';
-import {
-    getIsPhishingTransaction,
-    TokenDefinitionsRootState,
-} from '@suite-common/token-definitions';
-import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
 
-import { accountsActions } from '../accounts/accountsActions';
 import { transactionsActions } from './transactionsActions';
 import {
-    selectBlockchainHeightBySymbol,
-    BlockchainRootState,
-} from '../blockchain/blockchainReducer';
-import {
-    fetchTransactionsPageThunk,
     fetchAllTransactionsForAccountThunk,
+    fetchTransactionsPageThunk,
 } from './transactionsThunks';
+import { accountsActions } from '../accounts/accountsActions';
 import {
     AccountsRootState,
     selectAccountByKey,
     selectSolAccountHasStaked,
 } from '../accounts/accountsReducer';
+import {
+    BlockchainRootState,
+    selectBlockchainHeightBySymbol,
+} from '../blockchain/blockchainReducer';
 
 export type AccountTransactionsFetchStatusDetail =
     | {

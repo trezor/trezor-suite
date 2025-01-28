@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 
-import { COIN_LIST_URL } from '../constants';
 import { AdvancedTokenStructure, SimpleTokenStructure } from '../../src/tokenDefinitionsTypes';
+import { COIN_LIST_URL } from '../constants';
 import { CoinData } from '../types';
 
 const getContractAddress = (assetPlatformId: string, platforms: CoinData['platforms']) => {

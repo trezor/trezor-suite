@@ -1,5 +1,5 @@
-import { BigNumber } from '@trezor/utils';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
 
 import { AccountHistoryMovementItem } from '../../types';
 

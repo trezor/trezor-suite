@@ -1,14 +1,14 @@
-import { UseFormReturn, FormState as ReactHookFormState } from 'react-hook-form';
+import { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 import type { Network } from '@suite-common/wallet-config';
 import {
     Account,
-    Rate,
     FeeInfo,
-    StakeFormState,
     PrecomposedLevels,
+    Rate,
+    StakeFormState,
 } from '@suite-common/wallet-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { FeeLevel } from '@trezor/connect';
 
 export enum EverstakeEndpointType {

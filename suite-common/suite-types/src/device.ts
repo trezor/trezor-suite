@@ -1,3 +1,4 @@
+import { DeviceMetadata } from '@suite-common/metadata-types';
 import {
     DeviceButtonRequest,
     DeviceEvent,
@@ -7,7 +8,6 @@ import {
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
 } from '@trezor/connect';
-import { DeviceMetadata } from '@suite-common/metadata-types';
 
 // Extend original ButtonRequestMessage from @trezor/connect
 // suite (deviceReducer) stores them in slightly different shape:

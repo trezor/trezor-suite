@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
-import { join } from 'path';
 import fs from 'fs';
+import { join } from 'path';
 
+import { DEFINITIONS_FILENAME_SUFFIX, FILES_PATH } from './constants';
+import { fetchCoinData } from './utils/fetchCoins';
 import { fetchNftData } from './utils/fetchNft';
 import { signData } from './utils/sign';
 import { validateStructure } from './utils/validate';
-import { FILES_PATH, DEFINITIONS_FILENAME_SUFFIX } from './constants';
-import { fetchCoinData } from './utils/fetchCoins';
 import { TokenStructure } from '../src/tokenDefinitionsTypes';
 
 const main = async () => {

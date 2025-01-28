@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
-import sharp from 'sharp';
 import fs from 'fs';
 import { join } from 'path';
+import sharp from 'sharp';
 
 import {
     COIN_IMAGE_SIZES,
-    UPDATED_ICONS_LIST_FILE,
     FILES_CRYPTOICONS_PATH,
     RATE_LIMIT_PER_MINUTE,
     RUN_LIMIT_SECONDS,
+    UPDATED_ICONS_LIST_FILE,
 } from './constants';
 import { CoinListData } from './types';
 import { getCoinData, getCoinList, getUpdatedIconsList } from './utils/fetchCoins';

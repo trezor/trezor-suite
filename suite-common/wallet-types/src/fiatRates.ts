@@ -1,6 +1,6 @@
-import type { FiatRatesBySymbol } from '@trezor/connect';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { FiatRatesBySymbol } from '@trezor/connect';
 
 import { TokenAddress } from './account';
 

@@ -1,24 +1,24 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { testMocks } from '@suite-common/test-utils';
+import { WalletAccountTransaction } from '@suite-common/wallet-types';
 
-import * as fixtures from '../__fixtures__/transactionUtils';
 import stMock from '../__fixtures__/searchTransactions.json';
+import * as fixtures from '../__fixtures__/transactionUtils';
 import {
+    MonthKey,
     advancedSearchTransactions,
     analyzeTransactions,
     enhanceTransaction,
     findChainedTransactions,
+    generateTransactionMonthKey,
     getAccountTransactions,
     getRbfParams,
-    groupTransactionsByDate,
+    getTransactionWithLowestNonce,
     groupJointTransactions,
+    groupTokensTransactionsByContractAddress,
+    groupTransactionsByDate,
     isPending,
     parseTransactionDateKey,
     parseTransactionMonthKey,
-    MonthKey,
-    generateTransactionMonthKey,
-    groupTokensTransactionsByContractAddress,
-    getTransactionWithLowestNonce,
 } from '../transactionUtils';
 
 const { getWalletTransaction } = testMocks;

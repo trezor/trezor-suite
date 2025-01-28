@@ -1,8 +1,8 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { isNative } from '@trezor/env-utils';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { isNative } from '@trezor/env-utils';
 
 import {
     fetchFiatRatesThunk,
@@ -10,8 +10,8 @@ import {
     updateMissingTxFiatRatesThunk,
     updateTxsFiatRatesThunk,
 } from './fiatRatesThunks';
-import { blockchainActions } from '../blockchain/blockchainActions';
 import { accountsActions } from '../accounts/accountsActions';
+import { blockchainActions } from '../blockchain/blockchainActions';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { fetchAllTransactionsForAccountThunk } from '../transactions/transactionsThunks';
 

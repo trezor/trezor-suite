@@ -1,29 +1,29 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
 import {
-    TrezorConnect,
-    AccountUtxo,
-    Device,
-    Features,
-    DeviceModelInternal,
-    FirmwareType,
-    DeviceUniquePath,
-} from '@trezor/connect';
-import {
-    TrezorDevice,
-    GuideNode,
+    Action,
     GuideArticle,
     GuideCategory,
+    GuideNode,
     MessageSystem,
-    Action,
+    TrezorDevice,
 } from '@suite-common/suite-types';
+import { networksCollection } from '@suite-common/wallet-config';
 import {
     Account,
+    BlockchainNetworks,
     FeeInfo,
     WalletAccountTransaction,
-    BlockchainNetworks,
 } from '@suite-common/wallet-types';
-import { networksCollection } from '@suite-common/wallet-config';
+import {
+    AccountUtxo,
+    Device,
+    DeviceModelInternal,
+    DeviceUniquePath,
+    Features,
+    FirmwareType,
+    TrezorConnect,
+} from '@trezor/connect';
 
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';

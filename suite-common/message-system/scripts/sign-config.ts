@@ -6,8 +6,8 @@ import { join } from 'path';
 
 import { CONFIG_PATH, PACKAGE_ROOT } from './constants';
 import {
-    JWS_CONFIG_FILENAME_REMOTE,
     JWS_CONFIG_FILENAME_LOCAL,
+    JWS_CONFIG_FILENAME_REMOTE,
     JWS_SIGN_ALGORITHM,
 } from '../src/messageSystemConstants';
 

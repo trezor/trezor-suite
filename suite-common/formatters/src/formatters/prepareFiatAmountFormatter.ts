@@ -1,7 +1,7 @@
 import { FormatNumberOptions } from '@formatjs/intl';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { redactNumericalSubstring } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';

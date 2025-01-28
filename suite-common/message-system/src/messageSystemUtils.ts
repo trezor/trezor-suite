@@ -1,26 +1,16 @@
 import * as semver from 'semver';
 
-import {
-    getEnvironment,
-    getBrowserName,
-    getBrowserVersion,
-    getCommitHash,
-    getOsName,
-    getOsVersion,
-    getSuiteVersion,
-    Environment as EnvironmentType,
-} from '@trezor/env-utils';
 import type {
-    TrezorDevice,
+    Condition,
+    Device,
     Duration,
-    MessageSystem,
+    Environment,
     Message,
-    Version,
+    MessageSystem,
     Settings,
     Transport,
-    Device,
-    Environment,
-    Condition,
+    TrezorDevice,
+    Version,
 } from '@suite-common/suite-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
@@ -29,6 +19,16 @@ import {
     getFirmwareRevision,
     getFirmwareVersion,
 } from '@trezor/device-utils';
+import {
+    Environment as EnvironmentType,
+    getBrowserName,
+    getBrowserVersion,
+    getCommitHash,
+    getEnvironment,
+    getOsName,
+    getOsVersion,
+    getSuiteVersion,
+} from '@trezor/env-utils';
 
 import { ValidMessagesPayload } from './messageSystemActions';
 

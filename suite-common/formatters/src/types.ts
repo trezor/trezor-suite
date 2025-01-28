@@ -1,7 +1,7 @@
 import { IntlShape } from 'react-intl';
 
-import { PROTO } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { PROTO } from '@trezor/connect';
 
 export type FormatterProviderConfig = {
     locale: string;

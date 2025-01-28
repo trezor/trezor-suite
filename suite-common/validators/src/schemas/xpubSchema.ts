@@ -1,7 +1,7 @@
 import { G } from '@mobily/ts-belt';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { isAddressValid, isAddressBasedNetwork } from '@suite-common/wallet-utils';
+import { isAddressBasedNetwork, isAddressValid } from '@suite-common/wallet-utils';
 
 import { yup } from '../config';
 

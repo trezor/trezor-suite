@@ -10,7 +10,7 @@ import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockch
 import TrezorConnect from '@trezor/connect';
 
 import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
-import { isLocalBalanceHistoryCoin, isIgnoredBalanceHistoryCoin } from './constants';
+import { isIgnoredBalanceHistoryCoin, isLocalBalanceHistoryCoin } from './constants';
 import {
     AccountHistoryMovementItem,
     AccountItem,

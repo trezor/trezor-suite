@@ -1,15 +1,15 @@
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
+import { isDeviceKnown } from '@suite-common/suite-utils';
+import { deviceActions } from '@suite-common/wallet-core';
 import {
-    FirmwareType,
-    UI,
     DEVICE,
+    DeviceButtonRequest,
     FirmwareProgress,
     FirmwareReconnect,
-    DeviceButtonRequest,
+    FirmwareType,
+    UI,
 } from '@trezor/connect';
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { deviceActions } from '@suite-common/wallet-core';
-import { isDeviceKnown } from '@suite-common/suite-utils';
 
 import { firmwareActions } from './firmwareActions';
 

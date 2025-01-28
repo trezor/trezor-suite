@@ -1,7 +1,7 @@
-import { Deferred } from '@trezor/utils';
-import { Account, AddressType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { Account, AddressType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Deferred } from '@trezor/utils';
 
 import { TrezorDevice } from './device';
 

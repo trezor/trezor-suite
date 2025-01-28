@@ -1,28 +1,28 @@
-import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { createThunk } from '@suite-common/redux-utils';
+import { getTxsPerPage } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { networksCollection } from '@suite-common/wallet-config';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 import {
     analyzeTransactions,
     findAccountDevice,
     formatNetworkAmount,
     formatTokenAmount,
-    tryGetAccountIdentity,
     getAccountTransactions,
     getAreSatoshisUsed,
     isAccountOutdated,
     isPending,
     isTrezorConnectBackendType,
+    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { getTxsPerPage } from '@suite-common/suite-utils';
-import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
 
+import { accountsActions } from './accountsActions';
+import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
+import { selectAccountByKey, selectAccounts } from './accountsReducer';
+import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsReducer';
-import { accountsActions } from './accountsActions';
-import { selectAccountByKey, selectAccounts } from './accountsReducer';
-import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
-import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 
 export const disableAccountsThunk = createThunk(
     `${ACCOUNTS_MODULE_PREFIX}/disableAccountsThunk`,

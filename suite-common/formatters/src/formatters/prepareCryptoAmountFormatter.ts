@@ -1,9 +1,9 @@
 import { A } from '@mobily/ts-belt';
 
 import {
+    NetworkSymbol,
     getNetworkOptional,
     isNetworkSymbol,
-    NetworkSymbol,
     networks,
 } from '@suite-common/wallet-config';
 import {

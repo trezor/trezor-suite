@@ -1,11 +1,11 @@
 import { createReducer } from '@reduxjs/toolkit';
 
+import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { formatDuration } from '@suite-common/suite-utils';
 import { NetworkSymbol, getNetworkType, networksCollection } from '@suite-common/wallet-config';
 import { FeeInfo, FeeLevelLabel } from '@suite-common/wallet-types';
-import { formatDuration } from '@suite-common/suite-utils';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { FeeLevel } from '@trezor/connect';
 import { getFeeInfo } from '@suite-common/wallet-utils';
+import { FeeLevel } from '@trezor/connect';
 
 import { blockchainActions } from '../blockchain/blockchainActions';
 

@@ -2,9 +2,9 @@ import { UseFormSetValue } from 'react-hook-form';
 
 import { toChecksumAddress } from 'web3-utils';
 
-import addressValidator from '@trezor/address-validator';
 import { getTestnetSymbols } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
+import addressValidator from '@trezor/address-validator';
 import { AccountInfo } from '@trezor/blockchain-link-types';
 
 const getNetworkType = (symbol: Account['symbol']) => {

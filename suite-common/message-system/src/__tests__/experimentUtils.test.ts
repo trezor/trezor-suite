@@ -1,9 +1,9 @@
+import { experimentTest, getArrayOfInstanceIds } from '../__fixtures__/experimentUtils';
 import {
     getExperimentGroupByInclusion,
     getInclusionFromInstanceId,
     selectActiveExperimentGroup,
 } from '../experimentUtils';
-import { experimentTest, getArrayOfInstanceIds } from '../__fixtures__/experimentUtils';
 import { ExperimentId } from '../messageSystemTypes';
 
 describe('testing experiment utils', () => {

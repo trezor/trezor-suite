@@ -1,4 +1,4 @@
-import { getNetwork, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     amountToSmallestUnit,
     formatNetworkAmount,

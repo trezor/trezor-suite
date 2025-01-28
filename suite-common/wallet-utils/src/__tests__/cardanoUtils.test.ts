@@ -1,25 +1,25 @@
 import { CARDANO, PROTO } from '@trezor/connect';
 
+import * as fixtures from '../__fixtures__/cardanoUtils';
 import {
+    formatMaxOutputAmount,
+    getAddressParameters,
     getAddressType,
     getDelegationCertificates,
-    getVotingCertificates,
+    getDerivationType,
     getNetworkId,
     getProtocolMagic,
     getShortFingerprint,
     getStakePoolForDelegation,
-    parseAsset,
     getStakingPath,
-    transformUserOutputs,
-    isCardanoTx,
-    isCardanoExternalOutput,
-    isPoolOverSaturated,
-    formatMaxOutputAmount,
     getUnusedChangeAddress,
-    getAddressParameters,
-    getDerivationType,
+    getVotingCertificates,
+    isCardanoExternalOutput,
+    isCardanoTx,
+    isPoolOverSaturated,
+    parseAsset,
+    transformUserOutputs,
 } from '../cardanoUtils';
-import * as fixtures from '../__fixtures__/cardanoUtils';
 
 describe('cardano utils', () => {
     let dateSpy: any;

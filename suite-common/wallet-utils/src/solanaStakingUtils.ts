@@ -1,15 +1,15 @@
-import { Solana, SolDelegation, SolNetwork, StakeAccount, StakeState } from '@everstake/wallet-sdk';
+import { SolDelegation, SolNetwork, Solana, StakeAccount, StakeState } from '@everstake/wallet-sdk';
 
-import { getNetworkFeatures, NetworkSymbol } from '@suite-common/wallet-config';
-import { BigNumber, isArrayMember } from '@trezor/utils';
-import { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
+import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
     Account,
-    supportedSolanaNetworkSymbols,
     SupportedSolanaNetworkSymbols,
+    supportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
+import { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
 import { PartialRecord } from '@trezor/type-utils';
-import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { formatNetworkAmount } from './accountUtils';
 

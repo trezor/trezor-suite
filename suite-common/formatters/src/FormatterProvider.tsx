@@ -16,14 +16,14 @@ import {
 import { prepareDateFormatter } from './formatters/prepareDateFormatter';
 import { prepareDateTimeFormatter } from './formatters/prepareDateTimeFormatter';
 import {
+    DisplaySymbolFormatterDataContext,
+    prepareDisplaySymbolFormatter,
+} from './formatters/prepareDisplaySymbolFormatter';
+import {
     FiatAmountFormatterDataContext,
     prepareFiatAmountFormatter,
 } from './formatters/prepareFiatAmountFormatter';
 import { MonthNameFormatter } from './formatters/prepareMonthNameFormatter';
-import {
-    DisplaySymbolFormatterDataContext,
-    prepareDisplaySymbolFormatter,
-} from './formatters/prepareDisplaySymbolFormatter';
 import { prepareTimeFormatter } from './formatters/prepareTimeFormatter';
 import { Formatter } from './makeFormatter';
 import { FormatterConfig, FormatterProviderConfig } from './types';

@@ -1,7 +1,7 @@
 import {
-    createAsyncThunk as createAsyncThunkReduxToolkit,
     AsyncThunkOptions,
     AsyncThunkPayloadCreator,
+    createAsyncThunk as createAsyncThunkReduxToolkit,
 } from '@reduxjs/toolkit';
 
 import { CustomThunkAPI } from './extraDependenciesType'; // Adjust the import path according to your project structure

@@ -1,4 +1,5 @@
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
+import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     Account,
     AccountKey,
@@ -21,12 +22,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { getTxsPerPage } from '@suite-common/suite-utils';
 
-import { accountsActions } from '../accounts/accountsActions';
-import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
-import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
-import { selectSendSignedTx } from '../send/sendFormReducer';
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import {
     selectAccountTransactions,
@@ -36,6 +32,10 @@ import {
     selectIsPageAlreadyFetched,
     selectTransactions,
 } from './transactionsReducer';
+import { accountsActions } from '../accounts/accountsActions';
+import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
+import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
+import { selectSendSignedTx } from '../send/sendFormReducer';
 
 /**
  * Replace existing transaction in the reducer (RBF)

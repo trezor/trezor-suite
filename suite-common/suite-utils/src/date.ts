@@ -1,17 +1,17 @@
 import {
+    Locale,
+    differenceInCalendarMonths,
+    differenceInMinutes,
+    differenceInMonths,
+    eachDayOfInterval,
+    eachMonthOfInterval,
+    eachQuarterOfInterval,
     formatDistance,
     formatDistanceStrict,
-    differenceInMonths,
     fromUnixTime,
     getUnixTime,
     startOfDay,
     startOfMonth,
-    differenceInCalendarMonths,
-    eachQuarterOfInterval,
-    eachMonthOfInterval,
-    eachDayOfInterval,
-    differenceInMinutes,
-    Locale,
 } from 'date-fns';
 
 export const formatDuration = (seconds: number) =>

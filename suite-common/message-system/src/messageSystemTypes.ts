@@ -1,4 +1,4 @@
-import { ExperimentsItem, MessageSystem, Category } from '@suite-common/suite-types';
+import { Category, ExperimentsItem, MessageSystem } from '@suite-common/suite-types';
 
 export type MessageState = { [key in Category]: boolean };
 

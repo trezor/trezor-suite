@@ -1,11 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { ExtraDependenciesPartial } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
-import { ExtraDependenciesPartial } from '@suite-common/redux-utils';
 
-import { disableAccountsThunk } from '../accountsThunks';
 import { AccountsRootState, prepareAccountsReducer } from '../accountsReducer';
+import { disableAccountsThunk } from '../accountsThunks';
 
 const accountsReducer = prepareAccountsReducer(extraDependenciesMock);
 

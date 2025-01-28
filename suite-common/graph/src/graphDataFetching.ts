@@ -6,17 +6,18 @@ import { fromUnixTime, getUnixTime } from 'date-fns';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
+import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 import {
     NUMBER_OF_POINTS,
-    isLocalBalanceHistoryCoin,
     isIgnoredBalanceHistoryCoin,
+    isLocalBalanceHistoryCoin,
 } from './constants';
 import {
     findOldestBalanceMovementTimestamp,
@@ -33,7 +34,6 @@ import {
     FiatGraphPoint,
     FiatGraphPointWithCryptoBalance,
 } from './types';
-import { getAccountHistoryMovementFromTransactions } from './balanceHistoryUtils';
 
 export const addBalanceForAccountMovementHistory = (
     data: AccountMovementHistory[] | AccountHistoryMovementItem[],

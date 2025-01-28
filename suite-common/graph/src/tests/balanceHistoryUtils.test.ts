@@ -1,13 +1,13 @@
 import { TokenAddress } from '@suite-common/wallet-types';
 
+import { getAccountHistoryMovementFromTransactions } from '../balanceHistoryUtils';
 import { btcAccountBalanceHistoryResult, btcAccountTransactions } from './__fixtures__/btc';
-import { xrpAccountTransactions, xrpBalanceHistoryResult } from './__fixtures__/xrp';
 import {
     ethAccountBalanceHistoryResult,
-    ethTokenBalanceHistoryResult,
     ethAccountTransactions,
+    ethTokenBalanceHistoryResult,
 } from './__fixtures__/eth';
-import { getAccountHistoryMovementFromTransactions } from '../balanceHistoryUtils';
+import { xrpAccountTransactions, xrpBalanceHistoryResult } from './__fixtures__/xrp';
 
 describe('Account balance movement history', () => {
     it('should getAccoutBalanceHistory for bitcoin', async () => {

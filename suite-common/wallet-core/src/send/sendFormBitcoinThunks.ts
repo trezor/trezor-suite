@@ -1,21 +1,6 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import TrezorConnect, {
-    FeeLevel,
-    Params,
-    SignTransaction,
-    SignedTransaction,
-    DEFAULT_SORTING_STRATEGY,
-} from '@trezor/connect';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    formatNetworkAmount,
-    getBitcoinComposeOutputs,
-    hasNetworkFeatures,
-    restoreOrigOutputsOrder,
-    getUtxoOutpoint,
-    isRbfTransaction,
-} from '@suite-common/wallet-utils';
+import { createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS, BitcoinOnlySymbolsItemType } from '@suite-common/suite-constants';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
 import {
     Account,
@@ -24,17 +9,32 @@ import {
     PrecomposedLevels,
     PrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { createThunk } from '@suite-common/redux-utils';
-
-import { selectTransactions } from '../transactions/transactionsReducer';
-import { selectSelectedDevice } from '../device/deviceReducer';
 import {
-    ComposeTransactionThunkArguments,
-    ComposeFeeLevelsError,
-    SignTransactionThunkArguments,
-    SignTransactionError,
-} from './sendFormTypes';
+    formatNetworkAmount,
+    getBitcoinComposeOutputs,
+    getUtxoOutpoint,
+    hasNetworkFeatures,
+    isRbfTransaction,
+    restoreOrigOutputsOrder,
+} from '@suite-common/wallet-utils';
+import TrezorConnect, {
+    DEFAULT_SORTING_STRATEGY,
+    FeeLevel,
+    Params,
+    SignTransaction,
+    SignedTransaction,
+} from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
+import {
+    ComposeFeeLevelsError,
+    ComposeTransactionThunkArguments,
+    SignTransactionError,
+    SignTransactionThunkArguments,
+} from './sendFormTypes';
+import { selectSelectedDevice } from '../device/deviceReducer';
+import { selectTransactions } from '../transactions/transactionsReducer';
 
 type GetSequenceParams = { account: Account; formValues: FormState };
 

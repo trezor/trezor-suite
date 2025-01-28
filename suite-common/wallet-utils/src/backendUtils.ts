@@ -1,16 +1,16 @@
-import { parseElectrumUrl } from '@trezor/utils';
-import type {
-    CustomBackend,
-    BlockchainNetworks,
-    BackendSettings,
-    Account,
-} from '@suite-common/wallet-types';
 import {
-    TREZOR_CONNECT_BACKENDS,
     BackendType,
     NetworkSymbol,
+    TREZOR_CONNECT_BACKENDS,
     getNetworkType,
 } from '@suite-common/wallet-config';
+import type {
+    Account,
+    BackendSettings,
+    BlockchainNetworks,
+    CustomBackend,
+} from '@suite-common/wallet-types';
+import { parseElectrumUrl } from '@trezor/utils';
 
 export const getDefaultBackendType = (symbol: NetworkSymbol) => {
     if (symbol === 'ada' || symbol === 'tada') {

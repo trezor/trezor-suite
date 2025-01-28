@@ -1,6 +1,6 @@
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { Message, Category } from '@suite-common/suite-types';
 import { ExperimentId } from '@suite-common/message-system';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { Category, Message } from '@suite-common/suite-types';
 
 import {
     ContextDomain,

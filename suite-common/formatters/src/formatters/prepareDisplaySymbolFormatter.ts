@@ -1,8 +1,8 @@
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-import { getNetwork, getNetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
-import { FormatterConfig } from '../types';
 import { makeFormatter } from '../makeFormatter';
+import { FormatterConfig } from '../types';
 
 export type DisplaySymbolFormatterDataContext = { areAmountUnitsEnabled?: boolean };
 

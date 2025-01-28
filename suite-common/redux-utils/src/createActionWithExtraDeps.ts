@@ -1,4 +1,4 @@
-import { ActionCreatorWithPreparedPayload, createAction, Dispatch } from '@reduxjs/toolkit';
+import { ActionCreatorWithPreparedPayload, Dispatch, createAction } from '@reduxjs/toolkit';
 
 import { ExtraDependencies } from './extraDependenciesType';
 

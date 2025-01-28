@@ -1,9 +1,9 @@
 import {
     ActionReducerMapBuilder,
-    createAction,
-    createSlice,
     CreateSliceOptions,
     SliceCaseReducers,
+    createAction,
+    createSlice,
 } from '@reduxjs/toolkit';
 
 import { ExtraDependenciesForReducer } from './extraDependenciesType';

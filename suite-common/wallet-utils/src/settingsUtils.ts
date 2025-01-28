@@ -1,5 +1,5 @@
-import { PROTO } from '@trezor/connect';
 import { Account } from '@suite-common/wallet-types';
+import { PROTO } from '@trezor/connect';
 
 import { hasNetworkFeatures } from './accountUtils';
 

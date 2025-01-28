@@ -1,5 +1,5 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getLocaleSeparators } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const localizeNumber = (
     value: number | string | BigNumber,

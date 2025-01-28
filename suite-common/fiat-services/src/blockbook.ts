@@ -1,7 +1,7 @@
 import type { HistoricRates, TimestampedRates } from '@suite-common/wallet-types';
 
-import { RateLimiter } from './limiter';
 import { fetchUrl } from './fetch';
+import { RateLimiter } from './limiter';
 
 // TODO: generate from @trezor/connect-common/files/coins.json
 const ENDPOINTS = {

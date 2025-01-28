@@ -9,10 +9,8 @@ import {
 
 import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { fiatCurrencies } from '@suite-common/suite-config';
 import { Network, NetworkType } from '@suite-common/wallet-config';
-import { EthereumTransaction, TokenInfo, ComposeOutput, PROTO } from '@trezor/connect';
 import {
     COMPOSE_ERROR_TYPES,
     DEFAULT_PAYMENT,
@@ -20,20 +18,22 @@ import {
     ERC20_TRANSFER,
 } from '@suite-common/wallet-constants';
 import type {
-    FormState,
-    FeeInfo,
+    Account,
+    AccountKey,
+    CurrencyOption,
     EthTransactionData,
+    ExcludedUtxos,
     ExternalOutput,
+    FeeInfo,
+    FormState,
+    GeneralPrecomposedTransactionFinal,
     Output,
     RbfTransactionParams,
-    Account,
-    CurrencyOption,
-    ExcludedUtxos,
-    GeneralPrecomposedTransactionFinal,
-    AccountKey,
-    TokenAddress,
     SendFormDraftKey,
+    TokenAddress,
 } from '@suite-common/wallet-types';
+import { ComposeOutput, EthereumTransaction, PROTO, TokenInfo } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { amountToSmallestUnit, getUtxoOutpoint, networkAmountToSmallestUnit } from './accountUtils';
 import { sanitizeHex } from './ethUtils';

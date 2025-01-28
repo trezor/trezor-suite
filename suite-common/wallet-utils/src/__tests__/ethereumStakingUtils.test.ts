@@ -1,17 +1,17 @@
 import { Account } from '@suite-common/wallet-types';
 
 import {
-    getAccountAutocompoundBalance,
-    getEthAccountTotalStakingBalance,
-    getAccountEverstakeStakingPool,
-    getUnstakeAmountByEthereumDataHex,
-} from '../ethereumStakingUtils';
-import {
     getAccountAutocompoundBalanceFixtures,
     getAccountEverstakeStakingPoolFixtures,
     getEthAccountTotalStakingBalanceFixtures,
     getUnstakeAmountByEthereumDataHexFixtures,
 } from '../__fixtures__/ethereumStakingUtils';
+import {
+    getAccountAutocompoundBalance,
+    getAccountEverstakeStakingPool,
+    getEthAccountTotalStakingBalance,
+    getUnstakeAmountByEthereumDataHex,
+} from '../ethereumStakingUtils';
 
 describe('getAccountEverstakeStakingPool', () => {
     getAccountEverstakeStakingPoolFixtures.forEach(({ description, account, expected }) => {

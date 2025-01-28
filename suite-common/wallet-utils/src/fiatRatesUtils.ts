@@ -1,15 +1,15 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
-import {
-    TokenAddress,
-    FiatRateKey,
-    TickerId,
-    Timestamp,
-    RatesByTimestamps,
-    WalletAccountTransaction,
-    TickerResult,
-} from '@suite-common/wallet-types';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    FiatRateKey,
+    RatesByTimestamps,
+    TickerId,
+    TickerResult,
+    Timestamp,
+    TokenAddress,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 
 const ONE_HOUR_IN_SECONDS = 60 * 60;
 

@@ -1,24 +1,24 @@
 import { decode, verify } from 'jws';
 
-import { getJWSPublicKey, isCodesignBuild, isNative } from '@trezor/env-utils';
-import { scheduleAction } from '@trezor/utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { MessageSystem } from '@suite-common/suite-types';
+import { getJWSPublicKey, isCodesignBuild, isNative } from '@trezor/env-utils';
+import { scheduleAction } from '@trezor/utils';
 
+import { ACTION_PREFIX, messageSystemActions } from './messageSystemActions';
 import {
-    VERSION,
-    JWS_SIGN_ALGORITHM,
     CONFIG_URL_REMOTE,
+    FETCH_CHECK_INTERVAL_IN_MS,
+    FETCH_CHECK_INTERVAL_IN_MS_MOBILE,
     FETCH_INTERVAL_IN_MS,
     FETCH_INTERVAL_IN_MS_MOBILE,
     FETCH_TIMEOUT_IN_MS,
-    FETCH_CHECK_INTERVAL_IN_MS,
-    FETCH_CHECK_INTERVAL_IN_MS_MOBILE,
+    JWS_SIGN_ALGORITHM,
+    VERSION,
 } from './messageSystemConstants';
-import { ACTION_PREFIX, messageSystemActions } from './messageSystemActions';
 import {
-    selectMessageSystemTimestamp,
     selectMessageSystemCurrentSequence,
+    selectMessageSystemTimestamp,
 } from './messageSystemSelectors';
 import { jws as configJwsLocal } from '../files/config.v1';
 

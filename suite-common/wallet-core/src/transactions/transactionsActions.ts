@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { AccountTransaction } from '@trezor/connect';
 import { enhanceTransaction } from '@suite-common/wallet-utils';
+import { AccountTransaction } from '@trezor/connect';
 
 export const TRANSACTIONS_MODULE_PREFIX = '@common/wallet-core/transactions';
 

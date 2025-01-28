@@ -1,4 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { deviceConnectThunks } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     DEVICE,
@@ -6,10 +7,9 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
+import { isDesktop, isNative } from '@trezor/env-utils';
 import { DATA_URL } from '@trezor/urls';
 import { getSynchronize } from '@trezor/utils';
-import { deviceConnectThunks } from '@suite-common/wallet-core';
-import { isDesktop, isNative } from '@trezor/env-utils';
 
 import { cardanoConnectPatch } from './cardanoConnectPatch';
 

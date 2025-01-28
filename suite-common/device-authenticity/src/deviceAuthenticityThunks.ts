@@ -1,6 +1,6 @@
-import TrezorConnect, { AuthenticateDeviceResult } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions, ToastPayload } from '@suite-common/toast-notifications';
+import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
+import TrezorConnect, { AuthenticateDeviceResult } from '@trezor/connect';
 
 import { ACTION_PREFIX, deviceAuthenticityActions } from './deviceAuthenticityActions';
 

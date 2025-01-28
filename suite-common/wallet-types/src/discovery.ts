@@ -1,8 +1,8 @@
-import { ObjectValues } from '@trezor/type-utils';
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { AccountType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-config';
-import { Deferred } from '@trezor/utils';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { StaticSessionId } from '@trezor/connect';
+import { ObjectValues } from '@trezor/type-utils';
+import { Deferred } from '@trezor/utils';
 
 import { Account, AccountBackendSpecific } from './account';
 

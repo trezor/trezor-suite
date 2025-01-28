@@ -1,7 +1,7 @@
 import {
     getIsFakeTokenPhishingFixtures,
-    getIsZeroValuePhishingFixtures,
     getIsPhishingTransactionFixtures,
+    getIsZeroValuePhishingFixtures,
 } from '../__fixtures__/antiFraud';
 import {
     getIsFakeTokenPhishing,

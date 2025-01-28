@@ -1,36 +1,36 @@
-import { fromWei, toWei } from 'web3-utils';
 import { addDays, startOfMonth } from 'date-fns';
+import { fromWei, toWei } from 'web3-utils';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { AccountLabels } from '@suite-common/metadata-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { SignOperator } from '@suite-common/suite-types';
 import {
     Account,
-    RbfTransactionParams,
-    WalletAccountTransaction,
-    ChainedTransactions,
-    PrecomposedTransactionFinal,
     AccountKey,
-    TokenAddress,
-    RatesByTimestamps,
-    Timestamp,
+    ChainedTransactions,
     GeneralPrecomposedTransactionFinal,
+    PrecomposedTransactionFinal,
     PrecomposedTransactionFinalRbf,
+    RatesByTimestamps,
+    RbfTransactionParams,
+    Timestamp,
+    TokenAddress,
+    WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     AccountAddress,
     AccountTransaction,
-    TokenTransfer,
     InternalTransfer,
     TokenInfo,
+    TokenTransfer,
 } from '@trezor/connect';
-import { SignOperator } from '@suite-common/suite-types';
 import { arrayPartition } from '@trezor/utils';
-import { AccountLabels } from '@suite-common/metadata-types';
-import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { formatAmount, formatNetworkAmount, isTokenMatchesSearch } from './accountUtils';
-import { toFiatCurrency } from '../src/fiatConverterUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
+import { toFiatCurrency } from '../src/fiatConverterUtils';
 
 export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?: number }) => {
     // if both are missing the blockHeight don't change their order
