@@ -178,19 +178,13 @@ export const TransactionReviewModalContent = ({
             />
             <NewModal.ModalBase
                 heading={<Translation id={areDetailsVisible ? 'TR_DETAIL' : actionLabel} />}
-                onBackClick={
-                    areDetailsVisible
-                        ? () => {
-                              setAreDetailsVisible(!areDetailsVisible);
-                          }
-                        : undefined
-                }
+                onBackClick={areDetailsVisible ? () => setAreDetailsVisible(false) : undefined}
                 description={
                     !areDetailsVisible && (
                         <TransactionReviewSummary
                             tx={precomposedTx}
                             account={account}
-                            broadcast={precomposedForm.options.includes('broadcast')}
+                            broadcast={isBroadcastEnabled}
                             onDetailsClick={() => {
                                 setAreDetailsVisible(!areDetailsVisible);
                             }}

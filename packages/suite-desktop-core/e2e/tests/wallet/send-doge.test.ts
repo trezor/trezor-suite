@@ -53,13 +53,12 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
         });
 
         await test.step('Verify info on modals and confirm', async () => {
-            await expect(devicePrompt.reviewAmount).toContainText(localizeNumber(sendAmount));
-            await expect(devicePrompt.outputValueOf('default')).toContainText(
+            await expect(devicePrompt.outputValueOf('amount')).toContainText(
                 `${localizeNumber(sendAmount)} DOGE`,
             );
             await expect(devicePrompt.outputValueOf('total')).toContainText(`${totalAmount} DOGE`);
             await expect(devicePrompt.outputValueOf('fee')).toContainText(`${feeAmount} DOGE`);
-            await expect(devicePrompt.chunkedText).toHaveText(recipientAddress);
+            await expect(devicePrompt.outputValueOf('address')).toHaveText(recipientAddress);
             await expect(devicePrompt.modal).toHaveScreenshot('send-doge.png');
             await trezorUserEnvLink.pressYes();
             await expect(devicePrompt.modal).toHaveScreenshot('send-doge-confirmed.png');

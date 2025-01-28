@@ -56,21 +56,16 @@ const Status = ({ state }: { state: TransactionReviewOutputElementProps['state']
     }
 };
 
-const Value = ({
-    value,
-    type,
-    symbol,
-    token,
-    isFee,
-    isFiatVisible,
-}: {
+type ValueProps = {
     value: string;
     type: OutputElementLine['type'];
     symbol: NetworkSymbol;
     isFiatVisible: boolean;
     isFee: boolean;
     token?: TokenInfo;
-}) => {
+};
+
+const Value = ({ value, type, symbol, token, isFee, isFiatVisible }: ValueProps) => {
     switch (type) {
         case 'address':
             return <Address value={value} />;
@@ -105,8 +100,12 @@ const Value = ({
                 </>
             );
         }
-        default:
+        case 'default':
             return <Text>{value}</Text>;
+        default: {
+            const _unhandledCase: never = type;
+            throw new Error(`Unhandled type: ${_unhandledCase}`);
+        }
     }
 };
 

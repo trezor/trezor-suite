@@ -131,8 +131,7 @@ const Container = styled.div<ContainerProps>`
     flex-flow: ${({ $direction, $isReversed, $flexWrap }) =>
         `${$direction}${$isReversed === true ? '-reverse' : ''} ${$flexWrap}`};
     flex: ${({ $flex }) => $flex};
-    row-gap: ${({ $rowGap }) => $rowGap}px;
-    column-gap: ${({ $columnGap }) => $columnGap}px;
+    gap: ${({ $rowGap, $columnGap }) => `${$rowGap}px ${$columnGap}px`};
     justify-content: ${({ $justifyContent }) => $justifyContent};
     align-items: ${({ $alignItems }) => $alignItems};
     ${({ $order }) => (typeof $order !== 'undefined' ? `order: ${$order};` : '')}
