@@ -6864,10 +6864,6 @@ export default defineMessages({
         defaultMessage:
             'We want to be sure that your device is in tip-top shape before you start using it. Reach out to Trezor Support to find out what to do next.',
     },
-    TR_DISCONNECT_DEVICE: {
-        id: 'TR_DISCONNECT_DEVICE',
-        defaultMessage: 'Disconnect your device from your laptop or computer.',
-    },
     TR_AVOID_USING_DEVICE: {
         id: 'TR_AVOID_USING_DEVICE',
         defaultMessage: 'Avoid using this device or sending any funds to it.',

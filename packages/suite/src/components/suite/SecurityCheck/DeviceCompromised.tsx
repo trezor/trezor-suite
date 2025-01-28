@@ -16,7 +16,7 @@ const useSecurityCheckFailProps = (): Partial<SecurityCheckFailProps> => {
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const hashCheckError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
 
-    // revision check has precedence over hash check, because it is unimpeachable
+    // revision check has precedence over hash check, because it does not have the ambiguous other-error state
     if (revisionCheckError !== null) {
         return {
             heading: 'TR_DEVICE_COMPROMISED_HEADING',

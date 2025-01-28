@@ -15,10 +15,6 @@ const IconBackground = styled.div`
 
 export const hardFailureChecklistItems: SecurityChecklistItem[] = [
     {
-        icon: <Icon size={24} variant="default" name="plugs" />,
-        content: <Translation id="TR_DISCONNECT_DEVICE" />,
-    },
-    {
         icon: <Icon size={24} variant="default" name="hand" />,
         content: <Translation id="TR_AVOID_USING_DEVICE" />,
     },
