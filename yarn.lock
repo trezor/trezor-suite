@@ -12873,11 +12873,10 @@ __metadata:
   resolution: "@trezor/trezor-user-env-link@workspace:packages/trezor-user-env-link"
   dependencies:
     "@trezor/utils": "workspace:*"
+    "@trezor/websocket-client": "workspace:*"
     "@types/semver": "npm:^7.5.8"
-    "@types/ws": "npm:^8.5.13"
     cross-fetch: "npm:^4.0.0"
     semver: "npm:^7.6.3"
-    ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
 
