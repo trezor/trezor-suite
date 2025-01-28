@@ -12,7 +12,6 @@ import { FrameProps } from '../../utils/frameProps';
 export type RadioCardProps = {
     isActive: boolean;
     children: ReactNode;
-    onClick: () => void;
 };
 
 const BorderActive = styled.div<{ isActive: boolean }>`
