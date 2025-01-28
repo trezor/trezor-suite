@@ -446,7 +446,7 @@ export default defineMessages({
     },
     TR_EXCHANGE_DETAIL_KYC_TEXT: {
         defaultMessage:
-            'The provider has marked this transaction as "suspicious" and you may be required to complete their KYC process to finish the trade. Please contact the provider\'s support to proceed.',
+            'The provider has marked this transaction as "suspicious" and you may be required to complete their KYC process to finish the trade. Contact the provider\'s support to proceed.',
         id: 'TR_EXCHANGE_DETAIL_KYC_TEXT',
     },
     TR_EXCHANGE_DETAIL_KYC_SUPPORT: {
@@ -1628,7 +1628,7 @@ export default defineMessages({
         id: 'TR_BACKUP_FINISHED_TEXT',
     },
     TR_BACKUP_RECOVERY_SEED: {
-        defaultMessage: 'Backup',
+        defaultMessage: 'Wallet backup',
         id: 'TR_BACKUP_RECOVERY_SEED',
     },
     TR_BACKUP_SUBHEADING_1: {
@@ -1915,11 +1915,12 @@ export default defineMessages({
     },
     TR_PASSPHRASE_NON_ASCII_CHARS: {
         defaultMessage:
-            'We recommend using <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code> or <code>these special characters</code>',
+            'Use only  <code>ABC</code>, <code>abc</code>, <code>123</code>, <code>spaces</code> and <code>these special characters</code>',
         id: 'TR_PASSPHRASE_NON_ASCII_CHARS',
     },
     TR_PASSPHRASE_NON_ASCII_CHARS_WARNING: {
-        defaultMessage: 'Use of unlisted special characters may impact future compatibility.',
+        defaultMessage:
+            'The use of unlisted special characters may cause compatibility issues in the future.',
         id: 'TR_PASSPHRASE_NON_ASCII_CHARS_WARNING',
     },
     TR_CONFIRMED_TX: {
@@ -1996,7 +1997,7 @@ export default defineMessages({
         id: 'TR_COPY_ADDRESS_POLICY_ID',
     },
     TR_CREATE_BACKUP: {
-        defaultMessage: 'Create backup',
+        defaultMessage: 'Create wallet backup',
         id: 'TR_CREATE_BACKUP',
     },
     TR_DETAIL: {
@@ -2011,7 +2012,7 @@ export default defineMessages({
     },
     TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION: {
         defaultMessage:
-            'Your Trezor was disconnected during the backup process. We strongly recommend that you use the factory reset option in Device settings to wipe your device and start the wallet backup process again.',
+            'Your Trezor was disconnected during the wallet backup process. We strongly recommend that you use the factory reset option in Device settings to wipe your device and start the wallet backup process again.',
         description: 'Error message. Instruction what to do.',
         id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
     },
@@ -2359,7 +2360,7 @@ export default defineMessages({
         id: 'TR_FAILED_BACKUP',
     },
     TR_BACKUP_SUCCESSFUL: {
-        defaultMessage: 'Backup successful',
+        defaultMessage: 'Wallet backup successful',
         id: 'TR_BACKUP_SUCCESSFUL',
     },
     TR_FIAT_RATES_NOT_AVAILABLE: {
@@ -3844,7 +3845,7 @@ export default defineMessages({
     },
     TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
-        defaultMessage: 'Start update',
+        defaultMessage: 'Update now',
     },
     TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_RESTART_AND_UPDATE: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_RESTART_AND_UPDATE',
@@ -4039,7 +4040,7 @@ export default defineMessages({
     },
     TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
-        defaultMessage: 'I understand this action deletes all data on the device',
+        defaultMessage: 'I understand this action deletes all data on the device.',
     },
     TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION',
@@ -4086,7 +4087,7 @@ export default defineMessages({
     TR_CHECK_RECOVERY_SEED_DESC_T3B1: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T3B1',
         defaultMessage:
-            'Use the two-button pad to enter your wallet backup, ensuring that your sensitive information remains secure and protected from any potentially unsafe computers or web browsers.',
+            'Use the two-button pad to enter your wallet backup. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
         dynamic: true,
     },
     TR_CHECK_RECOVERY_SEED_DESC_TOUCHSCREEN: {
@@ -4711,7 +4712,7 @@ export default defineMessages({
     TR_FIRMWARE_IS_POTENTIALLY_RISKY: {
         id: 'TR_FIRMWARE_IS_POTENTIALLY_RISKY',
         defaultMessage:
-            "Updating firmware poses potential risks. If anything goes wrong (such as a compromised cable), the device could be wiped, which means you'll have to recover your wallet using your wallet backup.",
+            "Updating firmware carries risks. If something goes wrong, the device may be wiped, and you'll need your wallet backup to restore access. Create a wallet backup before updating.",
     },
     ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING: {
         id: 'ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING',
@@ -5459,24 +5460,24 @@ export default defineMessages({
         defaultMessage: 'Locktime timestamp',
     },
     DESTINATION_TAG: {
-        defaultMessage: 'Destination tag',
+        defaultMessage: 'Memo/Destination tag',
         id: 'DESTINATION_TAG',
     },
     DESTINATION_TAG_TOOLTIP: {
         id: 'DESTINATION_TAG_TOOLTIP',
         defaultMessage:
-            'Destination tag is a unique code to identify the receiver of a transaction.',
+            'Memo/Destination tag is a unique code to identify the receiver of a transaction.',
     },
     DESTINATION_TAG_NOT_SET: {
         defaultMessage: "Destination tag isn't set",
         id: 'DESTINATION_TAG_NOT_SET',
     },
     DESTINATION_TAG_IS_NOT_VALID: {
-        defaultMessage: "Destination tag isn't valid",
+        defaultMessage: "Memo/Destination tag isn't valid",
         id: 'DESTINATION_TAG_IS_NOT_VALID',
     },
     DESTINATION_TAG_IS_NOT_NUMBER: {
-        defaultMessage: "Destination tag isn't a number",
+        defaultMessage: "Memo/Destination tag isn't a number",
         id: 'DESTINATION_TAG_IS_NOT_NUMBER',
     },
     DATA_ETH: {
@@ -5724,7 +5725,7 @@ export default defineMessages({
     TR_UTXO_NOT_MATURED_COINBASE: {
         id: 'TR_UTXO_NOT_MATURED_COINBASE',
         defaultMessage:
-            'A Coinbase transaction requires at least {confirmations} confirmations before it can be spent.',
+            'A coinbase transaction requires at least {confirmations} confirmations before it can be spent.',
     },
     TR_CHANGE_ADDRESS_TOOLTIP: {
         id: 'TR_CHANGE_ADDRESS_TOOLTIP',
@@ -5812,7 +5813,7 @@ export default defineMessages({
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
-        defaultMessage: 'Connect & unlock device to edit',
+        defaultMessage: 'Connect & unlock device to change',
     },
     TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP: {
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP',
@@ -7053,7 +7054,7 @@ export default defineMessages({
     },
     TR_STILL_DONT_SEE_YOUR_TREZOR: {
         id: 'TR_STILL_DONT_SEE_YOUR_TREZOR',
-        defaultMessage: 'Still don’t see your Trezor?',
+        defaultMessage: 'Don’t see your Trezor?',
     },
     TR_ONBOARDING_ADVANCED: {
         id: 'TR_ONBOARDING_ADVANCED',
@@ -7154,28 +7155,28 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_CABLE_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_TITLE',
-        defaultMessage: 'Try a different cable',
+        defaultMessage: 'Use a different USB cable',
     },
     TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION',
         defaultMessage:
-            'The cable must be fully inserted. In case of a USB-C connected device, the cable should click into place.',
+            'The cable must be fully inserted. For USB-C devices, ensure the cable clicks securely into place.',
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE',
-        defaultMessage: 'Try a different USB port',
+        defaultMessage: 'Use a different USB port',
     },
     TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION',
-        defaultMessage: 'Connect it directly to your computer (without a USB hub).',
+        defaultMessage: 'Connect your device directly to your computer, without using a USB hub.',
     },
     TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE',
-        defaultMessage: 'Try using a different computer, if you can',
+        defaultMessage: 'Use a different computer',
     },
     TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION',
-        defaultMessage: 'With Trezor Bridge installed.',
+        defaultMessage: 'Connect your device to a different computer with Trezor Bridge installed.',
     },
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE',
@@ -8493,7 +8494,7 @@ export default defineMessages({
     TR_CONFIRM_EVM_EXPLANATION_SEND_DESCRIPTION: {
         id: 'TR_CONFIRM_EVM_EXPLANATION_SEND_DESCRIPTION',
         defaultMessage:
-            'Make sure you send your crypto only through the {network} network. If coins or tokens are sent outside the {network} network, the receiver may not be able to access them.',
+            'Make sure you send your assets only through the {network} network. If coins or tokens are sent outside the {network} network, the receiver may not be able to access them.',
     },
     TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION',
@@ -9110,7 +9111,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_DESC: {
         id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_DESC',
-        defaultMessage: 'Connect Trezor to move or trade coins.',
+        defaultMessage: 'Connect Trezor to move or swap coins.',
     },
     TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON: {
         id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON',
@@ -9156,7 +9157,7 @@ export default defineMessages({
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION',
         defaultMessage:
-            'Write your passphrase on paper & keep it away from anything digital (no cloud, USB, internet, phone).',
+            'Write your passphrase on paper & keep it away from anything digital—no clouds, USB, internet, or phones.',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION',
@@ -9178,7 +9179,7 @@ export default defineMessages({
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING',
         defaultMessage:
-            'Write it down on paper, keep it away from anything digital, and store it in a safe place. No one can recover it, not even Trezor Support.',
+            'Write it down on paper, store it in a safe place, and keep it away from anything digital. No one can recover it, not even Trezor Support.',
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM1: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM1',
