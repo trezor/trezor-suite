@@ -26,7 +26,7 @@ const initialSettings: ConnectSettings = {
     env: 'node',
     lazyLoad: false,
     timestamp: new Date().getTime(),
-    interactionTimeout: 600, // 5 minutes
+    interactionTimeout: 1200, // 20 minutes
     sharedLogger: true,
     deeplinkUrl: `${DEFAULT_DOMAIN}deeplink/${DEEPLINK_VERSION}/`,
     transportReconnect: true,
