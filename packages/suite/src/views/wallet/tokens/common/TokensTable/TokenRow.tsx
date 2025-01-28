@@ -156,7 +156,7 @@ export const TokenRow = ({
                         size={24}
                         shouldTryToFetch={isTokenKnown}
                     />
-                    <BlurUrls text={token.name} />
+                    {isTokenKnown ? token.name : <BlurUrls text={token.name} />}
                 </Row>
             </Table.Cell>
             <Table.Cell>
