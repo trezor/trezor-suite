@@ -475,9 +475,7 @@ class RippleWorker extends BaseWorker<RippleAPI> {
     }
 
     disconnect() {
-        if (this.api) {
-            this.api.disconnect();
-        }
+        return this.api?.disconnect();
     }
 
     async messageHandler(event: { data: MessageTypes.Message }) {
@@ -508,10 +506,9 @@ class RippleWorker extends BaseWorker<RippleAPI> {
         if (this.pingTimeout) {
             clearTimeout(this.pingTimeout);
         }
-        this.pingTimeout = setTimeout(
-            () => this.onPing(),
-            this.settings.pingTimeout || DEFAULT_PING_TIMEOUT,
-        );
+        this.pingTimeout = this.api?.isConnected()
+            ? setTimeout(() => this.onPing(), this.settings.pingTimeout || DEFAULT_PING_TIMEOUT)
+            : undefined;
     }
 
     async onPing() {
