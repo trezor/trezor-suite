@@ -101,3 +101,5 @@ export { getSafeWindowSize } from './utils/getSafeWindowSize';
 
 export { intermediaryTheme } from './config/colors';
 export type { SuiteThemeColors } from './config/colors';
+
+export { RadioCard } from './components/RadioCard/RadioCard';
