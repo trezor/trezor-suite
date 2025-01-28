@@ -2,15 +2,12 @@ import {
     BuyCryptoPaymentMethod,
     BuyProviderInfo,
     BuyTrade,
-    BuyTradeStatus,
     CryptoId,
     ExchangeProviderInfo,
     ExchangeTrade,
-    ExchangeTradeStatus,
     FiatCurrencyCode,
     SellFiatTrade,
     SellProviderInfo,
-    SellTradeStatus,
 } from 'invity-api';
 import { AnyAction, Dispatch } from 'redux';
 
@@ -100,8 +97,6 @@ export interface TradingGetTypedTradeProps {
     transactionId: string | undefined;
 }
 
-export type TradingTradeStatusType = BuyTradeStatus | SellTradeStatus | ExchangeTradeStatus;
-
 export interface TradingGetDetailDataProps {
     trading: State;
     tradeType: TradeType;
@@ -137,14 +132,6 @@ export interface TradingCryptoListProps {
     label: string; // token shortcut
     cryptoName?: string | undefined; // full name
 }
-
-export type TradingUtilsProvidersProps = {
-    [name: string]: {
-        logo: string;
-        companyName: string;
-        brandName?: string;
-    };
-};
 
 export interface TradingInfoProps {
     cryptoIdToPlatformName: (cryptoId: CryptoId) => string | undefined;

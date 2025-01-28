@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { Badge, Radio, Tooltip, Row, Text, useElevation } from '@trezor/components';
 import { borders, spacings, spacingsPx, mapElevationToBackground, Elevation } from '@trezor/theme';
+import type { TradingUtilsProvidersProps } from '@suite-common/trading';
 
-import { TradingUtilsProvidersProps } from 'src/types/trading/trading';
 import { Translation } from 'src/components/suite';
 import { ExchangeType } from 'src/types/trading/tradingForm';
 import { FORM_EXCHANGE_CEX, FORM_EXCHANGE_DEX } from 'src/constants/wallet/trading/form';

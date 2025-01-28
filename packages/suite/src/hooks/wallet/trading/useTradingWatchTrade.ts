@@ -11,17 +11,13 @@ import {
     WatchSellTradeResponse,
 } from 'invity-api';
 
-import { invityAPI, type TradingType } from '@suite-common/trading';
+import { invityAPI, type TradingTradeStatusType, type TradingType } from '@suite-common/trading';
 
 import { Trade, TradeType } from 'src/types/wallet/tradingCommonTypes';
 import { saveTrade as saveBuyTrade } from 'src/actions/wallet/tradingBuyActions';
 import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/tradingExchangeActions';
 import { saveTrade as saveSellTrade } from 'src/actions/wallet/tradingSellActions';
-import {
-    TradingTradeStatusType,
-    TradingUseWatchTradeProps,
-    TradingWatchTradeProps,
-} from 'src/types/trading/trading';
+import { TradingUseWatchTradeProps, TradingWatchTradeProps } from 'src/types/trading/trading';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 
 export const tradeFinalStatuses: Record<TradeType, TradingTradeStatusType[]> = {

@@ -1,9 +1,8 @@
 import { spacings } from '@trezor/theme';
 import { Row, Card, Column, Spinner, Paragraph } from '@trezor/components';
-import type { TradingTradeType } from '@suite-common/trading';
+import type { TradingTradeType, TradingUtilsProvidersProps } from '@suite-common/trading';
 
 import { Translation } from 'src/components/suite';
-import { TradingUtilsProvidersProps } from 'src/types/trading/trading';
 import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 import {
     FORM_EXCHANGE_CEX,
