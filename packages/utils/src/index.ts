@@ -46,6 +46,7 @@ export * from './promiseAllSequence';
 export * from './redactUserPath';
 export * from './resolveAfter';
 export * from './scheduleAction';
+export * from './serializeError';
 export * from './splitStringEveryNCharacters';
 export * from './throttler';
 export * from './throwError';
