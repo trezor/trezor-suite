@@ -21,10 +21,6 @@ const isArray = (
     attempts: ScheduleActionParams['attempts'],
 ): attempts is readonly AttemptParams[] => Array.isArray(attempts);
 
-const abortedBySignal = () => new Error('Aborted by signal');
-const abortedByDeadline = () => new Error('Aborted by deadline');
-const abortedByTimeout = () => new Error('Aborted by timeout');
-
 const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
     new Promise<void>((resolve, reject) => {
         if (clear.aborted) return reject();
@@ -43,7 +39,7 @@ const resolveAfterMs = (ms: number | undefined, clear: AbortSignal) =>
         clear.addEventListener('abort', onClear);
     });
 
-const rejectAfterMs = (ms: number, reason: () => Error, clear: AbortSignal) =>
+const rejectAfterMs = (ms: number, reason: Error, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
         if (clear.aborted) return reject();
         // eslint-disable-next-line prefer-const
@@ -55,19 +51,20 @@ const rejectAfterMs = (ms: number, reason: () => Error, clear: AbortSignal) =>
         };
         timeout = setTimeout(() => {
             clear.removeEventListener('abort', onClear);
-            reject(reason());
+            reject(reason);
         }, ms);
         clear.addEventListener('abort', onClear);
     });
 
-const maybeRejectAfterMs = (ms: number | undefined, reason: () => Error, clear: AbortSignal) =>
+const maybeRejectAfterMs = (ms: number | undefined, reason: Error, clear: AbortSignal) =>
     ms === undefined ? [] : [rejectAfterMs(ms, reason, clear)];
 
 const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) =>
     new Promise<never>((_, reject) => {
         if (clear.aborted) return reject();
-        if (signal?.aborted) return reject(abortedBySignal());
-        const onAbort = () => reject(abortedBySignal());
+        const errorSignal = new Error('Aborted by signal');
+        if (signal?.aborted) return reject(errorSignal);
+        const onAbort = () => reject(errorSignal);
         signal?.addEventListener('abort', onAbort);
         const onClear = () => {
             signal?.removeEventListener('abort', onAbort);
@@ -133,20 +130,19 @@ export const scheduleAction = async <T>(
         ? (attempt: number) => attempts[attempt]
         : () => ({ timeout, gap });
 
+    const errorDeadline = new Error('Aborted by deadline');
+    const errorTimeout = new Error('Aborted by timeout');
+
     try {
         return await Promise.race([
             rejectWhenAborted(signal, clear),
-            ...maybeRejectAfterMs(deadlineMs, abortedByDeadline, clear),
+            ...maybeRejectAfterMs(deadlineMs, errorDeadline, clear),
             resolveAfterMs(delay, clear).then(() =>
                 attemptLoop(
                     attemptCount,
                     (attempt, abort) =>
                         Promise.race([
-                            ...maybeRejectAfterMs(
-                                getParams(attempt).timeout,
-                                abortedByTimeout,
-                                clear,
-                            ),
+                            ...maybeRejectAfterMs(getParams(attempt).timeout, errorTimeout, clear),
                             resolveAction(action, abort),
                         ]),
                     (attempt, error) => {
