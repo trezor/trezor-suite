@@ -1181,8 +1181,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         });
     }
 
-    // Deprecate Vertcoin (VTC) and other networks
     if (oldVersion < 52) {
+        // Deprecate Vertcoin (VTC) and other networks
         const deprecatedNetworks = ['vtc', 'btg', 'nmc', 'dgb', 'dash'];
 
         // Remove transactions related to deprecated networks
@@ -1227,6 +1227,27 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         for (const network of deprecatedNetworks) {
             await backendSettings.delete(network as NetworkSymbol); // Delete backend settings for each deprecated network
         }
+
+        // remove ripple network transactions
+        const accountsToUpdate = ['xrp', 'txrp'];
+
+        await updateAll<'txs', DBWalletAccountTransactionCompatible>(transaction, 'txs', tx => {
+            if (accountsToUpdate.includes(tx.tx.symbol)) {
+                return null;
+            }
+            tx.tx.internalTransfers = [];
+
+            return tx;
+        });
+
+        // force to fetch ripple network transactions again
+        await updateAll(transaction, 'accounts', account => {
+            if (accountsToUpdate.includes(account.symbol)) {
+                account.history = { total: 0, unconfirmed: 0, tokens: 0 };
+
+                return account;
+            }
+        });
     }
 
     if (oldVersion < 53) {
