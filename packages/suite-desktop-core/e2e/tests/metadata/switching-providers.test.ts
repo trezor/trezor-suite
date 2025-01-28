@@ -30,10 +30,10 @@ test.describe(
             await metadataProviderMock.start(MetadataProvider.DROPBOX);
 
             // Add a label using Dropbox
-            await metadataPage.clickAddAccountLabelButton(AccountLabelId.BitcoinDefault1);
+            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
             await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 
-            await metadataPage.metadataInput.fill(dropboxLabel);
+            await metadataPage.account.metadataInput.fill(dropboxLabel);
             await page.keyboard.press('Enter');
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
                 dropboxLabel,
@@ -58,7 +58,7 @@ test.describe(
             await metadataProviderMock.start(MetadataProvider.GOOGLE);
 
             // Connect to Google and add a label
-            await metadataPage.clickAddAccountLabelButton(AccountLabelId.BitcoinDefault1);
+            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
             await expect(page.getByTestId('@modal/metadata-provider')).toBeVisible();
             await expect(
                 page.getByTestId('@modal/metadata-provider/file-system-button'),
@@ -66,7 +66,7 @@ test.describe(
             await page.getByTestId('@modal/metadata-provider/google-button').click();
             await expect(page.getByTestId('@modal/metadata-provider')).not.toBeVisible();
 
-            await metadataPage.metadataInput.fill(googleLabel);
+            await metadataPage.account.metadataInput.fill(googleLabel);
             await page.keyboard.press('Enter');
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
                 googleLabel,

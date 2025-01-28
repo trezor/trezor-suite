@@ -3,13 +3,7 @@ import { test, expect } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
 
 test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, () => {
-    const fileContent = {
-        version: '1.0.0',
-        accountLabel: 'already existing label',
-        outputLabels: {},
-        addressLabels: {},
-    };
-    const aesKey: string = 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d';
+
 
     test.use({
         emulatorSetupConf: { mnemonic: 'mnemonic_all' },
@@ -28,8 +22,8 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
     }) => {
         await metadataProviderMock.setFileContent(
             '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
-            fileContent,
-            aesKey,
+            metadataProviderMock.defaultFileContent,
+            metadataProviderMock.defaultAesKey,
         );
 
         await onboardingPage.completeOnboarding();
@@ -42,8 +36,8 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
 
         await page.getByTestId('@account-menu/btc/normal/0').click();
 
-        await metadataPage.accountLabel(AccountLabelId.BitcoinDefault1).click();
-        await metadataPage.editAccountLabelButton(AccountLabelId.BitcoinDefault1).click();
+        await metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1).click();
+        await metadataPage.account.editLabelButton(AccountLabelId.BitcoinDefault1).click();
 
         // Simulated API responses for retries with malformed token must be supplied exactly at this point in the flow
         for (let i = 0; i < 4; i++) {
@@ -56,7 +50,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
             });
         }
 
-        await metadataPage.metadataInput.fill('Kvooo');
+        await metadataPage.account.metadataInput.fill('Kvooo');
         await page.keyboard.press('Enter');
 
         // Validate the error message in the toast notification
@@ -64,7 +58,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
             'Error: Failed to save labeling data: Error in call to API function "files/upload": The given OAuth 2 access token is malformed.',
         );
 
-        await expect(metadataPage.accountLabel(AccountLabelId.BitcoinDefault1)).toContainText(
+        await expect(metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1)).toContainText(
             'Bitcoin #1',
         );
     });
@@ -79,8 +73,8 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
     }) => {
         await metadataProviderMock.setFileContent(
             '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
-            fileContent,
-            aesKey,
+            metadataProviderMock.defaultFileContent,
+            metadataProviderMock.defaultAesKey,
         );
 
         await onboardingPage.completeOnboarding();
@@ -121,8 +115,8 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
         });
 
         await page.getByTestId('@account-menu/btc/normal/0').click();
-        await metadataPage.editAccountLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
-        await expect(metadataPage.accountLabel(AccountLabelId.BitcoinDefault1)).toContainText(
+        await metadataPage.account.editLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
+        await expect(metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1)).toContainText(
             'Kvooo',
         );
     });
@@ -144,7 +138,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
                 // 1] user manually changed the files (very unlikely);
                 // 2] we screwed app data saving or reading
             },
-            aesKey,
+            metadataProviderMock.defaultAesKey,
         );
 
         await onboardingPage.completeOnboarding();
@@ -157,7 +151,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
 
         await page.getByTestId('@account-menu/btc/normal/0').click();
         // just enter some label, this indicates that app did not crash
-        await metadataPage.editAccountLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
+        await metadataPage.account.editLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
     });
 
     test.afterEach(async ({ metadataProviderMock }) => {

@@ -6,14 +6,6 @@ import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
 //On enable, it initiates metadata right away (if device already has state).
 //On disable, it throws away all metadata related records from memory.
 test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () => {
-    const fileContent = {
-        version: '1.0.0',
-        accountLabel: 'already existing label',
-        outputLabels: {},
-        addressLabels: {},
-    };
-    const aesKey: string = 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d';
-
     test.use({
         emulatorStartConf: { model: 'T2T1', wipe: true },
         emulatorSetupConf: { mnemonic: 'mnemonic_all' },
@@ -22,8 +14,8 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
         await metadataProviderMock.start(MetadataProvider.GOOGLE);
         await metadataProviderMock.setFileContent(
             'f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
-            fileContent,
-            aesKey,
+            metadataProviderMock.defaultFileContent,
+            metadataProviderMock.defaultAesKey,
         );
     });
 
@@ -63,7 +55,7 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
         );
 
         // At this moment, there are no labels. But we still can see "add label" button, which inits metadata flow but without obtaining keys from device (they are saved!)
-        await metadataPage.clickAddAccountLabelButton(AccountLabelId.BitcoinDefault1);
+        await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
         await metadataPage.metadataProviderButton(MetadataProvider.GOOGLE).click();
         await expect(metadataPage.metadataModal).not.toBeVisible();
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
@@ -77,7 +69,7 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).not.toContainText(
             'label',
         );
-        await metadataPage.clickAddAccountLabelButton(AccountLabelId.BitcoinDefault1);
+        await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
 
         // disabling metadata removed also all keys, so metadata init flow takes all steps now expect for providers, these stay connected
         await devicePrompt.confirmOnDevicePromptIsShown();
@@ -91,7 +83,7 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
         await trezorUserEnvLink.stopEmu();
 
         // Device is saved, when disconnected, user still can edit labels
-        await metadataPage.editAccountLabel(
+        await metadataPage.account.editLabel(
             AccountLabelId.BitcoinDefault1,
             'edited for remembered',
         );
@@ -108,10 +100,10 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText('Bitcoin');
 
         // Still possible to reconnect provider, we have keys still saved
-        await metadataPage.clickAddAccountLabelButton(AccountLabelId.BitcoinDefault1);
+        await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
         await metadataPage.metadataProviderButton(MetadataProvider.GOOGLE).click();
         await expect(metadataPage.metadataModal).not.toBeVisible();
-        await metadataPage.fillLabelInput('mnau');
+        await metadataPage.account.fillLabelInput('mnau');
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText('mnau');
 
         // device saved, disable metadata
@@ -121,7 +113,7 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
 
         // Now it is not possible to add labels, keys are gone and device is not connected
         await expect(
-            metadataPage.addAccountLabelButton(AccountLabelId.BitcoinDefault1),
+            metadataPage.account.addLabelButton(AccountLabelId.BitcoinDefault1),
         ).not.toBeVisible();
     });
 

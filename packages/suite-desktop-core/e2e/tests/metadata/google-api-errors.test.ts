@@ -46,7 +46,7 @@ test.describe('Google API errors', { tag: ['@group=metadata', '@webOnly'] }, () 
         await dashboardPage.discoveryShouldFinish();
 
         await page.getByTestId('@account-menu/btc/normal/0').click();
-        await metadataPage.clickAddAccountLabelButton(AccountLabelId.BitcoinDefault1);
+        await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
 
         await metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE, {
             skipVerification: true,

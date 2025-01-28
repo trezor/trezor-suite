@@ -36,7 +36,7 @@ test.describe(
             // Navigate to account and hover over add label button
             await page.getByTestId('@suite/menu/suite-index').click();
             await page.getByTestId('@account-menu/btc/normal/0').click();
-            await metadataPage.clickAddAccountLabelButton(AccountLabelId.BitcoinDefault1);
+            await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressNo();
 
@@ -54,29 +54,7 @@ test.describe(
 
             // Add another wallet, enable labeling on the new device
             await page.getByTestId('@menu/switch-device').click();
-            await page.getByTestId('@switch-device/add-hidden-wallet-button').click();
-            await page.getByTestId('@passphrase/input').fill('abc');
-            await page.getByTestId('@passphrase/hidden/submit-button').click();
-            await expect(page.getByTestId('@passphrase/input')).not.toBeVisible();
-
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
-
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
-
-            await page
-                .getByTestId('@passphrase-confirmation/step1-open-unused-wallet-button')
-                .click();
-            await page.getByTestId('@passphrase-confirmation/step2-button').click();
-            await page.getByTestId('@passphrase/input').fill('abc');
-            await page.getByTestId('@passphrase/hidden/submit-button').click();
-
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
-
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await dashboardPage.addHiddenWallet('abc');
 
             await expect(page.getByTestId('@passphrase/input')).not.toBeVisible();
             await devicePrompt.confirmOnDevicePromptIsShown();

@@ -28,14 +28,14 @@ test.describe('Metadata - address labeling', { tag: ['@group=metadata', '@webOnl
         // Metadata provider: google
         metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE);
 
-        await metadataPage.metadataInput.fill('meow address');
+        await metadataPage.address.metadataInput.fill('meow address');
         await page.keyboard.press('Enter');
         await expect(page.getByTestId(metadataEl)).toHaveText('meow address');
 
         // Edit metadata label
         await page.getByTestId(metadataEl).hover();
         await page.getByTestId(`${metadataEl}/edit-label-button`).click();
-        await metadataPage.metadataInput.fill('meow meow');
+        await metadataPage.address.metadataInput.fill('meow meow');
         await page.keyboard.press('Enter');
         await expect(page.getByTestId(metadataEl)).toHaveText('meow meow');
     });

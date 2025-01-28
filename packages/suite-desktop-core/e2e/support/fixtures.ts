@@ -31,7 +31,7 @@ import { MarketActions } from './pageActions/marketActions';
 import { AssetsActions } from './pageActions/assetsActions';
 import { MetadataProviderMock } from './mocks/metadataProviderMock';
 import { BlockbookMock } from './mocks/blockBookMock';
-import { MetadataActions } from './pageActions/metadataActions';
+import { MetadataActions } from './pageActions/metadata/metadataActions';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 
@@ -141,8 +141,8 @@ const test = base.extend<Fixtures>({
             await use(webPage);
         }
     },
-    dashboardPage: async ({ page }, use) => {
-        const dashboardPage = new DashboardActions(page);
+    dashboardPage: async ({ page, devicePrompt }, use) => {
+        const dashboardPage = new DashboardActions(page, devicePrompt);
         await use(dashboardPage);
     },
     settingsPage: async ({ page, url }, use) => {

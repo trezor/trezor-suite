@@ -29,33 +29,33 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText('Bitcoin #1');
 
         // Metadata flow
-        await metadataPage.clickAddAccountLabelButton(AccountLabelId.BitcoinDefault1);
+        await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
         await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 
         // Edit label
-        await metadataPage.metadataInput.fill('cool new label');
+        await metadataPage.account.metadataInput.fill('cool new label');
         await page.keyboard.press('Enter');
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
             'cool new label',
         );
 
         // Submit label changes via button
-        await metadataPage.editAccountLabel(AccountLabelId.BitcoinDefault1, 'even cooler');
+        await metadataPage.account.editLabel(AccountLabelId.BitcoinDefault1, 'even cooler');
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
             'even cooler',
         );
 
         await expect(
-            metadataPage.successAccountLabel(AccountLabelId.BitcoinDefault1),
+            metadataPage.account.successLabel(AccountLabelId.BitcoinDefault1),
         ).toBeVisible();
         await expect(
-            metadataPage.successAccountLabel(AccountLabelId.BitcoinDefault1),
+            metadataPage.account.successLabel(AccountLabelId.BitcoinDefault1),
         ).not.toBeVisible();
 
         // Discard changes via escape
-        await metadataPage.accountLabel(AccountLabelId.BitcoinDefault1).click();
-        await metadataPage.editAccountLabelButton(AccountLabelId.BitcoinDefault1).click();
-        await metadataPage.metadataInput.fill('bcash is true bitcoin');
+        await metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1).click();
+        await metadataPage.account.editLabelButton(AccountLabelId.BitcoinDefault1).click();
+        await metadataPage.account.metadataInput.fill('bcash is true bitcoin');
         await page.keyboard.press('Escape');
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
             'even cooler',
@@ -71,9 +71,9 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         await searchInput.clear();
 
         // Remove metadata by clearing input
-        await metadataPage.accountLabel(AccountLabelId.BitcoinDefault1).hover();
-        await metadataPage.editAccountLabelButton(AccountLabelId.BitcoinDefault1).click();
-        await metadataPage.metadataInput.clear();
+        await metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1).hover();
+        await metadataPage.account.editLabelButton(AccountLabelId.BitcoinDefault1).click();
+        await metadataPage.account.metadataInput.clear();
         await page.keyboard.press('Enter');
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText('Bitcoin #1');
 
@@ -81,16 +81,16 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         await page.getByTestId('@account-menu/segwit').click();
         await page.getByTestId('@account-menu/btc/segwit/0').click();
 
-        await metadataPage.addAccountLabel(AccountLabelId.BitcoinSegwit1, 'typing into one input');
-        await expect(metadataPage.successAccountLabel(AccountLabelId.BitcoinSegwit1)).toBeVisible();
+        await metadataPage.account.addLabel(AccountLabelId.BitcoinSegwit1, 'typing into one input');
+        await expect(metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit1)).toBeVisible();
 
         await page.getByTestId('@account-menu/btc/segwit/1').click();
 
         await expect(
-            metadataPage.successAccountLabel(AccountLabelId.BitcoinSegwit2),
+            metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit2),
         ).not.toBeVisible();
         await expect(
-            metadataPage.successAccountLabel(AccountLabelId.BitcoinSegwit1),
+            metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit1),
         ).not.toBeVisible();
 
         // Check metadata requests when switching routes
@@ -102,7 +102,7 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         await page.getByTestId('@account-menu/add-account').click();
         await settingsPage.coins.networkButton('btc').click();
         await page.getByTestId('@add-account').click();
-        await metadataPage.addAccountLabel(
+        await metadataPage.account.addLabel(
             AccountLabelId.BitcoinDefault3,
             'adding label to a newly added account. does it work?',
         );

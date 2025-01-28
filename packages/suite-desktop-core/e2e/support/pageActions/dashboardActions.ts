@@ -1,6 +1,9 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
 import { step } from '../common';
+import { DevicePromptActions } from './devicePromptActions';
 
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
 
@@ -29,7 +32,7 @@ export class DashboardActions {
     readonly deviceStatusOnSwitchDevice: Locator;
     readonly solveIssuesButton: Locator;
 
-    constructor(private readonly page: Page) {
+    constructor(private readonly page: Page, private readonly devicePrompt: DevicePromptActions) {
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
         this.discoveryHeader = this.page.getByRole('heading', { name: 'Dashboard' });
         this.discoveryBar = this.page.getByTestId('@wallet/discovery-progress-bar');
@@ -80,5 +83,57 @@ export class DashboardActions {
         await this.addStandardWalletButton.click();
         await this.modal.waitFor({ state: 'detached' });
         await this.discoveryShouldFinish();
+    }
+    
+    @step()
+    async addHiddenWallet(passphrase: string) {
+        await this.page.getByTestId('@switch-device/add-hidden-wallet-button').click();
+        await this.page.getByTestId('@passphrase/input').fill(passphrase);
+        await this.page.getByTestId('@passphrase/hidden/submit-button').click();
+        await expect(this.page.getByTestId('@passphrase/input')).not.toBeVisible();
+
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLink.pressYes();
+
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLink.pressYes();
+
+        await this.page
+            .getByTestId('@passphrase-confirmation/step1-open-unused-wallet-button')
+            .click();
+        await this.page.getByTestId('@passphrase-confirmation/step2-button').click();
+        await this.page.getByTestId('@passphrase/input').fill(passphrase);
+        await this.page.getByTestId('@passphrase/hidden/submit-button').click();
+
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLink.pressYes();
+
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLink.pressYes();
+
+        await this.modal.waitFor({ state: 'detached' });
+    }
+
+    @step()
+    async setViewOnlyForWallet(walletIndex: number, desiredState: 'enabled' | 'disabled') {
+        const walletContainer = this.page.getByTestId(`@switch-device/wallet-on-index/${walletIndex}`);
+        const viewOnlyStatus = await walletContainer.getByTestId(`@viewOnlyStatus/${desiredState}`).isVisible();
+
+        // check if change is even necessary
+        if (viewOnlyStatus) {
+            return;
+        }
+            
+        // if it is, open view-only settings container and change the state
+        await walletContainer.getByTestId('@collapsible-box/icon-collapsed').click();
+        await walletContainer.getByTestId('@collapsible-box/body').waitFor({ state: 'visible' });
+        await walletContainer.getByTestId(`@collapsible-box/body`).getByText(desiredState).click();
+        // close it to match the initial state
+        await walletContainer.getByTestId('@collapsible-box/icon-expanded').click();
+    }
+
+    @step()
+    async openDevice(index: number) {
+        await this.page.getByTestId(`@switch-device/wallet-on-index/${index}`).click();
     }
 }
