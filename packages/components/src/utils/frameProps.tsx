@@ -85,10 +85,19 @@ const getValueWithUnit = (value: string | number) =>
 export const pickAndPrepareFrameProps = (
     props: Record<string, any>,
     allowedFrameProps: Array<FramePropsKeys>,
-) =>
-    makePropsTransient(
-        allowedFrameProps.reduce((acc, item) => ({ ...acc, [item]: props[item] }), {}),
+    convertToTransient = true,
+) => {
+    const selectedProps = allowedFrameProps.reduce(
+        (acc, item) => ({ ...acc, [item]: props[item] }),
+        {},
     );
+
+    if (convertToTransient) {
+        return makePropsTransient(selectedProps);
+    }
+
+    return selectedProps;
+};
 
 export const withFrameProps = ({
     $margin,

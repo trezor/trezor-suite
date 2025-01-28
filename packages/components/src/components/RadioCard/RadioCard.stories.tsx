@@ -1,6 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { RadioCard as RadioCardComponent, RadioCardProps } from './RadioCard';
+import {
+    RadioCard as RadioCardComponent,
+    RadioCardProps,
+    allowedRadioCardFrameProps,
+} from './RadioCard';
+import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {
     title: 'RadioCard',
@@ -12,6 +17,7 @@ export const RadioCard: StoryObj<RadioCardProps> = {
     args: {
         isActive: true,
         children: 'Content',
+        ...getFramePropsStory(allowedRadioCardFrameProps).args,
     },
     argTypes: {
         isActive: {
@@ -19,5 +25,6 @@ export const RadioCard: StoryObj<RadioCardProps> = {
                 type: 'boolean',
             },
         },
+        ...getFramePropsStory(allowedRadioCardFrameProps).argTypes,
     },
 };
