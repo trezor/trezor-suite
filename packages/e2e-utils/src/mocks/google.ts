@@ -215,6 +215,8 @@ export class GoogleMock {
                     this.server = null;
                     resolve();
                 });
+
+                this.server.closeAllConnections();
             });
         } else {
             console.log('[mockGoogleDrive]: Server is not running');

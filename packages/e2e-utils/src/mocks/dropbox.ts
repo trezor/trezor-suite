@@ -241,6 +241,8 @@ export class DropboxMock {
                     this.server = null;
                     resolve();
                 });
+
+                this.server.closeAllConnections();
             });
         } else {
             console.log('[mockDropbox]: Server is not running');

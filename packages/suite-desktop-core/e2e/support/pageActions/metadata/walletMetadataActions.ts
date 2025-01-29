@@ -3,15 +3,8 @@ import { MetadataBaseActions } from './metadataBaseActions';
 
 export class WalletMetadataActions extends MetadataBaseActions {
     private readonly walletSelectorBeginPart = '[data-testid^="@metadata/walletLabel/"]';
-
-    @step()
-    async getLabel(index: number): Promise<string> {
-        const labelElement = await this.page.$(
-            `${this.walletSelectorBeginPart}[data-testid$=":${index + 1}"]`,
-        );
-
-        return labelElement?.innerText() || '';
-    }
+    readonly walletLabel = (index: number) =>
+        this.page.locator(`${this.walletSelectorBeginPart}[data-testid$=":${index + 1}"]`);
 
     @step()
     async clickAddLabel(index: number) {

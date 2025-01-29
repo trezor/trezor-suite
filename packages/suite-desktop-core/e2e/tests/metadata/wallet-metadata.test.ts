@@ -34,7 +34,7 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
         await metadataPage.wallet.clickAddLabel(standardWalletIndex);
         await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
         await metadataPage.wallet.fillLabelInput('label for standard wallet');
-        expect(await metadataPage.wallet.getLabel(standardWalletIndex)).toBe(
+        await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
             'label for standard wallet',
         );
 
@@ -52,8 +52,12 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
         await metadataPage.wallet.fillLabelInput('wallet not for drugs');
 
         // Verify wallet labels
-        expect(await metadataPage.wallet.getLabel(standardWalletIndex)).toBe('wallet for drugs');
-        expect(await metadataPage.wallet.getLabel(hiddenWalletIndex)).toBe('wallet not for drugs');
+        await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
+            'wallet for drugs',
+        );
+        await expect(metadataPage.wallet.walletLabel(hiddenWalletIndex)).toHaveText(
+            'wallet not for drugs',
+        );
 
         // Remember wallet and reload app
         await dashboardPage.setViewOnlyForWallet(hiddenWalletIndex, 'enabled');
@@ -64,8 +68,12 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
         // Verify wallet labels after reload
         await dashboardPage.openDeviceSwitcher();
 
-        expect(await metadataPage.wallet.getLabel(standardWalletIndex)).toBe('wallet for drugs');
-        expect(await metadataPage.wallet.getLabel(hiddenWalletIndex)).toBe('wallet not for drugs');
+        await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
+            'wallet for drugs',
+        );
+        await expect(metadataPage.wallet.walletLabel(hiddenWalletIndex)).toHaveText(
+            'wallet not for drugs',
+        );
     });
 
     test('labels can be enabled and edited when different wallet is open', async ({
@@ -101,10 +109,10 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
         );
 
         // Verify wallet labels
-        expect(await metadataPage.wallet.getLabel(standardWalletIndex)).toBe(
+        await expect(metadataPage.wallet.walletLabel(standardWalletIndex)).toHaveText(
             'label for standard wallet',
         );
-        expect(await metadataPage.wallet.getLabel(hiddenWalletIndex)).toBe(
+        await expect(metadataPage.wallet.walletLabel(hiddenWalletIndex)).toHaveText(
             'still works, metadata enabled for currently not selected device',
         );
     });
