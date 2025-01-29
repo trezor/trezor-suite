@@ -10,6 +10,7 @@ import { AccountLabels } from 'src/types/suite/metadata';
 const TruncatedSpan = styled.span<{ $isBlurred?: boolean }>`
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 `;
 
 interface TargetAddressLabelProps {

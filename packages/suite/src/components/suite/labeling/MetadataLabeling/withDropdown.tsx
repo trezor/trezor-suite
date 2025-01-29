@@ -28,7 +28,7 @@ export const withDropdown = (WrappedComponent: FC<ExtendedProps>) => (props: Pro
         isDisabled={props.editActive}
         placement={{
             position: 'bottom',
-            alignment: 'end',
+            alignment: 'start',
         }}
         renderOnClickPosition
         items={[

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { BadgeSize, Row, TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
+import { BadgeSize, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import type {
     AccountType,
@@ -43,22 +43,20 @@ export const AccountLabel = ({
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
 
     return (
-        <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-            <Row gap={spacings.sm}>
-                {accountLabel ? (
-                    <TabularNums>{accountLabel}</TabularNums>
-                ) : (
-                    getDefaultAccountLabel({ accountType, symbol, index })
-                )}
-                {showAccountTypeBadge && (
-                    <AccountTypeBadge
-                        accountType={accountType}
-                        size={accountTypeBadgeSize}
-                        path={path}
-                        networkType={networkType}
-                    />
-                )}
-            </Row>
-        </TruncateWithTooltip>
+        <Row gap={spacings.sm}>
+            {accountLabel ? (
+                <TabularNums>{accountLabel}</TabularNums>
+            ) : (
+                getDefaultAccountLabel({ accountType, symbol, index })
+            )}
+            {showAccountTypeBadge && (
+                <AccountTypeBadge
+                    accountType={accountType}
+                    size={accountTypeBadgeSize}
+                    path={path}
+                    networkType={networkType}
+                />
+            )}
+        </Row>
     );
 };
