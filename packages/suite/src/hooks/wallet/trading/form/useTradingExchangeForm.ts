@@ -483,6 +483,7 @@ export const useTradingExchangeForm = ({
                 amount: selectedQuote.dexTx.value,
                 destinationTag: selectedQuote.partnerPaymentExtraId,
                 ethereumDataHex: selectedQuote.dexTx.data,
+                solanaSerializedTx: selectedQuote.dexTx.data,
                 recalcCustomLimit: true,
                 ethereumAdjustGasLimit: selectedQuote.status === 'CONFIRM' ? '1.25' : undefined,
                 setMaxOutputId: values.setMaxOutputId,
@@ -547,6 +548,8 @@ export const useTradingExchangeForm = ({
                 address: sendAddress,
                 amount: sendStringAmount,
                 destinationTag: sendPaymentExtraId,
+                solanaSerializedTx:
+                    '010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080010002055bcae372d903bee7808844eca46e24a1925f171d7d74ef7bc17fa89125c3d8a8776469c925b70a333baf1af283e30e60e4ea17f95d5e66732b216d3469245f0f05e84ac077481905e80941f68cab0121f9171f05daab39e2faeb94eb153d049106ddf6e1d765a193d9cbe146ceeb79ac1cb485ed5f5b37913a8cf5857eff00a9054a535a992921064d24e87160da387c7c35b5ddbc92bb81e41fa8404105448d5977addf7460ae02d41ca36cf29794a2e9867a6a72c50dbc72879501196b7be402030301020009032c0763e10000000004004230786564646632616565313338626265616533643230636361636362383230383962663837386162306433663163386465356263353137383530633561633763616600',
             });
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {

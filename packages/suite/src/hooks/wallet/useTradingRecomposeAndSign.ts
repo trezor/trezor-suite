@@ -17,6 +17,7 @@ interface TradingRecomposeAndSignProps {
     amount: string;
     destinationTag?: string;
     ethereumDataHex?: string;
+    solanaSerializedTx?: string;
     recalcCustomLimit?: boolean;
     ethereumAdjustGasLimit?: string;
     setMaxOutputId?: number | undefined;
@@ -38,6 +39,7 @@ export const useTradingRecomposeAndSign = () => {
             amount,
             destinationTag,
             ethereumDataHex,
+            solanaSerializedTx,
             recalcCustomLimit,
             ethereumAdjustGasLimit,
             options = ['broadcast'],
@@ -76,6 +78,7 @@ export const useTradingRecomposeAndSign = () => {
                 rippleDestinationTag: destinationTag,
                 ethereumDataHex,
                 ethereumAdjustGasLimit,
+                solanaSerializedTx,
                 selectedUtxos: [],
             };
 

@@ -35,6 +35,7 @@ export interface FormState {
     ethereumDataAscii?: string;
     ethereumDataHex?: string;
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
+    solanaSerializedTx?: string;
     rippleDestinationTag?: string;
     rbfParams?: RbfTransactionParams;
     isCoinControlEnabled: boolean;

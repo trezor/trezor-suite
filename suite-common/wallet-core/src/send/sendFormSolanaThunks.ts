@@ -331,7 +331,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
             path: selectedAccount.path,
-            serializedTx: transaction.payload.serializedTx,
+            serializedTx: transaction.payload.serializedTx ?? formState.solanaSerializedTx,
             serialize: true,
             additionalInfo: transaction.payload.additionalInfo.tokenAccountInfo
                 ? {
