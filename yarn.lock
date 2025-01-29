@@ -12985,7 +12985,7 @@ __metadata:
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.7.0"
     jest-environment-node: "npm:^29.7.0"
-    long: "npm:^4.0.0"
+    long: "npm:^5.2.0"
     protobufjs: "npm:7.4.0"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.16.3"
@@ -30289,17 +30289,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"long@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "long@npm:4.0.0"
-  checksum: 10/8296e2ba7bab30f9cfabb81ebccff89c819af6a7a78b4bb5a70ea411aa764ee0532f7441381549dfa6a1a98d72abe9138bfcf99f4fa41238629849bc035b845b
-  languageName: node
-  linkType: hard
-
-"long@npm:^5.0.0":
-  version: 5.2.3
-  resolution: "long@npm:5.2.3"
-  checksum: 10/9167ec6947a825b827c30da169a7384eec6c0c9ec2f0b9c74da2e93d81159bbe39fb09c3f13dae9721d4b807ccfa09797a7dd1012f5d478e3e33ca3c78b608e6
+"long@npm:^5.0.0, long@npm:^5.2.0":
+  version: 5.2.4
+  resolution: "long@npm:5.2.4"
+  checksum: 10/c27c060a683d4d76dc48da12ded0ae49c610aaf10d028ec938829d7bebe916979dcc8b67ed71f8bf6d845a90151b66a9b741a3ee51ec874908e496c2a576697a
   languageName: node
   linkType: hard
 
