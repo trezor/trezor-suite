@@ -59,7 +59,7 @@ const getLines = (
             id: 'fee',
             label: <Translation id="MAX_FEE" />,
             value: precomposedTx.fee,
-            type: 'amount',
+            type: 'fee',
         };
 
         return isUnknownStakingClaimValue ? [feeLine] : [amountLine, feeLine];
@@ -72,13 +72,13 @@ const getLines = (
                 id: 'total',
                 label: <Translation id={showAmountWithoutFee ? 'AMOUNT' : 'TR_TOTAL_AMOUNT'} />,
                 value: tokenInfo ? precomposedTx.totalSpent : amount,
-                type: 'amount',
+                type: 'total',
             },
             {
                 id: 'fee',
                 label: <Translation id={feeLabel} />,
                 value: precomposedTx.fee,
-                type: 'amount',
+                type: 'fee',
             },
         ];
     }
@@ -88,7 +88,7 @@ const getLines = (
             id: 'total',
             label: <Translation id="TR_TOTAL" />,
             value: precomposedTx.totalSpent,
-            type: 'amount',
+            type: 'total',
         },
     ];
 };

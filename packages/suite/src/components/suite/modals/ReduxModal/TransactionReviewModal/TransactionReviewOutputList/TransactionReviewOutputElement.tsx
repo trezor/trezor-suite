@@ -71,6 +71,8 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible }: ValueProps)
             return <Address value={value} />;
         case 'data':
             return <DataWrapper>{value}</DataWrapper>;
+        case 'total':
+        case 'fee':
         case 'amount': {
             const formattedValue = token
                 ? formatAmount(value, token.decimals)
@@ -112,7 +114,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible }: ValueProps)
 export type OutputElementLine = {
     id: string;
     value: string;
-    type: 'default' | 'address' | 'data' | 'amount';
+    type: 'default' | 'address' | 'data' | 'amount' | 'fee' | 'total';
     label?: ReactNode;
 };
 

@@ -116,7 +116,7 @@ const getOutputLines = (
             return [
                 {
                     id: type,
-                    type: 'amount',
+                    type: 'fee',
                     value,
                 },
             ];
@@ -124,13 +124,13 @@ const getOutputLines = (
             return [
                 {
                     id: 'increase-fee-by',
-                    type: 'amount',
+                    type: 'fee',
                     label: <Translation id="TR_INCREASE_FEE_BY" />,
                     value,
                 },
                 {
                     id: 'increased-fee',
-                    type: 'amount',
+                    type: 'fee',
                     label: <Translation id="TR_INCREASED_FEE" />,
                     value: value2,
                 },

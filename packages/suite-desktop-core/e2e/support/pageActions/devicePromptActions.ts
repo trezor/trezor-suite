@@ -12,8 +12,9 @@ export class DevicePromptActions {
     private readonly paginatedTextSeparator: Locator;
     readonly chunkedText: Locator;
     readonly outputValue: Locator;
-    readonly outputValueOf = (section: 'default' | 'address' | 'data' | 'amount') =>
-        this.page.getByTestId(`@modal/output-${section}`).getByTestId('@modal/output-value');
+    readonly outputValueOf = (
+        section: 'default' | 'address' | 'data' | 'amount' | 'fee' | 'total',
+    ) => this.page.getByTestId(`@modal/output-${section}`).getByTestId('@modal/output-value');
     readonly reviewAmount: Locator;
 
     constructor(private page: Page) {

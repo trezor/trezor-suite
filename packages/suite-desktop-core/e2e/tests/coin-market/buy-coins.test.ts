@@ -1,5 +1,5 @@
+import { capitalizeFirstLetter, splitStringEveryNCharacters } from '@trezor/utils';
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { buyQuotes, buyTrade, invityEndpoint } from '../../fixtures/invity';
 import expectedWatchRequestPayload from '../../fixtures/invity/buy/watch-request.json';
@@ -40,7 +40,9 @@ test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'
 
         await test.step('Confirm trade and verifies confirmation summary', async () => {
             await marketPage.confirmTrade(receiveAddress);
-            await expect(marketPage.confirmationAddress).toHaveText(receiveAddress);
+            await expect(marketPage.confirmationAddress).toHaveText(
+                splitStringEveryNCharacters(receiveAddress, 4).join(' '),
+            );
             await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
             await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
             await expect(marketPage.confirmationProvider).toHaveText(mockedProvider);
