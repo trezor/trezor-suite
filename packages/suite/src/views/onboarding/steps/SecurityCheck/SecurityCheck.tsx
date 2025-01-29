@@ -27,6 +27,7 @@ import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { SecurityChecklist } from './SecurityChecklist';
+import { SecurityChecklistItem } from './types';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
     max-width: 840px;
@@ -90,15 +91,15 @@ const TooltipWrapper = styled.span`
 
 const firmwareInstalledChecklist = [
     {
-        icon: 'info',
+        icon: <Icon size={24} name="info" />,
         content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_4" />,
     },
-] as const;
+] as const satisfies SecurityChecklistItem[];
 
 const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
     [
         {
-            icon: 'verified',
+            icon: <Icon size={24} name="verified" />,
             content: (
                 <Translation
                     id="TR_ONBOARDING_DEVICE_CHECK_2"
@@ -118,7 +119,7 @@ const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
             ),
         },
         {
-            icon: 'hologram',
+            icon: <Icon size={24} name="hologram" />,
             content: (
                 <Translation
                     id="TR_ONBOARDING_DEVICE_CHECK_1"
@@ -139,10 +140,10 @@ const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
             ),
         },
         {
-            icon: 'package',
+            icon: <Icon size={24} name="package" />,
             content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_3" />,
         },
-    ] as const;
+    ] as const satisfies SecurityChecklistItem[];
 
 type SecurityCheckContentProps = {
     goToDeviceAuthentication: () => void;
