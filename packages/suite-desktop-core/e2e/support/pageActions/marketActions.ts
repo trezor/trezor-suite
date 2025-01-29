@@ -238,7 +238,7 @@ export class MarketActions {
         await this.buyTermsConfirmButton.click();
         await this.confirmOnTrezorButton.click();
         if (addressToCheck) {
-            await expect(this.devicePrompt.chunkedText).toHaveText(addressToCheck);
+            await expect(this.devicePrompt.outputValueOf('address')).toHaveText(addressToCheck);
         }
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();

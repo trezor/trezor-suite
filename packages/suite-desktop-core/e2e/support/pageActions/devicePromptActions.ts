@@ -12,7 +12,7 @@ export class DevicePromptActions {
     private readonly paginatedTextSeparator: Locator;
     readonly chunkedText: Locator;
     readonly outputValue: Locator;
-    readonly outputValueOf = (section: string) =>
+    readonly outputValueOf = (section: 'default' | 'address' | 'data' | 'amount') =>
         this.page.getByTestId(`@modal/output-${section}`).getByTestId('@modal/output-value');
     readonly reviewAmount: Locator;
 
