@@ -112,7 +112,7 @@ export const HELP_CENTER_EVM_ADDRESS_CHECKSUM: Url =
 export const HELP_CENTER_EVM_SEND_TO_CONTRACT_URL =
     'https://trezor.io/support/a/where-is-my-ethereum';
 export const HELP_CENTER_FIRMWARE_REVISION_CHECK: Url =
-    'https://trezor.io/learn/a/trezor-firmware-revision-check';
+    'https://trezor.io/learn/a/trezor-firmware-authenticity-check';
 export const HELP_CENTER_REPLACE_BY_FEE: Url =
     'https://trezor.io/learn/a/replace-by-fee-rbf-ethereum';
 
