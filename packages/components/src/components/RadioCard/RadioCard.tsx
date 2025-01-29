@@ -4,54 +4,74 @@ import styled, { css } from 'styled-components';
 
 import { palette, borders, spacingsPx } from '@trezor/theme';
 
-import { Card } from '../Card/Card';
 import { Icon } from '../Icon/Icon';
 import { Box } from '../Box/Box';
-import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
+import { TransientProps } from '../../utils/transientProps';
 
-export const allowedRadioCardFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+export const allowedRadioCardFrameProps = [
+    'margin',
+    'flex',
+    'width',
+] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedRadioCardFrameProps)[number]>;
 
 export type RadioCardProps = {
     isActive: boolean;
     children: ReactNode;
+    onClick: () => void;
 } & AllowedFrameProps;
 
-const BorderActive = styled.div<{ isActive: boolean }>`
-    pointer-events: none;
-    position: absolute;
-    inset: 0;
+const Wrapper = styled.div<{ isActive: boolean } & TransientProps<AllowedFrameProps>>`
+    position: relative;
+    width: 100%;
+    border-radius: ${borders.radii.md};
+    box-shadow: ${({ theme }) => theme.boxShadowBase};
+    padding: ${spacingsPx.md};
+    outline: ${borders.widths.small} solid ${({ theme }) => theme.borderFocus};
+    outline-offset: -${borders.widths.small};
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+        outline-color: ${({ theme }) => theme.borderInputDefault};
+    }
+
     ${({ isActive }) =>
         isActive &&
         css`
-            outline: ${borders.widths.large} solid ${({ theme }) => theme.borderSecondary};
+            outline-width: ${borders.widths.large};
+            outline-color: ${({ theme }) => theme.borderSecondary} !important;
             outline-offset: -${borders.widths.large};
         `}
-    border-radius: ${borders.radii.md};
+
+    ${withFrameProps}
 `;
 
 const IconWrapper = styled.div`
     border-radius: ${borders.radii.full};
-    background-color: ${({ theme }) => theme.borderSecondary};
+    background: ${({ theme }) => theme.borderSecondary};
     padding: ${spacingsPx.xxxs};
 `;
 
-export const RadioCard = ({ isActive, children, ...rest }: RadioCardProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedRadioCardFrameProps, false);
+export const RadioCard = ({ isActive, onClick, children, ...rest }: RadioCardProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedRadioCardFrameProps);
 
     return (
-        <Box position={{ type: 'relative' }} {...frameProps}>
+        <Wrapper isActive={isActive} onClick={onClick} {...frameProps}>
             {isActive && (
-                <Box position={{ type: 'absolute', top: '-1px', right: '-1px' }} zIndex={2}>
+                <Box position={{ type: 'absolute', top: '-3px', right: '-3px' }}>
                     <IconWrapper>
-                        <Icon name="check" size="extraSmall" color={palette.lightWhiteAlpha1000} />
+                        <Icon name="check" size="small" color={palette.lightWhiteAlpha1000} />
                     </IconWrapper>
                 </Box>
             )}
-            <Card paddingType="small" fillType="none">
-                {children}
-            </Card>
-            <BorderActive isActive={isActive} />
-        </Box>
+            {children}
+        </Wrapper>
     );
 };
