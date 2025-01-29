@@ -71,7 +71,7 @@ jobs:
 
       - run: yarn install --immutable
       - run: yarn message-system-sign-config
-      - run: yarn test:unit
+      - run: yarn test:unit --detectOpenHandles --no-cache --coverage false
 
   utility-scripts:
     runs-on: ubuntu-latest
