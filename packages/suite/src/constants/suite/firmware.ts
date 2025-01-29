@@ -3,14 +3,15 @@ import { FilterPropertiesByType } from '@trezor/type-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 
 /*
- * Various scenarios how firmware authenticity check errors are handled
+ * Various scenarios how firmware authenticity check errors are handled in Suite
+ * see suite-native/device/src/config/firmware.ts for Suite Lite
  */
 
 // will be ignored completely
 type SkippedBehavior = { type: 'skipped'; shouldReport: boolean };
-// display `SuiteBanners` warning
+// display a warning banner
 type SoftWarningBehavior = { type: 'softWarning'; shouldReport: true };
-// display `SuiteBanners`, show `DeviceCompromised` modal, block receiving address
+// display "Device Compromised" modal, after closing it display a warning banner, block receiving address
 type HardModalBehavior = { type: 'hardModal'; shouldReport: true };
 
 type RevisionErrorBehavior = SoftWarningBehavior | HardModalBehavior;
