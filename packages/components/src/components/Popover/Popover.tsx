@@ -36,7 +36,8 @@ export type PopoverProps = {
     content?: React.ReactNode;
     onOpenChange?: (isOpen: boolean) => void;
     onInteraction?: () => void;
-    offset?: number;
+    popoverOffset?: number;
+    zIndex?: number;
 };
 
 export function usePopover({
@@ -44,6 +45,7 @@ export function usePopover({
     placement = DEFAULT_POPOVER_PLACEMENT,
     isOpen: controlledOpen,
     onOpenChange: setControlledOpen,
+    popoverOffset = DEFAULT_POPOVER_OFFSET,
 }: PopoverProps) {
     const [uncontrolledOpen, setUncontrolledOpen] = React.useState(isInitialOpen);
     const [labelId, setLabelId] = React.useState<string | undefined>();
@@ -60,7 +62,7 @@ export function usePopover({
         onOpenChange: setOpen,
         whileElementsMounted: autoUpdate,
         middleware: [
-            offset(DEFAULT_POPOVER_OFFSET),
+            offset(popoverOffset),
             flip({
                 crossAxis: calculatedPlacement.includes('-'),
                 fallbackAxisSideDirection: 'end',
@@ -142,15 +144,18 @@ export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>((p
     const { children, ...htmlProps } = props;
     const { context: floatingContext, ...context } = usePopoverContext();
     const ref = useMergeRefs([context.refs.setFloating, propRef]);
+
+    // When the popover is rendered in a separate root (e.g. outside the main DOM like Storybook)
+    // it doesn't inherit text color, so we set it explicitly.
     const theme = useTheme();
+    const themeVariant: keyof typeof intermediaryTheme =
+        theme.variant === 'standard' ? 'light' : theme.variant;
+
+    const color = intermediaryTheme[themeVariant]?.textDefault;
 
     if (!floatingContext.open) return null;
 
     const floatingProps = context.getFloatingProps(htmlProps);
-
-    // When the popover is rendered in a separate root (e.g. outside the main DOM like Storybook)
-    // it doesn't inherit text color, so we set it explicitly.
-    const color = intermediaryTheme[theme.variant as 'dark' | 'light'].textDefault;
 
     return (
         <FloatingPortal>
@@ -178,14 +183,16 @@ export function Popover({
     isInitialOpen,
     placement,
     isOpen,
+    popoverOffset,
+    zIndex = zIndices.popover,
     children,
 }: PopoverProps & { children: React.ReactNode }) {
-    const popover = usePopover({ isInitialOpen, placement, isOpen });
+    const popover = usePopover({ isInitialOpen, placement, isOpen, popoverOffset });
 
     return (
         <PopoverContext.Provider value={popover}>
             <PopoverTrigger>{children}</PopoverTrigger>
-            <PopoverContent style={{ zIndex: zIndices.popover }}>{content}</PopoverContent>
+            <PopoverContent style={{ zIndex }}>{content}</PopoverContent>
         </PopoverContext.Provider>
     );
 }

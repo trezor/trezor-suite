@@ -57,7 +57,12 @@ export const Popover: StoryObj<PopoverStoryProps> = {
                 >
                     <Button>Uncontrolled</Button>
                 </PopoverComponent>
-                <PopoverComponent isOpen={args.isOpen} placement={placement} content={<Content />}>
+                <PopoverComponent
+                    isOpen={args.isOpen}
+                    popoverOffset={args.popoverOffset}
+                    placement={placement}
+                    content={<Content />}
+                >
                     <Button onClick={() => updateArgs({ isOpen: !args.isOpen })}>Controlled</Button>
                 </PopoverComponent>
             </Container>
@@ -65,6 +70,7 @@ export const Popover: StoryObj<PopoverStoryProps> = {
     },
     args: {
         isOpen: false,
+        popoverOffset: 5,
         placementPosition: 'center',
         placementAlignment: 'center',
     },
@@ -77,6 +83,11 @@ export const Popover: StoryObj<PopoverStoryProps> = {
         isOpen: {
             control: {
                 type: 'boolean',
+            },
+        },
+        popoverOffset: {
+            control: {
+                type: 'number',
             },
         },
         placementPosition: {

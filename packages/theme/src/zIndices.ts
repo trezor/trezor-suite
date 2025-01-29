@@ -4,7 +4,6 @@
 export const zIndices = {
     windowControls: 100,
     tooltip: 60, // above all content to be always fully visible when toggled
-    popover: 55, // above other content to be fully visible
     guide: 50, // above MODAL to stay accessible when modal is open
     guideButton: 49, // below GUIDE to get covered by the guide when it is opening
 
@@ -14,6 +13,7 @@ export const zIndices = {
 
     modal: 40, // above other suite content to disable interacting with it
     legacyModal: 39, // below MODAL in case another modal overlaps it, e.g. ReconnectDevicePrompt
+    popover: 35,
     draggableComponent: 30, // sidebar, above other content to be visible when dragged, resized
     navigationBar: 30,
     expandableNavigationHeader: 21, // above EXPANDABLE_NAVIGATION to cover its box-shadow
