@@ -19,6 +19,8 @@ const config: PlaywrightTestConfig = {
                 baseURL: process.env.BASE_URL || 'http://localhost:8000/',
             },
             grepInvert: /@desktopOnly/,
+            //TODO: #16073 We are still encountering instabilities, snapshots resolution differs, tolerance does not help
+            ignoreSnapshots: true,
         },
         {
             name: PlaywrightProjects.Desktop,
