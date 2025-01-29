@@ -40,6 +40,7 @@ import {
 import {
     useDevice,
     useDispatch,
+    useExternalLink,
     useLayoutSize,
     useSelector,
     useTranslation,
@@ -111,6 +112,7 @@ export const TokenRow = ({
         token.contract,
     );
     const coingeckoId = getCoingeckoId(account.symbol);
+    const explorerUrl = useExternalLink(getTokenExplorerUrl(network, token));
 
     if (!unusedAddress || !device) return null;
 
@@ -337,10 +339,7 @@ export const TokenRow = ({
                                             label: <Translation id="TR_VIEW_IN_EXPLORER" />,
                                             icon: 'arrowUpRight',
                                             onClick: () => {
-                                                window.open(
-                                                    getTokenExplorerUrl(network, token),
-                                                    '_blank',
-                                                );
+                                                window.open(explorerUrl, '_blank');
                                             },
                                         },
                                     ],
