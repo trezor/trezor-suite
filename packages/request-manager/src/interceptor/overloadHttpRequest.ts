@@ -12,16 +12,16 @@ const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
 };
 
 /** Should the request be blocked if Tor isn't enabled? */
-export const getIsTorRequired = (options: Readonly<http.RequestOptions>) =>
-    !!options.headers?.['Proxy-Authorization'];
+export const getIsTorRequired = (options?: Readonly<http.RequestOptions>) =>
+    !!options?.headers?.['Proxy-Authorization'];
 
-const getIdentityForAgent = (options: Readonly<http.RequestOptions>) => {
-    if (options.headers?.['Proxy-Authorization']) {
+const getIdentityForAgent = (options?: Readonly<http.RequestOptions>) => {
+    if (options?.headers?.['Proxy-Authorization']) {
         // Use Proxy-Authorization header to define proxy identity
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
         return getIdentityName(options.headers['Proxy-Authorization']);
     }
-    if (options.headers?.Upgrade === 'websocket') {
+    if (options?.headers?.Upgrade === 'websocket') {
         // Create random identity for each websocket connection
         return `WebSocket/${options.host}/${getWeakRandomId(16)}`;
     }
