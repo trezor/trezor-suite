@@ -118,8 +118,8 @@ export const prepareTrezorEmulator = async (
 export const disconnectTrezorUserEnv = async () => {
     // Clear the connection to the Trezor emulator so the test does not synchronize with it when not necessary.
     await TrezorUserEnvLink.stopEmu();
-    await TrezorUserEnvLink.disconnect();
     await TrezorUserEnvLink.stopBridge();
+    await TrezorUserEnvLink.disconnect();
 };
 
 export const wait = async (ms: number) => {
