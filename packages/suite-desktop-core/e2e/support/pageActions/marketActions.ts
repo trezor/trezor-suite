@@ -225,7 +225,9 @@ export class MarketActions {
         await expect(this.youPayFiatInput).not.toHaveValue('');
         await this.selectCountryOfResidence(country);
         await this.selectFiatCurrency(currency);
+        const quotesPromise = this.page.waitForResponse(invityEndpoint.buyQuotes);
         await this.youPayFiatInput.fill(amount);
+        await quotesPromise;
         // Warning: Bug #16054, as a workaround we wait for offer sync after setting the amount
         await this.waitForOffersSyncToFinish();
     }
