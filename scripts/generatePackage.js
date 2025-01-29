@@ -4,7 +4,8 @@ import fsExtra from 'fs-extra';
 import prettier from 'prettier';
 import sortPackageJson from 'sort-package-json';
 
-import templatePackageJson from './package-template/package.json';
+import templatePackageJsonWeb from './package-template/package.json';
+import templatePackageJsonNative from './package-template-native/package.json';
 // todo: calling yarn generate-package failed on not resolving destructuring imports. default imports seem to work.
 import import1 from './utils/getPrettierConfig';
 import import2 from './utils/getWorkspacesList';
@@ -12,20 +13,21 @@ import import2 from './utils/getWorkspacesList';
 const { getPrettierConfig } = import1;
 const { getWorkspacesList } = import2;
 
-const templatePath = './scripts/package-template';
-
 const scopes = {
     '@suite-common': {
         path: 'suite-common/',
         templatePath: 'package-template/',
+        templatePackageJson: templatePackageJsonWeb,
     },
     '@suite-native': {
         path: 'suite-native/',
-        templatePath: 'package-template/',
+        templatePath: 'package-template-native/',
+        templatePackageJson: templatePackageJsonNative,
     },
     '@trezor': {
         path: 'packages/',
         templatePath: 'package-template/',
+        templatePackageJson: templatePackageJsonWeb,
     },
 };
 
@@ -57,7 +59,9 @@ const exitWithErrorMessage = errorMessage => {
         );
     }
 
-    const packagePath = `${scopes[packageScope].path}/${packageName}`;
+    const { path, templatePath, templatePackageJson } = scopes[packageScope];
+    const packagePath = `${path}/${packageName}`;
+
     const workspacesNames = Object.keys(getWorkspacesList());
     if (fs.existsSync(packagePath)) {
         exitWithErrorMessage(
@@ -80,7 +84,7 @@ const exitWithErrorMessage = errorMessage => {
         prettier.format(JSON.stringify(config).replace(/\\\\/g, '/'), prettierConfig);
 
     try {
-        fsExtra.copySync(templatePath, packagePath);
+        fsExtra.copySync(`./scripts/${templatePath}`, packagePath);
         fs.writeFileSync(`${packagePath}/package.json`, await serializeConfig(packageJson));
     } catch (error) {
         exitWithErrorMessage(`${error}\n${chalk.bold.red('Package creation failed.')}`);
