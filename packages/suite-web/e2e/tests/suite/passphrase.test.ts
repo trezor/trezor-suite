@@ -1,6 +1,7 @@
 // @group_passphrase
 // @retry=2
 import { EventType } from '@trezor/suite-analytics';
+import { splitStringEveryNCharacters } from '@trezor/utils';
 
 import { ExtractByEventType, Requests } from '../../support/types';
 
@@ -79,18 +80,10 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/menu/wallet-receive').click({ timeout: 10000 });
         // click reveal address
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
-        cy.getTestElement('@device-display/chunked-text')
-            .find('[data-testid*="chunk"]')
-            .then(chunks => {
-                let fullAddress = '';
-                // @ts-expect-error
-                chunks.each((i, el) => {
-                    fullAddress += Cypress.$(el).text();
-                });
-
-                return fullAddress;
-            })
-            .should('contain', abcAddr);
+        cy.getTestElement('@modal/output-value').should(
+            'contain',
+            splitStringEveryNCharacters(abcAddr, 4).join(' '),
+        );
         cy.task('pressYes');
         cy.getTestElement('@metadata/copy-address-button')
             .should('exist')
@@ -118,18 +111,10 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/used-address/0').should('not.exist');
         cy.getTestElement('@wallet/receive/reveal-address-button').should('not.be.disabled');
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
-        cy.getTestElement('@device-display/chunked-text')
-            .find('[data-testid*="chunk"]')
-            .then(chunks => {
-                let fullAddress = '';
-                // @ts-expect-error
-                chunks.each((i, el) => {
-                    fullAddress += Cypress.$(el).text();
-                });
-
-                return fullAddress;
-            })
-            .should('contain', defAddr);
+        cy.getTestElement('@modal/output-value').should(
+            'contain',
+            splitStringEveryNCharacters(defAddr, 4).join(' '),
+        );
         cy.task('pressYes');
         cy.getTestElement('@metadata/copy-address-button')
             .should('exist')
@@ -151,18 +136,10 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
 
         // should display confirm passphrase modal
-        cy.getTestElement('@device-display/chunked-text')
-            .find('[data-testid*="chunk"]')
-            .then(chunks => {
-                let fullAddress = '';
-                // @ts-expect-error
-                chunks.each((i, el) => {
-                    fullAddress += Cypress.$(el).text();
-                });
-
-                return fullAddress;
-            })
-            .should('contain', abcAddr);
+        cy.getTestElement('@modal/output-value').should(
+            'contain',
+            splitStringEveryNCharacters(abcAddr, 4).join(' '),
+        );
         cy.task('pressYes');
     });
 });

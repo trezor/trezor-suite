@@ -1,6 +1,8 @@
 // @group_passphrase
 // @retry=2
 
+import { splitStringEveryNCharacters } from '@trezor/utils';
+
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 const correctPassphraseAddr =
@@ -64,9 +66,9 @@ describe('Passphrase with cardano', () => {
         cy.task('pressYes');
         cy.wait(501);
         cy.task('pressYes');
-        cy.getTestElement('@device-display/paginated-text').should(
+        cy.getTestElement('@modal/output-value').should(
             'contain',
-            correctPassphraseAddr,
+            splitStringEveryNCharacters(correctPassphraseAddr, 4).join(' '),
         );
         cy.task('pressYes');
         cy.getTestElement('@metadata/copy-address-button');

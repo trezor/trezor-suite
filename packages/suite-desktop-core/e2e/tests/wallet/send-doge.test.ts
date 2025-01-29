@@ -1,4 +1,5 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { splitStringEveryNCharacters } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
 
@@ -58,10 +59,13 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
             );
             await expect(devicePrompt.outputValueOf('total')).toContainText(`${totalAmount} DOGE`);
             await expect(devicePrompt.outputValueOf('fee')).toContainText(`${feeAmount} DOGE`);
-            await expect(devicePrompt.outputValueOf('address')).toHaveText(recipientAddress);
+            await expect(devicePrompt.outputValueOf('address')).toHaveText(
+                splitStringEveryNCharacters(recipientAddress, 4).join(' '),
+            );
             await expect(devicePrompt.modal).toHaveScreenshot('send-doge.png');
             await trezorUserEnvLink.pressYes();
             await expect(devicePrompt.modal).toHaveScreenshot('send-doge-confirmed.png');
+            await trezorUserEnvLink.pressYes();
         });
 
         await expect(page.getByTestId('@toast/sign-tx-error')).toHaveText(

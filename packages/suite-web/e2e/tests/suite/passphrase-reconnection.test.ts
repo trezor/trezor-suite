@@ -1,5 +1,7 @@
 // @group_passphrase
 // @retry=2
+import { splitStringEveryNCharacters } from '@trezor/utils';
+
 import { Requests } from '../../support/types';
 
 let requests: Requests;
@@ -39,18 +41,10 @@ describe('Passphrase reconnection', () => {
         cy.getTestElement('@wallet/menu/wallet-receive').click({ timeout: 10000 });
         // click reveal address
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
-        cy.getTestElement('@device-display/chunked-text')
-            .find('[data-testid*="chunk"]')
-            .then(chunks => {
-                let fullAddress = '';
-                // @ts-expect-error
-                chunks.each((i, el) => {
-                    fullAddress += Cypress.$(el).text();
-                });
-
-                return fullAddress;
-            })
-            .should('contain', abcAddr);
+        cy.getTestElement('@modal/output-value').should(
+            'contain',
+            splitStringEveryNCharacters(abcAddr, 4).join(' '),
+        );
         cy.task('pressYes');
         cy.getTestElement('@metadata/copy-address-button')
             .should('exist')
@@ -82,18 +76,10 @@ describe('Passphrase reconnection', () => {
         cy.task('pressYes');
 
         // should display confirm passphrase modal
-        cy.getTestElement('@device-display/chunked-text')
-            .find('[data-testid*="chunk"]')
-            .then(chunks => {
-                let fullAddress = '';
-                // @ts-expect-error
-                chunks.each((i, el) => {
-                    fullAddress += Cypress.$(el).text();
-                });
-
-                return fullAddress;
-            })
-            .should('contain', abcAddr);
+        cy.getTestElement('@modal/output-value').should(
+            'contain',
+            splitStringEveryNCharacters(abcAddr, 4).join(' '),
+        );
         cy.task('pressYes');
         cy.getTestElement('@metadata/copy-address-button')
             .should('exist')
@@ -104,7 +90,7 @@ describe('Passphrase reconnection', () => {
         // should display again
         cy.getTestElement('@wallet/receive/reveal-address-button').should('not.be.disabled');
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
-        cy.getTestElement('@device-display/chunked-text').should('be.visible');
+        cy.getTestElement('@modal/output-value').should('be.visible');
         cy.task('pressYes');
         cy.getTestElement('@metadata/copy-address-button')
             .should('exist')
