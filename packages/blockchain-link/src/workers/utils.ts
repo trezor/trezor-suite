@@ -1,4 +1,4 @@
-import { SolNetwork, Solana } from '@everstake/wallet-sdk';
+import { Network, Solana, isStake, stakeAccountState } from '@everstake/wallet-sdk-solana';
 
 import { parseHostname } from '@trezor/utils';
 
@@ -25,7 +25,11 @@ export const prioritizeEndpoints = (urls: string[]) =>
         .sort(([, a], [, b]) => b - a)
         .map(([url]) => url);
 
-export const getSolanaStakingData = async (descriptor: string, isTestnet: boolean) => {
+export const getSolanaStakingData = async (
+    descriptor: string,
+    isTestnet: boolean,
+    epoch: number,
+) => {
     const blockchainEnvironment = isTestnet ? 'devnet' : 'mainnet';
 
     // Find the blockchain configuration for the specified chain and environment
@@ -33,7 +37,7 @@ export const getSolanaStakingData = async (descriptor: string, isTestnet: boolea
         c.blockchain.name.toLowerCase().includes(`solana ${blockchainEnvironment}`),
     );
     const serverUrl = blockchainConfig?.blockchain.server[0];
-    const network = isTestnet ? SolNetwork.Devnet : SolNetwork.Mainnet;
+    const network = isTestnet ? Network.Devnet : Network.Mainnet;
 
     const solanaClient = new Solana(network, serverUrl);
 
@@ -43,5 +47,25 @@ export const getSolanaStakingData = async (descriptor: string, isTestnet: boolea
     }
     const { result: stakingAccounts } = delegations;
 
-    return { stakingAccounts };
+    return stakingAccounts
+        .map(account => {
+            const stakeAccount = account?.data;
+            if (!stakeAccount) return;
+
+            const stakeState = stakeAccountState(stakeAccount, BigInt(epoch));
+
+            const { state } = account?.data ?? {};
+            if (!isStake(state)) return;
+
+            if (state && 'fields' in state) {
+                const { fields } = state;
+
+                return {
+                    rentExemptReserve: fields[0]?.rentExemptReserve,
+                    stake: fields[1]?.delegation?.stake,
+                    status: stakeState,
+                };
+            }
+        })
+        .filter(account => account !== undefined);
 };

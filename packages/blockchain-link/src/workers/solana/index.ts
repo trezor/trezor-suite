@@ -366,12 +366,17 @@ const getAccountInfo = async (
             const accountDataBytes = getBase64Encoder().encode(accountDataEncoded);
             const accountDataLength = BigInt(accountDataBytes.byteLength);
             const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
-            const stakingData = await getSolanaStakingData(payload.descriptor, isTestnet);
+            const solEpoch = await getEpoch();
+            const solStakingAccounts = await getSolanaStakingData(
+                payload.descriptor,
+                isTestnet,
+                solEpoch,
+            );
             misc = {
                 owner: accountInfo?.owner,
                 rent: Number(rent),
-                solStakingAccounts: stakingData?.stakingAccounts,
-                solEpoch: await getEpoch(),
+                solStakingAccounts,
+                solEpoch,
             };
         }
     }
