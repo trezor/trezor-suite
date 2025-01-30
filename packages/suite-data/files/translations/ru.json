@@ -1581,8 +1581,6 @@
   "TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION": "Попробуйте установить <a>udev правила</a>. Перед открытием убедитесь, что они сохранены на рабочем столе.",
   "TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION": "Подключите его непосредственно к компьютеру (без USB хаба).",
   "TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE": "Попробуйте другой USB-порт",
-  "TR_TROUBLESHOOTING_UDEV_INSTALL_TITLE": "Установить правила автоматически",
-  "TR_TROUBLESHOOTING_UNREADABLE_UDEV": "Отсутствуют правила udev",
   "TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN": "Неожиданное состояние: {error}",
   "TR_TRY_AGAIN": "Ввести другую кодовую фразу",
   "TR_TXID": "TX ID",

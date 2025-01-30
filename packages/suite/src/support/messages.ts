@@ -1084,7 +1084,7 @@ export default defineMessages({
     },
     TR_BUY_DETAIL_ERROR_TEXT: {
         defaultMessage:
-            'Sorry, your transaction failed or was rejected. Your payment method was not charged.',
+            "Your transaction failed or was rejected. Your payment method hasn't been charged.",
         id: 'TR_BUY_DETAIL_ERROR_TEXT',
     },
     TR_BUY_DETAIL_ERROR_SUPPORT: {
@@ -3319,7 +3319,7 @@ export default defineMessages({
         id: 'TR_VERIFY_MESSAGE',
     },
     TR_WAIT_FOR_REBOOT: {
-        defaultMessage: 'Restarting Trezor',
+        defaultMessage: 'Restarting Trezor. Enter PIN if prompted.',
         description: 'Info what is happening with users device.',
         id: 'TR_WAIT_FOR_REBOOT',
     },
@@ -4356,12 +4356,12 @@ export default defineMessages({
         id: 'TR_SHOW_LESS',
     },
     TR_DASHBOARD_ASSET_FAILED: {
-        defaultMessage: 'Asset not loaded correctly',
+        defaultMessage: "Assets weren't loaded properly",
         description: 'Display error message in single asset (discovery partially failed)',
         id: 'TR_DASHBOARD_ASSET_FAILED',
     },
     TR_DASHBOARD_ASSETS_ERROR: {
-        defaultMessage: 'Assets were not loaded properly',
+        defaultMessage: "Assets weren't loaded properly",
         id: 'TR_DASHBOARD_ASSETS_ERROR',
     },
     TR_DASHBOARD_DISCOVERY_ERROR: {
@@ -4370,7 +4370,7 @@ export default defineMessages({
     },
     TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC: {
         defaultMessage:
-            'Accounts couldn’t be loaded. If using a VPN, disable it and try again. {details}',
+            'Assets couldn’t be loaded. If using a VPN, disable it and try again. {details}',
         id: 'TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC',
     },
     TR_PIN: {
@@ -5156,8 +5156,7 @@ export default defineMessages({
     },
     IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION: {
         id: 'IMAGE_VALIDATION_ERROR_INVALID_COLOR_COMBINATION',
-        defaultMessage:
-            'Invalid image color. It must contain only black and white (not grayscale).',
+        defaultMessage: 'Invalid image color. It can only contain black and white, not grayscale.',
     },
     TR_CONFIRM_ON_TREZOR: {
         id: 'TR_CONFIRM_ON_TREZOR',
@@ -5938,7 +5937,7 @@ export default defineMessages({
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
         defaultMessage:
-            'Not connected to the backend. Try reconnecting the device. Also, check your internet connection or the URL of your custom backend.',
+            'Not connected to the backend. Reconnect your device, and ensure your internet connection or custom backend URL is correct.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',

@@ -1987,8 +1987,6 @@
   "TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_TITLE": "Úgy tűnik, hogy egy régebbi Trezor modellt használsz.",
   "TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION": "Közvetlenül csatlakoztasd a számítógéphez (USB elosztó nélkül).",
   "TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE": "Próbálj meg egy másik USB portot",
-  "TR_TROUBLESHOOTING_UDEV_INSTALL_TITLE": "Szabályok automatikus telepítése",
-  "TR_TROUBLESHOOTING_UNREADABLE_UDEV": "Hiányzó udev szabályok",
   "TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN": "Váratlan állapot: {error}",
   "TR_TRY_AGAIN": "Próbáld újra",
   "TR_TXID": "TX ID",

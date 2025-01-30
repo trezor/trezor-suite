@@ -960,8 +960,6 @@
   "TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION": "Încercați să instalați <a>regulile udev</a>. Asigurați-vă că mai întâi le salvați pe desktop înainte de a le deschide.",
   "TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION": "Conectați-l direct la calculator, fără hub-uri.",
   "TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE": "Încercați un port USB diferit",
-  "TR_TROUBLESHOOTING_UDEV_INSTALL_TITLE": "Instalează automat regulile",
-  "TR_TROUBLESHOOTING_UNREADABLE_UDEV": "Lipsesc regulile udev",
   "TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN": "Stare neașteptată: {error}",
   "TR_TRY_AGAIN": "Încercați din nou",
   "TR_TXID": "TX ID",

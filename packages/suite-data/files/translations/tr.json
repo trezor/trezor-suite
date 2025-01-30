@@ -1984,8 +1984,6 @@
   "TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_TITLE": "Eski bir Trezor modeli kullanıyor olabilirsiniz.",
   "TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION": "Doğrudan bilgisayarınıza bağlayın (USB hub olmadan).",
   "TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE": "Farklı bir USB bağlantı noktası deneyin",
-  "TR_TROUBLESHOOTING_UDEV_INSTALL_TITLE": "Kuralları otomatik olarak yükle",
-  "TR_TROUBLESHOOTING_UNREADABLE_UDEV": "Eksik udev kuralları",
   "TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN": "Beklenmeyen durum: {error}",
   "TR_TRY_AGAIN": "Tekrar deneyin",
   "TR_TXID": "İşlem kimliği",

@@ -1984,8 +1984,6 @@
   "TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_TITLE": "Du verwendest offenbar ein älteres Modell von Trezor.",
   "TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION": "Verbinde das Gerät direkt mit deinem Computer (ohne USB-Hub).",
   "TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE": "Verwende einen anderen USB-Anschluss",
-  "TR_TROUBLESHOOTING_UDEV_INSTALL_TITLE": "Regeln automatisch installieren",
-  "TR_TROUBLESHOOTING_UNREADABLE_UDEV": "Fehlende udev-Regeln",
   "TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN": "Unerwarteter Zustand: {error}",
   "TR_TRY_AGAIN": "Wiederholen",
   "TR_TXID": "TX-ID",
