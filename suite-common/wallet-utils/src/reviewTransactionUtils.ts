@@ -141,10 +141,16 @@ const constructOldFlow = ({
                 // if the output also includes a token then we need to render another row with the token
                 if (tokenBundle) {
                     outputs.push({
-                        type: 'regular_legacy',
+                        type: 'amount',
                         label: o.address,
                         value: tokenBundle.balance ?? '0',
                         token: tokenBundle,
+                    });
+                } else {
+                    outputs.push({
+                        type: 'amount',
+                        label: o.address,
+                        value: o.amount,
                     });
                 }
             }
@@ -252,10 +258,16 @@ const constructNewFlow = ({
                 // if the output also includes a token then we need to render another row with the token
                 if (tokenBundle) {
                     outputs.push({
-                        type: 'regular_legacy',
+                        type: 'amount',
                         label: o.address,
                         value: tokenBundle.balance ?? '0',
                         token: tokenBundle,
+                    });
+                } else {
+                    outputs.push({
+                        type: 'amount',
+                        label: o.address,
+                        value: o.amount,
                     });
                 }
             }

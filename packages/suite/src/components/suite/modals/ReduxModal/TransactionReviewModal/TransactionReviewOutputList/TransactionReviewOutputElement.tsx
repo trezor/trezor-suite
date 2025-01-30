@@ -14,19 +14,15 @@ import {
     DotIndicator,
 } from '@trezor/components';
 import { TokenInfo } from '@trezor/connect';
-import {
-    amountToSmallestUnit,
-    formatNetworkAmount,
-    formatAmount,
-} from '@suite-common/wallet-utils';
+import { formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
 import { spacings } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 import { Account } from 'src/types/wallet';
 import { FiatValue, FormattedCryptoAmount, Translation, Address } from 'src/components/suite';
 
-// token name is fingerprint in Cardano
-const getFingerprint = (
+const getCardanoFingerprint = (
     tokens: Account['tokens'],
     symbol: string | undefined,
 ): string | undefined => {
@@ -36,7 +32,7 @@ const getFingerprint = (
 
     const token = tokens.find(token => token.symbol?.toLowerCase() === symbol?.toLowerCase());
 
-    return token?.name;
+    return token?.fingerprint;
 };
 
 const DataWrapper = styled.p`
@@ -137,7 +133,6 @@ export const TransactionReviewOutputElement = ({
     state,
 }: TransactionReviewOutputElementProps) => {
     const { networkType, symbol } = account;
-    const cardanoFingerprint = getFingerprint(account?.tokens, token?.symbol);
 
     return (
         <Card paddingType="none" fillType={state === 'done' ? 'flat' : 'default'}>
@@ -172,7 +167,11 @@ export const TransactionReviewOutputElement = ({
                     );
 
                     return (
-                        <div data-testid={`@modal/output-${line.id}`} key={line.id}>
+                        <Column
+                            data-testid={`@modal/output-${line.id}`}
+                            key={line.id}
+                            gap={spacings.md}
+                        >
                             <Text typographyStyle="hint" as="div">
                                 {line.label ? (
                                     <InfoItem
@@ -197,7 +196,7 @@ export const TransactionReviewOutputElement = ({
                                     <Text data-testid="@modal/output-value">{value}</Text>
                                 )}
                             </Text>
-                            {networkType === 'cardano' && cardanoFingerprint && (
+                            {networkType === 'cardano' && token?.symbol && (
                                 <Text typographyStyle="hint" as="div">
                                     <InfoItem
                                         label={
@@ -207,7 +206,12 @@ export const TransactionReviewOutputElement = ({
                                         }
                                         direction="row"
                                     >
-                                        {cardanoFingerprint}
+                                        <Column
+                                            alignItems="flex-end"
+                                            data-testid="@modal/cardano-fingerprint"
+                                        >
+                                            {getCardanoFingerprint(account?.tokens, token?.symbol)}
+                                        </Column>
                                     </InfoItem>
                                 </Text>
                             )}
@@ -221,14 +225,16 @@ export const TransactionReviewOutputElement = ({
                                         }
                                         direction="row"
                                     >
-                                        {amountToSmallestUnit(
-                                            formatAmount(line.value, token.decimals),
-                                            token.decimals,
-                                        )}
+                                        <Column
+                                            alignItems="flex-end"
+                                            data-testid="@modal/cardano-trezor-amount"
+                                        >
+                                            {line.value}
+                                        </Column>
                                     </InfoItem>
                                 </Text>
                             )}
-                        </div>
+                        </Column>
                     );
                 })}
             </Column>
