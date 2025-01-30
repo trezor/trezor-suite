@@ -4,11 +4,11 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
+import { findAccountsByAddress, isTestnet } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
-import { useTranslation } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
 
 import {
@@ -116,7 +116,7 @@ const getOutputLines = (
             return [
                 {
                     id: type,
-                    type: 'fee',
+                    type: 'amount',
                     value,
                 },
             ];
@@ -124,13 +124,13 @@ const getOutputLines = (
             return [
                 {
                     id: 'increase-fee-by',
-                    type: 'fee',
+                    type: 'amount',
                     label: <Translation id="TR_INCREASE_FEE_BY" />,
                     value,
                 },
                 {
                     id: 'increased-fee',
-                    type: 'fee',
+                    type: 'amount',
                     label: <Translation id="TR_INCREASED_FEE" />,
                     value: value2,
                 },
@@ -232,6 +232,7 @@ export const TransactionReviewOutput = ({
     isRbf,
 }: TransactionReviewOutputProps) => {
     const { networkType, symbol } = account;
+    const accounts = useSelector(state => state.wallet.accounts);
     const { translationString } = useTranslation();
     const isFiatVisible =
         ['fee', 'amount', 'gas', 'fee-replace', 'reduce-output'].includes(type) &&
@@ -247,7 +248,21 @@ export const TransactionReviewOutput = ({
         symbol,
         stakeType,
         translationString,
-    );
+    ).map(line => {
+        if (line.type === 'address') {
+            const relevantAccounts = findAccountsByAddress(symbol, line.value, accounts);
+
+            return {
+                ...line,
+                type:
+                    relevantAccounts.length > 0
+                        ? ('safe-address' as OutputElementLine['type'])
+                        : line.type,
+            };
+        }
+
+        return line;
+    });
 
     // prevents double label when bumping stake type txs
     if (type === 'address' && isRbf && stakeType) {

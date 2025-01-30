@@ -61,12 +61,12 @@ export const ConfirmValueModal = ({
     const canConfirmOnDevice = !!(device?.connected && device?.available);
     const addressConfirmed = isConfirmed || !canConfirmOnDevice;
     const isCancelable = isActionAbortable || addressConfirmed;
-    const state = addressConfirmed ? 'done' : 'default';
+    const state = addressConfirmed ? 'confirmed' : 'active';
     const outputLines: OutputElementLine[] = [
         {
             id: 'address',
             value,
-            type: 'address',
+            type: 'safe-address',
         },
     ];
 
@@ -109,7 +109,7 @@ export const ConfirmValueModal = ({
                 heading={heading}
                 description={description}
                 onCancel={isCancelable ? onCancel : undefined}
-                size="large"
+                size="huge"
             >
                 <Column gap={spacings.xl}>
                     {!device?.connected && (
@@ -151,7 +151,6 @@ export const ConfirmValueModal = ({
                                     isDisabled={!addressConfirmed}
                                     onClick={copy}
                                     data-testid={copyButtonDataTest}
-                                    isFullWidth
                                 >
                                     {copyButtonText}
                                 </NewModal.Button>

@@ -54,6 +54,7 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
         });
 
         await test.step('Verify info on modals and confirm', async () => {
+            await trezorUserEnvLink.pressYes();
             await expect(devicePrompt.outputValueOf('amount')).toContainText(
                 `${localizeNumber(sendAmount)} DOGE`,
             );

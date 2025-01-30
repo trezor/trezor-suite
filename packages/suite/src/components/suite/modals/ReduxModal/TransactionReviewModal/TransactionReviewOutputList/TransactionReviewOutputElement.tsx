@@ -13,6 +13,7 @@ import {
     H4,
     Icon,
     InfoItem,
+    Note,
     Row,
     Text,
 } from '@trezor/components';
@@ -43,9 +44,9 @@ const DataWrapper = styled.p`
 
 const Status = ({ state }: { state: TransactionReviewOutputElementProps['state'] }) => {
     switch (state) {
-        case 'done':
+        case 'confirmed':
             return <Icon size={spacings.md} variant="primary" name="check" />;
-        case 'pending':
+        case 'unconfirmed':
             return <DotIndicator />;
         default:
             return <DotIndicator isActive={true} />;
@@ -58,17 +59,24 @@ type ValueProps = {
     symbol: NetworkSymbol;
     isFiatVisible: boolean;
     isFee: boolean;
+    state: TransactionReviewOutputElementProps['state'];
     token?: TokenInfo;
 };
 
-const Value = ({ value, type, symbol, token, isFee, isFiatVisible }: ValueProps) => {
+const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: ValueProps) => {
     switch (type) {
         case 'address':
+            return state !== 'confirmed' ? (
+                <Note>
+                    <Translation id="TR_SEND_ADDRESS_CONFIRMATION_NOTE" />
+                </Note>
+            ) : (
+                <Address value={value} />
+            );
+        case 'safe-address':
             return <Address value={value} />;
         case 'data':
             return <DataWrapper>{value}</DataWrapper>;
-        case 'total':
-        case 'fee':
         case 'amount': {
             const isTokenAmount = !isFee && token;
             const formattedValue = isTokenAmount
@@ -114,7 +122,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible }: ValueProps)
 export type OutputElementLine = {
     id: string;
     value: string;
-    type: 'default' | 'address' | 'data' | 'amount' | 'fee' | 'total';
+    type: 'default' | 'address' | 'safe-address' | 'data' | 'amount';
     label?: ReactNode;
 };
 
@@ -122,7 +130,7 @@ export type TransactionReviewOutputElementProps = {
     title: ReactNode;
     lines: OutputElementLine[];
     account: Account;
-    state: 'default' | 'done' | 'pending';
+    state: 'active' | 'confirmed' | 'unconfirmed';
     fiatVisible?: boolean;
     token?: TokenInfo;
 };
@@ -138,12 +146,12 @@ export const TransactionReviewOutputElement = ({
     const { networkType, symbol } = account;
 
     return (
-        <Card paddingType="none" fillType={state === 'done' ? 'flat' : 'default'}>
+        <Card paddingType="none" fillType={state === 'confirmed' ? 'flat' : 'default'}>
             <Row padding={{ vertical: spacings.sm, horizontal: spacings.md }} gap={spacings.sm}>
                 <Status state={state} />
                 <H4
-                    margin={{ left: spacings.xxxs }}
-                    typographyStyle={state !== 'pending' ? 'callout' : 'hint'}
+                    margin={{ left: spacings.xxs }}
+                    typographyStyle={state !== 'unconfirmed' ? 'callout' : 'hint'}
                 >
                     {title}
                 </H4>
@@ -166,15 +174,12 @@ export const TransactionReviewOutputElement = ({
                             token={token}
                             isFiatVisible={fiatVisible}
                             isFee={line.id === 'fee'}
+                            state={state}
                         />
                     );
 
                     return (
-                        <Column
-                            data-testid={`@modal/output-${line.id}`}
-                            key={line.id}
-                            gap={spacings.md}
-                        >
+                        <Column data-testid={`@modal/output-${line.id}`} key={line.id}>
                             <Text typographyStyle="hint" as="div">
                                 {line.label ? (
                                     <InfoItem

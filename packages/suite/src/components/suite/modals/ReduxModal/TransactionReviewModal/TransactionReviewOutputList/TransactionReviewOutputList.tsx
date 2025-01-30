@@ -4,10 +4,12 @@ import styled from 'styled-components';
 
 import type { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
-import { Banner, Column, H4, Text } from '@trezor/components';
+import { findAccountsByAddress } from '@suite-common/wallet-utils';
+import { Banner, BulletList, Card, Column, H3, H4, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
 
 import { TransactionReviewOutput } from './TransactionReviewOutput';
@@ -31,14 +33,14 @@ const getState = (
     hasSignedTx: boolean,
 ): TransactionReviewOutputElementProps['state'] => {
     if (hasSignedTx || index < buttonRequestsCount - 1) {
-        return 'done';
+        return 'confirmed';
     }
 
     if (index === buttonRequestsCount - 1) {
-        return 'default';
+        return 'active';
     }
 
-    return 'pending';
+    return 'unconfirmed';
 };
 
 const Wrapper = styled.div`
@@ -72,8 +74,15 @@ export const TransactionReviewOutputList = ({
 }: TransactionReviewOutputListProps) => {
     const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
-    const { networkType } = account;
+    const accounts = useSelector(state => state.wallet.accounts);
+    const { networkType, symbol } = account;
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
+    const isFirstOutputAddress = outputs[0].type === 'address';
+    const isFirstStep = buttonRequestsCount === 1;
+    const isNotStaking = !stakeType;
+    const isInternalTransfer =
+        isFirstOutputAddress &&
+        findAccountsByAddress(symbol, outputs[0].value, accounts).length > 0;
 
     const summaryIndex = outputs.findIndex(
         ({ type }) => !['address', 'amount', 'opreturn'].includes(type),
@@ -87,6 +96,47 @@ export const TransactionReviewOutputList = ({
             outputRefs.current[buttonRequestsCount - 1]?.scrollIntoView({ behavior: 'smooth' });
         }
     }, [buttonRequestsCount, outputs.length, signedTx]);
+
+    if (isFirstOutputAddress && isFirstStep && isNotStaking && !isInternalTransfer) {
+        return (
+            <Card>
+                <Column gap={spacings.xxxl}>
+                    <H3>
+                        <Translation id="TR_SEND_ADDRESS_CONFIRMATION_HEADING" />
+                    </H3>
+                    <BulletList
+                        isOrdered
+                        bulletGap={spacings.md}
+                        titleGap={spacings.zero}
+                        gap={spacings.xxl}
+                    >
+                        <BulletList.Item
+                            title={
+                                <H4 typographyStyle="hint">
+                                    <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
+                                </H4>
+                            }
+                        />
+                        <BulletList.Item
+                            title={
+                                <H4 typographyStyle="hint">
+                                    <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
+                                </H4>
+                            }
+                        />
+                        <BulletList.Item
+                            state="done"
+                            title={
+                                <H4 typographyStyle="hint">
+                                    <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_3_HEADING" />
+                                </H4>
+                            }
+                        />
+                    </BulletList>
+                </Column>
+            </Card>
+        );
+    }
 
     return (
         <Column gap={spacings.md}>

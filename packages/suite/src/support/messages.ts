@@ -8535,6 +8535,27 @@ export default defineMessages({
         defaultMessage:
             '{index, selectordinal, one {#st} two {#nd} few {#rd} other {#th} } Recipient',
     },
+    TR_SEND_ADDRESS_CONFIRMATION_HEADING: {
+        id: 'TR_SEND_ADDRESS_CONFIRMATION_HEADING',
+        defaultMessage: 'Verify the address to avoid risking your funds',
+    },
+    TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING: {
+        id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING',
+        defaultMessage: 'Go to the app or place where you originally got the address.',
+    },
+    TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING: {
+        id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING',
+        defaultMessage: 'Compare that address with what is on your Trezor.',
+    },
+    TR_SEND_ADDRESS_CONFIRMATION_ITEM_3_HEADING: {
+        id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_3_HEADING',
+        defaultMessage: 'Confirm on Trezor if they match exactly.',
+    },
+    TR_SEND_ADDRESS_CONFIRMATION_NOTE: {
+        id: 'TR_SEND_ADDRESS_CONFIRMATION_NOTE',
+        defaultMessage:
+            'Verify that the original address matches the address on your Trezor exactly.',
+    },
     TR_DISCOVERY_NEW_COINS: {
         id: 'TR_DISCOVERY_NEW_COINS',
         defaultMessage: 'Activate coins',

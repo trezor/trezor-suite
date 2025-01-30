@@ -6,7 +6,6 @@ import {
     getIsUpdatedSendFlow,
     isTestnet,
 } from '@suite-common/wallet-utils';
-import { BulletListItemState } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -16,6 +15,7 @@ import { TrezorDevice } from 'src/types/suite';
 import {
     OutputElementLine,
     TransactionReviewOutputElement,
+    TransactionReviewOutputElementProps,
 } from './TransactionReviewOutputElement';
 
 const getLines = (
@@ -59,7 +59,7 @@ const getLines = (
             id: 'fee',
             label: <Translation id="MAX_FEE" />,
             value: precomposedTx.fee,
-            type: 'fee',
+            type: 'amount',
         };
 
         return isUnknownStakingClaimValue ? [feeLine] : [amountLine, feeLine];
@@ -72,13 +72,13 @@ const getLines = (
                 id: 'total',
                 label: <Translation id={showAmountWithoutFee ? 'AMOUNT' : 'TR_TOTAL_AMOUNT'} />,
                 value: tokenInfo ? precomposedTx.totalSpent : amount,
-                type: 'total',
+                type: 'amount',
             },
             {
                 id: 'fee',
                 label: <Translation id={feeLabel} />,
                 value: precomposedTx.fee,
-                type: 'fee',
+                type: 'amount',
             },
         ];
     }
@@ -88,13 +88,13 @@ const getLines = (
             id: 'total',
             label: <Translation id="TR_TOTAL" />,
             value: precomposedTx.totalSpent,
-            type: 'total',
+            type: 'amount',
         },
     ];
 };
 
 export type TransactionReviewTotalOutputProps = {
-    state: BulletListItemState;
+    state: TransactionReviewOutputElementProps['state'];
     precomposedTx: GeneralPrecomposedTransactionFinal;
     account: Account;
     isRbf: boolean;
