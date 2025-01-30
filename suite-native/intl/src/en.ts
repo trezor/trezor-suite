@@ -843,6 +843,15 @@ export const en = {
             },
             lookDifferentLabel: 'My device looks different',
         },
+        suspiciousDeviceScreen: {
+            title: 'Let’s play it safe',
+            subtitle:
+                'We want to be sure your device is in the best shape before you start using it.',
+            bullet1: 'Disconnect your device from your phone.',
+            bullet2: 'Avoid using this device or sending any funds to it.',
+            bullet3: 'Go to the support page linked below and use the Chat option on the website.',
+            contactSupportButton: 'Contact Trezor Support',
+        },
     },
     moduleAccountManagement: {
         accountSettingsScreen: {

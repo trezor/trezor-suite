@@ -31,6 +31,7 @@ export enum OnboardingStackRoutes {
     AnalyticsConsent = 'AnalyticsConsent',
     Biometrics = 'Biometrics',
     UninitializedDeviceLanding = 'UninitializedDeviceLanding',
+    SuspiciousDevice = 'SuspiciousDevice',
 }
 
 export enum AccountsImportStackRoutes {

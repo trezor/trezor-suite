@@ -4,7 +4,13 @@ import { selectDeviceModel, selectHasDeviceFirmwareInstalled } from '@suite-comm
 import { Box, Button, Image, Text, TextButton, TitleHeader, VStack } from '@suite-native/atoms';
 import { SetupSupportingDeviceModel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import {
+    OnboardingStackParamList,
+    OnboardingStackRoutes,
+    Screen,
+    ScreenHeader,
+    StackProps,
+} from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import { DeviceModelInternal } from '@trezor/connect';
 import { getScreenHeight } from '@trezor/env-utils';
@@ -67,7 +73,9 @@ const UninitializedDeviceLandingScreenContent = () => {
     );
 };
 
-export const UninitializedDeviceLandingScreen = () => {
+export const UninitializedDeviceLandingScreen = ({
+    navigation,
+}: StackProps<OnboardingStackParamList, OnboardingStackRoutes.UninitializedDeviceLanding>) => {
     const { showToast } = useToast();
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
 
@@ -76,9 +84,16 @@ export const UninitializedDeviceLandingScreen = () => {
         showToast({ variant: 'warning', message: 'TODO: implement next screen' });
     };
 
-    const handleDeclineButtonPress = () => {
-        // TODO: navigate to screen where user can see more info regarding tampered devices.
-        showToast({ variant: 'warning', message: 'TODO: implement next screen' });
+    const handleNeverUsedThisDeviceButtonPress = () => {
+        navigation.navigate(OnboardingStackRoutes.SuspiciousDevice, {
+            suspicionCause: 'firmwareAlreadyInstalled',
+        });
+    };
+
+    const handleDeviceLooksDifferentButtonPress = () => {
+        navigation.navigate(OnboardingStackRoutes.SuspiciousDevice, {
+            suspicionCause: 'deviceLooksDifferent',
+        });
     };
 
     return (
@@ -89,7 +104,7 @@ export const UninitializedDeviceLandingScreen = () => {
                     <UninitializedDeviceLandingScreenContent />
                     <TextButton
                         isUnderlined
-                        onPress={handleDeclineButtonPress}
+                        onPress={handleDeviceLooksDifferentButtonPress}
                         testID="@onboarding/UninitializedDeviceLandingScreen/deviceLooksDifferentBtn"
                     >
                         <Translation id="moduleOnboarding.uninitializedDeviceLandingScreen.lookDifferentLabel" />
@@ -105,7 +120,7 @@ export const UninitializedDeviceLandingScreen = () => {
                     {hasDeviceFirmwareInstalled && (
                         <Button
                             colorScheme="tertiaryElevation0"
-                            onPress={handleDeclineButtonPress}
+                            onPress={handleNeverUsedThisDeviceButtonPress}
                             testID="@onboarding/UninitializedDeviceLandingScreen/declineBtn"
                         >
                             <Translation id="moduleOnboarding.uninitializedDeviceLandingScreen.firmware.noButton" />

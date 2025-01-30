@@ -37,6 +37,12 @@ type AddCoinFlowParams = RequireAllOrNone<
 >;
 
 export type CloseActionType = 'back' | 'close';
+export type DeviceSuspicionCause =
+    | 'deviceLooksDifferent'
+    | 'firmwareAlreadyInstalled'
+    | 'untrustedReseller'
+    | 'securitySeal'
+    | 'packaging';
 
 type AccountDetailParams = {
     accountKey?: AccountKey;
@@ -113,6 +119,9 @@ export type OnboardingStackParamList = {
     [OnboardingStackRoutes.AnalyticsConsent]: undefined;
     [OnboardingStackRoutes.Biometrics]: undefined;
     [OnboardingStackRoutes.UninitializedDeviceLanding]: undefined;
+    [OnboardingStackRoutes.SuspiciousDevice]: {
+        suspicionCause: DeviceSuspicionCause;
+    };
 };
 
 export type AccountsImportStackParamList = {

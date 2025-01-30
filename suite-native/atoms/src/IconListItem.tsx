@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { FlexAlignType } from 'react-native';
 
 import { IconName, IconSize } from '@suite-native/icons';
-import { Color } from '@trezor/theme';
+import { Color, TypographyStyle } from '@trezor/theme';
 
 import { Box } from './Box';
 import { OrderedListIcon } from './OrderedListIcon';
@@ -42,6 +42,10 @@ type IconListItemProps = {
     verticalAlign?: FlexAlignType;
 };
 
+type IconListTextItemProps = IconListItemProps & {
+    textVariant?: TypographyStyle;
+};
+
 export const IconListItem = ({
     icon,
     children,
@@ -59,8 +63,12 @@ export const IconListItem = ({
     );
 };
 
-export const IconListTextItem = ({ children, ...rest }: IconListItemProps) => (
+export const IconListTextItem = ({
+    children,
+    textVariant = 'hint',
+    ...rest
+}: IconListTextItemProps) => (
     <IconListItem {...rest}>
-        <Text variant="hint">{children}</Text>
+        <Text variant={textVariant}>{children}</Text>
     </IconListItem>
 );

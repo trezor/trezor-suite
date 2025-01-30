@@ -41,6 +41,19 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
+// We encourage user to disconnect device when he is redirected to suspicious device screen.
+// We should not redirect him away so he can read the screen content and decide what to do.
+// If the device is connected again, he still should stay on that screen.
+const isSuspiciousDeviceScreenFocused = (navigation: NavigationProp) => {
+    const previousRoute = navigation.getState()?.routes.at(-1);
+    const innerStackRoute = previousRoute?.state?.routes.at(-1);
+
+    return (
+        previousRoute?.name === RootStackRoutes.OnboardingStack &&
+        innerStackRoute?.name === OnboardingStackRoutes.SuspiciousDevice
+    );
+};
+
 export const useHandleDeviceConnection = () => {
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
@@ -77,6 +90,7 @@ export const useHandleDeviceConnection = () => {
 
     // When is an uninitialized device model that supports device setup, navigate to device onboarding.
     useEffect(() => {
+        if (isSuspiciousDeviceScreenFocused(navigation)) return;
         if (
             isDeviceSetupSupported &&
             !isDeviceInitialized &&
@@ -111,7 +125,7 @@ export const useHandleDeviceConnection = () => {
     // At the moment when unauthorized physical device is selected,
     // redirect to the Connecting screen where is handled the connection logic.
     useEffect(() => {
-        if (isFirmwareInstallationRunning) return;
+        if (isFirmwareInstallationRunning || isSuspiciousDeviceScreenFocused(navigation)) return;
 
         if (
             isDeviceInitialized &&
@@ -166,7 +180,7 @@ export const useHandleDeviceConnection = () => {
             // TODO: this hook is getting very complex, and it's hard to understand the logic when it navigates there and back again.
             //  Ideally there'd be a single source of truth, a function returning "where we should be as per current state"
             //  rather than multiple useEffects with imperative instructions "go there when X changes"
-            if (isDeviceCompromisedModalFocused) {
+            if (isDeviceCompromisedModalFocused || isSuspiciousDeviceScreenFocused(navigation)) {
                 return;
             }
             navigation.navigate(RootStackRoutes.AppTabs, {
