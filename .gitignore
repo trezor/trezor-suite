@@ -49,6 +49,7 @@ playwright-report
 # build outputs
 lib
 libDev
+libESM
 dist
 public
 coverage

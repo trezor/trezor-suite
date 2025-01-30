@@ -2,7 +2,34 @@
 
 set -euxo pipefail
 
-REGEX="s/@trezor\/([^/]+)\/src/@trezor\/\1\/lib/g"
+# Usage: 
+#   bash replace-imports.sh <directory> [lib-type]
+#
+# Arguments:
+#   <directory>   The path to the directory containing files to modify.
+#   [lib-type]    (Optional) The type of library to use. Defaults to "lib" if not provided.
+#                 Use "libESM" for ESM libraries.
+#
+# Example:
+#   To replace imports in the ./lib directory using the default library type:
+#     bash replace-imports.sh ./lib
+#
+#   To replace imports in the ./libESM directory using the "libESM" library type:
+#     bash replace-imports.sh ./libESM libESM
+
+# By default set to "lib" but when providing second argument it uses it.
+if [ $# -ge 2 ]; then
+    LIB_TYPE="$2"
+else
+    LIB_TYPE="lib"
+fi
+
+# Set the regex based on the LIB_TYPE argument
+if [[ "$LIB_TYPE" == "libESM" ]]; then
+    REGEX="s/@trezor\/([^/]+)\/src/@trezor\/\1\/libESM/g"
+else
+    REGEX="s/@trezor\/([^/]+)\/src/@trezor\/\1\/lib/g"
+fi
 
 # Determine the operating system
 OS="$(uname)"
