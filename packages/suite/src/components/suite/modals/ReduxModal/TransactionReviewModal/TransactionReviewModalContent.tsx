@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { NewModal, Column } from '@trezor/components';
+import { NewModal } from '@trezor/components';
 import { Deferred } from '@trezor/utils';
 import {
     DeviceRootState,
@@ -20,7 +20,6 @@ import {
     getTxStakeNameByDataHex,
 } from '@suite-common/wallet-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -30,7 +29,6 @@ import { Translation } from 'src/components/suite';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
-import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewDetails } from './TransactionReviewDetails';
@@ -227,19 +225,16 @@ export const TransactionReviewModalContent = ({
                 {areDetailsVisible ? (
                     <TransactionReviewDetails tx={precomposedTx} txHash={serializedTx?.tx} />
                 ) : (
-                    <Column gap={spacings.md}>
-                        <TransactionReviewEvmExplanation account={account} stakeType={stakeType} />
-                        <TransactionReviewOutputList
-                            account={account}
-                            precomposedTx={precomposedTx}
-                            signedTx={serializedTx}
-                            outputs={outputs}
-                            buttonRequestsCount={buttonRequestsCount}
-                            isRbfAction={isRbfAction}
-                            isSending={isSending}
-                            stakeType={stakeType || undefined}
-                        />
-                    </Column>
+                    <TransactionReviewOutputList
+                        account={account}
+                        precomposedTx={precomposedTx}
+                        signedTx={serializedTx}
+                        outputs={outputs}
+                        buttonRequestsCount={buttonRequestsCount}
+                        isRbfAction={isRbfAction}
+                        isSending={isSending}
+                        stakeType={stakeType || undefined}
+                    />
                 )}
             </NewModal.ModalBase>
         </NewModal.Backdrop>

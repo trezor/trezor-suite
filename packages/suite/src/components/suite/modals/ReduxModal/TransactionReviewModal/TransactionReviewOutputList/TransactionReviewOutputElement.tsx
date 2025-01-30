@@ -198,31 +198,35 @@ export const TransactionReviewOutputElement = ({
                                 )}
                             </Text>
                             {networkType === 'cardano' && cardanoFingerprint && (
-                                <InfoItem
-                                    label={
-                                        <Text variant="default" typographyStyle="hint">
-                                            <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
-                                        </Text>
-                                    }
-                                    direction="row"
-                                >
-                                    {cardanoFingerprint}
-                                </InfoItem>
+                                <Text typographyStyle="hint" as="div">
+                                    <InfoItem
+                                        label={
+                                            <Text variant="default">
+                                                <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />
+                                            </Text>
+                                        }
+                                        direction="row"
+                                    >
+                                        {cardanoFingerprint}
+                                    </InfoItem>
+                                </Text>
                             )}
                             {networkType === 'cardano' && token && token.decimals !== 0 && (
-                                <InfoItem
-                                    label={
-                                        <Text variant="default" typographyStyle="hint">
-                                            <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
-                                        </Text>
-                                    }
-                                    direction="row"
-                                >
-                                    {amountToSmallestUnit(
-                                        formatAmount(line.value, token.decimals),
-                                        token.decimals,
-                                    )}
-                                </InfoItem>
+                                <Text typographyStyle="hint" as="div">
+                                    <InfoItem
+                                        label={
+                                            <Text variant="default">
+                                                <Translation id="TR_CARDANO_TREZOR_AMOUNT_HEADLINE" />
+                                            </Text>
+                                        }
+                                        direction="row"
+                                    >
+                                        {amountToSmallestUnit(
+                                            formatAmount(line.value, token.decimals),
+                                            token.decimals,
+                                        )}
+                                    </InfoItem>
+                                </Text>
                             )}
                         </div>
                     );
