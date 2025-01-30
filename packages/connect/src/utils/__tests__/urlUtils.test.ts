@@ -16,6 +16,7 @@ describe('utils/urlUtils', () => {
 
     it('getHost', () => {
         expect(getHost('http://localhost:8088/')).toEqual('localhost');
+        expect(getHost('http://subdomain.localhost:8088/')).toEqual('localhost');
         expect(getHost('file://index.html')).toEqual(undefined);
         expect(getHost('https://trezor.io')).toEqual('trezor.io');
         expect(getHost('https://connect.trezor.io')).toEqual('trezor.io');
