@@ -1,4 +1,3 @@
-import { isDevEnv } from '@suite-common/suite-utils';
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { FilterPropertiesByType } from '@trezor/type-utils';
 
