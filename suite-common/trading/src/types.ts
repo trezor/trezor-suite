@@ -1,9 +1,12 @@
 import type {
     BuyCryptoPaymentMethod,
     BuyTrade,
+    BuyTradeStatus,
     ExchangeTrade,
+    ExchangeTradeStatus,
     SellCryptoPaymentMethod,
     SellFiatTrade,
+    SellTradeStatus,
     WatchBuyTradeResponse,
     WatchExchangeTradeResponse,
     WatchSellTradeResponse,
@@ -27,3 +30,11 @@ export type TradingWatchTradeResponsePropsMap = {
 };
 
 export type TradingPaymentMethodType = BuyCryptoPaymentMethod | SellCryptoPaymentMethod;
+export type TradingTradeStatusType = BuyTradeStatus | SellTradeStatus | ExchangeTradeStatus;
+export type TradingUtilsProvidersProps = {
+    [name: string]: {
+        logo: string;
+        companyName: string;
+        brandName?: string;
+    };
+};

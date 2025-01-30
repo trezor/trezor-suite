@@ -1,7 +1,7 @@
 import { PropsWithChildren, useMemo } from 'react';
 
-import type { TradingType } from '@suite-common/trading';
 import { Route } from '@suite-common/suite-types';
+import type { TradingType } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

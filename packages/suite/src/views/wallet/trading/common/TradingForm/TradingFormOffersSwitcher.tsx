@@ -1,4 +1,4 @@
-import type { TradingTradeType } from '@suite-common/trading';
+import type { TradingTradeType, TradingUtilsProvidersProps } from '@suite-common/trading';
 import { Card, Column, Paragraph, Row, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -10,7 +10,6 @@ import {
     FORM_RATE_FLOATING,
     FORM_RATE_TYPE,
 } from 'src/constants/wallet/trading/form';
-import { TradingUtilsProvidersProps } from 'src/types/trading/trading';
 import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 import { TradingFormOffersSwitcherItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcherItem';
 

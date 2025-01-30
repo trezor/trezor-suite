@@ -1,8 +1,8 @@
 import produce from 'immer';
 
-import type { InvityServerEnvironment } from '@suite-common/trading';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
+import type { InvityServerEnvironment } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { DeviceRootState, discoveryActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';

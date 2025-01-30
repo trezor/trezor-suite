@@ -1,8 +1,8 @@
 import { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import { v4 as uuidv4 } from 'uuid';
 
-import { type TradingTradeType, type TradingType, regional } from '@suite-common/trading';
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import { type TradingTradeType, type TradingType, regional } from '@suite-common/trading';
 import {
     Network,
     NetworkSymbol,

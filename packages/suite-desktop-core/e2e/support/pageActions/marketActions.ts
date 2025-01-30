@@ -1,7 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 
-import { regional } from '@suite-common/trading';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { regional } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import {

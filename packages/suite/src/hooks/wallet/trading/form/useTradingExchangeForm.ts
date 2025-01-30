@@ -9,9 +9,9 @@ import type {
 } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { type TradingExchangeType, invityAPI } from '@suite-common/trading';
 import { isChanged } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { type TradingExchangeType, invityAPI } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { amountToSmallestUnit, formatAmount, toFiatCurrency } from '@suite-common/wallet-utils';
