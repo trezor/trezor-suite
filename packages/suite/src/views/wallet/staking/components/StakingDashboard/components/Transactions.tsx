@@ -1,5 +1,6 @@
 import {
     selectAccountStakeTypeTransactions,
+    selectAccountTransactionsWithNulls,
     selectAreAllTransactionsLoaded,
     selectIsLoadingAccountTransactions,
 } from '@suite-common/wallet-core';
@@ -17,7 +18,9 @@ export const Transactions = () => {
     const areAllTransactionsLoaded = useSelector(state =>
         selectAreAllTransactionsLoaded(state, accountKey),
     );
-
+    const allTransactions = useSelector(state =>
+        selectAccountTransactionsWithNulls(state, accountKey),
+    );
     const stakeTxs = useSelector(state => selectAccountStakeTypeTransactions(state, accountKey));
 
     if (selectedAccount.status !== 'loaded' || stakeTxs.length < 1) {
@@ -28,6 +31,7 @@ export const Transactions = () => {
 
     return (
         <TransactionList
+            allTransactions={allTransactions}
             account={account}
             transactions={stakeTxs}
             symbol={account.symbol}

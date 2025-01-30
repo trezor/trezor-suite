@@ -5,6 +5,7 @@ import {
     getIsPhishingTransaction,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
@@ -14,7 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import { getSynchronize } from '@trezor/utils';
 
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 
 import { shouldAttemptToLoadNextPageForVisibleTransactions } from './transaction-fetch-utils';
@@ -144,15 +145,24 @@ export const useFetchTransactions = (
     return { fetchNext, pagesFetched, fetchPage, fetchAll, isFetching, fetchedAll };
 };
 
-export const useVisibleTransactionsRetriever = ({ account }: { account: Account }) => {
+export const useVisibleTransactions = ({
+    account,
+    numberOfPagesRequested,
+}: {
+    account: Account;
+    numberOfPagesRequested: number;
+}) => {
     const allTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, account.key),
     );
+    const { discovery } = useDiscovery();
 
-    const { fetchedAll, isFetching, pagesFetched, fetchPage } = useFetchTransactions(
-        account,
-        allTransactions,
-    );
+    const {
+        fetchedAll,
+        isFetching,
+        pagesFetched: allTransactionsPagesFetched,
+        fetchPage,
+    } = useFetchTransactions(account, allTransactions);
     const allAccountTransactions = useSelector(state =>
         selectAccountTotalTransactions(state, account.key),
     );
@@ -178,8 +188,10 @@ export const useVisibleTransactionsRetriever = ({ account }: { account: Account 
     );
 
     const perPage = getTxsPerPage(account.networkType);
-    const numberOfHidden = allTransactions.length - visibleTransactions.length;
-    const totalPossiblyVisible = allAccountTransactions - numberOfHidden;
+    // NOTE: as the paging increases / all is fetched, the number of the "all transactions" increases as the visible transactions decrease
+    // that's how the estimate of the "totalPossiblyVisible" gets more an more accurate
+    const numberOfHiddenInTheBatch = allTransactions.length - visibleTransactions.length;
+    const totalPossiblyVisible = allAccountTransactions - numberOfHiddenInTheBatch;
 
     useEffect(() => {
         if (
@@ -188,27 +200,31 @@ export const useVisibleTransactionsRetriever = ({ account }: { account: Account 
                 currentNumberOfVisibleTransactions: visibleTransactions.length,
                 currentNumberOfTransactions: allTransactions.length,
                 perPage,
-                pagesFetched,
+                numberOfPagesRequested,
             })
         ) {
-            fetchPage(pagesFetched + 1);
+            fetchPage(allTransactionsPagesFetched + 1);
         }
     }, [
         account.networkType,
         allAccountTransactions,
         allTransactions.length,
+        allTransactionsPagesFetched,
         fetchPage,
         fetchedAll,
-        pagesFetched,
+        numberOfPagesRequested,
         perPage,
         totalPossiblyVisible,
         visibleTransactions.length,
     ]);
 
+    const isLoading = discovery && discovery?.status !== DiscoveryStatus.COMPLETED; // NOTE: loading indicates that the state of the data is unknown and we are "loading for the first time"
+
     return {
         allTransactions,
         visibleTransactions,
         visibleTotal: totalPossiblyVisible,
-        isFetching: isFetching || transactionsIsLoading,
+        isFetching: isLoading || isFetching || transactionsIsLoading,
+        isLoading,
     };
 };

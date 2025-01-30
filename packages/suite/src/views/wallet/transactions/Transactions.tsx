@@ -12,7 +12,7 @@ import { AppState } from 'src/types/suite';
 import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 import { TradeBox } from './TradeBox/TradeBox';
-import { TransactionList } from './TransactionList/TransactionList';
+import { WalletTransactionList } from './TransactionList/WalletTransactionList';
 import { AccountEmpty } from './components/AccountEmpty';
 import { NoTransactions } from './components/NoTransactions';
 import { TransactionSummary } from './components/TransactionSummary';
@@ -58,12 +58,7 @@ export const Transactions = () => {
                         {isEmpty ? (
                             <CoinjoinExplanation />
                         ) : (
-                            <TransactionList
-                                account={account}
-                                transactions={accountTransactions}
-                                symbol={account.symbol}
-                                isLoading={transactionsIsLoading}
-                            />
+                            <WalletTransactionList account={account} symbol={account.symbol} />
                         )}
                     </>
                 )}
@@ -76,12 +71,7 @@ export const Transactions = () => {
             <Layout selectedAccount={selectedAccount}>
                 <TransactionSummary account={account} />
                 <TradeBox account={account} />
-                <TransactionList
-                    account={account}
-                    transactions={accountTransactions}
-                    symbol={account.symbol}
-                    isLoading={transactionsIsLoading}
-                />
+                <WalletTransactionList account={account} symbol={account.symbol} />
             </Layout>
         );
     }
