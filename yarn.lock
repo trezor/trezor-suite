@@ -11638,6 +11638,7 @@ __metadata:
     "@solana/web3.js": "npm:^2.0.0"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@types/tiny-secp256k1": "npm:^2.0.1"
     tsx: "npm:^4.16.3"
   peerDependencies:
     tslib: ^2.6.2
@@ -14415,6 +14416,15 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/c8f6480cf68d95b5e9f64fa6210f50915e8ff124638965a2c5a4c87641cc7f762155b9a8e01e3e517d48f8931e2d3920a40c4e677398e8b93c9cf1c8a36d2fbb
+  languageName: node
+  linkType: hard
+
+"@types/tiny-secp256k1@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@types/tiny-secp256k1@npm:2.0.1"
+  dependencies:
+    tiny-secp256k1: "npm:*"
+  checksum: 10/7ea0741c7098b8910e0ae2cad22e181c5fcf6b0d5d9c17164509be1603ab4638426e7bef56f6e9baff6763db8785e3b60fa934950908c1dd2afc0c117257d25e
   languageName: node
   linkType: hard
 
@@ -40576,6 +40586,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tiny-secp256k1@npm:*":
+  version: 2.2.3
+  resolution: "tiny-secp256k1@npm:2.2.3"
+  dependencies:
+    uint8array-tools: "npm:0.0.7"
+  checksum: 10/9975134c5c86587bb0e9886dd2e66a7a9b79931cb2c3e32b24bcfc2096216781828bb7c5482c0fa18a632ce1b907f6cc86bf12238704ec9cd43d1e81d8af502e
+  languageName: node
+  linkType: hard
+
 "tiny-secp256k1@npm:^1.1.6":
   version: 1.1.6
   resolution: "tiny-secp256k1@npm:1.1.6"
@@ -41428,6 +41447,13 @@ __metadata:
   bin:
     uglifyjs: bin/uglifyjs
   checksum: 10/42eb3f771fb5d82c9ddebcf71c0f061ee5004601631a14608d1ba6f41cd45f97eed61c4618d7c9d88c751f0e32ff11aedd1beefc10a02a2459537368bf75e4d4
+  languageName: node
+  linkType: hard
+
+"uint8array-tools@npm:0.0.7":
+  version: 0.0.7
+  resolution: "uint8array-tools@npm:0.0.7"
+  checksum: 10/6ffc45c7d2136757d63c6e556eb8345f908948618a9de37c805fec1249d989c265187b3fbef6cffc4ce5129083204829025b3c58800a0f24c8548e243d42ba13
   languageName: node
   linkType: hard
 

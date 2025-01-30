@@ -14,7 +14,9 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/replace-imports.sh ./libESM libESM",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
@@ -25,6 +27,7 @@
         "@trezor/utxo-lib": "workspace:*"
     },
     "devDependencies": {
+        "@types/tiny-secp256k1": "^2.0.1",
         "tsx": "^4.16.3"
     },
     "peerDependencies": {
