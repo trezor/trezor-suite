@@ -3,6 +3,5 @@
     "compilerOptions": {
         "outDir": "libESM",
         "module": "ESNext"
-    },
-    "include": ["./src"]
+    }
 }
