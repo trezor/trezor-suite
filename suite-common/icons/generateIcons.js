@@ -8,6 +8,7 @@ const { optimize } = require('svgo');
 
 const iconsFilePath = './src/icons.ts';
 const cryptoIconsPath = './src/cryptoIcons.ts';
+const networkIconsPath = './src/networkIcons.ts';
 
 const assetTypesConfig = [
     {
@@ -23,6 +24,10 @@ const cryptoAssetsTypesConfig = [
         dirname: 'cryptoAssets/cryptoIcons',
         typeName: 'CryptoIconName',
     },
+];
+
+const networkAssetsTypesConfig = [
+    { name: 'networkIcons', dirname: 'cryptoAssets/networkIcons', typeName: 'NetworkIconName' },
 ];
 
 // https://github.com/svg/svgo#built-in-plugins
@@ -127,4 +132,7 @@ const generateFileForAssetTypes = async (assetTypesArray, outputFilePath) => {
     console.log('Generating crypto icons TS file...');
     await generateFileForAssetTypes(cryptoAssetsTypesConfig, cryptoIconsPath);
     console.log(chalk.green('Crypto icons TS file generated successfully'));
+    console.log('Generating network icons TS file...');
+    await generateFileForAssetTypes(networkAssetsTypesConfig, networkIconsPath);
+    console.log(chalk.green('Network icons TS file generated successfully'));
 })();

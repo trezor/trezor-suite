@@ -114,3 +114,6 @@ export const getNetworkDisplaySymbolName = (symbol: NetworkSymbol) => {
 
     return network.displaySymbolName || network.name;
 };
+
+export const hasIconsWithNetworkBadge = (symbol: NetworkSymbol) =>
+    ['op', 'arb', 'base'].includes(symbol);

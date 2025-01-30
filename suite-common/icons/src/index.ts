@@ -6,3 +6,4 @@ Mobile app doesn't support treeshaking.
 export * from './constants';
 export * from './tokenIcons';
 export * from './cryptoIcons';
+export * from './networkIcons';
