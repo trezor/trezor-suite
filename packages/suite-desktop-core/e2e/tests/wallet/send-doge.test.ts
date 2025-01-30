@@ -1,7 +1,7 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { splitStringEveryNCharacters } from '@trezor/utils';
 
-import { expect, test } from '../../support/fixtures';
+import { test, expect } from '../../support/fixtures';
+import { formatAddress } from '../../support/common';
 
 test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
     test.use({
@@ -60,7 +60,7 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
             await expect(devicePrompt.outputValueOf('total')).toContainText(`${totalAmount} DOGE`);
             await expect(devicePrompt.outputValueOf('fee')).toContainText(`${feeAmount} DOGE`);
             await expect(devicePrompt.outputValueOf('address')).toHaveText(
-                splitStringEveryNCharacters(recipientAddress, 4).join(' '),
+                formatAddress(recipientAddress),
             );
             await expect(devicePrompt.modal).toHaveScreenshot('send-doge.png');
             await trezorUserEnvLink.pressYes();

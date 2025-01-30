@@ -6,6 +6,7 @@ import { isEqual, omit } from 'lodash';
 import path from 'path';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { splitStringEveryNCharacters } from '@trezor/utils';
 
 import { PlaywrightProjects } from '../playwright.config';
 
@@ -167,3 +168,5 @@ export { TrezorUserEnvLinkProxy };
 
 export const isEqualWithOmit = (param: { object1: any; object2: any; mask: string[] }) =>
     isEqual(omit(param.object1, param.mask), omit(param.object2, param.mask));
+
+export const formatAddress = (address: string) => splitStringEveryNCharacters(address, 4).join(' ');
