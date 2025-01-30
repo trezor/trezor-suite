@@ -481,7 +481,7 @@ export const useTradingSellForm = ({
     };
 
     const sendTransaction = async () => {
-        dispatch(tradingCommonActions.setTradingModalAccount(account));
+        dispatch(tradingCommonActions.setTradingModalAccountKey(account.key));
 
         const selectedTrade = trade?.data || selectedQuote;
         // destinationAddress may be set by useTradingWatchTrade hook to the trade object

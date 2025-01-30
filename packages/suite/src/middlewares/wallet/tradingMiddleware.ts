@@ -138,7 +138,7 @@ export const tradingMiddleware =
         // clear modal account on close button requests
         // it is necessary to clear the state because it could affect the next modal state
         if (isTradingRoute && (isReceiveModal || isSendModal)) {
-            api.dispatch(tradingCommonActions.setTradingModalAccount(undefined));
+            api.dispatch(tradingCommonActions.setTradingModalAccountKey(undefined));
         }
 
         next(action);

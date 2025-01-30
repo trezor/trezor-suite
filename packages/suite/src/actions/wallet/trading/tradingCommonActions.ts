@@ -7,7 +7,7 @@ import {
     selectSelectedDevice,
     toggleRememberDevice,
 } from '@suite-common/wallet-core';
-import { AddressDisplayOptions, Output } from '@suite-common/wallet-types/src';
+import { AccountKey, AddressDisplayOptions, Output } from '@suite-common/wallet-types/src';
 import {
     amountToSmallestUnit,
     formatAmount,
@@ -45,8 +45,8 @@ export type TradingCommonAction =
           modalCryptoId: CryptoId | undefined;
       }
     | {
-          type: typeof TRADING_COMMON.SET_MODAL_ACCOUNT;
-          modalAccount: Account | undefined;
+          type: typeof TRADING_COMMON.SET_MODAL_ACCOUNT_KEY;
+          modalAccountKey: AccountKey | undefined;
       }
     | {
           type: typeof TRADING_COMMON.SET_TRADING_ACTIVE_SECTION;
@@ -63,13 +63,15 @@ type FormState = {
 };
 
 /**
- * Set modalAccount to retrieve the correct account in modals.
- * Used in ConfirmAddressModal and TransactionReviewModalContent through selectAccountIncludingChosenInTrading.
+ * Set modalAccountKey to retrieve the correct account key in modals.
+ * Used in ConfirmAddressModal and TransactionReviewModalContent through selectAccountKeyIncludingChosenInTrading.
  * Unset in middleware after modal is closed.
  */
-export const setTradingModalAccount = (modalAccount: Account | undefined): TradingCommonAction => ({
-    type: TRADING_COMMON.SET_MODAL_ACCOUNT,
-    modalAccount,
+export const setTradingModalAccountKey = (
+    modalAccountKey: AccountKey | undefined,
+): TradingCommonAction => ({
+    type: TRADING_COMMON.SET_MODAL_ACCOUNT_KEY,
+    modalAccountKey,
 });
 
 export const setActiveSection = (activeSection: TradingType): TradingCommonAction => ({
@@ -92,7 +94,7 @@ export const verifyAddress =
         path = path ?? accountAddress.path;
         if (!path || !address) return;
 
-        dispatch(setTradingModalAccount(account));
+        dispatch(setTradingModalAccountKey(account.key));
 
         const addressDisplayType = selectAddressDisplayType(getState());
 

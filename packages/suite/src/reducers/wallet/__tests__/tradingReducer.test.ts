@@ -49,22 +49,22 @@ describe('settings reducer', () => {
     it('TRADING_COMMON.SET_MODAL_ACCOUNT', () => {
         expect(
             tradingReducer(undefined, {
-                type: TRADING_COMMON.SET_MODAL_ACCOUNT,
-                modalAccount: accounts[0],
+                type: TRADING_COMMON.SET_MODAL_ACCOUNT_KEY,
+                modalAccountKey: accounts[0].key,
             }),
         ).toEqual({
             ...initialState,
-            modalAccount: accounts[0],
+            modalAccountKey: accounts[0].key,
         });
 
         expect(
             tradingReducer(undefined, {
-                type: TRADING_COMMON.SET_MODAL_ACCOUNT,
-                modalAccount: undefined,
+                type: TRADING_COMMON.SET_MODAL_ACCOUNT_KEY,
+                modalAccountKey: undefined,
             }),
         ).toEqual({
             ...initialState,
-            modalAccount: undefined,
+            modalAccountKey: undefined,
         });
     });
 

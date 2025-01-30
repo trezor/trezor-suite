@@ -94,7 +94,7 @@ export interface State {
     composedTransactionInfo: ComposedTransactionInfo;
     trades: Trade[];
     modalCryptoId: CryptoId | undefined;
-    modalAccount: Account | undefined;
+    modalAccountKey: AccountKey | undefined;
     isLoading: boolean;
     lastLoadedTimestamp: number;
     activeSection?: TradingType;
@@ -144,7 +144,7 @@ export const initialState: State = {
     composedTransactionInfo: {},
     trades: [],
     isLoading: false,
-    modalAccount: undefined,
+    modalAccountKey: undefined,
     modalCryptoId: undefined,
     lastLoadedTimestamp: 0,
     activeSection: 'buy',
@@ -265,8 +265,8 @@ export const tradingReducer = (
                 draft.isLoading = action.isLoading;
                 draft.lastLoadedTimestamp = action.lastLoadedTimestamp;
                 break;
-            case TRADING_COMMON.SET_MODAL_ACCOUNT:
-                draft.modalAccount = action.modalAccount;
+            case TRADING_COMMON.SET_MODAL_ACCOUNT_KEY:
+                draft.modalAccountKey = action.modalAccountKey;
                 break;
             case TRADING_COMMON.SET_MODAL_CRYPTO_CURRENCY:
                 draft.modalCryptoId = action.modalCryptoId;

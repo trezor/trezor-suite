@@ -1,4 +1,4 @@
-import { accountsActions } from '@suite-common/wallet-core';
+import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { State as TradingState } from 'src/reducers/wallet/tradingReducer';
@@ -10,7 +10,7 @@ export type SelectedAccountRootState = {
     wallet: {
         selectedAccount: SelectedAccountStatus;
     };
-};
+} & AccountsRootState;
 
 export type SelectedAccountRootStateWithTrading = SelectedAccountRootState & {
     wallet: {
@@ -54,10 +54,10 @@ export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =
 export const selectAccountIncludingChosenInTrading = (
     state: SelectedAccountRootStateWithTrading,
 ) => {
-    const { modalAccount } = state.wallet.trading;
+    const { modalAccountKey } = state.wallet.trading;
 
-    if (modalAccount) {
-        return modalAccount;
+    if (modalAccountKey) {
+        return selectAccountByKey(state, modalAccountKey) ?? undefined;
     }
 
     const selectedAccount = selectSelectedAccount(state);

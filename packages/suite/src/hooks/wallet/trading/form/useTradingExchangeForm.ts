@@ -525,7 +525,7 @@ export const useTradingExchangeForm = ({
     };
 
     const sendTransaction = async () => {
-        dispatch(tradingCommonActions.setTradingModalAccount(account));
+        dispatch(tradingCommonActions.setTradingModalAccountKey(account.key));
 
         if (selectedQuote?.isDex) {
             sendDexTransaction();

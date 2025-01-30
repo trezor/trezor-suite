@@ -229,12 +229,12 @@ describe('tradingMiddleware', () => {
         expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(0);
     });
 
-    it('Test of cleaning modalAccount property after receive modal is closed', () => {
+    it('Test of cleaning modalAccountKey property after receive modal is closed', () => {
         const store = initStore(
             getInitialState({
                 trading: {
                     ...initialState,
-                    modalAccount: accounts[0],
+                    modalAccountKey: accounts[0].key,
                     lastLoadedTimestamp: Date.now(),
                 },
             }),
@@ -260,15 +260,15 @@ describe('tradingMiddleware', () => {
             type: UI.CLOSE_UI_WINDOW,
         });
 
-        expect(store.getState().wallet.trading.modalAccount).toEqual(undefined);
+        expect(store.getState().wallet.trading.modalAccountKey).toEqual(undefined);
     });
 
-    it('Test of cleaning modalAccount property after send modal is closed', () => {
+    it('Test of cleaning modalAccountKey property after send modal is closed', () => {
         const store = initStore(
             getInitialState({
                 trading: {
                     ...initialState,
-                    modalAccount: accounts[0],
+                    modalAccountKey: accounts[0].key,
                     lastLoadedTimestamp: Date.now(),
                 },
             }),
@@ -294,7 +294,7 @@ describe('tradingMiddleware', () => {
             type: MODAL.CLOSE,
         });
 
-        expect(store.getState().wallet.trading.modalAccount).toEqual(undefined);
+        expect(store.getState().wallet.trading.modalAccountKey).toEqual(undefined);
     });
 
     it('Test of setting activeSection after changing route', () => {
