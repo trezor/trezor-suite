@@ -21,3 +21,4 @@ export {
 } from './components/SelectAssetModal/NetworkTabs';
 export { NumberInput } from './components/NumberInput/NumberInput';
 export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
+export { EditableText } from './components/EditableText/EditableText';

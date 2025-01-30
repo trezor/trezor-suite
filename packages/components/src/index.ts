@@ -94,7 +94,14 @@ export { SubTabs, type SubTabsProps } from './components/SubTabs/SubTabs';
 export { VirtualizedList } from './components/VirtualizedList/VirtualizedList';
 export { List, type ListProps } from './components/List/List';
 export { StoryColumn, StoryWrapper } from './support/Story';
-export { type Margin } from './utils/frameProps';
+export {
+    type Margin,
+    type FrameProps,
+    type FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+    getFramePropsStory,
+} from './utils/frameProps';
 
 export * from './constants/keyboardEvents';
 

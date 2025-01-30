@@ -32,13 +32,14 @@ const Container = styled.div<TransientProps<AllowedFrameProps>>`
 export type BoxProps = AllowedFrameProps & {
     children: React.ReactNode;
     'data-testid'?: string;
+    as?: React.ElementType;
 };
 
-export const Box = ({ children, 'data-testid': dataTestId, ...rest }: BoxProps) => {
+export const Box = ({ children, 'data-testid': dataTestId, as = 'div', ...rest }: BoxProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedBoxFrameProps);
 
     return (
-        <Container data-testid={dataTestId} {...frameProps}>
+        <Container as={as} data-testid={dataTestId} {...frameProps}>
             {children}
         </Container>
     );
