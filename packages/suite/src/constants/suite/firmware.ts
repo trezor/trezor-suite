@@ -1,18 +1,19 @@
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { FilterPropertiesByType } from '@trezor/type-utils';
-import { isDevEnv } from '@suite-common/suite-utils';
 
 /*
  * Various scenarios how firmware authenticity check errors are handled in Suite
  * see suite-native/device/src/config/firmware.ts for Suite Lite
  */
 
+type BehaviorBaseType = { shouldReport: boolean; debugOnly?: boolean };
+
 // will be ignored completely
-type SkippedBehavior = { type: 'skipped'; shouldReport: boolean };
+type SkippedBehavior = BehaviorBaseType & { type: 'skipped' };
 // display a warning banner
-type SoftWarningBehavior = { type: 'softWarning'; shouldReport: true };
+type SoftWarningBehavior = BehaviorBaseType & { type: 'softWarning'; shouldReport: true };
 // display "Device Compromised" modal, after closing it display a warning banner, block receiving address
-type HardModalBehavior = { type: 'hardModal'; shouldReport: true };
+type HardModalBehavior = BehaviorBaseType & { type: 'hardModal'; shouldReport: true };
 
 type RevisionErrorBehavior = SoftWarningBehavior | HardModalBehavior;
 type RevisionCheckErrorScenarios = Record<FirmwareRevisionCheckError, RevisionErrorBehavior>;
@@ -33,8 +34,8 @@ export const hashCheckErrorScenarios = {
     'check-unsupported': { type: 'skipped', shouldReport: false },
     // could mean counterfeit firmware, but it's also caught by revision check, which handles edge-cases better
     'unknown-release': { type: 'skipped', shouldReport: false },
-    // TODO fix FW hash check unreliability & reenable on production
-    'other-error': { type: isDevEnv ? 'hardModal' : 'skipped', shouldReport: true },
+    // TODO fix FW hash check unreliability & reenable on production (outside of debug mode)
+    'other-error': { type: 'hardModal', shouldReport: true, debugOnly: true },
 } satisfies HashCheckErrorScenarios;
 
 export type SkippedHashCheckError = keyof FilterPropertiesByType<
@@ -45,3 +46,9 @@ export type SkippedHashCheckError = keyof FilterPropertiesByType<
 export const isSkippedHashCheckError = (
     error: FirmwareHashCheckError,
 ): error is SkippedHashCheckError => hashCheckErrorScenarios[error].type === 'skipped';
+
+export const isDebugOnlyRevisionCheckError = (error: FirmwareRevisionCheckError): boolean =>
+    (revisionCheckErrorScenarios[error] as RevisionErrorBehavior).debugOnly ?? false;
+
+export const isDebugOnlyHashCheckError = (error: FirmwareHashCheckError): boolean =>
+    (hashCheckErrorScenarios[error] as HashErrorBehavior).debugOnly ?? false;

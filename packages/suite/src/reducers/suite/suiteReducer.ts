@@ -22,6 +22,8 @@ import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/p
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import {
     hashCheckErrorScenarios,
+    isDebugOnlyHashCheckError,
+    isDebugOnlyRevisionCheckError,
     isSkippedHashCheckError,
     revisionCheckErrorScenarios,
 } from 'src/constants/suite/firmware';
@@ -493,11 +495,19 @@ export const selectFirmwareRevisionCheckError = (state: AppState) => {
 
 export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
     const revisionCheckError = selectFirmwareRevisionCheckError(state);
-    const { isFirmwareRevisionCheckDisabled } = state.suite.settings;
-    const isDisabledByMessage = selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck);
-    const isCheckEnabled = !isFirmwareRevisionCheckDisabled && !isDisabledByMessage;
+    if (revisionCheckError === null) return null;
 
-    return isCheckEnabled ? revisionCheckError : null;
+    const { isFirmwareRevisionCheckDisabled } = state.suite.settings;
+    if (isFirmwareRevisionCheckDisabled) return null;
+
+    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck);
+    if (isDisabledByMessageSystem) return null;
+
+    const isHiddenBehindDebug =
+        isDebugOnlyRevisionCheckError(revisionCheckError) && !selectIsDebugModeActive(state);
+    if (isHiddenBehindDebug) return null;
+
+    return revisionCheckError;
 };
 
 /**
@@ -518,11 +528,19 @@ export const selectFirmwareHashCheckError = (state: AppState) => {
 
 export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
     const hashCheckError = selectFirmwareHashCheckError(state);
-    const { isFirmwareHashCheckDisabled } = state.suite.settings;
-    const isDisabledByMessage = selectIsFeatureDisabled(state, Feature.firmwareHashCheck);
-    const isCheckEnabled = !isFirmwareHashCheckDisabled && !isDisabledByMessage;
+    if (hashCheckError === null) return null;
 
-    return isCheckEnabled ? hashCheckError : null;
+    const { isFirmwareHashCheckDisabled } = state.suite.settings;
+    if (isFirmwareHashCheckDisabled) return null;
+
+    const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareHashCheck);
+    if (isDisabledByMessageSystem) return null;
+
+    const isHiddenBehindDebug =
+        isDebugOnlyHashCheckError(hashCheckError) && !selectIsDebugModeActive(state);
+    if (isHiddenBehindDebug) return null;
+
+    return hashCheckError;
 };
 
 /**
