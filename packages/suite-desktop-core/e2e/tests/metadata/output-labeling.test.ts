@@ -4,7 +4,7 @@ import { OutputLabelId } from '../../support/enums/outputLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
 
-test.describe.skip('Metadata - Output labeling', { tag: ['@group=metadata', '@webOnly'] }, () => {
+test.describe('Metadata - Output labeling', { tag: ['@group=metadata', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ metadataProviderMock }) => {
         await metadataProviderMock.start(MetadataProvider.DROPBOX);
