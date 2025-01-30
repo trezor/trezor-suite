@@ -113,7 +113,10 @@ export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
     if (isCheckFailed) {
         return (
             <StyledCard>
-                <SecurityCheckFail supportUrl={TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL} />
+                <SecurityCheckFail
+                    supportUrl={TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL}
+                    text="TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT"
+                />
             </StyledCard>
         );
     }

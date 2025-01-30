@@ -6878,6 +6878,10 @@ export default defineMessages({
         id: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',
         defaultMessage: 'Your device firmware revision check failed.',
     },
+    TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT: {
+        id: 'TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT',
+        defaultMessage: 'Your device authentication check failed.',
+    },
     TR_PLAY_IT_SAFE: {
         id: 'TR_PLAY_IT_SAFE',
         defaultMessage: "Let's play it safe",
