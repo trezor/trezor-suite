@@ -3599,6 +3599,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@everstake/wallet-sdk-solana@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "@everstake/wallet-sdk-solana@npm:2.0.5"
+  dependencies:
+    "@solana-program/compute-budget": "npm:^0.6.1"
+    "@solana-program/stake": "npm:^0.1.0"
+    "@solana-program/system": "npm:^0.6.2"
+    "@solana/web3.js": "npm:2.0.0"
+  checksum: 10/5a608d04377e300fa10738911b0b0bea36f7fb8cc3fee35af29b2e55ed6b6008c169c5fb7ba2e9f72bfa3dfc606793851025c4641035f671a1dc60dd95349a6f
+  languageName: node
+  linkType: hard
+
 "@everstake/wallet-sdk@npm:^1.0.10":
   version: 1.0.10
   resolution: "@everstake/wallet-sdk@npm:1.0.10"
@@ -8141,6 +8153,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solana-program/stake@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@solana-program/stake@npm:0.1.0"
+  peerDependencies:
+    "@solana/web3.js": ^2.0.0
+  checksum: 10/a54a1946a76271db23c4aef5adebd94449760d653942d2e3ae7accc09973d3d4ded4406ee7d9f799371e6b30f47a2ff617a15b8890016e224a029477d9503085
+  languageName: node
+  linkType: hard
+
 "@solana-program/system@npm:^0.6.2":
   version: 0.6.2
   resolution: "@solana-program/system@npm:0.6.2"
@@ -8680,7 +8701,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/web3.js@npm:^2.0.0":
+"@solana/web3.js@npm:2.0.0, @solana/web3.js@npm:^2.0.0":
   version: 2.0.0
   resolution: "@solana/web3.js@npm:2.0.0"
   dependencies:
@@ -11531,7 +11552,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
-    "@everstake/wallet-sdk": "npm:^1.0.10"
     "@solana/web3.js": "npm:^2.0.0"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
@@ -11562,7 +11582,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@everstake/wallet-sdk": "npm:^1.0.10"
+    "@everstake/wallet-sdk-solana": "npm:^2.0.5"
     "@solana-program/token": "npm:^0.4.1"
     "@solana-program/token-2022": "npm:^0.3.4"
     "@solana/web3.js": "npm:^2.0.0"

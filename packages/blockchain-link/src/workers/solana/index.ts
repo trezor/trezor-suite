@@ -61,7 +61,7 @@ import { BigNumber, createDeferred, createLazy } from '@trezor/utils';
 
 import { getBaseFee, getPriorityFee } from './fee';
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
-import { getSolanaStakingData } from '../utils';
+import { getSolanaStakingData } from './utils';
 
 export type SolanaAPI = Readonly<{
     clusterUrl: ClusterUrl;
@@ -366,12 +366,17 @@ const getAccountInfo = async (
             const accountDataBytes = getBase64Encoder().encode(accountDataEncoded);
             const accountDataLength = BigInt(accountDataBytes.byteLength);
             const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
-            const stakingData = await getSolanaStakingData(payload.descriptor, isTestnet);
+            const solEpoch = await getEpoch();
+            const solStakingAccounts = await getSolanaStakingData(
+                payload.descriptor,
+                isTestnet,
+                solEpoch,
+            );
             misc = {
                 owner: accountInfo?.owner,
                 rent: Number(rent),
-                solStakingAccounts: stakingData?.stakingAccounts,
-                solEpoch: await getEpoch(),
+                solStakingAccounts,
+                solEpoch,
             };
         }
     }

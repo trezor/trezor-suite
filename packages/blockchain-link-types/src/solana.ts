@@ -1,4 +1,3 @@
-import type { SolDelegation } from '@everstake/wallet-sdk';
 import type {
     AccountInfoBase,
     AccountInfoWithBase58EncodedData,
@@ -71,6 +70,10 @@ export type AccountInfo<
 
 export type { Address } from '@solana/web3.js';
 
-export type SolanaStakingAccount = SolDelegation;
+export type SolanaStakingAccount = {
+    status: string;
+    stake?: bigint;
+    rentExemptReserve: bigint;
+};
 
 export type TokenDetailByMint = { [mint: string]: { name: string; symbol: string } };

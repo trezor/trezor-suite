@@ -1,0 +1,48 @@
+import { Network, Solana, isStake, stakeAccountState } from '@everstake/wallet-sdk-solana';
+
+import config from '../../ui/config';
+
+export const getSolanaStakingData = async (
+    descriptor: string,
+    isTestnet: boolean,
+    epoch: number,
+) => {
+    const blockchainEnvironment = isTestnet ? 'devnet' : 'mainnet';
+
+    // Find the blockchain configuration for the specified chain and environment
+    const blockchainConfig = config.find(c =>
+        c.blockchain.name.toLowerCase().includes(`solana ${blockchainEnvironment}`),
+    );
+    const serverUrl = blockchainConfig?.blockchain.server[0];
+    const network = isTestnet ? Network.Devnet : Network.Mainnet;
+
+    const solanaClient = new Solana(network, serverUrl);
+
+    const delegations = await solanaClient.getDelegations(descriptor);
+    if (!delegations || !delegations.result) {
+        throw new Error('Failed to fetch delegations');
+    }
+    const { result: stakingAccounts } = delegations;
+
+    return stakingAccounts
+        .map(account => {
+            const stakeAccount = account?.data;
+            if (!stakeAccount) return;
+
+            const stakeState = stakeAccountState(stakeAccount, BigInt(epoch));
+
+            const { state } = account?.data ?? {};
+            if (!isStake(state)) return;
+
+            if (state && 'fields' in state) {
+                const { fields } = state;
+
+                return {
+                    rentExemptReserve: fields[0]?.rentExemptReserve,
+                    stake: fields[1]?.delegation?.stake,
+                    status: stakeState,
+                };
+            }
+        })
+        .filter(account => account !== undefined);
+};
