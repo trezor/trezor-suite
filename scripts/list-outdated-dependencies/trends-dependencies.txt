@@ -1,6 +1,7 @@
 @ethereumjs/common
 @ethereumjs/tx
 @everstake/wallet-sdk
+@everstake/wallet-sdk-solana
 @fivebinaries/coin-selection
 @solana/buffer-layout
 @solana/web3.js

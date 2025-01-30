@@ -18,7 +18,7 @@
         "test-unit:watch": "yarn g:jest -o --watch"
     },
     "dependencies": {
-        "@everstake/wallet-sdk": "^1.0.10",
+        "@everstake/wallet-sdk": "1.0.10",
         "@floating-ui/react": "^0.26.9",
         "@formatjs/intl": "2.10.0",
         "@hookform/resolvers": "3.10.0",
@@ -27,7 +27,6 @@
         "@sentry/core": "^8.47.0",
         "@solana/buffer-layout": "^4.0.1",
         "@solana/web3.js": "^2.0.0",
-        "@solana/web3.js-version1": "npm:@solana/web3.js@1.95.8",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/assets": "workspace:*",
         "@suite-common/connect-init": "workspace:*",

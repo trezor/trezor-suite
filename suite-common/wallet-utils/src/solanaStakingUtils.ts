@@ -1,4 +1,4 @@
-import { SolDelegation, SolNetwork, Solana, StakeAccount, StakeState } from '@everstake/wallet-sdk';
+import { Network, Solana, StakeState } from '@everstake/wallet-sdk-solana';
 
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
@@ -32,13 +32,13 @@ export const getSolanaStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
     }, [] as SupportedSolanaNetworkSymbols[]);
 
 interface SolNetworkConfig {
-    network: SolNetwork;
+    network: Network;
 }
 
 export const getSolNetworkForWalletSdk = (symbol: NetworkSymbol): SolNetworkConfig => {
     const solNetworks: PartialRecord<NetworkSymbol, SolNetworkConfig> = {
-        dsol: { network: SolNetwork.Devnet },
-        sol: { network: SolNetwork.Mainnet },
+        dsol: { network: Network.Devnet },
+        sol: { network: Network.Mainnet },
     };
 
     return solNetworks[symbol] || solNetworks.sol!;
@@ -53,11 +53,9 @@ export const selectSolanaWalletSdkNetwork = (symbol: NetworkSymbol, url?: string
 export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAccount[]) => {
     if (!stakingAccounts?.length) return null;
 
-    const totalAmount = stakingAccounts.reduce((acc, solAccount) => {
-        const { account } = solAccount;
-
-        if ('parsed' in account.data) {
-            const delegationStake = account.data.parsed?.info?.stake?.delegation?.stake;
+    const totalAmount = stakingAccounts.reduce((acc, account) => {
+        if (account) {
+            const delegationStake = account?.stake?.toString();
 
             if (delegationStake != null) {
                 return acc.plus(delegationStake);
@@ -96,53 +94,19 @@ export const calculateSolanaStakingReward = (accountBalance?: string, apy?: stri
         .toString();
 };
 
-export const getStakingAccountStatus = (
-    solStakingAccount: SolDelegation['account'],
-    epoch: number,
-) => {
-    const stakeAccountClient = new StakeAccount(solStakingAccount);
-
-    return stakeAccountClient.stakeAccountState(epoch);
-};
-
-interface StakingAccountWithStatus extends SolDelegation {
-    status: string;
-}
-
-export const getSolanaStakingAccountsWithStatus = (
-    account: Account,
-): StakingAccountWithStatus[] | null => {
-    if (!account.misc || account.networkType !== 'solana') return null;
-
-    const { solStakingAccounts, solEpoch } = account.misc;
-    if (!solStakingAccounts?.length || !solEpoch) return null;
-
-    const stakingAccountsWithStatus = solStakingAccounts.map(solStakingAccount => {
-        const status = getStakingAccountStatus(solStakingAccount.account, solEpoch);
-
-        return {
-            ...solStakingAccount,
-            status,
-        };
-    });
-
-    return stakingAccountsWithStatus;
-};
-
 export const getSolanaStakingAccountsByStatus = (account: Account, status: string) => {
-    const stakingAccountsWithStatus = getSolanaStakingAccountsWithStatus(account);
+    if (account?.networkType !== 'solana') return [];
 
-    if (!stakingAccountsWithStatus) return [];
+    const { solStakingAccounts } = account?.misc ?? {};
+    if (!solStakingAccounts) return [];
 
-    return stakingAccountsWithStatus.filter(
-        solStakingAccount => solStakingAccount.status === status,
-    );
+    return solStakingAccounts.filter(solStakingAccount => solStakingAccount.status === status);
 };
 
 export const getStakingAccountCurrentStatus = (account?: Account) => {
     if (account?.networkType !== 'solana') return null;
 
-    const statusesToCheck = [StakeState.inactive, StakeState.activating];
+    const statusesToCheck = [StakeState.Inactive, StakeState.Activating];
 
     for (const status of statusesToCheck) {
         const stakingAccounts = getSolanaStakingAccountsByStatus(account, status);
@@ -164,23 +128,23 @@ export const getSolStakingAccountTotalBalanceByStatus = (account: Account, statu
 type StakeStateType = (typeof StakeState)[keyof typeof StakeState];
 
 export const getSolStakingAccountsInfo = (account: Account) => {
-    const balanceResults = Object.entries(StakeState).map(([key, status]) => {
+    const balanceResults = Object.values(StakeState).map(status => {
         const balance = getSolStakingAccountTotalBalanceByStatus(account, status);
 
-        return [key, balance];
+        return [status, balance];
     });
 
     const balances: Record<StakeStateType, string> = balanceResults.reduce(
-        (acc, [key, balance]) => ({ ...acc, [key]: balance }),
+        (acc, [status, balance]) => ({ ...acc, [status]: balance }),
         {},
     );
 
     return {
-        solStakedBalance: balances[StakeState.active],
-        solClaimableBalance: balances[StakeState.deactivated],
-        solPendingStakeBalance: balances[StakeState.activating],
-        solPendingUnstakeBalance: balances[StakeState.deactivating],
-        canClaimSol: new BigNumber(balances[StakeState.deactivated]).gt(0),
-        canUnstakeSol: new BigNumber(balances[StakeState.active]).gt(0),
+        solStakedBalance: balances[StakeState.Active],
+        solClaimableBalance: balances[StakeState.Deactivated],
+        solPendingStakeBalance: balances[StakeState.Activating],
+        solPendingUnstakeBalance: balances[StakeState.Deactivating],
+        canClaimSol: new BigNumber(balances[StakeState.Deactivated]).gt(0),
+        canUnstakeSol: new BigNumber(balances[StakeState.Active]).gt(0),
     };
 };
