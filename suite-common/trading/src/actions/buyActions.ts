@@ -3,7 +3,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { BuyInfo } from '../reducers/buyReducer';
 
-const BUY_COMMON_PREFIX = '@trading-common';
+const BUY_COMMON_PREFIX = '@trading-buy';
 
 export const SAVE_BUY_INFO = `${BUY_COMMON_PREFIX}/save_buy_info`;
 export const SAVE_QUOTE_REQUEST = `${BUY_COMMON_PREFIX}/save_buy_quote_request`;
