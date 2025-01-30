@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 
-import { invityAPI } from '@suite-common/trading';
+import { TradingUtilsProvidersProps, invityAPI } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { TradingUtilsProvidersProps } from 'src/types/trading/trading';
 
 const Icon = styled.img`
     flex: none;
