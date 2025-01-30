@@ -22,8 +22,14 @@
     "publishConfig": {
         "main": "lib/index.js"
     },
+    "exports": {
+        "node": "./lib/index.js",
+        "default": "./libESM/index.js"
+    },
     "files": [
-        "lib/"
+        "lib/",
+        "libESM",
+        "!**/*.map"
     ],
     "peerDependencies": {
         "@stellar/stellar-sdk": "^12.1.3",
@@ -40,6 +46,8 @@
     "scripts": {
         "test:unit": "jest -c ../../jest.config.base.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib"
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/replace-imports.sh ./libESM libESM"
     }
 }
