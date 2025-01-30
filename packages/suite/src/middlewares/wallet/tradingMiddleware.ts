@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 
 import { invityAPI } from '@suite-common/trading';
+import { ACCOUNTS_MODULE_PREFIX } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
 import { MODAL, ROUTER } from 'src/actions/suite/constants';
@@ -43,9 +44,13 @@ export const tradingMiddleware =
     (action: Action): Action => {
         const state = api.getState();
         const { isLoading, lastLoadedTimestamp } = state.wallet.trading;
-        const { exchangeInfo } = state.wallet.trading.exchange;
-        const { sellInfo } = state.wallet.trading.sell;
+        const { exchangeInfo, tradingAccountKey: tradingExchangeAccountKey } =
+            state.wallet.trading.exchange;
+        const { sellInfo, tradingAccountKey: tradingSellAccountKey } = state.wallet.trading.sell;
         const { router, modal } = state;
+        const isRouteChange = action.type === ROUTER.LOCATION_CHANGE;
+        const isSuiteAccountChanged =
+            action.type === `${ACCOUNTS_MODULE_PREFIX}/updateSelectedAccount`;
 
         if (action.type === TRADING_COMMON.LOAD_DATA) {
             const account = getAccountAccordingToRoute(state);
@@ -141,12 +146,18 @@ export const tradingMiddleware =
             api.dispatch(tradingCommonActions.setTradingModalAccountKey(undefined));
         }
 
+        // clear the account key in the Sell and Swap section when the route is not trading
+        if (isSuiteAccountChanged && (tradingExchangeAccountKey || tradingSellAccountKey)) {
+            api.dispatch(tradingSellActions.setTradingSellAccountKey(undefined));
+            api.dispatch(tradingExchangeActions.setTradingExchangeAccountKey(undefined));
+        }
+
         next(action);
 
         // get the new state after the action has been processed
         const newState = api.getState();
 
-        if (action.type === ROUTER.LOCATION_CHANGE) {
+        if (isRouteChange) {
             const routeName = newState.router.route?.name;
             const isBuy = routeName === 'wallet-trading-buy';
             const isSell = routeName === 'wallet-trading-sell';
