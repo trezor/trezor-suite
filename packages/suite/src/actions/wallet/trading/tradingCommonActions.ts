@@ -1,6 +1,6 @@
 import { CryptoId } from 'invity-api';
 
-import type { TradingType } from '@suite-common/invity';
+import { isDesktop } from '@trezor/env-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     confirmAddressOnDeviceThunk,
@@ -15,8 +15,8 @@ import {
     hasNetworkFeatures,
     parseFormDraftKey,
 } from '@suite-common/wallet-utils';
+import type { TradingType } from '@suite-common/trading';
 import { PROTO } from '@trezor/connect';
-import { isDesktop } from '@trezor/env-utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { TRADING_BUY, TRADING_COMMON, TRADING_EXCHANGE } from 'src/actions/wallet/constants';

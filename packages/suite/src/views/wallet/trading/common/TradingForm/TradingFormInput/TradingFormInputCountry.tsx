@@ -1,6 +1,6 @@
 import { Control, Controller } from 'react-hook-form';
 
-import { regional } from '@suite-common/invity';
+import { regional } from '@suite-common/trading';
 import { Flag, Row, Select } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import type { TradingBuyType } from '@suite-common/invity';
+import type { TradingBuyType } from '@suite-common/trading';
 import { Card } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';

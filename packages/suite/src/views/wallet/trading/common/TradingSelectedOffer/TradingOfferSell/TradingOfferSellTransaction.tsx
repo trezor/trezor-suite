@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import type { TradingSellType } from '@suite-common/invity';
+import type { TradingSellType } from '@suite-common/trading';
 import { Button, Column, Spinner, Text } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 

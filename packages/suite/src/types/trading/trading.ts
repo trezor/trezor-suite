@@ -20,7 +20,7 @@ import type {
     TradingPaymentMethodType,
     TradingSellType,
     TradingType,
-} from '@suite-common/invity';
+} from '@suite-common/trading';
 import { TokenDefinitionsState } from '@suite-common/token-definitions';
 import { AccountType, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { AccountsState } from '@suite-common/wallet-core';

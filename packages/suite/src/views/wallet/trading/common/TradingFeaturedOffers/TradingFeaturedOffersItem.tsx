@@ -1,7 +1,7 @@
 import { SellFiatTrade } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
-import type { TradingTradeType, TradingType } from '@suite-common/invity';
+import type { TradingTradeType, TradingType } from '@suite-common/trading';
 import { Badge, Button, Card, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';

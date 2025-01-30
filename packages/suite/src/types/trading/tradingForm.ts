@@ -18,7 +18,7 @@ import type {
     TradingSellType,
     TradingTradeType,
     TradingType,
-} from '@suite-common/invity';
+} from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { AccountsState } from '@suite-common/wallet-core';
 import {

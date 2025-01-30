@@ -11,7 +11,7 @@ import {
     WatchSellTradeResponse,
 } from 'invity-api';
 
-import { type TradingType, invityAPI } from '@suite-common/invity';
+import { type TradingType, invityAPI } from '@suite-common/trading';
 
 import { saveTrade as saveBuyTrade } from 'src/actions/wallet/tradingBuyActions';
 import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/tradingExchangeActions';

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import { TradingExchangeType } from '@suite-common/invity';
+import { TradingExchangeType } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import addressValidator from '@trezor/address-validator';

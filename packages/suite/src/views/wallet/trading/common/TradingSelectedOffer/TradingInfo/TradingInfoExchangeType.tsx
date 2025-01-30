@@ -1,6 +1,6 @@
 import { ExchangeTrade } from 'invity-api';
 
-import type { TradingTradeType } from '@suite-common/invity';
+import type { TradingTradeType } from '@suite-common/trading';
 import { Row, Text, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';

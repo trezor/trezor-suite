@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { DexApprovalType } from 'invity-api';
 import styled from 'styled-components';
 
-import type { TradingExchangeType } from '@suite-common/invity';
+import type { TradingExchangeType } from '@suite-common/trading';
 import {
     Banner,
     Button,

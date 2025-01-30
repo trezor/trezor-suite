@@ -1,7 +1,7 @@
 import { CryptoId } from 'invity-api';
 import { useTheme } from 'styled-components';
 
-import type { TradingExchangeType } from '@suite-common/invity';
+import type { TradingExchangeType } from '@suite-common/trading';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { H3, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';

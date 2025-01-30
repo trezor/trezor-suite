@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { BuyTrade, BuyTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI } from '@suite-common/trading';
 import { Button, Image, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

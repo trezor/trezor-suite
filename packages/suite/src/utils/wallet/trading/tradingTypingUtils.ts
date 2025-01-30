@@ -6,7 +6,7 @@ import type {
     TradingSellType,
     TradingTradeType,
     TradingType,
-} from '@suite-common/invity';
+} from '@suite-common/trading';
 import { CurrencyOption } from '@suite-common/wallet-types';
 
 import { FORM_FIAT_CURRENCY_SELECT, FORM_OUTPUT_CURRENCY } from 'src/constants/wallet/trading/form';

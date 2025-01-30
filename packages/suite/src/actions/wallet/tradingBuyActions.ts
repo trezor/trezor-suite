@@ -7,7 +7,7 @@ import {
     FiatCurrencyCode,
 } from 'invity-api';
 
-import { invityAPI, regional } from '@suite-common/invity';
+import { invityAPI, regional } from '@suite-common/trading';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { verifyAddress as verifyBuyAddress } from 'src/actions/wallet/trading/tradingCommonActions';

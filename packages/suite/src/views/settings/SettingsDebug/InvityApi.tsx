@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import type { InvityServerEnvironment } from '@suite-common/invity';
-import { invityAPI } from '@suite-common/invity';
+import type { InvityServerEnvironment } from '@suite-common/trading';
+import { invityAPI } from '@suite-common/trading';
 
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings';

@@ -1,4 +1,4 @@
-import type { TradingType } from '@suite-common/invity';
+import type { TradingType } from '@suite-common/trading';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 import type { TradingTradeCommonProps } from 'src/reducers/wallet/tradingReducer';

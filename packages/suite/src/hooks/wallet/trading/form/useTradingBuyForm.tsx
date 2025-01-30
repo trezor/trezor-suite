@@ -4,13 +4,13 @@ import { useForm, useWatch } from 'react-hook-form';
 import type { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { type TradingBuyType, invityAPI } from '@suite-common/invity';
+import { type TradingBuyType, invityAPI } from '@suite-common/trading';
 import { isChanged } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networks } from '@suite-common/wallet-config';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { isDesktop } from '@trezor/env-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { analytics, EventType } from '@trezor/suite-analytics';
 
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';

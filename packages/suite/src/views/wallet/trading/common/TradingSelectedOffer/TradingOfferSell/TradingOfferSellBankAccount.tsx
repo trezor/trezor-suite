@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { BankAccount } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
-import type { TradingSellType } from '@suite-common/invity';
+import type { TradingSellType } from '@suite-common/trading';
 import { Button, Icon, Row, Select } from '@trezor/components';
 import { fontWeights, spacingsPx, typography } from '@trezor/theme';
 

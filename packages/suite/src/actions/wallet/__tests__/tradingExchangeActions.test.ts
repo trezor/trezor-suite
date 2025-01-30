@@ -1,6 +1,6 @@
 import { CryptoId, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI } from '@suite-common/trading';
 
 import { tradingReducer } from 'src/reducers/wallet/tradingReducer';
 import { configureStore } from 'src/support/tests/configureStore';

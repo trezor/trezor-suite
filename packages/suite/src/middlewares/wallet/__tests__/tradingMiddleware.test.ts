@@ -1,4 +1,4 @@
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI } from '@suite-common/trading';
 import { UI } from '@trezor/connect';
 
 import { MODAL, ROUTER } from 'src/actions/suite/constants';
@@ -13,7 +13,7 @@ import { initialState, tradingReducer } from 'src/reducers/wallet/tradingReducer
 import { configureStore } from 'src/support/tests/configureStore';
 import { Action } from 'src/types/suite';
 
-jest.mock('@suite-common/invity');
+jest.mock('@suite-common/trading');
 invityAPI.setInvityServersEnvironment = () => {};
 invityAPI.createInvityAPIKey = () => {};
 invityAPI.getInfo = () =>

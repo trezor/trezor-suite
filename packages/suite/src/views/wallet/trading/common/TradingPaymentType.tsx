@@ -1,4 +1,4 @@
-import { type TradingPaymentMethodType, invityAPI } from '@suite-common/invity';
+import { type TradingPaymentMethodType, invityAPI } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import type { TradingType } from '@suite-common/invity';
+import type { TradingType } from '@suite-common/trading';
 import { spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
