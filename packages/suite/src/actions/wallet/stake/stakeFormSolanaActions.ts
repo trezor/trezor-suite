@@ -1,3 +1,5 @@
+import { address } from '@solana/web3.js';
+
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -21,7 +23,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
-    getPubKeyFromAddress,
     prepareClaimSolTx,
     prepareStakeSolTx,
     prepareUnstakeSolTx,
@@ -156,7 +157,7 @@ export const signTransaction =
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
             path: account.path,
-            serializedTx: txData.tx.serializedTx,
+            serializedTx: txData.tx.txShim.serializeMessage(),
             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
         });
 
@@ -173,15 +174,7 @@ export const signTransaction =
             return;
         }
 
-        const signerPubKey = getPubKeyFromAddress(account.descriptor);
+        txData.tx.txShim.addSignature(address(account.descriptor), signedTx.payload.signature);
 
-        txData.tx.versionedTx.addSignature(
-            signerPubKey,
-            Uint8Array.from(Buffer.from(signedTx.payload.signature, 'hex')),
-        );
-
-        const serializedVersiondeTx = txData.tx.versionedTx.serialize();
-        const signedSerializedTx = Buffer.from(serializedVersiondeTx).toString('hex');
-
-        return signedSerializedTx;
+        return txData.tx.txShim.serialize();
     };

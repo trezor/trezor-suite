@@ -3599,7 +3599,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@everstake/wallet-sdk-solana@npm:^2.0.5":
+"@everstake/wallet-sdk-solana@npm:2.0.5":
   version: 2.0.5
   resolution: "@everstake/wallet-sdk-solana@npm:2.0.5"
   dependencies:
@@ -3611,7 +3611,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@everstake/wallet-sdk@npm:^1.0.10":
+"@everstake/wallet-sdk@npm:1.0.10":
   version: 1.0.10
   resolution: "@everstake/wallet-sdk@npm:1.0.10"
   dependencies:
@@ -8678,7 +8678,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/web3.js-version1@npm:@solana/web3.js@1.95.8, @solana/web3.js@npm:1.95.8":
+"@solana/web3.js@npm:1.95.8":
   version: 1.95.8
   resolution: "@solana/web3.js@npm:1.95.8"
   dependencies:
@@ -9804,7 +9804,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
-    "@everstake/wallet-sdk": "npm:^1.0.10"
+    "@everstake/wallet-sdk-solana": "npm:2.0.5"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -11565,7 +11565,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
-    "@everstake/wallet-sdk": "npm:^1.0.10"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -11582,7 +11581,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@everstake/wallet-sdk-solana": "npm:^2.0.5"
+    "@everstake/wallet-sdk-solana": "npm:2.0.5"
     "@solana-program/token": "npm:^0.4.1"
     "@solana-program/token-2022": "npm:^0.3.4"
     "@solana/web3.js": "npm:^2.0.0"
@@ -12575,7 +12574,7 @@ __metadata:
   resolution: "@trezor/suite@workspace:packages/suite"
   dependencies:
     "@crowdin/cli": "npm:^4.0.0"
-    "@everstake/wallet-sdk": "npm:^1.0.10"
+    "@everstake/wallet-sdk": "npm:1.0.10"
     "@floating-ui/react": "npm:^0.26.9"
     "@formatjs/cli": "npm:^6.2.7"
     "@formatjs/intl": "npm:2.10.0"
@@ -12585,7 +12584,6 @@ __metadata:
     "@sentry/core": "npm:^8.47.0"
     "@solana/buffer-layout": "npm:^4.0.1"
     "@solana/web3.js": "npm:^2.0.0"
-    "@solana/web3.js-version1": "npm:@solana/web3.js@1.95.8"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/assets": "workspace:*"
     "@suite-common/connect-init": "workspace:*"

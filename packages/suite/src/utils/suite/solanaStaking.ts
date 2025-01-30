@@ -1,4 +1,13 @@
-import { PublicKey, VersionedTransaction } from '@solana/web3.js-version1';
+import {
+    CompilableTransactionMessage,
+    SignatureBytes,
+    Transaction,
+    TransactionMessageWithBlockhashLifetime,
+    compileTransaction,
+    getBase16Codec,
+    getTransactionEncoder,
+    pipe,
+} from '@solana/web3.js';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
@@ -10,11 +19,44 @@ import {
 import type { SolanaSignTransaction } from '@trezor/connect';
 
 type SolanaTx = SolanaSignTransaction & {
-    versionedTx: VersionedTransaction;
+    txShim: TransactionShim;
 };
 
+type TransactionShim = {
+    addSignature(signerPubKey: string, signatureHex: string): void;
+    serializeMessage(): string;
+    serialize(): string;
+};
+
+// This function is used in the solanaUtils in the connect package
+// It is used to create a transaction shim
+// Since it's not possible to export separate function form the connect package we need to copy it here
+// TODO: Refactor this function to avoid code duplication
+function createTransactionShimCommon(transaction: Transaction) {
+    return {
+        addSignature(signerPubKey: string, signatureHex: string) {
+            if (signerPubKey in transaction.signatures) {
+                const signatureBytes = getBase16Codec().encode(signatureHex) as SignatureBytes;
+                transaction = Object.freeze({
+                    ...transaction,
+                    signatures: Object.freeze({
+                        ...transaction.signatures,
+                        [signerPubKey]: signatureBytes,
+                    }),
+                });
+            }
+        },
+        serializeMessage() {
+            return getBase16Codec().decode(transaction.messageBytes);
+        },
+        serialize() {
+            return pipe(transaction, getTransactionEncoder().encode, getBase16Codec().decode);
+        },
+    };
+}
+
 export const transformTx = (
-    tx: VersionedTransaction,
+    tx: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime,
     path: string | number[],
     tokenAccountsInfos?: {
         baseAddress: string;
@@ -23,20 +65,17 @@ export const transformTx = (
         tokenAccount: string;
     }[],
 ): SolanaTx => {
-    const serializedMessage = new Uint8Array(tx.message.serialize());
-    const serializedTxHex = Buffer.from(serializedMessage).toString('hex');
-
+    const compilableTx = compileTransaction(tx);
+    const txShim = createTransactionShimCommon(compilableTx);
     const transformedTx = {
         path,
-        serializedTx: serializedTxHex,
+        serializedTx: txShim.serializeMessage(),
         additionalInfo: tokenAccountsInfos ? { tokenAccountsInfos } : undefined,
-        versionedTx: tx,
+        txShim,
     };
 
     return transformedTx;
 };
-
-export const getPubKeyFromAddress = (address: string) => new PublicKey(address);
 
 interface PrepareStakeSolTxParams {
     from: string;
@@ -54,6 +93,12 @@ export type PrepareStakeSolTxResponse =
           success: false;
           errorMessage: string;
       };
+// Type guard to check if transaction is of type CompilableTransactionMessage
+function isCompilableTransactionMessage(
+    tx: TransactionMessageWithBlockhashLifetime | CompilableTransactionMessage,
+): tx is CompilableTransactionMessage {
+    return (tx as CompilableTransactionMessage).feePayer !== undefined;
+}
 
 export const prepareStakeSolTx = async ({
     from,
@@ -66,8 +111,14 @@ export const prepareStakeSolTx = async ({
         const solanaClient = selectSolanaWalletSdkNetwork(symbol, selectedBlockchain.url);
 
         const lamports = networkAmountToSmallestUnit(amount, symbol);
-        const tx = await solanaClient.stake(from, Number(lamports), WALLET_SDK_SOURCE);
-        const transformedTx = transformTx(tx.result, path);
+        const tx = await solanaClient.stake(from, BigInt(lamports), WALLET_SDK_SOURCE);
+        const { stakeTx } = tx.result;
+
+        if (!isCompilableTransactionMessage(stakeTx)) {
+            throw new Error('Transaction is not compilable');
+        }
+
+        const transformedTx = transformTx(stakeTx, path);
 
         return {
             success: true,
@@ -94,8 +145,8 @@ export const prepareUnstakeSolTx = async ({
         const solanaClient = selectSolanaWalletSdkNetwork(symbol, selectedBlockchain.url);
 
         const lamports = networkAmountToSmallestUnit(amount, symbol);
-        const tx = await solanaClient.unstake(from, Number(lamports), WALLET_SDK_SOURCE);
-        const transformedTx = transformTx(tx.result, path);
+        const tx = await solanaClient.unstake(from, BigInt(lamports), WALLET_SDK_SOURCE);
+        const transformedTx = transformTx(tx.result.unstakeTx, path);
 
         return {
             success: true,
@@ -123,7 +174,7 @@ export const prepareClaimSolTx = async ({
         const solanaClient = selectSolanaWalletSdkNetwork(symbol, selectedBlockchain.url);
 
         const tx = await solanaClient.claim(from);
-        const transformedTx = transformTx(tx.result, path);
+        const transformedTx = transformTx(tx.result.claimTx, path);
 
         return {
             success: true,
