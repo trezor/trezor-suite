@@ -2,17 +2,17 @@ import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { Banner, Column, H4, Text } from '@trezor/components';
 import type { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
+import { Banner, Column, H4, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import type { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
+import type { Account } from 'src/types/wallet';
 
-import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 import { TransactionReviewOutput } from './TransactionReviewOutput';
 import type { TransactionReviewOutputElementProps } from './TransactionReviewOutputElement';
+import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 
 export type TransactionReviewOutputListProps = {
     account: Account;

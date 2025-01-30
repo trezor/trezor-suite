@@ -2,25 +2,25 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import {
-    H4,
-    Column,
-    Row,
-    InfoItem,
-    Text,
-    Card,
-    Divider,
-    Icon,
-    DotIndicator,
-} from '@trezor/components';
-import { TokenInfo } from '@trezor/connect';
-import { formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
-import { spacings } from '@trezor/theme';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { formatAmount, formatNetworkAmount } from '@suite-common/wallet-utils';
+import {
+    Card,
+    Column,
+    Divider,
+    DotIndicator,
+    H4,
+    Icon,
+    InfoItem,
+    Row,
+    Text,
+} from '@trezor/components';
+import { TokenInfo } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
+import { Address, FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
-import { FiatValue, FormattedCryptoAmount, Translation, Address } from 'src/components/suite';
 
 const getCardanoFingerprint = (
     tokens: Account['tokens'],

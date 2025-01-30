@@ -1,7 +1,7 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
 
-import { test, expect } from '../../support/fixtures';
 import { formatAddress } from '../../support/common';
+import { expect, test } from '../../support/fixtures';
 
 test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
     test.use({

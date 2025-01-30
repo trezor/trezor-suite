@@ -1,12 +1,12 @@
+import { getNetwork } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { convertTaprootXpub } from '@trezor/utils';
-import { getNetwork } from '@suite-common/wallet-config';
 
-import { Translation } from 'src/components/suite';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { ConfirmValueModal, ConfirmValueModalProps } from './ConfirmValueModal/ConfirmValueModal';
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';

@@ -1,27 +1,27 @@
-import { useEffect, ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    Tooltip,
-    NewModal,
-    Banner,
-    NewModalProps,
-    Paragraph,
-    Column,
-    Card,
-    Row,
-} from '@trezor/components';
-import { copyToClipboard } from '@trezor/dom-utils';
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { palette, spacings } from '@trezor/theme';
+import {
+    Banner,
+    Card,
+    Column,
+    NewModal,
+    NewModalProps,
+    Paragraph,
+    Row,
+    Tooltip,
+} from '@trezor/components';
+import { copyToClipboard } from '@trezor/dom-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
+import { palette, spacings } from '@trezor/theme';
 
-import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { MODAL } from 'src/actions/suite/constants';
+import { Translation } from 'src/components/suite';
 import { QrCode } from 'src/components/suite/QrCode';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Translation } from 'src/components/suite';
-import { MODAL } from 'src/actions/suite/constants';
+import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { ThunkAction } from 'src/types/suite';
 
 import {

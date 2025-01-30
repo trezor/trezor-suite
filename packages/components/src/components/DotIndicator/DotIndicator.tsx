@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { spacingsPx, spacings } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Box } from '../Box/Box';
 

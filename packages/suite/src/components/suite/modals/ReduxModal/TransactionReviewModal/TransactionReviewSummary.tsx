@@ -1,15 +1,15 @@
-import { getFeeUnits, getFee } from '@suite-common/wallet-utils';
-import { Box, IconButton, Note, Row, Text } from '@trezor/components';
 import { formatDuration } from '@suite-common/suite-utils';
 import { NetworkType, networks } from '@suite-common/wallet-config';
 import { FeeInfo, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
+import { getFee, getFeeUnits } from '@suite-common/wallet-utils';
+import { Box, IconButton, Note, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { Translation, AccountLabel } from 'src/components/suite';
-import { Account } from 'src/types/wallet';
+import { AccountLabel, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { Account } from 'src/types/wallet';
 
 const getEstimatedTime = (
     networkType: NetworkType,

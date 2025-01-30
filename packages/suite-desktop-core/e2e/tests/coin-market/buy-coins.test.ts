@@ -1,10 +1,10 @@
-import { capitalizeFirstLetter } from '@trezor/utils';
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { buyQuotes, buyTrade, invityEndpoint } from '../../fixtures/invity';
 import expectedWatchRequestPayload from '../../fixtures/invity/buy/watch-request.json';
 import { formatAddress } from '../../support/common';
-import { test, expect } from '../../support/fixtures';
+import { expect, test } from '../../support/fixtures';
 
 const mockedFiatAmount = buyQuotes[0].fiatStringAmount; // 1234, The mocked quotes are for a fixed input amount
 const mockedCryptoAmount = buyQuotes[0].receiveStringAmount;

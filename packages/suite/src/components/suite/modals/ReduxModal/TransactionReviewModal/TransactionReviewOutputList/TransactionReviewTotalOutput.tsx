@@ -1,21 +1,21 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import {
-    isTestnet,
-    getIsUpdatedSendFlow,
-    getIsUpdatedEthereumSendFlow,
-} from '@suite-common/wallet-utils';
+import { NetworkType } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
+import {
+    getIsUpdatedEthereumSendFlow,
+    getIsUpdatedSendFlow,
+    isTestnet,
+} from '@suite-common/wallet-utils';
 import { BulletListItemState } from '@trezor/components';
-import { NetworkType } from '@suite-common/wallet-config';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { TrezorDevice } from 'src/types/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import { TrezorDevice } from 'src/types/suite';
 
 import {
-    TransactionReviewOutputElement,
     OutputElementLine,
+    TransactionReviewOutputElement,
 } from './TransactionReviewOutputElement';
 
 const getLines = (

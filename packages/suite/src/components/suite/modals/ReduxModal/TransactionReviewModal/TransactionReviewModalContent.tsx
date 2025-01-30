@@ -1,37 +1,37 @@
 import { useState } from 'react';
 
-import { analytics, EventType } from '@trezor/suite-analytics';
-import { NewModal } from '@trezor/components';
-import { Deferred } from '@trezor/utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DeviceRootState,
-    selectSelectedDevice,
+    SendState,
+    StakeState,
     selectPrecomposedSendForm,
+    selectSelectedDevice,
     selectSendFormReviewButtonRequestsCount,
     selectStakePrecomposedForm,
-    StakeState,
-    SendState,
 } from '@suite-common/wallet-core';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { FormState, StakeFormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,
-    isRbfTransaction,
     getTxStakeNameByDataHex,
+    isRbfTransaction,
 } from '@suite-common/wallet-utils';
-import { ConfirmOnDevice } from '@trezor/product-components';
+import { NewModal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
+import { ConfirmOnDevice } from '@trezor/product-components';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { Deferred } from '@trezor/utils';
 
+import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
-import { Translation } from 'src/components/suite';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
+import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
 
-import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
-import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
-import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewDetails } from './TransactionReviewDetails';
+import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
+import { TransactionReviewSummary } from './TransactionReviewSummary';
+import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
 
 const isStakeState = (state: SendState | StakeState): state is StakeState => 'data' in state;
 
