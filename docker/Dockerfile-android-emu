@@ -1,0 +1,71 @@
+# 1. build docker
+# docker build . -f ./docker/Dockerfile-android-emu -t android-emu
+# 2. run docker, map suite files, add Hw acceleration (kvm)
+# docker run --device /dev/kvm -it -v ~/Workspace/suite:/suite android-emu bash
+# 3. run tests inside docker:
+    # cd suite-native/app
+    # yarn prebuild:clean
+    # yarn build:e2e android.emu.debug
+    # yarn start:e2e &
+    # yarn test:e2e android.emu.debug
+
+
+FROM reactnativecommunity/react-native-android
+
+# Install dependencies for the Android emulator
+RUN apt-get update && apt-get install -y \
+    qemu-kvm \
+    libvirt-daemon-system \
+    libvirt-clients \
+    bridge-utils \
+    libpulse0 \
+    libnss3 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxkbfile1 \
+    libxi6 \
+    libxtst6 \
+    libxrandr2 \
+    mesa-utils \
+    && apt-get clean
+
+# Accept Android SDK licenses
+RUN yes | sdkmanager --licenses
+
+# Install emulator system image for Pixel_3a_API_31
+RUN sdkmanager \
+    "system-images;android-31;google_apis;x86_64" \
+    "platforms;android-31" \
+    "platform-tools" \
+    "emulator"
+
+# Create and configure the Pixel_3a_API_31 emulator
+RUN echo "no" | avdmanager create avd \
+    -n Pixel_3a_API_31 \
+    -k "system-images;android-31;google_apis;x86_64" \
+    -d pixel_3a
+
+# TODO: preinstall gradle and lower NDK
+# RUN curl -L https://services.gradle.org/distributions/gradle-8.10.2-all.zip -o gradle-bin.zip
+# # RUN apt-get install -y unzip
+# RUN unzip gradle-bin.zip
+# RUN echo 'export GRADLE_HOME=/app/gradle-2.4' >> $HOME/.bashrc
+# RUN echo 'export PATH=$PATH:$GRADLE_HOME/bin' >> $HOME/.bashrc
+# RUN /bin/bash -c "source $HOME/.bashrc"
+
+# emulator -avd Pixel_3a_API_31 -no-window -no-audio -gpu swiftshader_indirect -no-metrics
+# /opt/android/emulator/emulator -verbose -no-audio -no-boot-anim -read-only -port 16908 @Pixel_3a_API_31
+
+# RUN sdkmanager --licenses > /dev/null
+# RUN sdkmanager --install 'build-tools;35.0.0' platform-tools 'platforms;android-31'> /dev/null
+# RUN sdkmanager --install emulator --channel=0 > /dev/null
+# RUN sdkmanager --install 'system-images;android-31;default;x86_64' --channel=0 > /dev/null
+# RUN avdmanager create avd -n Pixel_3a_API_31 -k "system-images;android-31;default;x86_64"
+
+
+WORKDIR /suite
+
+
+# Expose the default ADB port
+EXPOSE 5554 5555
