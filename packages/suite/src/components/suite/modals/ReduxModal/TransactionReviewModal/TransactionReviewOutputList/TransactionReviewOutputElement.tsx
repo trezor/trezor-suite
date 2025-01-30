@@ -74,7 +74,8 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible }: ValueProps)
         case 'total':
         case 'fee':
         case 'amount': {
-            const formattedValue = token
+            const isTokenAmount = !isFee && token;
+            const formattedValue = isTokenAmount
                 ? formatAmount(value, token.decimals)
                 : formatNetworkAmount(value, symbol);
 
@@ -85,12 +86,12 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible }: ValueProps)
                         value={formattedValue}
                         symbol={
                             // TX fee is so far always paid in network native coin
-                            !isFee && token ? token.symbol : symbol
+                            isTokenAmount ? token.symbol : symbol
                         }
                         contractAddress={token?.contract}
                         isTabular={false}
                     />
-                    {symbol && isFiatVisible && !(!isFee && token) && (
+                    {symbol && isFiatVisible && !isTokenAmount && (
                         <Text variant="tertiary">
                             <FiatValue
                                 disableHiddenPlaceholder
@@ -217,7 +218,10 @@ export const TransactionReviewOutputElement = ({
                                     }
                                     direction="row"
                                 >
-                                    {amountToSmallestUnit(line.value, token.decimals)}
+                                    {amountToSmallestUnit(
+                                        formatAmount(line.value, token.decimals),
+                                        token.decimals,
+                                    )}
                                 </InfoItem>
                             )}
                         </div>

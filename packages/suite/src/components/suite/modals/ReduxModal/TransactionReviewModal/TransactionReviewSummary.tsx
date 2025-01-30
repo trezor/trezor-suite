@@ -81,15 +81,17 @@ export const TransactionReviewSummary = ({
                 </Note>
             )}
 
-            <Note iconName="gasPump">
-                {networkType === 'ethereum' && (
-                    <>
-                        <Translation id="TR_GAS_PRICE" />
-                        {': '}
-                    </>
-                )}
-                {fee} {getFeeUnits(network.networkType)}
-            </Note>
+            {networkType === 'ethereum' ? (
+                <Note iconName="gasPump">
+                    <Translation id="TR_GAS_PRICE" />
+                    {': '}
+                    {fee} {getFeeUnits(network.networkType)}
+                </Note>
+            ) : (
+                <Note iconName="receipt">
+                    {fee} {getFeeUnits(network.networkType)}
+                </Note>
+            )}
 
             {isComposedFeeRateDifferent && network.networkType === 'bitcoin' && (
                 <Translation id="TR_FEE_RATE_CHANGED" />
