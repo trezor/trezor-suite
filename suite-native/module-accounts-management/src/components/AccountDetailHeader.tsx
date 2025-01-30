@@ -23,7 +23,6 @@ import {
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import {
-    hasPriceIncreasedAtom,
     percentageChangeAtom,
     referencePointAtom,
     selectedPointAtom,
@@ -104,7 +103,6 @@ export const AccountDetailHeader = ({
                 selectedPointAtom={selectedPointAtom}
                 referencePointAtom={referencePointAtom}
                 percentageChangeAtom={percentageChangeAtom}
-                hasPriceIncreasedAtom={hasPriceIncreasedAtom}
                 showChange={isHistoryEnabledAccount}
                 totalFiatBalance={totalFiatBalance}
                 isHistoryEnabledAccount={isHistoryEnabledAccount}

@@ -17,3 +17,5 @@ export {
 export const render = createRender(BasicProvider);
 
 export const renderWithStore = createRender(StoreProviderForTests);
+
+export { BasicProvider, StoreProviderForTests };

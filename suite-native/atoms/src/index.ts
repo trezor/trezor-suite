@@ -56,5 +56,6 @@ export * from './SelectableItem';
 export * from './constants';
 export * from './useIllustrationColors';
 export * from './utils';
+export * from './PriceChangeBadge';
 
 export { useDebugView } from './DebugView';

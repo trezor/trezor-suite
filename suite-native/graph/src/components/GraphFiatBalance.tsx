@@ -20,7 +20,6 @@ type BalanceProps = {
 type GraphFiatBalanceProps = BalanceProps & {
     referencePointAtom: Atom<FiatGraphPoint | null>;
     percentageChangeAtom: Atom<number>;
-    hasPriceIncreasedAtom: Atom<boolean>;
     showChange?: boolean;
     isLoading?: boolean;
     totalFiatBalance: string;
@@ -55,7 +54,6 @@ export const GraphFiatBalance = ({
     selectedPointAtom,
     referencePointAtom,
     percentageChangeAtom,
-    hasPriceIncreasedAtom,
     showChange = true,
     isLoading = false,
     totalFiatBalance,
@@ -101,10 +99,7 @@ export const GraphFiatBalance = ({
                         firstPointDate={firstGraphPoint.date}
                         selectedPointAtom={selectedPointAtom}
                     />
-                    <PriceChangeIndicator
-                        hasPriceIncreasedAtom={hasPriceIncreasedAtom}
-                        percentageChangeAtom={percentageChangeAtom}
-                    />
+                    <PriceChangeIndicator percentageChangeAtom={percentageChangeAtom} />
                 </HStack>
             )}
         </Box>

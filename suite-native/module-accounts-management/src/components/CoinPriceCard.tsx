@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { Badge, Box, BoxSkeleton, Card, RoundedIcon, Text } from '@suite-native/atoms';
+import { Box, Card, PriceChangeBadge, RoundedIcon, Text } from '@suite-native/atoms';
 import { FiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -44,31 +44,12 @@ const indicatorContainer = prepareNativeStyle(utils => ({
 const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const percentageChange = valuePercentageChange ?? 0;
-    const priceHasIncreased = percentageChange >= 0;
-
-    const icon = priceHasIncreased ? 'arrowUp' : 'arrowDown';
-    const badgeVariant = priceHasIncreased ? 'greenSubtle' : 'red';
-    const formattedPercentage = `${percentageChange.toPrecision(3)} %`;
-
     return (
         <Box style={applyStyle(indicatorContainer)}>
             <Text variant="label" color="textSubdued">
                 <Translation id="moduleAccountManagement.accountDetailContentScreen.coinPriceCard.changeIn24h" />
             </Text>
-            <Box justifyContent="center" alignItems="center" flexDirection="row">
-                {valuePercentageChange ? (
-                    <Badge
-                        icon={icon}
-                        iconSize="extraSmall"
-                        size="medium"
-                        variant={badgeVariant}
-                        label={formattedPercentage}
-                    />
-                ) : (
-                    <BoxSkeleton width={70} height={24} borderRadius={12} />
-                )}
-            </Box>
+            <PriceChangeBadge valuePercentageChange={valuePercentageChange} />
         </Box>
     );
 };

@@ -4,7 +4,6 @@ import { Box, VStack } from '@suite-native/atoms';
 import { GraphFiatBalance, selectHasDeviceHistoryEnabledAccounts } from '@suite-native/graph';
 
 import {
-    hasPriceIncreasedAtom,
     percentageChangeAtom,
     referencePointAtom,
     selectedPointAtom,
@@ -25,7 +24,6 @@ export const PortfolioHeader = ({ isLoading, totalFiatBalance }: PortfolioHeader
                     selectedPointAtom={selectedPointAtom}
                     referencePointAtom={referencePointAtom}
                     percentageChangeAtom={percentageChangeAtom}
-                    hasPriceIncreasedAtom={hasPriceIncreasedAtom}
                     showChange={hasDeviceHistoryEnabledAccounts}
                     isLoading={isLoading}
                     totalFiatBalance={totalFiatBalance}

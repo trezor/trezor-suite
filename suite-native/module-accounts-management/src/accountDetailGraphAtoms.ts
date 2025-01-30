@@ -15,9 +15,3 @@ export const percentageChangeAtom = atom(get => {
 
     return percentageDiff(referencePoint.value, selectedPoint.value);
 });
-
-export const hasPriceIncreasedAtom = atom(get => {
-    const percentageChange = get(percentageChangeAtom);
-
-    return percentageChange >= 0;
-});

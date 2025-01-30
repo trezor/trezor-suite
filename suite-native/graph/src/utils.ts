@@ -56,5 +56,5 @@ export const getExtremaFromGraphPoints = (points: FiatGraphPoint[]) => {
 export const percentageDiff = (a: number, b: number) => {
     if (a === 0 || b === 0) return 0;
 
-    return 100 * ((b - a) / ((b + a) / 2));
+    return (b - a) / ((b + a) / 2);
 };

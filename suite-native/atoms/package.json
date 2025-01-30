@@ -8,7 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest -c ../../jest.config.native.js"
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.0.5",
