@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-import type { TradingSellType } from '@suite-common/invity';
+import type { TradingSellType } from '@suite-common/trading';
 import { Card, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

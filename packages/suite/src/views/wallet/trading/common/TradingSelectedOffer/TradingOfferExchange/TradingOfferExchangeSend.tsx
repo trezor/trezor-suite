@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import type { TradingExchangeType } from '@suite-common/invity';
+import type { TradingExchangeType } from '@suite-common/trading';
 import { Button, Column, Divider, InfoItem, Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

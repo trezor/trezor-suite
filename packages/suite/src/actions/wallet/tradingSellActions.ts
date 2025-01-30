@@ -6,7 +6,7 @@ import {
     SellProviderInfo,
 } from 'invity-api';
 
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI } from '@suite-common/trading';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { Dispatch } from 'src/types/suite';

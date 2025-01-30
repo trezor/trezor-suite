@@ -31,7 +31,7 @@ import type {
     TradingTradeType,
     TradingType,
     TradingWatchTradeResponsePropsMap,
-} from '@suite-common/invity';
+} from '@suite-common/trading';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 
 type BodyType =

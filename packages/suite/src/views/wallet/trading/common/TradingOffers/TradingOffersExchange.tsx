@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { ExchangeTrade } from 'invity-api';
 
-import type { TradingExchangeType } from '@suite-common/invity';
+import type { TradingExchangeType } from '@suite-common/trading';
 
 import {
     EXCHANGE_COMPARATOR_KYC_FILTER,

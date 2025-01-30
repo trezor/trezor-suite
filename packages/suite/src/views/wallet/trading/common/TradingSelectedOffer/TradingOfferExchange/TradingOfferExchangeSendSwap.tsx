@@ -5,7 +5,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import type { TradingExchangeType } from '@suite-common/invity';
+import type { TradingExchangeType } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Button,

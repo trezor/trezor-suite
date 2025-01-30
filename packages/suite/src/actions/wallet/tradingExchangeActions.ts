@@ -6,7 +6,7 @@ import {
     ExchangeTradeQuoteRequest,
 } from 'invity-api';
 
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI } from '@suite-common/trading';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { verifyAddress as verifyExchangeAddress } from 'src/actions/wallet/trading/tradingCommonActions';

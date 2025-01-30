@@ -11,7 +11,7 @@ import type {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
-import type { TradingType } from '@suite-common/invity';
+import type { TradingType } from '@suite-common/trading';
 import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import type { FeeLevel } from '@trezor/connect';
 

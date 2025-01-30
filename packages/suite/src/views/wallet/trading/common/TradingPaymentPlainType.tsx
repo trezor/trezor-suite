@@ -1,4 +1,4 @@
-import type { TradingPaymentMethodType } from '@suite-common/invity';
+import type { TradingPaymentMethodType } from '@suite-common/trading';
 import { Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';

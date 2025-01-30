@@ -4,7 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeQuoteRequest } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { type TradingSellType, invityAPI } from '@suite-common/invity';
+import { type TradingSellType, invityAPI } from '@suite-common/trading';
 import { isChanged } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networks } from '@suite-common/wallet-config';

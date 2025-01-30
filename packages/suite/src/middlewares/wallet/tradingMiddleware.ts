@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI } from '@suite-common/trading';
 import { accountsActions } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 

@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import type { TradingTradeType, TradingType } from '@suite-common/invity';
+import type { TradingTradeType, TradingType } from '@suite-common/trading';
 import { Button, Column, Paragraph, Row, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

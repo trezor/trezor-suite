@@ -1,6 +1,6 @@
 import { CryptoId } from 'invity-api';
 
-import type { TradingType } from '@suite-common/invity';
+import type { TradingType } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
 import { Column, InfoItem, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';

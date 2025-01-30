@@ -1,4 +1,4 @@
-import type { TradingPaymentMethodType } from '@suite-common/invity';
+import type { TradingPaymentMethodType } from '@suite-common/trading';
 import { Flex, FlexProps, useMediaQuery, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

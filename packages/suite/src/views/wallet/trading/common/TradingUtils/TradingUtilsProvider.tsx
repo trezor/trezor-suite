@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { invityAPI } from '@suite-common/invity';
+import { invityAPI } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

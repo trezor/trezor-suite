@@ -1,6 +1,6 @@
 import produce from 'immer';
 
-import type { InvityServerEnvironment } from '@suite-common/invity';
+import type { InvityServerEnvironment } from '@suite-common/trading';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
