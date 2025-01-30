@@ -54,7 +54,7 @@ test.describe(
 
             // Add another wallet, enable labeling on the new device
             await page.getByTestId('@menu/switch-device').click();
-            await dashboardPage.addHiddenWallet('abc');
+            await dashboardPage.addUnusedHiddenWallet('abc');
 
             await expect(page.getByTestId('@passphrase/input')).not.toBeVisible();
             await devicePrompt.confirmOnDevicePromptIsShown();

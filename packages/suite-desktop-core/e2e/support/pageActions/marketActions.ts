@@ -5,7 +5,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import {
-    buyQuotes,
+    buyQuotesBTC,
     createRedirectedTradeResponse,
     invityEndpoint,
     invityResponses,
@@ -14,6 +14,7 @@ import expectedTradeRequestPayload from '../../fixtures/invity/buy/trade-request
 import { TrezorUserEnvLinkProxy, step } from '../common';
 import { expect } from '../customMatchers';
 import { DevicePromptActions } from './devicePromptActions';
+import { TradeRequest } from '../../fixtures/invity/types';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
 const quoteAmountLocator = '@trading/offers/quote/crypto-amount';
@@ -91,6 +92,7 @@ export class MarketActions {
     readonly confirmationFiatAmount: Locator;
     readonly confirmationProvider: Locator;
     readonly confirmationAddress: Locator;
+    readonly confirmationPaymentMethod: Locator;
     readonly confirmTradeButton: Locator;
     // Exchange
     readonly exchangeFeeDetails: Locator;
@@ -155,6 +157,7 @@ export class MarketActions {
         this.confirmationFiatAmount = this.page.getByTestId('@trading/form/info/fiat-amount');
         this.confirmationProvider = this.page.getByTestId('@trading/form/info/provider');
         this.confirmationAddress = this.page.getByTestId('@trading/form/verify/address');
+        this.confirmationPaymentMethod = this.page.getByTestId('@trading/form/info/payment-method');
         this.confirmTradeButton = this.page.getByTestId(
             '@trading/offer/continue-transaction-button',
         );
@@ -233,6 +236,16 @@ export class MarketActions {
     }
 
     @step()
+    async setYouPayCryptoAmount(amount: string, country: string = 'CZ') {
+        // Warning: the field is initialized empty and gets default value after the first offer sync
+        await expect(this.youPayCryptoInput).not.toHaveValue('');
+        await this.selectCountryOfResidence(country);
+        await this.youPayCryptoInput.fill(amount);
+        // Warning: Bug #16054, as a workaround we wait for offer sync after setting the amount
+        await this.waitForOffersSyncToFinish();
+    }
+
+    @step()
     async confirmTrade(addressToCheck?: string) {
         await expect(this.modal).toBeVisible();
         await this.buyTermsConfirmButton.click();
@@ -254,6 +267,21 @@ export class MarketActions {
         });
     }
 
+    // We bypass the provider part of the flow by having a modified redirect in trade response.
+    // This redirect is provided by Invity and normaly leads to provider's page.
+    // But our mocked response redirects us to transaction detail where our flow continues.
+    @step()
+    async mockInvityTrade(tradeRequest: TradeRequest, symbol: NetworkSymbol) {
+        const redirectedTradeResponse = createRedirectedTradeResponse({
+            symbol,
+            tradeRequest,
+            url: this.url,
+        });
+        await this.page.route(invityEndpoint.buyTrade, async route => {
+            await route.fulfill({ json: redirectedTradeResponse });
+        });
+    }
+
     @step()
     async mockInvity() {
         for (const [url, response] of Object.entries(invityResponses)) {
@@ -261,11 +289,6 @@ export class MarketActions {
                 await route.fulfill({ json: response });
             });
         }
-
-        const redirectedTradeResponse = createRedirectedTradeResponse(this.url);
-        await this.page.route(invityEndpoint.buyTrade, async route => {
-            await route.fulfill({ json: redirectedTradeResponse });
-        });
     }
 
     @step()
@@ -288,7 +311,7 @@ export class MarketActions {
     @step()
     async validateBuyQuotes() {
         const paymentMethod = await this.getSelectedPaymentMethod();
-        const expectedQuotes = buyQuotes.filter(
+        const expectedQuotes = buyQuotesBTC.filter(
             quote => quote.paymentMethod === paymentMethod && quote.error === undefined,
         );
         expect.soft(await this.quotes.count()).toBe(expectedQuotes.length);

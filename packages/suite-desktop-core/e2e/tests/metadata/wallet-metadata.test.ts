@@ -42,7 +42,7 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
         await metadataPage.wallet.fillLabelInput('wallet for drugs');
 
         // Add hidden wallet and enable labeling
-        await dashboardPage.addHiddenWallet('abc');
+        await dashboardPage.addUnusedHiddenWallet('abc');
 
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
@@ -93,7 +93,7 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly
         await metadataPage.wallet.fillLabelInput('label for standard wallet');
 
         // Add passphrase wallet C and switch back to first wallet
-        await dashboardPage.addHiddenWallet('C');
+        await dashboardPage.addUnusedHiddenWallet('C');
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressNo();
         await dashboardPage.openDeviceSwitcher();

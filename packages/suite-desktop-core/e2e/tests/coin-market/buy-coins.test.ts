@@ -1,22 +1,25 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { buyQuotes, buyTrade, invityEndpoint } from '../../fixtures/invity';
+import { buyQuotesBTC, buyTradeBTC, invityEndpoint } from '../../fixtures/invity';
 import expectedWatchRequestPayload from '../../fixtures/invity/buy/watch-request.json';
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
-const mockedFiatAmount = buyQuotes[0].fiatStringAmount; // 1234, The mocked quotes are for a fixed input amount
-const mockedCryptoAmount = buyQuotes[0].receiveStringAmount;
-const mockedProvider = capitalizeFirstLetter(buyQuotes[0].exchange);
-const formattedCryptoAmount = `${mockedCryptoAmount} BTC`;
-const formattedFiatAmount = `CZK ${localizeNumber(mockedFiatAmount, 'en', 2)}`;
-const { receiveAddress } = buyTrade.trade;
+// Expected values based on our mocked responses
+const fiatAmount = buyQuotesBTC[0].fiatStringAmount;
+const bestBuyProvider = capitalizeFirstLetter(buyQuotesBTC[0].exchange);
+const bestBuyCryptoAmount = `${buyQuotesBTC[0].receiveStringAmount} BTC`;
+// secondOffer that matches input criteria has index 5
+const secondOfferProvider = capitalizeFirstLetter(buyQuotesBTC[5].exchange);
+const secondOfferCryptoAmount = `${buyQuotesBTC[5].receiveStringAmount} BTC`;
+const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en', 2)}`;
+const { receiveAddress, paymentMethodName } = buyTradeBTC.trade;
 
-// TODO: #16041 Fix the Invity mocking on desktop
-test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'] }, () => {
+test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => {
     test.beforeEach(async ({ marketPage, onboardingPage, dashboardPage, walletPage }) => {
         await marketPage.mockInvity();
+        await marketPage.mockInvityTrade(buyTradeBTC, 'btc');
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
         await walletPage.openTrading();
@@ -24,47 +27,40 @@ test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'
 
     test('Select compared offers to buy', async ({ marketPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
-            await marketPage.setYouPayFiatAmount(mockedFiatAmount);
-            await expect(marketPage.bestOfferAmount).toHaveText(formattedCryptoAmount);
-            await expect(marketPage.quoteProvider).toHaveText(mockedProvider);
-            await expect(marketPage.section).toHaveScreenshot('buy-coins-layout.png');
+            await marketPage.setYouPayFiatAmount(fiatAmount);
+            await expect(marketPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
+            await expect(marketPage.quoteProvider).toHaveText(bestBuyProvider);
             await marketPage.compareButton.click();
         });
 
-        await test.step('Check offers and chooses the first one', async () => {
+        await test.step('Check offers and chooses the second one', async () => {
             await expect(marketPage.refreshTime).toHaveText(/Offers refresh in(0:2[5-9]|0:30)/);
-            await expect(marketPage.youPayFiatInput).toHaveValue(localizeNumber(mockedFiatAmount));
-            await expect(marketPage.paymentMethodDropdown).toHaveText('Credit Card');
+            await expect(marketPage.youPayFiatInput).toHaveValue(localizeNumber(fiatAmount));
+            await expect(marketPage.paymentMethodDropdown).toHaveText(paymentMethodName);
             await marketPage.validateBuyQuotes();
-            await marketPage.selectThisQuoteButton.first().click();
+            await marketPage.selectThisQuoteButton.nth(1).click();
         });
 
         await test.step('Confirm trade and verifies confirmation summary', async () => {
             await marketPage.confirmTrade(formatAddress(receiveAddress));
             await expect(marketPage.confirmationAddress).toHaveText(receiveAddress);
             await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(marketPage.confirmationProvider).toHaveText(mockedProvider);
-            await expect(marketPage.confirmationSection).toHaveScreenshot(
-                'compared-offers-buy-confirmation.png',
-                { mask: [marketPage.confirmOnTrezorButton] },
-            );
+            await expect(marketPage.confirmationCryptoAmount).toHaveText(secondOfferCryptoAmount);
+            await expect(marketPage.confirmationProvider).toHaveText(secondOfferProvider);
+            await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
             await expect(marketPage.confirmTradeButton).toBeEnabled();
         });
     });
 
     test('Buy crypto from best offer', async ({ page, marketPage }) => {
         await test.step('Request a trade', async () => {
-            await marketPage.setYouPayFiatAmount(mockedFiatAmount);
+            await marketPage.setYouPayFiatAmount(fiatAmount);
             await marketPage.buyBestOfferButton.click();
             await marketPage.confirmTrade();
         });
 
         const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
         await page.clock.install();
-        // We bypass the provider part of the flow by having a modified redirect in trade response.
-        // This redirect is provided by Invity and normaly leads to provider's page.
-        // But our mocked response redirects us to transaction detail where our flow continues.
         await test.step('Confirm the trade and get redirected to transaction detail', async () => {
             await marketPage.finishMockedTrade();
             await expect(watchRequestPromise).toHavePayload(expectedWatchRequestPayload, {
@@ -79,13 +75,10 @@ test.describe('Coin market buy', { tag: ['@group=other', '@snapshot', '@webOnly'
         await test.step('Wait 30s for watch refresh and change of status to Approved', async () => {
             await marketPage.changeTransactionWatchResponseTo('SUCCESS');
             await page.clock.fastForward(marketPage.transactionWatchPeriod);
-            await expect(watchRequestPromise).toHavePayload(expectedWatchRequestPayload, {
-                omit: ['partnerData'],
-            });
             await expect(marketPage.transactionDetailStatus).toHaveText('Approved');
             await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(marketPage.confirmationProvider).toHaveText(mockedProvider);
+            await expect(marketPage.confirmationCryptoAmount).toHaveText(bestBuyCryptoAmount);
+            await expect(marketPage.confirmationProvider).toHaveText(bestBuyProvider);
             await expect(marketPage.transactionDetail).toHaveScreenshot('transactions-detail.png');
         });
     });

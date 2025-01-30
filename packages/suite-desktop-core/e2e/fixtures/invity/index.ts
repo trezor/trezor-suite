@@ -1,8 +1,12 @@
 import { cloneDeep } from 'lodash';
 
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import buyList from './buy/list.json';
-import buyQuotes from './buy/quotes.json';
-import buyTrade from './buy/trade.json';
+import buyQuotesSolana from './buy/quotes-solana.json';
+import buyQuotesBTC from './buy/quotes.json';
+import buyTradeSolana from './buy/trade-solana.json';
+import buyTradeBTC from './buy/trade.json';
 import buyWatch from './buy/watch.json';
 import exchangeCoins from './exchange/coins.json';
 import exchangeList from './exchange/list.json';
@@ -11,6 +15,7 @@ import exchangeTrade from './exchange/trade.json';
 import exchangeWatch from './exchange/watch.json';
 import info from './info.json';
 import sellList from './sell/list.json';
+import { TradeRequest } from './types';
 
 const invityUrl = 'https://exchange.trezor.io';
 
@@ -36,15 +41,19 @@ export const invityResponses = {
     [invityEndpoint.exchangeWatch]: exchangeWatch,
     [invityEndpoint.info]: info,
     [invityEndpoint.buyList]: buyList,
-    [invityEndpoint.buyQuotes]: buyQuotes,
+    [invityEndpoint.buyQuotes]: buyQuotesBTC,
     [invityEndpoint.buyWatch]: buyWatch,
     [invityEndpoint.sellList]: sellList,
 };
 
 // This modification allows us to skip the provider's part of the flow and go directly to the transaction detail.
-export const createRedirectedTradeResponse = (url: string) => {
-    const redirectToDetail = `${url}coinmarket-redirect#detail/btc/normal/0/${buyTrade.trade.paymentId}`;
-    const modifiedTrade = cloneDeep(buyTrade);
+export const createRedirectedTradeResponse = (params: {
+    symbol: NetworkSymbol;
+    tradeRequest: TradeRequest;
+    url: string;
+}) => {
+    const redirectToDetail = `${params.url}coinmarket-redirect#detail/${params.symbol}/normal/0/${params.tradeRequest.trade.paymentId}`;
+    const modifiedTrade = cloneDeep(params.tradeRequest);
     modifiedTrade.trade.partnerData = redirectToDetail;
     modifiedTrade.tradeForm.form.formAction = redirectToDetail;
 
@@ -59,8 +68,10 @@ export {
     exchangeWatch,
     info,
     buyList,
-    buyQuotes,
-    buyTrade,
+    buyQuotesBTC,
+    buyQuotesSolana,
+    buyTradeBTC,
+    buyTradeSolana,
     buyWatch,
     sellList,
 };

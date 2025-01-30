@@ -100,7 +100,11 @@ export class DashboardActions {
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLink.pressYes();
+    }
 
+    @step()
+    async addUnusedHiddenWallet(passphrase: string) {
+        await this.addHiddenWallet(passphrase);
         await this.page
             .getByTestId('@passphrase-confirmation/step1-open-unused-wallet-button')
             .click();
