@@ -1,0 +1,28 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+
+import { prepareTradingReducer } from '../tradingReducer';
+import { tradingFixtures } from '../__fixtures__/tradingReducer';
+
+const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+
+describe('Testing trading reducer', () => {
+    tradingFixtures.forEach(f => {
+        it(f.description, () => {
+            const store = configureMockStore({
+                extra: {},
+                reducer: combineReducers({
+                    wallet: combineReducers({
+                        trading: tradingReducer,
+                    }),
+                }),
+                preloadedState: { wallet: { trading: f.initialState } },
+            });
+            f.actions.forEach(action => {
+                store.dispatch(action);
+            });
+            expect(store.getState().wallet.trading).toEqual(f.result);
+        });
+    });
+});

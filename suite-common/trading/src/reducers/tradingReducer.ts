@@ -17,7 +17,7 @@ export interface TradingComposedTransactionInfo {
     selectedFee?: FeeLevel['label'];
 }
 
-interface TradingInfo {
+export interface TradingInfo {
     platforms?: Platforms;
     coins?: Coins;
     paymentMethods: TradingPaymentMethodListProps[];

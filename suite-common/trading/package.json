@@ -7,7 +7,8 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
@@ -20,6 +21,7 @@
         "uuid": "^11.0.5"
     },
     "devDependencies": {
+        "@suite-common/test-utils": "workspace:*",
         "@types/invity-api": "^1.1.2"
     }
 }

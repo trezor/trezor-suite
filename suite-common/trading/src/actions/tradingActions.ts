@@ -11,16 +11,16 @@ const INFO_COMMON_PREFIX = '@trading-info'; // TODO: unify with TRADING_COMMON_P
 export const SAVE_COMPOSED_TRANSACTION_INFO = `${TRADING_COMMON_PREFIX}/save_composed_transaction_info`;
 export const SAVE_TRADE = `${TRADING_COMMON_PREFIX}/save_trade`;
 export const LOAD_DATA = `${TRADING_COMMON_PREFIX}/load_data`;
-export const SET_LOADING = `${TRADING_COMMON_PREFIX}/set_loading`;
+export const SET_LOADING = `${TRADING_COMMON_PREFIX}/set_loading`; // TODO: DEPRECATED?
 export const SET_MODAL_CRYPTO_CURRENCY = `${TRADING_COMMON_PREFIX}/set_modal_crypto_currency`;
 export const SET_MODAL_ACCOUNT_KEY = `${TRADING_COMMON_PREFIX}/set_modal_account_key`;
 export const SET_TRADING_ACTIVE_SECTION = `${TRADING_COMMON_PREFIX}/set_trading_active_section`;
 export const SET_TRADING_FROM_PREFILLED_CRYPTO_ID = `${TRADING_COMMON_PREFIX}/set_trading_from_prefilled_crypto_id`;
 
-export const SAVE_INFO = `${INFO_COMMON_PREFIX}/save-info`;
+export const SAVE_SYMBOLS_INFO = `${INFO_COMMON_PREFIX}/save-info`;
 export const SAVE_PAYMENT_METHODS = `${INFO_COMMON_PREFIX}/payment-methods`;
 
-const saveInfo = createAction(SAVE_INFO, (payload: InfoResponse) => ({
+const saveInfo = createAction(SAVE_SYMBOLS_INFO, (payload: InfoResponse) => ({
     payload,
 }));
 
