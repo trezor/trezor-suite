@@ -87,11 +87,14 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible }: ValueProps)
                         contractAddress={token?.contract}
                         isTabular={false}
                     />
-                    {symbol && isFiatVisible && !isTokenAmount && (
+                    {symbol && isFiatVisible && (
                         <Text variant="tertiary">
                             <FiatValue
                                 disableHiddenPlaceholder
                                 amount={formattedValue}
+                                tokenAddress={
+                                    token && !isFee ? (token.contract as TokenAddress) : undefined
+                                }
                                 symbol={symbol}
                             />
                         </Text>
