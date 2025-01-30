@@ -1,8 +1,8 @@
-import fsExtra from 'fs-extra';
-import fs from 'fs';
-import sortPackageJson from 'sort-package-json';
-import prettier from 'prettier';
 import chalk from 'chalk';
+import fs from 'fs';
+import fsExtra from 'fs-extra';
+import prettier from 'prettier';
+import sortPackageJson from 'sort-package-json';
 
 import templatePackageJson from './package-template/package.json';
 // todo: calling yarn generate-package failed on not resolving destructuring imports. default imports seem to work.

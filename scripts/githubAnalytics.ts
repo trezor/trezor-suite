@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import { Octokit } from 'octokit';
 import chalk from 'chalk';
+import { Octokit } from 'octokit';
 
 if (!process.env.GH_TOKEN) {
     console.log(chalk.red.bold('Missing GH_TOKEN env variable.'));

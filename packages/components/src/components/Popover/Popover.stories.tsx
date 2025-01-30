@@ -1,12 +1,10 @@
+import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
-import { useArgs } from '@storybook/client-api';
 
 import { spacingsPx } from '@trezor/theme';
 
 import { Popover as PopoverComponent, PopoverProps } from './Popover';
-import { Button } from '../buttons/Button/Button';
-import { Card } from '../Card/Card';
 import {
     POPOVER_PLACEMENT_ALIGNMENT,
     POPOVER_PLACEMENT_POSITION,
@@ -14,6 +12,8 @@ import {
     PopoverPlacementAlignment,
     PopoverPlacementPosition,
 } from './utils';
+import { Card } from '../Card/Card';
+import { Button } from '../buttons/Button/Button';
 
 const Container = styled.div`
     width: 100%;

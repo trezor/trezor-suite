@@ -2,13 +2,13 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { step } from '../../common';
 import { MetadataProvider } from '../../mocks/metadataProviderMock';
 import { DevicePromptActions } from '../devicePromptActions';
-import { step } from '../../common';
 import { AccountMetadataActions } from './accountMetadataActions';
+import { AddressMetadataActions } from './addressMetadataActions';
 import { OutputMetadataActions } from './outputMetadataActions';
 import { WalletMetadataActions } from './walletMetadataActions';
-import { AddressMetadataActions } from './addressMetadataActions';
 
 export class MetadataActions {
     readonly metadataModal: Locator;

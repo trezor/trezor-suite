@@ -1,13 +1,13 @@
+import chalk from 'chalk';
 import fs from 'fs';
+import { minimatch } from 'minimatch';
 import path from 'path';
 import prettier from 'prettier';
-import { minimatch } from 'minimatch';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import chalk from 'chalk';
 
-import { getWorkspacesList } from './utils/getWorkspacesList';
 import { getPrettierConfig } from './utils/getPrettierConfig';
+import { getWorkspacesList } from './utils/getWorkspacesList';
 
 (async () => {
     const { argv } = yargs(hideBin(process.argv))

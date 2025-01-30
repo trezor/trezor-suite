@@ -1,14 +1,15 @@
 import { screen } from '@testing-library/react';
 
-import TrezorConnect from '@trezor/connect';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 import { ServerInfo } from '@trezor/blockchain-link-types';
+import TrezorConnect from '@trezor/connect';
 
+// eslint-disable-next-line import/order
 import {
-    renderWithProviders,
-    waitForLoader,
     actionSequence,
     findByTestId,
+    renderWithProviders,
+    waitForLoader,
 } from 'src/support/tests/hooksHelper';
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
 import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';

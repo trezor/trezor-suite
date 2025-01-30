@@ -22,8 +22,8 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { FirmwareUpdateVersionCard } from './FirmwareVersionCard';
 import { FirmwareChangelogButton } from './FirmwareChangelogButton';
+import { FirmwareUpdateVersionCard } from './FirmwareVersionCard';
 
 const firmwareUpdateButtonStyle = prepareNativeStyle(utils => ({
     marginHorizontal: utils.spacings.sp16,

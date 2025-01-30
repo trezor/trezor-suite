@@ -1,5 +1,5 @@
-import { step } from '../../common';
 import { MetadataBaseActions } from './metadataBaseActions';
+import { step } from '../../common';
 
 export class WalletMetadataActions extends MetadataBaseActions {
     private readonly walletSelectorBeginPart = '[data-testid^="@metadata/walletLabel/"]';

@@ -1,14 +1,14 @@
-import globals from 'globals';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
+import globals from 'globals';
 
-import { reactConfig } from './reactConfig.mjs';
-import { javascriptConfig } from './javascriptConfig.mjs';
-import { typescriptConfig } from './typescriptConfig.mjs';
-import { importConfig, globalNoExtraneousDependenciesDevDependencies } from './importConfig.mjs';
-import { jestConfig } from './jestConfig.mjs';
-import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
-import { localRulesConfig } from './localRulesConfig.mjs';
 import { chaiFriendlyConfig } from './chaiFriendlyConfig.mjs';
+import { globalNoExtraneousDependenciesDevDependencies, importConfig } from './importConfig.mjs';
+import { javascriptConfig } from './javascriptConfig.mjs';
+import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
+import { jestConfig } from './jestConfig.mjs';
+import { localRulesConfig } from './localRulesConfig.mjs';
+import { reactConfig } from './reactConfig.mjs';
+import { typescriptConfig } from './typescriptConfig.mjs';
 
 export { globalNoExtraneousDependenciesDevDependencies };
 

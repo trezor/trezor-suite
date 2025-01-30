@@ -1,8 +1,9 @@
+/* eslint-disable import/order */
 import {
-    prepareFiatRatesMiddleware,
-    prepareBlockchainMiddleware,
-    prepareStakeMiddleware,
     prepareAccountsMiddleware,
+    prepareBlockchainMiddleware,
+    prepareFiatRatesMiddleware,
+    prepareStakeMiddleware,
 } from '@suite-common/wallet-core';
 import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
 

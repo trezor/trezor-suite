@@ -1,5 +1,5 @@
-import { step } from '../../common';
 import { MetadataBaseActions } from './metadataBaseActions';
+import { step } from '../../common';
 
 export class OutputMetadataActions extends MetadataBaseActions {
     readonly outputLabel = (outputId: string, txNumber: number) =>

@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 import { logsMiddleware } from '@suite-common/logger';
 
 import log from './logsMiddleware';

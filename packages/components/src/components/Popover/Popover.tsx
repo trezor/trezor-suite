@@ -1,26 +1,26 @@
 import * as React from 'react';
-import { CSSProperties, forwardRef, HTMLProps } from 'react';
+import { CSSProperties, HTMLProps, forwardRef } from 'react';
 
 import {
-    useFloating,
+    FloatingFocusManager,
+    FloatingPortal,
     autoUpdate,
-    offset,
     flip,
+    offset,
     shift,
     useClick,
     useDismiss,
-    useRole,
+    useFloating,
     useInteractions,
     useMergeRefs,
-    FloatingPortal,
-    FloatingFocusManager,
+    useRole,
 } from '@floating-ui/react';
 import { useTheme } from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
 
-import { intermediaryTheme } from '../../config/colors';
 import { PopoverPlacement, convertPopoverPlacement } from './utils';
+import { intermediaryTheme } from '../../config/colors';
 
 const DEFAULT_POPOVER_PLACEMENT: PopoverPlacement = {
     position: 'bottom',

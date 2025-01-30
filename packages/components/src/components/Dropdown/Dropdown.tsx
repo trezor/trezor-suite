@@ -1,8 +1,8 @@
 import {
-    forwardRef,
-    cloneElement,
-    ReactElement,
     MouseEvent,
+    ReactElement,
+    cloneElement,
+    forwardRef,
     useEffect,
     useImperativeHandle,
     useRef,
@@ -13,11 +13,11 @@ import styled from 'styled-components';
 
 import { useOnClickOutside } from '@trezor/react-utils';
 
-import { Menu, MenuProps, DropdownMenuItemProps } from '../Menu/Menu';
-import { IconButton } from '../buttons/IconButton/IconButton';
 import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { DropdownMenuItemProps, Menu, MenuProps } from '../Menu/Menu';
 import { Popover } from '../Popover/Popover';
 import { PopoverPlacement } from '../Popover/utils';
+import { IconButton } from '../buttons/IconButton/IconButton';
 
 export const allowedDropdownFrameProps = ['width'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedDropdownFrameProps)[number]>;

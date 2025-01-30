@@ -1,6 +1,6 @@
+import pluginImport from 'eslint-plugin-import';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import pluginImport from 'eslint-plugin-import';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,6 +39,16 @@ export const importConfig = [
                     allowObject: true,
                 },
             ],
+            'sort-imports': [
+                1,
+                {
+                    ignoreCase: false,
+                    ignoreDeclarationSort: true, // don't want to sort import lines, use eslint-plugin-import instead
+                    ignoreMemberSort: false,
+                    memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+                    allowSeparatedGroups: true,
+                },
+            ],
             'import/order': [
                 'warn',
                 {
@@ -56,6 +66,7 @@ export const importConfig = [
                     ],
                     pathGroupsExcludedImportTypes: ['internal', 'react'],
                     'newlines-between': 'always',
+                    alphabetize: { order: 'asc' },
                 },
             ],
             'import/no-extraneous-dependencies': [

@@ -1,5 +1,5 @@
-import { step } from '../../common';
 import { MetadataBaseActions } from './metadataBaseActions';
+import { step } from '../../common';
 
 export class AccountMetadataActions extends MetadataBaseActions {
     readonly addLabelButton = (accountId: string) =>

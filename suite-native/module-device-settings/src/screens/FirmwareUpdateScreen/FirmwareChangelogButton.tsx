@@ -1,9 +1,9 @@
-import { TouchableOpacity } from 'react-native';
 import { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
 
 import { Text } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
 import { Icon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { FirmwareChangelog } from './FirmwareChangelog';

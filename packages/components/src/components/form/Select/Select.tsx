@@ -4,8 +4,8 @@ import ReactSelect, { Props as ReactSelectProps, SelectInstance, StylesConfig } 
 import styled, { DefaultTheme, css, useTheme } from 'styled-components';
 
 import {
-    borders,
     Elevation,
+    borders,
     spacings,
     spacingsPx,
     typography,
@@ -30,11 +30,11 @@ import {
 } from './customComponents';
 import { useDetectPortalTarget } from './useDetectPortalTarget';
 import { useOnKeyDown } from './useOnKeyDown';
-import { DROPDOWN_MENU, menuStyle } from '../../Menu/menuStyle';
-import { useElevation } from '../../ElevationContext/ElevationContext';
-import { Spinner } from '../../loaders/Spinner/Spinner';
-import { TransientProps } from '../../../utils/transientProps';
 import { FrameProps } from '../../../utils/frameProps';
+import { TransientProps } from '../../../utils/transientProps';
+import { useElevation } from '../../ElevationContext/ElevationContext';
+import { DROPDOWN_MENU, menuStyle } from '../../Menu/menuStyle';
+import { Spinner } from '../../loaders/Spinner/Spinner';
 
 const reactSelectClassNamePrefix = 'react-select';
 

@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 import { AccountLabel } from './AccountLabel';
 import { DeviceConfirmImage } from './DeviceConfirmImage';
 import { CheckItem } from './CheckItem';
@@ -17,8 +18,8 @@ import { Translation } from './Translation';
 import {
     AccountLabeling,
     AddressLabeling,
-    WalletLabeling,
     MetadataLabeling,
+    WalletLabeling,
     useGetWalletLabel,
 } from './labeling';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
