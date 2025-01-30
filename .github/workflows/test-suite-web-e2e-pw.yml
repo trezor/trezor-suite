@@ -104,8 +104,8 @@ jobs:
         include:
           - TEST_GROUP: "@group=suite"
             CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=device-management"
-            CONTAINERS: "trezor-user-env-unix"
+          # - TEST_GROUP: "@group=device-management" # Disabled because there are no webOnly tests in this group
+          #   CONTAINERS: "trezor-user-env-unix"
           - TEST_GROUP: "@group=settings"
             CONTAINERS: "trezor-user-env-unix"
           - TEST_GROUP: "@group=metadata"
@@ -114,8 +114,8 @@ jobs:
           #   CONTAINERS: "trezor-user-env-unix"
           - TEST_GROUP: "@group=other"
             CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=wallet"
-            CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
+          # - TEST_GROUP: "@group=wallet" # Disabled because there are no webOnly tests in this group
+          #   CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
 
     steps:
       - name: Checkout
@@ -156,7 +156,7 @@ jobs:
         run: |
           docker compose up -d ${{ matrix.CONTAINERS }}
           echo "Starting Playwright Web test group ${{ matrix.TEST_GROUP }}"
-          yarn workspace @trezor/suite-desktop-core test:e2e:web --forbid-only --grep=${{ matrix.TEST_GROUP }}
+          yarn workspace @trezor/suite-desktop-core test:e2e:web --forbid-only --grep="(?=.*${{ matrix.TEST_GROUP }})(?=.*@webOnly)"
 
       - name: Extract Trezor-user-env and Regtest logs
         if: ${{ ! cancelled() }}
