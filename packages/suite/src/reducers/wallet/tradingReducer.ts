@@ -28,7 +28,7 @@ import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
 import type { SellInfo } from 'src/actions/wallet/tradingSellActions';
 import type { AppState, Action as SuiteAction } from 'src/types/suite';
 import { TradingPaymentMethodListProps } from 'src/types/trading/trading';
-import type { Account, WalletAction } from 'src/types/wallet';
+import type { WalletAction } from 'src/types/wallet';
 import type { Trade } from 'src/types/wallet/tradingCommonTypes';
 
 export interface ComposedTransactionInfo {
@@ -55,12 +55,6 @@ interface Buy extends TradingTradeCommonProps {
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[] | undefined;
     selectedQuote: BuyTrade | undefined;
-    cachedAccountInfo: {
-        accountType?: Account['accountType'];
-        index?: Account['index'];
-        symbol?: Account['symbol'];
-        shouldSubmit?: boolean;
-    };
     addressVerified: string | undefined;
 }
 
@@ -113,12 +107,6 @@ export const initialState: State = {
         buyInfo: undefined,
         quotesRequest: undefined,
         selectedQuote: undefined,
-        cachedAccountInfo: {
-            accountType: undefined,
-            index: undefined,
-            symbol: undefined,
-            shouldSubmit: false,
-        },
         quotes: [],
         addressVerified: undefined,
     },
@@ -190,14 +178,6 @@ export const tradingReducer = (
                 break;
             case TRADING_BUY.VERIFY_ADDRESS:
                 draft.buy.addressVerified = action.addressVerified;
-                break;
-            case TRADING_BUY.SAVE_CACHED_ACCOUNT_INFO:
-                draft.buy.cachedAccountInfo = {
-                    symbol: action.symbol,
-                    index: action.index,
-                    accountType: action.accountType,
-                    shouldSubmit: action.shouldSubmit,
-                };
                 break;
             case TRADING_BUY.DISPOSE:
                 draft.buy.addressVerified = undefined;

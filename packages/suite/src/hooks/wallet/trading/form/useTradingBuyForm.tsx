@@ -268,13 +268,6 @@ export const useTradingBuyForm = ({
     const goToOffers = async () => {
         await handleChange();
 
-        dispatch(
-            tradingBuyActions.saveCachedAccountInfo(
-                account.symbol,
-                account.index,
-                account.accountType,
-            ),
-        );
         navigateToBuyOffers();
     };
 

@@ -7,5 +7,4 @@ export const SAVE_QUOTE = '@trading-buy/save_buy_quote';
 export const CLEAR_QUOTES = '@trading-buy/clear_buy_quotes';
 export const VERIFY_ADDRESS = '@trading-buy/verify_address';
 export const SAVE_TRANSACTION_ID = '@trading-buy/save_transaction_id';
-export const SAVE_CACHED_ACCOUNT_INFO = '@trading-buy/save_cached_account_info';
 export const DISPOSE = '@trading-buy/dispose';

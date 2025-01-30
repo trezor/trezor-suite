@@ -34,13 +34,6 @@ export type TradingBuyAction =
     | { type: typeof TRADING_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
     | { type: typeof TRADING_BUY.VERIFY_ADDRESS; addressVerified: string | undefined }
     | {
-          type: typeof TRADING_BUY.SAVE_CACHED_ACCOUNT_INFO;
-          symbol: Account['symbol'];
-          index: Account['index'];
-          accountType: Account['accountType'];
-          shouldSubmit?: boolean;
-      }
-    | {
           type: typeof TRADING_BUY.SAVE_QUOTES;
           quotes: BuyTrade[];
       }
@@ -159,19 +152,6 @@ export const saveQuoteRequest = (request: BuyTradeQuoteRequest): TradingBuyActio
 export const saveTransactionDetailId = (transactionId: string): TradingBuyAction => ({
     type: TRADING_BUY.SAVE_TRANSACTION_DETAIL_ID,
     transactionId,
-});
-
-export const saveCachedAccountInfo = (
-    symbol: Account['symbol'],
-    index: number,
-    accountType: Account['accountType'],
-    shouldSubmit = false,
-): TradingBuyAction => ({
-    type: TRADING_BUY.SAVE_CACHED_ACCOUNT_INFO,
-    symbol,
-    index,
-    accountType,
-    shouldSubmit,
 });
 
 export const saveQuotes = (quotes: BuyTrade[]): TradingBuyAction => ({

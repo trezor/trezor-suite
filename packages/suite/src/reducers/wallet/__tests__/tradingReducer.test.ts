@@ -244,22 +244,6 @@ describe('settings reducer', () => {
         ).toEqual(initialState);
     });
 
-    it('TRADING_BUY.SAVE_CACHED_ACCOUNT_INFO', () => {
-        const cachedAccountInfo = {
-            symbol: 'btc',
-            index: 1,
-            accountType: 'segwit',
-            shouldSubmit: true,
-        };
-
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_BUY.SAVE_CACHED_ACCOUNT_INFO,
-                ...cachedAccountInfo,
-            } as any),
-        ).toEqual({ ...initialState, buy: { ...initialState.buy, cachedAccountInfo } });
-    });
-
     it('TRADING_EXCHANGE.SAVE_EXCHANGE_INFO', () => {
         const exchangeInfo: ExchangeInfo = {
             providerInfos: {},
