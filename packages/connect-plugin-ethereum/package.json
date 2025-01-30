@@ -23,8 +23,14 @@
     },
     "main": "src/index.ts",
     "files": [
-        "lib/"
+        "lib/",
+        "libESM",
+        "!**/*.map"
     ],
+    "exports": {
+        "node": "./lib/index.js",
+        "default": "./libESM/index.js"
+    },
     "peerDependencies": {
         "@metamask/eth-sig-util": "^8.0.0",
         "tslib": "^2.6.2"
@@ -35,6 +41,8 @@
     "scripts": {
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib"
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/replace-imports.sh ./libESM libESM"
     }
 }
