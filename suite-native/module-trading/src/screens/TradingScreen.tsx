@@ -5,6 +5,7 @@ import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 
+import { AmountCard } from '../components/buy/AmountCard';
 import { TradingOverviewRow } from '../components/general/TradingOverviewRow';
 import { TradingRowDivider } from '../components/general/TradingRowDivider';
 
@@ -19,10 +20,9 @@ export const TradingScreen = () => {
     return (
         <Screen header={<DeviceManagerScreenHeader />}>
             <VStack spacing="sp16">
+                <Text>Trading placeholder</Text>
+                <AmountCard />
                 <Card noPadding>
-                    <Box padding="sp20">
-                        <Text>Trading placeholder</Text>
-                    </Box>
                     <TradingRowDivider />
                     <TradingOverviewRow
                         title={translate('moduleTrading.tradingScreen.receiveAccount')}

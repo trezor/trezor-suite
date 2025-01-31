@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { Pressable, TextInput, TouchableOpacity } from 'react-native';
 
 import { Icon } from '@suite-native/icons';
@@ -7,12 +7,15 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box } from '../Box';
 import { SurfaceElevation } from '../types';
 
-type InputProps = {
+export type SearchInputProps = {
     onChange: (value: string) => void;
     placeholder?: string;
     isDisabled?: boolean;
     maxLength?: number;
     elevation?: SurfaceElevation;
+    onFocus?: () => void;
+    onBlur?: () => void;
+    value?: string;
 };
 
 const inputStyle = prepareNativeStyle(utils => ({
@@ -27,6 +30,7 @@ type InputStyleProps = {
     isFocused: boolean;
     elevation: SurfaceElevation;
 };
+
 const inputWrapperStyle = prepareNativeStyle<InputStyleProps>(
     (utils, { isFocused, elevation }) => ({
         flexDirection: 'row',
@@ -57,53 +61,73 @@ const inputWrapperStyle = prepareNativeStyle<InputStyleProps>(
     }),
 );
 
-export const SearchInput = ({
-    onChange,
-    placeholder,
-    maxLength,
-    isDisabled = false,
-    elevation = '0',
-}: InputProps) => {
-    const { applyStyle, utils } = useNativeStyles();
-    const [isFocused, setIsFocused] = useState<boolean>(false);
-    const [isClearButtonVisible, setIsClearButtonVisible] = useState<boolean>(false);
-    const searchInputRef = useRef<TextInput | null>(null);
-    const handleClear = () => {
-        setIsClearButtonVisible(false);
-        searchInputRef.current?.clear();
-        onChange('');
-    };
+const noOp = () => {};
 
-    const handleInputFocus = () => {
-        searchInputRef?.current?.focus();
-    };
+export const SearchInput = forwardRef<TextInput, SearchInputProps>(
+    (
+        {
+            onChange,
+            placeholder,
+            maxLength,
+            isDisabled = false,
+            elevation = '0',
+            onFocus = noOp,
+            onBlur = noOp,
+            value,
+        },
+        ref,
+    ) => {
+        const { applyStyle, utils } = useNativeStyles();
+        const [isFocused, setIsFocused] = useState<boolean>(false);
+        const [isClearButtonVisible, setIsClearButtonVisible] = useState<boolean>(false);
+        const searchInputRef = useRef<TextInput>(null);
 
-    const handleOnChangeText = (value: string) => {
-        setIsClearButtonVisible(!!value.length);
-        onChange(value);
-    };
+        useImperativeHandle(ref, () => searchInputRef.current!, [searchInputRef]);
 
-    return (
-        <Pressable onPress={handleInputFocus}>
-            <Box style={applyStyle(inputWrapperStyle, { isFocused, elevation })}>
-                <Icon name="magnifyingGlass" color="iconSubdued" size="large" />
-                <TextInput
-                    ref={searchInputRef}
-                    onChangeText={handleOnChangeText}
-                    placeholder={placeholder}
-                    placeholderTextColor={utils.colors.textSubdued}
-                    editable={!isDisabled}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    style={applyStyle(inputStyle)}
-                    maxLength={maxLength}
-                />
-                {isClearButtonVisible && (
-                    <TouchableOpacity onPress={handleClear}>
-                        <Icon name="xCircle" size="large" color="iconSubdued" />
-                    </TouchableOpacity>
-                )}
-            </Box>
-        </Pressable>
-    );
-};
+        const handleClear = () => {
+            setIsClearButtonVisible(false);
+            searchInputRef.current?.clear();
+            onChange('');
+        };
+
+        const handleInputFocus = () => {
+            searchInputRef.current?.focus();
+        };
+
+        const handleOnChangeText = (inputValue: string) => {
+            setIsClearButtonVisible(!!inputValue.length);
+            onChange(inputValue);
+        };
+
+        return (
+            <Pressable onPress={handleInputFocus}>
+                <Box style={applyStyle(inputWrapperStyle, { isFocused, elevation })}>
+                    <Icon name="magnifyingGlass" color="iconSubdued" size="large" />
+                    <TextInput
+                        ref={searchInputRef}
+                        onChangeText={handleOnChangeText}
+                        placeholder={placeholder}
+                        placeholderTextColor={utils.colors.textSubdued}
+                        editable={!isDisabled}
+                        onFocus={() => {
+                            setIsFocused(true);
+                            onFocus();
+                        }}
+                        onBlur={() => {
+                            setIsFocused(false);
+                            onBlur();
+                        }}
+                        style={applyStyle(inputStyle)}
+                        maxLength={maxLength}
+                        value={value}
+                    />
+                    {isClearButtonVisible && (
+                        <TouchableOpacity onPress={handleClear}>
+                            <Icon name="xCircle" size="large" color="iconSubdued" />
+                        </TouchableOpacity>
+                    )}
+                </Box>
+            </Pressable>
+        );
+    },
+);

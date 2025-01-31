@@ -8,14 +8,16 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest -c ../../jest.config.native.js"
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
         "@react-navigation/native-stack": "6.11.0",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
+        "expo-linear-gradient": "^14.0.1",
         "react": "18.2.0",
-        "react-native": "0.76.1"
+        "react-native": "0.76.1",
+        "react-native-reanimated": "3.16.7"
     }
 }

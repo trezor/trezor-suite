@@ -4,7 +4,7 @@ import { TradingStackNavigator } from '../TradingStackNavigator';
 
 describe('TradingStackNavigator', () => {
     it('should render', async () => {
-        const { getByText } = renderWithStore(<TradingStackNavigator />);
-        await waitFor(() => expect(getByText('Trading placeholder')).toBeDefined());
+        const { getAllByText } = renderWithStore(<TradingStackNavigator />);
+        await waitFor(() => expect(getAllByText('Buy').length).toBe(2));
     });
 });

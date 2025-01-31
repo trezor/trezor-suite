@@ -93,6 +93,8 @@ const usedIcons = [
     'shieldWarning',
     'shuffle',
     'stack',
+    'star',
+    'starFilled',
     'swap',
     'trashSimple',
     'treeStructure',

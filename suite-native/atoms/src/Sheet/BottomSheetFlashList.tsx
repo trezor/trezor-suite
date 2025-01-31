@@ -19,7 +19,6 @@ export type BottomSheetFlashListProps<TItem> = {
     subtitle?: ReactNode;
     estimatedListHeight?: number;
     handleComponent?: BottomSheetProps['handleComponent'];
-    stickyListFooterComponent?: ReactNode;
 } & FlashListProps<TItem>;
 
 const DEFAULT_INSET_BOTTOM = 25;

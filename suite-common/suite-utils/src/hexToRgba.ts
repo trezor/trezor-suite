@@ -4,8 +4,8 @@ export function hexToRgba(hex: string, alpha: number) {
     const b = parseInt(hex.slice(5, 7), 16);
 
     if (alpha > 0) {
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        return `rgba(${r}, ${g}, ${b}, ${alpha})` as `rgba(${number}, ${number}, ${number}, ${number})`;
     }
 
-    return `rgb(${r}, ${g}, ${b})`;
+    return `rgb(${r}, ${g}, ${b})` as `rgb(${number}, ${number}, ${number})`;
 }

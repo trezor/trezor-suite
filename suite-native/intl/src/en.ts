@@ -1278,6 +1278,20 @@ export const en = {
             provider: 'Provider',
             continueButton: 'Continue',
         },
+        selectCoin: {
+            buttonTitle: 'Select coin',
+        },
+        tradeableAssetsSheet: {
+            title: 'Coins',
+            favouritesTitle: 'Favourites',
+            allTitle: 'All coins',
+            favouritesAdd: 'Add to favourites',
+            favouritesRemove: 'Remove from favourites',
+            emptyTitle: 'No coin found',
+            emptyDescription:
+                'We couldn’t find a coin matching your search. Try checking the spelling or exploring the list for the right option.',
+        },
+        defaultSearchLabel: 'Search',
     },
 };
 
