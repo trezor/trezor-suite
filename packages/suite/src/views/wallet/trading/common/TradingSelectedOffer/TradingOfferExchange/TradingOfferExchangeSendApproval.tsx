@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { DexApprovalType } from 'invity-api';
 import styled from 'styled-components';
 
-import type { TradingExchangeType } from '@suite-common/trading';
+import { type TradingExchangeType, cryptoIdToSymbol, parseCryptoId } from '@suite-common/trading';
 import {
     Banner,
     Button,
@@ -26,7 +26,6 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { useTradingExchangeWatchSendApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchSendApproval';
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import { cryptoIdToSymbol, parseCryptoId } from 'src/utils/wallet/trading/tradingUtils';
 
 // add APPROVED means no approval request is necessary
 type ExtendedDexApprovalType = DexApprovalType | 'APPROVED';

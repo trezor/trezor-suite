@@ -11,7 +11,13 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { isChanged } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type TradingExchangeType, invityAPI } from '@suite-common/trading';
+import {
+    type TradingExchangeType,
+    addIdsToQuotes,
+    getUnusedAddressFromAccount,
+    invityAPI,
+    tradingGetSuccessQuotes,
+} from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { amountToSmallestUnit, formatAmount, toFiatCurrency } from '@suite-common/wallet-utils';
@@ -52,12 +58,7 @@ import {
     getSuccessQuotesOrdered,
     tradingGetExchangeReceiveCryptoId,
 } from 'src/utils/wallet/trading/exchangeUtils';
-import {
-    addIdsToQuotes,
-    getTradingNetworkDecimals,
-    getUnusedAddressFromAccount,
-    tradingGetSuccessQuotes,
-} from 'src/utils/wallet/trading/tradingUtils';
+import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
 

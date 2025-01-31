@@ -1,3 +1,4 @@
+import { parseCryptoId } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Select } from '@trezor/components';
 
@@ -7,7 +8,6 @@ import {
     TradingVerifyFormAccountOptionProps,
     TradingVerifyOptionsProps,
 } from 'src/types/trading/tradingVerify';
-import { parseCryptoId } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingVerifyOptionsItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerifyOptionsItem';
 
 export const TradingVerifyOptions = ({

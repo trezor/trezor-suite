@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { cryptoIdToSymbol } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { FormState, Output } from '@suite-common/wallet-types';
 
@@ -28,7 +29,6 @@ import { Account } from 'src/types/wallet';
 import { tradingGetExchangeReceiveCryptoId } from 'src/utils/wallet/trading/exchangeUtils';
 import {
     buildFiatOption,
-    cryptoIdToSymbol,
     getAddressAndTokenFromAccountOptionsGroupProps,
 } from 'src/utils/wallet/trading/tradingUtils';
 

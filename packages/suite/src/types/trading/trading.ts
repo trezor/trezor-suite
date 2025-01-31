@@ -4,7 +4,6 @@ import {
     BuyTrade,
     CryptoId,
     ExchangeProviderInfo,
-    ExchangeTrade,
     FiatCurrencyCode,
     SellFiatTrade,
     SellProviderInfo,
@@ -77,13 +76,6 @@ export type TradingTradeMapProps = {
 };
 
 export type TradingTradeDetailBuySellType = BuyTrade | SellFiatTrade;
-
-export type TradingTradeDetailMapProps = {
-    buy: BuyTrade;
-    sell: SellFiatTrade;
-    exchange: ExchangeTrade;
-};
-export type TradingTradeBuySellDetailMapProps = Omit<TradingTradeDetailMapProps, 'exchange'>;
 
 export type TradingTradeInfoMapProps = {
     buy: BuyInfo;

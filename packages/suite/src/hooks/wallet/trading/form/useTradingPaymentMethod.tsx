@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
 
+import type { TradingTradeMapProps } from '@suite-common/trading';
+
 import { useSelector } from 'src/hooks/suite';
 import {
     TradingPaymentMethodListProps,
     TradingPaymentMethodProps,
     TradingTradeBuySellType,
-    TradingTradeDetailMapProps,
 } from 'src/types/trading/trading';
 import { TradingPaymentMethodHookProps } from 'src/types/trading/tradingForm';
 
@@ -14,7 +15,7 @@ const useTradingPaymentMethod = <
 >(): TradingPaymentMethodHookProps<T> => {
     const paymentMethods = useSelector(state => state.wallet.trading.info.paymentMethods);
 
-    const getPaymentMethods = (quotes: TradingTradeDetailMapProps[T][]) => {
+    const getPaymentMethods = (quotes: TradingTradeMapProps[T][]) => {
         const newPaymentMethods: TradingPaymentMethodListProps[] = [];
 
         quotes.forEach(quote => {
@@ -33,7 +34,7 @@ const useTradingPaymentMethod = <
 
     const getQuotesByPaymentMethod = useCallback(
         (
-            quotes: TradingTradeDetailMapProps[T][] | undefined,
+            quotes: TradingTradeMapProps[T][] | undefined,
             currentPaymentMethod: TradingPaymentMethodProps,
         ) => {
             if (!quotes) return;

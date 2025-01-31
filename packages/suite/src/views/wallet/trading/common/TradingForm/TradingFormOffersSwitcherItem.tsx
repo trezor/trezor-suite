@@ -1,7 +1,7 @@
 import { ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import { TradingUtilsProvidersProps } from '@suite-common/trading';
+import { type TradingUtilsProvidersProps } from '@suite-common/trading';
 import { Badge, Radio, Row, Text, Tooltip, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 

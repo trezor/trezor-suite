@@ -1,12 +1,12 @@
 import { CryptoId } from 'invity-api';
 
+import { parseCryptoId } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
-import { parseCryptoId } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
 interface TradingInfoHeaderProps {

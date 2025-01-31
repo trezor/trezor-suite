@@ -1,14 +1,10 @@
 import styled from 'styled-components';
 
+import { cryptoIdToNetwork, isCryptoIdForNativeToken, parseCryptoId } from '@suite-common/trading';
 import { AssetLogo } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
 import { TradingCoinLogoProps } from 'src/types/trading/trading';
-import {
-    cryptoIdToNetwork,
-    isCryptoIdForNativeToken,
-    parseCryptoId,
-} from 'src/utils/wallet/trading/tradingUtils';
 
 const Wrapper = styled.div``;
 

@@ -1,7 +1,7 @@
 import { CryptoId } from 'invity-api';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import type { TradingType } from '@suite-common/trading';
+import { type TradingType, getUnusedAddressFromAccount } from '@suite-common/trading';
 import {
     confirmAddressOnDeviceThunk,
     selectSelectedDevice,
@@ -26,7 +26,6 @@ import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
-import { getUnusedAddressFromAccount } from 'src/utils/wallet/trading/tradingUtils';
 
 export type TradingCommonAction =
     | {

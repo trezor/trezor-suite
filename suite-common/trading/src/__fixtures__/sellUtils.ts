@@ -1,0 +1,50 @@
+import { CryptoId, SellFiatTrade } from 'invity-api';
+
+const bitcoin = 'bitcoin' as CryptoId;
+
+export const MIN_MAX_QUOTES_HIGH: SellFiatTrade[] = [
+    {
+        fiatStringAmount: '100000',
+        fiatCurrency: 'EUR',
+        cryptoCurrency: bitcoin,
+        cryptoStringAmount: '9.8414',
+        rate: 10161.15593309895,
+        quoteId: '0e1966dc-83c7-4b98-9b93-d8a5e426b3d3',
+        error: 'Amount too high, maximum is EUR 1000 or BTC 0.10595.',
+        exchange: 'cexdirect',
+        minFiat: 25,
+        maxFiat: 1000,
+        minCrypto: 0.002,
+        maxCrypto: 0.10595,
+        paymentMethod: 'creditCard',
+    },
+    {
+        fiatStringAmount: '100000',
+        fiatCurrency: 'EUR',
+        cryptoCurrency: bitcoin,
+        cryptoStringAmount: '10.010215580340265',
+        rate: 9989.794844818,
+        quoteId: 'f1a4cf48-ebdb-4dac-b049-2dbd086dd68d',
+        error: 'Amount too high, maximum is EUR 2000.03 or BTC 0.20015000.',
+        exchange: 'simplecoin',
+        minFiat: 19.98,
+        maxFiat: 2000.03,
+        minCrypto: 0.002,
+        maxCrypto: 0.20015,
+        paymentMethod: 'creditCard',
+    },
+    {
+        fiatStringAmount: '100000',
+        fiatCurrency: 'EUR',
+        cryptoCurrency: bitcoin,
+        cryptoStringAmount: '9.8414',
+        rate: 0,
+        error: 'Transaction amount too high. Please enter a value of 17050 EUR or less.',
+        exchange: 'simplex',
+        minFiat: 43,
+        maxFiat: 17045,
+        minCrypto: 0.00418032,
+        maxCrypto: 1.67212968,
+        paymentMethod: 'creditCard',
+    },
+];

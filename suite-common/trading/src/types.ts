@@ -2,6 +2,7 @@ import type {
     BuyCryptoPaymentMethod,
     BuyTrade,
     BuyTradeStatus,
+    CryptoId,
     ExchangeTrade,
     ExchangeTradeStatus,
     SellCryptoPaymentMethod,
@@ -20,8 +21,16 @@ export type TradingSellType = 'sell';
 export type TradingExchangeType = 'exchange';
 export type TradingType = TradingBuyType | TradingSellType | TradingExchangeType;
 
+export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
+
 // information about created trade
 export type TradingTradeType = BuyTrade | SellFiatTrade | ExchangeTrade;
+export type TradingTradeMapProps = {
+    buy: BuyTrade;
+    sell: SellFiatTrade;
+    exchange: ExchangeTrade;
+};
+export type TradingTradeBuySellMapProps = Omit<TradingTradeMapProps, 'exchange'>;
 
 export type TradingWatchTradeResponsePropsMap = {
     buy: WatchBuyTradeResponse;
@@ -37,4 +46,9 @@ export type TradingUtilsProvidersProps = {
         companyName: string;
         brandName?: string;
     };
+};
+
+export type TradingParsedCryptoIdProps = {
+    networkId: CryptoId;
+    contractAddress: string | undefined;
 };

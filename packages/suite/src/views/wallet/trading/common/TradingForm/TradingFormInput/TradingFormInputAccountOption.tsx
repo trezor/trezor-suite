@@ -1,3 +1,4 @@
+import { cryptoIdToNetwork, parseCryptoId } from '@suite-common/trading';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
 import { Badge, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -8,11 +9,7 @@ import {
     TradingAccountOptionsGroupOptionProps,
     TradingAccountsOptionsGroupProps,
 } from 'src/types/trading/trading';
-import {
-    cryptoIdToNetwork,
-    parseCryptoId,
-    tradingGetAccountLabel,
-} from 'src/utils/wallet/trading/tradingUtils';
+import { tradingGetAccountLabel } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
 interface TradingFormInputAccountOptionProps {

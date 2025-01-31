@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import type { TradingTradeType, TradingType } from '@suite-common/trading';
+import { type TradingTradeType, type TradingType, parseCryptoId } from '@suite-common/trading';
 import { Button, Column, Paragraph, Row, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -21,7 +21,6 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import {
     getBestRatedQuote,
-    parseCryptoId,
     tradingGetAmountLabels,
     tradingGetRoundedFiatAmount,
     tradingGetSectionActionLabel,

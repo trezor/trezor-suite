@@ -1,15 +1,15 @@
-import { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
-import { v4 as uuidv4 } from 'uuid';
+import { CryptoId } from 'invity-api';
 
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
-import { type TradingTradeType, type TradingType, regional } from '@suite-common/trading';
+import {
+    type TradingTradeType,
+    type TradingType,
+    cryptoIdToSymbol,
+    toTokenCryptoId,
+} from '@suite-common/trading';
 import {
     Network,
-    NetworkSymbol,
-    getCoingeckoId,
     getNetwork,
-    getNetworkByCoingeckoId,
-    getNetworkByTradeCryptoId,
     getNetworkDisplaySymbol,
     getNetworkDisplaySymbolName,
     getNetworkFeatures,
@@ -31,58 +31,10 @@ import {
     TradingGetAmountLabelsProps,
     TradingGetAmountLabelsReturnProps,
     TradingGetSortedAccountsProps,
-    TradingTradeBuySellDetailMapProps,
-    TradingTradeBuySellType,
-    TradingTradeDetailMapProps,
 } from 'src/types/trading/trading';
 import { Account } from 'src/types/wallet';
 
-export const cryptoPlatformSeparator = '--';
-/**
- * Used for for L2 networks (e.g. base, op)
- */
-export const contractAddressForNativeToken = '0x0000000000000000000000000000000000000000';
-
-interface ParsedCryptoId {
-    networkId: CryptoId;
-    contractAddress: string | undefined;
-}
-
-export const parseCryptoId = (cryptoId: CryptoId): ParsedCryptoId => {
-    const parts = cryptoId.split(cryptoPlatformSeparator);
-
-    return { networkId: parts[0] as CryptoId, contractAddress: parts[1] };
-};
-
-export const cryptoIdToNetwork = (cryptoId: CryptoId): Network | undefined => {
-    const { networkId, contractAddress } = parseCryptoId(cryptoId);
-
-    return contractAddress
-        ? getNetworkByCoingeckoId(networkId)
-        : getNetworkByTradeCryptoId(networkId);
-};
-
-export const cryptoIdToSymbol = (cryptoId: CryptoId): NetworkSymbol | undefined =>
-    cryptoIdToNetwork(cryptoId)?.symbol;
-
-export const toTokenCryptoId = (symbol: NetworkSymbol, contractAddress: string): CryptoId =>
-    `${getCoingeckoId(symbol)}${cryptoPlatformSeparator}${contractAddress}` as CryptoId;
-
-/** Convert testnet cryptoId to prod cryptoId (test-bitcoin -> bitcoin) */
-export const testnetToProdCryptoId = (cryptoId: CryptoId): CryptoId => {
-    const { networkId, contractAddress } = parseCryptoId(cryptoId);
-
-    return ((networkId.split('test-')?.[1] ?? networkId) +
-        (contractAddress ? `${cryptoPlatformSeparator}${contractAddress}` : '')) as CryptoId;
-};
-
-export const isCryptoIdForNativeToken = (cryptoId: CryptoId) => {
-    const { contractAddress } = parseCryptoId(cryptoId);
-
-    return contractAddress === contractAddressForNativeToken;
-};
-
-export interface TradingGetDecimalsProps {
+interface TradingGetDecimalsProps {
     sendCryptoSelect?: TradingAccountOptionsGroupOptionProps;
     network?: Network | null;
 }
@@ -98,48 +50,10 @@ export const getTradingNetworkDecimals = ({
     return network?.decimals ?? 8;
 };
 
-/** @deprecated */
-const suiteToInvitySymbols: {
-    suiteSymbol: string;
-    invitySymbol: string;
-}[] = [];
-
 export const buildFiatOption = (currency: string) => ({
     value: currency,
     label: currency.toUpperCase(),
 });
-
-/** @deprecated */
-export const invityApiSymbolToSymbol = (symbol?: string) => {
-    if (!symbol) return 'UNKNOWN';
-    const lowercaseSymbol = symbol.toLowerCase();
-    const result = suiteToInvitySymbols.find(s => s.invitySymbol === lowercaseSymbol);
-
-    return result ? result.suiteSymbol : lowercaseSymbol;
-};
-
-export const getUnusedAddressFromAccount = (account: Account) => {
-    switch (account.networkType) {
-        case 'cardano':
-        case 'bitcoin': {
-            const firstUnused = account.addresses?.unused[0];
-            if (firstUnused) {
-                return { address: firstUnused.address, path: firstUnused.path };
-            }
-
-            return { address: undefined, path: undefined };
-        }
-        case 'ripple':
-        case 'ethereum':
-        case 'solana': {
-            return {
-                address: account.descriptor,
-                path: account.path,
-            };
-        }
-        // no default
-    }
-};
 
 export const getCountryLabelParts = (label: string) => {
     try {
@@ -215,85 +129,6 @@ export const getComposeAddressPlaceholder = async (
             return account.descriptor;
         // no default
     }
-};
-
-export const mapTestnetSymbol = (
-    symbol: NetworkSymbol,
-): Exclude<NetworkSymbol, 'test' | 'tsep' | 'thol' | 'txrp' | 'tada'> => {
-    if (symbol === 'test') return 'btc';
-    if (symbol === 'tsep') return 'eth';
-    if (symbol === 'thol') return 'eth';
-    if (symbol === 'txrp') return 'xrp';
-    if (symbol === 'tada') return 'ada';
-
-    return symbol;
-};
-
-export const getTagAndInfoNote = (quote: { infoNote?: string }) => {
-    let tag = '';
-    let infoNote = (quote?.infoNote || '').trim();
-    if (infoNote.startsWith('#')) {
-        const splitNote = infoNote?.split('#') || [];
-        if (splitNote.length === 3) {
-            // infoNote contains "#badge_text#info_note_text"
-            [, tag, infoNote] = splitNote;
-        } else if (splitNote.length === 2) {
-            // infoNote contains "#badge_text"
-            infoNote = '';
-            tag = splitNote.pop() || '';
-        }
-    }
-
-    return { tag, infoNote };
-};
-
-export const tradingGetSuccessQuotes = <T extends TradingType>(
-    quotes: TradingTradeDetailMapProps[T][] | undefined,
-) => (quotes ? quotes.filter(quote => quote.error === undefined) : undefined);
-
-export const getDefaultCountry = (country: string = regional.UNKNOWN_COUNTRY) => {
-    const label = regional.countriesMap.get(country);
-
-    if (!label)
-        return {
-            label: regional.countriesMap.get(regional.UNKNOWN_COUNTRY)!,
-            value: regional.UNKNOWN_COUNTRY,
-        };
-
-    return {
-        label,
-        value: country,
-    };
-};
-
-export const filterQuotesAccordingTags = <T extends TradingTradeBuySellType>(
-    allQuotes: TradingTradeBuySellDetailMapProps[T][],
-) => allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
-
-// fill orderId for all, paymentId for sell and buy, quoteId for exchange
-export const addIdsToQuotes = <T extends TradingType>(
-    allQuotes: TradingTradeDetailMapProps[T][] | undefined,
-    type: TradingType,
-): TradingTradeDetailMapProps[T][] => {
-    if (!allQuotes) allQuotes = [];
-
-    allQuotes.forEach(q => {
-        const sellBuyQuote = ['buy', 'sell'].includes(type)
-            ? (q as BuyTrade | SellFiatTrade)
-            : null;
-
-        if (sellBuyQuote && !sellBuyQuote.paymentId) {
-            sellBuyQuote.paymentId = uuidv4();
-        }
-
-        if (type === 'exchange' && !q.quoteId) {
-            (q as ExchangeTrade).quoteId = uuidv4();
-        }
-
-        q.orderId = uuidv4();
-    });
-
-    return allQuotes;
 };
 
 export const getBestRatedQuote = (

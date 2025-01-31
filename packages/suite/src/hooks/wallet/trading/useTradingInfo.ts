@@ -3,6 +3,12 @@ import { useCallback } from 'react';
 import { CoinInfo, CryptoId } from 'invity-api';
 
 import {
+    cryptoIdToNetwork,
+    isCryptoIdForNativeToken,
+    parseCryptoId,
+    testnetToProdCryptoId,
+} from '@suite-common/trading';
+import {
     NetworkSymbolExtended,
     getDisplaySymbol,
     getNetwork,
@@ -16,12 +22,6 @@ import {
     TradingCryptoSelectOptionProps,
     TradingInfoProps,
 } from 'src/types/trading/trading';
-import {
-    cryptoIdToNetwork,
-    isCryptoIdForNativeToken,
-    parseCryptoId,
-    testnetToProdCryptoId,
-} from 'src/utils/wallet/trading/tradingUtils';
 
 const supportedAddressValidatorSymbols = new Set(
     addressValidator.getCurrencies().map(c => c.symbol),

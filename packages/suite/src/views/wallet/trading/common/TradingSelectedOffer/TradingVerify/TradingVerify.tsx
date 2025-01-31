@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import { TradingExchangeType } from '@suite-common/trading';
+import { TradingExchangeType, cryptoIdToNetwork } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import addressValidator from '@trezor/address-validator';
@@ -21,7 +21,6 @@ import {
     isTradingBuyContext,
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { cryptoIdToNetwork } from 'src/utils/wallet/trading/tradingUtils';
 import { ConfirmedOnTrezor } from 'src/views/wallet/trading/common/ConfirmedOnTrezor';
 import { TradingAddressOptions } from 'src/views/wallet/trading/common/TradingAddressOptions';
 import { TradingVerifyOptions } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerifyOptions';

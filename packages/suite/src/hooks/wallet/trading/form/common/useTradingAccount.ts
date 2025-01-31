@@ -1,11 +1,12 @@
 import { useState } from 'react';
 
+import { mapTestnetSymbol } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { mapTestnetSymbol, tradingGetSortedAccounts } from 'src/utils/wallet/trading/tradingUtils';
+import { tradingGetSortedAccounts } from 'src/utils/wallet/trading/tradingUtils';
 
 interface TradingUseAccountProps {
     tradingAccount: Account | undefined;
