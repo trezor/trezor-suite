@@ -7,13 +7,12 @@ import {
     FiatCurrencyCode,
 } from 'invity-api';
 
-import { invityAPI, regional } from '@suite-common/trading';
+import { type TradingFiatCurrenciesProps, invityAPI, regional } from '@suite-common/trading';
+import { Account } from '@suite-common/wallet-types';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { verifyAddress as verifyBuyAddress } from 'src/actions/wallet/trading/tradingCommonActions';
 import { Dispatch } from 'src/types/suite';
-import { TradingFiatCurrenciesProps } from 'src/types/trading/trading';
-import { Account } from 'src/types/wallet';
 
 import { TRADING_BUY, TRADING_COMMON } from './constants';
 

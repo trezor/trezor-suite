@@ -6,6 +6,7 @@ import { AnalyticsState } from '@suite-common/analytics';
 import type { MessageState } from '@suite-common/message-system';
 import type { DeviceWithEmptyPath, MessageSystem } from '@suite-common/suite-types';
 import { SimpleTokenStructure } from '@suite-common/token-definitions';
+import type { TradingTransaction } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type {
     BackendSettings,
@@ -18,8 +19,7 @@ import type { StorageUpdateMessage } from '@trezor/suite-storage';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { MetadataState } from 'src/types/suite/metadata';
 import type { Account, Discovery, WalletAccountTransaction } from 'src/types/wallet';
-import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
-import type { Trade } from 'src/types/wallet/tradingCommonTypes';
+import { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 
 import { GraphData } from '../types/wallet/graph';
 
@@ -105,7 +105,7 @@ export interface SuiteDBSchema extends DBSchema {
     };
     tradingTrades: {
         key: string;
-        value: Trade;
+        value: TradingTransaction;
     };
     metadata: {
         key: 'state';

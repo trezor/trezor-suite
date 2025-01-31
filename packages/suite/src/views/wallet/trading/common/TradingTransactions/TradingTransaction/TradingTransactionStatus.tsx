@@ -1,10 +1,10 @@
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 import { DefaultTheme, useTheme } from 'styled-components';
 
+import type { TradingTransaction } from '@suite-common/trading';
 import { Icon, Row, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { Trade } from 'src/types/wallet/tradingCommonTypes';
 import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/trading/buyUtils';
 import { getStatusMessage as getExchangeStatusMessage } from 'src/utils/wallet/trading/exchangeUtils';
 import { getStatusMessage as getSellStatusMessage } from 'src/utils/wallet/trading/sellUtils';
@@ -106,7 +106,7 @@ type StatusData =
     | ReturnType<typeof getSellTradeData>
     | ReturnType<typeof getExchangeTradeData>;
 
-const getData = (trade: Trade, theme: DefaultTheme): StatusData | null => {
+const getData = (trade: TradingTransaction, theme: DefaultTheme): StatusData | null => {
     if (!trade.data.status) return null;
 
     switch (trade.tradeType) {
@@ -120,7 +120,7 @@ const getData = (trade: Trade, theme: DefaultTheme): StatusData | null => {
 };
 
 interface TradingTransactionStatusProps {
-    trade: Trade;
+    trade: TradingTransaction;
 }
 
 export const TradingTransactionStatus = ({ trade }: TradingTransactionStatusProps) => {

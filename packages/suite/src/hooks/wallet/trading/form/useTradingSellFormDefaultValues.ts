@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 
-import { cryptoIdToSymbol, getDefaultCountry } from '@suite-common/trading';
+import {
+    type TradingPaymentMethodListProps,
+    cryptoIdToSymbol,
+    getDefaultCountry,
+} from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { FormState, Output } from '@suite-common/wallet-types';
 
@@ -11,7 +15,6 @@ import {
 } from 'src/constants/wallet/trading/form';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
-import { TradingPaymentMethodListProps } from 'src/types/trading/trading';
 import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { Account } from 'src/types/wallet';
 import {

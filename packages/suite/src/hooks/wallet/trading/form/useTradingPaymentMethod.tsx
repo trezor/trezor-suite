@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
 
-import type { TradingTradeMapProps } from '@suite-common/trading';
-
-import { useSelector } from 'src/hooks/suite';
-import {
+import type {
     TradingPaymentMethodListProps,
     TradingPaymentMethodProps,
-    TradingTradeBuySellType,
-} from 'src/types/trading/trading';
+    TradingTradeMapProps,
+} from '@suite-common/trading';
+
+import { useSelector } from 'src/hooks/suite';
+import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import { TradingPaymentMethodHookProps } from 'src/types/trading/tradingForm';
 
 const useTradingPaymentMethod = <

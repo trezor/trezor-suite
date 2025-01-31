@@ -4,7 +4,6 @@ import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import type { TradingTradeCommonProps } from 'src/reducers/wallet/tradingReducer';
 import { TradingTradeInfoMapProps, TradingTradeMapProps } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
-import type { TradeType } from 'src/types/wallet/tradingCommonTypes';
 
 export interface TradingDetailContextValues<T extends TradingType> extends TradingTradeCommonProps {
     account: Account;
@@ -20,7 +19,7 @@ export interface TradingGetDetailDataOutputProps<T extends TradingType> {
 
 export interface TradingUseDetailProps {
     selectedAccount: SelectedAccountLoaded;
-    tradeType: TradeType;
+    tradeType: TradingType;
 }
 
 export interface TradingUseDetailOutputProps<T extends TradingType> {

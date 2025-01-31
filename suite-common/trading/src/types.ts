@@ -5,6 +5,7 @@ import type {
     CryptoId,
     ExchangeTrade,
     ExchangeTradeStatus,
+    FiatCurrencyCode,
     SellCryptoPaymentMethod,
     SellFiatTrade,
     SellTradeStatus,
@@ -12,6 +13,8 @@ import type {
     WatchExchangeTradeResponse,
     WatchSellTradeResponse,
 } from 'invity-api';
+
+import type { Account } from '@suite-common/wallet-types';
 
 export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
 export type InvityServers = Record<InvityServerEnvironment, string>;
@@ -52,3 +55,34 @@ export type TradingParsedCryptoIdProps = {
     networkId: CryptoId;
     contractAddress: string | undefined;
 };
+
+export type TradingFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
+export type TradingPaymentMethodProps = BuyCryptoPaymentMethod | '';
+export type TradingPaymentMethodListProps = {
+    value: TradingPaymentMethodProps;
+    label: string;
+};
+
+type TradingCommonTransaction = {
+    date: string;
+    key?: string;
+    account: {
+        descriptor: Account['descriptor'];
+        symbol: Account['symbol'];
+        accountType: Account['accountType'];
+        accountIndex: Account['index'];
+    };
+};
+export type TradingTransactionBuy = TradingCommonTransaction & { tradeType: 'buy'; data: BuyTrade };
+export type TradingTransactionSell = TradingCommonTransaction & {
+    tradeType: 'sell';
+    data: SellFiatTrade;
+};
+export type TradingTransactionExchange = TradingCommonTransaction & {
+    tradeType: 'exchange';
+    data: ExchangeTrade;
+};
+export type TradingTransaction =
+    | TradingTransactionBuy
+    | TradingTransactionSell
+    | TradingTransactionExchange;

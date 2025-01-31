@@ -11,22 +11,26 @@ import {
     WatchSellTradeResponse,
 } from 'invity-api';
 
-import { type TradingTradeStatusType, type TradingType, invityAPI } from '@suite-common/trading';
+import {
+    type TradingTradeStatusType,
+    type TradingTransaction,
+    type TradingType,
+    invityAPI,
+} from '@suite-common/trading';
 
 import { saveTrade as saveBuyTrade } from 'src/actions/wallet/tradingBuyActions';
 import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/tradingExchangeActions';
 import { saveTrade as saveSellTrade } from 'src/actions/wallet/tradingSellActions';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { TradingUseWatchTradeProps, TradingWatchTradeProps } from 'src/types/trading/trading';
-import { Trade, TradeType } from 'src/types/wallet/tradingCommonTypes';
 
-export const tradeFinalStatuses: Record<TradeType, TradingTradeStatusType[]> = {
+export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> = {
     buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
     sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
     exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
 };
 
-const shouldRefreshTrade = (trade: Trade | undefined) =>
+const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
     trade && trade.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
 
 const tradingWatchTrade = async <T extends TradingType>({

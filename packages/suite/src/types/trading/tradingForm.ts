@@ -14,10 +14,15 @@ import type {
 import type {
     TradingBuyType,
     TradingExchangeType,
+    TradingPaymentMethodListProps,
+    TradingPaymentMethodProps,
     TradingPaymentMethodType,
     TradingSellType,
     TradingTradeMapProps,
     TradingTradeType,
+    TradingTransactionBuy,
+    TradingTransactionExchange,
+    TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
@@ -58,13 +63,11 @@ import {
     TradingCryptoSelectItemProps,
     TradingGetCryptoQuoteAmountProps,
     TradingGetProvidersInfoProps,
-    TradingPaymentMethodListProps,
-    TradingPaymentMethodProps,
     TradingTradeSellExchangeType,
 } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
 import { SendContextValues } from 'src/types/wallet/sendForm';
-import { Option, TradeBuy, TradeExchange, TradeSell } from 'src/types/wallet/tradingCommonTypes';
+import { Option } from 'src/types/wallet/tradingCommonTypes';
 import { AmountLimitProps, CryptoAmountLimitProps } from 'src/utils/suite/validation';
 
 export interface TradingBuyFormProps {
@@ -181,7 +184,7 @@ export interface TradingBuyFormContextProps
     quotesRequest: AppState['wallet']['trading']['buy']['quotesRequest'];
     quotes: AppState['wallet']['trading']['buy']['quotes'];
     selectedQuote: BuyTrade | undefined;
-    trade?: TradeBuy;
+    trade?: TradingTransactionBuy;
     addressVerified: string | undefined;
     // form - additional helpers for form
     form: {
@@ -208,7 +211,7 @@ export interface TradingSellFormContextProps
     feeInfo: FeeInfo;
     quotes: AppState['wallet']['trading']['sell']['quotes'];
     selectedQuote?: SellFiatTrade;
-    trade?: TradeSell;
+    trade?: TradingTransactionSell;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
     sellStep: TradingSellStepType;
     // form - additional helpers for form
@@ -240,7 +243,7 @@ export interface TradingExchangeFormContextProps
     };
 
     selectedQuote?: ExchangeTrade;
-    trade?: TradeExchange;
+    trade?: TradingTransactionExchange;
     suiteReceiveAccounts?: AccountsState;
     exchangeStep: TradingExchangeStepType;
     feeInfo: FeeInfo;

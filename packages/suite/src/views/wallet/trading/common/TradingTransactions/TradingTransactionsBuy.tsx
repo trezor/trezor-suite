@@ -1,5 +1,6 @@
 import { BuyProviderInfo } from 'invity-api';
 
+import type { TradingTransactionBuy as TradingTxBuy } from '@suite-common/trading';
 import { Button } from '@trezor/components';
 
 import { saveTransactionDetailId } from 'src/actions/wallet/tradingBuyActions';
@@ -8,7 +9,6 @@ import { useDispatch } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { Account } from 'src/types/wallet';
-import { TradeBuy } from 'src/types/wallet/tradingCommonTypes';
 import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
 import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';
 import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionId';
@@ -16,7 +16,7 @@ import { TradingTransactionInfo } from 'src/views/wallet/trading/common/TradingT
 import { TradingTransactionProvider } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionProvider';
 
 interface TradingTransactionBuyProps {
-    trade: TradeBuy;
+    trade: TradingTxBuy;
     account: Account;
     providers?: {
         [name: string]: BuyProviderInfo;

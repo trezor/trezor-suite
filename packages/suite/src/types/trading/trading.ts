@@ -1,5 +1,4 @@
 import {
-    BuyCryptoPaymentMethod,
     BuyProviderInfo,
     BuyTrade,
     CryptoId,
@@ -16,6 +15,10 @@ import type {
     TradingExchangeType,
     TradingPaymentMethodType,
     TradingSellType,
+    TradingTransaction,
+    TradingTransactionBuy,
+    TradingTransactionExchange,
+    TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
 import { AccountType, NetworkSymbolExtended } from '@suite-common/wallet-config';
@@ -32,14 +35,6 @@ import type { SellInfo } from 'src/actions/wallet/tradingSellActions';
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 import { State } from 'src/reducers/wallet/tradingReducer';
 import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
-import type {
-    Option,
-    Trade,
-    TradeBuy,
-    TradeExchange,
-    TradeSell,
-    TradeType,
-} from 'src/types/wallet/tradingCommonTypes';
 
 type TradingPageType = 'form' | 'offers' | 'confirm';
 
@@ -70,9 +65,9 @@ export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
 export type TradingTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;
 
 export type TradingTradeMapProps = {
-    buy: TradeBuy;
-    sell: TradeSell;
-    exchange: TradeExchange;
+    buy: TradingTransactionBuy;
+    sell: TradingTransactionSell;
+    exchange: TradingTransactionExchange;
 };
 
 export type TradingTradeDetailBuySellType = BuyTrade | SellFiatTrade;
@@ -84,14 +79,14 @@ export type TradingTradeInfoMapProps = {
 };
 
 export interface TradingGetTypedTradeProps {
-    trades: Trade[];
+    trades: TradingTransaction[];
     tradeType: TradingType;
     transactionId: string | undefined;
 }
 
 export interface TradingGetDetailDataProps {
     trading: State;
-    tradeType: TradeType;
+    tradeType: TradingType;
 }
 
 export interface TradingGetTypedInfoTradeProps {
@@ -110,13 +105,6 @@ export interface TradingWatchTradeProps<T extends TradingType> {
     refreshCount: number;
     dispatch: Dispatch<AnyAction>;
     removeDraft: (key: string) => void;
-}
-
-export type TradingPaymentMethodProps = BuyCryptoPaymentMethod | '';
-
-export interface TradingPaymentMethodListProps extends Option {
-    value: TradingPaymentMethodProps;
-    label: string;
 }
 
 export interface TradingCryptoListProps {
@@ -190,8 +178,6 @@ export interface TradingAccountsOptionsGroupProps {
     label: string;
     options: TradingAccountOptionsGroupOptionProps[];
 }
-
-export type TradingFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
 
 export interface TradingGetAmountLabelsProps {
     type: TradingType;

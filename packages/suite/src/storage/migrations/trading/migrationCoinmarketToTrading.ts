@@ -1,6 +1,5 @@
+import type { TradingTransaction } from '@suite-common/trading';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
-
-import { Trade } from 'src/types/wallet/tradingCommonTypes';
 
 import type { SuiteDBSchema } from '../../definitions';
 
@@ -23,7 +22,7 @@ export const migrationCoinmarketToTrading: OnUpgradeFunc<SuiteDBSchema> = async 
         const newTradesStore = db.createObjectStore(newStoreName, { keyPath: trades.keyPath });
 
         while (tradesCursor) {
-            const trade = tradesCursor.value as Trade;
+            const trade = tradesCursor.value as TradingTransaction;
 
             await tradesCursor.delete();
             await newTradesStore.add(trade);

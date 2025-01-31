@@ -1,7 +1,8 @@
 import { InfoResponse } from 'invity-api';
 
+import type { TradingPaymentMethodListProps } from '@suite-common/trading';
+
 import { TRADING_INFO } from 'src/actions/wallet/constants';
-import { TradingPaymentMethodListProps } from 'src/types/trading/trading';
 
 export type TradingInfoAction =
     | {

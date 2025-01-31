@@ -1,5 +1,6 @@
 import { ExchangeProviderInfo } from 'invity-api';
 
+import type { TradingTransactionExchange as TradingTxExchange } from '@suite-common/trading';
 import { Button } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -8,7 +9,6 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { Account } from 'src/types/wallet';
-import { TradeExchange } from 'src/types/wallet/tradingCommonTypes';
 import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
 import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';
 import { TradingTransactionId } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionId';
@@ -16,7 +16,7 @@ import { TradingTransactionInfo } from 'src/views/wallet/trading/common/TradingT
 import { TradingTransactionProvider } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionProvider';
 
 interface TradingTransactionExchangeProps {
-    trade: TradeExchange;
+    trade: TradingTxExchange;
     account: Account;
     providers?: {
         [name: string]: ExchangeProviderInfo;

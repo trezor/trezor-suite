@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import type { TradingType } from '@suite-common/trading';
+import type { TradingTransaction, TradingTransactionBuy, TradingType } from '@suite-common/trading';
 
 import { useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
@@ -19,9 +19,9 @@ import {
     TradingUseDetailOutputProps,
     TradingUseDetailProps,
 } from 'src/types/trading/tradingDetail';
-import { Trade, TradeBuy } from 'src/types/wallet/tradingCommonTypes';
 
-const isBuyTrade = (trade: Trade): trade is TradeBuy => trade.tradeType === 'buy';
+const isBuyTrade = (trade: TradingTransaction): trade is TradingTransactionBuy =>
+    trade.tradeType === 'buy';
 
 const getTypedTrade = <T extends TradingType>({
     trades,

@@ -4,6 +4,7 @@ import { MetadataState } from '@suite-common/metadata-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DefinitionType, TokenManagementAction } from '@suite-common/token-definitions';
+import type { TradingTransaction } from '@suite-common/trading';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { deviceActions, selectDevices } from '@suite-common/wallet-core';
@@ -18,7 +19,6 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 import { GraphData } from 'src/types/wallet/graph';
-import type { Trade } from 'src/types/wallet/tradingCommonTypes';
 import {
     serializeCoinjoinAccount,
     serializeDevice,
@@ -209,7 +209,7 @@ export const saveAccounts = async (accounts: Account[]) => {
     return db.addItems('accounts', accounts, true);
 };
 
-export const saveTradingTrade = async (trade: Trade) => {
+export const saveTradingTrade = async (trade: TradingTransaction) => {
     if (!(await db.isAccessible())) return;
 
     return db.addItem('tradingTrades', trade, undefined, true);

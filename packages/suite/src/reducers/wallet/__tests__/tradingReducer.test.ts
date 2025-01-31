@@ -6,6 +6,8 @@ import {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
+import type { TradingTransactionBuy, TradingTransactionExchange } from '@suite-common/trading';
+
 import { STORAGE } from 'src/actions/suite/constants';
 import {
     TRADING_BUY,
@@ -23,7 +25,6 @@ import {
 } from 'src/reducers/wallet/__fixtures__/tradingReducerFixtures';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 import { initialState, tradingReducer } from 'src/reducers/wallet/tradingReducer';
-import { TradeBuy, TradeExchange } from 'src/types/wallet/tradingCommonTypes';
 
 describe('settings reducer', () => {
     it('test initial state', () => {
@@ -288,7 +289,7 @@ describe('settings reducer', () => {
     });
 
     it('SAVE_TRADE', () => {
-        const tradeBuy: TradeBuy = {
+        const tradeBuy: TradingTransactionBuy = {
             date: 'ddd',
             key: 'buy-key',
             tradeType: 'buy',
@@ -313,7 +314,7 @@ describe('settings reducer', () => {
                 accountType: 'normal',
             },
         };
-        const tradeExchange: TradeExchange = {
+        const tradeExchange: TradingTransactionExchange = {
             date: 'ddd',
             key: 'exchange-key',
             tradeType: 'exchange',

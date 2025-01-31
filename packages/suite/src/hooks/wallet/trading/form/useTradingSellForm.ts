@@ -8,6 +8,7 @@ import { isChanged } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSellType,
+    TradingTransactionSell,
     addIdsToQuotes,
     filterQuotesAccordingTags,
     getUnusedAddressFromAccount,
@@ -54,7 +55,6 @@ import {
     TradingSellFormProps,
     TradingSellStepType,
 } from 'src/types/trading/tradingForm';
-import { TradeSell } from 'src/types/wallet/tradingCommonTypes';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 import { createQuoteLink, getAmountLimits } from 'src/utils/wallet/trading/sellUtils';
 import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
@@ -106,8 +106,9 @@ export const useTradingSellForm = ({
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
     const trades = useSelector(state => state.wallet.trading.trades);
     const trade = trades.find(
-        trade => trade.tradeType === 'sell' && trade.key === transactionId,
-    ) as TradeSell | undefined;
+        (trade): trade is TradingTransactionSell =>
+            trade.tradeType === 'sell' && trade.key === transactionId,
+    );
 
     const [amountLimits, setAmountLimits] = useState<AmountLimitProps | undefined>(undefined);
     const [sellStep, setSellStep] = useState<TradingSellStepType>('BANK_ACCOUNT');

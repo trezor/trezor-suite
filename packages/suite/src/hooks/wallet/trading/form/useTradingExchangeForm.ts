@@ -13,6 +13,7 @@ import { isChanged } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingExchangeType,
+    type TradingTransactionExchange,
     addIdsToQuotes,
     getUnusedAddressFromAccount,
     invityAPI,
@@ -51,7 +52,6 @@ import {
     TradingExchangeFormProps,
     TradingExchangeStepType,
 } from 'src/types/trading/tradingForm';
-import { TradeExchange } from 'src/types/wallet/tradingCommonTypes';
 import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
 import {
     createQuoteLink,
@@ -123,9 +123,11 @@ export const useTradingExchangeForm = ({
     const network = networks[account.symbol];
     const trades = useSelector(state => state.wallet.trading.trades);
     const trade = trades.find(
-        trade =>
-            trade.tradeType === 'exchange' && transactionId && trade.data.orderId === transactionId,
-    ) as TradeExchange | undefined;
+        (trade): trade is TradingTransactionExchange =>
+            trade.tradeType === 'exchange' &&
+            !!transactionId &&
+            trade.data.orderId === transactionId,
+    );
 
     const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues(account);
     const exchangeDraftKey = 'trading-exchange';

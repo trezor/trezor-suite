@@ -11,7 +11,11 @@ import type {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
-import type { TradingType } from '@suite-common/trading';
+import type {
+    TradingPaymentMethodListProps,
+    TradingTransaction,
+    TradingType,
+} from '@suite-common/trading';
 import type { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import type { FeeLevel } from '@trezor/connect';
 
@@ -26,10 +30,8 @@ import {
 import type { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
 import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
 import type { SellInfo } from 'src/actions/wallet/tradingSellActions';
-import type { AppState, Action as SuiteAction } from 'src/types/suite';
-import { TradingPaymentMethodListProps } from 'src/types/trading/trading';
-import type { WalletAction } from 'src/types/wallet';
-import type { Trade } from 'src/types/wallet/tradingCommonTypes';
+import { AppState } from 'src/reducers/store';
+import { Action } from 'src/types/suite';
 
 export interface ComposedTransactionInfo {
     composed?: Pick<
@@ -86,7 +88,7 @@ export interface State {
     exchange: Exchange;
     sell: Sell;
     composedTransactionInfo: ComposedTransactionInfo;
-    trades: Trade[];
+    trades: TradingTransaction[];
     modalCryptoId: CryptoId | undefined;
     modalAccountKey: AccountKey | undefined;
     isLoading: boolean;
@@ -139,10 +141,7 @@ export const initialState: State = {
     prefilledFromCryptoId: undefined,
 };
 
-export const tradingReducer = (
-    state: State = initialState,
-    action: WalletAction | SuiteAction,
-): State =>
+export const tradingReducer = (state: State = initialState, action: Action): State =>
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:

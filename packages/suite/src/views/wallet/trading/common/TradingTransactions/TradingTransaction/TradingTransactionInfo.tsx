@@ -1,18 +1,18 @@
+import type { TradingTransaction, TradingType } from '@suite-common/trading';
 import { InfoSegments } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedDate } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
-import { Trade, TradeType } from 'src/types/wallet/tradingCommonTypes';
 import { TradingTransactionStatus } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionStatus';
 
 interface TradingTransactionInfoProps {
-    trade: Trade;
+    trade: TradingTransaction;
 }
 
 const translationKeys: Record<
-    TradeType,
+    TradingType,
     Extract<ExtendedMessageDescriptor['id'], 'TR_BUY' | 'TR_TRADING_SELL' | 'TR_TRADING_SWAP'>
 > = {
     buy: 'TR_BUY',
