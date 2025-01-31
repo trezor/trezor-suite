@@ -17,6 +17,7 @@ import {
     Input,
     InputWrapper,
     NumPadButton,
+    PriceChangeBadge,
     Radio,
     SearchInput,
     Switch,
@@ -112,6 +113,15 @@ export const DemoScreen = () => {
                             />
                         ))}
                         <Badge key="disabled" label="disabled" icon="question" isDisabled />
+                    </HStack>
+                </VStack>
+                <VStack>
+                    <Text variant="titleSmall">PriceChangeBadge:</Text>
+                    <HStack justifyContent="center" style={applyStyle(flexWrapStyle)}>
+                        <PriceChangeBadge valuePercentageChange={0.123} />
+                        <PriceChangeBadge valuePercentageChange={-1.23} />
+                        <PriceChangeBadge valuePercentageChange={0} />
+                        <PriceChangeBadge valuePercentageChange={null} />
                     </HStack>
                 </VStack>
                 <Divider />
