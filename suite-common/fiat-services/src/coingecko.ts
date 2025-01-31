@@ -9,7 +9,7 @@ import { RateLimiter } from './limiter';
 // a proxy for https://api.coingecko.com/api/v3
 const COINGECKO_API_BASE_URL = 'https://cdn.trezor.io/dynamic/coingecko/api/v3';
 
-const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
+const ONE_DAY_IN_S = 24 * 60 * 60;
 
 interface HistoricalResponse extends HistoricRates {
     symbol: string;
@@ -133,11 +133,12 @@ export const getFiatRatesForTimestamps = async (
     if (!coinUrls || coinUrls.length === 0) return null;
 
     // sort timestamps chronologically to get the minimum and maximum values
-    const sortedTimestamps = [...timestamps].sort((ts1, ts2) => ts1 - ts2);
+    const sortedTimestampsInSeconds = [...timestamps].sort((ts1, ts2) => ts1 - ts2);
 
     // adjust from and to timestamps to get better range of data
-    const fromTimestamp = sortedTimestamps[0] - ONE_DAY_IN_MS;
-    const toTimestamp = sortedTimestamps[sortedTimestamps.length - 1] + ONE_DAY_IN_MS;
+    const fromTimestamp = sortedTimestampsInSeconds[0] - ONE_DAY_IN_S;
+    const toTimestamp =
+        sortedTimestampsInSeconds[sortedTimestampsInSeconds.length - 1] + ONE_DAY_IN_S;
 
     const params = `?vs_currency=${fiatCurrencyCode}&from=${fromTimestamp}&to=${toTimestamp}`;
 
