@@ -5,7 +5,7 @@ import { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
 const litecoin = 'litecoin' as CryptoId;
 const bitcoin = 'bitcoin' as CryptoId;
 const ethereum = 'ethereum' as CryptoId;
-const cronoseth = 'ethereum__0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b' as CryptoId;
+const cronoseth = 'ethereum--0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b' as CryptoId;
 
 const tickers1 = [ethereum, 'monero', bitcoin] as CryptoId[];
 const tickers2 = [ethereum, bitcoin] as CryptoId[];

@@ -1,6 +1,7 @@
 import { SellFiatTrade } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
+import { TradingTradeMapProps, getTagAndInfoNote } from '@suite-common/trading';
 import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -8,7 +9,6 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingTradeDetailMapProps } from 'src/types/trading/trading';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
@@ -16,7 +16,6 @@ import {
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { getTagAndInfoNote } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingTestWrapper } from 'src/views/wallet/trading';
 import { TradingUtilsKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsKyc';
 import { TradingUtilsPrice } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsPrice';
@@ -89,7 +88,7 @@ const ButtonWrapper = styled.div`
 `;
 
 export interface TradingOffersItemProps {
-    quote: TradingTradeDetailMapProps[keyof TradingTradeDetailMapProps];
+    quote: TradingTradeMapProps[keyof TradingTradeMapProps];
     isBestRate: boolean;
 }
 

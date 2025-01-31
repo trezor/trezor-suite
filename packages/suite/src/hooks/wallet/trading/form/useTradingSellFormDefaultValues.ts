@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { cryptoIdToSymbol, getDefaultCountry } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { FormState, Output } from '@suite-common/wallet-types';
 
@@ -15,9 +16,7 @@ import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm
 import { Account } from 'src/types/wallet';
 import {
     buildFiatOption,
-    cryptoIdToSymbol,
     getAddressAndTokenFromAccountOptionsGroupProps,
-    getDefaultCountry,
 } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingSellFormDefaultValues = (

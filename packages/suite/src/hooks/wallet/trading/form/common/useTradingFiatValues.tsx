@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import { FiatCurrencyCode } from 'invity-api';
 
+import { cryptoIdToSymbol, mapTestnetSymbol } from '@suite-common/trading';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { selectFiatRatesByFiatRateKey, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -11,11 +12,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
-import {
-    cryptoIdToSymbol,
-    getTradingNetworkDecimals,
-    mapTestnetSymbol,
-} from 'src/utils/wallet/trading/tradingUtils';
+import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 
 interface TradingBalanceProps {
     sendCryptoSelect?: TradingAccountOptionsGroupOptionProps;

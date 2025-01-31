@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { cryptoIdToSymbol } from '@suite-common/trading';
 import {
     getDisplaySymbol,
     getNetwork,
@@ -17,7 +18,6 @@ import {
 import { useSelector } from 'src/hooks/suite';
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
-import { cryptoIdToSymbol } from 'src/utils/wallet/trading/tradingUtils';
 
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
 

@@ -5,6 +5,7 @@ import { useDebounce } from 'react-use';
 import { FiatCurrencyCode } from 'invity-api';
 
 import { isChanged } from '@suite-common/suite-utils';
+import { cryptoIdToSymbol } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     amountToSmallestUnit,
@@ -38,7 +39,6 @@ import {
 } from 'src/types/trading/tradingForm';
 import { tradingGetExchangeReceiveCryptoId } from 'src/utils/wallet/trading/exchangeUtils';
 import {
-    cryptoIdToSymbol,
     getAddressAndTokenFromAccountOptionsGroupProps,
     getTradingNetworkDecimals,
     tradingGetSortedAccounts,

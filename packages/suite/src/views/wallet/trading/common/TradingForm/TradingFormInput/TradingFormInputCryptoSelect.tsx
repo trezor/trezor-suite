@@ -3,6 +3,12 @@ import { Controller } from 'react-hook-form';
 
 import { CryptoId } from 'invity-api';
 
+import {
+    CRYPTO_PLATFORM_SEPARATOR,
+    cryptoIdToNetwork,
+    isCryptoIdForNativeToken,
+    parseCryptoId,
+} from '@suite-common/trading';
 import { Network, NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { Badge, Row, Select, Text } from '@trezor/components';
 import {
@@ -35,12 +41,6 @@ import {
     TradingFormInputCryptoSelectProps,
 } from 'src/types/trading/tradingForm';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
-import {
-    cryptoIdToNetwork,
-    cryptoPlatformSeparator,
-    isCryptoIdForNativeToken,
-    parseCryptoId,
-} from 'src/utils/wallet/trading/tradingUtils';
 
 import { TradingCoinLogo } from '../../TradingCoinLogo';
 
@@ -144,7 +144,7 @@ export const TradingFormInputCryptoSelect = <
             const isNativeTokenSymbol = isCryptoIdForNativeToken(coingeckoId as CryptoId);
             const tokenCryptoId = isNativeTokenSymbol
                 ? coingeckoId
-                : `${coingeckoId}${cryptoPlatformSeparator}${contractAddress}`;
+                : `${coingeckoId}${CRYPTO_PLATFORM_SEPARATOR}${contractAddress}`;
 
             const cryptoId = contractAddress ? tokenCryptoId : coingeckoId;
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { TradingUtilsProvidersProps, invityAPI } from '@suite-common/trading';
+import { type TradingUtilsProvidersProps, invityAPI } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -1,0 +1,133 @@
+import type { CryptoId } from 'invity-api';
+
+import type { Account } from '@suite-common/wallet-types';
+
+import * as BUY_FIXTURE from '../__fixtures__/buyUtils';
+import * as EXCHANGE_FIXTURE from '../__fixtures__/exchangeUtils';
+import * as SELL_FIXTURE from '../__fixtures__/sellUtils';
+import { accountBtc, accountEth } from '../__fixtures__/utils';
+import {
+    addIdsToQuotes,
+    filterQuotesAccordingTags,
+    getTagAndInfoNote,
+    getUnusedAddressFromAccount,
+    isCryptoIdForNativeToken,
+    mapTestnetSymbol,
+    testnetToProdCryptoId,
+} from '../utils';
+
+describe('testing trading utils', () => {
+    it('getUnusedAddressFromAccount', () => {
+        expect(getUnusedAddressFromAccount(accountBtc as Account)).toStrictEqual({
+            address: '177BUDVZqTTzK1Fogqcrfbb5ketHEUDGSJ',
+            path: "m/44'/0'/3'/0/0",
+        });
+
+        expect(getUnusedAddressFromAccount(accountEth as Account)).toStrictEqual({
+            address: '0x2e0DC981d301cdd443C3987cf19Eb9671CB99ddC',
+            path: "m/44'/60'/0'/0/1",
+        });
+    });
+
+    it('mapTestnetCryptoCurrency', () => {
+        expect(mapTestnetSymbol('btc')).toStrictEqual('btc');
+        expect(mapTestnetSymbol('eth')).toStrictEqual('eth');
+        expect(mapTestnetSymbol('test')).toStrictEqual('btc');
+        expect(mapTestnetSymbol('txrp')).toStrictEqual('xrp');
+    });
+
+    it('getTagAndInfoNote', () => {
+        expect(getTagAndInfoNote({})).toStrictEqual({ infoNote: '', tag: '' });
+        expect(getTagAndInfoNote({ infoNote: '' })).toStrictEqual({ infoNote: '', tag: '' });
+        expect(getTagAndInfoNote({ infoNote: 'Foo' })).toStrictEqual({ infoNote: 'Foo', tag: '' });
+        expect(getTagAndInfoNote({ infoNote: ' #Foo' })).toStrictEqual({
+            infoNote: '',
+            tag: 'Foo',
+        });
+        expect(getTagAndInfoNote({ infoNote: 'Foo#Bar' })).toStrictEqual({
+            infoNote: 'Foo#Bar',
+            tag: '',
+        });
+        expect(getTagAndInfoNote({ infoNote: '#Foo' })).toStrictEqual({ infoNote: '', tag: 'Foo' });
+        expect(getTagAndInfoNote({ infoNote: '# Foo' })).toStrictEqual({
+            infoNote: '',
+            tag: ' Foo',
+        });
+        expect(getTagAndInfoNote({ infoNote: '##Bar' })).toStrictEqual({
+            infoNote: 'Bar',
+            tag: '',
+        });
+        expect(getTagAndInfoNote({ infoNote: '#Foo#Bar' })).toStrictEqual({
+            infoNote: 'Bar',
+            tag: 'Foo',
+        });
+        expect(getTagAndInfoNote({ infoNote: '  #Foo#Bar \t' })).toStrictEqual({
+            infoNote: 'Bar',
+            tag: 'Foo',
+        });
+    });
+
+    it('filterQuotesAccordingTags', () => {
+        const quotes = [
+            ...BUY_FIXTURE.MIN_MAX_QUOTES_OK,
+            ...BUY_FIXTURE.ALTERNATIVE_QUOTES,
+            ...SELL_FIXTURE.MIN_MAX_QUOTES_HIGH,
+        ];
+
+        expect(filterQuotesAccordingTags([])).toStrictEqual([]);
+        expect(filterQuotesAccordingTags(quotes).length).toStrictEqual(
+            quotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency')).length,
+        );
+    });
+
+    it('addIdsToQuotes', () => {
+        const quotes = [...BUY_FIXTURE.MIN_MAX_QUOTES_OK];
+        const quotesExchange = [...EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK];
+
+        expect(addIdsToQuotes([], 'buy')).toStrictEqual([]);
+        expect(addIdsToQuotes(quotes, 'buy').length).toStrictEqual(
+            quotes.filter(q => q.orderId && q.paymentId).length,
+        );
+        expect(addIdsToQuotes(quotesExchange, 'exchange').length).toStrictEqual(
+            quotesExchange.filter(q => q.orderId).length,
+        );
+    });
+
+    it('testnetToProdCryptoId', () => {
+        expect(testnetToProdCryptoId('test-bitcoin' as CryptoId)).toEqual('bitcoin');
+        expect(testnetToProdCryptoId('bitcoin' as CryptoId)).toEqual('bitcoin');
+
+        expect(testnetToProdCryptoId('test-ripple' as CryptoId)).toEqual('ripple');
+        expect(testnetToProdCryptoId('ripple' as CryptoId)).toEqual('ripple');
+
+        expect(
+            testnetToProdCryptoId(
+                'test-ethereum--0x1234123412341234123412341234123412341236' as CryptoId,
+            ),
+        ).toEqual('ethereum--0x1234123412341234123412341234123412341236');
+        expect(
+            testnetToProdCryptoId(
+                'ethereum--0x1234123412341234123412341234123412341236' as CryptoId,
+            ),
+        ).toEqual('ethereum--0x1234123412341234123412341234123412341236');
+    });
+
+    it('isCryptoIdForNativeToken - test if token is L2 native token', () => {
+        expect(isCryptoIdForNativeToken('ethereum' as CryptoId)).toEqual(false);
+        expect(
+            isCryptoIdForNativeToken(
+                'ethereum--0x1234123412341234123412341234123412341236' as CryptoId,
+            ),
+        ).toEqual(false);
+        expect(
+            isCryptoIdForNativeToken(
+                'ethereum--0x0000000000000000000000000000000000000000' as CryptoId,
+            ),
+        ).toEqual(true);
+        expect(
+            isCryptoIdForNativeToken(
+                'base--0x0000000000000000000000000000000000000000' as CryptoId,
+            ),
+        ).toEqual(true);
+    });
+});

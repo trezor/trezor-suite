@@ -1,7 +1,7 @@
 import { SellFiatTrade } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
-import type { TradingTradeType, TradingType } from '@suite-common/trading';
+import { type TradingTradeType, type TradingType, getTagAndInfoNote } from '@suite-common/trading';
 import { Badge, Button, Card, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -17,7 +17,6 @@ import {
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { getTagAndInfoNote } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFeaturedOffersAmounts } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffersAmounts';
 import { TradingFeaturedOffersPaymentInfo } from 'src/views/wallet/trading/common/TradingFeaturedOffers/TradingFeaturedOffersPaymentInfo';
 import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';

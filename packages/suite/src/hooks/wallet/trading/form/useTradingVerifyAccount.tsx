@@ -2,6 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { TrezorDevice } from '@suite-common/suite-types';
+import {
+    cryptoIdToSymbol,
+    getUnusedAddressFromAccount,
+    parseCryptoId,
+} from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
@@ -19,11 +24,6 @@ import {
     TradingVerifyFormAccountOptionProps,
     TradingVerifyFormProps,
 } from 'src/types/trading/tradingVerify';
-import {
-    cryptoIdToSymbol,
-    getUnusedAddressFromAccount,
-    parseCryptoId,
-} from 'src/utils/wallet/trading/tradingUtils';
 
 const getSelectAccountOptions = (
     suiteReceiveAccounts: Account[] | undefined,

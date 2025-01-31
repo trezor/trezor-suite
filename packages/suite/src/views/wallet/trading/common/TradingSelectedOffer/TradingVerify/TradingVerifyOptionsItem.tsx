@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { parseCryptoId } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { Column, Icon, Row, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
@@ -11,7 +12,6 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { TradingVerifyOptionsItemProps } from 'src/types/trading/tradingVerify';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { parseCryptoId } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 
 const AccountName = styled.div`

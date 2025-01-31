@@ -6,7 +6,14 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { isChanged } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type TradingSellType, invityAPI } from '@suite-common/trading';
+import {
+    type TradingSellType,
+    addIdsToQuotes,
+    filterQuotesAccordingTags,
+    getUnusedAddressFromAccount,
+    invityAPI,
+    tradingGetSuccessQuotes,
+} from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { amountToSmallestUnit, formatAmount } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -49,13 +56,7 @@ import {
 import { TradeSell } from 'src/types/wallet/tradingCommonTypes';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 import { createQuoteLink, getAmountLimits } from 'src/utils/wallet/trading/sellUtils';
-import {
-    addIdsToQuotes,
-    filterQuotesAccordingTags,
-    getTradingNetworkDecimals,
-    getUnusedAddressFromAccount,
-    tradingGetSuccessQuotes,
-} from 'src/utils/wallet/trading/tradingUtils';
+import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
 

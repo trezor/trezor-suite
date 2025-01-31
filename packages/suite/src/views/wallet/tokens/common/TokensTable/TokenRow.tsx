@@ -7,6 +7,7 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
+import { getUnusedAddressFromAccount, toTokenCryptoId } from '@suite-common/trading';
 import { Network, getCoingeckoId } from '@suite-common/wallet-config';
 import { selectSelectedDevice, sendFormActions } from '@suite-common/wallet-core';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
@@ -56,10 +57,6 @@ import {
     selectIsUnhideTokenModalShown,
 } from 'src/reducers/suite/suiteReducer';
 import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
-import {
-    getUnusedAddressFromAccount,
-    toTokenCryptoId,
-} from 'src/utils/wallet/trading/tradingUtils';
 
 import { BlurUrls } from '../BlurUrls';
 
