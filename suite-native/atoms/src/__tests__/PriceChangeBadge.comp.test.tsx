@@ -1,4 +1,4 @@
-import { BasicProvider, render, renderHook } from '@suite-native/test-utils';
+import { BasicProviderForTests, render, renderHook } from '@suite-native/test-utils';
 import { NativeStyleUtils, useNativeStyles } from '@trezor/styles';
 
 import { Box as MockBox } from '../Box';
@@ -12,7 +12,7 @@ describe('PriceChangeBadge', () => {
     let colors: NativeStyleUtils['colors'];
 
     beforeAll(() => {
-        const { result } = renderHook(() => useNativeStyles(), { wrapper: BasicProvider });
+        const { result } = renderHook(() => useNativeStyles(), { wrapper: BasicProviderForTests });
         ({ colors } = result.current.utils);
     });
 

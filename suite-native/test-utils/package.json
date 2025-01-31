@@ -10,6 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@gorhom/bottom-sheet": "5.0.5",
         "@react-navigation/native": "6.1.18",
         "@reduxjs/toolkit": "1.9.5",
         "@testing-library/react-native": "13.0.0",

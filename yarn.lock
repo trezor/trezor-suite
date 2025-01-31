@@ -11196,6 +11196,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/test-utils@workspace:suite-native/test-utils"
   dependencies:
+    "@gorhom/bottom-sheet": "npm:5.0.5"
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@testing-library/react-native": "npm:13.0.0"

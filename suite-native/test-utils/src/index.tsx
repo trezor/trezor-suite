@@ -1,4 +1,4 @@
-import { BasicProvider } from './BasicProvider';
+import { BasicProviderForTests } from './BasicProviderForTests';
 import { StoreProviderForTests } from './StoreProviderForTests';
 import { createRender } from './createRender';
 
@@ -14,8 +14,8 @@ export {
     waitForElementToBeRemoved,
 } from '@testing-library/react-native';
 
-export const render = createRender(BasicProvider);
+export const render = createRender(BasicProviderForTests);
 
 export const renderWithStore = createRender(StoreProviderForTests);
 
-export { BasicProvider, StoreProviderForTests };
+export { BasicProviderForTests, StoreProviderForTests };

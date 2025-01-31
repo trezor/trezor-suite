@@ -5,7 +5,7 @@ import { EnhancedStore } from '@reduxjs/toolkit';
 
 import { PreloadedState, initStore } from '@suite-native/state';
 
-import { BasicProvider } from './BasicProvider';
+import { BasicProviderForTests } from './BasicProviderForTests';
 
 type ReduxProviderProps = {
     children: ReactNode;
@@ -32,7 +32,7 @@ export const StoreProviderForTests = ({ children, preloadedState }: ReduxProvide
 
     return (
         <Provider store={store}>
-            <BasicProvider>{children}</BasicProvider>
+            <BasicProviderForTests>{children}</BasicProviderForTests>
         </Provider>
     );
 };
