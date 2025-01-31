@@ -6,4 +6,4 @@ export const CLEAR_QUOTES = '@trading-exchange/clear_exchange_quotes';
 export const VERIFY_ADDRESS = '@trading-exchange/verify_address';
 export const SAVE_TRANSACTION_ID = '@trading-exchange/save_transaction_id';
 export const SET_IS_FROM_REDIRECT = '@trading-exchange/set_is_from_redirect';
-export const SET_TRADING_ACCOUNT = '@trading-exchange/set_trading_account';
+export const SET_TRADING_ACCOUNT_KEY = '@trading-exchange/set_trading_account_key';

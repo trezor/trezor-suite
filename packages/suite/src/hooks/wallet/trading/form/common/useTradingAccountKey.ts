@@ -2,34 +2,34 @@ import { useState } from 'react';
 
 import { mapTestnetSymbol } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { tradingGetSortedAccounts } from 'src/utils/wallet/trading/tradingUtils';
 
-interface TradingUseAccountProps {
-    tradingAccount: Account | undefined;
+interface TradingUseAccountKeyProps {
+    tradingAccountKey: AccountKey | undefined;
     selectedAccount: SelectedAccountLoaded;
-    shouldUseTradingAccount?: boolean;
+    shouldUseTradingAccountKey?: boolean;
 }
 
 /**
- * Hook used to get account for trade form (used in Sell/Swap)
+ * Hook used to get account key of selected account for trade form (used in Sell/Swap)
  *  - coinmarketAccount is used whether user is in the trading flow (persistent)
  *  - selectedAccount is used as initial state if user entries from different page than trade
  */
-export const useTradingAccount = ({
-    tradingAccount,
+export const useTradingAccountKey = ({
+    tradingAccountKey,
     selectedAccount,
-    shouldUseTradingAccount,
-}: TradingUseAccountProps): [Account, (state: Account) => void] => {
+    shouldUseTradingAccountKey,
+}: TradingUseAccountKeyProps): [AccountKey, (state: AccountKey) => void] => {
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
 
-    const [account, setAccount] = useState<Account>(() => {
-        if (tradingAccount && shouldUseTradingAccount) {
-            return tradingAccount;
+    const [accountKey, setAccountKey] = useState<AccountKey>(() => {
+        if (tradingAccountKey && shouldUseTradingAccountKey) {
+            return tradingAccountKey;
         }
 
         if (isTestnet(selectedAccount.account.symbol) && !selectedAccount.network.tradeCryptoId) {
@@ -42,13 +42,13 @@ export const useTradingAccount = ({
             const accountNotInTestnet = accountsSorted.find(a => a.symbol === defaultSymbol);
 
             // return account which is on production network, if account is discovered
-            if (accountNotInTestnet) return accountNotInTestnet;
+            if (accountNotInTestnet) return accountNotInTestnet.key;
             // return first account if default symbol is not found
-            if (accountsSorted[0]) return accountsSorted[0];
+            if (accountsSorted[0]) return accountsSorted[0].key;
         }
 
-        return selectedAccount.account;
+        return selectedAccount.account.key;
     });
 
-    return [account, setAccount];
+    return [accountKey, setAccountKey];
 };

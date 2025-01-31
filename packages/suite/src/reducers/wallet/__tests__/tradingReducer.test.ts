@@ -480,14 +480,14 @@ describe('settings reducer', () => {
     it('TRADING_SELL.SET_TRADING_ACCOUNT', () => {
         expect(
             tradingReducer(undefined, {
-                type: TRADING_SELL.SET_TRADING_ACCOUNT,
-                account: accounts[0],
+                type: TRADING_SELL.SET_TRADING_ACCOUNT_KEY,
+                accountKey: accounts[0].key,
             }),
         ).toEqual({
             ...initialState,
             sell: {
                 ...initialState.sell,
-                tradingAccount: accounts[0],
+                tradingAccountKey: accounts[0].key,
             },
         });
     });
@@ -495,14 +495,14 @@ describe('settings reducer', () => {
     it('TRADING_EXCHANGE.SET_TRADING_ACCOUNT', () => {
         expect(
             tradingReducer(undefined, {
-                type: TRADING_EXCHANGE.SET_TRADING_ACCOUNT,
-                account: accounts[0],
+                type: TRADING_EXCHANGE.SET_TRADING_ACCOUNT_KEY,
+                accountKey: accounts[0].key,
             }),
         ).toEqual({
             ...initialState,
             exchange: {
                 ...initialState.exchange,
-                tradingAccount: accounts[0],
+                tradingAccountKey: accounts[0].key,
             },
         });
     });

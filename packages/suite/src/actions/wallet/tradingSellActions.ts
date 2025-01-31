@@ -7,6 +7,7 @@ import {
 } from 'invity-api';
 
 import { invityAPI } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { Dispatch } from 'src/types/suite';
@@ -26,7 +27,7 @@ export type TradingSellAction =
     | { type: typeof TRADING_SELL.SAVE_QUOTE_REQUEST; request: SellFiatTradeQuoteRequest }
     | { type: typeof TRADING_SELL.SAVE_TRANSACTION_ID; transactionId?: string }
     | { type: typeof TRADING_SELL.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
-    | { type: typeof TRADING_SELL.SET_TRADING_ACCOUNT; account: Account | undefined }
+    | { type: typeof TRADING_SELL.SET_TRADING_ACCOUNT_KEY; accountKey: AccountKey | undefined }
     | {
           type: typeof TRADING_SELL.SAVE_QUOTES;
           quotes: SellFiatTrade[];
@@ -124,9 +125,11 @@ export const setIsFromRedirect = (isFromRedirect: boolean): TradingSellAction =>
     isFromRedirect,
 });
 
-export const setTradingSellAccount = (account: Account | undefined): TradingSellAction => ({
-    type: TRADING_SELL.SET_TRADING_ACCOUNT,
-    account,
+export const setTradingSellAccountKey = (
+    accountKey: AccountKey | undefined,
+): TradingSellAction => ({
+    type: TRADING_SELL.SET_TRADING_ACCOUNT_KEY,
+    accountKey,
 });
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`

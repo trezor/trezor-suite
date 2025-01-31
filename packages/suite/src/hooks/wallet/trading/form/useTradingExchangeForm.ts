@@ -19,6 +19,7 @@ import {
     tradingGetSuccessQuotes,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { amountToSmallestUnit, formatAmount, toFiatCurrency } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -29,7 +30,7 @@ import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActio
 import { FORM_OUTPUT_AMOUNT, FORM_OUTPUT_FIAT } from 'src/constants/wallet/trading/form';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
-import { useTradingAccount } from 'src/hooks/wallet/trading/form/common/useTradingAccount';
+import { useTradingAccountKey } from 'src/hooks/wallet/trading/form/common/useTradingAccountKey';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useTradingExchangeQuotesFilter } from 'src/hooks/wallet/trading/form/common/useTradingExchangeQuotesFilter';
@@ -74,17 +75,20 @@ export const useTradingExchangeForm = ({
         isFromRedirect,
         quotes,
         transactionId,
-        tradingAccount,
+        tradingAccountKey,
         selectedQuote,
         addressVerified,
     } = useSelector(state => state.wallet.trading.exchange);
     const { cryptoIdToCoinSymbol } = useTradingInfo();
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
-    const [account, setAccount] = useTradingAccount({
-        tradingAccount,
+    const [accountKey, setAccountKey] = useTradingAccountKey({
+        tradingAccountKey,
         selectedAccount,
-        shouldUseTradingAccount: isPreviousRouteFromTradeSection,
+        shouldUseTradingAccountKey: isPreviousRouteFromTradeSection,
     });
+    const accountByKey = useSelector(state => selectAccountByKey(state, accountKey));
+    const account = accountByKey ?? selectedAccount.account;
+
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
         useTradingInitializer({ selectedAccount, pageType });
     const { buildDefaultCryptoOption } = useTradingInfo();
@@ -318,8 +322,8 @@ export const useTradingExchangeForm = ({
         composeRequest,
         setComposedLevels,
         setAccountOnChange: newAccount => {
-            dispatch(tradingExchangeActions.setTradingExchangeAccount(newAccount));
-            setAccount(newAccount);
+            dispatch(tradingExchangeActions.setTradingExchangeAccountKey(newAccount.key));
+            setAccountKey(newAccount.key);
         },
     });
 
@@ -621,12 +625,6 @@ export const useTradingExchangeForm = ({
             removeDraft(exchangeDraftKey);
         }
     }, [defaultValues, values, removeDraft]);
-
-    useEffect(() => {
-        if (account.key === tradingAccount?.key) {
-            setAccount(tradingAccount);
-        }
-    }, [account, setAccount, tradingAccount]);
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {

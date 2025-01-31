@@ -1,7 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
 import { invityAPI } from '@suite-common/trading';
-import { accountsActions } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
 import { MODAL, ROUTER } from 'src/actions/suite/constants';
@@ -21,12 +20,19 @@ import { getTradeTypeByRoute } from 'src/utils/wallet/trading/tradingUtils';
 export const getAccountAccordingToRoute = (state: AppState) => {
     const tradeType = getTradeTypeByRoute(state.router.route?.name);
 
-    const { account } = state.wallet.selectedAccount;
-    const sellSelectedAccount = state.wallet.trading.sell.tradingAccount;
-    const exchangeSelectedAccount = state.wallet.trading.exchange.tradingAccount;
+    const {
+        selectedAccount: { account },
+        accounts,
+        trading: {
+            sell: { tradingAccountKey: sellSelectedAccountKey },
+            exchange: { tradingAccountKey: exchangeSelectedAccountKey },
+        },
+    } = state.wallet;
 
-    if (tradeType === 'sell' && sellSelectedAccount) return sellSelectedAccount;
-    if (tradeType === 'exchange' && exchangeSelectedAccount) return exchangeSelectedAccount;
+    if (tradeType === 'sell' && sellSelectedAccountKey)
+        return accounts.find(account => account.key === sellSelectedAccountKey);
+    if (tradeType === 'exchange' && exchangeSelectedAccountKey)
+        return accounts.find(account => account.key === exchangeSelectedAccountKey);
 
     return account;
 };
@@ -174,25 +180,13 @@ export const tradingMiddleware =
 
         // after an account change in the Sell or Swap update the invityAPIKey based on the account
         if (
-            action.type === TRADING_EXCHANGE.SET_TRADING_ACCOUNT ||
-            action.type === TRADING_SELL.SET_TRADING_ACCOUNT
+            action.type === TRADING_EXCHANGE.SET_TRADING_ACCOUNT_KEY ||
+            action.type === TRADING_SELL.SET_TRADING_ACCOUNT_KEY
         ) {
             const account = getAccountAccordingToRoute(newState);
 
             if (account) {
                 invityAPI.createInvityAPIKey(account.descriptor);
-            }
-        }
-
-        if (isTradingRoute && action.type === accountsActions.updateAccount.type) {
-            const account = action.payload;
-
-            if (state.wallet.trading.sell.tradingAccount?.key === account.key) {
-                api.dispatch(tradingSellActions.setTradingSellAccount(account));
-            }
-
-            if (state.wallet.trading.exchange.tradingAccount?.key === account.key) {
-                api.dispatch(tradingExchangeActions.setTradingExchangeAccount(account));
             }
         }
 

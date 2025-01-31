@@ -7,6 +7,7 @@ import {
 } from 'invity-api';
 
 import { invityAPI } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { verifyAddress as verifyExchangeAddress } from 'src/actions/wallet/trading/tradingCommonActions';
@@ -39,7 +40,7 @@ export type TradingExchangeAction =
           type: typeof TRADING_EXCHANGE.SAVE_QUOTE;
           quote: ExchangeTrade | undefined;
       }
-    | { type: typeof TRADING_EXCHANGE.SET_TRADING_ACCOUNT; account: Account | undefined }
+    | { type: typeof TRADING_EXCHANGE.SET_TRADING_ACCOUNT_KEY; accountKey: AccountKey | undefined }
     | {
           type: typeof TRADING_COMMON.SAVE_TRADE;
           date: string;
@@ -152,7 +153,9 @@ export const setIsFromRedirect = (isFromRedirect: boolean): TradingExchangeActio
 export const verifyAddress = (account: Account, address?: string, path?: string) =>
     verifyExchangeAddress(account, address, path, TRADING_EXCHANGE.VERIFY_ADDRESS);
 
-export const setTradingExchangeAccount = (account: Account | undefined): TradingExchangeAction => ({
-    type: TRADING_EXCHANGE.SET_TRADING_ACCOUNT,
-    account,
+export const setTradingExchangeAccountKey = (
+    accountKey: AccountKey | undefined,
+): TradingExchangeAction => ({
+    type: TRADING_EXCHANGE.SET_TRADING_ACCOUNT_KEY,
+    accountKey,
 });

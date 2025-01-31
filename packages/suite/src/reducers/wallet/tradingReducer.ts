@@ -12,7 +12,7 @@ import type {
 } from 'invity-api';
 
 import type { TradingType } from '@suite-common/trading';
-import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import type { FeeLevel } from '@trezor/connect';
 
 import { STORAGE } from 'src/actions/suite/constants';
@@ -69,7 +69,8 @@ interface Exchange extends TradingTradeCommonProps {
     quotesRequest?: ExchangeTradeQuoteRequest;
     quotes: ExchangeTrade[] | undefined;
     addressVerified: string | undefined;
-    tradingAccount?: Account;
+    // internal selected account key in trading section
+    tradingAccountKey?: AccountKey;
     selectedQuote: ExchangeTrade | undefined;
     isFromRedirect: boolean;
 }
@@ -81,7 +82,8 @@ interface Sell extends TradingTradeCommonProps {
     selectedQuote: SellFiatTrade | undefined;
     transactionId?: string;
     isFromRedirect: boolean;
-    tradingAccount?: Account;
+    // internal selected account key in trading section
+    tradingAccountKey?: AccountKey;
 }
 
 export interface State {
@@ -126,7 +128,7 @@ export const initialState: State = {
         quotesRequest: undefined,
         quotes: [],
         addressVerified: undefined,
-        tradingAccount: undefined,
+        tradingAccountKey: undefined,
         selectedQuote: undefined,
         isFromRedirect: false,
     },
@@ -137,7 +139,7 @@ export const initialState: State = {
         selectedQuote: undefined,
         transactionId: undefined,
         isFromRedirect: false,
-        tradingAccount: undefined,
+        tradingAccountKey: undefined,
     },
     composedTransactionInfo: {},
     trades: [],
@@ -232,8 +234,8 @@ export const tradingReducer = (
             case TRADING_EXCHANGE.SAVE_TRANSACTION_ID:
                 draft.exchange.transactionId = action.transactionId;
                 break;
-            case TRADING_EXCHANGE.SET_TRADING_ACCOUNT:
-                draft.exchange.tradingAccount = action.account;
+            case TRADING_EXCHANGE.SET_TRADING_ACCOUNT_KEY:
+                draft.exchange.tradingAccountKey = action.accountKey;
                 break;
             case TRADING_COMMON.SAVE_COMPOSED_TRANSACTION_INFO:
                 draft.composedTransactionInfo = action.info;
@@ -256,8 +258,8 @@ export const tradingReducer = (
             case TRADING_SELL.SAVE_TRANSACTION_ID:
                 draft.sell.transactionId = action.transactionId;
                 break;
-            case TRADING_SELL.SET_TRADING_ACCOUNT:
-                draft.sell.tradingAccount = action.account;
+            case TRADING_SELL.SET_TRADING_ACCOUNT_KEY:
+                draft.sell.tradingAccountKey = action.accountKey;
                 break;
             case TRADING_COMMON.SET_LOADING:
                 draft.isLoading = action.isLoading;
