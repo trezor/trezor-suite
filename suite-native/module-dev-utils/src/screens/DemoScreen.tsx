@@ -79,6 +79,7 @@ export const DemoScreen = () => {
         'yellowElevation0',
         'blueBold',
         'blueElevation0',
+        'backgroundSurfaceElevation0',
     ] satisfies ButtonColorScheme[];
 
     const textButtonVariants = ['primary', 'tertiary'] satisfies TextButtonVariant[];

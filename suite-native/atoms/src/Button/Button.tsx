@@ -32,7 +32,8 @@ export type ButtonColorScheme =
     | 'yellowElevation1'
     | 'blueBold'
     | 'blueElevation0'
-    | 'blueElevation1';
+    | 'blueElevation1'
+    | 'backgroundSurfaceElevation0';
 
 export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
     children: ReactNode;
@@ -179,6 +180,13 @@ export const buttonSchemeToColorsMap = {
         onPressColor: 'backgroundAlertBlueSubtleOnElevation1',
         textColor: 'textAlertBlue',
         iconColor: 'iconAlertBlue',
+        disabledColors: baseDisabledScheme,
+    },
+    backgroundSurfaceElevation0: {
+        backgroundColor: 'backgroundSurfaceElevation0',
+        onPressColor: 'backgroundTertiaryPressedOnElevation0',
+        textColor: 'textSubdued',
+        iconColor: 'textSubdued',
         disabledColors: baseDisabledScheme,
     },
 } as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
