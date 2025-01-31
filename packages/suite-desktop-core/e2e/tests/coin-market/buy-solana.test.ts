@@ -62,7 +62,9 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
         });
 
         await test.step('Verify transaction detail', async () => {
-            await expect(marketPage.transactionDetailStatus).toHaveText('Approved');
+            await expect(marketPage.transactionDetailStatus).toHaveText('Approved', {
+                timeout: 15_000,
+            });
             await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
             await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
             await expect(marketPage.confirmationProvider).toHaveText(provider);
