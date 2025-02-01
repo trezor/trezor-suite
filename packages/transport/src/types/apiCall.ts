@@ -9,7 +9,7 @@ export interface Success<T> {
     payload: T;
 }
 
-export type ErrorGeneric<ErrorType> = {
+type ErrorGeneric<ErrorType> = {
     success: false;
     error: ErrorType;
     message?: string;
