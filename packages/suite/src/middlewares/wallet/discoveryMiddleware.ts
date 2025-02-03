@@ -15,7 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
-import { connectPopupCallThunk } from '@trezor/suite-desktop-connect-popup';
+import { connectPopupCallThunkInner } from '@trezor/suite-desktop-connect-popup';
 
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { MODAL, ROUTER, SUITE } from 'src/actions/suite/constants';
@@ -153,7 +153,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         if (
             becomesConnected ||
             action.type === SUITE.APP_CHANGED ||
-            connectPopupCallThunk.fulfilled.match(action) ||
+            connectPopupCallThunkInner.fulfilled.match(action) ||
             deviceActions.selectDevice.match(action) ||
             authorizeDeviceThunk.fulfilled.match(action) ||
             walletSettingsActions.changeNetworks.match(action) ||

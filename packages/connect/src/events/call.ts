@@ -43,6 +43,7 @@ type CallApi = {
 
 export type CallMethodUnion = CallApi[keyof CallApi];
 export type CallMethodPayload = Parameters<CallMethodUnion>[0];
+export type CallMethodParams<M extends keyof CallApi> = Parameters<CallApi[M]>[0];
 export type CallMethodResponse<M extends keyof CallApi> = UnwrappedResponse<ReturnType<CallApi[M]>>;
 export type CallMethodAnyResponse = ReturnType<CallMethodUnion>;
 
