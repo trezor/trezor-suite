@@ -11,6 +11,52 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.4.8-beta.1
+
+Starting with this release we include esm builds in our npm packages.
+
+## Feature
+
+    - trust *.localhost subdomains (c148eeb)
+    - solanaComposeTransaction method (e653ae9)
+    - increase popup interaction timeout from 10 to 20 minutes (f800602)
+    - blockchain methods now have support for various L2 ETH networks (26ff8ea, 38614db)
+    - solana and Token-2022 tokens (9abc7d9)
+    - show h instead of apostrophe in taproot xpub to be consistent with firmware (82e7d84)
+
+## Fixes
+
+    - edgecase where device is not detected during fw update using the old bridge (5fa3d45)
+    - use serializeError on FW hash check errors (0aadfb0)
+    - handle rejection in acquire/release (e47bf08)
+    - allow firmwareUpdate from binary without known device.firmwareRelease (7517a71)
+    - filterSafeListByBootloader: current bootloader version > recent release version (53d6e22)
+    - fix potential device hang after received message assertion error (59d6e69)
+    - fix device hanged after initial getFeatures timeout (bc385c2)
+    - solana transaction decode (5cb1895)
+    - resetDevice typed error (8795800)
+    - clear initial GetFeatures timeout (c0a9ecc)
+    - ethereum decimal places (c40929b)
+
+## Chores
+
+Internal non-public facing changes that are worth mentioning:
+
+    - define TrezorError.toString with pertinent info (ad09f50)
+    - emit FIRMWARE_VERSION_CHANGED event (d6de99a)
+    - return firmwareUpdate installed version details (4b6efed)
+    - add validation schema to cardanoComposeTransaction (05e52d8)
+    - solanaSignTransaction serialize (bb73ba6)
+    - multitransport (ff74c08, 1c89c28)
+    - add setTransports method (4880cd3)
+    - store devices per transport (4424d07)
+    - resetDevice with entropy check (c750a73)
+    - introduce internal_model UNKNOWN for non-standard models (289ebe9, e6c74f1)
+    - rename bnb to bsc (cc18737)
+    - make types strict to prevent accidental deletion via unused types, the optionality is a trap, they are required (184ebbb)
+    - remove account.addresses from cardanoComposeTransaction (1946d9f)
+    - clone udev/bridge info (a6d61a2)
+
 # 9.4.7
 
 This release mainly fixes a serialization bug in Ethereum EIP-1559 transactions that was causing signing issues in some cases, presumably since v9.4.3.
