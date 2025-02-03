@@ -515,6 +515,9 @@ export class UsbApi extends AbstractApi {
                 'The device was disconnected.',
             ].some(disconnectedErr => err.message.includes(disconnectedErr))
         ) {
+            // make sure that local descriptors are updated and higher layers are notified
+            this.enumerate();
+
             return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
         }
 
