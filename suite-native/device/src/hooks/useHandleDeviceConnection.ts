@@ -7,6 +7,7 @@ import {
     authorizeDeviceThunk,
     selectIsDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
+    selectIsDeviceInitialized,
     selectIsDeviceRemembered,
     selectIsDeviceUsingPassphrase,
     selectIsNoPhysicalDeviceConnected,
@@ -21,15 +22,18 @@ import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
+    OnboardingStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 
+import { selectIsDeviceSetupSupported } from '../selectors';
+
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList | RootStackParamList,
-    AuthorizeDeviceStackRoutes.PinMatrix | RootStackRoutes.Onboarding,
+    AuthorizeDeviceStackRoutes.PinMatrix | RootStackRoutes.OnboardingStack,
     RootStackParamList
 >;
 
@@ -41,9 +45,12 @@ export const useHandleDeviceConnection = () => {
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
-    const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
+    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
+    const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
+
+    const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
 
@@ -52,12 +59,46 @@ export const useHandleDeviceConnection = () => {
     const isSendStackFocused = lastRoute === RootStackRoutes.SendStack;
     const shouldBlockSendReviewRedirect = isDeviceRemembered && isSendStackFocused;
 
+    // When is an uninitialized device model that supports device setup, navigate to device onboarding.
+    useEffect(() => {
+        if (
+            isDeviceSetupSupported &&
+            !isDeviceInitialized &&
+            isDeviceConnected &&
+            isOnboardingFinished &&
+            !isPortfolioTrackerDevice &&
+            !isBiometricsOverlayVisible
+        ) {
+            requestPrioritizedDeviceAccess({
+                deviceCallback: () => dispatch(authorizeDeviceThunk()),
+            });
+
+            if (!isDeviceInitialized) {
+                navigation.navigate(RootStackRoutes.OnboardingStack, {
+                    screen: OnboardingStackRoutes.UninitializedDeviceLanding,
+                });
+
+                return;
+            }
+        }
+    }, [
+        dispatch,
+        isDeviceConnected,
+        isOnboardingFinished,
+        isBiometricsOverlayVisible,
+        navigation,
+        isDeviceInitialized,
+        isPortfolioTrackerDevice,
+        isDeviceSetupSupported,
+    ]);
+
     // At the moment when unauthorized physical device is selected,
     // redirect to the Connecting screen where is handled the connection logic.
     useEffect(() => {
         if (isFirmwareInstallationRunning) return;
 
         if (
+            isDeviceInitialized &&
             isDeviceConnected &&
             isOnboardingFinished &&
             !isPortfolioTrackerDevice &&
@@ -88,6 +129,7 @@ export const useHandleDeviceConnection = () => {
         isDeviceUsingPassphrase,
         shouldBlockSendReviewRedirect,
         isFirmwareInstallationRunning,
+        isDeviceInitialized,
     ]);
 
     // In case that the physical device is disconnected, redirect to the home screen and
@@ -96,12 +138,7 @@ export const useHandleDeviceConnection = () => {
         if (isFirmwareInstallationRunning) return;
 
         if (isNoPhysicalDeviceConnected && isOnboardingFinished) {
-            const previousRoute = navigation.getState()?.routes.at(-1)?.name;
-
-            // This accidentally gets triggered by finishing onboarding with no device connected,
-            // so this prevents from redirect being duplicated.
-            const isPreviousRouteOnboarding = previousRoute === RootStackRoutes.Onboarding;
-            if (isPreviousRouteOnboarding || shouldBlockSendReviewRedirect) {
+            if (shouldBlockSendReviewRedirect) {
                 return;
             }
             navigation.navigate(RootStackRoutes.AppTabs, {

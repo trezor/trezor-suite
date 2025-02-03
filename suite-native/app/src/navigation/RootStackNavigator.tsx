@@ -41,7 +41,7 @@ export const RootStackNavigator = () => {
             return RootStackRoutes.AppTabs;
         }
 
-        return RootStackRoutes.Onboarding;
+        return RootStackRoutes.OnboardingStack;
     };
 
     return (
@@ -49,16 +49,7 @@ export const RootStackNavigator = () => {
             initialRouteName={getInitialRouteName()}
             screenOptions={stackNavigationOptionsConfig}
         >
-            <RootStack.Screen
-                name={RootStackRoutes.Onboarding}
-                component={OnboardingStackNavigator}
-            />
             <RootStack.Screen name={RootStackRoutes.AppTabs} component={AppTabNavigator} />
-            <RootStack.Screen
-                name={RootStackRoutes.AccountsImport}
-                component={AccountsImportStackNavigator}
-                options={{ animation: 'slide_from_bottom' }}
-            />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.AccountSettings }}
                 name={RootStackRoutes.AccountSettings}
@@ -83,41 +74,47 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.DevUtilsStack}
                 component={DevUtilsStackNavigator}
             />
-            <RootStack.Screen
-                name={RootStackRoutes.AddCoinAccountStack}
-                component={AddCoinAccountStackNavigator}
-                options={{ animation: 'slide_from_bottom' }}
-            />
-            <RootStack.Screen
-                name={RootStackRoutes.CoinEnablingInit}
-                component={CoinEnablingInitScreen}
-                options={{ animation: 'slide_from_bottom' }}
-            />
-            <RootStack.Screen
-                name={RootStackRoutes.ReceiveStack}
-                component={ReceiveStackNavigator}
-                options={{ animation: 'slide_from_bottom' }}
-            />
-            <RootStack.Screen
-                name={RootStackRoutes.AuthorizeDeviceStack}
-                component={AuthorizeDeviceStackNavigator}
-                options={{
-                    ...stackNavigationOptionsConfig,
-                    animation: 'slide_from_bottom',
-                    gestureEnabled: false,
-                }}
-            />
-            <RootStack.Screen
-                name={RootStackRoutes.DeviceSettingsStack}
-                component={DeviceSettingsStackNavigator}
-                options={{ animation: 'slide_from_bottom' }}
-            />
             <RootStack.Screen name={RootStackRoutes.SendStack} component={SendStackNavigator} />
             <RootStack.Screen name={RootStackRoutes.ConnectPopup} component={ConnectPopupScreen} />
             <RootStack.Screen
                 name={RootStackRoutes.SettingsScreenStack}
                 component={SettingsStackNavigator}
             />
+            {/* Navigation flows that start by push from bottom animation on the first screen of its stack. */}
+            <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
+                <RootStack.Screen
+                    name={RootStackRoutes.OnboardingStack}
+                    component={OnboardingStackNavigator}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.AccountsImport}
+                    component={AccountsImportStackNavigator}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.AddCoinAccountStack}
+                    component={AddCoinAccountStackNavigator}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.CoinEnablingInit}
+                    component={CoinEnablingInitScreen}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.ReceiveStack}
+                    component={ReceiveStackNavigator}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.AuthorizeDeviceStack}
+                    component={AuthorizeDeviceStackNavigator}
+                    options={{
+                        ...stackNavigationOptionsConfig,
+                        gestureEnabled: false,
+                    }}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.DeviceSettingsStack}
+                    component={DeviceSettingsStackNavigator}
+                />
+            </RootStack.Group>
         </RootStack.Navigator>
     );
 };

@@ -12,3 +12,4 @@ export * from './utils';
 export * from './selectors';
 export * from './deviceThunks';
 export * from './config/firmware';
+export * from './types';

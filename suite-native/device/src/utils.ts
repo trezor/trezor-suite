@@ -2,6 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { AnyAction } from '@reduxjs/toolkit';
 import * as semver from 'semver';
 
+import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { DEVICE, Device, DeviceEvent, DeviceModelInternal, VersionArray } from '@trezor/connect';
 
 export const minimalSupportedFirmwareVersion = {
@@ -37,3 +38,20 @@ export const isDeviceEventAction = <T extends DeviceEvent['type']>(
     action: AnyAction,
     actionType: T,
 ): action is { type: T; payload: Device } => action.type === actionType;
+
+export const isDeviceSetupSupported = (model: DeviceModelInternal) => {
+    // Exhaustive check for case that new model is introduced later it won't be forgotten.
+    switch (model) {
+        case DeviceModelInternal.T2B1:
+        case DeviceModelInternal.T3B1:
+        case DeviceModelInternal.T3T1:
+            return true;
+        case DeviceModelInternal.T1B1:
+        case DeviceModelInternal.T2T1:
+        case DeviceModelInternal.T3W1:
+        case DeviceModelInternal.UNKNOWN:
+            return false;
+        default:
+            throw new UnreachableCaseError(model);
+    }
+};

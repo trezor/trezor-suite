@@ -13,15 +13,18 @@
         "@react-navigation/core": "^6.4.10",
         "@react-navigation/native": "6.1.18",
         "@react-navigation/native-stack": "6.11.0",
+        "@reduxjs/toolkit": "1.9.5",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "expo-linear-gradient": "^14.0.1",
         "react": "18.2.0",
         "react-native": "0.76.1",
+        "react-native-svg": "^15.9.0",
         "react-redux": "8.0.7"
     }
 }

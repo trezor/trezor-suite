@@ -1,7 +1,7 @@
 export enum RootStackRoutes {
     AppTabs = 'AppTabs',
     LegacyOnboarding = 'LegacyOnboarding',
-    Onboarding = 'Onboarding',
+    OnboardingStack = 'OnboardingStack',
     AccountsImport = 'AccountsImport',
     AuthorizeDeviceStack = 'AuthorizeDeviceStack',
     AccountDetail = 'AccountDetail',
@@ -29,6 +29,7 @@ export enum OnboardingStackRoutes {
     Welcome = 'Welcome',
     AnalyticsConsent = 'AnalyticsConsent',
     Biometrics = 'Biometrics',
+    UninitializedDeviceLanding = 'UninitializedDeviceLanding',
 }
 
 export enum AccountsImportStackRoutes {

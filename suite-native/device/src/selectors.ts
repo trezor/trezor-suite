@@ -36,7 +36,7 @@ import { doesCoinSupportStaking } from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
 
 import { revisionCheckErrorScenarios } from './config/firmware';
-import { isFirmwareVersionSupported } from './utils';
+import { isDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
 
 type NativeDeviceRootState = DeviceRootState &
     AccountsRootState &
@@ -185,3 +185,8 @@ export const selectHasFirmwareAuthenticityCheckHardFailed = (state: FwAuthentici
 
     return isRevisionHardError;
 };
+
+export const selectIsDeviceSetupSupported = createMemoizedSelector(
+    [selectDeviceModel],
+    model => !!model && isDeviceSetupSupported(model),
+);

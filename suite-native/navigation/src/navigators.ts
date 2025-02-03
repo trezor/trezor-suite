@@ -112,6 +112,7 @@ export type OnboardingStackParamList = {
     [OnboardingStackRoutes.Welcome]: undefined;
     [OnboardingStackRoutes.AnalyticsConsent]: undefined;
     [OnboardingStackRoutes.Biometrics]: undefined;
+    [OnboardingStackRoutes.UninitializedDeviceLanding]: undefined;
 };
 
 export type AccountsImportStackParamList = {
@@ -193,7 +194,7 @@ export type AuthorizeDeviceStackParamList = {
 
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
-    [RootStackRoutes.Onboarding]: NavigatorScreenParams<OnboardingStackParamList>;
+    [RootStackRoutes.OnboardingStack]: NavigatorScreenParams<OnboardingStackParamList>;
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };

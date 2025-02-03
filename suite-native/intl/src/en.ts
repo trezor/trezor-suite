@@ -825,6 +825,21 @@ export const en = {
                 notNow: 'Not now',
             },
         },
+
+        uninitializedDeviceLandingScreen: {
+            noFirmware: {
+                title: 'Now it’s just you\nand your crypto',
+                button: "Let's get started",
+            },
+            firmware: {
+                title: 'Have you used this Trezor before?',
+                subtitle:
+                    'Firmware is already installed on this Trezor. Continue only if you have used this Trezor before.',
+                confirmButton: 'Yes, set up my Trezor',
+                noButton: 'No, I have not',
+            },
+            lookDifferentLabel: 'My device looks different',
+        },
     },
     moduleAccountManagement: {
         accountSettingsScreen: {

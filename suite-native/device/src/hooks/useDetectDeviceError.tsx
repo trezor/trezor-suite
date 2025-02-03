@@ -34,7 +34,11 @@ import { BootloaderModalAppendix } from '../components/BootloaderModalAppendix';
 import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';
 import { UnacquiredDeviceModalAppendix } from '../components/UnacquiredDeviceModalAppendix';
 import { UninitializedDeviceModalAppendix } from '../components/UninitializedDeviceModalAppendix';
-import { selectDeviceError, selectIsDeviceFirmwareSupported } from '../selectors';
+import {
+    selectDeviceError,
+    selectIsDeviceFirmwareSupported,
+    selectIsDeviceSetupSupported,
+} from '../selectors';
 
 export const SUITE_WEB_URL = 'https://suite.trezor.io/web/';
 
@@ -61,6 +65,7 @@ export const useDetectDeviceError = () => {
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
+    const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
 
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
     const deviceError = useSelector(selectDeviceError);
@@ -103,7 +108,8 @@ export const useDetectDeviceError = () => {
             !isDeviceFirmwareSupported &&
             isOnboardingFinished &&
             !isPortfolioTrackerDevice &&
-            !wasDeviceEjectedByUser
+            !wasDeviceEjectedByUser &&
+            !isDeviceSetupSupported
         ) {
             showAlert({
                 title: <Translation id="moduleDevice.unsupportedFirmwareModal.title" />,
@@ -130,10 +136,11 @@ export const useDetectDeviceError = () => {
         dispatch,
         showAlert,
         handleDisconnect,
+        isDeviceSetupSupported,
     ]);
 
     useEffect(() => {
-        if (!isOnboardingFinished) return;
+        if (!isOnboardingFinished || isDeviceSetupSupported) return;
 
         if (
             isConnectedDeviceUninitialized &&
@@ -194,6 +201,7 @@ export const useDetectDeviceError = () => {
         openLink,
         deviceError,
         handleDisconnect,
+        isDeviceSetupSupported,
     ]);
 
     useEffect(() => {
