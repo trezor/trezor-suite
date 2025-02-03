@@ -8,8 +8,8 @@ import type {
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import type { TradingFiatCurrenciesProps } from '../types';
 import { tradingBuyActions } from '../actions/buyActions';
+import type { TradingFiatCurrenciesProps } from '../types';
 
 // TODO: refactor Map and Set https://redux.js.org/style-guide/#do-not-put-non-serializable-values-in-state-or-actions
 export interface BuyInfo {

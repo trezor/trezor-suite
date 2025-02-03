@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
+import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
 import { useTimer } from '@trezor/react-utils';
 
-import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from 'src/constants/wallet/trading/metadata';
 import { useDevice } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { UseTradingCommonProps, UseTradingCommonReturnProps } from 'src/types/trading/trading';

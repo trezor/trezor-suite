@@ -4,6 +4,7 @@
     "references": [
         { "path": "../redux-utils" },
         { "path": "../wallet-config" },
+        { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },

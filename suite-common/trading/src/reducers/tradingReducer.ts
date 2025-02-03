@@ -1,12 +1,12 @@
-import { Coins, CryptoId, Platforms } from 'invity-api';
 import { AnyAction } from '@reduxjs/toolkit';
+import { Coins, CryptoId, Platforms } from 'invity-api';
 
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { FeeLevel } from '@trezor/connect';
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import { TradingTransaction, TradingPaymentMethodListProps, TradingType } from '../types';
-import { buyInitialState, prepareBuyReducer, TradingBuyState } from './buyReducer';
+import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '../types';
+import { TradingBuyState, buyInitialState, prepareBuyReducer } from './buyReducer';
 import { tradingActions } from '../actions/tradingActions';
 
 export interface TradingComposedTransactionInfo {

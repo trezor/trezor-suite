@@ -2,8 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
-import { prepareTradingReducer } from '../tradingReducer';
 import { tradingFixtures } from '../__fixtures__/tradingReducer';
+import { prepareTradingReducer } from '../tradingReducer';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 

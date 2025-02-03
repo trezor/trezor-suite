@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 import { CryptoId, InfoResponse } from 'invity-api';
 
-import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '../types';
 import { TradingComposedTransactionInfo } from '../reducers/tradingReducer';
+import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '../types';
 
 // TODO: maybe move to constants
 const TRADING_COMMON_PREFIX = '@trading-common';
@@ -44,10 +44,10 @@ const loadInvityData = createAction(LOAD_DATA);
 
 const setLoading = createAction(
     SET_LOADING,
-    (payload: { isLoading: boolean; lastLoadedTimestamp?: number }) => ({
+    (isLoading: boolean, lastLoadedTimestamp?: number) => ({
         payload: {
-            ...payload,
-            lastLoadedTimestamp: payload.lastLoadedTimestamp ?? 0,
+            isLoading,
+            lastLoadedTimestamp: lastLoadedTimestamp ?? 0,
         },
     }),
 );

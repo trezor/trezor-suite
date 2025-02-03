@@ -1,5 +1,5 @@
-import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 import { createAction } from '@reduxjs/toolkit';
+import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 
 import { BuyInfo } from '../reducers/buyReducer';
 
@@ -38,7 +38,6 @@ const saveSelectedQuote = createAction(SAVE_QUOTE, (payload: BuyTrade | undefine
 
 const clearQuotes = createAction(CLEAR_QUOTES);
 
-// TODO: verifyAddress thunk
 const verifyAddress = createAction(VERIFY_ADDRESS, (payload: string | undefined) => ({ payload }));
 
 export const tradingBuyActions = {

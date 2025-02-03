@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { invityAPI } from '@suite-common/trading';
+import { INVITY_API_RELOAD_DATA_AFTER_MS, invityAPI } from '@suite-common/trading';
 import { UI } from '@trezor/connect';
 
 import { MODAL, ROUTER } from 'src/actions/suite/constants';
@@ -10,7 +10,6 @@ import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
 import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
 import * as tradingInfoAction from 'src/actions/wallet/tradingInfoActions';
 import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
-import { INVITY_API_RELOAD_DATA_AFTER_MS } from 'src/constants/wallet/trading/metadata';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 import { getTradeTypeByRoute } from 'src/utils/wallet/trading/tradingUtils';
 

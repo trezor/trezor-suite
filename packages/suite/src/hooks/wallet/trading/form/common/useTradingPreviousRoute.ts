@@ -1,4 +1,4 @@
-import type { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectRouter } from 'src/reducers/suite/routerReducer';
