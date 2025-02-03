@@ -37,6 +37,7 @@ export class UsbApi extends AbstractApi {
     private debugLink?: boolean;
     private synchronizeCreateDevices = getSynchronize();
     private synchronizeGetDevices = getSynchronize();
+    private synchronizeDeviceReset = getSynchronize();
 
     constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
         super({ logger });
@@ -207,7 +208,7 @@ export class UsbApi extends AbstractApi {
                         this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
                         this.chunkSize,
                     ),
-                { signal, onAbort: () => device?.reset() },
+                { signal, onAbort: () => this.synchronizeDeviceReset(() => device?.reset()) },
             );
             this.logger?.debug(
                 `usb: device.transferIn done. status: ${res.status}, byteLength: ${res.data?.byteLength}.`,
@@ -250,7 +251,7 @@ export class UsbApi extends AbstractApi {
                         this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
                         newArray,
                     ),
-                { signal, onAbort: () => device?.reset() },
+                { signal, onAbort: () => this.synchronizeDeviceReset(() => device?.reset()) },
             );
             this.logger?.debug(`usb: device.transferOut done.`);
             if (result.status !== 'ok') {
@@ -323,7 +324,10 @@ export class UsbApi extends AbstractApi {
             try {
                 // reset fails on ChromeOS and windows
                 this.logger?.debug('usb: device.reset');
-                await this.abortableMethod(() => device?.reset(), { signal });
+                await this.abortableMethod(
+                    () => this.synchronizeDeviceReset(() => device?.reset()),
+                    { signal },
+                );
                 this.logger?.debug(`usb: device.reset done.`);
             } catch (err) {
                 this.logger?.error(
@@ -362,7 +366,7 @@ export class UsbApi extends AbstractApi {
             if (!this.debugLink) {
                 try {
                     // NOTE: `device.reset()` interrupts transfers for all interfaces (debugLink and normal)
-                    await device.reset();
+                    await this.synchronizeDeviceReset(() => device?.reset());
                 } catch (err) {
                     this.logger?.error(
                         `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
