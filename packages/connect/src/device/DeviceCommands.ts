@@ -42,27 +42,32 @@ const assertType = (res: DefaultPayloadMessage, resType: MessageKey | MessageKey
 };
 
 const filterForLog = (type: string, msg: any) => {
-    const blacklist: { [key: string]: Record<string, string> } = {
-        // PassphraseAck: {
-        //     passphrase: '(redacted...)',
-        // },
-        // CipheredKeyValue: {
-        //     value: '(redacted...)',
-        // },
-        // GetPublicKey: {
-        //     address_n: '(redacted...)',
-        // },
-        // PublicKey: {
-        //     node: '(redacted...)',
-        //     xpub: '(redacted...)',
-        // },
-        // DecryptedMessage: {
-        //     message: '(redacted...)',
-        //     address: '(redacted...)',
-        // },
+    const blacklist: { [key: string]: Record<string, string> | string } = {
+        PassphraseAck: {
+            passphrase: '(redacted...)',
+        },
+        CipheredKeyValue: {
+            value: '(redacted...)',
+        },
+        GetPublicKey: {
+            address_n: '(redacted...)',
+        },
+        PublicKey: {
+            node: '(redacted...)',
+            xpub: '(redacted...)',
+        },
+        DecryptedMessage: {
+            message: '(redacted...)',
+            address: '(redacted...)',
+        },
+        Features: '(redacted...)',
     };
 
     if (type in blacklist) {
+        if (typeof blacklist[type] === 'string') {
+            return blacklist[type];
+        }
+
         return { ...msg, ...blacklist[type] };
     }
 
