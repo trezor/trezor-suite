@@ -46,8 +46,8 @@ export const UnstakeEthForm = () => {
         claimableAmount = '0',
     } = getStakingDataForNetwork(selectedAccount) ?? {};
 
-    const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT];
-    const showError = inputError && inputError.type === 'compose';
+    const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT] || errors?.outputs?.[0]?.amount;
+    const showError = inputError && !['required', 'min'].includes(inputError.type);
     const shouldShowInstantUnstakeEthAmount =
         approximatedInstantEthAmount && BigNumber(approximatedInstantEthAmount).gt(0);
 

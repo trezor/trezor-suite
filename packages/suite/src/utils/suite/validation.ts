@@ -81,7 +81,9 @@ export const validateCryptoLimits =
                 return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO', {
                     minimum: formatter.format(amountLimits.minCrypto, {
                         isBalance: true,
-                        currency,
+                        symbol: currency,
+                        shouldRedactNumbers: false,
+                        maxDisplayedDecimals: 18,
                     }),
                 });
             }
@@ -99,7 +101,9 @@ export const validateCryptoLimits =
                 return translationString('TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO', {
                     maximum: formatter.format(amountLimits.maxCrypto, {
                         isBalance: true,
-                        currency,
+                        symbol: currency,
+                        shouldRedactNumbers: false,
+                        maxDisplayedDecimals: 18,
                     }),
                 });
             }
