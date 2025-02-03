@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
@@ -34,33 +34,16 @@ export const useConnectPopupNavigation = () => {
     const featureFlagEnabled = useFeatureFlag(FeatureFlag.IsConnectPopupEnabled);
     const navigation = useNavigation<NavigationProp>();
 
-    const navigateToConnectPopup = useCallback(
-        (url: string) => {
-            if (!featureFlagEnabled) return;
-            if (!isConnectPopupUrl(url)) return;
+    const url = Linking.useURL();
+
+    useEffect(() => {
+        if (!featureFlagEnabled) return;
+        if (!url || !isConnectPopupUrl(url)) return;
+        try {
             const parsedUrl = Linking.parse(url);
             navigation.navigate(RootStackRoutes.ConnectPopup, { parsedUrl });
-        },
-        [navigation, featureFlagEnabled],
-    );
-
-    useEffect(() => {
-        const navigateToInitalUrl = async () => {
-            const currentUrl = await Linking.getInitialURL();
-            if (currentUrl) {
-                navigateToConnectPopup(currentUrl);
-            }
-        };
-        navigateToInitalUrl();
-    }, [navigateToConnectPopup]);
-
-    useEffect(() => {
-        // there could be when you open same deep link for second time and in that case it will be ignored
-        // this could be probably handed by Linking.addEventListener
-        const subscription = Linking.addEventListener('url', event => {
-            navigateToConnectPopup(event.url);
-        });
-
-        return () => subscription?.remove();
-    }, [navigateToConnectPopup]);
+        } catch (error) {
+            console.warn('Invalid deeplink URL', { error, url });
+        }
+    }, [url, navigation, featureFlagEnabled]);
 };
