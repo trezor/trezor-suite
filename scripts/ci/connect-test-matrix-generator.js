@@ -115,7 +115,7 @@ const inputs = [
         value: ['node', 'web'],
     },
     {
-        key: 'cache_tx',
+        key: 'disable_cache_tx',
         value: ['true', 'false'],
     },
     {
@@ -147,7 +147,7 @@ args.forEach(arg => {
 log('parsedArgs', parsedArgs);
 
 const validateArgs = () => {
-    const requiredArgs = ['model', 'firmware', 'env', 'groups', 'cache_tx', 'transport'];
+    const requiredArgs = ['model', 'firmware', 'env', 'groups', 'disable_cache_tx', 'transport'];
 
     requiredArgs.forEach(arg => {
         if (!parsedArgs[arg]) {
