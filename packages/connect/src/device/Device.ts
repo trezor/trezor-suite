@@ -544,6 +544,23 @@ export class Device extends TypedEmitter<DeviceEvents> {
                             ? GET_FEATURES_TIMEOUT_REACT_NATIVE
                             : GET_FEATURES_TIMEOUT;
 
+                    // note 1: clear communication with the device using Cancel message. This causes any remaining messages in its transport stack to get flushed.
+                    //         this case may happen when communication with the device was abruptly interrupted by unloading connect unexpectedly (example window reload)
+                    // note 2: this problem should not occur for the upcoming trezor host protocol, so we limit this to v1 and bridge protocols
+                    // note 3: in 99% of cases we send this message unnecessarily. as @Szymon pointed out, it might be better to catch this call and repeat it.
+                    // note 4: this case can happen also in the 'if' branch. 1] reload app, 2], browser doesn't fire release in time, 3] you get unacquired device, 4] you click
+                    //         the 'use device here' button and here you go. Yet I didn't want to burden every TrezorConnect method call with this but we may reconsider this.
+                    if (['v1', 'bridge'].includes(this.protocol.name)) {
+                        _log.debug(
+                            'sending a preventive cancel on the first encounter with the device',
+                        );
+                        try {
+                            await this.getCommands().typedCall('Cancel', 'Failure', {});
+                        } catch {
+                            // empty
+                        }
+                    }
+
                     let getFeaturesTimeoutId: ReturnType<typeof setTimeout> | undefined;
 
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
