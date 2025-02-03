@@ -550,6 +550,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     // note 3: in 99% of cases we send this message unnecessarily. as @Szymon pointed out, it might be better to catch this call and repeat it.
                     // note 4: this case can happen also in the 'if' branch. 1] reload app, 2], browser doesn't fire release in time, 3] you get unacquired device, 4] you click
                     //         the 'use device here' button and here you go. Yet I didn't want to burden every TrezorConnect method call with this but we may reconsider this.
+                    // note 5: ad note 4. it is not so problematic anymore since cleanup on dispose has been improved in https://github.com/trezor/trezor-suite/pull/16930
                     if (['v1', 'bridge'].includes(this.protocol.name)) {
                         _log.debug(
                             'sending a preventive cancel on the first encounter with the device',
@@ -1170,21 +1171,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return null;
     }
 
-    async dispose() {
+    dispose() {
         this.removeAllListeners();
         if (this.session && this.lastAcquiredHere) {
-            try {
-                await this.cancelableAction?.();
-                await this.commands?.cancel();
-
-                return this.transport.release({
-                    session: this.session,
-                    path: this.transportPath,
-                    onClose: true,
-                });
-            } catch {
-                // empty
-            }
+            return this.transport.release({
+                session: this.session,
+                path: this.transportPath,
+                onClose: true,
+            });
         }
     }
 

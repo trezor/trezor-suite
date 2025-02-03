@@ -184,6 +184,12 @@ export class BridgeTransport extends AbstractTransport {
         onClose,
         signal,
     }: AbstractTransportMethodParams<'release'>) {
+        if (onClose && typeof navigator !== 'undefined' && 'sendBeacon' in navigator) {
+            navigator.sendBeacon(`${this.url}/release/${session}?beacon=1`);
+
+            return Promise.resolve(this.success(null));
+        }
+
         return this.scheduleAction(
             async signal => {
                 const releasePromise = this.post('/release', {

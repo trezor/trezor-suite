@@ -582,7 +582,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                 await device.dispose();
             }),
         );
-
         // now we can be relatively sure that release calls have been dispatched
         // and we can safely kill all async subscriptions in transport layer
         transport?.stop();
