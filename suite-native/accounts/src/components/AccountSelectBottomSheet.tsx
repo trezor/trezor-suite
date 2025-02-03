@@ -93,7 +93,6 @@ export const AccountSelectBottomSheet = React.memo(
         return (
             <BottomSheetFlashList<AccountSelectBottomSheetSection>
                 isVisible
-                isCloseDisplayed={false}
                 onClose={onClose}
                 data={data}
                 renderItem={renderItem}

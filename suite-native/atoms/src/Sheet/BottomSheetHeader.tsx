@@ -3,9 +3,10 @@ import { View } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Box } from '../Box';
 import { IconButton } from '../Button/IconButton';
 import { Text } from '../Text';
+import { BottomSheetGrabber } from './BottomSheetGrabber';
+import { Box } from '../Box';
 
 type BottomSheetHeaderProps = {
     title: ReactNode;
@@ -44,23 +45,6 @@ const titlesContainer = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
         maxWidth: isCloseDisplayed ? '70%' : '100%',
     }),
 );
-
-const bottomSheetGrabberStyle = prepareNativeStyle(utils => ({
-    width: 32,
-    height: 4,
-    borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.borderDashed,
-}));
-
-const BottomSheetGrabber = () => {
-    const { applyStyle } = useNativeStyles();
-
-    return (
-        <Box flex={1} alignItems="center">
-            <Box style={applyStyle(bottomSheetGrabberStyle)} />
-        </Box>
-    );
-};
 
 export const BottomSheetHeader = ({
     title,

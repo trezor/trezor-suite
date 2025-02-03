@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
     BottomSheetBackdrop,
     BottomSheetModal,
+    BottomSheetProps,
     BottomSheetFlashList as FlashList,
 } from '@gorhom/bottom-sheet';
 import { FlashListProps } from '@shopify/flash-list';
@@ -13,11 +14,12 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type BottomSheetFlashListProps<TItem> = {
     isVisible: boolean;
-    isCloseDisplayed?: boolean;
     onClose: (isVisible: boolean) => void;
     title?: ReactNode;
     subtitle?: ReactNode;
     estimatedListHeight?: number;
+    handleComponent?: BottomSheetProps['handleComponent'];
+    stickyListFooterComponent?: ReactNode;
 } & FlashListProps<TItem>;
 
 const DEFAULT_INSET_BOTTOM = 25;
@@ -46,11 +48,11 @@ const WindowOverlay = ({ children }: { children: ReactNode }) => (
 
 export const BottomSheetFlashList = <TItem,>({
     isVisible,
-    isCloseDisplayed = true,
     onClose,
     title,
     subtitle,
     estimatedListHeight = 0,
+    handleComponent,
     ...flashListProps
 }: BottomSheetFlashListProps<TItem>) => {
     const { applyStyle } = useNativeStyles();
@@ -106,6 +108,7 @@ export const BottomSheetFlashList = <TItem,>({
             handleIndicatorStyle={applyStyle(handleStyle)}
             // @ts-expect-error wrong type, doesn't expect children
             containerComponent={WindowOverlay}
+            handleComponent={handleComponent}
         >
             <FlashList
                 {...flashListProps}
