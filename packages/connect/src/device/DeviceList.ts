@@ -203,6 +203,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return lock.promise as Promise<T>;
     }
 
+    private readonly scheduledUpgradeChecks: ApiTypeMap<ReturnType<typeof setTimeout>> = {};
+
     constructor({
         messages,
         priority,
@@ -378,6 +380,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                     this.emit(TRANSPORT.START, getTransportInfo(transport));
                 }
             }
+            if (transport) {
+                // new transport started successfully or present transport kept, (re)plan check
+                this.scheduleUpgradeCheck(apiType, initParams);
+            }
         } catch (error) {
             this.emit(TRANSPORT.ERROR, { apiType, error: error?.message });
             if (initParams.transportReconnect && !abortSignal.aborted) {
@@ -394,6 +400,26 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         const timeout = setTimeout(resolve, 1000);
 
         return promise.finally(() => clearTimeout(timeout));
+    }
+
+    private scheduleUpgradeCheck(apiType: TransportApiType, initParams: InitParams) {
+        clearTimeout(this.scheduledUpgradeChecks[apiType]);
+        this.scheduledUpgradeChecks[apiType] = setTimeout(async () => {
+            const transport = this.transport[apiType];
+            if (!transport) return;
+            const transports = this.transports.filter(t => t.apiType === apiType);
+            for (const t of transports) {
+                if (t === transport) break;
+                if (await t.ping()) {
+                    this.transportLock(apiType, 'Upgrading', signal =>
+                        this.createInitPromise(apiType, initParams, signal),
+                    ).catch(() => {});
+
+                    return;
+                }
+            }
+            this.scheduleUpgradeCheck(apiType, initParams);
+        }, 1000);
     }
 
     private async selectTransport(
@@ -542,6 +568,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     private async stopTransport(transport: Transport) {
+        clearTimeout(this.scheduledUpgradeChecks[transport.apiType]);
+
         const devices = this.devices.clear(transport);
 
         // disconnect devices
