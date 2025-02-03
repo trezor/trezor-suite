@@ -145,6 +145,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                     )}
                 {selectedAccountOption?.account?.networkType !== 'bitcoin' && (
                     <Input
+                        data-testid="@trading/form/verify/address"
                         readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
                         inputState={form.formState.errors.address ? 'error' : undefined}
                         labelLeft={

@@ -61,7 +61,9 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
 
         const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
         await page.clock.install();
+
         await test.step('Confirm the trade and get redirected to transaction detail', async () => {
+            await marketPage.changeTransactionWatchResponseTo('SUBMITTED');
             await marketPage.finishMockedTrade();
             await expect(watchRequestPromise).toHavePayload(expectedWatchRequestPayload, {
                 omit: ['partnerData'],

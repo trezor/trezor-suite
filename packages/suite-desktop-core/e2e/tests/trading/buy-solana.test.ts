@@ -14,24 +14,22 @@ const formattedFiatAmount = `CZK ${fiatAmount}`;
 const { receiveAddress, paymentMethodName } = buyTradeSolana.trade;
 
 test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () => {
-    test.beforeEach(async ({ marketPage, onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ page, marketPage, onboardingPage, dashboardPage }) => {
         await marketPage.mockInvity();
         await marketPage.mockInvityTrade(buyTradeSolana, 'sol');
+        await page.route(invityEndpoint.buyQuotes, async route => {
+            await route.fulfill({ json: buyQuotesSolana });
+        });
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
     });
 
     test('Buy specific crypto amount of Solana token', async ({
-        page,
         settingsPage,
         dashboardPage,
         walletPage,
         marketPage,
     }) => {
-        await page.route(invityEndpoint.buyQuotes, async route => {
-            await route.fulfill({ json: buyQuotesSolana });
-        });
-
         await test.step('Enable Solana and open its trading', async () => {
             await settingsPage.navigateTo('coins');
             await settingsPage.coins.enableNetwork('sol');
@@ -57,7 +55,6 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
                 capitalizeFirstLetter(provider),
             );
             await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
-            await marketPage.changeTransactionWatchResponseTo('SUCCESS');
             await marketPage.confirmTradeButton.click();
         });
 

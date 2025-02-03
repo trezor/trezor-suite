@@ -1,0 +1,34 @@
+{
+    "trade": {
+        "receiveAddress": "0x3f2329C9ADFbcCd9A84f52c906E936A42dA18CB8",
+        "paymentId": "a77943b27141cfc423ad5dd6df7f2865",
+        "status": "SUBMITTED",
+        "originalPaymentId": "c3025b52-8836-49f2-a7c9-07a2560d6034",
+        "partnerData": "https://trezor.banxa.com?expires=1738581904&id=f32568ce-fd75-44ed-a417-9e7e7d2f2a8c&oid=a77943b27141cfc423ad5dd6df7f2865&signature=14165f0d8e2d24af98efea79efddb9df4e808ac8baec1d5f0487d674e7b6f161",
+        "exchange": "banxa",
+        "fiatCurrency": "CZK",
+        "receiveCurrency": "ethereum",
+        "rate": 66290.62583937685,
+        "wantCrypto": false,
+        "exp": "OnGBiPZ211B633dTxSLnUA==",
+        "country": "CZ",
+        "paymentMethodName": "Credit Card",
+        "fiatStringAmount": "1234.00",
+        "receiveStringAmount": "0.01861500",
+        "minFiat": 600,
+        "maxFiat": 50000,
+        "minCrypto": 0.00946059,
+        "maxCrypto": 0.7883824,
+        "paymentMethod": "creditCard",
+        "quoteId": "6bb961d0-b927-46b0-97e9-338b6d6c95c6",
+        "orderId": "dd0d10bc-136a-41f0-8fff-9a760cd341fd",
+        "partnerData2": "6098"
+    },
+    "tradeForm": {
+        "form": {
+            "formMethod": "GET",
+            "formAction": "https://trezor.banxa.com?expires=1738581904&id=f32568ce-fd75-44ed-a417-9e7e7d2f2a8c&oid=a77943b27141cfc423ad5dd6df7f2865&signature=14165f0d8e2d24af98efea79efddb9df4e808ac8baec1d5f0487d674e7b6f161",
+            "fields": {}
+        }
+    }
+}

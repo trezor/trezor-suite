@@ -88,6 +88,7 @@ export class MarketActions {
     readonly buyTermsConfirmButton: Locator;
     readonly confirmOnTrezorButton: Locator;
     readonly confirmationSection: Locator;
+    readonly confirmationAccountDropdown: Locator;
     readonly confirmationCryptoAmount: Locator;
     readonly confirmationFiatAmount: Locator;
     readonly confirmationProvider: Locator;
@@ -153,6 +154,9 @@ export class MarketActions {
             '@trading/offer/confirm-on-trezor-button',
         );
         this.confirmationSection = this.page.getByTestId('@trading/selected-offer');
+        this.confirmationAccountDropdown = this.page.getByTestId(
+            '@trading/verify-options/account/input',
+        );
         this.confirmationCryptoAmount = this.page.getByTestId('@trading/form/info/crypto-amount');
         this.confirmationFiatAmount = this.page.getByTestId('@trading/form/info/fiat-amount');
         this.confirmationProvider = this.page.getByTestId('@trading/form/info/provider');

@@ -3,10 +3,12 @@ import { cloneDeep } from 'lodash';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import buyList from './buy/list.json';
+import buyQuotesBTC from './buy/quotes-bitcoin.json';
+import buyQuotesEthereum from './buy/quotes-ethereum.json';
 import buyQuotesSolana from './buy/quotes-solana.json';
-import buyQuotesBTC from './buy/quotes.json';
+import buyTradeBTC from './buy/trade-bitcoin.json';
+import buyTradeEthereum from './buy/trade-ethereum.json';
 import buyTradeSolana from './buy/trade-solana.json';
-import buyTradeBTC from './buy/trade.json';
 import buyWatch from './buy/watch.json';
 import exchangeCoins from './exchange/coins.json';
 import exchangeList from './exchange/list.json';
@@ -69,8 +71,10 @@ export {
     info,
     buyList,
     buyQuotesBTC,
+    buyQuotesEthereum,
     buyQuotesSolana,
     buyTradeBTC,
+    buyTradeEthereum,
     buyTradeSolana,
     buyWatch,
     sellList,
