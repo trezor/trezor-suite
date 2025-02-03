@@ -545,6 +545,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         DataManager.getSettings('env') === 'react-native'
                             ? GET_FEATURES_TIMEOUT_REACT_NATIVE
                             : GET_FEATURES_TIMEOUT;
+                    _log.debug('sending cancel');
+                    await cancelPrompt(this, true).catch(() => {});
+                    _log.debug('sending cancel done');
 
                     let getFeaturesTimeoutId: ReturnType<typeof setTimeout> | undefined;
 

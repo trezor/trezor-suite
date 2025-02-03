@@ -280,15 +280,22 @@ describe('DeviceList', () => {
         let readCount = 0;
         const transport = createTestTransport({
             read: () => {
-                let features = '3f232300110000000c1002180020006000aa010154'; // 2.0.0
-                if (readCount > 0) {
-                    features = `3f232300110000000c10021800200${1}6000aa010154`; // 2.0.1
+                let res = '';
+                if (readCount === 0) {
+                    // cancel response
+                    res = '3f2323000300000000000000000000000000000000';
+                } else if (readCount === 1) {
+                    // features
+                    res = '3f232300110000000c1002180020006000aa010154'; // 2.0.0;
+                } else {
+                    // features
+                    res = `3f232300110000000c10021800200${1}6000aa010154`; // 2.0.1
                 }
                 readCount++;
 
                 return Promise.resolve({
                     success: true,
-                    payload: Buffer.from(features, 'hex'),
+                    payload: Buffer.from(res, 'hex'),
                 });
             },
         });
