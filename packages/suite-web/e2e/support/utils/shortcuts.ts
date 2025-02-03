@@ -98,8 +98,8 @@ export const disableFirmwareHashCheck = () => {
     cy.getTestElement('@welcome-layout/body');
     cy.window().then(window => {
         window.store.dispatch({
-            type: SuiteActions.DEVICE_FIRMWARE_HASH_CHECK,
-            payload: { isDisabled: true },
+            type: SuiteActions.TOGGLE_FIRMWARE_HASH_CHECK,
+            payload: false,
         });
     });
 };

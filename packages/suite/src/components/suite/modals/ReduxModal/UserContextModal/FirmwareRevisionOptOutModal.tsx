@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Banner, Card, Column, H3, NewModal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { toggleCheckFirmwareAuthenticity } from 'src/actions/suite/suiteActions';
+import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
 import { CheckItem, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 
@@ -16,7 +16,7 @@ export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptO
     const dispatch = useDispatch();
 
     const handleTurningOffRevisionCheck = () => {
-        dispatch(toggleCheckFirmwareAuthenticity({ isDisabled: true }));
+        dispatch(toggleFirmwareAuthenticityChecks(false));
         onCancel();
     };
 

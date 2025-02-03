@@ -97,10 +97,10 @@ export type UserContextPayload =
           type: 'wipe-device';
       }
     | {
-          type: 'device-authenticity-opt-out';
+          type: 'device-authenticity-check-opt-out';
       }
     | {
-          type: 'firmware-revision-opt-out';
+          type: 'firmware-authenticity-checks-opt-out';
       }
     | {
           type: 'disconnect-device';

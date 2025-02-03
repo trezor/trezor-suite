@@ -118,8 +118,8 @@ export class OnboardingActions {
         // eslint-disable-next-line @typescript-eslint/no-shadow
         await this.page.evaluate(SuiteActions => {
             window.store.dispatch({
-                type: SuiteActions.DEVICE_FIRMWARE_HASH_CHECK,
-                payload: { isDisabled: true },
+                type: SuiteActions.TOGGLE_FIRMWARE_HASH_CHECK,
+                payload: false,
             });
             window.store.dispatch({
                 type: SuiteActions.SET_DEBUG_MODE,

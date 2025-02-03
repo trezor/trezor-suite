@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Banner, Card, Column, H3, NewModal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { deviceAuthenticityOptOut } from 'src/actions/suite/suiteActions';
+import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
 import { CheckItem, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 
@@ -16,7 +16,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
     const dispatch = useDispatch();
 
     const handleTurningOffRevisionCheck = () => {
-        dispatch(deviceAuthenticityOptOut(true));
+        dispatch(toggleDeviceAuthenticityCheck(false));
         onCancel();
     };
 

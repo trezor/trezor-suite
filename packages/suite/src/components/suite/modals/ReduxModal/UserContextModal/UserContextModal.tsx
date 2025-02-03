@@ -92,9 +92,9 @@ export const UserContextModal = ({
             return <BackgroundGalleryModal onCancel={onCancel} />;
         case 'wipe-device':
             return <WipeDeviceModal onCancel={onCancel} />;
-        case 'device-authenticity-opt-out':
+        case 'device-authenticity-check-opt-out':
             return <DeviceAuthenticityOptOutModal onCancel={onCancel} />;
-        case 'firmware-revision-opt-out':
+        case 'firmware-authenticity-checks-opt-out':
             return <FirmwareRevisionOptOutModal onCancel={onCancel} />;
         case 'qr-reader':
             return <QrScannerModal decision={payload.decision} onCancel={onCancel} />;

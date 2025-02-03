@@ -102,9 +102,12 @@ export interface SuiteSettings {
     isDesktopSuitePromoHidden: boolean;
     debug: DebugModeOptions;
     autodetect: AutodetectSettings;
-    isDeviceAuthenticityCheckDisabled: boolean;
-    isFirmwareRevisionCheckDisabled: boolean;
-    isFirmwareHashCheckDisabled: boolean;
+    enabledSecurityChecks: {
+        deviceAuthenticity: boolean;
+        entropy: boolean;
+        firmwareRevision: boolean;
+        firmwareHash: boolean;
+    };
     addressDisplayType: AddressDisplayOptions;
     defaultWalletLoading: WalletType;
     experimental?: ExperimentalFeature[];
@@ -173,9 +176,12 @@ const initialState: SuiteState = {
         torOnionLinks: isWeb(),
         isCoinjoinReceiveWarningHidden: false,
         isDesktopSuitePromoHidden: false,
-        isDeviceAuthenticityCheckDisabled: false,
-        isFirmwareRevisionCheckDisabled: false,
-        isFirmwareHashCheckDisabled: false,
+        enabledSecurityChecks: {
+            deviceAuthenticity: true,
+            entropy: true,
+            firmwareRevision: true,
+            firmwareHash: true,
+        },
         debug: {
             invityServerEnvironment: undefined,
             showDebugMenu: false,
@@ -342,14 +348,17 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.COINJOIN_RECEIVE_WARNING:
                 draft.settings.isCoinjoinReceiveWarningHidden = action.payload;
                 break;
-            case SUITE.DEVICE_AUTHENTICITY_OPT_OUT:
-                draft.settings.isDeviceAuthenticityCheckDisabled = action.payload;
+            case SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK:
+                draft.settings.enabledSecurityChecks.deviceAuthenticity = action.payload;
                 break;
-            case SUITE.DEVICE_FIRMWARE_REVISION_CHECK:
-                draft.settings.isFirmwareRevisionCheckDisabled = action.payload.isDisabled;
+            case SUITE.TOGGLE_FIRMWARE_REVISION_CHECK:
+                draft.settings.enabledSecurityChecks.firmwareRevision = action.payload;
                 break;
-            case SUITE.DEVICE_FIRMWARE_HASH_CHECK:
-                draft.settings.isFirmwareHashCheckDisabled = action.payload.isDisabled;
+            case SUITE.TOGGLE_FIRMWARE_HASH_CHECK:
+                draft.settings.enabledSecurityChecks.firmwareHash = action.payload;
+                break;
+            case SUITE.TOGGLE_ENTROPY_CHECK:
+                draft.settings.enabledSecurityChecks.entropy = action.payload;
                 break;
             case SUITE.LOCK_UI:
                 changeLock(draft, SUITE.LOCK_TYPE.UI, action.payload);
@@ -479,6 +488,15 @@ export const selectHasExperimentalFeature =
     (feature: ExperimentalFeature) => (state: SuiteRootState) =>
         state.suite.settings.experimental?.includes(feature) ?? false;
 
+export const selectIsDeviceAuthenticityCheckEnabled = (state: SuiteRootState) =>
+    state.suite.settings.enabledSecurityChecks.deviceAuthenticity;
+export const selectIsEntropyCheckEnabled = (state: SuiteRootState) =>
+    state.suite.settings.enabledSecurityChecks.entropy;
+export const selectIsFirmwareHashCheckEnabled = (state: SuiteRootState) =>
+    state.suite.settings.enabledSecurityChecks.firmwareHash;
+export const selectIsFirmwareRevisionCheckEnabled = (state: SuiteRootState) =>
+    state.suite.settings.enabledSecurityChecks.firmwareRevision;
+
 /**
  * Get firmware revision check error, or null if check was successful / skipped.
  */
@@ -497,7 +515,8 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
     const revisionCheckError = selectFirmwareRevisionCheckError(state);
     if (revisionCheckError === null) return null;
 
-    const { isFirmwareRevisionCheckDisabled } = state.suite.settings;
+    const isFirmwareRevisionCheckDisabled =
+        !state.suite.settings.enabledSecurityChecks.firmwareRevision;
     if (isFirmwareRevisionCheckDisabled) return null;
 
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck);
@@ -530,7 +549,7 @@ export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
     const hashCheckError = selectFirmwareHashCheckError(state);
     if (hashCheckError === null) return null;
 
-    const { isFirmwareHashCheckDisabled } = state.suite.settings;
+    const isFirmwareHashCheckDisabled = !state.suite.settings.enabledSecurityChecks.firmwareHash;
     if (isFirmwareHashCheckDisabled) return null;
 
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareHashCheck);

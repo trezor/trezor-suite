@@ -287,10 +287,12 @@ export const SecurityCheck = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
     const { initialRun } = useSelector(selectSuiteFlags);
-    const {
-        isDeviceAuthenticityCheckDisabled,
-        debug: { isUnlockedBootloaderAllowed },
-    } = useSelector(state => state.suite.settings);
+    const isDeviceAuthenticityCheckEnabled = useSelector(
+        state => state.suite.settings.enabledSecurityChecks.deviceAuthenticity,
+    );
+    const isUnlockedBootloaderAllowed = useSelector(
+        state => state.suite.settings.debug.isUnlockedBootloaderAllowed,
+    );
     const dispatch = useDispatch();
     const { goToSuite } = useOnboarding();
     const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(false);
@@ -303,7 +305,7 @@ export const SecurityCheck = () => {
         !!selectedDevice?.features?.internal_model &&
         SUPPORTS_DEVICE_AUTHENTICITY_CHECK[selectedDevice.features.internal_model] &&
         initialRun &&
-        !isDeviceAuthenticityCheckDisabled &&
+        isDeviceAuthenticityCheckEnabled &&
         !isDebugDevice(selectedDevice);
 
     // If there are multiple devices connected, check all of them before continuing to Suite.

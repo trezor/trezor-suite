@@ -22,7 +22,7 @@ import { DefaultWalletLoading } from './DefaultWalletLoading';
 import { DeviceAuthenticityOptOut } from './DeviceAuthenticityOptOut';
 import { DeviceLabel } from './DeviceLabel';
 import { DisplayRotation } from './DisplayRotation';
-import { FirmwareRevisionCheck } from './FirmwareRevisionCheck';
+import { FirmwareAuthenticityChecks } from './FirmwareAuthenticityChecks';
 import { FirmwareTypeChange } from './FirmwareTypeChange';
 import { FirmwareVersion } from './FirmwareVersion';
 import { HapticFeedback } from './HapticFeedback';
@@ -174,7 +174,7 @@ export const SettingsDevice = () => {
                 {isNormalMode && <WipeCode isDeviceLocked={isDeviceLocked} />}
                 <CustomFirmware />
                 {supportsDeviceAuthentication && <DeviceAuthenticityOptOut />}
-                <FirmwareRevisionCheck />
+                <FirmwareAuthenticityChecks />
             </SettingsSection>
         </SettingsLayout>
     );

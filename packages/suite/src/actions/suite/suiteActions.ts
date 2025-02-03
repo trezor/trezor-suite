@@ -38,9 +38,10 @@ export type SuiteAction =
     | { type: typeof SUITE.TOR_BOOTSTRAP; payload: TorBootstrap | null }
     | { type: typeof SUITE.ONION_LINKS; payload: boolean }
     | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
-    | { type: typeof SUITE.DEVICE_AUTHENTICITY_OPT_OUT; payload: boolean }
-    | { type: typeof SUITE.DEVICE_FIRMWARE_REVISION_CHECK; payload: { isDisabled: boolean } }
-    | { type: typeof SUITE.DEVICE_FIRMWARE_HASH_CHECK; payload: { isDisabled: boolean } }
+    | { type: typeof SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK; payload: boolean }
+    | { type: typeof SUITE.TOGGLE_FIRMWARE_REVISION_CHECK; payload: boolean }
+    | { type: typeof SUITE.TOGGLE_FIRMWARE_HASH_CHECK; payload: boolean }
+    | { type: typeof SUITE.TOGGLE_ENTROPY_CHECK; payload: boolean }
     | { type: typeof SUITE.COINJOIN_RECEIVE_WARNING; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | ReturnType<typeof lockDevice>
@@ -292,29 +293,25 @@ export const hideCoinjoinReceiveWarning = () => (dispatch: Dispatch) =>
         payload: true,
     });
 
-export const deviceAuthenticityOptOut = (payload: boolean) => (dispatch: Dispatch) => {
+export const toggleDeviceAuthenticityCheck = (enable: boolean) => (dispatch: Dispatch) => {
     dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
 
     dispatch({
-        type: SUITE.DEVICE_AUTHENTICITY_OPT_OUT,
-        payload,
+        type: SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK,
+        enable,
     });
 };
 
-export const toggleCheckFirmwareAuthenticity =
-    ({ isDisabled }: { isDisabled: boolean }) =>
-    (dispatch: Dispatch) => {
-        dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
+export const toggleFirmwareAuthenticityChecks = (enable: boolean) => (dispatch: Dispatch) => {
+    dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
 
+    [SUITE.TOGGLE_FIRMWARE_REVISION_CHECK, SUITE.TOGGLE_FIRMWARE_HASH_CHECK].forEach(type => {
         dispatch({
-            type: SUITE.DEVICE_FIRMWARE_REVISION_CHECK,
-            payload: { isDisabled },
+            type,
+            payload: enable,
         });
-        dispatch({
-            type: SUITE.DEVICE_FIRMWARE_HASH_CHECK,
-            payload: { isDisabled },
-        });
-    };
+    });
+};
 
 /**
  * Called from `suiteMiddleware`
