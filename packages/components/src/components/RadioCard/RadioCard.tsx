@@ -27,7 +27,7 @@ export type RadioCardProps = {
     onClick: () => void;
 } & AllowedFrameProps;
 
-const Wrapper = styled.div<{ isActive: boolean } & TransientProps<AllowedFrameProps>>`
+const Wrapper = styled.div<{ $isActive: boolean } & TransientProps<AllowedFrameProps>>`
     position: relative;
     width: 100%;
     border-radius: ${borders.radii.md};
@@ -42,8 +42,8 @@ const Wrapper = styled.div<{ isActive: boolean } & TransientProps<AllowedFramePr
         outline-color: ${({ theme }) => theme.borderInputDefault};
     }
 
-    ${({ isActive }) =>
-        isActive &&
+    ${({ $isActive }) =>
+        $isActive &&
         css`
             outline-width: ${borders.widths.large};
             outline-color: ${({ theme }) => theme.borderSecondary} !important;
@@ -63,7 +63,7 @@ export const RadioCard = ({ isActive, onClick, children, ...rest }: RadioCardPro
     const frameProps = pickAndPrepareFrameProps(rest, allowedRadioCardFrameProps);
 
     return (
-        <Wrapper isActive={isActive} onClick={onClick} {...frameProps}>
+        <Wrapper $isActive={isActive} onClick={onClick} {...frameProps}>
             {isActive && (
                 <Box position={{ type: 'absolute', top: '-3px', right: '-3px' }}>
                     <IconWrapper>
