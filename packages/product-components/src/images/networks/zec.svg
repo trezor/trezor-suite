@@ -1,0 +1,14 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<style>
+@media (prefers-color-scheme: dark) {
+    .background {
+        fill: #F6F6F6;
+    }
+    .foreground {
+        fill: #1F1F1F;
+    }
+}
+</style>
+<path class="background" d="M0 8C0 3.58172 3.58172 0 8 0H24C28.4183 0 32 3.58172 32 8V24C32 28.4183 28.4183 32 24 32H8C3.58172 32 0 28.4183 0 24V8Z" fill="#1F1F1F"/>
+<path class="foreground" d="M21.1634 11.3732V9.13414H17.1488V6.6666H14.6812V9.13414H10.6666V12.1043H16.8876L10.6666 20.5514V22.7905H14.6812V25.2515H17.1488V22.7905H21.1634V19.8203H14.9358L21.1634 11.3732Z" fill="white"/>
+</svg>

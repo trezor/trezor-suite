@@ -1,0 +1,14 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<style>
+@media (prefers-color-scheme: dark) {
+    .background {
+        fill: #F6F6F6;
+    }
+    .foreground {
+        fill: #1F1F1F;
+    }
+}
+</style>
+<path class="background" d="M0 8C0 3.58172 3.58172 0 8 0H24C28.4183 0 32 3.58172 32 8V24C32 28.4183 28.4183 32 24 32H8C3.58172 32 0 28.4183 0 24V8Z" fill="#1F1F1F"/>
+<path class="foreground" fill-rule="evenodd" clip-rule="evenodd" d="M15.7057 11.7111L10.2031 14.0307L15.6973 5.66676L21.039 14.09L15.7057 11.7111ZM15.7142 21.7873L10.2201 17.6042L15.765 26.3332L21.3184 17.6042L15.7142 21.7873ZM10 16.2572L15.7312 13.8445L21.3015 16.3249L15.7312 19.4403L10 16.2572Z" fill="#F6F6F6"/>
+</svg>

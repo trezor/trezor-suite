@@ -17,6 +17,8 @@ import {
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
+const LOGO_SIZE = 36;
+
 const rotateIn = keyframes`
     from {
         transform: translateY(100%);
@@ -47,8 +49,8 @@ const getAnimation = ($isBalanceShown: boolean, $shouldAnimate: boolean) => {
 
 const DetailsContainer = styled.div<{ $isBalanceShown: boolean; $shouldAnimate: boolean }>`
     display: flex;
-    flex-direction: column;
-    justify-content: ${({ $isBalanceShown }) => ($isBalanceShown ? 'space-between' : 'center')};
+    gap: ${spacingsPx.sm};
+    align-items: center;
     animation: ${({ $isBalanceShown, $shouldAnimate }) =>
             getAnimation($isBalanceShown, $shouldAnimate)}
         0.3s forwards;
@@ -107,51 +109,55 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
 
     return (
         <DetailsContainer $isBalanceShown={isBalanceShown} $shouldAnimate={shouldAnimate}>
-            <AccountHeading $isBalanceShown={isBalanceShown}>
-                <MetadataLabeling
-                    accountType={accountType}
-                    networkType={selectedAccount.networkType}
-                    path={path}
-                    defaultVisibleValue={
-                        <AccountLabel
-                            showAccountTypeBadge
-                            accountLabel={selectedAccountLabels.accountLabel}
-                            accountType={accountType}
-                            symbol={selectedAccount.symbol}
-                            index={index}
-                            path={path}
-                            networkType={selectedAccount.networkType}
-                        />
-                    }
-                    payload={{
-                        type: 'accountLabel',
-                        entityKey: key,
-                        defaultValue: path,
-                        value: selectedAccountLabels.accountLabel,
-                    }}
-                    defaultEditableValue={getDefaultAccountLabel({ accountType, symbol, index })}
-                    updateFlag={isBalanceShown}
-                />
-            </AccountHeading>
-            {isBalanceShown && (
-                <AccountBalance>
-                    <CryptoBalance>
+            <CoinLogo size={LOGO_SIZE} symbol={symbol} type="badge" />
+            <div>
+                <AccountHeading $isBalanceShown={isBalanceShown}>
+                    <MetadataLabeling
+                        accountType={accountType}
+                        networkType={selectedAccount.networkType}
+                        path={path}
+                        defaultVisibleValue={
+                            <AccountLabel
+                                showAccountTypeBadge
+                                accountLabel={selectedAccountLabels.accountLabel}
+                                accountType={accountType}
+                                symbol={selectedAccount.symbol}
+                                index={index}
+                                path={path}
+                                networkType={selectedAccount.networkType}
+                            />
+                        }
+                        payload={{
+                            type: 'accountLabel',
+                            entityKey: key,
+                            defaultValue: path,
+                            value: selectedAccountLabels.accountLabel,
+                        }}
+                        defaultEditableValue={getDefaultAccountLabel({
+                            accountType,
+                            symbol,
+                            index,
+                        })}
+                        updateFlag={isBalanceShown}
+                    />
+                </AccountHeading>
+                {isBalanceShown && (
+                    <AccountBalance>
+                        <CryptoBalance>
+                            <AmountUnitSwitchWrapper symbol={symbol}>
+                                <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
+                            </AmountUnitSwitchWrapper>
+                        </CryptoBalance>
                         <ForegroundWrapper>
-                            <CoinLogo size={16} symbol={symbol} />
+                            <FiatValue
+                                amount={formattedBalance}
+                                symbol={symbol}
+                                showApproximationIndicator
+                            />
                         </ForegroundWrapper>
-                        <AmountUnitSwitchWrapper symbol={symbol}>
-                            <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
-                        </AmountUnitSwitchWrapper>
-                    </CryptoBalance>
-                    <ForegroundWrapper>
-                        <FiatValue
-                            amount={formattedBalance}
-                            symbol={symbol}
-                            showApproximationIndicator
-                        />
-                    </ForegroundWrapper>
-                </AccountBalance>
-            )}
+                    </AccountBalance>
+                )}
+            </div>
         </DetailsContainer>
     );
 };

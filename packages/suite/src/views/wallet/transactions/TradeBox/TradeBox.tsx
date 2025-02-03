@@ -78,7 +78,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         gap={isBelowMobile ? spacings.md : spacings.xxxl}
                     >
                         <Row gap={spacings.sm}>
-                            <CoinLogo size={24} symbol={account.symbol} />
+                            <CoinLogo size={36} symbol={account.symbol} type="badge" />
                             <InfoItem
                                 label={getNetworkDisplaySymbolName(account.symbol)}
                                 typographyStyle="highlight"

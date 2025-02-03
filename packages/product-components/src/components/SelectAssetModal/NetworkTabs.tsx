@@ -97,7 +97,7 @@ export const NetworkTabs = ({
                     >
                         <Row gap={spacings.xxs}>
                             {network.tradeCryptoId && (
-                                <CoinLogo size={20} symbol={network.symbol} />
+                                <CoinLogo size={20} symbol={network.symbol} type="coin" />
                             )}
                             {network.name}
                         </Row>

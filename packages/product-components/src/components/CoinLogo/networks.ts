@@ -1,0 +1,26 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
+export const NETWORK_ICONS: Record<NetworkSymbol, string> = {
+    ada: require('../../images/networks/ada.svg'),
+    arb: require('../../images/networks/arb.svg'),
+    base: require('../../images/networks/base.svg'),
+    bch: require('../../images/networks/bch.svg'),
+    bsc: require('../../images/networks/bsc.svg'),
+    btc: require('../../images/networks/btc.svg'),
+    doge: require('../../images/networks/doge.svg'),
+    dsol: require('../../images/networks/dsol.svg'),
+    etc: require('../../images/networks/etc.svg'),
+    eth: require('../../images/networks/eth.svg'),
+    ltc: require('../../images/networks/ltc.svg'),
+    op: require('../../images/networks/op.svg'),
+    pol: require('../../images/networks/pol.svg'),
+    regtest: require('../../images/networks/btc_test.svg'),
+    sol: require('../../images/networks/sol.svg'),
+    tada: require('../../images/networks/tada.svg'),
+    test: require('../../images/networks/btc_test.svg'),
+    thol: require('../../images/networks/thol.svg'),
+    tsep: require('../../images/networks/tsep.svg'),
+    txrp: require('../../images/networks/txrp.svg'),
+    xrp: require('../../images/networks/xrp.svg'),
+    zec: require('../../images/networks/zec.svg'),
+};
