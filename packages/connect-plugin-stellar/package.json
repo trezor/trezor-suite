@@ -23,8 +23,10 @@
         "main": "lib/index.js"
     },
     "exports": {
-        "node": "./lib/index.js",
-        "default": "./libESM/index.js"
+        ".": {
+            "import": "./libESM/index.js",
+            "require": "./lib/index.js"
+        }
     },
     "files": [
         "lib/",
