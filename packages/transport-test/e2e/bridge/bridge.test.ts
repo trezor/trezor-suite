@@ -319,4 +319,43 @@ describe('bridge', () => {
             await Promise.all([bridge.receive({ session }), bridge.enumerate()]);
         });
     }
+
+    test.only('call and abort', async () => {
+        const promise = bridge.call({ session, name: 'GetFeatures', data: {} });
+        await Promise.resolve();
+        bridge.stop();
+        expect(promise).resolves.toMatchObject({
+            error: 'Aborted by signal',
+            message: undefined,
+            success: false,
+        });
+
+        const bridge2 = new BridgeTransport({ messages, id: '' });
+        expect(await bridge2.init()).toMatchObject({ success: true });
+
+        // enumerate
+        const enumerateResult = await bridge2.enumerate();
+
+        // acquire
+        const acquireResult = await bridge2.acquire({
+            input: { path: descriptors[0].path, previous: session },
+        });
+
+        // getFeatures
+        const message = await bridge2.call({
+            session: acquireResult.payload,
+            name: 'GetFeatures',
+            data: {},
+        });
+
+        console.log('message', message);
+
+        // double release
+        bridge2.release({ session: acquireResult.payload });
+        await bridge2.release({ session: acquireResult.payload });
+
+        // enumerate
+        const enumerateResult2 = await bridge2.enumerate();
+        console.log('enumerateResult2', enumerateResult2);
+    });
 });
