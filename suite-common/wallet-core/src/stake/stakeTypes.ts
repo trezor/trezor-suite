@@ -87,6 +87,5 @@ export type UnstakeContextValues = UseFormReturn<UnstakeFormState> &
         formState: ReactHookFormState<StakeFormState>;
         onCryptoAmountChange: (amount: string) => Promise<void>;
         onFiatAmountChange: (amount: string) => void;
-        onOptionChange: (amount: string) => Promise<void>;
         currentRate: Rate | undefined;
     };

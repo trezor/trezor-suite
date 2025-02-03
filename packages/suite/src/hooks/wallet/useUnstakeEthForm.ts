@@ -39,13 +39,9 @@ import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
 import { useFormDraft } from './useFormDraft';
 
-type UnstakeOptions = 'all' | 'rewards' | 'other';
-
 type UnstakeContextValues = UnstakeContextValuesBase & {
     amountLimits: AmountLimitProps;
     approximatedInstantEthAmount?: string | null;
-    unstakeOption: UnstakeOptions;
-    setUnstakeOption: (option: UnstakeOptions) => void;
     setRatioAmount: (divisor: number) => void;
 };
 
@@ -59,7 +55,6 @@ export const useUnstakeEthForm = ({
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
     );
-    const [unstakeOption, setUnstakeOption] = useState<UnstakeOptions>('all');
 
     const { account, network } = selectedAccount;
     const { symbol } = account;
@@ -234,18 +229,6 @@ export const useUnstakeEthForm = ({
         [composeRequest, currentRate, network.decimals, setValue],
     );
 
-    const onOptionChange = useCallback(
-        async (amount: string) => {
-            clearErrors([CRYPTO_INPUT, FIAT_INPUT]);
-            setValue(CRYPTO_INPUT, amount, {
-                shouldDirty: true,
-                shouldValidate: true,
-            });
-            await onCryptoAmountChange(amount);
-        },
-        [clearErrors, onCryptoAmountChange, setValue],
-    );
-
     const setRatioAmount = useCallback(
         async (divisor: number) => {
             setValue(CRYPTO_INPUT, undefined, { shouldDirty: true });
@@ -299,14 +282,11 @@ export const useUnstakeEthForm = ({
         clearForm,
         signTx,
         clearErrors,
-        onOptionChange,
         setRatioAmount,
         currentRate,
         feeInfo,
         changeFeeLevel,
         approximatedInstantEthAmount,
-        unstakeOption,
-        setUnstakeOption,
     };
 };
 
