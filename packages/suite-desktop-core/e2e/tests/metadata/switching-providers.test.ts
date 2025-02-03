@@ -4,7 +4,7 @@ import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
 
 test.describe(
     'Metadata - switching between cloud providers',
-    { tag: ['@group=metadata', '@webOnly'] },
+    { tag: ['@group=metadata2', '@webOnly'] },
     () => {
         const dropboxLabel = 'dropbox label';
         const googleLabel = 'google label';

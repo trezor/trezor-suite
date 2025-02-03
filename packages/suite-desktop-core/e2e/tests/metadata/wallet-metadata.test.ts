@@ -4,7 +4,7 @@ import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
 const standardWalletIndex = 0;
 const hiddenWalletIndex = 1;
 
-test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly'] }, () => {
+test.describe('Metadata - wallet labeling', { tag: ['@group=metadata2', '@webOnly'] }, () => {
     test.beforeEach(async ({ onboardingPage, dashboardPage, metadataProviderMock }) => {
         await metadataProviderMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding({ enableViewOnly: true });

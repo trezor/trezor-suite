@@ -4,7 +4,7 @@ import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
 
 test.describe(
     'Metadata - cancel metadata on device',
-    { tag: ['@group=metadata', '@webOnly'] },
+    { tag: ['@group=metadata2', '@webOnly'] },
     () => {
         test.use({
             emulatorSetupConf: {

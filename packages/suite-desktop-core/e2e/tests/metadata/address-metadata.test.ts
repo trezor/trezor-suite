@@ -3,7 +3,7 @@ import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
 
 const metadataEl = '@metadata/addressLabel/bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m';
 
-test.describe('Metadata - address labeling', { tag: ['@group=metadata', '@webOnly'] }, () => {
+test.describe('Metadata - address labeling', { tag: ['@group=metadata1', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ metadataProviderMock }) => {
         await metadataProviderMock.start(MetadataProvider.GOOGLE);
