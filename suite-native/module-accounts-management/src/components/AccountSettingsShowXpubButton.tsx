@@ -6,6 +6,7 @@ import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { XpubQRCodeBottomSheet } from '@suite-native/qr-code';
+import { convertTaprootXpub } from '@trezor/utils';
 
 export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: string }) => {
     const account = useSelector((state: AccountsRootState) =>
@@ -15,6 +16,11 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
     const [isXpubVisible, setIsXpubVisible] = useState(false);
 
     if (!account) return null;
+
+    // Suite uses apostrophe in Taproot descriptors but FW uses 'h' – make sure they match.
+    const accountXpub =
+        convertTaprootXpub({ xpub: account.descriptor, direction: 'apostrophe-to-h' }) ??
+        account.descriptor;
 
     const handleClose = () => {
         setIsXpubVisible(false);
@@ -40,12 +46,11 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
             >
                 {buttonTitle}
             </Button>
-
             <XpubQRCodeBottomSheet
                 isVisible={isXpubVisible}
                 onClose={handleClose}
                 symbol={account.symbol}
-                qrCodeData={account.descriptor}
+                qrCodeData={accountXpub}
             />
         </>
     );

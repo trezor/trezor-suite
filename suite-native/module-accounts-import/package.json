@@ -43,6 +43,7 @@
         "@suite-native/video-assets": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "react": "18.2.0",
         "react-hook-form": "^7.54.2",

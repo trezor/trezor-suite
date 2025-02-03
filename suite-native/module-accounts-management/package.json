@@ -37,6 +37,7 @@
         "@suite-native/tokens": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@trezor/styles": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0",
         "jotai": "1.9.1",
         "react": "18.2.0",

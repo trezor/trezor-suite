@@ -23,6 +23,7 @@ import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
 import { isCoinWithTokens } from '@suite-native/tokens';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import { convertTaprootXpub } from '@trezor/utils';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 
 import { paymentTypeToAccountType } from './constants';
@@ -90,6 +91,12 @@ export const getAccountInfoThunk = createThunk<
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
     async ({ symbol, fiatCurrency, xpubAddress }, { dispatch, rejectWithValue, getState }) => {
+        // Connect requires apostrophe in Taproot descriptors thus a conversion is necessary.
+        const taprootXpubWithApostrophes = convertTaprootXpub({
+            xpub: xpubAddress,
+            direction: 'h-to-apostrophe',
+        });
+
         try {
             const [fetchedAccountInfo] = await Promise.all([
                 TrezorConnect.getAccountInfo({
@@ -99,7 +106,7 @@ export const getAccountInfoThunk = createThunk<
                               deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
                           })
                         : undefined,
-                    descriptor: xpubAddress,
+                    descriptor: taprootXpubWithApostrophes ?? xpubAddress,
                     details: 'txs',
                     suppressBackupWarning: true,
                 }),

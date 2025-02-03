@@ -43,6 +43,7 @@
         { "path": "../video-assets" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
+        { "path": "../../packages/utils" },
         { "path": "../../packages/utxo-lib" }
     ],
     "include": [".", "**/*.json"]
