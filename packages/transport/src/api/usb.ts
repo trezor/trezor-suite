@@ -234,6 +234,11 @@ export class UsbApi extends AbstractApi {
         try {
             // https://wicg.github.io/webusb/#ref-for-dom-usbdevice-transferout
             this.logger?.debug('usb: device.transferOut');
+
+            const timeout = setTimeout(() => {
+                device?.reset();
+            }, 1000);
+
             const result = await this.abortableMethod(
                 () =>
                     device.transferOut(
@@ -242,6 +247,7 @@ export class UsbApi extends AbstractApi {
                     ),
                 { signal, onAbort: () => this.synchronizeDeviceReset(() => device?.reset()) },
             );
+            clearTimeout(timeout);
             this.logger?.debug(`usb: device.transferOut done.`);
             if (result.status !== 'ok') {
                 this.logger?.error(`usb: device.transferOut status not ok: ${result.status}`);
