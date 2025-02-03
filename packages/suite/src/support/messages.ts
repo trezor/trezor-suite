@@ -4899,15 +4899,6 @@ export default defineMessages({
         defaultMessage:
             "Adds an NFT section to EVM-based chain accounts, allowing you to view NFTs. Note: Sending NFTs isn't currently supported.",
     },
-    TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT: {
-        id: 'TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT',
-        defaultMessage: 'Support Ethereum L2 networks',
-    },
-    TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION: {
-        id: 'TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION',
-        defaultMessage:
-            'Enable support for Arbitrum One, Base, and Optimism networks in coin settings.',
-    },
     TR_EXPERIMENTAL_FEATURES_ALLOW: {
         id: 'TR_EXPERIMENTAL_FEATURES_ALLOW',
         defaultMessage: 'Experimental features',
