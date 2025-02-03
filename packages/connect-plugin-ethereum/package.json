@@ -28,8 +28,10 @@
         "!**/*.map"
     ],
     "exports": {
-        "node": "./lib/index.js",
-        "default": "./libESM/index.js"
+        ".": {
+            "import": "./libESM/index.js",
+            "require": "./lib/index.js"
+        }
     },
     "peerDependencies": {
         "@metamask/eth-sig-util": "^8.0.0",
