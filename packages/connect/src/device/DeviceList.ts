@@ -522,23 +522,32 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.devices.all().find(d => d.features?.device_id === deviceId);
     }
 
-    async dispose() {
+    dispose() {
         this.removeAllListeners();
 
         const promises = typedObjectKeys(this.transport)
             .concat(typedObjectKeys(this.locks))
             .filter(arrayDistinct)
-            .map(apiType =>
+            .map(apiType => {
                 this.transportLock(apiType, 'Disposing', async () => {
                     const transport = this.transport[apiType];
-                    if (transport) {
-                        delete this.transport[apiType];
-                        await this.stopTransport(transport);
-                    }
-                }),
-            );
 
-        await Promise.all(promises);
+                    if (transport && 'sendBeacon' in transport) {
+                        this.getAllDevices().forEach(d => {
+                            if (d.getLocalSession()) {
+                                // transport.sendBeacon(d.getLocalSession());
+                            }
+                        });
+                    }
+
+                    // if (transport) {
+                    //     delete this.transport[apiType];
+                    //     this.stopTransport(transport);
+                    // }
+                });
+            });
+
+        Promise.all(promises);
     }
 
     private async stopTransport(transport: Transport) {

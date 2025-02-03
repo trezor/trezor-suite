@@ -309,6 +309,10 @@ export class BridgeTransport extends AbstractTransport {
         );
     }
 
+    public sendBeacon(session: string): void {
+        navigator.sendBeacon(`${this.url}/release/${session}?beacon=1`);
+    }
+
     /**
      * All bridge endpoints use POST methods
      * For documentation, look here: https://github.com/trezor/trezord-go#api-documentation
