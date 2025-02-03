@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
-import { cryptoIdToNetwork, isCryptoIdForNativeToken, parseCryptoId } from '@suite-common/trading';
+import { parseCryptoId } from '@suite-common/trading';
 import { AssetLogo } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
 
 import { TradingCoinLogoProps } from 'src/types/trading/trading';
 
@@ -15,11 +14,6 @@ export const TradingCoinLogo = ({
     className,
 }: TradingCoinLogoProps) => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
-    const network = cryptoIdToNetwork(cryptoId);
-
-    if (isCryptoIdForNativeToken(cryptoId) && network) {
-        return <CoinLogo size={size} symbol={network.symbol} />;
-    }
 
     return (
         <Wrapper className={className}>

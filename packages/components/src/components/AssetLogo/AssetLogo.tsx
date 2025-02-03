@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { getNetwork, getNetworkByCoingeckoId, isNetworkSymbol } from '@suite-common/wallet-config';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
@@ -59,6 +60,29 @@ const ElevatedLogo = (props: LogoProps) => {
     return <Logo {...props} $elevation={elevation} />;
 };
 
+export const getCoingeckoIdAndContractAddressIncludesNativeTokens = (
+    coingeckoId: string,
+    contractAddress: string | undefined,
+) => {
+    const mainNetworkSymbol = getNetworkByCoingeckoId(coingeckoId)?.displaySymbol.toLowerCase();
+
+    if (
+        contractAddress === '0x0000000000000000000000000000000000000000' &&
+        mainNetworkSymbol &&
+        isNetworkSymbol(mainNetworkSymbol)
+    ) {
+        return {
+            coingeckoId: getNetwork(mainNetworkSymbol).tradeCryptoId ?? coingeckoId,
+            contractAddress: undefined,
+        };
+    }
+
+    return {
+        coingeckoId,
+        contractAddress,
+    };
+};
+
 export const AssetLogo = ({
     size,
     coingeckoId,
@@ -71,9 +95,18 @@ export const AssetLogo = ({
 }: AssetLogoProps) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isPlaceholder, setIsPlaceholder] = useState(!shouldTryToFetch);
+    const { coingeckoId: coingeckoIdLogo, contractAddress: contractAddressLogo } =
+        getCoingeckoIdAndContractAddressIncludesNativeTokens(coingeckoId, contractAddress);
 
-    const logoUrl = getAssetLogoUrl({ coingeckoId, contractAddress });
-    const logoUrl2x = getAssetLogoUrl({ coingeckoId, contractAddress, quality: '@2x' });
+    const logoUrl = getAssetLogoUrl({
+        coingeckoId: coingeckoIdLogo,
+        contractAddress: contractAddressLogo,
+    });
+    const logoUrl2x = getAssetLogoUrl({
+        coingeckoId: coingeckoIdLogo,
+        contractAddress: contractAddressLogo,
+        quality: '@2x',
+    });
 
     const frameProps = pickAndPrepareFrameProps(rest, allowedAssetLogoFrameProps);
 

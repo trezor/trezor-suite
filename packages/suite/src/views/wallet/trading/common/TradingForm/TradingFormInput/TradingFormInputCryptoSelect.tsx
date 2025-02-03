@@ -122,16 +122,13 @@ export const TradingFormInputCryptoSelect = <
                     if (!network) return null;
 
                     const { symbol } = network;
-                    const isNativeToken = isCryptoIdForNativeToken(option.value);
-                    // for native tokens (eg. base) to use tradeCryptoId
-                    const coingeckoId = isNativeToken ? network.tradeCryptoId : option.coingeckoId;
 
                     return {
                         ...option,
                         ticker: option.ticker || option.label,
                         symbol,
                         contractAddress: option.contractAddress ?? null,
-                        coingeckoId,
+                        coingeckoId: option.coingeckoId,
                     };
                 })
                 .filter(option => option !== null),
