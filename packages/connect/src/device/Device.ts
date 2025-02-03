@@ -375,6 +375,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         error.code === 'Device_InitializeFailed'
                     ) {
                         this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
+                        // todo: shouldn't we enumerate here to prevent the case where backend has a different session from the local one and acquiring
+                        // keeps returning "wrong previous session"?
                     } else if (
                         // device was claimed by another application on transport api layer (claimInterface in usb nomenclature) but never released (releaseInterface in usb nomenclature)
                         // the only remedy for this is to reconnect device manually
