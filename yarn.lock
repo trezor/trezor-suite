@@ -12960,6 +12960,7 @@ __metadata:
   resolution: "@trezor/websocket-client@workspace:packages/websocket-client"
   dependencies:
     "@trezor/utils": "workspace:*"
+    tsx: "npm:^4.16.3"
     ws: "npm:^8.18.0"
   peerDependencies:
     tslib: ^2.6.2

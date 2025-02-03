@@ -52,5 +52,8 @@
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
+    },
+    "devDependencies": {
+        "tsx": "^4.16.3"
     }
 }
