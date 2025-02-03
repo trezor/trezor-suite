@@ -114,7 +114,7 @@ const Label = styled.label<{
 export interface SwitchProps {
     isChecked: boolean;
     label?: ReactNode;
-    onChange: (isChecked?: boolean) => void;
+    onChange: (isChecked: boolean) => void;
     isDisabled?: boolean;
     isAlert?: boolean;
     isSmall?: boolean; // TODO: legacy prop

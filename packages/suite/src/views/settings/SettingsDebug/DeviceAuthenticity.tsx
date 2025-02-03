@@ -8,7 +8,7 @@ export const DeviceAuthenticity = () => {
     const dispatch = useDispatch();
     const debug = useSelector(state => state.suite.settings.debug);
 
-    const handleChange = (state?: boolean) =>
+    const handleChange = (state: boolean) =>
         dispatch(setDebugMode({ isUnlockedBootloaderAllowed: state }));
 
     return (

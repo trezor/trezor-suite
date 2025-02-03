@@ -15,20 +15,20 @@ export const CheckFirmwareAuthenticity = () => {
     const isFirmwareHashCheckEnabled = useSelector(selectIsFirmwareHashCheckEnabled);
     const isFirmwareRevisionCheckEnabled = useSelector(selectIsFirmwareRevisionCheckEnabled);
 
-    const toggleEntropyCheck = (isChecked?: boolean) =>
+    const toggleEntropyCheck = (isChecked: boolean) =>
         dispatch({
             type: SUITE.TOGGLE_ENTROPY_CHECK,
-            payload: !!isChecked,
+            payload: isChecked,
         });
-    const toggleFirmwareHashCheck = (isChecked?: boolean) =>
+    const toggleFirmwareHashCheck = (isChecked: boolean) =>
         dispatch({
             type: SUITE.TOGGLE_FIRMWARE_HASH_CHECK,
-            payload: !!isChecked,
+            payload: isChecked,
         });
-    const toggleFirmwareRevisionCheck = (isChecked?: boolean) =>
+    const toggleFirmwareRevisionCheck = (isChecked: boolean) =>
         dispatch({
             type: SUITE.TOGGLE_FIRMWARE_REVISION_CHECK,
-            payload: !!isChecked,
+            payload: isChecked,
         });
 
     return (
