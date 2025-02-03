@@ -18,8 +18,13 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
     });
 
     // #15646 This test is failing and has no values since the launchSuite starts legacy bridge in emulator anyway
-    test.skip('App spawns bundled bridge and stops it after app quit', async ({ request }) => {
-        const suite = await launchSuite();
+    test.skip('App spawns bundled bridge and stops it after app quit', async ({
+        request,
+    }, testInfo) => {
+        const suite = await launchSuite({
+            videoFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
+        });
         const title = await suite.window.title();
         expect(title).toContain('Trezor Suite');
 
@@ -51,7 +56,10 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         await trezorUserEnvLink.setupEmu({});
         await trezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
 
-        const suite = await launchSuite();
+        const suite = await launchSuite({
+            videoFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
+        });
         await suite.window.title();
 
         const devicePrompt = new DevicePromptActions(suite.window);

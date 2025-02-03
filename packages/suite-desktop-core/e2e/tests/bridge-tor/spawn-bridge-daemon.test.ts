@@ -13,10 +13,12 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         await trezorUserEnvLink.stopBridge();
     });
 
-    test('App in daemon mode spawns bridge', async ({ request }) => {
+    test('App in daemon mode spawns bridge', async ({ request }, testInfo) => {
         const daemonApp = await launchSuiteElectronApp({
             bridgeDaemon: true,
             bridgeLegacyTest: false,
+            videoFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
         });
 
         await expect(async () => {
@@ -24,7 +26,10 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         }).toPass({ timeout: 3_000 });
 
         // launch UI
-        const suite = await launchSuite();
+        const suite = await launchSuite({
+            videoFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
+        });
         const title = await suite.window.title();
         expect(title).toContain('Trezor Suite');
 

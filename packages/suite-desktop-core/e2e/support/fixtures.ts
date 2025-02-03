@@ -105,6 +105,7 @@ const test = base.extend<Fixtures>({
                 locale,
                 colorScheme,
                 videoFolder: testInfo.outputDir,
+                viewport: testInfo.project.use.viewport!,
             });
             await use(suite.window);
             await suite.electronApp.close(); // Ensure cleanup after tests

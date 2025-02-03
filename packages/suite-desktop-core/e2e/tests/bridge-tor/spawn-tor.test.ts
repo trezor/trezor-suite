@@ -33,16 +33,21 @@ const turnOnTorInSettings = async (window: Page, shouldEnableTor = true) => {
 };
 
 test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly'] }, () => {
-    test('Tor loading screen: happy path', async () => {
+    /* eslint-disable-next-line no-empty-pattern */
+    test('Tor loading screen: happy path', async ({}, testInfo) => {
+        const suiteArgs = {
+            videoFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
+        };
         test.setTimeout(timeout);
 
-        let suite = await launchSuite();
+        let suite = await launchSuite(suiteArgs);
 
         await turnOnTorInSettings(suite.window);
 
         suite.electronApp.close();
 
-        suite = await launchSuite();
+        suite = await launchSuite(suiteArgs);
 
         await suite.window.waitForSelector('[data-testid="@tor-loading-screen"]', {
             state: 'visible',
@@ -53,18 +58,22 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
         suite.electronApp.close();
     });
 
-    test('Tor loading screen: making sure that all the request go throw Tor', async () => {
-        test.setTimeout(timeout);
+    /* eslint-disable-next-line no-empty-pattern */
+    test('Tor loading screen: making sure that all the request go throw Tor', async ({}, testInfo) => {
+        const suiteArgs = {
+            videoFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
+        };
 
         const networkAnalyzer = new NetworkAnalyzer();
 
-        let suite = await launchSuite();
+        let suite = await launchSuite(suiteArgs);
 
         await turnOnTorInSettings(suite.window);
 
         suite.electronApp.close();
 
-        suite = await launchSuite();
+        suite = await launchSuite(suiteArgs);
         // Start network analyzer after making sure tor is going to be running.
         networkAnalyzer.start();
 
@@ -82,16 +91,21 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
         suite.electronApp.close();
     });
 
-    test('Tor loading screen: disable tor while loading', async () => {
+    /* eslint-disable-next-line no-empty-pattern */
+    test('Tor loading screen: disable tor while loading', async ({}, testInfo) => {
+        const suiteArgs = {
+            videoFolder: testInfo.outputDir,
+            viewport: testInfo.project.use.viewport!,
+        };
         test.setTimeout(timeout);
 
-        let suite = await launchSuite();
+        let suite = await launchSuite(suiteArgs);
 
         await turnOnTorInSettings(suite.window);
 
         suite.electronApp.close();
 
-        suite = await launchSuite();
+        suite = await launchSuite(suiteArgs);
 
         await suite.window.waitForSelector('[data-testid="@tor-loading-screen"]', {
             state: 'visible',

@@ -21,7 +21,8 @@ type LaunchSuiteParams = {
     bridgeDaemon?: boolean;
     locale?: string;
     colorScheme?: 'light' | 'dark' | 'no-preference' | null | undefined;
-    videoFolder?: string;
+    videoFolder: string;
+    viewport: { width: number; height: number };
 };
 
 const formatErrorLogMessage = (data: string) => {
@@ -31,7 +32,7 @@ const formatErrorLogMessage = (data: string) => {
     return `${red}${data}${reset}`;
 };
 
-export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => {
+export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     const defaultParams = {
         rmUserData: true,
         bridgeLegacyTest: true,
@@ -40,7 +41,8 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
     const options = Object.assign(defaultParams, params);
 
     const appDir = path.join(__dirname, '../../../suite-desktop');
-    const desiredLogLevel = process.env.LOGLEVEL ?? 'error';
+    const logLevelArgument = `--log-level=${process.env.LOGLEVEL ?? 'error'}`;
+    const viewportArgument = `--width=${options.viewport.width} --height=${options.viewport.height}`;
     if (!options.bridgeDaemon) {
         // TODO: #15646 Find out why currently pw fails to see node-bridge so we default to legacy bridge.
         await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
@@ -51,15 +53,14 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
             path.join(appDir, './dist/app.js'),
             disableHashCheckArgument,
             showDebugMenuArgument,
-            `--log-level=${desiredLogLevel}`,
+            viewportArgument,
+            logLevelArgument,
             ...(options.bridgeLegacyTest ? ['--bridge-legacy', '--bridge-test'] : []),
             ...(options.bridgeDaemon ? ['--bridge-daemon', '--skip-new-bridge-rollout'] : []),
         ],
         colorScheme: params.colorScheme,
         locale: params.locale,
-        ...(params.videoFolder && {
-            recordVideo: { dir: params.videoFolder, size: { width: 1280, height: 720 } },
-        }),
+        recordVideo: { dir: options.videoFolder, size: options.viewport },
     });
 
     const localDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'));
@@ -100,7 +101,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams = {}) => 
     return electronApp;
 };
 
-export const launchSuite = async (params: LaunchSuiteParams = {}) => {
+export const launchSuite = async (params: LaunchSuiteParams) => {
     const electronApp = await launchSuiteElectronApp(params);
     const window = await electronApp.firstWindow();
 
