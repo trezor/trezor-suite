@@ -206,10 +206,17 @@ export const useUnstakeEthForm = ({
         async (amount: string) => {
             if (currentRate) {
                 const fiatValue = toFiatCurrency(amount, currentRate?.rate);
-                setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
+                setValue(FIAT_INPUT, fiatValue || '', {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                });
             }
 
-            setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
+            setValue(CRYPTO_INPUT, amount, {
+                shouldDirty: true,
+                shouldValidate: true,
+            });
+            setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true, shouldValidate: true });
             await composeRequest(CRYPTO_INPUT);
         },
         [composeRequest, currentRate, setValue],
