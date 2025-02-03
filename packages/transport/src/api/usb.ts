@@ -503,18 +503,15 @@ export class UsbApi extends AbstractApi {
         return [hidDevices, nonHidDevices];
     }
 
+    // old bridge narrows multiple different errors to "device was disconnected" error.
     // https://github.com/trezor/trezord-go/blob/db03d99230f5b609a354e3586f1dfc0ad6da16f7/usb/libusb.go#L545
+    // I am not sure if this is correct so at this point we only narrow disconnected error from node-usb and webusb
     private handleReadWriteError(err: Error) {
         if (
             [
                 // node usb
-                'LIBUSB_TRANSFER_ERROR',
-                'LIBUSB_ERROR_PIPE',
-                'LIBUSB_ERROR_IO',
                 'LIBUSB_ERROR_NO_DEVICE',
-                'LIBUSB_ERROR_OTHER',
                 // web usb
-                ERRORS.INTERFACE_DATA_TRANSFER,
                 'The device was disconnected.',
             ].some(disconnectedErr => err.message.includes(disconnectedErr))
         ) {
