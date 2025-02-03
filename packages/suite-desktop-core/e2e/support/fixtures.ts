@@ -60,6 +60,7 @@ type Fixtures = {
     indexedDb: IndexedDbFixture;
     metadataProviderMock: MetadataProviderMock;
     blockbookMock: BlockbookMock;
+    exceptionLogger: void;
 };
 
 const test = base.extend<Fixtures>({
@@ -217,6 +218,24 @@ const test = base.extend<Fixtures>({
         const blockbookMock = new BlockbookMock();
         await use(blockbookMock);
     },
+    exceptionLogger: [
+        async ({ page }, use) => {
+            const errors: Error[] = [];
+            page.on('pageerror', error => {
+                errors.push(error);
+            });
+
+            await use();
+
+            if (errors.length > 0) {
+                throw new Error(
+                    `There was a JS exception during test run.
+                    \n${errors.map(error => `${error.message}\n${error.stack}`).join('\n-----\n')}`,
+                );
+            }
+        },
+        { auto: true },
+    ],
 });
 
 export { test };
