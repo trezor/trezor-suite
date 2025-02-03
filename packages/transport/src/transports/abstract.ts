@@ -143,6 +143,10 @@ export abstract class AbstractTransport extends TransportEmitter {
         this.id = id;
     }
 
+    ping(_params?: AbortableParam) {
+        return Promise.resolve(false);
+    }
+
     /**
      * Tries to initiate transport. Transport might not be available e.g. bridge not running.
      */

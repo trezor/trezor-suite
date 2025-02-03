@@ -87,6 +87,12 @@ export class BridgeTransport extends AbstractTransport {
         this.latestVersion = latestVersion;
     }
 
+    ping({ signal }: AbstractTransportMethodParams<'ping'> = {}) {
+        return this.scheduleAction(signal => this.post('/', { signal }), { signal })
+            .then(({ success }) => success)
+            .catch(() => false);
+    }
+
     public init({ signal }: AbstractTransportMethodParams<'init'> = {}) {
         return this.scheduleAction(
             async signal => {
