@@ -230,9 +230,15 @@ export class UsbApi extends AbstractApi {
         const newArray = new Uint8Array(this.chunkSize);
         newArray.set(new Uint8Array(buffer));
 
+        const timeout = setTimeout(() => {
+            this.logger?.debug('usb: device.transfer out take suspiciously long. timing out.');
+            device?.reset();
+        }, 1000);
+
         try {
             // https://wicg.github.io/webusb/#ref-for-dom-usbdevice-transferout
             this.logger?.debug('usb: device.transferOut');
+
             const result = await this.abortableMethod(
                 () =>
                     device.transferOut(
@@ -250,6 +256,8 @@ export class UsbApi extends AbstractApi {
             return this.success(undefined);
         } catch (err) {
             return this.handleReadWriteError(err);
+        } finally {
+            clearTimeout(timeout);
         }
     }
 
