@@ -32,7 +32,7 @@ describe('Discovery', () => {
 
         cy.getTestElement('@dashboard/loading', { timeout: 1000 * 10 });
 
-        // wait randomly between 1000 and 4000 ms
+        // wait randomly between 1000 and 3000 ms
         cy.wait(getRandomInt(1, 40) * 100);
         // trigger reload to simulate interruption. we want to make sure that communication with the device does not
         // end up in some de-synced state. if this test becomes flaky, this reload might be the reason.

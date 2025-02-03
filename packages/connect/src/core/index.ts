@@ -715,8 +715,11 @@ const onCallDevice = async (
         // TODO: This requires a massive refactoring https://github.com/trezor/trezor-suite/issues/5323
         // @ts-expect-error TODO: messageResponse should be assigned from the response of "inner" function
         const response = messageResponse;
-
         if (response) {
+            // todo: shouldReleaseSession should probably be removed (it was added recently). it looks like that we could
+            // receive 'disconnected during action' which does not mean that device got physically disconnected.
+            // see
+            // https://github.com/trezor/trezord-go/blob/db03d99230f5b609a354e3586f1dfc0ad6da16f7/usb/libusb.go#L545
             const shouldReleaseSession =
                 response.success ||
                 (!response.success &&
