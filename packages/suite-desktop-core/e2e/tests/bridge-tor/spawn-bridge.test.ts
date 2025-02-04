@@ -4,12 +4,13 @@ import {
     expectBridgeToBeStopped,
     waitForAppToBeInitialized,
 } from '../../support/bridge';
-import { LEGACY_BRIDGE_VERSION, launchSuite } from '../../support/common';
+import { LEGACY_BRIDGE_VERSION, launchSuite, skipFixture } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { AnalyticsActions } from '../../support/pageActions/analyticsActions';
 import { DevicePromptActions } from '../../support/pageActions/devicePromptActions';
 import { OnboardingActions } from '../../support/pageActions/onboarding/onboardingActions';
 
+test.use({ exceptionLogger: skipFixture });
 test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test.beforeEach(async ({ trezorUserEnvLink }) => {
         //Ensure bridge is stopped so we properly test the electron app starting node-bridge module.

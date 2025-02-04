@@ -1,8 +1,10 @@
 import { Page } from '@playwright/test';
 
-import { launchSuite } from '../../support/common';
+import { launchSuite, skipFixture } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { NetworkAnalyzer } from '../../support/networkAnalyzer';
+
+test.use({ exceptionLogger: skipFixture });
 
 const timeout = 1000 * 60 * 5; // 5 minutes because it takes a while to start tor.
 

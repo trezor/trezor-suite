@@ -3,9 +3,10 @@ import {
     expectBridgeToBeStopped,
     waitForAppToBeInitialized,
 } from '../../support/bridge';
-import { launchSuite, launchSuiteElectronApp } from '../../support/common';
+import { launchSuite, launchSuiteElectronApp, skipFixture } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
+test.use({ exceptionLogger: skipFixture });
 test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test.beforeAll(async ({ trezorUserEnvLink }) => {
         // Ensure bridge is stopped so we properly test the electron app starting node-bridge module.

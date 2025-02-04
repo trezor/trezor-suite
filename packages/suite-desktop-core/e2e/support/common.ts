@@ -171,3 +171,10 @@ export const isEqualWithOmit = (param: { object1: any; object2: any; mask: strin
     isEqual(omit(param.object1, param.mask), omit(param.object2, param.mask));
 
 export const formatAddress = (address: string) => splitStringEveryNCharacters(address, 4).join(' ');
+
+// This function is used to override automatic fixtures that we want to skip in specific tests.
+/* eslint-disable no-empty-pattern, react-hooks/rules-of-hooks */
+export async function skipFixture({}, use: (r: void) => Promise<void>) {
+    await use();
+}
+/* eslint-enable no-empty-pattern, react-hooks/rules-of-hooks */
