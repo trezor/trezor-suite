@@ -48,6 +48,14 @@ export const normalizeNetworkAccounts = (network: Network): NormalizedNetworkAcc
 export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
     networks[symbol]?.backendTypes.some(backend => backend === 'blockbook');
 
+// TODO: move to networksConfig
+export const externalBackendTypeNetworks: NetworkSymbol[] = ['bsc', 'pol', 'op', 'arb', 'base'];
+
+export const isTrezorInfraBasedNetwork = (symbol: NetworkSymbol) =>
+    networks[symbol]?.backendTypes.some(
+        backend => backend === 'blockbook' && !externalBackendTypeNetworks.includes(symbol),
+    );
+
 export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.networkType;
 
 // Takes into account just network features, not features for specific accountTypes.
