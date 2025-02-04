@@ -222,6 +222,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         },
         ios: {
             bundleIdentifier,
+            appleTeamId: 'C3P22XVH2C',
             icon: appIconIos,
             supportsTablet: true,
             infoPlist: {
