@@ -2,13 +2,14 @@ import { FC } from 'react';
 
 import styled from 'styled-components';
 
+import { Route } from '@suite-common/suite-types';
 import { spacingsPx } from '@trezor/theme';
 
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
-const Nav = styled.nav<{ $isSidebarCollapsed: boolean }>`
+export const Nav = styled.nav<{ $isSidebarCollapsed: boolean }>`
     display: flex;
     flex-direction: column;
     gap: ${spacingsPx.xxs};
@@ -17,6 +18,13 @@ const Nav = styled.nav<{ $isSidebarCollapsed: boolean }>`
 
     ${({ $isSidebarCollapsed }) => $isSidebarCollapsed && `align-items: center;`}
 `;
+
+export const SETTINGS_ROUTES: Route['name'][] = [
+    'settings-index',
+    'settings-device',
+    'settings-coins',
+    'settings-debug',
+] as const;
 
 const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> = [
     {
@@ -34,7 +42,7 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
         nameId: 'TR_SETTINGS',
         icon: 'gearSix',
         goToRoute: 'settings-index',
-        routes: ['settings-index', 'settings-device', 'settings-coins', 'settings-debug'],
+        routes: SETTINGS_ROUTES,
         'data-testid': '@suite/menu/settings',
     },
 ];

@@ -55,7 +55,7 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
             state: 'visible',
         });
 
-        await suite.window.waitForSelector('[data-testid="@welcome/title"]', { timeout });
+        await suite.window.waitForSelector('[data-testid="@welcome-layout/body"]', { timeout });
 
         suite.electronApp.close();
     });
@@ -83,7 +83,7 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
             state: 'visible',
         });
 
-        await suite.window.waitForSelector('[data-testid="@welcome/title"]', { timeout });
+        await suite.window.waitForSelector('[data-testid="@welcome-layout/body"]', { timeout });
         networkAnalyzer.stop();
         const requests = networkAnalyzer.getRequests();
         requests.forEach(request => {

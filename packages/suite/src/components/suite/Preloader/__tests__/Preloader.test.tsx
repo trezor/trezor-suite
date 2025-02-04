@@ -1,6 +1,7 @@
 import * as envUtils from '@trezor/env-utils';
 import { DeepPartial } from '@trezor/type-utils';
 
+import { desktopUpdateInitialState } from 'src/reducers/suite/desktopUpdateReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper';
 
@@ -85,7 +86,9 @@ const getInitialState = ({ suite, router, device }: any = {}) => ({
         discovery: [],
         accountSearch: {},
         settings: {},
+        blockchain: {},
     },
+    desktopUpdate: desktopUpdateInitialState,
     router: {
         app: 'suite-index',
         loaded: true,

@@ -88,7 +88,7 @@ export class SettingsActions {
             '@settings/early-access-confirm-button',
         );
         this.earlyAccessSkipButton = this.page.getByTestId('@settings/early-access-skip-button');
-        this.settingsCloseButton = this.page.getByTestId('@settings/menu/close');
+        this.settingsCloseButton = this.page.getByTestId('@suite/menu/suite-start');
         this.modal = this.page.getByTestId('@modal');
         this.modalCloseButton = this.page.getByTestId('@modal/close-button');
         this.deviceLabelInput = this.page.getByTestId('@settings/device/label-input');

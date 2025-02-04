@@ -18,7 +18,7 @@ export class OnboardingActions {
     readonly pin: PinActions;
     readonly tutorial: TutorialActions;
 
-    readonly welcomeTitle: Locator;
+    readonly welcomeBody: Locator;
     readonly onboardingContinueButton: Locator;
     readonly onboardingViewOnlySkipButton: Locator;
     readonly onboardingViewOnlyEnableButton: Locator;
@@ -52,7 +52,7 @@ export class OnboardingActions {
         this.tutorial = new TutorialActions(page);
         this.pin = new PinActions(page);
 
-        this.welcomeTitle = this.page.getByTestId('@welcome/title');
+        this.welcomeBody = this.page.getByTestId('@welcome-layout/body');
         this.onboardingContinueButton = this.page.getByTestId('@onboarding/exit-app-button');
         this.onboardingViewOnlySkipButton = this.page.getByTestId('@onboarding/viewOnly/skip');
         this.onboardingViewOnlyEnableButton = this.page.getByTestId('@onboarding/viewOnly/enable');
@@ -83,7 +83,7 @@ export class OnboardingActions {
 
     @step()
     async verifySuiteIsLoaded() {
-        await expect(this.welcomeTitle, 'expect Suite to load in under 30s').toBeVisible({
+        await expect(this.welcomeBody, 'expect Suite to load in under 30s').toBeVisible({
             timeout: 30_000,
         });
     }

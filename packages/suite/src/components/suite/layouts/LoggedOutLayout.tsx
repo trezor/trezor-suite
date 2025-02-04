@@ -1,6 +1,6 @@
 import { ReactNode, useRef, useState } from 'react';
 
-import { ElevationContext, ElevationUp, NewModal } from '@trezor/components';
+import { ElevationContext, ElevationDown, ElevationUp, NewModal } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useLayoutSize } from 'src/hooks/suite';
@@ -10,7 +10,6 @@ import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutCon
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import { Metadata } from '../Metadata';
-import { TrafficLightOffset } from '../TrafficLightOffset';
 import {
     AppWrapper,
     Body,
@@ -19,6 +18,7 @@ import {
     PageWrapper,
     Wrapper,
 } from './SuiteLayout/SuiteLayout';
+import { LoggedOutSidebar } from './WelcomeLayout/WelcomeLayout';
 import { ModalSwitcher } from '../modals/ModalSwitcher/ModalSwitcher';
 
 interface LoggedOutLayout {
@@ -36,38 +36,39 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
 
     return (
         <ElevationContext baseElevation={-1}>
-            <TrafficLightOffset>
-                <Wrapper ref={wrapperRef} data-testid="@logged-out-layout">
-                    <PageWrapper>
-                        <NewModal.Provider>
-                            <ModalContextProvider>
-                                <Metadata title={title} />
-                                <ModalSwitcher />
+            <Wrapper ref={wrapperRef} data-testid="@logged-out-layout">
+                <PageWrapper>
+                    <NewModal.Provider>
+                        <ModalContextProvider>
+                            <Metadata title={title} />
+                            <ModalSwitcher />
 
-                                <LayoutContext.Provider value={setLayoutPayload}>
-                                    <Body data-testid="@suite-layout/body">
-                                        <Columns>
-                                            <AppWrapper
-                                                data-testid="@app"
-                                                ref={scrollRef}
-                                                id="layout-scroll"
-                                            >
-                                                {layoutHeader}
-                                                <ElevationUp>
-                                                    <ContentWrapper>{children}</ContentWrapper>
-                                                </ElevationUp>
-                                            </AppWrapper>
-                                        </Columns>
-                                    </Body>
-                                </LayoutContext.Provider>
+                            <LayoutContext.Provider value={setLayoutPayload}>
+                                <Body data-testid="@suite-layout/body">
+                                    <Columns>
+                                        <ElevationDown>
+                                            <LoggedOutSidebar />
+                                        </ElevationDown>
+                                        <AppWrapper
+                                            data-testid="@app"
+                                            ref={scrollRef}
+                                            id="layout-scroll"
+                                        >
+                                            {layoutHeader}
+                                            <ElevationUp>
+                                                <ContentWrapper>{children}</ContentWrapper>
+                                            </ElevationUp>
+                                        </AppWrapper>
+                                    </Columns>
+                                </Body>
+                            </LayoutContext.Provider>
 
-                                {!isMobileLayout && <GuideButton />}
-                            </ModalContextProvider>
-                        </NewModal.Provider>
-                    </PageWrapper>
-                    <GuideRouter />
-                </Wrapper>
-            </TrafficLightOffset>
+                            {!isMobileLayout && <GuideButton />}
+                        </ModalContextProvider>
+                    </NewModal.Provider>
+                </PageWrapper>
+                <GuideRouter />
+            </Wrapper>
         </ElevationContext>
     );
 };

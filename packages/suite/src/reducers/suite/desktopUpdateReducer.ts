@@ -46,6 +46,8 @@ const initialState: DesktopUpdateState = {
     justUpdatedInteractedWith: false,
 };
 
+export const desktopUpdateInitialState = initialState;
+
 const desktopUpdateReducer = (
     state: DesktopUpdateState = initialState,
     action: Action,

@@ -14,12 +14,12 @@ export const expectBridgeToBeStopped = async (request: APIRequestContext) => {
     }).rejects.toThrow('ECONNREFUSED');
 };
 
-// We wait for `@welcome/title` or `@dashboard/graph` since
+// We wait for `@welcome-layout/body` or `@dashboard/graph` since
 // one or the other will be display depending on the state of the app
 // due to previously run tests. And both means the same for the porpoise of this test.
 // Bridge should be ready to check `/status` endpoint.
 export const waitForAppToBeInitialized = async (suite: any) =>
     await Promise.race([
-        expect(suite.window.getByTestId('@welcome/title')).toBeVisible(),
+        expect(suite.window.getByTestId('@welcome-layout/body')).toBeVisible(),
         expect(suite.window.getByTestId('@dashboard/graph')).toBeVisible(),
     ]);

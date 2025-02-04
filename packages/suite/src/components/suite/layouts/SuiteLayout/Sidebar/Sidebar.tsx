@@ -37,6 +37,8 @@ const Content = styled.div`
     flex-direction: column;
 `;
 
+export const SIDEBAR_MIN_WIDTH = 84;
+
 export const Sidebar = () => {
     const [closedNotificationDevice, setClosedNotificationDevice] = useState(false);
     const [closedNotificationSuite, setClosedNotificationSuite] = useState(false);
@@ -75,7 +77,7 @@ export const Sidebar = () => {
             <ResizableBox
                 directions={['right']}
                 width={sidebarWidth}
-                minWidth={84}
+                minWidth={SIDEBAR_MIN_WIDTH}
                 maxWidth={600}
                 zIndex={zIndices.draggableComponent}
                 updateHeightOnWindowResize
@@ -100,6 +102,7 @@ export const Sidebar = () => {
                                 )}
 
                                 <QuickActions
+                                    isSidebarCollapsed={isSidebarCollapsed}
                                     showUpdateBannerNotification={showUpdateBannerNotification}
                                 />
                             </Content>
