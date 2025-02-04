@@ -8540,15 +8540,15 @@ export default defineMessages({
     },
     TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING',
-        defaultMessage: 'Go to the app or place where you originally got the address.',
+        defaultMessage: 'Go to the app, exchange, or site where you got the original address.',
     },
     TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING',
-        defaultMessage: 'Compare that address with what is on your Trezor.',
+        defaultMessage: "Compare that address with what's on your Trezor.",
     },
     TR_SEND_ADDRESS_CONFIRMATION_ITEM_3_HEADING: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_ITEM_3_HEADING',
-        defaultMessage: 'Confirm on Trezor if they match exactly.',
+        defaultMessage: 'Confirm on your Trezor if they match exactly.',
     },
     TR_SEND_ADDRESS_CONFIRMATION_NOTE: {
         id: 'TR_SEND_ADDRESS_CONFIRMATION_NOTE',
