@@ -36,10 +36,10 @@ const getInfoRowsData = (
         case 'ethereum':
             return {
                 payoutDays: (
-                    <>
-                        ~
-                        <Translation id="TR_STAKE_DAYS" values={{ count: daysToAddToPool }} />
-                    </>
+                    <Translation
+                        id="TR_STAKE_APPROXIMATE_DAYS"
+                        values={{ count: daysToAddToPool }}
+                    />
                 ),
                 rewardsPeriodHeading: <Translation id="TR_STAKE_ENTER_THE_STAKING_POOL" />,
                 rewardsPeriodSubheading: (

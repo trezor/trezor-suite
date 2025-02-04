@@ -95,6 +95,7 @@ export const composeTransaction =
             formState,
             predefinedLevels,
             calculateTransaction,
+            undefined,
             customFeeLimit,
         );
     };

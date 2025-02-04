@@ -12,6 +12,7 @@ import {
     formatAmount,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
+import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 import { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -115,7 +116,9 @@ export const composeStakingTransaction = (
         feeLevel: FeeLevel,
         compareWithAmount: boolean,
         symbol: NetworkSymbol,
+        estimatedFee?: Fee[number],
     ) => PrecomposedTransaction,
+    estimatedFee?: Fee[number],
     customFeeLimit?: string,
 ) => {
     const { account, network } = formState;
@@ -129,7 +132,14 @@ export const composeStakingTransaction = (
     const wrappedResponse: PrecomposedLevels = {};
     const compareWithAmount = formValues.stakeType === 'stake';
     const response = predefinedLevels.map(level =>
-        calculateTransaction(availableBalance, output, level, compareWithAmount, account.symbol),
+        calculateTransaction(
+            availableBalance,
+            output,
+            level,
+            compareWithAmount,
+            account.symbol,
+            estimatedFee,
+        ),
     );
     response.forEach((tx, index) => {
         const feeLabel = predefinedLevels[index].label as FeeLevel['label'];

@@ -10,12 +10,17 @@ import {
 } from '@solana/web3.js';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
+import {
+    SOL_COMPUTE_UNIT_LIMIT,
+    SOL_COMPUTE_UNIT_PRICE,
+    WALLET_SDK_SOURCE,
+} from '@suite-common/wallet-constants';
 import { Blockchain } from '@suite-common/wallet-types';
 import {
     networkAmountToSmallestUnit,
     selectSolanaWalletSdkNetwork,
 } from '@suite-common/wallet-utils';
+import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 import type { SolanaSignTransaction } from '@trezor/connect';
 
 type SolanaTx = SolanaSignTransaction & {
@@ -83,6 +88,7 @@ interface PrepareStakeSolTxParams {
     amount: string;
     symbol: NetworkSymbol;
     selectedBlockchain: Blockchain;
+    estimatedFee?: Fee[number];
 }
 export type PrepareStakeSolTxResponse =
     | {
@@ -100,18 +106,41 @@ function isCompilableTransactionMessage(
     return (tx as CompilableTransactionMessage).feePayer !== undefined;
 }
 
+type PriorityFees = {
+    computeUnitPrice: bigint;
+    computeUnitLimit: number;
+};
+
+export const dummyPriorityFeesForFeeEstimation: PriorityFees = {
+    computeUnitPrice: BigInt(SOL_COMPUTE_UNIT_PRICE),
+    computeUnitLimit: SOL_COMPUTE_UNIT_LIMIT,
+};
+
+const getStakingParams = (estimatedFee?: Fee[number]) => {
+    if (!estimatedFee || !estimatedFee.feePerUnit || !estimatedFee.feeLimit) {
+        return dummyPriorityFeesForFeeEstimation;
+    }
+
+    return {
+        сomputeUnitPrice: BigInt(estimatedFee.feePerUnit),
+        computeUnitLimit: Number(estimatedFee.feeLimit), // solana package expects number
+    };
+};
+
 export const prepareStakeSolTx = async ({
     from,
     path,
     amount,
     symbol,
     selectedBlockchain,
+    estimatedFee,
 }: PrepareStakeSolTxParams): Promise<PrepareStakeSolTxResponse> => {
     try {
         const solanaClient = selectSolanaWalletSdkNetwork(symbol, selectedBlockchain.url);
 
         const lamports = networkAmountToSmallestUnit(amount, symbol);
-        const tx = await solanaClient.stake(from, BigInt(lamports), WALLET_SDK_SOURCE);
+        const params = getStakingParams(estimatedFee);
+        const tx = await solanaClient.stake(from, BigInt(lamports), WALLET_SDK_SOURCE, params);
         const { stakeTx } = tx.result;
 
         if (!isCompilableTransactionMessage(stakeTx)) {
@@ -140,12 +169,14 @@ export const prepareUnstakeSolTx = async ({
     amount,
     symbol,
     selectedBlockchain,
+    estimatedFee,
 }: PrepareStakeSolTxParams): Promise<PrepareStakeSolTxResponse> => {
     try {
         const solanaClient = selectSolanaWalletSdkNetwork(symbol, selectedBlockchain.url);
 
         const lamports = networkAmountToSmallestUnit(amount, symbol);
-        const tx = await solanaClient.unstake(from, BigInt(lamports), WALLET_SDK_SOURCE);
+        const params = getStakingParams(estimatedFee);
+        const tx = await solanaClient.unstake(from, BigInt(lamports), WALLET_SDK_SOURCE, params);
         const transformedTx = transformTx(tx.result.unstakeTx, path);
 
         return {
@@ -169,11 +200,13 @@ export const prepareClaimSolTx = async ({
     path,
     symbol,
     selectedBlockchain,
+    estimatedFee,
 }: PrepareClaimSolTxParams): Promise<PrepareStakeSolTxResponse> => {
     try {
         const solanaClient = selectSolanaWalletSdkNetwork(symbol, selectedBlockchain.url);
 
-        const tx = await solanaClient.claim(from);
+        const params = getStakingParams(estimatedFee);
+        const tx = await solanaClient.claim(from, params);
         const transformedTx = transformTx(tx.result.claimTx, path);
 
         return {
