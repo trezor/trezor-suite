@@ -61,6 +61,8 @@ const getConnectDependenciesToRelease = async () => {
     await checkNonReleasedDependencies('connect');
     await checkNonReleasedDependencies('connect-web');
     await checkNonReleasedDependencies('connect-webextension');
+    await checkNonReleasedDependencies('connect-plugin-stellar');
+    await checkNonReleasedDependencies('connect-plugin-ethereum');
 
     // We do not want to include `connect`, `connect-web` and `connect-webextension` since we want
     // to release those separately and we always want to release them.
