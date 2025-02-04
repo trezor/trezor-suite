@@ -20,7 +20,7 @@ describe('TrezorConnect override param', () => {
         it(`override previous call after ${delay}ms`, async () => {
             TrezorConnect.removeAllListeners();
 
-            const overriden = TrezorConnect.getAddress({
+            const overridden = TrezorConnect.getAddress({
                 path: "m/44'/1'/0'/0/0",
                 showOnTrezor: true,
             });
@@ -34,7 +34,7 @@ describe('TrezorConnect override param', () => {
             });
             expect(address.success).toBe(true);
 
-            const response = await overriden;
+            const response = await overridden;
             expect(response.success).toBe(false);
             expect(response.payload).toMatchObject({ code: 'Method_Override' });
         });
