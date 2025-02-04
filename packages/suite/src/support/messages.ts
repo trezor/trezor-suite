@@ -3174,7 +3174,7 @@ export default defineMessages({
         id: 'TR_TAKE_ME_BACK_TO_WALLET',
     },
     TR_TESTNET_COINS: {
-        defaultMessage: 'Testnet coins',
+        defaultMessage: 'Testnet',
         id: 'TR_TESTNET_COINS',
     },
     TR_TESTNET_COINS_DESCRIPTION: {
@@ -4178,7 +4178,7 @@ export default defineMessages({
     },
     TR_ACTIVATED_COINS: {
         id: 'TR_ACTIVATED_COINS',
-        defaultMessage: 'Activated coins',
+        defaultMessage: 'Activated',
     },
     TR_INACTIVE_COINS: {
         id: 'TR_INACTIVE_COINS',
@@ -8607,7 +8607,7 @@ export default defineMessages({
     TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION',
         defaultMessage:
-            'This receive address is only for {network} coins and tokens. If someone sends you crypto from outside the {network} network, you may not receive them.',
+            "The network uses the same address format as Ethereum. You'll need {network} ETH to pay transaction fees on this network.",
     },
     TR_EVM_EXPLANATION_SEND_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_SEND_DESCRIPTION',
