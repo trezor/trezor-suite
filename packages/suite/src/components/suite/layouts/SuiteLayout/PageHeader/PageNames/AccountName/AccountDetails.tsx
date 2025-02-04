@@ -109,7 +109,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
 
     return (
         <DetailsContainer $isBalanceShown={isBalanceShown} $shouldAnimate={shouldAnimate}>
-            <CoinLogo size={LOGO_SIZE} symbol={symbol} type="badge" />
+            <CoinLogo size={LOGO_SIZE} symbol={symbol} type="coin" />
             <div>
                 <AccountHeading $isBalanceShown={isBalanceShown}>
                     <MetadataLabeling
