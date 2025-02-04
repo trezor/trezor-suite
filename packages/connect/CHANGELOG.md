@@ -9,9 +9,11 @@
 | :----------------: | :----: | :----------: |
 | connect.trezor.io/ | 9.4.7  | 9.4.8-beta.2 |
 
-| connect.trezor.io/ | 9.4.7 | 9.4.8-beta.1 |
-
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
+
+# 9.4.8-beta.2
+
+Fixing issue in automated release proces of connect plugins in 9.4.8-beta.1
 
 # 9.4.8-beta.1
 
