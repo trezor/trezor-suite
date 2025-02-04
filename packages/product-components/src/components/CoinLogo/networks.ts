@@ -1,6 +1,8 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-export const NETWORK_ICONS: Record<NetworkSymbol, string> = {
+import { LegacyNetworkSymbol } from './coins';
+
+export const NETWORK_ICONS: Record<NetworkSymbol | LegacyNetworkSymbol, string> = {
     ada: require('../../images/networks/ada.svg'),
     arb: require('../../images/networks/arb.svg'),
     base: require('../../images/networks/base.svg'),
@@ -23,4 +25,13 @@ export const NETWORK_ICONS: Record<NetworkSymbol, string> = {
     txrp: require('../../images/networks/txrp.svg'),
     xrp: require('../../images/networks/xrp.svg'),
     zec: require('../../images/networks/zec.svg'),
+    eos: require('../../images/networks/eos.svg'),
+    nem: require('../../images/networks/nem.svg'),
+    xlm: require('../../images/networks/xlm.svg'),
+    xtz: require('../../images/networks/xtz.svg'),
+    dash: require('../../images/networks/dash.svg'),
+    dgb: require('../../images/networks/dgb.svg'),
+    nmc: require('../../images/networks/nmc.svg'),
+    vtc: require('../../images/networks/vtc.svg'),
+    btg: require('../../images/networks/btg.svg'),
 };
