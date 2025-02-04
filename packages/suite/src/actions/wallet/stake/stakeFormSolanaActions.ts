@@ -10,19 +10,24 @@ import {
 } from '@suite-common/wallet-constants';
 import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
+    Account,
     AddressDisplayOptions,
+    BlockchainNetworks,
     ExternalOutput,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
+    SelectedAccountStatus,
     StakeFormState,
 } from '@suite-common/wallet-types';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
+import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
+    PrepareStakeSolTxResponse,
     prepareClaimSolTx,
     prepareStakeSolTx,
     prepareUnstakeSolTx,
@@ -36,9 +41,10 @@ const calculateTransaction = (
     feeLevel: FeeLevel,
     compareWithAmount = true,
     symbol: NetworkSymbol,
+    estimatedFee?: Fee[number],
 ): PrecomposedTransaction => {
-    // TODO: change to the dynamic fee
-    const feeInLamports = new BigNumber(SOL_STAKING_OPERATION_FEE).toString();
+    const feeInLamports =
+        estimatedFee?.feePerTx ?? new BigNumber(SOL_STAKING_OPERATION_FEE).toString();
 
     const stakingParams = {
         feeInBaseUnits: feeInLamports,
@@ -56,11 +62,112 @@ const calculateTransaction = (
         ),
     };
 
-    return calculate(availableBalance, output, feeLevel, compareWithAmount, symbol, stakingParams);
+    const estimatedFeeLevel = { ...feeLevel, ...estimatedFee };
+
+    return calculate(
+        availableBalance,
+        output,
+        estimatedFeeLevel,
+        compareWithAmount,
+        symbol,
+        stakingParams,
+    );
 };
 
+const getTransactionData = async (
+    formValues: StakeFormState,
+    selectedAccount: SelectedAccountStatus,
+    blockchain: BlockchainNetworks,
+    estimatedFee?: Fee[number],
+) => {
+    const { stakeType } = formValues;
+
+    if (selectedAccount.status !== 'loaded' || selectedAccount.account.networkType !== 'solana') {
+        return;
+    }
+
+    const { account } = selectedAccount;
+
+    const selectedBlockchain = blockchain[account.symbol];
+
+    let txData;
+    if (stakeType === 'stake') {
+        txData = await prepareStakeSolTx({
+            from: account.descriptor,
+            path: account.path,
+            amount: formValues.outputs[0].amount,
+            symbol: account.symbol,
+            selectedBlockchain,
+            estimatedFee,
+        });
+    }
+
+    if (stakeType === 'unstake') {
+        txData = await prepareUnstakeSolTx({
+            from: account.descriptor,
+            path: account.path,
+            amount: formValues.outputs[0].amount,
+            symbol: account.symbol,
+            selectedBlockchain,
+            estimatedFee,
+        });
+    }
+
+    if (stakeType === 'claim') {
+        txData = await prepareClaimSolTx({
+            from: account.descriptor,
+            path: account.path,
+            symbol: account.symbol,
+            selectedBlockchain,
+            estimatedFee,
+        });
+    }
+
+    return txData;
+};
+
+async function estimateFee(
+    account: Account,
+    txData?: PrepareStakeSolTxResponse,
+): Promise<Fee[number] | undefined> {
+    if (!txData?.success) return undefined;
+
+    const estimatedFee = await TrezorConnect.blockchainEstimateFee({
+        coin: account.symbol,
+        request: {
+            specific: {
+                data: txData.tx.txShim.serialize(),
+                isCreatingAccount: false,
+                newTokenAccountProgramName: undefined,
+            },
+        },
+    });
+
+    if (estimatedFee && estimatedFee.payload && 'levels' in estimatedFee.payload) {
+        const { levels } = estimatedFee.payload;
+
+        return levels[0];
+    }
+
+    return undefined;
+}
+
 export const composeTransaction =
-    (formValues: StakeFormState, formState: ComposeActionContext) => () => {
+    (formValues: StakeFormState, formState: ComposeActionContext) =>
+    async (_: Dispatch, getState: GetState) => {
+        const { selectedAccount, blockchain } = getState().wallet;
+
+        if (selectedAccount.status !== 'loaded') return;
+
+        const { account } = selectedAccount;
+        const txData = await getTransactionData(formValues, selectedAccount, blockchain);
+
+        let estimatedFee;
+        // it is not needed to estimate fee for empty input
+        if (formValues.cryptoInput) {
+            estimatedFee = await estimateFee(account, txData);
+        }
+
         const { feeInfo } = formState;
         if (!feeInfo) return;
 
@@ -72,6 +179,7 @@ export const composeTransaction =
             formState,
             predefinedLevels,
             calculateTransaction,
+            estimatedFee,
             undefined,
         );
     };
@@ -93,39 +201,19 @@ export const signTransaction =
         const { account } = selectedAccount;
         if (account.networkType !== 'solana') return;
 
-        const selectedBlockchain = blockchain[account.symbol];
         const addressDisplayType = selectAddressDisplayType(getState());
-        const { stakeType } = formValues;
+        const estimatedFee = {
+            feePerTx: transactionInfo.fee,
+            feeLimit: transactionInfo.feeLimit,
+            feePerUnit: transactionInfo.feePerByte,
+        };
 
-        let txData;
-        if (stakeType === 'stake') {
-            txData = await prepareStakeSolTx({
-                from: account.descriptor,
-                path: account.path,
-                amount: formValues.outputs[0].amount,
-                symbol: account.symbol,
-                selectedBlockchain,
-            });
-        }
-
-        if (stakeType === 'unstake') {
-            txData = await prepareUnstakeSolTx({
-                from: account.descriptor,
-                path: account.path,
-                amount: formValues.outputs[0].amount,
-                symbol: account.symbol,
-                selectedBlockchain,
-            });
-        }
-
-        if (stakeType === 'claim') {
-            txData = await prepareClaimSolTx({
-                from: account.descriptor,
-                path: account.path,
-                symbol: account.symbol,
-                selectedBlockchain,
-            });
-        }
+        const txData = await getTransactionData(
+            formValues,
+            selectedAccount,
+            blockchain,
+            estimatedFee,
+        );
 
         if (!txData) {
             dispatch(

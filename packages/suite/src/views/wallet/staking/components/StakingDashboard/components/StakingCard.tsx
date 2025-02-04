@@ -147,6 +147,7 @@ export const StakingCard = ({
     const solReward = calculateSolanaStakingReward(depositedBalance, apy?.toString());
 
     const stakingReward = selectedAccount.networkType === 'solana' ? solReward : restakedReward;
+    const isEthereumNetwork = selectedAccount.networkType === 'ethereum';
 
     return (
         <Card>
@@ -224,12 +225,14 @@ export const StakingCard = ({
                                     <Translation id="TR_STAKE_UNSTAKING" />{' '}
                                     {isDaysToUnstakeShown && (
                                         <>
-                                            (~
+                                            (
                                             <Translation
-                                                id="TR_STAKE_DAYS"
-                                                values={{
-                                                    count: daysToUnstake,
-                                                }}
+                                                id={
+                                                    isEthereumNetwork
+                                                        ? 'TR_STAKE_APPROXIMATE_DAYS'
+                                                        : 'TR_UP_TO_DAYS'
+                                                }
+                                                values={{ count: daysToUnstake }}
                                             />
                                             )
                                         </>

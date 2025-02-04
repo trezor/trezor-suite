@@ -8944,6 +8944,10 @@ export default defineMessages({
         id: 'TR_STAKE_DAYS',
         defaultMessage: '{count, plural, one {# day} other {# days}}',
     },
+    TR_STAKE_APPROXIMATE_DAYS: {
+        id: 'TR_STAKE_APPROXIMATE_DAYS',
+        defaultMessage: '~{count, plural, one {# day} other {# days}}',
+    },
     TR_STAKE_MAX_REWARD_DAYS: {
         id: 'TR_STAKE_MAX_REWARD_DAYS',
         defaultMessage: 'Max {count, plural, one {# day} other {# days}}',
