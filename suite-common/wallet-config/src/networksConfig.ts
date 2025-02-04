@@ -127,7 +127,7 @@ export const networks = {
     arb: {
         symbol: 'arb',
         displaySymbol: 'ETH',
-        displaySymbolName: 'Ethereum',
+        displaySymbolName: 'Arbitrum One Ethereum',
         name: 'Arbitrum One',
         networkType: 'ethereum',
         chainId: 42161,
@@ -151,7 +151,7 @@ export const networks = {
     base: {
         symbol: 'base',
         displaySymbol: 'ETH',
-        displaySymbolName: 'Ethereum',
+        displaySymbolName: 'Base Ethereum',
         name: 'Base',
         networkType: 'ethereum',
         chainId: 8453,
@@ -175,7 +175,7 @@ export const networks = {
     op: {
         symbol: 'op',
         displaySymbol: 'ETH',
-        displaySymbolName: 'Ethereum',
+        displaySymbolName: 'Optimism Ethereum',
         name: 'Optimism',
         networkType: 'ethereum',
         chainId: 10,
