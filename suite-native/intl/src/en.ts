@@ -1245,6 +1245,15 @@ export const en = {
             description: 'We currently support staking as view-only in Trezor Suite Lite.',
         },
     },
+    moduleTrading: {
+        tradingScreen: {
+            receiveAccount: 'Receive account',
+            paymentMethod: 'Payment method',
+            countryOfResidence: 'Country of residence',
+            provider: 'Provider',
+            continueButton: 'Continue',
+        },
+    },
 };
 
 export type Translations = typeof en;
