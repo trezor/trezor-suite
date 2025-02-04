@@ -211,6 +211,8 @@ export class UsbApi extends AbstractApi {
             );
 
             if (!res.data?.byteLength) {
+                this.logger?.error(`usb: device.transferIn error: empty data buffer`);
+
                 return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER });
             }
 
