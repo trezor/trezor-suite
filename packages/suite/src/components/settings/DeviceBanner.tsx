@@ -2,7 +2,8 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Card, Column, LottieAnimation, Paragraph, Row, Text, variables } from '@trezor/components';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { Card, Column, LottieAnimation, Paragraph, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
@@ -22,21 +23,6 @@ const StyledLottieAnimation = styled(LottieAnimation)`
     background: ${({ theme }) => theme.legacy.BG_GREY};
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Title = styled(Paragraph)`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        display: flex;
-        flex-direction: column;
-        align-items: start;
-        gap: 0.4rem;
-    }
-`;
-
 type DeviceBannerProps = {
     title: ReactNode;
     description?: ReactNode;
@@ -45,6 +31,7 @@ type DeviceBannerProps = {
 export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
     const { device } = useDevice();
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const deviceConnectedButNotAcquired = device && !isDeviceAcquired(device);
 
     return (
         <Card
@@ -60,16 +47,15 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
                     loop
                 />
                 <Column>
-                    <Row justifyContent="space-between">
-                        <Title typographyStyle="highlight">{title}</Title>
+                    <Row gap={spacings.sm} flexWrap="wrap">
+                        <Paragraph typographyStyle="highlight">{title}</Paragraph>
                         {!description && isWebUsbTransport && !device?.connected && (
                             <WebUsbButton />
                         )}
                     </Row>
                     {description && <Text color="textSubdued">{description}</Text>}
                 </Column>
-
-                {!device?.features && <StyledAcquireDeviceButton />}
+                {deviceConnectedButNotAcquired && <StyledAcquireDeviceButton />}{' '}
             </Row>
         </Card>
     );
