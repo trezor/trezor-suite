@@ -432,7 +432,7 @@ export const restoreOrigOutputsOrder = (
 
 export const getDefaultValues = (currency: Output['currency']): FormState => ({
     ...DEFAULT_VALUES,
-    options: ['broadcast'],
+    options: ['broadcast', 'rippleDestinationTag'],
     outputs: [{ ...DEFAULT_PAYMENT, currency }],
     selectedUtxos: [],
 });
