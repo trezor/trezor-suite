@@ -1,9 +1,22 @@
 import { useState } from 'react';
 
+import { Card, Column, Text } from '@trezor/components';
+
+import { Translation } from 'src/components/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionList } from './TransactionList';
 import { useVisibleTransactions } from './useFetchTransactions';
+
+export const NoVisibleTransactions = () => (
+    <Card>
+        <Column alignItems="center">
+            <Text typographyStyle="hint" variant="tertiary">
+                <Translation id="TR_NO_VISIBLE_TRANSACTIONS" />
+            </Text>
+        </Column>
+    </Card>
+);
 
 interface TransactionListProps {
     symbol: WalletAccountTransaction['symbol'];
@@ -24,6 +37,10 @@ export const WalletTransactionList = ({
         account,
         numberOfPagesRequested: visiblePages,
     });
+
+    if (!result.isLoading && result.visibleTransactions.length === 0) {
+        return <NoVisibleTransactions />;
+    }
 
     return (
         <TransactionList

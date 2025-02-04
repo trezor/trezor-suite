@@ -88,6 +88,11 @@ export default defineMessages({
         defaultMessage: 'No transactions',
         id: 'TR_ACCOUNT_IS_EMPTY_TITLE',
     },
+    TR_NO_VISIBLE_TRANSACTIONS: {
+        defaultMessage:
+            'No visible transactions. Looking for something? Try showing suspicious transactions—use the filter menu above on the right. Stay cautious, some may be risky.',
+        id: 'TR_NO_VISIBLE_TRANSACTIONS',
+    },
     TR_ACCOUNT_PASSPHRASE_DISABLED: {
         defaultMessage: 'Change passphrase settings to use this device',
         id: 'TR_ACCOUNT_PASSPHRASE_DISABLED',
