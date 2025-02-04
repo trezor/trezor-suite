@@ -201,7 +201,7 @@ export const Coin = ({
             data-active={toggled}
         >
             <ImageWrapper>
-                <CoinLogo size={24} symbol={symbol} type="network" />
+                <CoinLogo size={24} symbol={symbol} type="coin" />
                 <Check $visible={toggled}>
                     <Icon size={8} color={theme.legacy.TYPE_WHITE} name="check" />
                 </Check>
