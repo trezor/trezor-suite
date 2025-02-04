@@ -18,9 +18,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-
-import { CollapsedSidebarOnly } from './CollapsedSidebarOnly';
-import { ExpandedSidebarOnly } from './ExpandedSidebarOnly';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 export const NavigationItemBase = styled.div.attrs(() => ({
     tabIndex: 0,
@@ -77,6 +75,7 @@ const Container = styled(NavigationItemBase)<{
 export interface NavigationItemProps {
     nameId: TranslationKey;
     icon: IconName;
+    expanded?: boolean;
     routes?: Route['name'][];
     goToRoute?: Route['name'];
     preserveParams?: boolean;
@@ -98,10 +97,11 @@ type TitleProps = {
 
 const Title = ({ nameId, values }: TitleProps) => <Translation id={nameId} values={values} />;
 
-const NavItem = (props: NavigationItemProps) => {
+export const NavItem = (props: NavigationItemProps) => {
     const {
         nameId,
         icon,
+        expanded,
         routes,
         goToRoute,
         isActive,
@@ -144,39 +144,34 @@ const NavItem = (props: NavigationItemProps) => {
             $isRounded={isRounded}
             $typographyStyle={typographyStyle}
         >
-            <Icon name={icon} size={iconSize} color={theme.iconSubdued} pointerEvents="none" />
-            <ExpandedSidebarOnly>
-                <Paragraph typographyStyle={typographyStyle}>
-                    <Translation id={nameId} values={values} />
-                </Paragraph>
-
-                {itemsCount && (
-                    <Paragraph variant="tertiary" typographyStyle={typographyStyle}>
-                        {itemsCount}
+            <Tooltip
+                cursor="pointer"
+                content={<Title nameId={nameId} values={values} />}
+                isActive={!expanded}
+                placement="right"
+                hasArrow
+            >
+                <Icon name={icon} size={iconSize} color={theme.iconSubdued} pointerEvents="none" />
+            </Tooltip>
+            {expanded && (
+                <>
+                    <Paragraph typographyStyle={typographyStyle}>
+                        <Translation id={nameId} values={values} />
                     </Paragraph>
-                )}
-            </ExpandedSidebarOnly>
+
+                    {itemsCount && (
+                        <Paragraph variant="tertiary" typographyStyle={typographyStyle}>
+                            {itemsCount}
+                        </Paragraph>
+                    )}
+                </>
+            )}
         </Container>
     );
 };
 
 export const NavigationItem = (props: NavigationItemProps) => {
-    const { nameId, values } = props;
+    const { isSidebarCollapsed } = useResponsiveContext();
 
-    return (
-        <>
-            <CollapsedSidebarOnly>
-                <Tooltip
-                    content={<Title nameId={nameId} values={values} />}
-                    placement="right"
-                    hasArrow
-                >
-                    <NavItem {...props} />
-                </Tooltip>
-            </CollapsedSidebarOnly>
-            <ExpandedSidebarOnly>
-                <NavItem {...props} />
-            </ExpandedSidebarOnly>
-        </>
-    );
+    return <NavItem expanded={!isSidebarCollapsed} {...props} />;
 };
