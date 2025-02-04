@@ -903,8 +903,6 @@
   "TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE": "Kayma toleransı",
   "TR_EXCHANGE_USE_NON_SUITE_ACCOUNT": "Suite'te olmayan bir hesap ({symbol}) kullanın",
   "TR_EXCHANGE_VERIFY_ADDRESS_STEP": "Alma adresi",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT": "Ethereum L2 ağlarını destekleme",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION": "Coin ayarlarında Arbitrum One, Base ve Optimism ağları için destek sağlayın.",
   "TR_EXPERIMENTAL_FEATURES": "Deneysel",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Deneysel özellikler",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "Yalnızca deneyimli kullanıcılara yöneliktir. Riski üstlenerek kullanın. Bu özellikler test aşamasında olup istikrarsız olabilir ve bunlar için uzun vadede destek sunulmayabilir.",

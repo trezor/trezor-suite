@@ -903,8 +903,6 @@
   "TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE": "Tolérance au glissement",
   "TR_EXCHANGE_USE_NON_SUITE_ACCOUNT": "Utiliser un compte ({symbol}) qui n’est pas dans Suite",
   "TR_EXCHANGE_VERIFY_ADDRESS_STEP": "Adresse de réception",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT": "Prenez en charge les réseaux Ethereum de niveau 2",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION": "Activez la prise en charge des réseaux Arbirum One, Base et Optimism dans les paramètres des coins.",
   "TR_EXPERIMENTAL_FEATURES": "Expérimental",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Fonctionnalités expérimentales",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "Destiné uniquement aux utilisateurs expérimentés. Cette utilisation se fait à vos risques et périls. Ces fonctionnalités sont en cours de test, peuvent être instables et ne pas être prises en charge à long terme.",

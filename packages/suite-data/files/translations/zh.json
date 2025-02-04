@@ -916,8 +916,6 @@
   "TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE": "滑点容忍度",
   "TR_EXCHANGE_USE_NON_SUITE_ACCOUNT": "使用一个不在 Suite 中的账户 {symbol}",
   "TR_EXCHANGE_VERIFY_ADDRESS_STEP": "接收地址",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT": "支持以太坊的第二层网络（Arbitrum One、Base、Optimism）",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION": "允许在加密货币设置中启用 Arbitrum One、Base 和 Optimism 网络。",
   "TR_EXPERIMENTAL_FEATURES": "实验性",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "实验性功能",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "仅供有经验的用户使用。使用风险自负。这些功能正在测试中，可能不稳定，也可能得不到长期支持。",

@@ -916,8 +916,6 @@
   "TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE": "スリッページ許容値",
   "TR_EXCHANGE_USE_NON_SUITE_ACCOUNT": "Suiteにないアカウント ({symbol}) を使用する",
   "TR_EXCHANGE_VERIFY_ADDRESS_STEP": "受信アドレス",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT": "Ethereum L2ネットワークのサポート",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION": "コイン設定でArbitrum One、Base、Optimismネットワークのサポートを有効にします。",
   "TR_EXPERIMENTAL_FEATURES": "実験的な機能",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "実験的な機能",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "上級者向けです。自己責任で使用してください。これらの機能はテスト中であり、不安定な場合があり、長期的なサポートがない可能性があります。",

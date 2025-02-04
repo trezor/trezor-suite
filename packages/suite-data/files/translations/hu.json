@@ -903,8 +903,6 @@
   "TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE": "Csúszási tolerancia",
   "TR_EXCHANGE_USE_NON_SUITE_ACCOUNT": "A Suite-ben nem szereplő {symbol} fiók használata",
   "TR_EXCHANGE_VERIFY_ADDRESS_STEP": "Fogadó cím",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT": "Ethereum L2 hálózatok támogatása",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION": "Az Arbitrum One, Base és Optimism hálózatok támogatásának engedélyezése a coin beállításokban.",
   "TR_EXPERIMENTAL_FEATURES": "Kísérleti funkciók",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Kísérleti funkciók",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "Csak tapasztalt felhasználóknak. Használat saját felelősségre. Ezek a funkciók tesztelés alatt állnak, instabilak lehetnek, és nem biztos, hogy hosszú távú támogatásban részesülnek.",

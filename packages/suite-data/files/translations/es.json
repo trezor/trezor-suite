@@ -903,8 +903,6 @@
   "TR_EXCHANGE_SWAP_SLIPPAGE_TOLERANCE": "Tolerancia de deslizamiento",
   "TR_EXCHANGE_USE_NON_SUITE_ACCOUNT": "Utiliza una cuenta ({symbol}) que no esté en Suite.",
   "TR_EXCHANGE_VERIFY_ADDRESS_STEP": "Dirección de destino",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT": "Apoya las redes de capa 2 de Ethereum",
-  "TR_EXPERIMENTAL_ETHEREUM_L2_SUPPORT_DESCRIPTION": "Activa la asistencia para las redes Arbitrum One, Base y Optimism en la configuración de monedas.",
   "TR_EXPERIMENTAL_FEATURES": "Experimental",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Funciones experimentales",
   "TR_EXPERIMENTAL_FEATURES_WARNING": "Solo para usuarios con experiencia. Utilízala bajo tu propia responsabilidad. Estas funciones están en fase de prueba, pueden ser inestables y podrían dejar de recibir soporte a largo plazo.",
