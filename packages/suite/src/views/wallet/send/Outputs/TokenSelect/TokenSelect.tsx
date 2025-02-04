@@ -331,7 +331,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 shouldTryToFetch={isTokenKnown}
                             />
                         ) : (
-                            <CoinLogo symbol={account.symbol} size={36} />
+                            <CoinLogo symbol={account.symbol} size={24} />
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">

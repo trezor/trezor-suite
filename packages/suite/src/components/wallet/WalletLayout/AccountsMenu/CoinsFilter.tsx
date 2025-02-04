@@ -13,7 +13,7 @@ import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledCoinLogo = styled(CoinLogo)<{ $isSelected?: boolean }>`
     display: block;
-    border-radius: ${borders.radii.xxs};
+    border-radius: ${borders.radii.full};
     outline: 2px solid
         ${({ $isSelected, theme }) =>
             $isSelected ? theme.backgroundSecondaryPressed : 'transparent'};
@@ -100,7 +100,6 @@ export const CoinsFilter = () => {
                                 <StyledCoinLogo
                                     data-testid={`@account-menu/filter/${networkSymbol}`}
                                     symbol={networkSymbol}
-                                    type="network"
                                     size={16}
                                     data-test-activated={coinFilter === networkSymbol}
                                     $isSelected={isSelected}
