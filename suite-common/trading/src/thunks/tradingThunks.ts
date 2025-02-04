@@ -63,7 +63,7 @@ const verifyAddressThunk = createThunk(
         if (response.success) {
             dispatch({
                 type: tradingAction,
-                addressVerified: address,
+                payload: address,
             });
         } else {
             // special case: device no-backup permissions not granted
