@@ -49,8 +49,7 @@ export const tradingMiddleware =
         const { sellInfo, tradingAccountKey: tradingSellAccountKey } = state.wallet.trading.sell;
         const { router, modal } = state;
         const isRouteChange = action.type === ROUTER.LOCATION_CHANGE;
-        const isSuiteAccountChanged =
-            action.type === `${ACCOUNTS_MODULE_PREFIX}/updateSelectedAccount`;
+        const isAccountUpdated = action.type === `${ACCOUNTS_MODULE_PREFIX}/updateSelectedAccount`;
 
         if (action.type === TRADING_COMMON.LOAD_DATA) {
             const account = getAccountAccordingToRoute(state);
@@ -147,9 +146,15 @@ export const tradingMiddleware =
         }
 
         // clear the account key in the Sell and Swap section when the route is not trading
-        if (isSuiteAccountChanged && (tradingExchangeAccountKey || tradingSellAccountKey)) {
-            api.dispatch(tradingSellActions.setTradingSellAccountKey(undefined));
-            api.dispatch(tradingExchangeActions.setTradingExchangeAccountKey(undefined));
+        if (
+            isAccountUpdated &&
+            !isTradingRoute &&
+            (tradingExchangeAccountKey || tradingSellAccountKey)
+        ) {
+            api.dispatch(tradingSellActions.setTradingSellAccountKey(action.payload.account?.key));
+            api.dispatch(
+                tradingExchangeActions.setTradingExchangeAccountKey(action.payload.account?.key),
+            );
         }
 
         next(action);
@@ -165,14 +170,17 @@ export const tradingMiddleware =
 
             if (isBuy) {
                 api.dispatch(tradingCommonActions.setActiveSection('buy'));
+                api.dispatch(tradingBuyActions.saveTransactionDetailId(undefined));
             }
 
             if (isSell) {
                 api.dispatch(tradingCommonActions.setActiveSection('sell'));
+                api.dispatch(tradingSellActions.saveTransactionId(undefined));
             }
 
             if (isExchange) {
                 api.dispatch(tradingCommonActions.setActiveSection('exchange'));
+                api.dispatch(tradingExchangeActions.saveTransactionId(undefined));
             }
 
             const wasBuy = state.router.route?.name === 'wallet-trading-buy';
