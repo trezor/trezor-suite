@@ -57,6 +57,8 @@ export const composeTransaction =
 
         const { amount } = formValues.outputs[0];
 
+        if (!amount || amount === '0') return;
+
         // gasLimit calculation based on account.descriptor and amount
         const { stakeType } = formValues;
         const stakeTxGasLimit = await getStakeTxGasLimit({
