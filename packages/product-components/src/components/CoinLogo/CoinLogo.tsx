@@ -22,24 +22,24 @@ export interface CoinLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
     index?: number;
 }
 
-const SvgWrapper = styled.div<Omit<CoinLogoProps, 'symbol'>>`
+const SvgWrapper = styled.div<{ $size?: number }>`
     position: relative;
     display: inline-block;
-    width: ${({ size }) => getSize(size)};
-    height: ${({ size }) => getSize(size)};
+    width: ${({ $size }) => getSize($size)};
+    height: ${({ $size }) => getSize($size)};
 
-    .coin-symbol {
-        width: ${({ size }) => getSize(size)};
-        height: ${({ size }) => getSize(size)};
-        line-height: ${({ size }) => getSize(size)};
+    > div {
+        width: ${({ $size }) => getSize($size)};
+        height: ${({ $size }) => getSize($size)};
+        line-height: ${({ $size }) => getSize($size)};
     }
 
-    .network-symbol {
+    > div + div {
         position: absolute;
         bottom: 0;
         right: 0;
-        width: ${({ size }) => getSize(size, 1, 3)};
-        height: ${({ size }) => getSize(size, 1, 3)};
+        width: ${({ $size }) => getSize($size, 1, 3)};
+        height: ${({ $size }) => getSize($size, 1, 3)};
         line-height: 0;
         border-radius: ${borders.radii.xxs};
         border: 1px solid white;
@@ -77,7 +77,7 @@ export const CoinLogo = ({
             : null;
 
     return (
-        <SvgWrapper className={className} size={size} {...rest}>
+        <SvgWrapper className={className} $size={size} {...rest}>
             <ReactSVG
                 src={symbolSrc ?? COINS[symbol]}
                 beforeInjection={svg => {
@@ -85,7 +85,6 @@ export const CoinLogo = ({
                     svg.setAttribute('height', getSize(size));
                 }}
                 loading={() => <span className="loading" />}
-                className="coin-symbol"
             />
             {badge && symbolSrc != null && (
                 <ReactSVG
@@ -95,7 +94,6 @@ export const CoinLogo = ({
                         svg.setAttribute('height', getSize(size, 0, 3));
                     }}
                     loading={() => <span className="loading" />}
-                    className="network-symbol"
                 />
             )}
         </SvgWrapper>
