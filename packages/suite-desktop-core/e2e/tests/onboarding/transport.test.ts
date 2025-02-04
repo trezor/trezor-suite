@@ -1,0 +1,19 @@
+import { expect, test } from '../../support/fixtures';
+
+test.describe(
+    'Onboarding - transport webusb/bridge',
+    { tag: ['@group=device-management', '@webOnly'] },
+    () => {
+        test.use({ startEmulator: false });
+
+        test('Offer webusb as primary choice on web', async ({ page, analyticsPage }) => {
+            await analyticsPage.continueButton.click();
+            await expect(page.getByTestId('@webusb-button')).toBeVisible();
+            await page.getByTestId('@connect-device-prompt/no-device-detected').click();
+            await expect(page.getByTestId('@collapsible-box/body')).toHaveAttribute(
+                'aria-expanded',
+                'true',
+            );
+        });
+    },
+);
