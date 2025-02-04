@@ -6,10 +6,10 @@ import { CustomBackend } from './CustomBackend';
 import { DebugAndExperimental } from './DebugAndExperimental';
 import { HideBalances } from './HideBalances';
 import { Tor } from './Tor';
-import { isCollapsedSidebar } from '../consts';
 import { UpdateStatusActionBarIcon } from './Update/UpdateStatusActionBarIcon';
+import { useResponsiveContext } from '../../../../../../support/suite/ResponsiveContext';
 
-const ActionsContainer = styled.div`
+const ActionsContainer = styled.div<{ $isSidebarCollapsed: boolean }>`
     display: flex;
     gap: ${spacingsPx.xs};
 
@@ -17,9 +17,7 @@ const ActionsContainer = styled.div`
     padding: 0 ${spacingsPx.xs};
     align-items: stretch;
 
-    @container ${isCollapsedSidebar} {
-        flex-direction: column;
-    }
+    ${({ $isSidebarCollapsed }) => $isSidebarCollapsed && `flex-direction: column;`}
 
     > * {
         flex: 1;
@@ -30,12 +28,18 @@ type QuickActionsProps = {
     showUpdateBannerNotification: boolean;
 };
 
-export const QuickActions = ({ showUpdateBannerNotification }: QuickActionsProps) => (
-    <ActionsContainer>
-        <UpdateStatusActionBarIcon showUpdateBannerNotification={showUpdateBannerNotification} />
-        <DebugAndExperimental />
-        <CustomBackend />
-        <Tor />
-        <HideBalances />
-    </ActionsContainer>
-);
+export const QuickActions = ({ showUpdateBannerNotification }: QuickActionsProps) => {
+    const { isSidebarCollapsed } = useResponsiveContext();
+
+    return (
+        <ActionsContainer $isSidebarCollapsed={isSidebarCollapsed}>
+            <UpdateStatusActionBarIcon
+                showUpdateBannerNotification={showUpdateBannerNotification}
+            />
+            <DebugAndExperimental />
+            <CustomBackend />
+            <Tor />
+            <HideBalances />
+        </ActionsContainer>
+    );
+};

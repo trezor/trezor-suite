@@ -6,18 +6,16 @@ import { spacingsPx } from '@trezor/theme';
 
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
-import { isCollapsedSidebar } from './consts';
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
-const Nav = styled.nav`
+const Nav = styled.nav<{ $isSidebarCollapsed: boolean }>`
     display: flex;
     flex-direction: column;
     gap: ${spacingsPx.xxs};
     margin: ${spacingsPx.xs};
     align-items: stretch;
 
-    @container ${isCollapsedSidebar} {
-        align-items: center;
-    }
+    ${({ $isSidebarCollapsed }) => $isSidebarCollapsed && `align-items: center;`}
 `;
 
 const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> = [
@@ -41,12 +39,16 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
     },
 ];
 
-export const Navigation = () => (
-    <Nav>
-        {navItems.map(item => {
-            const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
+export const Navigation = () => {
+    const { isSidebarCollapsed } = useResponsiveContext();
 
-            return <Component key={item.nameId} {...item} />;
-        })}
-    </Nav>
-);
+    return (
+        <Nav $isSidebarCollapsed={isSidebarCollapsed}>
+            {navItems.map(item => {
+                const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
+
+                return <Component key={item.nameId} {...item} />;
+            })}
+        </Nav>
+    );
+};
