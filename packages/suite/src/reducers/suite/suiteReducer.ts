@@ -4,7 +4,12 @@ import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import type { InvityServerEnvironment } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { DeviceRootState, discoveryActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    DeviceRootState,
+    discoveryActions,
+    selectIsEntropyCheckFailed,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 import { ConnectSettings, InstallerInfo, TRANSPORT, TransportInfo } from '@trezor/connect';
 import { isWeb } from '@trezor/env-utils';
@@ -575,6 +580,20 @@ export const selectIsFirmwareAuthenticityCheckEnabledAndHardFailed = (state: App
         hashError !== null && hashCheckErrorScenarios[hashError].type === 'hardModal';
 
     return isRevisionHardError || isHashHardError;
+};
+
+/**
+ * Return true if entropy check has failed and is not disabled via settings nor message system.
+ */
+export const selectIsEntropyCheckEnabledAndFailed = (state: AppState) => {
+    const isEntropyCheckEnabled = selectIsEntropyCheckEnabled(state);
+    const isEntropyCheckDisabledByMessageSystem = selectIsFeatureDisabled(
+        state,
+        Feature.entropyCheck,
+    );
+    const isEntropyCheckFailed = selectIsEntropyCheckFailed(state);
+
+    return isEntropyCheckEnabled && !isEntropyCheckDisabledByMessageSystem && isEntropyCheckFailed;
 };
 
 export default suiteReducer;
