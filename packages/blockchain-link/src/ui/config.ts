@@ -265,6 +265,30 @@ export default [
     },
     {
         blockchain: {
+            name: 'Bitcoin Testnet 4',
+            worker: 'js/blockbook-worker.js',
+            server: ['https://tbtc4-1.trezor.io', 'https://tbtc4-2.trezor.io'],
+            debug: true,
+        },
+        data: {
+            address:
+                'vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b', // all-all bech32 1
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+                contractFilter: undefined,
+            },
+            estimateFeeOptions: {
+                blocks: [1, 2, 10],
+            },
+            txid: '',
+            tx: '',
+            subscribe: 'tb1qlj64u6fqutr0xue85kl55fx0gt4m4urun25p7q', // https://bitcoinfaucet.uo1.net/
+        },
+        selected: true,
+    },
+    {
+        blockchain: {
             name: 'Bitcoin Cash',
             worker: 'js/blockbook-worker.js',
             server: [
