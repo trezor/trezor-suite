@@ -567,6 +567,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
                     await Promise.race([
+                        // todo: there is a issue at least with bridge (old and new) that getFeatures timeout does not kill the request and sending subsequent initialize gets 'other call in progress' error
                         this.getFeatures().finally(() => clearTimeout(getFeaturesTimeoutId)),
                         // note: tested on 24.7.2024 and whatever is written below this line is still valid
                         // We do not support T1B1 <1.9.0 but we still need Features even from not supported devices to determine your version
