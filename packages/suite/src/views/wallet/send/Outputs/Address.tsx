@@ -201,6 +201,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                             onClick: () => {
                                 contractAddressWarningDismissed.current = true;
                                 trigger(inputName);
+                                composeTransaction(amountInputName);
                             },
                             text: translationString('TR_I_UNDERSTAND_THE_RISK'),
                         },
