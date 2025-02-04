@@ -8,6 +8,7 @@ const safe3Homescreens = [
     'jupiter',
     'saturn',
     'starweb',
+    'valentine',
 ];
 
 // original trezor images has to be first as they are send to device as '0' and the default image from fw is used
@@ -57,6 +58,7 @@ export const getHomescreens = (isBitcoinOnlyFirmware: boolean) => ({
         'hacker',
         'polis',
         'carlos',
+        'heart',
     ],
     [DeviceModelInternal.T2B1]: safe3Homescreens,
     [DeviceModelInternal.T3B1]: safe3Homescreens,
