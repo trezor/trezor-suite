@@ -39,13 +39,15 @@ import { selectNetworkFeeInfo } from '../fees/feesReducer';
 
 export const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000; // 1 minute
 
-// using fast and cheap blockchains, it looks suspicious when tx is not almost instantly confirmed
 const CUSTOM_ACCOUNT_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
-    pol: 20 * 1000,
-    bsc: 20 * 1000,
-    op: 20 * 1000,
+    bsc: DEFAULT_ACCOUNT_SYNC_INTERVAL / 3,
+    pol: DEFAULT_ACCOUNT_SYNC_INTERVAL / 3,
+    op: DEFAULT_ACCOUNT_SYNC_INTERVAL / 3,
+    base: DEFAULT_ACCOUNT_SYNC_INTERVAL / 3,
+    arb: DEFAULT_ACCOUNT_SYNC_INTERVAL / 3,
     sol: DEFAULT_ACCOUNT_SYNC_INTERVAL * 5,
     ada: DEFAULT_ACCOUNT_SYNC_INTERVAL * 5,
+    xrp: DEFAULT_ACCOUNT_SYNC_INTERVAL * 3,
 };
 
 const getAccountSyncInterval = (symbol: NetworkSymbol) =>
