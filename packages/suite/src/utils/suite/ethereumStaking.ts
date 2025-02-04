@@ -436,7 +436,7 @@ export const prepareClaimEthTx = async ({
 };
 
 export interface GetStakeTxGasLimitParams {
-    stakeType: StakeType | undefined;
+    stakeType: StakeType;
     from: string;
     amount: string;
     symbol: NetworkSymbol;
@@ -450,7 +450,7 @@ export type GetStakeTxGasLimitResponse =
       }
     | {
           success: false;
-          error: PrecomposedLevels;
+          error: PrecomposedLevels; // TODO: wrong error
       };
 
 export const getStakeTxGasLimit = async ({
@@ -460,21 +460,6 @@ export const getStakeTxGasLimit = async ({
     symbol,
     identity,
 }: GetStakeTxGasLimitParams): Promise<GetStakeTxGasLimitResponse> => {
-    const genericError: PrecomposedLevels = {
-        normal: {
-            error: 'INCORRECT-FEE-RATE',
-            errorMessage: { id: 'TR_GENERIC_ERROR_TITLE' },
-            type: 'error',
-        },
-    };
-
-    if (!stakeType) {
-        return {
-            success: false,
-            error: genericError,
-        };
-    }
-
     try {
         let txData;
         if (stakeType === 'stake') {
@@ -502,12 +487,19 @@ export const getStakeTxGasLimit = async ({
             success: true,
             gasLimit: txData.gasLimit.toString(),
         };
-    } catch (e) {
-        console.error(e);
+    } catch (error) {
+        console.error(error);
 
         return {
             success: false,
-            error: genericError,
+            error: {
+                // TODO: get rid of generic error
+                normal: {
+                    error: 'INCORRECT-FEE-RATE',
+                    errorMessage: { id: 'TR_GENERIC_ERROR_TITLE' },
+                    type: 'error',
+                },
+            },
         };
     }
 };
