@@ -33,6 +33,8 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
 import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
+import { signSolanaSendFormTransactionThunk } from '@suite-common/wallet-core/src/send/sendFormSolanaThunks';
+import TrezorConnect from '@trezor/connect';
 
 export const MODULE_PREFIX = '@send';
 
@@ -276,6 +278,103 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             applySendFormMetadataLabelsThunk({
                 selectedAccount,
                 precomposedTransaction,
+                txid,
+            }),
+        );
+
+        // Clean send form state and close review modal.
+        dispatch(cancelSignSendFormTransactionThunk());
+
+        return result;
+    },
+);
+
+export const signAndPushSendFormTransactionThunk2 = createThunk(
+    `${MODULE_PREFIX}/signSendFormTransactionThunk2`,
+    async (
+        {
+            formState,
+            precomposedTransaction,
+            selectedAccount,
+        }: {
+            formState: FormState;
+            precomposedTransaction?: GeneralPrecomposedTransactionFinal;
+            selectedAccount?: Account;
+        },
+        { dispatch, getState },
+    ) => {
+        const device = selectSelectedDevice(getState());
+        if (!device || !selectedAccount) return;
+
+        /* const enhancedPrecomposedTransaction = await dispatch(
+            enhancePrecomposedTransactionThunk({
+                transactionFormValues: formState,
+                precomposedTransaction,
+                selectedAccount,
+            }),
+        ).unwrap(); */
+
+        // TransactionReviewModal has 2 steps: signing and pushing
+        // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
+        // this action is blocked by modalActions.preserve()
+        dispatch(modalActions.preserve());
+
+        if (!formState.solanaSerializedTx) {
+            return;
+        }
+
+        const response = await TrezorConnect.solanaSignTransaction({
+            device: {
+                path: device.path,
+                instance: device.instance,
+                state: device.state,
+            },
+            useEmptyPassphrase: device.useEmptyPassphrase,
+            path: selectedAccount.path,
+            serializedTx: formState.solanaSerializedTx,
+            serialize: true,
+        });
+
+        console.log(response);
+
+        if (!response.success) {
+            return dispatch(modalActions.onCancel());
+        }
+
+        return dispatch(modalActions.onCancel());
+
+        // Open a deferred modal and get the decision
+        const isPushConfirmed = await dispatch(
+            modalActions.openDeferredModal({ type: 'review-transaction' }),
+        );
+
+        console.log('isPushConfirmed', isPushConfirmed);
+
+        if (!isPushConfirmed) {
+            return;
+        }
+
+        // This has to be executed prior to pushing the transaction!
+
+        // push tx to the network
+        const pushResponse = await dispatch(
+            pushSendFormTransactionThunk({
+                selectedAccount,
+            }),
+        );
+
+        if (isRejected(pushResponse)) {
+            return pushResponse.payload?.metadata;
+        }
+
+        const result = pushResponse.payload;
+        const { txid } = result.payload;
+
+        // This thunk uses precomposedForm so it must be called before cleanup.
+        dispatch(
+            applySendFormMetadataLabelsThunk({
+                selectedAccount,
+                precomposedTransaction: { outputsPermutation: [] },
                 txid,
             }),
         );

@@ -8,7 +8,10 @@ import { networks } from '@suite-common/wallet-config';
 import type { Account, FormOptions } from '@suite-common/wallet-types';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import {
+    signAndPushSendFormTransactionThunk,
+    signAndPushSendFormTransactionThunk2,
+} from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 
 interface TradingRecomposeAndSignProps {
@@ -130,13 +133,15 @@ export const useTradingRecomposeAndSign = () => {
             }
 
             // compose transaction again to recalculate fees based on real account values
-            const composedLevels = await dispatch(
-                composeSendFormTransactionFeeLevelsThunk({
-                    formState,
-                    composeContext,
-                }),
-            ).unwrap();
-            if (!selectedFee || !composedLevels) {
+            const composedLevels = solanaSerializedTx
+                ? undefined
+                : await dispatch(
+                      composeSendFormTransactionFeeLevelsThunk({
+                          formState,
+                          composeContext,
+                      }),
+                  ).unwrap();
+            if ((!selectedFee || !composedLevels) && !solanaSerializedTx) {
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
@@ -146,9 +151,9 @@ export const useTradingRecomposeAndSign = () => {
 
                 return;
             }
-            const precomposedToSign = composedLevels[selectedFee];
+            const precomposedToSign = composedLevels?.[selectedFee];
 
-            if (!precomposedToSign || precomposedToSign.type !== 'final') {
+            if (!solanaSerializedTx && (!precomposedToSign || precomposedToSign.type !== 'final')) {
                 let errorMessage: string | undefined;
                 if (precomposedToSign?.type === 'error' && precomposedToSign.errorMessage) {
                     errorMessage = translationString(
@@ -170,7 +175,7 @@ export const useTradingRecomposeAndSign = () => {
             }
 
             return dispatch(
-                signAndPushSendFormTransactionThunk({
+                signAndPushSendFormTransactionThunk2({
                     formState,
                     precomposedTransaction: precomposedToSign,
                     selectedAccount: account,

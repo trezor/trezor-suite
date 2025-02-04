@@ -263,7 +263,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
     async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
-        if (precomposedTransaction.feeLimit == null)
+        if (precomposedTransaction?.feeLimit == null)
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Fee limit missing.',
@@ -294,27 +294,36 @@ export const signSolanaSendFormTransactionThunk = createThunk<
                 message: 'Missing token accounts.',
             });
 
-        const transaction = await TrezorConnect.solanaComposeTransaction({
-            fromAddress: selectedAccount.descriptor,
-            toAddress: formState.outputs[0].address,
-            amount: formState.outputs[0].amount,
-            token: token
-                ? {
-                      mint: token.contract,
-                      program: tokenStandardToTokenProgramName(token.type),
-                      decimals: token.decimals,
-                      accounts: token.accounts ?? [],
-                  }
-                : undefined,
-            blockHash,
-            lastValidBlockHeight,
-            priorityFees: {
-                computeUnitPrice: precomposedTransaction.feePerByte,
-                computeUnitLimit: precomposedTransaction.feeLimit,
-            },
-            coin: selectedAccount.symbol,
-            identity: getAccountIdentity(selectedAccount),
-        });
+        const transaction = formState.solanaSerializedTx
+            ? {
+                  success: true,
+                  payload: {
+                      serializedTx: formState.solanaSerializedTx,
+                      additionalInfo: undefined,
+                      error: undefined,
+                  },
+              }
+            : await TrezorConnect.solanaComposeTransaction({
+                  fromAddress: selectedAccount.descriptor,
+                  toAddress: formState.outputs[0].address,
+                  amount: formState.outputs[0].amount,
+                  token: token
+                      ? {
+                            mint: token.contract,
+                            program: tokenStandardToTokenProgramName(token.type),
+                            decimals: token.decimals,
+                            accounts: token.accounts ?? [],
+                        }
+                      : undefined,
+                  blockHash,
+                  lastValidBlockHeight,
+                  priorityFees: {
+                      computeUnitPrice: precomposedTransaction.feePerByte,
+                      computeUnitLimit: precomposedTransaction.feeLimit,
+                  },
+                  coin: selectedAccount.symbol,
+                  identity: getAccountIdentity(selectedAccount),
+              });
 
         if (!transaction.success) {
             return rejectWithValue({
@@ -331,9 +340,9 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
             path: selectedAccount.path,
-            serializedTx: formState.solanaSerializedTx ?? transaction.payload.serializedTx,
+            serializedTx: transaction.payload.serializedTx,
             serialize: true,
-            additionalInfo: transaction.payload.additionalInfo.tokenAccountInfo
+            additionalInfo: transaction.payload.additionalInfo?.tokenAccountInfo
                 ? {
                       tokenAccountsInfos: [transaction.payload.additionalInfo.tokenAccountInfo],
                   }
