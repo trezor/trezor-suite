@@ -16,18 +16,32 @@ export const ENCRYPTED_STORAGE_ID = 'trezorSuite-app-storage';
 export let encryptedStorage: MMKV;
 
 const retrieveStorageEncryptionKey = async () => {
+    let secureKey: string | null = null;
     try {
-        const secureKey = await SecureStore.getItemAsync(ENCRYPTION_KEY);
-
-        if (secureKey) return secureKey;
+        secureKey = await SecureStore.getItemAsync(ENCRYPTION_KEY);
     } catch (error) {
-        // Some users are facing an error when they uninstall the app and then reinstall it,
-        // see https://github.com/expo/expo/issues/23426
-        await SecureStore.deleteItemAsync(ENCRYPTION_KEY);
-        captureException(error);
+        // If there is an error, report it and try to read one more time.
+        captureException(error, { tags: { attempt: 1 } });
+        try {
+            // There were some trouble reading from the SecureStore,
+            // let's wait a bit to make sure it wasn't just temporary error.
+            await new Promise(resolve => setTimeout(resolve, 100));
+            secureKey = await SecureStore.getItemAsync(ENCRYPTION_KEY);
+        } catch (error) {
+            captureException(error, { tags: { attempt: 2 } });
+
+            // It's not possible to read from SecureStore,
+            // and we don't want to set a new key or reset storage without user interaction.
+            // It might happen on the background when the phone is locked.
+            return null;
+        }
     }
 
-    const secureKey = Buffer.from(getRandomBytes(16)).toString('hex');
+    if (secureKey) return secureKey;
+
+    // If we are here, it means that we have no encryption key in storage.
+    // We need to generate a new one. This should happen only once on first app start.
+    secureKey = Buffer.from(getRandomBytes(16)).toString('hex');
     await SecureStore.setItemAsync(ENCRYPTION_KEY, secureKey);
 
     return secureKey;
@@ -39,9 +53,30 @@ export const clearStorage = () => {
     RNRestart.restart();
 };
 
-// Ideally it should never happen but we need to be sure that at least some message is displayed.
-// If someone will mess with encryptionKey it can corrupt storage and app will crash on startup.
-// Then app will hang on splashscreen indefinitely so we at least want to show some error message.
+const alertUser = () => {
+    // If storage can't load, app is never set as ready so we need to hide splash screen here to make the alert visible.
+    SplashScreen.hideAsync();
+    Alert.alert(
+        'Unable to load app data',
+        'Try restarting the app. If the issue persists, you may need to clear the app’s storage. This won’t affect assets on your Trezor device.',
+        [
+            {
+                text: 'Clear app storage',
+                onPress: clearStorage,
+                style: 'destructive',
+            },
+            {
+                text: 'Restart app',
+                onPress: () => {
+                    RNRestart.restart();
+                },
+                isPreferred: true,
+                style: 'default',
+            },
+        ],
+    );
+};
+
 const tryInitStorage = (encryptionKey: string) => {
     try {
         return new MMKV({
@@ -49,23 +84,7 @@ const tryInitStorage = (encryptionKey: string) => {
             encryptionKey,
         });
     } catch (error) {
-        SplashScreen.hideAsync();
-        Alert.alert(
-            'Encrypted storage error',
-            `Storage is corrupted. Please reinstall the app or reset storage. \n Error: ${error.toString()}`,
-            [
-                {
-                    text: 'OK',
-                    onPress: () => {
-                        // do nothing
-                    },
-                },
-                {
-                    text: 'Reset storage',
-                    onPress: clearStorage,
-                },
-            ],
-        );
+        alertUser();
         // rethrow error so it can be caught by Sentry
         throw error;
     }
@@ -75,6 +94,12 @@ export const initMmkvStorage = async (): Promise<Storage> => {
     // storage may be already initialized (for example in dev useEffect fire twice)
     if (!encryptedStorage) {
         const encryptionKey = await retrieveStorageEncryptionKey();
+
+        if (!encryptionKey) {
+            alertUser();
+            throw new Error('Encryption key is unreadable!');
+        }
+
         encryptedStorage = tryInitStorage(encryptionKey);
     }
 
