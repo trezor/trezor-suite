@@ -1426,7 +1426,6 @@
   "TR_RECOVER_SUBHEADING_COMPUTER": "Pokud chcete obnovit stávající peněženku, můžete tak učinit pomocí zálohy peněženky. Vyberte počet slov v záloze peněženky.",
   "TR_RECOVER_SUBHEADING_TOUCH": "Celý proces obnovení probíhá na dotykové obrazovce Trezoru.",
   "TR_RECOVER_YOUR_WALLET_FROM": "Obnovit peněženku pomocí zálohy peněženky",
-  "TR_REDUCE_FROM": "Snížit z {value}",
   "TR_REMEMBER_WALLET_DESCRIPTION": "Stále se načte anonymně, ale načítání bude rychlejší a použijí se vlastní nastavení.",
   "TR_REMEMBER_WALLET_NOTE": "Zapamatuje si všechny účty na této peněžence",
   "TR_REMEMBER_WALLET_TITLE": "Zapamatovat si peněženku",

@@ -1426,7 +1426,6 @@
   "TR_RECOVER_SUBHEADING_COMPUTER": "Si vous souhaitez récupérer un portefeuille existant, vous pouvez le faire avec votre sauvegarde du portefeuille. Sélectionner le nombre de mots dans votre sauvegarde du portefeuille.",
   "TR_RECOVER_SUBHEADING_TOUCH": "L’ensemble du processus de récupération s’effectue sur l’écran tactile de votre Trezor.",
   "TR_RECOVER_YOUR_WALLET_FROM": "Récupérez le portefeuille à l’aide d’une sauvegarde du portefeuille",
-  "TR_REDUCE_FROM": "Réduire de {value}",
   "TR_REMEMBER_WALLET_DESCRIPTION": "Il sera chargé de manière confidentielle, mais avec des temps de chargement plus rapides et des configurations personnalisées enregistrées.",
   "TR_REMEMBER_WALLET_NOTE": "Cela mémorisera tous les actifs de ce portefeuille",
   "TR_REMEMBER_WALLET_TITLE": "Mémoriser le portefeuille",

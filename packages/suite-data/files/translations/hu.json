@@ -1428,7 +1428,6 @@
   "TR_RECOVER_SUBHEADING_COMPUTER": "Amennyiben egy meglévő tárcát szeretnél visszaállítani, azt a biztonsági mentés használatával tudod megtenni. Válaszd ki, hogy hány szóból áll a biztonsági mentésed.",
   "TR_RECOVER_SUBHEADING_TOUCH": "A Trezor Model T használatával a teljes helyreállítási folyamat az eszköz érintőképernyőjén történik.",
   "TR_RECOVER_YOUR_WALLET_FROM": "Tárca visszaállítása seed-ből",
-  "TR_REDUCE_FROM": "Csökkentés a következő értékről: {value}",
   "TR_REMEMBER_WALLET_DESCRIPTION": "Továbbra is anonim módon töltődik be, de gyorsabb betöltési időkkel és a mentett egyéni beállításokkal.",
   "TR_REMEMBER_WALLET_NOTE": "A tárca összes pénzeszközének megjegyzése.",
   "TR_REMEMBER_WALLET_TITLE": "Tárca megjegyzése",

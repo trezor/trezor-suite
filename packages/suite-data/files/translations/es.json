@@ -1426,7 +1426,6 @@
   "TR_RECOVER_SUBHEADING_COMPUTER": "Si quieres recuperar un monedero existente, puedes usar tu copia de seguridad. Selecciona el número de palabras de la copia de seguridad del monedero.",
   "TR_RECOVER_SUBHEADING_TOUCH": "Todo el proceso de recuperación se realiza en la pantalla del Trezor.",
   "TR_RECOVER_YOUR_WALLET_FROM": "Recuperar el monedero mediante una copia de seguridad",
-  "TR_REDUCE_FROM": "Reducir de {value}",
   "TR_REMEMBER_WALLET_DESCRIPTION": "Se cargará de forma privada, pero más rápido y usando la configuración personalizada guardada.",
   "TR_REMEMBER_WALLET_NOTE": "Recordará todos los activos de este monedero.",
   "TR_REMEMBER_WALLET_TITLE": "Recordar el monedero",

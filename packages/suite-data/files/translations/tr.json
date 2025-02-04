@@ -1426,7 +1426,6 @@
   "TR_RECOVER_SUBHEADING_COMPUTER": "Mevcut bir cüzdanı kurtarmak istiyorsanız bunu kurtarma parolanızla yapabilirsiniz. Kurtarma parolanızdaki kelime sayısını seçin.",
   "TR_RECOVER_SUBHEADING_TOUCH": "Tüm kurtarma süreci Trezor dokunmatik ekranı kullanılarak tamamlanır.",
   "TR_RECOVER_YOUR_WALLET_FROM": "Cüzdan yedekleme kullanarak cüzdanı kurtarın",
-  "TR_REDUCE_FROM": "Şundan azalt: {value}",
   "TR_REMEMBER_WALLET_DESCRIPTION": "Özel olarak yüklenmeye devam edecektir (ancak daha hızlı yükleme süreleri ve kaydedilmiş özel kurulumlarla).",
   "TR_REMEMBER_WALLET_NOTE": "Bu işlemle, bu cüzdandaki tüm varlıklar hatırlanacaktır",
   "TR_REMEMBER_WALLET_TITLE": "Cüzdanı hatırla",

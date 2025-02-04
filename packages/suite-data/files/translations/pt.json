@@ -1426,7 +1426,6 @@
   "TR_RECOVER_SUBHEADING_COMPUTER": "Se quiser recuperar uma carteira existente, você pode fazê-lo com sua frase-semente de recuperação. Selecione o número de palavras da sua frase-semente de recuperação.",
   "TR_RECOVER_SUBHEADING_TOUCH": "Todo o processo de recuperação é concluído usando o touchscreen do seu Trezor.",
   "TR_RECOVER_YOUR_WALLET_FROM": "Recupere a carteira usando uma cópia de segurança da carteira",
-  "TR_REDUCE_FROM": "Reduza de {value}",
   "TR_REMEMBER_WALLET_DESCRIPTION": "Ela ainda será carregada anonimamente, mas de forma mais rápida e com configurações personalizadas salvas.",
   "TR_REMEMBER_WALLET_NOTE": "Isto irá se lembrar de todos os ativos desta carteira",
   "TR_REMEMBER_WALLET_TITLE": "Lembrar carteira",

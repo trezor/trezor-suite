@@ -1426,7 +1426,6 @@
   "TR_RECOVER_SUBHEADING_COMPUTER": "Se desideri recuperare un wallet esistente, puoi farlo utilizzando la frase Seed di recupero. Seleziona il numero di parole nella frase Seed di recupero.",
   "TR_RECOVER_SUBHEADING_TOUCH": "L'intera procedura di recupero viene completata utilizzando il touchscreen di Trezor.",
   "TR_RECOVER_YOUR_WALLET_FROM": "Recupera il wallet utilizzando il back-up del wallet",
-  "TR_REDUCE_FROM": "Riduci da {value}",
   "TR_REMEMBER_WALLET_DESCRIPTION": "Verrà comunque caricato in modalità privata, ma con tempi di caricamento più rapidi e con le impostazioni personalizzate salvate.",
   "TR_REMEMBER_WALLET_NOTE": "Tutti gli asset nel wallet verranno ricordati",
   "TR_REMEMBER_WALLET_TITLE": "Ricorda wallet",

@@ -6443,7 +6443,7 @@ export default defineMessages({
     },
     TR_DECREASED_AMOUNT_SELECTION_EXPLANATION: {
         id: 'TR_DECREASED_AMOUNT_SELECTION_EXPLANATION',
-        defaultMessage: 'Select the amount that should be reduced to pay for the increased fee.',
+        defaultMessage: 'Select the amount to deduct to pay for the increased fee.',
     },
     TR_DECREASE_AMOUNT_BY: {
         id: 'TR_DECREASE_AMOUNT_BY',

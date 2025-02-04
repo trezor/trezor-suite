@@ -818,7 +818,6 @@
   "TR_RECOVER_SUBHEADING_COMPUTER": "Este posibilă recrearea dispozitivului din copia de rezervă bip39. În primul rând, alegeți numărul de cuvinte din copia de rezervă.",
   "TR_RECOVER_SUBHEADING_TOUCH": "La Model T, întregul proces de recuperare se poate face pe dispozitiv.",
   "TR_RECOVER_YOUR_WALLET_FROM": "Recuperează-ți portofelul din seed",
-  "TR_REDUCE_FROM": "Reducere de la {value}",
   "TR_REPLACE_TX": "Înlocuiți tranzacția",
   "TR_RESTORE_EXISTING_WALLET": "Recuperați portofelul",
   "TR_RETRY": "Reîncercați",

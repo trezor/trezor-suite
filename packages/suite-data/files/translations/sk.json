@@ -1287,7 +1287,6 @@
   "TR_RECOVER_SUBHEADING_COMPUTER": "If you want to recover an existing wallet, you can do so with your wallet backup. Select the number of words in your wallet backup.",
   "TR_RECOVER_SUBHEADING_TOUCH": "The entire recovery process is done on the device's touchscreen.",
   "TR_RECOVER_YOUR_WALLET_FROM": "Recover wallet from seed",
-  "TR_REDUCE_FROM": "Reduce from {value}",
   "TR_REMEMBER_WALLET_DESCRIPTION": "It will still be loaded privately, but with faster loading times and saved custom setups.",
   "TR_REMEMBER_WALLET_NOTE": "This will remember all assets on this wallet",
   "TR_REMEMBER_WALLET_TITLE": "Remember wallet",
