@@ -29,7 +29,7 @@ export type TradingBuyAction =
     | { type: typeof TRADING_BUY.SAVE_BUY_INFO; buyInfo: BuyInfo }
     | { type: typeof TRADING_BUY.DISPOSE }
     | { type: typeof TRADING_BUY.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
-    | { type: typeof TRADING_BUY.SAVE_TRANSACTION_DETAIL_ID; transactionId: string }
+    | { type: typeof TRADING_BUY.SAVE_TRANSACTION_DETAIL_ID; transactionId: string | undefined }
     | { type: typeof TRADING_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
     | { type: typeof TRADING_BUY.VERIFY_ADDRESS; addressVerified: string | undefined }
     | {
@@ -148,7 +148,7 @@ export const saveQuoteRequest = (request: BuyTradeQuoteRequest): TradingBuyActio
     request,
 });
 
-export const saveTransactionDetailId = (transactionId: string): TradingBuyAction => ({
+export const saveTransactionDetailId = (transactionId: string | undefined): TradingBuyAction => ({
     type: TRADING_BUY.SAVE_TRANSACTION_DETAIL_ID,
     transactionId,
 });
