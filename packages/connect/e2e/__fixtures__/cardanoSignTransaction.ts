@@ -2909,4 +2909,4 @@ export default {
 
         return { ...test, legacyResults: [legacyResults.minConnectVersion] };
     }),
-};
+} satisfies TestCase;

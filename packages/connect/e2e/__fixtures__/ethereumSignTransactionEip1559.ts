@@ -58,4 +58,4 @@ export default {
 
         return fixture;
     }),
-};
+} satisfies TestCase;

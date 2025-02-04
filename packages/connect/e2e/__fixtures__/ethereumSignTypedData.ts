@@ -70,4 +70,4 @@ export default {
         mnemonic: commonFixtures.setup.mnemonic,
     },
     tests: fixtures,
-};
+} satisfies TestCase;

@@ -24,7 +24,11 @@ declare namespace globalThis {
         result?: any;
         legacyResults?: LegacyResult[];
         customTimeout?: number;
-        setup?: any;
+        setup?: {
+            wiped?: boolean;
+            mnemonic?: string;
+            settings?: any;
+        };
         skip?: any;
     };
 
@@ -32,7 +36,9 @@ declare namespace globalThis {
         // method: keyof typeof TrezorConnect;
         method: string;
         setup: {
+            wiped?: boolean;
             mnemonic?: string;
+            settings?: any;
         };
         tests: Fixture[];
     };

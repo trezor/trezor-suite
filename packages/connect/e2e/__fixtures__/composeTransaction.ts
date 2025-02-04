@@ -475,4 +475,4 @@ export default {
             ],
         },
     ],
-};
+} satisfies TestCase;

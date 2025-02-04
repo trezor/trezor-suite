@@ -421,4 +421,4 @@ export default {
             },
         },
     ],
-};
+} satisfies TestCase;

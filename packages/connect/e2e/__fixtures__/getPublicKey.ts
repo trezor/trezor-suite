@@ -17,7 +17,7 @@ export default {
             legacyResults: [
                 {
                     rules: ['<1.10.4', '<2.4.3'],
-                    result: false,
+                    success: false,
                 },
             ],
         },
@@ -84,4 +84,4 @@ export default {
             result: false,
         },
     ],
-};
+} satisfies TestCase;

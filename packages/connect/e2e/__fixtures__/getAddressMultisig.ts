@@ -63,4 +63,4 @@ export default {
             },
         },
     ],
-};
+} satisfies TestCase;

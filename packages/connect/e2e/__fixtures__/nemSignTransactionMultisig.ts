@@ -168,4 +168,4 @@ export default {
             },
         },
     ],
-};
+} satisfies TestCase;

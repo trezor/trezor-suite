@@ -18,4 +18,4 @@ export default {
             message: 'Message verified',
         },
     })),
-};
+} satisfies TestCase;

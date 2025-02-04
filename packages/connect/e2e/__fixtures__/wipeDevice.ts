@@ -12,4 +12,4 @@ export default {
             },
         },
     ],
-};
+} satisfies TestCase;

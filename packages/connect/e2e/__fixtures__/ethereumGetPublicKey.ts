@@ -20,4 +20,4 @@ export default {
             xpub: result.xpub,
         },
     })),
-};
+} satisfies TestCase;

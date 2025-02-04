@@ -207,4 +207,4 @@ export default {
             legacyResults,
         },
     ],
-};
+} satisfies TestCase;

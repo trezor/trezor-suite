@@ -38,4 +38,4 @@ export default {
         },
         legacyResults: [legacyResults.minConnectVersion],
     })),
-};
+} satisfies TestCase;

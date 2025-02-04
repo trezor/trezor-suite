@@ -776,4 +776,4 @@ export default {
         ...fixture,
         legacyResults: [...legacyResults, ...(fixture.legacyResults || [])],
     })),
-};
+} satisfies TestCase;

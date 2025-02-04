@@ -213,4 +213,4 @@ export default {
         mnemonic: 'mnemonic_12',
     },
     tests,
-};
+} satisfies TestCase;

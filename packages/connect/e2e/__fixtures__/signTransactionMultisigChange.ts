@@ -167,4 +167,4 @@ export default {
             },
         },
     ],
-};
+} satisfies TestCase;

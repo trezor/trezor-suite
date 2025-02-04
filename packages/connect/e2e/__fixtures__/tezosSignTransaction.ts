@@ -169,4 +169,4 @@ export default {
             },
         },
     ].map(fixture => ({ ...fixture, legacyResults })),
-};
+} satisfies TestCase;

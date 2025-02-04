@@ -64,4 +64,4 @@ export default {
             result: false,
         },
     ],
-};
+} satisfies TestCase;

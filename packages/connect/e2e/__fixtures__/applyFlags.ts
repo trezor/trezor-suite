@@ -14,4 +14,4 @@ export default {
             },
         },
     ],
-};
+} satisfies TestCase;

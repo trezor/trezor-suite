@@ -70,4 +70,4 @@ export default {
             },
         },
     ].map(t => ({ ...t, legacyResults: [legacyResults.minConnectVersion] })),
-};
+} satisfies TestCase;

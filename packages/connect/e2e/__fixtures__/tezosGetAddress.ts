@@ -49,4 +49,4 @@ export default {
             result: false,
         },
     ].map(fixture => ({ ...fixture, legacyResults })),
-};
+} satisfies TestCase;
