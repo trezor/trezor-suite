@@ -73,6 +73,8 @@ const prompt = <E extends PromptEvents>(event: E, ...[device, ...args]: DeviceEv
 
             device.emit(...emitArgs);
         } else {
+            // this may happen in case communication is out of sync. consider:
+            // reload app, send GetFeatures, read PassphraseRequest (from previous session)
             cancelAndReject(ERRORS.TypedError('Runtime', `${event} callback not configured`));
         }
     });
