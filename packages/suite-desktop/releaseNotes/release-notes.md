@@ -6,7 +6,7 @@
 ### 🎨 Improvements
 
 -   Improved transaction details for Replace-by-Fee (RBF) now make it easier to speed up transactions.
--   Several improvements for the XPR Memo/Destination tags UI in the send and receive flows.
+-   Several improvements for destination tag UI during XRP send and receive flows.
 -   Solana transactions are now properly decoded, replacing “Unknown transaction” labels in your account history.
 -   When sending funds, address checks have been redesigned to prompt comparing the Trezor device address with the original source (such as an exchange or friend), helping prevent the risk of sending to a tampered address.
 
