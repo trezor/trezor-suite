@@ -11,7 +11,7 @@ import { selectFirmwareRevisionCheckError } from 'src/reducers/suite/suiteReduce
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
 
 export const reportCheckFail = (
-    checkType: 'Firmware revision' | 'Firmware hash' | 'Entropy',
+    checkType: 'Entropy' | 'Firmware hash' | 'Firmware revision' | 'Firmware version',
     contextData: Record<string, any>,
     errorPayload?: unknown,
 ) => {

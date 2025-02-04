@@ -146,5 +146,7 @@ export const extraDependenciesMock: ExtraDependencies = {
                 appUrl: '@suite-native/app',
             },
         },
+        reportCheckFail: (checkType, _contextData) =>
+            console.warn(`Reporting ${checkType} check fail. Implementation on phone not ready.`),
     },
 };

@@ -79,6 +79,7 @@ export const firmwareUpdate = createThunk<
 
         const {
             selectors: { selectLanguage },
+            utils: { reportCheckFail },
         } = extra;
 
         const device = selectSelectedDevice(getState());
@@ -154,7 +155,14 @@ export const firmwareUpdate = createThunk<
                 connectResponse: firmwareUpdateResponse,
             });
         } else {
-            const { check, versionCheck } = firmwareUpdateResponse.payload;
+            const {
+                check,
+                versionCheck,
+                bootloaderVersion,
+                binaryVersion,
+                installedVersion,
+                releaseVersion,
+            } = firmwareUpdateResponse.payload;
             if (check === 'mismatch') {
                 // hash check was performed, and it does not match, so consider firmware counterfeit
                 dispatch(handleFwHashMismatch(device));
@@ -165,10 +173,22 @@ export const firmwareUpdate = createThunk<
                         errorMessage: firmwareUpdateResponse.payload.checkError,
                     }),
                 );
-            } else if (!binary && !versionCheck) {
-                // TODO: log to sentry
             } else {
                 dispatch(handleFwHashValid(device));
+            }
+
+            // TODO: Add to the if-else block above and add handle in UI.
+            if (!binary && !versionCheck) {
+                reportCheckFail('Firmware version', {
+                    model: device.features?.internal_model,
+                    revision: device.features?.revision,
+                    vendor: device.features?.fw_vendor,
+                    bootloaderVersion,
+                    binaryVersion,
+                    installedVersion,
+                    releaseVersion,
+                    error: 'Unexpected firmware version change during firmware update.',
+                });
             }
 
             return fulfillWithValue({

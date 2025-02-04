@@ -138,6 +138,11 @@ export type ExtraDependencies = {
     utils: {
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
+        reportCheckFail: (
+            checkType: 'Entropy' | 'Firmware hash' | 'Firmware revision' | 'Firmware version',
+            contextData: Record<string, any>,
+            errorPayload?: unknown,
+        ) => void;
     };
 };
 

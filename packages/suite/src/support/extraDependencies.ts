@@ -32,6 +32,7 @@ import {
     findLabelsToBeMovedOrDeleted,
     moveLabelsForRbfAction,
 } from 'src/actions/wallet/moveLabelsForRbfActions';
+import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
@@ -216,5 +217,6 @@ export const extraDependencies: ExtraDependencies = {
     utils: {
         saveAs: (data, fileName) => saveAs(data, fileName),
         connectInitSettings,
+        reportCheckFail,
     },
 };

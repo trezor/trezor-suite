@@ -179,15 +179,11 @@ export const resetDevice =
         if (!result.success) {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
             if (result.payload.code === 'Failure_EntropyCheck') {
-                const model = device?.features?.internal_model;
-                const revision = device?.features?.revision;
-                const version = getFirmwareVersion(device);
-                const vendor = device?.features?.fw_vendor;
                 reportCheckFail('Entropy', {
-                    model,
-                    revision,
-                    version,
-                    vendor,
+                    model: device?.features?.internal_model,
+                    revision: device?.features?.revision,
+                    version: getFirmwareVersion(device),
+                    vendor: device?.features?.fw_vendor,
                     error: result.payload.error,
                 });
                 const hardErrors: string[] = [

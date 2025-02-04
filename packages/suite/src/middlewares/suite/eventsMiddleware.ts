@@ -16,6 +16,7 @@ import {
 import { DEVICE } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
+import { reportCheckFail } from 'src/components/suite/SecurityCheck/useReportDeviceCompromised';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
 /*
@@ -68,7 +69,16 @@ const eventsMiddleware =
         }
 
         if (action.type === DEVICE.FIRMWARE_VERSION_CHANGED) {
-            // TODO: show warning? move this to different middleware?
+            // TODO: Add UI.
+            const { device, oldVersion, newVersion } = action.payload;
+            reportCheckFail('Firmware version', {
+                model: device?.features?.internal_model,
+                revision: device?.features?.revision,
+                oldVersion,
+                newVersion,
+                vendor: device?.features?.fw_vendor,
+                error: 'Firmware version changed unexpectedly.',
+            });
         }
 
         if (deviceActions.selectDevice.match(action)) {
