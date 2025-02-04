@@ -7,7 +7,7 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=25.1.2",
+                        "desktop": ">=25.2.1",
                         "mobile": "!",
                         "web": "*"
                     },
