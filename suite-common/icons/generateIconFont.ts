@@ -17,6 +17,7 @@ const usedIcons = [
     'arrowLineUpRight',
     'arrowRight',
     'arrowsCounterClockwise',
+    'arrowsDownUp',
     'arrowsLeftRight',
     'arrowSquareOut',
     'arrowUp',

@@ -1272,11 +1272,16 @@ export const en = {
     },
     moduleTrading: {
         tradingScreen: {
+            buyTitle: 'Buy',
             receiveAccount: 'Receive account',
             paymentMethod: 'Payment method',
             countryOfResidence: 'Country of residence',
             provider: 'Provider',
             continueButton: 'Continue',
+            footer: {
+                poweredBy: 'Powered by',
+                learnMore: 'Learn more',
+            },
         },
         selectCoin: {
             buttonTitle: 'Select coin',
