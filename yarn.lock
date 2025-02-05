@@ -12552,7 +12552,7 @@ __metadata:
     glob: "npm:^10.3.10"
     jest-diff: "npm:^29.7.0"
     lodash: "npm:^4.17.21"
-    openpgp: "npm:^6.0.1"
+    openpgp: "npm:^6.1.0"
     systeminformation: "npm:^5.25.11"
     terser-webpack-plugin: "npm:^5.3.11"
     webpack: "npm:^5.96.1"
@@ -12604,7 +12604,7 @@ __metadata:
     electron-store: "npm:8.2.0"
     electron-updater: "npm:6.3.9"
     glob: "npm:^10.3.10"
-    openpgp: "npm:^6.0.1"
+    openpgp: "npm:^6.1.0"
     usb: "npm:^2.14.0"
   languageName: unknown
   linkType: soft
@@ -33484,10 +33484,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openpgp@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "openpgp@npm:6.0.1"
-  checksum: 10/29b4dca5027925573b7bbcc38d07e27ebec6fbb9c1d96398784129d2bb70176c4e80ca70e0584c1b183c52a437d090181ca408e3617ffa2d9bebeedfcee34161
+"openpgp@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "openpgp@npm:6.1.0"
+  checksum: 10/ee8a7f005defd7c312f9ff21ed90f03734ba5cf919952b65e84fec35266ebdf7727bc27819eb32bec77824115f16827eafa74f3ddcfd5ba09db5a6f28af3ab11
   languageName: node
   linkType: hard
 
