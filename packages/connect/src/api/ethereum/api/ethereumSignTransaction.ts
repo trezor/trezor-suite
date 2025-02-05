@@ -103,7 +103,8 @@ export default class EthereumSignTransaction extends AbstractMethod<
         const definitions = await getEthereumDefinitions({
             chainId: this.params.tx.chainId,
             slip44,
-            contractAddress: this.params.tx.data ? this.params.tx.to : undefined,
+            contractAddress:
+                this.params.tx.data && this.params.tx.to != null ? this.params.tx.to : undefined,
         });
         this.params.definitions = definitions;
 

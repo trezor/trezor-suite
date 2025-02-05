@@ -15,7 +15,7 @@ export const EthereumSignMessage = Type.Object({
 
 export type EthereumTransaction = Static<typeof EthereumTransaction>;
 export const EthereumTransaction = Type.Object({
-    to: Type.String(),
+    to: Type.Union([Type.String(), Type.Null()]),
     value: Type.String(),
     gasPrice: Type.String(),
     gasLimit: Type.String(),
@@ -35,7 +35,7 @@ export const EthereumAccessList = Type.Object({
 
 export type EthereumTransactionEIP1559 = Static<typeof EthereumTransactionEIP1559>;
 export const EthereumTransactionEIP1559 = Type.Object({
-    to: Type.String(),
+    to: Type.Union([Type.String(), Type.Null()]),
     value: Type.String(),
     gasLimit: Type.String(),
     gasPrice: Type.Optional(Type.Undefined()),

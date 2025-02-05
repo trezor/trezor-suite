@@ -88,6 +88,7 @@ export const serializeEthereumTx = (
     const txData = deepHexPrefix({
         ...tx,
         ...signature,
+        to: tx.to || undefined,
         type: isLegacy ? 0 : 2, // 0 for legacy, 2 for EIP-1559
         ...(isLegacy
             ? {
@@ -123,7 +124,7 @@ export const ethereumSignTx = async (
     // todo: don't we change parameters here to object?
     typedCall: TypedCall,
     address_n: number[],
-    to: string,
+    to: string | null,
     value: string,
     gas_limit: string,
     gas_price: string,
@@ -144,7 +145,7 @@ export const ethereumSignTx = async (
         nonce: stripLeadingZeroes(nonce),
         gas_price: stripLeadingZeroes(gas_price),
         gas_limit: stripLeadingZeroes(gas_limit),
-        to,
+        to: to || undefined,
         value: stripLeadingZeroes(value),
         definitions,
         chunkify,
@@ -174,7 +175,7 @@ export const ethereumSignTxEIP1559 = async (
     // todo: don't we change parameters here to object?
     typedCall: TypedCall,
     address_n: number[],
-    to: string,
+    to: string | null,
     value: string,
     gas_limit: string,
     max_gas_fee: string,
@@ -196,7 +197,7 @@ export const ethereumSignTxEIP1559 = async (
         max_gas_fee: stripLeadingZeroes(max_gas_fee),
         max_priority_fee: stripLeadingZeroes(max_priority_fee),
         gas_limit: stripLeadingZeroes(gas_limit),
-        to,
+        to: to || undefined,
         value: stripLeadingZeroes(value),
         data_length: length,
         data_initial_chunk: first,
