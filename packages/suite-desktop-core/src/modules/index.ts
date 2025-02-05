@@ -120,7 +120,10 @@ const initModulesInner = <
 ) => {
     const { logger } = global;
 
-    logger.info('modules', `Initializing ${MODULES.length} modules`);
+    logger.info(
+        'modules',
+        `Initializing ${modules.length} ${background ? 'background ' : ''}modules`,
+    );
 
     const modulesToLoad: [Module | ModuleBackground, ModuleLoad][] = [];
     const modulesToQuit: [Module | ModuleBackground, ModuleQuit][] = [];
@@ -140,7 +143,7 @@ const initModulesInner = <
             );
         }
     });
-    logger.info('modules', 'All modules initialized');
+    logger.info('modules', `All ${background ? 'background ' : ''}modules initialized`);
 
     const loadModules = (handshake: HandshakeClient) => {
         let loaded = 0;
