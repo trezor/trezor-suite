@@ -6,13 +6,21 @@ import { FirmwareRelease, VersionArray } from '../types';
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
 import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
 
-/*
- * error names that signify unavailable internet connection, see https://github.com/node-fetch/node-fetch/blob/main/docs/ERROR-HANDLING.md
- * Only works in Suite Desktop, where `cross-fetch` uses `node-fetch` (nodeJS environment)
- * In Suite Web, the errors are unfortunately indistinguishable from other errors, because they are all lumped as CORS errors
+const isNodeJSNetworkError = (e: Error) => ['FetchError', 'AbortError'].includes(e.name);
+const isReactNativeNetworkError = (e: Error) =>
+    e.name === 'TypeError' && e.message.includes('Network request failed');
+
+/**
+ * Check if an error signifies a missing fetch response (meaning network connection loss or unavailable host).
+ * This can only by correctly identified in nodeJS or React native runtimes (i.e. Suite Desktop main process, or Suite Lite).
+ * In browser runtime (Suite Web), all fetch errors are lumped together as CORS errors, therefore indistinguishable.
  * (even a request that had no response is CORS error, since a non-existent response does not have CORS headers)
  */
-const NODE_FETCH_OFFLINE_ERROR_NAMES = ['FetchError', 'AbortError'] as const;
+const isNetworkError = (e: unknown): boolean => {
+    if (!(e instanceof Error)) return false;
+
+    return isNodeJSNetworkError(e) || isReactNativeNetworkError(e);
+};
 
 type GetOnlineReleaseMetadataParams = {
     firmwareVersion: VersionArray;
@@ -94,12 +102,10 @@ export const checkFirmwareRevision = async ({
             }
 
             return { success: true };
-        } catch (e) {
-            if (NODE_FETCH_OFFLINE_ERROR_NAMES.includes(e.name)) {
-                return failFirmwareRevisionCheck('cannot-perform-check-offline');
-            }
-
-            return failFirmwareRevisionCheck('other-error');
+        } catch (e: unknown) {
+            return isNetworkError(e)
+                ? failFirmwareRevisionCheck('cannot-perform-check-offline')
+                : failFirmwareRevisionCheck('other-error');
         }
     }
 
