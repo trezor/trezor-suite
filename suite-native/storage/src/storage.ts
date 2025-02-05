@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 import { MMKV } from 'react-native-mmkv';
 import RNRestart from 'react-native-restart';
 
-import { captureException } from '@sentry/react-native';
+import { captureException, captureMessage } from '@sentry/react-native';
 import { getRandomBytes } from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 import * as SplashScreen from 'expo-splash-screen';
@@ -48,6 +48,7 @@ const retrieveStorageEncryptionKey = async () => {
 };
 
 export const clearStorage = () => {
+    captureMessage('User triggered Clear App Storage action.', 'error');
     unecryptedJotaiStorage.clearAll();
     encryptedStorage?.clearAll();
     RNRestart.restart();
