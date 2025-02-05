@@ -537,3 +537,5 @@ export const networks = {
         tradeCryptoId: 'test-ripple', // fake, coingecko does not have testnets
     },
 } as const satisfies Networks;
+
+export type NetworkDisplaySymbol = (typeof networks)[keyof typeof networks]['displaySymbol'];
