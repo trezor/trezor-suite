@@ -1,24 +1,27 @@
 import { createThunk } from '@suite-common/redux-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    getNetworkOptional,
-    isBlockbookBasedNetwork,
-    isNetworkSymbol,
-    networksCollection,
     NetworkSymbol,
+    externalBackendTypeNetworks,
+    getNetworkOptional,
+    isNetworkSymbol,
+    isTrezorInfraBasedNetwork,
+    networksCollection,
 } from '@suite-common/wallet-config';
+import type { Account, CustomBackend, NetworksFees } from '@suite-common/wallet-types';
 import {
     findAccountDevice,
     findAccountsByDescriptor,
     findAccountsByNetwork,
     formatNetworkAmount,
     formatTokenAmount,
+    getAccountIdentity,
     getAreSatoshisUsed,
     getBackendFromSettings,
     getCustomBackends,
     isTrezorConnectBackendType,
-    shouldUseIdentities,
-    getAccountIdentity,
     shouldSubscribeBlocks,
+    shouldUseIdentities,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     BlockchainBlock,
@@ -26,15 +29,13 @@ import TrezorConnect, {
     BlockchainNotification,
     FeeLevel,
 } from '@trezor/connect';
-import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
-import type { Account, CustomBackend, NetworksFees } from '@suite-common/wallet-types';
 import type { TimerId } from '@trezor/type-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 
-import { selectAccounts } from '../accounts/accountsReducer';
-import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
+import { selectAccounts } from '../accounts/accountsReducer';
+import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { selectNetworkFeeInfo } from '../fees/feesReducer';
 
 export const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000; // 1 minute
@@ -359,13 +360,13 @@ export const syncAccountsWithBlockchainThunk = createThunk(
         // First clear, to cancel last planned sync
         tryClearTimeout(blockchain[symbol].syncTimeout);
 
-        // non-blockbook networks will not be updated when app window is not active
-        const shouldSync = isWindowVisible || isBlockbookBasedNetwork(symbol);
+        // non-blockbook + networks using external nodes will not be updated when app window is not active
+        const shouldSync = isWindowVisible || isTrezorInfraBasedNetwork(symbol);
 
         if (shouldSync) {
-            // non-blockbook networks will not update periodically if not visible in UI (sidebar)
+            // non-blockbook + networks using external nodes will not update periodically if not visible in UI (sidebar)
             const visibleAccounts = findAccountsByNetwork(symbol, accounts).filter(
-                account => isBlockbookBasedNetwork(symbol) || account.visible,
+                account => isTrezorInfraBasedNetwork(symbol) || account.visible,
             );
 
             await Promise.all(
@@ -416,8 +417,8 @@ export const onBlockMinedThunk = createThunk(
 
         // Don't sync fast networks because a new block is emitted every few seconds.
         // Accounts are updated via account subscription or also by the timer in syncAccountsWithBlockchainThunk.
-        // Solana - new block every 800ms
-        if (network?.networkType === 'solana') {
+        // Solana - new block every ~333ms, EVMs 0.3s-3s
+        if (network?.networkType === 'solana' || externalBackendTypeNetworks.includes(symbol)) {
             return;
         }
 
