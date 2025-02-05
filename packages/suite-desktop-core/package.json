@@ -42,7 +42,7 @@
         "electron-store": "8.2.0",
         "electron-updater": "6.3.9",
         "openpgp": "^6.0.1",
-        "systeminformation": "^5.25.4",
+        "systeminformation": "^5.25.11",
         "ws": "^8.18.0"
     },
     "devDependencies": {

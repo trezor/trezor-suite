@@ -12553,7 +12553,7 @@ __metadata:
     jest-diff: "npm:^29.7.0"
     lodash: "npm:^4.17.21"
     openpgp: "npm:^6.0.1"
-    systeminformation: "npm:^5.25.4"
+    systeminformation: "npm:^5.25.11"
     terser-webpack-plugin: "npm:^5.3.11"
     webpack: "npm:^5.96.1"
     ws: "npm:^8.18.0"
@@ -40166,12 +40166,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"systeminformation@npm:^5.25.4":
-  version: 5.25.5
-  resolution: "systeminformation@npm:5.25.5"
+"systeminformation@npm:^5.25.11":
+  version: 5.25.11
+  resolution: "systeminformation@npm:5.25.11"
   bin:
     systeminformation: lib/cli.js
-  checksum: 10/310fe8e6e168c5aefdbf36020761d2a4ddfe74d28a814c1fece9195d2ed78ec908e79a3264e9c462111e8696b5028201bbb5d2d3414b1e572eeaff9d02ff041a
+  checksum: 10/9a43bb8991ac07a0bcf3f9002c32e9f36a1100b2f620049c4c3dc24f74556c681b1e4552dc27581af32a842540cd42c1bb085e842b0c325273fb558b51c7159f
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
