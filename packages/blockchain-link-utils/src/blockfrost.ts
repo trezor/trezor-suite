@@ -183,6 +183,7 @@ export const filterTokenTransfers = (
                             : tx.txUtxos.inputs.find(i => i.amount.find(a => a.unit === tokenUnit))
                                   ?.address || '',
                     to: type === 'recv' ? tx.address : output.address,
+                    standard: 'BLOCKFROST',
                 });
             });
     });

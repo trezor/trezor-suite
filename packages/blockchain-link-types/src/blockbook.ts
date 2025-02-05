@@ -79,27 +79,39 @@ type BaseERC = Required<Pick<BlockbookToken, 'contract'>> &
     Pick<BlockbookToken, 'name' | 'symbol' | 'decimals'>;
 
 export type ERC20 = BaseERC & {
+    /** @deprecated: Use standard instead. */
     type: 'ERC20';
+    standard: 'ERC20';
 } & Pick<BlockbookToken, 'balance' | 'baseValue' | 'secondaryValue'>;
 
 export type ERC721 = BaseERC & {
+    /** @deprecated: Use standard instead. */
     type: 'ERC721';
+    standard: 'ERC721';
 } & Required<Pick<BlockbookToken, 'ids'>>;
 
 export type ERC1155 = BaseERC & {
+    /** @deprecated: Use standard instead. */
     type: 'ERC1155';
+    standard: 'ERC1155';
 } & Required<Pick<BlockbookToken, 'multiTokenValues'>>;
 
 export type BEP20 = BaseERC & {
+    /** @deprecated: Use standard instead. */
     type: 'BEP20';
+    standard: 'BEP20';
 } & Pick<BlockbookToken, 'balance' | 'baseValue' | 'secondaryValue'>;
 
 export type BEP721 = BaseERC & {
+    /** @deprecated: Use standard instead. */
     type: 'BEP721';
+    standard: 'BEP721';
 } & Required<Pick<BlockbookToken, 'ids'>>;
 
 export type BEP1155 = BaseERC & {
+    /** @deprecated: Use standard instead. */
     type: 'BEP1155';
+    standard: 'BEP1155';
 } & Required<Pick<BlockbookToken, 'multiTokenValues'>>;
 
 export interface AccountInfo {

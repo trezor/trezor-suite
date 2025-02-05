@@ -75,12 +75,13 @@ export type TokenStandard =
     | 'ERC1155'
     | 'BEP1155'
     | 'SPL'
-    | 'SPL-2022';
+    | 'SPL-2022'
+    | 'BLOCKFROST';
 
 export type TransferType = 'sent' | 'recv' | 'self' | 'unknown';
 
 /* Transaction */
-export type TokenTransfer = Omit<BlockbookTokenTransfer, 'value'> & {
+export type TokenTransfer = Omit<BlockbookTokenTransfer, 'value' | 'type' | 'standard'> & {
     type: TransferType;
     standard?: TokenStandard;
     amount: string;
@@ -205,7 +206,9 @@ export interface TokenAccount {
 }
 
 export interface TokenInfo {
+    /** @deprecated: Use type instead. */
     type: string; // token type: ERC20...
+    standard: string; // token standard: ERC20...
     contract: string; // token address, token unit for ADA
     balance?: string; // token balance
     name?: string; // token name
