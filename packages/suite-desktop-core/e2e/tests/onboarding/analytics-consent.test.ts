@@ -1,34 +1,27 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe(
-    'Onboarding - analytics consent',
-    { tag: ['@group=device-management', '@webOnly'] },
-    () => {
-        test.use({
-            emulatorSetupConf: { needs_backup: false },
-        });
-        test.beforeEach(async ({ onboardingPage }) => {
-            await onboardingPage.disableFirmwareHashCheck();
-        });
+test.describe('Onboarding - analytics consent', { tag: ['@group=device-management'] }, () => {
+    test.beforeEach(async ({ onboardingPage }) => {
+        await onboardingPage.disableFirmwareHashCheck();
+    });
 
-        test('analytics consent appears on any route that is visited initially. this time /accounts', async ({
-            page,
-            analyticsPage,
-            onboardingPage,
-        }) => {
-            page.goto('/accounts');
-            await expect(analyticsPage.heading).toBeVisible();
-            await analyticsPage.continueButton.click();
-            await page.getByTestId('@onboarding/exit-app-button').click();
+    test('analytics consent appears on any route that is visited initially. this time /accounts', async ({
+        page,
+        analyticsPage,
+        onboardingPage,
+    }) => {
+        await page.goto('/accounts');
+        await expect(analyticsPage.heading).toBeVisible();
+        await analyticsPage.continueButton.click();
+        await page.getByTestId('@onboarding/exit-app-button').click();
 
-            if (onboardingPage.isModelWithSecureElement()) {
-                await onboardingPage.passThroughAuthenticityCheck();
-            }
+        if (onboardingPage.isModelWithSecureElement()) {
+            await onboardingPage.passThroughAuthenticityCheck();
+        }
 
-            await onboardingPage.onboardingViewOnlyEnableButton.click();
-            await expect(page.getByTestId('@suite-layout/body')).toBeVisible();
-            await page.getByTestId('@account-menu/btc/normal/0').click();
-            await expect(page.getByTestId('@wallet/menu/wallet-send')).toBeVisible();
-        });
-    },
-);
+        await onboardingPage.onboardingViewOnlyEnableButton.click();
+        await expect(page.getByTestId('@suite-layout/body')).toBeVisible();
+        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await expect(page.getByTestId('@wallet/menu/wallet-send')).toBeVisible();
+    });
+});
