@@ -58,7 +58,7 @@
         "@types/electron-localshortcut": "^3.1.3",
         "@types/lodash": "^4",
         "@types/ws": "^8.5.13",
-        "electron": "32.2.6",
+        "electron": "34.1.0",
         "fs-extra": "^11.2.0",
         "glob": "^10.3.10",
         "jest-diff": "^29.7.0",
