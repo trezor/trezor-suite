@@ -3437,6 +3437,10 @@ export default defineMessages({
         id: 'TR_GAS_PRICE',
         defaultMessage: 'Gas price',
     },
+    TR_CURRENT_FEE_CUSTOM_FEES: {
+        id: 'TR_CURRENT_FEE_CUSTOM_FEES',
+        defaultMessage: 'Current network fee:',
+    },
     TR_GAS_LIMIT: {
         id: 'TR_GAS_LIMIT',
         defaultMessage: 'Gas limit',
@@ -5606,9 +5610,13 @@ export default defineMessages({
         description: 'Label in Send form for Solana network type',
         id: 'EXPECTED_FEE',
     },
-    FEE_LEVEL_CUSTOM: {
-        defaultMessage: 'Custom',
-        id: 'FEE_LEVEL_CUSTOM',
+    FEE_LEVEL_STANDARD: {
+        defaultMessage: 'Standard',
+        id: 'FEE_LEVEL_STANDARD',
+    },
+    FEE_LEVEL_ADVANCED: {
+        defaultMessage: 'Advanced',
+        id: 'FEE_LEVEL_ADVANCED',
     },
     FEE_LEVEL_HIGH: {
         defaultMessage: 'High',
@@ -8893,6 +8901,14 @@ export default defineMessages({
         id: 'TR_STAKE_MAX_FEE_DESC',
         defaultMessage:
             'Maximum fee is the network transaction fee that you’re willing to pay on the network to ensure your transaction gets processed.',
+    },
+    TR_EVM_MAX_FEE_DESC: {
+        id: 'TR_EVM_MAX_FEE_DESC',
+        defaultMessage: `The maximum fee you're willing to pay to network validators to get your transaction processed. A higher fee can speed up confirmation, though you'll only pay what's needed if the actual fee is lower.`,
+    },
+    TR_TRANSACTION_FEE_DESC: {
+        id: 'TR_TRANSACTION_FEE_DESC',
+        defaultMessage: `The transaction fee you're willing to pay to network miners to ensure your transaction gets processed. A higher fee can speed up confirmation times.`,
     },
     TR_STAKE_MAX: {
         id: 'TR_STAKE_MAX',

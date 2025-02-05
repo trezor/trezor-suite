@@ -7,9 +7,10 @@ import {
     UseFormSetValue,
 } from 'react-hook-form';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
+import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
     FeeInfo,
     FormState,
@@ -18,19 +19,9 @@ import {
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import {
-    Banner,
-    Column,
-    InfoItem,
-    Note,
-    Row,
-    SelectBar,
-    Text,
-    Tooltip,
-    motionEasing,
-} from '@trezor/components';
+import { Banner, Column, InfoItem, Note, Row, SelectBar, Text, Tooltip } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
@@ -39,18 +30,26 @@ import { CustomFee } from './CustomFee';
 import { FeeDetails } from './FeeDetails';
 
 const FEE_LEVELS_TRANSLATIONS: Record<FeeLevel['label'], TranslationKey> = {
-    custom: 'FEE_LEVEL_CUSTOM',
+    custom: 'FEE_LEVEL_ADVANCED',
     high: 'FEE_LEVEL_HIGH',
     normal: 'FEE_LEVEL_NORMAL',
     economy: 'FEE_LEVEL_LOW',
     low: 'FEE_LEVEL_LOW',
 } as const;
 
-const buildFeeOptions = (levels: FeeLevel[]) =>
-    levels.map(({ label }) => ({
-        label: <Translation id={FEE_LEVELS_TRANSLATIONS[label]} />,
-        value: label,
-    }));
+export type FeeOption = {
+    label: React.ReactNode;
+    value: FeeLevel['label'];
+    blocks?: number;
+    feePerUnit?: string;
+    networkAmount?: string | null;
+    feePerTx?: string;
+};
+
+const SelectBarWrapper = styled.div`
+    justify-self: end;
+    margin-top: ${spacingsPx.xs};
+`;
 
 export interface FeesProps<TFieldValues extends FormState> {
     account: Account;
@@ -61,19 +60,77 @@ export interface FeesProps<TFieldValues extends FormState> {
     getValues: UseFormGetValues<TFieldValues>;
     errors: FieldErrors<TFieldValues>;
     changeFeeLevel: (level: FeeLevel['label']) => void;
-    changeFeeLimit?: (value: string) => void;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     label?: TranslationKey;
     rbfForm?: boolean;
     helperText?: React.ReactNode;
 }
 
+const buildFeeOptions = (
+    levels: FeeLevel[],
+    networkType: NetworkType,
+    symbol: NetworkSymbol,
+    composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano,
+) => {
+    const filteredLevels = levels.filter(level => level.label !== 'custom');
+
+    const getNetworkAmount = (level: FeeLevel) => {
+        const transactionInfo = composedLevels?.[level.label];
+        const hasTransactionInfo =
+            transactionInfo !== undefined && transactionInfo.type !== 'error';
+        const networkAmount = hasTransactionInfo
+            ? formatNetworkAmount(transactionInfo.fee, symbol)
+            : null;
+        // Needed only for Solana because of fee estimation on compose Tx
+        const fee = hasTransactionInfo ? transactionInfo.fee : level.feePerTx;
+
+        return { networkAmount, fee };
+    };
+
+    const buildBasicFeeOptions = (level: FeeLevel) => {
+        const { networkAmount } = getNetworkAmount(level);
+
+        return {
+            label: <Translation id={FEE_LEVELS_TRANSLATIONS[level.label]} />,
+            value: level.label,
+            feePerUnit: level.feePerUnit,
+            networkAmount,
+        };
+    };
+
+    switch (networkType) {
+        case 'solana':
+            return filteredLevels.map(level => {
+                const { fee } = getNetworkAmount(level);
+                const basicFeeOption = buildBasicFeeOptions(level);
+
+                return {
+                    ...basicFeeOption,
+                    feePerTx: fee,
+                };
+            });
+        case 'ethereum':
+            // legacy fee format
+            return filteredLevels.map(level => buildBasicFeeOptions(level));
+        case 'bitcoin':
+            return filteredLevels.map(level => {
+                const basicFeeOption = buildBasicFeeOptions(level);
+
+                return {
+                    ...basicFeeOption,
+                    blocks: level.blocks,
+                };
+            });
+        default:
+            return filteredLevels.map(level => buildBasicFeeOptions(level));
+    }
+};
+
 export const Fees = <TFieldValues extends FormState>({
     account: { symbol, networkType },
     feeInfo,
     control,
     changeFeeLevel,
-    changeFeeLimit,
     composedLevels,
     label,
     rbfForm,
@@ -82,134 +139,136 @@ export const Fees = <TFieldValues extends FormState>({
 }: FeesProps<TFieldValues>) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { getValues, register, setValue } = props as unknown as UseFormReturn<FormState>;
-    const errors = props.errors as unknown as FieldErrors<FormState>;
 
     const selectedOption = getValues('selectedFee') || 'normal';
-    const isCustomLevel = selectedOption === 'custom';
+    const isCustomFee = selectedOption === 'custom';
+    const errors = props.errors as unknown as FieldErrors<FormState>;
 
     const error = errors.selectedFee;
     const selectedLevel = feeInfo.levels.find(level => level.label === selectedOption)!;
     const transactionInfo = composedLevels?.[selectedOption];
+
+    const feeOptions = buildFeeOptions(feeInfo.levels, networkType, symbol, composedLevels);
+
     const hasTransactionInfo = transactionInfo !== undefined && transactionInfo.type !== 'error';
-    // Solana has only `normal` fee level, so we do not display any feeOptions since there is nothing to choose from
-    const feeOptions = networkType === 'solana' ? [] : buildFeeOptions(feeInfo.levels);
-
-    const shouldAnimateNormalFee = !isCustomLevel;
-
     const networkAmount = hasTransactionInfo
         ? formatNetworkAmount(transactionInfo.fee, symbol)
         : null;
 
+    const supportsCustomFee = networkType !== 'solana';
+
     return (
-        <Column gap={spacings.xs}>
-            <InfoItem
-                direction="row"
-                typographyStyle="body"
-                label={
-                    networkType === 'ethereum' ? (
-                        <Tooltip
-                            maxWidth={328}
-                            hasIcon
-                            content={<Translation id="TR_STAKE_MAX_FEE_DESC" />}
-                        >
-                            <Translation id={label ?? 'MAX_FEE'} />
-                        </Tooltip>
-                    ) : (
-                        <Translation id={label ?? 'FEE'} />
-                    )
-                }
-            >
-                {networkAmount && (
-                    <Row gap={spacings.md} alignItems="baseline">
-                        <FormattedCryptoAmount
-                            disableHiddenPlaceholder
-                            value={networkAmount}
-                            symbol={symbol}
-                        />
-                        <Text variant="tertiary" typographyStyle="label">
-                            <FiatValue
-                                disableHiddenPlaceholder
-                                amount={networkAmount}
-                                symbol={symbol}
-                                showApproximationIndicator
-                            />
-                        </Text>
-                    </Row>
-                )}
-            </InfoItem>
-
-            {feeOptions.length > 0 && (
-                <>
-                    <SelectBar
-                        selectedOption={selectedOption}
-                        options={feeOptions}
-                        onChange={changeFeeLevel}
-                        isFullWidth
-                        margin={{ top: spacings.sm }}
-                    />
-                    <AnimatePresence>
-                        {shouldAnimateNormalFee && (
-                            <motion.div
-                                animate={shouldAnimateNormalFee ? 'open' : 'closed'}
-                                variants={{
-                                    open: { opacity: 1, height: 'auto', marginTop: 0 },
-                                    closed: { opacity: 0, height: 0, marginTop: 0 },
-                                }}
-                                transition={{
-                                    opacity: { duration: 0.15, ease: motionEasing.transition },
-                                    height: { duration: 0.2, ease: motionEasing.transition },
-                                    marginTop: { duration: 0.25, ease: motionEasing.transition },
-                                }}
-                            >
-                                <FeeDetails
-                                    networkType={networkType}
-                                    feeInfo={feeInfo}
-                                    selectedLevel={selectedLevel}
-                                    transactionInfo={transactionInfo}
-                                    showFee={true}
-                                />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    <AnimatePresence>
-                        {isCustomLevel && (
-                            <motion.div
-                                initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                                animate={{ opacity: 1, height: 'auto', marginTop: 0 }}
-                                exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                                transition={{
-                                    opacity: { duration: 0.15, ease: motionEasing.transition },
-                                    height: { duration: 0.2, ease: motionEasing.transition },
-                                    marginTop: { duration: 0.25, ease: motionEasing.transition },
-                                }}
-                            >
-                                <CustomFee
-                                    control={control}
-                                    networkType={networkType}
-                                    feeInfo={feeInfo}
-                                    errors={errors}
-                                    register={register}
-                                    getValues={getValues}
-                                    setValue={setValue}
-                                    changeFeeLimit={changeFeeLimit}
-                                    composedFeePerByte={
-                                        (transactionInfo as PrecomposedTransactionFinal)?.feePerByte
+        <Column gap={spacings.md}>
+            <Row flexWrap="wrap">
+                <Row flex="1">
+                    <InfoItem
+                        direction="row"
+                        typographyStyle="body"
+                        verticalAlignment="bottom"
+                        label={
+                            <Row gap={spacings.xs}>
+                                <Tooltip
+                                    dashed
+                                    maxWidth={328}
+                                    content={
+                                        networkType === 'ethereum' ? (
+                                            <Translation id="TR_EVM_MAX_FEE_DESC" />
+                                        ) : (
+                                            <Translation id="TR_TRANSACTION_FEE_DESC" />
+                                        )
                                     }
-                                />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                                >
+                                    <Text variant="default">
+                                        <Translation
+                                            id={
+                                                label ??
+                                                (networkType === 'ethereum' ? 'MAX_FEE' : 'FEE')
+                                            }
+                                        />
+                                    </Text>
+                                </Tooltip>
+                            </Row>
+                        }
+                    />
+                </Row>
+                {supportsCustomFee && (
+                    <SelectBarWrapper>
+                        <SelectBar
+                            orientation="horizontal"
+                            selectedOption={isCustomFee ? 'custom' : 'normal'}
+                            options={[
+                                { label: <Translation id="FEE_LEVEL_STANDARD" />, value: 'normal' },
+                                { label: <Translation id="FEE_LEVEL_ADVANCED" />, value: 'custom' },
+                            ]}
+                            onChange={() => changeFeeLevel(isCustomFee ? 'normal' : 'custom')}
+                            isFullWidth
+                        />
+                    </SelectBarWrapper>
+                )}
+            </Row>
 
-                    {error && (
-                        <Banner icon margin={{ top: spacings.sm }} variant="destructive">
-                            {error.message}
-                        </Banner>
-                    )}
+            {!isCustomFee && (
+                <FeeDetails
+                    networkType={networkType}
+                    feeInfo={feeInfo}
+                    selectedLevel={selectedLevel}
+                    transactionInfo={transactionInfo}
+                    showFee={true}
+                    feeOptions={feeOptions}
+                    symbol={symbol}
+                    changeFeeLevel={changeFeeLevel}
+                />
+            )}
 
-                    {helperText && <Note margin={{ top: spacings.md }}>{helperText}</Note>}
+            {isCustomFee && (
+                <>
+                    <CustomFee
+                        control={control}
+                        networkType={networkType}
+                        feeInfo={feeInfo}
+                        errors={errors}
+                        register={register}
+                        getValues={getValues}
+                        setValue={setValue}
+                        composedFeePerByte={
+                            (transactionInfo as PrecomposedTransactionFinal)?.feePerByte
+                        }
+                    />
+                    <Column>
+                        <Row gap={spacings.sm} alignItems="baseline" justifyContent="space-between">
+                            <Text variant="tertiary" typographyStyle="hint">
+                                <Translation id="FEE" />:
+                            </Text>
+                            {networkAmount && (
+                                <Row gap={spacings.xxs}>
+                                    <Text variant="default" typographyStyle="hint">
+                                        <FormattedCryptoAmount
+                                            disableHiddenPlaceholder
+                                            value={networkAmount}
+                                            symbol={symbol}
+                                        />
+                                    </Text>
+                                    <Text variant="tertiary" typographyStyle="hint">
+                                        <FiatValue
+                                            disableHiddenPlaceholder
+                                            amount={networkAmount}
+                                            symbol={symbol}
+                                            showApproximationIndicator
+                                        />
+                                    </Text>
+                                </Row>
+                            )}
+                        </Row>
+                    </Column>
                 </>
             )}
+            {error && (
+                <Banner icon variant="destructive">
+                    {error.message}
+                </Banner>
+            )}
+
+            {helperText && <Note>{helperText}</Note>}
         </Column>
     );
 };

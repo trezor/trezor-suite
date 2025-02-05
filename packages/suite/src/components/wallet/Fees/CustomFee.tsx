@@ -11,7 +11,18 @@ import {
 import { NetworkType } from '@suite-common/wallet-config';
 import { FeeInfo, FormState } from '@suite-common/wallet-types';
 import { getFeeUnits, getInputState, isInteger } from '@suite-common/wallet-utils';
-import { Banner, Column, Grid, Note, Text, useMediaQuery, variables } from '@trezor/components';
+import {
+    Banner,
+    Column,
+    Grid,
+    Icon,
+    Note,
+    Row,
+    Text,
+    useMediaQuery,
+    variables,
+} from '@trezor/components';
+import { FeeLevel } from '@trezor/connect';
 import { NumberInput } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
@@ -36,16 +47,21 @@ interface CustomFeeProps<TFieldValues extends FormState> {
     control: Control;
     setValue: UseFormSetValue<TFieldValues>;
     getValues: UseFormGetValues<TFieldValues>;
-    changeFeeLimit?: (value: string) => void;
     composedFeePerByte: string;
 }
+
+// TODO: revisit with priority fees
+const getCurrentFee = (levels: FeeLevel[]) => {
+    const middleIndex = Math.floor((levels.length - 1) / 2);
+
+    return levels[middleIndex].feePerUnit;
+};
 
 export const CustomFee = <TFieldValues extends FormState>({
     networkType,
     feeInfo,
     register,
     control,
-    changeFeeLimit,
     composedFeePerByte,
     ...props
 }: CustomFeeProps<TFieldValues>) => {
@@ -146,7 +162,7 @@ export const CustomFee = <TFieldValues extends FormState>({
         feeLimitError?.type === 'feeLimit' ? feeLimitValidationProps : undefined;
 
     return (
-        <Column gap={spacings.xs}>
+        <Column gap={spacings.md} margin={{ bottom: spacings.md }}>
             <Banner
                 icon
                 variant="warning"
@@ -160,6 +176,22 @@ export const CustomFee = <TFieldValues extends FormState>({
             >
                 <Translation id="TR_CUSTOM_FEE_WARNING" />
             </Banner>
+            <Row justifyContent="space-between">
+                <Text variant="tertiary" typographyStyle="hint">
+                    <Translation id="TR_CURRENT_FEE_CUSTOM_FEES" />
+                </Text>
+                <Text variant="default" typographyStyle="hint">
+                    <Row alignItems="center" gap={spacings.xxs}>
+                        <Text>
+                            {getCurrentFee(feeInfo.levels)} {getFeeUnits(networkType)}
+                        </Text>
+                        <Icon
+                            name={networkType === 'ethereum' ? 'gasPump' : 'receipt'}
+                            size="mediumLarge"
+                        />
+                    </Row>
+                </Text>
+            </Row>
             <Grid gap={spacings.xs} columns={useFeeLimit && !isBelowLaptop ? 2 : 1}>
                 {useFeeLimit ? (
                     <NumberInput
@@ -169,7 +201,6 @@ export const CustomFee = <TFieldValues extends FormState>({
                         inputState={getInputState(feeLimitError)}
                         name={FEE_LIMIT}
                         data-testid={FEE_LIMIT}
-                        onChange={changeFeeLimit}
                         bottomText={
                             feeLimitError?.message ? (
                                 <InputError

@@ -2,7 +2,14 @@ import { ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { borders, palette, spacingsPx } from '@trezor/theme';
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    palette,
+    spacingsPx,
+} from '@trezor/theme';
 
 import {
     FrameProps,
@@ -12,6 +19,7 @@ import {
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 import { Box } from '../Box/Box';
+import { useElevation } from '../ElevationContext/ElevationContext';
 import { Icon } from '../Icon/Icon';
 
 export const allowedRadioCardFrameProps = [
@@ -27,14 +35,17 @@ export type RadioCardProps = {
     onClick?: () => void;
 } & AllowedFrameProps;
 
-const Wrapper = styled.div<{ $isActive: boolean } & TransientProps<AllowedFrameProps>>`
+const Wrapper = styled.div<
+    { $isActive: boolean; $elevation: Elevation } & TransientProps<AllowedFrameProps>
+>`
     position: relative;
     width: 100%;
     border-radius: ${borders.radii.md};
     box-shadow: ${({ theme }) => theme.boxShadowBase};
     padding: ${spacingsPx.md};
-    outline: ${borders.widths.small} solid ${({ theme }) => theme.borderFocus};
+    outline: ${borders.widths.small} solid ${mapElevationToBorder};
     outline-offset: -${borders.widths.small};
+    background-color: ${mapElevationToBackground};
 
     ${({ onClick }) => onClick && 'cursor: pointer;'}
 
@@ -61,10 +72,11 @@ const IconWrapper = styled.div`
 `;
 
 export const RadioCard = ({ isActive, onClick, children, ...rest }: RadioCardProps) => {
+    const { elevation } = useElevation();
     const frameProps = pickAndPrepareFrameProps(rest, allowedRadioCardFrameProps);
 
     return (
-        <Wrapper $isActive={isActive} onClick={onClick} {...frameProps}>
+        <Wrapper $isActive={isActive} onClick={onClick} $elevation={elevation} {...frameProps}>
             {isActive && (
                 <Box position={{ type: 'absolute', top: '-3px', right: '-3px' }}>
                     <IconWrapper>

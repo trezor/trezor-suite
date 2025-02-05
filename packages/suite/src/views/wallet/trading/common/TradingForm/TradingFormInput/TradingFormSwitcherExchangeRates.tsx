@@ -1,6 +1,6 @@
 import { UseFormSetValue } from 'react-hook-form';
 
-import { Column, Grid, Paragraph, RadioCard } from '@trezor/components';
+import { Column, ElevationUp, Grid, Paragraph, RadioCard } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -20,16 +20,18 @@ type ItemProps = {
 };
 
 const Item = ({ isSelected, onClick, title, label }: ItemProps) => (
-    <RadioCard isActive={isSelected} onClick={onClick}>
-        <Column alignItems="flex-start" gap={spacings.xxxs}>
-            <Paragraph typographyStyle="highlight">
-                <Translation id={title} />
-            </Paragraph>
-            <Paragraph typographyStyle="hint">
-                <Translation id={label} />
-            </Paragraph>
-        </Column>
-    </RadioCard>
+    <ElevationUp>
+        <RadioCard isActive={isSelected} onClick={onClick}>
+            <Column alignItems="flex-start" gap={spacings.xxxs}>
+                <Paragraph typographyStyle="highlight">
+                    <Translation id={title} />
+                </Paragraph>
+                <Paragraph typographyStyle="hint">
+                    <Translation id={label} />
+                </Paragraph>
+            </Column>
+        </RadioCard>
+    </ElevationUp>
 );
 
 type TradingFormSwitcherExchangeRatesProps = {

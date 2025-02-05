@@ -1,13 +1,6 @@
 import { TokenAddress } from '@suite-common/wallet-types';
 import { formatAmount } from '@suite-common/wallet-utils';
-import {
-    Card,
-    Column,
-    ElevationContext,
-    FractionButton,
-    FractionButtonProps,
-    Row,
-} from '@trezor/components';
+import { Column, FractionButton, FractionButtonProps, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { spacings } from '@trezor/theme';
 
@@ -131,21 +124,17 @@ export const TradingFormInputs = () => {
                         </Row>
                     )}
                 </Column>
-                <Card margin={{ vertical: spacings.sm }}>
-                    <ElevationContext baseElevation={0}>
-                        <Fees
-                            control={control}
-                            feeInfo={feeInfo}
-                            account={account}
-                            composedLevels={composedLevels}
-                            errors={errors}
-                            register={register}
-                            setValue={setValue}
-                            getValues={getValues}
-                            changeFeeLevel={changeFeeLevel}
-                        />
-                    </ElevationContext>
-                </Card>
+                <Fees
+                    control={control}
+                    feeInfo={feeInfo}
+                    account={account}
+                    composedLevels={composedLevels}
+                    errors={errors}
+                    register={register}
+                    setValue={setValue}
+                    getValues={getValues}
+                    changeFeeLevel={changeFeeLevel}
+                />
                 <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
             </>
@@ -218,21 +207,17 @@ export const TradingFormInputs = () => {
                     supportedCryptoCurrencies={supportedCryptoCurrencies}
                     methods={{ ...context }}
                 />
-                <Card margin={{ vertical: spacings.sm }}>
-                    <ElevationContext baseElevation={0}>
-                        <Fees
-                            control={control}
-                            feeInfo={feeInfo}
-                            account={account}
-                            composedLevels={composedLevels}
-                            errors={errors}
-                            register={register}
-                            setValue={setValue}
-                            getValues={getValues}
-                            changeFeeLevel={changeFeeLevel}
-                        />
-                    </ElevationContext>
-                </Card>
+                <Fees
+                    control={control}
+                    feeInfo={feeInfo}
+                    account={account}
+                    composedLevels={composedLevels}
+                    errors={errors}
+                    register={register}
+                    setValue={setValue}
+                    getValues={getValues}
+                    changeFeeLevel={changeFeeLevel}
+                />
                 <TradingFormSwitcherExchangeRates rateType={rateType} setValue={setValue} />
             </>
         );

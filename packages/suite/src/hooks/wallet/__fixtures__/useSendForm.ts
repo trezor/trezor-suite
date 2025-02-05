@@ -1724,7 +1724,7 @@ export const feeChange = [
         actionSequence: [
             {
                 type: 'click',
-                element: 'select-bar/high',
+                element: '@fee-card/high',
                 result: {
                     composeTransactionCalls: 1,
                     formValues: {
@@ -1757,7 +1757,19 @@ export const feeChange = [
             },
             {
                 type: 'click',
-                element: 'select-bar/economy',
+                element: 'select-bar/normal',
+                result: {
+                    composeTransactionCalls: 1,
+                    formValues: {
+                        selectedFee: 'normal' as const,
+                        feePerUnit: '40',
+                    },
+                },
+            },
+
+            {
+                type: 'click',
+                element: '@fee-card/economy',
                 result: {
                     composeTransactionCalls: 1,
                     formValues: {

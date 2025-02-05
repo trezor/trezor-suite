@@ -221,7 +221,7 @@ export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<
 const mapNetworkTypeToFeeUnits: Record<NetworkType, string> = {
     bitcoin: 'sat/vB',
     cardano: 'Lovelaces/B',
-    ethereum: 'GWEI',
+    ethereum: 'Gwei',
     ripple: 'Drops',
     solana: 'Lamports',
 };
