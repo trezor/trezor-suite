@@ -5461,6 +5461,10 @@ export default defineMessages({
         defaultMessage: 'Add Memo/Destination tag',
         id: 'DESTINATION_TAG_SWITCH',
     },
+    DESTINATION_TAG_GUIDE_LINK: {
+        defaultMessage: 'What is this?',
+        id: 'DESTINATION_TAG_GUIDE_LINK',
+    },
     DESTINATION_TAG_NOTE: {
         defaultMessage:
             'Online exchanges require this to identify your account. Get your destination tag from your online exchange.',
