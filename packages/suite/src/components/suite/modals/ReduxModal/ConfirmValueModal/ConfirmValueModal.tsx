@@ -7,6 +7,7 @@ import {
     Banner,
     Card,
     Column,
+    Link,
     NewModal,
     NewModalProps,
     Paragraph,
@@ -20,9 +21,11 @@ import { palette, spacings } from '@trezor/theme';
 import { MODAL } from 'src/actions/suite/constants';
 import { Translation } from 'src/components/suite';
 import { QrCode } from 'src/components/suite/QrCode';
+import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { ThunkAction } from 'src/types/suite';
+import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/RippleOptions/DestinationTag';
 
 import {
     OutputElementLine,
@@ -57,6 +60,7 @@ export const ConfirmValueModal = ({
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const dispatch = useDispatch();
+    const { openNodeById } = useGuideOpenNode();
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
     const addressConfirmed = isConfirmed || !canConfirmOnDevice;
@@ -83,6 +87,11 @@ export const ConfirmValueModal = ({
         }
 
         return null;
+    };
+
+    const handleOpenGuide = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        openNodeById(DESTINATION_TAG_GUIDE_PATH);
     };
 
     // Device connected while the modal is open -> validate on device.
@@ -127,7 +136,21 @@ export const ConfirmValueModal = ({
                     )}
                     {account.networkType === 'ripple' && (
                         <Banner variant="info" icon="info">
-                            <Translation id="DESTINATION_TAG_BANNER_RECEIVE" />
+                            <Translation
+                                id="DESTINATION_TAG_BANNER_RECEIVE"
+                                values={{
+                                    a: chunks => (
+                                        <Link
+                                            variant="nostyle"
+                                            icon="arrowUpRight"
+                                            typographyStyle="hint"
+                                            onClick={handleOpenGuide}
+                                        >
+                                            {chunks}
+                                        </Link>
+                                    ),
+                                }}
+                            />
                         </Banner>
                     )}
                     <Row gap={spacings.xl} alignItems="stretch">
