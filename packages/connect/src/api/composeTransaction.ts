@@ -301,7 +301,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         discovery.stop();
 
         if (!discovery.completed) {
-            await resolveAfter(501).promise; // temporary solution, TODO: immediately resolve will cause "device call in progress"
+            await resolveAfter(501); // temporary solution, TODO: immediately resolve will cause "device call in progress"
         }
 
         const account = discovery.accounts[uiResp.payload];
@@ -336,7 +336,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             // show error view
             this.postMessage(createUiMessage(UI.INSUFFICIENT_FUNDS));
             // wait few seconds...
-            await resolveAfter(2000, null).promise;
+            await resolveAfter(2000);
 
             // and go back to discovery
             return 'change-account';
