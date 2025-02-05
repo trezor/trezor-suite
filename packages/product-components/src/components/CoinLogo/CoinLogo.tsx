@@ -59,22 +59,22 @@ export const CoinLogo = ({
     size = DEFAULT_SIZE,
     ...rest
 }: CoinLogoProps) => {
-    const networkSymbol = getNetworkDisplaySymbol(
-        symbol as NetworkSymbol,
-    ).toLowerCase() as NetworkSymbol;
+    let symbolSrc;
+    let badge;
 
-    const symbolSrc =
-        // eslint-disable-next-line no-nested-ternary
-        type === 'coin'
-            ? COINS[symbol]
-            : type === 'network'
-              ? NETWORK_ICONS[symbol as NetworkSymbol]
-              : COINS[networkSymbol != symbol ? networkSymbol : symbol];
+    if (type === 'coin') {
+        symbolSrc = COINS[symbol];
+    } else if (type === 'network') {
+        symbolSrc = NETWORK_ICONS[symbol as NetworkSymbol];
+    } else {
+        // TODO: should be changed, this is hacky way
+        const networkSymbol = getNetworkDisplaySymbol(
+            symbol as NetworkSymbol,
+        )?.toLowerCase() as NetworkSymbol;
 
-    const badge =
-        type !== 'coin' && type !== 'network' && networkSymbol != symbol
-            ? NETWORK_ICONS[symbol as NetworkSymbol]
-            : null;
+        badge = networkSymbol !== symbol ? NETWORK_ICONS[symbol as NetworkSymbol] : null;
+        symbolSrc = COINS[networkSymbol !== symbol ? networkSymbol : symbol];
+    }
 
     return (
         <SvgWrapper className={className} $size={size} {...rest}>
