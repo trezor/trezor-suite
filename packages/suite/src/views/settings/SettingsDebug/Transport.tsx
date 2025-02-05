@@ -10,36 +10,46 @@ import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { DebugModeOptions, selectActiveTransports } from 'src/reducers/suite/suiteReducer';
 
+type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;
+
 type TransportMenuItem = {
-    name: ArrayElement<NonNullable<DebugModeOptions['transports']>>;
-    // todo: this is not true, at the moment it means something like "registered by connect"
-    // @trezor/connect is actively using this transport
+    name: Transport;
+    description: string;
     active?: boolean;
+    checked: boolean;
+};
+
+const TRANSPORTS_WEB = ['BridgeTransport', 'WebUsbTransport'] as const;
+const TRANSPORTS_DESKTOP = ['BridgeTransport', 'NodeUsbTransport', 'UdpTransport'] as const;
+const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
+    BridgeTransport:
+        'Client for bridge http interface regardless node-bridge or trezord-go implementation. It expects bridge to run on http://127.0.0.1:21325/.\
+        This is the most general transport that may be used for both desktop and web version of Trezor Suite.',
+    WebUsbTransport: 'Similar to NodeUsbTransport but using WebUSB API. Supported only in Chrome.',
+    NodeUsbTransport: 'Direct access to usb using node.js implementation.',
+    UdpTransport: 'Direct communication with emulators over udp.',
+};
+
+const useTransportItems = (transports: readonly Transport[]): TransportMenuItem[] => {
+    const activeTransports = useSelector(selectActiveTransports);
+    const debugTransports = useSelector(state => state.suite.settings.debug.transports);
+
+    return useMemo(
+        () =>
+            transports.map(type => ({
+                name: type,
+                description: TRANSPORT_DESCRIPTIONS[type],
+                active: activeTransports.some(a => a.type === type),
+                checked: debugTransports?.includes(type),
+            })),
+        [transports, activeTransports, debugTransports],
+    );
 };
 
 export const Transport = () => {
-    const debug = useSelector(state => state.suite.settings.debug);
-    const activeTransports = useSelector(selectActiveTransports);
     const dispatch = useDispatch();
-
-    // fallback [] to avoid need of migration.
-    const debugTransports = useMemo(() => debug.transports || [], [debug.transports]);
-
-    const transports: TransportMenuItem[] = useMemo(() => {
-        const transports: TransportMenuItem['name'][] = ['BridgeTransport'];
-
-        if (isDesktop()) {
-            transports.push('NodeUsbTransport');
-            transports.push('UdpTransport');
-        } else {
-            transports.push('WebUsbTransport');
-        }
-
-        return transports.map(type => ({
-            active: activeTransports.some(a => a.type === type),
-            name: type,
-        }));
-    }, [activeTransports]);
+    const transports = isDesktop() ? TRANSPORTS_DESKTOP : TRANSPORTS_WEB;
+    const items = useTransportItems(transports);
 
     return (
         <>
@@ -50,36 +60,22 @@ export const Transport = () => {
                 />
             </SectionItem>
             {/* todo: make it drag and drop sortable */}
-            {transports.map(transport => (
+            {items.map(transport => (
                 <SectionItem
-                    data-testid={`@settings/debug/transport/${transport.name}`}
                     key={transport.name}
+                    data-testid={`@settings/debug/transport/${transport.name}`}
                 >
                     <TextColumn
-                        title={`${transport.name} ${transport.active ? '(Active)' : ''}`}
-                        description={(() => {
-                            switch (transport.name) {
-                                case 'BridgeTransport':
-                                    return 'Client for bridge http interface regardless node-bridge or trezord-go implementation. It expects bridge to run on http://127.0.0.1:21325/. This is the most general transport that may be used for both desktop and web version of Trezor Suite.';
-                                case 'NodeUsbTransport':
-                                    return 'Direct access to usb using node.js implementation.';
-                                case 'UdpTransport':
-                                    return 'Direct communication with emulators over udp.';
-                                case 'WebUsbTransport':
-                                    return 'Similar to NodeUsbTransport but using WebUSB API. Supported only in Chrome.';
-                                default:
-                                    return '';
-                            }
-                        })()}
+                        title={`${transport.name}${transport.active ? ' (Active)' : ''}`}
+                        description={transport.description}
                     />
                     <ActionColumn>
                         <Checkbox
-                            isChecked={debugTransports.includes(transport.name)}
+                            isChecked={transport.checked}
                             onClick={() => {
-                                const nextTransports = debugTransports.includes(transport.name)
-                                    ? debugTransports.filter(t => t !== transport.name)
-                                    : [...debugTransports, transport.name];
-
+                                const nextTransports = items
+                                    .filter(t => (t.name === transport.name) !== t.checked)
+                                    .map(t => t.name);
                                 dispatch(setDebugMode({ transports: nextTransports }));
                                 TrezorConnect.setTransports({ transports: nextTransports });
                             }}
