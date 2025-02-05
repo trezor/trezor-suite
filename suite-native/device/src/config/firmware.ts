@@ -6,7 +6,7 @@ import { FirmwareRevisionCheckError } from '@trezor/connect';
  */
 
 // display a warning banner
-type SoftWarningBehavior = { type: 'softWarning'; shouldReport: true };
+type SoftWarningBehavior = { type: 'softWarning'; shouldReport: boolean };
 // display "Device Compromised" modal, after closing it dispaly a warning banner, block receiving address
 type HardModalBehavior = { type: 'hardModal'; shouldReport: true };
 
@@ -16,6 +16,6 @@ type RevisionCheckErrorScenarios = Record<FirmwareRevisionCheckError, RevisionEr
 export const revisionCheckErrorScenarios = {
     'revision-mismatch': { type: 'hardModal', shouldReport: true },
     'firmware-version-unknown': { type: 'hardModal', shouldReport: true },
-    'cannot-perform-check-offline': { type: 'softWarning', shouldReport: true },
+    'cannot-perform-check-offline': { type: 'softWarning', shouldReport: false },
     'other-error': { type: 'softWarning', shouldReport: true },
 } satisfies RevisionCheckErrorScenarios;

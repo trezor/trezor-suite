@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/react-native';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
+import { revisionCheckErrorScenarios } from '../config/firmware';
 import { selectFirmwareRevisionCheckError } from '../selectors';
 
 const reportCheckFail = (checkType: 'Firmware revision', contextData: any) => {
@@ -31,7 +32,10 @@ export const useReportDeviceCompromised = () => {
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckError);
 
     useEffect(() => {
-        if (revisionCheckError !== null) {
+        if (
+            revisionCheckError !== null &&
+            revisionCheckErrorScenarios[revisionCheckError].shouldReport
+        ) {
             reportCheckFail('Firmware revision', { ...commonData, revisionCheckError });
         }
     }, [commonData, revisionCheckError]);
