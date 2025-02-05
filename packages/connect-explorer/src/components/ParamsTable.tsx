@@ -93,7 +93,11 @@ const SingleParam = ({
             {hasDescendants && (
                 <div style={{ marginLeft: 30 }}>
                     {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
-                    <ParamsTable schema={value} topLevelSchema={topLevelSchema} />
+                    <ParamsTable
+                        schema={value}
+                        topLevelSchema={topLevelSchema}
+                        descriptions={descriptions}
+                    />
                 </div>
             )}
         </>
