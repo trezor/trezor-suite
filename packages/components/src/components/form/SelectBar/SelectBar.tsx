@@ -26,25 +26,10 @@ import { useElevation } from '../../ElevationContext/ElevationContext';
 export const allowedSelectBarFrameProps = ['margin', 'width'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectBarFrameProps)[number]>;
 
-const Wrapper = styled.div<TransientProps<AllowedFrameProps> & { $isFullWidth?: boolean }>`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.sm};
-    width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'auto')};
+export const orientations = ['horizontal', 'vertical', 'auto'] as const;
+export type Orientation = (typeof orientations)[number];
 
-    ${breakpointMediaQueries.below_sm} {
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100%;
-    }
-
-    ${withFrameProps}
-`;
-
-const Label = styled.span`
-    color: ${({ theme }) => theme.textSubdued};
-    text-transform: capitalize;
-`;
+export const DEFAULT_ORIENTATION = 'auto';
 
 const getTranslateValue = (index: number) => {
     const value = index * 100;
@@ -59,10 +44,63 @@ const getTranslateValue = (index: number) => {
 const getPuckWidth = (optionsCount: number) =>
     `calc((100% - 8px - ${(optionsCount - 1) * spacings.xxs}px) / ${optionsCount})`;
 
+const columnWrapper = css`
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+`;
+const columnOption = css`
+    grid-auto-flow: row;
+    width: 100%;
+    border-radius: ${borders.radii.lg};
+`;
+const columnPuck = ({
+    $selectedIndex: selectedIndex,
+    $optionsCount,
+}: {
+    $optionsCount: number;
+    $selectedIndex: number;
+}) => css`
+    left: 4px;
+    right: 4px;
+    top: 4px;
+    width: auto;
+    height: ${getPuckWidth($optionsCount)};
+    transform: ${`translateY(${getTranslateValue(selectedIndex)})`};
+`;
+
+const Wrapper = styled.div<
+    TransientProps<AllowedFrameProps> & { $isFullWidth?: boolean; $orientation: Orientation }
+>`
+    display: flex;
+    align-items: center;
+    gap: ${spacingsPx.sm};
+    width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'auto')};
+
+    ${({ $orientation }) =>
+        $orientation === 'auto' &&
+        css`
+            ${breakpointMediaQueries.below_sm} {
+                ${columnWrapper}
+            }
+        `}
+
+    ${({ $orientation }) => $orientation === 'vertical' && columnWrapper}
+
+
+    ${withFrameProps}
+`;
+
+const Label = styled.span`
+    color: ${({ theme }) => theme.textSubdued};
+    text-transform: capitalize;
+`;
+
 const Options = styled.div<{
     $optionsCount: number;
     $isFullWidth?: boolean;
     $elevation: Elevation;
+    $orientation: Orientation;
 }>`
     position: relative;
     display: grid;
@@ -74,14 +112,23 @@ const Options = styled.div<{
     border-radius: ${borders.radii.full};
     width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'auto')};
 
-    ${breakpointMediaQueries.below_sm} {
-        grid-auto-flow: row;
-        width: 100%;
-        border-radius: ${borders.radii.lg};
-    }
+    ${({ $orientation }) =>
+        $orientation === 'auto' &&
+        css`
+            ${breakpointMediaQueries.below_sm} {
+                ${columnOption}
+            }
+        `}
+
+    ${({ $orientation }) => $orientation === 'vertical' && columnOption}
 `;
 
-const Puck = styled.div<{ $optionsCount: number; $selectedIndex: number; $elevation: Elevation }>`
+const Puck = styled.div<{
+    $optionsCount: number;
+    $selectedIndex: number;
+    $elevation: Elevation;
+    $orientation: Orientation;
+}>`
     position: absolute;
     left: 4px;
     top: 4px;
@@ -98,15 +145,15 @@ const Puck = styled.div<{ $optionsCount: number; $selectedIndex: number; $elevat
 
     ${getFocusShadowStyle()}
 
-    ${breakpointMediaQueries.below_sm} {
-        left: 4px;
-        right: 4px;
-        top: 4px;
-        width: auto;
-        height: ${({ $optionsCount }) => getPuckWidth($optionsCount)};
-        transform: ${({ $selectedIndex: selectedIndex }) =>
-            `translateY(${getTranslateValue(selectedIndex)})`};
-    }
+    ${({ $orientation, $optionsCount, $selectedIndex }) =>
+        $orientation === 'auto' &&
+        css`
+            ${breakpointMediaQueries.below_sm} {
+                ${columnPuck({ $optionsCount, $selectedIndex })}
+            }
+        `}
+
+    ${({ $orientation }) => $orientation === 'vertical' && columnPuck}
 `;
 
 const WidthMock = styled.span`
@@ -165,6 +212,7 @@ export type SelectBarProps<V extends ValueTypes> = {
     onChange?: (value: V) => void;
     isDisabled?: boolean;
     isFullWidth?: boolean;
+    orientation?: 'horizontal' | 'vertical' | 'auto';
     className?: string;
     'data-testid'?: string;
 } & AllowedFrameProps;
@@ -177,6 +225,7 @@ export const SelectBar = <V extends ValueTypes>({
     onChange,
     isDisabled = false,
     isFullWidth,
+    orientation = DEFAULT_ORIENTATION,
     className,
     'data-testid': dataTest,
     ...rest
@@ -239,6 +288,7 @@ export const SelectBar = <V extends ValueTypes>({
             className={className}
             $isFullWidth={isFullWidth}
             data-testid={dataTest}
+            $orientation={orientation}
             {...frameProps}
         >
             {label && <Label>{label}</Label>}
@@ -247,11 +297,13 @@ export const SelectBar = <V extends ValueTypes>({
                 $optionsCount={options.length}
                 $isFullWidth={isFullWidth}
                 $elevation={elevation}
+                $orientation={orientation}
             >
                 <Puck
                     $optionsCount={options.length}
                     $selectedIndex={selectedIndex}
                     $elevation={nextElevation[elevation]}
+                    $orientation={orientation}
                     tabIndex={0}
                     onKeyDown={handleKeyboardNav}
                 />

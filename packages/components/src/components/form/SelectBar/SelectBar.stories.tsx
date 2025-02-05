@@ -1,7 +1,12 @@
 import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
 
-import { SelectBar as SelectBarComponent, SelectBarProps } from './SelectBar';
+import {
+    DEFAULT_ORIENTATION,
+    SelectBar as SelectBarComponent,
+    SelectBarProps,
+    orientations,
+} from './SelectBar';
 
 const options = [
     { label: 'low', value: 'low' },
@@ -18,6 +23,7 @@ const meta: Meta = {
         selectedOption: 'low',
         isDisabled: false,
         isFullWidth: undefined,
+        orientation: DEFAULT_ORIENTATION,
     },
     argTypes: {
         label: {
@@ -48,6 +54,12 @@ const meta: Meta = {
         isFullWidth: {
             control: {
                 type: 'boolean',
+            },
+        },
+        orientation: {
+            options: orientations,
+            control: {
+                type: 'radio',
             },
         },
     },
