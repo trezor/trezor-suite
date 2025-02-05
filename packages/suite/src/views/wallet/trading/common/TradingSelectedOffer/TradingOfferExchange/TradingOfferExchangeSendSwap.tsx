@@ -23,7 +23,7 @@ import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { AccountLabeling, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { AccountLabeling, Address, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
@@ -192,7 +192,7 @@ export const TradingOfferExchangeSendSwap = () => {
             <InfoItem
                 label={<Translation id="TR_EXCHANGE_SWAP_SEND_TO" values={translationValues} />}
             >
-                {dexTx.to}
+                <Address value={dexTx.to} />
             </InfoItem>
 
             <Card
@@ -278,7 +278,7 @@ export const TradingOfferExchangeSendSwap = () => {
                 <BreakableValue>{dexTx.data}</BreakableValue>
             </InfoItem>
 
-            <Column alignItems="center">
+            <Column>
                 <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                 <Button
                     isLoading={callInProgress}

@@ -23,6 +23,7 @@ export type TransactionReviewOutputListProps = {
     outputs: ReviewOutput[];
     buttonRequestsCount: number;
     isRbfAction: boolean;
+    isTradingAction: boolean;
     isSending?: boolean;
     stakeType?: StakeType;
 };
@@ -69,6 +70,7 @@ export const TransactionReviewOutputList = ({
     outputs,
     buttonRequestsCount,
     isRbfAction,
+    isTradingAction,
     isSending,
     stakeType,
 }: TransactionReviewOutputListProps) => {
@@ -79,7 +81,7 @@ export const TransactionReviewOutputList = ({
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
     const isFirstOutputAddress = outputs[0].type === 'address';
     const isFirstStep = buttonRequestsCount === 1;
-    const isNotStaking = !stakeType;
+    const isStaking = stakeType;
     const isInternalTransfer =
         isFirstOutputAddress &&
         findAccountsByAddress(symbol, outputs[0].value, accounts).length > 0;
@@ -97,7 +99,13 @@ export const TransactionReviewOutputList = ({
         }
     }, [buttonRequestsCount, outputs.length, signedTx]);
 
-    if (isFirstOutputAddress && isFirstStep && isNotStaking && !isInternalTransfer) {
+    if (
+        isFirstOutputAddress &&
+        isFirstStep &&
+        !isStaking &&
+        !isTradingAction &&
+        !isInternalTransfer
+    ) {
         return (
             <Card>
                 <Column gap={spacings.xxxl}>
@@ -158,6 +166,7 @@ export const TransactionReviewOutputList = ({
                                 state={getState(index, buttonRequestsCount, !!signedTx)}
                                 account={account}
                                 isRbf={isRbfAction}
+                                isTrading={isTradingAction}
                                 stakeType={stakeType}
                             />
                         </Column>

@@ -184,7 +184,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                 )}
             </Column>
             {selectedAccountOption && (
-                <Column alignItems="center">
+                <Column>
                     <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                     {(!addressVerified || addressVerified !== address) &&
                         selectedAccountOption.account && (

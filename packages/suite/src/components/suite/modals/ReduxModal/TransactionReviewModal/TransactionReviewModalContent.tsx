@@ -65,6 +65,7 @@ export const TransactionReviewModalContent = ({
             : selectPrecomposedSendForm(state),
     );
 
+    const isTradingAction = !!precomposedForm?.isTrading;
     const isRbfAction = precomposedTx !== undefined && isRbfTransaction(precomposedTx);
 
     const decreaseOutputId =
@@ -232,6 +233,7 @@ export const TransactionReviewModalContent = ({
                         outputs={outputs}
                         buttonRequestsCount={buttonRequestsCount}
                         isRbfAction={isRbfAction}
+                        isTradingAction={isTradingAction}
                         isSending={isSending}
                         stakeType={stakeType || undefined}
                     />
