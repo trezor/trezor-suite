@@ -19,7 +19,6 @@ export * from './createCooldown';
 export * from './createDeferred';
 export * from './createDeferredManager';
 export * from './createLazy';
-export * from './createTimeoutPromise';
 export * from './extractUrlsFromText';
 export * from './getLocaleSeparators';
 export * from './getMutex';
