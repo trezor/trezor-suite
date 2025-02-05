@@ -61,7 +61,7 @@ export const CoinLogo = ({
 }: CoinLogoProps) => {
     const networkSymbol = getNetworkDisplaySymbol(
         symbol as NetworkSymbol,
-    ).toLowerCase() as NetworkSymbol;
+    )?.toLowerCase() as NetworkSymbol;
 
     const symbolSrc =
         // eslint-disable-next-line no-nested-ternary

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { parseCryptoId } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Column, Icon, Row, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -45,7 +45,7 @@ export const TradingVerifyOptionsItem = ({
                     </AccountName>
                     <TradingBalance
                         balance={formattedBalance}
-                        displaySymbol={getNetwork(symbol).displaySymbol}
+                        displaySymbol={getNetworkDisplaySymbol(symbol)}
                         symbol={symbol}
                         sendCryptoSelect={
                             isTradingExchangeContext(context)

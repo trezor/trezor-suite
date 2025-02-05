@@ -96,7 +96,7 @@ export const getNetworkByCoingeckoId = (coingeckoId: string) =>
 export const getNetworkByTradeCryptoId = (coingeckoId: string) =>
     networksCollection.find(n => n.tradeCryptoId === coingeckoId);
 
-export const getNetworkDisplaySymbol = (symbol: NetworkSymbol) => getNetwork(symbol).displaySymbol;
+export const getNetworkDisplaySymbol = (symbol: NetworkSymbol) => getNetwork(symbol)?.displaySymbol;
 
 export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | null) => {
     const symbol = coinSymbol.toLowerCase();
