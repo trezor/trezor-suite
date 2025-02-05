@@ -24,7 +24,7 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedRadioCardFrameProps)[nu
 export type RadioCardProps = {
     isActive: boolean;
     children: ReactNode;
-    onClick: () => void;
+    onClick?: () => void;
 } & AllowedFrameProps;
 
 const Wrapper = styled.div<{ $isActive: boolean } & TransientProps<AllowedFrameProps>>`
@@ -35,7 +35,8 @@ const Wrapper = styled.div<{ $isActive: boolean } & TransientProps<AllowedFrameP
     padding: ${spacingsPx.md};
     outline: ${borders.widths.small} solid ${({ theme }) => theme.borderFocus};
     outline-offset: -${borders.widths.small};
-    cursor: pointer;
+
+    ${({ onClick }) => onClick && 'cursor: pointer;'}
 
     &:hover,
     &:focus {

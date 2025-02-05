@@ -138,12 +138,14 @@ export const DecreasedOutputs = () => {
                             // it's safe to use array index as key since outputs do not change
                             <RadioCard
                                 key={i}
-                                onClick={() => {
-                                    if (useRadio) {
-                                        setValue('setMaxOutputId', i);
-                                        composeRequest();
-                                    }
-                                }}
+                                onClick={
+                                    useRadio
+                                        ? () => {
+                                              setValue('setMaxOutputId', i);
+                                              composeRequest();
+                                          }
+                                        : undefined
+                                }
                                 isActive={useRadio && isChecked}
                             >
                                 <Row gap={spacings.sm}>
