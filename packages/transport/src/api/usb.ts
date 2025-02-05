@@ -82,6 +82,7 @@ export class UsbApi extends AbstractApi {
 
             const index = this.devices.findIndex(d => d.path === device.serialNumber);
             if (index > -1) {
+                delete this.lock[this.devices[index].path];
                 this.devices.splice(index, 1);
                 this.emit('transport-interface-change', this.devicesToDescriptors());
             } else {
