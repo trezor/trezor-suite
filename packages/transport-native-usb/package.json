@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/transport-native",
+    "name": "@trezor/transport-native-usb",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

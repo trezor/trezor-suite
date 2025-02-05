@@ -10,7 +10,7 @@ on:
       - "suite-native/**"
       - "suite-common/**"
       - "packages/react-native-usb/**"
-      - "packages/transport-native/**"
+      - "packages/transport-native-usb/**"
       - "yarn.lock"
       - ".github/workflows/build-suite-native-preview.yml"
       # list of paths is not complete, but it's always possible to dispatch manually using 'build-mobile' label

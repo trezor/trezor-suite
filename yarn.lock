@@ -11141,7 +11141,7 @@ __metadata:
     "@suite-native/module-send": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
-    "@trezor/transport-native": "workspace:*"
+    "@trezor/transport-native-usb": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/redux-logger": "npm:^3.0.11"
     expo-device: "npm:6.0.2"
@@ -12820,9 +12820,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport-native@workspace:*, @trezor/transport-native@workspace:packages/transport-native":
+"@trezor/transport-native-usb@workspace:*, @trezor/transport-native-usb@workspace:packages/transport-native-usb":
   version: 0.0.0-use.local
-  resolution: "@trezor/transport-native@workspace:packages/transport-native"
+  resolution: "@trezor/transport-native-usb@workspace:packages/transport-native-usb"
   dependencies:
     "@trezor/react-native-usb": "workspace:*"
     "@trezor/transport": "workspace:*"

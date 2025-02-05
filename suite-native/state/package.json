@@ -32,7 +32,7 @@
         "@suite-native/module-send": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
-        "@trezor/transport-native": "workspace:*",
+        "@trezor/transport-native-usb": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-device": "6.0.2",
         "react": "18.2.0",

@@ -37,7 +37,7 @@
         { "path": "../settings" },
         { "path": "../storage" },
         {
-            "path": "../../packages/transport-native"
+            "path": "../../packages/transport-native-usb"
         },
         { "path": "../../packages/utils" }
     ]

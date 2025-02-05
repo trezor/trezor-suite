@@ -15,7 +15,7 @@ import {
     selectFiatCurrencyCode,
     setFiatCurrency,
 } from '@suite-native/settings';
-import { NativeUsbTransport } from '@trezor/transport-native';
+import { NativeUsbTransport } from '@trezor/transport-native-usb';
 import { mergeDeepObject } from '@trezor/utils';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
