@@ -1,0 +1,26 @@
+{
+    "trade": {
+        "exchange": "banxa",
+        "fiatCurrency": "CZK",
+        "receiveCurrency": "solana",
+        "rate": 6106.42,
+        "wantCrypto": true,
+        "exp": "cRPhcsJWUUq9brG+zMXmog==",
+        "country": "CZ",
+        "paymentMethodName": "Credit Card",
+        "tags": ["wantCrypto"],
+        "fiatStringAmount": "3053.21",
+        "receiveStringAmount": "0.5",
+        "minFiat": 600,
+        "maxFiat": 50000,
+        "minCrypto": 0.10408553,
+        "maxCrypto": 8.67379421,
+        "paymentMethod": "creditCard",
+        "quoteId": "f9e89339-a0bb-4960-ae8e-cc543d651de3",
+        "partnerData2": "6098",
+        "paymentId": "8abad787-6328-46bf-9c65-4d9797008f93",
+        "orderId": "3e44be68-6827-4fa0-962b-85e1cbcbca2f",
+        "receiveAddress": "o6AySDQRrUa5Sp6XM9gqLogoibdufvxVyviFvR1PfaP"
+    },
+    "returnUrl": "http://localhost:8000/coinmarket-redirect#detail/sol/normal/0/8abad787-6328-46bf-9c65-4d9797008f93"
+}

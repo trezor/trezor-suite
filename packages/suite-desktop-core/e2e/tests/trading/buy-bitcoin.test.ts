@@ -1,8 +1,7 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { buyQuotesBTC, buyTradeBTC, invityEndpoint } from '../../fixtures/invity';
-import expectedWatchRequestPayload from '../../fixtures/invity/buy/watch-request.json';
+import { buyQuotesBTC, buyTradeBTC, invityEndpoint, invityRequest } from '../../fixtures/invity';
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
@@ -19,7 +18,7 @@ const { receiveAddress, paymentMethodName } = buyTradeBTC.trade;
 test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => {
     test.beforeEach(async ({ marketPage, onboardingPage, dashboardPage, walletPage }) => {
         await marketPage.mockInvity();
-        await marketPage.mockInvityTrade(buyTradeBTC, 'btc');
+        await marketPage.mockInvityTrade(buyTradeBTC, invityEndpoint.buyTrade);
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
         await walletPage.openTrading();
@@ -27,7 +26,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
 
     test('Select compared offers to buy', async ({ marketPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
-            await marketPage.setYouPayFiatAmount(fiatAmount);
+            await marketPage.setYouPayAmount(fiatAmount);
             await expect(marketPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
             await expect(marketPage.quoteProvider).toHaveText(bestBuyProvider);
             await marketPage.compareButton.click();
@@ -54,19 +53,23 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
 
     test('Buy crypto from best offer', async ({ page, marketPage }) => {
         await test.step('Request a trade', async () => {
-            await marketPage.setYouPayFiatAmount(fiatAmount);
+            await marketPage.setYouPayAmount(fiatAmount);
             await marketPage.buyBestOfferButton.click();
             await marketPage.confirmTrade();
         });
 
-        const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
         await page.clock.install();
 
         await test.step('Confirm the trade and get redirected to transaction detail', async () => {
             await marketPage.changeTransactionWatchResponseTo('SUBMITTED');
-            await marketPage.finishMockedTrade();
-            await expect(watchRequestPromise).toHavePayload(expectedWatchRequestPayload, {
-                omit: ['partnerData'],
+            const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
+            const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
+            await marketPage.confirmTradeButton.click();
+            await expect(tradeRequestPromise).toHavePayload(invityRequest.buyTradeBTCPayload, {
+                omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
+            });
+            await expect(watchRequestPromise).toHavePayload(invityRequest.buyWatchPayload, {
+                omit: ['partnerData', 'orderId', 'paymentId'],
             });
             await expect(marketPage.transactionDetailStatus).toHaveText(
                 'Waiting for your payment...',

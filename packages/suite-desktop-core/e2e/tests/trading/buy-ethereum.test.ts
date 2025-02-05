@@ -15,7 +15,7 @@ const { receiveAddress, paymentMethodName } = buyTradeEthereum.trade;
 test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, () => {
     test.beforeEach(async ({ page, marketPage, onboardingPage, dashboardPage }) => {
         await marketPage.mockInvity();
-        await marketPage.mockInvityTrade(buyTradeEthereum, 'eth');
+        await marketPage.mockInvityTrade(buyTradeEthereum, invityEndpoint.buyTrade);
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesEthereum });
         });
@@ -35,7 +35,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
         await test.step('Request to buy Ethereum', async () => {
             await walletPage.tradingBuyButton.click();
             await marketPage.selectAccount('Ethereum', 'eth');
-            await marketPage.setYouPayFiatAmount(fiatAmount);
+            await marketPage.setYouPayAmount(fiatAmount, 'ethereum');
             await expect(marketPage.bestOfferAmount).toHaveText(formattedCryptoAmount);
             await expect(marketPage.quoteProvider).toHaveText(provider);
             await marketPage.buyBestOfferButton.click();

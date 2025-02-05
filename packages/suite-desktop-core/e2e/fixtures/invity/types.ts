@@ -25,6 +25,29 @@ type Trade = {
     partnerData2?: string;
 };
 
+type SellTrade = {
+    refundAddress: string;
+    paymentId: string;
+    status: string;
+    partnerData: string;
+    exchange: string;
+    fiatCurrency: string;
+    cryptoCurrency: string;
+    rate: number;
+    amountInCrypto: boolean;
+    exp: string;
+    country: string;
+    paymentMethodName: string;
+    fiatStringAmount: string;
+    cryptoStringAmount: string;
+    minFiat: number;
+    maxFiat: number;
+    minCrypto: number;
+    maxCrypto: number;
+    paymentMethod: string;
+    orderId: string;
+};
+
 type TradeForm = {
     form: {
         formMethod: string;
@@ -33,7 +56,12 @@ type TradeForm = {
     };
 };
 
-export type TradeRequest = {
+export type TradeResponse = {
     trade: Trade;
+    tradeForm: TradeForm;
+};
+
+export type SellTradeResponse = {
+    trade: SellTrade;
     tradeForm: TradeForm;
 };

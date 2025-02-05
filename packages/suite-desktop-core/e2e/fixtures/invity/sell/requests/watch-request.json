@@ -1,0 +1,22 @@
+{
+    "refundAddress": "bc1q6stfdrpv7wqkdh97qea3yarxrvk76jcsxnf708",
+    "paymentId": "531847d1-4476-49b6-9577-27f3d6ae8e8c",
+    "status": "SUBMITTED",
+    "partnerData": "https://sell.moonpay.com/?apiKey=pk_live_1wuWa2Z1O2qG8izvpLkMOvBFbAPgWpfn&baseCurrencyCode=btc&quoteCurrencyCode=eur&baseCurrencyAmount=0.0007&lockAmount=true&externalTransactionId=531847d1-4476-49b6-9577-27f3d6ae8e8c&redirectURL=http%3A%2F%2Flocalhost%3A8000%2Fcoinmarket-redirect%23sell-offers%2Fbtc%2Fnormal%2F0%2Fp-qc%2FCZ%2FEUR%2F0.0007%2Fbitcoin%2Fb8373fba-d981-42ae-9c28-bcee40e20772&showWalletAddressForm=true&colorCode=%2300bfd9&language=CZ&signature=wOM6FBcSfatZ1AZepe3luyvbibbpR%2F0QFpTwJGI7ISI%3D",
+    "exchange": "moonpay-sell",
+    "fiatCurrency": "EUR",
+    "cryptoCurrency": "bitcoin",
+    "rate": 87357.14285714286,
+    "amountInCrypto": true,
+    "exp": "EV/8oAVshyY5TAk+IGNDeA==",
+    "country": "CZ",
+    "paymentMethodName": "Credit Card",
+    "fiatStringAmount": "61.15",
+    "cryptoStringAmount": "0.0007",
+    "minFiat": 20,
+    "maxFiat": 30000,
+    "minCrypto": 0.00005,
+    "maxCrypto": 30000,
+    "paymentMethod": "creditCard",
+    "orderId": "b8373fba-d981-42ae-9c28-bcee40e20772"
+}

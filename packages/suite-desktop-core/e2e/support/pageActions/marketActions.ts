@@ -10,11 +10,10 @@ import {
     invityEndpoint,
     invityResponses,
 } from '../../fixtures/invity';
-import expectedTradeRequestPayload from '../../fixtures/invity/buy/trade-request.json';
 import { TrezorUserEnvLinkProxy, step } from '../common';
 import { expect } from '../customMatchers';
 import { DevicePromptActions } from './devicePromptActions';
-import { TradeRequest } from '../../fixtures/invity/types';
+import { SellTradeResponse, TradeResponse } from '../../fixtures/invity/types';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
 const quoteAmountLocator = '@trading/offers/quote/crypto-amount';
@@ -48,6 +47,7 @@ export class MarketActions {
     readonly offerSpinner: Locator;
     readonly section: Locator;
     readonly form: Locator;
+    readonly sellTabButton: Locator;
     readonly quoteProvider: Locator;
     readonly bestOfferSection: Locator;
     readonly bestOfferAmount: Locator;
@@ -86,6 +86,7 @@ export class MarketActions {
     // Confirmation modal
     readonly modal: Locator;
     readonly buyTermsConfirmButton: Locator;
+    readonly sellTermsConfirmButton: Locator;
     readonly confirmOnTrezorButton: Locator;
     readonly confirmationSection: Locator;
     readonly confirmationAccountDropdown: Locator;
@@ -110,15 +111,15 @@ export class MarketActions {
     readonly proceedToPayButton: Locator;
     readonly transactionDetail: Locator;
     readonly transactionWatchPeriod = '00:30';
+    // Sell
+    readonly sellButton: Locator;
 
-    constructor(
-        private page: Page,
-        private url: string,
-    ) {
+    constructor(private page: Page) {
         this.devicePrompt = new DevicePromptActions(page);
         this.offerSpinner = this.page.getByTestId('@trading/offers/loading-spinner');
         this.section = this.page.getByTestId('@trading');
         this.form = this.page.getByTestId('@trading/form');
+        this.sellTabButton = this.page.getByTestId('@trading/menu/wallet-trading-sell');
         this.quoteProvider = this.page.getByTestId(quoteProviderLocator);
         this.bestOfferSection = this.page.getByTestId('@trading/best-offer');
         this.bestOfferAmount = this.page.getByTestId('@trading/best-offer/amount');
@@ -150,6 +151,9 @@ export class MarketActions {
         this.buyTermsConfirmButton = this.page.getByTestId(
             '@trading/buy/offers/buy-terms-confirm-button',
         );
+        this.sellTermsConfirmButton = this.page.getByTestId(
+            '@trading/sell/offers/buy-terms-confirm-button',
+        );
         this.confirmOnTrezorButton = this.page.getByTestId(
             '@trading/offer/confirm-on-trezor-button',
         );
@@ -177,14 +181,23 @@ export class MarketActions {
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
         this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
+        this.sellButton = this.page.getByTestId('@trading/form/sell-button');
     }
 
     @step()
-    async waitForOffersSyncToFinish() {
+    async waitForBuyOffersSync() {
         await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
         //Even though the offer sync is finished, the best offer might not be displayed correctly yet and show 0 BTC
         await expect(this.bestOfferAmount).not.toHaveText('0 BTC');
         await expect(this.buyBestOfferButton).toBeEnabled();
+    }
+
+    @step()
+    async waitForSellOffersSync() {
+        await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
+        //Even though the offer sync is finished, the best offer might not be displayed correctly yet and show 0 BTC
+        await expect(this.bestOfferAmount).not.toHaveText('0');
+        await expect(this.sellButton).toBeEnabled();
     }
 
     @step()
@@ -223,30 +236,30 @@ export class MarketActions {
     }
 
     @step()
-    async setYouPayFiatAmount(
+    async setYouPayAmount(
         amount: string,
-        currency: FiatCurrencyCode = 'czk',
+        cryptoCurrency: string = 'bitcoin',
+        wantCrypto: boolean = false,
+        fiatCurrencyCode: FiatCurrencyCode = 'czk',
         country: string = 'CZ',
     ) {
-        // Warning: the field is initialized empty and gets default value after the first offer sync
-        await expect(this.youPayFiatInput).not.toHaveValue('');
+        const inputField = wantCrypto ? this.youPayCryptoInput : this.youPayFiatInput;
+        await expect(inputField).not.toHaveValue('');
         await this.selectCountryOfResidence(country);
-        await this.selectFiatCurrency(currency);
-        const quotesPromise = this.page.waitForResponse(invityEndpoint.buyQuotes);
-        await this.youPayFiatInput.fill(amount);
-        await quotesPromise;
-        // Warning: Bug #16054, as a workaround we wait for offer sync after setting the amount
-        await this.waitForOffersSyncToFinish();
-    }
-
-    @step()
-    async setYouPayCryptoAmount(amount: string, country: string = 'CZ') {
-        // Warning: the field is initialized empty and gets default value after the first offer sync
-        await expect(this.youPayCryptoInput).not.toHaveValue('');
-        await this.selectCountryOfResidence(country);
-        await this.youPayCryptoInput.fill(amount);
-        // Warning: Bug #16054, as a workaround we wait for offer sync after setting the amount
-        await this.waitForOffersSyncToFinish();
+        await this.selectFiatCurrency(fiatCurrencyCode);
+        const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.buyQuotes);
+        const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.buyQuotes);
+        await inputField.fill(amount);
+        await expect(quotesRequestPromise).toHavePayload({
+            wantCrypto,
+            fiatCurrency: fiatCurrencyCode.toUpperCase(),
+            receiveCurrency: cryptoCurrency,
+            country,
+            fiatStringAmount: wantCrypto ? '2500' : amount,
+            cryptoStringAmount: wantCrypto ? amount : undefined,
+        });
+        await quotesResponsePromise;
+        await this.waitForBuyOffersSync();
     }
 
     @step()
@@ -262,26 +275,16 @@ export class MarketActions {
         await this.devicePrompt.confirmOnDevicePromptIsHidden();
     }
 
-    @step()
-    async finishMockedTrade() {
-        const tradeRequestPromise = this.page.waitForRequest(invityEndpoint.buyTrade);
-        await this.confirmTradeButton.click();
-        await expect(tradeRequestPromise).toHavePayload(expectedTradeRequestPayload, {
-            omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
-        });
-    }
-
     // We bypass the provider part of the flow by having a modified redirect in trade response.
     // This redirect is provided by Invity and normaly leads to provider's page.
     // But our mocked response redirects us to transaction detail where our flow continues.
     @step()
-    async mockInvityTrade(tradeRequest: TradeRequest, symbol: NetworkSymbol) {
-        const redirectedTradeResponse = createRedirectedTradeResponse({
-            symbol,
-            tradeRequest,
-            url: this.url,
-        });
-        await this.page.route(invityEndpoint.buyTrade, async route => {
+    async mockInvityTrade(tradeResponse: TradeResponse | SellTradeResponse, endpointUrl: string) {
+        await this.page.route(endpointUrl, async (route, request) => {
+            const redirectedTradeResponse = createRedirectedTradeResponse(
+                tradeResponse,
+                request.postDataJSON(),
+            );
             await route.fulfill({ json: redirectedTradeResponse });
         });
     }

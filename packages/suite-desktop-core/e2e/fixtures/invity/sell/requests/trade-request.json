@@ -1,0 +1,23 @@
+{
+    "trade": {
+        "exchange": "moonpay-sell",
+        "fiatCurrency": "EUR",
+        "cryptoCurrency": "bitcoin",
+        "rate": 88471.42857142857,
+        "amountInCrypto": true,
+        "exp": "EV/8oAVshyY5TAk+IGNDeA==",
+        "country": "CZ",
+        "paymentMethodName": "Credit Card",
+        "fiatStringAmount": "61.93",
+        "cryptoStringAmount": "0.0007",
+        "minFiat": 20,
+        "maxFiat": 30000,
+        "minCrypto": 0.00005,
+        "maxCrypto": 30000,
+        "paymentMethod": "creditCard",
+        "paymentId": "82b84c1f-0525-4205-9edd-47b4592fe906",
+        "orderId": "8d59f7f4-b12f-4434-a73c-afe799194edc",
+        "refundAddress": "bc1q6stfdrpv7wqkdh97qea3yarxrvk76jcsxnf708"
+    },
+    "returnUrl": "http://localhost:8000/coinmarket-redirect#sell-offers/btc/normal/0/p-qc/CZ/EUR/0.0007/bitcoin/8d59f7f4-b12f-4434-a73c-afe799194edc"
+}

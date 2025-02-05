@@ -1,7 +1,12 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { buyQuotesSolana, buyTradeSolana, invityEndpoint } from '../../fixtures/invity';
+import {
+    buyQuotesSolana,
+    buyTradeSolana,
+    invityEndpoint,
+    invityRequest,
+} from '../../fixtures/invity';
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
@@ -16,7 +21,7 @@ const { receiveAddress, paymentMethodName } = buyTradeSolana.trade;
 test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () => {
     test.beforeEach(async ({ page, marketPage, onboardingPage, dashboardPage }) => {
         await marketPage.mockInvity();
-        await marketPage.mockInvityTrade(buyTradeSolana, 'sol');
+        await marketPage.mockInvityTrade(buyTradeSolana, invityEndpoint.buyTrade);
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesSolana });
         });
@@ -25,6 +30,7 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
     });
 
     test('Buy specific crypto amount of Solana token', async ({
+        page,
         settingsPage,
         dashboardPage,
         walletPage,
@@ -39,9 +45,10 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
         });
 
         await test.step('Request a specific crypto amount to buy', async () => {
-            await marketPage.waitForOffersSyncToFinish();
+            await marketPage.waitForBuyOffersSync();
             await marketPage.youPayFiatCryptoSwitchButton.click();
-            await marketPage.setYouPayCryptoAmount(cryptoAmount);
+            const isCryptoInput = true;
+            await marketPage.setYouPayAmount(cryptoAmount, 'solana', isCryptoInput);
             await expect(marketPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(marketPage.quoteProvider).toHaveText(provider);
             await marketPage.buyBestOfferButton.click();
@@ -55,7 +62,11 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
                 capitalizeFirstLetter(provider),
             );
             await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
+            const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
             await marketPage.confirmTradeButton.click();
+            await expect(tradeRequestPromise).toHavePayload(invityRequest.buyTradeSolanaPayload, {
+                omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
+            });
         });
 
         await test.step('Verify transaction detail', async () => {
