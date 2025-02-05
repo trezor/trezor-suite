@@ -28,7 +28,6 @@ import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useGuide } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';
 
-import { NavSettings } from './NavSettings';
 import { TrafficLightOffset } from '../../TrafficLightOffset';
 
 const Expander = styled.div`
@@ -78,11 +77,6 @@ const Content = styled.div<{ $elevation: Elevation }>`
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding: ${spacingsPx.sm};
     }
-`;
-
-const SettingsWrapper = styled.div`
-    position: absolute;
-    align-self: flex-end;
 `;
 
 const ChildrenWrapper = styled.div`
@@ -167,10 +161,6 @@ const Right = ({ children }: { children: ReactNode }) => {
 
     return (
         <Content $elevation={elevation}>
-            <SettingsWrapper>
-                <NavSettings />
-            </SettingsWrapper>
-
             <ChildrenWrapper>
                 <ElevationUp>{children}</ElevationUp>
             </ChildrenWrapper>
