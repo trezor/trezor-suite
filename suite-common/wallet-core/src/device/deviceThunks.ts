@@ -33,12 +33,7 @@ import { getEnvironment } from '@trezor/env-utils';
 
 import { DEVICE_MODULE_PREFIX, DeviceConnectActionPayload, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
-import {
-    selectDeviceById,
-    selectSelectedDevice as selectDeviceSelector,
-    selectDevices,
-    selectSelectedDevice,
-} from './deviceReducer';
+import { selectDeviceById, selectDevices, selectSelectedDevice } from './deviceReducer';
 import { selectAccountByKey } from '../accounts/accountsReducer';
 
 type SelectDeviceThunkParams = {
@@ -150,7 +145,7 @@ export const createDeviceInstanceThunk = createThunk<
 export const handleDeviceConnect = createThunk(
     `${DEVICE_MODULE_PREFIX}/handleDeviceConnect`,
     (device: Device, { dispatch, getState }) => {
-        const selectedDevice = selectDeviceSelector(getState());
+        const selectedDevice = selectSelectedDevice(getState());
 
         if (!selectedDevice) {
             dispatch(selectDeviceThunk({ device }));
@@ -171,7 +166,7 @@ export const handleDeviceDisconnect = createThunk(
             selectors: { selectRouterApp },
         } = extra;
 
-        const selectedDevice = selectDeviceSelector(getState());
+        const selectedDevice = selectSelectedDevice(getState());
         const routerApp = selectRouterApp(getState());
         const devices = selectDevices(getState());
         if (!selectedDevice) return;
@@ -233,7 +228,7 @@ export const forgetDisconnectedDevices = createThunk(
  */
 export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
     const devices = selectDevices(getState());
-    const selectedDevice = selectDeviceSelector(getState());
+    const selectedDevice = selectSelectedDevice(getState());
 
     if (!selectedDevice) return false;
 
@@ -256,7 +251,7 @@ export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
 export const acquireDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/acquireDevice`,
     async (requestedDevice: TrezorDevice | undefined, { dispatch, getState }) => {
-        const device = requestedDevice || selectDeviceSelector(getState());
+        const device = requestedDevice || selectSelectedDevice(getState());
 
         if (!device) return;
 
@@ -305,7 +300,7 @@ export const authorizeDeviceThunk = createThunk<
             actions: { openModal },
         } = extra;
 
-        const device = selectDeviceSelector(getState());
+        const device = selectSelectedDevice(getState());
 
         if (!device) return rejectWithValue({ error: 'no-device' });
 
@@ -377,7 +372,7 @@ export const authorizeDeviceThunk = createThunk<
             const settings = extra.selectors.selectSuiteSettings(getState());
             dispatch(deviceActions.forgetDevice({ device, settings }));
 
-            const newDevice = selectDeviceSelector(getState());
+            const newDevice = selectSelectedDevice(getState());
             dispatch(deviceActions.selectDevice(newDevice));
             if (response.payload.error === 'enter-passphrase-back') {
                 dispatch(extra.thunks.openSwitchDeviceDialog());
@@ -409,7 +404,7 @@ export const authorizeDeviceThunk = createThunk<
 export const authConfirm = createThunk(
     `${DEVICE_MODULE_PREFIX}/authConfirm`,
     async (_, { dispatch, getState, extra }) => {
-        const device = selectDeviceSelector(getState());
+        const device = selectSelectedDevice(getState());
         if (!device) return false;
 
         const response = await TrezorConnect.getDeviceState({
@@ -508,7 +503,7 @@ export const initDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/initDevices`,
     (_, { dispatch, getState }) => {
         const devices = selectDevices(getState());
-        const device = selectDeviceSelector(getState());
+        const device = selectSelectedDevice(getState());
 
         if (!device && devices && devices[0]) {
             // if there are force remember devices, forget them and pick the first one of them as selected device
@@ -673,7 +668,7 @@ export const passwordMismatchResetThunk = createThunk<void, { device: TrezorDevi
 
         dispatch(deviceActions.forgetDevice({ device, settings }));
 
-        const newDevice = selectDeviceSelector(getState());
+        const newDevice = selectSelectedDevice(getState());
         dispatch(deviceActions.selectDevice(newDevice));
     },
 );
