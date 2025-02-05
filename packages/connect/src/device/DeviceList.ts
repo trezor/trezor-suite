@@ -18,6 +18,7 @@ import {
     createDeferred,
     getSynchronize,
     isNotUndefined,
+    resolveAfter,
 } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
@@ -26,7 +27,6 @@ import { Device } from './Device';
 import { getBridgeInfo } from '../data/transportInfo';
 import { ConnectSettings, DeviceUniquePath, StaticSessionId } from '../types';
 import { typedObjectKeys } from '../types/utils';
-import { abortablePromise } from '../utils/abortablePromise';
 import { initLog } from '../utils/debug';
 
 const createAuthPenaltyManager = (priority: number) => {
@@ -396,10 +396,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     private createReconnectDelay(signal: AbortSignal) {
-        const { promise, resolve } = abortablePromise(signal);
-        const timeout = setTimeout(resolve, 1000);
-
-        return promise.finally(() => clearTimeout(timeout));
+        return resolveAfter(1000, signal);
     }
 
     private scheduleUpgradeCheck(apiType: TransportApiType, initParams: InitParams) {
