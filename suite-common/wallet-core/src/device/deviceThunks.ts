@@ -256,9 +256,9 @@ export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
 export const acquireDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/acquireDevice`,
     async (requestedDevice: TrezorDevice | undefined, { dispatch, getState }) => {
-        const selectedDevice = selectDeviceSelector(getState());
-        if (!selectedDevice && !requestedDevice) return;
-        const device = requestedDevice || selectedDevice;
+        const device = requestedDevice || selectDeviceSelector(getState());
+
+        if (!device) return;
 
         const response = await TrezorConnect.getFeatures({
             device,
