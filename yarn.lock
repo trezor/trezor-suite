@@ -9773,7 +9773,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.2"
-    uuid: "npm:^11.0.4"
+    uuid: "npm:^11.0.5"
   languageName: unknown
   linkType: soft
 
@@ -12196,7 +12196,7 @@ __metadata:
   resolution: "@trezor/e2e-utils@workspace:packages/e2e-utils"
   dependencies:
     express: "npm:^4.21.2"
-    uuid: "npm:^11.0.4"
+    uuid: "npm:^11.0.5"
     ws: "npm:^8.18.0"
   languageName: unknown
   linkType: soft
@@ -12800,7 +12800,7 @@ __metadata:
     stylelint: "npm:^16.2.1"
     stylelint-config-standard: "npm:^36.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
-    uuid: "npm:^11.0.4"
+    uuid: "npm:^11.0.5"
     web3-utils: "npm:^4.3.1"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
@@ -42164,12 +42164,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^11.0.3, uuid@npm:^11.0.4":
-  version: 11.0.4
-  resolution: "uuid@npm:11.0.4"
+"uuid@npm:^11.0.3, uuid@npm:^11.0.5":
+  version: 11.0.5
+  resolution: "uuid@npm:11.0.5"
   bin:
     uuid: dist/esm/bin/uuid
-  checksum: 10/5fd9832d2819f4535c92805f381e26ac254dfc601424a1000bc277ea38440538385db948645ef23c800906eeda28d3da9e037b049e71b2efe1eff1d05c9f61a2
+  checksum: 10/0594ecdff3051e15d4a2c614b4c72e73af373bde0a5d156512353c01156975295d024ae8d7151846d7bd4d22ccd251b16ed51b4318fa71505fb20ad984102dc1
   languageName: node
   linkType: hard
 
