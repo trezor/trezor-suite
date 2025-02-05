@@ -8,8 +8,8 @@ import {
     Deferred,
     TypedEmitter,
     createDeferred,
-    createTimeoutPromise,
     isArrayMember,
+    resolveAfter,
     serializeError,
     versionUtils,
 } from '@trezor/utils';
@@ -343,7 +343,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     // call only once, right after device creation
     async handshake(delay?: number) {
         if (delay) {
-            await createTimeoutPromise(501 + delay);
+            await resolveAfter(501 + delay);
         }
 
         while (true) {
@@ -384,7 +384,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         this.unreadableError = error?.message;
                         this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
                     } else {
-                        await createTimeoutPromise(501);
+                        await resolveAfter(501);
                         continue;
                     }
                 }

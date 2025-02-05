@@ -6,7 +6,7 @@ import { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-con
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
-import { createTimeoutPromise } from '@trezor/utils';
+import { resolveAfter } from '@trezor/utils';
 
 import { openDeferredModal, openModal } from 'src/actions/suite/modalActions';
 import { toggleTor } from 'src/actions/suite/suiteActions';
@@ -111,7 +111,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
             // When Tor was not loaded it means there was an error or user canceled it, stop the coinjoin account activation.
             if (!isTorLoaded) return;
         }
-        await createTimeoutPromise(1000); // TODO fix properly: https://github.com/trezor/trezor-suite/issues/6902
+        await resolveAfter(1000); // TODO fix properly: https://github.com/trezor/trezor-suite/issues/6902
         await createAccount();
     };
 

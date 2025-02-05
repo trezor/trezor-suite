@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { Select, variables } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { bip39 } from '@trezor/crypto-utils';
-import { createTimeoutPromise } from '@trezor/utils';
+import { resolveAfter } from '@trezor/utils';
 
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 
@@ -80,7 +80,7 @@ export const WordInput = memo(() => {
                     translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
                 }
                 onChange={async (item: Option, ref?: SelectInstance<Option, boolean> | null) => {
-                    await createTimeoutPromise(600);
+                    await resolveAfter(600);
                     TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: item.value });
                     ref?.clearValue();
                 }}

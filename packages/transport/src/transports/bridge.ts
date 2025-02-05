@@ -4,7 +4,7 @@ import {
     bridge as protocolBridge,
     v1 as protocolV1,
 } from '@trezor/protocol';
-import { createTimeoutPromise, versionUtils } from '@trezor/utils';
+import { resolveAfter, versionUtils } from '@trezor/utils';
 
 import {
     AbstractTransport,
@@ -146,7 +146,7 @@ export class BridgeTransport extends AbstractTransport {
                     this.emit('transport-error', response.error);
                     break;
                 }
-                await createTimeoutPromise(1000);
+                await resolveAfter(1000);
             } else {
                 this.handleDescriptorsChange(response.payload);
             }

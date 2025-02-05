@@ -1,6 +1,6 @@
 import UDP from 'dgram';
 
-import { arrayPartition, createTimeoutPromise, isNotUndefined } from '@trezor/utils';
+import { arrayPartition, isNotUndefined, resolveAfter } from '@trezor/utils';
 
 import {
     AbstractApi,
@@ -36,7 +36,7 @@ export class UdpApi extends AbstractApi {
 
     private async listenLoop() {
         while (this.listening) {
-            await createTimeoutPromise(500);
+            await resolveAfter(500);
             if (!this.listening) break;
             await this.enumerate(this.listenAbortController.signal);
         }

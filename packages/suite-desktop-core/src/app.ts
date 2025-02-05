@@ -6,7 +6,7 @@ import { isMacOs } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { TimerId } from '@trezor/type-utils';
-import { createDeferred, createTimeoutPromise } from '@trezor/utils';
+import { createDeferred, resolveAfter } from '@trezor/utils';
 
 import { hangDetect } from './hang-detect';
 import { processStatePatch, restartApp } from './libs/app-utils';
@@ -300,7 +300,7 @@ const init = async () => {
             // await quitting all registered modules
             Promise.allSettled([quitModules(), quitTorModule(), quitBackgroundModules()]),
             // or timeout after 5s
-            createTimeoutPromise(5000),
+            resolveAfter(5000),
         ]);
 
         // global cleanup

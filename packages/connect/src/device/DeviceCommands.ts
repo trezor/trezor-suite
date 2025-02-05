@@ -3,7 +3,7 @@
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { Session, Transport } from '@trezor/transport';
-import { createTimeoutPromise, versionUtils } from '@trezor/utils';
+import { resolveAfter, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
 import { Device } from './Device';
@@ -561,7 +561,7 @@ export class DeviceCommands {
              */
             try {
                 // UI_EVENT is send right before ButtonAck, make sure that ButtonAck is sent
-                await createTimeoutPromise(1);
+                await resolveAfter(1);
                 await this.device.acquire();
                 await cancelPrompt(this.device, false);
             } catch {

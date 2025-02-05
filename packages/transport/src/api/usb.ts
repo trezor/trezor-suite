@@ -1,4 +1,4 @@
-import { createDeferred, createTimeoutPromise, getSynchronize } from '@trezor/utils';
+import { createDeferred, getSynchronize, resolveAfter } from '@trezor/utils';
 
 import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
 import {
@@ -277,7 +277,7 @@ export class UsbApi extends AbstractApi {
                 return res;
             }
 
-            await createTimeoutPromise(100 * i);
+            await resolveAfter(100 * i);
         }
 
         return this.openInternal(path, first, signal);

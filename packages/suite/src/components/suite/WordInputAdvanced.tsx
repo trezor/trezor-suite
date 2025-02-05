@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Button, KEYBOARD_CODE, PinButton } from '@trezor/components';
 import TrezorConnect, { DeviceModelInternal, UI } from '@trezor/connect';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
-import { createTimeoutPromise } from '@trezor/utils';
+import { resolveAfter } from '@trezor/utils';
 
 import { DeviceMatrixExplanation, Translation, TrezorLink } from 'src/components/suite';
 
@@ -40,7 +40,7 @@ interface WordInputAdvancedProps {
 
 export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
     const onSubmit = useCallback(async (value: string) => {
-        await createTimeoutPromise(600);
+        await resolveAfter(600);
         TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value });
     }, []);
 

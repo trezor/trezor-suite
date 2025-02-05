@@ -4,7 +4,7 @@ import { getFreePort } from '@trezor/node-utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { bridgeApiCall } from '@trezor/transport/src/utils/bridgeApiCall';
-import { createTimeoutPromise } from '@trezor/utils';
+import { resolveAfter } from '@trezor/utils';
 
 import { TrezordNode } from '../src/http';
 
@@ -703,7 +703,7 @@ describe('http', () => {
                 client.listen();
                 // it takes some tome for /listen request to propagate.
                 // todo: solve later
-                await createTimeoutPromise(1000);
+                await resolveAfter(1000);
 
                 return {
                     server,

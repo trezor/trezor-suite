@@ -1,7 +1,7 @@
 import { BrowserContext, Page, test } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { addDashesToSpaces, createTimeoutPromise } from '@trezor/utils';
+import { addDashesToSpaces, resolveAfter } from '@trezor/utils';
 
 import {
     checkHasLogs,
@@ -146,7 +146,7 @@ test.afterEach(async ({ context: _context }, testInfo) => {
         await context.close();
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
-    await createTimeoutPromise(WAIT_AFTER_TEST);
+    await resolveAfter(WAIT_AFTER_TEST);
 });
 
 test(`popup closed by user`, async ({ page, context }) => {

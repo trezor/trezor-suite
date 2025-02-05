@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto';
 
-import { createTimeoutPromise } from '@trezor/utils';
+import { resolveAfter } from '@trezor/utils';
 import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
 import {
@@ -90,7 +90,7 @@ const waitForReconnectedDevice = async (
             }),
         );
 
-        await createTimeoutPromise(2000);
+        await resolveAfter(2000);
         try {
             reconnectedDevice = deviceList.getOnlyDevice();
         } catch {
@@ -460,7 +460,7 @@ export const onCallFirmwareUpdate = async ({
 
         // This delay is crucial see https://github.com/trezor/trezor-firmware/issues/1983
         if (device.features.major_version === 1) {
-            await createTimeoutPromise(2000);
+            await resolveAfter(2000);
         }
         reconnectedDevice = await waitForReconnectedDevice(
             { bootloader: true, method: 'auto' },
