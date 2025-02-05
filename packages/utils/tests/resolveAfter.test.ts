@@ -4,7 +4,7 @@ describe('resolveAfter', () => {
     jest.useFakeTimers();
 
     it('resolves after specified time', async () => {
-        const { promise } = resolveAfter(200, 'foo');
+        const promise = resolveAfter(200, undefined, 'foo');
 
         jest.advanceTimersByTime(200);
 
@@ -12,10 +12,11 @@ describe('resolveAfter', () => {
     });
 
     it('rejects if the promise is rejected', async () => {
-        const { promise, reject } = resolveAfter(200);
+        const abort = new AbortController();
+        const promise = resolveAfter(200, abort.signal);
 
         // Reject the promise after 100ms
-        setTimeout(() => reject(new Error('bar')), 100);
+        setTimeout(() => abort.abort(new Error('bar')), 100);
 
         jest.advanceTimersByTime(100);
 
