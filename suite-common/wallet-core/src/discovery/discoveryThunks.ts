@@ -421,7 +421,7 @@ export const startDiscoveryThunk = createThunk(
             thunks: { initMetadata, fetchAndSaveMetadata },
             actions: { requestAuthConfirm },
         } = extra;
-        const device = selectDevice(getState());
+        let device = selectDevice(getState());
         const metadata = selectMetadata(getState());
         const discovery = selectDeviceDiscovery(getState());
 
@@ -469,9 +469,16 @@ export const startDiscoveryThunk = createThunk(
             // metadata are enabled in settings but metadata master key does not exist for this device
             // try to generate device metadata master key if passphrase is not used
             if (!authConfirm && metadataEnabled) {
+                console.log('discovery: initMetadata');
                 await dispatch(initMetadata(false));
+                console.log('discovery: initMetadata done');
             }
 
+            device = selectDevice(getState());
+            if (device?.status !== 'available') {
+                console.log('device is not available anymore');
+                return;
+            }
             dispatch(
                 startDiscovery({
                     ...discovery,
@@ -566,6 +573,7 @@ export const startDiscoveryThunk = createThunk(
         };
 
         TrezorConnect.on<AccountInfo | null>(UI.BUNDLE_PROGRESS, onBundleProgress);
+        console.log('startDiscoveryThunk: TrezorConnect.getAccountInfo');
         const result = await TrezorConnect.getAccountInfo({
             device,
             bundle,
@@ -598,6 +606,8 @@ export const startDiscoveryThunk = createThunk(
                     }),
                 );
                 // try to generate device metadata master key
+                // todo: why is it here again?
+                console.log('init metadata 2');
                 await dispatch(initMetadata(false));
             }
             if (currentDiscovery.status === DiscoveryStatus.RUNNING) {
@@ -661,6 +671,7 @@ export const startDiscoveryThunk = createThunk(
                 }
             }
 
+            // todo: isn't it better to reload device from state and check its properties such as status and connected instead of error codes?
             if (
                 result.payload.error &&
                 device.connected &&

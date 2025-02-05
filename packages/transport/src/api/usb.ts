@@ -310,33 +310,34 @@ export class UsbApi extends AbstractApi {
             });
         }
 
-        if (first) {
-            try {
-                this.logger?.debug(`usb: device.selectConfiguration ${CONFIGURATION_ID}`);
-                await this.abortableMethod(() => device.selectConfiguration(CONFIGURATION_ID), {
-                    signal,
-                });
-                this.logger?.debug(`usb: device.selectConfiguration done: ${CONFIGURATION_ID}.`);
-            } catch (err) {
-                this.logger?.error(
-                    `usb: device.selectConfiguration error ${err}. device: ${this.formatDeviceForLog(device)}`,
-                );
-            }
-            try {
-                // reset fails on ChromeOS and windows
-                this.logger?.debug('usb: device.reset');
-                await this.abortableMethod(
-                    () => this.synchronizeDeviceReset(() => device?.reset()),
-                    { signal },
-                );
-                this.logger?.debug(`usb: device.reset done.`);
-            } catch (err) {
-                this.logger?.error(
-                    `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
-                );
-                // empty
-            }
+        // commenting out first fixes  https://github.com/trezor/trezor-suite/issues/13550#issuecomment-2637659335
+        // if (first) {
+        try {
+            this.logger?.debug(`usb: device.selectConfiguration ${CONFIGURATION_ID}`);
+            await this.abortableMethod(() => device.selectConfiguration(CONFIGURATION_ID), {
+                signal,
+            });
+            this.logger?.debug(`usb: device.selectConfiguration done: ${CONFIGURATION_ID}.`);
+        } catch (err) {
+            this.logger?.error(
+                `usb: device.selectConfiguration error ${err}. device: ${this.formatDeviceForLog(device)}`,
+            );
         }
+        try {
+            // reset fails on ChromeOS and windows
+            this.logger?.debug('usb: device.reset');
+            await this.abortableMethod(() => this.synchronizeDeviceReset(() => device?.reset()), {
+                signal,
+            });
+            this.logger?.debug(`usb: device.reset done.`);
+        } catch (err) {
+            this.logger?.error(
+                `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
+            );
+            // empty
+        }
+        // }
+
         try {
             const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
             this.logger?.debug(`usb: device.claimInterface: ${interfaceId}`);
