@@ -234,7 +234,7 @@ export class UsbApi extends AbstractApi {
 
         const timeout = setTimeout(() => {
             this.logger?.debug('usb: device.transfer out take suspiciously long. timing out.');
-            device?.reset();
+            device?.reset().catch(() => {});
         }, 1000);
 
         try {
