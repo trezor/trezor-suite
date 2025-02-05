@@ -115,7 +115,6 @@ module.exports = {
         target: ['dmg', 'zip'],
     },
     win: {
-        publisherName: ['SatoshiLabs, s.r.o.', 'Trezor Company s.r.o.'],
         extraResources: [
             {
                 from: 'build/static/bin/bridge/win-${arch}',
@@ -133,8 +132,10 @@ module.exports = {
         icon: 'build/static/images/desktop/512x512.png',
         artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',
         target: ['nsis'],
-        signDlls: true,
-        sign: '../suite-desktop-core/scripts/sign-windows.ts',
+        signtoolOptions: {
+            publisherName: ['SatoshiLabs, s.r.o.', 'Trezor Company s.r.o.'],
+            sign: '../suite-desktop-core/scripts/sign-windows.ts',
+        },
     },
     linux: {
         extraResources: [
