@@ -5,7 +5,7 @@ import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isArrayMember } from '@trezor/utils';
 
-import { hashCheckErrorScenarios } from 'src/constants/suite/firmware';
+import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from 'src/constants/suite/firmware';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectFirmwareRevisionCheckError } from 'src/reducers/suite/suiteReducer';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
@@ -60,7 +60,7 @@ const useReportRevisionCheck = () => {
     const errorType = useSelector(selectFirmwareRevisionCheckError);
 
     useEffect(() => {
-        if (errorType !== null) {
+        if (errorType !== null && revisionCheckErrorScenarios[errorType].shouldReport) {
             reportCheckFail('Firmware revision', { ...commonData, errorType });
         }
     }, [commonData, errorType]);

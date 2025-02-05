@@ -11,7 +11,7 @@ type BehaviorBaseType = { shouldReport: boolean; debugOnly?: boolean };
 // will be ignored completely
 type SkippedBehavior = BehaviorBaseType & { type: 'skipped' };
 // display a warning banner
-type SoftWarningBehavior = BehaviorBaseType & { type: 'softWarning'; shouldReport: true };
+type SoftWarningBehavior = BehaviorBaseType & { type: 'softWarning' };
 // display "Device Compromised" modal, after closing it display a warning banner, block receiving address
 type HardModalBehavior = BehaviorBaseType & { type: 'hardModal'; shouldReport: true };
 
@@ -24,7 +24,7 @@ type HashCheckErrorScenarios = Record<FirmwareHashCheckError, HashErrorBehavior>
 export const revisionCheckErrorScenarios = {
     'revision-mismatch': { type: 'hardModal', shouldReport: true },
     'firmware-version-unknown': { type: 'hardModal', shouldReport: true },
-    'cannot-perform-check-offline': { type: 'softWarning', shouldReport: true },
+    'cannot-perform-check-offline': { type: 'softWarning', shouldReport: false },
     'other-error': { type: 'softWarning', shouldReport: true },
 } satisfies RevisionCheckErrorScenarios;
 
