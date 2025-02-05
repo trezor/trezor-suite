@@ -1,18 +1,16 @@
 import styled from 'styled-components';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { acquireDevice, selectDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Column, variables } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { AddWalletButton } from './AddWalletButton';
 import { WalletInstance } from './WalletInstance';
 import { CardWithDevice } from '../CardWithDevice';
-import { DeviceWarning } from './DeviceWarning';
 
 const WalletsWrapper = styled.div<{ $enabled: boolean }>`
     opacity: ${({ $enabled }) => ($enabled ? 1 : 0.5)};
@@ -38,34 +36,11 @@ export const DeviceItem = ({
     isFullHeaderVisible,
 }: DeviceItemProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
-    const dispatch = useDispatch();
-    const deviceStatus = deviceUtils.getStatus(device);
-    const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
-    const instancesWithState = instances.filter(i => i.state);
 
-    const onSolveIssueClick = () => {
-        const needsAcquire =
-            device.type === 'unacquired' ||
-            deviceStatus === 'used-in-other-window' ||
-            deviceStatus === 'was-used-in-other-window';
-        if (needsAcquire) {
-            dispatch(acquireDevice(device));
-        } else {
-            dispatch(selectDeviceThunk({ device }));
-            dispatch(redirectAfterWalletSelectedThunk());
-            onCancel(false);
-        }
-    };
+    const instancesWithState = instances.filter(i => i.state);
 
     return (
         <CardWithDevice
-            deviceWarning={
-                <DeviceWarning
-                    needsAttention={needsAttention}
-                    device={device}
-                    onSolveIssueClick={onSolveIssueClick}
-                />
-            }
             isFindTrezorVisible
             onCancel={onCancel}
             device={device}
