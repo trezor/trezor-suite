@@ -484,9 +484,11 @@ export const onCallFirmwareUpdate = async ({
         { payload: !intermediary && shouldStripFwHeaders(device.features) ? stripped : binary },
     );
 
-    await reconnectedDevice.release();
+    log.info('onCallFirmwareUpdate', 'firmware uploaded');
 
     if (intermediary) {
+        log.info('onCallFirmwareUpdate', '...but it was the intermediary firmware, so one more go');
+
         reconnectedDevice = await waitForReconnectedDevice(
             { bootloader: true, method: 'manual', intermediary: true },
             { deviceList, device: reconnectedDevice, log, postMessage, abortSignal },
@@ -503,8 +505,6 @@ export const onCallFirmwareUpdate = async ({
             reconnectedDevice,
             { payload: stripped },
         );
-
-        await reconnectedDevice.release();
     }
 
     reconnectedDevice = await waitForReconnectedDevice(
