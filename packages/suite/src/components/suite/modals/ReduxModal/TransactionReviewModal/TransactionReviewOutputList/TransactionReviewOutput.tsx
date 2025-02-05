@@ -218,6 +218,7 @@ export type TransactionReviewOutputProps = {
     account: Account;
     isRbf: boolean;
     stakeType?: StakeType;
+    isTrading?: boolean;
 } & ReviewOutput;
 
 export const TransactionReviewOutput = ({
@@ -230,6 +231,7 @@ export const TransactionReviewOutput = ({
     account,
     stakeType,
     isRbf,
+    isTrading,
 }: TransactionReviewOutputProps) => {
     const { networkType, symbol } = account;
     const accounts = useSelector(state => state.wallet.accounts);
@@ -255,7 +257,7 @@ export const TransactionReviewOutput = ({
             return {
                 ...line,
                 type:
-                    relevantAccounts.length > 0
+                    isTrading || relevantAccounts.length > 0
                         ? ('safe-address' as OutputElementLine['type'])
                         : line.type,
             };

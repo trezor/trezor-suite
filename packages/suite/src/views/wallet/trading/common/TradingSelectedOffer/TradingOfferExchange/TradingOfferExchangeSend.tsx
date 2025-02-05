@@ -4,7 +4,7 @@ import type { TradingExchangeType } from '@suite-common/trading';
 import { Button, Column, Divider, InfoItem, Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { AccountLabeling, Translation } from 'src/components/suite';
+import { AccountLabeling, Address, Translation } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
@@ -43,7 +43,7 @@ export const TradingOfferExchangeSend = () => {
                     <InfoItem
                         label={<Translation id="TR_EXCHANGE_SEND_TO" values={{ providerName }} />}
                     >
-                        {sendAddress}
+                        <Address value={sendAddress} />
                     </InfoItem>
                     <Column margin={{ top: 'auto' }}>
                         <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />

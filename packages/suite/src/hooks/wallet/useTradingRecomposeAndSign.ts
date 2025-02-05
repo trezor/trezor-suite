@@ -77,6 +77,7 @@ export const useTradingRecomposeAndSign = () => {
                 ethereumDataHex,
                 ethereumAdjustGasLimit,
                 selectedUtxos: [],
+                isTrading: true,
             };
 
             // prepare form state for composeAction

@@ -19,7 +19,7 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { saveSelectedQuote } from 'src/actions/wallet/tradingExchangeActions';
-import { AccountLabeling, Translation } from 'src/components/suite';
+import { AccountLabeling, Address, Translation } from 'src/components/suite';
 import { IOAddress } from 'src/components/suite/copy/IOAddress';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -141,7 +141,7 @@ export const TradingOfferExchangeSendApproval = () => {
                     />
                 }
             >
-                {dexTx.to}
+                <Address value={dexTx.to} />
             </InfoItem>
             {selectedQuote.approvalSendTxHash && (
                 <InfoItem label={<Translation id="TR_EXCHANGE_APPROVAL_TXID" />}>
@@ -283,7 +283,7 @@ export const TradingOfferExchangeSendApproval = () => {
                 </InfoItem>
             )}
 
-            <Column alignItems="center">
+            <Column>
                 <Divider margin={{ top: spacings.xxs, bottom: spacings.lg }} />
                 {(selectedQuote.status === 'APPROVAL_REQ' ||
                     (selectedQuote.status === 'CONFIRM' && approvalType === 'ZERO')) && (
