@@ -28,6 +28,10 @@ export const en = {
         offline: "You're offline.",
         tokens: '+ Tokens',
     },
+    icons: {
+        networkIconHint: 'Network Icon',
+        cryptoIconHint: 'Crypto Icon',
+    },
     messageSystem: {
         killswitch: {
             title: 'Update required',

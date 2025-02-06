@@ -8,9 +8,11 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "generate-icons": "yarn workspace @suite-common/icons generate-icons"
+        "generate-icons": "yarn workspace @suite-common/icons generate-icons",
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "1.9.5",
         "@shopify/react-native-skia": "^1.11.6",
         "@suite-common/icons": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
