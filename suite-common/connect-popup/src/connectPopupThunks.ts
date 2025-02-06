@@ -4,7 +4,6 @@ import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { CallMethodParams, CallMethodResponse, ERRORS } from '@trezor/connect';
 import { serializeError } from '@trezor/connect/src/constants/errors';
-import { desktopApi } from '@trezor/suite-desktop-api';
 import { createDeferred } from '@trezor/utils';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
@@ -102,17 +101,3 @@ export const connectPopupCallThunk = <M extends keyof typeof TrezorConnect>(
     ConnectPopupCallThunkParams<M>,
     CustomThunkAPI
 > => connectPopupCallThunkInner(params) as any;
-
-export const connectPopupInitThunk = createThunk(
-    `${CONNECT_POPUP_MODULE}/initPopupThunk`,
-    async (_, { dispatch }) => {
-        if (desktopApi.available && (await desktopApi.connectPopupEnabled())) {
-            desktopApi.on('connect-popup/call', async params => {
-                // @ts-expect-error: params in desktopApi are not fully typed
-                const response = await dispatch(connectPopupCallThunk(params)).unwrap();
-                desktopApi.connectPopupResponse(response);
-            });
-            desktopApi.connectPopupReady();
-        }
-    },
-);

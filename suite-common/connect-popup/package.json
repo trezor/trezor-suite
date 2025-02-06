@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/suite-desktop-connect-popup",
+    "name": "@suite-common/connect-popup",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -16,12 +16,19 @@
         "@suite-common/wallet-core": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:^",
-        "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "redux-mock-store": "^1.5.4",
         "redux-thunk": "^3.1.0"
+    },
+    "peerDependencies": {
+        "@trezor/suite-desktop-api": "workspace:*"
+    },
+    "peerDependenciesMeta": {
+        "@trezor/suite-desktop-api": {
+            "optional": true
+        }
     }
 }

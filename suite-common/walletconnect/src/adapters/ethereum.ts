@@ -1,12 +1,12 @@
 import { WalletKitTypes } from '@reown/walletkit';
 
+import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { getAccountIdentity, getEthereumEstimateFeeParams } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import * as trezorConnectPopupActions from '@trezor/suite-desktop-connect-popup';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { WalletConnectAdapter } from '../walletConnectTypes';

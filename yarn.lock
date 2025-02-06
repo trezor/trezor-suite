@@ -9386,6 +9386,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/connect-popup@workspace:*, @suite-common/connect-popup@workspace:suite-common/connect-popup":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/connect-popup@workspace:suite-common/connect-popup"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.6.0"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/env-utils": "workspace:^"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    redux-mock-store: "npm:^1.5.4"
+    redux-thunk: "npm:^3.1.0"
+  peerDependencies:
+    "@trezor/suite-desktop-api": "workspace:*"
+  peerDependenciesMeta:
+    "@trezor/suite-desktop-api":
+      optional: true
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/device-authenticity@workspace:*, @suite-common/device-authenticity@workspace:suite-common/device-authenticity":
   version: 0.0.0-use.local
   resolution: "@suite-common/device-authenticity@workspace:suite-common/device-authenticity"
@@ -9808,6 +9831,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.6.0"
     "@reown/walletkit": "npm:^1.1.1"
+    "@suite-common/connect-popup": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -12387,25 +12411,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-desktop-connect-popup@workspace:*, @trezor/suite-desktop-connect-popup@workspace:packages/suite-desktop-connect-popup":
-  version: 0.0.0-use.local
-  resolution: "@trezor/suite-desktop-connect-popup@workspace:packages/suite-desktop-connect-popup"
-  dependencies:
-    "@reduxjs/toolkit": "npm:2.6.0"
-    "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
-    "@suite-common/test-utils": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    "@trezor/env-utils": "workspace:^"
-    "@trezor/suite-desktop-api": "workspace:*"
-    "@trezor/urls": "workspace:*"
-    "@trezor/utils": "workspace:*"
-    redux-mock-store: "npm:^1.5.4"
-    redux-thunk: "npm:^3.1.0"
-  languageName: unknown
-  linkType: soft
-
 "@trezor/suite-desktop-core@workspace:packages/suite-desktop-core":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-core@workspace:packages/suite-desktop-core"
@@ -12590,6 +12595,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/assets": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
+    "@suite-common/connect-popup": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/firmware": "workspace:*"
@@ -12640,7 +12646,6 @@ __metadata:
     "@trezor/suite-analytics": "workspace:*"
     "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
-    "@trezor/suite-desktop-connect-popup": "workspace:*"
     "@trezor/suite-storage": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"

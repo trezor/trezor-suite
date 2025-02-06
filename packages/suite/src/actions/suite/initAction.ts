@@ -1,4 +1,5 @@
 import * as trezorConnectActions from '@suite-common/connect-init';
+import { connectPopupDesktopInitThunk } from '@suite-common/connect-popup/src/connectPopupDesktopThunks';
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
@@ -11,7 +12,6 @@ import {
 import * as walletConnectActions from '@suite-common/walletconnect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import * as trezorConnectPopupActions from '@trezor/suite-desktop-connect-popup';
 
 import * as languageActions from 'src/actions/settings/languageActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
@@ -118,7 +118,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
 
     // 14. init connect popup handler
     if (isDesktop()) {
-        dispatch(trezorConnectPopupActions.connectPopupInitThunk());
+        dispatch(connectPopupDesktopInitThunk());
     }
     if (selectIsDebugModeActive(getState())) {
         dispatch(walletConnectActions.walletConnectInitThunk());

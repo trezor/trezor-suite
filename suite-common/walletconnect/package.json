@@ -12,6 +12,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.6.0",
         "@reown/walletkit": "^1.1.1",
+        "@suite-common/connect-popup": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
