@@ -117,6 +117,7 @@ export const transformTokenInfo = (
     const info = tokens.map(token => ({
         type: 'BLOCKFROST',
         balance: token.quantity,
+        standard: 'BLOCKFROST',
         ...transformToken(token),
     }));
 

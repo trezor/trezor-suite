@@ -974,6 +974,7 @@ export const fixtures = {
             expectedOutput: [
                 {
                     type: 'SPL',
+                    standard: 'SPL',
                     contract: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
                     balance: '2000000',
                     decimals: 6,
@@ -998,6 +999,7 @@ export const fixtures = {
             expectedOutput: [
                 {
                     type: 'SPL',
+                    standard: 'SPL',
                     contract: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
                     balance: '3000000',
                     decimals: 6,

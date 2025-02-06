@@ -21,6 +21,7 @@ const tOut = {
 const tIn = {
     name: 'Token name',
     type: 'ERC20',
+    standard: 'ERC20',
     symbol: 'TN',
     contract: '0x0',
     value: '0',

@@ -873,6 +873,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                         fingerprint: token.name,
                         policyId,
                         type: token.type,
+                        standard: token.standard,
                     };
                 });
             }

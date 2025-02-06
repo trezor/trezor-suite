@@ -27,7 +27,7 @@ import {
 import { arrayPartition } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { formatAmount, formatNetworkAmount, isTokenMatchesSearch } from './accountUtils';
+import { formatAmount, formatNetworkAmount, isTokenTransferMatchesSearch } from './accountUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
 import { toFiatCurrency } from '../src/fiatConverterUtils';
@@ -491,7 +491,7 @@ export const isNftMultitokenTransfer = (transfer: TokenTransfer) =>
 
 // TODO: TokenInfo should use TokenStandard type
 export const isNftToken = (token: TokenInfo) =>
-    ['ERC1155', 'ERC721', 'BEP1155', 'BEP721'].includes(token.type || '');
+    ['ERC1155', 'ERC721', 'BEP1155', 'BEP721'].includes(token.standard || '');
 
 export const getNftTokenId = (transfer: TokenTransfer) =>
     // use 0 index, haven't found an example where multiTokenValues.length > 1
@@ -930,7 +930,7 @@ export const simpleSearchTransactions = (
     const foundTxsForToken = transactions.flatMap(transaction => {
         const hasMatchingToken = transaction.tokens.some(
             token =>
-                isTokenMatchesSearch(token, search.toLowerCase()) ||
+                isTokenTransferMatchesSearch(token, search.toLowerCase()) ||
                 token.to?.toLowerCase().includes(search.toLowerCase()) ||
                 token.from?.toLowerCase().includes(search.toLowerCase()),
         );

@@ -67,6 +67,7 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
 
                     return {
                         type: 'cardano',
+                        standard: 'BLOCKFROST',
                         contract: output.address,
                         balance: token.amount,
                         symbol: token.assetNameBytes

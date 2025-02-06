@@ -160,6 +160,7 @@ export const transformTokenInfo = (
                     decimals: info.tokenAmount.decimals,
                     ...getTokenNameAndSymbol(info.mint, tokenDetailByMint),
                     address: tokenAccount.pubkey,
+                    standard: tokenProgramsInfo[program].tokenStandard,
                 };
             }),
             A.reduce(
@@ -176,9 +177,10 @@ export const transformTokenInfo = (
                             balance: token.balance || '0',
                         });
                     } else {
-                        const { type, contract, balance, decimals, name, symbol } = token;
+                        const { type, standard, contract, balance, decimals, name, symbol } = token;
                         acc[token.contract] = {
                             type,
+                            standard,
                             contract,
                             balance,
                             decimals,

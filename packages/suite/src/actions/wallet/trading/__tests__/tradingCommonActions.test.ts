@@ -110,6 +110,7 @@ describe('Trading Common Actions', () => {
                 estimatedFeeLimit: '123',
                 token: {
                     type: 'abc',
+                    standard: 'ERC20',
                     contract: 'cde',
                     decimals: 0,
                 },

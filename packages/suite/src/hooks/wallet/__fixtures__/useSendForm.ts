@@ -133,7 +133,14 @@ export const ETH_ACCOUNT = {
         availableBalance: '10000000000000000000', // 10 ETH
         misc: { nonce: '0' },
         tokens: [
-            { type: 'ERC20', contract: '0xABCD', symbol: '0xABCD', decimals: 3, balance: '1' },
+            {
+                type: 'ERC20',
+                standard: 'ERC20',
+                contract: '0xABCD',
+                symbol: '0xABCD',
+                decimals: 3,
+                balance: '1',
+            },
         ],
     }),
     network: { networkType: 'ethereum', symbol: 'eth', decimals: 18, chainId: 1 },

@@ -315,6 +315,7 @@ export const transformTokenInfo = (
             {
                 ...token,
                 decimals: token.decimals || 0,
+                standard: token.standard,
             },
         ]);
     }, [] as TokenInfo[]);

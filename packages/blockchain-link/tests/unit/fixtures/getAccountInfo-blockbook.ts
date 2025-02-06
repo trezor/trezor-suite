@@ -456,6 +456,7 @@ const fixtures: {
                         tokens: [
                             {
                                 type: 'ERC20',
+                                standard: 'ERC20',
                                 name: 'Token name',
                                 symbol: 'TKNNME',
                                 contract: '0x0',
@@ -476,6 +477,7 @@ const fixtures: {
             tokens: [
                 {
                     type: 'ERC20',
+                    standard: 'ERC20',
                     name: 'Token name',
                     symbol: 'TKNNME',
                     contract: '0x0',
@@ -600,6 +602,7 @@ const fixtures: {
                         address: '0x3c205C8B3e02421Da82064646788c82f7bd753B9',
                         contractInfo: {
                             type: 'ERC20',
+                            standard: 'ERC20',
                             contract: '0x3c205C8B3e02421Da82064646788c82f7bd753B9',
                             name: 'PureFi Token',
                             symbol: 'UFI',
@@ -619,6 +622,7 @@ const fixtures: {
                 addressAliases: undefined,
                 contractInfo: {
                     type: 'ERC20',
+                    standard: 'ERC20',
                     contract: '0x3c205C8B3e02421Da82064646788c82f7bd753B9',
                     name: 'PureFi Token',
                     symbol: 'UFI',

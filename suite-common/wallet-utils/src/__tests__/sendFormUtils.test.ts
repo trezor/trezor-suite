@@ -239,8 +239,22 @@ describe('sendForm utils', () => {
 
         const EthAccount = getWalletAccount({
             tokens: [
-                { type: 'ERC20', contract: 'A', symbol: 'A', decimals: 2, name: 'A' },
-                { type: 'ERC20', contract: 'B', symbol: 'B', decimals: 6, name: 'B' },
+                {
+                    type: 'ERC20',
+                    standard: 'ERC20',
+                    contract: 'A',
+                    symbol: 'A',
+                    decimals: 2,
+                    name: 'A',
+                },
+                {
+                    type: 'ERC20',
+                    standard: 'ERC20',
+                    contract: 'B',
+                    symbol: 'B',
+                    decimals: 6,
+                    name: 'B',
+                },
             ],
         });
         const EthNetwork = networks.eth;
