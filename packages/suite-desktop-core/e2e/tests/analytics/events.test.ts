@@ -1,10 +1,9 @@
 import { EventType } from '@trezor/suite-analytics';
 import { ExtractByEventType } from '@trezor/suite-web/e2e/support/types';
 
-import { isDesktopProject } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Analytics Events', { tag: ['@group=suite'] }, () => {
+test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
     test.use({
         startEmulator: false,
     });
@@ -30,9 +29,7 @@ test.describe('Analytics Events', { tag: ['@group=suite'] }, () => {
             passphrase_protection: true,
         });
 
-        if (!isDesktopProject(test.info())) {
-            await trezorUserEnvLink.startBridge();
-        }
+        await trezorUserEnvLink.startBridge();
 
         // reload to activate bridge and start testing app with enabled analytics
         await page.reload();
@@ -94,9 +91,7 @@ test.describe('Analytics Events', { tag: ['@group=suite'] }, () => {
             passphrase_protection: true,
         });
 
-        if (!isDesktopProject(test.info())) {
-            await trezorUserEnvLink.startBridge();
-        }
+        await trezorUserEnvLink.startBridge();
 
         analytics.interceptAnalytics();
 
