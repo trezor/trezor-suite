@@ -46,6 +46,7 @@ type Delay = {
 };
 
 interface TooltipOptions {
+    isActive?: boolean; // Determines if the tooltip is active - reacts to the hovering
     isInitiallyOpen?: boolean;
     placement?: Placement;
     isOpen?: boolean;
@@ -62,6 +63,7 @@ type UseTooltipReturn = ReturnType<typeof useInteractions> & {
 } & UseFloatingReturn;
 
 export const useTooltip = ({
+    isActive = true,
     isInitiallyOpen = false,
     placement = 'top',
     isOpen: isControlledOpen,
@@ -73,7 +75,8 @@ export const useTooltip = ({
     const arrowRef = useRef<SVGSVGElement>(null);
     const [isUncontrolledTooltipOpen, setIsUncontrolledTooltipOpen] = useState(isInitiallyOpen);
 
-    const open = isControlledOpen ?? isUncontrolledTooltipOpen;
+    // NOTE: if the tooltip is overall inactive (isActive === false), always hide it / never display it
+    const open = isActive === false ? false : isControlledOpen ?? isUncontrolledTooltipOpen;
     const setOpen = setControlledOpen ?? setIsUncontrolledTooltipOpen;
 
     const data = useFloating({

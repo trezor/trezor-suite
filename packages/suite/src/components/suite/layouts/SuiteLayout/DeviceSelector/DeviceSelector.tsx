@@ -77,7 +77,7 @@ export const DeviceSelector = () => {
     const dispatch = useDispatch();
     const { getDiscoveryStatus } = useDiscovery();
     const discoveryStatus = getDiscoveryStatus();
-    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
+    const discoveryInProgress = Boolean(discoveryStatus && discoveryStatus.status === 'loading');
 
     const [localCount, setLocalCount] = useState<number | null>(null);
     const [isAnimationTriggered, setIsAnimationTriggered] = useState(false);
@@ -134,13 +134,10 @@ export const DeviceSelector = () => {
         >
             <ViewOnlyTooltip>
                 <Tooltip
+                    isActive={discoveryInProgress}
                     isFullWidth
                     placement="bottom"
-                    content={
-                        discoveryInProgress ? (
-                            <Translation id="TR_UNAVAILABLE_WHILE_LOADING" />
-                        ) : undefined
-                    }
+                    content={<Translation id="TR_UNAVAILABLE_WHILE_LOADING" />}
                 >
                     <InnerContainer
                         onClick={handleSwitchDeviceClick}

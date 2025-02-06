@@ -46,10 +46,11 @@ type UnmanagedModeProps = {
 };
 
 type TooltipUiProps = {
+    isActive?: boolean; // Determines if the tooltip is activated - if it listens and reacts to the interaction
     children: ReactNode;
     className?: string;
-    disabled?: boolean;
     dashed?: boolean;
+    disabled?: boolean;
     offset?: number;
     shift?: ShiftOptions;
     cursor?: Cursor;
@@ -67,7 +68,9 @@ export type TooltipProps = (ManagedModeProps | UnmanagedModeProps) &
     TooltipBoxProps;
 
 export const Tooltip = ({
+    isActive = true, // NOTE: determines, if the tooltip is actually working - is displayed, reacts to the events
     placement = 'top',
+    disabled = false, // NOTE: determines the appearance of the cursor over the tooltip trigger
     children,
     isLarge = false,
     dashed = false,
@@ -80,7 +83,6 @@ export const Tooltip = ({
     addon,
     title,
     headerIcon,
-    disabled,
     className,
     isFullWidth = false,
     isInline = false,
@@ -101,6 +103,7 @@ export const Tooltip = ({
     return (
         <Wrapper $isFullWidth={isFullWidth} className={className} as={elType}>
             <TooltipFloatingUi
+                isActive={isActive}
                 placement={placement}
                 isOpen={isOpen}
                 offset={offset}
@@ -111,7 +114,7 @@ export const Tooltip = ({
                     <Content
                         $dashed={dashed}
                         $isInline={isInline}
-                        $cursor={disabled ? 'default' : cursor}
+                        $cursor={disabled ? 'not-allowed' : cursor}
                         as={elType}
                     >
                         {children}
