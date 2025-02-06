@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@react-navigation/native": "6.1.18",
+        "@reduxjs/toolkit": "1.9.5",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/atoms": "workspace:*",
@@ -20,7 +21,6 @@
         "@suite-native/feature-flags": "workspace:^",
         "@suite-native/intl": "workspace:^",
         "@suite-native/navigation": "workspace:*",
-        "@trezor/connect": "workspace:*",
         "@trezor/connect-mobile": "workspace:*",
         "expo-linking": "^7.0.5",
         "react": "18.2.0",

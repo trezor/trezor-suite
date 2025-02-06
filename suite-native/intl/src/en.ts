@@ -318,6 +318,7 @@ export const en = {
             invalidCallback: 'Invalid callback URL',
             invalidParams: 'Invalid parameters from calling app',
             versionUnsupported: 'Unsupported version. Please update your Trezor Suite app.',
+            methodNotAllowed: 'Method not allowed for security reasons.',
         },
         bottomSheets: {
             confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',

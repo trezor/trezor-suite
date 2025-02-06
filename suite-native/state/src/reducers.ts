@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
+import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { logsSlice } from '@suite-common/logger';
 import {
@@ -63,6 +64,7 @@ const sendFormReducer = sendFormSlice.prepareReducer(extraDependencies);
 const tradingReducer = tradingSlice.prepareReducer(extraDependencies);
 const stakeReducer = prepareStakeReducer(extraDependencies);
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -92,6 +94,7 @@ export const prepareRootReducers = async () => {
         fees: feesReducer,
         stake: stakeReducer,
         tradingNew: tradingPersistedReducer,
+        connectPopup: connectPopupReducer,
     });
 
     const walletPersistedReducer = await preparePersistReducer({

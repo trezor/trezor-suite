@@ -9,9 +9,9 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 export const ConnectPopupModal = () => {
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
-    if (!popupCall) return null;
+    if (!popupCall || popupCall?.state !== 'request') return null;
 
-    const { method, processName, origin } = popupCall;
+    const { methodTitle, confirmLabel, processName, origin } = popupCall;
     const onConfirm = () => dispatch(connectPopupActions.approveCall());
     const onCancel = () =>
         dispatch(connectPopupActions.rejectCall(ERRORS.TypedError('Method_Cancel')));
@@ -27,13 +27,13 @@ export const ConnectPopupModal = () => {
                         <Translation id="TR_CANCEL" />
                     </NewModal.Button>
                     <NewModal.Button variant="primary" onClick={onConfirm}>
-                        <Translation id="TR_CONFIRM" />
+                        {confirmLabel || <Translation id="TR_CONFIRM" />}
                     </NewModal.Button>
                 </>
             }
             heading={<Translation id="TR_TREZOR_CONNECT" />}
         >
-            <H2>{method}</H2>
+            <H2>{methodTitle}</H2>
 
             {processName && (
                 <Paragraph margin={{ top: spacings.xs }}>

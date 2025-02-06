@@ -1,5 +1,4 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
-import { ParsedURL } from 'expo-linking';
 import { RequireAllOrNone } from 'type-fest';
 
 import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
@@ -224,9 +223,7 @@ export type RootStackParamList = {
     [RootStackRoutes.ReceiveStack]: NavigatorScreenParams<ReceiveStackParamList>;
     [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
     [RootStackRoutes.CoinEnablingInit]: undefined;
-    [RootStackRoutes.ConnectPopup]: {
-        parsedUrl: ParsedURL;
-    };
+    [RootStackRoutes.ConnectPopup]: undefined;
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
     [RootStackRoutes.DeviceCompromisedModalScreen]: undefined;
 };

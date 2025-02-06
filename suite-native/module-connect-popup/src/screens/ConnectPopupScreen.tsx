@@ -1,81 +1,47 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 
+import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import {
-    deviceActions,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceDiscoveryActive,
     selectIsPortfolioTrackerDevice,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Box, Button, ErrorMessage, IconButton, Loader, Text, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { DeviceManager } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    ScreenHeader,
-    StackProps,
-} from '@suite-native/navigation';
-import TrezorConnect from '@trezor/connect';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { ButtonRequestsOverlay } from '../components/ButtonRequestsOverlay';
-import { ConnectPopupDebugOptions } from '../components/ConnectPopupDebugOptions';
-import { useConnectMethod } from '../hooks/useConnectMethod';
-import { useConnectParseParams } from '../hooks/useConnectParseParams';
-import { callbackURLOrigin } from '../utils/callbackURLOrigin';
 
-export const ConnectPopupScreen = ({
-    route,
-}: StackProps<RootStackParamList, RootStackRoutes.ConnectPopup>) => {
+export const ConnectPopupScreen = () => {
     const navigation = useNavigation();
 
     const dispatch = useDispatch();
-    const device = useSelector(selectSelectedDevice);
     const deviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const validDevice = deviceConnectedAndAuthorized && !isPortfolioTrackerDevice;
     const discoveryActive = useSelector(selectIsDeviceDiscoveryActive);
-
+    const popupCall = useSelector(selectConnectPopupCall);
     const [showDebug, setShowDebug] = useState<boolean>(false);
-    const [callResult, setCallResult] = useState<any>();
-    const [loading, setLoading] = useState(false);
 
-    const { popupOptions, parseParamsError } = useConnectParseParams(route.params.parsedUrl);
-    const { method, methodError } = useConnectMethod(popupOptions);
-
-    const callDevice = useCallback(async () => {
-        if (!popupOptions || !device) return;
-
-        setLoading(true);
-        // @ts-expect-error method is dynamic
-        const response = await TrezorConnect[popupOptions.method]({
-            ...popupOptions.params,
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: device.state,
-            },
-            useEmptyPassphrase: device.useEmptyPassphrase,
-        });
-        setCallResult(response);
-        dispatch(deviceActions.removeButtonRequests({ device }));
-        const callbackUrl = new URL(popupOptions.callback);
-        callbackUrl.searchParams.set('response', JSON.stringify(response));
-        Linking.openURL(callbackUrl.toString());
-        setLoading(false);
-        if (navigation.canGoBack()) {
-            navigation.goBack();
+    useEffect(() => {
+        if (popupCall?.state === 'deeplink-callback') {
+            Linking.openURL(popupCall.callbackUrl);
+            if (navigation.canGoBack()) {
+                navigation.goBack();
+            }
         }
-    }, [popupOptions, dispatch, device, navigation]);
+    }, [popupCall, navigation]);
 
     const mainView = useMemo(() => {
-        if (loading) {
+        const onConfirm = () => dispatch(connectPopupActions.approveCall());
+
+        if (!popupCall) {
             return (
                 <Loader
                     size="large"
@@ -96,9 +62,8 @@ export const ConnectPopupScreen = ({
         }
 
         if (validDevice) {
-            if (popupOptions && method) {
-                const callbackOrigin = callbackURLOrigin(popupOptions?.callback);
-                if (!callbackOrigin) {
+            if (popupCall.state === 'request') {
+                if (!popupCall.origin) {
                     return (
                         <ErrorMessage
                             errorMessage={
@@ -110,13 +75,11 @@ export const ConnectPopupScreen = ({
 
                 return (
                     <VStack testID="@popup/deeplink-info" spacing="sp8" alignItems="center">
-                        <Text variant="titleSmall">
-                            {method.confirmation?.label ?? method.info}
-                        </Text>
+                        <Text variant="titleSmall">{popupCall.methodTitle}</Text>
                         <Text>
                             <Translation id="moduleConnectPopup.callback" />
                             {': '}
-                            <Text color="textAlertBlue">{callbackOrigin}</Text>
+                            <Text color="textAlertBlue">{popupCall.origin}</Text>
                         </Text>
 
                         <Text
@@ -128,8 +91,8 @@ export const ConnectPopupScreen = ({
                         >
                             <Translation id="moduleConnectPopup.areYouSureMessage" />
                         </Text>
-                        <Button testID="@popup/call-device" onPress={callDevice}>
-                            {method.confirmation?.customConfirmButton?.label ?? (
+                        <Button testID="@popup/call-device" onPress={onConfirm}>
+                            {popupCall.confirmLabel || (
                                 <Translation id="moduleConnectPopup.confirm" />
                             )}
                         </Button>
@@ -137,24 +100,21 @@ export const ConnectPopupScreen = ({
                 );
             }
 
-            if (parseParamsError) {
-                return (
-                    <ErrorMessage
-                        errorMessage={
-                            <Translation
-                                id={
-                                    parseParamsError.code === 'Deeplink_VersionMismatch'
-                                        ? 'moduleConnectPopup.errors.versionUnsupported'
-                                        : 'moduleConnectPopup.errors.invalidParams'
-                                }
-                            />
-                        }
-                    />
-                );
-            }
+            if (popupCall.state === 'call-error') {
+                const getTranslationId = () => {
+                    switch (popupCall.callError.code) {
+                        case 'Deeplink_VersionMismatch':
+                            return 'moduleConnectPopup.errors.versionUnsupported';
+                        case 'Method_NotAllowed':
+                            return 'moduleConnectPopup.errors.methodNotAllowed';
+                        case 'Device_NotFound':
+                            return 'moduleConnectPopup.errors.deviceNotConnected';
+                        default:
+                            return 'moduleConnectPopup.errors.invalidParams';
+                    }
+                };
 
-            if (methodError) {
-                return <ErrorMessage errorMessage={methodError} />;
+                return <ErrorMessage errorMessage={<Translation id={getTranslationId()} />} />;
             }
 
             return (
@@ -171,16 +131,7 @@ export const ConnectPopupScreen = ({
                 />
             );
         }
-    }, [
-        validDevice,
-        method,
-        popupOptions,
-        parseParamsError,
-        methodError,
-        loading,
-        discoveryActive,
-        callDevice,
-    ]);
+    }, [validDevice, popupCall, discoveryActive, dispatch]);
 
     return (
         <Screen
@@ -214,12 +165,6 @@ export const ConnectPopupScreen = ({
             </Box>
 
             <ButtonRequestsOverlay />
-
-            <ConnectPopupDebugOptions showDebug={showDebug} setShowDebug={setShowDebug}>
-                <Text>Device: {JSON.stringify(device, null, 2)}</Text>
-                <Text>Params: {JSON.stringify(route.params.parsedUrl.queryParams)}</Text>
-                <Text>Call result: {JSON.stringify(callResult)}</Text>
-            </ConnectPopupDebugOptions>
         </Screen>
     );
 };

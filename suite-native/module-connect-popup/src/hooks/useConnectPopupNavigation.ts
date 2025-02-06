@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 
+import { connectPopupDeeplinkThunk, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
@@ -33,17 +35,21 @@ const isConnectPopupUrl = (url: string): boolean => {
 export const useConnectPopupNavigation = () => {
     const featureFlagEnabled = useFeatureFlag(FeatureFlag.IsConnectPopupEnabled);
     const navigation = useNavigation<NavigationProp>();
+    const dispatch = useDispatch();
+    const connectPopupCall = useSelector(selectConnectPopupCall);
 
+    // Handle deeplink
     const url = Linking.useURL();
 
     useEffect(() => {
         if (!featureFlagEnabled) return;
         if (!url || !isConnectPopupUrl(url)) return;
-        try {
-            const parsedUrl = Linking.parse(url);
-            navigation.navigate(RootStackRoutes.ConnectPopup, { parsedUrl });
-        } catch (error) {
-            console.warn('Invalid deeplink URL', { error, url });
+        dispatch(connectPopupDeeplinkThunk({ url }));
+    }, [url, featureFlagEnabled, dispatch]);
+
+    useEffect(() => {
+        if (connectPopupCall) {
+            navigation.navigate(RootStackRoutes.ConnectPopup);
         }
-    }, [url, navigation, featureFlagEnabled]);
+    }, [connectPopupCall, navigation]);
 };

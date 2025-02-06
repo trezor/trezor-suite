@@ -23,11 +23,12 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 state.activeCall = payload;
             })
             .addCase(connectPopupActions.approveCall, state => {
-                state?.activeCall?.confirmation.resolve();
+                if (state.activeCall?.state === 'request') state.activeCall.confirmation.resolve();
                 state.activeCall = undefined;
             })
             .addCase(connectPopupActions.rejectCall, (state, { payload }) => {
-                state?.activeCall?.confirmation.reject(payload);
+                if (state.activeCall?.state === 'request')
+                    state.activeCall.confirmation.reject(payload);
                 state.activeCall = undefined;
             });
     },

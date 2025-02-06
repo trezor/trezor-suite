@@ -15,7 +15,6 @@
         { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../navigation" },
-        { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-mobile"
         }

@@ -6,7 +6,7 @@ export const prepareConnectPopupMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, extra }) => {
         await next(action);
 
-        if (connectPopupActions.initiateCall.match(action)) {
+        if (connectPopupActions.initiateCall.match(action) && action.payload.state === 'request') {
             dispatch(extra.actions.openModal({ type: 'connect-popup' }));
         }
         if (
