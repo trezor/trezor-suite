@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Button, DropdownMenuItemProps, Row } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
+import { spacingsPx } from '@trezor/theme';
 import type { TimerId } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
@@ -61,9 +62,7 @@ const LabelButton = styled(Button)`
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const ActionButton = styled(Button)<{ $isValueVisible?: boolean; $isVisible?: boolean }>`
-    margin-left: ${({ $isValueVisible, $isVisible, isLoading }) =>
-        $isValueVisible || !$isVisible || isLoading ? '12px' : '4px'};
+const ActionButton = styled(Button)<{ $isVisible?: boolean }>`
     visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
 `;
 
@@ -71,7 +70,6 @@ const ActionButton = styled(Button)<{ $isValueVisible?: boolean; $isVisible?: bo
 // eslint-disable-next-line local-rules/no-override-ds-component
 const SuccessButton = styled(Button)`
     cursor: wait;
-    margin-left: 12px;
     width: auto;
     background-color: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation0};
     color: ${({ theme }) => theme.textPrimaryDefault};
@@ -88,6 +86,7 @@ const LabelContainer = styled.div`
     align-items: center;
     justify-content: flex-start;
     overflow: hidden;
+    gap: ${spacingsPx.sm};
 
     &:hover {
         ${ActionButton} {
@@ -436,7 +435,6 @@ export const MetadataLabeling = ({
                             isDisabled={actionButtonsDisabled}
                             $isVisible={isVisible}
                             size="tiny"
-                            $isValueVisible={!!payload.value}
                             onClick={e => {
                                 e.stopPropagation();
                                 // By clicking on add label button, metadata.editing field is set
