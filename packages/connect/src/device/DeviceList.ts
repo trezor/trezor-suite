@@ -380,8 +380,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                     this.emit(TRANSPORT.START, getTransportInfo(transport));
                 }
             }
-            if (transport) {
-                // new transport started successfully or present transport kept, (re)plan check
+            if (transport && transport !== transports[0]) {
+                // new transport started successfully or present transport kept, and it's not the most preferred one, (re)plan check
                 this.scheduleUpgradeCheck(apiType, initParams);
             }
         } catch (error) {
@@ -406,8 +406,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         clearTimeout(this.scheduledUpgradeChecks[apiType]);
         this.scheduledUpgradeChecks[apiType] = setTimeout(async () => {
             const transport = this.transport[apiType];
-            if (!transport) return;
             const transports = this.transports.filter(t => t.apiType === apiType);
+            if (!transport || transport === transports[0]) return;
             for (const t of transports) {
                 if (t === transport) break;
                 if (await t.ping()) {
