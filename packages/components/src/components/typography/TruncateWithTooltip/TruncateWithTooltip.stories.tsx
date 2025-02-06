@@ -9,6 +9,7 @@ import {
 const Container = styled.div`
     overflow: hidden;
     white-space: nowrap;
+    max-width: 200px;
 `;
 
 const meta: Meta = {

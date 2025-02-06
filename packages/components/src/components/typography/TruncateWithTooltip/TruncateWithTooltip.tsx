@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Cursor, Tooltip } from '../../Tooltip/Tooltip';
+import { Tooltip, type AllowedFrameProps as TooltipAllowedFrameProps } from '../../Tooltip/Tooltip';
 import { TooltipDelay } from '../../Tooltip/TooltipDelay';
 
 const EllipsisContainer = styled.div`
@@ -10,52 +10,49 @@ const EllipsisContainer = styled.div`
     overflow: hidden;
 `;
 
-export interface TruncateWithTooltipProps {
+export interface TruncateWithTooltipProps extends TooltipAllowedFrameProps {
     children: React.ReactNode;
     delayShow?: TooltipDelay;
-    cursor?: Cursor;
 }
 
-export const TruncateWithTooltip = ({
-    children,
-    delayShow,
-    cursor = 'inherit',
-}: TruncateWithTooltipProps) => {
-    const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+export const TruncateWithTooltip = ({ children, delayShow, ...rest }: TruncateWithTooltipProps) => {
+    const [isEllipsisActive, setEllipsisActive] = useState(false);
 
     const containerRef = useRef<HTMLDivElement | null>(null);
 
-    const scrollWidth = containerRef.current?.scrollWidth ?? null;
-    const scrollHeight = containerRef.current?.scrollHeight ?? null;
-
     useEffect(() => {
-        if (!containerRef.current || !scrollWidth || !scrollHeight) return;
+        if (!containerRef.current) return;
+
         const resizeObserver = new ResizeObserver(entries => {
+            const scrollWidth = containerRef.current?.scrollWidth ?? null;
+            const scrollHeight = containerRef.current?.scrollHeight ?? null;
             const borderBoxSize = entries[0].borderBoxSize?.[0];
-            if (!borderBoxSize) {
+            if (!borderBoxSize || !scrollWidth || !scrollHeight) {
                 return;
             }
 
             const { inlineSize: elementWidth, blockSize: elementHeight } = borderBoxSize;
 
-            setIsTooltipVisible(
-                scrollWidth > Math.ceil(elementWidth) || scrollHeight > Math.ceil(elementHeight),
-            );
+            const nextEllipsisActive =
+                scrollWidth > Math.ceil(elementWidth) || scrollHeight > Math.ceil(elementHeight);
+
+            setEllipsisActive(nextEllipsisActive);
         });
         resizeObserver.observe(containerRef.current);
 
         return () => resizeObserver.disconnect();
-    }, [children, scrollWidth, scrollHeight]);
+    }, [children]);
 
     return (
         <EllipsisContainer ref={containerRef}>
-            {isTooltipVisible ? (
-                <Tooltip delayShow={delayShow} content={children} cursor={cursor}>
-                    <EllipsisContainer>{children}</EllipsisContainer>
-                </Tooltip>
-            ) : (
-                children
-            )}
+            <Tooltip
+                isActive={Boolean(children) && isEllipsisActive}
+                delayShow={delayShow}
+                content={children ?? null}
+                {...rest}
+            >
+                {isEllipsisActive ? <EllipsisContainer>{children}</EllipsisContainer> : children}
+            </Tooltip>
         </EllipsisContainer>
     );
 };
