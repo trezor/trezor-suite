@@ -1,14 +1,12 @@
-import React from 'react';
-
 import { useFormatters } from '@suite-common/formatters';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { useTradeableAssetsSheetControls } from '../../hooks/useTradeableAssetsSheetControls';
-import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
-import { TradeableAssetsSheet } from '../general/TradeableAssetsSheet/TradeableAssetsSheet';
+import { TradeableAssetPicker } from './TradeableAssetPicker';
+import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
+import { TradeableAsset } from '../../types';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 
 const notImplementedCallback = () => {
@@ -27,13 +25,7 @@ export const BuyCard = () => {
     const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
 
-    const {
-        isTradeableAssetsSheetVisible,
-        showTradeableAssetsSheet,
-        hideTradeableAssetsSheet,
-        selectedTradeableAsset,
-        setSelectedTradeableAsset,
-    } = useTradeableAssetsSheetControls();
+    const { selectedValue, ...restControls } = useTradeSheetControls<TradeableAsset>();
 
     return (
         <Card noPadding>
@@ -42,21 +34,15 @@ export const BuyCard = () => {
                     <Translation id="moduleTrading.tradingScreen.buyTitle" />
                 </Text>
                 <HStack justifyContent="space-between" alignItems="center">
-                    <SelectTradeableAssetButton
-                        onPress={showTradeableAssetsSheet}
-                        selectedAsset={selectedTradeableAsset}
-                    />
+                    <TradeableAssetPicker selectedValue={selectedValue} {...restControls} />
                     <Text variant="titleMedium" color="textDisabled">
                         0.0
                     </Text>
                 </HStack>
                 <HStack justifyContent="space-between" alignItems="center">
                     <Text variant="body" color="textSubdued">
-                        {selectedTradeableAsset?.symbol ? (
-                            <CryptoAmountFormatter
-                                value="0"
-                                symbol={selectedTradeableAsset.symbol}
-                            />
+                        {selectedValue?.symbol ? (
+                            <CryptoAmountFormatter value="0" symbol={selectedValue.symbol} />
                         ) : (
                             '-'
                         )}
@@ -83,11 +69,6 @@ export const BuyCard = () => {
                     </Text>
                 </VStack>
             </TradingOverviewRow>
-            <TradeableAssetsSheet
-                isVisible={isTradeableAssetsSheetVisible}
-                onClose={hideTradeableAssetsSheet}
-                onAssetSelect={setSelectedTradeableAsset}
-            />
         </Card>
     );
 };

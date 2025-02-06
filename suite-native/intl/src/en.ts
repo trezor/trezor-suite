@@ -1296,7 +1296,14 @@ export const en = {
             emptyDescription:
                 'We couldn’t find a coin matching your search. Try checking the spelling or exploring the list for the right option.',
         },
+        countrySheet: {
+            title: 'Country of residence',
+            emptyTitle: 'No country found',
+            emptyDescription:
+                'We couldn’t find a country matching your search. Try checking the spelling or exploring the list for the right option.',
+        },
         defaultSearchLabel: 'Search',
+        notSelected: 'Not selected',
     },
 };
 
