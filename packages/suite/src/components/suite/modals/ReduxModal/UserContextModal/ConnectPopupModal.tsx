@@ -1,54 +1,54 @@
+import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { H2, NewModal, Paragraph } from '@trezor/components';
+import { ERRORS } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
-interface ConnectPopupModalProps {
-    method: string;
-    processName?: string;
-    origin?: string;
-    onConfirm: () => void;
-    onCancel: () => void;
-}
+export const ConnectPopupModal = () => {
+    const dispatch = useDispatch();
+    const popupCall = useSelector(selectConnectPopupCall);
+    if (!popupCall) return null;
 
-export const ConnectPopupModal = ({
-    method,
-    processName,
-    origin,
-    onConfirm,
-    onCancel,
-}: ConnectPopupModalProps) => (
-    <NewModal
-        onCancel={onCancel}
-        iconName="plugs"
-        variant="primary"
-        bottomContent={
-            <>
-                <NewModal.Button variant="tertiary" onClick={onCancel}>
-                    <Translation id="TR_CANCEL" />
-                </NewModal.Button>
-                <NewModal.Button variant="primary" onClick={onConfirm}>
-                    <Translation id="TR_CONFIRM" />
-                </NewModal.Button>
-            </>
-        }
-        heading={<Translation id="TR_TREZOR_CONNECT" />}
-    >
-        <H2>{method}</H2>
+    const { method, processName, origin } = popupCall;
+    const onConfirm = () => dispatch(connectPopupActions.approveCall());
+    const onCancel = () =>
+        dispatch(connectPopupActions.rejectCall(ERRORS.TypedError('Method_Cancel')));
 
-        {processName && (
-            <Paragraph margin={{ top: spacings.xs }}>
-                <Translation id="TR_CONNECT_MODAL_PROCESS" /> <strong>{processName}</strong>
+    return (
+        <NewModal
+            onCancel={onCancel}
+            iconName="plugs"
+            variant="primary"
+            bottomContent={
+                <>
+                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                        <Translation id="TR_CANCEL" />
+                    </NewModal.Button>
+                    <NewModal.Button variant="primary" onClick={onConfirm}>
+                        <Translation id="TR_CONFIRM" />
+                    </NewModal.Button>
+                </>
+            }
+            heading={<Translation id="TR_TREZOR_CONNECT" />}
+        >
+            <H2>{method}</H2>
+
+            {processName && (
+                <Paragraph margin={{ top: spacings.xs }}>
+                    <Translation id="TR_CONNECT_MODAL_PROCESS" /> <strong>{processName}</strong>
+                </Paragraph>
+            )}
+            {origin && (
+                <Paragraph>
+                    <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" /> <strong>{origin}</strong>
+                </Paragraph>
+            )}
+
+            <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
+                <Translation id="TR_CONNECT_MODAL_REQUEST_DESCRIPTION" />
             </Paragraph>
-        )}
-        {origin && (
-            <Paragraph>
-                <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" /> <strong>{origin}</strong>
-            </Paragraph>
-        )}
-
-        <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
-            <Translation id="TR_CONNECT_MODAL_REQUEST_DESCRIPTION" />
-        </Paragraph>
-    </NewModal>
-);
+        </NewModal>
+    );
+};

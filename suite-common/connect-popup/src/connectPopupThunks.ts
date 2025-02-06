@@ -6,6 +6,8 @@ import TrezorConnect, { CallMethodParams, CallMethodResponse, ERRORS } from '@tr
 import { serializeError } from '@trezor/connect/src/constants/errors';
 import { createDeferred } from '@trezor/utils';
 
+import { connectPopupActions } from './connectPopupActions';
+
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
 type ConnectPopupCallThunkResponse<M extends keyof typeof TrezorConnect> = Promise<{
@@ -29,15 +31,6 @@ export const connectPopupCallThunkInner = createThunk<
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ id, method, payload, processName, origin }, { dispatch, getState, extra }) => {
         try {
-            const device = selectSelectedDevice(getState());
-
-            if (!device) {
-                console.error('Device not found');
-
-                // TODO: wait for device selection and continue
-                throw ERRORS.TypedError('Device_NotFound');
-            }
-
             // @ts-expect-error: method is dynamic
             const methodInfo = await TrezorConnect[method]({
                 ...payload,
@@ -50,17 +43,19 @@ export const connectPopupCallThunkInner = createThunk<
             const confirmation = createDeferred();
             dispatch(extra.actions.lockDevice(true));
             dispatch(
-                extra.actions.openModal({
-                    type: 'connect-popup',
-                    onCancel: () => confirmation.reject(ERRORS.TypedError('Method_Cancel')),
-                    onConfirm: () => confirmation.resolve(),
+                connectPopupActions.initiateCall({
                     method: methodInfo.payload.info,
                     processName,
                     origin,
+                    confirmation,
                 }),
             );
             await confirmation.promise;
-            dispatch(extra.actions.lockDevice(false));
+
+            const device = selectSelectedDevice(getState());
+            if (!device) {
+                throw ERRORS.TypedError('Device_NotFound');
+            }
 
             // @ts-expect-error: method is dynamic
             const response = await TrezorConnect[method]({
@@ -73,21 +68,20 @@ export const connectPopupCallThunkInner = createThunk<
                 ...payload,
             });
 
-            dispatch(extra.actions.onModalCancel());
-
             return {
                 ...response,
                 id,
             };
         } catch (error) {
             console.error('connectPopupCallThunk', error);
-            dispatch(extra.actions.onModalCancel());
 
             return {
                 success: false,
                 payload: serializeError(error),
                 id,
             };
+        } finally {
+            dispatch(extra.actions.lockDevice(false));
         }
     },
 );

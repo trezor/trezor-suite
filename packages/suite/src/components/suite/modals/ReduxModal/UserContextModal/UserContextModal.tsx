@@ -214,15 +214,7 @@ export const UserContextModal = ({
         case 'passphrase-mismatch-warning':
             return <PassphraseMismatchModal onCancel={onCancel} />;
         case 'connect-popup':
-            return (
-                <ConnectPopupModal
-                    onCancel={payload.onCancel}
-                    onConfirm={payload.onConfirm}
-                    method={payload.method}
-                    origin={payload.origin}
-                    processName={payload.processName}
-                />
-            );
+            return <ConnectPopupModal />;
         case 'walletconnect-proposal':
             return <WalletConnectProposalModal eventId={payload.eventId} />;
         default:

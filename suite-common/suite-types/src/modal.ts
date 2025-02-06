@@ -194,11 +194,6 @@ export type UserContextPayload =
       }
     | {
           type: 'connect-popup';
-          onConfirm: () => void;
-          onCancel: () => void;
-          method: string;
-          processName?: string;
-          origin?: string;
       }
     | {
           type: 'walletconnect-proposal';
