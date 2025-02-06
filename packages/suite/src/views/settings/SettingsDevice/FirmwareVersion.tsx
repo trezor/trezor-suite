@@ -100,7 +100,10 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                                 id="TR_YOUR_FIRMWARE_VERSION"
                                 values={{
                                     version: (
-                                        <VersionTooltip content={revision} disabled={!revision}>
+                                        <VersionTooltip
+                                            content={revision}
+                                            cursor={!revision ? 'not-allowed' : undefined}
+                                        >
                                             {revision ? (
                                                 <TrezorLink href={changelogUrl} variant="nostyle">
                                                     <GithubButton />

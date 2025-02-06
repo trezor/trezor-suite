@@ -136,7 +136,7 @@ const StoreBadge = ({
     return (
         <Tooltip
             isOpen={isTooltipOpen}
-            disabled={isMobileLayout}
+            cursor={isMobileLayout ? 'not-allowed' : undefined}
             content={
                 <Column alignItems="center">
                     <StoreTitle

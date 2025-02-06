@@ -74,4 +74,26 @@ describe('Tooltip', () => {
         const parent = triggerBefore.parentElement;
         expect(parent).toHaveAttribute('data-state', 'closed');
     });
+
+    it('should apply the cursor prop to the content wrapper', () => {
+        const tooltipContent = 'Tooltip Content';
+        render(
+            <Tooltip content={tooltipContent} cursor="pointer">
+                <button>Hover me</button>
+            </Tooltip>,
+        );
+
+        expect(screen.getByText('Hover me').parentElement).toHaveStyle({ cursor: 'pointer' });
+    });
+
+    it('should should apply the default=help cursor when the passed cursor is undefined', () => {
+        const tooltipContent = 'Tooltip Content';
+        render(
+            <Tooltip content={tooltipContent} cursor={undefined}>
+                <button>Hover me</button>
+            </Tooltip>,
+        );
+
+        expect(screen.getByText('Hover me').parentElement).toHaveStyle({ cursor: 'help' });
+    });
 });

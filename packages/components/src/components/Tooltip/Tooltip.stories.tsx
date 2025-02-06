@@ -6,13 +6,14 @@ import styled from 'styled-components';
 
 import { Elevation, mapElevationToBackground, spacingsPx, zIndices } from '@trezor/theme';
 
-import { Tooltip as TooltipComponent, TooltipProps } from './Tooltip';
+import { Tooltip as TooltipComponent, TooltipProps, allowedTooltipFrameProps } from './Tooltip';
 import {
     TOOLTIP_DELAY_LONG,
     TOOLTIP_DELAY_NONE,
     TOOLTIP_DELAY_NORMAL,
     TOOLTIP_DELAY_SHORT,
 } from './TooltipDelay';
+import { getFramePropsStory } from '../../utils/frameProps';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 import { Button } from '../buttons/Button/Button';
 
@@ -107,6 +108,7 @@ export const Tooltip: StoryObj<TooltipProps> = {
         offset: 10,
         delayHide: TOOLTIP_DELAY_SHORT,
         delayShow: TOOLTIP_DELAY_SHORT,
+        ...getFramePropsStory(allowedTooltipFrameProps).args,
     },
     argTypes: {
         hasArrow: {
@@ -176,5 +178,6 @@ export const Tooltip: StoryObj<TooltipProps> = {
             control: 'select',
             options: DELAYS,
         },
+        ...getFramePropsStory(allowedTooltipFrameProps).argTypes,
     },
 };

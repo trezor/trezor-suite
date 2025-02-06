@@ -137,6 +137,7 @@ export const DeviceSelector = () => {
                     isActive={discoveryInProgress}
                     isFullWidth
                     placement="bottom"
+                    cursor={discoveryInProgress ? 'not-allowed' : undefined}
                     content={<Translation id="TR_UNAVAILABLE_WHILE_LOADING" />}
                 >
                     <InnerContainer
