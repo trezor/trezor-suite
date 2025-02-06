@@ -37,12 +37,10 @@ type AccountBalanceProps = {
 const CryptoBalance = ({
     symbol,
     tokenSymbol,
-    tokenAddress,
     totalCryptoBalance,
 }: {
     symbol: NetworkSymbol;
     tokenSymbol?: TokenSymbol | null;
-    tokenAddress?: TokenAddress;
     totalCryptoBalance: string | null;
 }) => {
     const selectedPoint = useAtomValue(selectedPointAtom);
@@ -50,12 +48,7 @@ const CryptoBalance = ({
 
     return (
         <DiscreetTextTrigger>
-            <AccountDetailCryptoValue
-                symbol={symbol}
-                tokenSymbol={tokenSymbol}
-                tokenAddress={tokenAddress}
-                value={value}
-            />
+            <AccountDetailCryptoValue symbol={symbol} tokenSymbol={tokenSymbol} value={value} />
         </DiscreetTextTrigger>
     );
 };
@@ -96,7 +89,6 @@ export const AccountDetailHeader = ({
             <CryptoBalance
                 symbol={account.symbol}
                 tokenSymbol={tokenSymbol}
-                tokenAddress={tokenAddress}
                 totalCryptoBalance={totalCryptoBalance}
             />
             <GraphFiatBalance

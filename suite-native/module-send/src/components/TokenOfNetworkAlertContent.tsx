@@ -4,27 +4,10 @@ import { useSelector } from 'react-redux';
 import { getNetwork } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { AlertBox, Box, Text, VStack } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { AlertBox, Text, VStack } from '@suite-native/atoms';
+import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-const iconWrapperStyle = prepareNativeStyle(() => ({
-    overflow: 'visible',
-    height: 90,
-    width: 90,
-}));
-
-const networkIconWrapperStyle = prepareNativeStyle(utils => ({
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
-    padding: 3,
-    overflow: 'visible',
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderRadius: utils.borders.radii.round,
-}));
 
 type ParagraphProps = {
     header: ReactNode;
@@ -45,7 +28,6 @@ export const TokenOfNetworkAlertBody = ({
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
 }) => {
-    const { applyStyle } = useNativeStyles();
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
@@ -59,12 +41,11 @@ export const TokenOfNetworkAlertBody = ({
 
     return (
         <VStack spacing="sp24">
-            <Box style={applyStyle(iconWrapperStyle)}>
-                <CryptoIcon symbol={symbol} contractAddress={tokenContract} size={80} />
-                <Box style={applyStyle(networkIconWrapperStyle)}>
-                    <CryptoIcon symbol={symbol} size={32} />
-                </Box>
-            </Box>
+            <CryptoIconWithNetwork
+                symbol={symbol}
+                contractAddress={tokenContract}
+                size="extraLarge"
+            />
             <Text variant="titleSmall">
                 <Translation
                     id="moduleSend.outputs.tokenOfNetworkSheet.title"

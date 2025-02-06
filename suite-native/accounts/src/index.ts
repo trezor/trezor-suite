@@ -9,6 +9,8 @@ export * from './components/AccountsList/AccountsListTokenItem';
 export * from './components/TokenSelectBottomSheet';
 export * from './components/AccountSectionTitle';
 export * from './components/AccountLabelFieldHint';
+export * from './components/AccountDetailsCard';
+export * from './components/TokenReceiveCard';
 export * from './hooks/useAccountLabelForm';
 export * from './selectors';
 export * from './hooks/useAccountAlerts';

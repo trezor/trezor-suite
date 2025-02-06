@@ -5,7 +5,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { Box, CardDivider, Text, VStack } from '@suite-native/atoms';
 import { AccountAddressFormatter } from '@suite-native/formatters';
-import { CryptoIcon } from '@suite-native/icons';
+import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -56,13 +56,6 @@ const stepperDotStyle = prepareNativeStyle(utils => ({
     height: utils.spacings.sp4,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundNeutralSubdued,
-}));
-
-const coinIconWrapperStyle = prepareNativeStyle(utils => ({
-    alignSelf: 'flex-start',
-    padding: utils.spacings.sp12,
-    backgroundColor: utils.colors.backgroundSurfaceElevation2,
-    borderRadius: utils.borders.radii.round,
 }));
 
 const TransactionDetailSummaryStepper = () => {
@@ -116,13 +109,11 @@ export const TransactionDetailAddressesSection = ({
                     </Box>
 
                     {symbol && (
-                        <Box style={applyStyle(coinIconWrapperStyle)}>
-                            <CryptoIcon
-                                symbol={symbol}
-                                contractAddress={contractAddress}
-                                size="extraSmall"
-                            />
-                        </Box>
+                        <CryptoIconWithNetwork
+                            symbol={symbol}
+                            contractAddress={contractAddress}
+                            size="small"
+                        />
                     )}
                 </Box>
             </SummaryRow>

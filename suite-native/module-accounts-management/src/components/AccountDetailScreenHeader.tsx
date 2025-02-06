@@ -1,6 +1,10 @@
+import { useSelector } from 'react-redux';
+
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { IconButton } from '@suite-native/atoms';
+import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { HStack, IconButton, Text } from '@suite-native/atoms';
+import { CryptoIconWithNetwork } from '@suite-native/icons';
 import {
     AccountsStackParamList,
     GoBackIcon,
@@ -21,6 +25,28 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
+const AccountDetailScreenHeaderContent = ({
+    accountLabel,
+    accountKey,
+}: AccountDetailScreenHeaderProps) => {
+    const symbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
+
+    if (!symbol) {
+        return null;
+    }
+
+    return (
+        <HStack alignItems="center">
+            <CryptoIconWithNetwork symbol={symbol} size="small" />
+            <Text variant="highlight" adjustsFontSizeToFit numberOfLines={1}>
+                {accountLabel}
+            </Text>
+        </HStack>
+    );
+};
+
 export const AccountDetailScreenHeader = ({
     accountLabel,
     accountKey,
@@ -37,7 +63,12 @@ export const AccountDetailScreenHeader = ({
 
     return (
         <ScreenHeader
-            content={accountLabel}
+            content={
+                <AccountDetailScreenHeaderContent
+                    accountLabel={accountLabel}
+                    accountKey={accountKey}
+                />
+            }
             rightIcon={
                 <IconButton
                     colorScheme="tertiaryElevation0"

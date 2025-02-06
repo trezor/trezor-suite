@@ -1,6 +1,6 @@
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Card, HStack, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { isCoinWithTokens } from '@suite-native/tokens';
@@ -30,8 +30,8 @@ export const CorrectNetworkMessageCard = ({ symbol }: CorrectNetworkMessageCardP
 
     return (
         <Card style={applyStyle(cardStyle)}>
-            <HStack spacing="sp12">
-                <CryptoIcon symbol={symbol} size={20} />
+            <HStack spacing="sp12" alignItems="center">
+                <NetworkIcon symbol={symbol} size="extraLarge" />
                 <Text variant="hint">
                     <Translation
                         id="moduleSend.outputs.correctNetworkMessage"

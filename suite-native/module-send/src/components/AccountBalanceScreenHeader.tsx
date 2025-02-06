@@ -1,22 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    selectAccountFormattedBalance,
-    selectAccountLabel,
-    selectAccountNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
-import { HStack, Text, VStack } from '@suite-native/atoms';
-import { CoinAmountFormatter, CoinToFiatAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon } from '@suite-native/icons';
+import { Text } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
 import { GoBackIcon, ScreenHeader } from '@suite-native/navigation';
-import {
-    TokensRootState,
-    selectAccountTokenBalance,
-    selectAccountTokenSymbol,
-} from '@suite-native/tokens';
+import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 type AccountBalanceScreenHeaderProps = {
     accountKey: AccountKey;
@@ -27,72 +17,26 @@ export const AccountBalanceScreenHeader = ({
     accountKey,
     tokenContract,
 }: AccountBalanceScreenHeaderProps) => {
-    const accountLabel = useSelector((state: AccountsRootState) =>
-        selectAccountLabel(state, accountKey),
-    );
-    const symbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
     );
 
-    const formattedBalance = useSelector((state: AccountsRootState) =>
-        selectAccountFormattedBalance(state, accountKey),
+    const tokenInfo = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 
-    const tokenSymbol = useSelector((state: TokensRootState) =>
-        selectAccountTokenSymbol(state, accountKey, tokenContract),
-    );
-
-    const tokenBalance = useSelector((state: TokensRootState) =>
-        selectAccountTokenBalance(state, accountKey, tokenContract),
-    );
-
-    if (!symbol) {
+    if (!account) {
         return;
     }
 
-    const accountTitle = tokenSymbol ? `${accountLabel} – ${tokenSymbol}` : accountLabel;
+    const assetName = (tokenInfo?.symbol ?? getNetworkDisplaySymbol(account.symbol)).toUpperCase();
 
     return (
         <ScreenHeader
             content={
-                <VStack spacing="sp4" alignItems="center">
-                    <HStack spacing="sp8" alignItems="center">
-                        {symbol && (
-                            <CryptoIcon
-                                symbol={symbol}
-                                contractAddress={tokenContract}
-                                size="extraSmall"
-                            />
-                        )}
-                        {accountTitle && <Text variant="highlight">{accountTitle}</Text>}
-                    </HStack>
-                    <HStack spacing="sp4" alignItems="center">
-                        <CoinAmountFormatter
-                            variant="hint"
-                            color="textDefault"
-                            value={tokenBalance ?? formattedBalance}
-                            decimals={0}
-                            accountKey={accountKey}
-                            tokenContract={tokenContract}
-                        />
-                        {!isTestnet(symbol) && (
-                            <>
-                                <Text variant="hint" color="textSubdued">
-                                    ≈
-                                </Text>
-                                <CoinToFiatAmountFormatter
-                                    variant="hint"
-                                    color="textSubdued"
-                                    value={tokenBalance ?? formattedBalance}
-                                    accountKey={accountKey}
-                                    decimals={0}
-                                    tokenContract={tokenContract}
-                                    isBalance={true}
-                                />
-                            </>
-                        )}
-                    </HStack>
-                </VStack>
+                <Text variant="highlight">
+                    <Translation id="moduleSend.outputs.title" values={{ assetName }} />
+                </Text>
             }
             leftIcon={<GoBackIcon />}
         />

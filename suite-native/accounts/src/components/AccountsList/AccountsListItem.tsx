@@ -1,7 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useFormatters } from '@suite-common/formatters';
 import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { Badge, RoundedIcon } from '@suite-native/atoms';
@@ -9,7 +8,9 @@ import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     FiatAmountFormatter,
+    NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
+import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import {
@@ -26,11 +27,9 @@ import { OnSelectAccount } from '../../types';
 
 export type AccountListItemProps = {
     account: Account;
-    isInModal?: boolean;
-
+    isNativeCoinOnly?: boolean;
     onPress?: OnSelectAccount;
     disabled?: boolean;
-
     hasBackground?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
@@ -55,14 +54,13 @@ export const AccountsListItem = ({
     account,
     onPress,
     disabled,
-    isInModal = false,
+    isNativeCoinOnly = false,
     hasBackground = false,
     isFirst = false,
     isLast = false,
     showDivider = false,
 }: AccountListItemProps) => {
     const { accountLabel } = account;
-    const { NetworkNameFormatter } = useFormatters();
 
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
@@ -87,10 +85,20 @@ export const AccountsListItem = ({
         });
     }, [account, accountHasAnyTokens, accountHasStaking, onPress]);
 
+    const icon = useMemo(
+        () =>
+            isNativeCoinOnly ? (
+                <CryptoIconWithNetwork symbol={account.symbol} />
+            ) : (
+                <RoundedIcon symbol={account.symbol} />
+            ),
+        [account.symbol, isNativeCoinOnly],
+    );
+
     const doesCoinSupportTokens = isCoinWithTokens(account.symbol);
-    const shouldShowAccountLabel = !doesCoinSupportTokens || !isInModal;
-    const shouldShowTokenBadge = accountHasAnyTokens && !isInModal;
-    const shouldShowStakingBadge = accountHasStaking && !isInModal;
+    const shouldShowAccountLabel = !doesCoinSupportTokens || !isNativeCoinOnly;
+    const shouldShowTokenBadge = accountHasAnyTokens && !isNativeCoinOnly;
+    const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
 
     return (
         <AccountsListItemBase
@@ -100,12 +108,12 @@ export const AccountsListItem = ({
             showDivider={showDivider}
             onPress={handleOnPress}
             disabled={disabled}
-            icon={<RoundedIcon symbol={account.symbol} />}
+            icon={icon}
             title={
                 shouldShowAccountLabel ? (
                     accountLabel
                 ) : (
-                    <NetworkNameFormatter value={account.symbol} />
+                    <NetworkDisplaySymbolNameFormatter value={account.symbol} />
                 )
             }
             badges={

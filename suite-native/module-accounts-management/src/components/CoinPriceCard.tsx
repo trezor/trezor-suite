@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import { Box, Card, PriceChangeBadge, RoundedIcon, Text } from '@suite-native/atoms';
+import { Box, Card, PriceChangeBadge, Text } from '@suite-native/atoms';
 import { FiatAmountFormatter } from '@suite-native/formatters';
+import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -70,7 +71,7 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
         <Card style={applyStyle(cardStyle)}>
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">
-                    <RoundedIcon symbol={symbol} />
+                    <CryptoIconWithNetwork symbol={symbol} />
                 </Box>
                 <Box style={applyStyle(cardContentStyle)}>
                     <Text variant="label" color="textSubdued">

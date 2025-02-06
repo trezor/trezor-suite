@@ -7,8 +7,9 @@ import {
     selectAccountLabel,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { Box, HStack, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import {
     GoBackIcon,
@@ -16,15 +17,16 @@ import {
     RootStackRoutes,
     ScreenHeader,
 } from '@suite-native/navigation';
+import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 type TokenAccountDetailScreenHeaderProps = {
     accountKey: string;
-    tokenName: string;
+    tokenContract: TokenAddress;
 };
 
 export const TokenAccountDetailScreenHeader = ({
     accountKey,
-    tokenName,
+    tokenContract,
 }: TokenAccountDetailScreenHeaderProps) => {
     const { translate } = useTranslate();
     const accountLabel = useSelector((state: AccountsRootState) =>
@@ -32,29 +34,42 @@ export const TokenAccountDetailScreenHeader = ({
     );
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
-    )!;
+    );
+    const token = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenContract),
+    );
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
     const { closeActionType } = route.params;
+
+    if (!symbol) {
+        return null;
+    }
 
     return (
         <ScreenHeader
             content={
                 <Box alignItems="center">
-                    <Text ellipsizeMode="tail" numberOfLines={1}>
-                        {tokenName}
-                    </Text>
-                    <HStack spacing="sp4" alignItems="center">
-                        <CryptoIcon symbol={symbol} size="extraSmall" />
-                        <Text
-                            variant="label"
-                            color="textSubdued"
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
-                        >
-                            {translate('moduleAccounts.accountDetail.accountLabelBadge', {
-                                accountLabel,
-                            })}
-                        </Text>
+                    <HStack alignItems="center">
+                        <CryptoIconWithNetwork
+                            symbol={symbol}
+                            contractAddress={tokenContract}
+                            size="small"
+                        />
+                        <VStack spacing={0}>
+                            <Text ellipsizeMode="tail" numberOfLines={1}>
+                                {token?.name}
+                            </Text>
+                            <Text
+                                variant="label"
+                                color="textSubdued"
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                            >
+                                {translate('moduleAccounts.accountDetail.accountLabelBadge', {
+                                    accountLabel,
+                                })}
+                            </Text>
+                        </VStack>
                     </HStack>
                 </Box>
             }

@@ -4,21 +4,18 @@ import { G } from '@mobily/ts-belt';
 
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { AccountsListItem } from '@suite-native/accounts';
 import { Card, ErrorMessage, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
+import { AccountsListItem } from './AccountsList/AccountsListItem';
 import { TokenReceiveCard } from './TokenReceiveCard';
 
-type ReceiveAccountDetailsCardProps = {
+type AccountDetailsCardProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
 };
 
-export const ReceiveAccountDetailsCard = ({
-    accountKey,
-    tokenContract,
-}: ReceiveAccountDetailsCardProps) => {
+export const AccountDetailsCard = ({ accountKey, tokenContract }: AccountDetailsCardProps) => {
     const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -27,7 +24,7 @@ export const ReceiveAccountDetailsCard = ({
     if (G.isNullable(account))
         return (
             <ErrorMessage
-                errorMessage={translate('moduleReceive.accountNotFound', { accountKey })}
+                errorMessage={translate('moduleAccounts.accountNotFound', { accountKey })}
             />
         );
 
@@ -37,7 +34,7 @@ export const ReceiveAccountDetailsCard = ({
                 {tokenContract ? (
                     <TokenReceiveCard contract={tokenContract} accountKey={accountKey} />
                 ) : (
-                    <AccountsListItem account={account} />
+                    <AccountsListItem account={account} isNativeCoinOnly />
                 )}
             </Card>
         </VStack>

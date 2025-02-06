@@ -17,7 +17,6 @@
         { "path": "../atoms" },
         { "path": "../device" },
         { "path": "../device-mutex" },
-        { "path": "../formatters" },
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },

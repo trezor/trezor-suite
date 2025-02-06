@@ -516,12 +516,7 @@ export const en = {
     moduleReceive: {
         receiveTitle: 'Receive',
         screenTitle: '{coinSymbol} Receive address',
-        accountNotFound: 'Account {accountKey} not found.',
         deviceCancelError: 'Address confirmation canceled.',
-        tokens: {
-            runOn: 'Run on {accountLabel}',
-            errorMessage: 'Token not found.',
-        },
         receiveAddressCard: {
             alert: {
                 success: 'Receive address has been confirmed on your Trezor.',
@@ -885,6 +880,11 @@ export const en = {
         },
     },
     moduleAccounts: {
+        accountNotFound: 'Account {accountKey} not found.',
+        tokens: {
+            runOn: 'Run on {accountLabel}',
+            errorMessage: 'Token not found.',
+        },
         accountDetail: {
             accountLabelBadge: 'Run on {accountLabel}',
         },
@@ -1099,6 +1099,7 @@ export const en = {
             title: 'Send from',
         },
         outputs: {
+            title: '{assetName} Send',
             correctNetworkMessage:
                 'Make sure that you’re sending to an address\non {networkName} network. <link>Learn more</link>',
             tokenOfNetworkSheet: {

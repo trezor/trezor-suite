@@ -7,6 +7,7 @@ export { TransactionIdFormatter } from './components/TransactionIdFormatter';
 export { PercentageDifferenceFormatter } from './components/PercentageDifferenceFormatter';
 export { FiatAmountFormatter } from './components/FiatAmountFormatter';
 export { CryptoAmountFormatter } from './components/CryptoAmountFormatter';
+export { NetworkDisplaySymbolNameFormatter } from './components/NetworkDisplaySymbolNameFormatter';
 export { TokenAmountFormatter } from './components/TokenAmountFormatter';
 export { TokenToFiatAmountFormatter } from './components/TokenToFiatAmountFormatter';
 export { SignValueFormatter } from './components/SignValueFormatter';

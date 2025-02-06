@@ -9,6 +9,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { AccountDetailsCard } from '@suite-native/accounts';
 import { Box, ErrorMessage, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorImage,
@@ -18,7 +19,6 @@ import { Translation } from '@suite-native/intl';
 import { CloseActionType, Screen } from '@suite-native/navigation';
 
 import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
-import { ReceiveAccountDetailsCard } from '../components/ReceiveAccountDetailsCard';
 import { ReceiveAddressCard } from '../components/ReceiveAddressCard';
 import { ReceiveScreenHeader } from '../components/ReceiveScreenHeader';
 import { hasReceiveAddressButtonRequest } from '../hooks/receiveSelectors';
@@ -88,10 +88,7 @@ export const ReceiveAddressScreen = ({
             <Box flex={1}>
                 <VStack marginTop="sp8" spacing="sp16">
                     {isAccountDetailVisible && (
-                        <ReceiveAccountDetailsCard
-                            accountKey={accountKey}
-                            tokenContract={tokenContract}
-                        />
+                        <AccountDetailsCard accountKey={accountKey} tokenContract={tokenContract} />
                     )}
                     <ReceiveAddressCard
                         symbol={account.symbol}

@@ -1,4 +1,8 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    NetworkDisplaySymbol,
+    NetworkSymbol,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
 import { TokenAddress, TransactionType } from '@suite-common/wallet-types';
 import { Box, RoundedIcon } from '@suite-native/atoms';
 import { CryptoIcon, IconName, IconSize } from '@suite-native/icons';
@@ -47,6 +51,14 @@ export const TransactionIcon = ({
 }: TransactionIconProps) => {
     const { applyStyle } = useNativeStyles();
 
+    let iconSymbol: NetworkSymbol | NetworkDisplaySymbol | undefined;
+
+    if (contractAddress) {
+        iconSymbol = symbol;
+    } else if (symbol) {
+        iconSymbol = getNetworkDisplaySymbol(symbol) as NetworkDisplaySymbol;
+    }
+
     return (
         <Box>
             <RoundedIcon
@@ -62,10 +74,10 @@ export const TransactionIcon = ({
                     width={3}
                 />
             )}
-            {symbol && (
+            {iconSymbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>
                     <CryptoIcon
-                        symbol={symbol}
+                        symbol={iconSymbol}
                         contractAddress={contractAddress}
                         size="extraSmall"
                     />

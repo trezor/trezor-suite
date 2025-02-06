@@ -57,9 +57,9 @@ export const AccountDetailContentScreen = ({
     return (
         <Screen
             header={
-                token?.name ? (
+                tokenContract ? (
                     <TokenAccountDetailScreenHeader
-                        tokenName={token.name}
+                        tokenContract={tokenContract}
                         accountKey={accountKey}
                     />
                 ) : (

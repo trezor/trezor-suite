@@ -39,7 +39,7 @@ export const AccountSelectBottomSheet = React.memo(
                                 {...item}
                                 hasBackground
                                 showDivider
-                                isInModal={true}
+                                isNativeCoinOnly
                                 onPress={() => onSelectAccount(item)}
                             />
                         );

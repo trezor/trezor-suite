@@ -10,7 +10,6 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     CloseActionType,
@@ -69,7 +68,6 @@ export const ReceiveScreenHeader = ({
                         )}
                     </Text>
                     <HStack spacing="sp8" alignItems="center">
-                        {symbol && <CryptoIcon symbol={symbol} size="extraSmall" />}
                         {accountLabel && (
                             <Text variant="highlight">
                                 {accountLabel}

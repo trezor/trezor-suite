@@ -1,4 +1,4 @@
-import { NetworkDisplaySymbol, networks } from './networksConfig';
+import { networks } from './networksConfig';
 import type {
     AccountType,
     Network,
@@ -68,11 +68,6 @@ export const getTradeCryptoId = (symbol: NetworkSymbol) => networks[symbol].trad
 
 export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is NetworkSymbol =>
     Object.prototype.hasOwnProperty.call(networks, symbol);
-
-export const isNetworkDisplaySymbol = (
-    displaySymbol: NetworkSymbolExtended,
-): displaySymbol is NetworkDisplaySymbol =>
-    Object.prototype.hasOwnProperty.call(networks, displaySymbol);
 
 /**
  * Get network object by symbol as a generic `Network` type.

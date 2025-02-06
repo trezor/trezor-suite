@@ -6,8 +6,9 @@ import {
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { Badge, Box, ErrorMessage, RoundedIcon, Text, VStack } from '@suite-native/atoms';
+import { Badge, Box, ErrorMessage, Text, VStack } from '@suite-native/atoms';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
+import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -43,7 +44,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
 
     if (!token || !symbol) {
         return (
-            <ErrorMessage errorMessage={<Translation id="moduleReceive.tokens.errorMessage" />} />
+            <ErrorMessage errorMessage={<Translation id="moduleAccounts.tokens.errorMessage" />} />
         );
     }
 
@@ -54,18 +55,17 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
             <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                 <Box flex={1} flexDirection="row" alignItems="center">
                     <Box marginRight="sp16">
-                        <RoundedIcon symbol={symbol} contractAddress={contract} />
+                        <CryptoIconWithNetwork symbol={symbol} contractAddress={contract} />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
                         <Text>{tokenName}</Text>
                         <Badge
                             label={
                                 <Translation
-                                    id="moduleReceive.tokens.runOn"
+                                    id="moduleAccounts.tokens.runOn"
                                     values={{ accountLabel }}
                                 />
                             }
-                            icon={symbol}
                             size="small"
                             iconSize="extraSmall"
                         />
