@@ -34,11 +34,11 @@
         }
     },
     "peerDependencies": {
-        "@metamask/eth-sig-util": "^8.0.0",
+        "@metamask/eth-sig-util": "^8.2.0",
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@metamask/eth-sig-util": "^8.0.0"
+        "@metamask/eth-sig-util": "^8.2.0"
     },
     "scripts": {
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
