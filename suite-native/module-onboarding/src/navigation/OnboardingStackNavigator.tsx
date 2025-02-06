@@ -8,6 +8,7 @@ import {
 
 import { AnalyticsConsentScreen } from '../screens/AnalyticsConsentScreen';
 import { BiometricsScreen } from '../screens/BiometricsScreen';
+import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
 import { SuspiciousDeviceScreen } from '../screens/SuspiciousDeviceScreen';
 import { UninitializedDeviceLandingScreen } from '../screens/UninitializedDeviceLandingScreen';
 import { WelcomeScreen } from '../screens/WelcomeScreen';
@@ -35,6 +36,10 @@ export const OnboardingStackNavigator = () => (
         <OnboardingStack.Screen
             name={OnboardingStackRoutes.SuspiciousDevice}
             component={SuspiciousDeviceScreen}
+        />
+        <OnboardingStack.Screen
+            name={OnboardingStackRoutes.SecurityCheck}
+            component={SecurityCheckScreen}
         />
     </OnboardingStack.Navigator>
 );

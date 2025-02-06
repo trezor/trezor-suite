@@ -77,11 +77,18 @@ export const UninitializedDeviceLandingScreen = ({
     navigation,
 }: StackProps<OnboardingStackParamList, OnboardingStackRoutes.UninitializedDeviceLanding>) => {
     const { showToast } = useToast();
+
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
 
     const handleConfirmButtonPress = () => {
-        // TODO: navigate to next onboarding screen based on firmware status
-        showToast({ variant: 'warning', message: 'TODO: implement next screen' });
+        if (hasDeviceFirmwareInstalled) {
+            showToast({
+                variant: 'warning',
+                message: 'TODO: add FW update screen to onboarding flow',
+            });
+        } else {
+            navigation.navigate(OnboardingStackRoutes.SecurityCheck);
+        }
     };
 
     const handleNeverUsedThisDeviceButtonPress = () => {

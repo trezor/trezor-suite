@@ -122,6 +122,7 @@ export type OnboardingStackParamList = {
     [OnboardingStackRoutes.SuspiciousDevice]: {
         suspicionCause: DeviceSuspicionCause;
     };
+    [OnboardingStackRoutes.SecurityCheck]: undefined;
 };
 
 export type AccountsImportStackParamList = {

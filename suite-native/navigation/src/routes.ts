@@ -32,6 +32,7 @@ export enum OnboardingStackRoutes {
     Biometrics = 'Biometrics',
     UninitializedDeviceLanding = 'UninitializedDeviceLanding',
     SuspiciousDevice = 'SuspiciousDevice',
+    SecurityCheck = 'SecurityCheck',
 }
 
 export enum AccountsImportStackRoutes {

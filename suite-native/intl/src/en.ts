@@ -21,6 +21,8 @@ export const en = {
             next: 'Next',
             tryAgain: 'Try again',
             edit: 'Edit',
+            yes: 'Yes',
+            learnMore: 'Learn more',
         },
         unknownError: 'Something went wrong',
         default: 'Default',
@@ -852,6 +854,34 @@ export const en = {
             bullet2: 'Avoid using this device or sending any funds to it.',
             bullet3: 'Go to the support page linked below and use the Chat option on the website.',
             contactSupportButton: 'Contact Trezor Support',
+        },
+        securityCheckScreen: {
+            title: 'Security check',
+            subtitle: 'We need to make sure your device is safe to work with.',
+            step1: {
+                header: 'Trusted source',
+                description:
+                    'My device was bought from the official Trezor Shop or a <link>trusted reseller</link>.',
+            },
+            step2: {
+                header: 'Holographic seal',
+                description:
+                    'The <link>holographic seal</link> was complete and undamaged when I unboxed my device.',
+                modal: {
+                    alertBox:
+                        'We sold this Trezor model with two different holographic seals. Both of them are valid.',
+                    title: 'Verify the holographic seal',
+                    paragraph1:
+                        'Ensure the holographic seal on your device was intact when unboxed, with no peeling, scratches, or damage.',
+                    paragraph2: 'Proceed only if the seal was intact and undamaged.',
+                },
+            },
+            step3: {
+                header: 'Packaging',
+                description:
+                    'The package was factory sealed and intact, with no signs of tampering before unboxing.',
+            },
+            declineButton: 'I’m not sure',
         },
     },
     moduleAccountManagement: {
