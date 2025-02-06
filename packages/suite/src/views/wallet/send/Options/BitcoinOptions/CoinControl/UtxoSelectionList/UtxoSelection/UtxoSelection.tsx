@@ -34,7 +34,7 @@ const ROW_GAP = spacings.xxs;
 const LabelPart = styled.div`
     display: flex;
     align-items: center;
-    gap: ${ROW_GAP};
+    gap: ${ROW_GAP}px;
     color: ${({ theme }) => theme.textSubdued};
     overflow: hidden;
 `;
@@ -42,7 +42,7 @@ const LabelPart = styled.div`
 const DetailPartVisibleOnHover = styled.div<{ $alwaysVisible?: boolean }>`
     display: flex;
     align-items: center;
-    gap: ${ROW_GAP};
+    gap: ${ROW_GAP}px;
     color: ${({ theme }) => theme.textSubdued};
 
     ${({ $alwaysVisible }) =>
