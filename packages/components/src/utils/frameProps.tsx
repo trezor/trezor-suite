@@ -56,7 +56,7 @@ type Position = {
     left?: string | number;
 };
 
-const cursors = ['pointer', 'help', 'default', 'not-allowed'] as const;
+const cursors = ['pointer', 'help', 'default', 'not-allowed', 'inherit'] as const;
 type Cursor = (typeof cursors)[number];
 
 export type FrameProps = {
@@ -83,21 +83,21 @@ type TransientFrameProps = TransientProps<FrameProps>;
 const getValueWithUnit = (value: string | number) =>
     typeof value === 'number' ? `${value}px` : value;
 
-export const pickAndPrepareFrameProps = (
-    props: Record<string, any>,
-    allowedFrameProps: Array<FramePropsKeys>,
-    convertToTransient = true,
+export const pickAndPrepareFrameProps = <
+    TProps extends { [K in FramePropsKeys]?: FrameProps[K] },
+    KFP extends FramePropsKeys[],
+>(
+    props: TProps,
+    allowedFrameProps: KFP,
 ) => {
-    const selectedProps = allowedFrameProps.reduce(
+    const selectedProps = allowedFrameProps.reduce<{
+        [value in KFP[number]]: TProps[value];
+    }>(
         (acc, item) => ({ ...acc, [item]: props[item] }),
-        {},
+        {} as { [value in KFP[number]]: TProps[value] },
     );
 
-    if (convertToTransient) {
-        return makePropsTransient(selectedProps);
-    }
-
-    return selectedProps;
+    return makePropsTransient(selectedProps);
 };
 
 export const withFrameProps = ({

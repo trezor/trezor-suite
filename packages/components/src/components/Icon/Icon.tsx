@@ -185,8 +185,8 @@ export const Icon = forwardRef(
                 onClick={onClick ? handleClick : undefined}
                 className={className}
                 ref={ref}
-                $cursor={cursor ?? (onClick ? 'pointer' : undefined)}
                 {...frameProps}
+                $cursor={cursor ?? (onClick ? 'pointer' : undefined)}
             >
                 <SVG
                     tabIndex={onClick ? 0 : undefined}
