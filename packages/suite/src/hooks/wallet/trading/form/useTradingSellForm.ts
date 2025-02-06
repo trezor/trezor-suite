@@ -80,6 +80,7 @@ export const useTradingSellForm = ({
     const { cryptoIdToCoinSymbol } = useTradingInfo();
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
     const [accountKey, setAccountKey] = useTradingAccountKey({
+        type,
         tradingAccountKey,
         selectedAccount,
         shouldUseTradingAccountKey: isPreviousRouteFromTradeSection,
