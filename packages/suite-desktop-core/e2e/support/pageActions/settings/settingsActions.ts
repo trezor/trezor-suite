@@ -65,6 +65,7 @@ export class SettingsActions {
         this.page.getByTestId(`@settings/language-select/option/${language}`);
     readonly checkSeedButton: Locator;
     readonly metadataSwitch: Locator;
+    readonly analyticsSwitch: Locator;
 
     constructor(
         private readonly page: Page,
@@ -98,6 +99,7 @@ export class SettingsActions {
         this.languageInput = this.page.getByTestId('@settings/language-select/input');
         this.checkSeedButton = this.page.getByTestId('@settings/device/check-seed-button');
         this.metadataSwitch = this.page.getByTestId('@settings/metadata-switch');
+        this.analyticsSwitch = this.page.getByTestId('@analytics/toggle-switch');
     }
 
     @step()

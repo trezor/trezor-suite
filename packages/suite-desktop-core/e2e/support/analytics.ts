@@ -25,6 +25,10 @@ export class AnalyticsFixture {
         return event;
     }
 
+    extractRequestTypes() {
+        return this.requests.map(request => request['c_type']);
+    }
+
     //TODO: #15811 To be refactored
     @step()
     async interceptAnalytics() {
