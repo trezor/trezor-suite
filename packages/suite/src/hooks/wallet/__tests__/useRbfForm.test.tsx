@@ -17,6 +17,12 @@ import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserCont
 import * as fixtures from '../__fixtures__/useRbfForm';
 import { RbfContext, useRbf, useRbfContext } from '../useRbfForm';
 
+global.ResizeObserver = class MockedResizeObserver {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+};
+
 // do not mock
 jest.unmock('@trezor/connect');
 

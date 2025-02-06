@@ -88,18 +88,24 @@ export const useScrollShadow = () => {
 
     useEffect(() => {
         setShadows();
-        window.addEventListener('resize', () => setShadows());
-        window.addEventListener('orientationchange', () => setShadows());
+
+        const observer = new ResizeObserver(() => {
+            setShadows();
+        });
+
+        if (scrollElementRef?.current) {
+            observer.observe(scrollElementRef.current);
+        }
 
         return () => {
-            window.removeEventListener('resize', () => setShadows());
-            window.removeEventListener('orientationchange', () => setShadows());
+            observer.disconnect();
         };
     }, []);
 
     const onScroll = () => {
         setShadows();
     };
+
     type ShadowProps = { backgroundColor?: Color; style?: CSSObject };
 
     const ShadowTop = ({ backgroundColor, style }: ShadowProps) => (
