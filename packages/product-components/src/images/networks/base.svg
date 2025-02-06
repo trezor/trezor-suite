@@ -1,14 +1,4 @@
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<style>
-@media (prefers-color-scheme: dark) {
-    .background {
-        fill: #F6F6F6;
-    }
-    .foreground {
-        fill: #1F1F1F;
-    }
-}
-</style>
-<path class="background" d="M0 8C0 3.58172 3.58172 0 8 0H24C28.4183 0 32 3.58172 32 8V24C32 28.4183 28.4183 32 24 32H8C3.58172 32 0 28.4183 0 24V8Z" fill="#1F1F1F"/>
-<path class="foreground" d="M15.9826 26C21.515 26 26 21.5228 26 16C26 10.4771 21.515 6 15.9826 6C10.7337 6 6.42765 10.0299 6 15.1594H19.2408V16.8406H6C6.42765 21.9701 10.7337 26 15.9826 26Z" fill="#F6F6F6"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+    <path class="bg" fill="#1F1F1F" d="M0 8a8 8 0 0 1 8-8h16a8 8 0 0 1 8 8v16a8 8 0 0 1-8 8H8a8 8 0 0 1-8-8z"/>
+    <path class="fg" fill="#F6F6F6" d="M15.983 26C21.515 26 26 21.523 26 16S21.515 6 15.983 6C10.733 6 6.428 10.03 6 15.16h13.24v1.68H6c.428 5.13 4.734 9.16 9.983 9.16"/>
 </svg>

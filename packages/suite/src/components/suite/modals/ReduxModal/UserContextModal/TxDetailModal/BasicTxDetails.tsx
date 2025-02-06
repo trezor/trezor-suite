@@ -77,7 +77,7 @@ export const BasicTxDetails = ({
         <Card>
             <Row gap={spacings.sm}>
                 <IconWrapper $elevation={elevation}>
-                    <CoinLogo symbol={tx.symbol} size={48} type="badge" />
+                    <CoinLogo symbol={tx.symbol} size={48} type="tokenWithNetwork" />
                     <NestedIconWrapper $elevation={elevation}>
                         <Icon
                             size={14}

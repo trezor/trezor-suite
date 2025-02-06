@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-import { CoinLogoProps } from './CoinLogo';
+import { COIN_LOGO_TYPE, CoinLogoProps } from './CoinLogo';
 import { COINS } from './coins';
 import { CoinLogo as CoinLogoComponent } from '../../index';
 
@@ -19,9 +19,9 @@ const meta: Meta = {
 export default meta;
 
 export const CoinLogo: StoryObj<CoinLogoProps> = {
-    render: ({ symbol, size }) => (
+    render: ({ symbol, size, type }) => (
         <Center>
-            <CoinLogoComponent symbol={symbol} size={size} />
+            <CoinLogoComponent symbol={symbol} size={size} type={type} />
         </Center>
     ),
     args: {
@@ -33,6 +33,12 @@ export const CoinLogo: StoryObj<CoinLogoProps> = {
         },
         symbol: {
             options: Object.keys(COINS),
+            control: {
+                type: 'select',
+            },
+        },
+        type: {
+            options: COIN_LOGO_TYPE,
             control: {
                 type: 'select',
             },

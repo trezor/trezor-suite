@@ -45,7 +45,9 @@ export const AssetItem = ({
     'data-testid': dataTestId,
 }: AssetItemProps) => {
     const getCoinLogo = () =>
-        isCoinSymbol(symbol) ? <CoinLogo size={24} symbol={symbol} type="badge" /> : null;
+        isCoinSymbol(symbol) ? (
+            <CoinLogo size={24} symbol={symbol} type="tokenWithNetwork" />
+        ) : null;
     const displaySymbol = getDisplaySymbol(ticker, contractAddress);
 
     return (

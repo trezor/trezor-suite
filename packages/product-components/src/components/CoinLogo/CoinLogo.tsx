@@ -9,6 +9,9 @@ import { borders } from '@trezor/theme';
 import { COINS, LegacyNetworkSymbol } from './coins';
 import { NETWORK_ICONS } from './networks';
 
+export const COIN_LOGO_TYPE = ['token', 'network', 'tokenWithNetwork'] as const;
+export type CoinLogoType = (typeof COIN_LOGO_TYPE)[number];
+
 const DEFAULT_SIZE = 32;
 
 const getSize = (size?: number, border = 0, divisor = 1) =>
@@ -16,7 +19,7 @@ const getSize = (size?: number, border = 0, divisor = 1) =>
 
 export interface CoinLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
     symbol: NetworkSymbol | LegacyNetworkSymbol;
-    type?: 'coin' | 'network' | 'badge';
+    type?: CoinLogoType;
     className?: string;
     size?: number;
     index?: number;
@@ -42,19 +45,30 @@ const SvgWrapper = styled.div<{ $size?: number }>`
         height: ${({ $size }) => getSize($size, 1, 3)};
         line-height: 0;
         border-radius: ${borders.radii.xxs};
-        border: 1px solid white;
-        background-color: white;
+        border-width: 1px;
+        border-style: solid;
+        border-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
+        background-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
 
-        @media (prefers-color-scheme: dark) {
-            border: 1px solid black;
-            background-color: black;
+        div {
+            line-height: 0;
+        }
+    }
+
+    svg {
+        .bg {
+            fill: ${({ theme }) => theme.logoBg};
+        }
+
+        .fg {
+            fill: ${({ theme }) => theme.logoFg};
         }
     }
 `;
 
 export const CoinLogo = ({
     symbol,
-    type = 'coin',
+    type = 'token',
     className,
     size = DEFAULT_SIZE,
     ...rest
@@ -62,15 +76,20 @@ export const CoinLogo = ({
     let symbolSrc;
     let badge;
 
-    if (type === 'coin') {
+    if (type === 'token') {
         symbolSrc = COINS[symbol];
     } else if (type === 'network') {
         symbolSrc = NETWORK_ICONS[symbol as NetworkSymbol];
     } else {
         // TODO: should be changed, this is hacky way
-        const networkSymbol = getNetworkDisplaySymbol(
-            symbol as NetworkSymbol,
-        )?.toLowerCase() as NetworkSymbol;
+        let networkSymbol;
+        try {
+            networkSymbol = getNetworkDisplaySymbol(
+                symbol as NetworkSymbol,
+            ).toLowerCase() as NetworkSymbol;
+        } catch {
+            networkSymbol = symbol as NetworkSymbol;
+        }
 
         badge = networkSymbol !== symbol ? NETWORK_ICONS[symbol as NetworkSymbol] : null;
         symbolSrc = COINS[networkSymbol !== symbol ? networkSymbol : symbol];

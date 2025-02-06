@@ -161,6 +161,8 @@ const light = {
     textPrimaryPressed: palette.lightPrimaryForest900,
     textSecondaryHighlight: palette.lightSecondaryEmerald800,
     textSubdued: palette.lightGray700,
+    logoBg: palette.lightGray900,
+    logoFg: palette.lightGray100,
 };
 
 export type ThemeColorVariant = 'debug' | 'standard' | 'dark';
@@ -322,5 +324,7 @@ export const colorVariants: Record<ThemeColorVariant, Colors> = {
         textPrimaryPressed: palette.darkPrimaryForest900,
         textSecondaryHighlight: palette.darkSecondaryGreen800,
         textSubdued: palette.darkGray700,
+        logoBg: palette.darkGray900,
+        logoFg: palette.darkGray100,
     } as Colors,
 } as const;
