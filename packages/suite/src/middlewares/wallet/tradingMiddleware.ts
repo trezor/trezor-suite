@@ -1,7 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
 import { invityAPI } from '@suite-common/trading';
-import { ACCOUNTS_MODULE_PREFIX } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
 import { MODAL, ROUTER } from 'src/actions/suite/constants';
@@ -44,12 +43,10 @@ export const tradingMiddleware =
     (action: Action): Action => {
         const state = api.getState();
         const { isLoading, lastLoadedTimestamp } = state.wallet.trading;
-        const { exchangeInfo, tradingAccountKey: tradingExchangeAccountKey } =
-            state.wallet.trading.exchange;
-        const { sellInfo, tradingAccountKey: tradingSellAccountKey } = state.wallet.trading.sell;
+        const { exchangeInfo } = state.wallet.trading.exchange;
+        const { sellInfo } = state.wallet.trading.sell;
         const { router, modal } = state;
         const isRouteChange = action.type === ROUTER.LOCATION_CHANGE;
-        const isAccountUpdated = action.type === `${ACCOUNTS_MODULE_PREFIX}/updateSelectedAccount`;
 
         if (action.type === TRADING_COMMON.LOAD_DATA) {
             const account = getAccountAccordingToRoute(state);
@@ -143,18 +140,6 @@ export const tradingMiddleware =
         // it is necessary to clear the state because it could affect the next modal state
         if (isTradingRoute && (isReceiveModal || isSendModal)) {
             api.dispatch(tradingCommonActions.setTradingModalAccountKey(undefined));
-        }
-
-        // clear the account key in the Sell and Swap section when the route is not trading
-        if (
-            isAccountUpdated &&
-            !isTradingRoute &&
-            (tradingExchangeAccountKey || tradingSellAccountKey)
-        ) {
-            api.dispatch(tradingSellActions.setTradingSellAccountKey(action.payload.account?.key));
-            api.dispatch(
-                tradingExchangeActions.setTradingExchangeAccountKey(action.payload.account?.key),
-            );
         }
 
         next(action);

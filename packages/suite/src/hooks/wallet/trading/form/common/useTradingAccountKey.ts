@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { mapTestnetSymbol } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { setTradingExchangeAccountKey } from 'src/actions/wallet/tradingExchangeActions';
+import { setTradingSellAccountKey } from 'src/actions/wallet/tradingSellActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { TradingTradeSellExchangeType } from 'src/types/trading/trading';
 import { tradingGetSortedAccounts } from 'src/utils/wallet/trading/tradingUtils';
 
 interface TradingUseAccountKeyProps {
+    type: TradingTradeSellExchangeType;
     tradingAccountKey: AccountKey | undefined;
     selectedAccount: SelectedAccountLoaded;
     shouldUseTradingAccountKey?: boolean;
@@ -20,10 +24,12 @@ interface TradingUseAccountKeyProps {
  *  - selectedAccount is used as initial state if user entries from different page than trade
  */
 export const useTradingAccountKey = ({
+    type,
     tradingAccountKey,
     selectedAccount,
     shouldUseTradingAccountKey,
 }: TradingUseAccountKeyProps): [AccountKey, (state: AccountKey) => void] => {
+    const dispatch = useDispatch();
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
 
@@ -49,6 +55,17 @@ export const useTradingAccountKey = ({
 
         return selectedAccount.account.key;
     });
+
+    // update accountKey in store
+    useEffect(() => {
+        if (!shouldUseTradingAccountKey) {
+            if (type === 'sell') {
+                dispatch(setTradingSellAccountKey(accountKey));
+            } else {
+                dispatch(setTradingExchangeAccountKey(accountKey));
+            }
+        }
+    }, [accountKey, dispatch, shouldUseTradingAccountKey, type]);
 
     return [accountKey, setAccountKey];
 };
