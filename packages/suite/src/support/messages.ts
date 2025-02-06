@@ -6442,14 +6442,23 @@ export default defineMessages({
         id: 'TR_CANCEL_TX_RETURN_TO_YOUR_WALLET',
         defaultMessage: 'Return to your wallet',
     },
-    TR_CANCEL_TX_FAILED: {
-        id: 'TR_CANCEL_TX_FAILED',
+    TR_CANCEL_TX_FAILED_ALREADY_MINED: {
+        id: 'TR_CANCEL_TX_FAILED_ALREADY_MINED',
         defaultMessage: 'Cancel transaction failed',
     },
-    TR_CANCEL_TX_FAILED_DESCRIPTION: {
-        id: 'TR_CANCEL_TX_FAILED_DESCRIPTION',
+    TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION: {
+        id: 'TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION',
         defaultMessage:
             'The transaction couldn’t be canceled as it has just been confirmed on the Bitcoin network.',
+    },
+    TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED: {
+        id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED',
+        defaultMessage: 'Replace transaction failed',
+    },
+    TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION: {
+        id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION',
+        defaultMessage:
+            'The transaction couldn’t be replaced as it has just been confirmed on the Bitcoin network.',
     },
     TR_BUMP_FEE_SUBTEXT: {
         id: 'TR_BUMP_FEE_SUBTEXT',

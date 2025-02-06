@@ -58,6 +58,10 @@ export type UserContextPayload =
           decision: Deferred<boolean>;
       }
     | {
+          type: 'review-transaction-rbf-previous-transaction-mined-error';
+          decision?: Deferred<boolean>;
+      }
+    | {
           type: 'import-transaction';
           decision: Deferred<{ [key: string]: string }[]>;
       }

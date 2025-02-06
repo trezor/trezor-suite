@@ -10,9 +10,13 @@ import { TransactionReviewModalContent } from './TransactionReviewModalContent';
 // contexts are distinguished by `type` prop
 type TransactionReviewModalProps =
     | Extract<UserContextPayload, { type: 'review-transaction' }>
-    | { type: 'sign-transaction'; decision?: undefined };
+    | { type: 'sign-transaction'; decision?: undefined }
+    | Extract<
+          UserContextPayload,
+          { type: 'review-transaction-rbf-previous-transaction-mined-error' }
+      >;
 
-export const TransactionReviewModal = ({ decision }: TransactionReviewModalProps) => {
+export const TransactionReviewModal = ({ type, decision }: TransactionReviewModalProps) => {
     const send = useSelector(state => state.wallet.send);
     const stake = useSelector(selectStake);
     const dispatch = useDispatch();
@@ -31,6 +35,7 @@ export const TransactionReviewModal = ({ decision }: TransactionReviewModalProps
             decision={decision}
             txInfoState={txInfoState}
             cancelSignTx={handleCancelSignTx}
+            isRbfConfirmedError={type === 'review-transaction-rbf-previous-transaction-mined-error'}
         />
     );
 };

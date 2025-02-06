@@ -21,6 +21,22 @@ const removeTransaction = createAction(
     (payload: { account: Account; txs: { txid: string }[] }) => ({ payload }),
 );
 
+type AddTransactionActionProps = {
+    transactions: (AccountTransaction & Partial<WalletAccountTransaction>)[];
+    account: Account;
+    page?: number;
+    perPage?: number;
+};
+
+type AddTransactionActionResult = {
+    payload: {
+        transactions: WalletAccountTransaction[];
+        account: Account;
+        page?: number;
+        perPage?: number;
+    };
+};
+
 const addTransaction = createAction(
     `${TRANSACTIONS_MODULE_PREFIX}/addTransaction`,
     ({
@@ -28,19 +44,7 @@ const addTransaction = createAction(
         account,
         page,
         perPage,
-    }: {
-        transactions: (AccountTransaction & Partial<WalletAccountTransaction>)[];
-        account: Account;
-        page?: number;
-        perPage?: number;
-    }): {
-        payload: {
-            transactions: WalletAccountTransaction[];
-            account: Account;
-            page?: number;
-            perPage?: number;
-        };
-    } => ({
+    }: AddTransactionActionProps): AddTransactionActionResult => ({
         payload: {
             transactions: transactions.map(t => enhanceTransaction(t, account)),
             account,

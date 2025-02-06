@@ -22,6 +22,7 @@ import { ConfirmOnDevice } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { Deferred } from '@trezor/utils';
 
+import * as modalActions from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
@@ -32,6 +33,7 @@ import { TransactionReviewDetails } from './TransactionReviewDetails';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
+import { ReplaceByFeeFailedOriginalTxConfirmed } from '../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
 
 const isStakeState = (state: SendState | StakeState): state is StakeState => 'data' in state;
 
@@ -42,12 +44,14 @@ type TransactionReviewModalContentProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
     txInfoState: SendState | StakeState;
     cancelSignTx: () => void;
+    isRbfConfirmedError?: boolean;
 };
 
 export const TransactionReviewModalContent = ({
     decision,
     txInfoState,
     cancelSignTx,
+    isRbfConfirmedError,
 }: TransactionReviewModalContentProps) => {
     const dispatch = useDispatch();
     const account = useSelector(selectAccountIncludingChosenInTrading);
@@ -97,13 +101,16 @@ export const TransactionReviewModalContent = ({
         ? precomposedForm.stakeType
         : getTxStakeNameByDataHex(outputs[0]?.value);
 
-    const onCancel =
-        isActionAbortable || serializedTx
-            ? () => {
-                  cancelSignTx();
-                  decision?.resolve(false);
-              }
-            : undefined;
+    const onCancel = () => {
+        if (isRbfConfirmedError) {
+            dispatch(modalActions.onCancel());
+        }
+
+        if (isActionAbortable || serializedTx) {
+            cancelSignTx();
+            decision?.resolve(false);
+        }
+    };
 
     const actionLabel = getTransactionReviewModalActionText({
         stakeType,
@@ -164,17 +171,89 @@ export const TransactionReviewModalContent = ({
         reportTransactionCreatedEvent('downloaded');
     };
 
+    const BottomContent = () => {
+        if (isRbfConfirmedError) {
+            return (
+                <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    <Translation id="TR_CLOSE" />
+                </NewModal.Button>
+            );
+        }
+
+        if (areDetailsVisible) {
+            return null;
+        }
+
+        if (isBroadcastEnabled) {
+            return (
+                <NewModal.Button
+                    data-testid="@modal/send"
+                    isDisabled={!serializedTx}
+                    isLoading={isSending}
+                    onClick={handleSend}
+                >
+                    <Translation id={actionLabel} />
+                </NewModal.Button>
+            );
+        }
+
+        return (
+            <>
+                <NewModal.Button
+                    isDisabled={!serializedTx}
+                    onClick={handleCopy}
+                    data-testid="@send/copy-raw-transaction"
+                >
+                    <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
+                </NewModal.Button>
+                <NewModal.Button
+                    variant="tertiary"
+                    isDisabled={!serializedTx}
+                    onClick={handleDownload}
+                >
+                    <Translation id="DOWNLOAD_TRANSACTION" />
+                </NewModal.Button>
+            </>
+        );
+    };
+
+    const Content = () => {
+        if (areDetailsVisible) {
+            return <TransactionReviewDetails tx={precomposedTx} txHash={serializedTx?.tx} />;
+        }
+
+        if (isRbfConfirmedError) {
+            return <ReplaceByFeeFailedOriginalTxConfirmed type="replace-by-fee" />;
+        }
+
+        return (
+            <TransactionReviewOutputList
+                account={account}
+                precomposedTx={precomposedTx}
+                signedTx={serializedTx}
+                outputs={outputs}
+                buttonRequestsCount={buttonRequestsCount}
+                isRbfAction={isRbfAction}
+                isTradingAction={isTradingAction}
+                isSending={isSending}
+                stakeType={stakeType || undefined}
+            />
+        );
+    };
+
     return (
         <NewModal.Backdrop>
-            <ConfirmOnDevice
-                title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                steps={outputs.length + 1}
-                activeStep={serializedTx ? outputs.length + 2 : buttonRequestsCount}
-                deviceModelInternal={deviceModelInternal}
-                deviceUnitColor={device?.features?.unit_color}
-                successText={<Translation id="TR_CONFIRMED_TX" />}
-                onCancel={onCancel}
-            />
+            {!isRbfConfirmedError && (
+                <ConfirmOnDevice
+                    title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                    steps={outputs.length + 1}
+                    activeStep={serializedTx ? outputs.length + 2 : buttonRequestsCount}
+                    deviceModelInternal={deviceModelInternal}
+                    deviceUnitColor={device?.features?.unit_color}
+                    successText={<Translation id="TR_CONFIRMED_TX" />}
+                    onCancel={onCancel}
+                />
+            )}
             <NewModal.ModalBase
                 heading={<Translation id={areDetailsVisible ? 'TR_DETAIL' : actionLabel} />}
                 onBackClick={areDetailsVisible ? () => setAreDetailsVisible(false) : undefined}
@@ -191,53 +270,10 @@ export const TransactionReviewModalContent = ({
                         />
                     )
                 }
-                bottomContent={
-                    !areDetailsVisible &&
-                    (isBroadcastEnabled ? (
-                        <NewModal.Button
-                            data-testid="@modal/send"
-                            isDisabled={!serializedTx}
-                            isLoading={isSending}
-                            onClick={handleSend}
-                        >
-                            <Translation id={actionLabel} />
-                        </NewModal.Button>
-                    ) : (
-                        <>
-                            <NewModal.Button
-                                isDisabled={!serializedTx}
-                                onClick={handleCopy}
-                                data-testid="@send/copy-raw-transaction"
-                            >
-                                <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
-                            </NewModal.Button>
-                            <NewModal.Button
-                                variant="tertiary"
-                                isDisabled={!serializedTx}
-                                onClick={handleDownload}
-                            >
-                                <Translation id="DOWNLOAD_TRANSACTION" />
-                            </NewModal.Button>
-                        </>
-                    ))
-                }
+                bottomContent={<BottomContent />}
                 size="small"
             >
-                {areDetailsVisible ? (
-                    <TransactionReviewDetails tx={precomposedTx} txHash={serializedTx?.tx} />
-                ) : (
-                    <TransactionReviewOutputList
-                        account={account}
-                        precomposedTx={precomposedTx}
-                        signedTx={serializedTx}
-                        outputs={outputs}
-                        buttonRequestsCount={buttonRequestsCount}
-                        isRbfAction={isRbfAction}
-                        isTradingAction={isTradingAction}
-                        isSending={isSending}
-                        stakeType={stakeType || undefined}
-                    />
-                )}
+                <Content />
             </NewModal.ModalBase>
         </NewModal.Backdrop>
     );

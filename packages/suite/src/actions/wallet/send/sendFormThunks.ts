@@ -33,8 +33,8 @@ import {
 import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
 import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
-
-export const MODULE_PREFIX = '@send';
+import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
+import { MODULE_PREFIX } from './sendThunksConsts';
 
 export const saveSendFormDraftThunk = createThunk(
     `${MODULE_PREFIX}/saveSendFormDraftThunk`,
@@ -227,7 +227,13 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         );
 
         if (isRejected(signResponse)) {
-            // close modal manually since UI.CLOSE_UI.WINDOW was blocked
+            // Do not close the modal, as we need that modal to display the error state.
+            if (signResponse.payload?.message === RBF_ERROR_ALREADY_MINED) {
+                return;
+            }
+
+            // Close the modal manually since UI.CLOSE_UI.WINDOW was
+            // blocked by `modalActions.preserve` above.
             dispatch(modalActions.onCancel());
 
             return;

@@ -15,6 +15,7 @@ import walletMiddleware from './walletMiddleware';
 import graphMiddleware from './graphMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import { coinjoinMiddleware } from './coinjoinMiddleware';
+import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
 
 export default [
     prepareBlockchainMiddleware(extraDependencies),
@@ -28,4 +29,5 @@ export default [
     graphMiddleware,
     tradingMiddleware,
     coinjoinMiddleware,
+    replaceByFeeErrorMiddleware,
 ];

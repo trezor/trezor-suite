@@ -106,6 +106,8 @@ export const UserContextModal = ({
             );
         case 'review-transaction':
             return <TransactionReviewModal {...payload} />;
+        case 'review-transaction-rbf-previous-transaction-mined-error':
+            return <TransactionReviewModal {...payload} />;
         case 'cardano-withdraw-modal':
             return <CardanoWithdrawModal onCancel={onCancel} />;
         case 'trading-buy-terms': {

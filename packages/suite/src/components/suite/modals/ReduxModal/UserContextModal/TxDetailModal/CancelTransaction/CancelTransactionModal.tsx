@@ -17,11 +17,11 @@ import { spacings } from '@trezor/theme';
 
 import { CancelTransaction } from './CancelTransaction';
 import { CancelTransactionButton } from './CancelTransactionButton';
-import { CancelTransactionFailed } from './CancelTransactionFailed';
 import { useDispatch, useSelector } from '../../../../../../../hooks/suite';
 import { CancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
 import { Translation } from '../../../../../Translation';
 import { AffectedTransactions } from '../AffectedTransactions/AffectedTransactions';
+import { ReplaceByFeeFailedOriginalTxConfirmed } from '../ReplaceByFeeFailedOriginalTxConfirmed';
 import { TxDetailModalBase } from '../TxDetailModalBase';
 
 const isComposeCancelTransactionPartialAccount = (
@@ -100,7 +100,7 @@ export const CancelTransactionModal = ({
                 onBackClick={onBackClick}
             >
                 {isTxConfirmed ? (
-                    <CancelTransactionFailed />
+                    <ReplaceByFeeFailedOriginalTxConfirmed type="cancel-transaction" />
                 ) : (
                     <Column gap={spacings.md}>
                         <CancelTransaction tx={tx} selectedAccount={selectedAccount} />
