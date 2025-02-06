@@ -64,7 +64,7 @@
         "jest-diff": "^29.7.0",
         "lodash": "^4.17.21",
         "terser-webpack-plugin": "^5.3.11",
-        "webpack": "^5.96.1",
+        "webpack": "^5.97.1",
         "xvfb-maybe": "^0.2.1"
     }
 }
