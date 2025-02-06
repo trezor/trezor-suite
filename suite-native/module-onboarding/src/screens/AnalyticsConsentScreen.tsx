@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Card, Switch, Text, TitleHeader, VStack } from '@suite-native/atoms';
@@ -57,6 +58,10 @@ export const AnalyticsConsentScreen = ({
         handleOpenLink(LEARN_MORE_LINK);
     };
 
+    const toggleAnalyticsConsent = () => {
+        setIsEnabled(prevIsEnabled => !prevIsEnabled);
+    };
+
     return (
         <Screen>
             <VStack justifyContent="space-between" flex={1}>
@@ -92,23 +97,26 @@ export const AnalyticsConsentScreen = ({
                                         }
                                     />
                                 </VStack>
-                                <Box
-                                    flexDirection="row"
-                                    alignItems="center"
-                                    justifyContent="space-between"
-                                    style={applyStyle(consentWrapperStyle)}
+                                <TouchableOpacity
+                                    onPress={toggleAnalyticsConsent}
+                                    activeOpacity={0.5}
                                 >
-                                    <Text>
-                                        <Translation id="moduleOnboarding.analyticsConsentScreen.helpSwitchTitle" />
-                                    </Text>
-                                    <Switch
-                                        testID="@onboarding/AnalyticsConsent/consentSwitch"
-                                        isChecked={isEnabled}
-                                        onChange={enabled => {
-                                            setIsEnabled(enabled);
-                                        }}
-                                    />
-                                </Box>
+                                    <Box
+                                        flexDirection="row"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        style={applyStyle(consentWrapperStyle)}
+                                    >
+                                        <Text>
+                                            <Translation id="moduleOnboarding.analyticsConsentScreen.helpSwitchTitle" />
+                                        </Text>
+                                        <Switch
+                                            testID="@onboarding/AnalyticsConsent/consentSwitch"
+                                            isChecked={isEnabled}
+                                            onChange={toggleAnalyticsConsent}
+                                        />
+                                    </Box>
+                                </TouchableOpacity>
                             </VStack>
                         </Box>
                     </Card>

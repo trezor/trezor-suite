@@ -17,10 +17,17 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { setIsOnboardingFinished } from '@suite-native/settings';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+const titleStyle = prepareNativeStyle(_ => ({
+    // this title should have smaller letter spacing by design.
+    letterSpacing: -1.4,
+}));
 
 export const BiometricsScreen = ({
     navigation,
 }: StackProps<OnboardingStackParamList, OnboardingStackRoutes.Biometrics>) => {
+    const { applyStyle } = useNativeStyles();
     const { toggleBiometricsOption } = useBiometricsSettings();
 
     const dispatch = useDispatch();
@@ -68,10 +75,10 @@ export const BiometricsScreen = ({
     return (
         <Screen header={<ScreenHeader />}>
             <VStack justifyContent="space-between" flex={1}>
-                <Box flex={1} alignItems="center" paddingTop="sp32">
+                <Box flex={1} alignItems="center" justifyContent="center">
                     <BiometricsSvg />
                 </Box>
-                <VStack spacing={40}>
+                <VStack spacing="sp40">
                     <VStack spacing="sp16">
                         <HStack spacing="sp8" alignItems="center">
                             <Icon
@@ -83,7 +90,7 @@ export const BiometricsScreen = ({
                                 <Translation id="moduleOnboarding.biometricsScreen.title" />
                             </Text>
                         </HStack>
-                        <Text variant="titleMedium">
+                        <Text style={applyStyle(titleStyle)} variant="titleMedium">
                             <Translation id="moduleOnboarding.biometricsScreen.description" />
                         </Text>
                     </VStack>
