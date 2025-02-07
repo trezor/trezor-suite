@@ -85,11 +85,13 @@ const transformToInternalFlatListData = <T, U = undefined>(
                 ],
             );
 
-            if (noSingletonSectionHeader && inputData.length === 1) {
-                return [...acc, ...itemsData];
+            if (!noSingletonSectionHeader || inputData.length > 1) {
+                acc.push(['sectionHeader', label, key]);
             }
 
-            return [...acc, ['sectionHeader', label, key], ...itemsData];
+            acc.push(...itemsData);
+
+            return acc;
         },
         [] as ListInternalItemShape<T, U>[],
     );

@@ -13,7 +13,7 @@ type TradeableAssetsSheetHeaderProps = {
 
 const HEADER_HEIGHT = 160;
 
-const wrapperStyle = prepareNativeStyle<{}>(() => ({
+const wrapperStyle = prepareNativeStyle(() => ({
     height: HEADER_HEIGHT,
 }));
 

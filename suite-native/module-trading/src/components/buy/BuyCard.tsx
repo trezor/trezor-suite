@@ -1,18 +1,13 @@
 import { useFormatters } from '@suite-common/formatters';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { ReceiveAccountPicker } from './ReceiveAccountPicker';
 import { TradeableAssetPicker } from './TradeableAssetPicker';
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
 import { TradeableAsset } from '../../types';
-import { TradingOverviewRow } from '../general/TradingOverviewRow';
-
-const notImplementedCallback = () => {
-    // eslint-disable-next-line no-console
-    console.log('Not implemented');
-};
 
 const buySectionStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
     borderBottomWidth: borders.widths.small,
@@ -21,7 +16,6 @@ const buySectionStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
 }));
 
 export const BuyCard = () => {
-    const { translate } = useTranslate();
     const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
 
@@ -55,20 +49,7 @@ export const BuyCard = () => {
                     </HStack>
                 </HStack>
             </VStack>
-            <TradingOverviewRow
-                title={translate('moduleTrading.tradingScreen.receiveAccount')}
-                onPress={notImplementedCallback}
-                noBottomBorder
-            >
-                <VStack spacing={0} paddingLeft="sp20">
-                    <Text color="textSubdued" variant="body" textAlign="right">
-                        Bitcoin Vault
-                    </Text>
-                    <Text color="textSubdued" variant="hint" ellipsizeMode="tail" numberOfLines={1}>
-                        3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC
-                    </Text>
-                </VStack>
-            </TradingOverviewRow>
+            <ReceiveAccountPicker selectedSymbol={selectedValue?.symbol} />
         </Card>
     );
 };
