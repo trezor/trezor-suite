@@ -117,6 +117,7 @@ const getOutputLines = (
                 {
                     id: type,
                     type: 'amount',
+                    label: <Translation id="AMOUNT" />,
                     value,
                 },
             ];
