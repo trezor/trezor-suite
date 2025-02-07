@@ -15,7 +15,14 @@ export class DevicePromptActions {
     readonly outputValueOf = (
         section: 'default' | 'address' | 'data' | 'amount' | 'fee' | 'total',
     ) => this.page.getByTestId(`@modal/output-${section}`).getByTestId('@modal/output-value');
+    readonly cryptoAmountOf = (section: 'amount' | 'fee' | 'total') =>
+        this.page
+            .getByTestId(`@modal/output-${section}`)
+            .getByTestId('@modal/crypto-amount-with-symbol');
+    readonly fiatAmountOf = (section: 'amount' | 'fee' | 'total') =>
+        this.page.getByTestId(`@modal/output-${section}`).getByTestId('@modal/fiat-amount');
     readonly reviewAmount: Locator;
+    readonly sellButton: Locator;
 
     constructor(private page: Page) {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
@@ -26,6 +33,7 @@ export class DevicePromptActions {
         this.chunkedText = page.getByTestId('@device-display/chunked-text');
         this.outputValue = page.getByTestId('@modal/output-value');
         this.reviewAmount = page.getByTestId('@modal/transaction-review/amount');
+        this.sellButton = page.getByTestId('@modal/send');
     }
 
     @step()

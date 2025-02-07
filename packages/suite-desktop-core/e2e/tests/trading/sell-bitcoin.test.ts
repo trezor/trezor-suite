@@ -6,37 +6,48 @@ import {
     invityRequest,
     sellQuotesBTC,
     sellTradeBTC,
+    sellWatch,
 } from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
 
 const mnemonic =
     'academic again academic academic academic academic academic academic academic academic academic academic academic academic academic academic academic pecan provide remember';
 
+// Expected values based on our mocked responses
 const fiatAmount = sellQuotesBTC[0].fiatStringAmount;
 const cryptoAmount = sellQuotesBTC[0].cryptoStringAmount;
 const provider = getCompanyNameFromList(sellQuotesBTC[0].exchange, 'sellList');
+const providerAddress = sellWatch.destinationAddress;
+const providerPaymentId = sellWatch.destinationPaymentExtraId;
+const formattedCryptoAmount = `${cryptoAmount} BTC`;
+const formattedFiatAmount = `€${fiatAmount}`;
+const { paymentMethodName } = sellTradeBTC.trade;
 
 test.describe('Trading - Sell', { tag: ['@group=other', '@snapshot', '@webOnly'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic, passphrase_protection: true },
     });
     test.beforeEach(async ({ marketPage, onboardingPage, dashboardPage, walletPage }) => {
-        // if (!process.env.PASSPHRASE) {
-        //     throw new Error('PASSPHRASE not provided in env variables. Skipping the test');
-        // }
+        if (!process.env.PASSPHRASE) {
+            throw new Error('PASSPHRASE not provided in env variables. Failing test.');
+        }
         await marketPage.mockInvity();
         await marketPage.mockInvityTrade(sellTradeBTC, invityEndpoint.sellTrade);
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
         await dashboardPage.deviceSwitchingOpenButton.click();
-        // WIll be provided once the test is ready
-        // await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+        await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         await dashboardPage.discoveryShouldFinish();
         await walletPage.openTrading();
         await marketPage.sellTabButton.click();
     });
 
-    test('Sell Bitcoin for best offer', async ({ page, marketPage }) => {
+    test('Sell Bitcoin for best offer', async ({
+        page,
+        marketPage,
+        devicePrompt,
+        trezorUserEnvLink,
+    }) => {
         await test.step('Fill in a sell request', async () => {
             await marketPage.selectCountryOfResidence('CZ');
             const quoteRequestPromise = page.waitForRequest(invityEndpoint.sellQuotes);
@@ -48,7 +59,7 @@ test.describe('Trading - Sell', { tag: ['@group=other', '@snapshot', '@webOnly']
         });
 
         await test.step('Confirm sell', async () => {
-            await marketPage.sellButton.click();
+            await marketPage.formSellButton.click();
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.sellTrade);
             await marketPage.sellTermsConfirmButton.click();
             await expect(tradeRequestPromise).toHavePayload(invityRequest.sellTradePayload, {
@@ -56,6 +67,28 @@ test.describe('Trading - Sell', { tag: ['@group=other', '@snapshot', '@webOnly']
             });
         });
 
-        // TODO: Add missing steps, fix the redirection to the transaction detail
+        await test.step('Verify all confirmation values', async () => {
+            await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(marketPage.confirmationProvider).toHaveText(provider);
+            await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
+            await expect(marketPage.confirmationAddress).toHaveText(providerAddress);
+            await expect(marketPage.confirmationAccount).toHaveText('Bitcoin #1');
+            await expect(page.getByTestId('@trading/form/verify/extra-id')).toHaveText(
+                providerPaymentId,
+            );
+        });
+
+        await test.step('Initiate send', async () => {
+            await marketPage.confirmTradeButton.click();
+            await expect(devicePrompt.sellButton).toBeDisabled();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
+            await expect(devicePrompt.cryptoAmountOf('amount')).toHaveText(formattedCryptoAmount);
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
+            // Don't click the sell button, we will lose crypto.
+            await expect(devicePrompt.sellButton).toBeEnabled();
+        });
     });
 });

@@ -89,6 +89,7 @@ export class MarketActions {
     readonly sellTermsConfirmButton: Locator;
     readonly confirmOnTrezorButton: Locator;
     readonly confirmationSection: Locator;
+    readonly confirmationAccount: Locator;
     readonly confirmationAccountDropdown: Locator;
     readonly confirmationCryptoAmount: Locator;
     readonly confirmationFiatAmount: Locator;
@@ -110,9 +111,9 @@ export class MarketActions {
     readonly transactionDetailStatus: Locator;
     readonly proceedToPayButton: Locator;
     readonly transactionDetail: Locator;
-    readonly transactionWatchPeriod = '00:30';
+    readonly watchPeriod = '00:30';
     // Sell
-    readonly sellButton: Locator;
+    readonly formSellButton: Locator;
 
     constructor(private page: Page) {
         this.devicePrompt = new DevicePromptActions(page);
@@ -158,6 +159,7 @@ export class MarketActions {
             '@trading/offer/confirm-on-trezor-button',
         );
         this.confirmationSection = this.page.getByTestId('@trading/selected-offer');
+        this.confirmationAccount = this.page.getByTestId('@trading/form/verify/account');
         this.confirmationAccountDropdown = this.page.getByTestId(
             '@trading/verify-options/account/input',
         );
@@ -181,7 +183,7 @@ export class MarketActions {
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
         this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
-        this.sellButton = this.page.getByTestId('@trading/form/sell-button');
+        this.formSellButton = this.page.getByTestId('@trading/form/sell-button');
     }
 
     @step()
@@ -197,7 +199,7 @@ export class MarketActions {
         await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
         //Even though the offer sync is finished, the best offer might not be displayed correctly yet and show 0 BTC
         await expect(this.bestOfferAmount).not.toHaveText('0');
-        await expect(this.sellButton).toBeEnabled();
+        await expect(this.formSellButton).toBeEnabled();
     }
 
     @step()
@@ -256,7 +258,7 @@ export class MarketActions {
             receiveCurrency: cryptoCurrency,
             country,
             fiatStringAmount: wantCrypto ? '2500' : amount,
-            cryptoStringAmount: wantCrypto ? amount : undefined,
+            ...(wantCrypto && { cryptoStringAmount: amount }),
         });
         await quotesResponsePromise;
         await this.waitForBuyOffersSync();
@@ -299,7 +301,7 @@ export class MarketActions {
     }
 
     @step()
-    async changeTransactionWatchResponseTo(status: 'SUBMITTED' | 'SUCCESS') {
+    async changeBuyWatchResponseTo(status: 'SUBMITTED' | 'SUCCESS') {
         await this.page.route(invityEndpoint.buyWatch, async route => {
             await route.fulfill({ json: { status } });
         });

@@ -103,7 +103,7 @@ export const FormattedCryptoAmount = ({
     }
 
     const content = (
-        <Row gap={spacings.xxs}>
+        <Row gap={spacings.xxs} data-testid={`${dataTest}-with-symbol`}>
             <Row data-testid={dataTest}>
                 {!!signValue && <Sign value={signValue} />}
                 <Value $isTabular={isTabular}>

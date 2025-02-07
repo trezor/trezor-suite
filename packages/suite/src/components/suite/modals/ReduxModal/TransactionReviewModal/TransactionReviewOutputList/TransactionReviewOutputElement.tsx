@@ -86,6 +86,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
             return (
                 <>
                     <FormattedCryptoAmount
+                        data-testid="@modal/crypto-amount"
                         disableHiddenPlaceholder
                         value={formattedValue}
                         symbol={
@@ -96,7 +97,7 @@ const Value = ({ value, type, symbol, token, isFee, isFiatVisible, state }: Valu
                         isTabular={false}
                     />
                     {symbol && isFiatVisible && (
-                        <Text variant="tertiary">
+                        <Text variant="tertiary" data-testid="@modal/fiat-amount">
                             <FiatValue
                                 disableHiddenPlaceholder
                                 amount={formattedValue}

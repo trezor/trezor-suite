@@ -25,6 +25,7 @@ Steps:
     - ``export HOSTNAME=`hostname` ``
     - `export DISPLAY=${HOSTNAME}:0`
 1. In terminal window, navigate to `trezor-user-env` repo root and run `./run.sh`.
+1. In workspace `packages/suite-desktop-core` create a `.env` file according to the `.example.env`
 
 ### Web
 

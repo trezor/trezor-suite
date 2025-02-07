@@ -67,7 +67,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                         <LabelText>
                             <Translation id="TR_SELL_SEND_FROM" />
                         </LabelText>
-                        <Value>
+                        <Value data-testid="@trading/form/verify/account">
                             <AccountLabeling account={account} />
                         </Value>
                     </Row>
@@ -75,7 +75,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                         <LabelText>
                             <Translation id="TR_SELL_SEND_TO" values={{ providerName }} />
                         </LabelText>
-                        <Value>
+                        <Value data-testid="@trading/form/verify/address">
                             <Address>{destinationAddress}</Address>
                         </Value>
                     </Row>
@@ -94,7 +94,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                                     <Translation id="DESTINATION_TAG" />
                                 )}
                             </LabelText>
-                            <Value>
+                            <Value data-testid="@trading/form/verify/extra-id">
                                 <Address>{destinationPaymentExtraId}</Address>
                             </Value>
                         </Row>
@@ -106,6 +106,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                             isLoading={callInProgress}
                             isDisabled={!device?.connected}
                             onClick={sendTransaction}
+                            data-testid="@trading/offer/continue-transaction-button"
                         >
                             <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />
                         </Button>

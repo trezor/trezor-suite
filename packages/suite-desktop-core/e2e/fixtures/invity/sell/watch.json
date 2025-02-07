@@ -1,3 +1,5 @@
 {
-    "status": "SEND_CRYPTO"
+    "status": "SEND_CRYPTO",
+    "destinationAddress": "bc1q3tzqaakjpjdljaudkhusr95s23fl48wh4xdmvy",
+    "destinationPaymentExtraId": "6d666a5f-b99c-4482-b8bc-2df04fc11b7b"
 }

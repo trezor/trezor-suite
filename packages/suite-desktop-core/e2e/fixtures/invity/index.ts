@@ -44,7 +44,7 @@ export const invityEndpoint = {
     sellList: `${invityUrl}/api/v3/sell/list`,
     sellQuotes: `${invityUrl}/api/v3/sell/fiat/quotes`,
     sellTrade: `${invityUrl}/api/v3/sell/fiat/trade`,
-    sellWatch: `${invityUrl}/v3/sell/fiat/watch/0*`,
+    sellWatch: `${invityUrl}/api/v3/sell/fiat/watch/*`,
 };
 
 export const invityRequest = {
@@ -78,8 +78,9 @@ export const createRedirectedTradeResponse = (
     tradeRequest: any,
 ) => {
     const modifiedResponse = cloneDeep(tradeResponse);
-    modifiedResponse.trade.partnerData = tradeRequest.returnUrl;
-    modifiedResponse.tradeForm.form.formAction = tradeRequest.returnUrl;
+    const newRedirect = tradeRequest.returnUrl;
+    modifiedResponse.trade.partnerData = newRedirect;
+    modifiedResponse.tradeForm.form.formAction = newRedirect;
     modifiedResponse.trade.paymentId = tradeRequest.trade.paymentId;
     modifiedResponse.trade.orderId = tradeRequest.trade.orderId;
     if ('refundAddress' in modifiedResponse.trade && tradeRequest.refundAddress) {

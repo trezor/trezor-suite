@@ -155,6 +155,7 @@ jobs:
           CURRENTS_PROJECT_ID: Og0NOQ
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
           CURRENTS_CI_BUILD_ID: pr-run-${{github.run_id}}
+          PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
         run: |
           docker compose up -d ${{ matrix.CONTAINERS }}
           echo "Starting Playwright Web test group ${{ matrix.TEST_GROUP }}"
@@ -185,10 +186,3 @@ jobs:
           COMPOSE_FILE: ./docker/docker-compose.suite-ci-pw.yml
         run: docker compose down
 
-      - name: Upload Playwright report
-        if: ${{ ! cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-${{ matrix.TEST_GROUP }}
-          path: ./packages/suite-desktop-core/playwright-report/
-          retention-days: 30
