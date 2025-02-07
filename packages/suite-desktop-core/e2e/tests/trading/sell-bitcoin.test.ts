@@ -23,13 +23,15 @@ const formattedCryptoAmount = `${cryptoAmount} BTC`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeBTC.trade;
 
-test.describe('Trading - Sell', { tag: ['@group=other', '@snapshot', '@webOnly'] }, () => {
+test.describe('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic, passphrase_protection: true },
     });
     test.beforeEach(async ({ marketPage, onboardingPage, dashboardPage, walletPage }) => {
         if (!process.env.PASSPHRASE) {
-            throw new Error('PASSPHRASE not provided in env variables. Failing test.');
+            throw new Error(
+                'PASSPHRASE not provided in env variables. Check docs/tests/e2e-playwright-suite.md.',
+            );
         }
         await marketPage.mockInvity();
         await marketPage.mockInvityTrade(sellTradeBTC, invityEndpoint.sellTrade);
@@ -65,6 +67,10 @@ test.describe('Trading - Sell', { tag: ['@group=other', '@snapshot', '@webOnly']
             await expect(tradeRequestPromise).toHavePayload(invityRequest.sellTradePayload, {
                 omit: ['returnUrl', 'trade.orderId', 'trade.paymentId', 'trade.refundAddress'],
             });
+        });
+        await test.step('Wait for the redirection to complete', async () => {
+            await expect(page.getByText('Buy & sell')).not.toBeVisible();
+            await expect(page.getByText('Buy & sell')).toBeVisible({ timeout: 15_000 });
         });
 
         await test.step('Verify all confirmation values', async () => {

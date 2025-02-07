@@ -72,15 +72,14 @@ export const invityResponses = {
     [invityEndpoint.sellWatch]: sellWatch,
 };
 
-// This modification allows us to skip the provider's part of the flow and go directly to the transaction detail.
+// This modification allows us to skip the provider's part of the flow and continue further.
 export const createRedirectedTradeResponse = (
     tradeResponse: TradeResponse | SellTradeResponse,
     tradeRequest: any,
 ) => {
     const modifiedResponse = cloneDeep(tradeResponse);
-    const newRedirect = tradeRequest.returnUrl;
-    modifiedResponse.trade.partnerData = newRedirect;
-    modifiedResponse.tradeForm.form.formAction = newRedirect;
+    modifiedResponse.trade.partnerData = tradeRequest.returnUrl;
+    modifiedResponse.tradeForm.form.formAction = tradeRequest.returnUrl;
     modifiedResponse.trade.paymentId = tradeRequest.trade.paymentId;
     modifiedResponse.trade.orderId = tradeRequest.trade.orderId;
     if ('refundAddress' in modifiedResponse.trade && tradeRequest.refundAddress) {
