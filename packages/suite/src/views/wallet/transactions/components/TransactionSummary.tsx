@@ -2,6 +2,7 @@ import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
+import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { Button, Card, Column, Row, variables } from '@trezor/components';
 
 import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/graphActions';
@@ -137,14 +138,16 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                     </Column>
                 </>
             )}
-            <SummaryCards
-                selectedRange={selectedRange}
-                dataInterval={dataInterval}
-                data={data}
-                localCurrency={localCurrency}
-                account={account}
-                isLoading={isLoading}
-            />
+            {!hasNetworkPotentialFraudTransactions(account.symbol) && (
+                <SummaryCards
+                    selectedRange={selectedRange}
+                    dataInterval={dataInterval}
+                    data={data}
+                    localCurrency={localCurrency}
+                    account={account}
+                    isLoading={isLoading}
+                />
+            )}
         </Column>
     );
 };
