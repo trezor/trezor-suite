@@ -42,10 +42,6 @@ const Expander = styled.div`
 const WelcomeWrapper = styled.div<{ $elevation: Elevation }>`
     background-color: ${mapElevationToBackground};
     height: 100%;
-
-    @media (max-width: ${variables.SCREEN_SIZE.MD}) {
-        display: none;
-    }
 `;
 
 const MotionWelcome = styled(motion.div)`
