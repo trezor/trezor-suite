@@ -1,6 +1,6 @@
 import { D } from '@mobily/ts-belt';
 
-import { getNetworkType } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -39,11 +39,16 @@ export const getIsFakeTokenPhishing = (
         );
     }); // there is hidden or unknown token in tx
 
+// NOTE: This function determins, for which symbols there are filters in the UI to hide / display spam transactions
+// when handling fraud for other symbols, make sure this function is updated!
+export const hasNetworkPotentialFraudTransactions = (symbol: NetworkSymbol) =>
+    getNetworkType(symbol) === 'ethereum';
+
 export const getIsPhishingTransaction = (
     transaction: WalletAccountTransaction,
     tokenDefinitions: TokenDefinitions,
 ) =>
-    getNetworkType(transaction.symbol) === 'ethereum' &&
+    hasNetworkPotentialFraudTransactions(transaction.symbol) &&
     (getIsZeroValuePhishing(transaction) ||
         (D.isNotEmpty(tokenDefinitions) && // at least one token definition is available
             getIsFakeTokenPhishing(transaction, tokenDefinitions)));

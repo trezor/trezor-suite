@@ -48,12 +48,15 @@ const Actions = styled.div<{ $isActive: boolean }>`
     ${typography.callout};
 `;
 
+const LIMITED_NUMBER_OF_NEXT_VISIBLE_PAGES = 2;
+
 interface PaginationProps {
     currentPage: number;
     isLastPage?: boolean;
     hasPages?: boolean;
     perPage: number;
     totalItems: number;
+    isPageListLimited?: boolean;
     onPageSelected: (page: number) => void;
 }
 
@@ -64,6 +67,7 @@ export const Pagination = ({
     isLastPage,
     perPage,
     totalItems,
+    isPageListLimited,
     ...rest
 }: PaginationProps) => {
     const totalPages = Math.ceil(totalItems / perPage);
@@ -109,17 +113,24 @@ export const Pagination = ({
             </Actions>
 
             {totalPages ? (
-                calculatedPages.map(i => (
-                    <PageItem
-                        key={i}
-                        data-testid={`@wallet/accounts/pagination/${i}`}
-                        data-test-activated={i === currentPage}
-                        onClick={() => onPageSelected(i)}
-                        $isActive={i === currentPage}
-                    >
-                        {i}
-                    </PageItem>
-                ))
+                calculatedPages
+                    .slice(
+                        0,
+                        isPageListLimited
+                            ? currentPage + LIMITED_NUMBER_OF_NEXT_VISIBLE_PAGES
+                            : calculatedPages.length,
+                    )
+                    .map(i => (
+                        <PageItem
+                            key={i}
+                            data-testid={`@wallet/accounts/pagination/${i}`}
+                            data-test-activated={i === currentPage}
+                            onClick={() => onPageSelected(i)}
+                            $isActive={i === currentPage}
+                        >
+                            {i}
+                        </PageItem>
+                    ))
             ) : (
                 <>
                     {[...Array(currentPage - 1)].map((_p, i) => (
@@ -142,7 +153,7 @@ export const Pagination = ({
 
             <Actions $isActive={currentPage < (totalPages || 1)}>
                 <PageItem onClick={() => onPageSelected(currentPage + 1)}>›</PageItem>
-                {totalPages && totalPages > 2 && (
+                {totalPages && totalPages > 2 && !isPageListLimited && (
                     <PageItem onClick={() => onPageSelected(totalPages)}>»</PageItem>
                 )}
             </Actions>

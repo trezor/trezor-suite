@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { Card, Column, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
@@ -42,9 +43,13 @@ export const WalletTransactionList = ({
         return <NoVisibleTransactions />;
     }
 
+    const fraudTransactionPossible = hasNetworkPotentialFraudTransactions(symbol);
+
     return (
         <TransactionList
             key={account.key} // NOTE: ensure that transaction list is unmounted when account key changes
+            customPageFetching={fraudTransactionPossible}
+            isPagingLimited={fraudTransactionPossible}
             allTransactions={result.allTransactions}
             transactions={result.visibleTransactions}
             symbol={symbol}

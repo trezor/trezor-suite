@@ -33,6 +33,7 @@ interface TransactionListProps {
     symbol: WalletAccountTransaction['symbol'];
     isLoading?: boolean;
     account: Account;
+    isPagingLimited?: boolean;
     customTotalItems?: number;
     isExportable?: boolean;
     customPageFetching?: boolean;
@@ -45,6 +46,7 @@ export const TransactionList = ({
     isLoading,
     account,
     symbol,
+    isPagingLimited,
     customTotalItems,
     onPageRequested,
     isExportable = true,
@@ -195,6 +197,7 @@ export const TransactionList = ({
 
             {showPagination && (
                 <Pagination
+                    isPageListLimited={Boolean(isPagingLimited)}
                     hasPages={!isRipple}
                     currentPage={currentPage}
                     isLastPage={isLastRipplePage}

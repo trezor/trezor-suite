@@ -43,6 +43,7 @@ export const TREZOR_CONNECT_BACKENDS = [
     'blockfrost',
     'solana',
 ] as const;
+
 export const NON_STANDARD_BACKENDS = ['coinjoin'] as const;
 
 type TrezorConnectBackendType = (typeof TREZOR_CONNECT_BACKENDS)[number];

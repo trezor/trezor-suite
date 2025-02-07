@@ -1,11 +1,11 @@
 import { networks } from './networksConfig';
-import type {
-    AccountType,
-    Network,
-    NetworkFeature,
-    NetworkSymbol,
-    NetworkSymbolExtended,
-    NormalizedNetworkAccount,
+import {
+    type AccountType,
+    type Network,
+    type NetworkFeature,
+    type NetworkSymbol,
+    type NetworkSymbolExtended,
+    type NormalizedNetworkAccount,
 } from './types';
 
 export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
