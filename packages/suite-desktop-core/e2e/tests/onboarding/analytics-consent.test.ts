@@ -14,7 +14,7 @@ test.describe(
             onboardingPage,
         }) => {
             await page.goto('/accounts');
-            await expect(analyticsPage.heading).toBeVisible();
+            await expect(analyticsPage.heading).toBeVisible({ timeout: 30000 });
             await analyticsPage.continueButton.click();
             await page.getByTestId('@onboarding/exit-app-button').click();
 

@@ -6,6 +6,12 @@ test.describe(
     () => {
         test.use({ startEmulator: false });
 
+        test.beforeEach(async ({ trezorUserEnvLink }) => {
+            await trezorUserEnvLink.stopBridge();
+            await trezorUserEnvLink.stopEmu();
+            await trezorUserEnvLink.startBridge();
+        });
+
         test('Offer webusb as primary choice on web', async ({ page, analyticsPage }) => {
             await analyticsPage.continueButton.click();
             await expect(page.getByTestId('@webusb-button')).toBeVisible();
@@ -14,6 +20,10 @@ test.describe(
                 'aria-expanded',
                 'true',
             );
+        });
+
+        test.afterEach(async ({ trezorUserEnvLink }) => {
+            await trezorUserEnvLink.stopBridge();
         });
     },
 );
