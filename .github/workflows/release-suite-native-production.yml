@@ -34,7 +34,7 @@ jobs:
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
-          eas-version: latest
+          eas-version: 14.7.1
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Install libs
         run: yarn workspaces focus @suite-native/app
@@ -62,7 +62,7 @@ jobs:
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
-          eas-version: latest
+          eas-version: 14.7.1
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Install libs
         run: yarn workspaces focus @suite-native/app
@@ -90,7 +90,7 @@ jobs:
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
-          eas-version: latest
+          eas-version: 14.7.1
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
