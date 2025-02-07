@@ -62,6 +62,7 @@ describe('Interceptor', () => {
 
     beforeAll(() => {
         createInterceptor(interceptorOptions);
+        jest.spyOn(console, 'error').mockImplementation(() => {});
     });
 
     it('Blocks websocket connections', async () => {

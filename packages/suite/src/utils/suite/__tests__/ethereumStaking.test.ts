@@ -154,6 +154,20 @@ describe('getStakeFormsDefaultValues', () => {
 });
 
 describe('getStakeTxGasLimit', () => {
+    beforeAll(() => {
+        const originalError = console.error;
+
+        jest.spyOn(console, 'error').mockImplementation((...args) => {
+            const errorMessage = args[0];
+
+            if (typeof errorMessage === 'object') {
+                return;
+            }
+
+            originalError(...args);
+        });
+    });
+
     getStakeTxGasLimitFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);

@@ -9,7 +9,7 @@ import { Preloader } from '../Preloader';
 
 // render only Translation.id in data-test attribute
 jest.mock('src/components/suite/Translation', () => ({
-    Translation: ({ id }: any) => <div data-testid={id}>{id}</div>,
+    Translation: ({ id }: any) => <span data-testid={id}>{id}</span>,
 }));
 
 // @trezor/connect fetching ethereum definitions
@@ -149,6 +149,24 @@ const deviceCompromisedFixtures = [
 ];
 
 describe('Preloader component', () => {
+    beforeAll(() => {
+        const originalWarn = console.warn;
+
+        jest.spyOn(console, 'warn').mockImplementation((...args) => {
+            const warningMessage = args[0];
+
+            if (
+                (typeof warningMessage === 'string' &&
+                    warningMessage.startsWith('Firmware hash check failed!')) ||
+                warningMessage.startsWith('Firmware revision check failed')
+            ) {
+                return;
+            }
+
+            originalWarn(...args);
+        });
+    });
+
     it('Loading: suite is loading', () => {
         const store = initStore(
             getInitialState({
