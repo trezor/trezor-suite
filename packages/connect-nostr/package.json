@@ -1,0 +1,20 @@
+{
+    "name": "@trezor/connect-nostr",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "test:e2e": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "nostr-tools": "^2.10.4",
+        "ws": "^8.18.0"
+    },
+    "devDependencies": {
+        "@types/ws": "^8.5.13"
+    }
+}
