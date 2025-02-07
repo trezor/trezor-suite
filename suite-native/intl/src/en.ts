@@ -1345,6 +1345,17 @@ export const en = {
             emptyDescription:
                 'We couldn’t find a country matching your search. Try checking the spelling or exploring the list for the right option.',
         },
+        accountSheet: {
+            addressEmptyTitle: 'No address found',
+            addressEmptyDescription:
+                'We couldn’t find an address matching your search. Try checking the spelling or exploring the list for the right option.',
+            titleStep1: 'Pick account',
+            newAddress: 'New address',
+            usedAddresses: 'Used addresses',
+            step2Hint: 'Select to display account addresses',
+            balanceFiat: 'Balance in fiat',
+            balanceCrypto: 'Balance in crypto',
+        },
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',
     },

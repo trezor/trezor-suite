@@ -3,7 +3,10 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../navigation" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        }
     ],
     "include": [".", "**/*.json"]
 }

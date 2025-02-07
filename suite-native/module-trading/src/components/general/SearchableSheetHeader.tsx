@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useState } from 'react';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { BottomSheetGrabber, VStack } from '@suite-native/atoms';
+import { IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -11,6 +12,8 @@ import { SheetHeaderTitle } from './SheetHeaderTitle';
 export type SearchableSheetHeaderProps = {
     onClose: () => void;
     title: ReactNode;
+    leftButtonIcon?: IconName;
+    leftButtonA11yLabel?: string;
     onFilterFocusChange?: (isFilterActive: boolean) => void;
     children?: ReactNode;
     style?: NativeStyleObject;
@@ -20,7 +23,7 @@ export const FOCUS_ANIMATION_DURATION = 300 as const;
 
 const noOp = () => {};
 
-const wrapperStyle = prepareNativeStyle<{}>(({ spacings }) => ({
+const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
     padding: spacings.sp16,
     gap: spacings.sp16,
 }));
@@ -31,6 +34,8 @@ export const SearchableSheetHeader = ({
     children,
     onFilterFocusChange = noOp,
     style,
+    leftButtonIcon = 'x',
+    leftButtonA11yLabel,
 }: SearchableSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
@@ -56,9 +61,11 @@ export const SearchableSheetHeader = ({
                         exiting={FadeOut.duration(FOCUS_ANIMATION_DURATION)}
                     >
                         <SheetHeaderTitle
-                            leftButtonIcon="x"
+                            leftButtonIcon={leftButtonIcon}
                             onLeftButtonPress={onClose}
-                            leftButtonA11yLabel={translate('generic.buttons.close')}
+                            leftButtonA11yLabel={
+                                leftButtonA11yLabel ?? translate('generic.buttons.close')
+                            }
                         >
                             {title}
                         </SheetHeaderTitle>
