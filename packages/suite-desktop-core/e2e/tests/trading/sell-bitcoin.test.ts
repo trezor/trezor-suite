@@ -93,7 +93,8 @@ test.describe('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
             await expect(devicePrompt.cryptoAmountOf('amount')).toHaveText(formattedCryptoAmount);
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
-            // Don't click the sell button, we will lose crypto.
+            // Note: We intentionally skip clicking the sell button in tests to prevent actual cryptocurrency transactions.
+            // In a real scenario, the user would complete the transaction by clicking this button.
             await expect(devicePrompt.sellButton).toBeEnabled();
         });
     });

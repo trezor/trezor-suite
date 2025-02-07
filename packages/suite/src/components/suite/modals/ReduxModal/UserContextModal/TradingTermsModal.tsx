@@ -73,7 +73,7 @@ export const TradingTermsModal = ({
             }
             bottomContent={
                 <NewModal.Button
-                    data-testid={`@trading/${lowercaseType}/offers/buy-terms-confirm-button`}
+                    data-testid={`@trading/${lowercaseType}/offers/trade-terms-confirm-button`}
                     onClick={() => {
                         decision.resolve(true);
                         onCancel();

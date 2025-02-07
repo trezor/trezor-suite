@@ -150,10 +150,10 @@ export class MarketActions {
         this.selectThisQuoteButton = this.page.getByTestId('@trading/offers/get-this-deal-button');
         this.modal = this.page.getByTestId('@modal');
         this.buyTermsConfirmButton = this.page.getByTestId(
-            '@trading/buy/offers/buy-terms-confirm-button',
+            '@trading/buy/offers/trade-terms-confirm-button',
         );
         this.sellTermsConfirmButton = this.page.getByTestId(
-            '@trading/sell/offers/buy-terms-confirm-button',
+            '@trading/sell/offers/trade-terms-confirm-button',
         );
         this.confirmOnTrezorButton = this.page.getByTestId(
             '@trading/offer/confirm-on-trezor-button',
