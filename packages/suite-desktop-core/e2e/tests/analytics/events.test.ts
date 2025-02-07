@@ -7,7 +7,9 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
     test.use({
         startEmulator: false,
     });
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ trezorUserEnvLink, onboardingPage }) => {
+        await trezorUserEnvLink.stopBridge();
+        await trezorUserEnvLink.stopEmu();
         await onboardingPage.disableFirmwareHashCheck();
     });
 
@@ -25,7 +27,6 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
 
         await trezorUserEnvLink.startEmu({ wipe: true, model: 'T3T1', version: '2.8.1' });
         await trezorUserEnvLink.setupEmu({
-            needs_backup: false,
             passphrase_protection: true,
         });
 
@@ -33,7 +34,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
 
         // reload to activate bridge and start testing app with enabled analytics
         await page.reload();
-        analytics.interceptAnalytics();
+        await analytics.interceptAnalytics();
         await onboardingPage.optionallyDismissFwHashCheckError();
         await page.getByTestId('@onboarding/exit-app-button').click();
 
@@ -87,13 +88,12 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
     }) => {
         await trezorUserEnvLink.startEmu({ wipe: true, model: 'T3T1' });
         await trezorUserEnvLink.setupEmu({
-            needs_backup: false,
             passphrase_protection: true,
         });
 
         await trezorUserEnvLink.startBridge();
 
-        analytics.interceptAnalytics();
+        await analytics.interceptAnalytics();
 
         await settingsPage.navigateTo('application');
 
