@@ -13,6 +13,7 @@ export const allowedDomains = [
     'localhost',
     '127.0.0.1',
     'trezor.io',
+    'sldev.cz', // Test environment, available only with VPN
     'invity.io',
     'api.github.com',
     'api.dropboxapi.com',
