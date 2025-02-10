@@ -1,5 +1,10 @@
 import { A, pipe } from '@mobily/ts-belt';
 
+import {
+    Feature,
+    MessageSystemRootState,
+    selectIsFeatureEnabled,
+} from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
@@ -156,7 +161,9 @@ export const selectFirmwareRevisionCheckError = (state: DeviceRootState) => {
     return checkResult.error;
 };
 
-type FwAuthenticityCheckState = NativeDeviceRootState & FeatureFlagsRootState;
+type FwAuthenticityCheckState = NativeDeviceRootState &
+    FeatureFlagsRootState &
+    MessageSystemRootState;
 /**
  * Get firmware revision check error, or null if check was successful / skipped, if the check is enabled in settings and through message system.
  */
@@ -167,8 +174,13 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: FwAuthenticityC
         state,
         FeatureFlag.IsFwRevisionCheckEnabled,
     );
-    const isCheckEnabled = isFirmwareRevisionCheckEnabled && isFeatureFlagEnabled;
-    // TODO #16456 disable also by message-system feature flag
+    const isMessageSystemFeatureEnabled = selectIsFeatureEnabled(
+        state,
+        Feature.firmwareRevisionCheckMobile,
+        true,
+    );
+    const isCheckEnabled =
+        isFirmwareRevisionCheckEnabled && isFeatureFlagEnabled && isMessageSystemFeatureEnabled;
 
     return isCheckEnabled ? revisionCheckError : null;
 };

@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         {

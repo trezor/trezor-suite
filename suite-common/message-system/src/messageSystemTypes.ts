@@ -24,6 +24,7 @@ export const Feature = {
     ethUnstake: 'eth.staking.unstake',
     ethClaim: 'eth.staking.claim',
     firmwareRevisionCheck: 'security.firmware.revisionCheck',
+    firmwareRevisionCheckMobile: 'security.firmware.revisionCheck.mobile',
     firmwareHashCheck: 'security.firmware.hashCheck',
     entropyCheck: 'security.entropyCheck',
     // FW update feature flag implemented only for mobile app
