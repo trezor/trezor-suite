@@ -179,7 +179,7 @@ const updateConfigFromJSON = async () => {
                 'develop',
                 '--head',
                 branchName,
-                '--add-label',
+                '--label',
                 'no-project',
             ]);
         }
