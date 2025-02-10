@@ -70,19 +70,11 @@ export const CardWithDevice = ({
     const isLocked = useDevice().isLocked(true);
     const dispatch = useDispatch();
 
-    const onSolveIssueClick = () => {
-        const needsAcquire =
-            device.type === 'unacquired' ||
-            deviceStatus === 'used-in-other-window' ||
-            deviceStatus === 'was-used-in-other-window';
-        if (needsAcquire) {
-            dispatch(acquireDevice(device));
-        } else {
-            dispatch(selectDeviceThunk({ device }));
-            dispatch(redirectAfterWalletSelectedThunk());
-            onCancel?.(false);
-        }
-    };
+    const needsAcquire = [
+        'unacquired',
+        'used-in-other-window',
+        'was-used-in-other-window',
+    ].includes(deviceStatus);
 
     return (
         <Card paddingType="small">
@@ -102,9 +94,17 @@ export const CardWithDevice = ({
                         variant="warning"
                         rightContent={
                             <Banner.Button
-                                onClick={onSolveIssueClick}
+                                onClick={() => {
+                                    if (needsAcquire) {
+                                        dispatch(acquireDevice(device));
+                                    } else {
+                                        dispatch(selectDeviceThunk({ device }));
+                                        dispatch(redirectAfterWalletSelectedThunk());
+                                        onCancel?.(false);
+                                    }
+                                }}
                                 data-testid="@switch-device/solve-issue-button"
-                                isDisabled={isLocked}
+                                isDisabled={!needsAcquire && isLocked}
                             >
                                 <Translation id="TR_SOLVE_ISSUE" />
                             </Banner.Button>
