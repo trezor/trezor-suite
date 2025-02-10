@@ -3,7 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { createReducerWithExtraDeps, createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { tradingBuyActions } from '../../actions/buyActions';
 import { accounts } from '../../reducers/__fixtures__/account';
@@ -26,6 +26,10 @@ jest.mock('@suite-common/wallet-core', () => ({
 }));
 
 describe('Testing trading thunks', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     it('testing verifyAddressThunk - save verified address', async () => {
         const store = configureMockStore({
             extra: {},
@@ -43,7 +47,7 @@ describe('Testing trading thunks', () => {
         });
 
         const account = accounts[0];
-        const address = account.addresses?.unused[0].address;
+        const addressData = account.addresses?.unused[0];
 
         (selectSelectedDevice as jest.Mock).mockImplementation(() => ({
             connected: true,
@@ -60,14 +64,14 @@ describe('Testing trading thunks', () => {
         await store.dispatch(
             tradingThunks.verifyAddressThunk({
                 account,
-                address,
-                path: account.addresses?.unused[0].path,
+                address: addressData?.address,
+                path: addressData?.path,
                 tradingAction: tradingBuyActions.verifyAddress.type,
             }),
         );
 
         expect(store.getActions().length).toEqual(6);
-        expect(store.getState().wallet.trading.buy.addressVerified).toEqual(address);
+        expect(store.getState().wallet.trading.buy.addressVerified).toEqual(addressData?.address);
     });
 
     it('testing verifyAddressThunk - device not found', async () => {

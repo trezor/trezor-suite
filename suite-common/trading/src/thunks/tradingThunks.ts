@@ -25,7 +25,7 @@ const verifyAddressThunk = createThunk(
         { dispatch, getState, extra },
     ) => {
         const device = selectSelectedDevice(getState());
-        if (!device || !account) return;
+        if (!device) return;
         const accountAddress = getUnusedAddressFromAccount(account);
         address = address ?? accountAddress.address;
         path = path ?? accountAddress.path;
