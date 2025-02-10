@@ -14,39 +14,9 @@ export type AssetListItemProps = {
     onPress: () => void;
     onFavouritePress: () => void;
     isFavourite?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
-};
-
-type AssetItemStyleProps = {
-    isFirst: boolean;
-    isLast: boolean;
 };
 
 export const ASSET_ITEM_HEIGHT = 68;
-
-const itemStyle = prepareNativeStyle<AssetItemStyleProps>(
-    ({ colors, spacings, borders }, { isFirst, isLast }) => ({
-        backgroundColor: colors.backgroundSurfaceElevation1,
-        paddingHorizontal: spacings.sp12,
-        extend: [
-            {
-                condition: isFirst,
-                style: {
-                    borderTopLeftRadius: borders.radii.r20,
-                    borderTopRightRadius: borders.radii.r20,
-                },
-            },
-            {
-                condition: isLast,
-                style: {
-                    borderBottomLeftRadius: borders.radii.r20,
-                    borderBottomRightRadius: borders.radii.r20,
-                },
-            },
-        ],
-    }),
-);
 
 const vStackStyle = prepareNativeStyle(({ spacings }) => ({
     height: ASSET_ITEM_HEIGHT,
@@ -63,8 +33,6 @@ export const TradeableAssetListItem = ({
     onPress,
     onFavouritePress,
     isFavourite = false,
-    isFirst = false,
-    isLast = false,
 }: AssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { DisplaySymbolFormatter, FiatAmountFormatter, NetworkNameFormatter } = useFormatters();
@@ -72,12 +40,7 @@ export const TradeableAssetListItem = ({
     const assetName = name ?? <NetworkNameFormatter value={symbol} />;
 
     return (
-        <Pressable
-            onPress={onPress}
-            accessibilityRole="radio"
-            accessibilityLabel={name ?? symbol}
-            style={applyStyle(itemStyle, { isFirst, isLast })}
-        >
+        <Pressable onPress={onPress} accessibilityRole="radio" accessibilityLabel={name ?? symbol}>
             <HStack alignItems="center" spacing="sp12">
                 <Box justifyContent="center">
                     <RoundedIcon symbol={symbol} contractAddress={contractAddress} />
