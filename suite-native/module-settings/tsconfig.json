@@ -38,7 +38,8 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/urls" }
     ],
     "include": [".", "**/*.json"]
 }

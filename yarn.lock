@@ -11485,6 +11485,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@trezor/urls": "workspace:*"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -11755,6 +11756,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/urls": "workspace:*"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"

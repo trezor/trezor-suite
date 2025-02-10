@@ -17,6 +17,7 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@trezor/urls": "workspace:*",
         "react-redux": "8.0.7"
     }
 }

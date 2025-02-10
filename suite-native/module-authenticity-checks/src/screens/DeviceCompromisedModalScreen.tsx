@@ -15,11 +15,9 @@ import {
     ScreenHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL } from '@trezor/urls';
 
-// TODO this page is for desktop; await creation of new page tailored to the suite-native UX
-const TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL =
-    'https://trezor.io/support/a/trezor-fw-revision-check-failed';
-const chatUrl = `${TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL}#open-chat`;
+const chatUrl = `${TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL}#open-chat`;
 
 const InformativeList = () => (
     <VStack spacing="sp24">

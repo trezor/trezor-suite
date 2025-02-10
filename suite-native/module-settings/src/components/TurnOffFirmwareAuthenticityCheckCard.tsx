@@ -11,19 +11,16 @@ import {
 } from '@suite-native/settings';
 import { useToast } from '@suite-native/toasts';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { HELP_CENTER_FIRMWARE_REVISION_CHECK_MOBILE } from '@trezor/urls';
 
 import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
-
-// TODO this page is for desktop; await creation of new page tailored to the suite-native UX
-const HELP_CENTER_FIRMWARE_REVISION_CHECK =
-    'https://trezor.io/learn/a/trezor-firmware-authenticity-check';
 
 const fullWidthButtonStyle = prepareNativeStyle(() => ({ flex: 1 }));
 
 const LearnMoreButton = () => {
     const { applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
-    const handleButtonPress = () => openLink(HELP_CENTER_FIRMWARE_REVISION_CHECK);
+    const handleButtonPress = () => openLink(HELP_CENTER_FIRMWARE_REVISION_CHECK_MOBILE);
 
     return (
         <Button

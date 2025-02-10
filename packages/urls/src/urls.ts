@@ -28,7 +28,9 @@ export const TREZOR_SUPPORT_RECOVERY_ISSUES_URL: Url =
 export const TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL: Url =
     'https://trezor.io/support/a/trezor-safe-device-authentication-check-failed';
 export const TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL: Url =
-    'https://trezor.io/support/a/trezor-fw-revision-check-failed';
+    'https://trezor.io/support/a/trezor-fw-authenticity-check-failed';
+export const TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL: Url =
+    'https://trezor.io/support/a/trezor-fw-authenticity-check-failed-mobile';
 export const TREZOR_SUPPORT_FW_ALREADY_INSTALLED: Url =
     'https://trezor.io/support/a/firmware-is-already-installed';
 export const TREZOR_SUPPORT_IS_MY_DEVICE_SAFE: Url =
@@ -115,6 +117,9 @@ export const HELP_CENTER_EVM_SEND_TO_CONTRACT_URL =
     'https://trezor.io/support/a/where-is-my-ethereum';
 export const HELP_CENTER_FIRMWARE_REVISION_CHECK: Url =
     'https://trezor.io/learn/a/trezor-firmware-authenticity-check';
+export const HELP_CENTER_FIRMWARE_REVISION_CHECK_MOBILE: Url =
+    'https://trezor.io/learn/a/trezor-firmware-authenticity-check-mobile';
+
 export const HELP_CENTER_REPLACE_BY_FEE_ETHEREUM: Url =
     'https://trezor.io/learn/a/replace-by-fee-rbf-ethereum';
 export const HELP_CENTER_REPLACE_BY_FEE_BITCOIN =
