@@ -20,6 +20,9 @@ import {
     prepareStakeReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
+// Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
+// This is causing problems handling types in WalletConnect, so we import the reducer directly instead of the whole module
+import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import {
     DiscoveryConfigState,
@@ -65,6 +68,7 @@ const tradingReducer = tradingSlice.prepareReducer(extraDependencies);
 const stakeReducer = prepareStakeReducer(extraDependencies);
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
+const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -95,6 +99,7 @@ export const prepareRootReducers = async () => {
         stake: stakeReducer,
         tradingNew: tradingPersistedReducer,
         connectPopup: connectPopupReducer,
+        walletConnect: walletConnectReducer,
     });
 
     const walletPersistedReducer = await preparePersistReducer({

@@ -36,20 +36,24 @@ export const connectPopupCallThunkInner = createThunk<
                 __info: true,
             });
             if (!methodInfo.success) {
-                connectPopupActions.initiateCall({
-                    state: 'call-error',
-                    callError: ERRORS.TypedError(methodInfo.payload.code),
-                });
+                dispatch(
+                    connectPopupActions.initiateCall({
+                        state: 'call-error',
+                        callError: ERRORS.TypedError(methodInfo.payload.code),
+                    }),
+                );
                 throw methodInfo;
             }
             if (
                 methodInfo.payload.requiredPermissions.includes('management') ||
                 methodInfo.payload.requiredPermissions.includes('push_tx')
             ) {
-                connectPopupActions.initiateCall({
-                    state: 'call-error',
-                    callError: ERRORS.TypedError('Method_NotAllowed'),
-                });
+                dispatch(
+                    connectPopupActions.initiateCall({
+                        state: 'call-error',
+                        callError: ERRORS.TypedError('Method_NotAllowed'),
+                    }),
+                );
 
                 return;
             }
@@ -89,6 +93,8 @@ export const connectPopupCallThunkInner = createThunk<
             // Note: for mobile this needs to be called explicitly, on desktop it's automatically handled by middleware
             dispatch(deviceActions.removeButtonRequests({ device }));
 
+            dispatch(connectPopupActions.finishCall());
+
             return response;
         } catch (error) {
             console.error('connectPopupCallThunk', error);
@@ -116,64 +122,81 @@ export const connectPopupCallThunk = <M extends keyof typeof TrezorConnect>(
 export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
     `${CONNECT_POPUP_MODULE}/deeplinkThunk`,
     async ({ url }, { dispatch }) => {
+        let parsedUrl;
         try {
-            const parsedUrl = new URL(url);
-            const path = parsedUrl.pathname;
-            const queryParams = Object.fromEntries(parsedUrl.searchParams.entries());
+            parsedUrl = new URL(url);
+        } catch (error) {
+            console.warn('Invalid deeplink URL', { error, url });
 
-            const version = path && path.split('/').slice(-2, -1)[0];
-            if (
-                !queryParams?.method ||
-                !queryParams?.params ||
-                !queryParams?.callback ||
-                typeof queryParams?.params !== 'string' ||
-                typeof queryParams?.method !== 'string' ||
-                typeof queryParams?.callback !== 'string' ||
-                !Object.prototype.hasOwnProperty.call(TrezorConnect, queryParams?.method)
-            ) {
-                dispatch(
-                    connectPopupActions.initiateCall({
-                        state: 'call-error',
-                        callError: TypedError('Method_InvalidParameter'),
-                    }),
-                );
+            return;
+        }
 
-                return;
-            }
+        const path = parsedUrl.pathname;
+        const queryParams = Object.fromEntries(parsedUrl.searchParams.entries());
 
-            if (!version || parseInt(version) > DEEPLINK_VERSION) {
-                dispatch(
-                    connectPopupActions.initiateCall({
-                        state: 'call-error',
-                        callError: TypedError('Deeplink_VersionMismatch'),
-                    }),
-                );
-
-                return;
-            }
-
-            const payload = JSON.parse(queryParams.params);
-            const { method, callback } = queryParams;
-            const callbackUrl = new URL(callback);
-
-            const response = await dispatch(
-                connectPopupCallThunk({
-                    processName: 'deeplink',
-                    origin: `${callbackUrl.protocol}//${callbackUrl.host}`,
-                    // @ts-expect-error: method is dynamic
-                    method,
-                    payload,
-                }),
-            ).unwrap();
-            callbackUrl.searchParams.set('response', JSON.stringify(response));
+        // Validate params
+        const version = path && path.split('/').slice(-2, -1)[0];
+        if (
+            !queryParams?.method ||
+            !queryParams?.params ||
+            !queryParams?.callback ||
+            typeof queryParams?.params !== 'string' ||
+            typeof queryParams?.method !== 'string' ||
+            typeof queryParams?.callback !== 'string' ||
+            !Object.prototype.hasOwnProperty.call(TrezorConnect, queryParams?.method)
+        ) {
             dispatch(
                 connectPopupActions.initiateCall({
-                    state: 'deeplink-callback',
-                    callbackUrl: callbackUrl.toString(),
+                    state: 'call-error',
+                    callError: TypedError('Method_InvalidParameter'),
                 }),
             );
-        } catch (error) {
-            console.warn('Ignoring invalid deeplink URL', { error, url });
+
+            return;
         }
+
+        if (!version || parseInt(version) > DEEPLINK_VERSION) {
+            dispatch(
+                connectPopupActions.initiateCall({
+                    state: 'call-error',
+                    callError: TypedError('Deeplink_VersionMismatch'),
+                }),
+            );
+
+            return;
+        }
+
+        const { method, callback } = queryParams;
+        let payload, callbackUrl;
+        try {
+            payload = JSON.parse(queryParams.params);
+            callbackUrl = new URL(callback);
+        } catch {
+            dispatch(
+                connectPopupActions.initiateCall({
+                    state: 'call-error',
+                    callError: TypedError('Method_InvalidParameter'),
+                }),
+            );
+
+            return;
+        }
+
+        const response = await dispatch(
+            connectPopupCallThunk({
+                processName: 'deeplink',
+                origin: `${callbackUrl.protocol}//${callbackUrl.host}`,
+                // @ts-expect-error: method is dynamic
+                method,
+                payload,
+            }),
+        ).unwrap();
+        callbackUrl.searchParams.set('response', JSON.stringify(response));
+        dispatch(
+            connectPopupActions.initiateCall({
+                state: 'deeplink-callback',
+                callbackUrl: callbackUrl.toString(),
+            }),
+        );
     },
 );

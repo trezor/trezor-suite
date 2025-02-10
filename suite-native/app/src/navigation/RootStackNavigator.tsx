@@ -11,7 +11,11 @@ import {
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
 import { DeviceCompromisedModalScreen } from '@suite-native/module-authenticity-checks';
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
-import { ConnectPopupScreen } from '@suite-native/module-connect-popup';
+import {
+    ConnectPopupScreen,
+    WalletConnectPairScreen,
+    WalletConnectSessionPopupScreen,
+} from '@suite-native/module-connect-popup';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
@@ -80,6 +84,14 @@ export const RootStackNavigator = () => {
                 component={DevUtilsStackNavigator}
             />
             <RootStack.Screen name={RootStackRoutes.ConnectPopup} component={ConnectPopupScreen} />
+            <RootStack.Screen
+                name={RootStackRoutes.WalletConnectSessionPopup}
+                component={WalletConnectSessionPopupScreen}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.WalletConnectPair}
+                component={WalletConnectPairScreen}
+            />
             <RootStack.Screen
                 name={RootStackRoutes.SettingsScreenStack}
                 component={SettingsStackNavigator}

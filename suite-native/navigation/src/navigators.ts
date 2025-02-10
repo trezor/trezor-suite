@@ -224,6 +224,8 @@ export type RootStackParamList = {
     [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
     [RootStackRoutes.CoinEnablingInit]: undefined;
     [RootStackRoutes.ConnectPopup]: undefined;
+    [RootStackRoutes.WalletConnectSessionPopup]: undefined;
+    [RootStackRoutes.WalletConnectPair]: undefined;
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
     [RootStackRoutes.DeviceCompromisedModalScreen]: undefined;
 };

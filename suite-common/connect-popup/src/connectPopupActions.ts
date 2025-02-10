@@ -10,6 +10,8 @@ const initiateCall = createAction(`${ACTION_PREFIX}/initiateCall`, (payload: Con
 
 const approveCall = createAction(`${ACTION_PREFIX}/approveCall`);
 
+const finishCall = createAction(`${ACTION_PREFIX}/finishCall`);
+
 const rejectCall = createAction(`${ACTION_PREFIX}/rejectCall`, (payload: Error) => ({
     payload,
 }));
@@ -17,5 +19,6 @@ const rejectCall = createAction(`${ACTION_PREFIX}/rejectCall`, (payload: Error) 
 export const connectPopupActions = {
     initiateCall,
     approveCall,
+    finishCall,
     rejectCall,
 } as const;

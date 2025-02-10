@@ -308,6 +308,7 @@ export const en = {
         title: 'Trezor Connect Mobile',
         callback: 'Callback',
         confirm: 'Confirm',
+        cancel: 'Cancel',
         areYouSureMessage: 'Are you sure you want to continue?\nMake sure you trust the source.',
         connectionStatus: {
             loading: 'Loading...',
@@ -322,6 +323,29 @@ export const en = {
         },
         bottomSheets: {
             confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',
+        },
+        walletConnect: {
+            title: 'WalletConnect',
+            message:
+                'An external app is trying to connect to your Trezor Suite. Make sure you trust the source!',
+            connect: 'Connect',
+            pairingUrl: 'Enter pairing URL',
+            scanQR: 'Scan QR code',
+            activeConnections: 'Active connections',
+            noActiveConnections: 'No active connections',
+            disconnect: 'Disconnect',
+            serviceStatus: {
+                verified: 'Verified',
+                unknown: 'Unknown',
+                dangerous: 'Dangerous',
+            },
+            errors: {
+                requestExpired:
+                    'Request has expired. Please go back to the application and try again.',
+                isScam: 'The request was detected as a scam and was blocked automatically.',
+                unableToVerify:
+                    'We were unable to verify the request authenticity. Please make sure you trust the source.',
+            },
         },
     },
     moduleDevice: {
@@ -556,6 +580,10 @@ export const en = {
                 deviceChecks: {
                     title: 'Device checks',
                     subtitle: 'Authenticity and security checks',
+                },
+                walletConnect: {
+                    title: 'WalletConnect',
+                    subtitle: 'Use external apps using the WalletConnect protocol',
                 },
             },
             support: {

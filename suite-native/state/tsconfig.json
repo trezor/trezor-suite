@@ -25,6 +25,9 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/walletconnect"
+        },
         { "path": "../blockchain" },
         { "path": "../device" },
         { "path": "../device-authorization" },

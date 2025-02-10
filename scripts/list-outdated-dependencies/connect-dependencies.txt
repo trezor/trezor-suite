@@ -93,4 +93,5 @@ scroll-into-view-if-needed
 @reown/walletkit
 @walletconnect/core
 @walletconnect/utils
+@walletconnect/react-native-compat
 html-inline-script-webpack-plugin

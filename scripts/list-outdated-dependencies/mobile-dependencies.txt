@@ -77,3 +77,6 @@ fantasticon
 @whatwg-node/events
 abortcontroller-polyfill
 event-target-shim
+@react-native-async-storage/async-storage
+@types/fast-text-encoding
+fast-text-encoding

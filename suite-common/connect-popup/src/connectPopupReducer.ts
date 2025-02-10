@@ -22,6 +22,9 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             .addCase(connectPopupActions.initiateCall, (state, { payload }) => {
                 state.activeCall = payload;
             })
+            .addCase(connectPopupActions.finishCall, state => {
+                state.activeCall = { state: 'finished' };
+            })
             .addCase(connectPopupActions.approveCall, state => {
                 if (state.activeCall?.state === 'request') state.activeCall.confirmation.resolve();
                 state.activeCall = undefined;

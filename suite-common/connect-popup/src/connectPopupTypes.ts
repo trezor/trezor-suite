@@ -18,4 +18,7 @@ export type ConnectPopupCall =
     | {
           state: 'deeplink-callback';
           callbackUrl: string;
+      }
+    | {
+          state: 'finished';
       };

@@ -11,9 +11,10 @@
     },
     "dependencies": {
         "@react-navigation/native": "6.1.18",
-        "@reduxjs/toolkit": "1.9.5",
+        "@reduxjs/toolkit": "2.6.0",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/walletconnect": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/device": "workspace:*",

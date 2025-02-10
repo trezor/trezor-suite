@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import * as Linking from 'expo-linking';
 
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import {
@@ -30,11 +29,8 @@ export const ConnectPopupScreen = () => {
     const [showDebug, setShowDebug] = useState<boolean>(false);
 
     useEffect(() => {
-        if (popupCall?.state === 'deeplink-callback') {
-            Linking.openURL(popupCall.callbackUrl);
-            if (navigation.canGoBack()) {
-                navigation.goBack();
-            }
+        if (popupCall?.state == 'finished' && navigation.canGoBack()) {
+            navigation.goBack();
         }
     }, [popupCall, navigation]);
 
