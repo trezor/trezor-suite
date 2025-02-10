@@ -32,7 +32,7 @@
         "@sentry/core": "8.47.0",
         "@sentry/react-native": "6.5.0",
         "@shopify/flash-list": "^1.7.2",
-        "@shopify/react-native-skia": "^1.5.10",
+        "@shopify/react-native-skia": "^1.11.6",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/formatters": "workspace:*",
