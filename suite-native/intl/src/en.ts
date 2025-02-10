@@ -38,7 +38,7 @@ export const en = {
     },
     moduleHome: {
         graphIgnoredNetworks: {
-            sol: 'Solana is not included in the graph trend.',
+            sol: 'Solana is not included in the graph.',
         },
         emptyState: {
             device: {
