@@ -14,7 +14,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
-import { isRbfTransaction } from './transactionUtils';
+import { isRbfBumpFeeTransaction } from './transactionUtils';
 
 export const getTransactionReviewOutputState = (
     index: number,
@@ -102,10 +102,10 @@ const constructOldFlow = ({
     const hasBitcoinLockTime = 'bitcoinLockTime' in precomposedForm;
     const hasRippleDestinationTag = 'rippleDestinationTag' in precomposedForm;
 
-    const isRbf = isRbfTransaction(precomposedTx);
+    const isBumpFeeRbf = isRbfBumpFeeTransaction(precomposedTx);
 
     // used in the bump fee flow
-    if (isRbf && precomposedTx.useNativeRbf) {
+    if (isBumpFeeRbf && precomposedTx.useNativeRbf) {
         outputs.push(
             {
                 type: 'txid',
@@ -192,7 +192,7 @@ const constructOldFlow = ({
                 value: precomposedForm.rippleDestinationTag,
             });
         }
-    } else if (!isRbf || !precomposedTx.useNativeRbf) {
+    } else if (!isBumpFeeRbf || !precomposedTx.useNativeRbf) {
         outputs.push({ type: 'fee', value: precomposedTx.fee });
     }
 
@@ -219,7 +219,7 @@ const constructNewFlow = ({
         outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
     }
 
-    const isRbf = isRbfTransaction(precomposedTx);
+    const isRbf = isRbfBumpFeeTransaction(precomposedTx);
 
     // used in the bump fee flow
     if (isRbf && precomposedTx.useNativeRbf) {

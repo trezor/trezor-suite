@@ -9,7 +9,7 @@ import {
 import { PrecomposedTransactionFinal, StakeFormState, StakeType } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
-    isRbfTransaction,
+    isRbfBumpFeeTransaction,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     tryGetAccountIdentity,
@@ -118,7 +118,7 @@ const pushTransaction =
                 );
             }
 
-            if (isRbfTransaction(precomposedTx)) {
+            if (isRbfBumpFeeTransaction(precomposedTx)) {
                 // notification from the backend may be delayed.
                 // modify affected transaction(s) in the reducer until the real account update occurs.
                 // this will update transaction details (like time, fee etc.)

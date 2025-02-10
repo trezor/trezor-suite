@@ -16,7 +16,7 @@ import {
     constructTransactionReviewOutputs,
     getIsUpdatedSendFlow,
     getTransactionReviewOutputState,
-    isRbfTransaction,
+    isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 
 import { StatefulReviewOutput } from './types';
@@ -30,7 +30,9 @@ export const selectTransactionReviewOutputs = (
     const precomposedTx = selectSendPrecomposedTx(state);
 
     const decreaseOutputId =
-        precomposedTx !== undefined && isRbfTransaction(precomposedTx) && precomposedTx.useNativeRbf
+        precomposedTx !== undefined &&
+        isRbfBumpFeeTransaction(precomposedTx) &&
+        precomposedTx.useNativeRbf
             ? precomposedForm?.setMaxOutputId
             : undefined;
 

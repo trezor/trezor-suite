@@ -10,7 +10,8 @@ import {
     ChainedTransactions,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalRbf,
+    PrecomposedTransactionFinalBumpFeeRbf,
+    PrecomposedTransactionFinalCancelRbf,
     RatesByTimestamps,
     RbfTransactionParams,
     Timestamp,
@@ -64,7 +65,16 @@ export const isPending = (tx: WalletAccountTransaction | AccountTransaction) => 
 
 export const isRbfTransaction = (
     tx: GeneralPrecomposedTransactionFinal,
-): tx is PrecomposedTransactionFinalRbf => 'prevTxid' in tx && tx.prevTxid !== undefined;
+): tx is PrecomposedTransactionFinalBumpFeeRbf | PrecomposedTransactionFinalCancelRbf =>
+    'rbfType' in tx;
+
+export const isRbfBumpFeeTransaction = (
+    tx: GeneralPrecomposedTransactionFinal,
+): tx is PrecomposedTransactionFinalBumpFeeRbf => isRbfTransaction(tx) && tx.rbfType === 'bump-fee';
+
+export const isRbfCancelTransaction = (
+    tx: GeneralPrecomposedTransactionFinal,
+): tx is PrecomposedTransactionFinalCancelRbf => isRbfTransaction(tx) && tx.rbfType === 'cancel';
 
 /* Convert date to string in YYYY-MM-DD format */
 const generateTransactionDateKey = (d: Date) =>

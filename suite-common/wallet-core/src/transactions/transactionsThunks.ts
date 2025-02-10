@@ -5,7 +5,7 @@ import {
     AccountKey,
     PrecomposedTransactionCardanoFinal,
     PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalRbf,
+    PrecomposedTransactionFinalBumpFeeRbf,
     Timestamp,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
@@ -15,7 +15,7 @@ import {
     findTransactions,
     getPendingAccount,
     getRbfParams,
-    isRbfTransaction,
+    isRbfBumpFeeTransaction,
     isTrezorConnectBackendType,
     replaceEthereumSpecific,
     tryGetAccountIdentity,
@@ -44,7 +44,7 @@ import { selectSendSignedTx } from '../send/sendFormReducer';
  */
 interface ReplaceTransactionThunkParams {
     // transaction input parameters. It has to be passed as argument rather than obtained form send-form state, because this thunk is used also by eth-staking module that uses different redux state.
-    precomposedTransaction: PrecomposedTransactionFinalRbf;
+    precomposedTransaction: PrecomposedTransactionFinalBumpFeeRbf;
     newTxid: string;
 }
 
@@ -54,7 +54,7 @@ export const replaceTransactionThunk = createThunk(
         { precomposedTransaction, newTxid }: ReplaceTransactionThunkParams,
         { getState, dispatch },
     ) => {
-        if (!isRbfTransaction(precomposedTransaction)) return; // ignore if it's not a replacement tx
+        if (!isRbfBumpFeeTransaction(precomposedTransaction)) return; // ignore if it's not a replacement tx
 
         const walletTransactions = selectTransactions(getState());
         const signedTransaction = selectSendSignedTx(getState());
@@ -156,7 +156,7 @@ export const addFakePendingTxThunk = createThunk(
 
         Object.keys(affectedAccounts).forEach(key => {
             const affectedAccount = affectedAccounts[key];
-            if (!isRbfTransaction(precomposedTransaction)) {
+            if (!isRbfBumpFeeTransaction(precomposedTransaction)) {
                 // create and profile pending transaction for affected account if it's not a replacement tx
                 const affectedAccountTransaction = blockbookUtils.transformTransaction(
                     signedTransaction,

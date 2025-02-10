@@ -46,7 +46,7 @@ import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
-import { isRbfTransaction } from './transactionUtils';
+import { isRbfBumpFeeTransaction } from './transactionUtils';
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
@@ -1014,21 +1014,23 @@ export const getPendingAccount = ({
     // calculate availableBalance
     let availableBalanceBig = new BigNumber(account.availableBalance);
 
-    const isRbf = isRbfTransaction(tx);
+    const isBumpFeeRbf = isRbfBumpFeeTransaction(tx);
 
     if (!receivingAccount) {
-        availableBalanceBig = availableBalanceBig.minus(isRbf ? tx.feeDifference : tx.totalSpent);
+        availableBalanceBig = availableBalanceBig.minus(
+            isBumpFeeRbf ? tx.feeDifference : tx.totalSpent,
+        );
     }
     // get utxo
     const utxo = getUtxoFromSignedTransaction({
         account,
         tx,
         txid,
-        prevTxid: isRbf ? tx.prevTxid : undefined,
+        prevTxid: isBumpFeeRbf ? tx.prevTxid : undefined,
         receivingAccount,
     });
 
-    if (!isRbf) {
+    if (!isBumpFeeRbf) {
         // join all account addresses
 
         const addresses = getAccountAddresses(account);

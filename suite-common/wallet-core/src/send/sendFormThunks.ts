@@ -13,8 +13,8 @@ import {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinal,
+    PrecomposedTransactionFinalBumpFeeRbf,
     PrecomposedTransactionFinalCardano,
-    PrecomposedTransactionFinalRbf,
 } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
@@ -533,25 +533,26 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             (!hasDecreasedOutput && nativeRbfAvailable) ||
             (hasDecreasedOutput && decreaseOutputAvailable);
 
-        const enhancedPrecomposedTransaction: GeneralPrecomposedTransactionFinal = {
-            ...precomposedTransaction,
+        const createGeneralPrecomposedTransactionFinal = (): GeneralPrecomposedTransactionFinal => {
+            if (!isCardanoTx(selectedAccount, precomposedTransaction) && formValues.rbfParams) {
+                const enhancedRbfPrecomposedTx: PrecomposedTransactionFinalBumpFeeRbf = {
+                    ...precomposedTransaction,
+                    rbfType: 'bump-fee',
+                    prevTxid: formValues.rbfParams.txid,
+                    feeDifference: new BigNumber(precomposedTransaction.fee)
+                        .minus(formValues.rbfParams.baseFee)
+                        .toFixed(),
+                    useNativeRbf: !!useNativeRbf,
+                    useDecreaseOutput: !!hasDecreasedOutput,
+                };
+
+                return enhancedRbfPrecomposedTx;
+            }
+
+            return precomposedTransaction;
         };
 
-        if (!isCardanoTx(selectedAccount, enhancedPrecomposedTransaction)) {
-            if (formValues.rbfParams) {
-                (enhancedPrecomposedTransaction as PrecomposedTransactionFinalRbf).prevTxid =
-                    formValues.rbfParams.txid;
-                (enhancedPrecomposedTransaction as PrecomposedTransactionFinalRbf).feeDifference =
-                    new BigNumber(precomposedTransaction.fee)
-                        .minus(formValues.rbfParams.baseFee)
-                        .toFixed();
-                (enhancedPrecomposedTransaction as PrecomposedTransactionFinalRbf).useNativeRbf =
-                    !!useNativeRbf;
-                (
-                    enhancedPrecomposedTransaction as PrecomposedTransactionFinalRbf
-                ).useDecreaseOutput = !!hasDecreasedOutput;
-            }
-        }
+        const enhancedPrecomposedTransaction = createGeneralPrecomposedTransactionFinal();
 
         if (
             !isCardanoTx(selectedAccount, enhancedPrecomposedTransaction) &&

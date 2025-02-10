@@ -18,9 +18,9 @@ import {
     Account,
     FormState,
     GeneralPrecomposedTransactionFinal,
-    PrecomposedTransactionFinalRbf,
+    PrecomposedTransactionFinalBumpFeeRbf,
 } from '@suite-common/wallet-types';
-import { isCardanoTx, isRbfTransaction } from '@suite-common/wallet-utils';
+import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
 import { getSynchronize } from '@trezor/utils';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -100,7 +100,7 @@ const updateRbfLabelsThunk = createThunk(
             txid,
         }: {
             labelsToBeEdited: RbfLabelsToBeUpdated;
-            precomposedTransaction: PrecomposedTransactionFinalRbf;
+            precomposedTransaction: PrecomposedTransactionFinalBumpFeeRbf;
             txid: string;
         },
         { dispatch },
@@ -248,10 +248,10 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             return;
         }
 
-        const isRbf = isRbfTransaction(precomposedTransaction);
+        const isBumpFeeRbf = isRbfBumpFeeTransaction(precomposedTransaction);
 
         // This has to be executed prior to pushing the transaction!
-        const rbfLabelsToBeEdited = isRbf
+        const rbfLabelsToBeEdited = isBumpFeeRbf
             ? dispatch(findLabelsToBeMovedOrDeleted({ prevTxid: precomposedTransaction.prevTxid }))
             : null;
 
@@ -269,7 +269,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         const result = pushResponse.payload;
         const { txid } = result.payload;
 
-        if (isRbf && rbfLabelsToBeEdited) {
+        if (isBumpFeeRbf && rbfLabelsToBeEdited) {
             dispatch(
                 updateRbfLabelsThunk({
                     labelsToBeEdited: rbfLabelsToBeEdited,

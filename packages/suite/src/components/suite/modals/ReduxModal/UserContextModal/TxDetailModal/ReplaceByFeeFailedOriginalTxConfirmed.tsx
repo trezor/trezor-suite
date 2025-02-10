@@ -1,3 +1,4 @@
+import { RbfTransactionType } from '@suite-common/wallet-types';
 import { Box, Card, Column, IconCircle, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import {
@@ -9,23 +10,23 @@ import {
 import { Translation, TranslationKey } from '../../../../Translation';
 import { TrezorLink } from '../../../../TrezorLink';
 
-type ReplaceByFeeFailedOriginalTxConfirmedProps = {
-    type: 'replace-by-fee' | 'cancel-transaction';
+export type ReplaceByFeeFailedOriginalTxConfirmedProps = {
+    type: RbfTransactionType;
 };
 
 const titleMap: Record<ReplaceByFeeFailedOriginalTxConfirmedProps['type'], TranslationKey> = {
-    'replace-by-fee': 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED',
-    'cancel-transaction': 'TR_CANCEL_TX_FAILED_ALREADY_MINED',
+    'bump-fee': 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED',
+    cancel: 'TR_CANCEL_TX_FAILED_ALREADY_MINED',
 };
 
 const descriptionMap: Record<ReplaceByFeeFailedOriginalTxConfirmedProps['type'], TranslationKey> = {
-    'replace-by-fee': 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION',
-    'cancel-transaction': 'TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION',
+    'bump-fee': 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION',
+    cancel: 'TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION',
 };
 
 const helpLink: Record<ReplaceByFeeFailedOriginalTxConfirmedProps['type'], Url> = {
-    'replace-by-fee': HELP_CENTER_REPLACE_BY_FEE_BITCOIN,
-    'cancel-transaction': HELP_CENTER_CANCEL_TRANSACTION,
+    'bump-fee': HELP_CENTER_REPLACE_BY_FEE_BITCOIN,
+    cancel: HELP_CENTER_CANCEL_TRANSACTION,
 };
 
 export const ReplaceByFeeFailedOriginalTxConfirmed = ({

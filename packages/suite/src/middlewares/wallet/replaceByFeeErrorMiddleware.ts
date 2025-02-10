@@ -13,20 +13,25 @@ export const replaceByFeeErrorMiddleware =
     (action: Action): Action => {
         next(action);
 
-        if (transactionsActions.addTransaction.match(action)) {
-            const { transactions } = action.payload;
+        if (!transactionsActions.addTransaction.match(action)) {
+            return action;
+        }
 
-            const precomposedTx = api.getState().wallet.send?.precomposedTx;
+        const { transactions } = action.payload;
+        const precomposedTx = api.getState().wallet.send?.precomposedTx;
 
-            if (precomposedTx !== undefined && isRbfTransaction(precomposedTx)) {
-                const addedTransaction = transactions.find(
-                    tx => tx.txid === precomposedTx.prevTxid,
-                );
+        if (precomposedTx === undefined) {
+            return action;
+        }
 
-                if (addedTransaction !== undefined && addedTransaction.blockHeight !== undefined) {
-                    api.dispatch(replaceByFeeErrorThunk());
-                }
-            }
+        if (!isRbfTransaction(precomposedTx)) {
+            return action;
+        }
+
+        const addedTransaction = transactions.find(tx => tx.txid === precomposedTx.prevTxid);
+
+        if (addedTransaction !== undefined && addedTransaction.blockHeight !== undefined) {
+            api.dispatch(replaceByFeeErrorThunk());
         }
 
         return action;

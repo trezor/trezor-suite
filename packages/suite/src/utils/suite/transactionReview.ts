@@ -3,13 +3,15 @@ import { StakeFormState } from '@suite-common/wallet-types';
 
 interface getTransactionReviewModalActionTextParams {
     stakeType: StakeFormState['stakeType'] | null;
-    isRbfAction: boolean;
+    isBumpFeeRbfAction: boolean;
+    isCancelRbfAction: boolean;
     isSending?: boolean;
 }
 
 export const getTransactionReviewModalActionText = ({
     stakeType,
-    isRbfAction,
+    isBumpFeeRbfAction,
+    isCancelRbfAction,
     isSending,
 }: getTransactionReviewModalActionTextParams): TranslationKey => {
     switch (stakeType) {
@@ -22,8 +24,12 @@ export const getTransactionReviewModalActionText = ({
         // no default
     }
 
-    if (isRbfAction) {
+    if (isBumpFeeRbfAction) {
         return 'TR_REPLACE_TX';
+    }
+
+    if (isCancelRbfAction) {
+        return 'TR_CANCEL_TX';
     }
 
     if (isSending) {

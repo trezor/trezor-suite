@@ -8,11 +8,11 @@ import {
 import {
     Account,
     ChainedTransactions,
+    PrecomposedTransactionFinalCancelRbf,
     SelectedAccountLoaded,
     WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { Banner, Column, NewModal } from '@trezor/components';
-import { PrecomposeResultFinal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { CancelTransaction } from './CancelTransaction';
@@ -50,7 +50,8 @@ export const CancelTransactionModal = ({
     const { account } = selectedAccount;
 
     const dispatch = useDispatch();
-    const [composedCancelTx, setComposedCancelTx] = useState<PrecomposeResultFinal | null>(null);
+    const [composedCancelTx, setComposedCancelTx] =
+        useState<PrecomposedTransactionFinalCancelRbf | null>(null);
 
     const confirmations = useSelector(state =>
         selectTransactionConfirmations(state, tx.txid, account.key),
@@ -69,7 +70,9 @@ export const CancelTransactionModal = ({
 
         dispatch(composeCancelTransactionThunk({ account, tx, chainedTxs }))
             .unwrap()
-            .then(setComposedCancelTx)
+            .then(precomposed => {
+                setComposedCancelTx({ ...precomposed, rbfType: 'cancel', prevTxid: tx.txid });
+            })
             .catch(setError);
     }, [account, tx, dispatch, chainedTxs]);
 
@@ -100,7 +103,7 @@ export const CancelTransactionModal = ({
                 onBackClick={onBackClick}
             >
                 {isTxConfirmed ? (
-                    <ReplaceByFeeFailedOriginalTxConfirmed type="cancel-transaction" />
+                    <ReplaceByFeeFailedOriginalTxConfirmed type="cancel" />
                 ) : (
                     <Column gap={spacings.md}>
                         <CancelTransaction tx={tx} selectedAccount={selectedAccount} />

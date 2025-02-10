@@ -14,7 +14,7 @@ import {
     getBitcoinComposeOutputs,
     getUtxoOutpoint,
     hasNetworkFeatures,
-    isRbfTransaction,
+    isRbfBumpFeeTransaction,
     restoreOrigOutputsOrder,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
@@ -273,7 +273,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
 
         if (
             formState.rbfParams &&
-            isRbfTransaction(precomposedTransaction) &&
+            isRbfBumpFeeTransaction(precomposedTransaction) &&
             precomposedTransaction.useNativeRbf
         ) {
             const { txid, utxo, outputs } = formState.rbfParams;

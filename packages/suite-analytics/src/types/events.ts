@@ -36,6 +36,24 @@ export type SuiteAnalyticsEventSuiteReady = {
     };
 };
 
+export type TransactionCreatedEvent = {
+    type: EventType.TransactionCreated;
+    payload: {
+        action: 'sent' | 'copied' | 'downloaded' | 'replaced' | 'canceled';
+        symbol: string;
+        tokens: string;
+        outputsCount: number;
+        broadcast: boolean;
+        bitcoinLockTime: boolean;
+        ethereumData: boolean;
+        ethereumNonce: boolean;
+        rippleDestinationTag: boolean;
+        selectedFee: string;
+        isCoinControlEnabled: boolean;
+        hasCoinControlBeenOpened: boolean;
+    };
+};
+
 export type SuiteAnalyticsEvent =
     | SuiteAnalyticsEventSuiteReady
     | {
@@ -198,23 +216,7 @@ export type SuiteAnalyticsEvent =
               type: 'exchange' | 'buy' | 'sell';
           };
       }
-    | {
-          type: EventType.TransactionCreated;
-          payload: {
-              action: 'sent' | 'copied' | 'downloaded' | 'replaced';
-              symbol: string;
-              tokens: string;
-              outputsCount: number;
-              broadcast: boolean;
-              bitcoinLockTime: boolean;
-              ethereumData: boolean;
-              ethereumNonce: boolean;
-              rippleDestinationTag: boolean;
-              selectedFee: string;
-              isCoinControlEnabled: boolean;
-              hasCoinControlBeenOpened: boolean;
-          };
-      }
+    | TransactionCreatedEvent
     | {
           type: EventType.SendRawTransaction;
           payload: {

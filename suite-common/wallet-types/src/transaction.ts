@@ -103,7 +103,7 @@ export type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectRespon
 };
 
 // base of PrecomposedTransactionFinal
-type TxFinal = PrecomposedTransactionConnectResponseFinal & {
+type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     max?: string;
     feeLimit?: string;
     estimatedFeeLimit?: string;
@@ -120,7 +120,10 @@ export type PrecomposedTransactionCardanoFinal =
         token?: TokenInfo;
     };
 
-export type PrecomposedTransactionFinalRbf = TxFinal & {
+export type RbfTransactionType = 'bump-fee' | 'cancel';
+
+export type PrecomposedTransactionFinalBumpFeeRbf = PrecomposedTransactionBase & {
+    rbfType: 'bump-fee';
     prevTxid: string;
     feeDifference: string;
     // Native RBF is a firmware feature to recognize an RBF transaction and simplify transaction review flow.
@@ -128,8 +131,16 @@ export type PrecomposedTransactionFinalRbf = TxFinal & {
     useDecreaseOutput: boolean;
 };
 
-// strict distinction between normal and RBF type
-export type PrecomposedTransactionFinal = TxFinal | PrecomposedTransactionFinalRbf;
+export type PrecomposedTransactionFinalCancelRbf = PrecomposedTransactionBase & {
+    rbfType: 'cancel';
+    prevTxid: string;
+};
+
+// Strict distinction between Normal-Tx and Bump-Fee-Tx / Cancel-Tx
+export type PrecomposedTransactionFinal =
+    | PrecomposedTransactionBase
+    | PrecomposedTransactionFinalBumpFeeRbf
+    | PrecomposedTransactionFinalCancelRbf;
 
 export type PrecomposedTransaction =
     | PrecomposedTransactionError
@@ -142,6 +153,7 @@ export type PrecomposedTransactionCardano =
     | PrecomposedTransactionCardanoFinal;
 
 export type GeneralPrecomposedTransaction = PrecomposedTransaction | PrecomposedTransactionCardano;
+
 export type GeneralPrecomposedTransactionFinal = Extract<
     GeneralPrecomposedTransaction,
     { type: 'final' }

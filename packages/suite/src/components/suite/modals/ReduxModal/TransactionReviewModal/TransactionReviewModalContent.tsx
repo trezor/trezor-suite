@@ -10,16 +10,18 @@ import {
     selectSendFormReviewButtonRequestsCount,
     selectStakePrecomposedForm,
 } from '@suite-common/wallet-core';
-import { FormState, StakeFormState } from '@suite-common/wallet-types';
+import { FormState, RbfTransactionType, StakeFormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,
     getTxStakeNameByDataHex,
+    isRbfBumpFeeTransaction,
+    isRbfCancelTransaction,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
 import { NewModal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType, TransactionCreatedEvent, analytics } from '@trezor/suite-analytics';
 import { Deferred } from '@trezor/utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -39,6 +41,14 @@ const isStakeState = (state: SendState | StakeState): state is StakeState => 'da
 
 const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState =>
     'stakeType' in form;
+
+const mapRbfTypeToReporting: Record<
+    RbfTransactionType,
+    TransactionCreatedEvent['payload']['action']
+> = {
+    'bump-fee': 'replaced',
+    cancel: 'canceled',
+};
 
 type TransactionReviewModalContentProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
@@ -70,10 +80,13 @@ export const TransactionReviewModalContent = ({
     );
 
     const isTradingAction = !!precomposedForm?.isTrading;
-    const isRbfAction = precomposedTx !== undefined && isRbfTransaction(precomposedTx);
+    const isBumpFeeRbfAction =
+        precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);
 
     const decreaseOutputId =
-        isRbfAction && precomposedTx.useNativeRbf ? precomposedForm?.setMaxOutputId : undefined;
+        isBumpFeeRbfAction && precomposedTx.useNativeRbf
+            ? precomposedForm?.setMaxOutputId
+            : undefined;
 
     const buttonRequestsCount = useSelector((state: DeviceRootState) =>
         selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId),
@@ -112,15 +125,18 @@ export const TransactionReviewModalContent = ({
         }
     };
 
+    const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);
+
     const actionLabel = getTransactionReviewModalActionText({
         stakeType,
-        isRbfAction,
+        isBumpFeeRbfAction,
+        isCancelRbfAction,
         isSending,
     });
 
     const isBroadcastEnabled = options.includes('broadcast');
 
-    const reportTransactionCreatedEvent = (action: 'sent' | 'copied' | 'downloaded' | 'replaced') =>
+    const reportTransactionCreatedEvent = (action: TransactionCreatedEvent['payload']['action']) =>
         analytics.report({
             type: EventType.TransactionCreated,
             payload: {
@@ -148,7 +164,11 @@ export const TransactionReviewModalContent = ({
         }
         if (decision) {
             decision.resolve(true);
-            reportTransactionCreatedEvent(isRbfAction ? 'replaced' : 'sent');
+            reportTransactionCreatedEvent(
+                isRbfTransaction(precomposedTx)
+                    ? mapRbfTypeToReporting[precomposedTx.rbfType]
+                    : 'sent',
+            );
         }
     };
 
@@ -222,8 +242,8 @@ export const TransactionReviewModalContent = ({
             return <TransactionReviewDetails tx={precomposedTx} txHash={serializedTx?.tx} />;
         }
 
-        if (isRbfConfirmedError) {
-            return <ReplaceByFeeFailedOriginalTxConfirmed type="replace-by-fee" />;
+        if (isRbfConfirmedError && isRbfTransaction(precomposedTx)) {
+            return <ReplaceByFeeFailedOriginalTxConfirmed type={precomposedTx.rbfType} />;
         }
 
         return (
@@ -233,7 +253,7 @@ export const TransactionReviewModalContent = ({
                 signedTx={serializedTx}
                 outputs={outputs}
                 buttonRequestsCount={buttonRequestsCount}
-                isRbfAction={isRbfAction}
+                isRbfAction={isBumpFeeRbfAction}
                 isTradingAction={isTradingAction}
                 isSending={isSending}
                 stakeType={stakeType || undefined}
