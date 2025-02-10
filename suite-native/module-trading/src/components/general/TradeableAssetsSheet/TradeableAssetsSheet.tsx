@@ -1,10 +1,13 @@
-import { ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { BottomSheetFlashList, Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
+import {
+    ItemRenderConfig,
+    SectionListData,
+    TradingBottomSheetSectionList,
+} from '../TradingBottomSheetSectionList';
 import { TradeAssetsListEmptyComponent } from './TradeAssetsListEmptyComponent';
 import { ASSET_ITEM_HEIGHT, TradeableAssetListItem } from './TradeableAssetListItem';
 import { TradeableAssetsSheetHeader } from './TradeableAssetsSheetHeader';
@@ -16,13 +19,9 @@ export type TradeableAssetsSheetProps = {
     onAssetSelect: (symbol: TradeableAsset) => void;
 };
 
-type ListInnerItemShape =
-    // [type, text, key]
-    | ['sectionHeader', ReactNode, string]
-    // [type, data, isFavourite]
-    | ['asset', TradeableAsset, { isFavourite?: boolean; isFirst?: boolean; isLast?: boolean }];
-
-const SECTION_HEADER_HEIGHT = 48 as const;
+type ListItemExtraData = {
+    isFavourite: boolean;
+};
 
 const mockFavourites: TradeableAsset[] = [
     { symbol: 'btc' },
@@ -50,104 +49,32 @@ const mockAssets: TradeableAsset[] = [
 const getMockFiatRate = () => Math.random() * 1000;
 const getMockPriceChange = () => Math.random() * 3 - 1;
 
-const getEstimatedListHeight = (itemsCount: number) =>
-    itemsCount * ASSET_ITEM_HEIGHT + 2 * SECTION_HEADER_HEIGHT;
+const keyExtractor = (
+    { symbol, contractAddress }: TradeableAsset,
+    { isFavourite }: ListItemExtraData,
+) => `asset_${symbol}_${contractAddress ?? ''}}_${isFavourite ? 'favourite' : 'all'}`;
 
-const transformToInnerFlatListData = (
-    favourites: TradeableAsset[],
-    assetsData: TradeableAsset[],
-): ListInnerItemShape[] => [
-    [
-        'sectionHeader',
-        <Translation key="favourites" id="moduleTrading.tradeableAssetsSheet.favouritesTitle" />,
-        'section_favourites',
-    ],
-    ...favourites.map(
-        (asset, index) =>
-            [
-                'asset',
-                asset,
-                {
-                    isFavourite: true,
-                    isFirst: index === 0,
-                    isLast: index === favourites.length - 1,
-                },
-            ] as ListInnerItemShape,
-    ),
-    [
-        'sectionHeader',
-        <Translation key="all" id="moduleTrading.tradeableAssetsSheet.allTitle" />,
-        'section_all',
-    ],
-    ...assetsData.map(
-        (asset, index) =>
-            [
-                'asset',
-                asset,
-                {
-                    isFavourite: false,
-                    isFirst: index === 0,
-                    isLast: index === assetsData.length - 1,
-                },
-            ] as ListInnerItemShape,
-    ),
-];
+const renderItem = (
+    asset: TradeableAsset,
+    { sectionData }: ItemRenderConfig<ListItemExtraData>,
+    onAssetSelect: (asset: TradeableAsset) => void,
+) => {
+    const toggleFavourite = () => {
+        // TODO: Implement
+        // eslint-disable-next-line no-console
+        console.log('Not implemented!');
+    };
 
-const keyExtractor = (item: ListInnerItemShape) => {
-    switch (item[0]) {
-        case 'sectionHeader':
-            return item[2];
-
-        case 'asset': {
-            const [_, { symbol, contractAddress }, { isFavourite }] = item;
-
-            return `asset_${symbol}_${contractAddress ?? ''}_${isFavourite ? 'favourite' : ''}`;
-        }
-
-        default:
-            throw new UnreachableCaseError(item[0]);
-    }
-};
-
-const renderItem = (data: ListInnerItemShape, onAssetSelect: (asset: TradeableAsset) => void) => {
-    switch (data[0]) {
-        case 'sectionHeader': {
-            const text = data[1];
-
-            return (
-                <Box paddingVertical="sp12">
-                    <Text variant="hint" color="textSubdued">
-                        {text}
-                    </Text>
-                </Box>
-            );
-        }
-
-        case 'asset': {
-            const [_, asset, { isFavourite, isFirst, isLast }] = data;
-            const toggleFavourite = () => {
-                // TODO: Implement
-                // eslint-disable-next-line no-console
-                console.log('Not implemented!');
-            };
-
-            return (
-                <TradeableAssetListItem
-                    asset={asset}
-                    onPress={() => onAssetSelect(asset)}
-                    onFavouritePress={toggleFavourite}
-                    priceChange={getMockPriceChange()}
-                    fiatRate={getMockFiatRate()}
-                    isFavourite={isFavourite}
-                    isFirst={isFirst}
-                    isLast={isLast}
-                />
-            );
-        }
-
-        default:
-            throw new UnreachableCaseError(data[0]);
-    }
+    return (
+        <TradeableAssetListItem
+            asset={asset}
+            onPress={() => onAssetSelect(asset)}
+            onFavouritePress={toggleFavourite}
+            priceChange={getMockPriceChange()}
+            fiatRate={getMockFiatRate()}
+            isFavourite={sectionData.isFavourite}
+        />
+    );
 };
 
 export const TradeableAssetsSheet = ({
@@ -162,24 +89,37 @@ export const TradeableAssetsSheet = ({
 
     const favourites = mockFavourites;
     const assetsData = mockAssets;
-    const estimatedListHeight = getEstimatedListHeight(favourites.length + assetsData.length);
 
-    const data: ListInnerItemShape[] = useMemo(
-        () => transformToInnerFlatListData(favourites, assetsData),
+    const data = useMemo(
+        () =>
+            [
+                {
+                    key: 'section_favourites',
+                    label: <Translation id="moduleTrading.tradeableAssetsSheet.favouritesTitle" />,
+                    data: favourites,
+                    sectionData: { isFavourite: true },
+                },
+                {
+                    key: 'section_all',
+                    label: <Translation id="moduleTrading.tradeableAssetsSheet.allTitle" />,
+                    data: assetsData,
+                    sectionData: { isFavourite: false },
+                },
+            ] as SectionListData<TradeableAsset, ListItemExtraData>,
         [favourites, assetsData],
     );
 
     return (
-        <BottomSheetFlashList<ListInnerItemShape>
+        <TradingBottomSheetSectionList<TradeableAsset, ListItemExtraData>
             isVisible={isVisible}
             onClose={onClose}
             ListEmptyComponent={<TradeAssetsListEmptyComponent />}
             handleComponent={() => <TradeableAssetsSheetHeader onClose={onClose} />}
             data={data}
             keyExtractor={keyExtractor}
-            estimatedListHeight={estimatedListHeight}
             estimatedItemSize={ASSET_ITEM_HEIGHT}
-            renderItem={({ item }) => renderItem(item, onAssetSelectCallback)}
+            renderItem={(item, config) => renderItem(item, config, onAssetSelectCallback)}
+            noSingletonSectionHeader
         />
     );
 };
