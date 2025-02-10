@@ -10,6 +10,7 @@ import { TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
 import { TradingOfferExchangeSend } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSend';
 import { TradingOfferExchangeSendApproval } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSendApproval';
 import { TradingOfferExchangeSendSwap } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSendSwap';
+import { TradingOfferExchangeSignData } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSignData';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 import {
     TradingSelectedOfferStepper,
@@ -53,11 +54,17 @@ export const TradingOfferExchange = ({
         {
             step: 'SEND_TRANSACTION',
             translationId: 'TR_EXCHANGE_CONFIRM_SEND_STEP',
-            isActive: exchangeStep === 'SEND_TRANSACTION',
+            isActive: exchangeStep === 'SEND_TRANSACTION' || exchangeStep === 'SIGN_DATA',
             component: !selectedQuote.isDex ? (
                 <TradingOfferExchangeSend />
             ) : (
-                <TradingOfferExchangeSendSwap />
+                <>
+                    {exchangeStep === 'SIGN_DATA' ? (
+                        <TradingOfferExchangeSignData />
+                    ) : (
+                        <TradingOfferExchangeSendSwap />
+                    )}
+                </>
             ),
         },
     ];

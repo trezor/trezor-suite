@@ -9692,7 +9692,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/invity-api": "npm:^1.1.3"
+    "@types/invity-api": "npm:^1.1.5"
     uuid: "npm:^11.0.5"
   languageName: unknown
   linkType: soft
@@ -12625,7 +12625,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/file-saver": "npm:^2.0.6"
-    "@types/invity-api": "npm:^1.1.3"
+    "@types/invity-api": "npm:^1.1.5"
     "@types/jws": "npm:^3.2.10"
     "@types/pako": "npm:^2.0.3"
     "@types/pdfmake": "npm:^0.2.9"
@@ -13528,10 +13528,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/invity-api@npm:^1.1.3":
-  version: 1.1.4
-  resolution: "@types/invity-api@npm:1.1.4"
-  checksum: 10/6a17f3d84274c86eb31950cb525b3a0a5bf87a7539e8ac35a011f15d354fd1c0cd7dee88bd3d475d5b973829d71817de2b019bedddd03224be85e51dabac830b
+"@types/invity-api@npm:^1.1.5":
+  version: 1.1.5
+  resolution: "@types/invity-api@npm:1.1.5"
+  checksum: 10/104a0e0ea4082ab5b7f45b6f36bce39551f9dc0fc5f4786d411bb2ef6bf08294b33e079299cfc0c0b0ad5c91eee6c4ffe371033c0c645c73351d6f6ab171c0fe
   languageName: node
   linkType: hard
 

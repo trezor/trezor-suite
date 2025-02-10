@@ -140,7 +140,8 @@ export type TradingSellStepType = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
 export type TradingExchangeStepType =
     | 'RECEIVING_ADDRESS'
     | 'SEND_TRANSACTION'
-    | 'SEND_APPROVAL_TRANSACTION';
+    | 'SEND_APPROVAL_TRANSACTION'
+    | 'SIGN_DATA';
 
 interface TradingFormStateProps {
     isFormLoading: boolean;
@@ -267,7 +268,8 @@ export interface TradingExchangeFormContextProps
 
     setExchangeStep: (step: TradingExchangeStepType) => void;
     confirmTrade: (address: string, extraField?: string, trade?: ExchangeTrade) => Promise<boolean>;
-    sendTransaction: () => void;
+    sendTransaction: () => Promise<void>;
+    signDataAndConfirm: () => Promise<void>;
     selectQuote: (quote: ExchangeTrade) => void;
     verifyAddress: TradingVerifyAccountProps;
 }

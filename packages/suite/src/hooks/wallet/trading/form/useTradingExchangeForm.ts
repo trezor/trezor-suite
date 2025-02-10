@@ -23,6 +23,10 @@ import { networks } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { amountToSmallestUnit, formatAmount, toFiatCurrency } from '@suite-common/wallet-utils';
+import TrezorConnect, {
+    EthereumSignTypedDataMessage,
+    EthereumSignTypedDataTypes,
+} from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
@@ -422,6 +426,10 @@ export const useTradingExchangeForm = ({
                 dispatch(tradingExchangeActions.saveSelectedQuote(response));
                 setExchangeStep('SEND_APPROVAL_TRANSACTION');
                 ok = true;
+            } else if (response.status === 'SIGN_DATA') {
+                dispatch(tradingExchangeActions.saveSelectedQuote(response));
+                setExchangeStep('SIGN_DATA');
+                ok = true;
             } else if (response.status === 'CONFIRM') {
                 dispatch(tradingExchangeActions.saveSelectedQuote(response));
                 if (response.isDex) {
@@ -510,11 +518,11 @@ export const useTradingExchangeForm = ({
                             new Date().toISOString(),
                         ),
                     );
-                    confirmTrade(quote.receiveAddress || '', undefined, quote);
+                    await confirmTrade(quote.receiveAddress || '', undefined, quote);
                 } else {
                     quote.approvalSendTxHash = txid;
                     quote.status = 'APPROVAL_PENDING';
-                    confirmTrade(quote.receiveAddress || '', undefined, quote);
+                    await confirmTrade(quote.receiveAddress || '', undefined, quote);
                 }
             }
         } else {
@@ -531,7 +539,7 @@ export const useTradingExchangeForm = ({
         dispatch(tradingCommonActions.setTradingModalAccountKey(account.key));
 
         if (selectedQuote?.isDex) {
-            sendDexTransaction();
+            await sendDexTransaction();
 
             return;
         }
@@ -576,6 +584,76 @@ export const useTradingExchangeForm = ({
                 }),
             );
         }
+    };
+
+    const signDataAndConfirm = async () => {
+        if (!selectedQuote?.signData) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Cannot sign, missing data',
+                }),
+            );
+
+            return;
+        }
+
+        dispatch(tradingCommonActions.setTradingModalAccountKey(account.key));
+
+        let signature;
+        if (
+            account.networkType === 'ethereum' &&
+            selectedQuote.signData.type === 'eip712-typed-data'
+        ) {
+            const typedData = selectedQuote?.signData
+                .data as EthereumSignTypedDataMessage<EthereumSignTypedDataTypes>;
+
+            const result = await TrezorConnect.ethereumSignTypedData({
+                device,
+                path: account.path,
+                metamask_v4_compat: false,
+                data: typedData,
+            });
+
+            if (!result.success) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'sign-message-error',
+                        error: result.payload.error,
+                    }),
+                );
+
+                return;
+            }
+
+            signature = result.payload.signature;
+        } else {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Cannot sign data, unsupported network',
+                }),
+            );
+
+            return;
+        }
+
+        const trade = { ...selectedQuote };
+        trade.signature = signature;
+        trade.status = 'SIGN_DATA';
+
+        if (!trade.receiveAddress) {
+            return;
+        }
+
+        dispatch(
+            tradingExchangeActions.saveTrade(
+                trade,
+                selectedAccount.account,
+                new Date().toISOString(),
+            ),
+        );
+        await confirmTrade(trade.receiveAddress, undefined, trade);
     };
 
     const goToOffers = async () => {
@@ -726,6 +804,7 @@ export const useTradingExchangeForm = ({
         goToOffers,
         setExchangeStep,
         sendTransaction,
+        signDataAndConfirm,
         verifyAddress: tradingExchangeActions.verifyAddress,
         selectQuote,
         confirmTrade,

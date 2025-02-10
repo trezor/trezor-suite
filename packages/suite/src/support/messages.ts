@@ -718,6 +718,22 @@ export default defineMessages({
         defaultMessage: 'DEX',
         id: 'TR_TRADING_EXCHANGE_COMPARATOR_FILTER_RATE_DEX',
     },
+    TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE: {
+        defaultMessage: 'You’re swapping with {provider}',
+        id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE',
+    },
+    TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_1: {
+        defaultMessage: 'Simply sign the order — no need to send transactions manually',
+        id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_1',
+    },
+    TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_2: {
+        defaultMessage: 'No gas fees — the smart contract handles everything for you',
+        id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_2',
+    },
+    TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_3: {
+        defaultMessage: 'Your swap might be partially filled based on market conditions',
+        id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_3',
+    },
     TR_SELL_STATUS_ERROR: {
         defaultMessage: 'Rejected',
         id: 'TR_SELL_STATUS_ERROR',

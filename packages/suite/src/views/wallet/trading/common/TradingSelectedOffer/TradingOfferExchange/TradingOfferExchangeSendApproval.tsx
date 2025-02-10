@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { DexApprovalType } from 'invity-api';
+import { DexApprovalType, ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
 import { type TradingExchangeType, cryptoIdToSymbol, parseCryptoId } from '@suite-common/trading';
@@ -44,7 +44,6 @@ export const TradingOfferExchangeSendApproval = () => {
         exchangeInfo,
         confirmTrade,
         sendTransaction,
-        setExchangeStep,
     } = useTradingFormContext<TradingExchangeType>();
     const { cryptoIdToCoinSymbol } = useTradingInfo();
     const [approvalType, setApprovalType] = useState<ExtendedDexApprovalType>(
@@ -110,30 +109,16 @@ export const TradingOfferExchangeSendApproval = () => {
             return;
         }
 
+        const updatedSelectedQuote: ExchangeTrade = {
+            ...selectedQuote,
+        };
+
         if (selectedQuote.approvalType) {
-            const updatedSelectedQuote = {
-                ...selectedQuote,
-                approvalType: undefined,
-            };
-            dispatch(
-                saveSelectedQuote({
-                    ...selectedQuote,
-                    approvalType: undefined,
-                }),
-            );
-
-            const confirmedTrade = await confirmTrade(
-                selectedQuote.receiveAddress,
-                undefined,
-                updatedSelectedQuote,
-            );
-
-            if (!confirmedTrade) {
-                return;
-            }
+            updatedSelectedQuote.approvalType = undefined;
+            dispatch(saveSelectedQuote(updatedSelectedQuote));
         }
 
-        setExchangeStep('SEND_TRANSACTION');
+        await confirmTrade(selectedQuote.receiveAddress, undefined, updatedSelectedQuote);
     };
 
     return (
