@@ -50,6 +50,10 @@ export const RootStackNavigator = () => {
             initialRouteName={getInitialRouteName()}
             screenOptions={stackNavigationOptionsConfig}
         >
+            <RootStack.Screen
+                name={RootStackRoutes.OnboardingStack}
+                component={OnboardingStackNavigator}
+            />
             <RootStack.Screen name={RootStackRoutes.AppTabs} component={AppTabNavigator} />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.AccountSettings }}
@@ -88,10 +92,6 @@ export const RootStackNavigator = () => {
             {/* Navigation flows that start by push from bottom animation on the first screen of its stack. */}
             <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
                 <RootStack.Screen
-                    name={RootStackRoutes.OnboardingStack}
-                    component={OnboardingStackNavigator}
-                />
-                <RootStack.Screen
                     name={RootStackRoutes.AccountsImport}
                     component={AccountsImportStackNavigator}
                 />
@@ -108,16 +108,15 @@ export const RootStackNavigator = () => {
                     component={ReceiveStackNavigator}
                 />
                 <RootStack.Screen
+                    name={RootStackRoutes.DeviceSettingsStack}
+                    component={DeviceSettingsStackNavigator}
+                />
+                <RootStack.Screen
                     name={RootStackRoutes.AuthorizeDeviceStack}
                     component={AuthorizeDeviceStackNavigator}
                     options={{
-                        ...stackNavigationOptionsConfig,
                         gestureEnabled: false,
                     }}
-                />
-                <RootStack.Screen
-                    name={RootStackRoutes.DeviceSettingsStack}
-                    component={DeviceSettingsStackNavigator}
                 />
             </RootStack.Group>
         </RootStack.Navigator>
