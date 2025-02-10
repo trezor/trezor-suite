@@ -9,6 +9,7 @@
 -   Improved XRP Memo/Destination tag UI in the send and receive flows for a smoother experience.
 -   Solana transactions are now properly decoded, replacing “Unknown transaction” labels in account history.
 -   Redesigned address verification when sending funds, prompting users to compare the Trezor device address with the original source (e.g., an exchange or contact) to help prevent sending to a tampered address.
+-   Suite is deprecating support for Bitcoin Gold, Dash, Vertcoin, Namecoin, and Digibyte; however, these coins will continue to be supported in Firmware and can still be accessed through third-party applications.
 
 ### 🔧 Bug fixes
 
