@@ -1,6 +1,19 @@
 [
     {
         "required": false,
+        "version": [1, 13, 0],
+        "bootloader_version": [1, 12, 1],
+        "min_firmware_version": [1, 12, 0],
+        "min_bootloader_version": [1, 12, 0],
+        "url": "firmware/t1b1/trezor-t1b1-1.13.0.bin",
+        "url_bitcoinonly": "firmware/t1b1/trezor-t1b1-1.13.0-bitcoinonly.bin",
+        "fingerprint": "356433bd9de6cb564bf7778fc5de73c56197459523358f267e9235af9e1ce46d",
+        "fingerprint_bitcoinonly": "253042fb209c78e02482c645b16cc9894c19124e9c9c0c1051b3c68b6e7c700b",
+        "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c",
+        "changelog": "* Multisig-related changes.\n* Reworked PIN processing.\n* Fixed the ability to display the XPUB using a QR code."
+    },
+    {
+        "required": false,
         "version": [1, 12, 1],
         "bootloader_version": [1, 12, 1],
         "min_firmware_version": [1, 12, 0],
