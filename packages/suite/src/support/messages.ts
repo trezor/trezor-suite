@@ -3681,7 +3681,7 @@ export default defineMessages({
     },
     TOAST_COPY_TO_CLIPBOARD: {
         id: 'TOAST_COPY_TO_CLIPBOARD',
-        defaultMessage: 'Copied to clipboard',
+        defaultMessage: 'Copied',
     },
     TOAST_TX_SENT: {
         id: 'TOAST_TX_SENT',
@@ -6405,6 +6405,49 @@ export default defineMessages({
         id: 'TR_BUMP_FEE',
         defaultMessage: 'Bump fee',
     },
+    TR_CANCEL_TX: {
+        id: 'TR_CANCEL_TX',
+        defaultMessage: 'Cancel',
+    },
+    TR_CANCEL_TX_BUTTON: {
+        id: 'TR_CANCEL_TX_BUTTON',
+        defaultMessage: 'Cancel transaction',
+    },
+    TR_CANCEL_TX_HEADER: {
+        id: 'TR_CANCEL_TX_HEADER',
+        defaultMessage: 'Cancel transaction',
+    },
+    TR_CANCEL_TX_NOTICE: {
+        id: 'TR_CANCEL_TX_NOTICE',
+        defaultMessage:
+            'Once the transaction is canceled successfully, your funds (minus the transaction fee) will be returned to your wallet.',
+    },
+    TR_CANCEL_TX_FEE: {
+        id: 'TR_CANCEL_TX_FEE',
+        defaultMessage: 'Transaction fee',
+    },
+    TR_CANCEL_TX_RETURN_TO_YOUR_WALLET: {
+        id: 'TR_CANCEL_TX_RETURN_TO_YOUR_WALLET',
+        defaultMessage: 'Return to your wallet',
+    },
+    TR_CANCEL_TX_FAILED_ALREADY_MINED: {
+        id: 'TR_CANCEL_TX_FAILED_ALREADY_MINED',
+        defaultMessage: 'Cancel transaction failed',
+    },
+    TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION: {
+        id: 'TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION',
+        defaultMessage:
+            'The transaction couldn’t be canceled as it has just been confirmed on the Bitcoin network.',
+    },
+    TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED: {
+        id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED',
+        defaultMessage: 'Replace transaction failed',
+    },
+    TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION: {
+        id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION',
+        defaultMessage:
+            'The transaction couldn’t be replaced as it has just been confirmed on the Bitcoin network.',
+    },
     TR_BUMP_FEE_SUBTEXT: {
         id: 'TR_BUMP_FEE_SUBTEXT',
         defaultMessage: 'Speed up this transaction confirmation by paying a higher fee.',
@@ -6887,7 +6930,7 @@ export default defineMessages({
     },
     TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
-        defaultMessage: 'Security check verifying entropy failed during wallet creation.',
+        defaultMessage: 'Security check (entropy verification) failed.',
     },
     TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
