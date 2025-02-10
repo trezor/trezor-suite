@@ -6449,7 +6449,7 @@ export default defineMessages({
     TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION: {
         id: 'TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION',
         defaultMessage:
-            'The transaction couldn’t be canceled as it has just been confirmed on the Bitcoin network.',
+            "The transaction couldn’t be canceled as it's just been confirmed on the Bitcoin network.",
     },
     TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED: {
         id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED',
@@ -6458,7 +6458,7 @@ export default defineMessages({
     TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION: {
         id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION',
         defaultMessage:
-            'The transaction couldn’t be replaced as it has just been confirmed on the Bitcoin network.',
+            "The transaction couldn’t be replaced as it's just been confirmed on the Bitcoin network.",
     },
     TR_BUMP_FEE_SUBTEXT: {
         id: 'TR_BUMP_FEE_SUBTEXT',
@@ -8729,12 +8729,12 @@ export default defineMessages({
     },
     TR_STAKE_REWARDS_ARE_EMPTY: {
         id: 'TR_STAKE_REWARDS_ARE_EMPTY',
-        defaultMessage: 'No Rewards',
+        defaultMessage: 'No rewards',
     },
     TR_STAKE_WAIT_TO_CHECK_REWARDS: {
         id: 'TR_STAKE_WAIT_TO_CHECK_REWARDS',
         defaultMessage:
-            'Wait up to {count, plural, one {# day} other {# days}} to check your rewards',
+            'Wait up to {count, plural, one {# day} other {# days}} to check your rewards.',
     },
     TR_STAKE_ETH_CARD_TITLE: {
         id: 'TR_STAKE_ETH_CARD_TITLE',

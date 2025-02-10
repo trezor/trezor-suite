@@ -360,7 +360,7 @@
   "TR_BACKUP_RECOVERY_SEED_FAILED_DESC": "O processo da cópia de segurança da carteira falhou. É altamente recomendado fazer uma cópia de segurança da sua carteira. Siga o link para saber como criar uma cópia de segurança da carteira.",
   "TR_BACKUP_RECOVERY_SEED_FAILED_TITLE": "Falha na cópia de segurança da carteira",
   "TR_BACKUP_SEED_IS_ULTIMATE": "Se precisar restaurar sua carteira para acessar seus fundos, é necessário ter sua semente de recuperação (backup de carteira) ao seu lado. Não perca ou se esqueça. Não há o que fazer caso ela se perca. Ninguém pode ajudar você a recuperá-la, nem mesmo o suporte da Trezor. Portanto, seja responsável e certifique-se de manter suas sementes de recuperação guardadas como se sua vida dependesse disso.",
-  "TR_BACKUP_SUBHEADING_1": "Uma cópia de segurança da carteira é uma série de palavras aleatórias gerada pela Tezor. É importante anotar o backup da sua carteira e mantê-lo seguro, pois é a única forma de recuperar e acessar seus fundos",
+  "TR_BACKUP_SUBHEADING_1": "Uma cópia de segurança da carteira é uma série de palavras aleatórias gerada pela Trezor. É importante anotar o backup da sua carteira e mantê-lo seguro, pois é a única forma de recuperar e acessar seus fundos.",
   "TR_BACKUP_SUCCESSFUL": "Cópia de segurança da carteira bem sucedida",
   "TR_BALANCE": "Saldo",
   "TR_BASIC_RECOVERY": "Recuperação padrão",
