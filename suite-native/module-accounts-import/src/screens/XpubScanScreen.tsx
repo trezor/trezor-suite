@@ -36,9 +36,6 @@ import { XpubImportSection, networkTypeToTitleMap } from '../components/XpubImpo
 
 const FORM_BUTTON_FADE_IN_DURATION = 200;
 
-// Extra padding needed to make multiline xpub input form visible even with the sticky footer.
-const EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT = 350;
-
 const cameraStyle = prepareNativeStyle(_ => ({
     alignItems: 'center',
     marginTop: 20,
@@ -176,7 +173,7 @@ export const XpubScanScreen = ({
         <Screen
             header={<AccountImportScreenHeader closeActionType="back" />}
             footer={<XpubHint networkType={networkType} handleOpen={handleOpenHint} />}
-            extraKeyboardAvoidingViewHeight={EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT}
+            focusedInputBottomOffset={163} // button height with vertical margin + footer height
         >
             <Card>
                 <SelectableNetworkItem symbol={networkSymbol} />

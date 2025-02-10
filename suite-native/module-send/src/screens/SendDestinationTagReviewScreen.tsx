@@ -7,6 +7,7 @@ import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
+    Screen,
     ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
@@ -15,7 +16,6 @@ import {
 
 import { ReviewDestinationTagCard } from '../components/ReviewDestinationTagCard';
 import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
-import { SendScreen } from '../components/SendScreen';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
 import {
     selectIsDestinationTagOutputConfirmed,
@@ -65,8 +65,8 @@ export const SendDestinationTagReviewScreen = ({
     }, [isDestinationTagConfirmed, accountKey, navigation, tokenContract, transaction]);
 
     return (
-        <SendScreen
-            screenHeader={
+        <Screen
+            header={
                 <ScreenHeader
                     content={translate('moduleSend.review.outputs.title')}
                     closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
@@ -80,6 +80,6 @@ export const SendDestinationTagReviewScreen = ({
                 </Text>
                 <ReviewDestinationTagCard destinationTag={destinationTag} />
             </VStack>
-        </SendScreen>
+        </Screen>
     );
 };

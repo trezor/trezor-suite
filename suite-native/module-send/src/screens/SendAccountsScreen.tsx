@@ -1,13 +1,12 @@
 import { AccountsList, OnSelectAccount } from '@suite-native/accounts';
 import { useTranslate } from '@suite-native/intl';
 import {
+    Screen,
     ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
-
-import { SendScreen } from '../components/SendScreen';
 
 export const SendAccountsScreen = ({
     navigation,
@@ -21,8 +20,8 @@ export const SendAccountsScreen = ({
         });
 
     return (
-        <SendScreen
-            screenHeader={
+        <Screen
+            header={
                 <ScreenHeader
                     content={translate('moduleSend.accountsList.title')}
                     closeActionType="close"
@@ -34,6 +33,6 @@ export const SendAccountsScreen = ({
                 isSendFilterEnabled
                 hideTokensIntoModal
             />
-        </SendScreen>
+        </Screen>
     );
 };

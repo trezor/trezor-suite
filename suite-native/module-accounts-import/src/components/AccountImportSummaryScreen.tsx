@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
-import { KeyboardAvoidingView, Platform } from 'react-native';
 
 import { Box, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Screen, ScreenFooterGradient } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountImportScreenHeader } from './AccountImportScreenHeader';
 
@@ -14,36 +14,45 @@ type AccountImportSummaryScreenProps = {
     testID?: string;
 };
 
+const screenFooterStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.sp16,
+    paddingBottom: utils.spacings.sp16,
+    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+}));
+
 export const AccountImportSummaryScreen = ({
     children,
     title,
     subtitle,
     footer,
     testID,
-}: AccountImportSummaryScreenProps) => (
-    <Screen
-        header={<AccountImportScreenHeader />}
-        footer={
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                <ScreenFooterGradient />
-                <Box marginHorizontal="sp16" marginBottom="sp16">
-                    {footer}
+}: AccountImportSummaryScreenProps) => {
+    const { applyStyle } = useNativeStyles();
+
+    return (
+        <Screen
+            header={<AccountImportScreenHeader />}
+            footer={
+                <>
+                    <ScreenFooterGradient />
+                    <Box style={applyStyle(screenFooterStyle)}>{footer}</Box>
+                </>
+            }
+            focusedInputBottomOffset={114} // space below the label input + button height with vertical margin
+        >
+            <VStack spacing="sp32" flex={1}>
+                <Box flex={1} alignItems="center" justifyContent="center">
+                    <PictogramTitleHeader
+                        variant="success"
+                        icon="coinVerticalCheck"
+                        title={title}
+                        subtitle={subtitle}
+                    />
                 </Box>
-            </KeyboardAvoidingView>
-        }
-    >
-        <VStack spacing="sp32" flex={1}>
-            <Box flex={1} alignItems="center" justifyContent="center">
-                <PictogramTitleHeader
-                    variant="success"
-                    icon="coinVerticalCheck"
-                    title={title}
-                    subtitle={subtitle}
-                />
-            </Box>
-            <Box flex={1} justifyContent="flex-end" testID={testID}>
-                {children}
-            </Box>
-        </VStack>
-    </Screen>
-);
+                <Box flex={1} testID={testID}>
+                    {children}
+                </Box>
+            </VStack>
+        </Screen>
+    );
+};

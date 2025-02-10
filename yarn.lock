@@ -10004,7 +10004,7 @@ __metadata:
     react-native: "npm:0.76.1"
     react-native-edge-to-edge: "npm:^1.3.1"
     react-native-gesture-handler: "npm:^2.21.0"
-    react-native-keyboard-aware-scroll-view: "npm:0.9.5"
+    react-native-keyboard-controller: "npm:1.16.5"
     react-native-mmkv: "npm:2.12.2"
     react-native-quick-crypto: "npm:^0.7.6"
     react-native-reanimated: "npm:^3.16.7"
@@ -10948,7 +10948,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
     react-native-edge-to-edge: "npm:^1.3.1"
-    react-native-keyboard-aware-scroll-view: "npm:0.9.5"
+    react-native-keyboard-controller: "npm:1.16.5"
     react-native-reanimated: "npm:^3.16.7"
     react-native-safe-area-context: "npm:^4.14.0"
     react-redux: "npm:8.0.7"
@@ -11154,6 +11154,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
+    react-native-keyboard-controller: "npm:1.16.5"
     react-native-safe-area-context: "npm:^4.14.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -36094,24 +36095,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-iphone-x-helper@npm:^1.0.3":
-  version: 1.3.1
-  resolution: "react-native-iphone-x-helper@npm:1.3.1"
+"react-native-is-edge-to-edge@npm:^1.1.6":
+  version: 1.1.6
+  resolution: "react-native-is-edge-to-edge@npm:1.1.6"
   peerDependencies:
-    react-native: ">=0.42.0"
-  checksum: 10/024376646009a966e33e12fc2358751830818b0fb73b1c601a64eb5e490d2dc43eec23668991b985a8c412a84d087f20eb45bb9b593567c08b66e741b7bddda5
+    react: ">=18.2.0"
+    react-native: ">=0.73.0"
+  checksum: 10/4e07c1e34c01c8d50fd7c1d0460db06f6f0515197405230386a8ffb950cb724b10743af032310d1384df0a90059bfb8992ba2d93344ce86315315f0493feccc2
   languageName: node
   linkType: hard
 
-"react-native-keyboard-aware-scroll-view@npm:0.9.5":
-  version: 0.9.5
-  resolution: "react-native-keyboard-aware-scroll-view@npm:0.9.5"
+"react-native-keyboard-controller@npm:1.16.5":
+  version: 1.16.5
+  resolution: "react-native-keyboard-controller@npm:1.16.5"
   dependencies:
-    prop-types: "npm:^15.6.2"
-    react-native-iphone-x-helper: "npm:^1.0.3"
+    react-native-is-edge-to-edge: "npm:^1.1.6"
   peerDependencies:
-    react-native: ">=0.48.4"
-  checksum: 10/95d8ed8a46426b16e819713495d64766a3eed5d63a03fb4feca0351cce55d74197f75d8b01dd3f2c491cda29c155bb71c8063d2fba23e8a0044208aad03d0d91
+    react: "*"
+    react-native: "*"
+    react-native-reanimated: ">=3.0.0"
+  checksum: 10/807941ff9094d95b3867b76b98f5a550ee0e1133acc3c52c01d56f5c225c8cfe22175613e8929019e9a75afbeea07bb994121b472c2f78107e3fc4bd1fd25e2a
   languageName: node
   linkType: hard
 

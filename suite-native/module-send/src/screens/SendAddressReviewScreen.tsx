@@ -5,6 +5,7 @@ import { AccountsRootState, DeviceRootState, SendRootState } from '@suite-common
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
+    Screen,
     ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
@@ -13,7 +14,6 @@ import {
 
 import { AddressReviewStepList } from '../components/AddressReviewStepList';
 import { SendConfirmOnDeviceImage } from '../components/SendConfirmOnDeviceImage';
-import { SendScreen } from '../components/SendScreen';
 import {
     selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionReviewInProgress,
@@ -43,8 +43,8 @@ export const SendAddressReviewScreen = ({
     }, [isAddressConfirmed, accountKey, navigation, tokenContract]);
 
     return (
-        <SendScreen
-            screenHeader={
+        <Screen
+            header={
                 <ScreenHeader
                     content={translate('moduleSend.review.outputs.title')}
                     closeActionType={isTransactionReviewInProgress ? 'close' : 'back'}
@@ -61,6 +61,6 @@ export const SendAddressReviewScreen = ({
                     <AddressReviewStepList />
                 </VStack>
             </Box>
-        </SendScreen>
+        </Screen>
     );
 };

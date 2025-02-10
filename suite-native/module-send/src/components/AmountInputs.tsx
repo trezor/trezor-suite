@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { TextInput, View, findNodeHandle } from 'react-native';
+import { TextInput, View } from 'react-native';
 import Animated, { LinearTransition, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -13,12 +13,7 @@ import {
 import { EventType, analytics } from '@suite-native/analytics';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    SendStackParamList,
-    SendStackRoutes,
-    StackProps,
-    useScrollView,
-} from '@suite-native/navigation';
+import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AmountErrorMessage } from './AmountErrorMessage';
@@ -66,7 +61,6 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
     );
 
     const [isCryptoSelected, setIsCryptoSelected] = useState(true);
-    const scrollView = useScrollView();
     const amountInputsWrapperRef = useRef<View>(null);
 
     const cryptoRef = useRef<TextInput>(null);
@@ -102,23 +96,6 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
         setIsCryptoSelected(!isCryptoSelected);
     };
 
-    const handleInputFocus = () => {
-        const amountInputsWrapper = amountInputsWrapperRef.current;
-        const scrollViewNodeHandle = findNodeHandle(scrollView);
-
-        if (!amountInputsWrapper || !scrollViewNodeHandle) return;
-
-        // Timeout is needed so the position is calculated after keyboard and footer animations are finished.
-        setTimeout(
-            () =>
-                // Scroll so the whole amount inputs section is visible.
-                amountInputsWrapper.measureLayout(scrollViewNodeHandle, (_, y) => {
-                    scrollView?.scrollTo({ y, animated: true });
-                }),
-            400,
-        );
-    };
-
     if (!symbol) return null;
 
     return (
@@ -149,7 +126,6 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
                         isDisabled={!isCryptoSelected}
                         symbol={symbol}
                         onPress={!isCryptoSelected ? handleSwitchInputs : undefined}
-                        onFocus={handleInputFocus}
                         tokenContract={tokenContract}
                     />
                     {isFiatDisplayed && (
@@ -164,7 +140,6 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
                                 symbol={symbol}
                                 tokenContract={tokenContract}
                                 onPress={isCryptoSelected ? handleSwitchInputs : undefined}
-                                onFocus={handleInputFocus}
                             />
                         </>
                     )}

@@ -53,7 +53,7 @@ expo-updates
 jotai
 lottie-react-native
 react-native-gesture-handler
-react-native-keyboard-aware-scroll-view
+react-native-keyboard-controller
 react-native-mmkv
 react-native-quick-crypto
 react-native-restart

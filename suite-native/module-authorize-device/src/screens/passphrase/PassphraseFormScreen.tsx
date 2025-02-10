@@ -2,14 +2,15 @@ import { LayoutChangeEvent, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { Box, Button, HStack, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
 import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
+import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
 
 const ANIMATION_DURATION = 300;
 
@@ -70,18 +71,20 @@ export const PassphraseFormScreen = () => {
     };
 
     return (
-        <PassphraseContentScreenWrapper
-            title={<Translation id="modulePassphrase.title" />}
-            subtitle={
-                <Translation
-                    id="modulePassphrase.subtitle"
-                    values={{
-                        bold: chunks => <Text variant="highlight">{chunks}</Text>,
-                    }}
+        <Screen header={<PassphraseScreenHeader />}>
+            <VStack marginTop="sp8" spacing="sp16">
+                <TitleHeader
+                    title={<Translation id="modulePassphrase.title" />}
+                    subtitle={
+                        <Translation
+                            id="modulePassphrase.subtitle"
+                            values={{
+                                bold: chunks => <Text variant="highlight">{chunks}</Text>,
+                            }}
+                        />
+                    }
+                    titleVariant="titleMedium"
                 />
-            }
-        >
-            <VStack spacing="sp16">
                 <View
                     style={applyStyle(animationWrapperStyle)}
                     onLayout={(event: LayoutChangeEvent) =>
@@ -158,6 +161,6 @@ export const PassphraseFormScreen = () => {
                     inputLabel={translate('modulePassphrase.form.createWalletInputLabel')}
                 />
             </VStack>
-        </PassphraseContentScreenWrapper>
+        </Screen>
     );
 };

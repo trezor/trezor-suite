@@ -1,13 +1,12 @@
 import { useRef, useState } from 'react';
-import { TextInput, View, findNodeHandle } from 'react-native';
-import Animated, { FadeIn, FadeOut, useSharedValue } from 'react-native-reanimated';
+import { TextInput } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { AlertBox, AnimatedVStack, HStack, Switch, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { useScrollView } from '@suite-native/navigation';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -25,13 +24,8 @@ const inputWrapperStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp12,
 }));
 
-const SCROLL_TO_DELAY = 200;
-
 export const DestinationTagInput = () => {
-    const inputWrapperRef = useRef<View | null>(null);
     const inputRef = useRef<TextInput | null>(null);
-    const inputHeight = useSharedValue<number | null>(null);
-    const scrollView = useScrollView();
     const { applyStyle } = useNativeStyles();
 
     const [isInputDisplayed, setIsInputDisplayed] = useState(true);
@@ -56,28 +50,9 @@ export const DestinationTagInput = () => {
         setIsInputDisplayed(!isInputDisplayed);
     };
 
-    const handleInputFocus = () => {
-        const inputWrapper = inputWrapperRef.current;
-        const scrollViewNodeHandle = findNodeHandle(scrollView);
-
-        if (!inputWrapper || !scrollViewNodeHandle) return;
-
-        // Timeout is needed so the position is calculated after keyboard and footer animations are finished.
-        setTimeout(
-            () =>
-                // Scroll so the whole amount inputs section is visible.
-                inputWrapper.measureLayout(scrollViewNodeHandle, (_x, y, _w, h) => {
-                    inputHeight.value = h;
-                    scrollView?.scrollTo({ y, animated: true });
-                }),
-            SCROLL_TO_DELAY,
-        );
-    };
-
     const handleChangeValue = () => {
         debounce(() => {
             trigger(destinationTagFieldName);
-            handleInputFocus();
         });
     };
 
@@ -116,7 +91,6 @@ export const DestinationTagInput = () => {
                         onChangeText={handleChangeValue}
                         name={destinationTagFieldName}
                         testID={destinationTagFieldName}
-                        onFocus={handleInputFocus}
                         accessibilityLabel="address input"
                     />
                     <HStack paddingHorizontal="sp12" spacing="sp4">

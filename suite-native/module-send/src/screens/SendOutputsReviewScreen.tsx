@@ -8,6 +8,7 @@ import { useTranslate } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
+    Screen,
     ScreenHeader,
     SendStackParamList,
     SendStackRoutes,
@@ -17,7 +18,6 @@ import {
 
 import { OutputsReviewFooter } from '../components/OutputsReviewFooter';
 import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
-import { SendScreen } from '../components/SendScreen';
 import { useShowReviewCancellationAlert } from '../hooks/useShowReviewCancellationAlert';
 import { cleanupSendFormThunk } from '../sendFormThunks';
 
@@ -59,8 +59,8 @@ export const SendOutputsReviewScreen = ({
     });
 
     return (
-        <SendScreen
-            screenHeader={
+        <Screen
+            header={
                 <ScreenHeader
                     content={translate('moduleSend.review.outputs.title')}
                     closeActionType="close"
@@ -71,6 +71,6 @@ export const SendOutputsReviewScreen = ({
                 <ReviewOutputItemList accountKey={accountKey} tokenContract={tokenContract} />
                 <OutputsReviewFooter accountKey={accountKey} tokenContract={tokenContract} />
             </VStack>
-        </SendScreen>
+        </Screen>
     );
 };

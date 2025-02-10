@@ -27,6 +27,7 @@ import { Box, Button } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
+    Screen,
     ScreenFooterGradient,
     SendStackParamList,
     SendStackRoutes,
@@ -36,10 +37,10 @@ import {
 import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SendOutputFields } from '../components/SendOutputFields';
-import { SendScreen } from '../components/SendScreen';
 import { useSubscribeForSolanaBlockUpdates } from '../hooks/useSubscribeForSolanaBlockUpdates';
 import { storeFeeLevels } from '../sendFormSlice';
 import { calculateFeeLevelsMaxAmountThunk } from '../sendFormThunks';
@@ -66,6 +67,12 @@ const getDefaultValues = ({
         ],
     }) as const;
 
+const screenFooterStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.sp16,
+    paddingBottom: utils.spacings.sp16,
+    backgroundColor: utils.colors.backgroundSurfaceElevation0,
+}));
+
 export const SendOutputsScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputs>) => {
@@ -74,6 +81,7 @@ export const SendOutputsScreen = ({
     const debounce = useDebounce();
     const navigation =
         useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendOutputs>>();
+    const { applyStyle } = useNativeStyles();
 
     const [feeLevelsMaxAmount, setFeeLevelsMaxAmount] = useState<FeeLevelsMaxAmount>();
 
@@ -270,15 +278,15 @@ export const SendOutputsScreen = ({
     });
 
     return (
-        <SendScreen
-            screenHeader={
+        <Screen
+            header={
                 <AccountBalanceScreenHeader accountKey={accountKey} tokenContract={tokenContract} />
             }
             footer={
                 isValid && (
                     <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
                         <ScreenFooterGradient />
-                        <Box marginHorizontal="sp16">
+                        <Box style={applyStyle(screenFooterStyle)}>
                             <Button
                                 accessibilityRole="button"
                                 accessibilityLabel="validate send form"
@@ -292,15 +300,16 @@ export const SendOutputsScreen = ({
                     </Animated.View>
                 )
             }
+            focusedInputBottomOffset={148} // space below the main amount input + button height with vertical margin
         >
             <>
                 <AccountDetailsCard accountKey={accountKey} tokenContract={tokenContract} />
-                <Box marginVertical="sp32">
+                <Box marginTop="sp32">
                     <Form form={form}>
                         <SendOutputFields accountKey={accountKey} />
                     </Form>
                 </Box>
             </>
-        </SendScreen>
+        </Screen>
     );
 };

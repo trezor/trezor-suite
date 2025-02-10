@@ -1,6 +1,6 @@
 import React, { ReactNode, useRef } from 'react';
 import { ScrollView, ScrollViewProps } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -11,9 +11,8 @@ type ScreenContentProps = {
     children: ReactNode;
     isScrollable: boolean;
     hasHeader: boolean;
-    extraKeyboardAvoidingViewHeight: number;
+    focusedInputBottomOffset?: number;
     refreshControl?: ScrollViewProps['refreshControl'];
-    keyboardDismissMode?: ScrollViewProps['keyboardDismissMode'];
 };
 
 const screenContentWrapperStyle = prepareNativeStyle(() => ({ flexGrow: 1 }));
@@ -22,9 +21,8 @@ export const ScreenContentWrapper = ({
     children,
     isScrollable,
     hasHeader,
-    extraKeyboardAvoidingViewHeight,
+    focusedInputBottomOffset,
     refreshControl,
-    keyboardDismissMode,
 }: ScreenContentProps) => {
     const scrollViewRef = useRef<ScrollView | null>(null);
     const { applyStyle } = useNativeStyles();
@@ -35,18 +33,14 @@ export const ScreenContentWrapper = ({
         <>
             {scrollDivider}
             <KeyboardAwareScrollView
-                innerRef={ref => {
-                    // Assign the ref of inner ScrollView.
-                    scrollViewRef.current = ref as unknown as ScrollView;
-                }}
-                keyboardDismissMode={keyboardDismissMode}
+                ref={scrollViewRef}
+                bottomOffset={focusedInputBottomOffset}
+                refreshControl={refreshControl}
                 keyboardShouldPersistTaps="handled"
                 contentInsetAdjustmentBehavior="automatic"
-                extraHeight={extraKeyboardAvoidingViewHeight}
                 contentContainerStyle={applyStyle(screenContentWrapperStyle)}
-                refreshControl={refreshControl}
-                testID="@screen/mainScrollView"
                 onScroll={hasHeader ? handleScroll : undefined}
+                testID="@screen/mainScrollView"
             >
                 <ScrollViewContext.Provider value={scrollViewRef}>
                     {children}

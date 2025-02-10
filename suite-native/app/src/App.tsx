@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -80,13 +81,15 @@ const PureApp = () => (
         <IntlProvider>
             <StoreProvider>
                 <SentryProvider>
-                    <SafeAreaProvider>
-                        <StylesProvider>
-                            <NavigationContainerWithAnalytics>
-                                <AppComponent />
-                            </NavigationContainerWithAnalytics>
-                        </StylesProvider>
-                    </SafeAreaProvider>
+                    <KeyboardProvider>
+                        <SafeAreaProvider>
+                            <StylesProvider>
+                                <NavigationContainerWithAnalytics>
+                                    <AppComponent />
+                                </NavigationContainerWithAnalytics>
+                            </StylesProvider>
+                        </SafeAreaProvider>
+                    </KeyboardProvider>
                 </SentryProvider>
             </StoreProvider>
         </IntlProvider>

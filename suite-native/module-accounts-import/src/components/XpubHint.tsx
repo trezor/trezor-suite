@@ -1,5 +1,3 @@
-import { KeyboardAvoidingView, Platform } from 'react-native';
-
 import { NetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { Box, TextButton } from '@suite-native/atoms';
@@ -36,16 +34,14 @@ export const XpubHint = ({ networkType, handleOpen }: XpubScanHintSheet) => {
     );
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <Box style={applyStyle(sheetTriggerStyle)}>
-                <TextButton
-                    viewLeft="question"
-                    onPress={handleOpen}
-                    data-testID="@accounts-import/sync-coins/xpub-help-link"
-                >
-                    {buttonTitle}
-                </TextButton>
-            </Box>
-        </KeyboardAvoidingView>
+        <Box style={applyStyle(sheetTriggerStyle)}>
+            <TextButton
+                viewLeft="question"
+                onPress={handleOpen}
+                data-testID="@accounts-import/sync-coins/xpub-help-link"
+            >
+                {buttonTitle}
+            </TextButton>
+        </Box>
     );
 };

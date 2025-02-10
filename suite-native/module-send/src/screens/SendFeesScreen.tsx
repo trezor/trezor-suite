@@ -1,11 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import { Screen, SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SendFeesForm } from '../components/SendFeesForm';
-import { SendScreen } from '../components/SendScreen';
 
 export const SendFeesScreen = ({
     route: { params },
@@ -18,12 +17,12 @@ export const SendFeesScreen = ({
     if (!account) return;
 
     return (
-        <SendScreen
-            screenHeader={
+        <Screen
+            header={
                 <AccountBalanceScreenHeader accountKey={accountKey} tokenContract={tokenContract} />
             }
         >
             <SendFeesForm accountKey={accountKey} tokenContract={tokenContract} />
-        </SendScreen>
+        </Screen>
     );
 };

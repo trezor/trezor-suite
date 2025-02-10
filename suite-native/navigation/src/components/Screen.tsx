@@ -1,6 +1,7 @@
 import { ReactNode, useContext } from 'react';
 import { ScrollViewProps, View } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
+import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
@@ -14,6 +15,7 @@ import { Color } from '@trezor/theme';
 
 import { ScreenContentWrapper } from './ScreenContentWrapper';
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
+import { useIsKeyboardShown } from '../hooks/useIsKeyboardShown';
 
 type ScreenProps = {
     children: ReactNode;
@@ -23,10 +25,9 @@ type ScreenProps = {
     backgroundColor?: Color;
     noHorizontalPadding?: boolean;
     noBottomPadding?: boolean;
-    extraKeyboardAvoidingViewHeight?: number;
+    focusedInputBottomOffset?: number;
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
-    keyboardDismissMode?: ScrollViewProps['keyboardDismissMode'];
 };
 
 const screenContainerStyle = prepareNativeStyle<{
@@ -91,12 +92,11 @@ export const Screen = ({
     header,
     footer,
     refreshControl,
-    keyboardDismissMode,
     isScrollable = true,
     backgroundColor = 'backgroundSurfaceElevation0',
     noHorizontalPadding = false,
     noBottomPadding = false,
-    extraKeyboardAvoidingViewHeight = 0,
+    focusedInputBottomOffset,
     hasBottomInset = true,
 }: ScreenProps) => {
     const {
@@ -105,9 +105,12 @@ export const Screen = ({
     } = useNativeStyles();
 
     const insets = useBannerAwareSafeAreaInsets();
+    const isKeyboardShown = useIsKeyboardShown();
+
     const horizontalPadding = noHorizontalPadding ? 0 : spacings.sp16;
     const bottomPadding = noBottomPadding ? 0 : spacings.sp16;
-    const hasBottomPadding = !useContext(BottomTabBarHeightContext) && hasBottomInset;
+    const hasBottomPadding =
+        !useContext(BottomTabBarHeightContext) && hasBottomInset && !isKeyboardShown;
     const systemBarsStyle = useAndroidNavigationBarStyle({ backgroundColor });
 
     const isMessageBannerDisplayed = useSelector(selectIsAnyBannerMessageActive);
@@ -130,9 +133,8 @@ export const Screen = ({
             <ScreenContentWrapper
                 isScrollable={isScrollable}
                 hasHeader={!!header}
-                extraKeyboardAvoidingViewHeight={extraKeyboardAvoidingViewHeight}
+                focusedInputBottomOffset={focusedInputBottomOffset}
                 refreshControl={refreshControl}
-                keyboardDismissMode={keyboardDismissMode}
             >
                 <Box
                     style={applyStyle(screenContentBaseStyle, {
@@ -145,7 +147,7 @@ export const Screen = ({
                     {children}
                 </Box>
             </ScreenContentWrapper>
-            {footer}
+            <KeyboardStickyView>{footer}</KeyboardStickyView>
         </View>
     );
 };

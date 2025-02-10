@@ -127,28 +127,26 @@ export const AccountImportConfirmFormScreen = ({
                     </Button>
                 }
             >
-                <FlashList
-                    data={knownTokens}
-                    renderItem={renderItem}
-                    ListEmptyComponent={null}
-                    ListHeaderComponent={
-                        <>
-                            <AccountImportOverview
-                                balance={accountInfo.balance}
-                                symbol={symbol}
-                                formControl={form.control}
-                            />
-                            {knownTokens.length > 0 && (
-                                <Box marginTop="sp16" marginBottom="sp8">
-                                    <Text variant="titleSmall">
-                                        <Translation id="moduleAccountImport.summaryScreen.tokens" />
-                                    </Text>
-                                </Box>
-                            )}
-                        </>
-                    }
-                    estimatedItemSize={115}
+                <AccountImportOverview
+                    balance={accountInfo.balance}
+                    symbol={symbol}
+                    formControl={form.control}
                 />
+                {knownTokens.length > 0 && (
+                    <FlashList
+                        data={knownTokens}
+                        renderItem={renderItem}
+                        ListEmptyComponent={null}
+                        ListHeaderComponent={
+                            <Box marginTop="sp16" marginBottom="sp8">
+                                <Text variant="titleSmall">
+                                    <Translation id="moduleAccountImport.summaryScreen.tokens" />
+                                </Text>
+                            </Box>
+                        }
+                        estimatedItemSize={115}
+                    />
+                )}
             </AccountImportSummaryScreen>
         </Form>
     );

@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -23,7 +23,6 @@ import {
     AuthorizeDeviceStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
-    useScrollView,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -31,10 +30,6 @@ import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
 import { NoPassphraseButton } from './NoPassphraseButton';
 
 const FORM_CARD_PADDING = 12;
-
-// iOS scroll needs to calculate also with the keyboard height.
-const SCROLL_OFFSET = Platform.OS === 'android' ? 0 : 250;
-const SCROLL_DELAY = 100;
 
 type PassphraseFormProps = {
     onFocus?: () => void;
@@ -58,7 +53,6 @@ export const PassphraseForm = ({
     noPassphraseEnabled,
 }: PassphraseFormProps) => {
     const dispatch = useDispatch();
-    const scrollView = useScrollView();
     const formWrapperView = useRef<View>(null);
 
     const [isInputFocused, setIsInputFocused] = useState(false);
@@ -84,24 +78,6 @@ export const PassphraseForm = ({
         formState: { isDirty },
         reset,
     } = form;
-
-    const handleScrollToButton = useCallback(() => {
-        if (scrollView && formWrapperView.current) {
-            // Scroll so the whole form including submit button is visible.The delay is needed, because the scroll can not start before the button animation finishes.
-            formWrapperView.current.measureLayout(scrollView.getInnerViewNode(), (_, y) => {
-                setTimeout(
-                    () => scrollView.scrollTo({ y: y - SCROLL_OFFSET, animated: true }),
-                    SCROLL_DELAY,
-                );
-            });
-        }
-    }, [scrollView]);
-
-    useEffect(() => {
-        if (isDirty) {
-            handleScrollToButton();
-        }
-    }, [isDirty, handleScrollToButton]);
 
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
         dispatch(onPassphraseSubmit({ value: passphrase, passphraseOnDevice: false }));
