@@ -1,14 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
-import {
-    BridgeTransport,
-    NodeUsbTransport,
-    TRANSPORT,
-    Transport,
-    UdpTransport,
-    WebUsbTransport,
-    isTransportInstance,
-} from '@trezor/transport';
+import { TRANSPORT, Transport } from '@trezor/transport';
 import type { TransportApiType } from '@trezor/transport/src/transports/abstract';
 import { Descriptor, PathPublic } from '@trezor/transport/src/types';
 import {
@@ -25,8 +17,8 @@ import {
 import { ERRORS } from '../constants';
 import { DEVICE, TransportError, TransportInfo } from '../events';
 import { Device } from './Device';
-import { getBridgeInfo } from '../data/transportInfo';
 import { ConnectSettings, DeviceUniquePath, StaticSessionId } from '../types';
+import { createTransportList } from './TransportList';
 import { initLog } from '../utils/debug';
 
 const createAuthPenaltyManager = (priority: number) => {
@@ -153,7 +145,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     private readonly handshakeLock;
     private readonly authPenaltyManager;
 
-    private transportCommonArgs;
+    private updateTransports;
 
     isConnected(): this is DeviceList {
         return !!Object.keys(this.transport).length;
@@ -218,70 +210,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         this.handshakeLock = getSynchronize();
         this.authPenaltyManager = createAuthPenaltyManager(priority);
-        this.transportCommonArgs = {
+        this.updateTransports = createTransportList({
             messages,
             logger: transportLogger,
             sessionsBackgroundUrl: _sessionsBackgroundUrl,
             id: manifest?.appUrl || 'unknown app',
-        };
-    }
-
-    private tryGetTransport(name: string) {
-        return this.transports.find(t => t.name === name);
-    }
-
-    private getOrCreateTransport(
-        transportType: NonNullable<ConnectSettings['transports']>[number],
-    ) {
-        const { transportCommonArgs } = this;
-
-        if (typeof transportType === 'string') {
-            const existing = this.tryGetTransport(transportType);
-            if (existing) return existing;
-
-            switch (transportType) {
-                case 'WebUsbTransport':
-                    return new WebUsbTransport(transportCommonArgs);
-                case 'NodeUsbTransport':
-                    return new NodeUsbTransport(transportCommonArgs);
-                case 'BridgeTransport':
-                    return new BridgeTransport({
-                        latestVersion: getBridgeInfo().version.join('.'),
-                        ...transportCommonArgs,
-                    });
-                case 'UdpTransport':
-                    return new UdpTransport(transportCommonArgs);
-            }
-        } else if (typeof transportType === 'function' && 'prototype' in transportType) {
-            const transportInstance = new transportType(transportCommonArgs);
-            if (isTransportInstance(transportInstance)) {
-                return this.tryGetTransport(transportInstance.name) ?? transportInstance;
-            }
-        } else if (isTransportInstance(transportType)) {
-            if (this.tryGetTransport(transportType.name)) {
-                return transportType;
-            }
-
-            // custom Transport might be initialized without messages, update them if so
-            if (!transportType.getMessage()) {
-                transportType.updateMessages(transportCommonArgs.messages);
-            }
-
-            return transportType;
-        }
-
-        // runtime check
-        throw ERRORS.TypedError(
-            'Runtime',
-            `DeviceList.init: transports[] of unexpected type: ${transportType}`,
-        );
-    }
-
-    private createTransports(transports: ConnectSettings['transports']) {
-        // BridgeTransport is the ultimate fallback
-        const transportTypes = transports?.length ? transports : ['BridgeTransport' as const];
-
-        return transportTypes.map(this.getOrCreateTransport.bind(this));
+        });
     }
 
     private onDeviceConnected(descriptor: Descriptor, transport: Transport) {
@@ -320,7 +254,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     async init(initParams: InitParams = {}) {
         // throws when unknown transport is requested, in that case nothing is changed
-        this.transports = this.createTransports(initParams.transports);
+        this.transports = this.updateTransports(this.transports, initParams.transports);
 
         const promises = this.transports
             .map(t => t.apiType)
