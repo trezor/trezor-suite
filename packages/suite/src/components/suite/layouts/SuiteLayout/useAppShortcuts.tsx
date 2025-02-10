@@ -5,11 +5,16 @@ import { KEYBOARD_CODE } from '@trezor/components';
 
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';
 import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useAppShortcuts = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
+
+    const { getDiscoveryStatus } = useDiscovery();
+    const discoveryStatus = getDiscoveryStatus();
+    const discoveryInProgress =
+        discoveryStatus !== undefined && discoveryStatus.status === 'loading';
 
     useEvent('keydown', e => {
         const { altKey, metaKey } = e;
@@ -29,13 +34,12 @@ export const useAppShortcuts = () => {
 
         // press ALT + D to show SwitchDevice
         if (altKey && e.code === KEYBOARD_CODE.KEY_D && isDeviceSelected) {
-            dispatch(
-                goto('suite-switch-device', {
-                    params: {
-                        cancelable: true,
-                    },
-                }),
-            );
+            if (!discoveryInProgress) {
+                dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
+            }
+
+            // Firefox has default ALT+D shortcut to open address bar so we want to prevent that
+            // anyway (even when we are doing nothing due to running discovery) to avoid inconsistent behavior
             e.preventDefault();
         }
 
