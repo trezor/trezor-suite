@@ -3685,7 +3685,7 @@ export default defineMessages({
     },
     TOAST_COPY_TO_CLIPBOARD: {
         id: 'TOAST_COPY_TO_CLIPBOARD',
-        defaultMessage: 'Copied to clipboard',
+        defaultMessage: 'Copied',
     },
     TOAST_TX_SENT: {
         id: 'TOAST_TX_SENT',
@@ -6415,7 +6415,7 @@ export default defineMessages({
     },
     TR_BUMP_FEE: {
         id: 'TR_BUMP_FEE',
-        defaultMessage: 'Speed up',
+        defaultMessage: 'Bump fee',
     },
     TR_CANCEL_TX: {
         id: 'TR_CANCEL_TX',
@@ -6942,7 +6942,7 @@ export default defineMessages({
     },
     TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
-        defaultMessage: 'Security check verifying entropy failed during wallet creation.',
+        defaultMessage: 'Security check (entropy verification) failed.',
     },
     TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
