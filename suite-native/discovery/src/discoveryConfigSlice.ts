@@ -10,7 +10,6 @@ import {
     selectDeviceSupportedNetworks,
 } from '@suite-common/wallet-core';
 import {
-    filterBlacklistedNetworks,
     filterTestnetNetworks,
     isDetoxTestBuild,
     portfolioTrackerMainnets,
@@ -105,34 +104,20 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<
     DeviceRootState & DiscoveryConfigSliceRootState & FeatureFlagsRootState
 >();
 
-export const selectFeatureFlagEnabledNetworkSymbols = createMemoizedSelector(
-    [state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreEthL2sEnabled)],
-    areEthL2sEnabled => {
-        const allowlist: NetworkSymbol[] = [];
-
-        if (areEthL2sEnabled) {
-            allowlist.push('base', 'op', 'arb');
-        }
-
-        return returnStableArrayIfEmpty(allowlist);
-    },
-);
-
 export const selectDiscoverySupportedNetworks = createMemoizedSelector(
     [
         selectDeviceSupportedNetworks,
         selectAreTestnetsEnabled,
-        selectFeatureFlagEnabledNetworkSymbols,
+
         (_state, forcedAreTestnetsEnabled?: boolean) => forcedAreTestnetsEnabled,
     ],
-    (deviceNetworks, defaultAreTestnetsEnabled, allowlist, forcedAreTestnetsEnabled) => {
+    (deviceNetworks, defaultAreTestnetsEnabled, forcedAreTestnetsEnabled) => {
         const areTestnetsEnabled = forcedAreTestnetsEnabled ?? defaultAreTestnetsEnabled;
 
         return pipe(
             deviceNetworks,
             networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
             filterUnavailableNetworks,
-            availableNetworks => filterBlacklistedNetworks(availableNetworks, allowlist),
             sortNetworks,
             returnStableArrayIfEmpty,
         );
@@ -147,11 +132,6 @@ export const selectDiscoveryNetworkSymbols = createMemoizedSelector(
     supportedNetworks => returnStableArrayIfEmpty(supportedNetworks.map(n => n.symbol)),
 );
 
-export const selectPortfolioTrackerMainnetNetworkSymbols = createMemoizedSelector(
-    [selectFeatureFlagEnabledNetworkSymbols],
-    allowlist => returnStableArrayIfEmpty([...portfolioTrackerMainnets, ...allowlist]),
-);
-
 export const selectPortfolioTrackerTestnetNetworkSymbols = createMemoizedSelector(
     [state => selectIsFeatureFlagEnabled(state, FeatureFlag.IsRegtestEnabled)],
     isRegtestEnabled =>
@@ -163,8 +143,8 @@ export const selectPortfolioTrackerTestnetNetworkSymbols = createMemoizedSelecto
 );
 
 export const selectPortfolioTrackerNetworkSymbols = createMemoizedSelector(
-    [selectPortfolioTrackerMainnetNetworkSymbols, selectPortfolioTrackerTestnetNetworkSymbols],
-    (mainnets, testnets) => returnStableArrayIfEmpty([...mainnets, ...testnets]),
+    [selectPortfolioTrackerTestnetNetworkSymbols],
+    testnets => returnStableArrayIfEmpty([...portfolioTrackerMainnets, ...testnets]),
 );
 
 export const selectIsCoinEnablingInitFinished = (

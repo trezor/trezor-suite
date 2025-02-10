@@ -4,10 +4,8 @@ import { useSelector } from 'react-redux';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { HeaderedCard, VStack } from '@suite-native/atoms';
-import {
-    selectPortfolioTrackerMainnetNetworkSymbols,
-    selectPortfolioTrackerTestnetNetworkSymbols,
-} from '@suite-native/discovery';
+import { portfolioTrackerMainnets } from '@suite-native/config';
+import { selectPortfolioTrackerTestnetNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 
 type SelectableAssetListProps = {
@@ -33,7 +31,6 @@ const NetworkItemSection = ({
 );
 
 export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps) => {
-    const portfolioMainnetNetworkSymbols = useSelector(selectPortfolioTrackerMainnetNetworkSymbols);
     const portfolioTestnetsNetworkSymbols = useSelector(
         selectPortfolioTrackerTestnetNetworkSymbols,
     );
@@ -42,7 +39,7 @@ export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps
         <VStack spacing="sp24">
             <NetworkItemSection
                 title={<Translation id="moduleAccountImport.coinList.mainnets" />}
-                symbols={portfolioMainnetNetworkSymbols}
+                symbols={portfolioTrackerMainnets}
                 onSelectItem={onSelectItem}
             />
             <NetworkItemSection

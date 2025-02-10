@@ -10,7 +10,6 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',
-    [FeatureFlagEnum.AreEthL2sEnabled]: 'Eth L2s',
     [FeatureFlagEnum.IsDeviceOnboardingEnabled]: 'Device onboarding',
     [FeatureFlagEnum.IsTradingEnabled]: 'Trading',
     [FeatureFlagEnum.IsFwRevisionCheckEnabled]: 'Firmware Revision Check',

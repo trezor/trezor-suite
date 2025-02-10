@@ -18,11 +18,25 @@ export const orderedAccountTypes: AccountType[] = [
     'ledger',
 ];
 
-const discoveryBlacklist: NetworkSymbol[] = ['op', 'base', 'arb'];
-
 // All supported coins for device discovery
 export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly NetworkSymbol[]> = {
-    mainnet: ['btc', 'eth', 'pol', 'sol', 'bsc', 'ltc', 'etc', 'ada', 'xrp', 'bch', 'doge', 'zec'],
+    mainnet: [
+        'btc',
+        'eth',
+        'pol',
+        'sol',
+        'bsc',
+        'ltc',
+        'etc',
+        'ada',
+        'xrp',
+        'bch',
+        'doge',
+        'zec',
+        'op',
+        'base',
+        'arb',
+    ],
     testnet: ['test', 'regtest', 'tsep', 'thol', 'dsol', 'tada', 'txrp'],
 };
 
@@ -47,15 +61,6 @@ export const filterTestnetNetworks = (
 
     return networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol));
 };
-
-export const filterBlacklistedNetworks = (
-    networksToFilter: Network[],
-    allowList: NetworkSymbol[],
-) =>
-    networksToFilter.filter(
-        network =>
-            !discoveryBlacklist.includes(network.symbol) || allowList.includes(network.symbol),
-    );
 
 export const portfolioTrackerMainnets = sortNetworks(
     getMainnets().filter(network => networkSymbolsWhitelistMap.mainnet.includes(network.symbol)),
