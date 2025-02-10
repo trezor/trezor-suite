@@ -1,6 +1,21 @@
 [
     {
         "required": false,
+        "version": [2, 8, 8],
+        "min_firmware_version": [2, 0, 8],
+        "min_bootloader_version": [2, 0, 0],
+        "bootloader_version": [2, 1, 8],
+        "firmware_revision": "592590cf66a9b62dfeee7e4d2afb6e01005e5b2c",
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
+        "url": "firmware/t2t1/trezor-t2t1-2.8.8.bin",
+        "fingerprint": "f4888bed3e75205464910f3956d1f3ad19bb73e093b31c9141a66226a7081990",
+        "changelog": "* Fix \"PIN attempts exceeded\" screen\n* Fixed a bug resulting in restarting the recovery flow when inputting 33-word mnemonic",
+        "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.8.8-bitcoinonly.bin",
+        "fingerprint_bitcoinonly": "81928bbb5bc855f46a2ccb210173f9676b69d153a513bfa0101abfc063f7aef5",
+        "changelog_bitcoinonly": "* Fix \"PIN attempts exceeded\" screen\n* Fixed a bug resulting in restarting the recovery flow when inputting 33-word mnemonic"
+    },
+    {
+        "required": false,
         "version": [2, 8, 7],
         "min_firmware_version": [2, 0, 8],
         "min_bootloader_version": [2, 0, 0],
