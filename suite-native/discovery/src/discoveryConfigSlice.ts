@@ -11,9 +11,9 @@ import {
 } from '@suite-common/wallet-core';
 import {
     filterTestnetNetworks,
+    getNativeMainnetSymbols,
+    getNativeTestnetSymbols,
     isDetoxTestBuild,
-    portfolioTrackerMainnets,
-    portfolioTrackerTestnets,
     sortNetworks,
 } from '@suite-native/config';
 import {
@@ -132,19 +132,19 @@ export const selectDiscoveryNetworkSymbols = createMemoizedSelector(
     supportedNetworks => returnStableArrayIfEmpty(supportedNetworks.map(n => n.symbol)),
 );
 
-export const selectPortfolioTrackerTestnetNetworkSymbols = createMemoizedSelector(
+export const selectSupportedTestnetNetworkSymbols = createMemoizedSelector(
     [state => selectIsFeatureFlagEnabled(state, FeatureFlag.IsRegtestEnabled)],
     isRegtestEnabled =>
         returnStableArrayIfEmpty(
             isRegtestEnabled
-                ? [...portfolioTrackerTestnets, 'regtest' as const]
-                : portfolioTrackerTestnets,
+                ? [...getNativeTestnetSymbols(), 'regtest' as const]
+                : getNativeTestnetSymbols(),
         ),
 );
 
-export const selectPortfolioTrackerNetworkSymbols = createMemoizedSelector(
-    [selectPortfolioTrackerTestnetNetworkSymbols],
-    testnets => returnStableArrayIfEmpty([...portfolioTrackerMainnets, ...testnets]),
+export const selectSupportedNetworkSymbols = createMemoizedSelector(
+    [selectSupportedTestnetNetworkSymbols],
+    testnets => returnStableArrayIfEmpty([...getNativeMainnetSymbols(), ...testnets]),
 );
 
 export const selectIsCoinEnablingInitFinished = (

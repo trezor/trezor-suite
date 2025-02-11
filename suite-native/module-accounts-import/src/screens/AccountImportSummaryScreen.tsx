@@ -6,7 +6,7 @@ import {
     selectDeviceAccountByDescriptorAndNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { ErrorMessage } from '@suite-native/atoms';
-import { selectPortfolioTrackerNetworkSymbols } from '@suite-native/discovery';
+import { selectSupportedNetworkSymbols } from '@suite-native/discovery';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
@@ -39,12 +39,10 @@ export const AccountImportSummaryScreen = ({
             networkSymbol,
         ),
     );
-    const portfolioTrackerSupportedNetworks = useSelector(selectPortfolioTrackerNetworkSymbols);
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
 
     const isAccountImportSupported =
-        portfolioTrackerSupportedNetworks.some(
-            supportedSymbol => supportedSymbol === networkSymbol,
-        ) ||
+        supportedNetworks.some(supportedSymbol => supportedSymbol === networkSymbol) ||
         (networkSymbol === 'regtest' && isRegtestEnabled);
 
     if (!isAccountImportSupported) {

@@ -43,11 +43,6 @@ export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly 
 
 export const sendDisabledNetworkTypes: NetworkType[] = ['cardano'];
 
-export const discoverySupportedNetworks = [
-    ...networkSymbolsWhitelistMap.mainnet,
-    ...networkSymbolsWhitelistMap.testnet,
-];
-
 export const sortNetworks = (networksToSort: Network[]) =>
     A.sort(networksToSort, (a, b) => {
         const aOrder = networkSymbolCollection.indexOf(a.symbol);
@@ -65,20 +60,12 @@ export const filterTestnetNetworks = (
     return networkSymbols.filter(networkSymbol => !isTestnet(networkSymbol));
 };
 
-export const portfolioTrackerMainnets = sortNetworks(
-    getMainnets().filter(network => networkSymbolsWhitelistMap.mainnet.includes(network.symbol)),
-).map(network => network.symbol);
-
-const getPortfolioTrackerTestnets = () =>
+export const getNativeMainnetSymbols = () =>
     sortNetworks(
-        getTestnets().filter(network =>
-            networkSymbolsWhitelistMap.testnet.includes(network.symbol),
-        ),
-    ).map(network => network.symbol);
+        getMainnets().filter(({ symbol }) => networkSymbolsWhitelistMap.mainnet.includes(symbol)),
+    ).map(n => n.symbol);
 
-export const portfolioTrackerTestnets = getPortfolioTrackerTestnets();
-
-export const portfolioTrackerSupportedNetworks = [
-    ...portfolioTrackerMainnets,
-    ...portfolioTrackerTestnets,
-];
+export const getNativeTestnetSymbols = () =>
+    sortNetworks(
+        getTestnets().filter(({ symbol }) => networkSymbolsWhitelistMap.testnet.includes(symbol)),
+    ).map(n => n.symbol);
