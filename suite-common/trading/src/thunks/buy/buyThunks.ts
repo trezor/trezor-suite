@@ -2,9 +2,9 @@ import { BuyProviderInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 
-import { invityAPI } from '../invityAPI';
-import { BuyInfo } from '../reducers/buyReducer';
-import { regional } from '../regional';
+import { invityAPI } from '../../invityAPI';
+import { BuyInfo } from '../../reducers/buyReducer';
+import { regional } from '../../regional';
 
 const BUY_COMMON_PREFIX = '@trading-buy/thunk';
 

@@ -3,16 +3,16 @@ import { FiatCurrenciesProps } from 'invity-api';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
-import { invityAPI } from '../../invityAPI';
-import { buyInitialState } from '../../reducers/__fixtures__/buyTradingReducer';
-import { prepareBuyReducer } from '../../reducers/buyReducer';
-import { regional } from '../../regional';
+import { invityAPI } from '../../../invityAPI';
+import { buyInitialState } from '../../../reducers/__fixtures__/buyTradingReducer';
+import { prepareBuyReducer } from '../../../reducers/buyReducer';
+import { regional } from '../../../regional';
 import { buyThunks } from '../buyThunks';
 
 const buyTradingReducer = prepareBuyReducer(extraDependenciesMock);
 
 describe('Testing buy thunks', () => {
-    jest.mock('../../invityAPI');
+    jest.mock('../../../invityAPI');
 
     invityAPI.setInvityServersEnvironment = () => {};
     invityAPI.createInvityAPIKey = () => {};

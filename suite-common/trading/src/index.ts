@@ -8,5 +8,5 @@ export type { TradingBuyState } from './reducers/buyReducer';
 export * from './middlewares/tradingMiddleware';
 export * from './actions/tradingActions';
 export * from './actions/buyActions';
-export * from './thunks/buyThunks';
+export * from './thunks/buy/buyThunks';
 export * from './thunks/tradingThunks';
