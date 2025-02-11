@@ -96,6 +96,8 @@ export type TradingTransactionSell = TradingCommonTransaction & {
 export type TradingTransactionExchange = TradingCommonTransaction & {
     tradeType: 'exchange';
     data: ExchangeTrade;
+    sendAccountKey?: Account['key'];
+    receiveAccountKey?: Account['key'];
 };
 export type TradingTransaction =
     | TradingTransactionBuy

@@ -24,6 +24,7 @@ export type TradingExchangeState = {
     addressVerified: string | undefined;
     // internal selected account key in trading section
     tradingAccountKey?: AccountKey;
+    receiveAccountKey?: AccountKey;
     selectedQuote: ExchangeTrade | undefined;
     isFromRedirect: boolean;
     isLoading: boolean;
@@ -40,6 +41,7 @@ export const exchangeInitialState: TradingExchangeState = {
     quotes: [],
     addressVerified: undefined,
     tradingAccountKey: undefined,
+    receiveAccountKey: undefined,
     selectedQuote: undefined,
     isFromRedirect: false,
     isLoading: false,
@@ -74,6 +76,9 @@ const tradingExchangeSlice = createSlice({
         },
         setTradingAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
             state.tradingAccountKey = action.payload;
+        },
+        setReceiveAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
+            state.receiveAccountKey = action.payload;
         },
         saveSelectedQuote(state, action: PayloadAction<ExchangeTrade | undefined>) {
             state.selectedQuote = action.payload;

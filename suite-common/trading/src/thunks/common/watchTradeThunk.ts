@@ -106,6 +106,8 @@ export const watchTradeThunk = createThunk(
                         key: data.tradeData.orderId,
                         account: accountData,
                         data: data.tradeData,
+                        sendAccountKey: trade.sendAccountKey,
+                        receiveAccountKey: trade.receiveAccountKey,
                     }),
                 );
 

@@ -9,8 +9,10 @@ import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
 import {
+    selectTradingExchangeAccountKey,
     selectTradingExchangeFormStep,
     selectTradingExchangeQuotesRequest,
+    selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../../utils';
@@ -46,6 +48,8 @@ export const confirmTradeThunk = createThunk(
 
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
         const quotesRequest = selectTradingExchangeQuotesRequest(getState());
+        const sendAccountKey = selectTradingExchangeAccountKey(getState());
+        const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
         const formStep = selectTradingExchangeFormStep(getState());
         const { address: refundAddress } = getUnusedAddressFromAccount(account);
 
@@ -152,6 +156,8 @@ export const confirmTradeThunk = createThunk(
                     accountIndex: account.index,
                 },
                 data: response,
+                sendAccountKey,
+                receiveAccountKey,
             }),
         );
         dispatch(tradingExchangeActions.saveTransactionId(response.orderId));

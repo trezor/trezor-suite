@@ -5,13 +5,14 @@ import { ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import { type TradingExchangeType, cryptoIdToNetwork } from '@suite-common/trading';
+import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, InfoItem } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { IOAddress } from 'src/components/suite/copy/IOAddress';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
@@ -48,6 +49,7 @@ const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
 };
 
 export const TradingDetailExchange = () => {
+    const accounts = useSelector(selectAccounts);
     const { account, trade, info } = useTradingDetailContext<TradingExchangeType>();
     const dispatch = useDispatch();
 
@@ -103,6 +105,9 @@ export const TradingDetailExchange = () => {
     const { receiveTxHash, send } = trade.data;
     const network = send && cryptoIdToNetwork(send);
 
+    const sendAccount = accounts.find(account => account.key === trade.sendAccountKey);
+    const receiveAccount = accounts.find(account => account.key === trade.receiveAccountKey);
+
     return (
         <Wrapper>
             <Card>
@@ -142,6 +147,8 @@ export const TradingDetailExchange = () => {
             </Card>
             <Card>
                 <TradingSelectedOfferInfo
+                    account={sendAccount}
+                    selectedAccount={receiveAccount}
                     selectedQuote={trade.data}
                     transactionId={trade.key}
                     providers={info?.providerInfos}

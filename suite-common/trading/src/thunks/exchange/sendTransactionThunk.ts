@@ -8,7 +8,11 @@ import { SendDexTransactionThunkProps } from './sendDexTransactionThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
-import { selectTradingExchangeSelectedQuote } from '../../selectors/tradingSelectors';
+import {
+    selectTradingExchangeAccountKey,
+    selectTradingExchangeReceiveAccountKey,
+    selectTradingExchangeSelectedQuote,
+} from '../../selectors/tradingSelectors';
 import { TradingSendRejectedProps } from '../../types';
 
 export type SendTransactionThunkProps = {
@@ -41,6 +45,8 @@ export const sendTransactionThunk = createThunk<
         { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
+        const sendAccountKey = selectTradingExchangeAccountKey(getState());
+        const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
         const selectedTrade = trade ?? selectedQuote;
         // sendAddress may be set by useTradingWatchTrade hook to the trade object
         const sendAddress = selectedTrade?.sendAddress;
@@ -117,6 +123,8 @@ export const sendTransactionThunk = createThunk<
                     accountIndex: account.index,
                 },
                 data: selectedTrade,
+                sendAccountKey,
+                receiveAccountKey,
             }),
         );
         dispatch(tradingExchangeActions.saveTransactionId(selectedTrade.orderId));

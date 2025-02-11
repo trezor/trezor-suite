@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 55
+
+-   change `tradingTrades` - add `sendAccountKey` and `receiveAccountKey` to each exchange trade
+
 ## 54
 
 -   create `connect` object for Connect Popup related data

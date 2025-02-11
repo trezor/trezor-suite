@@ -6,7 +6,11 @@ import { Account } from '@suite-common/wallet-types';
 import { exchangeThunks, tradingThunks } from '../';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingActions } from '../../reducers/tradingReducer';
-import { selectTradingExchangeSelectedQuote } from '../../selectors/tradingSelectors';
+import {
+    selectTradingExchangeAccountKey,
+    selectTradingExchangeReceiveAccountKey,
+    selectTradingExchangeSelectedQuote,
+} from '../../selectors/tradingSelectors';
 import { TradingSendRejectedProps } from '../../types';
 import { RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
@@ -42,6 +46,8 @@ export const sendDexTransactionThunk = createThunk<
         { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
+        const sendAccountKey = selectTradingExchangeAccountKey(getState());
+        const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
 
         if (
             !selectedQuote ||
@@ -104,6 +110,8 @@ export const sendDexTransactionThunk = createThunk<
                         accountIndex: account.index,
                     },
                     data: trade,
+                    sendAccountKey,
+                    receiveAccountKey,
                 }),
             );
         } else {

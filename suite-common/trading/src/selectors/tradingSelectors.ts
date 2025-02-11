@@ -340,3 +340,9 @@ export const selectValidTradingBuyQuotes = createMemoizedSelector(
         return quotes.filter(item => item.rate && item.rate !== 0);
     },
 );
+
+export const selectTradingExchangeAccountKey = (state: TradingRootState) =>
+    state.wallet.tradingNew.exchange.tradingAccountKey;
+
+export const selectTradingExchangeReceiveAccountKey = (state: TradingRootState) =>
+    state.wallet.tradingNew.exchange.receiveAccountKey;

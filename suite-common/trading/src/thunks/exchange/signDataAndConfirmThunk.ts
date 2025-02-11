@@ -10,7 +10,11 @@ import TrezorConnect, {
 import { exchangeThunks } from '../';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingActions } from '../../reducers/tradingReducer';
-import { selectTradingExchangeSelectedQuote } from '../../selectors/tradingSelectors';
+import {
+    selectTradingExchangeAccountKey,
+    selectTradingExchangeReceiveAccountKey,
+    selectTradingExchangeSelectedQuote,
+} from '../../selectors/tradingSelectors';
 
 export type SignDataAndConfirmThunkProps = {
     account: Account;
@@ -36,6 +40,8 @@ export const signDataAndConfirmThunk = createThunk(
         { dispatch, getState },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
+        const sendAccountKey = selectTradingExchangeAccountKey(getState());
+        const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
 
         if (!selectedQuote?.signData) {
             dispatch(
@@ -106,6 +112,8 @@ export const signDataAndConfirmThunk = createThunk(
                     accountIndex: account.index,
                 },
                 data: trade,
+                sendAccountKey,
+                receiveAccountKey,
             }),
         );
 
