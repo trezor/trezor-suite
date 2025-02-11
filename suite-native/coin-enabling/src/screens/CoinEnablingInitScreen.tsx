@@ -58,7 +58,7 @@ export const CoinEnablingInitScreen = () => {
                 canBeSaved && (
                     <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
                         <ScreenFooterGradient />
-                        <Box marginHorizontal="sp16">
+                        <Box marginHorizontal="sp16" marginBottom="sp16">
                             <Button onPress={handleSave} testID="@coin-enabling/button-save">
                                 <Translation id="moduleSettings.coinEnabling.initialSetup.button" />
                             </Button>
