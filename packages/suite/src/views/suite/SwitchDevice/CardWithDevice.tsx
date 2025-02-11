@@ -14,6 +14,7 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
 import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { DeviceHeader } from './DeviceItem/DeviceHeader';
+import { usePassphraseModalContext } from '../../../components/suite/modals/ReduxModal/DeviceContextModal/PassphraseModalContext';
 
 const Content = styled.div<{ $elevation: Elevation }>`
     padding-top: ${spacingsPx.xs};
@@ -61,6 +62,7 @@ export const CardWithDevice = ({
     icon,
 }: CardWithDeviceProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
+    const { setPassphraseState } = usePassphraseModalContext();
 
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
     const isUnknown = device.type !== 'acquired';
@@ -86,12 +88,17 @@ export const CardWithDevice = ({
         }
     };
 
+    const handleCancel = () => {
+        setPassphraseState('initial');
+        onCancel();
+    };
+
     return (
         <Card paddingType="small">
             <DeviceWrapper>
                 <DeviceHeader
                     isFindTrezorVisible={isFindTrezorVisible}
-                    onCancel={onCancel}
+                    onCancel={handleCancel}
                     device={device}
                     isFullHeaderVisible={isFullHeaderVisible}
                     onBackButtonClick={onBackButtonClick}

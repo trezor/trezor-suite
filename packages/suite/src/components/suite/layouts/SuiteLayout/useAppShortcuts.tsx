@@ -1,15 +1,19 @@
 import { useEvent } from 'react-use';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { WalletType } from '@suite-common/wallet-types/libDev/src';
 import { KEYBOARD_CODE } from '@trezor/components';
 
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';
 import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 
+import { usePassphraseModalContext } from '../../modals/ReduxModal/DeviceContextModal/PassphraseModalContext';
+
 export const useAppShortcuts = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
+    const { setPassphraseState } = usePassphraseModalContext();
 
     const { getDiscoveryStatus } = useDiscovery();
     const discoveryStatus = getDiscoveryStatus();
@@ -27,7 +31,8 @@ export const useAppShortcuts = () => {
             e.code === KEYBOARD_CODE.KEY_P &&
             isDeviceSelected
         ) {
-            dispatch(addWalletThunk({ walletType: 'passphrase', device: selectedDevice }));
+            setPassphraseState('exists-enter-passphrase');
+            dispatch(addWalletThunk({ walletType: WalletType.PASSPHRASE, device: selectedDevice }));
             dispatch(closeModalApp());
             e.preventDefault();
         }

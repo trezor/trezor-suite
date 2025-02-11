@@ -12,10 +12,12 @@ import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 import { Translation } from '../../../Translation';
+import { usePassphraseModalContext } from '../DeviceContextModal/PassphraseModalContext';
 
 export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) => {
     const { isLocked, device: selectDevice } = useDevice();
     const dispatch = useDispatch();
+    const { setPassphraseState, isExisting } = usePassphraseModalContext();
 
     const isDeviceLocked = isLocked();
 
@@ -24,6 +26,12 @@ export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) 
     }
 
     const onStartOver = () => {
+        if (isExisting) {
+            setPassphraseState('exists-enter-passphrase');
+        } else {
+            setPassphraseState('not-exist-enter-passphrase');
+        }
+
         dispatch(passwordMismatchResetThunk({ device: selectDevice }));
         dispatch(addWalletThunk({ walletType: WalletType.PASSPHRASE, device: selectDevice }));
         dispatch(redirectAfterWalletSelectedThunk());
