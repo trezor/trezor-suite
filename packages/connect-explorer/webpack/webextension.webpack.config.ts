@@ -1,4 +1,4 @@
-import CopyPlugin from 'copy-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
@@ -111,7 +111,7 @@ const config: webpack.Configuration = {
             inject: true,
             minify: false,
         }),
-        new CopyPlugin({
+        new CopyWebpackPlugin({
             patterns: [
                 {
                     from: path.join(__dirname, '..', 'src-webextension', 'manifest.json'),

@@ -1,4 +1,4 @@
-import CopyPlugin from 'copy-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
@@ -17,7 +17,7 @@ const config: webpack.Configuration = {
         path: path.join(baseDir, 'build'),
     },
     plugins: [
-        new CopyPlugin({
+        new CopyWebpackPlugin({
             patterns: ['browser-detection', 'fonts', 'images', 'oauth', 'videos', 'guide/assets']
                 .map(dir => ({
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),

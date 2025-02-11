@@ -1,4 +1,4 @@
-import CopyPlugin from 'copy-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 
@@ -30,7 +30,7 @@ const config: webpack.Configuration = {
     module: prod.module,
     resolve: prod.resolve,
     plugins: [
-        new CopyPlugin({
+        new CopyWebpackPlugin({
             patterns: [
                 {
                     from: `${path.join(__dirname, '..', 'dist', 'content-script.js')}`,

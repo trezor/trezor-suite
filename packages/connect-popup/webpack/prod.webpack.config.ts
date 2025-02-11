@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import CopyPlugin from 'copy-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -107,7 +107,7 @@ const config: webpack.Configuration = {
             minify: false,
             urls: URLS,
         }),
-        new CopyPlugin({
+        new CopyWebpackPlugin({
             patterns: [
                 {
                     from: `${STATIC_SRC}/popup.css`,

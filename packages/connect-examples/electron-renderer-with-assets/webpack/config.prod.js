@@ -1,4 +1,4 @@
-const CopyPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
@@ -25,7 +25,7 @@ module.exports = {
         modules: ['node_modules'],
     },
     plugins: [
-        new CopyPlugin({
+        new CopyWebpackPlugin({
             patterns: [
                 {
                     from: path.join(__dirname, '..', '..', '..', 'connect-iframe', 'build'),
