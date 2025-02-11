@@ -17,6 +17,7 @@
 @types/copy-webpack-plugin
 @types/file-saver
 @types/fs-extra
+@types/node-fetch
 @types/prettier
 @types/react
 @types/react-dom
