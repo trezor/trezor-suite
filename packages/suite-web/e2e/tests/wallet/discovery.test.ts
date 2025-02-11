@@ -1,6 +1,8 @@
 // @group_wallet
 // @retry=2
 
+import { getRandomInt } from '@trezor/utils';
+
 import { onNavBar } from '../../support/pageObjects/topBarObject';
 
 // discovery should end within this time frame
@@ -29,6 +31,18 @@ describe('Discovery', () => {
         cy.log('all available networks should return something from discovery');
 
         cy.getTestElement('@dashboard/loading', { timeout: 1000 * 10 });
+
+        // wait randomly between 1000 and 4000 ms
+        cy.wait(getRandomInt(1, 40) * 100);
+        // trigger reload to simulate interruption. we want to make sure that communication with the device does not
+        // end up in some de-synced state. if this test becomes flaky, this reload might be the reason.
+        cy.reload();
+
+        // device appears as connected
+        cy.getTestElement('@deviceStatus-connected');
+        // dashboard is still loading, discovery starts, no error appears
+        cy.getTestElement('@dashboard/loading');
+
         cy.getTestElement('@dashboard/loading', { timeout: DISCOVERY_LIMIT }).should('not.exist');
         ['btc', ...coinsToActivate].forEach(symbol => {
             cy.getTestElement(`@wallet/coin-balance/value-${symbol}`);
