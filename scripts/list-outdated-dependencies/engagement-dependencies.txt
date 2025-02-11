@@ -8,7 +8,7 @@
 @storybook/addons
 @storybook/client-api
 @storybook/react
-@storybook/react-webpack5
+@storybook/nextjs
 @storybook/theming
 @types/qrcode.react
 @types/react-date-range
