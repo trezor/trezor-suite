@@ -8,6 +8,8 @@ import { TrezorDevice } from 'src/types/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
+import { usePassphraseModalContext } from '../DeviceContextModal/PassphraseModalContext';
+
 type PassphraseDuplicateModalProps = {
     device: TrezorDevice;
     duplicate: TrezorDevice;
@@ -18,9 +20,23 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
     const { isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();
+    const { setPassphraseState, isExisting } = usePassphraseModalContext();
 
-    const handleSwitchDevice = () => dispatch(switchDuplicatedDevice({ device, duplicate }));
-    const handleAuthorizeDevice = () => dispatch(authorizeDeviceThunk());
+    const handleSwitchDevice = () => {
+        setPassphraseState('initial');
+
+        return dispatch(switchDuplicatedDevice({ device, duplicate }));
+    };
+
+    const handleAuthorizeDevice = () => {
+        if (isExisting) {
+            setPassphraseState('exists-enter-passphrase');
+        } else {
+            setPassphraseState('not-exist-enter-passphrase');
+        }
+
+        return dispatch(authorizeDeviceThunk());
+    };
 
     return (
         <SwitchDeviceModal>

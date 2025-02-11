@@ -1,5 +1,19 @@
+import { useState } from 'react';
+
 import { WalletType } from '@suite-common/wallet-types';
-import { Button, Column, HotkeyBadge, Row, Tooltip } from '@trezor/components';
+import {
+    Button,
+    Card,
+    Column,
+    ElevationDown,
+    HotkeyBadge,
+    Icon,
+    IconButton,
+    Row,
+    Text,
+    Tooltip,
+} from '@trezor/components';
+import { CardButton } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
@@ -7,6 +21,8 @@ import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDeviceOrUiLocked } from 'src/reducers/suite/suiteReducer';
 import { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
+
+import { usePassphraseModalContext } from '../../../../components/suite/modals/ReduxModal/DeviceContextModal/PassphraseModalContext';
 
 interface AddWalletButtonProps {
     device: TrezorDevice;
@@ -25,11 +41,85 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     // useDevice hook is not really suited for this since we need to pass the device as a prop
     // and there is no point in useDevice returning the same device object we would have passed
     const isLocked = !device || !device.connected || isDeviceOrUiLocked;
+    const [isPassphraseExpanded, setIsPassphraseExpanded] = useState(false);
 
-    const onAddWallet = ({ walletType }: { walletType: WalletType }) => {
-        dispatch(addWalletThunk({ walletType, device }));
-        onCancel(false);
+    const { setPassphraseState, passphraseState, setIsExisting } = usePassphraseModalContext();
+    console.log('___!!!', passphraseState);
+    const onAddWallet = ({
+        walletType,
+        isExisting,
+    }: {
+        walletType: WalletType;
+        isExisting: boolean;
+    }) => {
+        if (!isExisting) {
+            setPassphraseState('not-exist-best-practices');
+            setIsExisting(false);
+        } else {
+            setPassphraseState('exists-enter-passphrase');
+            setIsExisting(true);
+
+            dispatch(addWalletThunk({ walletType, device }));
+            onCancel(false);
+        }
     };
+
+    const ExpandedPassphraseContainer = () => (
+        <Card paddingType="small">
+            <Row alignItems="center" justifyContent="space-between">
+                <Text>
+                    <Translation id="TR_ADD_HIDDEN_WALLET" />
+                </Text>
+                <IconButton
+                    variant="tertiary"
+                    icon="x"
+                    size="tiny"
+                    onClick={() => {
+                        setIsPassphraseExpanded(false);
+                    }}
+                />
+            </Row>
+            <Column gap={spacings.xxs} width="100%" margin={{ top: spacings.sm }}>
+                <CardButton
+                    data-testid="@switch-device/add-hidden-wallet-button"
+                    isDisabled={isLocked}
+                    onClick={() =>
+                        onAddWallet({
+                            walletType: WalletType.PASSPHRASE,
+                            isExisting: false,
+                        })
+                    }
+                >
+                    <Row gap={spacings.md} alignItems="center">
+                        <Icon name="plusCircleFilled" variant="primary" />
+                        <Text variant="primary" typographyStyle="highlight">
+                            <Translation id="TR_NEW_PASSPHRASE_WALLET" />
+                        </Text>
+                    </Row>
+                </CardButton>
+                <CardButton
+                    data-testid="@switch-device/add-hidden-wallet-button"
+                    isDisabled={isLocked}
+                    onClick={() =>
+                        onAddWallet({
+                            walletType: WalletType.PASSPHRASE,
+                            isExisting: true,
+                        })
+                    }
+                >
+                    <Row gap={spacings.md} alignItems="center" justifyContent="space-between">
+                        <Row gap={spacings.md} alignItems="center">
+                            <Icon name="folderOpen" variant="tertiary" />
+                            <Text variant="tertiary">
+                                <Translation id="TR_OPEN_PREVIOUSLY_USED_WALLET" />
+                            </Text>
+                        </Row>
+                        {!isLocked && <HotkeyBadge hotkey={['ALT', 'KEY_P']} />}
+                    </Row>
+                </CardButton>
+            </Column>
+        </Card>
+    );
 
     return (
         <Tooltip
@@ -45,26 +135,33 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         isFullWidth
                         icon="plus"
                         isDisabled={isLocked}
-                        onClick={() => onAddWallet({ walletType: WalletType.STANDARD })}
+                        onClick={() =>
+                            onAddWallet({ walletType: WalletType.STANDARD, isExisting: false })
+                        }
                     >
                         <Translation id="TR_ADD_WALLET" />
                     </Button>
                 )}
 
                 {isPassphraseProtectionEnabled && (
-                    <Button
-                        data-testid="@switch-device/add-hidden-wallet-button"
-                        variant="tertiary"
-                        isFullWidth
-                        icon="plus"
-                        isDisabled={isLocked}
-                        onClick={() => onAddWallet({ walletType: WalletType.PASSPHRASE })}
-                    >
-                        <Row gap={spacings.xs}>
-                            <Translation id="TR_ADD_HIDDEN_WALLET" />{' '}
-                            {!isLocked && <HotkeyBadge hotkey={['ALT', 'KEY_P']} />}
-                        </Row>
-                    </Button>
+                    <>
+                        {isPassphraseExpanded ? (
+                            <ExpandedPassphraseContainer />
+                        ) : (
+                            <Button
+                                data-testid="@switch-device/add-hidden-wallet-button"
+                                variant="tertiary"
+                                isFullWidth
+                                isDisabled={isLocked}
+                                onClick={() => setIsPassphraseExpanded(true)}
+                            >
+                                <Row gap={spacings.xs}>
+                                    <Translation id="TR_ADD_HIDDEN_WALLET" />{' '}
+                                    {!isLocked && <HotkeyBadge hotkey={['ALT', 'KEY_P']} />}
+                                </Row>
+                            </Button>
+                        )}
+                    </>
                 )}
             </Column>
         </Tooltip>
