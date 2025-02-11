@@ -118,13 +118,13 @@ export const connectInitThunk = createThunk(
         // ======================================================  ====================                         ====================
         // localhost:8000                                          localhost:8088                               NO
         // https://dev.suite.sldev.cz/suite-web/develop/web/       https://dev.suite.sldev.cz/connect/develop/  YES - connect
-        // suite.trezor.io/web                                     connect.trezor.io/9(x.y)/                    YES - connect
+        // suite.trezor.io/web                                     connect.trezor.io/9(x.y)/                    NO
 
         let _sessionsBackgroundUrl: string | null = null;
-
+        const localSharedWorker = '/static/sessions-background-sharedworker.js';
         if (typeof window !== 'undefined' && !isNative()) {
             if (window.location.origin.includes('localhost')) {
-                _sessionsBackgroundUrl = null;
+                _sessionsBackgroundUrl = localSharedWorker;
             } else if (window.location.origin.endsWith('dev.suite.sldev.cz')) {
                 // we are expecting accompanying connect build at specified location
                 const assetPrefixArr = (process.env.ASSET_PREFIX || '').split('/').filter(Boolean);
@@ -141,8 +141,7 @@ export const connectInitThunk = createThunk(
 
                 _sessionsBackgroundUrl = `${window.location.origin}/${relevantSegments.join('/')}/workers/sessions-background-sharedworker.js`;
             } else {
-                _sessionsBackgroundUrl =
-                    'https://connect.trezor.io/9/workers/sessions-background-sharedworker.js';
+                _sessionsBackgroundUrl = localSharedWorker;
             }
         }
 
