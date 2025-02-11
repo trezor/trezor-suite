@@ -20,3 +20,7 @@ trim_trailing_whitespace = unset
 # Use indentation of 2 spaces for all yaml files.
 [*.{yaml,yml}]
 indent_size = 2
+
+# Use indentation of 4 spaces for all json files.
+[*.json]
+indent_size = 4
