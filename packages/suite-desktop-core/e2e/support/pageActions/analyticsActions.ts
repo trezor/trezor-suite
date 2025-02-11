@@ -5,10 +5,12 @@ import { step } from '../common';
 export class AnalyticsActions {
     readonly heading: Locator;
     readonly continueButton: Locator;
+    readonly toggleSwitch: Locator;
 
     constructor(page: Page) {
         this.continueButton = page.getByTestId('@analytics/continue-button');
         this.heading = page.getByTestId('@analytics/consent/heading');
+        this.toggleSwitch = page.getByTestId('@analytics/toggle-switch');
     }
 
     @step()

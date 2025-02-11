@@ -66,6 +66,7 @@ export class SettingsActions {
     readonly checkSeedButton: Locator;
     readonly metadataSwitch: Locator;
     readonly analyticsSwitch: Locator;
+    readonly showLogButton: Locator;
 
     constructor(
         private readonly page: Page,
@@ -100,6 +101,7 @@ export class SettingsActions {
         this.checkSeedButton = this.page.getByTestId('@settings/device/check-seed-button');
         this.metadataSwitch = this.page.getByTestId('@settings/metadata-switch');
         this.analyticsSwitch = this.page.getByTestId('@analytics/toggle-switch');
+        this.showLogButton = this.page.getByTestId('@settings/show-log-button');
     }
 
     @step()
@@ -199,5 +201,15 @@ export class SettingsActions {
             await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
             await expect(this.notificationSuccessToast).toBeVisible();
         });
+    }
+
+    @step()
+    async changeSafetyChecksLevel(level: 'strict' | 'prompt') {
+        await this.navigateTo('device');
+        await this.page.getByTestId('@settings/device/safety-checks-button').click();
+        await this.page.getByTestId(`@radio-button-${level}`).click();
+        await this.page.getByTestId('@safety-checks-apply').click();
+        await expect(this.confirmOnDevicePrompt).toBeVisible();
+        await TrezorUserEnvLinkProxy.pressYes();
     }
 }

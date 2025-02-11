@@ -27,6 +27,9 @@ export class SuiteGuide {
     readonly toastNotifications: Locator;
     readonly feedbackSuccessToast: Locator;
     readonly articleHeader: Locator;
+    readonly guideNodes: Locator;
+    readonly guideLabel: Locator;
+    readonly searchNoResults: Locator;
 
     constructor(private readonly page: Page) {
         this.guideButton = this.page.getByTestId('@guide/button-open');
@@ -46,6 +49,9 @@ export class SuiteGuide {
         this.toastNotifications = this.page.locator('[data-testid-alt="@toast"]');
         this.feedbackSuccessToast = this.page.getByTestId('@toast/user-feedback-send-success');
         this.articleHeader = this.page.getByTestId('@guide/article').locator('h1');
+        this.guideNodes = this.page.getByTestId('@guide/nodes');
+        this.guideLabel = this.page.getByTestId('@guide/label');
+        this.searchNoResults = this.page.getByTestId('@guide/search/no-results');
     }
 
     @step()
