@@ -27,7 +27,4 @@ module.exports = {
 
         return options;
     },
-    features: {
-        storyStoreV7: false, // Remove this line when storiesOf is not used anymore
-    },
 };
