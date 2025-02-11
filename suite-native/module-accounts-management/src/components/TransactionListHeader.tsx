@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AccountsRootState,
+    TransactionsRootState,
     selectAccountByKey,
-    selectHasAccountTransactions,
     selectIsPortfolioTrackerDevice,
     selectIsTestnetAccount,
 } from '@suite-common/wallet-core';
@@ -22,6 +22,7 @@ import {
     SendStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { TokensRootState, selectHasAccountAnyTransactions } from '@suite-native/tokens';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailGraph } from './AccountDetailGraph';
@@ -47,8 +48,8 @@ const TransactionListHeaderContent = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const accountHasTransactions = useSelector((state: AccountsRootState) =>
-        selectHasAccountTransactions(state, accountKey),
+    const hasAccountTransactions = useSelector((state: TransactionsRootState & TokensRootState) =>
+        selectHasAccountAnyTransactions(state, accountKey),
     );
     const isTestnetAccount = useSelector((state: AccountsRootState) =>
         selectIsTestnetAccount(state, accountKey),
@@ -60,7 +61,7 @@ const TransactionListHeaderContent = ({
 
     // Graph is temporarily hidden also for ERC20 tokens.
     // Will be solved in issue: https://github.com/trezor/trezor-suite/issues/7839
-    const isGraphDisplayed = accountHasTransactions && !isTestnetAccount && !isTokenAccount;
+    const isGraphDisplayed = hasAccountTransactions && !isTestnetAccount && !isTokenAccount;
 
     if (isGraphDisplayed) {
         return <AccountDetailGraph accountKey={accountKey} />;
@@ -87,8 +88,9 @@ export const TransactionListHeader = memo(
             selectAccountByKey(state, accountKey),
         );
 
-        const accountHasTransactions = useSelector((state: AccountsRootState) =>
-            selectHasAccountTransactions(state, accountKey),
+        const hasAccountTransactions = useSelector(
+            (state: TransactionsRootState & TokensRootState) =>
+                selectHasAccountAnyTransactions(state, accountKey),
         );
         const isTestnetAccount = useSelector((state: AccountsRootState) =>
             selectIsTestnetAccount(state, accountKey),
@@ -138,7 +140,7 @@ export const TransactionListHeader = memo(
                         accountKey={accountKey}
                         tokenContract={tokenContract}
                     />
-                    {accountHasTransactions && (
+                    {hasAccountTransactions && (
                         <HStack paddingTop="sp8" paddingHorizontal="sp16" flex={1} spacing="sp12">
                             {isReceiveButtonDisplayed && (
                                 <Box flex={1}>
@@ -166,7 +168,7 @@ export const TransactionListHeader = memo(
                     )}
                     {isPriceCardDisplayed && <CoinPriceCard accountKey={accountKey} />}
                 </VStack>
-                {accountHasTransactions && (
+                {hasAccountTransactions && (
                     <Box marginTop="sp52" marginHorizontal="sp32">
                         <Text variant="titleSmall">
                             <Translation id="transactions.title" />

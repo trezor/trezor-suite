@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { selectHasAccountTransactions } from '@suite-common/wallet-core';
+import { selectHasBitcoinAccountTransactions } from '@suite-common/wallet-core';
 import { Card, Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -27,7 +27,9 @@ interface CoinjoinBalanceSectionProps {
 
 export const CoinjoinBalanceSection = ({ accountKey }: CoinjoinBalanceSectionProps) => {
     const hasAnonymitySetError = useSelector(selectHasAnonymitySetError);
-    const hasTransactions = useSelector(state => selectHasAccountTransactions(state, accountKey));
+    const hasTransactions = useSelector(state =>
+        selectHasBitcoinAccountTransactions(state, accountKey),
+    );
 
     const theme = useTheme();
 

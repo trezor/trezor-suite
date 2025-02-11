@@ -163,6 +163,11 @@ export const selectAccountTransactionsWithTokenTransfers = createMemoizedSelecto
         ) as WalletAccountTransaction[],
 );
 
+export const selectHasAccountAnyTransactions = createMemoizedSelector(
+    [selectAccountTransactionsWithTokenTransfers],
+    (transactions): boolean => transactions.length > 0,
+);
+
 export const selectAccountsKnownTokens = createMemoizedSelector(
     [selectAccountByKey, selectTokenDefinitions],
     (account, tokenDefinitions): TokenInfoBranded[] => {
