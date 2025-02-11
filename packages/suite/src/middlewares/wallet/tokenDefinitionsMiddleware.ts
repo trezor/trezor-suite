@@ -1,9 +1,9 @@
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
-import { getTokenDefinitionThunk } from './tokenDefinitionsThunks';
-import { getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
+import { selectNetworkTokenDefinitions } from '../../../../../suite-common/token-definitions/src/tokenDefinitionsSelectors';
+import { getTokenDefinitionThunk } from '../../../../../suite-common/token-definitions/src/tokenDefinitionsThunks';
+import { getSupportedDefinitionTypes } from '../../../../../suite-common/token-definitions/src/tokenDefinitionsUtils';
 
 const CHANGE_NETWORKS = '@wallet-settings/change-networks'; // from walletSettings.ts
 

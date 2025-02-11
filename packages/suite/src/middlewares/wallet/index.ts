@@ -5,7 +5,6 @@ import {
     prepareFiatRatesMiddleware,
     prepareStakeMiddleware,
 } from '@suite-common/wallet-core';
-import { prepareTokenDefinitionsMiddleware } from '@suite-common/token-definitions';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
@@ -16,6 +15,7 @@ import graphMiddleware from './graphMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
+import { prepareTokenDefinitionsMiddleware } from './tokenDefinitionsMiddleware';
 
 export default [
     prepareBlockchainMiddleware(extraDependencies),
