@@ -4,29 +4,35 @@ import { tradingBuyActions } from '../actions/buyActions';
 import { tradingActions } from '../actions/tradingActions';
 import { INVITY_API_RELOAD_DATA_AFTER_MS } from '../constants';
 import { invityAPI } from '../invityAPI';
-import { TradingRootState, selectState } from '../selectors/tradingSelectors';
+import {
+    TradingRootState,
+    selectTradingBuy,
+    selectTradingInfo,
+    selectTradingLoadingAndTimestamp,
+    selectTradingSelectedAccount,
+    selectTradingSettingEnviroment,
+} from '../selectors/tradingSelectors';
 import { buyThunks } from '../thunks/buyThunks';
 
 /**
  * In the Sell and Swap section an account can be changed by a user in the select
  */
-export const getAccountAccordingToRoute = (state: TradingRootState) => {
+export const getAccountAccordingToSection = (state: TradingRootState) => {
     const {
-        selectedAccount: { account },
+        account,
         // accounts,
-    } = state.wallet;
+    } = selectTradingSelectedAccount(state);
 
     return account;
 };
 
 export const tradingMiddleware = createMiddleware(async (action, { dispatch, next, getState }) => {
-    const state = selectState(getState());
-    const { isLoading, lastLoadedTimestamp } = state.wallet.trading;
+    const { isLoading, lastLoadedTimestamp } = selectTradingLoadingAndTimestamp(getState());
 
     if (action.type === tradingActions.loadInvityData.type) {
-        const account = getAccountAccordingToRoute(state);
-        const { platforms, coins } = state.wallet.trading.info;
-        const { buyInfo } = state.wallet.trading.buy;
+        const account = getAccountAccordingToSection(getState());
+        const { platforms, coins } = selectTradingInfo(getState());
+        const { buyInfo } = selectTradingBuy(getState());
 
         const currentAccountDescriptor = invityAPI.getCurrentAccountDescriptor();
         const isDifferentAccount = currentAccountDescriptor !== account?.descriptor;
@@ -35,7 +41,7 @@ export const tradingMiddleware = createMiddleware(async (action, { dispatch, nex
         if (account && !isLoading && (isDifferentAccount || areDataOutdated)) {
             dispatch(tradingActions.setLoading(true));
 
-            const { invityServerEnvironment } = state.suite.settings.debug;
+            const invityServerEnvironment = selectTradingSettingEnviroment(getState());
             if (invityServerEnvironment) {
                 invityAPI.setInvityServersEnvironment(invityServerEnvironment);
             }

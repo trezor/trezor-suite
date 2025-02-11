@@ -5,7 +5,7 @@ import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { tradingBuyActions } from '../actions/buyActions';
 import { tradingActions } from '../actions/tradingActions';
-import { selectState } from '../selectors/tradingSelectors';
+import { selectTradingSettingAddressDisplayType } from '../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../utils';
 
 const TRADING_COMMON_PREFIX = '@trading-common/thunk';
@@ -33,7 +33,7 @@ const verifyAddressThunk = createThunk(
 
         dispatch(tradingActions.setModalAccountKey(account.key));
 
-        const { addressDisplayType } = selectState(getState()).suite.settings;
+        const addressDisplayType = selectTradingSettingAddressDisplayType(getState());
 
         const { useEmptyPassphrase, connected, available } = device;
 
