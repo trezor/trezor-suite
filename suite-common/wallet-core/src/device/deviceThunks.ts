@@ -255,6 +255,12 @@ export const acquireDevice = createThunk(
 
         if (!device) return;
 
+        if (!device?.connected) {
+            console.warn('Device is not connected');
+
+            return;
+        }
+
         const response = await TrezorConnect.getFeatures({
             device,
             useEmptyPassphrase: true,
