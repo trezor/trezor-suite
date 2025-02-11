@@ -39,6 +39,14 @@ export interface WalletConnectSession {
     };
 }
 
+export interface PendingConnectionProposalNetwork {
+    namespaceId: string;
+    symbol?: string;
+    name: string;
+    status: 'active' | 'inactive' | 'unsupported';
+    required: boolean;
+}
+
 export interface PendingConnectionProposal {
     eventId: number;
     params: ProposalTypes.Struct;
@@ -47,4 +55,5 @@ export interface PendingConnectionProposal {
     verifyUrl: string;
     isScam?: boolean;
     expired: boolean;
+    networks: PendingConnectionProposalNetwork[];
 }

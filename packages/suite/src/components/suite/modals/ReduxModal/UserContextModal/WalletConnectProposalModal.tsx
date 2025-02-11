@@ -3,10 +3,13 @@ import {
     sessionProposalApproveThunk,
     sessionProposalRejectThunk,
 } from '@suite-common/walletconnect';
-import { Banner, H2, NewModal, Note, Paragraph } from '@trezor/components';
+import { Banner, Card, H2, NewModal, Note, Paragraph, Row, Text } from '@trezor/components';
+import { BannerButton } from '@trezor/components/src/components/Banner/BannerButton';
+import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { onCancel } from 'src/actions/suite/modalActions';
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -73,6 +76,66 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
             <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
                 <Translation id="TR_WALLETCONNECT_REQUEST" />
             </Paragraph>
+
+            <Card margin={{ top: spacings.xs }} paddingType="small">
+                {['active', 'inactive', 'unsupported'].map(status => {
+                    const filteredNetworks = pendingProposal.networks.filter(
+                        network => network.status == status,
+                    );
+                    if (!filteredNetworks?.length) return null;
+
+                    return (
+                        <>
+                            <Text variant="tertiary">{`Requested networks - ${status}: `}</Text>
+                            <Row
+                                key={status}
+                                rowGap={spacings.xs}
+                                columnGap={spacings.sm}
+                                flexWrap="wrap"
+                                margin={{ bottom: spacings.sm }}
+                            >
+                                {filteredNetworks.map(network => (
+                                    <Row key={network.namespaceId} gap={spacings.xs}>
+                                        {network.symbol && (
+                                            <CoinLogo
+                                                type="network"
+                                                symbol={network.symbol as any}
+                                                size={24}
+                                            />
+                                        )}
+                                        <Text>
+                                            {network.name}
+                                            {network.required && (
+                                                <Text variant="destructive">*</Text>
+                                            )}
+                                        </Text>
+                                    </Row>
+                                ))}
+                            </Row>
+                        </>
+                    );
+                })}
+            </Card>
+            {pendingProposal.networks.some(
+                network => network.required && network.status !== 'active',
+            ) && (
+                <Banner
+                    variant="warning"
+                    margin={{ top: spacings.xs }}
+                    rightContent={
+                        <BannerButton
+                            onClick={() => dispatch(goto('settings-coins'))}
+                            icon="arrowRight"
+                            iconAlignment="right"
+                        >
+                            Coin settings
+                        </BannerButton>
+                    }
+                >
+                    Some required networks are not activated. Please activate them to ensure proper
+                    compatibility with the app.
+                </Banner>
+            )}
 
             {pendingProposal.isScam && (
                 <Banner variant="destructive" margin={{ top: spacings.xs }}>

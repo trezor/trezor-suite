@@ -1,6 +1,7 @@
 import { WalletKit, WalletKitTypes } from '@reown/walletkit';
 import { WalletKit as WalletKitClient } from '@reown/walletkit/dist/types/client';
 import { Core } from '@walletconnect/core';
+import type { ProposalTypes } from '@walletconnect/types';
 import {
     buildApprovedNamespaces,
     buildAuthObject,
@@ -10,7 +11,7 @@ import {
 
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
@@ -19,6 +20,7 @@ import { getAdapterByMethod, getNamespaces } from './adapters';
 import { walletConnectActions } from './walletConnectActions';
 import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
 import { selectPendingProposal } from './walletConnectReducer';
+import { PendingConnectionProposalNetwork } from './walletConnectTypes';
 
 let walletKit: WalletKitClient;
 
@@ -82,12 +84,64 @@ export const sessionAuthenticateThunk = createThunk<
     }
 });
 
+export const sessionProposalThunk = createThunk<
+    void,
+    {
+        event: WalletKitTypes.SessionProposal;
+    }
+>(`${WALLETCONNECT_MODULE}/sessionProposalThunk`, ({ event }, { dispatch, getState }) => {
+    // Check supported networks
+    const accounts = selectAccounts(getState());
+    const networks: PendingConnectionProposalNetwork[] = [];
+    const processNamespace =
+        (required: boolean) =>
+        ([key, namespace]: [string, ProposalTypes.RequiredNamespace]) => {
+            if (key === 'eip155') {
+                namespace.chains?.forEach(chain => {
+                    const alreadyAdded = networks.some(network => network.namespaceId === chain);
+                    if (alreadyAdded) return;
+                    const supported = networksCollection.find(
+                        nc => chain === `eip155:${nc.chainId}`,
+                    );
+                    const getStatus = () => {
+                        if (!supported) return 'unsupported';
+                        const hasAccounts = accounts.some(
+                            account => account.symbol === supported?.symbol,
+                        );
+                        if (hasAccounts) return 'active';
+
+                        return 'inactive';
+                    };
+                    networks.push({
+                        namespaceId: chain,
+                        symbol: supported?.symbol,
+                        name: supported?.name ?? `Unknown (${chain})`,
+                        status: getStatus(),
+                        required,
+                    });
+                });
+            }
+        };
+    Object.entries(event.params.requiredNamespaces).forEach(processNamespace(true));
+    Object.entries(event.params.optionalNamespaces).forEach(processNamespace(false));
+
+    dispatch(
+        walletConnectActions.createSessionProposal({
+            eventId: event.id,
+            params: event.params,
+            expired: false,
+            networks,
+            ...event.verifyContext.verified,
+        }),
+    );
+});
+
 export const sessionRequestThunk = createThunk<
     void,
     {
         event: WalletKitTypes.SessionRequest;
     }
->(`${WALLETCONNECT_MODULE}/sessionProposalThunk`, async ({ event }, { dispatch }) => {
+>(`${WALLETCONNECT_MODULE}/sessionRequestThunk`, async ({ event }, { dispatch }) => {
     try {
         const adapter = getAdapterByMethod(event.params.request.method);
         if (!adapter) {
@@ -132,7 +186,11 @@ export const sessionProposalApproveThunk = createThunk<
     async ({ eventId }, { dispatch, getState }) => {
         try {
             const pendingProposal = selectPendingProposal(getState());
-            if (!pendingProposal || pendingProposal.eventId !== eventId) {
+            if (
+                !pendingProposal ||
+                pendingProposal.eventId !== eventId ||
+                pendingProposal.expired
+            ) {
                 throw new Error('Proposal not found');
             }
 
@@ -142,6 +200,18 @@ export const sessionProposalApproveThunk = createThunk<
                 proposal: pendingProposal.params,
                 supportedNamespaces,
             });
+            // No supported accounts found
+            if (
+                !Object.values(approvedNamespaces).some(namespace => namespace.accounts.length > 0)
+            ) {
+                await walletKit.rejectSession({
+                    id: eventId,
+                    reason: getSdkError('UNSUPPORTED_ACCOUNTS'),
+                });
+
+                return;
+            }
+
             const session = await walletKit.approveSession({
                 id: eventId,
                 namespaces: approvedNamespaces,
@@ -180,6 +250,7 @@ export const switchSelectedAccountThunk = createThunk<void, { account: Account }
     `${WALLETCONNECT_MODULE}/switchSelectedAccountThunk`,
     async ({ account }) => {
         const network = getNetwork(account.symbol);
+        if (!network || !network.chainId) return;
         const sessions = await walletKit.getActiveSessions();
         for (const topic in sessions) {
             walletKit.emitSessionEvent({
@@ -242,14 +313,7 @@ export const walletConnectInitThunk = createThunk(
         });
 
         walletKit.on('session_proposal', event => {
-            dispatch(
-                walletConnectActions.createSessionProposal({
-                    eventId: event.id,
-                    params: event.params,
-                    expired: false,
-                    ...event.verifyContext.verified,
-                }),
-            );
+            dispatch(sessionProposalThunk({ event }));
         });
 
         walletKit.on('proposal_expire', () => {
