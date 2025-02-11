@@ -5,6 +5,7 @@ export * from './config';
 export * from './useHandleHardwareBackNavigation';
 export * from './useNavigateToInitialScreen';
 export * from './useScrollDivider';
+export * from './hooks/useNavigationRoute';
 export * from './components/TabBar';
 export * from './components/Screen';
 export * from './components/ScreenHeader';
