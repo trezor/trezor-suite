@@ -26,7 +26,6 @@ describe('featureFlagsSlice', () => {
                 isRegtestEnabled: true,
                 isConnectPopupEnabled: true,
                 isTradingEnabled: true,
-                isDeviceOnboardingEnabled: true,
                 IsFwRevisionCheckEnabled: true,
             });
         });

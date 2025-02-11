@@ -10,7 +10,6 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',
-    [FeatureFlagEnum.IsDeviceOnboardingEnabled]: 'Device onboarding',
     [FeatureFlagEnum.IsTradingEnabled]: 'Trading',
     [FeatureFlagEnum.IsFwRevisionCheckEnabled]: 'Firmware Revision Check',
 } as const satisfies Record<FeatureFlagEnum, string>;
