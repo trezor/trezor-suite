@@ -9,6 +9,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingBuyType,
     addIdsToQuotes,
+    buyUtils,
     cryptoIdToNetwork,
     filterQuotesAccordingTags,
     invityAPI,
@@ -43,7 +44,7 @@ import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import { TradingBuyFormContextProps, TradingBuyFormProps } from 'src/types/trading/tradingForm';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
-import { createQuoteLink, createTxLink, getAmountLimits } from 'src/utils/wallet/trading/buyUtils';
+import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
 import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
@@ -231,7 +232,7 @@ export const useTradingBuyForm = ({
                 undefined;
             const symbol =
                 cryptoIdToCoinSymbol(quoteRequest.receiveCurrency) ?? quoteRequest.receiveCurrency;
-            const limits = getAmountLimits({
+            const limits = buyUtils.getAmountLimits({
                 request: quoteRequest,
                 quotes: quotesDefault,
                 currency: symbol,

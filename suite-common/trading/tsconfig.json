@@ -8,6 +8,7 @@
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/react-utils" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" }
     ]

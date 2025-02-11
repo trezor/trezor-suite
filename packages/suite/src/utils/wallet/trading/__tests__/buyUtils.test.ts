@@ -1,20 +1,7 @@
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import * as fixtures from 'src/utils/wallet/trading/__fixtures__/buyUtils';
-import {
-    createQuoteLink,
-    createTxLink,
-    getAmountLimits,
-    getStatusMessage,
-} from 'src/utils/wallet/trading/buyUtils';
+import { createQuoteLink, createTxLink, getStatusMessage } from 'src/utils/wallet/trading/buyUtils';
 
-const {
-    QUOTE_REQUEST_FIAT,
-    QUOTE_REQUEST_CRYPTO,
-    MIN_MAX_QUOTES_OK,
-    MIN_MAX_QUOTES_LOW,
-    MIN_MAX_QUOTES_HIGH,
-    EMPTY_AMOUNT_QUOTES,
-} = fixtures;
+const { QUOTE_REQUEST_FIAT, QUOTE_REQUEST_CRYPTO, MIN_MAX_QUOTES_OK } = fixtures;
 
 jest.mock('src/hooks/wallet/trading/useTradingInfo', () => ({
     ...jest.requireActual('src/hooks/wallet/trading/useTradingInfo'),
@@ -22,79 +9,6 @@ jest.mock('src/hooks/wallet/trading/useTradingInfo', () => ({
 }));
 
 describe('trading/buy utils', () => {
-    it('getAmountLimits', () => {
-        const cryptoIdToCoinSymbol = (useTradingInfo as jest.Mock).mockImplementation(() => 'BTC');
-
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_FIAT,
-                quotes: MIN_MAX_QUOTES_OK,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toBe(undefined);
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_CRYPTO,
-                quotes: MIN_MAX_QUOTES_OK,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toBe(undefined);
-
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_FIAT,
-                quotes: MIN_MAX_QUOTES_LOW,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toStrictEqual({
-            currency: 'EUR',
-            minFiat: '20',
-        });
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_CRYPTO,
-                quotes: MIN_MAX_QUOTES_LOW,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toStrictEqual({
-            currency: 'btc',
-            minCrypto: '0.002',
-        });
-
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_FIAT,
-                quotes: MIN_MAX_QUOTES_HIGH,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toStrictEqual({
-            currency: 'EUR',
-            maxFiat: '17045',
-        });
-
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_CRYPTO,
-                quotes: MIN_MAX_QUOTES_HIGH,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toStrictEqual({
-            currency: 'btc',
-            maxCrypto: '1.67212968',
-        });
-
-        expect(
-            getAmountLimits({
-                request: QUOTE_REQUEST_CRYPTO,
-                quotes: EMPTY_AMOUNT_QUOTES,
-                currency: cryptoIdToCoinSymbol().toLowerCase(),
-            }),
-        ).toStrictEqual({
-            currency: 'btc',
-            maxCrypto: '0.0001',
-        });
-    });
-
     it('createQuoteLink', async () => {
         const accountMock = {
             index: 1,
