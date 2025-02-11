@@ -1,40 +1,44 @@
 import { useCallback, useEffect } from 'react';
-import {
-    // useDispatch,
-    useSelector,
-} from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
 import { selectIsDeviceAuthorized, selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { isBluetoothEnabled } from '@suite-native/bluetooth';
 import { ConnectAndUnlockDeviceScreenContent } from '@suite-native/device';
 import {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
+    RootStackParamList,
     Screen,
-    StackProps,
+    StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 
 import { ConnectDeviceScreenHeader } from '../../components/connect/ConnectDeviceScreenHeader';
 
 export const ConnectAndUnlockDeviceScreen = ({
     route: { params },
-}: StackProps<
+    navigation,
+}: StackToStackCompositeScreenProps<
     AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice
+    AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+    RootStackParamList
 >) => {
     // const dispatch = useDispatch();
 
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isFocused = useIsFocused();
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
-    const navigation = useNavigation();
 
     const navigateBack = useCallback(() => {
         if (navigation.canGoBack()) {
             navigation.goBack();
         }
     }, [navigation]);
+
+    const navigateToConnectBluetoothDeviceScreen = () => {
+        navigation.replace(AuthorizeDeviceStackRoutes.ConnectBluetoothDevice);
+    };
 
     useEffect(() => {
         if (!isFocused || !isDeviceConnected) return;
@@ -59,10 +63,15 @@ export const ConnectAndUnlockDeviceScreen = ({
                 />
             }
             noHorizontalPadding
+            noBottomPadding
             hasBottomInset={false}
             isScrollable={false}
         >
-            <ConnectAndUnlockDeviceScreenContent />
+            <ConnectAndUnlockDeviceScreenContent
+                onConnectViaBluetooth={
+                    isBluetoothEnabled ? navigateToConnectBluetoothDeviceScreen : undefined
+                }
+            />
         </Screen>
     );
 };

@@ -94,6 +94,7 @@ export enum WipeDeviceStackRoutes {
 
 export enum AuthorizeDeviceStackRoutes {
     ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
+    ConnectBluetoothDevice = 'ConnectBluetoothDevice',
     PinMatrix = 'PinMatrix',
     ConnectingDevice = 'ConnectingDevice',
 

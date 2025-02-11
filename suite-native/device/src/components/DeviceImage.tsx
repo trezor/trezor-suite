@@ -12,13 +12,17 @@ const deviceImageMap: Record<DeviceModelInternal, string> = {
     [DeviceModelInternal.T3W1]: require('../assets/t3w1.png'),
 };
 
-type DeviceImageSize = 'normal' | 'large';
+type DeviceImageSize = 'small' | 'normal' | 'large';
 type DeviceImageDimensions = {
     width: number;
     height: number;
 };
 
-const sizeToDimensionsMap = {
+export const deviceImageSizeToDimensionsMap = {
+    small: {
+        width: 68,
+        height: 112,
+    },
     normal: {
         width: 92,
         height: 151,
@@ -31,7 +35,7 @@ const sizeToDimensionsMap = {
 
 const imageStyle = prepareNativeStyle<{ size: DeviceImageSize; maxHeight?: number }>(
     (_, { size, maxHeight }) => ({
-        ...sizeToDimensionsMap[size],
+        ...deviceImageSizeToDimensionsMap[size],
         maxHeight,
         contentFit: 'contain',
     }),

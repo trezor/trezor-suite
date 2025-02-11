@@ -11,6 +11,7 @@
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../bluetooth" },
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../discovery" },

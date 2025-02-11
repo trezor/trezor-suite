@@ -142,6 +142,16 @@ export const selectIsDeviceConnected = createMemoizedSelector(
     device => !!device?.connected,
 );
 
+export const selectIsDeviceConnectedViaBluetooth = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => !!device?.bluetoothProps,
+);
+
+export const selectDeviceBluetoothId = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => device?.bluetoothProps?.id,
+);
+
 export const selectIsConnectedDeviceUninitialized = createMemoizedSelector(
     [selectSelectedDevice, selectIsDeviceInitialized],
     (device, isDeviceInitialized) => device && !isDeviceInitialized,

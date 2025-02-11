@@ -96,18 +96,19 @@ export const en = {
                 secondaryButton: 'Settings',
                 alert: 'This requires access to Trezor Suite coin addresses.',
             },
-            connectOrImportCrossroads: {
-                gotMyTrezor: {
-                    title: 'Connect & unlock my Trezor',
-                    description: 'Manage your coins with your Trezor connected.',
-                    connectButton: 'Connect & unlock',
+            connectTrezor: {
+                title: 'Connect your Trezor',
+                description: 'Manage your coins with your Trezor connected.',
+                connectButton: 'Connect',
+                bluetooth: {
+                    title: 'Connect your Trezor Safe 7',
+                    connectButton: 'Connect over Bluetooth',
                 },
-                syncCoins: {
-                    title: 'Track my coins',
-                    description:
-                        'Sync your favorite coins and track balances with portfolio tracker.',
-                    syncButton: 'Sync & Track',
-                },
+            },
+            syncCoins: {
+                title: 'Track your coins',
+                description: 'Sync your favorite coins and track balances with portfolio tracker.',
+                syncButton: 'Sync & Track',
             },
         },
         buttons: {
@@ -149,6 +150,63 @@ export const en = {
         },
     },
     biometricsButton: 'Unlock with biometrics',
+    bluetooth: {
+        alerts: {
+            permissionDenied: {
+                title: 'Bluetooth permission needed',
+                description:
+                    'Trezor Suite Lite will need permission to find and connect to nearby Trezor devices.',
+                primaryButton: 'Request permission',
+            },
+            permissionBlocked: {
+                title: 'Bluetooth permission blocked',
+                description:
+                    'Trezor Suite Lite will need permission to find and connect to nearby Trezor devices.',
+                primaryButton: 'Open app settings',
+            },
+            adapterDisabled: {
+                title: 'Bluetooth is turned off',
+                description: 'Turn on Bluetooth in System Settings to connect to your Trezor.',
+                primaryButton: 'Open Bluetooth settings',
+            },
+        },
+        toasts: {
+            pairingCanceled: 'Bluetooth pairing canceled.',
+        },
+        deviceManager: {
+            title: 'Connect Trezor',
+            subtitle:
+                'Turn on and unlock your Trezor. To connect a new device, set it to pairing mode.',
+            troubleshootingTipsLink: 'Troubleshooting tips',
+        },
+        deviceCard: {
+            connectButton: 'Connect',
+            knownDeviceHint: 'Turn on and unlock your Trezor',
+            removeConfirmation: {
+                title: 'Remove this Trezor?',
+                description:
+                    'This will remove your Trezor from the list of known devices. To reconnect, set your Trezor to pairing mode after removing it.',
+                primaryButton: 'Remove',
+            },
+        },
+        noTrezorNearbyCard: {
+            title: 'No Trezor nearby',
+            hints: {
+                1: 'Make sure your Trezor is turned on and unlocked',
+                2: 'Try setting your Trezor into pairing mode if it isn’t already',
+            },
+            scanAgainButton: 'Scan again',
+        },
+        pairingHint: {
+            button: 'I don’t see my Trezor',
+            title: 'Don’t see your Trezor?',
+            tips: {
+                1: 'Make sure your Trezor Safe 7 is within 10 meters from this phone.',
+                2: 'Make sure your Trezor Safe 7 is in pairing mode by holding the power button for 3 seconds.',
+                3: 'If nothing helps, try connecting your Trezor Safe 7 via cable.',
+            },
+        },
+    },
     moduleAccountImport: {
         title: 'Sync my coins',
         error: { unsupportedNetworkType: 'Unsupported account network type.' },
@@ -278,6 +336,7 @@ export const en = {
     moduleConnectDevice: {
         connectAndUnlockScreen: {
             title: 'Connect & unlock\nyour Trezor',
+            connectViaBluetoothButton: 'Connect via Bluetooth',
         },
         pinScreen: {
             title: 'Enter PIN\non your Trezor',
@@ -510,6 +569,17 @@ export const en = {
                         'Make sure you have your wallet backup. You won’t be able to recover access to your assets without it.',
                 },
             },
+        },
+        bluetooth: {
+            title: 'Bluetooth',
+            content: 'Manage device bluetooth connection.',
+            unpairTrezorButton: 'Unpair Trezor',
+            info: {
+                title: 'Unpair Trezor',
+                description:
+                    'Your Trezor will be disconnected and you will need to remove it also from the Bluetooth settings on your phone.',
+            },
+            successMessage: 'Trezor has been unpaired.',
         },
     },
     moduleReceive: {

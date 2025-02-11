@@ -3343,7 +3343,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/config@npm:~10.0.11":
+"@expo/config@npm:~10.0.11, @expo/config@npm:~10.0.4":
   version: 10.0.11
   resolution: "@expo/config@npm:10.0.11"
   dependencies:
@@ -3384,7 +3384,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/env@npm:~0.4.2":
+"@expo/env@npm:~0.4.0, @expo/env@npm:~0.4.2":
   version: 0.4.2
   resolution: "@expo/env@npm:0.4.2"
   dependencies:
@@ -9947,10 +9947,12 @@ __metadata:
     react: "npm:18.2.0"
     react-intl: "npm:^7.1.11"
     react-native: "npm:0.76.9"
+    react-native-ble-plx: "npm:3.5.0"
     react-native-edge-to-edge: "npm:^1.3.1"
     react-native-gesture-handler: "npm:^2.21.0"
     react-native-keyboard-controller: "npm:1.16.5"
     react-native-mmkv: "npm:2.12.2"
+    react-native-permissions: "npm:^5.2.3"
     react-native-quick-crypto: "npm:^0.7.6"
     react-native-reanimated: "npm:^3.16.7"
     react-native-restart: "npm:0.0.27"
@@ -10062,6 +10064,32 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/bluetooth@workspace:*, @suite-native/bluetooth@workspace:suite-native/bluetooth":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/bluetooth@workspace:suite-native/bluetooth"
+  dependencies:
+    "@react-navigation/native": "npm:6.1.18"
+    "@reduxjs/toolkit": "npm:2.8.2"
+    "@suite-common/bluetooth": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/device-mutex": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/storage": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/transport-native-bluetooth": "workspace:*"
+    expo-constants: "npm:17.0.3"
+    react: "npm:18.2.0"
+    react-native: "npm:0.76.1"
+    react-native-permissions: "npm:5.2.5"
+    react-native-reanimated: "npm:^3.16.7"
+    react-native-restart: "npm:0.0.27"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 
@@ -10568,6 +10596,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/bluetooth": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/discovery": "workspace:*"
@@ -10624,6 +10653,7 @@ __metadata:
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/bluetooth": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/firmware": "workspace:*"
@@ -11087,6 +11117,7 @@ __metadata:
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native/banner-flags": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
+    "@suite-native/bluetooth": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/discovery": "workspace:*"
@@ -11099,6 +11130,7 @@ __metadata:
     "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
+    "@trezor/transport-native-bluetooth": "workspace:*"
     "@trezor/transport-native-usb": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/redux-logger": "npm:^3.0.13"
@@ -11149,6 +11181,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.76.9"
     react-native-keyboard-controller: "npm:1.16.5"
+    react-native-permissions: "npm:5.2.5"
     react-native-safe-area-context: "npm:^4.14.0"
     react-redux: "npm:9.2.0"
   languageName: unknown
@@ -12711,6 +12744,15 @@ __metadata:
     styled-components: "npm:^6.1.17"
     usb: "npm:^2.15.0"
     webpack: "npm:5.99.9"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/transport-native-bluetooth@workspace:*, @trezor/transport-native-bluetooth@workspace:packages/transport-native-bluetooth":
+  version: 0.0.0-use.local
+  resolution: "@trezor/transport-native-bluetooth@workspace:packages/transport-native-bluetooth"
+  dependencies:
+    "@trezor/transport": "workspace:*"
+    react-native-ble-plx: "npm:3.5.0"
   languageName: unknown
   linkType: soft
 
@@ -22520,6 +22562,19 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/48c56d5bb51c78e0d874fb0fb672c9be95f1724995f1b722427899d61c573ea7a1f871b8a643a7b38f9c1abc1329c00ad45458706982c41575ca95599603c697
+  languageName: node
+  linkType: hard
+
+"expo-constants@npm:17.0.3":
+  version: 17.0.3
+  resolution: "expo-constants@npm:17.0.3"
+  dependencies:
+    "@expo/config": "npm:~10.0.4"
+    "@expo/env": "npm:~0.4.0"
+  peerDependencies:
+    expo: "*"
+    react-native: "*"
+  checksum: 10/25487b469010c57ffbb1bf5e052d5e546db0bc7af9a68acd0e359a2f3978c99fc28b49527514da862dfcaf6b7915674b16d70a3c63d31a64cbdb0d27c6294a69
   languageName: node
   linkType: hard
 
@@ -35186,6 +35241,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-ble-plx@npm:3.5.0":
+  version: 3.5.0
+  resolution: "react-native-ble-plx@npm:3.5.0"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/f807e82d45220eeb5ba3aacaf13fddd9e11395337b8b2b99fe468cc154fefdce501efefcb1421b6bcf0f0e602e82ce535ff8dc3b1d1e57aca85fd6507bc7ea2e
+  languageName: node
+  linkType: hard
+
 "react-native-edge-to-edge@npm:^1.3.1":
   version: 1.3.1
   resolution: "react-native-edge-to-edge@npm:1.3.1"
@@ -35241,6 +35306,34 @@ __metadata:
     react: "*"
     react-native: ">=0.71.0"
   checksum: 10/c1ebb8e81905ee8ce17858ff6096525cbdd0e51892dca80a3cd6e26feb5e979a9c7d609c5a55886150efb0136c5899de174c71115f81607019ed7af68678797b
+  languageName: node
+  linkType: hard
+
+"react-native-permissions@npm:5.2.5":
+  version: 5.2.5
+  resolution: "react-native-permissions@npm:5.2.5"
+  peerDependencies:
+    react: ">=18.1.0"
+    react-native: ">=0.70.0"
+    react-native-windows: ">=0.70.0"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 10/e0c6eb88346064bcaad0b0c0bc92516673f54758aba6bb7ae954df4270540c3a2d38dfb012d9d7c1c4c95159d084001aaa58e7597a31dcb9acd8974c199de917
+  languageName: node
+  linkType: hard
+
+"react-native-permissions@npm:^5.2.3":
+  version: 5.3.0
+  resolution: "react-native-permissions@npm:5.3.0"
+  peerDependencies:
+    react: ">=18.1.0"
+    react-native: ">=0.70.0"
+    react-native-windows: ">=0.70.0"
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+  checksum: 10/fce7368bf91b2ca093353b208ba706c8f6ae260fb78d2788642b460103b6f63dbc947460846b897f758b3058c511f1b92a4cf38991f473def836b113d5f45262
   languageName: node
   linkType: hard
 

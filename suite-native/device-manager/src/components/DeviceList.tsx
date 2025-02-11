@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -19,6 +19,7 @@ import {
     TextDivider,
     VStack,
 } from '@suite-native/atoms';
+import { isBluetoothEnabled } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
@@ -144,9 +145,21 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
             onSelectDevice(device);
         }
         setIsDeviceManagerVisible(false);
-        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
-        });
+        if (isBluetoothEnabled && Platform.OS === 'ios') {
+            // make sure the device manager is already hidden before navigating to prevent app freezing
+            // TODO: might be fixed by https://github.com/trezor/trezor-suite/issues/17968
+            setTimeout(
+                () =>
+                    navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                        screen: AuthorizeDeviceStackRoutes.ConnectBluetoothDevice,
+                    }),
+                2 * ANIMATION_DURATION,
+            );
+        } else {
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+            });
+        }
         analytics.report({
             type: EventType.DeviceManagerClick,
             payload: { action: 'connectDeviceButton' },

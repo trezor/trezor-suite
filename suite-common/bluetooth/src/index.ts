@@ -1,13 +1,14 @@
-export { BLUETOOTH_PREFIX, bluetoothActions } from './bluetoothActions';
-
-export { prepareBluetoothReducerCreator } from './bluetoothReducer';
-export { BluetoothFilterPolicy } from './types';
 export type {
     BluetoothManufacturerData,
     BluetoothScanStatus,
     DeviceBluetoothConnectionStatusType,
 } from './types';
+export type { BluetoothState } from './bluetoothReducer';
+export type { WithBluetoothState } from './bluetoothSelectors';
+export { BluetoothFilterPolicy } from './types';
 
+export { BLUETOOTH_PREFIX, bluetoothActions } from './bluetoothActions';
+export { prepareInitialState, prepareBluetoothReducerCreator } from './bluetoothReducer';
 export {
     prepareSelectAllDevices,
     selectKnownDevices,

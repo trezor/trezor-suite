@@ -10,6 +10,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
+        { "path": "../bluetooth" },
         { "path": "../config" },
         { "path": "../feature-flags" },
         { "path": "../firmware" },

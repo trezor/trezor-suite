@@ -1,0 +1,20 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/bluetooth"
+        },
+        { "path": "../atoms" },
+        { "path": "../device-mutex" },
+        { "path": "../intl" },
+        { "path": "../storage" },
+        { "path": "../toasts" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/styles" },
+        {
+            "path": "../../packages/transport-native-bluetooth"
+        }
+    ]
+}

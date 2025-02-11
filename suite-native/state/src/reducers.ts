@@ -27,6 +27,7 @@ import {
 // This is causing problems handling types in WalletConnect, so we import the reducer directly instead of the whole module
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
 import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banner-flags';
+import { bluetoothSlice } from '@suite-native/bluetooth';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { nativeFirmwareReducer } from '@suite-native/firmware';
@@ -35,6 +36,7 @@ import { sendFormSlice } from '@suite-native/module-send';
 import { tradingSlice } from '@suite-native/module-trading';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
+    bluetoothPersistTransform,
     deriveAccountTypeFromPaymentType,
     devicePersistTransform,
     initMmkvStorage,
@@ -69,6 +71,7 @@ const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
+const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({
@@ -223,6 +226,14 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
+    const bluetoothPersistedReducer = await preparePersistReducer({
+        reducer: bluetoothReducer,
+        persistedKeys: ['knownDevices'],
+        key: 'bluetooth',
+        version: 1,
+        transforms: [bluetoothPersistTransform],
+    });
+
     const rootReducer = await preparePersistReducer({
         reducer: combineReducers({
             app: appReducer,
@@ -242,6 +253,7 @@ export const prepareRootReducers = async () => {
             tokenDefinitions: tokenDefinitionsReducer,
             connectPopup: connectPopupReducer,
             walletConnect: walletConnectReducer,
+            bluetooth: bluetoothPersistedReducer,
         } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.

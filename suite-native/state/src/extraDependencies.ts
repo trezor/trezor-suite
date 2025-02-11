@@ -9,8 +9,10 @@ import {
     selectDiscoveryForSelectedDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
+import { isBluetoothEnabled } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectTradingEnvironment } from '@suite-native/module-trading';
+import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 import { mergeDeepObject } from '@trezor/utils';
 
@@ -18,8 +20,12 @@ const deviceType = Device.isDevice ? 'device' : 'emulator';
 
 const transportsPerDeviceType = {
     device: Platform.select({
-        ios: ['BridgeTransport'],
-        android: [NativeUsbTransport],
+        ios: isBluetoothEnabled
+            ? ['BridgeTransport', NativeBluetoothTransport]
+            : ['BridgeTransport'],
+        android: isBluetoothEnabled
+            ? [NativeUsbTransport, NativeBluetoothTransport]
+            : [NativeUsbTransport],
     }),
     emulator: ['BridgeTransport'],
 } as const;
