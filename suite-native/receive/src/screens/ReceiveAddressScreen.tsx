@@ -10,12 +10,13 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { Box, ErrorMessage, VStack } from '@suite-native/atoms';
+import { AlertBox, Box, ErrorMessage, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorImage,
     selectHasFirmwareAuthenticityCheckHardFailed,
 } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
+import { Link } from '@suite-native/link';
 import { CloseActionType, Screen } from '@suite-native/navigation';
 
 import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
@@ -66,6 +67,8 @@ export const ReceiveAddressScreen = ({
     const isConfirmOnTrezorReady =
         isUnverifiedAddressRevealed && !isReceiveApproved && hasReceiveButtonRequest;
 
+    const showXrpInfo = account.networkType === 'ripple';
+
     return (
         <Screen
             header={
@@ -87,6 +90,29 @@ export const ReceiveAddressScreen = ({
         >
             <Box flex={1}>
                 <VStack marginTop="sp8" spacing="sp16">
+                    {showXrpInfo && (
+                        <AlertBox
+                            variant="info"
+                            contentColor="textDefault"
+                            title={
+                                <Translation
+                                    id="moduleReceive.xrpDestinationTag"
+                                    values={{
+                                        link: chunk => (
+                                            <Link
+                                                label={chunk}
+                                                textVariant="label"
+                                                href="https://trezor.io/learn/a/destination-tags"
+                                                isUnderlined
+                                                textColor="textDefault"
+                                                textPressedColor="textSubdued"
+                                            />
+                                        ),
+                                    }}
+                                />
+                            }
+                        />
+                    )}
                     {isAccountDetailVisible && (
                         <AccountDetailsCard accountKey={accountKey} tokenContract={tokenContract} />
                     )}

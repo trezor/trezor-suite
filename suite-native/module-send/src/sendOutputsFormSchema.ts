@@ -194,10 +194,36 @@ export const sendOutputsFormValidationSchema = yup.object({
             }),
         )
         .required(),
+    isRippleDestinationTagEnabled: yup.boolean(),
     rippleDestinationTag: yup
         .string()
-        .optional()
+        .when('isRippleDestinationTagEnabled', {
+            is: true,
+            then: schema => schema.required('Destination Tag is required'),
+            otherwise: schema => schema.notRequired(),
+        })
         .matches(/^\d*$/, 'You can only use positive numbers for the destination tag.')
+        .test(
+            'is-destination-tag-required',
+            'Destination tag was not set.',
+            (
+                value,
+                {
+                    options: { context },
+                    schema: { isRippleDestinationTagEnabled },
+                }: yup.TestContext<SendFormFormContext>,
+            ) => {
+                const { symbol } = context!;
+
+                if (!symbol) return true;
+                if (getNetworkType(symbol) !== 'ripple') return true;
+
+                // isRippleDestinationTagEnabled is enabled, tag should be set
+                if (!value && isRippleDestinationTagEnabled) return false;
+
+                return true;
+            },
+        )
         .test(
             'is-destination-tag-in-range',
             'Destination tag is too high.',

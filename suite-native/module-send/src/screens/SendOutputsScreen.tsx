@@ -49,10 +49,13 @@ import { constructFormDraft } from '../utils';
 
 const getDefaultValues = ({
     tokenContract,
+    isRippleDestinationTagEnabled,
 }: {
     tokenContract?: TokenAddress;
+    isRippleDestinationTagEnabled: boolean;
 }): Readonly<SendOutputsFormValues> =>
     ({
+        isRippleDestinationTagEnabled,
         outputs: [
             {
                 amount: '',
@@ -113,7 +116,10 @@ export const SendOutputsScreen = ({
             decimals: tokenInfo?.decimals ?? network?.decimals,
             isTaprootAvailable: !deviceUnavailableCapabilities?.taproot,
         },
-        defaultValues: getDefaultValues({ tokenContract }),
+        defaultValues: getDefaultValues({
+            tokenContract,
+            isRippleDestinationTagEnabled: network?.networkType === 'ripple',
+        }),
     });
 
     const {

@@ -1,78 +1,59 @@
 import { useRef, useState } from 'react';
 import { TextInput, View, findNodeHandle } from 'react-native';
-import Animated, {
-    FadeIn,
-    FadeOut,
-    LinearTransition,
-    useSharedValue,
-} from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
+import Animated, { FadeIn, FadeOut, useSharedValue } from 'react-native-reanimated';
 
-import { useRoute } from '@react-navigation/native';
-
-import { Box, IconButton, Text } from '@suite-native/atoms';
+import { AlertBox, AnimatedVStack, HStack, Switch, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    SendStackParamList,
-    SendStackRoutes,
-    StackProps,
-    useScrollView,
-} from '@suite-native/navigation';
+import { Link } from '@suite-native/link';
+import { useScrollView } from '@suite-native/navigation';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { integerTransformer } from '../hooks/useSendAmountTransformers';
-import { NativeSendRootState, selectRippleDestinationTagFromDraft } from '../sendFormSlice';
 import { SendFieldName, SendOutputsFormValues } from '../sendOutputsFormSchema';
 
-const inputWrapperStyle = prepareNativeStyle<{ isInputDisplayed: boolean }>(
-    (utils, { isInputDisplayed }) => ({
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+const titleTextStyle = prepareNativeStyle(utils => ({
+    flex: 1,
+    gap: utils.spacings.sp12,
+}));
 
-        extend: {
-            condition: isInputDisplayed,
-            style: {
-                alignItems: undefined,
-                flexDirection: 'column',
-                gap: utils.spacings.sp12,
-            },
-        },
-    }),
-);
+const inputWrapperStyle = prepareNativeStyle(utils => ({
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    gap: utils.spacings.sp12,
+}));
 
 const SCROLL_TO_DELAY = 200;
 
-type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendOutputs>['route'];
-
 export const DestinationTagInput = () => {
-    const route = useRoute<RouteProps>();
-    const { accountKey, tokenContract } = route.params;
     const inputWrapperRef = useRef<View | null>(null);
     const inputRef = useRef<TextInput | null>(null);
     const inputHeight = useSharedValue<number | null>(null);
     const scrollView = useScrollView();
     const { applyStyle } = useNativeStyles();
 
-    const isDestinationTagPresentInDraft = !!useSelector((state: NativeSendRootState) =>
-        selectRippleDestinationTagFromDraft(state, accountKey, tokenContract),
-    );
-
-    const [isInputDisplayed, setIsInputDisplayed] = useState(isDestinationTagPresentInDraft);
+    const [isInputDisplayed, setIsInputDisplayed] = useState(true);
     const destinationTagFieldName: SendFieldName = 'rippleDestinationTag';
+    const isRippleDestinationTagEnabledFieldName: SendFieldName = 'isRippleDestinationTagEnabled';
+
     const debounce = useDebounce();
 
-    const { trigger } = useFormContext<SendOutputsFormValues>();
+    const { trigger, setValue } = useFormContext<SendOutputsFormValues>();
 
-    const handleShowInput = () => {
-        setIsInputDisplayed(true);
-
-        // Wait for input element to be mounted.
-        setTimeout(() => {
-            inputRef.current?.focus();
-        });
+    const handleShowInputChange = () => {
+        if (!isInputDisplayed) {
+            setValue(isRippleDestinationTagEnabledFieldName, true);
+            // Wait for input element to be mounted.
+            setTimeout(() => {
+                inputRef.current?.focus();
+            });
+        } else {
+            setValue(isRippleDestinationTagEnabledFieldName, false);
+        }
+        trigger(destinationTagFieldName);
+        setIsInputDisplayed(!isInputDisplayed);
     };
 
     const handleInputFocus = () => {
@@ -101,36 +82,60 @@ export const DestinationTagInput = () => {
     };
 
     return (
-        <Animated.View layout={LinearTransition} ref={inputWrapperRef}>
-            <Box style={applyStyle(inputWrapperStyle, { isInputDisplayed })}>
-                <Animated.View layout={LinearTransition}>
+        <VStack style={applyStyle(inputWrapperStyle)}>
+            <HStack alignContent="space-between" alignItems="center">
+                <HStack style={applyStyle(titleTextStyle)}>
                     <Text variant="hint">
-                        <Translation id="moduleSend.outputs.recipients.destinationTagLabel" />
+                        <Translation id="moduleSend.outputs.recipients.destinationTag.label" />
                     </Text>
+                    <Text variant="hint">
+                        <Translation
+                            id="moduleSend.outputs.recipients.destinationTag.linkText"
+                            values={{
+                                link: chunk => (
+                                    <Link
+                                        label={chunk}
+                                        textVariant="hint"
+                                        href="https://trezor.io/learn/a/destination-tags"
+                                        isUnderlined
+                                        textColor="textDefault"
+                                        textPressedColor="textSubdued"
+                                    />
+                                ),
+                            }}
+                        />
+                    </Text>
+                </HStack>
+                <Switch isChecked={isInputDisplayed} onChange={handleShowInputChange} />
+            </HStack>
+            {isInputDisplayed ? (
+                <AnimatedVStack spacing="sp8" entering={FadeIn} exiting={FadeOut}>
+                    <TextInputField
+                        valueTransformer={integerTransformer}
+                        ref={inputRef}
+                        onChangeText={handleChangeValue}
+                        name={destinationTagFieldName}
+                        testID={destinationTagFieldName}
+                        onFocus={handleInputFocus}
+                        accessibilityLabel="address input"
+                    />
+                    <HStack paddingHorizontal="sp12" spacing="sp4">
+                        <Icon name="info" color="iconSubdued" size="medium" />
+                        <Text variant="label" color="textSubdued">
+                            <Translation id="moduleSend.outputs.recipients.destinationTag.info" />
+                        </Text>
+                    </HStack>
+                </AnimatedVStack>
+            ) : (
+                <Animated.View entering={FadeIn} exiting={FadeOut}>
+                    <AlertBox
+                        variant="warning"
+                        title={
+                            <Translation id="moduleSend.outputs.recipients.destinationTag.warning" />
+                        }
+                    />
                 </Animated.View>
-                {!isInputDisplayed && (
-                    <Animated.View entering={FadeIn} exiting={FadeOut}>
-                        <IconButton
-                            iconName="plus"
-                            colorScheme="tertiaryElevation1"
-                            onPress={handleShowInput}
-                        />
-                    </Animated.View>
-                )}
-                {isInputDisplayed && (
-                    <Animated.View entering={FadeIn} exiting={FadeOut}>
-                        <TextInputField
-                            valueTransformer={integerTransformer}
-                            ref={inputRef}
-                            onChangeText={handleChangeValue}
-                            name={destinationTagFieldName}
-                            testID={destinationTagFieldName}
-                            onFocus={handleInputFocus}
-                            accessibilityLabel="address input"
-                        />
-                    </Animated.View>
-                )}
-            </Box>
-        </Animated.View>
+            )}
+        </VStack>
     );
 };

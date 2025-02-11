@@ -517,6 +517,8 @@ export const en = {
         receiveTitle: 'Receive',
         screenTitle: '{coinSymbol} Receive address',
         deviceCancelError: 'Address confirmation canceled.',
+        xrpDestinationTag:
+            'When sending XRP to Trezor, your online exchange may require a destination tag, but Trezor doesn’t. Enter any random number to proceed. <link>Learn more.</link>',
         receiveAddressCard: {
             alert: {
                 success: 'Receive address has been confirmed on your Trezor.',
@@ -1130,7 +1132,13 @@ export const en = {
                 addressQrLabel: 'Scan recipient address',
                 amountLabel: 'Amount to be sent',
                 maxButton: 'Send max',
-                destinationTagLabel: 'Destination tag',
+                destinationTag: {
+                    label: 'Destination tag',
+                    warning:
+                        'Online exchanges require this to identify your account. Get your destination tag from your Ripple account. Make sure you really don’t need it.',
+                    info: 'Online exchanges require this to identify your account. Get your destination tag from your exchange.',
+                    linkText: '<link>What’s this?</link>',
+                },
             },
         },
         fees: {
