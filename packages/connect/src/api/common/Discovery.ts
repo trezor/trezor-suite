@@ -70,13 +70,13 @@ export class Discovery extends EventEmitter {
                     getPath: getDescriptor.bind(this, 84),
                 });
             }
-            // if (coinInfo.taproot) {
-            // TODO: enable taproot/p2tr discovery type in popup
-            // this.types.push({
-            //     type: 'p2tr',
-            //     getPath: getDescriptor.bind(this, 86),
-            // });
-            // }
+            // add taproot/p2tr discovery type
+            if (coinInfo.taproot) {
+                this.types.push({
+                    type: 'p2tr',
+                    getPath: getDescriptor.bind(this, 86),
+                });
+            }
             // add segwit/p2sh discovery type (normal if bech32 is not supported)
             if (coinInfo.xPubMagicSegwit) {
                 this.types.push({
