@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
-import { Keyboard } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -36,6 +36,7 @@ import {
 import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SendOutputFields } from '../components/SendOutputFields';
@@ -66,6 +67,10 @@ const getDefaultValues = ({
         ],
     }) as const;
 
+const screenStyle = prepareNativeStyle(_ => ({
+    flex: 1,
+}));
+
 export const SendOutputsScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputs>) => {
@@ -74,6 +79,7 @@ export const SendOutputsScreen = ({
     const debounce = useDebounce();
     const navigation =
         useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendOutputs>>();
+    const { applyStyle } = useNativeStyles();
 
     const [feeLevelsMaxAmount, setFeeLevelsMaxAmount] = useState<FeeLevelsMaxAmount>();
 
@@ -270,37 +276,43 @@ export const SendOutputsScreen = ({
     });
 
     return (
-        <SendScreen
-            screenHeader={
-                <AccountBalanceScreenHeader accountKey={accountKey} tokenContract={tokenContract} />
-            }
-            footer={
-                isValid && (
-                    <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
-                        <ScreenFooterGradient />
-                        <Box marginHorizontal="sp16">
-                            <Button
-                                accessibilityRole="button"
-                                accessibilityLabel="validate send form"
-                                testID="@send/form-submit-button"
-                                onPress={handleNavigateToReviewScreen}
-                                isDisabled={isSubmitting}
-                            >
-                                <Translation id="generic.buttons.continue" />
-                            </Button>
-                        </Box>
-                    </Animated.View>
-                )
-            }
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={applyStyle(screenStyle)}
         >
-            <>
+            <SendScreen
+                screenHeader={
+                    <AccountBalanceScreenHeader
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
+                }
+                footer={
+                    isValid && (
+                        <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
+                            <ScreenFooterGradient />
+                            <Box marginHorizontal="sp16">
+                                <Button
+                                    accessibilityRole="button"
+                                    accessibilityLabel="validate send form"
+                                    testID="@send/form-submit-button"
+                                    onPress={handleNavigateToReviewScreen}
+                                    isDisabled={isSubmitting}
+                                >
+                                    <Translation id="generic.buttons.continue" />
+                                </Button>
+                            </Box>
+                        </Animated.View>
+                    )
+                }
+            >
                 <AccountDetailsCard accountKey={accountKey} tokenContract={tokenContract} />
                 <Box marginVertical="sp32">
                     <Form form={form}>
                         <SendOutputFields accountKey={accountKey} />
                     </Form>
                 </Box>
-            </>
-        </SendScreen>
+            </SendScreen>
+        </KeyboardAvoidingView>
     );
 };
