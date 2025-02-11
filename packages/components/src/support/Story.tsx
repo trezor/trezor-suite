@@ -1,3 +1,5 @@
+import React, { ComponentProps, Fragment } from 'react';
+
 import styled, { ThemeProvider } from 'styled-components';
 
 import { intermediaryTheme } from '../index';
@@ -11,17 +13,21 @@ const Wrapper = styled.div`
     color: ${({ theme }) => theme.textDefault};
 `;
 
-export const StoryWrapper = (story: any) => (
-    <>
-        <ThemeProvider theme={{ ...intermediaryTheme.light, variant: 'light' }}>
-            <Wrapper>{story.children}</Wrapper>
-        </ThemeProvider>
-
-        <ThemeProvider theme={{ ...intermediaryTheme.dark, variant: 'dark' }}>
-            <Wrapper>{story.children}</Wrapper>
-        </ThemeProvider>
-    </>
-);
+export const StoryWrapper = (story: any) =>
+    React.createElement(
+        Fragment,
+        null,
+        React.createElement(
+            ThemeProvider,
+            { theme: { ...intermediaryTheme.light, variant: 'light' } },
+            React.createElement(Wrapper, null, story.children),
+        ),
+        React.createElement(
+            ThemeProvider,
+            { theme: { ...intermediaryTheme.dark, variant: 'dark' } },
+            React.createElement(Wrapper, null, story.children),
+        ),
+    );
 
 interface StoryColumnProps {
     children: any;
@@ -43,8 +49,9 @@ const Col = styled.div<StoryColumnProps>`
     }
 `;
 
-export const StoryColumn = ({ minWidth, maxWidth, children }: StoryColumnProps) => (
-    <Col minWidth={minWidth || 250} maxWidth={maxWidth || 500}>
-        {children}
-    </Col>
-);
+export const StoryColumn = ({ minWidth, maxWidth, children }: StoryColumnProps) =>
+    React.createElement<Omit<ComponentProps<typeof Col>, 'children'>>(
+        Col,
+        { minWidth: minWidth || 250, maxWidth: maxWidth || 500 },
+        children,
+    );

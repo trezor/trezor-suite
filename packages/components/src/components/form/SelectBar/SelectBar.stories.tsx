@@ -15,8 +15,9 @@ const options = [
     { label: 'custom', value: 'custom' },
 ];
 
-const meta: Meta = {
+const meta: Meta<typeof SelectBarComponent> = {
     title: 'Form',
+    component: SelectBarComponent,
     args: {
         label: 'fee',
         options,
@@ -63,11 +64,11 @@ const meta: Meta = {
             },
         },
     },
-    component: SelectBarComponent,
-} as unknown as Meta;
+};
+
 export default meta;
 
-export const SelectBar: StoryObj<SelectBarProps<string>> = {
+export const SelectBar: StoryObj<typeof SelectBarComponent> = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [_, updateArgs] = useArgs<SelectBarProps<string>>();
