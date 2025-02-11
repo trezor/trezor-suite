@@ -69,6 +69,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           yarn message-system-sign-config
+          NODE_ENV=production yarn workspace @trezor/connect-iframe build:lib
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/suite-web build
       # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli

@@ -84,6 +84,7 @@ jobs:
           DESKTOP_APP_NAME: "Trezor-Suite"
         run: |
           yarn message-system-sign-config
+          yarn workspace @trezor/connect-iframe build:lib
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/suite-web build
       # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
@@ -185,4 +186,3 @@ jobs:
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-ci-pw.yml
         run: docker compose down
-

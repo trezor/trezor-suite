@@ -40,6 +40,17 @@ const config: webpack.Configuration = {
                 concurrency: 100,
             },
         }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: path.join(
+                        __dirname,
+                        '../../connect-iframe/build/workers/sessions-background-sharedworker.js',
+                    ),
+                    to: path.join(baseDir, 'build', 'static'),
+                },
+            ],
+        }),
         // Html files
         ...routes.map(
             route =>
