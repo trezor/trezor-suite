@@ -19,7 +19,7 @@ interface VerifyAddressThunk {
 }
 
 const verifyAddressThunk = createThunk(
-    'trading/verifyAddress',
+    `${TRADING_COMMON_PREFIX}/verifyAddress`,
     async (
         { account, address, path, tradingAction }: VerifyAddressThunk,
         { dispatch, getState, extra },

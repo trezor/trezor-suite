@@ -4,46 +4,35 @@ import { CryptoId, InfoResponse } from 'invity-api';
 import { TradingComposedTransactionInfo } from '../reducers/tradingReducer';
 import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '../types';
 
-// TODO: maybe move to constants
 const TRADING_COMMON_PREFIX = '@trading-common';
-const INFO_COMMON_PREFIX = '@trading-info'; // TODO: unify with TRADING_COMMON_PREFIX
 
-export const SAVE_COMPOSED_TRANSACTION_INFO = `${TRADING_COMMON_PREFIX}/save_composed_transaction_info`;
-export const SAVE_TRADE = `${TRADING_COMMON_PREFIX}/save_trade`;
-export const LOAD_DATA = `${TRADING_COMMON_PREFIX}/load_data`;
-export const SET_LOADING = `${TRADING_COMMON_PREFIX}/set_loading`; // TODO: DEPRECATED?
-export const SET_MODAL_CRYPTO_CURRENCY = `${TRADING_COMMON_PREFIX}/set_modal_crypto_currency`;
-export const SET_MODAL_ACCOUNT_KEY = `${TRADING_COMMON_PREFIX}/set_modal_account_key`;
-export const SET_TRADING_ACTIVE_SECTION = `${TRADING_COMMON_PREFIX}/set_trading_active_section`;
-export const SET_TRADING_FROM_PREFILLED_CRYPTO_ID = `${TRADING_COMMON_PREFIX}/set_trading_from_prefilled_crypto_id`;
-
-export const SAVE_SYMBOLS_INFO = `${INFO_COMMON_PREFIX}/save-info`;
-export const SAVE_PAYMENT_METHODS = `${INFO_COMMON_PREFIX}/payment-methods`;
-
-const saveInfo = createAction(SAVE_SYMBOLS_INFO, (payload: InfoResponse) => ({
+const saveInfo = createAction(`${TRADING_COMMON_PREFIX}/save-info`, (payload: InfoResponse) => ({
     payload,
 }));
 
 const savePaymentMethods = createAction(
-    SAVE_PAYMENT_METHODS,
+    `${TRADING_COMMON_PREFIX}/payment-methods`,
     (payload: TradingPaymentMethodListProps[]) => ({
         payload,
     }),
 );
 
 const saveComposedTransactionInfo = createAction(
-    SAVE_COMPOSED_TRANSACTION_INFO,
+    `${TRADING_COMMON_PREFIX}/save_composed_transaction_info`,
     (payload: TradingComposedTransactionInfo) => ({
         payload,
     }),
 );
 
-const saveTrade = createAction(SAVE_TRADE, (payload: TradingTransaction) => ({ payload }));
+const saveTrade = createAction(
+    `${TRADING_COMMON_PREFIX}/save_trade`,
+    (payload: TradingTransaction) => ({ payload }),
+);
 
-const loadInvityData = createAction(LOAD_DATA);
+const loadInvityData = createAction(`${TRADING_COMMON_PREFIX}/load_data`);
 
 const setLoading = createAction(
-    SET_LOADING,
+    `${TRADING_COMMON_PREFIX}/set_loading`,
     (isLoading: boolean, lastLoadedTimestamp?: number) => ({
         payload: {
             isLoading,
@@ -52,19 +41,25 @@ const setLoading = createAction(
     }),
 );
 
-const setModalCryptoCurrency = createAction(SET_MODAL_CRYPTO_CURRENCY, (payload: CryptoId) => ({
-    payload,
-}));
+const setModalCryptoCurrency = createAction(
+    `${TRADING_COMMON_PREFIX}/set_modal_crypto_currency`,
+    (payload: CryptoId) => ({
+        payload,
+    }),
+);
 
-const setModalAccountKey = createAction(SET_MODAL_ACCOUNT_KEY, (payload: string) => ({ payload }));
+const setModalAccountKey = createAction(
+    `${TRADING_COMMON_PREFIX}/set_modal_account_key`,
+    (payload: string) => ({ payload }),
+);
 
 const setTradingActiveSection = createAction(
-    SET_TRADING_ACTIVE_SECTION,
+    `${TRADING_COMMON_PREFIX}/set_trading_active_section`,
     (payload: TradingType) => ({ payload }),
 );
 
 const setTradingFromPrefilledCryptoId = createAction(
-    SET_TRADING_FROM_PREFILLED_CRYPTO_ID,
+    `${TRADING_COMMON_PREFIX}/set_trading_from_prefilled_crypto_id`,
     (payload: CryptoId | undefined) => ({ payload }),
 );
 

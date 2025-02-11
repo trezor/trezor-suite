@@ -7,7 +7,9 @@ import { BuyInfo } from '../reducers/buyReducer';
 import { regional } from '../regional';
 import { TradingFiatCurrenciesProps } from '../types';
 
-const loadInfoThunk = createThunk<BuyInfo>('buy/loadInfo', async () => {
+const BUY_COMMON_PREFIX = '@trading-buy/thunk';
+
+const loadInfoThunk = createThunk<BuyInfo>(`${BUY_COMMON_PREFIX}/loadInfo`, async () => {
     const buyInfo = await invityAPI.getBuyList();
     const defaultAmountsOfFiatCurrencies: TradingFiatCurrenciesProps = new Map();
 

@@ -53,7 +53,7 @@ export const prepareBuyReducer = createReducerWithExtraDeps(buyInitialState, bui
         .addCase(tradingBuyActions.saveQuoteRequest, (state, { payload }) => {
             state.quotesRequest = payload;
         })
-        .addCase(tradingBuyActions.saveTransactionDetailId, (state, { payload }) => {
+        .addCase(tradingBuyActions.saveTransactionId, (state, { payload }) => {
             state.transactionId = payload;
         })
         .addCase(tradingBuyActions.saveQuotes, (state, { payload }) => {

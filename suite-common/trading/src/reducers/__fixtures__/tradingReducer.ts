@@ -1,6 +1,6 @@
 import { CryptoId, InfoResponse } from 'invity-api';
 
-import * as TRADING_ACTIONS from '../../actions/tradingActions';
+import { tradingActions } from '../../actions/tradingActions';
 import { TradingComposedTransactionInfo, TradingState } from '../tradingReducer';
 import { accounts } from './account';
 import { buyInitialState } from './buyTradingReducer';
@@ -152,7 +152,7 @@ export const tradingFixtures = [
         initialState,
         actions: [
             {
-                type: TRADING_ACTIONS.SET_MODAL_ACCOUNT_KEY,
+                type: tradingActions.setModalAccountKey.type,
                 payload: accounts[0].key,
             },
         ],
@@ -169,7 +169,7 @@ export const tradingFixtures = [
         },
         actions: [
             {
-                type: TRADING_ACTIONS.SET_MODAL_ACCOUNT_KEY,
+                type: tradingActions.setModalAccountKey.type,
                 payload: undefined,
             },
         ],
@@ -183,7 +183,7 @@ export const tradingFixtures = [
         initialState,
         actions: [
             {
-                type: TRADING_ACTIONS.SET_MODAL_CRYPTO_CURRENCY,
+                type: tradingActions.setModalCryptoCurrency.type,
                 payload: 'ankr' as CryptoId,
             },
         ],
@@ -200,7 +200,7 @@ export const tradingFixtures = [
         },
         actions: [
             {
-                type: TRADING_ACTIONS.SET_MODAL_CRYPTO_CURRENCY,
+                type: tradingActions.setModalCryptoCurrency.type,
                 payload: undefined,
             },
         ],
@@ -214,7 +214,7 @@ export const tradingFixtures = [
         initialState,
         actions: [
             {
-                type: TRADING_ACTIONS.SET_TRADING_ACTIVE_SECTION,
+                type: tradingActions.setTradingActiveSection.type,
                 payload: 'exchange',
             },
         ],
@@ -228,7 +228,7 @@ export const tradingFixtures = [
         initialState,
         actions: [
             {
-                type: TRADING_ACTIONS.SAVE_SYMBOLS_INFO,
+                type: tradingActions.saveInfo.type,
                 payload: symbolsInfo,
             },
         ],
@@ -246,21 +246,7 @@ export const tradingFixtures = [
         initialState,
         actions: [
             {
-                type: TRADING_ACTIONS.SET_TRADING_FROM_PREFILLED_CRYPTO_ID,
-                payload: 'ankr' as CryptoId,
-            },
-        ],
-        result: {
-            ...initialState,
-            prefilledFromCryptoId: 'ankr',
-        },
-    },
-    {
-        description: 'test setting prefilled crypto id',
-        initialState,
-        actions: [
-            {
-                type: TRADING_ACTIONS.SET_TRADING_FROM_PREFILLED_CRYPTO_ID,
+                type: tradingActions.setTradingFromPrefilledCryptoId.type,
                 payload: 'ankr' as CryptoId,
             },
         ],
@@ -274,11 +260,11 @@ export const tradingFixtures = [
         initialState,
         actions: [
             {
-                type: TRADING_ACTIONS.SAVE_TRADE,
+                type: tradingActions.saveTrade.type,
                 payload: tradeBuy,
             },
             {
-                type: TRADING_ACTIONS.SAVE_TRADE,
+                type: tradingActions.saveTrade.type,
                 payload: tradeExchange,
             },
         ],
@@ -292,7 +278,7 @@ export const tradingFixtures = [
         initialState,
         actions: [
             {
-                type: TRADING_ACTIONS.SAVE_PAYMENT_METHODS,
+                type: tradingActions.savePaymentMethods.type,
                 payload: paymentMethods,
             },
         ],
@@ -309,7 +295,7 @@ export const tradingFixtures = [
         initialState,
         actions: [
             {
-                type: TRADING_ACTIONS.SAVE_COMPOSED_TRANSACTION_INFO,
+                type: tradingActions.saveComposedTransactionInfo.type,
                 payload: composedTransactionInfo,
             },
         ],
@@ -323,7 +309,7 @@ export const tradingFixtures = [
         initialState,
         actions: [
             {
-                type: TRADING_ACTIONS.SET_LOADING,
+                type: tradingActions.setLoading.type,
                 payload: loadingStatus,
             },
         ],

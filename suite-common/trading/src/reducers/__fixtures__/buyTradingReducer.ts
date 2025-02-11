@@ -1,6 +1,6 @@
 import { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
 
-import * as BUY_TRADING_ACTIONS from '../../actions/buyActions';
+import { tradingBuyActions } from '../../actions/buyActions';
 import { BuyInfo, TradingBuyState } from '../buyReducer';
 
 export const buyInitialState: TradingBuyState = {
@@ -69,7 +69,7 @@ export const buyTradingFixtures = [
         initialState: buyInitialState,
         actions: [
             {
-                type: BUY_TRADING_ACTIONS.SAVE_BUY_INFO,
+                type: tradingBuyActions.saveBuyInfo.type,
                 payload: buyInfo,
             },
         ],
@@ -83,7 +83,7 @@ export const buyTradingFixtures = [
         initialState: buyInitialState,
         actions: [
             {
-                type: BUY_TRADING_ACTIONS.SAVE_QUOTE_REQUEST,
+                type: tradingBuyActions.saveQuoteRequest.type,
                 payload: quotesRequest,
             },
         ],
@@ -97,7 +97,7 @@ export const buyTradingFixtures = [
         initialState: buyInitialState,
         actions: [
             {
-                type: BUY_TRADING_ACTIONS.SAVE_TRANSACTION_DETAIL_ID,
+                type: tradingBuyActions.saveTransactionId.type,
                 payload: '1234-1234-1234',
             },
         ],
@@ -111,7 +111,7 @@ export const buyTradingFixtures = [
         initialState: buyInitialState,
         actions: [
             {
-                type: BUY_TRADING_ACTIONS.SAVE_QUOTES,
+                type: tradingBuyActions.saveQuotes.type,
                 payload: buyQuotes,
             },
         ],
@@ -128,7 +128,7 @@ export const buyTradingFixtures = [
         },
         actions: [
             {
-                type: BUY_TRADING_ACTIONS.CLEAR_QUOTES,
+                type: tradingBuyActions.clearQuotes.type,
             },
         ],
         result: {
@@ -140,7 +140,7 @@ export const buyTradingFixtures = [
         initialState: buyInitialState,
         actions: [
             {
-                type: BUY_TRADING_ACTIONS.VERIFY_ADDRESS,
+                type: tradingBuyActions.verifyAddress.type,
                 payload: '1abcdef',
             },
         ],
@@ -157,7 +157,7 @@ export const buyTradingFixtures = [
         },
         actions: [
             {
-                type: BUY_TRADING_ACTIONS.DISPOSE,
+                type: tradingBuyActions.dispose.type,
             },
         ],
         result: {
@@ -169,7 +169,7 @@ export const buyTradingFixtures = [
         initialState: buyInitialState,
         actions: [
             {
-                type: BUY_TRADING_ACTIONS.SAVE_QUOTE,
+                type: tradingBuyActions.saveSelectedQuote.type,
                 payload: buyQuotes[0],
             },
         ],
@@ -183,7 +183,7 @@ export const buyTradingFixtures = [
         initialState: buyInitialState,
         actions: [
             {
-                type: BUY_TRADING_ACTIONS.SET_IS_FROM_REDIRECT,
+                type: tradingBuyActions.setIsFromRedirect.type,
                 payload: true,
             },
         ],
