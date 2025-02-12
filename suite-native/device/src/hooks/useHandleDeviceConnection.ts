@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useNavigationState } from '@react-navigation/native';
 
 import {
     authorizeDeviceThunk,
@@ -27,6 +27,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
+    useNavigationRouteMatch,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 
@@ -40,19 +41,6 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackRoutes.PinMatrix | RootStackRoutes.OnboardingStack,
     RootStackParamList
 >;
-
-// We encourage user to disconnect device when he is redirected to suspicious device screen.
-// We should not redirect him away so he can read the screen content and decide what to do.
-// If the device is connected again, he still should stay on that screen.
-const isSuspiciousDeviceScreenFocused = (navigation: NavigationProp) => {
-    const previousRoute = navigation.getState()?.routes.at(-1);
-    const innerStackRoute = previousRoute?.state?.routes.at(-1);
-
-    return (
-        previousRoute?.name === RootStackRoutes.OnboardingStack &&
-        innerStackRoute?.name === OnboardingStackRoutes.SuspiciousDevice
-    );
-};
 
 export const useHandleDeviceConnection = () => {
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
@@ -81,7 +69,14 @@ export const useHandleDeviceConnection = () => {
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
 
-    const lastRoute = navigation.getState()?.routes.at(-1)?.name;
+    // We encourage user to disconnect device when he is redirected to suspicious device screen.
+    // We should not redirect him away so he can read the screen content and decide what to do.
+    // If the device is connected again, he still should stay on that screen.
+    const isSuspiciousDeviceScreenFocused = useNavigationRouteMatch(
+        OnboardingStackRoutes.SuspiciousDevice,
+    );
+
+    const lastRoute = useNavigationState(state => state?.routes.at(-1)?.name);
     const isDeviceSettingsStackFocused = lastRoute === RootStackRoutes.DeviceSettingsStack;
     const isSendStackFocused = lastRoute === RootStackRoutes.SendStack;
     const shouldBlockSendReviewRedirect = isDeviceRemembered && isSendStackFocused;
@@ -90,7 +85,7 @@ export const useHandleDeviceConnection = () => {
 
     // When is an uninitialized device model that supports device setup, navigate to device onboarding.
     useEffect(() => {
-        if (isSuspiciousDeviceScreenFocused(navigation)) return;
+        if (isSuspiciousDeviceScreenFocused) return;
         if (
             isDeviceSetupSupported &&
             !isDeviceInitialized &&
@@ -116,6 +111,7 @@ export const useHandleDeviceConnection = () => {
         isDeviceConnected,
         isOnboardingFinished,
         isBiometricsOverlayVisible,
+        isSuspiciousDeviceScreenFocused,
         navigation,
         isDeviceInitialized,
         isPortfolioTrackerDevice,
@@ -125,7 +121,7 @@ export const useHandleDeviceConnection = () => {
     // At the moment when unauthorized physical device is selected,
     // redirect to the Connecting screen where is handled the connection logic.
     useEffect(() => {
-        if (isFirmwareInstallationRunning || isSuspiciousDeviceScreenFocused(navigation)) return;
+        if (isFirmwareInstallationRunning || isSuspiciousDeviceScreenFocused) return;
 
         if (
             isDeviceConnected &&
@@ -166,6 +162,7 @@ export const useHandleDeviceConnection = () => {
         isDeviceInitialized,
         shouldNavigateToDeviceCompromisedModal,
         isDeviceSetupSupported,
+        isSuspiciousDeviceScreenFocused,
     ]);
 
     // In case that the physical device is disconnected, redirect to the home screen and
@@ -181,7 +178,7 @@ export const useHandleDeviceConnection = () => {
             // TODO: this hook is getting very complex, and it's hard to understand the logic when it navigates there and back again.
             //  Ideally there'd be a single source of truth, a function returning "where we should be as per current state"
             //  rather than multiple useEffects with imperative instructions "go there when X changes"
-            if (isDeviceCompromisedModalFocused || isSuspiciousDeviceScreenFocused(navigation)) {
+            if (isDeviceCompromisedModalFocused || isSuspiciousDeviceScreenFocused) {
                 return;
             }
             navigation.navigate(RootStackRoutes.AppTabs, {
@@ -198,6 +195,7 @@ export const useHandleDeviceConnection = () => {
         shouldBlockSendReviewRedirect,
         isFirmwareInstallationRunning,
         isDeviceCompromisedModalFocused,
+        isSuspiciousDeviceScreenFocused,
     ]);
 
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
