@@ -358,8 +358,6 @@ export abstract class AbstractTransport extends TransportEmitter {
         err: Error | string,
         expectedErrors: E[] = [],
     ) => {
-        this.logger?.error(this.name, 'unexpected error: ', err);
-
         return unknownError(typeof err !== 'string' ? err : new Error(err), expectedErrors);
     };
 
