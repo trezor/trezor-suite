@@ -9,10 +9,12 @@ import {
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
 import {
+    Account,
     AddressDisplayOptions,
     ExternalOutput,
     PrecomposedLevels,
     PrecomposedTransaction,
+    RbfTransactionParams,
 } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
@@ -256,35 +258,17 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     },
 );
 
-export const signEthereumSendFormTransactionThunk = createThunk<
-    { serializedTx: string },
-    SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError }
+export const ethereumGetCurrentNonceThunk = createThunk<
+    { nonce: string },
+    { selectedAccount: Account & { networkType: 'ethereum' }; rbfParams?: RbfTransactionParams }
 >(
-    `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
-    async (
-        { formState, precomposedTransaction, selectedAccount, device },
-        { getState, extra, rejectWithValue },
-    ) => {
-        const {
-            selectors: { selectAddressDisplayType },
-        } = extra;
-        const transactions = selectTransactions(getState());
-
-        const network = getNetwork(selectedAccount.symbol);
-
-        if (selectedAccount.networkType !== 'ethereum' || !network.chainId)
-            return rejectWithValue({
-                error: 'sign-transaction-failed',
-                message: 'Ethereum network mismatch.',
-            });
-
-        const addressDisplayType = selectAddressDisplayType(getState());
-
+    `${SEND_MODULE_PREFIX}/ethereumGetCurrentNonceThunk`,
+    ({ selectedAccount, rbfParams }, { getState }) => {
         // Ethereum account `misc.nonce` is not updated before pending tx is mined
         // Calculate `pendingNonce`: greatest value in pending tx + 1
         // This may lead to unexpected/unwanted behavior
         // whenever pending tx gets rejected all following txs (with higher nonce) will be rejected as well
+        const transactions = selectTransactions(getState());
         const pendingTxs = (transactions[selectedAccount.key] || []).filter(isPending);
         const pendingNonce = pendingTxs.reduce((value, tx) => {
             if (!tx.ethereumSpecific) return value;
@@ -300,9 +284,44 @@ export const signEthereumSendFormTransactionThunk = createThunk<
                 ? pendingNonceBig.toString()
                 : accountNonce;
 
-        if (formState.rbfParams && typeof formState.rbfParams.ethereumNonce === 'number') {
-            nonce = formState.rbfParams.ethereumNonce.toString();
+        if (rbfParams && typeof rbfParams.ethereumNonce === 'number') {
+            nonce = rbfParams.ethereumNonce.toString();
         }
+
+        return { nonce };
+    },
+);
+
+export const signEthereumSendFormTransactionThunk = createThunk<
+    { serializedTx: string },
+    SignTransactionThunkArguments,
+    { rejectValue: SignTransactionError }
+>(
+    `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
+    async (
+        { formState, precomposedTransaction, selectedAccount, device },
+        { dispatch, getState, extra, rejectWithValue },
+    ) => {
+        const {
+            selectors: { selectAddressDisplayType },
+        } = extra;
+
+        const network = getNetwork(selectedAccount.symbol);
+
+        if (selectedAccount.networkType !== 'ethereum' || !network.chainId)
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Ethereum network mismatch.',
+            });
+
+        const addressDisplayType = selectAddressDisplayType(getState());
+
+        const { nonce } = await dispatch(
+            ethereumGetCurrentNonceThunk({
+                selectedAccount,
+                rbfParams: formState.rbfParams,
+            }),
+        ).unwrap();
 
         // transform to TrezorConnect.ethereumSignTransaction params
         const transaction = prepareEthereumTransaction({
