@@ -1,10 +1,7 @@
-import { randomBytes } from 'crypto';
-
 import { resolveAfter } from '@trezor/utils';
 import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
 import {
-    calculateFirmwareHash,
     getBinaryForFirmwareUpgrade,
     getLanguage,
     parseFirmwareHeaders,
@@ -12,7 +9,7 @@ import {
     stripFwHeaders,
     uploadFirmware,
 } from '../api/firmware';
-import { ERRORS, FIRMWARE, PROTO } from '../constants';
+import { ERRORS, PROTO } from '../constants';
 import { getReleases } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
 import { DeviceList } from '../device/DeviceList';
@@ -286,47 +283,6 @@ const getBinaryHelper = (
         });
 };
 
-const firmwareCheck = async (
-    reconnectedDevice: Device,
-    device: Device,
-    stripped: ArrayBuffer,
-    postMessage: PostMessage,
-) => {
-    postMessage(
-        createUiMessage(UI.FIRMWARE_PROGRESS, {
-            device: device.toMessageObject(),
-            operation: 'validating',
-            progress: 0,
-        }),
-    );
-
-    const { hash, challenge } = calculateFirmwareHash(
-        device.features.major_version,
-        stripped,
-        randomBytes(32),
-    );
-
-    const getFirmwareHashResponse = await reconnectedDevice
-        .getCommands()
-        .typedCall('GetFirmwareHash', 'FirmwareHash', { challenge });
-
-    postMessage(
-        createUiMessage(UI.FIRMWARE_PROGRESS, {
-            device: device.toMessageObject(),
-            operation: 'validating',
-            progress: 100,
-        }),
-    );
-
-    return (
-        // @ts-expect-error T1B1
-        getFirmwareHashResponse.message !== 'Unknown message' &&
-        // @ts-expect-error T2T1
-        getFirmwareHashResponse.message !== 'Unexpected message' &&
-        getFirmwareHashResponse.message.hash === hash
-    );
-};
-
 export type Params = {
     language?: string;
     baseUrl?: string;
@@ -342,13 +298,15 @@ type Context = {
     abortSignal: AbortSignal;
 };
 
+type OnCallFirmwareUpdateParams = {
+    params: Params;
+    context: Context;
+};
+
 export const onCallFirmwareUpdate = async ({
     params,
     context: { deviceList, postMessage, initDevice, log, abortSignal },
-}: {
-    params: Params;
-    context: Context;
-}): Promise<FirmwareUpdateResponse> => {
+}: OnCallFirmwareUpdateParams): Promise<FirmwareUpdateResponse> => {
     log.debug('onCallFirmwareUpdate with params: ', params);
 
     const device = await initDevice(params?.device?.path);
@@ -531,10 +489,6 @@ export const onCallFirmwareUpdate = async ({
         }
     }
 
-    const checkSupported =
-        reconnectedDevice.atLeast(FIRMWARE.FW_HASH_SUPPORTED_VERSIONS) && !params.binary;
-
-    let check: FirmwareUpdateResponse['check'];
     const installedVersion = reconnectedDevice.getVersion();
     if (!bootloaderVersion || !installedVersion) {
         throw ERRORS.TypedError('Runtime', 'reconnectedDevice.installedVersion is not set');
@@ -546,39 +500,11 @@ export const onCallFirmwareUpdate = async ({
     // check if installed version matches requested release version
     const assertReleaseVersion = releaseVersion ? isEqual(installedVersion, releaseVersion) : true; // binary
 
-    const versionDetails = {
+    return {
         versionCheck: assertBinaryVersion && assertReleaseVersion,
         bootloaderVersion,
         installedVersion,
         binaryVersion,
         releaseVersion,
     };
-
-    if (checkSupported) {
-        try {
-            log.debug(
-                'onCallFirmwareUpdate',
-                'getFirmwareHash supported, proceed with check',
-                stripped,
-            );
-
-            const isValid = await firmwareCheck(reconnectedDevice, device, stripped, postMessage);
-            await reconnectedDevice.release();
-            if (isValid) {
-                log.debug('onCallFirmwareUpdate', 'installed fw hash and calculated hash match');
-                check = 'valid';
-            } else {
-                check = 'mismatch';
-            }
-        } catch (err) {
-            // device failed to respond to the hash check, consider the firmware counterfeit
-            return { check: 'other-error', checkError: err.message, ...versionDetails };
-        }
-    } else {
-        await reconnectedDevice.release();
-
-        check = 'omitted';
-    }
-
-    return { check, ...versionDetails };
 };

@@ -10,20 +10,6 @@ const setStatus = createAction(
     (payload: FirmwareStatus | 'error') => ({ payload }),
 );
 
-const setHashInvalid = createAction(
-    `${FIRMWARE_MODULE_PREFIX}/set-hash-invalid`,
-    (payload: string) => ({
-        payload,
-    }),
-);
-
-const clearInvalidHash = createAction(
-    `${FIRMWARE_MODULE_PREFIX}/clear-invalid-hash`,
-    (payload: string) => ({
-        payload,
-    }),
-);
-
 const setFirmwareUpdateError = createAction(
     `${FIRMWARE_MODULE_PREFIX}/set-firmware-update-error`,
     (payload?: string) => ({
@@ -62,8 +48,6 @@ const cacheDevice = createAction(
 );
 
 export const firmwareActions = {
-    setHashInvalid,
-    clearInvalidHash,
     setStatus,
     setFirmwareUpdateError,
     setTargetType,

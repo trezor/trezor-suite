@@ -9,7 +9,6 @@ import {
     FirmwareInitial,
     FirmwareInstallation,
     FirmwareRetryButton,
-    FirmwareUpdateHashCheckError,
 } from 'src/components/firmware';
 import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
 import { PrerequisitesGuide, Translation } from 'src/components/suite';
@@ -20,19 +19,13 @@ export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
-    const { status, error, resetReducer, firmwareUpdate, firmwareHashInvalid, targetType } =
-        useFirmwareInstallation();
+    const { status, error, resetReducer, firmwareUpdate, targetType } = useFirmwareInstallation();
 
     const install = () => firmwareUpdate({ firmwareType: targetType });
     const goToNextStepAndResetReducer = () => {
         goToNextStep();
         resetReducer();
     };
-
-    // special and hopefully very rare case. this appears when somebody tried to fool user into using a hacked firmware
-    if (device?.id && firmwareHashInvalid.includes(device.id)) {
-        return <FirmwareUpdateHashCheckError error={error} />;
-    }
 
     const showFingerprintCheck =
         modal.context === MODAL.CONTEXT_DEVICE &&

@@ -11,12 +11,7 @@ import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
-import {
-    CheckSeedStep,
-    FirmwareCloseButton,
-    FirmwareInstallation,
-    FirmwareUpdateHashCheckError,
-} from 'src/components/firmware';
+import { CheckSeedStep, FirmwareCloseButton, FirmwareInstallation } from 'src/components/firmware';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { Modal, PrerequisitesGuide, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -61,7 +56,6 @@ export const FirmwareModal = ({
         status,
         deviceWillBeWiped,
         error,
-        firmwareHashInvalid,
         uiEvent,
         confirmOnDevice,
         showConfirmationPill,
@@ -94,11 +88,6 @@ export const FirmwareModal = ({
 
         switch (status) {
             case 'error':
-                // Special and hopefully very rare case. This appears when somebody tried to fool user into using a hacked firmware. This check is skipped when installing custom FW.
-                if (device?.id && firmwareHashInvalid.includes(device.id)) {
-                    return <FirmwareUpdateHashCheckError error={error} />;
-                }
-
                 return (
                     <OnboardingStepBox
                         image="FIRMWARE"

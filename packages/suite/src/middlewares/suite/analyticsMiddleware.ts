@@ -1,12 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
-import {
-    INVALID_HASH_ERROR,
-    firmwareActions,
-    firmwareUpdate,
-    handleFwHashError,
-} from '@suite-common/firmware';
+import { firmwareUpdate } from '@suite-common/firmware';
 import { getPhysicalDeviceCount } from '@suite-common/suite-utils';
 import {
     authorizeDeviceThunk,
@@ -61,15 +56,6 @@ const analyticsMiddleware =
             analytics.report({
                 type: EventType.SelectWalletType,
                 payload: { type: action.payload.device.walletNumber ? 'hidden' : 'standard' },
-            });
-        }
-
-        if (handleFwHashError.fulfilled.match(action)) {
-            analytics.report({
-                type: EventType.FirmwareValidateHashError,
-                payload: {
-                    error: action.meta.arg.errorMessage,
-                },
             });
         }
 
@@ -267,15 +253,6 @@ const analyticsMiddleware =
                         ? EventType.SwitchDeviceRemember
                         : EventType.SwitchDeviceForget,
                 });
-                break;
-            }
-
-            case firmwareActions.setFirmwareUpdateError.type: {
-                if (action.payload === INVALID_HASH_ERROR) {
-                    analytics.report({
-                        type: EventType.FirmwareValidateHashMismatch,
-                    });
-                }
                 break;
             }
 

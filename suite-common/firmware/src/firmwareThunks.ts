@@ -8,42 +8,7 @@ import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
 import { selectFirmware } from './firmwareReducer';
 import { getBinFilesBaseUrlThunk } from './getBinFilesBaseUrlThunk';
 
-export const handleFwHashError = createThunk(
-    `${FIRMWARE_MODULE_PREFIX}/handleFwHashError`,
-    ({ errorMessage }: { errorMessage: string }, { dispatch }) => {
-        // TODO dispatch `setHashInvalid` once again when we are sure it works correctly.
-        dispatch(
-            firmwareActions.setFirmwareUpdateError(
-                `${errorMessage}. Unable to validate firmware hash. If you want to check authenticity of newly installed firmware please proceed to device settings and reinstall firmware.`,
-            ),
-        );
-    },
-);
-
 export const INVALID_HASH_ERROR = 'Invalid hash';
-
-const handleFwHashMismatch = createThunk(
-    `${FIRMWARE_MODULE_PREFIX}/handleFwHashMismatch`,
-    (device: TrezorDevice, { dispatch }) => {
-        // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
-        if (device.id) {
-            dispatch(firmwareActions.setHashInvalid(device.id));
-        }
-        dispatch(firmwareActions.setFirmwareUpdateError(INVALID_HASH_ERROR));
-    },
-);
-
-const handleFwHashValid = createThunk(
-    `${FIRMWARE_MODULE_PREFIX}/handleFwHashValid`,
-    (device: TrezorDevice, { dispatch }) => {
-        // device.id should always be present here (device is initialized and in normal mode) during successful TrezorConnect.getFirmwareHash call
-        if (device.id) {
-            dispatch(firmwareActions.clearInvalidHash(device.id));
-        }
-        dispatch(firmwareActions.setStatus('done'));
-        dispatch(firmwareActions.setFirmwareUpdateError(undefined));
-    },
-);
 
 type FirmwareUpdateProps = {
     firmwareType?: FirmwareType;
@@ -156,26 +121,14 @@ export const firmwareUpdate = createThunk<
             });
         } else {
             const {
-                check,
                 versionCheck,
                 bootloaderVersion,
                 binaryVersion,
                 installedVersion,
                 releaseVersion,
             } = firmwareUpdateResponse.payload;
-            if (check === 'mismatch') {
-                // hash check was performed, and it does not match, so consider firmware counterfeit
-                dispatch(handleFwHashMismatch(device));
-            } else if (check === 'other-error') {
-                // device failed to respond, so display a warning in the modal
-                dispatch(
-                    handleFwHashError({
-                        errorMessage: firmwareUpdateResponse.payload.checkError,
-                    }),
-                );
-            } else {
-                dispatch(handleFwHashValid(device));
-            }
+
+            dispatch(firmwareActions.setStatus('done'));
 
             // TODO: Add to the if-else block above and add handle in UI.
             if (!binary && !versionCheck) {

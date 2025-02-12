@@ -2,7 +2,6 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
-import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { TokenManagementAction } from '@suite-common/token-definitions';
@@ -313,8 +312,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     break;
 
                 case deviceActions.connectDevice.type: // so that firmwareReducer.addCase for the same action is persisted
-                case firmwareActions.clearInvalidHash.type:
-                case firmwareActions.setHashInvalid.type:
                     api.dispatch(storageActions.saveFirmware());
                     break;
 
