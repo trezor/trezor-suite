@@ -26,7 +26,9 @@ export const AccountImportSummaryScreen = ({
         footer={
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <ScreenFooterGradient />
-                <Box marginHorizontal="sp16">{footer}</Box>
+                <Box marginHorizontal="sp16" marginBottom="sp16">
+                    {footer}
+                </Box>
             </KeyboardAvoidingView>
         }
     >
