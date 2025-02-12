@@ -101,6 +101,15 @@ export const init = async (container: HTMLElement) => {
         });
     }
 
+    if (preloadAction?.type === STORAGE.LOAD) {
+        if (
+            preloadAction.payload.knownDevices &&
+            preloadAction.payload.knownDevices.bluetooth.length > 0
+        ) {
+            // await desktopApi.loadBluetoothModule();
+        }
+    }
+
     // Loading Tor as separate module, before the rest of the modules.
     const { shouldRunTor } = await desktopApi.loadTorModule();
 
@@ -137,7 +146,7 @@ export const init = async (container: HTMLElement) => {
         TrezorConnect[method] = proxy[method];
     });
 
-    store.dispatch(initBluetoothThunk() as any); // TODO type error here
+    store.dispatch(initBluetoothThunk()); // TODO type error here
 
     // finally render whole app
     root.render(

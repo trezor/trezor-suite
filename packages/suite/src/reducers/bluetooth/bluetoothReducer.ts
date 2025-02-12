@@ -55,6 +55,10 @@ const initialState: BluetoothState = {
 
 export const bluetoothReducer = createReducer(initialState, builder =>
     builder
+        .addCase('@storage/load', (state, rest) => {
+            // @ts-expect-error typed action
+            state.pairedDevices = rest.payload.knownDevices?.bluetooth || [];
+        })
         .addCase(bluetoothAdapterEventAction, (state, { payload: { isPowered } }) => {
             state.isBluetoothEnabled = isPowered;
             if (!isPowered) {
@@ -62,6 +66,17 @@ export const bluetoothReducer = createReducer(initialState, builder =>
             }
         })
         .addCase(bluetoothDeviceListUpdate, (state, { payload: { devices } }) => {
+            // update pairedDevices, uuid is changed after pairing (linux)
+            state.pairedDevices = state.pairedDevices.reduce((prev, curr) => {
+                // find devices with the same address but different uuid
+                const changed = devices.find(
+                    d => d.address === curr.address && d.uuid !== curr.uuid,
+                );
+                prev.push(changed ? { ...curr, uuid: changed.uuid } : curr);
+
+                return prev;
+            }, [] as BluetoothDevice[]);
+
             const newList: Record<string, BluetoothDeviceState> = Object.fromEntries(
                 state.pairedDevices.map(device => [
                     device.uuid,

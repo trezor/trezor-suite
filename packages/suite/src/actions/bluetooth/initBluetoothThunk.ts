@@ -15,7 +15,7 @@ type DeviceConnectionStatusWithOptionalUuid = Without<DeviceConnectionStatus, 'u
 
 export const initBluetoothThunk = createThunk<void, void, void>(
     `${BLUETOOTH_PREFIX}/initBluetoothThunk`,
-    (_, { dispatch }) => {
+    (_, { dispatch, getState }) => {
         bluetoothManager.on('adapter-event', isPowered => {
             console.warn('adapter-event', isPowered);
             dispatch(bluetoothAdapterEventAction({ isPowered }));
@@ -40,5 +40,8 @@ export const initBluetoothThunk = createThunk<void, void, void>(
                 }),
             );
         });
+
+        const knownDevices = getState().bluetooth.pairedDevices;
+        bluetoothManager.setState({ knownDevices });
     },
 );
