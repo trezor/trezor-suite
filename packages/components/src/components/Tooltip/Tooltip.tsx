@@ -73,9 +73,10 @@ type TooltipUiProps = {
     isInline?: boolean;
 } & AllowedFrameProps;
 
-export type TooltipProps = (ManagedModeProps | UnmanagedModeProps) &
-    TooltipUiProps &
-    TooltipBoxProps;
+export type ManagedTooltipProps = ManagedModeProps & TooltipUiProps & TooltipBoxProps;
+export type UnmanagedTooltipProps = UnmanagedModeProps & TooltipUiProps & TooltipBoxProps;
+
+export type TooltipProps = ManagedTooltipProps | UnmanagedTooltipProps;
 
 export const Tooltip = ({
     isActive = true,

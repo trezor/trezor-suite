@@ -80,7 +80,11 @@ export const Tor = () => {
     return (
         isTorIconVisible && (
             <QuickActionButton
-                tooltip={<TorTooltip variant={variant} iconName={iconName} torStatus={torStatus} />}
+                tooltip={{
+                    content: (
+                        <TorTooltip variant={variant} iconName={iconName} torStatus={torStatus} />
+                    ),
+                }}
                 onClick={() => dispatch(goto('settings-index', { anchor: SettingsAnchor.Tor }))}
             >
                 <ComponentWithSubIcon

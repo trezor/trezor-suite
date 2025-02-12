@@ -17,7 +17,7 @@ export const CustomBackend = () => {
     return (
         isCustomBackendIconVisible && (
             <NavBackends customBackends={enabledBackends}>
-                <QuickActionButton tooltip={translationString('TR_CUSTOM_BACKEND')}>
+                <QuickActionButton tooltip={{ content: translationString('TR_CUSTOM_BACKEND') }}>
                     <ComponentWithSubIcon
                         variant="primary"
                         subIconProps={{
