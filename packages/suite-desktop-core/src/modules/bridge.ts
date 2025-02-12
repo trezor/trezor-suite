@@ -2,6 +2,7 @@
  * Bridge runner
  */
 import { isDevEnv } from '@suite-common/suite-utils';
+import { isWindows } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { InvokeResult } from '@trezor/suite-desktop-api';
 import { TrezordNode } from '@trezor/transport-bridge';
@@ -88,9 +89,11 @@ const shouldUseLegacyBridge = (store: Dependencies['store']) => {
 
     // Legacy bridge explicitly requested
     if (bridgeLegacy || legacyRequestedBySettings) return true;
-    // dev uses node-bridge by default
+    // dev uses node-bridge by default on every platform
     if (isDevEnv) return false;
-    // eap has node-bridge temporarily disabled
+    // windows users reported some problems during fw update (not seeing reconnected device)
+    if (isWindows()) return true;
+    // otherwise use node-bridge in the early access program
     if (allowPrerelease) return false;
 
     // handle rollout for regular users
