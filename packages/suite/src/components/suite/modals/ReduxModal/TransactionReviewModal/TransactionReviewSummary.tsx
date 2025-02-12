@@ -1,9 +1,9 @@
 import { formatDuration } from '@suite-common/suite-utils';
 import { NetworkType, networks } from '@suite-common/wallet-config';
 import { FeeInfo, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
-import { getFee, getFeeUnits } from '@suite-common/wallet-utils';
+import { getFee } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabel, Translation } from 'src/components/suite';
@@ -85,11 +85,11 @@ export const TransactionReviewSummary = ({
                 <Note iconName="gasPump">
                     <Translation id="TR_GAS_PRICE" />
                     {': '}
-                    {fee} {getFeeUnits(network.networkType)}
+                    <FeeRate feeRate={fee} networkType={network.networkType} />
                 </Note>
             ) : (
                 <Note iconName="receipt">
-                    {fee} {getFeeUnits(network.networkType)}
+                    <FeeRate feeRate={fee} networkType={network.networkType} />
                 </Note>
             )}
 

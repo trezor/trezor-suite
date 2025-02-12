@@ -218,14 +218,15 @@ export const getNonComposeErrorMessage = (error: FieldError | undefined) =>
 export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<Output>>) =>
     error?.amount?.type === COMPOSE_ERROR_TYPES.ANONYMITY;
 
-export const getFeeUnits = (networkType: NetworkType) => {
-    if (networkType === 'ethereum') return 'GWEI';
-    if (networkType === 'ripple') return 'Drops';
-    if (networkType === 'cardano') return 'Lovelaces/B';
-    if (networkType === 'solana') return 'Lamports';
-
-    return 'sat/vB';
+const mapNetworkTypeToFeeUnits: Record<NetworkType, string> = {
+    bitcoin: 'sat/vB',
+    cardano: 'Lovelaces/B',
+    ethereum: 'GWEI',
+    ripple: 'Drops',
+    solana: 'Lamports',
 };
+
+export const getFeeUnits = (networkType: NetworkType) => mapNetworkTypeToFeeUnits[networkType];
 
 export const getFee = (networkType: NetworkType, tx: GeneralPrecomposedTransactionFinal) => {
     if (networkType === 'solana') return tx.fee;

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { fromWei } from 'web3-utils';
 
 import { Network } from '@suite-common/wallet-config';
-import { getFeeRate, getFeeUnits, getTxIcon, isPending } from '@suite-common/wallet-utils';
+import { getFeeRate, getTxIcon, isPending } from '@suite-common/wallet-utils';
 import {
     Card,
     Divider,
@@ -16,7 +16,7 @@ import {
     Text,
     useElevation,
 } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 
 import { FormattedDateWithBullet, Translation } from 'src/components/suite';
@@ -148,7 +148,10 @@ export const BasicTxDetails = ({
                         {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users
                             might have locally saved old transactions without this field. since we
                             cant reliably migrate this data, we are keeping old way of displaying feeRate in place */}
-                        {`${tx?.feeRate ? tx.feeRate : getFeeRate(tx)} ${getFeeUnits('bitcoin')}`}
+                        <FeeRate
+                            feeRate={tx?.feeRate ? tx.feeRate : getFeeRate(tx)}
+                            networkType="bitcoin"
+                        />
                     </Item>
                 )}
 
@@ -168,9 +171,10 @@ export const BasicTxDetails = ({
                         </Item>
 
                         <Item label={<Translation id="TR_GAS_PRICE" />} iconName="receipt">
-                            {`${fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei')} ${getFeeUnits(
-                                'ethereum',
-                            )}`}
+                            <FeeRate
+                                feeRate={fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei')}
+                                networkType="ethereum"
+                            />
                         </Item>
 
                         <Item label={<Translation id="TR_NONCE" />} iconName="receipt">

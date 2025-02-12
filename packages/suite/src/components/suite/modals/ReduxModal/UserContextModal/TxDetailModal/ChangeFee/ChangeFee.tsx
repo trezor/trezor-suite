@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
 
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { formatNetworkAmount, getFeeUnits } from '@suite-common/wallet-utils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, InfoItem, Row, Text } from '@trezor/components';
+import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -28,7 +29,10 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     } = useRbfContext();
 
     const feeRate =
-        networkType === 'bitcoin' ? `${tx.rbfParams?.feeRate} ${getFeeUnits(networkType)}` : null;
+        networkType === 'bitcoin' && tx.rbfParams?.feeRate !== undefined ? (
+            <FeeRate feeRate={tx.rbfParams.feeRate} networkType={networkType} />
+        ) : null;
+
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
     return (
@@ -44,7 +48,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                         label={
                             <>
                                 <Translation id="TR_CURRENT_FEE" />
-                                {feeRate && ` (${feeRate})`}
+                                {feeRate && <> ({feeRate})</>}
                             </>
                         }
                         typographyStyle="body"

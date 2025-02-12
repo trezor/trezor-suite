@@ -22,3 +22,4 @@ export {
 export { NumberInput } from './components/NumberInput/NumberInput';
 export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
 export { EditableText } from './components/EditableText/EditableText';
+export { FeeRate } from './components/FeeRate/FeeRate';

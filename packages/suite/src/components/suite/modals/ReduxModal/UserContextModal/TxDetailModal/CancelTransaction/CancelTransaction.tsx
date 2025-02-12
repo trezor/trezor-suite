@@ -1,6 +1,7 @@
 import { SelectedAccountLoaded, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { formatNetworkAmount, getFeeUnits } from '@suite-common/wallet-utils';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, InfoItem, Row, Text } from '@trezor/components';
+import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_CANCEL_TRANSACTION } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils';
@@ -66,8 +67,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                         <Row gap={spacings.md}>
                             <Translation id="TR_CANCEL_TX_FEE" />
                             <Text variant="tertiary">
-                                {feePerByte.toFormat(2)}&nbsp;
-                                {getFeeUnits(networkType)}
+                                <FeeRate feeRate={feePerByte} networkType={networkType} />
                             </Text>
                         </Row>
                     }

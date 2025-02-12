@@ -10,6 +10,7 @@ import {
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Row, Text } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
+import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -55,8 +56,10 @@ const BitcoinDetails = ({
                 </Item>
 
                 <Item label={<Translation id="TR_FEE_RATE" />}>
-                    {hasInfo ? transactionInfo.feePerByte : selectedLevel.feePerUnit}{' '}
-                    {getFeeUnits(networkType)}
+                    <FeeRate
+                        feeRate={hasInfo ? transactionInfo.feePerByte : selectedLevel.feePerUnit}
+                        networkType={networkType}
+                    />
                     {hasInfo ? ` (${transactionInfo.bytes} B)` : ''}
                 </Item>
             </>
@@ -96,7 +99,7 @@ const EthereumDetails = ({
                 <Item label={<Translation id="TR_GAS_LIMIT" />}>{gasLimit}</Item>
 
                 <Item label={<Translation id="TR_GAS_PRICE" />}>
-                    {gasPrice} {getFeeUnits(networkType)}
+                    <FeeRate feeRate={gasPrice} networkType={networkType} />
                 </Item>
             </>
         )
