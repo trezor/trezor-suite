@@ -1272,6 +1272,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
             return walletSettings;
         });
+        db.createObjectStore('knownDevices');
     }
 
     if (oldVersion < 54) {
