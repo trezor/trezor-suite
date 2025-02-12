@@ -27,6 +27,7 @@ export const preloadStore = async () => {
     // load state from database
     const suiteSettings = await db.getItemByPK('suiteSettings', 'suite');
     const devices = await db.getItemsExtended('devices');
+    const knownDevices = await db.getItemByPK('knownDevices', 'devices');
     const accounts = await db.getItemsExtended('accounts');
     const discovery = await db.getItemsExtended('discovery');
     const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
@@ -52,6 +53,7 @@ export const preloadStore = async () => {
             suiteSettings,
             walletSettings,
             devices,
+            knownDevices,
             accounts,
             discovery,
             txs,

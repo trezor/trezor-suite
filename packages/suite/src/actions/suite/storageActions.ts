@@ -102,6 +102,12 @@ export const saveCoinjoinDebugSettings = () => async (_dispatch: Dispatch, getSt
     db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
 };
 
+export const saveKnownDevices = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!(await db.isAccessible())) return;
+    const { pairedDevices } = getState().bluetooth;
+    db.addItem('knownDevices', { bluetooth: pairedDevices }, 'devices', true);
+};
+
 export const saveFormDraft = async (key: string, draft: FieldValues) => {
     if (!(await db.isAccessible())) return;
 
