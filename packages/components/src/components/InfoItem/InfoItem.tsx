@@ -23,7 +23,10 @@ import { Icon, IconName } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 import { TextProps, TextPropsKeys } from '../typography/utils';
 
-export const allowedInfoItemTextProps = ['typographyStyle'] as const satisfies TextPropsKeys[];
+export const allowedInfoItemTextProps = [
+    'typographyStyle',
+    'ellipsisLineCount',
+] as const satisfies TextPropsKeys[];
 type AllowedTextProps = Pick<TextProps, (typeof allowedInfoItemTextProps)[number]>;
 
 export const allowedInfoItemFrameProps = [
@@ -56,6 +59,7 @@ export type InfoItemProps = AllowedFrameProps &
     };
 
 export const InfoItem = ({
+    ellipsisLineCount,
     children,
     label,
     direction = 'column',
@@ -94,7 +98,7 @@ export const InfoItem = ({
                         variant={variant}
                         typographyStyle={typographyStyle}
                         as="div"
-                        ellipsisLineCount={1}
+                        ellipsisLineCount={ellipsisLineCount ?? 1}
                     >
                         {label}
                     </Text>

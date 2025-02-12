@@ -128,11 +128,8 @@ export const SettingsCoins = () => {
             </SettingsSection>
 
             <SettingsSection
-                title={
-                    <Tooltip content={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />} hasIcon>
-                        <Translation id="TR_TESTNET_COINS" />
-                    </Tooltip>
-                }
+                tooltipText={<Translation id="TR_TESTNET_COINS_DESCRIPTION" />}
+                title={<Translation id="TR_TESTNET_COINS" />}
                 icon="coin"
             >
                 <SettingsSectionItem anchorId={SettingsAnchor.TestnetCrypto}>
@@ -142,14 +139,8 @@ export const SettingsCoins = () => {
 
             {showUnsupportedCoins && (
                 <SettingsSection
-                    title={
-                        <Tooltip
-                            content={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
-                            hasIcon
-                        >
-                            <Translation id="TR_UNSUPPORTED_COINS" />
-                        </Tooltip>
-                    }
+                    tooltipText={<Translation id="TR_UNSUPPORTED_COINS_DESCRIPTION" />}
+                    title={<Translation id="TR_UNSUPPORTED_COINS" />}
                     icon="coin"
                 >
                     <SettingsSectionItem anchorId={SettingsAnchor.UnsupportedCrypto}>
