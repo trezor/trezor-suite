@@ -37,8 +37,9 @@ export const DiscreetCanvas = ({ width, height, fontSize, text, color }: Discree
 
     return (
         <Canvas style={applyStyle(discreetCanvasStyle, { height, width })}>
-            <SkiaText y={fontSize} text={text} font={font} color={colors[color]} />
-            <Blur blur={blurValue} mode="decal" />
+            <SkiaText y={fontSize} text={text} font={font} color={colors[color]}>
+                <Blur blur={blurValue} mode="decal" />
+            </SkiaText>
         </Canvas>
     );
 };
