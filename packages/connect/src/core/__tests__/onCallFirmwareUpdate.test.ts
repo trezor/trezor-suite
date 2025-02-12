@@ -290,7 +290,6 @@ describe('onCallFirmwareUpdate', () => {
             context,
         });
 
-        expect(result.check).toEqual('valid');
         expect(result.versionCheck).toEqual(true);
 
         await deviceList.dispose();
@@ -315,42 +314,6 @@ describe('onCallFirmwareUpdate', () => {
             context,
         });
 
-        expect(result.check).toEqual('valid');
-        expect(result.versionCheck).toEqual(true);
-
-        await deviceList.dispose();
-    });
-
-    it('T2T1: hash mismatch', async () => {
-        const { context, deviceList, waitForDeviceList, buildFixture } = setupTest();
-
-        jest.spyOn(mockFwHash, 'calculateFirmwareHash').mockImplementation((..._args) =>
-            calculateFirmwareHashMock('aa00'),
-        );
-
-        await waitForDeviceList([
-            // GetFeatures before reboot
-            buildFixture('0037', {
-                major_version: 2,
-                minor_version: 8,
-                patch_version: 3,
-            }),
-            // GetFeatures in bootloader mode
-            buildFixture('0037', {
-                bootloader_mode: true,
-            }),
-            // Initialize in bootloader mode
-            buildFixture('0000', {}),
-            // GetFeatures after reboot
-            buildFixture('0037', {}),
-        ]);
-
-        const result = await runFirmwareUpdate({
-            params: {},
-            context,
-        });
-
-        expect(result.check).toEqual('mismatch');
         expect(result.versionCheck).toEqual(true);
 
         await deviceList.dispose();
@@ -385,7 +348,6 @@ describe('onCallFirmwareUpdate', () => {
             context,
         });
 
-        expect(result.check).toEqual('valid');
         expect(result.versionCheck).toEqual(false);
         expect(result.releaseVersion).toEqual(result.binaryVersion);
         expect(result.releaseVersion).not.toEqual(result.installedVersion);
@@ -419,7 +381,6 @@ describe('onCallFirmwareUpdate', () => {
             context,
         });
 
-        expect(result.check).toEqual('omitted');
         expect(result.versionCheck).toEqual(true);
 
         await deviceList.dispose();
@@ -445,7 +406,6 @@ describe('onCallFirmwareUpdate', () => {
             context,
         });
 
-        expect(result.check).toEqual('omitted');
         expect(result.versionCheck).toEqual(true);
 
         await deviceList.dispose();
@@ -471,7 +431,6 @@ describe('onCallFirmwareUpdate', () => {
             context,
         });
 
-        expect(result.check).toEqual('omitted');
         expect(result.versionCheck).toEqual(false);
         expect(result.binaryVersion).not.toEqual(result.installedVersion);
 
@@ -503,7 +462,6 @@ describe('onCallFirmwareUpdate', () => {
             context,
         });
 
-        expect(result.check).toEqual('valid');
         expect(result.versionCheck).toEqual(true);
 
         await deviceList.dispose();
@@ -549,7 +507,6 @@ describe('onCallFirmwareUpdate', () => {
             context,
         });
 
-        expect(result.check).toEqual('valid');
         expect(result.versionCheck).toEqual(true);
 
         await deviceList.dispose();
@@ -578,7 +535,6 @@ describe('onCallFirmwareUpdate', () => {
             context,
         });
 
-        expect(result.check).toEqual('omitted');
         expect(result.versionCheck).toEqual(true);
 
         await deviceList.dispose();

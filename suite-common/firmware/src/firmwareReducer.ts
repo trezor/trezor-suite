@@ -56,15 +56,6 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         .addCase(firmwareActions.setStatus, (state, { payload }) => {
             state.status = payload;
         })
-        .addCase(firmwareActions.setHashInvalid, (state, { payload }) => {
-            state.firmwareHashInvalid.push(payload);
-            state.status = 'error';
-        })
-        .addCase(firmwareActions.clearInvalidHash, (state, { payload }) => {
-            state.firmwareHashInvalid = state.firmwareHashInvalid.filter(
-                deviceId => deviceId !== payload,
-            );
-        })
         .addCase(firmwareActions.setFirmwareUpdateError, (state, { payload }) => {
             state.error = payload;
             if (payload) {

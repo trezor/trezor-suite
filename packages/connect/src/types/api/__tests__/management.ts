@@ -38,23 +38,6 @@ export const management = async (api: TrezorConnect) => {
     });
     if (pin.success) pin.payload.message.toLowerCase();
 
-    const fwBinary = await api.firmwareUpdate({
-        binary: new ArrayBuffer(0),
-    });
-    if (fwBinary.success) {
-        fwBinary.payload.check.toLocaleLowerCase();
-    }
-
-    const fwAuto = await api.firmwareUpdate({
-        btcOnly: false,
-        language: 'en-EN',
-        baseUrl: 'https://example.com',
-    });
-
-    if (fwAuto.success) {
-        fwAuto.payload.check.toLowerCase();
-    }
-
     api.firmwareUpdate({
         binary: new ArrayBuffer(0),
         // @ts-expect-error: cannot use both

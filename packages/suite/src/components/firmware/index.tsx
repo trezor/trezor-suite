@@ -10,4 +10,3 @@ export { FirmwareRetryButton } from './Buttons/FirmwareRetryButton';
 export { FirmwareCloseButton } from './Buttons/FirmwareCloseButton';
 export { FirmwareContinueButton } from './Buttons/FirmwareContinueButton';
 export { FirmwareInstallButton } from './Buttons/FirmwareInstallButton';
-export { FirmwareUpdateHashCheckError } from './FirmwareUpdateHashCheckError';
