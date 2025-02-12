@@ -26,11 +26,15 @@ export class DashboardActions {
         this.page.getByTestId(`@switch-device/wallet-on-index/${index}/fiat-amount`);
     readonly confirmDeviceEjectButton: Locator;
     readonly addStandardWalletButton: Locator;
+    readonly addHiddenWalletButton: Locator;
     readonly hideBalanceButton: Locator;
     readonly portfolioFiatAmount: Locator;
     readonly deviceStatus: Locator;
     readonly deviceStatusOnSwitchDevice: Locator;
     readonly solveIssuesButton: Locator;
+    readonly passphraseInput: Locator;
+    readonly passphraseSubmitButton: Locator;
+    readonly passphraseShowButton: Locator;
 
     constructor(
         private readonly page: Page,
@@ -45,6 +49,9 @@ export class DashboardActions {
         this.modal = this.page.getByTestId('@modal');
         this.confirmDeviceEjectButton = this.page.getByTestId('@switch-device/eject');
         this.addStandardWalletButton = this.page.getByTestId('@switch-device/add-wallet-button');
+        this.addHiddenWalletButton = this.page.getByTestId(
+            '@switch-device/add-hidden-wallet-button',
+        );
         this.hideBalanceButton = this.page.getByTestId('@quickActions/hideBalances');
         this.portfolioFiatAmount = this.page.getByTestId('@dashboard/portfolio/fiat-amount');
         this.deviceStatus = this.page.locator("[data-testid-alt='@deviceStatus']");
@@ -52,6 +59,9 @@ export class DashboardActions {
             .getByTestId('@menu/switch-device')
             .locator("[data-testid-alt='@deviceStatus']");
         this.solveIssuesButton = this.page.getByTestId('@switch-device/solve-issue-button');
+        this.passphraseInput = this.page.getByTestId('@passphrase/input');
+        this.passphraseSubmitButton = this.page.getByTestId('@passphrase/hidden/submit-button');
+        this.passphraseShowButton = this.page.getByTestId('@passphrase/show-toggle');
     }
 
     @step()
@@ -76,9 +86,10 @@ export class DashboardActions {
 
     @step()
     async ejectWallet(walletIndex: number = 0) {
+        const ejectedWallet = await this.walletAtIndex(walletIndex).elementHandle();
         await this.walletAtIndexEjectButton(walletIndex).click();
         await this.confirmDeviceEjectButton.click();
-        await this.walletAtIndex(walletIndex).waitFor({ state: 'detached' });
+        await ejectedWallet?.waitForElementState('hidden');
     }
 
     @step()
@@ -89,17 +100,23 @@ export class DashboardActions {
     }
 
     @step()
-    async addHiddenWallet(passphrase: string) {
-        await this.page.getByTestId('@switch-device/add-hidden-wallet-button').click();
-        await this.page.getByTestId('@passphrase/input').fill(passphrase);
-        await this.page.getByTestId('@passphrase/hidden/submit-button').click();
-        await expect(this.page.getByTestId('@passphrase/input')).not.toBeVisible();
+    async addHiddenWallet(passphrase: string, options?: { skipDiscovery?: boolean }) {
+        await this.addHiddenWalletButton.click();
+        await this.passphraseInput.fill(passphrase);
+        await this.passphraseSubmitButton.click();
+        await expect(this.passphraseInput).not.toBeVisible();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLink.pressYes();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLink.pressYes();
+
+        if (options?.skipDiscovery) {
+            return;
+        }
+
+        await this.discoveryShouldFinish();
     }
 
     @step()
@@ -109,8 +126,8 @@ export class DashboardActions {
             .getByTestId('@passphrase-confirmation/step1-open-unused-wallet-button')
             .click();
         await this.page.getByTestId('@passphrase-confirmation/step2-button').click();
-        await this.page.getByTestId('@passphrase/input').fill(passphrase);
-        await this.page.getByTestId('@passphrase/hidden/submit-button').click();
+        await this.passphraseInput.fill(passphrase);
+        await this.passphraseSubmitButton.click();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLink.pressYes();
