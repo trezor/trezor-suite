@@ -12,7 +12,8 @@ import type { Account } from '@suite-common/wallet-types';
 
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, CRYPTO_PLATFORM_SEPARATOR } from './constants';
 import { regional } from './regional';
-import type {
+import {
+    TradingAccountOptionsGroupOptionProps,
     TradingParsedCryptoIdProps,
     TradingPaymentMethodListProps,
     TradingPaymentMethodProps,
@@ -156,6 +157,22 @@ export const addIdsToQuotes = <T extends TradingType>(
     });
 
     return allQuotes;
+};
+
+interface TradingGetDecimalsProps {
+    sendCryptoSelect?: TradingAccountOptionsGroupOptionProps;
+    network?: Network | null;
+}
+
+export const getTradingNetworkDecimals = ({
+    sendCryptoSelect,
+    network,
+}: TradingGetDecimalsProps) => {
+    if (sendCryptoSelect) {
+        return sendCryptoSelect.decimals;
+    }
+
+    return network?.decimals ?? 8;
 };
 
 export const getTradingPaymentMethods = <T extends TradingTradeBuySellType>(

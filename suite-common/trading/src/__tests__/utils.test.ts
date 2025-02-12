@@ -1,15 +1,18 @@
 import type { CryptoId } from 'invity-api';
 
+import { getNetwork } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
 import * as BUY_FIXTURE from '../__fixtures__/buyUtils';
 import * as EXCHANGE_FIXTURE from '../__fixtures__/exchangeUtils';
 import * as SELL_FIXTURE from '../__fixtures__/sellUtils';
 import { accountBtc, accountEth } from '../__fixtures__/utils';
+import type { TradingAccountOptionsGroupOptionProps } from '../types';
 import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
     getTagAndInfoNote,
+    getTradingNetworkDecimals,
     getTradingPaymentMethods,
     getTradingQuotesByPaymentMethod,
     getUnusedAddressFromAccount,
@@ -158,5 +161,37 @@ describe('testing trading utils', () => {
         const quotesUndefined = getTradingQuotesByPaymentMethod(undefined, 'applePay');
 
         expect(quotesUndefined).toBeUndefined();
+    });
+
+    it('testing getTradingNetworkDecimals', () => {
+        const network = getNetwork('base');
+        const decimals = getTradingNetworkDecimals({
+            network,
+        });
+
+        expect(decimals).toEqual(network.decimals);
+
+        const decimalsDefault = getTradingNetworkDecimals({
+            network: null,
+        });
+
+        expect(decimalsDefault).toEqual(8);
+
+        const sendCryptoSelect: TradingAccountOptionsGroupOptionProps = {
+            value: 'ethereum' as CryptoId,
+            label: 'ETH',
+            cryptoName: 'Ethereum',
+            balance: '0.0022992',
+            descriptor: 'ethereum',
+            decimals: 18,
+            accountType: 'normal',
+        };
+
+        const decimalsWithAccount = getTradingNetworkDecimals({
+            network,
+            sendCryptoSelect,
+        });
+
+        expect(decimalsWithAccount).toEqual(sendCryptoSelect.decimals);
     });
 });

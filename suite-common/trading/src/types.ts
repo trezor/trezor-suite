@@ -14,6 +14,7 @@ import type {
     WatchSellTradeResponse,
 } from 'invity-api';
 
+import { AccountType } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
 export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
@@ -86,6 +87,17 @@ export type TradingTransaction =
     | TradingTransactionBuy
     | TradingTransactionSell
     | TradingTransactionExchange;
+
+export interface TradingAccountOptionsGroupOptionProps {
+    value: CryptoId;
+    label: string; // token shortcut
+    cryptoName: string | undefined; // full name
+    balance: string;
+    descriptor: string;
+    decimals: number;
+    contractAddress?: string;
+    accountType?: AccountType;
+}
 
 export type TradingOTC = {
     idWidget: string;
