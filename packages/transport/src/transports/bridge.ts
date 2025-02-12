@@ -351,6 +351,7 @@ export class BridgeTransport extends AbstractTransport {
         | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
         | typeof PROTOCOL_MALFORMED
         | typeof ERRORS.OTHER_CALL_IN_PROGRESS
+        | typeof ERRORS.SESSION_NOT_FOUND
     >;
     private async post(
         endpoint: '/release',
@@ -387,6 +388,7 @@ export class BridgeTransport extends AbstractTransport {
                 case '/':
                     return this.unknownError(response.error);
                 case '/acquire':
+                    // todo: validators don't match types
                     return this.unknownError(response.error, [
                         ERRORS.SESSION_WRONG_PREVIOUS,
                         ERRORS.DEVICE_NOT_FOUND,
