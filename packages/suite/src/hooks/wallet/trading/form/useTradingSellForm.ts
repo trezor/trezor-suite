@@ -11,6 +11,8 @@ import {
     TradingTransactionSell,
     addIdsToQuotes,
     filterQuotesAccordingTags,
+    getTradingPaymentMethods,
+    getTradingQuotesByPaymentMethod,
     getUnusedAddressFromAccount,
     invityAPI,
     tradingGetSuccessQuotes,
@@ -37,7 +39,6 @@ import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/comm
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
 import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
-import useTradingPaymentMethod from 'src/hooks/wallet/trading/form/useTradingPaymentMethod';
 import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingSellFormDefaultValues';
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
@@ -90,8 +91,8 @@ export const useTradingSellForm = ({
 
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
         useTradingInitializer({ selectedAccount, pageType });
-    const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
-        useTradingPaymentMethod<TradingSellType>();
+    const paymentMethods = useSelector(state => state.wallet.trading.info.paymentMethods);
+
     const {
         selectedFee: selectedFeeRecomposedAndSigned,
         composed,
@@ -165,7 +166,7 @@ export const useTradingSellForm = ({
         isInitialDataLoading || formState.isSubmitting || isSubmittingHelper || isFirstRequest;
     const isFormInvalid = !(formIsValid && hasValues);
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
-    const quotesByPaymentMethod = getQuotesByPaymentMethod(
+    const quotesByPaymentMethod = getTradingQuotesByPaymentMethod<TradingSellType>(
         innerQuotes,
         values?.paymentMethod?.value ?? '',
     );
@@ -282,7 +283,8 @@ export const useTradingSellForm = ({
                 const bestQuotePaymentMethodName =
                     bestQuote?.paymentMethodName ?? bestQuotePaymentMethod;
                 const paymentMethodSelected = values.paymentMethod?.value;
-                const paymentMethodsFromQuotes = getPaymentMethods(quotesSuccess);
+                const paymentMethodsFromQuotes =
+                    getTradingPaymentMethods<TradingSellType>(quotesSuccess);
                 const isSelectedPaymentMethodAvailable =
                     paymentMethodsFromQuotes.find(item => item.value === paymentMethodSelected) !==
                     undefined;
@@ -319,7 +321,6 @@ export const useTradingSellForm = ({
             cryptoIdToCoinSymbol,
             getQuoteRequestData,
             getQuotesRequest,
-            getPaymentMethods,
             dispatch,
             setValue,
             composeRequest,

@@ -12,6 +12,8 @@ import {
     buyUtils,
     cryptoIdToNetwork,
     filterQuotesAccordingTags,
+    getTradingPaymentMethods,
+    getTradingQuotesByPaymentMethod,
     invityAPI,
     tradingGetSuccessQuotes,
 } from '@suite-common/trading';
@@ -35,7 +37,6 @@ import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common
 import { useTradingModalCrypto } from 'src/hooks/wallet/trading/form/common/useTradingModalCrypto';
 import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
 import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
-import useTradingPaymentMethod from 'src/hooks/wallet/trading/form/useTradingPaymentMethod';
 import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -58,11 +59,10 @@ export const useTradingBuyForm = ({
     const dispatch = useDispatch();
     const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest, selectedQuote } =
         useSelector(state => state.wallet.trading.buy);
+    const paymentMethods = useSelector(state => state.wallet.trading.info.paymentMethods);
     const { cryptoIdToCoinSymbol } = useTradingInfo();
     const { callInProgress, account, timer, device, setCallInProgress, checkQuotesTimer } =
         useTradingInitializer({ selectedAccount, pageType });
-    const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
-        useTradingPaymentMethod<TradingBuyType>();
     const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =
         useTradingNavigation(account);
 
@@ -119,7 +119,7 @@ export const useTradingBuyForm = ({
     const isFormInvalid = !(formIsValid && hasValues);
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 
-    const quotesByPaymentMethod = getQuotesByPaymentMethod(
+    const quotesByPaymentMethod = getTradingQuotesByPaymentMethod<TradingBuyType>(
         innerQuotes,
         values?.paymentMethod?.value ?? '',
     );
@@ -226,7 +226,8 @@ export const useTradingBuyForm = ({
             const bestQuotePaymentMethodName =
                 bestQuote?.paymentMethodName ?? bestQuotePaymentMethod;
             const paymentMethodSelected = values.paymentMethod?.value;
-            const paymentMethodsFromQuotes = getPaymentMethods(quotesSuccess);
+            const paymentMethodsFromQuotes =
+                getTradingPaymentMethods<TradingBuyType>(quotesSuccess);
             const isSelectedPaymentMethodAvailable =
                 paymentMethodsFromQuotes.find(item => item.value === paymentMethodSelected) !==
                 undefined;
@@ -260,7 +261,6 @@ export const useTradingBuyForm = ({
             cryptoIdToCoinSymbol,
             getQuoteRequestData,
             getQuotesRequest,
-            getPaymentMethods,
             dispatch,
             setValue,
         ],

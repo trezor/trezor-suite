@@ -17,6 +17,7 @@ export const MIN_MAX_QUOTES_OK: BuyTrade[] = [
         minCrypto: 0.002,
         maxCrypto: 0.10532,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
         paymentId: 'e709df77-ee9e-4d12-98c2-84004a19c546',
     },
     {
@@ -31,7 +32,8 @@ export const MIN_MAX_QUOTES_OK: BuyTrade[] = [
         maxFiat: 1999.96,
         minCrypto: 0.002,
         maxCrypto: 0.20003,
-        paymentMethod: 'creditCard',
+        paymentMethod: 'applePay',
+        paymentMethodName: 'Apple Pay',
     },
     {
         fiatStringAmount: '10',
@@ -45,7 +47,6 @@ export const MIN_MAX_QUOTES_OK: BuyTrade[] = [
         maxFiat: 17044,
         minCrypto: 0.00415525,
         maxCrypto: 1.66210137,
-        paymentMethod: 'creditCard',
     },
 ];
 

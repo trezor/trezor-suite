@@ -1,4 +1,4 @@
-import { FiatCurrencyCode } from 'invity-api';
+import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -70,6 +70,9 @@ export const selectTradingBuy = createMemoizedSelector(
     }),
 );
 
+export const selectTradingBuyQuotesRequest = (state: TradingRootState) =>
+    state.wallet.trading.buy.quotesRequest;
+
 export const selectTradingSelectedAccount = (state: TradingRootState) =>
     state.wallet.selectedAccount;
 
@@ -78,3 +81,12 @@ export const selectTradingSettingEnvironment = (state: TradingRootState) =>
 
 export const selectTradingSettingAddressDisplayType = (state: TradingRootState) =>
     state.suite.settings.addressDisplayType;
+
+export const selectTradingPaymentMethods = (state: TradingRootState) =>
+    state.wallet.trading.info.paymentMethods;
+
+export const cryptoIdToCoinSymbol = (state: TradingRootState, cryptoId: CryptoId) => {
+    const { coins = {} } = state.wallet.trading.info;
+
+    return coins[cryptoId]?.symbol?.toUpperCase();
+};

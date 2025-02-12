@@ -10,6 +10,8 @@ import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
     getTagAndInfoNote,
+    getTradingPaymentMethods,
+    getTradingQuotesByPaymentMethod,
     getUnusedAddressFromAccount,
     isCryptoIdForNativeToken,
     mapTestnetSymbol,
@@ -129,5 +131,32 @@ describe('testing trading utils', () => {
                 'base--0x0000000000000000000000000000000000000000' as CryptoId,
             ),
         ).toEqual(true);
+    });
+
+    it('testing getTradingPaymentMethods', () => {
+        const paymentMethods = getTradingPaymentMethods([
+            ...BUY_FIXTURE.MIN_MAX_QUOTES_OK,
+            BUY_FIXTURE.MIN_MAX_QUOTES_OK[1], // duplicate applePay
+        ]);
+
+        const findApplePay = paymentMethods.find(
+            paymentMethod =>
+                paymentMethod.value === 'applePay' && paymentMethod.label === 'Apple Pay',
+        );
+
+        expect(paymentMethods.length).toBe(2);
+        expect(findApplePay).toBeDefined();
+    });
+
+    it('testing getTradingQuotesByPaymentMethod', () => {
+        const quotes = getTradingQuotesByPaymentMethod(BUY_FIXTURE.MIN_MAX_QUOTES_OK, 'applePay');
+
+        const allQuotesApplePay = quotes?.find(quote => quote.paymentMethod === 'applePay');
+
+        expect(allQuotesApplePay).toBeDefined();
+
+        const quotesUndefined = getTradingQuotesByPaymentMethod(undefined, 'applePay');
+
+        expect(quotesUndefined).toBeUndefined();
     });
 });

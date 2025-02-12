@@ -8,12 +8,14 @@ import {
     getNetworkByCoingeckoId,
     getNetworkByTradeCryptoId,
 } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, CRYPTO_PLATFORM_SEPARATOR } from './constants';
 import { regional } from './regional';
-import {
+import type {
     TradingParsedCryptoIdProps,
+    TradingPaymentMethodListProps,
+    TradingPaymentMethodProps,
     TradingTradeBuySellMapProps,
     TradingTradeBuySellType,
     TradingTradeMapProps,
@@ -154,4 +156,38 @@ export const addIdsToQuotes = <T extends TradingType>(
     });
 
     return allQuotes;
+};
+
+export const getTradingPaymentMethods = <T extends TradingTradeBuySellType>(
+    quotes: TradingTradeMapProps[T][],
+) => {
+    const newPaymentMethods: TradingPaymentMethodListProps[] = [];
+
+    quotes.forEach(quote => {
+        const { paymentMethod, paymentMethodName } = quote;
+
+        const shouldAddToPaymentMethods =
+            paymentMethod !== undefined &&
+            newPaymentMethods.every(item => item.value !== paymentMethod);
+
+        if (shouldAddToPaymentMethods) {
+            newPaymentMethods.push({
+                value: paymentMethod,
+                label: paymentMethodName ?? paymentMethod,
+            });
+        }
+    });
+
+    return newPaymentMethods;
+};
+
+export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellType>(
+    quotes: TradingTradeMapProps[T][] | undefined,
+    currentPaymentMethod: TradingPaymentMethodProps,
+) => {
+    if (!quotes) return;
+
+    return quotes.filter(
+        quote => quote.paymentMethod === currentPaymentMethod && quote.error === undefined,
+    );
 };
