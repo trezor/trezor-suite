@@ -220,25 +220,39 @@ export const prepareRootReducers = async () => {
         key: 'root',
         version: 3,
         migrations: {
-            2: (oldState: { wallet: { accounts: any; transactions: { transactions: any } } }) => {
+            2: (oldState: {
+                wallet: {
+                    accounts: any;
+                    transactions: { transactions: any; fetchStatusDetail: any };
+                };
+            }) => {
                 const oldStateWallet = oldState.wallet;
                 const migratedAccounts = migrateAccountBnbToBsc(oldStateWallet.accounts);
 
                 const migratedTransactions = migrateTransactionsBnbToBsc(
                     oldStateWallet.transactions?.transactions,
                 );
+
                 const migratedState = {
                     ...oldState,
                     wallet: {
                         ...oldStateWallet,
                         accounts: migratedAccounts,
-                        transactions: { transactions: migratedTransactions },
+                        transactions: {
+                            transactions: migratedTransactions,
+                            fetchStatusDetail: oldStateWallet.transactions?.fetchStatusDetail,
+                        },
                     },
                 };
 
                 return migratedState;
             },
-            3: (oldState: { wallet: { accounts: any; transactions: { transactions: any } } }) => {
+            3: (oldState: {
+                wallet: {
+                    accounts: any;
+                    transactions: { transactions: any; fetchStatusDetail: any };
+                };
+            }) => {
                 const oldStateWallet = oldState.wallet;
                 const migratedAccounts = migrateAccountsDeprecateNetworks(oldStateWallet.accounts);
                 const migratedTransactions = migrateTransactionsDeprecateNetworks(
@@ -249,7 +263,10 @@ export const prepareRootReducers = async () => {
                     wallet: {
                         ...oldStateWallet,
                         accounts: migratedAccounts,
-                        transactions: { transactions: migratedTransactions },
+                        transactions: {
+                            transactions: migratedTransactions,
+                            fetchStatusDetail: oldStateWallet.transactions?.fetchStatusDetail,
+                        },
                     },
                 };
 
