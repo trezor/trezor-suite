@@ -102,6 +102,13 @@ export const saveCoinjoinDebugSettings = () => async (_dispatch: Dispatch, getSt
     db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
 };
 
+export const saveKnownDevices = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!(await db.isAccessible())) return;
+    const { knownDevices } = getState().bluetooth;
+    // Todo: consider adding serializeBluetoothDevice (do not save status, ... signal strength, ...)
+    db.addItem('knownDevices', { bluetooth: knownDevices }, 'devices', true);
+};
+
 export const saveFormDraft = async (key: string, draft: FieldValues) => {
     if (!(await db.isAccessible())) return;
 

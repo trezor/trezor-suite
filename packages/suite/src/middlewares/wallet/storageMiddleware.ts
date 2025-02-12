@@ -2,6 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { messageSystemActions } from '@suite-common/message-system';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { TokenManagementAction } from '@suite-common/token-definitions';
@@ -201,6 +202,17 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 if (isDeviceRemembered(action.payload) && action.payload?.mode === 'normal') {
                     storageActions.saveDevice(action.payload);
                 }
+            }
+
+            if (
+                isAnyOf(
+                    deviceActions.connectDevice, // Known device is stored
+                    bluetoothActions.knownDevicesUpdateAction,
+                    bluetoothActions.removeKnownDeviceAction,
+                    bluetoothActions.connectDeviceEventAction, // Known devices may be updated
+                )(action)
+            ) {
+                api.dispatch(storageActions.saveKnownDevices());
             }
 
             if (sendFormActions.storeDraft.match(action)) {
