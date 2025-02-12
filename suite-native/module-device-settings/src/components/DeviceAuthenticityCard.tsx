@@ -58,8 +58,11 @@ export const DeviceAuthenticityCard = () => {
         const { success, payload } = result.payload;
         if (success) {
             const checkResult = payload.valid ? 'successful' : 'compromised';
-            navigation.navigate(DeviceAuthenticityStackRoutes.AuthenticitySummary, { checkResult });
-            reportCheckResult(checkResult);
+            const configExpired = payload.error === 'CA_PUBKEY_NOT_FOUND' && payload.configExpired;
+            navigation.navigate(DeviceAuthenticityStackRoutes.AuthenticitySummary, {
+                checkResult: configExpired ? 'successful' : checkResult,
+            });
+            reportCheckResult(configExpired ? 'configExpired' : checkResult);
         } else {
             const errorCode = payload.code;
             if (errorCode === 'Failure_ActionCancelled' || errorCode === 'Failure_PinCancelled') {
