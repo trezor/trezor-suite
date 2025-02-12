@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { Image, ImageBackground, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -42,49 +41,35 @@ const screenContainerStyle = prepareNativeStyle(() => ({
     backgroundColor: BLACK_BACKGROUND_COLOR,
 }));
 
-const WELCOME_BACKGROUND = require('../assets/welcomeScreenBackground.jpeg');
-
 export const WelcomeScreen = ({
     navigation,
 }: StackProps<OnboardingStackParamList, OnboardingStackRoutes.Welcome>) => {
     const { applyStyle, utils } = useNativeStyles();
-    const [isImageLoaded, setIsImageLoaded] = useState(false);
 
     const transparentColor = hexToRgba(utils.colors.transparent, 0.01);
-
-    useEffect(() => {
-        const prefetchImage = async () => {
-            await Image.prefetch(Image.resolveAssetSource(WELCOME_BACKGROUND).uri);
-            setIsImageLoaded(true);
-        };
-        prefetchImage();
-    }, []);
-
     const navigateToAnalyticsConsent = () => {
         navigation.navigate(OnboardingStackRoutes.AnalyticsConsent);
     };
 
     return (
         <Box flex={1} style={applyStyle(screenContainerStyle)}>
-            {isImageLoaded && (
-                <ImageBackground
-                    source={WELCOME_BACKGROUND}
-                    style={StyleSheet.absoluteFillObject}
-                    resizeMode="cover"
-                    fadeDuration={0}
-                >
-                    <Box flex={1} justifyContent="space-between">
-                        <LinearGradient
-                            colors={[BLACK_BACKGROUND_COLOR, transparentColor]}
-                            style={applyStyle(gradientBackgroundBottomStyle)}
-                        />
-                        <LinearGradient
-                            colors={[transparentColor, BLACK_BACKGROUND_COLOR]}
-                            style={applyStyle(gradientBackgroundBottomStyle)}
-                        />
-                    </Box>
-                </ImageBackground>
-            )}
+            <ImageBackground
+                source={require('../assets/welcomeScreenBackground.jpeg')}
+                style={StyleSheet.absoluteFillObject}
+                resizeMode="cover"
+                fadeDuration={0}
+            >
+                <Box flex={1} justifyContent="space-between">
+                    <LinearGradient
+                        colors={[BLACK_BACKGROUND_COLOR, transparentColor]}
+                        style={applyStyle(gradientBackgroundBottomStyle)}
+                    />
+                    <LinearGradient
+                        colors={[transparentColor, BLACK_BACKGROUND_COLOR]}
+                        style={applyStyle(gradientBackgroundBottomStyle)}
+                    />
+                </Box>
+            </ImageBackground>
             <Screen isScrollable={false} backgroundColor="transparent">
                 <VStack flex={1} justifyContent="flex-end" alignItems="center" spacing={48}>
                     <VStack alignItems="center" spacing="sp16">
