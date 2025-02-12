@@ -103,23 +103,13 @@ export const SuspiciousDeviceScreen = ({
                         </IconListTextItem>
                     </VStack>
                 </VStack>
-                <VStack spacing="sp12">
-                    <Button
-                        testID="@onboarding/SuspiciousDeviceScreen/contactSupportBtn"
-                        colorScheme="yellowBold"
-                        onPress={handleContactSupportButtonPress}
-                    >
-                        <Translation id="moduleOnboarding.suspiciousDeviceScreen.contactSupportButton" />
-                    </Button>
-
-                    <Button
-                        colorScheme="yellowElevation0"
-                        onPress={handleBackButtonPress}
-                        testID="@onboarding/SuspiciousDeviceScreen/backBtn"
-                    >
-                        <Translation id="generic.buttons.back" />
-                    </Button>
-                </VStack>
+                <Button
+                    testID="@onboarding/SuspiciousDeviceScreen/contactSupportBtn"
+                    colorScheme="yellowBold"
+                    onPress={handleContactSupportButtonPress}
+                >
+                    <Translation id="moduleOnboarding.suspiciousDeviceScreen.contactSupportButton" />
+                </Button>
             </VStack>
         </Screen>
     );
