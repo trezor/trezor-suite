@@ -2,6 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 
 import { BuyInfo } from '../reducers/buyReducer';
+import { AmountLimitProps } from '../utils/buy/buyUtils';
 
 const BUY_COMMON_PREFIX = '@trading-buy';
 
@@ -48,6 +49,17 @@ const verifyAddress = createAction(
     (payload: string | undefined) => ({ payload }),
 );
 
+const setIsLoading = createAction(`${BUY_COMMON_PREFIX}/set_is_loading`, (payload: boolean) => ({
+    payload,
+}));
+
+const setAmountLimits = createAction(
+    `${BUY_COMMON_PREFIX}/set_amount_limits`,
+    (payload: AmountLimitProps | undefined) => ({
+        payload,
+    }),
+);
+
 export const tradingBuyActions = {
     saveBuyInfo,
     dispose,
@@ -58,4 +70,6 @@ export const tradingBuyActions = {
     saveSelectedQuote,
     clearQuotes,
     verifyAddress,
+    setIsLoading,
+    setAmountLimits,
 };

@@ -1,6 +1,7 @@
 import { BuyTrade, BuyTradeQuoteRequest, CryptoId, FiatCurrenciesProps } from 'invity-api';
 
 import { tradingBuyActions } from '../../actions/buyActions';
+import { AmountLimitProps } from '../../utils/buy/buyUtils';
 import { BuyInfo, TradingBuyState } from '../buyReducer';
 
 export const buyInitialState: TradingBuyState = {
@@ -11,6 +12,8 @@ export const buyInitialState: TradingBuyState = {
     selectedQuote: undefined,
     quotes: [],
     addressVerified: undefined,
+    isLoading: false,
+    amountLimits: undefined,
 };
 
 const buyInfo: BuyInfo = {
@@ -64,6 +67,15 @@ const buyQuotes: BuyTrade[] = [
         paymentMethod: 'creditCard',
     },
 ];
+
+const amountLimits: AmountLimitProps = {
+    currency: 'bitcoin',
+    minCrypto: '0.002',
+    maxCrypto: '0.002',
+
+    minFiat: '50',
+    maxFiat: '250',
+};
 
 export const buyTradingFixtures = [
     {
@@ -192,6 +204,34 @@ export const buyTradingFixtures = [
         result: {
             ...buyInitialState,
             isFromRedirect: true,
+        },
+    },
+    {
+        description: 'test setting loading status',
+        initialState: buyInitialState,
+        actions: [
+            {
+                type: tradingBuyActions.setIsLoading.type,
+                payload: true,
+            },
+        ],
+        result: {
+            ...buyInitialState,
+            isLoading: true,
+        },
+    },
+    {
+        description: 'test setting amount limits',
+        initialState: buyInitialState,
+        actions: [
+            {
+                type: tradingBuyActions.setAmountLimits.type,
+                payload: amountLimits,
+            },
+        ],
+        result: {
+            ...buyInitialState,
+            amountLimits,
         },
     },
 ];

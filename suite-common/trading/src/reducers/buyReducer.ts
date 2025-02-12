@@ -9,6 +9,7 @@ import type {
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { tradingBuyActions } from '../actions/buyActions';
+import { AmountLimitProps } from '../utils/buy/buyUtils';
 
 export interface BuyInfo {
     buyInfo: BuyListResponse;
@@ -24,6 +25,8 @@ export interface TradingBuyState {
     quotes: BuyTrade[];
     selectedQuote: BuyTrade | undefined;
     addressVerified: string | undefined;
+    isLoading: boolean;
+    amountLimits: AmountLimitProps | undefined;
 
     transactionId?: string;
 }
@@ -36,6 +39,8 @@ export const buyInitialState: TradingBuyState = {
     selectedQuote: undefined,
     quotes: [],
     addressVerified: undefined,
+    isLoading: false,
+    amountLimits: undefined,
 };
 
 export const prepareBuyReducer = createReducerWithExtraDeps(buyInitialState, builder => {
@@ -66,5 +71,11 @@ export const prepareBuyReducer = createReducerWithExtraDeps(buyInitialState, bui
         })
         .addCase(tradingBuyActions.dispose, state => {
             state.addressVerified = undefined;
+        })
+        .addCase(tradingBuyActions.setIsLoading, (state, { payload }) => {
+            state.isLoading = payload;
+        })
+        .addCase(tradingBuyActions.setAmountLimits, (state, { payload }) => {
+            state.amountLimits = payload;
         });
 });
