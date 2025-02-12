@@ -1,4 +1,4 @@
-import { A, pipe } from '@mobily/ts-belt';
+import { A, G, pipe } from '@mobily/ts-belt';
 
 import {
     Feature,
@@ -47,7 +47,8 @@ type NativeDeviceRootState = DeviceRootState &
     AccountsRootState &
     DiscoveryRootState &
     SettingsSliceRootState &
-    FiatRatesRootState;
+    FiatRatesRootState &
+    FeatureFlagsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeDeviceRootState>();
 
@@ -199,6 +200,13 @@ export const selectHasFirmwareAuthenticityCheckHardFailed = (state: FwAuthentici
 };
 
 export const selectIsDeviceSetupSupported = createMemoizedSelector(
-    [selectDeviceModel],
-    model => !!model && isDeviceSetupSupported(model),
+    [
+        selectDeviceModel,
+        (state: NativeDeviceRootState) =>
+            selectIsFeatureFlagEnabled(state, FeatureFlag.IsDeviceOnboardingEnabled),
+    ],
+    (model, isDeviceOnboardingFeatureFlagEnabled) =>
+        isDeviceOnboardingFeatureFlagEnabled &&
+        G.isNotNullable(model) &&
+        isDeviceSetupSupported(model),
 );

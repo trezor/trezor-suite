@@ -128,13 +128,13 @@ export const useHandleDeviceConnection = () => {
         if (isFirmwareInstallationRunning || isSuspiciousDeviceScreenFocused(navigation)) return;
 
         if (
-            isDeviceInitialized &&
             isDeviceConnected &&
             isOnboardingFinished &&
             !isPortfolioTrackerDevice &&
             !isDeviceConnectedAndAuthorized &&
             !isBiometricsOverlayVisible &&
-            !shouldNavigateToDeviceCompromisedModal
+            !shouldNavigateToDeviceCompromisedModal &&
+            !isDeviceSetupSupported
         ) {
             requestPrioritizedDeviceAccess({
                 deviceCallback: () => dispatch(authorizeDeviceThunk()),
@@ -165,6 +165,7 @@ export const useHandleDeviceConnection = () => {
         isFirmwareInstallationRunning,
         isDeviceInitialized,
         shouldNavigateToDeviceCompromisedModal,
+        isDeviceSetupSupported,
     ]);
 
     // In case that the physical device is disconnected, redirect to the home screen and
