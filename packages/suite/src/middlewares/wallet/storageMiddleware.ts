@@ -203,6 +203,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
             }
 
+            if (deviceActions.connectDevice.match(action)) {
+                api.dispatch(storageActions.saveKnownDevices());
+            }
+
             if (sendFormActions.storeDraft.match(action)) {
                 const device = selectSelectedDevice(api.getState());
                 const { formState, accountKey } = action.payload;

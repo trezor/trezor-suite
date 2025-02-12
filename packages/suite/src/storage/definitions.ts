@@ -68,6 +68,15 @@ export interface SuiteDBSchema extends DBSchema {
         key: string;
         value: DeviceWithEmptyPath;
     };
+    knownDevices: {
+        key: string; // device_id
+        value: {
+            bluetooth: any[];
+            // thp: any[];
+            // entropy_check_keys: any[];
+            // validation_errors: any; // errors from onboarding?
+        };
+    };
     accounts: {
         key: string[];
         value: Account;

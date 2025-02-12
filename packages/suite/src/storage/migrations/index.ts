@@ -1251,6 +1251,10 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         });
     }
 
+    if (oldVersion < 53) {
+        db.createObjectStore('knownDevices');
+    }
+
     await migrationCoinmarketToTrading(db, oldVersion, newVersion, transaction);
 
     db.createObjectStore('security');
