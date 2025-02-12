@@ -402,6 +402,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async updateDescriptor(descriptor: Descriptor) {
         this.sessionDfd?.resolve(descriptor.session);
 
+        // todo: I got uncaught error here once: Uncaught (in promise) wrong previous session
         await Promise.all([this.acquirePromise, this.releasePromise]);
 
         // TODO improve these conditions
