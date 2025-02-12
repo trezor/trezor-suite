@@ -169,7 +169,7 @@ jobs:
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/suite-web @trezor/connect-iframe @trezor/connect-web @trezor/suite-data @trezor/suite-build
+          yarn workspaces focus @trezor/suite-web @trezor/connect-iframe @trezor/suite-data @trezor/suite-build
 
       - name: Build suite-web
         env:
@@ -180,7 +180,6 @@ jobs:
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           NODE_ENV=production yarn workspace @trezor/connect-iframe build:lib
-          yarn workspace @trezor/connect-web build
           yarn workspace @trezor/suite-web build
 
       # this step should upload build result to s3 bucket staging-suite.trezor.io using awscli
