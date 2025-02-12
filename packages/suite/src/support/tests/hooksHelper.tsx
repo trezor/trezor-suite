@@ -2,7 +2,13 @@ import { ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 
-import { act, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import {
+    RenderResult,
+    act,
+    render,
+    screen,
+    waitForElementToBeRemoved,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { MockedFormatterProvider } from '@suite-common/formatters';
@@ -10,7 +16,7 @@ import { MockedFormatterProvider } from '@suite-common/formatters';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
 // used in hooks tests
-export const renderWithProviders = (store: any, children: ReactNode) => {
+export const renderWithProviders = (store: any, children: ReactNode): RenderResult => {
     const renderMethods = render(
         <Provider store={store}>
             <ConnectedThemeProvider>

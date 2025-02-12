@@ -17,7 +17,7 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const IconCircle: StoryObj = {
+export const IconCircle: StoryObj<IconCircleProps> = {
     render: props => <IconCircleComponent {...(props as IconCircleProps)} />,
     args: {
         variant: 'primary',

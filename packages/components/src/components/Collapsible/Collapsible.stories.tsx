@@ -12,7 +12,7 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const Collapsible: StoryObj = {
+export const Collapsible: StoryObj<typeof CollapsibleComponent> = {
     render: args => (
         <CollapsibleComponent {...args}>
             <CollapsibleComponent.Toggle>

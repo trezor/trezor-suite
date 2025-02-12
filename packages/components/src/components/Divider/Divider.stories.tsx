@@ -15,7 +15,7 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const Divider: StoryObj = {
+export const Divider: StoryObj<typeof DividerComponent> = {
     render: props => (
         <Container>
             <DividerComponent {...props} />

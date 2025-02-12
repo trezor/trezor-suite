@@ -76,12 +76,13 @@ export const Button: StoryObj<ButtonProps> = {
             },
         },
         icon: {
-            options: {
-                'No icon': null,
-                ...variables.ICONS.reduce((acc, icon) => ({ ...acc, [icon]: icon }), {}),
-            },
+            options: [null, ...variables.ICONS],
             control: {
                 type: 'select',
+                labels: {
+                    'No icon': null,
+                    ...variables.ICONS.reduce((acc, icon) => ({ ...acc, [icon]: icon }), {}),
+                },
             },
         },
         iconSize: {

@@ -17,7 +17,7 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const Heading: StoryObj = {
+export const Heading: StoryObj<typeof H1> = {
     render: props => (
         <Wrapper>
             <H1 {...props}>This is heading 1</H1>

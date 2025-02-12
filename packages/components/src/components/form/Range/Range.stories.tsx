@@ -47,7 +47,7 @@ export const Range: StoryObj<RangeProps> = {
         },
         labels: {
             control: {
-                type: 'array',
+                type: 'object',
             },
             table: {
                 type: {

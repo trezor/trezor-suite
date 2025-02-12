@@ -12,7 +12,7 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const FormCell: StoryObj = {
+export const FormCell: StoryObj<typeof FormCellComponent> = {
     render: props => (
         <FormCellComponent {...props}>
             <SkeletonRectangle width="100%" height={40} />

@@ -92,7 +92,7 @@ const TabsApp = (props: Partial<TabsProps>) => {
     );
 };
 
-export const Tabs: StoryObj = {
+export const Tabs: StoryObj<typeof TabsComponent> = {
     render: props => <TabsApp {...props} />,
     args: {
         hasBorder: true,

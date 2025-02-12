@@ -13,7 +13,7 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const BulletList: StoryObj = {
+export const BulletList: StoryObj<typeof BulletListComponent> = {
     render: props => (
         <BulletListComponent {...props}>
             <BulletListComponent.Item title="Lorem ipsum" state="done">
@@ -40,7 +40,7 @@ export const BulletList: StoryObj = {
         isOrdered: true,
         bulletSize: 'large',
         width: 400,
-        margin: { vertical: spacings.lg, horizontal: 'auto ' },
+        margin: { vertical: spacings.lg, horizontal: 'auto' },
     },
     argTypes: {
         isOrdered: {

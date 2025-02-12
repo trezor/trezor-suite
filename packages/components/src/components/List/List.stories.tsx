@@ -25,7 +25,7 @@ const iconProps = {
     variant: 'primary',
 } as Partial<IconProps>;
 
-export const List: StoryObj = {
+export const List: StoryObj<typeof ListComponent> = {
     render: props => (
         <ListComponent {...props}>
             <ListComponent.Item bulletComponent={<Icon name="butterfly" {...iconProps} />}>

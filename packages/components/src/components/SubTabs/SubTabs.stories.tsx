@@ -96,7 +96,7 @@ const SubTabsApp = (props: Partial<SubTabsProps>) => {
     );
 };
 
-export const SubTabs: StoryObj = {
+export const SubTabs: StoryObj<typeof SubTabsComponent> = {
     render: props => <SubTabsApp {...props} />,
     args: {
         ...getFramePropsStory(allowedSubTabsFrameProps).args,

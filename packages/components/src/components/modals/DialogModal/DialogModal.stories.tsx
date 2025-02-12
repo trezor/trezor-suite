@@ -40,13 +40,19 @@ export const DialogModal: StoryObj<DialogModalProps> = {
             control: 'text',
         },
         bottomBarComponents: {
-            control: 'none',
+            control: {
+                type: undefined,
+            },
         },
         className: {
-            control: 'none',
+            control: {
+                type: undefined,
+            },
         },
         'data-testid': {
-            control: 'none',
+            control: {
+                type: undefined,
+            },
         },
         icon: {
             options: variables.ICONS,

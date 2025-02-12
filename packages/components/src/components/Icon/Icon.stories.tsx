@@ -6,13 +6,7 @@ import {
     icons as iconsDeprecated,
 } from '@suite-common/icons-deprecated';
 
-import {
-    Icon as IconComponent,
-    IconProps,
-    allowedIconFrameProps,
-    iconSizes,
-    iconVariants,
-} from './Icon';
+import { Icon as IconComponent, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta = {
@@ -27,7 +21,7 @@ const allIcons = new Set(
     [...iconNames, ...iconsDeprecatedNames].sort((a, b) => a.localeCompare(b)),
 );
 
-export const Icon: StoryObj<IconProps> = {
+export const Icon: StoryObj<typeof IconComponent> = {
     args: {
         name: 'discover',
         variant: 'primary',
@@ -62,9 +56,12 @@ export const Icon: StoryObj<IconProps> = {
             control: 'color',
         },
         size: {
-            options: iconSizes,
+            options: Object.values(iconSizes),
             control: {
                 type: 'select',
+                labels: Object.fromEntries(
+                    Object.entries(iconSizes).map(([key, value]) => [value, `${key}: ${value}`]),
+                ),
             },
         },
         ...getFramePropsStory(allowedIconFrameProps).argTypes,

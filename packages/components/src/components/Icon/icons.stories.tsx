@@ -160,9 +160,10 @@ export const AllIcons: StoryObj<IconProps> = {
             control: 'color',
         },
         size: {
-            options: iconSizes,
+            options: Object.values(iconSizes),
             control: {
                 type: 'select',
+                labels: iconSizes,
             },
         },
         ...getFramePropsStory(allowedIconFrameProps).argTypes,

@@ -22,9 +22,10 @@ export const RotateDeviceImage: StoryObj<RotateDeviceImageProps> = {
     },
     argTypes: {
         deviceModel: {
-            options: DeviceModelInternal,
+            options: Object.values(DeviceModelInternal),
             control: {
                 type: 'select',
+                labels: DeviceModelInternal,
             },
         },
         deviceColor: {

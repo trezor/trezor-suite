@@ -79,10 +79,14 @@ export const Modal: StoryObj<ModalProps> = {
             },
         },
         className: {
-            control: 'none',
+            control: {
+                type: undefined,
+            },
         },
         'data-testid': {
-            control: 'none',
+            control: {
+                type: undefined,
+            },
         },
     },
 };

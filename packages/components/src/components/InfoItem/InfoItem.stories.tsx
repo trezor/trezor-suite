@@ -20,12 +20,8 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const InfoItem: StoryObj = {
-    render: props => (
-        <InfoItemComponent label={undefined} {...props}>
-            Lorem ipsum
-        </InfoItemComponent>
-    ),
+export const InfoItem: StoryObj<typeof InfoItemComponent> = {
+    render: props => <InfoItemComponent {...props}>Lorem ipsum</InfoItemComponent>,
     args: {
         ...getTextPropsStory(allowedInfoItemTextProps).args,
         ...getFramePropsStory(allowedInfoItemFrameProps).args,
@@ -77,6 +73,9 @@ export const InfoItem: StoryObj = {
             options: Object.values(spacings),
             control: {
                 type: 'select',
+                labels: Object.fromEntries(
+                    Object.entries(spacings).map(([key, value]) => [value, `${key}: ${value}`]),
+                ),
             },
         },
         ...getTextPropsStory(allowedInfoItemTextProps).argTypes,

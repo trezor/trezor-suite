@@ -16,7 +16,7 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const Box: StoryObj = {
+export const Box: StoryObj<typeof BoxComponent> = {
     render: props => (
         <BoxComponent {...props}>
             <Content />
