@@ -38,7 +38,6 @@ type AccessLock = {
 
 export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-change': DescriptorApiLevel[];
-    'transport-interface-error': typeof ERRORS.DEVICE_NOT_FOUND | typeof ERRORS.DEVICE_UNREADABLE;
 }> {
     protected logger?: Logger;
     protected listening: boolean = false;
