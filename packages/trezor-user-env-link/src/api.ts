@@ -95,7 +95,7 @@ export const DEFAULT_BRIDGE_VERSION = '2.0.33';
 export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> {
     private client: WebsocketClient;
     public firmwares?: Firmwares;
-    private defaultFirmware?: string;
+    private defaultFirmware: Record<string, string> = {};
     public defaultModel: Model = 'T2T1';
 
     public currentEmulatorSetup?: Partial<SetupEmu> = {};
@@ -112,9 +112,12 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
             this.firmwares = firmwares;
             // select the highest version from the list of available firmwares.
             // this is the version that is likely to be the newest production.
-            this.defaultFirmware = semverRSort(
-                this.firmwares[this.defaultModel].filter(fw => semverValid(fw)),
-            )[0];
+
+            Object.keys(firmwares).forEach(model => {
+                this.defaultFirmware![model as Model] = semverRSort(
+                    firmwares![model as Model].filter(fw => semverValid(fw)),
+                )[0];
+            });
         });
 
         this.client.on('disconnected', () => this.emit('disconnected'));
@@ -202,10 +205,13 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         const params = {
             type: 'emulator-start',
             model: this.defaultModel,
-            version: this.defaultFirmware || '2-main',
+            version: arg?.model
+                ? this.defaultFirmware![arg.model]
+                : this.defaultFirmware![this.defaultModel] || '2-main',
             ...arg,
         };
 
+        console.log('sending emulator-start', params);
         await this.client.send(params);
 
         if (params.wipe) {
