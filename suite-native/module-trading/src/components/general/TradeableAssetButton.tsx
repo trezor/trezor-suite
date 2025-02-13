@@ -23,9 +23,7 @@ const GRADIENT_START = { x: 0, y: 0.5 } as const;
 const GRADIENT_END = { x: 1, y: 0.5 } as const;
 
 const buttonStyle = prepareNativeStyle(({ spacings }) => ({
-    height: spacings.sp36,
-    padding: spacings.sp4,
-    paddingRight: spacings.sp12,
+    padding: spacings.sp8,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
