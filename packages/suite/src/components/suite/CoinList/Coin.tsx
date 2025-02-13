@@ -140,7 +140,7 @@ const NameLabeled = styled.div`
 
 const Label = styled.div`
     ${typography.label}
-
+    line-height: 13px;
     color: ${({ theme }) => theme.textSubdued};
 `;
 
