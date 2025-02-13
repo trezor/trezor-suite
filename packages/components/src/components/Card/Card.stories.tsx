@@ -12,6 +12,9 @@ export default meta;
 
 export const Card: StoryObj = {
     args: {
+        paddingType: 'normal',
+        fillType: 'default',
+        ...getFramePropsStory(allowedCardFrameProps).args,
         children: (
             <p>
                 Quos delectus veritatis est doloribus dolor. Odit fugit omnis magni ipsam quia rem
@@ -25,11 +28,6 @@ export const Card: StoryObj = {
                 voluptatem.
             </p>
         ),
-        label: '',
-        paddingType: 'normal',
-        fillType: 'default',
-        isHiglighted: false,
-        ...getFramePropsStory(allowedCardFrameProps).args,
     },
     argTypes: {
         onClick: {
@@ -42,6 +40,12 @@ export const Card: StoryObj = {
             control: {
                 type: 'radio',
             },
+        },
+        label: {
+            control: 'text',
+        },
+        heading: {
+            control: 'text',
         },
         fillType: {
             options: fillTypes,

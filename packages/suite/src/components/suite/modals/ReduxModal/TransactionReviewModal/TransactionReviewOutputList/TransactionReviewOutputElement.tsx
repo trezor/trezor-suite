@@ -8,7 +8,6 @@ import { formatAmount, formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
     Card,
     Column,
-    Divider,
     DotIndicator,
     H4,
     Icon,
@@ -147,25 +146,22 @@ export const TransactionReviewOutputElement = ({
     const { networkType, symbol } = account;
 
     return (
-        <Card paddingType="none" fillType={state === 'confirmed' ? 'flat' : 'default'}>
-            <Row padding={{ vertical: spacings.sm, horizontal: spacings.md }} gap={spacings.sm}>
-                <Status state={state} />
-                <H4
-                    margin={{ left: spacings.xxs }}
-                    typographyStyle={state !== 'unconfirmed' ? 'callout' : 'hint'}
-                >
-                    {title}
-                </H4>
-            </Row>
-            <Divider margin={{}} />
-            <Column
-                gap={spacings.md}
-                padding={{
-                    vertical: spacings.sm,
-                    horizontal: spacings.md,
-                    left: spacings.xxxxl,
-                }}
-            >
+        <Card
+            paddingType="small"
+            fillType={state === 'confirmed' ? 'flat' : 'default'}
+            heading={
+                <Row gap={spacings.sm}>
+                    <Status state={state} />
+                    <H4
+                        margin={{ left: spacings.xxs }}
+                        typographyStyle={state !== 'unconfirmed' ? 'callout' : 'hint'}
+                    >
+                        {title}
+                    </H4>
+                </Row>
+            }
+        >
+            <Column gap={spacings.md} padding={{ left: spacings.xxl }}>
                 {lines.map(line => {
                     const value = (
                         <Value

@@ -17,7 +17,7 @@ export type Margin =
     | SpacingValues
     | 'auto';
 
-type Padding =
+export type Padding =
     | {
           top?: SpacingValues;
           bottom?: SpacingValues;
@@ -42,7 +42,8 @@ const overflows = [
     'no-scroll',
 ] as const;
 
-type Overflow = (typeof overflows)[number];
+type OverflowValue = (typeof overflows)[number];
+type Overflow = OverflowValue | `${OverflowValue} ${OverflowValue}`;
 
 const pointerEvents = ['auto', 'none', 'inherit', 'initial', 'unset'] as const;
 type PointerEvent = (typeof pointerEvents)[number];
@@ -54,6 +55,7 @@ type Position = {
     right?: string | number;
     bottom?: string | number;
     left?: string | number;
+    inset?: string | number;
 };
 
 const cursors = ['pointer', 'help', 'default', 'not-allowed', 'inherit'] as const;
@@ -177,6 +179,7 @@ export const withFrameProps = ({
     ${$position &&
     css`
         position: ${$position.type};
+        ${typeof $position.inset !== 'undefined' && `inset: ${getValueWithUnit($position.inset)};`}
         ${typeof $position.top !== 'undefined' && `top: ${getValueWithUnit($position.top)};`}
         ${typeof $position.right !== 'undefined' && `right: ${getValueWithUnit($position.right)};`}
             ${typeof $position.bottom !== 'undefined' &&

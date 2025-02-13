@@ -1,5 +1,5 @@
 import { ChainedTransactions } from '@suite-common/wallet-types';
-import { Banner, Card, Column, Divider, Link, Row, Table, Text } from '@trezor/components';
+import { Banner, Card, Column, Link, Row, Table, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -17,19 +17,23 @@ export const AffectedTransactions = ({ chainedTxs, showChained }: AffectedTransa
     }
 
     return (
-        <Card fillType="flat" paddingType="none">
-            <Row justifyContent="space-between" alignItems="center" padding={spacings.md}>
-                <Text typographyStyle="body">
-                    <Translation id="TR_CHAINED_TXS" />
-                </Text>
-                <Text variant="primary" typographyStyle="hint">
-                    <Link onClick={showChained} icon="arrowUpRight" variant="nostyle">
-                        <Translation id="TR_SEE_DETAILS" />
-                    </Link>
-                </Text>
-            </Row>
-            <Divider margin={spacings.zero} />
-            <Column padding={spacings.md} gap={spacings.md}>
+        <Card
+            fillType="flat"
+            paddingType="small"
+            heading={
+                <Row justifyContent="space-between" alignItems="center">
+                    <Text typographyStyle="body">
+                        <Translation id="TR_CHAINED_TXS" />
+                    </Text>
+                    <Text variant="primary" typographyStyle="hint">
+                        <Link onClick={showChained} icon="arrowUpRight" variant="nostyle">
+                            <Translation id="TR_SEE_DETAILS" />
+                        </Link>
+                    </Text>
+                </Row>
+            }
+        >
+            <Column gap={spacings.md}>
                 <Banner variant="warning">
                     <Translation id="TR_AFFECTED_TXS" />
                 </Banner>

@@ -37,26 +37,27 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
     const fee = formatNetworkAmount(composedCancelTx.fee, tx.symbol);
 
     return (
-        <Card fillType="flat" paddingType="none">
-            <Row justifyContent="space-between" margin={spacings.md}>
-                <Text typographyStyle="highlight">
-                    <Translation id="TR_CANCEL_TX_HEADER" />
-                </Text>
-
-                <Text typographyStyle="hint">
-                    <TrezorLink
-                        variant="nostyle"
-                        href={HELP_CENTER_CANCEL_TRANSACTION}
-                        icon="arrowUpRight"
-                    >
-                        <Translation id="TR_LEARN_MORE" />
-                    </TrezorLink>
-                </Text>
-            </Row>
-
-            <Divider margin={spacings.zero} />
-
-            <Column gap={spacings.md} margin={spacings.md}>
+        <Card
+            fillType="flat"
+            paddingType="small"
+            heading={
+                <Row justifyContent="space-between">
+                    <Text typographyStyle="highlight">
+                        <Translation id="TR_CANCEL_TX_HEADER" />
+                    </Text>
+                    <Text typographyStyle="hint">
+                        <TrezorLink
+                            variant="nostyle"
+                            href={HELP_CENTER_CANCEL_TRANSACTION}
+                            icon="arrowUpRight"
+                        >
+                            <Translation id="TR_LEARN_MORE" />
+                        </TrezorLink>
+                    </Text>
+                </Row>
+            }
+        >
+            <Column gap={spacings.md}>
                 <Text typographyStyle="hint">
                     <Translation id="TR_CANCEL_TX_NOTICE" />
                 </Text>
@@ -90,10 +91,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                     </Column>
                 </InfoItem>
 
-                <Divider
-                    orientation="horizontal"
-                    margin={{ top: spacings.xs, bottom: spacings.xs }}
-                />
+                <Divider margin={{ vertical: spacings.xs }} />
 
                 <InfoItem
                     direction="row"

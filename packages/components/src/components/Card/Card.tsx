@@ -1,4 +1,4 @@
-import { HTMLAttributes, ReactNode, forwardRef } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
@@ -19,7 +19,10 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
+import { Box } from '../Box/Box';
+import { Divider } from '../Divider/Divider';
 import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
+import { Text } from '../typography/Text/Text';
 
 export const allowedCardFrameProps = [
     'margin',
@@ -34,170 +37,154 @@ export const allowedCardFrameProps = [
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCardFrameProps)[number]>;
 
-const Container = styled.div<{ $fillType: FillType } & TransientProps<AllowedFrameProps>>`
+type ContainerProps = {
+    $fillType: FillType;
+    $hasLabel: boolean;
+};
+
+const Container = styled.section<ContainerProps & TransientProps<AllowedFrameProps>>`
     width: 100%;
     border-radius: ${borders.radii.md};
-    background: ${({ theme, $fillType }) =>
-        $fillType !== 'flat' && theme.backgroundTertiaryDefaultOnElevation0};
-    padding: ${spacingsPx.xxxs};
+
+    ${({ $hasLabel, $fillType }) =>
+        $hasLabel &&
+        css`
+            background: ${({ theme }) =>
+                $fillType !== 'flat' && theme.backgroundTertiaryDefaultOnElevation0};
+            padding: ${spacingsPx.xxxs};
+        `}
 
     ${withFrameProps}
 `;
 
-const LabelContainer = styled.div<{ $paddingType: PaddingType }>`
-    padding: ${mapPaddingTypeToLabelPadding};
-    color: ${({ theme }) => theme.textSubdued};
-`;
+type CardContainerProps = {
+    $elevation: Elevation;
+    $fillType: FillType;
+    $isClickable: boolean;
+    $variant?: CardVariant;
+    $hasLabel: boolean;
+};
 
-const CardContainer = styled.div<
-    {
-        $elevation: Elevation;
-        $paddingType: PaddingType;
-        $fillType: FillType;
-        $isClickable: boolean;
-        $variant?: CardVariant;
-        $hasLabel: boolean;
-    } & TransientProps<AllowedFrameProps>
->`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+const CardContainer = styled.div<CardContainerProps>`
     position: relative;
-    padding: ${mapPaddingTypeToPadding};
     border-radius: ${borders.radii.md};
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
+    overflow: hidden;
     transition:
         background 0.5s,
         border 0.5s,
         box-shadow 0.5s;
 
-    ${({ theme, $variant, $paddingType }) =>
+    ${({ theme, $variant }) =>
         $variant &&
         css`
             overflow: hidden;
-            padding-left: calc(${spacingsPx.xxs} + ${mapPaddingTypeToPadding({ $paddingType })});
 
             &::before {
                 content: '';
                 position: absolute;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                width: ${spacingsPx.xxs};
-                background: ${mapVariantToColor({ theme, $variant })};
+                border-radius: ${borders.radii.md};
+                inset: 0;
+                border-left: ${spacingsPx.xxs} solid ${mapVariantToColor({ theme, $variant })};
+                pointer-events: none;
             }
         `}
 
     ${mapFillTypeToCSS}
-    ${withFrameProps}
 `;
 
-type CommonCardProps = AccessibilityProps & {
-    paddingType?: PaddingType;
-    fillType?: FillType;
-    onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
-    onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
-    onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
-    children?: ReactNode;
-    className?: string;
-    label?: ReactNode;
-    variant?: CardVariant;
-    'data-testid'?: string;
-};
+export type CardProps = AccessibilityProps &
+    AllowedFrameProps & {
+        heading?: ReactNode;
+        label?: ReactNode;
+        paddingType?: PaddingType;
+        fillType?: FillType;
+        onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
+        onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
+        onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
+        children?: ReactNode;
+        className?: string;
+        variant?: CardVariant;
+        'data-testid'?: string;
+    };
 
-export type CardPropsWithTransientProps = CommonCardProps & TransientProps<AllowedFrameProps>;
-export type CardProps = CommonCardProps & AllowedFrameProps;
+export const Card = ({
+    paddingType = 'normal',
+    fillType = 'default',
+    heading,
+    label,
+    onClick,
+    onMouseEnter,
+    onMouseLeave,
+    className,
+    tabIndex,
+    children,
+    variant,
+    'data-testid': dataTest,
+    ...rest
+}: CardProps) => {
+    const { elevation } = useElevation();
+    const theme = useTheme();
+    const frameProps = pickAndPrepareFrameProps(rest, allowedCardFrameProps);
 
-const CardComponent = forwardRef<HTMLDivElement, CardPropsWithTransientProps>(
-    (
-        {
-            children,
-            paddingType = 'normal',
-            fillType = 'default',
-            onClick,
-            onMouseEnter,
-            onMouseLeave,
-            className,
-            tabIndex,
-            label,
-            variant,
-            'data-testid': dataTest,
-            ...rest
-        },
-        ref,
-    ) => {
-        const { elevation } = useElevation();
-        const theme = useTheme();
+    const content = (
+        <>
+            {heading && (
+                <>
+                    <Box
+                        padding={mapPaddingTypeToPadding({
+                            paddingType,
+                            hasHeading: true,
+                        })}
+                    >
+                        <Text as="div" typographyStyle="callout">
+                            {heading}
+                        </Text>
+                    </Box>
+                    <Divider margin={{}} />
+                </>
+            )}
+            <Box
+                padding={mapPaddingTypeToPadding({
+                    paddingType,
+                    hasHeading: !!heading,
+                })}
+            >
+                {children}
+            </Box>
+        </>
+    );
 
-        return (
+    return (
+        <Container $fillType={fillType} $hasLabel={!!label} {...frameProps}>
+            {label && (
+                <Box padding={mapPaddingTypeToLabelPadding({ paddingType })}>
+                    <Text as="div" variant="tertiary">
+                        {label}
+                    </Text>
+                </Box>
+            )}
             <CardContainer
-                ref={ref}
                 $elevation={elevation}
-                $paddingType={paddingType}
+                $hasLabel={!!label}
                 $fillType={fillType}
                 $isClickable={Boolean(onClick)}
                 $variant={variant}
-                $hasLabel={Boolean(label)}
                 onClick={onClick}
                 onMouseEnter={onMouseEnter}
                 className={className}
                 onMouseLeave={onMouseLeave}
-                {...withAccessibilityProps({ tabIndex })}
-                {...rest}
                 data-testid={dataTest}
+                {...withAccessibilityProps({ tabIndex })}
             >
                 {fillType === 'flat' ? (
                     <ElevationContext baseElevation={theme.variant === 'dark' ? 0 : -1}>
-                        {children}
+                        {content}
                     </ElevationContext>
                 ) : (
-                    <ElevationUp>{children}</ElevationUp>
+                    <ElevationUp>{content}</ElevationUp>
                 )}
             </CardContainer>
-        );
-    },
-);
-
-export const Card = forwardRef<HTMLDivElement, CardProps>(
-    (
-        {
-            paddingType = 'normal',
-            fillType = 'default',
-            label,
-            onClick,
-            onMouseEnter,
-            onMouseLeave,
-            className,
-            tabIndex,
-            children,
-            variant,
-            'data-testid': dataTest,
-            ...rest
-        },
-        ref,
-    ) => {
-        const commonProps = {
-            onClick,
-            onMouseEnter,
-            onMouseLeave,
-            className,
-            tabIndex,
-            paddingType,
-            fillType,
-            children,
-            label,
-            variant,
-            'data-testid': dataTest,
-        };
-        const frameProps = pickAndPrepareFrameProps(rest, allowedCardFrameProps);
-
-        return label ? (
-            <Container $fillType={fillType} {...frameProps}>
-                <LabelContainer $paddingType={paddingType}>{label}</LabelContainer>
-                <CardComponent {...commonProps} ref={ref} />
-            </Container>
-        ) : (
-            <CardComponent {...commonProps} {...frameProps} ref={ref} />
-        );
-    },
-);
+        </Container>
+    );
+};

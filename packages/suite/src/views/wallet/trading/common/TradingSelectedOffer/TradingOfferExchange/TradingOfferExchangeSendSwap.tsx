@@ -198,7 +198,7 @@ export const TradingOfferExchangeSendSwap = () => {
             <Card
                 fillType="default"
                 margin={{ vertical: spacings.md }}
-                label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE" />}
+                heading={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE" />}
             >
                 <ElevationContext baseElevation={0}>
                     <Column gap={spacings.lg}>

@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Card, Column, Divider, InfoItem, Row, Text } from '@trezor/components';
+import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -37,45 +37,43 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
 
     return (
         <>
-            <Card fillType="flat" paddingType="none">
-                <Text typographyStyle="body" margin={spacings.md}>
-                    <Translation id="TR_BUMP_FEE_SUBTEXT" />
-                </Text>
-                <Divider margin={spacings.zero} />
-                <Column margin={spacings.md}>
-                    <InfoItem
-                        direction="row"
-                        label={
-                            <>
-                                <Translation id="TR_CURRENT_FEE" />
-                                {feeRate && <> ({feeRate})</>}
-                            </>
-                        }
-                        typographyStyle="body"
-                    >
-                        <Row gap={spacings.md} alignItems="baseline">
-                            <FormattedCryptoAmount
+            <Card
+                fillType="flat"
+                paddingType="small"
+                heading={<Translation id="TR_BUMP_FEE_SUBTEXT" />}
+            >
+                <InfoItem
+                    direction="row"
+                    label={
+                        <>
+                            <Translation id="TR_CURRENT_FEE" />
+                            {feeRate && <> ({feeRate})</>}
+                        </>
+                    }
+                    typographyStyle="body"
+                >
+                    <Row gap={spacings.md} alignItems="baseline">
+                        <FormattedCryptoAmount
+                            disableHiddenPlaceholder
+                            value={fee}
+                            symbol={tx.symbol}
+                        />
+                        <Text variant="tertiary" typographyStyle="label">
+                            <FiatValue
                                 disableHiddenPlaceholder
-                                value={fee}
+                                amount={fee}
                                 symbol={tx.symbol}
+                                showApproximationIndicator
                             />
-                            <Text variant="tertiary" typographyStyle="label">
-                                <FiatValue
-                                    disableHiddenPlaceholder
-                                    amount={fee}
-                                    symbol={tx.symbol}
-                                    showApproximationIndicator
-                                />
-                            </Text>
-                        </Row>
-                    </InfoItem>
+                        </Text>
+                    </Row>
+                </InfoItem>
 
-                    <Divider />
+                <Divider />
 
-                    <RbfFees />
+                <RbfFees />
 
-                    {children}
-                </Column>
+                {children}
             </Card>
 
             <DecreasedOutputs />

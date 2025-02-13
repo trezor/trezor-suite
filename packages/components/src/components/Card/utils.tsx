@@ -1,17 +1,13 @@
 import { DefaultTheme, RuleSet, css } from 'styled-components';
 
-import {
-    CSSColor,
-    Elevation,
-    SpacingPxValues,
-    mapElevationToBackground,
-    spacingsPx,
-} from '@trezor/theme';
+import { CSSColor, Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
 
 import { CardVariant, FillType, PaddingType } from './types';
+import { Padding } from '../../utils/frameProps';
 
 type PaddingMapArgs = {
-    $paddingType: PaddingType;
+    paddingType: PaddingType;
+    hasHeading?: boolean;
 };
 
 type FillTypeMapArgs = {
@@ -27,26 +23,29 @@ type VariantMapArgs = {
     theme: DefaultTheme;
 };
 
-export const mapPaddingTypeToLabelPadding = ({ $paddingType }: PaddingMapArgs): string => {
-    const paddingMap: Record<PaddingType, string> = {
-        none: `${spacingsPx.xxs} 0`,
-        small: `${spacingsPx.xxs} ${spacingsPx.sm}`,
-        normal: `${spacingsPx.xs} ${spacingsPx.lg}`,
-        large: `${spacingsPx.sm} ${spacingsPx.xl}`,
+export const mapPaddingTypeToPadding = ({
+    paddingType,
+    hasHeading,
+}: PaddingMapArgs): Padding | undefined => {
+    const paddingMap: Record<PaddingType, Padding | undefined> = {
+        none: undefined,
+        small: hasHeading ? { vertical: spacings.sm, horizontal: spacings.md } : spacings.sm,
+        normal: hasHeading ? { vertical: spacings.md, horizontal: spacings.lg } : spacings.lg,
+        large: hasHeading ? { vertical: spacings.lg, horizontal: spacings.xl } : spacings.xl,
     };
 
-    return paddingMap[$paddingType];
+    return paddingMap[paddingType];
 };
 
-export const mapPaddingTypeToPadding = ({ $paddingType }: PaddingMapArgs): SpacingPxValues => {
-    const paddingMap: Record<PaddingType, SpacingPxValues> = {
-        none: '0px',
-        small: spacingsPx.sm,
-        normal: spacingsPx.lg,
-        large: spacingsPx.xl,
+export const mapPaddingTypeToLabelPadding = ({ paddingType }: PaddingMapArgs): Padding => {
+    const paddingMap: Record<PaddingType, Padding> = {
+        none: { vertical: spacings.xxs },
+        small: { vertical: spacings.xxs, horizontal: spacings.sm },
+        normal: { vertical: spacings.xs, horizontal: spacings.lg },
+        large: { vertical: spacings.sm, horizontal: spacings.xl },
     };
 
-    return paddingMap[$paddingType];
+    return paddingMap[paddingType];
 };
 
 export const mapFillTypeToCSS = ({
@@ -60,7 +59,7 @@ export const mapFillTypeToCSS = ({
         default: css`
             background: ${mapElevationToBackground({ $elevation, theme })};
             box-shadow: ${$elevation === 1 && !$hasLabel && theme.boxShadowBase};
-            border: 1px solid transparent;
+            outline: 1px solid transparent;
 
             ${$isClickable &&
             css`
@@ -73,11 +72,11 @@ export const mapFillTypeToCSS = ({
             theme.variant === 'dark'
                 ? css`
                       background: none;
-                      border: 1px solid ${theme.borderElevation3};
+                      outline: 1px solid ${theme.borderElevation3};
                   `
                 : css`
                       background: ${theme.backgroundSurfaceElevationNegative};
-                      border: 1px solid ${theme.borderElevation0};
+                      outline: 1px solid ${theme.borderElevation0};
                   `,
     };
 
