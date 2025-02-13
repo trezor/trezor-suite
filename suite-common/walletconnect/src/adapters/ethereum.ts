@@ -87,7 +87,7 @@ const ethereumRequestThunk = createThunk<
             if (account.networkType !== 'ethereum') {
                 throw new Error('Account is not Ethereum');
             }
-            if (!transaction.gasPrice) {
+            if (!transaction.gasPrice && !transaction.maxFeePerGas) {
                 // Fee not provided, estimate it
                 const feeLevels = await TrezorConnect.blockchainEstimateFee({
                     coin: account.symbol,
@@ -125,6 +125,9 @@ const ethereumRequestThunk = createThunk<
                     throw new Error('eth_sendTransaction cannot estimate fee');
                 }
                 transaction.gas = estimatedFee.payload.levels[0].feeLimit;
+            }
+            if (!transaction.value) {
+                transaction.value = '0x0';
             }
             const { nonce } = await dispatch(
                 ethereumGetCurrentNonceThunk({ selectedAccount: account }),
