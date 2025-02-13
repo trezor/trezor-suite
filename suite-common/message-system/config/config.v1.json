@@ -1,8 +1,49 @@
 {
     "version": 1,
-    "timestamp": "2025-02-03T00:00:00+00:00",
-    "sequence": 79,
+    "timestamp": "2025-02-13T00:00:00+00:00",
+    "sequence": 80,
     "actions": [
+        {
+            "conditions": [
+                {
+                    "os": {
+                        "macos": "<11.0.0",
+                        "linux": "!",
+                        "windows": "!",
+                        "android": "!",
+                        "ios": "!",
+                        "chromeos": "!"
+                    },
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "e7ee26d1-ab9a-4967-873c-f35543d2c06d",
+                "priority": 90,
+                "dismissible": false,
+                "variant": "warning",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "Do not update Trezor Suite. You are using macOS Catalina (10.15.7) or an older version, which are no longer supported.",
+                    "en": "Do not update Trezor Suite. You are using macOS Catalina (10.15.7) or an older version, which are no longer supported.",
+                    "es": "No actualice Trezor Suite. Está utilizando macOS Catalina (10.15.7) o una versión anterior, que ya no son compatibles.",
+                    "cs": "Neaktualizujte Trezor Suite. Používáte macOS Catalina (10.15.7) nebo starší verzi, které již nejsou podporovány.",
+                    "ru": "Не обновляйте Trezor Suite. Вы используете macOS Catalina (10.15.7) или более старую версию, которая больше не поддерживается.",
+                    "ja": "Trezor Suiteをアップデートしないでください。macOS Catalina (10.15.7)またはサポートが終了した古いバージョンを使用しています。",
+                    "hu": "Ne frissítse a Trezor Suite-ot. Ön a macOS Catalina (10.15.7) vagy egy régebbi verziót használ, amely már nem támogatott.",
+                    "it": "Non aggiornare Trezor Suite. Si sta utilizzando macOS Catalina (10.15.7) o una versione precedente, non più supportata.",
+                    "fr": "Ne mettez pas à jour Trezor Suite. Vous utilisez macOS Catalina (10.15.7) ou une version plus ancienne, qui ne sont plus prises en charge.",
+                    "de": "Aktualisieren Sie Trezor Suite nicht. Sie verwenden macOS Catalina (10.15.7) oder eine ältere Version, die nicht mehr unterstützt wird.",
+                    "tr": "Trezor Suite'i güncellemeyin. macOS Catalina (10.15.7) veya artık desteklenmeyen daha eski bir sürüm kullanıyorsunuz.",
+                    "pt": "Não atualize o Trezor Suite. Você está usando o macOS Catalina (10.15.7) ou uma versão mais antiga, que não é mais compatível.",
+                    "uk": "Не оновлюйте Trezor Suite. Ви використовуєте macOS Catalina (10.15.7) або старішу версію, які більше не підтримуються."
+                }
+            }
+        },
         {
             "conditions": [
                 {
