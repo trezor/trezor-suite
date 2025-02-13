@@ -47,8 +47,15 @@ export class UsbApi extends AbstractApi {
     }
 
     public listen() {
-        this.usbInterface.onconnect = event => {
+        this.usbInterface.onconnect = async event => {
             this.logger?.debug(`usb: onconnect: ${this.formatDeviceForLog(event.device)}`);
+
+            // this should fix a bug when device rebooted back to normal mode
+            // during fw update on windows throws LIBUSB_ERROR_IO on every transferOut
+            if (event.device.opened) {
+                this.logger?.debug('usb: onconnect: device already opened, closing');
+                await event.device.close();
+            }
 
             return this.createDevices([event.device], this.abortController.signal)
                 .then(newDevices => {
