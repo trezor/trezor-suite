@@ -55,7 +55,7 @@ export const Body = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow: hidden hidden;
+    overflow: hidden;
 `;
 
 // AppWrapper and MenuSecondary creates own scrollbars independently
