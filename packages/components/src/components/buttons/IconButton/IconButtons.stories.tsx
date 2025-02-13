@@ -72,16 +72,6 @@ export const IconButtons: StoryObj = {
                             console.log('click');
                         }}
                     />
-                    <IconButton
-                        icon="palette"
-                        bottomLabel={<span>Bottom Label</span>}
-                        variant={variant}
-                        isDisabled
-                        data-testid={`button-${variant}-disabled`}
-                        onClick={() => {
-                            console.log('click');
-                        }}
-                    />
                 </StoryColumn>
             ))}
         </>

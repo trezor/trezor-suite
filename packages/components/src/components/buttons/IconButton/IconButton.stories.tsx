@@ -30,9 +30,6 @@ export const IconButton: StoryObj<IconButtonProps> = {
                 type: 'select',
             },
         },
-        bottomLabel: {
-            type: 'string',
-        },
         variant: {
             control: {
                 type: 'radio',

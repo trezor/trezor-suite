@@ -1,42 +1,32 @@
 import React from 'react';
 
-import styled, { useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 
+import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_SHORT } from '../../Tooltip/TooltipDelay';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { ButtonContainer, ButtonProps, IconOrComponent, getIcon } from '../Button/Button';
-import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
+import { ButtonVariant, getIconColor, getIconSize } from '../buttonStyleUtils';
 
-const IconButtonContainer = styled(ButtonContainer)`
-    position: relative;
-    padding: ${({ $size }) => getPadding($size, false)};
-`;
+export const allowedIconButtonFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconButtonFrameProps)[number]>;
 
-const Label = styled.span<{ $isDisabled: boolean }>`
-    position: absolute;
-    bottom: -22px;
-    color: ${({ theme, $isDisabled }) => ($isDisabled ? theme.textDisabled : theme.textSubdued)};
-    white-space: nowrap;
-`;
-
-export interface IconButtonProps
-    extends Omit<
+export type IconButtonProps = AllowedFrameProps &
+    Omit<
         ButtonProps,
-        'isFullWidth' | 'iconAlignment' | 'iconSize' | 'variant' | 'children'
-    > {
-    icon: IconOrComponent;
-    label?: React.ReactNode;
-    iconSize?: number;
-    variant?: ButtonVariant;
-    bottomLabel?: React.ReactNode;
-}
+        'icon' | 'isFullWidth' | 'iconAlignment' | 'iconSize' | 'variant' | 'children'
+    > & {
+        icon: IconOrComponent;
+        label?: React.ReactNode;
+        iconSize?: number;
+        variant?: ButtonVariant;
+    };
 
 export const IconButton = ({
     icon,
     label = null,
-    bottomLabel,
     variant = 'primary',
     size = 'large',
     iconSize,
@@ -44,6 +34,7 @@ export const IconButton = ({
     isLoading = false,
     onClick,
     isSubtle = false,
+    margin,
     ...rest
 }: IconButtonProps) => {
     const theme = useTheme();
@@ -71,20 +62,20 @@ export const IconButton = ({
             delayHide={TOOLTIP_DELAY_NONE}
             cursor="default"
         >
-            <IconButtonContainer
+            <ButtonContainer
                 $variant={variant}
                 $size={size}
+                $hasLabel={false}
                 disabled={isDisabled || isLoading}
                 onClick={handleClick}
                 $isSubtle={isSubtle}
                 $elevation={elevation}
+                $margin={margin}
                 {...rest}
             >
                 {!isLoading && icon && IconComponent}
                 {isLoading && Loader}
-
-                {bottomLabel && <Label $isDisabled={isDisabled}>{bottomLabel}</Label>}
-            </IconButtonContainer>
+            </ButtonContainer>
         </Tooltip>
     );
 };

@@ -42,6 +42,7 @@ type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
     $hasIcon?: boolean;
     $isFullWidth?: boolean;
     $isSubtle: boolean;
+    $hasLabel: boolean;
     as?: 'a' | 'button';
     $borderRadius?: typeof borders.radii.sm | typeof borders.radii.full; // Do not allow all, we want consistency
 };
@@ -53,7 +54,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     justify-content: center;
     flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'right' && 'row-reverse'};
     gap: ${({ $hasIcon }) => $hasIcon && spacingsPx.xs};
-    padding: ${({ $size }) => getPadding($size, true)};
+    padding: ${({ $size, $hasLabel }) => getPadding($size, $hasLabel)};
     width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'fit-content')};
     border-radius: ${({ $borderRadius }) => $borderRadius ?? borders.radii.full};
     transition:
@@ -193,6 +194,7 @@ export const Button = ({
             $isSubtle={isSubtle}
             $size={size}
             $variant={variant}
+            $hasLabel={true}
             as={isLink ? 'a' : 'button'}
             className={className}
             data-testid={dataTestId}
