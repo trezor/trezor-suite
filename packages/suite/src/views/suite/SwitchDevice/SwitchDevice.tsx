@@ -11,8 +11,10 @@ import { ForegroundAppProps } from 'src/types/suite';
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
 import { BluetoothConnect } from '../../../components/suite/bluetooth/BluetoothConnect';
+import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
 export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
+    const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
     const [isBluetoothMode, setIsBluetoothMode] = useState(false);
 
     const selectedDevice = useSelector(selectSelectedDevice);
@@ -44,12 +46,18 @@ export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
                             isFullHeaderVisible={index === 0}
                         />
                     ))}
-                    <Button variant="tertiary" isFullWidth onClick={() => setIsBluetoothMode(true)}>
-                        <Row justifyContent="center" alignItems="center" gap={spacings.xs}>
-                            <Icon name="bluetooth" size="mediumLarge" />
-                            <Text typographyStyle="body">Pair Trezor Safe 7</Text>
-                        </Row>
-                    </Button>
+                    {isBluetoothEnabled && (
+                        <Button
+                            variant="tertiary"
+                            isFullWidth
+                            onClick={() => setIsBluetoothMode(true)}
+                        >
+                            <Row justifyContent="center" alignItems="center" gap={spacings.xs}>
+                                <Icon name="bluetooth" size="mediumLarge" />
+                                <Text typographyStyle="body">Pair Trezor Safe 7</Text>
+                            </Row>
+                        </Button>
+                    )}
                 </Column>
             )}
         </SwitchDeviceModal>

@@ -10,7 +10,7 @@ import { Button, ElevationContext, ElevationDown, Flex, motionEasing } from '@tr
 import { goto } from 'src/actions/suite/routerActions';
 import { ConnectDevicePrompt, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectHasTransportOfType, selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 import { DeviceAcquire } from './DeviceAcquire';
 import { DeviceBootloader } from './DeviceBootloader';
@@ -55,8 +55,7 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
     const device = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
     const connectedDevicesCount = devices.filter(d => d.connected === true).length;
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
-    const isBluetooth = useSelector(selectHasTransportOfType('BluetoothTransport'));
+
     const prerequisite = useSelector(selectPrerequisite);
 
     const TipComponent = useMemo(
@@ -68,11 +67,7 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                     return <DeviceDisconnectRequired />;
                 case 'device-disconnected':
                     return (
-                        <DeviceConnect
-                            isWebUsbTransport={isWebUsbTransport}
-                            isBluetooth={isBluetooth}
-                            onBluetoothClick={() => setIsBluetoothConnectOpen(true)}
-                        />
+                        <DeviceConnect onBluetoothClick={() => setIsBluetoothConnectOpen(true)} />
                     );
                 case 'device-unacquired':
                     return <DeviceAcquire />;
@@ -101,7 +96,7 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                     return <></>;
             }
         },
-        [prerequisite, isWebUsbTransport, isBluetooth, device],
+        [prerequisite, device],
     );
 
     const handleSwitchDeviceClick = () =>

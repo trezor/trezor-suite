@@ -10,17 +10,21 @@ import {
     TROUBLESHOOTING_TIP_USB,
 } from 'src/components/suite/troubleshooting/tips';
 
+import { useSelector } from '../../../hooks/suite';
+import { selectHasTransportOfType, selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
+
 interface DeviceConnectProps {
-    isWebUsbTransport: boolean;
-    isBluetooth: boolean;
     onBluetoothClick: () => void;
 }
 
-export const DeviceConnect = ({
-    isWebUsbTransport,
-    onBluetoothClick,
-    isBluetooth,
-}: DeviceConnectProps) => {
+export const DeviceConnect = ({ onBluetoothClick }: DeviceConnectProps) => {
+    const { isBluetoothEnabled } = useSelector(selectSuiteFlags);
+
+    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
+    const isBluetoothTransport = useSelector(selectHasTransportOfType('BluetoothTransport'));
+
+    const isBluetooth = isBluetoothTransport && isBluetoothEnabled;
+
     const items = isWebUsbTransport
         ? [
               TROUBLESHOOTING_TIP_UDEV,

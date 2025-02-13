@@ -9540,4 +9540,8 @@ export default defineMessages({
         id: 'TR_WALLTCONNECT_SESSIONS',
         defaultMessage: 'Sessions',
     },
+    TR_BLUETOOTH: {
+        id: 'TR_BLUETOOTH',
+        defaultMessage: 'Bluetooth',
+    },
 });

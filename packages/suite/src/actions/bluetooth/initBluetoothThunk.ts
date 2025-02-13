@@ -8,6 +8,7 @@ import {
     bluetoothConnectDeviceEventAction,
     bluetoothDeviceListUpdate,
 } from './bluetoothActions';
+import { selectSuiteFlags } from '../../reducers/suite/suiteReducer';
 
 type DeviceConnectionStatusWithOptionalUuid = Without<DeviceConnectionStatus, 'uuid'> & {
     uuid?: string;
@@ -15,7 +16,13 @@ type DeviceConnectionStatusWithOptionalUuid = Without<DeviceConnectionStatus, 'u
 
 export const initBluetoothThunk = createThunk<void, void, void>(
     `${BLUETOOTH_PREFIX}/initBluetoothThunk`,
-    (_, { dispatch, getState }) => {
+    async (_, { dispatch, getState }) => {
+        const { isBluetoothEnabled } = selectSuiteFlags(getState());
+
+        if (!isBluetoothEnabled) {
+            return;
+        }
+
         bluetoothManager.on('adapter-event', isPowered => {
             console.warn('adapter-event', isPowered);
             dispatch(bluetoothAdapterEventAction({ isPowered }));
@@ -42,6 +49,6 @@ export const initBluetoothThunk = createThunk<void, void, void>(
         });
 
         const knownDevices = getState().bluetooth.pairedDevices;
-        bluetoothManager.setState({ knownDevices });
+        await bluetoothManager.setState({ knownDevices });
     },
 );
