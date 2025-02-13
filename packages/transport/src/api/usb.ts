@@ -76,7 +76,7 @@ export class UsbApi extends AbstractApi {
                 );
 
                 // trezor devices have serial number 468E58AE386B5D2EA8C572A2 or 000000000000000000000000 (for bootloader devices)
-                return;
+                return this.enumerate();
             }
 
             const index = this.devices.findIndex(d => d.path === device.serialNumber);
@@ -183,9 +183,7 @@ export class UsbApi extends AbstractApi {
             this.logger?.debug('usb: enumerate');
             const devices = await this.abortableMethod(
                 () => this.synchronizeGetDevices(() => this.usbInterface.getDevices()),
-                {
-                    signal,
-                },
+                { signal },
             );
 
             this.devices = await this.createDevices(devices, signal);
