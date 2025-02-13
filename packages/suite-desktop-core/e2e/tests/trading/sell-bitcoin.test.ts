@@ -39,7 +39,6 @@ test.describe('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
         await dashboardPage.discoveryShouldFinish();
         await dashboardPage.deviceSwitchingOpenButton.click();
         await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-        await dashboardPage.discoveryShouldFinish();
         await walletPage.openTrading();
         await marketPage.sellTabButton.click();
     });
