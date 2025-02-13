@@ -162,10 +162,5 @@ module.exports = {
         category: 'Utility',
         target: ['AppImage'],
     },
-    electronFuses: {
-        // the fuse may be enabled for all build targets, but as of Jan 2025, it actually affects only macOS & Windows
-        enableEmbeddedAsarIntegrityValidation: true,
-        onlyLoadAppFromAsar: true,
-    },
     afterSign: '../suite-desktop-core/scripts/notarize.ts',
 };
