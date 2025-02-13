@@ -21,7 +21,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         await analyticsPage.passThroughAnalytics();
 
         // Device onboarding steps
-        await onboardingPage.firmware.skip();
+        await onboardingPage.firmware.continueButton.click();
         await onboardingPage.passThroughAuthenticityCheck();
         await page.waitForTimeout(500);
         await onboardingPage.tutorial.skip();
