@@ -10,7 +10,6 @@ import {
     negativeSpacings,
     prevElevation,
     spacings,
-    spacingsPx,
 } from '@trezor/theme';
 
 import { NewModalBackdrop } from './NewModalBackdrop';
@@ -19,21 +18,17 @@ import { NewModalContext } from './NewModalContext';
 import { NewModalProvider } from './NewModalProvider';
 import { NewModalAlignment, NewModalSize, NewModalVariant } from './types';
 import { mapModalSizeToWidth } from './utils';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { Box } from '../Box/Box';
+import { Divider } from '../Divider/Divider';
 import { ElevationContext, ElevationUp, useElevation } from '../ElevationContext/ElevationContext';
+import { Column, Row } from '../Flex/Flex';
 import { IconName } from '../Icon/Icon';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { IconButton } from '../buttons/IconButton/IconButton';
 import { H3 } from '../typography/Heading/Heading';
-import { Text } from '../typography/Text/Text';
+import { Paragraph } from '../typography/Paragraph/Paragraph';
 
 export const allowedNewModalFrameProps = ['height'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedNewModalFrameProps)[number]>;
@@ -41,63 +36,19 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedNewModalFrameProps)[num
 const NEW_MODAL_CONTENT_ID = 'modal-content';
 const MODAL_ELEVATION = 0;
 
-const Container = styled.div<
-    TransientProps<AllowedFrameProps> & { $elevation: Elevation; $size: NewModalSize }
->`
-    display: flex;
-    flex-direction: column;
-    position: relative;
+const Container = styled.section<{ $elevation: Elevation }>`
     border-radius: ${borders.radii.md};
     transition: background 0.3s;
-    max-width: 95%;
-    min-width: 305px;
-    max-height: 80vh;
-    width: ${({ $size }) => mapModalSizeToWidth($size)}px;
-    overflow: hidden;
     background: ${mapElevationToBackground};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
     -webkit-app-region: no-drag;
-
-    ${withFrameProps}
-`;
-
-const Header = styled.header`
-    display: flex;
-    align-items: center;
-    word-break: break-word;
-    padding: ${spacingsPx.md};
-    padding-bottom: 0;
-    gap: ${spacingsPx.md};
-`;
-
-const HeadingContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+    height: 100%;
     overflow: hidden;
 `;
 
 const ScrollContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    height: 100%;
     overflow-y: auto;
-`;
-
-const Body = styled.div`
-    padding: ${spacingsPx.md};
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-`;
-
-const Footer = styled.footer`
-    display: flex;
-    flex-wrap: wrap;
-    gap: ${spacingsPx.xs};
-    padding: ${spacingsPx.md};
-    border-top: 1px solid ${({ theme }) => theme.borderElevation0};
+    height: 100%;
 `;
 
 type NewModalProps = AllowedFrameProps & {
@@ -126,13 +77,10 @@ const InnerNewModalBase = ({
     onBackClick,
     onCancel,
     isBackdropCancelable,
+    height,
     'data-testid': dataTest = '@modal',
-    ...rest
 }: NewModalProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedNewModalFrameProps);
-    const { scrollElementRef, onScroll, ShadowContainer, ShadowTop, ShadowBottom } =
-        useScrollShadow();
-
+    const { scrollElementRef, onScroll, ShadowTop, ShadowBottom } = useScrollShadow();
     const { elevation } = useElevation();
 
     const hasHeader = onBackClick || onCancel || heading || description;
@@ -145,72 +93,95 @@ const InnerNewModalBase = ({
     });
 
     return (
-        <Container
-            $elevation={elevation}
-            $size={size}
-            onClick={e => e.stopPropagation()}
-            data-testid={dataTest}
-            {...frameProps}
-        >
-            {hasHeader && (
-                <Header>
-                    <ElevationUp>
-                        {onBackClick && (
-                            <IconButton
-                                variant="tertiary"
-                                icon="caretLeft"
-                                data-testid="@modal/back-button"
-                                onClick={onBackClick}
-                                size="small"
-                            />
-                        )}
+        <Box maxWidth="95%" maxHeight="80vh" width={mapModalSizeToWidth(size)} height={height}>
+            <Container
+                $elevation={elevation}
+                onClick={e => e.stopPropagation()}
+                data-testid={dataTest}
+                id={NEW_MODAL_CONTENT_ID}
+            >
+                <Column height="100%">
+                    {hasHeader && (
+                        <Row
+                            padding={{ horizontal: spacings.md, top: spacings.md }}
+                            alignItems="center"
+                            gap={spacings.md}
+                            as="header"
+                        >
+                            <ElevationUp>
+                                {onBackClick && (
+                                    <IconButton
+                                        variant="tertiary"
+                                        icon="caretLeft"
+                                        data-testid="@modal/back-button"
+                                        onClick={onBackClick}
+                                        size="small"
+                                    />
+                                )}
 
-                        <HeadingContainer>
-                            {heading && <H3 ellipsisLineCount={1}>{heading}</H3>}
-                            {description && (
-                                <Text variant="tertiary" typographyStyle="hint">
-                                    {description}
-                                </Text>
-                            )}
-                        </HeadingContainer>
+                                {(heading || description) && (
+                                    <Column flex="1" overflow="hidden">
+                                        {heading && <H3 ellipsisLineCount={1}>{heading}</H3>}
+                                        {description && (
+                                            <Paragraph
+                                                variant="tertiary"
+                                                typographyStyle="hint"
+                                                ellipsisLineCount={2}
+                                            >
+                                                {description}
+                                            </Paragraph>
+                                        )}
+                                    </Column>
+                                )}
 
-                        {onCancel && (
-                            <IconButton
-                                variant="tertiary"
-                                icon="close"
-                                data-testid="@modal/close-button"
-                                onClick={onCancel}
-                                size="small"
-                            />
-                        )}
-                    </ElevationUp>
-                </Header>
-            )}
-            <ShadowContainer>
-                <ShadowTop />
-                <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                    <Body id={NEW_MODAL_CONTENT_ID}>
-                        {iconName && (
-                            <Box
-                                margin={{
-                                    bottom: spacings.md,
-                                    top: isIconPushedTop ? negativeSpacings.md : 0,
-                                }}
+                                {onCancel && (
+                                    <IconButton
+                                        variant="tertiary"
+                                        icon="close"
+                                        data-testid="@modal/close-button"
+                                        onClick={onCancel}
+                                        size="small"
+                                        margin={{ left: 'auto' }}
+                                    />
+                                )}
+                            </ElevationUp>
+                        </Row>
+                    )}
+                    <Box position={{ type: 'relative' }} overflow="hidden" flex="1">
+                        <ShadowTop />
+                        <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
+                            <Column padding={spacings.md}>
+                                {iconName && (
+                                    <Box
+                                        margin={{
+                                            bottom: spacings.md,
+                                            top: isIconPushedTop ? negativeSpacings.md : 0,
+                                        }}
+                                    >
+                                        <IconCircle name={iconName} size={110} variant={variant} />
+                                    </Box>
+                                )}
+                                <ElevationUp>{children}</ElevationUp>
+                            </Column>
+                        </ScrollContainer>
+                        <ShadowBottom />
+                    </Box>
+                    {bottomContent && (
+                        <>
+                            <Divider margin={{}} />
+                            <Row
+                                padding={spacings.md}
+                                gap={spacings.xs}
+                                flexWrap="wrap"
+                                as="footer"
                             >
-                                <IconCircle name={iconName} size={110} variant={variant} />
-                            </Box>
-                        )}
-                        <ElevationUp>{children}</ElevationUp>
-                    </Body>
-                </ScrollContainer>
-                <ShadowBottom />
-            </ShadowContainer>
-            {bottomContent && (
-                <Footer>
-                    <ElevationUp>{bottomContent}</ElevationUp>
-                </Footer>
-            )}
-        </Container>
+                                <ElevationUp>{bottomContent}</ElevationUp>
+                            </Row>
+                        </>
+                    )}
+                </Column>
+            </Container>
+        </Box>
     );
 };
 const NewModalBase = (props: NewModalProps) => (

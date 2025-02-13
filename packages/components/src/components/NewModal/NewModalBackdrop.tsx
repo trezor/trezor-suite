@@ -9,6 +9,8 @@ import { spacings, zIndices } from '@trezor/theme';
 import { useModalTarget } from './NewModalProvider';
 import { NewModalAlignment } from './types';
 import { mapAlignmentToAlignItems, mapAlignmentToJustifyContent } from './utils';
+import { Box } from '../Box/Box';
+import { Column } from '../Flex/Flex';
 
 export type NewModalBackdropProps = {
     onClick?: () => void;
@@ -17,22 +19,11 @@ export type NewModalBackdropProps = {
     padding?: number;
 };
 
-const Wrapper = styled.div<{ $alignment: NewModalAlignment; $padding: number }>`
-    position: absolute;
-    z-index: ${zIndices.modal};
-    inset: 0;
-    display: flex;
-    flex-direction: column;
+const Wrapper = styled.div<{ $padding: number }>`
     padding: ${({ $padding }) => $padding}px;
-    overflow: auto;
     backdrop-filter: blur(5px);
     background: rgb(0 0 0 / 30%);
-    align-items: ${({ $alignment }) => mapAlignmentToAlignItems($alignment)};
-    justify-content: ${({ $alignment }) => mapAlignmentToJustifyContent($alignment)};
-
-    > * + * {
-        margin-top: ${spacings.md}px;
-    }
+    height: 100%;
 `;
 
 export const NewModalBackdrop = ({
@@ -46,9 +37,18 @@ export const NewModalBackdrop = ({
     const backdrop = (
         // eslint-disable-next-line jsx-a11y/no-autofocus
         <FocusLock autoFocus={false}>
-            <Wrapper onClick={onClick} $alignment={alignment} $padding={padding}>
-                {children}
-            </Wrapper>
+            <Box position={{ type: 'absolute', inset: 0 }} zIndex={zIndices.modal} overflow="auto">
+                <Wrapper onClick={onClick} $padding={padding}>
+                    <Column
+                        alignItems={mapAlignmentToAlignItems(alignment)}
+                        justifyContent={mapAlignmentToJustifyContent(alignment)}
+                        gap={spacings.md}
+                        height="100%"
+                    >
+                        {children}
+                    </Column>
+                </Wrapper>
+            </Box>
         </FocusLock>
     );
 

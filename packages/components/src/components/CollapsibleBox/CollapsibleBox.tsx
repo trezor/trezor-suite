@@ -70,7 +70,7 @@ export type CollapsibleBoxProps = AllowedFrameProps & {
     defaultIsOpen?: boolean;
 };
 
-const Container = styled.div<TransientProps<AllowedFrameProps> & ContainerProps>`
+const Container = styled.section<TransientProps<AllowedFrameProps> & ContainerProps>`
     width: 100%;
     border-radius: ${borders.radii.sm};
     transition: background 0.3s;
