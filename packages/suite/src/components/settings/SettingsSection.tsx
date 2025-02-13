@@ -1,6 +1,16 @@
 import React, { ReactNode } from 'react';
 
-import { Card, Column, IconName, InfoItem, useMediaQuery, variables } from '@trezor/components';
+import {
+    Box,
+    Card,
+    Column,
+    Icon,
+    IconName,
+    InfoItem,
+    Tooltip,
+    useMediaQuery,
+    variables,
+} from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 type SettingsSectionProps = {
@@ -8,17 +18,37 @@ type SettingsSectionProps = {
     icon?: IconName;
     className?: string;
     children?: ReactNode;
+    tooltipText?: ReactNode;
 };
 
-export const SettingsSection = ({ title, icon, children }: SettingsSectionProps) => {
+export const SettingsSection = ({ title, icon, children, tooltipText }: SettingsSectionProps) => {
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
 
     return (
         <InfoItem
+            ellipsisLineCount={0}
             direction={isBelowLaptop ? 'column' : 'row'}
             labelWidth={250}
             iconName={icon}
-            label={title}
+            label={
+                <>
+                    {title}
+                    {tooltipText && (
+                        <Box
+                            as="span"
+                            position={{
+                                type: 'relative',
+                                top: 2,
+                                left: 5,
+                            }}
+                        >
+                            <Tooltip isInline content={tooltipText}>
+                                <Icon name="question" size="medium" />
+                            </Tooltip>
+                        </Box>
+                    )}
+                </>
+            }
             variant="default"
             typographyStyle="titleSmall"
             verticalAlignment="top"
