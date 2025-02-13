@@ -1,0 +1,34 @@
+{
+    "trade": {
+        "receiveAddress": "o6AySDQRrUa5Sp6XM9gqLogoibdufvxVyviFvR1PfaP",
+        "paymentId": "016a7798-2c52-4932-a6c2-5f6bf7f33cfa",
+        "status": "SUBMITTED",
+        "originalPaymentId": "25c836d4-b53f-4f66-b95b-ccb0b69fff9f",
+        "partnerData": "https://exchange.mercuryo.io/?widget_id=865f3f01-ab22-447c-990c-dc37232ee643&type=buy&fix_amount=true&currency=JUP&network=SOLANA&fix_currency=true&fix_fiat_amount=true&fiat_currency=CZK&fix_fiat_currency=true&address=o6AySDQRrUa5Sp6XM9gqLogoibdufvxVyviFvR1PfaP&hide_address=false&country_code=CZ&merchant_transaction_id=016a7798-2c52-4932-a6c2-5f6bf7f33cfa&theme=invity&return_url=http%3A%2F%2Flocalhost%3A8000%2Fcoinmarket-redirect%23detail%2Fsol%2Fnormal%2F0%2F25c836d4-b53f-4f66-b95b-ccb0b69fff9f&utm_source=Trezor&utm_referral=referral&payment_method=card&signature=3207a5048995e2c4120aa3a04d31647eb34173fd6939dea9e39cbaf6e46aba315ee982f9acf01ab9e2a050d91cb23ac24413c3e2bd43dd12cbf201376e26f995&amount=98.7",
+        "exchange": "mercuryo",
+        "fiatCurrency": "CZK",
+        "receiveCurrency": "solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+        "rate": 20.89,
+        "wantCrypto": true,
+        "exp": "BnQKmcAplN2vtGap8BF0Vg==",
+        "country": "CZ",
+        "paymentMethodName": "Credit Card",
+        "tags": ["wantCrypto"],
+        "fiatStringAmount": "2165.03",
+        "receiveStringAmount": "98.7",
+        "minFiat": 508.14,
+        "maxFiat": 127033.75,
+        "minCrypto": 23.260642,
+        "maxCrypto": 5817.144933,
+        "paymentMethod": "creditCard",
+        "quoteId": "f91555dc-7df3-46d8-bbac-effe555723ab",
+        "orderId": "2e9a8395-2211-475f-b969-a563958fe448"
+    },
+    "tradeForm": {
+        "form": {
+            "formMethod": "GET",
+            "formAction": "https://exchange.mercuryo.io/?widget_id=865f3f01-ab22-447c-990c-dc37232ee643&type=buy&fix_amount=true&currency=JUP&network=SOLANA&fix_currency=true&fix_fiat_amount=true&fiat_currency=CZK&fix_fiat_currency=true&address=o6AySDQRrUa5Sp6XM9gqLogoibdufvxVyviFvR1PfaP&hide_address=false&country_code=CZ&merchant_transaction_id=016a7798-2c52-4932-a6c2-5f6bf7f33cfa&theme=invity&return_url=http%3A%2F%2Flocalhost%3A8000%2Fcoinmarket-redirect%23detail%2Fsol%2Fnormal%2F0%2F25c836d4-b53f-4f66-b95b-ccb0b69fff9f&utm_source=Trezor&utm_referral=referral&payment_method=card&signature=3207a5048995e2c4120aa3a04d31647eb34173fd6939dea9e39cbaf6e46aba315ee982f9acf01ab9e2a050d91cb23ac24413c3e2bd43dd12cbf201376e26f995&amount=98.7",
+            "fields": {}
+        }
+    }
+}

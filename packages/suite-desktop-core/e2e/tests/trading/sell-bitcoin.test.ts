@@ -27,7 +27,7 @@ test.describe('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic, passphrase_protection: true },
     });
-    test.beforeEach(async ({ marketPage, onboardingPage, dashboardPage, walletPage }) => {
+    test.beforeEach(async ({ page, marketPage, onboardingPage, dashboardPage, walletPage }) => {
         if (!process.env.PASSPHRASE) {
             throw new Error(
                 'PASSPHRASE not provided in env variables. Check docs/tests/e2e-playwright-suite.md.',
@@ -35,6 +35,9 @@ test.describe('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
         }
         await marketPage.mockInvity();
         await marketPage.mockInvityTrade(sellTradeBTC, invityEndpoint.sellTrade);
+        await page.route(invityEndpoint.sellQuotes, async route => {
+            await route.fulfill({ json: sellQuotesBTC });
+        });
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
         await dashboardPage.deviceSwitchingOpenButton.click();

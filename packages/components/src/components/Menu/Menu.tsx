@@ -238,6 +238,7 @@ const Group = ({
                     setToggled={setToggled}
                     isKeyboardSelected={itemId === keyboardFocusedItemId}
                     onMouseOver={() => !item.isDisabled && handleItemHover(itemId)}
+                    data-testid={item['data-testid']}
                     {...item}
                     key={itemId}
                 />
