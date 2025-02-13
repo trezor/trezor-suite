@@ -1,25 +1,41 @@
+import { useEffect } from 'react';
+
 import { useFormatters } from '@suite-common/formatters';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { ReceiveAccountCryptoBalance } from './ReceiveAccountCryptoBalance';
 import { ReceiveAccountPicker } from './ReceiveAccountPicker';
 import { TradeableAssetPicker } from './TradeableAssetPicker';
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
-import { TradeableAsset } from '../../types';
+import { ReceiveAccount, TradeableAsset } from '../../types';
 
 const buySectionStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
     borderBottomWidth: borders.widths.small,
     borderBottomColor: colors.backgroundSurfaceElevation0,
     padding: spacings.sp20,
+    gap: spacings.sp20,
 }));
 
 export const BuyCard = () => {
-    const { FiatAmountFormatter, CryptoAmountFormatter } = useFormatters();
+    const { FiatAmountFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
 
-    const { selectedValue, ...restControls } = useTradeSheetControls<TradeableAsset>();
+    const { selectedValue: selectedAsset, ...restAssetControls } =
+        useTradeSheetControls<TradeableAsset>();
+    const {
+        selectedValue: selectedReceiveAccount,
+        setSelectedValue: setReceiveAccount,
+        ...restReceiveAccountControls
+    } = useTradeSheetControls<ReceiveAccount>();
+
+    const selectedSymbol = selectedAsset?.symbol;
+
+    useEffect(() => {
+        setReceiveAccount(undefined);
+    }, [selectedSymbol, setReceiveAccount]);
 
     return (
         <Card noPadding>
@@ -28,19 +44,16 @@ export const BuyCard = () => {
                     <Translation id="moduleTrading.tradingScreen.buyTitle" />
                 </Text>
                 <HStack justifyContent="space-between" alignItems="center">
-                    <TradeableAssetPicker selectedValue={selectedValue} {...restControls} />
+                    <TradeableAssetPicker selectedValue={selectedAsset} {...restAssetControls} />
                     <Text variant="titleMedium" color="textDisabled">
                         0.0
                     </Text>
                 </HStack>
                 <HStack justifyContent="space-between" alignItems="center">
-                    <Text variant="body" color="textSubdued">
-                        {selectedValue?.symbol ? (
-                            <CryptoAmountFormatter value="0" symbol={selectedValue.symbol} />
-                        ) : (
-                            '-'
-                        )}
-                    </Text>
+                    <ReceiveAccountCryptoBalance
+                        symbol={selectedReceiveAccount?.account?.symbol}
+                        balance={selectedReceiveAccount?.account?.balance}
+                    />
                     <HStack>
                         <Text variant="body" color="textSubdued">
                             <FiatAmountFormatter value={0} />
@@ -49,7 +62,12 @@ export const BuyCard = () => {
                     </HStack>
                 </HStack>
             </VStack>
-            <ReceiveAccountPicker selectedSymbol={selectedValue?.symbol} />
+            <ReceiveAccountPicker
+                selectedSymbol={selectedSymbol}
+                selectedValue={selectedReceiveAccount}
+                setSelectedValue={setReceiveAccount}
+                {...restReceiveAccountControls}
+            />
         </Card>
     );
 };

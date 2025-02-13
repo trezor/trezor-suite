@@ -19,11 +19,12 @@ type RightTextProps = {
 type ReceiveAccountPickerRightProps = {
     selectedAccountLabel: string | undefined;
     selectedAddress: string | undefined;
+    selectedSymbol: NetworkSymbol | undefined;
 };
 
-type ReceiveAccountPickerProps = {
+export type ReceiveAccountPickerProps = {
     selectedSymbol?: NetworkSymbol;
-};
+} & ReturnType<typeof useTradeSheetControls<ReceiveAccount>>;
 
 const RightText = ({ color, variant = 'body', children }: RightTextProps) => (
     <Text color={color} variant={variant} textAlign="right" ellipsizeMode="tail" numberOfLines={1}>
@@ -34,7 +35,16 @@ const RightText = ({ color, variant = 'body', children }: RightTextProps) => (
 const ReceiveAccountPickerRight = ({
     selectedAccountLabel,
     selectedAddress,
+    selectedSymbol,
 }: ReceiveAccountPickerRightProps) => {
+    if (!selectedSymbol) {
+        return (
+            <RightText color="textDisabled">
+                <Translation id="moduleTrading.selectCoinFirst" />
+            </RightText>
+        );
+    }
+
     if (!selectedAccountLabel) {
         return (
             <RightText color="textDisabled">
@@ -57,32 +67,41 @@ const ReceiveAccountPickerRight = ({
     );
 };
 
-export const ReceiveAccountPicker = ({ selectedSymbol }: ReceiveAccountPickerProps) => {
+export const ReceiveAccountPicker = ({
+    selectedSymbol,
+    isSheetVisible,
+    hideSheet,
+    showSheet,
+    setSelectedValue,
+    selectedValue,
+}: ReceiveAccountPickerProps) => {
     const { translate } = useTranslate();
 
-    const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
-        useTradeSheetControls<ReceiveAccount>();
+    const onPress = selectedSymbol ? showSheet : undefined;
 
     return (
         <>
             <TradingOverviewRow
                 title={translate('moduleTrading.tradingScreen.receiveAccount')}
-                onPress={showSheet}
+                onPress={onPress}
                 noBottomBorder
             >
                 <VStack spacing={0} paddingLeft="sp20">
                     <ReceiveAccountPickerRight
                         selectedAccountLabel={selectedValue?.account.accountLabel}
                         selectedAddress={selectedValue?.address?.address}
+                        selectedSymbol={selectedSymbol}
                     />
                 </VStack>
             </TradingOverviewRow>
-            <AccountSheet
-                symbol={selectedSymbol ?? 'btc'}
-                onAccountSelect={setSelectedValue}
-                isVisible={isSheetVisible}
-                onClose={hideSheet}
-            />
+            {selectedSymbol && (
+                <AccountSheet
+                    symbol={selectedSymbol}
+                    onAccountSelect={setSelectedValue}
+                    isVisible={isSheetVisible}
+                    onClose={hideSheet}
+                />
+            )}
         </>
     );
 };
