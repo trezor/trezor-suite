@@ -1,8 +1,5 @@
 /* eslint-disable no-console */
 
-import semverRSort from 'semver/functions/rsort';
-import semverValid from 'semver/functions/valid';
-
 import { TypedEmitter } from '@trezor/utils';
 
 import { Firmwares, Model } from './types';
@@ -95,7 +92,6 @@ export const DEFAULT_BRIDGE_VERSION = '2.0.33';
 export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> {
     private client: WebsocketClient;
     public firmwares?: Firmwares;
-    private defaultFirmware: Record<string, string> = {};
     public defaultModel: Model = 'T2T1';
 
     public currentEmulatorSetup?: Partial<SetupEmu> = {};
@@ -110,14 +106,6 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         this.client.on('firmwares', (firmwares: Firmwares) => {
             this.firmwares = firmwares;
-            // select the highest version from the list of available firmwares.
-            // this is the version that is likely to be the newest production.
-
-            Object.keys(firmwares).forEach(model => {
-                this.defaultFirmware![model as Model] = semverRSort(
-                    firmwares![model as Model].filter(fw => semverValid(fw)),
-                )[0];
-            });
         });
 
         this.client.on('disconnected', () => this.emit('disconnected'));
@@ -205,9 +193,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         const params = {
             type: 'emulator-start',
             model: this.defaultModel,
-            version: arg?.model
-                ? this.defaultFirmware![arg.model]
-                : this.defaultFirmware![this.defaultModel] || '2-main',
+            version: arg?.model === 'T1B1' ? '1-latest' : '2-latest',
             ...arg,
         };
 
