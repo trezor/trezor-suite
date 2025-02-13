@@ -25,7 +25,9 @@ const SpecialCharsWrapper = styled.div`
 
 const SpecialChars = styled.div`
     padding: 0 ${spacingsPx.xxs};
-    box-shadow: inset 0 0 0 2px #f2f2f2;
+    box-shadow: inset 0 0 0 1px ${({ theme }) => theme.borderElevation0};
+    border-radius: ${borders.radii.xs} ${borders.radii.xs} 0 0;
+    padding-bottom: ${spacingsPx.xxxs};
     font-family: RobotoMono, 'PixelOperatorMono8', monospace;
     font-weight: 400;
     letter-spacing: 0.1em;
