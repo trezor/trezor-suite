@@ -84,8 +84,6 @@ export class UsbApi extends AbstractApi {
                 this.devices.splice(index, 1);
                 this.emit('transport-interface-change', this.devicesToDescriptors());
             } else {
-                // todo: this doesn't make sense. this error is fired for disconnected dongles, keyboards etc. we are not consuming transport-interface-error anywhere so it doesn't matter, it is just useless
-                this.emit('transport-interface-error', ERRORS.DEVICE_NOT_FOUND);
                 this.logger?.error('usb: device that should be removed does not exist in state');
             }
         };
