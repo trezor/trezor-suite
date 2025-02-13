@@ -29,7 +29,7 @@ export const getTransactionReviewModalActionText = ({
     }
 
     if (isCancelRbfAction) {
-        return 'TR_CANCEL_TX';
+        return 'TR_CANCEL_TX_BUTTON';
     }
 
     if (isSending) {
