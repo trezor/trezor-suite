@@ -8,6 +8,7 @@ type WalletParams = {
     symbol?: NetworkSymbol;
     type?: 'normal' | 'legacy' | 'ledger';
     atIndex?: number;
+    tokens?: boolean;
 };
 
 export class WalletActions {
@@ -71,8 +72,11 @@ export class WalletActions {
         symbol = 'btc',
         type = 'normal',
         atIndex = 0,
+        tokens = false,
     }: WalletParams = {}): Locator =>
-        this.page.getByTestId(`@account-menu/${symbol}/${type}/${atIndex}`);
+        this.page.getByTestId(
+            `@account-menu/${symbol}/${type}/${atIndex}${tokens ? '/tokens' : ''}`,
+        );
 
     accountLabel = ({ symbol = 'btc', type = 'normal', atIndex = 0 }: WalletParams = {}): Locator =>
         this.page.getByTestId(`@account-menu/${symbol}/${type}/${atIndex}/label`);

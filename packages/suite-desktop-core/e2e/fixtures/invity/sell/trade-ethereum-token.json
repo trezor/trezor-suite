@@ -1,0 +1,32 @@
+{
+    "trade": {
+        "refundAddress": "0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C",
+        "partnerData": "https://my.btcdirect.eu/en-gb/user/link-user-identifier?client=trezor&user-identifier-id=0124f853-c435-49d0-b247-aa7f4bed1d3a",
+        "paymentId": "bf6abd06-5fcf-421c-921c-61807f552acd",
+        "status": "SUBMITTED",
+        "exchange": "btcdirect-sell",
+        "fiatCurrency": "EUR",
+        "cryptoCurrency": "ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "rate": 0.9453571428571429,
+        "amountInCrypto": true,
+        "exp": "smWJR5rZZn8vPQSVap5/lQ==",
+        "country": "CZ",
+        "paymentMethodName": "Bank Transfer",
+        "fiatStringAmount": "9.32",
+        "cryptoStringAmount": "9.87",
+        "minFiat": 1,
+        "maxFiat": 50726.17,
+        "minCrypto": 1,
+        "maxCrypto": 52373.58101,
+        "paymentMethod": "bankTransfer",
+        "orderId": "0a752718-2686-4ebc-98d0-336f72fdba50",
+        "validUntil": "2099-02-11T14:16:33Z"
+    },
+    "tradeForm": {
+        "form": {
+            "formMethod": "GET",
+            "formAction": "https://my.btcdirect.eu/en-gb/user/link-user-identifier?client=trezor&user-identifier-id=0124f853-c435-49d0-b247-aa7f4bed1d3a",
+            "fields": {}
+        }
+    }
+}

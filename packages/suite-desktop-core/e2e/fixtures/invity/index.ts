@@ -19,12 +19,16 @@ import exchangeWatch from './exchange/watch.json';
 import info from './info.json';
 import sellList from './sell/list.json';
 import sellQuotesBTC from './sell/quotes-bitcoin.json';
-//Payloads
+import sellQuotesEthereumToken from './sell/quotes-ethereum-token.json';
+import sellQuotesSolana from './sell/quotes-solana.json';
 import sellQuotesPayload from './sell/requests/quotes-request.json';
 import sellTradePayload from './sell/requests/trade-request.json';
 import sellWatchPayload from './sell/requests/watch-request.json';
 import sellTradeBTC from './sell/trade-bitcoin.json';
+import sellTradeEthereumToken from './sell/trade-ethereum-token.json';
+import sellTradeSolana from './sell/trade-solana.json';
 import sellWatch from './sell/watch.json';
+//Payloads
 //Types
 import { SellTradeResponse, TradeResponse } from './types';
 
@@ -75,7 +79,9 @@ export const createRedirectedTradeResponse = (
     tradeRequest: any,
 ) => {
     const modifiedResponse = cloneDeep(tradeResponse);
-    modifiedResponse.trade.partnerData = tradeRequest.returnUrl;
+    if ('partnerData' in modifiedResponse.trade) {
+        modifiedResponse.trade.partnerData = tradeRequest.returnUrl;
+    }
     modifiedResponse.tradeForm.form.formAction = tradeRequest.returnUrl;
     modifiedResponse.trade.paymentId = tradeRequest.trade.paymentId;
     modifiedResponse.trade.orderId = tradeRequest.trade.orderId;
@@ -116,6 +122,10 @@ export {
     buyWatch,
     sellList,
     sellQuotesBTC,
+    sellQuotesEthereumToken,
+    sellQuotesSolana,
     sellTradeBTC,
+    sellTradeEthereumToken,
+    sellTradeSolana,
     sellWatch,
 };
