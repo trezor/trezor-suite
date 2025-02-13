@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import semverRSort from 'semver/functions/rsort';
+import rcompare from 'semver/functions/rcompare';
 import semverValid from 'semver/functions/valid';
 
 import { TypedEmitter } from '@trezor/utils';
@@ -95,7 +95,6 @@ export const DEFAULT_BRIDGE_VERSION = '2.0.33';
 export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> {
     private client: WebsocketClient;
     public firmwares?: Firmwares;
-    private defaultFirmware?: string;
     public defaultModel: Model = 'T2T1';
 
     public currentEmulatorSetup?: Partial<SetupEmu> = {};
@@ -110,11 +109,6 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         this.client.on('firmwares', (firmwares: Firmwares) => {
             this.firmwares = firmwares;
-            // select the highest version from the list of available firmwares.
-            // this is the version that is likely to be the newest production.
-            this.defaultFirmware = semverRSort(
-                this.firmwares[this.defaultModel].filter(fw => semverValid(fw)),
-            )[0];
         });
 
         this.client.on('disconnected', () => this.emit('disconnected'));
@@ -198,23 +192,28 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
-    async startEmu(arg?: StartEmu) {
-        const params = {
+    async startEmu(arg: StartEmu = {}) {
+        const { model = this.defaultModel, ...rest } = arg;
+        const defaultFirmware = this.firmwares?.[model]
+            ?.filter(version => semverValid(version))
+            ?.sort(rcompare)?.[0] ?? '2-main';
+    
+        await this.client.send({
             type: 'emulator-start',
-            model: this.defaultModel,
-            version: this.defaultFirmware || '2-main',
-            ...arg,
-        };
-
-        await this.client.send(params);
-
-        if (params.wipe) {
+            model,
+            version: defaultFirmware,
+            ...rest,
+        });
+    
+        if (rest.wipe) {
             this.currentEmulatorSettings = {};
             this.currentEmulatorSetup = {};
         }
-
+    
         return null;
     }
+
+
     async startEmuFromUrl({ url, model, wipe }: StartEmuFromUrl) {
         await this.client.send({
             type: 'emulator-start-from-url',
