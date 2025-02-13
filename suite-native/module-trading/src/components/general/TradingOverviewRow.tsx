@@ -8,7 +8,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 export type TradeOverviewOptionProps = {
     title: string;
     children: ReactNode;
-    onPress: () => void;
+    onPress?: () => void;
     noBottomBorder?: boolean;
 };
 

@@ -1358,6 +1358,7 @@ export const en = {
         },
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',
+        selectCoinFirst: 'Select coin first',
     },
 };
 
