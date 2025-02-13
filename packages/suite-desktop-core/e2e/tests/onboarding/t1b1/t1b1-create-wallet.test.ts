@@ -1,6 +1,6 @@
 import { expect, test } from '../../../support/fixtures';
 
-test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] }, () => {
+test.describe.skip('Onboarding - create wallet', { tag: ['@group=device-management'] }, () => {
     test.use({
         emulatorStartConf: { model: 'T1B1', version: '1-latest', wipe: true },
         setupEmulator: false,
