@@ -30,6 +30,7 @@ import * as requestInterceptor from './request-interceptor';
 import * as shortcuts from './shortcuts';
 import * as store from './store';
 import * as systemInformation from './system-information';
+import * as systemSettings from './system-settings';
 import * as theme from './theme';
 import * as tray from './tray';
 import * as trezorConnect from './trezor-connect';
@@ -63,6 +64,7 @@ const MODULES: Module[] = [
     autoStart,
     bridge,
     systemInformation,
+    systemSettings,
     // Modules used only in dev/prod mode
     ...(isDevEnv ? [] : [csp, fileProtocol]),
 ];
