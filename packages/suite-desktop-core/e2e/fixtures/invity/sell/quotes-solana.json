@@ -32,7 +32,7 @@
         "minCrypto": 0.01,
         "maxCrypto": 267.73919776,
         "paymentMethod": "bankTransfer",
-        "validUntil": "2025-02-11T18:53:29Z"
+        "validUntil": "2099-02-11T18:53:29Z"
     },
     {
         "exchange": "btcdirect-sell",
@@ -50,7 +50,7 @@
         "minCrypto": 0.01,
         "maxCrypto": 267.73919776,
         "paymentMethod": "sepa",
-        "validUntil": "2025-02-11T18:53:29Z"
+        "validUntil": "2099-02-11T18:53:29Z"
     },
     {
         "exchange": "moonpay-sell",

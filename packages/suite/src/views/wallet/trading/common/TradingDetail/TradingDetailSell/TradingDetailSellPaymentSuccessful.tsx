@@ -68,7 +68,7 @@ export const TradingDetailSellPaymentSuccessful = ({ account }: PaymentSuccessfu
     return (
         <Wrapper>
             <Image image="TRADING_SUCCESS" />
-            <Title>
+            <Title data-testid="@trading/detail-sell/success-title">
                 <Translation id="TR_SELL_DETAIL_SUCCESS_TITLE" />
             </Title>
             <Description>

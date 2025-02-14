@@ -15,7 +15,7 @@
         "minCrypto": 1,
         "maxCrypto": 52373.58101,
         "paymentMethod": "bankTransfer",
-        "validUntil": "2025-02-11T14:16:33Z"
+        "validUntil": "2099-02-11T14:16:33Z"
     },
     {
         "exchange": "btcdirect-sell",
@@ -33,6 +33,6 @@
         "minCrypto": 1,
         "maxCrypto": 52373.58101,
         "paymentMethod": "sepa",
-        "validUntil": "2025-02-11T14:16:33Z"
+        "validUntil": "2099-02-11T14:16:33Z"
     }
 ]

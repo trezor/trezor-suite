@@ -23,7 +23,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
         await dashboardPage.discoveryShouldFinish();
     });
 
-    test('Buy Ethereum that is not discovered on wallet yet', async ({
+    test('Enable Ethereum on account by buying it', async ({
         page,
         dashboardPage,
         settingsPage,

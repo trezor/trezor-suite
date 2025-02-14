@@ -23,7 +23,7 @@ const formattedCryptoAmount = `${cryptoAmount} BTC`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeBTC.trade;
 
-test.describe('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic, passphrase_protection: true },
     });

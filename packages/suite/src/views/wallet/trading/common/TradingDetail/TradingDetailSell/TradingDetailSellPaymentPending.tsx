@@ -20,7 +20,7 @@ interface PaymentConvertingProps {
 export const TradingDetailSellPaymentPending = ({ supportUrl }: PaymentConvertingProps) => (
     <Wrapper>
         <Spinner />
-        <H4 margin={{ top: spacings.xl }}>
+        <H4 data-testid="@trading/detail-sell/pending" margin={{ top: spacings.xl }}>
             <Translation id="TR_SELL_DETAIL_PENDING_TITLE" />
         </H4>
         {supportUrl && (

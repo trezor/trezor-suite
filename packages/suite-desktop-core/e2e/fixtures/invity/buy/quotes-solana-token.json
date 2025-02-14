@@ -153,7 +153,7 @@
         "maxCrypto": 22007.29022299,
         "paymentMethod": "creditCard",
         "quoteId": "7e7b74d3-13d3-403b-ae50-e605d4abd846",
-        "validUntil": "2025-02-12T20:09:59.306Z"
+        "validUntil": "2099-02-12T20:09:59.306Z"
     },
     {
         "exchange": "simplex",
@@ -173,7 +173,7 @@
         "maxCrypto": 22007.29022299,
         "paymentMethod": "applePay",
         "quoteId": "7e7b74d3-13d3-403b-ae50-e605d4abd846",
-        "validUntil": "2025-02-12T20:09:59.306Z"
+        "validUntil": "2099-02-12T20:09:59.306Z"
     },
     {
         "exchange": "simplex",
@@ -193,6 +193,6 @@
         "maxCrypto": 22007.29022299,
         "paymentMethod": "googlePay",
         "quoteId": "7e7b74d3-13d3-403b-ae50-e605d4abd846",
-        "validUntil": "2025-02-12T20:09:59.306Z"
+        "validUntil": "2099-02-12T20:09:59.306Z"
     }
 ]

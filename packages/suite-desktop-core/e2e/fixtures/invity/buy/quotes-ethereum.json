@@ -129,7 +129,7 @@
         "maxCrypto": 76.35358357,
         "paymentMethod": "bankTransfer",
         "quoteId": "f9076590-1099-471e-9de0-9a654d5fe054",
-        "validUntil": "2025-02-03T11:27:24.907Z"
+        "validUntil": "2099-02-03T11:27:24.907Z"
     },
     {
         "exchange": "mercuryo",
@@ -166,7 +166,7 @@
         "maxCrypto": 384.25632,
         "paymentMethod": "paypal",
         "quoteId": "f3dd260f-650f-48fa-9564-3f28817ca658",
-        "validUntil": "2025-02-03T11:23:25+00:00"
+        "validUntil": "2099-02-03T11:23:25+00:00"
     },
     {
         "exchange": "mercuryo",
@@ -203,7 +203,7 @@
         "maxCrypto": 38.42563,
         "paymentMethod": "revolutPay",
         "quoteId": "f3dd260f-650f-48fa-9564-3f28817ca658",
-        "validUntil": "2025-02-03T11:23:25+00:00"
+        "validUntil": "2099-02-03T11:23:25+00:00"
     },
     {
         "exchange": "mercuryo",
@@ -258,7 +258,7 @@
         "maxCrypto": 7.68513,
         "paymentMethod": "googlePay",
         "quoteId": "f3dd260f-650f-48fa-9564-3f28817ca658",
-        "validUntil": "2025-02-03T11:23:25+00:00"
+        "validUntil": "2099-02-03T11:23:25+00:00"
     },
     {
         "exchange": "paybis",
@@ -277,7 +277,7 @@
         "maxCrypto": 7.68513,
         "paymentMethod": "creditCard",
         "quoteId": "f3dd260f-650f-48fa-9564-3f28817ca658",
-        "validUntil": "2025-02-03T11:23:25+00:00"
+        "validUntil": "2099-02-03T11:23:25+00:00"
     },
     {
         "exchange": "paybis",
@@ -296,7 +296,7 @@
         "maxCrypto": 7.68513,
         "paymentMethod": "applePay",
         "quoteId": "f3dd260f-650f-48fa-9564-3f28817ca658",
-        "validUntil": "2025-02-03T11:23:25+00:00"
+        "validUntil": "2099-02-03T11:23:25+00:00"
     },
     {
         "exchange": "moonpay",
@@ -369,7 +369,7 @@
         "maxCrypto": 7.11481765,
         "paymentMethod": "googlePay",
         "quoteId": "8c15ae9c-7af9-4316-a36b-95cd3a2ddc72",
-        "validUntil": "2025-02-03T11:22:33.839Z"
+        "validUntil": "2099-02-03T11:22:33.839Z"
     },
     {
         "exchange": "simplex",
@@ -388,7 +388,7 @@
         "maxCrypto": 7.11481765,
         "paymentMethod": "creditCard",
         "quoteId": "8c15ae9c-7af9-4316-a36b-95cd3a2ddc72",
-        "validUntil": "2025-02-03T11:22:33.839Z"
+        "validUntil": "2099-02-03T11:22:33.839Z"
     },
     {
         "exchange": "simplex",
@@ -407,7 +407,7 @@
         "maxCrypto": 7.11481765,
         "paymentMethod": "applePay",
         "quoteId": "8c15ae9c-7af9-4316-a36b-95cd3a2ddc72",
-        "validUntil": "2025-02-03T11:22:33.839Z"
+        "validUntil": "2099-02-03T11:22:33.839Z"
     },
     {
         "error": "Amount too low, minimum is CZK 1327.",

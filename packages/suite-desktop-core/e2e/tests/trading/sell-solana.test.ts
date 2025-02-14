@@ -9,6 +9,10 @@ import {
     sellQuotesSolana,
     sellTradeSolana,
 } from '../../fixtures/invity';
+import {
+    getSignatureStatusesResponse,
+    sendTransactionResponse,
+} from '../../fixtures/solana-responses';
 import { expect, test } from '../../support/fixtures';
 
 const mnemonic =
@@ -18,30 +22,38 @@ const mnemonic =
 const fiatAmount = localizeNumber(sellQuotesSolana[0].fiatStringAmount, 'en', 2, 2);
 const cryptoAmount = sellQuotesSolana[0].cryptoStringAmount;
 const provider = getCompanyNameFromList(sellQuotesSolana[0].exchange, 'sellList');
+// This address belongs to QA passphrase wallet. So if me make mistake in updating the test case,
+// and actually send crypto. It will be sent to this address and we will not lose it.
 const providerAddress = '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK';
 const providerPaymentId = '6d666a5f-b99c-4482-b8bc-2df04fc11b7b';
 const formattedCryptoAmount = `${cryptoAmount} SOL`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeSolana.trade;
+const toastText = `${formattedCryptoAmount} sent from Solana #1`;
 
-function catchSolanaSendRequest(route: Route, request: Request) {
+function mockSolanaSendRequests(route: Route, request: Request) {
     const method = request.method();
     const postData = request.postData();
 
     if (method === 'POST' && postData) {
         const postDataJson = JSON.parse(postData);
-        if (postDataJson.method === 'getLatestBlockhash') {
-            route.continue();
+
+        //IMPORTANT: Mocking this request prevents from actually sending crypto
+        if (postDataJson.method === 'sendTransaction') {
+            route.fulfill({ json: sendTransactionResponse(postDataJson.id) });
+
+            return;
+        }
+
+        if (postDataJson.method === 'getSignatureStatuses') {
+            route.fulfill({ json: getSignatureStatusesResponse(postDataJson.id) });
 
             return;
         }
     }
-
-    // Abort all other requests matching the solPattern
-    route.abort();
 }
 
-test.describe('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic, passphrase_protection: true },
     });
@@ -72,7 +84,6 @@ test.describe('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
             await settingsPage.coins.enableNetwork('sol');
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await dashboardPage.discoveryShouldFinish();
             await walletPage.openTrading({ symbol: 'sol' });
             await marketPage.sellTabButton.click();
         },
@@ -116,16 +127,33 @@ test.describe('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
             await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(formattedCryptoAmount);
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
-            // Note: We intentionally skip clicking the sell button in tests to prevent actual cryptocurrency transactions.
-            // In a real scenario, the user would complete the transaction by clicking this button.
             await expect(devicePrompt.sellButton).toBeEnabled();
         });
 
-        await test.step('Risk it for the biscuit', async () => {
+        await test.step('Send crypto to provider', async () => {
             const solUrlPattern = /^https:\/\/sol\d+\.trezor\.io\//;
-            await page.route(solUrlPattern, catchSolanaSendRequest);
-            await page.pause();
-            // await devicePrompt.sellButton.click();
+            //IMPORTANT: Mocking this request prevents from actually sending crypto
+            await page.route(solUrlPattern, mockSolanaSendRequests);
+            await page.clock.install();
+            await devicePrompt.sellButton.click();
+            await expect(devicePrompt.sellButton).toHaveText('Confirming transaction');
+            await expect(page.getByTestId('@trading/detail-sell/pending')).toHaveText(
+                'Trade in progress...',
+            );
+            await expect(
+                page.getByRole('link', { name: "Open partner's support site" }),
+            ).toBeVisible();
+            await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
+        });
+
+        await test.step('Wait 30s for watch refresh and change of status to Success', async () => {
+            await page.route(invityEndpoint.sellWatch, async route => {
+                await route.fulfill({ json: { status: 'SUCCESS' } });
+            });
+            await page.clock.fastForward(marketPage.watchPeriod);
+            await expect(page.getByTestId('@trading/detail-sell/success-title')).toHaveText(
+                'Trade success',
+            );
         });
     });
 });

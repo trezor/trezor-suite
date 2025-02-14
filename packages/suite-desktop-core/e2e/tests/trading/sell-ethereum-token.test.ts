@@ -21,7 +21,7 @@ const provider = getCompanyNameFromList(sellQuotesEthereumToken[0].exchange, 'se
 // const formattedFiatAmount = `€${fiatAmount}`;
 // const { paymentMethodName } = sellTradeBTC.trade;
 
-test.describe.skip('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic, passphrase_protection: true },
     });
@@ -43,14 +43,13 @@ test.describe.skip('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () =
             await settingsPage.coins.enableNetwork('eth');
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await dashboardPage.discoveryShouldFinish();
             await walletPage.accountButton({ symbol: 'eth', tokens: true }).click();
             await page.getByRole('row', { name: 'USD Coin' }).getByRole('button').first().click();
             await page.getByTestId('@trading/tokens/sell-button').click();
         },
     );
 
-    test('Sell Ethereum token', async ({ marketPage }) => {
+    test('Sell Ethereum', async ({ marketPage }) => {
         await test.step('Fill in a sell request', async () => {
             await marketPage.selectCountryOfResidence('CZ');
             await marketPage.youPayCryptoInput.fill(cryptoAmount);

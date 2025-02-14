@@ -27,7 +27,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
         await walletPage.openTrading();
     });
 
-    test('Select compared offers to buy', async ({ marketPage }) => {
+    test('Buy Bitcoin from compared offer', async ({ marketPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
             await marketPage.setYouPayAmount(fiatAmount);
             await expect(marketPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
@@ -54,7 +54,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
         });
     });
 
-    test('Buy crypto from best offer', async ({ page, marketPage }) => {
+    test('Buy Bitcoin from best offer', async ({ page, marketPage }) => {
         await test.step('Request a trade', async () => {
             await marketPage.setYouPayAmount(fiatAmount);
             await marketPage.buyBestOfferButton.click();
