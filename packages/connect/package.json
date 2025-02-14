@@ -68,7 +68,6 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@babel/preset-typescript": "^7.24.7",
         "@ethereumjs/common": "^4.4.0",
         "@ethereumjs/tx": "^5.4.0",
         "@fivebinaries/coin-selection": "3.0.0",
@@ -98,6 +97,7 @@
         "cross-fetch": "^4.0.0"
     },
     "devDependencies": {
+        "@babel/preset-typescript": "^7.24.7",
         "@trezor/eslint": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/karma": "^6.3.9",

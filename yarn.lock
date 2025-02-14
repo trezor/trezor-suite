@@ -13742,7 +13742,6 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/websocket-client": "workspace:*"
     "@types/semver": "npm:^7.5.8"
-    cross-fetch: "npm:^4.0.0"
     semver: "npm:^7.6.3"
   languageName: unknown
   linkType: soft

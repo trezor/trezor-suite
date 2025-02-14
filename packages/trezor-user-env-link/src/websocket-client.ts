@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
 
-import fetch from 'cross-fetch';
-
 import {
     WebsocketClient as WebsocketClientBase,
     WebsocketResponse as WebsocketResponseData,
