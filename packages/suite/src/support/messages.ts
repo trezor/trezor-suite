@@ -9540,4 +9540,12 @@ export default defineMessages({
         id: 'TR_WALLTCONNECT_SESSIONS',
         defaultMessage: 'Sessions',
     },
+    TR_BLUETOOTH: {
+        id: 'TR_BLUETOOTH',
+        defaultMessage: 'Bluetooth',
+    },
+    TR_CONNECT_BLUETOOTH_BUTTON: {
+        id: 'TR_CONNECT_BLUETOOTH_BUTTON',
+        defaultMessage: 'Connect Safe 7 via bluetooth',
+    },
 });
