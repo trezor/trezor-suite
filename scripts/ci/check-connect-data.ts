@@ -180,7 +180,7 @@ const updateConfigFromJSON = async () => {
 
             const commitMessage = 'chore(connect): update device authenticity config';
             await exec('git', ['checkout', '-b', branchName]);
-            commit({
+            await commit({
                 path: ROOT,
                 message: commitMessage,
             });
@@ -188,7 +188,7 @@ const updateConfigFromJSON = async () => {
             // do not want to create 2 branches and PRs with same content.
             await exec('git', ['push', 'origin', branchName]);
 
-            await exec('gh', [
+            const pr = await exec('gh', [
                 'pr',
                 'create',
                 '--repo',
@@ -201,12 +201,30 @@ const updateConfigFromJSON = async () => {
                 'develop',
                 '--head',
                 branchName,
-                '--label',
-                'no-project',
             ]);
+
+            console.log('pr', pr);
+
+            const prUrlMatch = pr.stdout.match(/(https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/\d+)/);
+            console.log('prUrlMatch', prUrlMatch);
+            if (!prUrlMatch) {
+                throw new Error('Failed to extract PR URL');
+            }
+            const prUrl = prUrlMatch[0];
+
+            // We get the PR number from the PR URL provided by the `gh pr create ...`.
+            const prNumber = prUrl.split('/').pop();
+
+            console.log(`Created PR: ${prUrl}`);
+
+            // Adding label to the created PR.
+            await exec('gh', ['pr', 'edit', `${prNumber}`, '--add-label', 'no-project']);
+
+            console.log(`Added label to PR #${prNumber}`);
         }
     } catch (error) {
         console.error(`Error updating configuration: ${error.message}`);
+        throw new Error(error.message);
     }
 };
 
