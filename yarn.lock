@@ -12624,7 +12624,7 @@ __metadata:
     react-dom: "npm:18.2.0"
     react-focus-lock: "npm:^2.9.7"
     react-intl: "npm:^6.6.8"
-    react-markdown: "npm:^9.0.1"
+    react-markdown: "npm:^9.0.3"
     react-select: "npm:^5.8.0"
     react-svg: "npm:^16.1.33"
     react-use: "npm:^17.5.0"
@@ -12740,7 +12740,7 @@ __metadata:
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-inspector: "npm:^6.0.2"
-    react-markdown: "npm:^9.0.1"
+    react-markdown: "npm:^9.0.3"
     react-medium-image-zoom: "npm:^5.2.4"
     react-redux: "npm:8.0.7"
     redux: "npm:^4.2.1"
@@ -37793,9 +37793,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-markdown@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "react-markdown@npm:9.0.1"
+"react-markdown@npm:^9.0.3":
+  version: 9.0.3
+  resolution: "react-markdown@npm:9.0.3"
   dependencies:
     "@types/hast": "npm:^3.0.0"
     devlop: "npm:^1.0.0"
@@ -37810,7 +37810,7 @@ __metadata:
   peerDependencies:
     "@types/react": ">=18"
     react: ">=18"
-  checksum: 10/71ce31f200982f641d363888a26e8fb52a199a589124f20295e9be870fa3aed26fcfa14d1dc766d83df666a15cb82359291bfda207bd55d5728ff376d217e079
+  checksum: 10/b97eb9a61762762043263286ece030bd878acabe24bbf433767a9518cb18e434e26a75b1b810a7cb966e304ddb4e16bd4a15edcc808113b11b4fb85a68d99e8d
   languageName: node
   linkType: hard
 
