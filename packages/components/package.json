@@ -65,7 +65,7 @@
         "@types/react-date-range": "^1.4.9",
         "postcss-styled-syntax": "^0.6.4",
         "storybook": "^7.6.13",
-        "stylelint": "^16.2.1",
+        "stylelint": "^16.14.1",
         "stylelint-config-standard": "^36.0.0",
         "typescript-styled-plugin": "^0.18.3"
     }
