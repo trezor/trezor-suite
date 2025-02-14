@@ -2,8 +2,7 @@
     "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
         "outDir": "lib",
-        "target": "es2019",
-        "lib": ["es2019", "webworker"]
+        "lib": ["webworker"]
     },
     "include": ["./src"],
     "references": [
