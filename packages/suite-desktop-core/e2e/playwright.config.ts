@@ -22,15 +22,11 @@ const config: PlaywrightTestConfig = {
                 baseURL: process.env.BASE_URL || 'http://localhost:8000/',
             },
             grepInvert: /@desktopOnly/,
-            //TODO: #16073 We are still encountering instabilities, snapshots resolution differs, tolerance does not help
-            ignoreSnapshots: true,
         },
         {
             name: PlaywrightProjects.Desktop,
             use: {},
             grepInvert: /@webOnly/,
-            //TODO: #16073 We cannot set resolution for Electron. Once solved, remove ignoreSnapshots
-            ignoreSnapshots: true,
         },
     ],
     testDir: 'tests',
@@ -49,9 +45,6 @@ const config: PlaywrightTestConfig = {
     timeout: process.env.GITHUB_ACTION ? timeoutCIRun : timeoutLocalRun,
     outputDir: path.join(__dirname, 'test-results'),
     snapshotPathTemplate: 'snapshots/{projectName}/{testFilePath}/{arg}{ext}',
-    expect: {
-        toHaveScreenshot: { maxDiffPixelRatio: 0.025 },
-    },
 };
 
 // eslint-disable-next-line import/no-default-export

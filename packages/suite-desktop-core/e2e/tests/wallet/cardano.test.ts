@@ -26,9 +26,9 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
     }) => {
         await settingsPage.coins.enableNetwork('tada');
         await settingsPage.coins.openNetworkAdvanceSettings('tada');
-        await expect(settingsPage.modal).toHaveScreenshot('cardano-advanced-settings.png', {
-            mask: [settingsPage.coins.coinAddressInput],
-        });
+        // await expect(settingsPage.modal).toHaveScreenshot('cardano-advanced-settings.png', {
+        //     mask: [settingsPage.coins.coinAddressInput],
+        // });
         await settingsPage.modalCloseButton.click();
 
         await test.step('Verify Cardano account details', async () => {
@@ -42,13 +42,13 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
             await walletPage.showPublicKeyButton.click();
             await devicePrompt.waitForPromptAndConfirm();
             await expect(walletPage.copyPublicKeyButton).toBeEnabled();
-            await expect(settingsPage.modal).toHaveScreenshot('cardano-show-xpub.png');
+            // await expect(settingsPage.modal).toHaveScreenshot('cardano-show-xpub.png');
             await settingsPage.modalCloseButton.click();
         });
 
         await test.step('Verify Cardano send form', async () => {
             await walletPage.sendButton.click();
-            await expect(walletPage.sendForm).toHaveScreenshot('cardano-send.png');
+            // await expect(walletPage.sendForm).toHaveScreenshot('cardano-send.png');
             await page.getByTestId('@account-subpage/back').click();
         });
 
@@ -58,7 +58,7 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
             await devicePrompt.waitForPromptAndConfirm();
             await expect(walletPage.copyAddressButton).toBeEnabled();
             await expect(devicePrompt.outputValue).toHaveText(formattedReceiveAddress);
-            await expect(settingsPage.modal).toHaveScreenshot('cardano-receive.png');
+            // await expect(settingsPage.modal).toHaveScreenshot('cardano-receive.png');
             await settingsPage.modalCloseButton.click();
             await page.getByTestId('@account-subpage/back').click();
         });

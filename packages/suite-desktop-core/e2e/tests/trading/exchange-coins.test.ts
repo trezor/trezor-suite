@@ -1,6 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe('trading Exchange', { tag: ['@group=other', '@snapshot'] }, () => {
+test.describe('trading Exchange', { tag: ['@group=other'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic:
@@ -27,9 +27,6 @@ test.describe('trading Exchange', { tag: ['@group=other', '@snapshot'] }, () => 
     test.skip('Exchange flow', async ({ marketPage, page }) => {
         await test.step('Wait for exchange form initialization and make visual comparison', async () => {
             await expect(marketPage.bestOfferAmount).toHaveText('0 BTC');
-            await expect(marketPage.form).toHaveScreenshot('exchange-form.png', {
-                mask: [marketPage.exchangeFeeDetails],
-            });
         });
 
         await page

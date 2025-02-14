@@ -63,9 +63,9 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
             await expect(devicePrompt.outputValueOf('address')).toHaveText(
                 formatAddress(recipientAddress),
             );
-            await expect(devicePrompt.modal).toHaveScreenshot('send-doge.png');
+            // await expect(devicePrompt.modal).toHaveScreenshot('send-doge.png');
             await trezorUserEnvLink.pressYes();
-            await expect(devicePrompt.modal).toHaveScreenshot('send-doge-confirmed.png');
+            // await expect(devicePrompt.modal).toHaveScreenshot('send-doge-confirmed.png');
             await trezorUserEnvLink.pressYes();
         });
 
