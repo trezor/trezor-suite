@@ -10,7 +10,7 @@ import { tradingActions } from '../../actions/tradingActions';
 import { invityAPI } from '../../invityAPI';
 import { TradingState, initialState, prepareTradingReducer } from '../../reducers/tradingReducer';
 import { regional } from '../../regional';
-import { buyThunks } from '../../thunks/buy/buyThunks';
+import { buyThunks } from '../../thunks/buy';
 import { tradingMiddleware } from '../tradingMiddleware';
 
 jest.mock('../../invityAPI');

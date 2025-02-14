@@ -4,12 +4,13 @@ import { CryptoId } from 'invity-api';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 
+import { buyThunks } from '../';
 import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { TradingBuyFormProps, TradingCryptoSelectItemProps } from '../../../types';
 import { MIN_MAX_QUOTES_OK } from '../../../utils/buy/__fixtures__/buyUtils';
-import { HandleRequestThunk, buyThunks } from '../buyThunks';
+import { HandleRequestThunkProps } from '../handleRequestThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
@@ -62,7 +63,7 @@ describe('Testing handleRequestThunk', () => {
             loading: mockTimerLoading,
             stop: mockTimerStop,
             reset: mockTimerReset,
-        } as unknown as HandleRequestThunk['timer'];
+        } as unknown as HandleRequestThunkProps['timer'];
 
         const mockAbort = jest.fn();
         const mockAbortController: AbortController = {
@@ -97,7 +98,7 @@ describe('Testing handleRequestThunk', () => {
             },
             amountInCrypto: false,
         };
-        const input: HandleRequestThunk = {
+        const input: HandleRequestThunkProps = {
             formValues,
             turnOffLoading: false,
             network: getNetwork('btc'),

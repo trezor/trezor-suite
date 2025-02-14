@@ -12,7 +12,7 @@ import {
     selectTradingSelectedAccount,
     selectTradingSettingEnvironment,
 } from '../selectors/tradingSelectors';
-import { buyThunks } from '../thunks/buy/buyThunks';
+import { buyThunks } from '../thunks/buy';
 
 export const getAccountAccordingToSection = (state: TradingRootState) => {
     const { account } = selectTradingSelectedAccount(state);
