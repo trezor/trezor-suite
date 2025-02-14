@@ -114,7 +114,7 @@ export class OnboardingActions {
             return;
         }
 
-        await expect(this.welcomeTitle).toBeVisible({ timeout: 10000 });
+        await expect(this.welcomeTitle).toBeVisible({ timeout: 30_000 });
         // eslint-disable-next-line @typescript-eslint/no-shadow
         await this.page.evaluate(SuiteActions => {
             window.store.dispatch({

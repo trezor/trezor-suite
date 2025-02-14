@@ -16,9 +16,12 @@ const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en', 2)}`;
 const { receiveAddress, paymentMethodName } = buyTradeBTC.trade;
 
 test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => {
-    test.beforeEach(async ({ marketPage, onboardingPage, dashboardPage, walletPage }) => {
+    test.beforeEach(async ({ page, marketPage, onboardingPage, dashboardPage, walletPage }) => {
         await marketPage.mockInvity();
         await marketPage.mockInvityTrade(buyTradeBTC, invityEndpoint.buyTrade);
+        await page.route(invityEndpoint.buyQuotes, async route => {
+            await route.fulfill({ json: buyQuotesBTC });
+        });
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
         await walletPage.openTrading();

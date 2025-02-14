@@ -206,6 +206,7 @@ export const TokenRow = ({
                                     options: [
                                         {
                                             label: <Translation id="TR_BUY" />,
+                                            'data-testid': '@trading/tokens/buy-button',
                                             icon: 'currencyCircleDollar',
                                             onClick: () => {
                                                 dispatch(
@@ -223,6 +224,7 @@ export const TokenRow = ({
                                         },
                                         {
                                             label: <Translation id="TR_TRADING_SELL" />,
+                                            'data-testid': '@trading/tokens/sell-button',
                                             icon: 'currencyCircleDollar',
                                             onClick: () => {
                                                 dispatch(
@@ -240,6 +242,7 @@ export const TokenRow = ({
                                         },
                                         {
                                             label: <Translation id="TR_TRADING_SWAP" />,
+                                            'data-testid': '@trading/tokens/swap-button',
                                             icon: 'arrowsLeftRight',
                                             onClick: () => {
                                                 dispatch(
@@ -258,6 +261,7 @@ export const TokenRow = ({
                                         },
                                         {
                                             label: <Translation id="TR_NAV_SEND" />,
+                                            'data-testid': '@trading/tokens/send-button',
                                             icon: 'send',
                                             onClick: () => {
                                                 goToWithAnalytics('wallet-send', {
@@ -276,6 +280,7 @@ export const TokenRow = ({
                                         },
                                         {
                                             label: <Translation id="TR_NAV_RECEIVE" />,
+                                            'data-testid': '@trading/tokens/receive-button',
                                             icon: 'receive',
                                             onClick: onReceive,
                                             isDisabled: isReceiveButtonDisabled,
@@ -311,6 +316,7 @@ export const TokenRow = ({
                                         },
                                         {
                                             label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
+                                            'data-testid': '@trading/tokens/transactions-button',
                                             icon: 'newspaper',
                                             onClick: () => {
                                                 dispatch({

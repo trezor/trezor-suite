@@ -3,13 +3,13 @@ import { cloneDeep } from 'lodash';
 import buyList from './buy/list.json';
 import buyQuotesBTC from './buy/quotes-bitcoin.json';
 import buyQuotesEthereum from './buy/quotes-ethereum.json';
-import buyQuotesSolana from './buy/quotes-solana.json';
+import buyQuotesSolanaToken from './buy/quotes-solana-token.json';
 import buyTradeBTCPayload from './buy/requests/trade-request-bitcoin.json';
 import buyTradeSolanaPayload from './buy/requests/trade-request-solana.json';
 import buyWatchPayload from './buy/requests/watch-request.json';
 import buyTradeBTC from './buy/trade-bitcoin.json';
 import buyTradeEthereum from './buy/trade-ethereum.json';
-import buyTradeSolana from './buy/trade-solana.json';
+import buyTradeSolanaToken from './buy/trade-solana-token.json';
 import buyWatch from './buy/watch.json';
 import exchangeCoins from './exchange/coins.json';
 import exchangeList from './exchange/list.json';
@@ -64,11 +64,8 @@ export const invityResponses = {
     [invityEndpoint.exchangeWatch]: exchangeWatch,
     [invityEndpoint.info]: info,
     [invityEndpoint.buyList]: buyList,
-    [invityEndpoint.buyQuotes]: buyQuotesBTC,
     [invityEndpoint.buyWatch]: buyWatch,
     [invityEndpoint.sellList]: sellList,
-    [invityEndpoint.sellQuotes]: sellQuotesBTC,
-    [invityEndpoint.sellTrade]: sellTradeBTC,
     [invityEndpoint.sellWatch]: sellWatch,
 };
 
@@ -112,10 +109,10 @@ export {
     buyList,
     buyQuotesBTC,
     buyQuotesEthereum,
-    buyQuotesSolana,
+    buyQuotesSolanaToken,
     buyTradeBTC,
     buyTradeEthereum,
-    buyTradeSolana,
+    buyTradeSolanaToken,
     buyWatch,
     sellList,
     sellQuotesBTC,
