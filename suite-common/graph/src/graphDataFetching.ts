@@ -352,29 +352,31 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     dispatch: ReturnType<typeof useDispatch>;
 }): Promise<FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]> => {
     const accountsWithBalanceHistory = await Promise.all(
-        accounts.map(accountItem => {
-            const { symbol } = accountItem;
+        accounts
+            .filter(a => !isIgnoredBalanceHistoryCoin(a.symbol))
+            .map(accountItem => {
+                const { symbol } = accountItem;
 
-            return getAccountBalanceHistory({
-                endOfTimeFrameDate,
-                startOfTimeFrameDate,
-                forceRefetch,
-                dispatch,
-                accountItem,
-            })
-                .then(balanceHistory => ({
+                return getAccountBalanceHistory({
+                    endOfTimeFrameDate,
+                    startOfTimeFrameDate,
+                    forceRefetch,
+                    dispatch,
                     accountItem,
-                    balanceHistory,
-                }))
-                .catch(error => {
-                    console.error(
-                        `Unable to fetch GRAPH balance history for ${symbol} account:`,
-                        error,
-                    );
-                    error.message = `${symbol.toUpperCase()}: ${error.message}`;
-                    throw error;
-                });
-        }),
+                })
+                    .then(balanceHistory => ({
+                        accountItem,
+                        balanceHistory,
+                    }))
+                    .catch(error => {
+                        console.error(
+                            `Unable to fetch GRAPH balance history for ${symbol} account:`,
+                            error,
+                        );
+                        error.message = `${symbol.toUpperCase()}: ${error.message}`;
+                        throw error;
+                    });
+            }),
     );
 
     const accountsWithBalanceHistoryFlattened: AccountWithBalanceHistory[] = pipe(
