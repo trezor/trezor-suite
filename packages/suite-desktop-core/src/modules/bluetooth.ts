@@ -34,18 +34,14 @@ export const init: ModuleInit = () => {
         },
     };
 
-    let unregisterProxy: (() => void) | undefined;
+    const unregisterProxy = createIpcProxyHandler(ipcMain, 'Bluetooth', proxyOptions);
     const onLoad = () => {
-        unregisterProxy = createIpcProxyHandler(ipcMain, 'Bluetooth', proxyOptions);
-
         // TODO: start binary
     };
 
     const onQuit = () => {
         logger.info(SERVICE_NAME, 'Stopping (app quit)');
-        if (unregisterProxy) {
-            unregisterProxy();
-        }
+        unregisterProxy();
     };
 
     return { onLoad, onQuit };
