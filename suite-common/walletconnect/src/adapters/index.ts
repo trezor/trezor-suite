@@ -2,15 +2,12 @@ import type { ProposalTypes } from '@walletconnect/types';
 
 import { Account } from '@suite-common/wallet-types';
 
+import { bitcoinAdapter } from './bitcoin';
 import { ethereumAdapter } from './ethereum';
 import { solanaAdapter } from './solana';
 import { PendingConnectionProposalNetwork, WalletConnectAdapter } from '../walletConnectTypes';
 
-export const adapters: WalletConnectAdapter[] = [
-    ethereumAdapter,
-    solanaAdapter,
-    // TODO: bitcoinAdapter
-];
+export const adapters: WalletConnectAdapter[] = [ethereumAdapter, solanaAdapter, bitcoinAdapter];
 
 export const getAdapterByMethod = (method: string) =>
     adapters.find(adapter => adapter.methods.includes(method));

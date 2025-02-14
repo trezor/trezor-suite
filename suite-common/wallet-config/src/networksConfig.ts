@@ -457,7 +457,7 @@ export const networks = {
         },
         coingeckoId: undefined,
         tradeCryptoId: 'test-bitcoin', // fake, coingecko does not have testnets
-        caipId: 'bip122:00000000da84f2bafbbc53dee25a72ae',
+        caipId: 'bip122:000000000933ea01ad0ee984209779ba',
     },
     regtest: {
         symbol: 'regtest',

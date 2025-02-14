@@ -49,7 +49,7 @@ const ethereumRequestThunk = createThunk<
     };
     const session = selectSessionByTopic(getState(), event.topic);
     if (!session) {
-        throw new Error('Session not found');
+        throw new Error('WalletConnect Session not found');
     }
     const popupCallCommonParams = {
         source: {

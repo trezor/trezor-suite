@@ -109,7 +109,7 @@ const solanaRequestThunk = createThunk<
 >(`${WALLETCONNECT_MODULE}/solanaRequest`, async ({ event }, { dispatch, getState }) => {
     const session = selectSessionByTopic(getState(), event.topic);
     if (!session) {
-        throw new Error('Session not found');
+        throw new Error('WalletConnect Session not found');
     }
     const isDevnet = session.lastAccount?.symbol === 'dsol';
 
