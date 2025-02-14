@@ -2,23 +2,20 @@ import React, { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Tooltip } from '@trezor/components';
+import { ManagedTooltipProps, Tooltip } from '@trezor/components';
 
 const Container = styled.div`
     height: 44px;
     flex: 1;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    cursor: pointer;
 `;
 
 type ActionButtonProps = {
     onClick?: () => void;
     children: ReactNode;
-    tooltip: ReactNode;
+    tooltip: Partial<ManagedTooltipProps>;
     'data-testid'?: string;
     isOpen?: boolean;
 };
@@ -30,7 +27,7 @@ export const QuickActionButton = ({
     'data-testid': dataTest,
     isOpen,
 }: ActionButtonProps) => (
-    <Tooltip content={tooltip} cursor="pointer" isOpen={isOpen}>
+    <Tooltip content={tooltip?.content} cursor="pointer" {...tooltip} isOpen={isOpen}>
         <Container data-testid={dataTest} onClick={onClick}>
             {children}
         </Container>

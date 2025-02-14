@@ -62,9 +62,10 @@ type TooltipUiProps = {
     isInline?: boolean;
 };
 
-export type TooltipProps = (ManagedModeProps | UnmanagedModeProps) &
-    TooltipUiProps &
-    TooltipBoxProps;
+export type ManagedTooltipProps = ManagedModeProps & TooltipUiProps & TooltipBoxProps;
+export type UnmanagedTooltipProps = UnmanagedModeProps & TooltipUiProps & TooltipBoxProps;
+
+export type TooltipProps = ManagedTooltipProps | UnmanagedTooltipProps;
 
 export const Tooltip = ({
     placement = 'top',

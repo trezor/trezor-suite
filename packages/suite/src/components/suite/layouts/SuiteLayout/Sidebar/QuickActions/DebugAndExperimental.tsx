@@ -84,13 +84,15 @@ export const DebugAndExperimental = () => {
 
     return (
         <QuickActionButton
-            tooltip={
-                <DebugAndExperimentalTooltip
-                    isDebugMode={isDebug}
-                    isEapEnabled={isEapEnabled}
-                    isExperimental={isExperimental}
-                />
-            }
+            tooltip={{
+                content: (
+                    <DebugAndExperimentalTooltip
+                        isDebugMode={isDebug}
+                        isEapEnabled={isEapEnabled}
+                        isExperimental={isExperimental}
+                    />
+                ),
+            }}
             onClick={handleEapClick}
         >
             <Relative $size={getIconSize(iconSizes.medium)}>

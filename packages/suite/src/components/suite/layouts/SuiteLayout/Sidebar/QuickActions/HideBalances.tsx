@@ -16,7 +16,7 @@ export const HideBalances = () => {
 
     return (
         <QuickActionButton
-            tooltip={translationString(translationLabel)}
+            tooltip={{ content: translationString(translationLabel) }}
             onClick={handleDiscreetModeClick}
             data-testid="@quickActions/hideBalances"
         >

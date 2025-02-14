@@ -2,12 +2,19 @@ import { useDispatch } from 'react-redux';
 
 import styled, { DefaultTheme, css, useTheme } from 'styled-components';
 
-import { ComponentWithSubIcon, Icon, IconSize, getIconSize, iconSizes } from '@trezor/components';
+import {
+    ComponentWithSubIcon,
+    Icon,
+    IconSize,
+    ManagedTooltipProps,
+    getIconSize,
+    iconSizes,
+} from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { CSSColor, Color, borders } from '@trezor/theme';
 
-import { useDevice } from '../../../../../../../hooks/suite';
+import { useDevice, useDiscovery } from '../../../../../../../hooks/suite';
 import { QuickActionButton } from '../QuickActionButton';
 import { UpdateIconGroup } from './UpdateIconGroup';
 import { UpdateTooltip } from './UpdateTooltip';
@@ -20,6 +27,7 @@ import {
     mapUpdateStatusToVariant,
 } from './updateQuickActionTypes';
 import { useUpdateStatus } from './useUpdateStatus';
+import { Translation } from '../../../../../Translation';
 
 type MapArgs = {
     $variant: UpdateVariant;
@@ -152,6 +160,9 @@ export const UpdateStatusActionBarIcon = ({
     const theme = useTheme();
 
     const { updateStatus, updateStatusDevice, updateStatusSuite } = useUpdateStatus();
+    const { getDiscoveryStatus } = useDiscovery();
+    const discoveryStatus = getDiscoveryStatus();
+    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
 
     const { device } = useDevice();
     const dispatch = useDispatch();
@@ -180,20 +191,32 @@ export const UpdateStatusActionBarIcon = ({
         }
     };
 
+    const getTooltip = (): Partial<ManagedTooltipProps> => {
+        if (discoveryInProgress) {
+            return {
+                cursor: 'not-allowed',
+                content: <Translation id="TR_UNAVAILABLE_WHILE_LOADING" />,
+            };
+        }
+
+        return {
+            isActive: !showUpdateBannerNotification,
+            content: (
+                <UpdateTooltip
+                    updateStatusDevice={updateStatusDevice}
+                    onClickSuite={suiteOnClickHandler}
+                    updateStatusSuite={updateStatusSuite}
+                    onClickDevice={deviceOnClickHandler}
+                />
+            ),
+        };
+    };
+
     return (
         <div>
             <QuickActionButton
-                tooltip={
-                    !showUpdateBannerNotification && (
-                        <UpdateTooltip
-                            updateStatusDevice={updateStatusDevice}
-                            onClickSuite={suiteOnClickHandler}
-                            updateStatusSuite={updateStatusSuite}
-                            onClickDevice={deviceOnClickHandler}
-                        />
-                    )
-                }
-                onClick={handleClick}
+                tooltip={getTooltip()}
+                onClick={discoveryInProgress ? undefined : handleClick}
             >
                 <ComponentWithSubIcon
                     variant={variant}
