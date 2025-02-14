@@ -1,16 +1,16 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { deviceNeedsAttention, getStatus } from '@suite-common/suite-utils';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, motionEasing } from '@trezor/components';
+import { Button, ElevationContext, ElevationDown, Flex, motionEasing } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { ConnectDevicePrompt, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectHasTransportOfType, selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 import { DeviceAcquire } from './DeviceAcquire';
 import { DeviceBootloader } from './DeviceBootloader';
@@ -48,11 +48,12 @@ interface PrerequisitesGuideProps {
 }
 
 export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
+    const [isBluetoothConnectOpen, setIsBluetoothConnectOpen] = useState(false);
+
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
     const connectedDevicesCount = devices.filter(d => d.connected === true).length;
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const prerequisite = useSelector(selectPrerequisite);
 
     const TipComponent = useMemo(
@@ -63,7 +64,9 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                 case 'device-disconnect-required':
                     return <DeviceDisconnectRequired />;
                 case 'device-disconnected':
-                    return <DeviceConnect isWebUsbTransport={isWebUsbTransport} />;
+                    return (
+                        <DeviceConnect onBluetoothClick={() => setIsBluetoothConnectOpen(true)} />
+                    );
                 case 'device-unacquired':
                     return <DeviceAcquire />;
                 case 'device-used-elsewhere':
@@ -91,7 +94,7 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                     return <></>;
             }
         },
-        [prerequisite, isWebUsbTransport, device],
+        [prerequisite, device],
     );
 
     const handleSwitchDeviceClick = () =>
@@ -99,30 +102,41 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
 
     return (
         <Wrapper>
-            <ConnectDevicePrompt
-                connected={!!device}
-                showWarning={
-                    !!(device && deviceNeedsAttention(getStatus(device))) ||
-                    prerequisite === 'transport-bridge'
-                }
-                prerequisite={prerequisite}
-            />
+            {isBluetoothConnectOpen ? (
+                <ElevationContext baseElevation={-1}>
+                    {/* Here we need to draw the inner card with elevation -1 (custom design) */}
+                    <ElevationDown>
+                        <Flex width={470}>Here will be the Bluetooth connection dialog</Flex>
+                    </ElevationDown>
+                </ElevationContext>
+            ) : (
+                <>
+                    <ConnectDevicePrompt
+                        connected={!!device}
+                        showWarning={
+                            !!(device && deviceNeedsAttention(getStatus(device))) ||
+                            prerequisite === 'transport-bridge'
+                        }
+                        prerequisite={prerequisite}
+                    />
 
-            {allowSwitchDevice && connectedDevicesCount > 1 && (
-                <ButtonWrapper>
-                    <Button variant="tertiary" onClick={handleSwitchDeviceClick}>
-                        <Translation id="TR_SWITCH_DEVICE" />
-                    </Button>
-                </ButtonWrapper>
+                    {allowSwitchDevice && connectedDevicesCount > 1 && (
+                        <ButtonWrapper>
+                            <Button variant="tertiary" onClick={handleSwitchDeviceClick}>
+                                <Translation id="TR_SWITCH_DEVICE" />
+                            </Button>
+                        </ButtonWrapper>
+                    )}
+
+                    <TipsContainer
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.6, duration: 0.5, ease: motionEasing.enter }}
+                    >
+                        <TipComponent />
+                    </TipsContainer>
+                </>
             )}
-
-            <TipsContainer
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 0.5, ease: motionEasing.enter }}
-            >
-                <TipComponent />
-            </TipsContainer>
         </Wrapper>
     );
 };
