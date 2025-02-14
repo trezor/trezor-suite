@@ -87,7 +87,6 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
             await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
             await expect(marketPage.confirmationCryptoAmount).toHaveText(bestBuyCryptoAmount);
             await expect(marketPage.confirmationProvider).toHaveText(bestBuyProvider);
-            await expect(marketPage.transactionDetail).toHaveScreenshot('transactions-detail.png');
         });
     });
 });

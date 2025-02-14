@@ -13,7 +13,6 @@ test.describe.skip('Firmware update', { tag: ['@group=device-management'] }, () 
         await page.getByTestId('@firmware/install-button').click();
 
         await expect(page.getByTestId('@firmware-modal')).toBeVisible();
-        // await expect(page.getByTestId('@firmware-modal')).toHaveScreenshot('check-seed.png');
         await page.getByTestId('@firmware/confirm-seed-checkbox').click();
         await page.getByTestId('@firmware/confirm-seed-button').click();
 
