@@ -10372,7 +10372,7 @@ __metadata:
   dependencies:
     prettier: "npm:^3.3.2"
     sharp: "npm:0.32.6"
-    svgo: "npm:3.2.0"
+    svgo: "npm:3.3.2"
   languageName: unknown
   linkType: soft
 
@@ -10383,7 +10383,7 @@ __metadata:
     chalk: "npm:4.1.2"
     fantasticon: "npm:3.0.0"
     prettier: "npm:^3.3.2"
-    svgo: "npm:3.2.0"
+    svgo: "npm:3.3.2"
   languageName: unknown
   linkType: soft
 
@@ -41838,7 +41838,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svgo@npm:3.2.0, svgo@npm:^3.2.0":
+"svgo@npm:3.3.2":
+  version: 3.3.2
+  resolution: "svgo@npm:3.3.2"
+  dependencies:
+    "@trysound/sax": "npm:0.2.0"
+    commander: "npm:^7.2.0"
+    css-select: "npm:^5.1.0"
+    css-tree: "npm:^2.3.1"
+    css-what: "npm:^6.1.0"
+    csso: "npm:^5.0.5"
+    picocolors: "npm:^1.0.0"
+  bin:
+    svgo: ./bin/svgo
+  checksum: 10/82fdea9b938884d808506104228e4d3af0050d643d5b46ff7abc903ff47a91bbf6561373394868aaf07a28f006c4057b8fbf14bbd666298abdd7cc590d4f7700
+  languageName: node
+  linkType: hard
+
+"svgo@npm:^3.2.0":
   version: 3.2.0
   resolution: "svgo@npm:3.2.0"
   dependencies:
