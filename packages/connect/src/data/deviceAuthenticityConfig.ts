@@ -7,7 +7,7 @@ import { DeviceAuthenticityConfig } from './deviceAuthenticityConfigTypes';
  */
 export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
     version: 1,
-    timestamp: '2024-07-09T12:00:00+00:00',
+    timestamp: '2025-02-06T12:00:00.000Z',
     T2B1: {
         rootPubKeys: [
             '04ca97480ac0d7b1e6efafe518cd433cec2bf8ab9822d76eafd34363b55d63e60380bff20acc75cde03cffcb50ab6f8ce70c878e37ebc58ff7cca0a83b16b15fa5',
