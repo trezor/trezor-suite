@@ -214,6 +214,7 @@ const initialRun = [
                 showCopyAddressModal: true,
                 showUnhideTokenModal: true,
                 enableAutoupdateOnNextRun: false,
+                isBluetoothEnabled: false,
             },
         },
     },

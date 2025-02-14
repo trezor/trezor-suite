@@ -1,16 +1,16 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { deviceNeedsAttention, getStatus } from '@suite-common/suite-utils';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, motionEasing } from '@trezor/components';
+import { Button, ElevationContext, ElevationDown, Flex, motionEasing } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { ConnectDevicePrompt, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectHasTransportOfType, selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 import { DeviceAcquire } from './DeviceAcquire';
 import { DeviceBootloader } from './DeviceBootloader';
@@ -43,16 +43,25 @@ const ButtonWrapper = styled.div`
     margin-top: 30px;
 `;
 
-interface PrerequisitesGuideProps {
-    allowSwitchDevice?: boolean;
-}
+const Bluetooth = () => (
+    <ElevationContext baseElevation={-1}>
+        {/* Here we need to draw the inner card with elevation -1 (custom design) */}
+        <ElevationDown>
+            <Flex width={470}>Here will be the Bluetooth connection dialog</Flex>
+        </ElevationDown>
+    </ElevationContext>
+);
 
-export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
+type NonBluetoothProps = {
+    allowSwitchDevice?: boolean;
+    setIsBluetoothConnectOpen: (isOpen: boolean) => void;
+};
+
+const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluetoothProps) => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
     const connectedDevicesCount = devices.filter(d => d.connected === true).length;
-    const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const prerequisite = useSelector(selectPrerequisite);
 
     const TipComponent = useMemo(
@@ -63,7 +72,9 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                 case 'device-disconnect-required':
                     return <DeviceDisconnectRequired />;
                 case 'device-disconnected':
-                    return <DeviceConnect isWebUsbTransport={isWebUsbTransport} />;
+                    return (
+                        <DeviceConnect onBluetoothClick={() => setIsBluetoothConnectOpen(true)} />
+                    );
                 case 'device-unacquired':
                     return <DeviceAcquire />;
                 case 'device-used-elsewhere':
@@ -91,14 +102,14 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                     return <></>;
             }
         },
-        [prerequisite, isWebUsbTransport, device],
+        [prerequisite, device, setIsBluetoothConnectOpen],
     );
 
     const handleSwitchDeviceClick = () =>
         dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
 
     return (
-        <Wrapper>
+        <>
             <ConnectDevicePrompt
                 connected={!!device}
                 showWarning={
@@ -123,6 +134,27 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
             >
                 <TipComponent />
             </TipsContainer>
+        </>
+    );
+};
+
+interface PrerequisitesGuideProps {
+    allowSwitchDevice?: boolean;
+}
+
+export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProps) => {
+    const [isBluetoothConnectOpen, setIsBluetoothConnectOpen] = useState(false);
+
+    return (
+        <Wrapper>
+            {isBluetoothConnectOpen ? (
+                <Bluetooth />
+            ) : (
+                <NonBluetooth
+                    allowSwitchDevice={allowSwitchDevice}
+                    setIsBluetoothConnectOpen={setIsBluetoothConnectOpen}
+                />
+            )}
         </Wrapper>
     );
 };

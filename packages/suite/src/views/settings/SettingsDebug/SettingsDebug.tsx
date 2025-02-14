@@ -1,10 +1,12 @@
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout, SettingsSection } from 'src/components/settings';
+import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 import { Backends } from './Backends';
+import { Bluetooth } from './Bluetooth';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { CoinjoinApi } from './CoinjoinApi';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
@@ -88,6 +90,11 @@ export const SettingsDebug = () => {
             <SettingsSection title="WalletConnect">
                 <WalletConnect />
             </SettingsSection>
+            {isDesktop() && (
+                <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
+                    <Bluetooth />
+                </SettingsSection>
+            )}
         </SettingsLayout>
     );
 };
