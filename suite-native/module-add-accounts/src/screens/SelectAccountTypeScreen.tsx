@@ -12,8 +12,8 @@ import {
     SelectableItem,
     Text,
     VStack,
+    useBannerAwareSafeAreaInsets,
 } from '@suite-native/atoms';
-import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
 import { Translation, TxKeyPath, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
@@ -89,7 +89,7 @@ export const SelectAccountTypeScreen = ({
     const { accountType: defaultType, networkSymbol, flowType } = route.params;
     const { translate } = useTranslate();
     const openLink = useOpenLink();
-    const insets = useOfflineBannerAwareSafeAreaInsets();
+    const insets = useBannerAwareSafeAreaInsets();
     const { applyStyle, utils } = useNativeStyles();
 
     const { getAvailableAccountTypesForNetworkSymbol, addCoinAccount } = useAddCoinAccount();

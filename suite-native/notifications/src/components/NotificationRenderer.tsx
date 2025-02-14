@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectOpenedTransactionNotifications } from '@suite-common/toast-notifications';
-import { Box, VStack } from '@suite-native/atoms';
-import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
+import { Box, VStack, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionNotification } from './TransactionNotification';
@@ -19,7 +18,7 @@ const notificationContainerStyle = prepareNativeStyle<{ topSafeAreaInset: number
 
 export const NotificationRenderer = () => {
     const { applyStyle } = useNativeStyles();
-    const { top: topSafeAreaInset } = useOfflineBannerAwareSafeAreaInsets();
+    const { top: topSafeAreaInset } = useBannerAwareSafeAreaInsets();
     const transactionNotifications = useSelector(selectOpenedTransactionNotifications);
 
     return (

@@ -8,13 +8,13 @@ import * as Sentry from '@sentry/react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
-import { OfflineBanner, configureNetInfo } from '@suite-native/connection-status';
+import { configureNetInfo } from '@suite-native/connection-status';
 import { IntlProvider } from '@suite-native/intl';
-import { KillswitchMessageScreen, MessageSystemBannerRenderer } from '@suite-native/message-system';
-import { DeviceCompromisedBanner } from '@suite-native/module-authenticity-checks';
+import { KillswitchMessageScreen } from '@suite-native/message-system';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { StoreProvider, selectIsAppReady, selectIsConnectInitialized } from '@suite-native/state';
 
+import { BannersRenderer } from './BannersRenderer';
 import { ModalsRenderer } from './ModalsRenderer';
 import { SentryProvider } from './SentryProvider';
 import { StylesProvider } from './StylesProvider';
@@ -64,9 +64,7 @@ const AppComponent = () => {
 
     return (
         <FormatterProvider config={formattersConfig}>
-            <OfflineBanner />
-            <DeviceCompromisedBanner />
-            <MessageSystemBannerRenderer />
+            <BannersRenderer />
             <BottomSheetModalProvider>
                 <RootStackNavigator />
             </BottomSheetModalProvider>

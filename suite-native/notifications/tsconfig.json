@@ -15,7 +15,6 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../atoms" },
-        { "path": "../connection-status" },
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../navigation" },

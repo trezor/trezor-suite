@@ -21,7 +21,6 @@
         "@suite-native/accounts": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/connection-status": "workspace:*",
         "@suite-native/discovery": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",

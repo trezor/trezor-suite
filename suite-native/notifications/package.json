@@ -16,7 +16,6 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/connection-status": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/navigation": "workspace:*",

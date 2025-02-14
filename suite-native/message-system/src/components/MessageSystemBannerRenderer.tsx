@@ -4,7 +4,6 @@ import { A } from '@mobily/ts-belt';
 
 import { selectActiveBannerMessages } from '@suite-common/message-system';
 import { VStack } from '@suite-native/atoms';
-import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { MessageBanner } from './MessageBanner';
@@ -15,20 +14,22 @@ const messageBannerContainerStyle = prepareNativeStyle<{ topSafeAreaInset: numbe
     }),
 );
 
-export const MessageSystemBannerRenderer = () => {
+export const useIsMessageSystemBannerVisible = () =>
+    A.isNotEmpty(useSelector(selectActiveBannerMessages));
+
+type MessageSystemBannerRendererProps = { topSafeAreaInset: number };
+
+export const MessageSystemBannerRenderer = ({
+    topSafeAreaInset,
+}: MessageSystemBannerRendererProps) => {
     const { applyStyle } = useNativeStyles();
-    const { top: topSafeAreaInset } = useOfflineBannerAwareSafeAreaInsets();
 
     const activeBannerMessages = useSelector(selectActiveBannerMessages);
-    const topInset = A.isNotEmpty(activeBannerMessages) ? topSafeAreaInset : 0;
+
+    if (A.isEmpty(activeBannerMessages)) return null;
 
     return (
-        <VStack
-            spacing="sp4"
-            style={applyStyle(messageBannerContainerStyle, {
-                topSafeAreaInset: topInset,
-            })}
-        >
+        <VStack spacing="sp4" style={applyStyle(messageBannerContainerStyle, { topSafeAreaInset })}>
             {activeBannerMessages.map(message => (
                 <MessageBanner key={message.id} message={message} />
             ))}

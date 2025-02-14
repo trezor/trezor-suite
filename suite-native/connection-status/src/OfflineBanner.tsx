@@ -1,5 +1,4 @@
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -22,9 +21,10 @@ const contentStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
     }),
 );
 
-export const OfflineBanner = () => {
+type OfflineBannerProps = { topSafeAreaInset: number };
+
+export const OfflineBanner = ({ topSafeAreaInset }: OfflineBannerProps) => {
     const { applyStyle } = useNativeStyles();
-    const { top: topSafeAreaInset } = useSafeAreaInsets();
 
     const isOfflineBannerVisible = useIsOfflineBannerVisible();
 

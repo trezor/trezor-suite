@@ -8,8 +8,7 @@ import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
 
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
-import { Box } from '@suite-native/atoms';
-import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
+import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
@@ -105,7 +104,7 @@ export const Screen = ({
         utils: { spacings },
     } = useNativeStyles();
 
-    const insets = useOfflineBannerAwareSafeAreaInsets();
+    const insets = useBannerAwareSafeAreaInsets();
     const horizontalPadding = noHorizontalPadding ? 0 : spacings.sp16;
     const bottomPadding = noBottomPadding ? 0 : spacings.sp16;
     const hasBottomPadding = !useContext(BottomTabBarHeightContext) && hasBottomInset;

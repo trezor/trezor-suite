@@ -55,6 +55,7 @@ export * from './BulletListItem';
 export * from './NumberedListItem';
 export * from './SelectableItem';
 export * from './constants';
+export * from './useBannerAwareSafeAreaInsets';
 export * from './useIllustrationColors';
 export * from './utils';
 export * from './PriceChangeBadge';

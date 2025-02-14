@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import { useAtomValue } from 'jotai';
 
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { useOfflineBannerAwareSafeAreaInsets } from '@suite-native/connection-status';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -43,10 +42,14 @@ const ExtendedBannerContent = () => {
     );
 };
 
-export const DeviceCompromisedBanner = () => {
+export const useIsDeviceCompromisedBannerVisible = () =>
+    useAtomValue(deviceCompromisedBannerAtom) !== 'none';
+
+type DeviceCompromisedBannerProps = { topSafeAreaInset: number };
+
+export const DeviceCompromisedBanner = ({ topSafeAreaInset }: DeviceCompromisedBannerProps) => {
     const bannerVariant = useAtomValue(deviceCompromisedBannerAtom);
     const { applyStyle } = useNativeStyles();
-    const { top: topSafeAreaInset } = useOfflineBannerAwareSafeAreaInsets();
 
     if (bannerVariant === 'none') return null;
 
