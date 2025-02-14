@@ -1,5 +1,6 @@
-import { Draft, createReducer } from '@reduxjs/toolkit';
+import { AnyAction, Draft } from '@reduxjs/toolkit';
 
+import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 
 import {
@@ -51,13 +52,8 @@ export const bluetoothReducerCreator = <T extends BluetoothDevice>() => {
         devices: [] as T[],
     };
 
-    return createReducer<BluetoothState<T>>(initialState, builder =>
+    return createReducerWithExtraDeps<BluetoothState<T>>(initialState, (builder, extra) =>
         builder
-            .addCase('@storage/load', (state, rest) => {
-                // Todo: figure out hot to type it
-                // @ts-expect-error typed action
-                state.knownDevices = rest.payload.knownDevices?.bluetooth || [];
-            })
             .addCase(bluetoothAdapterEventAction, (state, { payload: { isPowered } }) => {
                 state.isAdapterEnabled = isPowered;
                 if (!isPowered) {
@@ -124,6 +120,12 @@ export const bluetoothReducerCreator = <T extends BluetoothDevice>() => {
                             }
                         }
                     }
+                },
+            )
+            .addMatcher(
+                action => action.type === extra.actionTypes.storageLoad,
+                (state, action: AnyAction) => {
+                    state.knownDevices = action.payload.knownDevices?.bluetooth;
                 },
             ),
     );

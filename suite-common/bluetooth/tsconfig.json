@@ -4,6 +4,6 @@
     "references": [
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
-        { "path": "../wallet-core" },
+        { "path": "../wallet-core" }
     ]
 }
