@@ -13425,7 +13425,7 @@ __metadata:
     "@types/react-dom": "npm:18.2.19"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
-    react-helmet-async: "npm:^2.0.4"
+    react-helmet-async: "npm:^2.0.5"
     react-redux: "npm:8.0.7"
     react-router-dom: "npm:^5.2.0"
     styled-components: "npm:^6.1.8"
@@ -13497,7 +13497,7 @@ __metadata:
     eslint-plugin-cypress: "npm:^4.1.0"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
-    react-helmet-async: "npm:^2.0.4"
+    react-helmet-async: "npm:^2.0.5"
     react-redux: "npm:8.0.7"
     react-router: "npm:^5.2.0"
     react-router-dom: "npm:^5.2.0"
@@ -13621,7 +13621,7 @@ __metadata:
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
     react-focus-lock: "npm:^2.9.7"
-    react-helmet-async: "npm:^2.0.4"
+    react-helmet-async: "npm:^2.0.5"
     react-hook-form: "npm:^7.54.2"
     react-intl: "npm:^6.6.8"
     react-qr-reader: "npm:^2.2.1"
@@ -37698,17 +37698,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-helmet-async@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "react-helmet-async@npm:2.0.4"
+"react-helmet-async@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "react-helmet-async@npm:2.0.5"
   dependencies:
     invariant: "npm:^2.2.4"
     react-fast-compare: "npm:^3.2.2"
     shallowequal: "npm:^1.1.0"
   peerDependencies:
     react: ^16.6.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.6.0 || ^17.0.0 || ^18.0.0
-  checksum: 10/8f18cb27e8f5821811d715906b5fe279d4ce7e1e0ef1a565d90d64db386d2e4676fe7f4182d27393eccf7b03ace7d65fb4c406f945d43de3b57acaaa54711831
+  checksum: 10/03a8fbf4779c90899012809da09a6b174a2e11e2db4c7f4e61672903dd4e2f3bb732619da4254fc874c502251a07c8da01c752ed7d6df429c7718cf8451d176a
   languageName: node
   linkType: hard
 
@@ -41838,7 +41837,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svgo@npm:3.3.2":
+"svgo@npm:3.3.2, svgo@npm:^3.2.0":
   version: 3.3.2
   resolution: "svgo@npm:3.3.2"
   dependencies:
@@ -41852,23 +41851,6 @@ __metadata:
   bin:
     svgo: ./bin/svgo
   checksum: 10/82fdea9b938884d808506104228e4d3af0050d643d5b46ff7abc903ff47a91bbf6561373394868aaf07a28f006c4057b8fbf14bbd666298abdd7cc590d4f7700
-  languageName: node
-  linkType: hard
-
-"svgo@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "svgo@npm:3.2.0"
-  dependencies:
-    "@trysound/sax": "npm:0.2.0"
-    commander: "npm:^7.2.0"
-    css-select: "npm:^5.1.0"
-    css-tree: "npm:^2.3.1"
-    css-what: "npm:^6.1.0"
-    csso: "npm:^5.0.5"
-    picocolors: "npm:^1.0.0"
-  bin:
-    svgo: ./bin/svgo
-  checksum: 10/2fdf3f2090e17b3c309e60f69c78a2afd5a9771247adb540bae3fce467243f7a601a2a5497ef40998292da41ad828b3eabf3c18b75bf449c2d2cbf6d7f6e96d9
   languageName: node
   linkType: hard
 
