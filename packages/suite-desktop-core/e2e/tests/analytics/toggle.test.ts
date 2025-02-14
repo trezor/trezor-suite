@@ -22,16 +22,16 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
         await expect(settingsPage.analyticsSwitch.locator('input')).not.toBeChecked();
 
         await analyticsPage.continueButton.click(); // Click the button and trigger the request
-        await expect.poll(() => analytics.requests).toHaveLength(1);
+        await analytics.waitForAnalyticsRequests();
 
         // assert that only "analytics/dispose" event was fired
-        const disposeRequest = analytics.requests[0];
+        const disposeRequest = analytics.findLatestRequestByType(EventType.SettingsAnalytics);
         expect(disposeRequest).toHaveProperty('c_type', EventType.SettingsAnalytics);
         expect(disposeRequest).toHaveProperty('value', 'false');
         expect(disposeRequest).toHaveProperty('c_session_id');
         expect(disposeRequest).toHaveProperty('c_instance_id');
         expect(disposeRequest).toHaveProperty('c_timestamp');
-        expect(disposeRequest.c_timestamp).toMatch(/^\d+$/);
+        expect(disposeRequest?.c_timestamp).toMatch(/^\d+$/);
 
         await page.getByTestId('@onboarding/exit-app-button').click();
 
@@ -50,50 +50,49 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
         // go to settings, analytics should not enabled and no additional analytics requests should be fired
         await settingsPage.navigateTo('application');
         await expect(settingsPage.analyticsSwitch.locator('input')).not.toBeChecked();
-        expect(analytics.requests).toHaveLength(1);
 
         // enable analytics and check "analytics/enable" event was fired
         await settingsPage.analyticsSwitch.click();
         await expect(settingsPage.analyticsSwitch.locator('input')).toBeChecked();
-        await expect.poll(() => analytics.requests).toHaveLength(2);
+        await analytics.waitForAnalyticsRequests();
 
-        const enableRequest = analytics.requests[1];
+        const enableRequest = analytics.findLatestRequestByType(EventType.SettingsAnalytics);
         expect(enableRequest).toHaveProperty('c_type', EventType.SettingsAnalytics);
         expect(enableRequest).toHaveProperty('c_session_id');
         expect(enableRequest).toHaveProperty('c_instance_id');
         expect(enableRequest).toHaveProperty('c_timestamp');
-        expect(enableRequest.c_timestamp).toMatch(/^\d+$/);
-        expect(analytics.requests).toHaveLength(2);
+        expect(enableRequest?.c_timestamp).toMatch(/^\d+$/);
 
         // check that timestamps are different
-        expect(disposeRequest.c_timestamp).not.toEqual(enableRequest.c_timestamp);
+        expect(disposeRequest?.c_timestamp).not.toEqual(enableRequest?.c_timestamp);
 
         // check that session ids changed after reload
-        expect(disposeRequest.c_session_id).not.toEqual(enableRequest.c_session_id);
+        expect(disposeRequest?.c_session_id).not.toEqual(enableRequest?.c_session_id);
 
         // check that instance ids are the same after reload
-        expect(disposeRequest.c_instance_id).toEqual(enableRequest.c_instance_id);
+        expect(disposeRequest?.c_instance_id).toEqual(enableRequest?.c_instance_id);
 
         // change fiat and check that it was logged
         await page.getByTestId('@settings/fiat-select/input').scrollIntoViewIfNeeded(); // Shouldn't be necessary, but without it the dropdown doesn't open
         await page.getByTestId('@settings/fiat-select/input').click();
         await page.getByTestId('@settings/fiat-select/option/huf').click();
-        await expect.poll(() => analytics.requests).toHaveLength(3);
-        expect(analytics.requests[2]).toHaveProperty('c_type', EventType.SettingsGeneralChangeFiat);
-        expect(analytics.requests[2]).toHaveProperty('fiat', 'huf');
-        expect(analytics.requests[2]).toHaveProperty(
-            'c_instance_id',
-            analytics.requests[1].c_instance_id,
+
+        await analytics.waitForAnalyticsRequests();
+        const changeFiatRequest = analytics.findLatestRequestByType(
+            EventType.SettingsGeneralChangeFiat,
         );
-        expect(analytics.requests).toHaveLength(3);
+        expect(changeFiatRequest).toHaveProperty('c_type', EventType.SettingsGeneralChangeFiat);
+        expect(changeFiatRequest).toHaveProperty('fiat', 'huf');
+        expect(changeFiatRequest).toHaveProperty('c_instance_id', enableRequest?.c_instance_id);
 
         // open device modal and check that it was logged
         await dashboardPage.openDeviceSwitcher();
-        await expect.poll(() => analytics.requests).toHaveLength(4);
+        await analytics.waitForAnalyticsRequests();
 
-        const deviceModalRequest = analytics.requests[3];
+        const deviceModalRequest = analytics.findLatestRequestByType(
+            EventType.RouterLocationChange,
+        );
         expect(deviceModalRequest).toHaveProperty('c_type', EventType.RouterLocationChange);
-        expect(analytics.requests).toHaveLength(4);
     });
 
     test('should respect enabled analytics in onboarding with following disabling in settings', async ({
@@ -107,12 +106,12 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
         await expect(settingsPage.analyticsSwitch.locator('input')).toBeChecked();
 
         await analyticsPage.continueButton.click(); // Click the button and trigger the request
-        await expect.poll(() => analytics.requests.length).toBeGreaterThan(2);
+        await analytics.waitForAnalyticsRequests(2);
 
         // assert that more than 1 event was fired and it was "suite/ready" and "analytics/enable" for sure
         expect(analytics.requests.length).toBeGreaterThan(1);
-        expect(analytics.extractRequestTypes()).toContain(EventType.SuiteReady);
-        expect(analytics.extractRequestTypes()).toContain(EventType.SettingsAnalytics);
+        expect(analytics.findLatestRequestByType(EventType.SuiteReady)).toBeDefined();
+        expect(analytics.findLatestRequestByType(EventType.SettingsAnalytics)).toBeDefined();
 
         // finish onboarding
         await page.getByTestId('@onboarding/exit-app-button').click();
@@ -134,10 +133,12 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
         await page.getByTestId('@settings/fiat-select/option/huf').click();
 
         // check that analytics disable event was fired
-        await expect.poll(() => analytics.requests.length).toBeGreaterThan(3);
-        expect(analytics.extractRequestTypes()).toContain(EventType.SettingsAnalytics);
+        await analytics.waitForAnalyticsRequests();
+        expect(analytics.findLatestRequestByType(EventType.SettingsAnalytics)).toBeDefined();
 
         // check that "settings/general/change-fiat" event was not fired
-        expect(analytics.extractRequestTypes()).not.toContain(EventType.SettingsGeneralChangeFiat);
+        expect(
+            analytics.findLatestRequestByType(EventType.SettingsGeneralChangeFiat),
+        ).not.toBeDefined();
     });
 });

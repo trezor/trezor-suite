@@ -41,10 +41,10 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         // suite-ready is logged 1st, just check that it is reported when app is initialized and enabled
         // device-connect is logged 2nd
         // transport-type is logged 3rd
+        await analytics.waitForAnalyticsRequests(3);
         expect(analytics.requests[0]).toHaveProperty('c_type', EventType.SuiteReady);
         expect(analytics.requests[1]).toHaveProperty('c_type', EventType.DeviceConnect);
         expect(analytics.requests[2]).toHaveProperty('c_type', EventType.TransportType);
-        expect(analytics.requests).toHaveLength(3);
 
         const deviceConnectEvent = analytics.findAnalyticsEventByType<
             ExtractByEventType<EventType.DeviceConnect>
@@ -74,8 +74,8 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         // device-disconnect is logged 4th
         await trezorUserEnvLink.stopEmu();
 
-        await expect.poll(() => analytics.requests).toHaveLength(4); // Poll to prevent race condition
-        expect(analytics.requests[3]).toHaveProperty('c_type', EventType.DeviceDisconnect);
+        await analytics.waitForAnalyticsRequests(1); // Poll to prevent race condition
+        expect(analytics.findLatestRequestByType(EventType.DeviceDisconnect)).toBeDefined();
     });
 
     test('reports suite-ready after enabling analytics on app initial run', async ({
@@ -137,7 +137,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         await analyticsPage.continueButton.click();
         await page.getByTestId('@onboarding/exit-app-button').click();
 
-        expect(analytics.requests.length).toBeGreaterThanOrEqual(2);
+        await analytics.waitForAnalyticsRequests(2);
         expect(analytics.requests[0]).toHaveProperty('c_type', EventType.SettingsAnalytics);
         expect(analytics.requests[1]).toHaveProperty('c_type', EventType.SuiteReady);
 

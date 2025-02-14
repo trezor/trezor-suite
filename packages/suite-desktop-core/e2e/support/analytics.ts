@@ -5,9 +5,11 @@ import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 import { EventPayload, Requests } from '@trezor/suite-web/e2e/support/types';
 
 import { step } from './common';
+import { expect } from '../support/fixtures';
 
 export class AnalyticsFixture {
     private page: Page;
+    private lastRequestCount = 0;
     requests: Requests = [];
 
     constructor(page: Page) {
@@ -25,8 +27,8 @@ export class AnalyticsFixture {
         return event;
     }
 
-    extractRequestTypes() {
-        return this.requests.map(request => request['c_type']);
+    findLatestRequestByType(eventType: SuiteAnalyticsEvent['type']) {
+        return [...this.requests].reverse().find(req => req.c_type === eventType);
     }
 
     //TODO: #15811 To be refactored
@@ -38,5 +40,13 @@ export class AnalyticsFixture {
             this.requests.push(params);
             route.continue();
         });
+    }
+
+    @step()
+    async waitForAnalyticsRequests(expectedNewRequests = 1) {
+        await expect
+            .poll(() => this.requests.length)
+            .toBeGreaterThanOrEqual(this.lastRequestCount + expectedNewRequests);
+        this.lastRequestCount = this.requests.length;
     }
 }
