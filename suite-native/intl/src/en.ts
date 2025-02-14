@@ -1356,6 +1356,24 @@ export const en = {
             balanceFiat: 'Balance in fiat',
             balanceCrypto: 'Balance in crypto',
         },
+        legalSheet: {
+            title: 'Buy with {tradeProviderName}',
+            subheaderSecurity: 'Security first with your Trezor',
+            infoSecurity1:
+                "I’m here to swap cryptocurrencies. If I were directed to this site for any other reason, I'll contact Trezor Support before proceeding.",
+            infoSecurity2:
+                "I want to swap cryptocurrencies for my own account. I understand that the provider's policies may require identity verification.",
+            infoSecurity3:
+                "I understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
+            subheaderPartners: 'Verified partners by Invity',
+            infoPartners:
+                "I understand that Invity doesn't provide this service. It's governed by {tradeProviderName}’s Terms and Conditions.",
+            subheaderLegal: 'Legal notice',
+            infoLegal1:
+                "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
+            infoLegal2:
+                'I understand that cryptocurrencies are an emerging financial tool and that regulations can differ by region. This may increase the risk of fraud, theft, or market instability.',
+        },
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',
         selectCoinFirst: 'Select coin first',

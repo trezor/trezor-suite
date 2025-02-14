@@ -1,22 +1,15 @@
 import { useState } from 'react';
 
+import { useBottomSheetControls } from './useBottomSheetControls';
+
 export const useTradeSheetControls = <T>() => {
-    const [isSheetVisible, setIsSheetVisible] = useState(false);
+    const bottomSheetControls = useBottomSheetControls();
+
     const [selectedValue, setSelectedValue] = useState<undefined | T>();
 
-    const showSheet = () => {
-        setIsSheetVisible(true);
-    };
-
-    const hideSheet = () => {
-        setIsSheetVisible(false);
-    };
-
     return {
-        isSheetVisible,
-        showSheet,
-        hideSheet,
         selectedValue,
         setSelectedValue,
+        ...bottomSheetControls,
     };
 };
