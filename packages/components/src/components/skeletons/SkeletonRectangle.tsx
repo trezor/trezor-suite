@@ -18,12 +18,7 @@ const StyledSkeletonRectangle = styled.div<
 >`
     width: ${({ $width }) => getValue($width) ?? '80px'};
     height: ${({ $height }) => getValue($height) ?? '20px'};
-    background: ${({ $background, ...props }) =>
-        $background ??
-        mapElevationToBackground({
-            theme: props.theme,
-            $elevation: props.$elevation,
-        })};
+    background: ${({ $background, ...props }) => $background ?? mapElevationToBackground(props)};
     border-radius: ${({ $borderRadius }) => getValue($borderRadius) ?? borders.radii.xs};
     background-size: 200%;
 

@@ -22,16 +22,6 @@ export const RotateDeviceImage = ({
         return null;
     }
 
-    // conflict here
-    // const isDeviceImageRotating =
-    //     deviceModel &&
-    //     [
-    //         DeviceModelInternal.T2B1,
-    //         DeviceModelInternal.T3B1,
-    //         DeviceModelInternal.T3T1,
-    //         DeviceModelInternal.T3W1,
-    //     ].includes(deviceModel);
-
     return (
         <DeviceAnimation
             className={className}
