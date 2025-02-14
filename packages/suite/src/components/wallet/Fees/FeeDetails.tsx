@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { formatDuration } from '@suite-common/suite-utils';
+import { formatDurationStrict } from '@suite-common/suite-utils';
 import { NetworkSymbol, NetworkType, getNetwork } from '@suite-common/wallet-config';
 import {
     FeeInfo,
@@ -16,6 +16,7 @@ import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { FiatValue } from 'src/components/suite/FiatValue';
+import { useLocales } from 'src/hooks/suite';
 
 import { FeeOption } from './Fees';
 
@@ -115,6 +116,7 @@ const BitcoinDetails = ({
     symbol,
 }: DetailsProps) => {
     const [columns, setColumns] = React.useState(1);
+    const locale = useLocales();
 
     const hasInfo = transactionInfo && transactionInfo.type !== 'error';
     const ref = useRef<HTMLDivElement>(null);
@@ -140,7 +142,13 @@ const BitcoinDetails = ({
                             <span data-testid={`@fee-card/${fee.value}`}>{fee.label}</span>
                         }
                         topRightChild={
-                            <>~{formatDuration(feeInfo.blockTime * (fee?.blocks ?? 0) * 60)}</>
+                            <>
+                                ~
+                                {formatDurationStrict(
+                                    feeInfo.blockTime * (fee?.blocks ?? 0) * 60,
+                                    locale,
+                                )}
+                            </>
                         }
                         bottomLeftChild={
                             <FiatValue

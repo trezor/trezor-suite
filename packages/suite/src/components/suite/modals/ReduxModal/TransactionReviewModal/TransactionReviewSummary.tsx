@@ -1,4 +1,4 @@
-import { formatDuration } from '@suite-common/suite-utils';
+import { formatDurationStrict } from '@suite-common/suite-utils';
 import { NetworkType, networks } from '@suite-common/wallet-config';
 import { FeeInfo, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
 import { getFee } from '@suite-common/wallet-utils';
@@ -7,6 +7,7 @@ import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabel, Translation } from 'src/components/suite';
+import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { Account } from 'src/types/wallet';
@@ -44,6 +45,7 @@ export const TransactionReviewSummary = ({
         state => state.wallet.selectedAccount.account?.key,
     ) as string;
     const fees = useSelector(state => state.wallet.fees);
+    const locale = useLocales();
 
     const network = networks[account.symbol];
     const { symbol, accountType, index, networkType } = account;
@@ -69,7 +71,7 @@ export const TransactionReviewSummary = ({
             {estimateTime !== undefined && (
                 <Note iconName="clock">
                     {'≈ '}
-                    {formatDuration(estimateTime)}
+                    {formatDurationStrict(estimateTime, locale)}
                 </Note>
             )}
 
