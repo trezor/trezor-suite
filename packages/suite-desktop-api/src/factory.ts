@@ -183,5 +183,6 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         connectPopupResponse: response => ipcRenderer.invoke('connect-popup/response', response),
 
         getSystemInformation: () => ipcRenderer.invoke('system/get-system-information'),
+        openSystemSettings: settings => ipcRenderer.invoke('system/open-settings', settings),
     };
 };
