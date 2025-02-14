@@ -1,8 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
-import { step } from '../common';
+import { TrezorUserEnvLinkProxy, step } from '../common';
 
 export class DevicePromptActions {
     readonly confirmOnDevicePrompt: Locator;
@@ -57,7 +55,7 @@ export class DevicePromptActions {
     @step()
     async waitForPromptAndConfirm() {
         await this.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLink.pressYes();
+        await TrezorUserEnvLinkProxy.pressYes();
     }
 
     @step()

@@ -1,8 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
-import { step } from '../common';
+import { TrezorUserEnvLinkProxy, step } from '../common';
 import { DevicePromptActions } from './devicePromptActions';
 
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
@@ -107,10 +105,10 @@ export class DashboardActions {
         await expect(this.passphraseInput).not.toBeVisible();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLink.pressYes();
+        await TrezorUserEnvLinkProxy.pressYes();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLink.pressYes();
+        await TrezorUserEnvLinkProxy.pressYes();
 
         if (options?.skipDiscovery) {
             return;
@@ -130,10 +128,10 @@ export class DashboardActions {
         await this.passphraseSubmitButton.click();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLink.pressYes();
+        await TrezorUserEnvLinkProxy.pressYes();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLink.pressYes();
+        await TrezorUserEnvLinkProxy.pressYes();
 
         await this.modal.waitFor({ state: 'detached' });
     }

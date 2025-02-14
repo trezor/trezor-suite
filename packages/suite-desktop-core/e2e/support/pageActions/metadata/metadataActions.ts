@@ -1,8 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-
-import { step } from '../../common';
+import { TrezorUserEnvLinkProxy, step } from '../../common';
 import { MetadataProvider } from '../../mocks/metadataProviderMock';
 import { DevicePromptActions } from '../devicePromptActions';
 import { AccountMetadataActions } from './accountMetadataActions';
@@ -38,7 +36,7 @@ export class MetadataActions {
         options?: { skipVerification?: boolean },
     ) {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLink.pressYes();
+        await TrezorUserEnvLinkProxy.pressYes();
         await this.metadataProviderButton(provider).click();
 
         if (options?.skipVerification) {

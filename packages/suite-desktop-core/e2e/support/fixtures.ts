@@ -1,13 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Page, test as base } from '@playwright/test';
 
-import {
-    Model,
-    SetupEmu,
-    StartEmu,
-    TrezorUserEnvLink,
-    TrezorUserEnvLinkClass,
-} from '@trezor/trezor-user-env-link';
+import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
 import { AnalyticsFixture } from './analytics';
 import {
@@ -168,7 +162,7 @@ const test = base.extend<Fixtures>({
             page,
             analyticsPage,
             devicePrompt,
-            emulatorStartConf.model ?? TrezorUserEnvLink.defaultModel,
+            emulatorStartConf.model,
             testInfo,
         );
         await use(onboardingPage);
