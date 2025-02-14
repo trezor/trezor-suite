@@ -35,6 +35,17 @@ const fetchJSON = async (url: string) => {
     return response.json();
 };
 
+const getLatestTimestamp = (timestamps: string[]): string | null => {
+    if (timestamps.length === 0) {
+        return null;
+    }
+
+    const dateObjects = timestamps.map(timestamp => new Date(timestamp));
+    const latestDate = new Date(Math.max(...dateObjects.map(date => date.getTime())));
+
+    return latestDate.toISOString();
+};
+
 const updateConfigFromJSON = async () => {
     try {
         const devicesKeys = Object.keys(authenticityPaths) as AuthenticityPathsKeys[];
@@ -42,10 +53,13 @@ const updateConfigFromJSON = async () => {
         // Import the current configuration object
         let { deviceAuthenticityConfig } = require(CONFIG_FILE_PATH);
 
+        const timestamps: string[] = [];
+
         for (const deviceKey of devicesKeys) {
             const { authenticity, authenticityDev } = authenticityPaths[deviceKey];
             const authenticityUrl = `${AUTHENTICITY_BASE_URL}/${authenticity}`;
             const authenticityData = await fetchJSON(authenticityUrl);
+            timestamps.push(authenticityData.timestamp);
             const authenticityDevUrl = `${AUTHENTICITY_BASE_URL}/${authenticityDev}`;
             const authenticityDevData = await fetchJSON(authenticityDevUrl);
 
@@ -58,6 +72,15 @@ const updateConfigFromJSON = async () => {
                 },
             };
         }
+
+        const latestTimestamp = getLatestTimestamp(timestamps);
+
+        if (!latestTimestamp) {
+            // Sanity check and type safety.
+            throw new Error('Timestamp should always be present.');
+        }
+
+        deviceAuthenticityConfig['timestamp'] = latestTimestamp;
 
         const updatedConfigString = `
             /** THIS FILE IS AUTOMATICALLY UPDATED by script ci/scripts/check-connect-data.ts  */
