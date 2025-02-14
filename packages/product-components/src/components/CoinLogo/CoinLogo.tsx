@@ -3,7 +3,7 @@ import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import { borders } from '@trezor/theme';
 
 import { COINS, LegacyNetworkSymbol } from './coins';
@@ -81,15 +81,8 @@ export const CoinLogo = ({
     } else if (type === 'network') {
         symbolSrc = NETWORK_ICONS[symbol as NetworkSymbol];
     } else {
-        // TODO: should be changed, this is hacky way
-        let networkSymbol;
-        try {
-            networkSymbol = getNetworkDisplaySymbol(
-                symbol as NetworkSymbol,
-            ).toLowerCase() as NetworkSymbol;
-        } catch {
-            networkSymbol = symbol as NetworkSymbol;
-        }
+        const network = getNetworkOptional(symbol);
+        const networkSymbol = network?.settlementLayer ?? symbol;
 
         badge = networkSymbol !== symbol ? NETWORK_ICONS[symbol as NetworkSymbol] : null;
         symbolSrc = COINS[networkSymbol !== symbol ? networkSymbol : symbol];

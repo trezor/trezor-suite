@@ -126,6 +126,7 @@ export const networks = {
     },
     arb: {
         symbol: 'arb',
+        settlementLayer: 'eth',
         displaySymbol: 'ETH',
         displaySymbolName: 'Arbitrum One Ethereum',
         name: 'Arbitrum One',
@@ -150,6 +151,7 @@ export const networks = {
     },
     base: {
         symbol: 'base',
+        settlementLayer: 'eth',
         displaySymbol: 'ETH',
         displaySymbolName: 'Base Ethereum',
         name: 'Base',
@@ -174,6 +176,7 @@ export const networks = {
     },
     op: {
         symbol: 'op',
+        settlementLayer: 'eth',
         displaySymbol: 'ETH',
         displaySymbolName: 'Optimism Ethereum',
         name: 'Optimism',

@@ -96,6 +96,7 @@ export type NetworkDeviceSupport = Partial<Record<DeviceModelInternal, string>>;
 
 type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     symbol: TKey;
+    settlementLayer?: NetworkSymbol;
     displaySymbol: string;
     displaySymbolName?: string;
     name: string;

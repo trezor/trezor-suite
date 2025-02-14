@@ -178,13 +178,17 @@ const EthereumDetails = ({
     symbol,
     networkType,
 }: DetailsProps) => {
-    const isMainnet = !getNetwork(symbol).settlementLayer;
+    const hasSettlementLayer = !!getNetwork(symbol).settlementLayer;
 
     // TODO: this can be probably moved to FeeRate component
     const formatFeePerUnit = (feePerUnit?: string) => {
         const num = Number(feePerUnit) || 0;
 
-        return (Math.ceil(num * 100) / 100).toFixed(isMainnet ? 2 : 4);
+        const numOfDecimalPlaces = hasSettlementLayer ? 4 : 2;
+
+        const multiplier = Math.pow(10, numOfDecimalPlaces);
+
+        return (Math.ceil(num * multiplier) / multiplier).toFixed(numOfDecimalPlaces);
     };
 
     return (
