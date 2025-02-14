@@ -29,6 +29,6 @@ test.describe('Safari', { tag: ['@group=other', '@webOnly', '@snapshot'] }, () =
             'Continue at my own risk',
         );
         await onboardingPage.continueAtYourOwnRiskButton.click({ force: true });
-        await expect(onboardingPage.welcomeTitle).toBeVisible({ timeout: 20_000 });
+        await onboardingPage.verifySuiteIsLoaded();
     });
 });

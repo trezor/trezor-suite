@@ -82,8 +82,15 @@ export class OnboardingActions {
     }
 
     @step()
+    async verifySuiteIsLoaded() {
+        await expect(this.welcomeTitle, 'expect Suite to load in under 30s').toBeVisible({
+            timeout: 30_000,
+        });
+    }
+
+    @step()
     async optionallyDismissFwHashCheckError() {
-        await expect(this.welcomeTitle).toBeVisible({ timeout: 10000 });
+        await this.verifySuiteIsLoaded();
         // dismisses the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
         this.page
             .$('[data-testid="@device-compromised/back-button"]')
@@ -114,7 +121,7 @@ export class OnboardingActions {
             return;
         }
 
-        await expect(this.welcomeTitle).toBeVisible({ timeout: 30_000 });
+        await this.verifySuiteIsLoaded();
         // eslint-disable-next-line @typescript-eslint/no-shadow
         await this.page.evaluate(SuiteActions => {
             window.store.dispatch({
