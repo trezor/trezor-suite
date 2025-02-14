@@ -1,3 +1,5 @@
+import { Request, Route } from '@playwright/test';
+
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -16,11 +18,28 @@ const mnemonic =
 const fiatAmount = localizeNumber(sellQuotesSolana[0].fiatStringAmount, 'en', 2, 2);
 const cryptoAmount = sellQuotesSolana[0].cryptoStringAmount;
 const provider = getCompanyNameFromList(sellQuotesSolana[0].exchange, 'sellList');
-const providerAddress = 'H5uev4ENYn99GXRwzkQ2Ho5duvCVc34QsmibDfURkQWZ';
+const providerAddress = '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK';
 const providerPaymentId = '6d666a5f-b99c-4482-b8bc-2df04fc11b7b';
 const formattedCryptoAmount = `${cryptoAmount} SOL`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeSolana.trade;
+
+function catchSolanaSendRequest(route: Route, request: Request) {
+    const method = request.method();
+    const postData = request.postData();
+
+    if (method === 'POST' && postData) {
+        const postDataJson = JSON.parse(postData);
+        if (postDataJson.method === 'getLatestBlockhash') {
+            route.continue();
+
+            return;
+        }
+    }
+
+    // Abort all other requests matching the solPattern
+    route.abort();
+}
 
 test.describe('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({
@@ -100,6 +119,13 @@ test.describe('Trading - Sell', { tag: ['@group=other', '@webOnly'] }, () => {
             // Note: We intentionally skip clicking the sell button in tests to prevent actual cryptocurrency transactions.
             // In a real scenario, the user would complete the transaction by clicking this button.
             await expect(devicePrompt.sellButton).toBeEnabled();
+        });
+
+        await test.step('Risk it for the biscuit', async () => {
+            const solUrlPattern = /^https:\/\/sol\d+\.trezor\.io\//;
+            await page.route(solUrlPattern, catchSolanaSendRequest);
+            await page.pause();
+            // await devicePrompt.sellButton.click();
         });
     });
 });
