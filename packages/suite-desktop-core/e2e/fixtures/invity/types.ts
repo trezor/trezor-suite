@@ -29,7 +29,7 @@ type SellTrade = {
     refundAddress: string;
     paymentId: string;
     status: string;
-    partnerData?: string;
+    partnerData: string;
     exchange: string;
     fiatCurrency: string;
     cryptoCurrency: string;

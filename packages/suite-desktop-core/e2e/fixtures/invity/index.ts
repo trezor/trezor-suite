@@ -79,9 +79,7 @@ export const createRedirectedTradeResponse = (
     tradeRequest: any,
 ) => {
     const modifiedResponse = cloneDeep(tradeResponse);
-    if ('partnerData' in modifiedResponse.trade) {
-        modifiedResponse.trade.partnerData = tradeRequest.returnUrl;
-    }
+    modifiedResponse.trade.partnerData = tradeRequest.returnUrl;
     modifiedResponse.tradeForm.form.formAction = tradeRequest.returnUrl;
     modifiedResponse.trade.paymentId = tradeRequest.trade.paymentId;
     modifiedResponse.trade.orderId = tradeRequest.trade.orderId;
