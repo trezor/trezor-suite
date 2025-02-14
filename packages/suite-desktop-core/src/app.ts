@@ -24,6 +24,8 @@ import { isAutoStartEnabled } from './modules/auto-start';
 import { init as initTorModule } from './modules/tor';
 import { ipcMain } from './typed-electron';
 
+process.traceProcessWarnings = true;
+
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDevEnv) app.setVersion(process.env.VERSION);
 
