@@ -1,9 +1,0 @@
-{
-    "amountInCrypto": true,
-    "cryptoCurrency": "bitcoin",
-    "fiatCurrency": "EUR",
-    "country": "CZ",
-    "cryptoStringAmount": "0.00065",
-    "fiatStringAmount": "",
-    "flows": ["BANK_ACCOUNT", "PAYMENT_GATE"]
-}

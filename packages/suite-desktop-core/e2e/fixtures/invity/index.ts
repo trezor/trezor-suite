@@ -1,5 +1,3 @@
-import { cloneDeep } from 'lodash';
-
 import buyList from './buy/list.json';
 import buyQuotesBTC from './buy/quotes-bitcoin.json';
 import buyQuotesEthereum from './buy/quotes-ethereum.json';
@@ -21,16 +19,12 @@ import sellList from './sell/list.json';
 import sellQuotesBTC from './sell/quotes-bitcoin.json';
 import sellQuotesEthereumToken from './sell/quotes-ethereum-token.json';
 import sellQuotesSolana from './sell/quotes-solana.json';
-import sellQuotesPayload from './sell/requests/quotes-request.json';
 import sellTradePayload from './sell/requests/trade-request.json';
 import sellWatchPayload from './sell/requests/watch-request.json';
 import sellTradeBTC from './sell/trade-bitcoin.json';
 import sellTradeEthereumToken from './sell/trade-ethereum-token.json';
 import sellTradeSolana from './sell/trade-solana.json';
 import sellWatch from './sell/watch.json';
-//Payloads
-//Types
-import { SellTradeResponse, TradeResponse } from './types';
 
 const invityUrl = 'https://exchange.trezor.io';
 
@@ -55,7 +49,6 @@ export const invityRequest = {
     buyTradeBTCPayload,
     buyTradeSolanaPayload,
     buyWatchPayload,
-    sellQuotesPayload,
     sellTradePayload,
     sellWatchPayload,
 };
@@ -71,23 +64,6 @@ export const invityResponses = {
     [invityEndpoint.buyWatch]: buyWatch,
     [invityEndpoint.sellList]: sellList,
     [invityEndpoint.sellWatch]: sellWatch,
-};
-
-// This modification allows us to skip the provider's part of the flow and continue further.
-export const createRedirectedTradeResponse = (
-    tradeResponse: TradeResponse | SellTradeResponse,
-    tradeRequest: any,
-) => {
-    const modifiedResponse = cloneDeep(tradeResponse);
-    modifiedResponse.trade.partnerData = tradeRequest.returnUrl;
-    modifiedResponse.tradeForm.form.formAction = tradeRequest.returnUrl;
-    modifiedResponse.trade.paymentId = tradeRequest.trade.paymentId;
-    modifiedResponse.trade.orderId = tradeRequest.trade.orderId;
-    if ('refundAddress' in modifiedResponse.trade && tradeRequest.refundAddress) {
-        modifiedResponse.trade.refundAddress = tradeRequest.refundAddress;
-    }
-
-    return modifiedResponse;
 };
 
 export const getCompanyNameFromList = (name: string, type: 'buyList' | 'sellList') => {

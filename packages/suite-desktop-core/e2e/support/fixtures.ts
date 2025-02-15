@@ -14,6 +14,7 @@ import {
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
 import { MetadataProviderMock } from './mocks/metadataProviderMock';
+import { TradingMock } from './mocks/tradingMock';
 import { AnalyticsActions } from './pageActions/analyticsActions';
 import { AssetsActions } from './pageActions/assetsActions';
 import { DashboardActions } from './pageActions/dashboardActions';
@@ -54,6 +55,7 @@ type Fixtures = {
     indexedDb: IndexedDbFixture;
     metadataProviderMock: MetadataProviderMock;
     blockbookMock: BlockbookMock;
+    tradingMock: TradingMock;
     exceptionLogger: void;
 };
 
@@ -211,6 +213,10 @@ const test = base.extend<Fixtures>({
     blockbookMock: async ({}, use) => {
         const blockbookMock = new BlockbookMock();
         await use(blockbookMock);
+    },
+    tradingMock: async ({ page }, use) => {
+        const tradingMock = new TradingMock(page);
+        await use(tradingMock);
     },
     exceptionLogger: [
         async ({ page }, use) => {

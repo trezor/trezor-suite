@@ -4,16 +4,10 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { regional } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import {
-    buyQuotesBTC,
-    createRedirectedTradeResponse,
-    invityEndpoint,
-    invityResponses,
-} from '../../fixtures/invity';
+import { buyQuotesBTC, invityEndpoint } from '../../fixtures/invity';
 import { TrezorUserEnvLinkProxy, step } from '../common';
 import { expect } from '../customMatchers';
 import { DevicePromptActions } from './devicePromptActions';
-import { SellTradeResponse, TradeResponse } from '../../fixtures/invity/types';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
 const quoteAmountLocator = '@trading/offers/quote/crypto-amount';
@@ -238,7 +232,7 @@ export class MarketActions {
     }
 
     @step()
-    async setYouPayAmount(
+    async setYouBuyAmount(
         amount: string,
         cryptoCurrency: string = 'bitcoin',
         wantCrypto: boolean = false,
@@ -265,6 +259,28 @@ export class MarketActions {
     }
 
     @step()
+    async setYouSellAmount(
+        amount: string,
+        cryptoCurrency: string = 'bitcoin',
+        fiatCurrencyCode: FiatCurrencyCode = 'eur',
+        country: string = 'CZ',
+    ) {
+        await this.selectCountryOfResidence(country);
+        const quoteRequestPromise = this.page.waitForRequest(invityEndpoint.sellQuotes);
+        await this.youPayCryptoInput.fill(amount);
+        await expect(quoteRequestPromise).toHavePayload({
+            amountInCrypto: true,
+            cryptoCurrency,
+            fiatCurrency: fiatCurrencyCode.toUpperCase(),
+            country,
+            cryptoStringAmount: amount,
+            fiatStringAmount: '',
+            flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
+        });
+        await this.waitForSellOffersSync();
+    }
+
+    @step()
     async confirmTrade(addressToCheck?: string) {
         await expect(this.modal).toBeVisible();
         await this.buyTermsConfirmButton.click();
@@ -277,34 +293,17 @@ export class MarketActions {
         await this.devicePrompt.confirmOnDevicePromptIsHidden();
     }
 
-    // We bypass the provider part of the flow by having a modified redirect in trade response.
-    // This redirect is provided by Invity and normaly leads to provider's page.
-    // But our mocked response redirects us to transaction detail where our flow continues.
     @step()
-    async mockInvityTrade(tradeResponse: TradeResponse | SellTradeResponse, endpointUrl: string) {
-        await this.page.route(endpointUrl, async (route, request) => {
-            const redirectedTradeResponse = createRedirectedTradeResponse(
-                tradeResponse,
-                request.postDataJSON(),
-            );
-            await route.fulfill({ json: redirectedTradeResponse });
-        });
-    }
-
-    @step()
-    async mockInvity() {
-        for (const [url, response] of Object.entries(invityResponses)) {
-            await this.page.route(url, async route => {
-                await route.fulfill({ json: response });
-            });
-        }
-    }
-
-    @step()
-    async changeBuyWatchResponseTo(status: 'SUBMITTED' | 'SUCCESS') {
-        await this.page.route(invityEndpoint.buyWatch, async route => {
-            await route.fulfill({ json: { status } });
-        });
+    async initiateSendConfirmation() {
+        await this.confirmTradeButton.click();
+        await expect(this.devicePrompt.sellButton).toBeDisabled();
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLinkProxy.pressYes();
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLinkProxy.pressYes();
+        // Note: We intentionally skip clicking the sell button in tests to prevent actual cryptocurrency transactions.
+        // In a real scenario, the user would complete the transaction by clicking this button.
+        await expect(this.devicePrompt.sellButton).toBeEnabled();
     }
 
     @step()
@@ -332,5 +331,11 @@ export class MarketActions {
             expect.soft(provider?.toLowerCase()).toBe(expectedQuotes[index].exchange);
             expect.soft(amount).toBe(expectedQuotes[index].receiveStringAmount);
         }
+    }
+
+    @step()
+    async waitForRedirectCompletion() {
+        await expect(this.page.getByText('Buy & sell')).not.toBeVisible();
+        await expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 15000 });
     }
 }

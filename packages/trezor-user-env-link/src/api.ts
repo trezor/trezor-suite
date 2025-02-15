@@ -88,6 +88,8 @@ export const MNEMONICS = {
     mnemonic_abandon:
         'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about',
     mnemonic_immune: 'immune enlist rule measure fan swarm mandate track point menu security fan',
+    mnemonic_academic:
+        'academic again academic academic academic academic academic academic academic academic academic academic academic academic academic academic academic pecan provide remember',
 };
 
 export const DEFAULT_BRIDGE_VERSION = '2.0.33';

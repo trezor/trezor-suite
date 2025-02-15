@@ -16,12 +16,11 @@ const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en', 2)}`;
 const { receiveAddress, paymentMethodName } = buyTradeBTC.trade;
 
 test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => {
-    test.beforeEach(async ({ page, marketPage, onboardingPage, dashboardPage, walletPage }) => {
-        await marketPage.mockInvity();
-        await marketPage.mockInvityTrade(buyTradeBTC, invityEndpoint.buyTrade);
+    test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage, walletPage }) => {
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesBTC });
         });
+        await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeBTC);
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
         await walletPage.openTrading();
@@ -29,7 +28,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
 
     test('Buy Bitcoin from compared offer', async ({ marketPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
-            await marketPage.setYouPayAmount(fiatAmount);
+            await marketPage.setYouBuyAmount(fiatAmount);
             await expect(marketPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
             await expect(marketPage.quoteProvider).toHaveText(bestBuyProvider);
             await marketPage.compareButton.click();
@@ -54,9 +53,9 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
         });
     });
 
-    test('Buy Bitcoin from best offer', async ({ page, marketPage }) => {
+    test('Buy Bitcoin from best offer', async ({ page, marketPage, tradingMock }) => {
         await test.step('Request a trade', async () => {
-            await marketPage.setYouPayAmount(fiatAmount);
+            await marketPage.setYouBuyAmount(fiatAmount);
             await marketPage.buyBestOfferButton.click();
             await marketPage.confirmTrade();
         });
@@ -64,7 +63,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
         await page.clock.install();
 
         await test.step('Confirm the trade and get redirected to transaction detail', async () => {
-            await marketPage.changeBuyWatchResponseTo('SUBMITTED');
+            await tradingMock.changeBuyWatchResponseTo('SUBMITTED');
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
             const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
             await marketPage.confirmTradeButton.click();
@@ -81,7 +80,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
         });
 
         await test.step('Wait 30s for watch refresh and change of status to Approved', async () => {
-            await marketPage.changeBuyWatchResponseTo('SUCCESS');
+            await tradingMock.changeBuyWatchResponseTo('SUCCESS');
             await page.clock.fastForward(marketPage.watchPeriod);
             await expect(marketPage.transactionDetailStatus).toHaveText('Approved');
             await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);

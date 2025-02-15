@@ -1,6 +1,5 @@
-import { Request, Route } from '@playwright/test';
-
 import { localizeNumber } from '@suite-common/wallet-utils';
+import { MNEMONICS } from '@trezor/trezor-user-env-link';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
@@ -9,14 +8,7 @@ import {
     sellQuotesSolana,
     sellTradeSolana,
 } from '../../fixtures/invity';
-import {
-    getSignatureStatusesResponse,
-    sendTransactionResponse,
-} from '../../fixtures/solana-responses';
 import { expect, test } from '../../support/fixtures';
-
-const mnemonic =
-    'academic again academic academic academic academic academic academic academic academic academic academic academic academic academic academic academic pecan provide remember';
 
 // Expected values based on our mocked responses
 const fiatAmount = localizeNumber(sellQuotesSolana[0].fiatStringAmount, 'en', 2, 2);
@@ -31,44 +23,27 @@ const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeSolana.trade;
 const toastText = `${formattedCryptoAmount} sent from Solana #1`;
 
-function mockSolanaSendRequests(route: Route, request: Request) {
-    const method = request.method();
-    const postData = request.postData();
-
-    if (method === 'POST' && postData) {
-        const postDataJson = JSON.parse(postData);
-
-        //IMPORTANT: Mocking this request prevents from actually sending crypto
-        if (postDataJson.method === 'sendTransaction') {
-            route.fulfill({ json: sendTransactionResponse(postDataJson.id) });
-
-            return;
-        }
-
-        if (postDataJson.method === 'getSignatureStatuses') {
-            route.fulfill({ json: getSignatureStatusesResponse(postDataJson.id) });
-
-            return;
-        }
-    }
-}
-
 test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({
-        emulatorSetupConf: { mnemonic, passphrase_protection: true },
+        emulatorSetupConf: { mnemonic: MNEMONICS.mnemonic_academic, passphrase_protection: true },
     });
     test.beforeEach(
-        async ({ page, marketPage, onboardingPage, dashboardPage, settingsPage, walletPage }) => {
-            if (!process.env.PASSPHRASE) {
-                throw new Error(
-                    'PASSPHRASE not provided in env variables. Check docs/tests/e2e-playwright-suite.md.',
-                );
-            }
-            await marketPage.mockInvity();
-            await marketPage.mockInvityTrade(sellTradeSolana, invityEndpoint.sellTrade);
+        async ({
+            page,
+            marketPage,
+            tradingMock,
+            onboardingPage,
+            dashboardPage,
+            settingsPage,
+            walletPage,
+        }) => {
             await page.route(invityEndpoint.sellQuotes, async route => {
                 await route.fulfill({ json: sellQuotesSolana });
             });
+            await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeSolana);
+            //IMPORTANT: Mocking this request prevents from actually sending crypto
+            await tradingMock.routeSolanaSendRequests();
+            //TODO: Rework watch routing for sell tests. Eveyrone should point to QA passphrase wallet.
             await page.route(invityEndpoint.sellWatch, async route => {
                 await route.fulfill({
                     json: {
@@ -89,11 +64,9 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
         },
     );
 
-    test('Sell Solana', async ({ page, marketPage, devicePrompt, trezorUserEnvLink }) => {
+    test('Sell Solana', async ({ page, marketPage, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
-            await marketPage.selectCountryOfResidence('CZ');
-            await marketPage.youPayCryptoInput.fill(cryptoAmount);
-            await marketPage.waitForSellOffersSync();
+            await marketPage.setYouSellAmount(cryptoAmount, 'solana');
             await expect(marketPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(marketPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
         });
@@ -102,10 +75,8 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
             await marketPage.formSellButton.click();
             await marketPage.sellTermsConfirmButton.click();
         });
-        await test.step('Wait for the redirection to complete', async () => {
-            await expect(page.getByText('Buy & sell')).not.toBeVisible();
-            await expect(page.getByText('Buy & sell')).toBeVisible({ timeout: 15_000 });
-        });
+
+        await marketPage.waitForRedirectCompletion();
 
         await test.step('Verify all confirmation values', async () => {
             await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
@@ -120,20 +91,12 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
         });
 
         await test.step('Initiate send', async () => {
-            await marketPage.confirmTradeButton.click();
-            await expect(devicePrompt.sellButton).toBeDisabled();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await marketPage.initiateSendConfirmation();
             await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(formattedCryptoAmount);
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
-            await expect(devicePrompt.sellButton).toBeEnabled();
         });
 
+        // Thanks to our mocked responses, the crypto is actually not send.
         await test.step('Send crypto to provider', async () => {
-            const solUrlPattern = /^https:\/\/sol\d+\.trezor\.io\//;
-            //IMPORTANT: Mocking this request prevents from actually sending crypto
-            await page.route(solUrlPattern, mockSolanaSendRequests);
             await page.clock.install();
             await devicePrompt.sellButton.click();
             await expect(devicePrompt.sellButton).toHaveText('Confirming transaction');

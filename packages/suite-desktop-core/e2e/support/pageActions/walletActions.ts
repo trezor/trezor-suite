@@ -118,14 +118,14 @@ export class WalletActions {
     @step()
     async openTrading(params: WalletParams = {}) {
         await this.accountButton(params).click();
-        //TODO: #16073 We cannot set resolution for Electron. on CI button is hidden under dropdown due to a breakpoint
-        const isBuyButtonHidden = !(await this.tradingBuyButton.isVisible());
-        if (isBuyButtonHidden) {
-            await this.walletExtraDropDown.click();
-            await this.tradingDropdownBuyButton.click();
-        } else {
-            await this.tradingBuyButton.click();
-        }
+        await this.tradingBuyButton.click();
+    }
+
+    @step()
+    async openSellTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
+        await this.accountButton({ symbol, tokens: true }).click();
+        await this.page.getByRole('row', { name: tokenName }).getByRole('button').first().click();
+        await this.page.getByTestId('@trading/tokens/sell-button').click();
     }
 
     @step()

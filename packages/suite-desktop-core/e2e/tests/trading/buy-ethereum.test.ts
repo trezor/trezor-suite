@@ -13,12 +13,11 @@ const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en', 2)}`;
 const { receiveAddress, paymentMethodName } = buyTradeEthereum.trade;
 
 test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, () => {
-    test.beforeEach(async ({ page, marketPage, onboardingPage, dashboardPage }) => {
-        await marketPage.mockInvity();
-        await marketPage.mockInvityTrade(buyTradeEthereum, invityEndpoint.buyTrade);
+    test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage }) => {
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesEthereum });
         });
+        await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeEthereum);
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
     });
@@ -35,7 +34,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
         await test.step('Request to buy Ethereum', async () => {
             await walletPage.tradingBuyButton.click();
             await marketPage.selectAccount('Ethereum', 'eth');
-            await marketPage.setYouPayAmount(fiatAmount, 'ethereum');
+            await marketPage.setYouBuyAmount(fiatAmount, 'ethereum');
             await expect(marketPage.bestOfferAmount).toHaveText(formattedCryptoAmount);
             await expect(marketPage.quoteProvider).toHaveText(provider);
             await marketPage.buyBestOfferButton.click();
@@ -80,10 +79,10 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
             //     await marketPage.confirmTradeButton.click();
             // });
 
+            // await marketPage.waitForRedirectCompletion();
+
             // await test.step('Verify transaction detail', async () => {
-            //     await expect(marketPage.transactionDetailStatus).toHaveText('Approved', {
-            //         timeout: 15_000,
-            //     });
+            //     await expect(marketPage.transactionDetailStatus).toHaveText('Approved');
             //     await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
             //     await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
             //     await expect(marketPage.confirmationProvider).toHaveText(provider);
