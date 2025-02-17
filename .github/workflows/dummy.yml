@@ -22,4 +22,4 @@ jobs:
         if: ${{ github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/run-tests')) }}
         run: |
           echo "Test triggered by PR creation or /run-tests comment"
-          sleep 120  # Simulate a long-running test
+          sleep 30  # Simulate a long-running test
