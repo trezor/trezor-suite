@@ -93,8 +93,7 @@
         "@trezor/utxo-lib": "workspace:*",
         "blakejs": "^1.2.1",
         "bs58": "^6.0.0",
-        "bs58check": "^4.0.0",
-        "cross-fetch": "^4.0.0"
+        "bs58check": "^4.0.0"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.24.7",

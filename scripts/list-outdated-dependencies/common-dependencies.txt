@@ -37,7 +37,6 @@ bn.js
 chalk
 concurrently
 copy-webpack-plugin
-cross-fetch
 depcheck
 dotenv
 escape-string-regexp
