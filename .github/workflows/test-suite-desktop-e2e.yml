@@ -6,6 +6,7 @@ on:
     branches:
       - develop
     paths-ignore:
+      - "yarn.lock"
       - "suite-native/**"
       - "packages/connect*/**"
       - "packages/react-native-usb/**"
@@ -50,7 +51,7 @@ jobs:
             CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
 
     steps:
-        # Electron requires unprivileged user namespaces to function properly. 
+        # Electron requires unprivileged user namespaces to function properly.
         # Disabling this security rule allows Electron to create sandboxed processes
         # without requiring elevated privileges, which is essential for running the application.
         # This is workaround until electron builder solves this issue in future release.

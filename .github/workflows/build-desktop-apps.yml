@@ -5,6 +5,7 @@ on:
     branches:
       - develop
     paths-ignore:
+      - "yarn.lock"
       - "suite-native/**"
       - "docs/**"
       - "docker/**"
