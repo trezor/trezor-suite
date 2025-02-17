@@ -9,6 +9,7 @@ import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ReceiveAccount } from '../../../types';
+import { AccountAddress } from '../AccountAddress';
 
 export type AccountListItemProps = {
     symbol: NetworkSymbol;
@@ -48,7 +49,16 @@ export const AccountListItem = ({
 
     const shouldDisplayCaret = !isAddressDetail && !!account.addresses;
     const shouldDisplayBalance = !isAddressDetail || address?.balance != null;
-    const label = isAddressDetail ? address.address : account.accountLabel;
+    const label = isAddressDetail ? (
+        <AccountAddress address={address.address} form="full" />
+    ) : (
+        account.accountLabel
+    );
+    const info = isAddressDetail ? (
+        address.path
+    ) : (
+        <DisplaySymbolFormatter value={symbol} areAmountUnitsEnabled={false} />
+    );
 
     return (
         <Pressable
@@ -91,7 +101,7 @@ export const AccountListItem = ({
                             variant="hint"
                             style={applyStyle(labelTextStyle, { textColor: 'textSubdued' })}
                         >
-                            <DisplaySymbolFormatter value={symbol} areAmountUnitsEnabled={false} />
+                            {info}
                         </Text>
                         {shouldDisplayBalance && cryptoValue && (
                             <CryptoToFiatAmountFormatter

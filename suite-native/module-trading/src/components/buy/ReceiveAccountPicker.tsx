@@ -7,6 +7,7 @@ import { Color } from '@trezor/theme';
 
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
 import { ReceiveAccount } from '../../types';
+import { AccountAddress } from '../general/AccountAddress';
 import { AccountSheet } from '../general/AccountSheet/AccountSheet';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 
@@ -60,9 +61,13 @@ const ReceiveAccountPickerRight = ({
     return (
         <>
             <RightText color="textSubdued">{selectedAccountLabel}</RightText>
-            <RightText color="textSubdued" variant="hint">
-                {selectedAddress}
-            </RightText>
+            <AccountAddress
+                address={selectedAddress}
+                form="short"
+                color="textSubdued"
+                variant="hint"
+                textAlign="right"
+            />
         </>
     );
 };
