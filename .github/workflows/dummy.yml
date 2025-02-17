@@ -1,33 +1,25 @@
-name: Dummy Workflow
+name: Dummy PR Test Workflow
 
 on:
   pull_request:
-    types: [opened, synchronize]  # Triggers when PR is created or updated
+    types: [opened]  # Trigger only on PR creation
   issue_comment:
-    types: [created]  # Triggered when a comment is created
-  push:
-    branches:
-      - release/2*  # Separate trigger for the release branch
+    types: [created]  # Trigger on comment creation
 
 jobs:
-  dummy-job:
-    if: >
-      github.event_name != 'issue_comment' || 
-      contains(github.event.comment.body, '/run-tests')
+  test:
     runs-on: ubuntu-latest
-
     concurrency:
-      group: >
-        ${{
-          github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) ||
-          github.event_name == 'issue_comment' && format('pr-{0}-comment', github.event.issue.number) ||
-          github.ref
-        }}
-      cancel-in-progress: false  # Don't cancel previous runs
+      group: ${{ github.event.pull_request.number || github.ref }}  # Group by PR number or branch reference
+      cancel-in-progress: false  # Don't cancel any in-progress runs
 
     steps:
-      - name: Print event details
-        run: echo "Triggered ${{ github.event_name }}"
+      - name: Check if it's an issue comment with /run-tests
+        if: ${{ github.event_name == 'issue_comment' && contains(github.event.comment.body, '/run-tests') }}
+        run: echo "Tests are being triggered by a comment."
 
-      - name: Simulate long test run
-        run: sleep 120  # Simulate a long-running test
+      - name: Simulate test run
+        if: ${{ github.event_name == 'pull_request' || (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/run-tests')) }}
+        run: |
+          echo "Test triggered by PR creation or /run-tests comment"
+          sleep 120  # Simulate a long-running test
