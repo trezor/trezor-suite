@@ -141,3 +141,6 @@ Test reports are uploaded to [currents.dev](https://app.currents.dev/)
 ### Artifacts on CI
 
 Every Playwright test run contains attached artifact of both Playwright report and docker logs. Download, unpack and show with `yarn playwright show-report ./path/to/report`
+
+
+blablabladelete delete
