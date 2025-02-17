@@ -1,3 +1,4 @@
+import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { RbfTransactionType } from '@suite-common/wallet-types';
 import { Box, Card, Column, IconCircle, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -12,6 +13,7 @@ import { TrezorLink } from '../../../../TrezorLink';
 
 export type ReplaceByFeeFailedOriginalTxConfirmedProps = {
     type: RbfTransactionType;
+    networkSymbol: NetworkSymbol;
 };
 
 const titleMap: Record<ReplaceByFeeFailedOriginalTxConfirmedProps['type'], TranslationKey> = {
@@ -31,6 +33,7 @@ const helpLink: Record<ReplaceByFeeFailedOriginalTxConfirmedProps['type'], Url> 
 
 export const ReplaceByFeeFailedOriginalTxConfirmed = ({
     type,
+    networkSymbol,
 }: ReplaceByFeeFailedOriginalTxConfirmedProps) => (
     <Card fillType="flat">
         <Column gap={spacings.xs}>
@@ -41,7 +44,10 @@ export const ReplaceByFeeFailedOriginalTxConfirmed = ({
             <Text typographyStyle="titleSmall">
                 <Translation id={titleMap[type]} />
             </Text>
-            <Translation id={descriptionMap[type]} />
+            <Translation
+                id={descriptionMap[type]}
+                values={{ network: networks[networkSymbol].name }}
+            />
 
             <TrezorLink typographyStyle="hint" href={helpLink[type]} icon="arrowUpRight">
                 <Translation id="TR_LEARN_MORE" />

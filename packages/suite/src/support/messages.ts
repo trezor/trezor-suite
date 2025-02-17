@@ -6466,7 +6466,7 @@ export default defineMessages({
     TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION: {
         id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION',
         defaultMessage:
-            "The transaction couldn’t be replaced as it's just been confirmed on the Bitcoin network.",
+            "The transaction couldn’t be replaced as it's just been confirmed on the {network} network.",
     },
     TR_BUMP_FEE_SUBTEXT: {
         id: 'TR_BUMP_FEE_SUBTEXT',

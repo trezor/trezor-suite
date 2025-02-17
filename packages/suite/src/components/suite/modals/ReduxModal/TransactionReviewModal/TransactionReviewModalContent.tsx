@@ -243,7 +243,7 @@ export const TransactionReviewModalContent = ({
         }
 
         if (isRbfConfirmedError && isRbfTransaction(precomposedTx)) {
-            return <ReplaceByFeeFailedOriginalTxConfirmed type={precomposedTx.rbfType} />;
+            return <ReplaceByFeeFailedOriginalTxConfirmed type={precomposedTx.rbfType} networkSymbol={symbol}/>;
         }
 
         return (

@@ -103,7 +103,10 @@ export const CancelTransactionModal = ({
                 onBackClick={onBackClick}
             >
                 {isTxConfirmed ? (
-                    <ReplaceByFeeFailedOriginalTxConfirmed type="cancel" />
+                    <ReplaceByFeeFailedOriginalTxConfirmed
+                        type="cancel"
+                        networkSymbol={tx.symbol}
+                    />
                 ) : (
                     <Column gap={spacings.md}>
                         <CancelTransaction tx={tx} selectedAccount={selectedAccount} />
