@@ -4,6 +4,7 @@ import {
     type AccountType,
     type Network,
     type NetworkSymbol,
+    NetworkType,
     getMainnets,
     getTestnets,
     networkSymbolCollection,
@@ -39,6 +40,8 @@ export const networkSymbolsWhitelistMap: Record<'mainnet' | 'testnet', readonly 
     ],
     testnet: ['test', 'regtest', 'tsep', 'thol', 'dsol', 'tada', 'txrp'],
 };
+
+export const sendDisabledNetworkTypes: NetworkType[] = ['cardano'];
 
 export const discoverySupportedNetworks = [
     ...networkSymbolsWhitelistMap.mainnet,

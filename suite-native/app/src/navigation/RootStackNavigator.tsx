@@ -79,7 +79,6 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.DevUtilsStack}
                 component={DevUtilsStackNavigator}
             />
-            <RootStack.Screen name={RootStackRoutes.SendStack} component={SendStackNavigator} />
             <RootStack.Screen name={RootStackRoutes.ConnectPopup} component={ConnectPopupScreen} />
             <RootStack.Screen
                 name={RootStackRoutes.SettingsScreenStack}
@@ -107,6 +106,7 @@ export const RootStackNavigator = () => {
                     name={RootStackRoutes.ReceiveStack}
                     component={ReceiveStackNavigator}
                 />
+                <RootStack.Screen name={RootStackRoutes.SendStack} component={SendStackNavigator} />
                 <RootStack.Screen
                     name={RootStackRoutes.DeviceSettingsStack}
                     component={DeviceSettingsStackNavigator}

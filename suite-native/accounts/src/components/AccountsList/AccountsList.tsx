@@ -21,6 +21,7 @@ type AccountsListProps = {
     filterValue?: string;
     hideTokensIntoModal?: boolean;
     isStakingPressable?: boolean;
+    isSendFilterEnabled?: boolean;
 };
 
 export const AccountsList = ({
@@ -28,9 +29,14 @@ export const AccountsList = ({
     filterValue = '',
     hideTokensIntoModal = false,
     isStakingPressable = false,
+    isSendFilterEnabled = false,
 }: AccountsListProps) => {
     const groupedAccounts = useSelector((state: NativeAccountsRootState) =>
-        selectFilteredDeviceAccountsGroupedByNetworkAccountType(state, filterValue),
+        selectFilteredDeviceAccountsGroupedByNetworkAccountType(
+            state,
+            filterValue,
+            isSendFilterEnabled,
+        ),
     );
     const groups = useMemo(() => Object.entries(groupedAccounts), [groupedAccounts]);
     const bottomSheetAccountAtom = useMemo(() => atom<Account | null>(null), []);

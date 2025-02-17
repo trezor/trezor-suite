@@ -87,6 +87,7 @@ export const en = {
         },
         buttons: {
             receive: 'Receive',
+            send: 'Send',
         },
         rememberModeModal: {
             title: 'Enable view-only to check balances after you disconnect your Trezor',
@@ -1140,7 +1141,7 @@ export const en = {
     },
     moduleSend: {
         accountsList: {
-            title: 'Send from',
+            title: 'Send',
         },
         outputs: {
             title: '{assetName} Send',

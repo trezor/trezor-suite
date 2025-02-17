@@ -9,10 +9,6 @@ import {
 
 import { SendScreen } from '../components/SendScreen';
 
-// TODO: So far we do not want enable send form for any other networkS than Bitcoin-like coins.
-// This filter will be removed in a follow up PR.
-const BITCOIN_LIKE_FILTER = 'bitcoin';
-
 export const SendAccountsScreen = ({
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAccounts>) => {
@@ -23,15 +19,18 @@ export const SendAccountsScreen = ({
             accountKey: account.key,
         });
 
-    // TODO: move text content to @suite-native/intl package when is copy ready
     return (
         <SendScreen
-            screenHeader={<ScreenHeader content={translate('moduleSend.accountsList.title')} />}
+            screenHeader={
+                <ScreenHeader
+                    content={translate('moduleSend.accountsList.title')}
+                    closeActionType="close"
+                />
+            }
         >
-            {/* TODO: Enable filtering same as receive screen account list has. */}
             <AccountsList
                 onSelectAccount={navigateToSendFormScreen}
-                filterValue={BITCOIN_LIKE_FILTER}
+                isSendFilterEnabled
                 hideTokensIntoModal
             />
         </SendScreen>

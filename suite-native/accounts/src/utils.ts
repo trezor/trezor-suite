@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-config';
 import { formattedAccountTypeMap } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { orderedAccountTypes } from '@suite-native/config';
+import { orderedAccountTypes, sendDisabledNetworkTypes } from '@suite-native/config';
 
 const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>> = {
     normal: 'default',
@@ -66,6 +66,14 @@ export const filterAccountsByLabelAndNetworkNames = (
 
     return A.filter(accounts, account => isFilterValueMatchingAccount(account, filterValue));
 };
+
+export const filterSendAvailableAccounts = (accounts: readonly Account[]) =>
+    A.filter(
+        accounts,
+        account =>
+            !sendDisabledNetworkTypes.includes(account.networkType) &&
+            Number(account.availableBalance) > 0,
+    );
 
 /**
  * Returns object with key equal string composed by network name and account type. Values are arrays of corresponding accounts.

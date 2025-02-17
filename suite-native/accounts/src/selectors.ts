@@ -37,6 +37,7 @@ import type { StaticSessionId } from '@trezor/connect';
 import { AccountSelectBottomSheetSection, GroupedByTypeAccounts } from './types';
 import {
     filterAccountsByLabelAndNetworkNames,
+    filterSendAvailableAccounts,
     groupAccountsByNetworkAccountType,
     sortAccountsByNetworksAndAccountTypes,
 } from './utils';
@@ -55,12 +56,20 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRoo
 export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMemoizedSelector(
     [
         selectVisibleDeviceAccounts,
-        (_state: NativeAccountsRootState, filterValue: string) => filterValue,
+        (
+            _state: NativeAccountsRootState,
+            filterValue: string,
+            isSendFilterEnabled: boolean = false,
+        ) => ({
+            filterValue,
+            isSendFilterEnabled,
+        }),
     ],
-    (accounts, filterValue) =>
+    (accounts, { filterValue, isSendFilterEnabled }) =>
         pipe(
             accounts,
             sortAccountsByNetworksAndAccountTypes,
+            isSendFilterEnabled ? filterSendAvailableAccounts : accountsSorted => accountsSorted,
             accountsSorted => filterAccountsByLabelAndNetworkNames(accountsSorted, filterValue),
             groupAccountsByNetworkAccountType,
         ) as GroupedByTypeAccounts,
@@ -214,3 +223,8 @@ export const selectFreshAccountAddress = (
 
     return getFirstFreshAddress(account, [], pendingAddresses, isAccountUtxoBased);
 };
+
+export const selectHasDeviceAnySendAvailableAccount = createMemoizedSelector(
+    [selectVisibleDeviceAccounts],
+    accounts => pipe(accounts, filterSendAvailableAccounts, A.isNotEmpty),
+);
