@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useFormatters } from '@suite-common/formatters';
+import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsListItemBase, StakingBadge } from '@suite-native/accounts';
@@ -55,8 +55,7 @@ const CryptoAmount = React.memo(({ symbol }: AssetItemSubComponentProps) => {
             value={cryptoValue}
             symbol={symbol}
             // Every asset crypto amount is rounded to 8 decimals to prevent UI overflow.
-
-            decimals={8}
+            decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
             testID={`@assets/cryptoAmount/${symbol}`}
         />
     );

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { Box, Card, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
@@ -93,7 +94,7 @@ export const StakePendingCard = ({
                         <CryptoAmountFormatter
                             value={totalStakePending}
                             symbol={symbol}
-                            decimals={8}
+                            decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
                             color="textDefault"
                             variant="highlight"
                         />

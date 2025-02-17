@@ -27,6 +27,8 @@ export type CryptoAmountFormatterDataContext = {
     isEllipsisAppended?: boolean;
 };
 
+export const BASE_CRYPTO_MAX_DISPLAYED_DECIMALS = 8;
+
 const truncateDecimals = (value: string, maxDecimals: number, isEllipsisAppended: boolean) => {
     const parts = value.split('.');
     const [integerPart, fractionalPart] = parts;
@@ -63,7 +65,7 @@ const convertToUnit = (
         !isBalance &&
         (bitcoinAmountUnit !== PROTO.AmountUnit.SATOSHI || !areAmountUnitsSupported)
     ) {
-        return formatAmount(value, decimals ?? 8);
+        return formatAmount(value, decimals ?? BASE_CRYPTO_MAX_DISPLAYED_DECIMALS);
     }
 
     return value;
@@ -83,7 +85,7 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
                 symbol,
                 isBalance = false,
                 withSymbol = true,
-                maxDisplayedDecimals = 8,
+                maxDisplayedDecimals = BASE_CRYPTO_MAX_DISPLAYED_DECIMALS,
                 isEllipsisAppended = true,
             },
             shouldRedactNumbers,
