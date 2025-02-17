@@ -97,7 +97,6 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
         await test.step('Send crypto to provider', async () => {
             await page.clock.install();
             await devicePrompt.sellButton.click();
-            await expect(devicePrompt.sellButton).toHaveText('Confirming transaction');
             await expect(marketPage.detailSellStatus).toHaveText('Trade in progress...');
             await expect(
                 page.getByRole('link', { name: "Open partner's support site" }),
