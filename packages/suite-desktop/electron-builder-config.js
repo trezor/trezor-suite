@@ -134,7 +134,7 @@ module.exports = {
         target: ['nsis'],
         signtoolOptions: {
             publisherName: ['SatoshiLabs, s.r.o.', 'Trezor Company s.r.o.'],
-            sign: '../suite-desktop-core/scripts/sign-windows.ts',
+            sign: '../suite-desktop-core/lib/sign-windows.js',
         },
     },
     linux: {
@@ -162,6 +162,6 @@ module.exports = {
         category: 'Utility',
         target: ['AppImage'],
     },
-    afterPack: '../suite-desktop-core/scripts/setElectronFuses.js',
-    afterSign: '../suite-desktop-core/scripts/notarize.ts',
+    afterPack: '../suite-desktop-core/lib/setElectronFuses.js',
+    afterSign: '../suite-desktop-core/lib/notarize.js',
 };

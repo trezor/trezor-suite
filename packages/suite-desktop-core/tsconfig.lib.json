@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "compilerOptions": {
+        "outDir": "lib"
+    },
+    "include": ["./scripts"],
+    "references": [
+        {
+            "path": "../eslint"
+        }
+    ]
+}

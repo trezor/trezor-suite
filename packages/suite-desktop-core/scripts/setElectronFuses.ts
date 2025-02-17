@@ -1,14 +1,15 @@
-const { flipFuses, FuseV1Options, FuseVersion } = require('@electron/fuses');
-const path = require('path');
+import { FuseV1Options, FuseVersion, flipFuses } from '@electron/fuses';
+import type { Hooks } from 'app-builder-lib';
+import path from 'path';
 
 // copied from https://github.com/electron-userland/electron-builder/blob/04be5699c664e6a93e093b820a16ad516355b5c7/packages/app-builder-lib/src/platformPackager.ts#L430-L434
 const binaryExtensionByPlaformNameMap = {
     darwin: '.app',
     win32: '.exe',
     linux: '',
-};
+} as const;
 
-exports.default = async function afterPack(context) {
+const afterPackHookSetElectronFuses: Hooks['afterPack'] = async context => {
     const { electronPlatformName, appOutDir } = context;
 
     /*
@@ -38,3 +39,5 @@ exports.default = async function afterPack(context) {
 
     console.log('Successfully set electron fuses');
 };
+
+export default afterPackHookSetElectronFuses;

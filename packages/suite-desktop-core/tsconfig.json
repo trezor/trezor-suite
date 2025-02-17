@@ -5,7 +5,12 @@
         "moduleResolution": "node",
         "outDir": "libDev"
     },
-    "include": ["src", "e2e", "**/*.json"],
+    "include": [
+        "src",
+        "e2e",
+        "scripts",
+        "**/*.json"
+    ],
     "references": [
         {
             "path": "../../suite-common/message-system"

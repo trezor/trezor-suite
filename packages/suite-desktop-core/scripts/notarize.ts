@@ -1,8 +1,7 @@
-/* eslint-disable no-console */
+import { notarize } from '@electron/notarize';
+import type { Hooks } from 'app-builder-lib';
 
-const { notarize } = require('@electron/notarize');
-
-exports.default = context => {
+const notarizeAfterSignHook: Hooks['afterSign'] = context => {
     const { electronPlatformName, appOutDir } = context;
 
     if (electronPlatformName !== 'darwin') {
@@ -25,5 +24,8 @@ exports.default = context => {
         appleId: process.env.APPLEID,
         appleIdPassword: process.env.APPLEIDPASS,
         teamId: process.env.APPLETEAMID,
-    });
+        // TODO fix: notarize tool is known to be working, but TS fails: no overload matches this call
+    } as any);
 };
+
+export default notarizeAfterSignHook;
