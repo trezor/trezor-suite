@@ -55,7 +55,7 @@ export const invityRequest = {
     sellWatchPayload,
 };
 
-export const invityResponses = {
+export const invityGeneralResponses = {
     [invityEndpoint.exchangeCoins]: exchangeCoins,
     [invityEndpoint.exchangeList]: exchangeList,
     [invityEndpoint.exchangeQuotes]: exchangeQuotes,

@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 import { cloneDeep } from 'lodash';
 
-import { invityEndpoint, invityResponses } from '../../fixtures/invity';
+import { invityEndpoint, invityGeneralResponses } from '../../fixtures/invity';
 import { SellTradeResponse, TradeResponse } from '../../fixtures/invity/types';
 import {
     getSignatureStatusesResponse,
@@ -14,9 +14,10 @@ export class TradingMock {
         this.validatePassphraseEnv();
     }
 
+    // Common responses for all trading tests.
     @step()
     async routeInvityGeneralEndpoints() {
-        for (const [url, response] of Object.entries(invityResponses)) {
+        for (const [url, response] of Object.entries(invityGeneralResponses)) {
             await this.page.route(url, async route => {
                 await route.fulfill({ json: response });
             });
@@ -38,6 +39,9 @@ export class TradingMock {
         });
     }
 
+    // Solana sell flow uses Solana provider to send transactions.
+    // We mock these requests to prevent sending real transactions.
+    // Thanks to that we are able to test the whole sell flow without sending real crypto.
     @step()
     async routeSolanaSendRequests() {
         const solUrlPattern = /^https:\/\/sol\d+\.trezor\.io\//;
@@ -73,6 +77,7 @@ export class TradingMock {
     }
 
     // This modification allows us to skip the provider's part of the flow and continue further.
+    // Partner's URL is replaced with Suite's URL redirect. And we also set correct Ids
     createRedirectedTradeResponse = (
         tradeResponse: TradeResponse | SellTradeResponse,
         tradeRequest: any,
