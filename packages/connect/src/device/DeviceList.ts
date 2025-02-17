@@ -10,7 +10,6 @@ import {
     createDeferred,
     getSynchronize,
     isNotUndefined,
-    resolveAfter,
     typedObjectKeys,
 } from '@trezor/utils';
 
@@ -19,6 +18,7 @@ import { DEVICE, TransportError, TransportInfo } from '../events';
 import { Device } from './Device';
 import { ConnectSettings, DeviceUniquePath, StaticSessionId } from '../types';
 import { createTransportList } from './TransportList';
+import { TransportManager } from './TransportManager';
 import { initLog } from '../utils/debug';
 
 const createAuthPenaltyManager = (priority: number) => {
@@ -131,10 +131,8 @@ type InitParams = Pick<
     'transports' | 'pendingTransportEvent' | 'transportReconnect'
 >;
 
-type ApiTypeMap<T> = Partial<Record<TransportApiType, T>>;
-
 export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDeviceList {
-    private readonly transport: ApiTypeMap<Transport> = {};
+    private readonly transportManagers: Partial<Record<TransportApiType, TransportManager>> = {};
 
     // array of transport that might be used in this environment
     private transports: Transport[] = [];
@@ -147,55 +145,27 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private updateTransports;
 
+    private getConnectedTransports() {
+        return Object.values(this.transportManagers)
+            .map(manager => manager.get())
+            .filter(isNotUndefined);
+    }
+
     isConnected(): this is DeviceList {
-        return !!Object.keys(this.transport).length;
+        return !!this.getConnectedTransports().length;
     }
 
     pendingConnection() {
-        const pending = Object.values(this.locks)
-            .map(({ promise }) => promise)
+        const pending = Object.values(this.transportManagers)
+            .map(manager => manager.pending())
             .filter(isNotUndefined);
 
         if (pending.length) return Promise.all(pending).then(() => {});
     }
 
     getActiveTransports() {
-        return Object.values(this.transport).map(getTransportInfo);
+        return this.getConnectedTransports().map(getTransportInfo);
     }
-
-    private readonly locks: ApiTypeMap<{
-        promise?: Promise<void>;
-        abort?: AbortController;
-        abortMessage?: string;
-        sequence: number;
-    }> = {};
-
-    private async transportLock<T extends void>(
-        apiType: TransportApiType,
-        abortMessage: string,
-        action: (signal: AbortSignal) => Promise<T>,
-    ): Promise<T> {
-        const lock = this.locks[apiType] ?? (this.locks[apiType] = { sequence: 0 });
-        lock.abortMessage = abortMessage;
-        const sequence = ++lock.sequence;
-
-        while (lock.promise) {
-            lock.abort?.abort(new Error(abortMessage));
-            await lock.promise.catch(() => {});
-        }
-
-        if (sequence !== lock.sequence) return Promise.reject(new Error(lock.abortMessage));
-
-        lock.abort = new AbortController();
-        lock.promise = action(lock.abort.signal).finally(() => {
-            delete lock.abort;
-            delete lock.promise;
-        });
-
-        return lock.promise as Promise<T>;
-    }
-
-    private readonly scheduledUpgradeChecks: ApiTypeMap<ReturnType<typeof setTimeout>> = {};
 
     constructor({
         messages,
@@ -252,122 +222,57 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         device?.usedElsewhere();
     }
 
-    async init(initParams: InitParams = {}) {
+    private getOrCreateTransportManager(apiType: TransportApiType) {
+        if (!this.transportManagers[apiType]) {
+            const manager = new TransportManager({
+                startTransport: this.startTransport.bind(this),
+                stopTransport: this.stopTransport.bind(this),
+            });
+            manager.on(TRANSPORT.START, transport =>
+                this.emit(TRANSPORT.START, getTransportInfo(transport)),
+            );
+            manager.on(TRANSPORT.ERROR, error => this.emit(TRANSPORT.ERROR, { apiType, error }));
+            this.transportManagers[apiType] = manager;
+        }
+
+        return this.transportManagers[apiType];
+    }
+
+    async init({ transports, transportReconnect, pendingTransportEvent }: InitParams = {}) {
         // throws when unknown transport is requested, in that case nothing is changed
-        this.transports = this.updateTransports(this.transports, initParams.transports);
+        this.transports = this.updateTransports(this.transports, transports);
 
         const promises = this.transports
             .map(t => t.apiType)
-            .concat(typedObjectKeys(this.transport))
-            .concat(typedObjectKeys(this.locks))
+            .concat(typedObjectKeys(this.transportManagers))
             .filter(arrayDistinct)
             .map(apiType =>
-                this.transportLock(apiType, 'New init', signal =>
-                    this.createInitPromise(apiType, initParams, signal),
-                ),
+                this.getOrCreateTransportManager(apiType).init({
+                    transports: this.transports.filter(t => t.apiType === apiType),
+                    transportReconnect,
+                    pendingTransportEvent,
+                }),
             );
 
         await Promise.all(promises);
     }
 
-    private async createInitPromise(
-        apiType: TransportApiType,
-        initParams: InitParams,
-        abortSignal: AbortSignal,
+    private async startTransport(
+        transport: Transport,
+        pendingTransportEvent: boolean,
+        signal: AbortSignal,
     ) {
         try {
-            const transports = this.transports.filter(t => t.apiType === apiType);
-            const transport = transports.length
-                ? await this.selectTransport(transports, abortSignal)
-                : undefined;
-            const oldTransport = this.transport[apiType];
-            if (oldTransport !== transport) {
-                if (oldTransport) {
-                    delete this.transport[apiType];
-                    await this.stopTransport(oldTransport);
-                    if (!transport) {
-                        this.emit(TRANSPORT.ERROR, { apiType, error: 'Transport disabled' });
-                    }
-                }
-
-                if (transport) {
-                    try {
-                        await this.initializeTransport(transport, initParams, abortSignal);
-                    } catch (error) {
-                        await this.stopTransport(transport);
-                        throw error;
-                    }
-
-                    transport.on(TRANSPORT.ERROR, error => {
-                        this.emit(TRANSPORT.ERROR, { apiType, error });
-                        this.transportLock(apiType, 'Transport error', async signal => {
-                            delete this.transport[apiType];
-                            await this.stopTransport(transport);
-                            if (initParams.transportReconnect) {
-                                await this.createReconnectDelay(signal);
-                                await this.createInitPromise(apiType, initParams, signal);
-                            }
-                        }).catch(() => {});
-                    });
-
-                    this.transport[apiType] = transport;
-                    this.emit(TRANSPORT.START, getTransportInfo(transport));
-                }
-            }
-            if (transport && transport !== transports[0]) {
-                // new transport started successfully or present transport kept, and it's not the most preferred one, (re)plan check
-                this.scheduleUpgradeCheck(apiType, initParams);
-            }
-        } catch (error) {
-            this.emit(TRANSPORT.ERROR, { apiType, error: error?.message });
-            if (initParams.transportReconnect && !abortSignal.aborted) {
-                this.transportLock(apiType, 'Reconnecting', async signal => {
-                    await this.createReconnectDelay(signal);
-                    await this.createInitPromise(apiType, initParams, signal);
-                }).catch(() => {});
-            }
+            await this.initializeTransport(transport, pendingTransportEvent, signal);
+        } catch (err) {
+            await this.stopTransport(transport);
+            throw err;
         }
-    }
-
-    private createReconnectDelay(signal: AbortSignal) {
-        return resolveAfter(1000, signal);
-    }
-
-    private scheduleUpgradeCheck(apiType: TransportApiType, initParams: InitParams) {
-        clearTimeout(this.scheduledUpgradeChecks[apiType]);
-        this.scheduledUpgradeChecks[apiType] = setTimeout(async () => {
-            const transport = this.transport[apiType];
-            const transports = this.transports.filter(t => t.apiType === apiType);
-            if (!transport || transport === transports[0]) return;
-            for (const t of transports) {
-                if (t === transport) break;
-                if (await t.ping()) {
-                    this.transportLock(apiType, 'Upgrading', signal =>
-                        this.createInitPromise(apiType, initParams, signal),
-                    ).catch(() => {});
-
-                    return;
-                }
-            }
-            this.scheduleUpgradeCheck(apiType, initParams);
-        }, 1000);
-    }
-
-    private async selectTransport(
-        [transport, ...rest]: Transport[],
-        signal: AbortSignal,
-    ): Promise<Transport> {
-        if (signal.aborted) throw new Error(signal.reason);
-        if (transport === this.transport[transport.apiType]) return transport;
-        const result = await transport.init({ signal });
-        if (result.success) return transport;
-        else if (rest.length) return this.selectTransport(rest, signal);
-        else throw new Error(result.error);
     }
 
     private async initializeTransport(
         transport: Transport,
-        initParams: InitParams,
+        pendingTransportEvent: boolean,
         signal: AbortSignal,
     ) {
         /**
@@ -398,7 +303,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         const descriptors = enumerateResult.payload;
 
         const waitForDevicesPromise =
-            initParams.pendingTransportEvent && descriptors.length
+            pendingTransportEvent && descriptors.length
                 ? this.waitForDevices(transport, descriptors, signal)
                 : Promise.resolve();
 
@@ -482,25 +387,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     async dispose() {
         this.removeAllListeners();
 
-        const promises = typedObjectKeys(this.transport)
-            .concat(typedObjectKeys(this.locks))
-            .filter(arrayDistinct)
-            .map(apiType =>
-                this.transportLock(apiType, 'Disposing', async () => {
-                    const transport = this.transport[apiType];
-                    if (transport) {
-                        delete this.transport[apiType];
-                        await this.stopTransport(transport);
-                    }
-                }),
-            );
+        const promises = Object.values(this.transportManagers).map(manager => manager.dispose());
 
         await Promise.all(promises);
     }
 
     private async stopTransport(transport: Transport) {
-        clearTimeout(this.scheduledUpgradeChecks[transport.apiType]);
-
         const devices = this.devices.clear(transport);
 
         // disconnect devices
@@ -522,7 +414,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     async enumerate() {
-        const promises = Object.values(this.transport).map(async transport => {
+        const promises = this.getConnectedTransports().map(async transport => {
             const res = await transport.enumerate();
 
             if (!res.success) {
