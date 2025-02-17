@@ -5,8 +5,9 @@ import { Address } from '@trezor/blockchain-link-types';
 import { ReceiveAccount } from '../../../../types';
 import { AccountListItem, AccountListItemProps } from '../AccountListItem';
 
-jest.mock('@suite-native/formatters', () => ({
-    useFiatFromCryptoValue: ({ cryptoValue }: { cryptoValue: string }) => cryptoValue,
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    selectFiatRatesByFiatRateKey: () => ({ rate: 1e8 }),
 }));
 
 describe('AccountListItem', () => {
@@ -20,7 +21,7 @@ describe('AccountListItem', () => {
         };
         const result = renderWithStore(<AccountListItem {...props} />);
 
-        await waitFor(() => expect(result.getByText('BTC')).toBeDefined());
+        await waitFor(() => expect(result.getByAccessibilityHint('Crypto Icon')).toBeDefined());
 
         return result;
     };
