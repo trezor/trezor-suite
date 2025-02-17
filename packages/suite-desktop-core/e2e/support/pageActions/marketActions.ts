@@ -90,6 +90,7 @@ export class MarketActions {
     readonly confirmationProvider: Locator;
     readonly confirmationAddress: Locator;
     readonly confirmationPaymentMethod: Locator;
+    readonly confirmationPaymentId: Locator;
     readonly confirmTradeButton: Locator;
     // Exchange
     readonly exchangeFeeDetails: Locator;
@@ -108,6 +109,7 @@ export class MarketActions {
     readonly watchPeriod = '00:30';
     // Sell
     readonly formSellButton: Locator;
+    readonly detailSellStatus: Locator;
 
     constructor(private page: Page) {
         this.devicePrompt = new DevicePromptActions(page);
@@ -162,6 +164,7 @@ export class MarketActions {
         this.confirmationProvider = this.page.getByTestId('@trading/form/info/provider');
         this.confirmationAddress = this.page.getByTestId('@trading/form/verify/address');
         this.confirmationPaymentMethod = this.page.getByTestId('@trading/form/info/payment-method');
+        this.confirmationPaymentId = this.page.getByTestId('@trading/form/verify/extra-id');
         this.confirmTradeButton = this.page.getByTestId(
             '@trading/offer/continue-transaction-button',
         );
@@ -178,6 +181,7 @@ export class MarketActions {
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
         this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
         this.formSellButton = this.page.getByTestId('@trading/form/sell-button');
+        this.detailSellStatus = this.page.getByTestId('@trading/detail-sell/status');
     }
 
     @step()

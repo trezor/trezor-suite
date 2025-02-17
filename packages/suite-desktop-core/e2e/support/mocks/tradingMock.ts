@@ -25,7 +25,7 @@ export class TradingMock {
 
     // We bypass the provider part of the flow by having a modified redirect in trade response.
     // This redirect is provided by Invity and normaly leads to provider's page.
-    // But our mocked response redirects us to transaction detail where our flow continues.
+    // But our mocked response redirects us to back to Suite where our flow continues.
     @step()
     async routeTrade(endpointUrl: string, tradeResponse: TradeResponse | SellTradeResponse) {
         await this.routeInvityGeneralEndpoints();

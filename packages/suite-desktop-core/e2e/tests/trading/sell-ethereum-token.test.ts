@@ -6,6 +6,7 @@ import {
     invityEndpoint,
     sellQuotesEthereumToken,
     sellTradeEthereumToken,
+    sellWatchEthereum,
 } from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
 
@@ -13,8 +14,8 @@ import { expect, test } from '../../support/fixtures';
 const fiatAmount = sellQuotesEthereumToken[0].fiatStringAmount;
 const cryptoAmount = sellQuotesEthereumToken[0].cryptoStringAmount;
 const provider = getCompanyNameFromList(sellQuotesEthereumToken[0].exchange, 'sellList');
-// const providerAddress = sellWatch.destinationAddress;
-// const providerPaymentId = sellWatch.destinationPaymentExtraId;
+// const providerAddress = sellWatchEthereum.destinationAddress;
+// const providerPaymentId = sellWatchEthereum.destinationPaymentExtraId;
 // const formattedCryptoAmount = `${cryptoAmount} ETH`;
 // const formattedFiatAmount = `€${fiatAmount}`;
 // const { paymentMethodName } = sellTradeEthereum.trade;
@@ -25,17 +26,25 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, 
     });
     test.beforeEach(
         async ({ page, tradingMock, onboardingPage, dashboardPage, settingsPage, walletPage }) => {
-            await page.route(invityEndpoint.sellQuotes, async route => {
-                await route.fulfill({ json: sellQuotesEthereumToken });
+            await test.step('Mocking responses', async () => {
+                await page.route(invityEndpoint.sellQuotes, async route => {
+                    await route.fulfill({ json: sellQuotesEthereumToken });
+                });
+                await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeEthereumToken);
+                await page.route(invityEndpoint.sellWatch, async route => {
+                    await route.fulfill({ json: sellWatchEthereum });
+                });
             });
-            await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeEthereumToken);
             await onboardingPage.completeOnboarding();
             await dashboardPage.discoveryShouldFinish();
-            await settingsPage.navigateTo('coins');
-            await settingsPage.coins.enableNetwork('eth');
-            await dashboardPage.deviceSwitchingOpenButton.click();
-            await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSellTradingOfToken('eth', 'USD Coin');
+
+            await test.step('Enable Ethereum and open its token sell trading', async () => {
+                await settingsPage.navigateTo('coins');
+                await settingsPage.coins.enableNetwork('eth');
+                await dashboardPage.deviceSwitchingOpenButton.click();
+                await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+                await walletPage.openSellTradingOfToken('eth', 'USD Coin');
+            });
         },
     );
 
@@ -64,9 +73,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, 
         //     await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
         //     await expect(marketPage.confirmationAddress).toHaveText(providerAddress);
         //     await expect(marketPage.confirmationAccount).toHaveText('Bitcoin #1');
-        //     await expect(page.getByTestId('@trading/form/verify/extra-id')).toHaveText(
-        //         providerPaymentId,
-        //     );
+        //     await expect(marketPage.confirmationPaymentId).toHaveText(providerPaymentId);
         // });
 
         // await test.step('Initiate send', async () => {

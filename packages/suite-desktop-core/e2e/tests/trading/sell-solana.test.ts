@@ -7,6 +7,7 @@ import {
     invityEndpoint,
     sellQuotesSolana,
     sellTradeSolana,
+    sellWatchSolana,
 } from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
 
@@ -14,10 +15,11 @@ import { expect, test } from '../../support/fixtures';
 const fiatAmount = localizeNumber(sellQuotesSolana[0].fiatStringAmount, 'en', 2, 2);
 const cryptoAmount = sellQuotesSolana[0].cryptoStringAmount;
 const provider = getCompanyNameFromList(sellQuotesSolana[0].exchange, 'sellList');
-// This address belongs to QA passphrase wallet. So if me make mistake in updating the test case,
-// and actually send crypto. It will be sent to this address and we will not lose it.
-const providerAddress = '6YaYu1rHw95rtyrADg1pgrKuDPB3fte8GdRAcAUyx3zK';
-const providerPaymentId = '6d666a5f-b99c-4482-b8bc-2df04fc11b7b';
+// This address belongs to second account in this wallet.
+// So if me make mistake in updating the test case, and actually send crypto.
+// It will be sent to this address and we will not lose it.
+const providerAddress = sellWatchSolana.destinationAddress;
+const providerPaymentId = sellWatchSolana.destinationPaymentExtraId;
 const formattedCryptoAmount = `${cryptoAmount} SOL`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeSolana.trade;
@@ -37,30 +39,28 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
             settingsPage,
             walletPage,
         }) => {
-            await page.route(invityEndpoint.sellQuotes, async route => {
-                await route.fulfill({ json: sellQuotesSolana });
-            });
-            await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeSolana);
-            //IMPORTANT: Mocking this request prevents from actually sending crypto
-            await tradingMock.routeSolanaSendRequests();
-            //TODO: Rework watch routing for sell tests. Eveyrone should point to QA passphrase wallet.
-            await page.route(invityEndpoint.sellWatch, async route => {
-                await route.fulfill({
-                    json: {
-                        status: 'SEND_CRYPTO',
-                        destinationAddress: providerAddress,
-                        destinationPaymentExtraId: providerPaymentId,
-                    },
+            await test.step('Mocking responses', async () => {
+                await page.route(invityEndpoint.sellQuotes, async route => {
+                    await route.fulfill({ json: sellQuotesSolana });
+                });
+                await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeSolana);
+                //IMPORTANT: Mocking this request prevents from actually sending crypto
+                await tradingMock.routeSolanaSendRequests();
+                await page.route(invityEndpoint.sellWatch, async route => {
+                    await route.fulfill({ json: sellWatchSolana });
                 });
             });
             await onboardingPage.completeOnboarding();
             await dashboardPage.discoveryShouldFinish();
-            await settingsPage.navigateTo('coins');
-            await settingsPage.coins.enableNetwork('sol');
-            await dashboardPage.deviceSwitchingOpenButton.click();
-            await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openTrading({ symbol: 'sol' });
-            await marketPage.sellTabButton.click();
+
+            await test.step('Enable Solana and open its sell trading', async () => {
+                await settingsPage.navigateTo('coins');
+                await settingsPage.coins.enableNetwork('sol');
+                await dashboardPage.deviceSwitchingOpenButton.click();
+                await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+                await walletPage.openTrading({ symbol: 'sol' });
+                await marketPage.sellTabButton.click();
+            });
         },
     );
 
@@ -85,9 +85,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
             await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
             await expect(marketPage.confirmationAddress).toHaveText(providerAddress);
             await expect(marketPage.confirmationAccount).toHaveText('Solana #1');
-            await expect(page.getByTestId('@trading/form/verify/extra-id')).toHaveText(
-                providerPaymentId,
-            );
+            await expect(marketPage.confirmationPaymentId).toHaveText(providerPaymentId);
         });
 
         await test.step('Initiate send', async () => {
@@ -100,23 +98,19 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
             await page.clock.install();
             await devicePrompt.sellButton.click();
             await expect(devicePrompt.sellButton).toHaveText('Confirming transaction');
-            await expect(page.getByTestId('@trading/detail-sell/pending')).toHaveText(
-                'Trade in progress...',
-            );
+            await expect(marketPage.detailSellStatus).toHaveText('Trade in progress...');
             await expect(
                 page.getByRole('link', { name: "Open partner's support site" }),
             ).toBeVisible();
             await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
         });
 
-        await test.step('Wait 30s for watch refresh and change of status to Success', async () => {
+        await test.step('Wait 30s for watch refresh and status change to Success', async () => {
             await page.route(invityEndpoint.sellWatch, async route => {
                 await route.fulfill({ json: { status: 'SUCCESS' } });
             });
             await page.clock.fastForward(marketPage.watchPeriod);
-            await expect(page.getByTestId('@trading/detail-sell/success-title')).toHaveText(
-                'Trade success',
-            );
+            await expect(marketPage.detailSellStatus).toHaveText('Trade success');
         });
     });
 });

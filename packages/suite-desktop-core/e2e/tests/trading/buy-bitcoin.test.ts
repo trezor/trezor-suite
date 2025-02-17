@@ -79,7 +79,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
             await expect(marketPage.proceedToPayButton).toBeVisible();
         });
 
-        await test.step('Wait 30s for watch refresh and change of status to Approved', async () => {
+        await test.step('Wait 30s for watch refresh and status change to Approved', async () => {
             await tradingMock.changeBuyWatchResponseTo('SUCCESS');
             await page.clock.fastForward(marketPage.watchPeriod);
             await expect(marketPage.transactionDetailStatus).toHaveText('Approved');

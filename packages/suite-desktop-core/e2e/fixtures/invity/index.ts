@@ -24,7 +24,9 @@ import sellWatchPayload from './sell/requests/watch-request.json';
 import sellTradeBTC from './sell/trade-bitcoin.json';
 import sellTradeEthereumToken from './sell/trade-ethereum-token.json';
 import sellTradeSolana from './sell/trade-solana.json';
-import sellWatch from './sell/watch.json';
+import sellWatchBTC from './sell/watch-bitcoin.json';
+import sellWatchEthereum from './sell/watch-ethereum.json';
+import sellWatchSolana from './sell/watch-solana.json';
 
 const invityUrl = 'https://exchange.trezor.io';
 
@@ -63,7 +65,6 @@ export const invityResponses = {
     [invityEndpoint.buyList]: buyList,
     [invityEndpoint.buyWatch]: buyWatch,
     [invityEndpoint.sellList]: sellList,
-    [invityEndpoint.sellWatch]: sellWatch,
 };
 
 export const getCompanyNameFromList = (name: string, type: 'buyList' | 'sellList') => {
@@ -101,5 +102,7 @@ export {
     sellTradeBTC,
     sellTradeEthereumToken,
     sellTradeSolana,
-    sellWatch,
+    sellWatchBTC,
+    sellWatchEthereum,
+    sellWatchSolana,
 };

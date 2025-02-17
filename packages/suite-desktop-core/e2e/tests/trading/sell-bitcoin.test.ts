@@ -7,7 +7,7 @@ import {
     invityRequest,
     sellQuotesBTC,
     sellTradeBTC,
-    sellWatch,
+    sellWatchBTC,
 } from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
 
@@ -15,8 +15,8 @@ import { expect, test } from '../../support/fixtures';
 const fiatAmount = sellQuotesBTC[0].fiatStringAmount;
 const cryptoAmount = sellQuotesBTC[0].cryptoStringAmount;
 const provider = getCompanyNameFromList(sellQuotesBTC[0].exchange, 'sellList');
-const providerAddress = sellWatch.destinationAddress;
-const providerPaymentId = sellWatch.destinationPaymentExtraId;
+const providerAddress = sellWatchBTC.destinationAddress;
+const providerPaymentId = sellWatchBTC.destinationPaymentExtraId;
 const formattedCryptoAmount = `${cryptoAmount} BTC`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeBTC.trade;
@@ -27,10 +27,15 @@ test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () =>
     });
     test.beforeEach(
         async ({ page, marketPage, tradingMock, onboardingPage, dashboardPage, walletPage }) => {
-            await page.route(invityEndpoint.sellQuotes, async route => {
-                await route.fulfill({ json: sellQuotesBTC });
+            await test.step('Mocking responses', async () => {
+                await page.route(invityEndpoint.sellQuotes, async route => {
+                    await route.fulfill({ json: sellQuotesBTC });
+                });
+                await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeBTC);
+                await page.route(invityEndpoint.sellWatch, async route => {
+                    await route.fulfill({ json: sellWatchBTC });
+                });
             });
-            await tradingMock.routeTrade(invityEndpoint.sellTrade, sellTradeBTC);
             await onboardingPage.completeOnboarding();
             await dashboardPage.discoveryShouldFinish();
             await dashboardPage.deviceSwitchingOpenButton.click();
@@ -65,9 +70,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () =>
             await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
             await expect(marketPage.confirmationAddress).toHaveText(providerAddress);
             await expect(marketPage.confirmationAccount).toHaveText('Bitcoin #1');
-            await expect(page.getByTestId('@trading/form/verify/extra-id')).toHaveText(
-                providerPaymentId,
-            );
+            await expect(marketPage.confirmationPaymentId).toHaveText(providerPaymentId);
         });
 
         await test.step('Initiate send', async () => {
