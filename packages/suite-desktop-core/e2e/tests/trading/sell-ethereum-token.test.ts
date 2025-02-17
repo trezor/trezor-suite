@@ -1,4 +1,3 @@
-import { MNEMONICS } from '@trezor/trezor-user-env-link';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
@@ -22,7 +21,7 @@ const provider = getCompanyNameFromList(sellQuotesEthereumToken[0].exchange, 'se
 
 test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({
-        emulatorSetupConf: { mnemonic: MNEMONICS.mnemonic_academic, passphrase_protection: true },
+        emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
     test.beforeEach(
         async ({ page, tradingMock, onboardingPage, dashboardPage, settingsPage, walletPage }) => {

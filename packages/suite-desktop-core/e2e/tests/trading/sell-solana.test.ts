@@ -1,5 +1,4 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { MNEMONICS } from '@trezor/trezor-user-env-link';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {
@@ -27,7 +26,7 @@ const toastText = `${formattedCryptoAmount} sent from Solana #1`;
 
 test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({
-        emulatorSetupConf: { mnemonic: MNEMONICS.mnemonic_academic, passphrase_protection: true },
+        emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
     test.beforeEach(
         async ({
