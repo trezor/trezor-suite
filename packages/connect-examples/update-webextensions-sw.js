@@ -3,8 +3,8 @@
  */
 
 const fs = require('fs');
-const fetch = require('node-fetch');
 const path = require('path');
+const { Readable } = require('stream');
 
 const rootPaths = ['webextension-mv3-sw'];
 
@@ -50,7 +50,8 @@ rootPaths.forEach(dir => {
             const dest = fs.createWriteStream(
                 path.join(rootPath, buildFolder, 'vendor', 'trezor-connect-webextension.js'),
             );
-            res.body.pipe(dest);
+            const stream = Readable.fromWeb(res.body);
+            stream.pipe(dest);
         });
     } else {
         ['trezor-connect-webextension.js'].forEach(p => {
