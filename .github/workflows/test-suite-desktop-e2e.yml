@@ -3,6 +3,9 @@ name: "[Test] suite-desktop e2e"
 
 on:
   pull_request:
+    types:
+    - opened
+    - ready_for_review
     branches:
       - develop
     paths-ignore:
@@ -21,6 +24,9 @@ on:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
+  issue_comment:
+    types:
+      - created
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -28,7 +34,12 @@ concurrency:
 
 jobs:
   run-desktop-tests:
-    if: github.repository == 'trezor/trezor-suite'
+    if: >
+      github.repository == 'trezor/trezor-suite' &&
+      (github.event_name == 'pull_request' ||
+      (github.event_name == 'issue_comment' && github.event.comment.body == '/run-tests') ||
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'push')
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
