@@ -12530,7 +12530,7 @@ __metadata:
     "@types/redux-mock-store": "npm:^1.5.0"
     "@types/semver": "npm:^7.5.8"
     "@types/ua-parser-js": "npm:^0.7.39"
-    "@types/zxcvbn": "npm:^4.4.4"
+    "@types/zxcvbn": "npm:4.4.5"
     bs58check: "npm:^4.0.0"
     date-fns: "npm:^2.30.0"
     dropbox: "npm:^10.34.0"
@@ -14265,10 +14265,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/zxcvbn@npm:^4.4.4":
-  version: 4.4.4
-  resolution: "@types/zxcvbn@npm:4.4.4"
-  checksum: 10/d5de69c1e34d6d3988b2f23d0e4d1e8ca136d039480cca265d7358c921937da50648bef29154835670dadcc1c8449349339c2a87cd77cfc3ff6a9b19ce669864
+"@types/zxcvbn@npm:4.4.5":
+  version: 4.4.5
+  resolution: "@types/zxcvbn@npm:4.4.5"
+  checksum: 10/279b0d43e21b8de48a9ef98b5753e343673fdb6cfdd2679e2afbb292410d610a0f01d7c1cb1dad1acbd0d35ee01e8a8dbe21cb034a2e2f3458492cf5fd3b44c3
   languageName: node
   linkType: hard
 
