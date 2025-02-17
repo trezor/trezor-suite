@@ -59,5 +59,6 @@ export * from './useBannerAwareSafeAreaInsets';
 export * from './useIllustrationColors';
 export * from './utils';
 export * from './PriceChangeBadge';
+export * from './resetLetterSpacingOnAndroidStyle';
 
 export { useDebugView } from './DebugView';

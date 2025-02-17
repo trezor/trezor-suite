@@ -1,6 +1,6 @@
 import { ActivityIndicator } from 'react-native';
 
-import { Box, Text, VStack } from '@suite-native/atoms';
+import { Box, Text, VStack, resetLetterSpacingOnAndroidStyle } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useHandleHardwareBackNavigation } from '@suite-native/navigation';
@@ -26,7 +26,10 @@ export const ConnectingDeviceScreen = () => {
             <VStack spacing="sp16" alignItems="center">
                 <ActivityIndicator size="large" />
                 <Box flexDirection="row" alignItems="center">
-                    <Text variant="titleMedium">
+                    <Text
+                        variant="titleMedium"
+                        style={applyStyle(resetLetterSpacingOnAndroidStyle)}
+                    >
                         <Translation id="moduleConnectDevice.connectingDeviceScreen.title" />
                     </Text>
                     <Box paddingBottom="sp8" paddingLeft="sp8">

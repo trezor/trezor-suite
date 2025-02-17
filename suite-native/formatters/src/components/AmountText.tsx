@@ -1,6 +1,10 @@
-import { DiscreetText, Text, TextProps } from '@suite-native/atoms';
-import { isAndroid } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import {
+    DiscreetText,
+    Text,
+    TextProps,
+    resetLetterSpacingOnAndroidStyle,
+} from '@suite-native/atoms';
+import { useNativeStyles } from '@trezor/styles';
 
 type AmountTextProps = {
     isDiscreetText?: boolean;
@@ -8,24 +12,13 @@ type AmountTextProps = {
     value: string | null;
 } & TextProps;
 
-const amountTextStyle = prepareNativeStyle(_ => ({
-    // Because of this RN issue https://github.com/facebook/react-native/issues/46436
-    // turning off custom letter spacing for amounts on Android.
-    extend: {
-        condition: isAndroid(),
-        style: {
-            letterSpacing: 0,
-        },
-    },
-}));
-
 export const AmountText = ({ value, isDiscreetText = true, ...otherProps }: AmountTextProps) => {
     const { applyStyle } = useNativeStyles();
 
     const TextComponent = isDiscreetText ? DiscreetText : Text;
 
     return (
-        <TextComponent style={applyStyle(amountTextStyle)} {...otherProps}>
+        <TextComponent style={applyStyle(resetLetterSpacingOnAndroidStyle)} {...otherProps}>
             {value}
         </TextComponent>
     );

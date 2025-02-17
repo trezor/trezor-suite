@@ -21,7 +21,6 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/tokens": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
