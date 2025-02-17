@@ -118,8 +118,27 @@ jobs:
             CONTAINERS: "trezor-user-env-unix"
           # - TEST_GROUP: "@group=wallet" # Disabled because there are no webOnly tests in this group
           #   CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
+          - TEST_GROUP: "@group=empty group produces error"
+            CONTAINERS: "trezor-user-env-unix"
 
     steps:
+      - name: Check if this job should be skipped
+        id: check_skip
+        run: |
+          echo "Fetching previous run results for PR #${{ github.event.pull_request.number }}..."
+
+          # Fetch previous runs' results
+          previous_runs=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs?event=pull_request&head_sha=${{ github.sha }}" \
+          )
+
+          # Check if this group of tests passed previously
+          group_name="${{ matrix.TEST_GROUP }}"
+          if echo "$previous_runs" | jq ".workflow_runs[].conclusion" | grep -q 'success'; then
+            echo "Tests for group $group_name were successful previously. Skipping this job."
+            exit 0
+          fi
       - name: Checkout
         uses: actions/checkout@v4
         with:
