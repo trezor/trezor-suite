@@ -31,7 +31,7 @@
         "react": "18.2.0",
         "react-hook-form": "^7.54.2",
         "react-intl": "^6.6.8",
-        "react-svg": "^16.1.33",
+        "react-svg": "16.3.0",
         "styled-components": "^6.1.8",
         "zxcvbn": "^4.4.2"
     },

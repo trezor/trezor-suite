@@ -43,7 +43,7 @@
         "react-intl": "^6.6.8",
         "react-markdown": "^9.0.3",
         "react-select": "^5.8.0",
-        "react-svg": "^16.1.33",
+        "react-svg": "16.3.0",
         "react-use": "^17.5.0",
         "styled-components": "^6.1.8"
     },
