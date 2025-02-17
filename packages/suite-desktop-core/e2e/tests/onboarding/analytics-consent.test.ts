@@ -10,10 +10,11 @@ test.describe(
 
         test('analytics consent appears on any route that is visited initially. this time /accounts', async ({
             page,
+            url,
             analyticsPage,
             onboardingPage,
         }) => {
-            await page.goto('/accounts');
+            await page.goto(url + 'accounts');
             await expect(analyticsPage.heading).toBeVisible({ timeout: 30000 });
             await analyticsPage.continueButton.click();
             await page.getByTestId('@onboarding/exit-app-button').click();

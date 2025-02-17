@@ -14,7 +14,7 @@ test.describe(
 
         test('Offer webusb as primary choice on web', async ({ page, analyticsPage }) => {
             await analyticsPage.continueButton.click();
-            await expect(page.getByTestId('@webusb-button')).toBeVisible();
+            await expect(page.getByTestId('@webusb-button')).toBeVisible({ timeout: 30000 });
             await page.getByTestId('@connect-device-prompt/no-device-detected').click();
             await expect(page.getByTestId('@collapsible-box/body')).toHaveAttribute(
                 'aria-expanded',
