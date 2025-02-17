@@ -32,7 +32,7 @@ export type BluetoothDevice = {
 
 export type DeviceBluetoothStatusType = DeviceBluetoothStatus['type'];
 
-type BluetoothState<T extends BluetoothDevice> = {
+export type BluetoothState<T extends BluetoothDevice> = {
     adapterStatus: 'unknown' | 'enabled' | 'disabled';
     scanStatus: BluetoothScanStatus;
     nearbyDevices: T[];
