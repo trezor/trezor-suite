@@ -180,7 +180,7 @@ const updateConfigFromJSON = async () => {
 
             const commitMessage = 'chore(connect): update device authenticity config';
             await exec('git', ['checkout', '-b', branchName]);
-            commit({
+            await commit({
                 path: ROOT,
                 message: commitMessage,
             });
