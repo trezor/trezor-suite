@@ -126,18 +126,32 @@ jobs:
           ref: ${{github.event.after}}
           fetch-depth: 2
 
+      - name: Check previous runs
+        id: check-previous-runs
+        if: github.event_name == 'pull_request' && github.run_attempt == 1
+        uses: './.github/actions/check-previous-test-runs'
+        with:
+          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          pr_branch: ${{ github.head_ref }}
+          repo: ${{ github.repository }}
+          workflow_name: ${{ github.workflow }}
+          job_name: "${{ github.job }} (${{ join(matrix.*, ', ') }})"
+
       - name: Setup node
+        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Extract branch name
+        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         id: extract_branch
         run: |
           echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
 
       - name: Install dependencies and pull docker images
+        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-ci-pw.yml
         run: |
@@ -148,6 +162,7 @@ jobs:
           docker compose pull ${{ matrix.CONTAINERS }}
 
       - name: Run Playwright e2e web tests
+        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-ci-pw.yml
           BASE_URL: https://dev.suite.sldev.cz/suite-web/${{ steps.extract_branch.outputs.branch }}/web/
@@ -162,7 +177,7 @@ jobs:
           yarn workspace @trezor/suite-desktop-core test:e2e:web --forbid-only --grep="(?=.*${{ matrix.TEST_GROUP }})(?=.*@webOnly)"
 
       - name: Extract Trezor-user-env and Regtest logs
-        if: ${{ ! cancelled() }}
+        if: ${{ !cancelled() && steps.check-previous-runs.outputs.skip_tests != 'true' }}
         run: |
           docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log || true
           docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log || true
@@ -170,7 +185,7 @@ jobs:
           docker logs docker-electrum-regtest-1 > electrum-regtest.txt || true
 
       - name: Upload Trezor-user-env and Regtest logs
-        if: ${{ ! cancelled() }}
+        if: ${{ !cancelled() && steps.check-previous-runs.outputs.skip_tests != 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: emulator-logs-${{ matrix.TEST_GROUP }}
@@ -182,6 +197,7 @@ jobs:
           retention-days: 30
 
       - name: Docker compose down
+        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-ci-pw.yml
         run: docker compose down

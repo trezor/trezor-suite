@@ -1,0 +1,68 @@
+name: 'Check Previous Runs'
+description: 'Check if a previous run of a job was successful to skip tests'
+inputs:
+  github_token:
+    description: 'GitHub token for accessing the API'
+    required: true
+  pr_branch:
+    description: 'The branch of the pull request'
+    required: true
+  repo:
+    description: 'The repository name'
+    required: true
+  workflow_name:
+    description: 'The workflow name to filter runs'
+    required: true
+  job_name:
+    description: 'The name of the job to check success'
+    required: true
+outputs:
+  skip_tests:
+    description: 'Indicates whether tests should be skipped'
+    value: ${{ steps.check-previous-runs.outputs.skip_tests }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Check Previous Test Runs
+      id: check-previous-runs
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+      run: |
+        PR_BRANCH="${{ inputs.pr_branch }}"
+        REPO="${{ inputs.repo }}"
+        WORKFLOW_NAME="${{ inputs.workflow_name }}"
+        JOB_NAME="${{ inputs.job_name }}"
+
+        # Fetch workflow ID
+        WORKFLOW_ID=$(gh workflow list \
+          --repo "$REPO" \
+          --json id,name \
+          --jq ".[] | select(.name == \"${WORKFLOW_NAME}\") | .id")
+
+        echo ${WORKFLOW_ID}
+
+        # Fetch previous PR runs
+        PREVIOUS_RUN_JOBS_URL=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
+          "https://api.github.com/repos/$REPO/actions/workflows/${WORKFLOW_ID}/runs?event=pull_request&branch=${PR_BRANCH}&status=completed&per_page=1" | \
+          jq -r '.workflow_runs[] | .jobs_url')
+
+        echo ${PREVIOUS_RUN_JOBS_URL}
+
+        if [ -z "${PREVIOUS_RUN_JOBS_URL}" ]; then
+          echo "No previous runs found. Running tests as usual"
+          echo "skip_tests=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        SUCCESSFUL_JOB=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" "${PREVIOUS_RUN_JOBS_URL}" | \
+          jq -r --arg JOB_NAME "${JOB_NAME}" '.jobs[] | select(.name == $JOB_NAME and .conclusion == "success") | .url')
+
+        if [ -z "${SUCCESSFUL_JOB}" ]; then
+          echo "No previous successful job found. Running tests as usual"
+          echo "skip_tests=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        echo "Previous successful job found: ${SUCCESSFUL_JOB} - skipping the rest of the job"
+        echo "skip_tests=true" >> $GITHUB_OUTPUT
+      shell: bash
