@@ -106,6 +106,7 @@ export const CancelTransactionModal = ({
                     <ReplaceByFeeFailedOriginalTxConfirmed
                         type="cancel"
                         networkSymbol={tx.symbol}
+                        networkType={account.networkType}
                     />
                 ) : (
                     <Column gap={spacings.md}>

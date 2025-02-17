@@ -61,6 +61,7 @@ export const BumpFeeModal = ({
                     <ReplaceByFeeFailedOriginalTxConfirmed
                         type="bump-fee"
                         networkSymbol={tx.symbol}
+                        networkType={account.networkType}
                     />
                 ) : (
                     <ChangeFee tx={tx} chainedTxs={chainedTxs} showChained={onShowChained} />
