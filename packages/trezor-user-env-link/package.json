@@ -11,7 +11,6 @@
     "dependencies": {
         "@trezor/utils": "workspace:*",
         "@trezor/websocket-client": "workspace:*",
-        "cross-fetch": "^4.0.0",
         "semver": "^7.6.3"
     },
     "devDependencies": {

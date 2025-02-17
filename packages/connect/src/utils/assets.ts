@@ -1,13 +1,8 @@
-import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
 
 import { tryLocalAssetRequire } from './assetUtils';
 import { httpRequest as browserHttpRequest } from './assets-browser';
 import { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
-
-if (global && typeof global.fetch !== 'function') {
-    global.fetch = fetch;
-}
 
 export function httpRequest<T extends HttpRequestType>(
     url: string,

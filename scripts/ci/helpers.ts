@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import semver from 'semver';
-import fetch from 'cross-fetch';
 import { promisify } from 'util';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 

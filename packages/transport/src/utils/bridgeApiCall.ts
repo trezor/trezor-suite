@@ -1,5 +1,3 @@
-import fetch from 'cross-fetch';
-
 import { PROTOCOL_MALFORMED } from '@trezor/protocol/src/errors';
 
 import { error, success, unknownError } from './result';

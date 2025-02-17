@@ -2,7 +2,6 @@ import { execSync } from 'child_process';
 
 import fs from 'fs';
 import util from 'util';
-import fetch from 'cross-fetch';
 import path from 'path';
 import * as tar from 'tar';
 import crypto from 'crypto';

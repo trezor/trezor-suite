@@ -1,4 +1,3 @@
-import fetch from 'cross-fetch';
 import fs from 'fs-extra';
 import path from 'path';
 import crypto from 'crypto';
