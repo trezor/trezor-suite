@@ -66,7 +66,7 @@ export default {
             },
             messages: {
                 avoidStyledComponent:
-                    "Please do not override components imported from '{{packageName}}'. Use wrapper component or ask Usability team for help.",
+                    "Please do not override components imported from '{{packageName}}'. Use wrapper component or ask Engagement team for help.",
             },
             schema: [
                 {

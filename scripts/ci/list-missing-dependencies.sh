@@ -1,7 +1,7 @@
 #!/bin/bash
 # List dependencies missing from the domain lists.
 
-domains=("common" "connect" "foundation" "mobile" "qa" "trends" "usability")
+domains=("common" "connect" "foundation" "mobile" "qa" "trends" "engagement")
 
 dependencies_in_lists=()
 dependencies_missing_from_lists=()
