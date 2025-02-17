@@ -64,6 +64,7 @@ import {
     ComposeFeeLevelsError,
     PushTransactionError,
     SignTransactionError,
+    SignTransactionTimeoutError,
 } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsReducer';
@@ -399,7 +400,7 @@ export const signTransactionThunk = createThunk<
         precomposedTransaction: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
         selectedAccount: Account;
     },
-    { rejectValue: SignTransactionError | undefined }
+    { rejectValue: SignTransactionError | SignTransactionTimeoutError | undefined }
 >(
     `${SEND_MODULE_PREFIX}/signTransactionThunk`,
     async (
@@ -457,11 +458,19 @@ export const signTransactionThunk = createThunk<
         if (isRejected(response) || !response?.payload) {
             // catch manual error from TransactionReviewModal
             const message = response?.payload?.message ?? 'unknown-error';
-            if (message === 'tx-cancelled')
+            if (message === 'tx-timeout') {
+                return rejectWithValue({
+                    error: 'sign-transaction-timeout',
+                    message: 'Signing process timed out.',
+                });
+            }
+
+            if (message === 'tx-cancelled') {
                 return rejectWithValue({
                     error: 'sign-transaction-failed',
                     message: 'User canceled the signing process.',
                 });
+            }
 
             dispatch(
                 notificationsActions.addToast({
@@ -576,7 +585,10 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         dispatch(
             sendFormActions.storePrecomposedTransaction({
                 formState: formValues,
-                precomposedTransaction: enhancedPrecomposedTransaction,
+                precomposedTransaction: {
+                    ...enhancedPrecomposedTransaction,
+                    createdTimestamp: new Date().getTime(),
+                },
             }),
         );
 

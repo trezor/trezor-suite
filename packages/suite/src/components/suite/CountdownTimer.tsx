@@ -85,6 +85,7 @@ export const CountdownTimer = ({
                     id={messageId}
                     values={{
                         value: getValue(),
+                        strong: chunks => <strong>{chunks}</strong>,
                         firstValue,
                     }}
                 />

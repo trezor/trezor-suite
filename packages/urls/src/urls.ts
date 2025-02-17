@@ -128,6 +128,9 @@ export const HELP_CENTER_REPLACE_BY_FEE_BITCOIN =
     'https://trezor.io/learn/a/replace-by-fee-rbf-bitcoin';
 export const HELP_CENTER_CANCEL_TRANSACTION: Url =
     'https://trezor.io/support/a/can-i-cancel-or-reverse-a-transaction';
+// TODO: update this link when the article is ready
+export const HELP_CENTER_SOL_SEND: Url =
+    'https://trezor.io/learn/a/solana-sol-on-trezor-safe-5-trezor-safe-3-and-trezor-model-t';
 
 export const INVITY_URL: Url = 'https://invity.io/';
 export const INVITY_SCHEDULE_OF_FEES: Url = 'https://blog.invity.io/schedule-of-fees';

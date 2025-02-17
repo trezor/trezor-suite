@@ -1,27 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
+    AccountsState,
     DeviceRootState,
     SendState,
+    SerializedTx,
     StakeState,
+    selectAccounts,
     selectPrecomposedSendForm,
     selectSelectedDevice,
     selectSendFormReviewButtonRequestsCount,
     selectStakePrecomposedForm,
 } from '@suite-common/wallet-core';
-import { FormState, RbfTransactionType, StakeFormState } from '@suite-common/wallet-types';
+import {
+    FormState,
+    RbfTransactionType,
+    ReviewOutput,
+    StakeFormState,
+    StakeType,
+} from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,
+    findAccountsByAddress,
     getTxStakeNameByDataHex,
     isRbfBumpFeeTransaction,
     isRbfCancelTransaction,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
-import { NewModal } from '@trezor/components';
+import { Column, NewModal, Row } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { EventType, TransactionCreatedEvent, analytics } from '@trezor/suite-analytics';
+import { spacings } from '@trezor/theme';
 import { Deferred } from '@trezor/utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -33,9 +46,47 @@ import { getTransactionReviewModalActionText } from 'src/utils/suite/transaction
 
 import { TransactionReviewDetails } from './TransactionReviewDetails';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
+import { TransactionReviewOutputTimer } from './TransactionReviewOutputList/TransactionReviewOutputTimer';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
+import { ExpiredTxValidity } from '../UserContextModal/TxDetailModal/ExpiredTxValidity';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
+
+const getTxValidityTimeoutInMs = (networkType?: NetworkType) => {
+    if (networkType === 'solana') {
+        // Blockhash required in Solana tx is valid for 1 minute. Leave 15 seconds for tx confirmation.
+        return 45 * 1000;
+    }
+
+    return 0;
+};
+
+const hasTxValidityExpired = (deadline: number) => deadline <= Date.now();
+
+const shouldShowTxValidityTimer = (
+    deadline: number,
+    outputs: ReviewOutput[],
+    symbol: NetworkSymbol,
+    accounts: AccountsState,
+    buttonRequestsCount: number,
+    serializedTx: SerializedTx | undefined,
+    stakeType: StakeType | null,
+    shouldCheckTxTimeValidity: boolean,
+) => {
+    if (!shouldCheckTxTimeValidity || hasTxValidityExpired(deadline)) {
+        return false;
+    }
+
+    const firstOutput = outputs[0];
+    const isInternalTransfer =
+        firstOutput?.type === 'address' &&
+        findAccountsByAddress(symbol, firstOutput.value, accounts).length > 0;
+
+    const isFirstStep = buttonRequestsCount <= 1;
+    const isStaking = stakeType && !serializedTx;
+
+    return isInternalTransfer || !isFirstStep || serializedTx || isStaking;
+};
 
 const isStakeState = (state: SendState | StakeState): state is StakeState => 'data' in state;
 
@@ -53,6 +104,7 @@ const mapRbfTypeToReporting: Record<
 type TransactionReviewModalContentProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
     txInfoState: SendState | StakeState;
+    tryAgainSignTx: () => void;
     cancelSignTx: () => void;
     isRbfConfirmedError?: boolean;
 };
@@ -60,16 +112,17 @@ type TransactionReviewModalContentProps = {
 export const TransactionReviewModalContent = ({
     decision,
     txInfoState,
+    tryAgainSignTx,
     cancelSignTx,
     isRbfConfirmedError,
 }: TransactionReviewModalContentProps) => {
     const dispatch = useDispatch();
     const account = useSelector(selectAccountIncludingChosenInTrading);
+    const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const [isSending, setIsSending] = useState(false);
     const [areDetailsVisible, setAreDetailsVisible] = useState(false);
-
     const deviceModelInternal = device?.features?.internal_model;
     const { precomposedTx, serializedTx } = txInfoState;
 
@@ -79,7 +132,34 @@ export const TransactionReviewModalContent = ({
             : selectPrecomposedSendForm(state),
     );
 
-    const isTradingAction = !!precomposedForm?.isTrading;
+    const shouldCheckTxTimeValidity =
+        account?.networkType === 'solana' && !precomposedForm?.isTrading;
+
+    const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp || 0;
+    const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
+
+    // check if transaction is still valid
+    useEffect(() => {
+        if (!shouldCheckTxTimeValidity) {
+            return;
+        }
+
+        const now = Date.now();
+        const timeLeft = Math.max(deadline - now, 0);
+        let mounted = true;
+
+        const timeoutId = setTimeout(() => {
+            if (mounted && !isSending) {
+                TrezorConnect.cancel('tx-timeout');
+            }
+        }, timeLeft);
+
+        return () => {
+            mounted = false;
+            clearTimeout(timeoutId);
+        };
+    }, [deadline, isSending, shouldCheckTxTimeValidity]);
+
     const isBumpFeeRbfAction =
         precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);
 
@@ -118,7 +198,7 @@ export const TransactionReviewModalContent = ({
               .find(type => type) || null;
 
     const onCancel = () => {
-        if (isRbfConfirmedError) {
+        if (isRbfConfirmedError || shouldCheckTxTimeValidity) {
             dispatch(modalActions.onCancel());
         }
 
@@ -129,6 +209,19 @@ export const TransactionReviewModalContent = ({
     };
 
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);
+
+    const isTxExpired = hasTxValidityExpired(deadline);
+
+    const showTxValidityTimer = shouldShowTxValidityTimer(
+        deadline,
+        outputs,
+        symbol,
+        accounts,
+        buttonRequestsCount,
+        serializedTx,
+        stakeType,
+        shouldCheckTxTimeValidity,
+    );
 
     const actionLabel = getTransactionReviewModalActionText({
         stakeType,
@@ -194,12 +287,33 @@ export const TransactionReviewModalContent = ({
         reportTransactionCreatedEvent('downloaded');
     };
 
+    const handleTryAgain = (cancel: boolean) => {
+        if (cancel) {
+            TrezorConnect.cancel('tx-timeout');
+        }
+
+        tryAgainSignTx();
+    };
+
     const BottomContent = () => {
         if (isRbfConfirmedError) {
             return (
                 <NewModal.Button variant="tertiary" onClick={onCancel}>
                     <Translation id="TR_CLOSE" />
                 </NewModal.Button>
+            );
+        }
+
+        if (shouldCheckTxTimeValidity && isTxExpired && !isSending) {
+            return (
+                <>
+                    <NewModal.Button variant="primary" onClick={() => handleTryAgain(false)}>
+                        <Translation id="TR_TRY_AGAIN" />
+                    </NewModal.Button>
+                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                        <Translation id="TR_CLOSE" />
+                    </NewModal.Button>
+                </>
             );
         }
 
@@ -254,18 +368,26 @@ export const TransactionReviewModalContent = ({
             );
         }
 
+        if (shouldCheckTxTimeValidity && isTxExpired && !isSending) {
+            return <ExpiredTxValidity symbol={symbol} />;
+        }
+
         return (
-            <TransactionReviewOutputList
-                account={account}
-                precomposedTx={precomposedTx}
-                signedTx={serializedTx}
-                outputs={outputs}
-                buttonRequestsCount={buttonRequestsCount}
-                isRbfAction={isBumpFeeRbfAction}
-                isTradingAction={isTradingAction}
-                isSending={isSending}
-                stakeType={stakeType || undefined}
-            />
+            <Column gap={spacings.md}>
+                <TransactionReviewOutputList
+                    account={account}
+                    precomposedTx={precomposedTx}
+                    signedTx={serializedTx}
+                    outputs={outputs}
+                    buttonRequestsCount={buttonRequestsCount}
+                    isRbfAction={isBumpFeeRbfAction}
+                    isTradingAction={!!precomposedForm.isTrading}
+                    isSending={isSending}
+                    stakeType={stakeType || undefined}
+                    deadline={deadline}
+                    onTryAgain={handleTryAgain}
+                />
+            </Column>
         );
     };
 
@@ -287,15 +409,27 @@ export const TransactionReviewModalContent = ({
                 onBackClick={areDetailsVisible ? () => setAreDetailsVisible(false) : undefined}
                 description={
                     !areDetailsVisible && (
-                        <TransactionReviewSummary
-                            tx={precomposedTx}
-                            account={account}
-                            broadcast={isBroadcastEnabled}
-                            onDetailsClick={() => {
-                                setAreDetailsVisible(!areDetailsVisible);
-                            }}
-                            stakeType={stakeType}
-                        />
+                        <Row justifyContent="space-between">
+                            <TransactionReviewSummary
+                                tx={precomposedTx}
+                                account={account}
+                                broadcast={isBroadcastEnabled}
+                                onDetailsClick={() => {
+                                    setAreDetailsVisible(!areDetailsVisible);
+                                }}
+                                stakeType={stakeType}
+                            />
+                            {showTxValidityTimer && (
+                                <Row gap={spacings.xs}>
+                                    <TransactionReviewOutputTimer
+                                        deadline={deadline}
+                                        onTryAgain={handleTryAgain}
+                                        isMinimal
+                                        isSending={isSending}
+                                    />
+                                </Row>
+                            )}
+                        </Row>
                     )
                 }
                 bottomContent={<BottomContent />}

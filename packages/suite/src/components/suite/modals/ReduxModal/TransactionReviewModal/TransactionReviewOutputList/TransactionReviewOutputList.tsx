@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import type { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
-import { Banner, BulletList, Card, Column, H3, H4, Text } from '@trezor/components';
+import { BulletList, Card, Column, H3, H4 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -14,6 +14,7 @@ import type { Account } from 'src/types/wallet';
 
 import { TransactionReviewOutput } from './TransactionReviewOutput';
 import type { TransactionReviewOutputElementProps } from './TransactionReviewOutputElement';
+import { TransactionReviewOutputTimer } from './TransactionReviewOutputTimer';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 
 export type TransactionReviewOutputListProps = {
@@ -26,6 +27,8 @@ export type TransactionReviewOutputListProps = {
     isTradingAction: boolean;
     isSending?: boolean;
     stakeType?: StakeType;
+    deadline?: number;
+    onTryAgain: (close: boolean) => void;
 };
 
 const getState = (
@@ -71,8 +74,10 @@ export const TransactionReviewOutputList = ({
     buttonRequestsCount,
     isRbfAction,
     isTradingAction,
-    isSending,
     stakeType,
+    deadline,
+    onTryAgain,
+    isSending,
 }: TransactionReviewOutputListProps) => {
     const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
@@ -80,7 +85,7 @@ export const TransactionReviewOutputList = ({
     const { networkType, symbol } = account;
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
     const isFirstOutputAddress = outputs[0].type === 'address';
-    const isFirstStep = buttonRequestsCount === 1;
+    const isFirstStep = buttonRequestsCount <= 1;
     const isStaking = stakeType;
     const isInternalTransfer =
         isFirstOutputAddress &&
@@ -104,14 +109,24 @@ export const TransactionReviewOutputList = ({
         isFirstStep &&
         !isStaking &&
         !isTradingAction &&
-        !isInternalTransfer
+        !isInternalTransfer &&
+        !signedTx
     ) {
         return (
             <Card>
-                <Column gap={spacings.xxxl}>
-                    <H3>
-                        <Translation id="TR_SEND_ADDRESS_CONFIRMATION_HEADING" />
-                    </H3>
+                <Column gap={spacings.xxl}>
+                    <Column gap={spacings.md}>
+                        <H3>
+                            <Translation id="TR_SEND_ADDRESS_CONFIRMATION_HEADING" />
+                        </H3>
+                        {networkType === 'solana' && deadline && (
+                            <TransactionReviewOutputTimer
+                                deadline={deadline}
+                                onTryAgain={onTryAgain}
+                                isSending={isSending}
+                            />
+                        )}
+                    </Column>
                     <BulletList
                         isOrdered
                         bulletGap={spacings.md}
@@ -191,14 +206,6 @@ export const TransactionReviewOutputList = ({
                     </Column>
                 </Wrapper>
             )}
-            {isSending && networkType === 'solana' ? (
-                <Banner variant="tertiary" icon="info">
-                    <Translation
-                        id="TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN"
-                        values={{ nowrap: chunks => <Text textWrap="nowrap">{chunks}</Text> }}
-                    />
-                </Banner>
-            ) : null}
         </Column>
     );
 };

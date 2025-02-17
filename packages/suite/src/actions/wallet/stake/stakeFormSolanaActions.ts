@@ -195,11 +195,14 @@ export const signTransaction =
             !device ||
             !transactionInfo ||
             transactionInfo.type !== 'final'
-        )
+        ) {
             return;
+        }
 
         const { account } = selectedAccount;
-        if (account.networkType !== 'solana') return;
+        if (account.networkType !== 'solana') {
+            return;
+        }
 
         const addressDisplayType = selectAddressDisplayType(getState());
         const estimatedFee = {
@@ -251,15 +254,20 @@ export const signTransaction =
 
         if (!signedTx.success) {
             // catch manual error from TransactionReviewModal
-            if (signedTx.payload.error === 'tx-cancelled') return;
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: signedTx.payload.error,
-                }),
-            );
+            if (signedTx.payload.error === 'tx-cancelled') {
+                return;
+            }
 
-            return;
+            if (signedTx.payload.error !== 'tx-timeout') {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'sign-tx-error',
+                        error: signedTx.payload.error,
+                    }),
+                );
+            }
+
+            return signedTx;
         }
 
         txData.tx.txShim.addSignature(address(account.descriptor), signedTx.payload.signature);

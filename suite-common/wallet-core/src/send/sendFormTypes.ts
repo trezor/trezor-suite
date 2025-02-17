@@ -57,9 +57,19 @@ export type SignTransactionError = {
     message?: string;
 };
 
+export type SignTransactionTimeoutError = {
+    error: 'sign-transaction-timeout';
+    errorCode?: CONNECT_ERRORS.ErrorCode;
+    message?: string;
+};
+
 export type PushTransactionError = {
     error: 'push-transaction-failed';
     metadata: Unsuccessful;
 };
 
-export type SendFormError = ComposeFeeLevelsError | SignTransactionError | PushTransactionError;
+export type SendFormError =
+    | ComposeFeeLevelsError
+    | SignTransactionError
+    | SignTransactionTimeoutError
+    | PushTransactionError;

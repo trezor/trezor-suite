@@ -9149,6 +9149,28 @@ export default defineMessages({
         id: 'TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN',
         defaultMessage: 'Transaction confirmation may take up to <nowrap>one (1) minute</nowrap>',
     },
+    TR_TX_SEND_FAILED_TITLE: {
+        id: 'TR_TX_SEND_FAILED_TITLE',
+        defaultMessage: 'Send transaction failed',
+    },
+    TR_TX_SEND_FAILED_DESCRIPTION: {
+        id: 'TR_TX_SEND_FAILED_DESCRIPTION',
+        defaultMessage:
+            'The time to sign a {networkName} transaction is limited. It could no longer be submitted because it timed out and is no longer valid.',
+    },
+    TR_TX_CONFIRMATION_TIMER: {
+        id: 'TR_TX_CONFIRMATION_TIMER',
+        defaultMessage: '{value} left',
+    },
+    TR_TX_CONFIRMATION_TIMER_SHORT: {
+        id: 'TR_TX_CONFIRMATION_TIMER_SHORT',
+        defaultMessage: '<strong>{value}</strong> left to confirm',
+    },
+    TR_SOLANA_TX_CONFIRMATION_TIMER_DESCRIPTION: {
+        id: 'TR_SOLANA_TX_CONFIRMATION_TIMER_DESCRIPTION',
+        defaultMessage:
+            'Due to Solana network constraints you have <1 minute to confirm and send the transaction before it times out.',
+    },
     TR_VIEW_ONLY_PROMO_YES: {
         id: 'TR_VIEW_ONLY_PROMO_YES',
         defaultMessage: 'Enable',

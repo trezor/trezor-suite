@@ -5,6 +5,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     SignTransactionError,
+    SignTransactionTimeoutError,
     composeSendFormTransactionFeeLevelsThunk,
     deviceActions,
     enhancePrecomposedTransactionThunk,
@@ -39,7 +40,7 @@ export const signTransactionNativeThunk = createThunk<
         feeLevel: GeneralPrecomposedTransactionFinal;
         tokenContract?: TokenAddress;
     },
-    { rejectValue: SignTransactionError | undefined }
+    { rejectValue: SignTransactionError | SignTransactionTimeoutError | undefined }
 >(
     `${SEND_MODULE_PREFIX}/signTransactionNativeThunk`,
     async (

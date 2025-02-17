@@ -109,6 +109,7 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     estimatedFeeLimit?: string;
     token?: TokenInfo;
     isTokenKnown?: boolean;
+    createdTimestamp?: number;
 };
 
 // base of PrecomposedTransactionFinal
@@ -118,6 +119,7 @@ export type PrecomposedTransactionCardanoFinal =
         feeLimit?: string;
         estimatedFeeLimit?: string;
         token?: TokenInfo;
+        createdTimestamp?: number;
     };
 
 export type RbfTransactionType = 'bump-fee' | 'cancel';

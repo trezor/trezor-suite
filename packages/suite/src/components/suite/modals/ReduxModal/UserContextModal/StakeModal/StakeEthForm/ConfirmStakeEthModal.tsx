@@ -8,7 +8,7 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { Translation, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getDaysToAddToPoolInitial } from 'src/utils/suite/ethereumStaking';
@@ -80,19 +80,17 @@ export const ConfirmStakeEthModal = ({
                         }}
                     />
                 </Banner>
-                <Banner icon="hand">
+                <Banner
+                    icon="hand"
+                    rightContent={
+                        <Banner.Button href={HELP_CENTER_ETH_STAKING}>
+                            <Translation id="TR_LEARN_MORE" />
+                        </Banner.Button>
+                    }
+                >
                     <Translation
                         id="TR_STAKE_ETH_WILL_BE_BLOCKED"
                         values={{
-                            a: chunks => (
-                                <TrezorLink
-                                    target="_blank"
-                                    variant="underline"
-                                    href={HELP_CENTER_ETH_STAKING}
-                                >
-                                    {chunks}
-                                </TrezorLink>
-                            ),
                             networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
                         }}
                     />
