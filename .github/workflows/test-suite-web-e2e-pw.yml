@@ -107,7 +107,7 @@ jobs:
     if: >
       github.repository == 'trezor/trezor-suite' &&
       (github.event_name == 'pull_request' ||
-      (github.event_name == 'issue_comment' && github.event.comment.body == '/run-tests') ||
+      (github.event_name == 'issue_comment' && github.event.comment.body == '/run-e2e-tests') ||
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'push')
     runs-on: ubuntu-latest
