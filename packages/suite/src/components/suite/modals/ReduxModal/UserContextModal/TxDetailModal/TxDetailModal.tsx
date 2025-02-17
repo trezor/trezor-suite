@@ -69,6 +69,8 @@ export const TxDetailModal = ({ tx, flow, onCancel }: TxDetailModalProps) => {
         !tx.deadline &&
         selectedAccount.status === 'loaded';
 
+    const canCancelTransaction = network.networkType === 'bitcoin';
+
     if (section === 'bump-fee' && canReplaceTransaction) {
         return (
             <BumpFeeModal
@@ -104,6 +106,7 @@ export const TxDetailModal = ({ tx, flow, onCancel }: TxDetailModalProps) => {
             onCancelTxClick={onCancelTxClick}
             chainedTxs={chainedTxs}
             canReplaceTransaction={canReplaceTransaction}
+            canCancelTransaction={canCancelTransaction}
         />
     );
 };

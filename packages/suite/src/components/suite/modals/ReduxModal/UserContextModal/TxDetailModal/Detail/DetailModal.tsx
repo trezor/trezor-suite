@@ -17,6 +17,7 @@ type DetailModalProps = {
     onCancelTxClick: () => void;
     chainedTxs?: ChainedTransactions;
     canReplaceTransaction: boolean;
+    canCancelTransaction: boolean;
 };
 
 export const DetailModal = ({
@@ -27,6 +28,7 @@ export const DetailModal = ({
     onCancelTxClick,
     chainedTxs,
     canReplaceTransaction,
+    canCancelTransaction,
 }: DetailModalProps) => {
     const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
@@ -47,9 +49,11 @@ export const DetailModal = ({
                         <NewModal.Button icon="gauge" variant="tertiary" onClick={onChangeFeeClick}>
                             <Translation id="TR_BUMP_FEE" />
                         </NewModal.Button>
-                        <NewModal.Button icon="x" variant="tertiary" onClick={onCancelTxClick}>
-                            <Translation id="TR_CANCEL_TX" />
-                        </NewModal.Button>
+                        {canCancelTransaction && (
+                            <NewModal.Button icon="x" variant="tertiary" onClick={onCancelTxClick}>
+                                <Translation id="TR_CANCEL_TX" />
+                            </NewModal.Button>
+                        )}
                     </>
                 ) : null
             }
