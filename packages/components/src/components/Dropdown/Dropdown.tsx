@@ -15,7 +15,7 @@ import { useOnClickOutside } from '@trezor/react-utils';
 
 import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
 import { DropdownMenuItemProps, Menu, MenuProps } from '../Menu/Menu';
-import { Popover } from '../Popover/Popover';
+import { Popover, PopoverRef } from '../Popover/Popover';
 import { PopoverPlacement } from '../Popover/utils';
 import { IconButton } from '../buttons/IconButton/IconButton';
 
@@ -65,6 +65,7 @@ export const Dropdown = forwardRef(
     ) => {
         const [isToggled, setIsToggledState] = useState(false);
 
+        const popoverRef = useRef<PopoverRef>(null);
         const menuRef = useRef<HTMLUListElement>(null);
         const toggleRef = useRef<HTMLDivElement>(null);
 
@@ -87,6 +88,7 @@ export const Dropdown = forwardRef(
         useImperativeHandle(ref, () => ({
             close: () => {
                 setToggled(false);
+                popoverRef.current?.close();
             },
         }));
 
@@ -121,6 +123,7 @@ export const Dropdown = forwardRef(
 
         return (
             <Popover
+                ref={popoverRef}
                 placement={placement}
                 content={
                     <Menu items={items} content={content} setToggled={setToggled} addon={addon} />

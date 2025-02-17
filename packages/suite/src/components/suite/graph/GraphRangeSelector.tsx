@@ -127,6 +127,11 @@ export const GraphRangeSelector = ({
     const locale = useLocales();
     const { selectedRange, setSelectedRange } = useGraph();
 
+    const clearCustomTimerange = () => {
+        setCustomTimerangeStart(undefined);
+        setCustomTimerangeEnd(undefined);
+    };
+
     const setCustomTimerange = (startDate: Date, endDate: Date) => {
         setCustomTimerangeStart(startDate);
         setCustomTimerangeEnd(endDate);
@@ -158,6 +163,7 @@ export const GraphRangeSelector = ({
                         if (onSelectedRange) {
                             onSelectedRange(range);
                         }
+                        clearCustomTimerange();
                     }}
                     data-testid={`@dashboard/graph/range-${range.label}`}
                 >

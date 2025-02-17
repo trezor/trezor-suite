@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CSSProperties, HTMLProps, forwardRef } from 'react';
+import { CSSProperties, HTMLProps, forwardRef, useImperativeHandle } from 'react';
 
 import {
     FloatingFocusManager,
@@ -178,21 +178,36 @@ export const PopoverContent = forwardRef<HTMLDivElement, PopoverContentProps>((p
     );
 });
 
-export function Popover({
-    content,
-    isInitialOpen,
-    placement,
-    isOpen,
-    popoverOffset,
-    zIndex = zIndices.popover,
-    children,
-}: PopoverProps & { children: React.ReactNode }) {
-    const popover = usePopover({ isInitialOpen, placement, isOpen, popoverOffset });
-
-    return (
-        <PopoverContext.Provider value={popover}>
-            <PopoverTrigger>{children}</PopoverTrigger>
-            <PopoverContent style={{ zIndex }}>{content}</PopoverContent>
-        </PopoverContext.Provider>
-    );
+export interface PopoverRef {
+    open: () => void;
+    close: () => void;
 }
+
+export const Popover = forwardRef(
+    (
+        {
+            content,
+            isInitialOpen,
+            placement,
+            isOpen,
+            popoverOffset,
+            zIndex = zIndices.popover,
+            children,
+        }: PopoverProps & { children: React.ReactNode },
+        ref,
+    ) => {
+        const popover = usePopover({ isInitialOpen, placement, isOpen, popoverOffset });
+
+        useImperativeHandle(ref, () => ({
+            open: () => popover.setOpen(true),
+            close: () => popover.setOpen(false),
+        }));
+
+        return (
+            <PopoverContext.Provider value={popover}>
+                <PopoverTrigger>{children}</PopoverTrigger>
+                <PopoverContent style={{ zIndex }}>{content}</PopoverContent>
+            </PopoverContext.Provider>
+        );
+    },
+);
