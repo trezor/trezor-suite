@@ -9,17 +9,14 @@
 | :----------------: | :----: | :----------: |
 | connect.trezor.io/ | 9.4.7  | 9.5.0-beta.1 |
 
-| connect.trezor.io/ | 9.4.7 | 9.4.8-beta.2 |
-
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.4.8-beta.2
+# 9.5.0-beta.1
 
-Fixing issue in automated release proces of connect plugins in 9.4.8-beta.1
+Starting with this release we changed de target in all `@trezor` packages to ES2022. It might be problematic in some very old environment or if you use Typescript with lower than ES2022 you might have to add ES2022 lib to your tsconfig. We are also include esm builds in our npm packages. For now only in `@trezor/connect-plugin-stellar` and `@trezor/connect-plugin-ethereum`.
 
-# 9.4.8-beta.1
-
-Starting with this release we include esm builds in our npm packages.
+Another important change comes from 013f14a where we ping trezor-bridge and if it comes online connect would ditch webusb transport and start using bridge instead.
+This should help potential inconsistent states of device communication.
 
 ## Feature
 
@@ -29,6 +26,10 @@ Starting with this release we include esm builds in our npm packages.
     - blockchain methods now have support for various L2 ETH networks (26ff8ea, 38614db)
     - solana and Token-2022 tokens (9abc7d9)
     - show h instead of apostrophe in taproot xpub to be consistent with firmware (82e7d84)
+    - remove Hash-Check from FW upgrade (it is performed on-device-connect anyway) (7413e2c)
+    - enable taproot in connect discovery in popup (b1ea07e)
+    - add fw binaries for 2.8.8 and 1.13.0 (6ef1768), firmware update will be offered
+    - feat(connect): upgrade to bridge when it starts (013f14a)
 
 ## Fixes
 
@@ -43,6 +44,26 @@ Starting with this release we include esm builds in our npm packages.
     - resetDevice typed error (8795800)
     - clear initial GetFeatures timeout (c0a9ecc)
     - ethereum decimal places (c40929b)
+    - fix(connect): gracefully handle offline FW revision check in react native (a969076)
+    - fix(connect-explorer): pass description for nested parameters (fc44b51)
+    - fix(connect): allow to: null in ethereumSignTransaction for contract deployment (1aa34bf)
+
+## Chores
+
+    - use target ES2022 from root tsconfig.lib (2b75843, 83b4e69, a0395a2, d52b30b)
+    - docs(connect-mobile): improve description of deeplinking protocol (aa1436e)
+    - chore(connect-common): update authenticity config (6ba9ead)
+    - unify timeout utils (fd9f509, dedff02, 4b57c17)
+    - chore: update solana and everstake deps (cf806ff)
+    - chore(connect-plugin-ethereum): update dep (91da7e7)
+    - chore(connect-plugin-stellar): update dep (daffb20)
+    - chore(suite): bump webpack (eab0cc7)
+    - chore(suite-desktop): bump electron-builder (306a3cf)
+    - chore(suite-desktop): bump electron (4641b02)
+    - npm-prerelease: @trezor/connect-common 0.3.0-beta.1 (e661c40)
+    - npm-prerelease: @trezor/connect-plugin-stellar 9.1.0-beta.1 (ec3e39f)
+    - npm-prerelease: @trezor/connect-plugin-ethereum 9.1.0-beta.1 (5513fee)
+    - chore(suite-native): update expo-linking (0e80d40)
 
 ## Chores
 
