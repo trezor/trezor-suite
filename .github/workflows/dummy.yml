@@ -2,12 +2,12 @@ name: Dummy Workflow
 
 on:
   pull_request:
-    types: 
-    - opened
-    - ready_for_review
+    types: [opened, synchronize]  # Triggers when PR is created or updated
   issue_comment:
-    types:
-    - created
+    types: [created]  # Triggered when a comment is created
+  push:
+    branches:
+      - release/2*  # Separate trigger for the release branch
 
 jobs:
   dummy-job:
@@ -19,15 +19,15 @@ jobs:
     concurrency:
       group: >
         ${{
-          github.event_name == 'pull_request' && format('pr-{0}-commit-{1}', github.event.pull_request.number, github.sha) ||
+          github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) ||
           github.event_name == 'issue_comment' && format('pr-{0}-comment', github.event.issue.number) ||
           github.ref
         }}
-      cancel-in-progress: false
+      cancel-in-progress: false  # Don't cancel previous runs
 
     steps:
       - name: Print event details
         run: echo "Triggered ${{ github.event_name }}"
 
       - name: Simulate long test run
-        run: sleep 60
+        run: sleep 120  # Simulate a long-running test
