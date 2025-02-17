@@ -1,0 +1,33 @@
+name: Dummy Workflow
+
+on:
+  pull_request:
+    types: 
+    - opened
+    - ready_for_review
+  issue_comment:
+    types:
+    - created
+
+jobs:
+  dummy-job:
+    if: >
+      github.event_name != 'issue_comment' || 
+      contains(github.event.comment.body, '/run-tests')
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: >
+        ${{
+          github.event_name == 'pull_request' && format('pr-{0}-commit-{1}', github.event.pull_request.number, github.sha) ||
+          github.event_name == 'issue_comment' && format('pr-{0}-comment', github.event.issue.number) ||
+          github.ref
+        }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Print event details
+        run: echo "Triggered ${{ github.event_name }}"
+
+      - name: Simulate long test run
+        run: sleep 60
