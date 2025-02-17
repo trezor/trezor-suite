@@ -9,16 +9,12 @@ import type {
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { tradingBuyActions } from '../actions/buyActions';
-import type { TradingFiatCurrenciesProps } from '../types';
 
-// TODO: refactor Map and Set https://redux.js.org/style-guide/#do-not-put-non-serializable-values-in-state-or-actions
 export interface BuyInfo {
-    buyInfo: Omit<BuyListResponse, 'defaultAmountsOfFiatCurrencies'> & {
-        defaultAmountsOfFiatCurrencies: TradingFiatCurrenciesProps;
-    };
+    buyInfo: BuyListResponse;
     providerInfos: { [name: string]: BuyProviderInfo };
-    supportedFiatCurrencies: Set<string>;
-    supportedCryptoCurrencies: Set<CryptoId>;
+    supportedFiatCurrencies: string[];
+    supportedCryptoCurrencies: CryptoId[];
 }
 
 export interface TradingBuyState {

@@ -5,56 +5,48 @@ import { createThunk } from '@suite-common/redux-utils';
 import { invityAPI } from '../invityAPI';
 import { BuyInfo } from '../reducers/buyReducer';
 import { regional } from '../regional';
-import { TradingFiatCurrenciesProps } from '../types';
 
 const BUY_COMMON_PREFIX = '@trading-buy/thunk';
 
-const loadInfoThunk = createThunk<BuyInfo>(`${BUY_COMMON_PREFIX}/loadInfo`, async () => {
-    const buyInfo = await invityAPI.getBuyList();
-    const defaultAmountsOfFiatCurrencies: TradingFiatCurrenciesProps = new Map();
+const loadInfoThunk = createThunk<BuyInfo>(
+    `${BUY_COMMON_PREFIX}/loadInfo`,
+    async (_, { fulfillWithValue }) => {
+        const buyInfo = await invityAPI.getBuyList();
 
-    if (!buyInfo?.providers) {
-        return {
-            buyInfo: {
-                country: regional.UNKNOWN_COUNTRY,
-                providers: [],
-                defaultAmountsOfFiatCurrencies,
-            },
-            providerInfos: {},
-            supportedFiatCurrencies: new Set(),
-            supportedCryptoCurrencies: new Set(),
-        };
-    }
+        if (!buyInfo?.providers) {
+            return fulfillWithValue({
+                buyInfo: {
+                    country: regional.UNKNOWN_COUNTRY,
+                    providers: [],
+                    defaultAmountsOfFiatCurrencies: {} as Record<FiatCurrencyCode, number>,
+                },
+                providerInfos: {},
+                supportedFiatCurrencies: [],
+                supportedCryptoCurrencies: [],
+            });
+        }
 
-    const providerInfos: { [name: string]: BuyProviderInfo } = {};
+        const providerInfos: { [name: string]: BuyProviderInfo } = {};
 
-    buyInfo.providers.forEach(e => (providerInfos[e.name] = e));
+        buyInfo.providers.forEach(e => (providerInfos[e.name] = e));
 
-    const tradedFiatCurrencies: string[] = [];
-    const tradedCoins: CryptoId[] = [];
-    buyInfo.providers.forEach(p => {
-        tradedFiatCurrencies.push(...p.tradedFiatCurrencies.map(c => c.toLowerCase()));
-        tradedCoins.push(...p.tradedCoins);
-    });
-    const supportedFiatCurrencies = new Set(tradedFiatCurrencies);
-    const supportedCryptoCurrencies = new Set(tradedCoins);
-
-    if (buyInfo.defaultAmountsOfFiatCurrencies) {
-        Object.entries(buyInfo.defaultAmountsOfFiatCurrencies).forEach(([key, value]) => {
-            defaultAmountsOfFiatCurrencies.set(key as FiatCurrencyCode, value.toString());
+        const supportedFiatCurrencies: string[] = [];
+        const supportedCryptoCurrencies: CryptoId[] = [];
+        buyInfo.providers.forEach(provider => {
+            supportedFiatCurrencies.push(
+                ...provider.tradedFiatCurrencies.map(c => c.toLowerCase()),
+            );
+            supportedCryptoCurrencies.push(...provider.tradedCoins);
         });
-    }
 
-    return {
-        buyInfo: {
-            ...buyInfo,
-            defaultAmountsOfFiatCurrencies,
-        },
-        providerInfos,
-        supportedFiatCurrencies,
-        supportedCryptoCurrencies,
-    };
-});
+        return fulfillWithValue({
+            buyInfo,
+            providerInfos,
+            supportedFiatCurrencies,
+            supportedCryptoCurrencies,
+        });
+    },
+);
 
 export const buyThunks = {
     loadInfoThunk,

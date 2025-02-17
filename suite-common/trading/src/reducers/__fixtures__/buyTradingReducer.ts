@@ -1,4 +1,4 @@
-import { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
+import { BuyTrade, BuyTradeQuoteRequest, CryptoId, FiatCurrenciesProps } from 'invity-api';
 
 import { tradingBuyActions } from '../../actions/buyActions';
 import { BuyInfo, TradingBuyState } from '../buyReducer';
@@ -17,11 +17,13 @@ const buyInfo: BuyInfo = {
     buyInfo: {
         country: 'cz',
         providers: [],
-        defaultAmountsOfFiatCurrencies: new Map([['usd', '1000']]),
+        defaultAmountsOfFiatCurrencies: {
+            usd: 150,
+        } as FiatCurrenciesProps,
     },
     providerInfos: {},
-    supportedCryptoCurrencies: new Set(['BTC', 'ETH']) as Set<CryptoId>,
-    supportedFiatCurrencies: new Set(['usd']),
+    supportedCryptoCurrencies: ['BTC', 'ETH'] as CryptoId[],
+    supportedFiatCurrencies: ['usd'],
 };
 
 const quotesRequest: BuyTradeQuoteRequest = {

@@ -10,18 +10,12 @@ import {
     selectTradingInfo,
     selectTradingLoadingAndTimestamp,
     selectTradingSelectedAccount,
-    selectTradingSettingEnviroment,
+    selectTradingSettingEnvironment,
 } from '../selectors/tradingSelectors';
 import { buyThunks } from '../thunks/buyThunks';
 
-/**
- * In the Sell and Swap section an account can be changed by a user in the select
- */
 export const getAccountAccordingToSection = (state: TradingRootState) => {
-    const {
-        account,
-        // accounts,
-    } = selectTradingSelectedAccount(state);
+    const { account } = selectTradingSelectedAccount(state);
 
     return account;
 };
@@ -41,7 +35,7 @@ export const tradingMiddleware = createMiddleware(async (action, { dispatch, nex
         if (account && !isLoading && (isDifferentAccount || areDataOutdated)) {
             dispatch(tradingActions.setLoading(true));
 
-            const invityServerEnvironment = selectTradingSettingEnviroment(getState());
+            const invityServerEnvironment = selectTradingSettingEnvironment(getState());
             if (invityServerEnvironment) {
                 invityAPI.setInvityServersEnvironment(invityServerEnvironment);
             }
