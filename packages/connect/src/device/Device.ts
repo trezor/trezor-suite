@@ -221,7 +221,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.transportPath = descriptor.path;
         this.transportSessionOwner = descriptor.sessionOwner;
         this.transportDescriptorType = descriptor.type;
-        this.bluetoothProps = descriptor.uuid ? { uuid: descriptor.uuid } : undefined;
+        this.bluetoothProps = descriptor.id ? { id: descriptor.id } : undefined;
 
         this.session = descriptor.session;
         this.lastAcquiredHere = false;

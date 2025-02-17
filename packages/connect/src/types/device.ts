@@ -82,7 +82,7 @@ type BaseDevice = {
 };
 
 export type BluetoothDeviceProps = {
-    uuid: string;
+    id: string;
 };
 
 export type KnownDevice = BaseDevice & {

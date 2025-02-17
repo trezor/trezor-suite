@@ -29,7 +29,7 @@ export type Descriptor = Omit<DescriptorApiLevel, 'path'> & {
     /** only reported by old bridge */
     debug?: boolean;
     /** only reported by transport-bluetooth */
-    uuid?: string;
+    id?: string;
 };
 
 export interface Logger {
