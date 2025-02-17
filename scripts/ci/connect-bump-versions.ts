@@ -196,7 +196,7 @@ const bumpConnect = async () => {
                     await exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
                 }
 
-                commit({
+                await commit({
                     path: PACKAGE_PATH,
                     // We only use `npm-release` when doing stable release, so the part of the script above can check commits to include in CHANGELOG.
                     message: `npm-${deploymentType === 'canary' ? 'prerelease' : 'release'}: @trezor/${packageName} ${version}`,
@@ -241,7 +241,7 @@ const bumpConnect = async () => {
 
         await exec('git', ['checkout', '-b', branchName]);
 
-        commit({
+        await commit({
             path: ROOT,
             message: commitMessage,
         });
@@ -268,7 +268,7 @@ const bumpConnect = async () => {
             .replace('https://github.com/trezor/trezor-suite/pull/', '');
 
         if (errors.length) {
-            comment({
+            await comment({
                 prNumber,
                 body: `Deps error. one of the dependencies likely needs to be published for the first time: ${errors.join(
                     ', ',
@@ -283,7 +283,7 @@ const bumpConnect = async () => {
         );
 
         if (depsChecklist) {
-            comment({
+            await comment({
                 prNumber,
                 body: depsChecklist,
             });
@@ -315,7 +315,7 @@ const bumpConnect = async () => {
                 return;
             }
 
-            comment({
+            await comment({
                 prNumber,
                 body: connectGitLogText,
             });
