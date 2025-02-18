@@ -1,11 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Bridge page', { tag: ['@group=suite', '@webOnly'] }, () => {
-    test.beforeEach(async ({ trezorUserEnvLink }) => {
-        await trezorUserEnvLink.stopEmu();
-        await trezorUserEnvLink.stopBridge();
-    });
-
     test.use({ startEmulator: false });
     test('can use webusb', async ({ url, page }) => {
         await page.goto(url + 'bridge');

@@ -1,10 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Guide without device', { tag: ['@group=suite', '@webOnly'] }, () => {
-    test.beforeEach(async ({ trezorUserEnvLink }) => {
-        await trezorUserEnvLink.stopEmu();
-        await trezorUserEnvLink.stopBridge();
-    });
     test.use({ startEmulator: false });
     test('open / close guide', async ({ page, suiteGuidePage, settingsPage }) => {
         // Open guide

@@ -91,10 +91,13 @@ const test = base.extend<Fixtures>({
         testInfo,
     ) => {
         // We need to ensure emulator is running before launching the suite
+        await trezorUserEnvLink.logTestDetails(
+            ` - - - STARTING TEST ${testInfo.titlePath.join(' - ')}`,
+        );
+        await trezorUserEnvLink.stopBridge();
+        await trezorUserEnvLink.stopEmu();
+        await trezorUserEnvLink.connect();
         if (startEmulator) {
-            await trezorUserEnvLink.stopBridge();
-            await trezorUserEnvLink.stopEmu();
-            await trezorUserEnvLink.connect();
             await trezorUserEnvLink.startEmu(emulatorStartConf);
         }
 
@@ -117,6 +120,9 @@ const test = base.extend<Fixtures>({
             }
             await use(undefined);
         }
+        await trezorUserEnvLink.logTestDetails(
+            ` - - - FINISHING TEST ${testInfo.titlePath.join(' - ')}`,
+        );
     },
     page: async ({ electronWindow, page: webPage }, use, testInfo) => {
         if (electronWindow) {

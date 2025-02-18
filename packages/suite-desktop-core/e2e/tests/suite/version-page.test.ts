@@ -4,12 +4,7 @@ import { expect, test } from '../../support/fixtures';
 
 //TODO: Fix #17001
 test.describe.skip('Hidden version page', { tag: ['@group=suite', '@webOnly'] }, () => {
-    test.beforeEach(async ({ trezorUserEnvLink }) => {
-        await trezorUserEnvLink.stopEmu();
-        await trezorUserEnvLink.stopBridge();
-    });
     test.use({ startEmulator: false });
-
     test('is accessible via route', async ({ url, page }) => {
         const suiteVersion = getSuiteVersion();
         const suiteCommitHash = getCommitHash();

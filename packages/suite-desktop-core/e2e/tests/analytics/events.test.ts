@@ -4,12 +4,8 @@ import { ExtractByEventType } from '@trezor/suite-web/e2e/support/types';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
-    test.use({
-        startEmulator: false,
-    });
-    test.beforeEach(async ({ trezorUserEnvLink, onboardingPage }) => {
-        await trezorUserEnvLink.stopBridge();
-        await trezorUserEnvLink.stopEmu();
+    test.use({ startEmulator: false });
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.disableFirmwareHashCheck();
     });
 
