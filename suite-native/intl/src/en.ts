@@ -676,6 +676,8 @@ export const en = {
         },
         aboutUs: {
             title: 'About Trezor Suite Lite',
+            followUs: 'Follow us',
+            body: 'Trezor Suite Lite is a safe and secure way to stay connected to the crypto on your hardware wallet. Track coin balances on the go without exposing your private data. Easily create and send payment addresses to anyone.',
         },
         privacyAndSecurity: {
             title: 'Privacy & Security',

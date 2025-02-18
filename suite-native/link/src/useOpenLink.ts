@@ -3,6 +3,10 @@ import { Linking } from 'react-native';
 
 import { useToast } from '@suite-native/toasts';
 
+interface OpenLinkOptions {
+    enforce?: boolean; // Bypasses canOpenURL check, needed for URLs meant to open in external apps.
+}
+
 export const useOpenLink = () => {
     const { showToast } = useToast();
 
@@ -15,11 +19,11 @@ export const useOpenLink = () => {
     }, [showToast]);
 
     const handleOpenLink = useCallback(
-        async (href: string) => {
+        async (href: string, { enforce }: OpenLinkOptions = {}) => {
             try {
                 const canOpenURL = await Linking.canOpenURL(href);
 
-                if (!canOpenURL) {
+                if (!canOpenURL && !enforce) {
                     showErrorToast();
 
                     return;
