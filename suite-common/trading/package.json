@@ -19,6 +19,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/react-utils": "workspace:*",
+        "@trezor/suite-analytics": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
         "uuid": "^11.0.5"

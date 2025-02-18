@@ -73,6 +73,9 @@ export const selectTradingBuy = createMemoizedSelector(
 export const selectTradingBuyQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.buy.quotesRequest;
 
+export const selectTradingBuySelectedQuote = (state: TradingRootState) =>
+    state.wallet.trading.buy.selectedQuote;
+
 export const selectTradingSelectedAccount = (state: TradingRootState) =>
     state.wallet.selectedAccount;
 

@@ -34,6 +34,7 @@ export const MIN_MAX_QUOTES_OK: BuyTrade[] = [
         maxCrypto: 0.20003,
         paymentMethod: 'applePay',
         paymentMethodName: 'Apple Pay',
+        paymentId: 'e709df77-ee9e-4d12-98c2-84004a19c521',
     },
     {
         fiatStringAmount: '10',

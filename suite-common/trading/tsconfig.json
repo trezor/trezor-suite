@@ -9,6 +9,9 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/react-utils" },
+        {
+            "path": "../../packages/suite-analytics"
+        },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" }
     ]
