@@ -272,6 +272,10 @@ export class MarketActions {
         await this.selectCountryOfResidence(country);
         const quoteRequestPromise = this.page.waitForRequest(invityEndpoint.sellQuotes);
         await this.youPayCryptoInput.fill(amount);
+        await expect(
+            this.page.getByText('Not enough funds'),
+            'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
+        ).not.toBeVisible();
         await expect(quoteRequestPromise).toHavePayload({
             amountInCrypto: true,
             cryptoCurrency,
