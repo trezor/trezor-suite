@@ -301,7 +301,6 @@ export const authorizeDeviceThunk = createThunk<
         const device = selectSelectedDevice(getState());
 
         if (!device) return rejectWithValue({ error: 'no-device' });
-
         const isDeviceReady =
             device.connected &&
             isDeviceAcquired(device) &&
@@ -312,7 +311,6 @@ export const authorizeDeviceThunk = createThunk<
             device.firmware !== 'required';
 
         if (!isDeviceReady) return rejectWithValue({ error: 'device-not-ready', device });
-
         const deviceParams: Parameters<typeof TrezorConnect.getDeviceState>[0] = {
             device: {
                 path: device.path,
@@ -322,7 +320,6 @@ export const authorizeDeviceThunk = createThunk<
             keepSession: true,
             useEmptyPassphrase: device.useEmptyPassphrase,
         };
-
         const response = await TrezorConnect.getDeviceState(deviceParams);
 
         if (response.success) {

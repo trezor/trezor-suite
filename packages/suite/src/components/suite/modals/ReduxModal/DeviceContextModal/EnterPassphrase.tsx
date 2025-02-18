@@ -17,17 +17,19 @@ type EnterPassphraseProps = {
     onDeviceOffer: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     device: TrezorDevice;
+    onBack: () => void;
 };
 
-export const EnterPassphrase = ({ device, onDeviceOffer, onSubmit }: EnterPassphraseProps) => {
+export const EnterPassphrase = ({
+    device,
+    onDeviceOffer,
+    onSubmit,
+    onBack,
+}: EnterPassphraseProps) => {
     const deviceModel = useSelector(selectDeviceModel);
 
     const onEnterPassphraseDialogCancel = () => {
         TrezorConnect.cancel('enter-passphrase-cancel');
-    };
-
-    const onEnterPassphraseDialogBack = () => {
-        TrezorConnect.cancel('enter-passphrase-back');
     };
 
     return (
@@ -35,7 +37,7 @@ export const EnterPassphrase = ({ device, onDeviceOffer, onSubmit }: EnterPassph
             <CardWithDevice
                 onCancel={onEnterPassphraseDialogCancel}
                 device={device}
-                onBackButtonClick={onEnterPassphraseDialogBack}
+                onBackButtonClick={onBack}
                 isFullHeaderVisible
             >
                 <Column gap={spacings.sm} margin={{ top: spacings.xxs }}>

@@ -1,7 +1,7 @@
 import { useEvent } from 'react-use';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { WalletType } from '@suite-common/wallet-types/libDev/src';
+import { WalletType } from '@suite-common/wallet-types';
 import { KEYBOARD_CODE } from '@trezor/components';
 
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';
@@ -10,10 +10,10 @@ import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 
 import { usePassphraseModalContext } from '../../modals/ReduxModal/DeviceContextModal/PassphraseModalContext';
 
-export const useAppShortcuts = () => {
+export const AppShortcuts = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
-    const { setPassphraseState } = usePassphraseModalContext();
+    const { setPassphraseState, setIsExisting } = usePassphraseModalContext();
 
     const { getDiscoveryStatus } = useDiscovery();
     const discoveryStatus = getDiscoveryStatus();
@@ -23,7 +23,6 @@ export const useAppShortcuts = () => {
     useEvent('keydown', e => {
         const { altKey, metaKey } = e;
         const isDeviceSelected = selectedDevice !== undefined;
-
         // press ALT + P to show PassphraseModal
         if (
             selectedDevice?.connected &&
@@ -31,6 +30,7 @@ export const useAppShortcuts = () => {
             e.code === KEYBOARD_CODE.KEY_P &&
             isDeviceSelected
         ) {
+            setIsExisting(true);
             setPassphraseState('exists-enter-passphrase');
             dispatch(addWalletThunk({ walletType: WalletType.PASSPHRASE, device: selectedDevice }));
             dispatch(closeModalApp());
@@ -54,4 +54,6 @@ export const useAppShortcuts = () => {
             e.preventDefault();
         }
     });
+
+    return null;
 };

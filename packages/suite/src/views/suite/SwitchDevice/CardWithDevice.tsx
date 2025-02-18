@@ -90,7 +90,7 @@ export const CardWithDevice = ({
 
     const handleCancel = () => {
         setPassphraseState('initial');
-        onCancel();
+        onCancel?.();
     };
 
     return (
