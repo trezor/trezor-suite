@@ -1,7 +1,6 @@
 import { CryptoId, InfoResponse } from 'invity-api';
 
-import { tradingActions } from '../../actions/tradingActions';
-import { TradingComposedTransactionInfo, TradingState } from '../tradingReducer';
+import { TradingComposedTransactionInfo, TradingState, tradingActions } from '../tradingReducer';
 import { accounts } from './account';
 import { buyInitialState } from './buyTradingReducer';
 import {

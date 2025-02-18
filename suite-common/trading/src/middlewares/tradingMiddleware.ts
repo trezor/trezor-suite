@@ -1,9 +1,9 @@
 import { createMiddleware } from '@suite-common/redux-utils';
 
-import { tradingActions } from '../actions/tradingActions';
 import { INVITY_API_RELOAD_DATA_AFTER_MS } from '../constants';
 import { invityAPI } from '../invityAPI';
 import { tradingBuyActions } from '../reducers/buyReducer';
+import { tradingActions } from '../reducers/tradingReducer';
 import {
     TradingRootState,
     selectTradingBuy,
@@ -33,7 +33,7 @@ export const tradingMiddleware = createMiddleware(async (action, { dispatch, nex
         const areDataOutdated = lastLoadedTimestamp + INVITY_API_RELOAD_DATA_AFTER_MS < Date.now();
 
         if (account && !isLoading && (isDifferentAccount || areDataOutdated)) {
-            dispatch(tradingActions.setLoading(true));
+            dispatch(tradingActions.setLoading({ isLoading: true }));
 
             const invityServerEnvironment = selectTradingSettingEnvironment(getState());
             if (invityServerEnvironment) {
@@ -54,7 +54,9 @@ export const tradingMiddleware = createMiddleware(async (action, { dispatch, nex
                 dispatch(tradingBuyActions.saveBuyInfo(buyInfoData));
             }
 
-            dispatch(tradingActions.setLoading(false, Date.now()));
+            dispatch(
+                tradingActions.setLoading({ isLoading: false, lastLoadedTimestamp: Date.now() }),
+            );
         }
     }
 

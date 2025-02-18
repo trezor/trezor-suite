@@ -5,9 +5,9 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from '@suite-common/wallet-types';
 
 import { BUY_THUNK_COMMON_PREFIX } from './handleRequestThunk';
-import { tradingActions } from '../../actions/tradingActions';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
+import { tradingActions } from '../../reducers/tradingReducer';
 import { selectTradingBuySelectedQuote } from '../../selectors/tradingSelectors';
 
 export type ConfirmTradeThunkProps = {

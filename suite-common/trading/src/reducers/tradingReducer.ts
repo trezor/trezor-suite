@@ -1,13 +1,12 @@
-import { AnyAction } from '@reduxjs/toolkit';
-import { Coins, CryptoId, Platforms } from 'invity-api';
+import { AnyAction, PayloadAction } from '@reduxjs/toolkit';
+import { Coins, CryptoId, InfoResponse, Platforms } from 'invity-api';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { FeeLevel } from '@trezor/connect';
 
 import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '../types';
 import { TradingBuyState, buyInitialState, tradingBuyReducer } from './buyReducer';
-import { tradingActions } from '../actions/tradingActions';
 
 export interface TradingComposedTransactionInfo {
     composed?: Pick<
@@ -76,49 +75,63 @@ export const initialState: TradingState = {
     prefilledFromCryptoId: undefined,
 };
 
-export const prepareTradingReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
-    builder
-        .addCase(extra.actionTypes.storageLoad, (state, action: AnyAction) => ({
-            ...state,
-            trades: action.payload.tradingTrades ?? state.trades,
-        }))
-        .addCase(tradingActions.saveInfo, (state, { payload }) => {
-            state.info.coins = payload.coins;
-            state.info.platforms = payload.platforms;
-        })
-        .addCase(tradingActions.savePaymentMethods, (state, { payload }) => {
-            state.info.paymentMethods = payload;
-        })
-        .addCase(tradingActions.saveComposedTransactionInfo, (state, { payload }) => {
-            state.composedTransactionInfo = payload;
-        })
-        .addCase(tradingActions.setTradingFromPrefilledCryptoId, (state, { payload }) => {
-            state.prefilledFromCryptoId = payload;
-        })
-        .addCase(tradingActions.saveTrade, (state, { payload }) => {
-            if (payload.key) {
-                const trades = state.trades.filter(t => t.key !== payload.key);
-                trades.push(payload);
+export const tradingSlice = createSliceWithExtraDeps({
+    name: 'trading-common',
+    initialState,
+    reducers: {
+        saveInfo(state, action: PayloadAction<InfoResponse>) {
+            state.info.coins = action.payload.coins;
+            state.info.platforms = action.payload.platforms;
+        },
+        savePaymentMethods(state, action: PayloadAction<TradingPaymentMethodListProps[]>) {
+            state.info.paymentMethods = action.payload;
+        },
+        saveComposedTransactionInfo(state, action: PayloadAction<TradingComposedTransactionInfo>) {
+            state.composedTransactionInfo = action.payload;
+        },
+        saveTrade(state, action: PayloadAction<TradingTransaction>) {
+            if (action.payload.key) {
+                const trades = state.trades.filter(t => t.key !== action.payload.key);
+                trades.push(action.payload);
 
                 state.trades = trades;
             }
-        })
-        .addCase(tradingActions.setLoading, (state, { payload }) => {
-            state.isLoading = payload.isLoading;
-            state.lastLoadedTimestamp = payload.lastLoadedTimestamp;
-        })
-        .addCase(tradingActions.setModalAccountKey, (state, { payload }) => {
-            state.modalAccountKey = payload;
-        })
-        .addCase(tradingActions.setModalCryptoCurrency, (state, { payload }) => {
-            state.modalCryptoId = payload;
-        })
-        .addCase(tradingActions.setTradingActiveSection, (state, { payload }) => {
-            state.activeSection = payload;
-        })
-        .addDefaultCase((state, action) => {
-            tradingBuyReducer(state.buy, action);
-            // TODO: prepareSellReducer(extra)(state.sell, action);
-            // TODO: prepareExchangeReducer(extra)(state.exchange, action);
-        });
+        },
+        setModalCryptoCurrency(state, action: PayloadAction<CryptoId>) {
+            state.modalCryptoId = action.payload;
+        },
+        setModalAccountKey(state, action: PayloadAction<string>) {
+            state.modalAccountKey = action.payload;
+        },
+        setLoading(
+            state,
+            action: PayloadAction<{ isLoading: boolean; lastLoadedTimestamp?: number }>,
+        ) {
+            state.isLoading = action.payload.isLoading;
+            state.lastLoadedTimestamp = action.payload.lastLoadedTimestamp ?? 0;
+        },
+        setTradingActiveSection(state, action: PayloadAction<TradingType>) {
+            state.activeSection = action.payload;
+        },
+        setTradingFromPrefilledCryptoId(state, action: PayloadAction<CryptoId | undefined>) {
+            state.prefilledFromCryptoId = action.payload;
+        },
+        loadInvityData() {},
+    },
+    extraReducers: (builder, extra) => {
+        builder
+
+            .addCase(extra.actionTypes.storageLoad, (state, action: AnyAction) => ({
+                ...state,
+                trades: action.payload.tradingTrades ?? state.trades,
+            }))
+            .addDefaultCase((state, action) => {
+                tradingBuyReducer(state.buy, action);
+                // TODO: prepareSellReducer(extra)(state.sell, action);
+                // TODO: prepareExchangeReducer(extra)(state.exchange, action);
+            });
+    },
 });
+
+export const prepareTradingReducer = tradingSlice.prepareReducer;
+export const tradingActions = tradingSlice.actions;
