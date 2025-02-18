@@ -1462,7 +1462,7 @@
   "TR_REMEMBER_WALLET_TITLE": "Remember wallet",
   "TR_REMOVE_WIPE_CODE": "Remove wipe code",
   "TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED": "Replace transaction failed",
-  "TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION": "The transaction couldn’t be replaced as it's just been confirmed on the {network} network.",
+  "TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION": "The transaction couldn’t be replaced as it's just been confirmed on the network.",
   "TR_REPLACE_TX": "Replace transaction",
   "TR_REQUIRED_FIELD": "Required",
   "TR_RESTART_TREZOR_DEVICE_TUTORIAL": "Restart tutorial",

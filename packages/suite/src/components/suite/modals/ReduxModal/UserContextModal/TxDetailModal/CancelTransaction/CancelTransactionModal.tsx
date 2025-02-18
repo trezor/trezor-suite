@@ -105,7 +105,6 @@ export const CancelTransactionModal = ({
                 {isTxConfirmed ? (
                     <ReplaceByFeeFailedOriginalTxConfirmed
                         type="cancel"
-                        networkSymbol={tx.symbol}
                         networkType={account.networkType}
                     />
                 ) : (

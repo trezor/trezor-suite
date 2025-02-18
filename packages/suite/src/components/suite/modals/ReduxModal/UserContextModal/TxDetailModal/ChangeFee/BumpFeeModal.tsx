@@ -60,7 +60,6 @@ export const BumpFeeModal = ({
                 {isTxConfirmed ? (
                     <ReplaceByFeeFailedOriginalTxConfirmed
                         type="bump-fee"
-                        networkSymbol={tx.symbol}
                         networkType={account.networkType}
                     />
                 ) : (

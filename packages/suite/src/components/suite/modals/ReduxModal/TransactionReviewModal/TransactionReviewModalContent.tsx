@@ -246,7 +246,6 @@ export const TransactionReviewModalContent = ({
             return (
                 <ReplaceByFeeFailedOriginalTxConfirmed
                     type={precomposedTx.rbfType}
-                    networkSymbol={symbol}
                     networkType={networkType}
                 />
             );
