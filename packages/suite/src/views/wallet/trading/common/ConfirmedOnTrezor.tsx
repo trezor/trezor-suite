@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { variables } from '@trezor/components';
 import { RotateDeviceImage } from '@trezor/product-components';
+import { borders } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
@@ -18,6 +19,7 @@ const Confirmed = styled.div`
     justify-content: center;
     margin-top: 27px;
     gap: 10px;
+    border-radius: ${borders.radii.sm};
 `;
 
 // reason: set size of RotateDeviceImage

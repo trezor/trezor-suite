@@ -63,7 +63,7 @@ const Container = styled.div<{
                     : theme.backgroundNeutralDisabled};
             }
 
-            :hover {
+            &:hover {
                 background: ${$isChecked
                     ? theme.backgroundPrimaryPressed
                     : theme.backgroundNeutralSubdued};

@@ -23,6 +23,7 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { ConfirmedOnTrezor } from 'src/views/wallet/trading/common/ConfirmedOnTrezor';
 import { TradingAddressOptions } from 'src/views/wallet/trading/common/TradingAddressOptions';
+import { TradingVerifyDestinationTag } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerifyDestinationTag';
 import { TradingVerifyOptions } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingVerify/TradingVerifyOptions';
 
 interface TradingVerifyProps {
@@ -163,25 +164,31 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                     />
                 )}
 
+                {exchangeQuote?.extraFieldDescription && (
+                    <TradingVerifyDestinationTag
+                        inputComponent={
+                            <Input
+                                label={
+                                    <Translation
+                                        id="TR_EXCHANGE_EXTRA_FIELD"
+                                        values={extraFieldDescription}
+                                    />
+                                }
+                                inputState={form.formState.errors.extraField ? 'error' : undefined}
+                                bottomText={form.formState.errors.extraField?.message || null}
+                                innerRef={descriptionRef}
+                                {...descriptionField}
+                            />
+                        }
+                        onToggle={() => form.setValue('extraField', '', { shouldValidate: true })}
+                        required={exchangeQuote.extraFieldDescription.required}
+                    />
+                )}
+
                 {device?.connected &&
                     device.available &&
                     addressVerified &&
                     addressVerified === address && <ConfirmedOnTrezor device={device} />}
-
-                {exchangeQuote?.extraFieldDescription && (
-                    <Input
-                        label={
-                            <Translation
-                                id="TR_EXCHANGE_EXTRA_FIELD"
-                                values={extraFieldDescription}
-                            />
-                        }
-                        inputState={form.formState.errors.extraField ? 'error' : undefined}
-                        bottomText={form.formState.errors.extraField?.message || null}
-                        innerRef={descriptionRef}
-                        {...descriptionField}
-                    />
-                )}
             </Column>
             {selectedAccountOption && (
                 <Column>
@@ -226,7 +233,13 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                                     confirmTrade(address, extraField);
                                 }
                             }}
-                            isDisabled={!form.formState.isValid || address === '' || callInProgress}
+                            isDisabled={
+                                !form.formState.isValid ||
+                                address === '' ||
+                                callInProgress ||
+                                (exchangeQuote?.extraFieldDescription?.required &&
+                                    extraField === '')
+                            }
                         >
                             <Translation id="TR_BUY_GO_TO_PAYMENT" />
                         </Button>
