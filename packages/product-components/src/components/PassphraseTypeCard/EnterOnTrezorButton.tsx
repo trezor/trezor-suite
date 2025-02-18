@@ -2,9 +2,11 @@ import { FormattedMessage } from 'react-intl';
 
 import styled, { useTheme } from 'styled-components';
 
-import { Card, Icon, Image, Row, Text } from '@trezor/components';
+import { Icon, Image, Row, Text } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
+
+import { CardButton } from '../CardButton/CardButton';
 
 const Flex = styled.div`
     flex: 1;
@@ -20,8 +22,7 @@ export const EnterOnTrezorButton = ({ submit, value, deviceModel }: EnterOnTrezo
     const theme = useTheme();
 
     return (
-        <Card
-            paddingType="small"
+        <CardButton
             onClick={() => submit(value, true)}
             data-testid="@passphrase/enter-on-device-button"
         >
@@ -37,6 +38,6 @@ export const EnterOnTrezorButton = ({ submit, value, deviceModel }: EnterOnTrezo
                 </Flex>
                 <Icon name="caretRight" color={theme.iconSubdued} />
             </Row>
-        </Card>
+        </CardButton>
     );
 };

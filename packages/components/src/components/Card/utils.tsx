@@ -65,7 +65,7 @@ export const mapFillTypeToCSS = ({
             ${$isClickable &&
             css`
                 &:hover {
-                    box-shadow: ${$elevation === 1 && theme.boxShadowElevated};
+                    box-shadow: ${theme.boxShadowElevated};
                 }
             `}
         `,
