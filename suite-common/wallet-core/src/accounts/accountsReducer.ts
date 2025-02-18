@@ -283,7 +283,7 @@ export const selectAccountByKey = createMemoizedSelector(
 // CAUTION!: This selector does not work for XRP accounts! It should be used only for Bitcoin-like accounts.
 // Ripple backend does not provide the total transaction count info.
 // The property`account.history.total` is always equal to -1 for XRP accounts.
-export const selectHasBitcoinAccountTransactions = createMemoizedSelector(
+export const selectHasAccountTransactionHistory = createMemoizedSelector(
     [selectAccountByKey],
     account => !!account?.history.total,
 );

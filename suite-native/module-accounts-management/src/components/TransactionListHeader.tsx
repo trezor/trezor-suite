@@ -22,7 +22,8 @@ import {
     SendStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { TokensRootState, selectHasAccountAnyTransactions } from '@suite-native/tokens';
+import { TokensRootState } from '@suite-native/tokens';
+import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailGraph } from './AccountDetailGraph';

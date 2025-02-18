@@ -10,6 +10,9 @@ import {
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     TransactionsRootState,
+    selectAccountNetworkType,
+    selectAccountTransactions,
+    selectHasAccountTransactionHistory,
     selectTransactionByAccountKeyAndTxid,
     selectTransactionTargets,
 } from '@suite-common/wallet-core';
@@ -158,5 +161,18 @@ export const selectTransactionInputAndOutputTransfers = createMemoizedSelector(
         ) as TransactionTranfer[];
 
         return { externalTransfers, internalTransfers, tokenTransfers };
+    },
+);
+
+// Preferred way to get this value is to use selectHasAccountTransactionHistory, because it is faster (no need to fetch transactions).
+// That selector unfortunately does not support Ripple, so for XRP accounts we need to use suboptimal selectHasAccountTransactionHistory.
+export const selectHasAccountAnyTransactions = createMemoizedSelector(
+    [selectAccountNetworkType, selectHasAccountTransactionHistory, selectAccountTransactions],
+    (networkType, hasAccountTransactionHistory, transactions): boolean => {
+        if (networkType !== 'ripple') {
+            return hasAccountTransactionHistory;
+        }
+
+        return transactions.length > 0;
     },
 );
