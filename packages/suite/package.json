@@ -105,7 +105,7 @@
         "react-qr-reader": "^2.2.1",
         "react-redux": "9.2.0",
         "react-router-dom": "^5.2.0",
-        "react-select": "^5.8.0",
+        "react-select": "5.10.0",
         "react-svg": "16.3.0",
         "react-toastify": "^10.0.4",
         "react-use": "^17.5.0",
