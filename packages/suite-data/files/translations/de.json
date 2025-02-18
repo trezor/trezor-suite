@@ -34,6 +34,7 @@
   "DESTINATION_TAG": "Memo/Destination-Tag",
   "DESTINATION_TAG_BANNER_RECEIVE": "Trezor benötigt keinen Memo oder Destination-Tag, um XRP zu empfangen. Gib einen beliebigen Wert in das Feld Memo/Destination-Tag ein, um deine Überweisung abzuschließen. <a>Mehr erfahren</a>",
   "DESTINATION_TAG_BANNER_SEND": "Bei Online-Börsen ist dies erforderlich, um dein Konto zu identifizieren. Holen dir deinen Destination-Tag von deinem Ripple-Konto auf deiner Online-Börse.",
+  "DESTINATION_TAG_GUIDE_LINK": "Was ist das?",
   "DESTINATION_TAG_IS_NOT_NUMBER": "Memo/Destination-Tag ist keine Zahl",
   "DESTINATION_TAG_IS_NOT_VALID": "Memo/Destination-Tag ist nicht gültig",
   "DESTINATION_TAG_NOTE": "Bei Online-Börsen ist dies erforderlich, um dein Konto zu identifizieren. Hol dir deinen Destination-Tag bei deiner Online-Börse.",

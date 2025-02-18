@@ -34,6 +34,7 @@
   "DESTINATION_TAG": "Memo/tag de destino",
   "DESTINATION_TAG_BANNER_RECEIVE": "Com o Trezor, não é necessário usar memo ou tag de destino para receber XRP. Insira qualquer valor no campo de memo/tag de destino para concluir a transferência. <a>Saiba mais</a>",
   "DESTINATION_TAG_BANNER_SEND": "Nas trocas online, isso é exigido para identificar a conta. Obtenha a tag de destino da conta Ripple na troca online.",
+  "DESTINATION_TAG_GUIDE_LINK": "O que é isso?",
   "DESTINATION_TAG_IS_NOT_NUMBER": "A tag de destino/memo não é um número",
   "DESTINATION_TAG_IS_NOT_VALID": "A tag de destino/memo é inválida",
   "DESTINATION_TAG_NOTE": "Nas trocas online, isso é exigido para identificar a conta. Obtenha a tag de destino na troca online.",

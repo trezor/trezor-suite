@@ -149,21 +149,9 @@ export default defineMessages({
         description: 'Used as label for send address input',
         id: 'TR_RECIPIENT_ADDRESS',
     },
-    TR_RECIPIENT_ADDRESS_MATCH: {
-        defaultMessage: 'Recipient address match?',
-        id: 'TR_RECIPIENT_ADDRESS_MATCH',
-    },
-    TR_RECEIVE_ADDRESS_MATCH: {
-        defaultMessage: 'Receive address match?',
-        id: 'TR_RECEIVE_ADDRESS_MATCH',
-    },
     TR_RECEIVE_ADDRESS: {
         defaultMessage: 'Receive address',
         id: 'TR_RECEIVE_ADDRESS',
-    },
-    TR_XPUB_MATCH: {
-        defaultMessage: 'Public key (XPUB) match?',
-        id: 'TR_XPUB_MATCH',
     },
     TR_XPUB: {
         defaultMessage: 'Public key (XPUB)',
@@ -212,12 +200,12 @@ export default defineMessages({
     TR_EXCHANGE_FIXED_OFFERS_INFO: {
         id: 'TR_EXCHANGE_FIXED_OFFERS_INFO',
         defaultMessage:
-            "Fixed rates show you exactly how much you'll end up with at the end of the exchange—the amount won't change between when you select the rate and when your transaction is complete. You're guaranteed the amount shown, but these rates are usually less generous, meaning your money won't buy as much crypto.",
+            'Fixed-rate offers guarantee a set amount at the end of the exchange, but they’re usually less favorable, giving you less crypto for your money.',
     },
     TR_EXCHANGE_FLOAT_OFFERS_INFO: {
         id: 'TR_EXCHANGE_FLOAT_OFFERS_INFO',
         defaultMessage:
-            "Floating rates mean that the final amount you'll get may change slightly due to fluctuations in the market between when you select the rate and when your transaction is complete. These rates are usually higher, meaning you could end up with more crypto in the end.",
+            'Floating-rate offers may result in slight changes to the final amount due to market fluctuations, but they’re typically higher, so you could receive more crypto.',
     },
     TR_EXCHANGE_FEES_INFO: {
         id: 'TR_EXCHANGE_FEES_INFO',
@@ -627,7 +615,7 @@ export default defineMessages({
     },
     TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP: {
         id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
-        defaultMessage: 'This is the specific alphanumeric address that will receive your coins.',
+        defaultMessage: 'This is the address for receiving your assets.',
     },
     TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT: {
         id: 'TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT',
@@ -1055,7 +1043,7 @@ export default defineMessages({
         id: 'TR_BUY_CONFIRMED_ON_TREZOR',
     },
     TR_BUY_NOT_TRANSACTIONS: {
-        defaultMessage: 'No transactions yet.',
+        defaultMessage: 'No transactions',
         id: 'TR_BUY_NOT_TRANSACTIONS',
     },
     TR_BUY_GO_TO_PAYMENT: {
@@ -1149,7 +1137,7 @@ export default defineMessages({
         id: 'TR_TRADING_SHOW_OFFERS',
     },
     TR_TRADING_LAST_TRANSACTIONS: {
-        defaultMessage: 'Last transactions',
+        defaultMessage: 'Previous transactions',
         id: 'TR_TRADING_LAST_TRANSACTIONS',
     },
     TR_TRADING_BUY_AND_SELL_COUNTER: {
@@ -1901,7 +1889,7 @@ export default defineMessages({
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
     },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON: {
-        defaultMessage: 'Confirm empty Passphrase wallet on "{deviceLabel}" device.',
+        defaultMessage: 'Confirm empty Passphrase wallet on your {deviceLabel}',
         id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON',
     },
     TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION: {
@@ -1913,8 +1901,7 @@ export default defineMessages({
         id: 'TR_CONFIRM_PASSPHRASE',
     },
     TR_CONFIRM_PASSPHRASE_SOURCE: {
-        defaultMessage:
-            'Confirm empty Passphrase wallet passphrase source on "{deviceLabel}" device.',
+        defaultMessage: 'Confirm empty Passphrase wallet passphrase source on your {deviceLabel}',
         id: 'TR_CONFIRM_PASSPHRASE_SOURCE',
     },
     TR_PASSPHRASE_NON_ASCII_CHARS: {
@@ -2021,7 +2008,7 @@ export default defineMessages({
         id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
     },
     TR_DEVICE_LABEL_IS_NOT_BACKED_UP: {
-        defaultMessage: 'Device "{deviceLabel}" isn\'t backed up',
+        defaultMessage: "Device {deviceLabel} isn't backed up",
         id: 'TR_DEVICE_LABEL_IS_NOT_BACKED_UP',
     },
     TR_DEVICE_NOT_CONNECTED: {
@@ -2033,11 +2020,11 @@ export default defineMessages({
         id: 'TR_DEVICE_FW_UNKNOWN',
     },
     TR_DEVICE_LABEL_IS_NOT_CONNECTED: {
-        defaultMessage: 'Device "{deviceLabel}" isn\'t connected',
+        defaultMessage: "Device {deviceLabel} isn't connected",
         id: 'TR_DEVICE_LABEL_IS_NOT_CONNECTED',
     },
     TR_DEVICE_LABEL_IS_UNAVAILABLE: {
-        defaultMessage: 'Device "{deviceLabel}" is unavailable',
+        defaultMessage: 'Device {deviceLabel} is unavailable',
         id: 'TR_DEVICE_LABEL_IS_UNAVAILABLE',
     },
     TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED: {
@@ -2327,7 +2314,7 @@ export default defineMessages({
         id: 'TR_ENTER_PASSPHRASE_ON_DEVICE',
     },
     TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL: {
-        defaultMessage: 'Enter passphrase on "{deviceLabel}"',
+        defaultMessage: 'Enter passphrase on {deviceLabel}',
         id: 'TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL',
     },
     TR_ENTER_PIN: {
@@ -2348,7 +2335,7 @@ export default defineMessages({
         id: 'TR_ENTER_SEED_WORDS_INSTRUCTION',
     },
     TR_ENTERED_PIN_NOT_CORRECT: {
-        defaultMessage: 'Incorrect PIN for "{deviceLabel}"',
+        defaultMessage: 'Incorrect PIN for {deviceLabel}',
         id: 'TR_ENTERED_PIN_NOT_CORRECT',
     },
     TR_EXCHANGE_RATE: {
@@ -2494,12 +2481,6 @@ export default defineMessages({
         defaultMessage: 'Continue to backup',
         id: 'TR_CONTINUE_TO_BACKUP',
     },
-    TR_CONTINUE_TO_PIN: {
-        defaultMessage: 'Create PIN',
-        description:
-            'Button in standalone backup page that will direct user to setting up pin (in case it is not set up yet).',
-        id: 'TR_CONTINUE_TO_PIN',
-    },
     TR_SKIP_PIN: {
         defaultMessage: 'Skip PIN',
         id: 'TR_SKIP_PIN',
@@ -2639,7 +2620,7 @@ export default defineMessages({
         id: 'TR_LEARN_MORE',
     },
     TR_NORMAL_ACCOUNTS: {
-        defaultMessage: 'Default accounts',
+        defaultMessage: 'Accounts',
         id: 'TR_NORMAL_ACCOUNTS',
     },
     TR_COINJOIN_ACCOUNTS: {
@@ -2840,7 +2821,7 @@ export default defineMessages({
         id: 'TR_OUTGOING',
     },
     TR_PASSPHRASE_CASE_SENSITIVE: {
-        defaultMessage: 'Note: Passphrase is case-sensitive.',
+        defaultMessage: 'Passphrases are case-sensitive',
         id: 'TR_PASSPHRASE_CASE_SENSITIVE',
     },
     TR_PASSPHRASE_HIDDEN_WALLET: {
@@ -3016,7 +2997,7 @@ export default defineMessages({
         id: 'TR_SELECT_DEVICE',
     },
     TR_SELECT_PASSPHRASE_SOURCE: {
-        defaultMessage: 'Select where to enter passphrase on "{deviceLabel}" .',
+        defaultMessage: 'Select where to enter passphrase on {deviceLabel}',
         id: 'TR_SELECT_PASSPHRASE_SOURCE',
     },
     TR_SENT_TO_SELF: {
@@ -3198,12 +3179,12 @@ export default defineMessages({
         id: 'TR_UNSUPPORTED_COINS_DESCRIPTION',
     },
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
-        defaultMessage: 'Check <b>{deviceLabel}</b> screen for the keypad layout.',
+        defaultMessage: 'Check the <b>{deviceLabel}</b> screen for the keypad layout.',
         id: 'TR_THE_PIN_LAYOUT_IS_DISPLAYED',
     },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE: {
         defaultMessage:
-            'This Passphrase wallet is empty. To make sure you are in the correct wallet, enter the passphrase on your Trezor.',
+            "This Passphrase wallet is empty. To make sure you're in the correct wallet, enter the passphrase on your Trezor.",
         id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE',
     },
     TR_ADDRESS_PHISHING_WARNING: {
@@ -3333,7 +3314,7 @@ export default defineMessages({
         id: 'TR_VALIDATION',
     },
     TR_WALLET_DUPLICATE_DESC: {
-        defaultMessage: "The Passphrase wallet you're trying to add has already been discovered.",
+        defaultMessage: "The Passphrase wallet you're accessing has already been discovered.",
         id: 'TR_WALLET_DUPLICATE_DESC',
     },
     TR_WALLET_DUPLICATE_RETRY: {
@@ -3341,11 +3322,11 @@ export default defineMessages({
         id: 'TR_WALLET_DUPLICATE_RETRY',
     },
     TR_WALLET_DUPLICATE_SWITCH: {
-        defaultMessage: 'Continue to discovered wallet',
+        defaultMessage: 'Continue',
         id: 'TR_WALLET_DUPLICATE_SWITCH',
     },
     TR_WALLET_DUPLICATE_TITLE: {
-        defaultMessage: 'Passphrase duplicated',
+        defaultMessage: 'Passphrase already used',
         id: 'TR_WALLET_DUPLICATE_TITLE',
     },
     TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION: {
@@ -3422,7 +3403,7 @@ export default defineMessages({
         id: 'TR_YOUR_NEW_VERSION_IS_DOWNLOADING',
     },
     TR_YOUR_NEW_VERSION_IS_READY: {
-        defaultMessage: 'Version {version} has been downloaded and is ready for installation.',
+        defaultMessage: 'Version {version} has been downloaded and is ready to be installed.',
         id: 'TR_YOUR_NEW_VERSION_IS_READY',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
@@ -3486,7 +3467,7 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_BIP86_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP86_DESC',
         defaultMessage:
-            'Taproot is a new address type that can enhance privacy and network efficiency. Note that some services may not support Taproot addresses yet.',
+            'Taproot is a new address type that can enhance privacy and network efficiency. Note that some services may not support Taproot addresses.',
     },
     TR_ACCOUNT_TYPE_BIP49_DESC: {
         id: 'TR_ACCOUNT_TYPE_BIP49_DESC',
@@ -3745,7 +3726,7 @@ export default defineMessages({
     },
     TOAST_AUTO_UPDATER_NO_NEW: {
         id: 'TOAST_AUTO_UPDATER_NO_NEW',
-        defaultMessage: 'No new updates available.',
+        defaultMessage: 'No updates available',
     },
     TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN: {
         id: 'TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN',
@@ -3841,7 +3822,7 @@ export default defineMessages({
     },
     TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED',
-        defaultMessage: "Trezor Suite's been updated.",
+        defaultMessage: 'Trezor Suite has been updated',
     },
     TR_QUICK_ACTION_UPDATE_POPOVER_APP_DOWNLOADED: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_DOWNLOADED',
@@ -3861,7 +3842,7 @@ export default defineMessages({
     },
     TR_QUICK_ACTION_UPDATE_POPOVER_WHATS_NEW: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_WHATS_NEW',
-        defaultMessage: 'What’s new?',
+        defaultMessage: 'What’s new',
     },
     TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED: {
         id: 'TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED',
@@ -4135,8 +4116,7 @@ export default defineMessages({
     },
     TR_SEED_WORDS_ENTER_BUTTONS: {
         id: 'TR_SEED_WORDS_ENTER_BUTTONS',
-        defaultMessage:
-            'Using the buttons on the device, enter the words from your seed in the order displayed on your device.',
+        defaultMessage: 'Use the buttons on your device to enter your wallet backup.',
     },
     TR_CHOOSE_RECOVERY_TYPE: {
         id: 'TR_CHOOSE_RECOVERY_TYPE',
@@ -4190,7 +4170,7 @@ export default defineMessages({
     },
     TR_INACTIVE_COINS: {
         id: 'TR_INACTIVE_COINS',
-        defaultMessage: 'Not activated yet',
+        defaultMessage: 'Not activated',
     },
     TR_COIN_SETTINGS: {
         id: 'TR_COIN_SETTINGS',
@@ -4288,7 +4268,7 @@ export default defineMessages({
     TR_VIEW_ONLY_EXPLANATION: {
         id: 'TR_VIEW_ONLY_EXPLANATION',
         defaultMessage:
-            'To send or trade coins, <secondLine>simply reconnect your device</secondLine>',
+            'To send or swap coins, <secondLine>simply reconnect your device</secondLine>',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
@@ -4405,12 +4385,12 @@ export default defineMessages({
     TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP: {
         id: 'TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
         defaultMessage:
-            "This is the account where you'll find your coins once the transaction is finished.",
+            'Your assets will be sent to this account once the transaction is complete.',
     },
     TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP: {
         id: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
         defaultMessage:
-            'This is the specific alphanumeric address that will receive your coins. Verify this address on your Trezor.',
+            'This is the address for receiving your assets. Verify this receive address on your Trezor.',
     },
     TR_PAYMENT_METHOD_CREDITCARD: {
         id: 'TR_PAYMENT_METHOD_CREDITCARD',
@@ -4905,7 +4885,7 @@ export default defineMessages({
     TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION',
         defaultMessage:
-            "Adds an NFT section to EVM-based chain accounts, allowing you to view NFTs. Note: Sending NFTs isn't currently supported.",
+            "Adds an NFT section to EVM-based chain accounts, allowing you to view NFTs. Sending NFTs isn't currently supported.",
     },
     TR_EXPERIMENTAL_FEATURES_ALLOW: {
         id: 'TR_EXPERIMENTAL_FEATURES_ALLOW',
@@ -4953,7 +4933,7 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_ENABLED: {
         id: 'TR_EARLY_ACCESS_ENABLED',
-        defaultMessage: 'Early Access Program enabled',
+        defaultMessage: 'Early Access Program opted in',
         description: 'Title in settings if Early Access is active.',
     },
     TR_EARLY_ACCESS_MENU: {
@@ -4968,11 +4948,11 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_DESCRIPTION_ENABLED: {
         id: 'TR_EARLY_ACCESS_DESCRIPTION_ENABLED',
-        defaultMessage: 'Leave if you no longer want priority access to new features.',
+        defaultMessage: 'Opt out if you no longer want priority access to new features.',
     },
     TR_EARLY_ACCESS_ENABLE: {
         id: 'TR_EARLY_ACCESS_ENABLE',
-        defaultMessage: 'Join',
+        defaultMessage: 'Opt in',
     },
     TR_EARLY_ACCESS_STAY_IN: {
         id: 'TR_EARLY_ACCESS_STAY_IN',
@@ -4984,15 +4964,16 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM',
-        defaultMessage: 'Join',
+        defaultMessage: 'Opt in',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_TITLE',
-        defaultMessage: 'Try out the latest product features before release to the general public.',
+        defaultMessage:
+            'Get early access to the latest product features before they’re released publicly. ',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_DESCRIPTION',
-        defaultMessage: 'You can turn it off anytime.',
+        defaultMessage: 'Opt out anytime.',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK',
@@ -5005,11 +4986,11 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_JOINED_TITLE: {
         id: 'TR_EARLY_ACCESS_JOINED_TITLE',
-        defaultMessage: 'Early Access Program enabled',
+        defaultMessage: 'Early Access Program opted in',
     },
     TR_EARLY_ACCESS_JOINED_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_JOINED_DESCRIPTION',
-        defaultMessage: 'You can either check for beta updates now or on the next launch.',
+        defaultMessage: 'Check for updates now or on the next launch.',
     },
     TR_EARLY_ACCESS_SKIP_CHECK: {
         id: 'TR_EARLY_ACCESS_SKIP_CHECK',
@@ -5017,17 +4998,16 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_CHECK_UPDATE: {
         id: 'TR_EARLY_ACCESS_CHECK_UPDATE',
-        defaultMessage: 'Check for updates now',
+        defaultMessage: 'Check now',
     },
     TR_EARLY_ACCESS_LEFT_TITLE: {
         id: 'TR_EARLY_ACCESS_LEFT_TITLE',
-        defaultMessage:
-            "You've left the Early Access Program. Beta releases are no longer offered.",
+        defaultMessage: "You've opted out of the Early Access Program.",
     },
     TR_EARLY_ACCESS_LEFT_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_LEFT_DESCRIPTION',
         defaultMessage:
-            'To downgrade to the latest stable release of Trezor Suite, click "Download stable" and reinstall the app.',
+            'To get to the latest public release of Trezor Suite, click "Download stable" and reinstall the app.',
     },
     TR_EARLY_ACCESS_SKIP_REINSTALL: {
         id: 'TR_EARLY_ACCESS_SKIP_REINSTALL',
@@ -5041,11 +5021,11 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE: {
         id: 'TR_EARLY_ACCESS_DISABLE_CONFIRM_TITLE',
-        defaultMessage: 'Are you sure you want to leave the Early Access Program?',
+        defaultMessage: 'Opt out of the Early Access Program?',
     },
     TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION',
-        defaultMessage: 'Click "Leave" to stop checking for beta releases',
+        defaultMessage: 'Click "Opt out" to stop checking for beta releases',
     },
     TR_EXPORT_TO_FILE: {
         id: 'TR_EXPORT_TO_FILE',
@@ -5244,7 +5224,7 @@ export default defineMessages({
     },
     TR_TOKENS_EMPTY: {
         id: 'TR_TOKENS_EMPTY',
-        defaultMessage: 'No tokens... yet.',
+        defaultMessage: 'No tokens',
     },
     TR_NFT_EMPTY: {
         id: 'TR_NFT_EMPTY',
@@ -5260,7 +5240,7 @@ export default defineMessages({
     },
     TR_HIDDEN_TOKENS_EMPTY: {
         id: 'TR_HIDDEN_TOKENS_EMPTY',
-        defaultMessage: 'You have no hidden tokens.',
+        defaultMessage: 'No hidden tokens',
     },
     TR_HIDDEN_NFT_EMPTY: {
         id: 'TR_HIDDEN_NFT_EMPTY',
@@ -5496,11 +5476,6 @@ export default defineMessages({
             'Trezor doesn’t require a memo or destination tag to receive XRP. Enter any value in the memo/destination tag field to complete your transfer. <a>Learn more</a>',
         id: 'DESTINATION_TAG_BANNER_RECEIVE',
     },
-    DESTINATION_TAG_TOOLTIP: {
-        id: 'DESTINATION_TAG_TOOLTIP',
-        defaultMessage:
-            'Memo/Destination tag is a unique code to identify the receiver of a transaction.',
-    },
     DESTINATION_TAG_NOT_SET: {
         defaultMessage: "Destination tag isn't set",
         id: 'DESTINATION_TAG_NOT_SET',
@@ -5540,10 +5515,6 @@ export default defineMessages({
     RAW_TX_NOT_SET: {
         defaultMessage: 'Transaction not set',
         id: 'RAW_TX_NOT_SET',
-    },
-    ESTIMATED_TIME: {
-        defaultMessage: 'Estimated time',
-        id: 'ESTIMATED_TIME',
     },
     TOTAL_SENT: {
         id: 'TOTAL_SENT',
@@ -6151,7 +6122,7 @@ export default defineMessages({
     },
     TR_INPUTS_OUTPUTS: {
         id: 'TR_INPUTS_OUTPUTS',
-        defaultMessage: 'Inputs, Outputs',
+        defaultMessage: 'Inputs & outputs',
     },
     TR_MY_INPUTS_AND_OUTPUTS: {
         id: 'TR_MY_INPUTS_AND_OUTPUTS',
@@ -6213,7 +6184,7 @@ export default defineMessages({
     },
     TR_UPDATE_MODAL_WHATS_NEW: {
         id: 'TR_UPDATE_MODAL_WHATS_NEW',
-        defaultMessage: 'What’s new?',
+        defaultMessage: 'What’s new',
     },
     TR_UPDATE_MODAL_YOUR_VERSION: {
         id: 'TR_UPDATE_MODAL_YOUR_VERSION',
@@ -6253,7 +6224,7 @@ export default defineMessages({
     },
     TR_VERSION_HAS_BEEN_RELEASED: {
         id: 'TR_VERSION_HAS_BEEN_RELEASED',
-        defaultMessage: 'Version {version} has been released!',
+        defaultMessage: 'Version {version} has been released',
     },
     TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE: {
         id: 'TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE',
@@ -6417,10 +6388,6 @@ export default defineMessages({
         id: 'TR_RANGE',
         defaultMessage: 'range',
     },
-    TR_DELIVERY: {
-        id: 'TR_DELIVERY',
-        defaultMessage: 'Delivery',
-    },
     TR_BUMP_FEE: {
         id: 'TR_BUMP_FEE',
         defaultMessage: 'Bump fee',
@@ -6457,7 +6424,7 @@ export default defineMessages({
     TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION: {
         id: 'TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION',
         defaultMessage:
-            "The transaction couldn’t be canceled as it's just been confirmed on the Bitcoin network.",
+            "The transaction couldn’t be replaced as it's just been confirmed on the network.",
     },
     TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED: {
         id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED',
@@ -6466,7 +6433,7 @@ export default defineMessages({
     TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION: {
         id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION',
         defaultMessage:
-            "The transaction couldn’t be replaced as it's just been confirmed on the network.",
+            "The transaction couldn’t be replaced as it's just been confirmed on the Bitcoin network.",
     },
     TR_BUMP_FEE_SUBTEXT: {
         id: 'TR_BUMP_FEE_SUBTEXT',
@@ -7201,10 +7168,6 @@ export default defineMessages({
         id: 'TR_ONBOARDING_ADVANCED',
         defaultMessage: 'Advanced',
     },
-    TR_ONBOARDING_DOWNLOAD_DESKTOP_APP: {
-        id: 'TR_ONBOARDING_DOWNLOAD_DESKTOP_APP',
-        defaultMessage: 'Download desktop app',
-    },
     TR_DATA_ANALYTICS_CATEGORY_1: {
         id: 'TR_DATA_ANALYTICS_CATEGORY_1',
         defaultMessage: 'Platform',
@@ -7385,10 +7348,6 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_SHELLEY: {
         defaultMessage: 'Shelley',
         id: 'TR_ACCOUNT_TYPE_SHELLEY',
-    },
-    TR_NETWORK_CARDANO_TESTNET: {
-        defaultMessage: 'Cardano Testnet',
-        id: 'TR_NETWORK_CARDANO_TESTNET',
     },
     TR_STAKING_REWARDS_TITLE: {
         id: 'TR_STAKING_REWARDS_TITLE',
@@ -8731,10 +8690,6 @@ export default defineMessages({
         defaultMessage:
             'An epoch in Solana is approximately {count, plural, one {# day} other {# days}} long.',
     },
-    TR_STAKE_REFRESH_REWARDS_TOOLTIP: {
-        id: 'TR_STAKE_REFRESH_REWARDS_TOOLTIP',
-        defaultMessage: 'Refresh your rewards for this account.',
-    },
     TR_STAKE_REWARDS_ARE_EMPTY: {
         id: 'TR_STAKE_REWARDS_ARE_EMPTY',
         defaultMessage: 'No rewards',
@@ -8897,22 +8852,15 @@ export default defineMessages({
         id: 'TR_STAKE_AVAILABLE',
         defaultMessage: 'Available',
     },
-    TR_STAKE_MAX_FEE_DESC: {
-        id: 'TR_STAKE_MAX_FEE_DESC',
-        defaultMessage:
-            'Maximum fee is the network transaction fee that you’re willing to pay on the network to ensure your transaction gets processed.',
-    },
     TR_EVM_MAX_FEE_DESC: {
         id: 'TR_EVM_MAX_FEE_DESC',
-        defaultMessage: `The maximum fee you're willing to pay to network validators to get your transaction processed. A higher fee can speed up confirmation, though you'll only pay what's needed if the actual fee is lower.`,
+        defaultMessage:
+            "The maximum fee you're willing to pay to network validators to get your transaction processed. A higher fee can speed up confirmation, though you'll only pay what's needed if the actual fee is lower.",
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
-        defaultMessage: `The transaction fee you're willing to pay to network miners to ensure your transaction gets processed. A higher fee can speed up confirmation times.`,
-    },
-    TR_STAKE_MAX: {
-        id: 'TR_STAKE_MAX',
-        defaultMessage: 'Max',
+        defaultMessage:
+            "The transaction fee you're willing to pay to network miners to ensure your transaction gets processed. A higher fee can speed up confirmation times.",
     },
     TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
@@ -9075,18 +9023,6 @@ export default defineMessages({
         id: 'TR_STAKE_PAID_FROM_BALANCE',
         defaultMessage: 'Paid from your balance',
     },
-    TR_STAKE_OTHER_AMOUNT: {
-        id: 'TR_STAKE_OTHER_AMOUNT',
-        defaultMessage: 'Other amount',
-    },
-    TR_UP_TO: {
-        id: 'TR_UP_TO',
-        defaultMessage: 'up to',
-    },
-    TR_STAKE_ONLY_REWARDS: {
-        id: 'TR_STAKE_ONLY_REWARDS',
-        defaultMessage: 'Only rewards',
-    },
     TR_STAKE_NO_REWARDS: {
         id: 'TR_STAKE_NO_REWARDS',
         defaultMessage: 'No rewards available',
@@ -9194,7 +9130,7 @@ export default defineMessages({
     },
     TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN: {
         id: 'TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN',
-        defaultMessage: 'Confirmation of transaction may take up to <nowrap>1 minute</nowrap>',
+        defaultMessage: 'Transaction confirmation may take up to <nowrap>one (1) minute</nowrap>',
     },
     TR_VIEW_ONLY_PROMO_YES: {
         id: 'TR_VIEW_ONLY_PROMO_YES',
@@ -9327,7 +9263,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE',
-        defaultMessage: 'This passphrase wallet is empty',
+        defaultMessage: 'This Passphrase wallet is empty',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION',
@@ -9425,7 +9361,7 @@ export default defineMessages({
     },
     TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE: {
         id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE',
-        defaultMessage: 'Do you primarily use a passphrase?',
+        defaultMessage: 'Do you primarily use a Passphrase wallet?',
     },
     TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION: {
         id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION',
