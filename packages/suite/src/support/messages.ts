@@ -149,21 +149,9 @@ export default defineMessages({
         description: 'Used as label for send address input',
         id: 'TR_RECIPIENT_ADDRESS',
     },
-    TR_RECIPIENT_ADDRESS_MATCH: {
-        defaultMessage: 'Recipient address match?',
-        id: 'TR_RECIPIENT_ADDRESS_MATCH',
-    },
-    TR_RECEIVE_ADDRESS_MATCH: {
-        defaultMessage: 'Receive address match?',
-        id: 'TR_RECEIVE_ADDRESS_MATCH',
-    },
     TR_RECEIVE_ADDRESS: {
         defaultMessage: 'Receive address',
         id: 'TR_RECEIVE_ADDRESS',
-    },
-    TR_XPUB_MATCH: {
-        defaultMessage: 'Public key (XPUB) match?',
-        id: 'TR_XPUB_MATCH',
     },
     TR_XPUB: {
         defaultMessage: 'Public key (XPUB)',
@@ -2493,12 +2481,6 @@ export default defineMessages({
     TR_CONTINUE_TO_BACKUP: {
         defaultMessage: 'Continue to backup',
         id: 'TR_CONTINUE_TO_BACKUP',
-    },
-    TR_CONTINUE_TO_PIN: {
-        defaultMessage: 'Create PIN',
-        description:
-            'Button in standalone backup page that will direct user to setting up pin (in case it is not set up yet).',
-        id: 'TR_CONTINUE_TO_PIN',
     },
     TR_SKIP_PIN: {
         defaultMessage: 'Skip PIN',
@@ -5496,11 +5478,6 @@ export default defineMessages({
             'Trezor doesn’t require a memo or destination tag to receive XRP. Enter any value in the memo/destination tag field to complete your transfer. <a>Learn more</a>',
         id: 'DESTINATION_TAG_BANNER_RECEIVE',
     },
-    DESTINATION_TAG_TOOLTIP: {
-        id: 'DESTINATION_TAG_TOOLTIP',
-        defaultMessage:
-            'Memo/Destination tag is a unique code to identify the receiver of a transaction.',
-    },
     DESTINATION_TAG_NOT_SET: {
         defaultMessage: "Destination tag isn't set",
         id: 'DESTINATION_TAG_NOT_SET',
@@ -5540,10 +5517,6 @@ export default defineMessages({
     RAW_TX_NOT_SET: {
         defaultMessage: 'Transaction not set',
         id: 'RAW_TX_NOT_SET',
-    },
-    ESTIMATED_TIME: {
-        defaultMessage: 'Estimated time',
-        id: 'ESTIMATED_TIME',
     },
     TOTAL_SENT: {
         id: 'TOTAL_SENT',
@@ -6417,10 +6390,6 @@ export default defineMessages({
         id: 'TR_RANGE',
         defaultMessage: 'range',
     },
-    TR_DELIVERY: {
-        id: 'TR_DELIVERY',
-        defaultMessage: 'Delivery',
-    },
     TR_BUMP_FEE: {
         id: 'TR_BUMP_FEE',
         defaultMessage: 'Bump fee',
@@ -7201,10 +7170,6 @@ export default defineMessages({
         id: 'TR_ONBOARDING_ADVANCED',
         defaultMessage: 'Advanced',
     },
-    TR_ONBOARDING_DOWNLOAD_DESKTOP_APP: {
-        id: 'TR_ONBOARDING_DOWNLOAD_DESKTOP_APP',
-        defaultMessage: 'Download desktop app',
-    },
     TR_DATA_ANALYTICS_CATEGORY_1: {
         id: 'TR_DATA_ANALYTICS_CATEGORY_1',
         defaultMessage: 'Platform',
@@ -7385,10 +7350,6 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_SHELLEY: {
         defaultMessage: 'Shelley',
         id: 'TR_ACCOUNT_TYPE_SHELLEY',
-    },
-    TR_NETWORK_CARDANO_TESTNET: {
-        defaultMessage: 'Cardano Testnet',
-        id: 'TR_NETWORK_CARDANO_TESTNET',
     },
     TR_STAKING_REWARDS_TITLE: {
         id: 'TR_STAKING_REWARDS_TITLE',
@@ -8731,10 +8692,6 @@ export default defineMessages({
         defaultMessage:
             'An epoch in Solana is approximately {count, plural, one {# day} other {# days}} long.',
     },
-    TR_STAKE_REFRESH_REWARDS_TOOLTIP: {
-        id: 'TR_STAKE_REFRESH_REWARDS_TOOLTIP',
-        defaultMessage: 'Refresh your rewards for this account.',
-    },
     TR_STAKE_REWARDS_ARE_EMPTY: {
         id: 'TR_STAKE_REWARDS_ARE_EMPTY',
         defaultMessage: 'No rewards',
@@ -8897,11 +8854,6 @@ export default defineMessages({
         id: 'TR_STAKE_AVAILABLE',
         defaultMessage: 'Available',
     },
-    TR_STAKE_MAX_FEE_DESC: {
-        id: 'TR_STAKE_MAX_FEE_DESC',
-        defaultMessage:
-            'Maximum fee is the network transaction fee that you’re willing to pay on the network to ensure your transaction gets processed.',
-    },
     TR_EVM_MAX_FEE_DESC: {
         id: 'TR_EVM_MAX_FEE_DESC',
         defaultMessage: `The maximum fee you're willing to pay to network validators to get your transaction processed. A higher fee can speed up confirmation, though you'll only pay what's needed if the actual fee is lower.`,
@@ -8909,10 +8861,6 @@ export default defineMessages({
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
         defaultMessage: `The transaction fee you're willing to pay to network miners to ensure your transaction gets processed. A higher fee can speed up confirmation times.`,
-    },
-    TR_STAKE_MAX: {
-        id: 'TR_STAKE_MAX',
-        defaultMessage: 'Max',
     },
     TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
@@ -9074,18 +9022,6 @@ export default defineMessages({
     TR_STAKE_PAID_FROM_BALANCE: {
         id: 'TR_STAKE_PAID_FROM_BALANCE',
         defaultMessage: 'Paid from your balance',
-    },
-    TR_STAKE_OTHER_AMOUNT: {
-        id: 'TR_STAKE_OTHER_AMOUNT',
-        defaultMessage: 'Other amount',
-    },
-    TR_UP_TO: {
-        id: 'TR_UP_TO',
-        defaultMessage: 'up to',
-    },
-    TR_STAKE_ONLY_REWARDS: {
-        id: 'TR_STAKE_ONLY_REWARDS',
-        defaultMessage: 'Only rewards',
     },
     TR_STAKE_NO_REWARDS: {
         id: 'TR_STAKE_NO_REWARDS',
