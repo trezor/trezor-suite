@@ -5,7 +5,7 @@ import { configureMockStore } from '@suite-common/test-utils';
 import { buyTradingFixtures } from '../__fixtures__/buyTradingReducer';
 import { tradingBuyReducer } from '../buyReducer';
 
-describe('Testing buy trading reducer', () => {
+describe('tradingBuyReducer', () => {
     buyTradingFixtures.forEach(f => {
         it(f.description, () => {
             const store = configureMockStore({

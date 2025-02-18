@@ -1,8 +1,8 @@
 import * as fixtures from '../__fixtures__/buyUtils';
 import { buyUtils } from '../buyUtils';
 
-describe('testing buy utils', () => {
-    it('testing getAmountLimits function', () => {
+describe('getAmountLimits', () => {
+    it('should test all scenarios', () => {
         const currency = 'bitcoin';
 
         expect(

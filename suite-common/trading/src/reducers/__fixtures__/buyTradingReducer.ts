@@ -78,7 +78,7 @@ const amountLimits: AmountLimitProps = {
 
 export const buyTradingFixtures = [
     {
-        description: 'test saving buy info',
+        description: 'should save buy info',
         initialState: buyInitialState,
         actions: [
             {
@@ -92,7 +92,7 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'test saving quote request',
+        description: 'should save quote request',
         initialState: buyInitialState,
         actions: [
             {
@@ -106,7 +106,7 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'test saving transaction detail id',
+        description: 'should save transaction detail id',
         initialState: buyInitialState,
         actions: [
             {
@@ -120,7 +120,7 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'test saving quotes',
+        description: 'should save quotes',
         initialState: buyInitialState,
         actions: [
             {
@@ -134,7 +134,7 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'test clearing quotes',
+        description: 'should clear quotes',
         initialState: {
             ...buyInitialState,
             quotes: buyQuotes,
@@ -149,7 +149,7 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'test verifying address',
+        description: 'should save verify address',
         initialState: buyInitialState,
         actions: [
             {
@@ -163,7 +163,7 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'test dispose of verifying address',
+        description: 'should dispose verified address',
         initialState: {
             ...buyInitialState,
             addressVerified: '1abcdef',
@@ -178,7 +178,7 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'test saving selected quote',
+        description: 'should save selected quote',
         initialState: buyInitialState,
         actions: [
             {
@@ -192,7 +192,7 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'test setting status whether is from redirect',
+        description: 'should set status whether is from redirect',
         initialState: buyInitialState,
         actions: [
             {
@@ -206,7 +206,7 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'test setting loading status',
+        description: 'should set loading status',
         initialState: buyInitialState,
         actions: [
             {
@@ -220,7 +220,7 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'test setting amount limits',
+        description: 'should set amount limits',
         initialState: buyInitialState,
         actions: [
             {

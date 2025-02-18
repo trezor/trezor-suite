@@ -124,7 +124,7 @@ const loadingStatus = {
 
 export const tradingFixtures = [
     {
-        description: 'test initial state',
+        description: 'should set initial state',
         initialState,
         actions: [
             {
@@ -134,7 +134,7 @@ export const tradingFixtures = [
         result: initialState,
     },
     {
-        description: 'test STORAGE.LOAD',
+        description: 'should call STORAGE.LOAD',
         initialState,
         actions: [
             {
@@ -147,7 +147,7 @@ export const tradingFixtures = [
         result: initialState,
     },
     {
-        description: 'test setting modal account',
+        description: 'should set modal account',
         initialState,
         actions: [
             {
@@ -161,7 +161,7 @@ export const tradingFixtures = [
         },
     },
     {
-        description: 'test clearing modal account',
+        description: 'should clear modal account',
         initialState: {
             ...initialState,
             modalAccountKey: accounts[0].key,
@@ -178,7 +178,7 @@ export const tradingFixtures = [
         },
     },
     {
-        description: 'test setting crypto currency for modal',
+        description: 'should set crypto currency for modal',
         initialState,
         actions: [
             {
@@ -192,7 +192,7 @@ export const tradingFixtures = [
         },
     },
     {
-        description: 'test clearing crypto currency for modal',
+        description: 'should clear crypto currency for modal',
         initialState: {
             ...initialState,
             modalCryptoId: 'ankr' as CryptoId,
@@ -209,7 +209,7 @@ export const tradingFixtures = [
         },
     },
     {
-        description: 'test setting active section',
+        description: 'should set active section',
         initialState,
         actions: [
             {
@@ -223,7 +223,7 @@ export const tradingFixtures = [
         },
     },
     {
-        description: 'test loading symbols info',
+        description: 'should load symbols info',
         initialState,
         actions: [
             {
@@ -241,7 +241,7 @@ export const tradingFixtures = [
         },
     },
     {
-        description: 'test setting prefilled crypto id',
+        description: 'should set prefilled crypto id',
         initialState,
         actions: [
             {
@@ -255,7 +255,7 @@ export const tradingFixtures = [
         },
     },
     {
-        description: 'test saving trade for buy and exchange',
+        description: 'should save trade for buy and exchange',
         initialState,
         actions: [
             {
@@ -273,7 +273,7 @@ export const tradingFixtures = [
         },
     },
     {
-        description: 'test saving payment methods',
+        description: 'should save payment methods',
         initialState,
         actions: [
             {
@@ -290,7 +290,7 @@ export const tradingFixtures = [
         },
     },
     {
-        description: 'test saving composed transaction info',
+        description: 'should save composed transaction info',
         initialState,
         actions: [
             {
@@ -304,7 +304,7 @@ export const tradingFixtures = [
         },
     },
     {
-        description: 'test setting loading status',
+        description: 'should set loading status',
         initialState,
         actions: [
             {

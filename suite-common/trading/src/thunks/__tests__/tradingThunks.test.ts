@@ -25,12 +25,12 @@ jest.mock('@suite-common/wallet-core', () => ({
     selectSelectedDevice: jest.fn(),
 }));
 
-describe('Testing trading thunks', () => {
+describe('verifyAddressThunk', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    it('testing verifyAddressThunk - save verified address', async () => {
+    it('should save verified address', async () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({
@@ -74,7 +74,7 @@ describe('Testing trading thunks', () => {
         expect(store.getState().wallet.trading.buy.addressVerified).toEqual(addressData?.address);
     });
 
-    it('testing verifyAddressThunk - device not found', async () => {
+    it('should not update verified address device not found', async () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({
@@ -108,7 +108,7 @@ describe('Testing trading thunks', () => {
         expect(store.getState().wallet.trading.buy.addressVerified).toEqual(undefined);
     });
 
-    it('testing verifyAddressThunk - path or address not defined', async () => {
+    it('should not update verified address when path or address are not defined', async () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({
@@ -151,7 +151,7 @@ describe('Testing trading thunks', () => {
         expect(store.getState().wallet.trading.buy.addressVerified).toEqual(undefined);
     });
 
-    it('testing verifyAddressThunk - device is not available', async () => {
+    it('should not update verified address, but trigger toast when device is not available', async () => {
         const store = configureMockStore({
             extra: extraDependenciesMock,
             reducer: combineReducers({
@@ -199,7 +199,7 @@ describe('Testing trading thunks', () => {
         expect(store.getState().wallet.trading.buy.addressVerified).toEqual(undefined);
     });
 
-    it('testing verifyAddressThunk - device is not connected', async () => {
+    it('should not update verified address, but trigger toast when device is not connected', async () => {
         const store = configureMockStore({
             extra: extraDependenciesMock,
             reducer: combineReducers({
@@ -247,7 +247,7 @@ describe('Testing trading thunks', () => {
         expect(store.getState().wallet.trading.buy.addressVerified).toEqual(undefined);
     });
 
-    it('testing verifyAddressThunk - a confirmation of address on  device is not successful', async () => {
+    it('should not update verified address when a confirmation of address on device is not successful', async () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({

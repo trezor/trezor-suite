@@ -132,7 +132,7 @@ describe('selectQuoteThunk', () => {
         };
     };
 
-    it('successful select without need of login', async () => {
+    it('should successful select without need of login', async () => {
         const { quote, state } = getDataMocks();
         const { store, mockTimer, mockNextStep, mockTimerStop, mockUserConsent, mockLoginRequest } =
             getMocks(state);
@@ -156,8 +156,8 @@ describe('selectQuoteThunk', () => {
         expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(quote);
     });
 
-    describe('incorrect input data', () => {
-        it('buyInfo is undefined', async () => {
+    describe('should not be possible to save selected quote', () => {
+        it('when buyInfo is undefined', async () => {
             const { quote, state } = getDataMocks();
             const { store, mockTimer, mockNextStep, mockTimerStop, mockLoginRequest } = getMocks({
                 ...state,
@@ -185,7 +185,7 @@ describe('selectQuoteThunk', () => {
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
-        it('quotesRequest is undefined', async () => {
+        it('when quotesRequest is undefined', async () => {
             const { quote, state } = getDataMocks();
             const { store, mockTimer, mockNextStep, mockTimerStop, mockLoginRequest } = getMocks({
                 ...state,
@@ -213,7 +213,7 @@ describe('selectQuoteThunk', () => {
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
-        it('exchange is not found in providerInfos', async () => {
+        it('when exchange is not found in providerInfos', async () => {
             const { quote, state } = getDataMocks();
             const { store, mockTimer, mockNextStep, mockTimerStop, mockLoginRequest } =
                 getMocks(state);
@@ -242,7 +242,7 @@ describe('selectQuoteThunk', () => {
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
-        it('quote receiveCurrency is undefined', async () => {
+        it('when quote receiveCurrency is undefined', async () => {
             const { quote, state } = getDataMocks();
             const { store, mockTimer, mockNextStep, mockTimerStop, mockLoginRequest } =
                 getMocks(state);
@@ -270,35 +270,36 @@ describe('selectQuoteThunk', () => {
             expect(mockTimerStop).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
+
+        it('when user cancels consent', async () => {
+            const { quote, state } = getDataMocks();
+            const { store, mockTimer, mockNextStep, mockTimerStop, mockLoginRequest } =
+                getMocks(state);
+
+            const mockUserConsent = jest.fn(() => Promise.resolve(false));
+
+            await store
+                .dispatch(
+                    buyThunks.selectQuoteThunk({
+                        quote,
+                        returnUrl: 'returnUrl',
+                        timer: mockTimer,
+                        loginRequest: mockLoginRequest,
+                        userConsent: mockUserConsent,
+                        nextStep: mockNextStep,
+                    }),
+                )
+                .unwrap();
+
+            expect(mockUserConsent).toHaveBeenCalledTimes(1);
+            expect(mockNextStep).toHaveBeenCalledTimes(0);
+            expect(mockTimerStop).toHaveBeenCalledTimes(0);
+            expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
+        });
     });
 
-    it('user canceled consent - quote is not saved', async () => {
-        const { quote, state } = getDataMocks();
-        const { store, mockTimer, mockNextStep, mockTimerStop, mockLoginRequest } = getMocks(state);
-
-        const mockUserConsent = jest.fn(() => Promise.resolve(false));
-
-        await store
-            .dispatch(
-                buyThunks.selectQuoteThunk({
-                    quote,
-                    returnUrl: 'returnUrl',
-                    timer: mockTimer,
-                    loginRequest: mockLoginRequest,
-                    userConsent: mockUserConsent,
-                    nextStep: mockNextStep,
-                }),
-            )
-            .unwrap();
-
-        expect(mockUserConsent).toHaveBeenCalledTimes(1);
-        expect(mockNextStep).toHaveBeenCalledTimes(0);
-        expect(mockTimerStop).toHaveBeenCalledTimes(0);
-        expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
-    });
-
-    describe('login case', () => {
-        it('need of login request before continue for selecting quote', async () => {
+    describe('should not successfully select quote in login flow', () => {
+        it('when there is a need of login request before continue', async () => {
             const { quote, tradeForm, state } = getDataMocks();
             const {
                 store,
@@ -342,7 +343,7 @@ describe('selectQuoteThunk', () => {
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
-        it('unsuccessful login flow without tradeForm', async () => {
+        it('when login response has not tradeForm', async () => {
             const { quote, state } = getDataMocks();
             const { store, mockTimer, mockNextStep, mockUserConsent, mockLoginRequest } =
                 getMocks(state);
@@ -377,7 +378,7 @@ describe('selectQuoteThunk', () => {
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
-        it('unsuccessful login flow with incorrect status', async () => {
+        it('when login response has incorrect status', async () => {
             const { quote, state, tradeForm } = getDataMocks();
             const { store, mockTimer, mockNextStep, mockUserConsent, mockLoginRequest } =
                 getMocks(state);
@@ -413,7 +414,7 @@ describe('selectQuoteThunk', () => {
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
         });
 
-        it('unsuccessful login flow without response from API', async () => {
+        it('when login response is undefined', async () => {
             const { quote, state } = getDataMocks();
             const { store, mockTimer, mockNextStep, mockUserConsent, mockLoginRequest } =
                 getMocks(state);

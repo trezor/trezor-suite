@@ -139,20 +139,20 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
     expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(1);
 };
 
-describe('testing trading middleware', () => {
+describe('tradingMiddleware', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    it('loadData - account changed and loading all necessary data', async () => {
+    it('should update when account is changed', async () => {
         await testUpdatedInfoData('account-changed');
     });
 
-    it('loadData - outdated data and loading all necessary data', async () => {
+    it('should update when data are outdated data ', async () => {
         await testUpdatedInfoData('outdated');
     });
 
-    it('loadData - keep current data without updating', async () => {
+    it('should keep same version of data without update', async () => {
         invityAPI.getCurrentAccountDescriptor = () => accountBtc.descriptor;
 
         const getCurrentAccountDescriptorMock = jest.spyOn(

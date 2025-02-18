@@ -234,7 +234,7 @@ describe('confirmTradeThunk', () => {
         });
     });
 
-    it('should call processResponseData with response and save trade', async () => {
+    it('should call processResponseData with successful response and save trade', async () => {
         const { store, mockProcessResponseData, mocktriggerAnalyticsTradeConfirmation } =
             getMocks();
 

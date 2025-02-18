@@ -21,8 +21,8 @@ import {
     testnetToProdCryptoId,
 } from '../utils';
 
-describe('testing trading utils', () => {
-    it('getUnusedAddressFromAccount', () => {
+describe('getUnusedAddressFromAccount', () => {
+    it('should return unused value from the passed account', () => {
         expect(getUnusedAddressFromAccount(accountBtc as Account)).toStrictEqual({
             address: '177BUDVZqTTzK1Fogqcrfbb5ketHEUDGSJ',
             path: "m/44'/0'/3'/0/0",
@@ -33,15 +33,19 @@ describe('testing trading utils', () => {
             path: "m/44'/60'/0'/0/1",
         });
     });
+});
 
-    it('mapTestnetCryptoCurrency', () => {
+describe('mapTestnetCryptoCurrency', () => {
+    it('should transform testnet network symbol to mainnet', () => {
         expect(mapTestnetSymbol('btc')).toStrictEqual('btc');
         expect(mapTestnetSymbol('eth')).toStrictEqual('eth');
         expect(mapTestnetSymbol('test')).toStrictEqual('btc');
         expect(mapTestnetSymbol('txrp')).toStrictEqual('xrp');
     });
+});
 
-    it('getTagAndInfoNote', () => {
+describe('getTagAndInfoNote', () => {
+    it('should return tag and info not from passed data', () => {
         expect(getTagAndInfoNote({})).toStrictEqual({ infoNote: '', tag: '' });
         expect(getTagAndInfoNote({ infoNote: '' })).toStrictEqual({ infoNote: '', tag: '' });
         expect(getTagAndInfoNote({ infoNote: 'Foo' })).toStrictEqual({ infoNote: 'Foo', tag: '' });
@@ -71,8 +75,10 @@ describe('testing trading utils', () => {
             tag: 'Foo',
         });
     });
+});
 
-    it('filterQuotesAccordingTags', () => {
+describe('filterQuotesAccordingTags', () => {
+    it('should filter quotes', () => {
         const quotes = [
             ...BUY_FIXTURE.MIN_MAX_QUOTES_OK,
             ...BUY_FIXTURE.ALTERNATIVE_QUOTES,
@@ -84,8 +90,10 @@ describe('testing trading utils', () => {
             quotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency')).length,
         );
     });
+});
 
-    it('addIdsToQuotes', () => {
+describe('addIdsToQuotes', () => {
+    it('should add id to passed quotes according section', () => {
         const quotes = [...BUY_FIXTURE.MIN_MAX_QUOTES_OK];
         const quotesExchange = [...EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK];
 
@@ -97,8 +105,10 @@ describe('testing trading utils', () => {
             quotesExchange.filter(q => q.orderId).length,
         );
     });
+});
 
-    it('testnetToProdCryptoId', () => {
+describe('testnetToProdCryptoId', () => {
+    it('should convert testnet CryptoId to mainnet CryptoId', () => {
         expect(testnetToProdCryptoId('test-bitcoin' as CryptoId)).toEqual('bitcoin');
         expect(testnetToProdCryptoId('bitcoin' as CryptoId)).toEqual('bitcoin');
 
@@ -116,8 +126,10 @@ describe('testing trading utils', () => {
             ),
         ).toEqual('ethereum--0x1234123412341234123412341234123412341236');
     });
+});
 
-    it('isCryptoIdForNativeToken - test if token is L2 native token', () => {
+describe('isCryptoIdForNativeToken', () => {
+    it('should test if token is L2 native token', () => {
         expect(isCryptoIdForNativeToken('ethereum' as CryptoId)).toEqual(false);
         expect(
             isCryptoIdForNativeToken(
@@ -135,8 +147,10 @@ describe('testing trading utils', () => {
             ),
         ).toEqual(true);
     });
+});
 
-    it('testing getTradingPaymentMethods', () => {
+describe('getTradingPaymentMethods', () => {
+    it('should get payment methods from quotes', () => {
         const paymentMethods = getTradingPaymentMethods([
             ...BUY_FIXTURE.MIN_MAX_QUOTES_OK,
             BUY_FIXTURE.MIN_MAX_QUOTES_OK[1], // duplicate applePay
@@ -150,8 +164,10 @@ describe('testing trading utils', () => {
         expect(paymentMethods.length).toBe(2);
         expect(findApplePay).toBeDefined();
     });
+});
 
-    it('testing getTradingQuotesByPaymentMethod', () => {
+describe('getTradingQuotesByPaymentMethod', () => {
+    it('should select quotes according to payment method', () => {
         const quotes = getTradingQuotesByPaymentMethod(BUY_FIXTURE.MIN_MAX_QUOTES_OK, 'applePay');
 
         const allQuotesApplePay = quotes?.find(quote => quote.paymentMethod === 'applePay');
@@ -162,8 +178,10 @@ describe('testing trading utils', () => {
 
         expect(quotesUndefined).toBeUndefined();
     });
+});
 
-    it('testing getTradingNetworkDecimals', () => {
+describe('getTradingNetworkDecimals', () => {
+    it('should select network decimals according to network or select', () => {
         const network = getNetwork('base');
         const decimals = getTradingNetworkDecimals({
             network,

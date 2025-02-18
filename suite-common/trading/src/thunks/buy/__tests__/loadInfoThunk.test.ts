@@ -9,7 +9,7 @@ import { buyInitialState } from '../../../reducers/__fixtures__/buyTradingReduce
 import { tradingBuyReducer } from '../../../reducers/buyReducer';
 import { regional } from '../../../regional';
 
-describe('Testing loadInfoThunk', () => {
+describe('loadInfoThunk', () => {
     jest.mock('../../../invityAPI');
 
     invityAPI.setInvityServersEnvironment = () => {};
@@ -33,7 +33,7 @@ describe('Testing loadInfoThunk', () => {
         },
     });
 
-    it('successful response', async () => {
+    it('should load data when response is successful', async () => {
         const buyInfoAPI = {
             country: 'CZ',
             suggestedFiatCurrency: 'CZK',
@@ -60,7 +60,7 @@ describe('Testing loadInfoThunk', () => {
         });
     });
 
-    it('unsuccessful response', async () => {
+    it('should load default data object when response is unsuccessful', async () => {
         invityAPI.getBuyList = () => Promise.resolve(undefined);
 
         const buyInfoData = await store.dispatch(buyThunks.loadInfoThunk()).unwrap();
