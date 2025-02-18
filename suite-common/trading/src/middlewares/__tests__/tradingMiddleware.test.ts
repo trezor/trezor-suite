@@ -1,6 +1,5 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
 
@@ -15,7 +14,7 @@ import {
 } from '../../reducers/tradingReducer';
 import { regional } from '../../regional';
 import { buyThunks } from '../../thunks/buy';
-import { tradingMiddleware } from '../tradingMiddleware';
+import { prepareTradingMiddleware } from '../tradingMiddleware';
 
 jest.mock('../../invityAPI');
 invityAPI.setInvityServersEnvironment = () => {};
@@ -27,7 +26,7 @@ type SelectedAccountStatus = {
     account: Account;
 };
 type SelectedAccountState = SelectedAccountStatus;
-const mockedSelectedAccountReducer = createReducerWithExtraDeps<SelectedAccountState>(
+const mockedSelectedAccountReducer = createReducer<SelectedAccountState>(
     {
         status: 'none',
         account: accountBtc as Account,
@@ -35,7 +34,7 @@ const mockedSelectedAccountReducer = createReducerWithExtraDeps<SelectedAccountS
     () => {},
 );
 
-const mockedSuiteReducer = createReducerWithExtraDeps(
+const mockedSuiteReducer = createReducer(
     {
         settings: {
             debug: {
@@ -46,6 +45,14 @@ const mockedSuiteReducer = createReducerWithExtraDeps(
     () => {},
 );
 
+const tradingMiddleware = prepareTradingMiddleware({
+    ...extraDependenciesMock,
+    selectors: {
+        ...extraDependenciesMock.selectors,
+        selectSelectedAccount: () => ({ status: 'loaded', account: accountBtc }) as any,
+    },
+});
+
 const initStore = (localInitialState?: Partial<TradingState>) =>
     configureMockStore({
         middleware: [tradingMiddleware],
@@ -53,9 +60,9 @@ const initStore = (localInitialState?: Partial<TradingState>) =>
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: tradingReducer,
-                selectedAccount: mockedSelectedAccountReducer(extraDependenciesMock),
+                selectedAccount: mockedSelectedAccountReducer,
             }),
-            suite: mockedSuiteReducer(extraDependenciesMock),
+            suite: mockedSuiteReducer,
         }),
         preloadedState: {
             wallet: {

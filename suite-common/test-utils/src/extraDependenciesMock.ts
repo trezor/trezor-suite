@@ -3,7 +3,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { Route } from '@suite-common/suite-types';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
 import { testMocks } from './mocks';
@@ -98,11 +98,16 @@ export const extraDependenciesMock: ExtraDependencies = {
             'selectAddressDisplayType',
             AddressDisplayOptions.CHUNKED,
         ),
+        selectSelectedAccount: mockSelector('selectSelectedAccount', {
+            status: 'loaded',
+            account: testMocks.getWalletAccount(),
+        } as SelectedAccountLoaded),
         selectSelectedAccountStatus: mockSelector('selectSelectedAccountStatus', 'loaded'),
         selectSuiteSettings: mockSelector('selectSuiteSettings', {
             defaultWalletLoading: 'standard',
         }),
         selectIsWindowVisible: mockSelector('selectIsWindowVisible', true),
+        selectTradingEnvironment: mockSelector('selectTradingEnvironment', 'localhost'),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),

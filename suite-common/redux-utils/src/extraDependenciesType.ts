@@ -84,10 +84,14 @@ export type ExtraDependencies = {
         selectMetadata: SuiteCompatibleSelector<any>;
         selectDeviceDiscovery: SuiteCompatibleSelector<Discovery | undefined>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
+        selectSelectedAccount: SuiteCompatibleSelector<SelectedAccountStatus>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
         selectSuiteSettings: SuiteCompatibleSelector<{
             defaultWalletLoading: WalletType;
         }>;
+        selectTradingEnvironment: SuiteCompatibleSelector<
+            'production' | 'staging' | 'dev' | 'localhost' | undefined
+        >;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,

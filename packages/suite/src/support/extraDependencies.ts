@@ -91,9 +91,12 @@ export const extraDependencies: ExtraDependencies = {
         selectRouterApp: (state: AppState) => state.router.app,
         selectRoute: (state: AppState) => state.router.route,
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
+        selectSelectedAccount: (state: AppState) => state.wallet.selectedAccount,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectSuiteSettings,
         selectIsWindowVisible,
+        selectTradingEnvironment: (state: AppState) =>
+            state.suite.settings.debug.invityServerEnvironment,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,

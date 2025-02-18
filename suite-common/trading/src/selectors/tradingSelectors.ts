@@ -76,15 +76,6 @@ export const selectTradingBuyQuotesRequest = (state: TradingRootState) =>
 export const selectTradingBuySelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.buy.selectedQuote;
 
-export const selectTradingSelectedAccount = (state: TradingRootState) =>
-    state.wallet.selectedAccount;
-
-export const selectTradingSettingEnvironment = (state: TradingRootState) =>
-    state.suite.settings.debug.invityServerEnvironment;
-
-export const selectTradingSettingAddressDisplayType = (state: TradingRootState) =>
-    state.suite.settings.addressDisplayType;
-
 export const selectTradingPaymentMethods = (state: TradingRootState) =>
     state.wallet.trading.info.paymentMethods;
 
