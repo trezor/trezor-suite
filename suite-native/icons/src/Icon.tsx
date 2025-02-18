@@ -15,6 +15,9 @@ export type AnimatedIconColor = Color | CSSColor | SharedValue<CSSColor>;
 
 export const icons = codepoints;
 
+// Limit the maximum font size multiplier to 1.5 to prevent layout issues if the user has accessibility font size settings set to maximum.
+const MAX_FONT_SIZE_MULTIPLIER = 1.5;
+
 /**
  * @description If you need to add a new icon, please follow these steps:
  * 1. Add the icon name to the file `generateIconFont.ts`.
@@ -68,7 +71,11 @@ export const Icon = ({ name, size = 'large', color = 'iconDefault', ...props }: 
     }, [sizeNumber, color, colors]);
 
     return (
-        <DefaultTextComponent style={style} {...props}>
+        <DefaultTextComponent
+            style={style}
+            {...props}
+            maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+        >
             {char}
         </DefaultTextComponent>
     );
@@ -131,7 +138,11 @@ const AnimatedIcon = ({
     }));
 
     return (
-        <Animated.Text style={[baseStyle, style]} {...props}>
+        <Animated.Text
+            style={[baseStyle, style]}
+            {...props}
+            maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+        >
             {char}
         </Animated.Text>
     );
