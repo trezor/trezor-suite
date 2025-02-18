@@ -7,9 +7,9 @@ import { Network } from '@suite-common/wallet-config';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { Timer } from '@trezor/react-utils';
 
-import { tradingBuyActions } from '../../actions/buyActions';
 import { tradingActions } from '../../actions/tradingActions';
 import { invityAPI } from '../../invityAPI';
+import { tradingBuyActions } from '../../reducers/buyReducer';
 import {
     cryptoIdToCoinSymbol,
     selectTradingBuyQuotesRequest,

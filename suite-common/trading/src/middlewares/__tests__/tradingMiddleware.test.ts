@@ -5,9 +5,9 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 import { Account } from '@suite-common/wallet-types';
 
 import { accountBtc } from '../../__fixtures__/utils';
-import { tradingBuyActions } from '../../actions/buyActions';
 import { tradingActions } from '../../actions/tradingActions';
 import { invityAPI } from '../../invityAPI';
+import { tradingBuyActions } from '../../reducers/buyReducer';
 import { TradingState, initialState, prepareTradingReducer } from '../../reducers/tradingReducer';
 import { regional } from '../../regional';
 import { buyThunks } from '../../thunks/buy';

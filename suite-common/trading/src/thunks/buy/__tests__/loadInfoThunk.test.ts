@@ -1,15 +1,13 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { FiatCurrenciesProps } from 'invity-api';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import { buyThunks } from '../';
 import { invityAPI } from '../../../invityAPI';
 import { buyInitialState } from '../../../reducers/__fixtures__/buyTradingReducer';
-import { prepareBuyReducer } from '../../../reducers/buyReducer';
+import { tradingBuyReducer } from '../../../reducers/buyReducer';
 import { regional } from '../../../regional';
-
-const buyTradingReducer = prepareBuyReducer(extraDependenciesMock);
 
 describe('Testing loadInfoThunk', () => {
     jest.mock('../../../invityAPI');
@@ -22,7 +20,7 @@ describe('Testing loadInfoThunk', () => {
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: combineReducers({
-                    buy: buyTradingReducer,
+                    buy: tradingBuyReducer,
                 }),
             }),
         }),

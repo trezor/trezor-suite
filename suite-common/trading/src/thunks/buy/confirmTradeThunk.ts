@@ -6,9 +6,9 @@ import { Account } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { BUY_THUNK_COMMON_PREFIX } from './handleRequestThunk';
-import { tradingBuyActions } from '../../actions/buyActions';
 import { tradingActions } from '../../actions/tradingActions';
 import { invityAPI } from '../../invityAPI';
+import { tradingBuyActions } from '../../reducers/buyReducer';
 import { selectTradingBuySelectedQuote } from '../../selectors/tradingSelectors';
 
 export type ConfirmTradeThunkProps = {

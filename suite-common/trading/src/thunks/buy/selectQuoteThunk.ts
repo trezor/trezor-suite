@@ -5,8 +5,8 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { Timer } from '@trezor/react-utils';
 
 import { BUY_THUNK_COMMON_PREFIX } from './handleRequestThunk';
-import { tradingBuyActions } from '../../actions/buyActions';
 import { invityAPI } from '../../invityAPI';
+import { tradingBuyActions } from '../../reducers/buyReducer';
 import {
     cryptoIdToCoinSymbol,
     selectTradingBuyInfo,

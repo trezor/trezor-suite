@@ -1,3 +1,4 @@
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import type {
     BuyListResponse,
     BuyProviderInfo,
@@ -6,9 +7,6 @@ import type {
     CryptoId,
 } from 'invity-api';
 
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-
-import { tradingBuyActions } from '../actions/buyActions';
 import { AmountLimitProps } from '../utils/buy/buyUtils';
 
 export interface BuyInfo {
@@ -43,39 +41,45 @@ export const buyInitialState: TradingBuyState = {
     amountLimits: undefined,
 };
 
-export const prepareBuyReducer = createReducerWithExtraDeps(buyInitialState, builder => {
-    builder
-        .addCase(tradingBuyActions.saveBuyInfo, (state, { payload }) => {
-            state.buyInfo = payload;
-        })
-        .addCase(tradingBuyActions.setIsFromRedirect, (state, { payload }) => {
-            state.isFromRedirect = payload;
-        })
-        .addCase(tradingBuyActions.saveQuoteRequest, (state, { payload }) => {
-            state.quotesRequest = payload;
-        })
-        .addCase(tradingBuyActions.saveTransactionId, (state, { payload }) => {
-            state.transactionId = payload;
-        })
-        .addCase(tradingBuyActions.saveQuotes, (state, { payload }) => {
-            state.quotes = payload;
-        })
-        .addCase(tradingBuyActions.saveSelectedQuote, (state, { payload }) => {
-            state.selectedQuote = payload;
-        })
-        .addCase(tradingBuyActions.clearQuotes, state => {
+export const tradingBuySlice = createSlice({
+    name: 'trading-buy',
+    initialState: buyInitialState,
+    reducers: {
+        saveBuyInfo(state, action: PayloadAction<BuyInfo>) {
+            state.buyInfo = action.payload;
+        },
+        setIsFromRedirect(state, action: PayloadAction<boolean>) {
+            state.isFromRedirect = action.payload;
+        },
+        saveQuoteRequest(state, action: PayloadAction<BuyTradeQuoteRequest>) {
+            state.quotesRequest = action.payload;
+        },
+        saveTransactionId(state, action: PayloadAction<string>) {
+            state.transactionId = action.payload;
+        },
+        saveQuotes(state, action: PayloadAction<BuyTrade[]>) {
+            state.quotes = action.payload;
+        },
+        saveSelectedQuote(state, action: PayloadAction<BuyTrade | undefined>) {
+            state.selectedQuote = action.payload;
+        },
+        clearQuotes(state) {
             state.quotes = [];
-        })
-        .addCase(tradingBuyActions.verifyAddress, (state, { payload }) => {
-            state.addressVerified = payload;
-        })
-        .addCase(tradingBuyActions.dispose, state => {
+        },
+        verifyAddress(state, action: PayloadAction<string | undefined>) {
+            state.addressVerified = action.payload;
+        },
+        dispose(state) {
             state.addressVerified = undefined;
-        })
-        .addCase(tradingBuyActions.setIsLoading, (state, { payload }) => {
-            state.isLoading = payload;
-        })
-        .addCase(tradingBuyActions.setAmountLimits, (state, { payload }) => {
-            state.amountLimits = payload;
-        });
+        },
+        setIsLoading(state, action: PayloadAction<boolean>) {
+            state.isLoading = action.payload;
+        },
+        setAmountLimits(state, action: PayloadAction<AmountLimitProps | undefined>) {
+            state.amountLimits = action.payload;
+        },
+    },
 });
+
+export const tradingBuyActions = tradingBuySlice.actions;
+export const tradingBuyReducer = tradingBuySlice.reducer;

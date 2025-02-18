@@ -1,11 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore } from '@suite-common/test-utils';
 
 import { buyTradingFixtures } from '../__fixtures__/buyTradingReducer';
-import { prepareBuyReducer } from '../buyReducer';
-
-const buyTradingReducer = prepareBuyReducer(extraDependenciesMock);
+import { tradingBuyReducer } from '../buyReducer';
 
 describe('Testing buy trading reducer', () => {
     buyTradingFixtures.forEach(f => {
@@ -15,7 +13,7 @@ describe('Testing buy trading reducer', () => {
                 reducer: combineReducers({
                     wallet: combineReducers({
                         trading: combineReducers({
-                            buy: buyTradingReducer,
+                            buy: tradingBuyReducer,
                         }),
                     }),
                 }),

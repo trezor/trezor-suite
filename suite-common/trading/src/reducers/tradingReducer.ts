@@ -6,7 +6,7 @@ import { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-ty
 import { FeeLevel } from '@trezor/connect';
 
 import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '../types';
-import { TradingBuyState, buyInitialState, prepareBuyReducer } from './buyReducer';
+import { TradingBuyState, buyInitialState, tradingBuyReducer } from './buyReducer';
 import { tradingActions } from '../actions/tradingActions';
 
 export interface TradingComposedTransactionInfo {
@@ -117,7 +117,7 @@ export const prepareTradingReducer = createReducerWithExtraDeps(initialState, (b
             state.activeSection = payload;
         })
         .addDefaultCase((state, action) => {
-            prepareBuyReducer(extra)(state.buy, action);
+            tradingBuyReducer(state.buy, action);
             // TODO: prepareSellReducer(extra)(state.sell, action);
             // TODO: prepareExchangeReducer(extra)(state.exchange, action);
         });

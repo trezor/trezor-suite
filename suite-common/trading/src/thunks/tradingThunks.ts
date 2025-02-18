@@ -3,8 +3,8 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { tradingBuyActions } from '../actions/buyActions';
 import { tradingActions } from '../actions/tradingActions';
+import { tradingBuyActions } from '../reducers/buyReducer';
 import { selectTradingSettingAddressDisplayType } from '../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../utils';
 

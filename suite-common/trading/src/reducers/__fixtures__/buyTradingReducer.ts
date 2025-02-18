@@ -1,8 +1,7 @@
 import { BuyTrade, BuyTradeQuoteRequest, CryptoId, FiatCurrenciesProps } from 'invity-api';
 
-import { tradingBuyActions } from '../../actions/buyActions';
 import { AmountLimitProps } from '../../utils/buy/buyUtils';
-import { BuyInfo, TradingBuyState } from '../buyReducer';
+import { BuyInfo, TradingBuyState, tradingBuyActions } from '../buyReducer';
 
 export const buyInitialState: TradingBuyState = {
     transactionId: undefined,

@@ -1,9 +1,9 @@
 import { createMiddleware } from '@suite-common/redux-utils';
 
-import { tradingBuyActions } from '../actions/buyActions';
 import { tradingActions } from '../actions/tradingActions';
 import { INVITY_API_RELOAD_DATA_AFTER_MS } from '../constants';
 import { invityAPI } from '../invityAPI';
+import { tradingBuyActions } from '../reducers/buyReducer';
 import {
     TradingRootState,
     selectTradingBuy,
