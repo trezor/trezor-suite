@@ -1,6 +1,5 @@
 import { usePreferredModal } from 'src/hooks/suite/usePreferredModal';
 
-import { DiscoveryLoader } from './DiscoveryLoader';
 import { ForegroundAppModal } from './ForegroundAppModal';
 import { ReduxModal } from '../ReduxModal/ReduxModal';
 
@@ -13,8 +12,6 @@ export const ModalSwitcher = () => {
             return <ForegroundAppModal {...modal.payload} />;
         case 'redux-modal':
             return <ReduxModal {...modal.payload} />;
-        case 'discovery-loading':
-            return <DiscoveryLoader />;
         default:
             return null;
     }

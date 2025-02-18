@@ -2,7 +2,6 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -31,12 +30,12 @@ export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
         sortedDevices.unshift(selectedDevice);
     }
 
-    // TODO: This is far from perfect. It should be on the same place with `packages/suite/src/components/suite/modals/ReduxModal/DeviceContextModal/PassphraseWalletIsNotExistFlow.tsx` but app is divided
     if (selectedDevice && !isExisting && passphraseState === 'not-exist-best-practices') {
         return (
             <PassphraseWalletBestPractices
                 onCancel={() => {
-                    TrezorConnect.cancel('auth-confirm-cancel');
+                    setPassphraseState('initial');
+                    onCancel();
                 }}
                 onNext={() => {
                     dispatch(

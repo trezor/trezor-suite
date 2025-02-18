@@ -27,7 +27,6 @@ import {
     ImportTransactionModal,
     MetadataProviderModal,
     MoreRoundsNeededModal,
-    PassphraseDuplicateModal,
     PinMismatchModal,
     QrScannerModal,
     RequestEnableTorModal,
@@ -48,11 +47,9 @@ import type { AcquiredDevice } from 'src/types/suite';
 
 import type { ReduxModalProps } from '../ReduxModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
-import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
-import { usePassphraseModalContext } from '../DeviceContextModal/PassphraseModalContext';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({
@@ -62,9 +59,6 @@ export const UserContextModal = ({
     const dispatch = useDispatch();
 
     const onCancel = () => dispatch(onCancelAction());
-    const { setPassphraseState, isExisting, passphraseState } = usePassphraseModalContext();
-
-    console.log('___!!!', passphraseState);
 
     switch (payload.type) {
         case 'add-account':
@@ -105,16 +99,6 @@ export const UserContextModal = ({
             return <QrScannerModal decision={payload.decision} onCancel={onCancel} />;
         case 'transaction-detail':
             return <TxDetailModal {...payload} onCancel={onCancel} />;
-        case 'passphrase-duplicate':
-            if (isExisting) {
-                setPassphraseState('exists-passphrase-duplicate');
-            } else {
-                setPassphraseState('not-exist-passphrase-duplicate');
-            }
-
-            return (
-                <PassphraseDuplicateModal device={payload.device} duplicate={payload.duplicate} />
-            );
         case 'review-transaction':
             return <TransactionReviewModal {...payload} />;
         case 'review-transaction-rbf-previous-transaction-mined-error':
@@ -221,14 +205,6 @@ export const UserContextModal = ({
             );
         case 'unhide-token':
             return <UnhideTokenModal onCancel={onCancel} address={payload.address} />;
-        case 'passphrase-mismatch-warning':
-            if (isExisting) {
-                setPassphraseState('exists-passphrase-mismatch');
-            } else {
-                setPassphraseState('not-exist-passphrase-mismatch');
-            }
-
-            return <PassphraseMismatchModal onCancel={onCancel} />;
         case 'connect-popup':
             return <ConnectPopupModal />;
         case 'walletconnect-proposal':

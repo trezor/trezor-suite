@@ -1,8 +1,11 @@
 import { useCallback } from 'react';
 
-import { onPassphraseSubmit } from '@suite-common/wallet-core';
+import {
+    onPassphraseSubmit,
+    selectIsDiscoveryAuthConfirmationRequired,
+} from '@suite-common/wallet-core';
 
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { TrezorDevice } from 'src/types/suite';
 
 import { ConfirmPassphraseBeforeAction } from './ConfirmPassphraseBeforeAction';
@@ -39,16 +42,8 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
         [dispatch, isExisting, setPassphraseState],
     );
 
-    // "view-only" is active, device is reconnected and you fired an action that needs passphrase (e.g. add coin, show receive address)
-    if (hasDeviceState) {
-        return (
-            <ConfirmPassphraseBeforeAction
-                device={device}
-                onSubmit={onSubmit}
-                onDeviceOffer={onDeviceOffer}
-            />
-        );
-    }
+    const authConfirmation =
+        useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
 
     if (isExisting)
         return (
@@ -56,6 +51,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                 device={device}
                 onSubmit={onSubmit}
                 onDeviceOffer={onDeviceOffer}
+                authConfirmation={authConfirmation}
             />
         );
     if (!isExisting)
@@ -67,5 +63,18 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
             />
         );
 
+    // "view-only" is active, device is reconnected and you fired an action that needs passphrase (e.g. add coin, show receive address)
+    if (hasDeviceState) {
+        return (
+            <ConfirmPassphraseBeforeAction
+                device={device}
+                onSubmit={onSubmit}
+                onDeviceOffer={onDeviceOffer}
+            />
+        );
+    }
+
     throw new Error('Unexpected passphrase state');
+
+    return null;
 };

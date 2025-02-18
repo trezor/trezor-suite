@@ -1,5 +1,4 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { selectIsDiscoveryAuthConfirmationRequired } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { EnterPassphrase } from './EnterPassphrase';
@@ -7,21 +6,20 @@ import { usePassphraseModalContext } from './PassphraseModalContext';
 import { PassphraseWalletBestPractices } from './PassphraseWalletBestPractices';
 import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
 import { PassphraseWalletIsEmpty } from './PassphraseWalletIsEmpty';
-import { useSelector } from '../../../../../hooks/suite';
 
 type PassphraseWalletExistsFlowProps = {
     onDeviceOffer: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     device: TrezorDevice;
+    authConfirmation?: boolean;
 };
 
 export const PassphraseWalletExistsFlow = ({
     onDeviceOffer,
     onSubmit,
     device,
+    authConfirmation,
 }: PassphraseWalletExistsFlowProps) => {
-    const authConfirmation =
-        useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
     const { passphraseState, setPassphraseState } = usePassphraseModalContext();
 
     const onConfirmPassphraseDialogCancel = () => {
@@ -32,21 +30,22 @@ export const PassphraseWalletExistsFlow = ({
         TrezorConnect.cancel('auth-confirm-retry');
     };
 
-    console.log('___TADY', authConfirmation);
     if (authConfirmation) {
         if (passphraseState === 'exists-empty-wallet') {
+            const onBack = () => {
+                onConfirmPassphraseDialogRetry();
+                setPassphraseState('exists-enter-passphrase');
+            };
+
             return (
                 <PassphraseWalletIsEmpty
                     onCancel={onConfirmPassphraseDialogCancel}
                     onNext={() => {
                         setPassphraseState('exists-best-practices');
                     }}
-                    onBack={() => {
-                        onConfirmPassphraseDialogRetry();
-                        setPassphraseState('exists-enter-passphrase');
-                    }}
+                    onBack={onBack}
                     device={device}
-                    onRetry={onConfirmPassphraseDialogRetry}
+                    onRetry={onBack}
                 />
             );
         }
@@ -81,8 +80,18 @@ export const PassphraseWalletExistsFlow = ({
     }
 
     if (passphraseState === 'exists-enter-passphrase') {
+        const onEnterPassphraseDialogBack = () => {
+            TrezorConnect.cancel('enter-passphrase-back');
+            setPassphraseState('initial');
+        };
+
         return (
-            <EnterPassphrase device={device} onDeviceOffer={onDeviceOffer} onSubmit={onSubmit} />
+            <EnterPassphrase
+                device={device}
+                onDeviceOffer={onDeviceOffer}
+                onSubmit={onSubmit}
+                onBack={onEnterPassphraseDialogBack}
+            />
         );
     }
 };

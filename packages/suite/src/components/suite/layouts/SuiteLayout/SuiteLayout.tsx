@@ -25,11 +25,12 @@ import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutCon
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
+import { AppShortcuts } from './AppShortcuts';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { DebugLegend } from './DebugLegend';
 import { MobileMenu } from './MobileMenu/MobileMenu';
+import { PassphraseFlow } from './PassphraseFlow';
 import { Sidebar } from './Sidebar/Sidebar';
-import { useAppShortcuts } from './useAppShortcuts';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 import { PassphraseModalProvider } from '../../modals/ReduxModal/DeviceContextModal/PassphraseModalContext';
 
@@ -152,8 +153,6 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
     const isAccountPage = !!selectedAccount;
 
-    useAppShortcuts();
-
     return (
         <ElevationContext baseElevation={-1}>
             <Wrapper ref={wrapperRef} data-testid="@suite-layout">
@@ -164,6 +163,8 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                     <Metadata title={title} />
 
                                     <ModalSwitcher />
+                                    <PassphraseFlow />
+                                    <AppShortcuts />
 
                                     {isMobileLayout && <CoinjoinBars />}
 

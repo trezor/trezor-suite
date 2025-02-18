@@ -42,7 +42,15 @@ export const PassphraseWalletIsNotExistFlow = ({
 
     if (passphraseState === 'not-exist-enter-passphrase') {
         return (
-            <EnterPassphrase device={device} onDeviceOffer={onDeviceOffer} onSubmit={onSubmit} />
+            <EnterPassphrase
+                device={device}
+                onDeviceOffer={onDeviceOffer}
+                onSubmit={onSubmit}
+                onBack={() => {
+                    TrezorConnect.cancel('enter-passphrase-back');
+                    setPassphraseState('not-exist-best-practices');
+                }}
+            />
         );
     }
 };

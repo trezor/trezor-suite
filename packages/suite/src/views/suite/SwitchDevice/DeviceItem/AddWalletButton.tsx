@@ -5,7 +5,6 @@ import {
     Button,
     Card,
     Column,
-    ElevationDown,
     HotkeyBadge,
     Icon,
     IconButton,
@@ -43,24 +42,29 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     const isLocked = !device || !device.connected || isDeviceOrUiLocked;
     const [isPassphraseExpanded, setIsPassphraseExpanded] = useState(false);
 
-    const { setPassphraseState, passphraseState, setIsExisting } = usePassphraseModalContext();
-    console.log('___!!!', passphraseState);
+    const { setPassphraseState, setIsExisting } = usePassphraseModalContext();
+
     const onAddWallet = ({
         walletType,
         isExisting,
     }: {
         walletType: WalletType;
-        isExisting: boolean;
+        isExisting?: boolean;
     }) => {
-        if (!isExisting) {
-            setPassphraseState('not-exist-best-practices');
-            setIsExisting(false);
-        } else {
-            setPassphraseState('exists-enter-passphrase');
-            setIsExisting(true);
-
+        if (walletType === WalletType.STANDARD) {
             dispatch(addWalletThunk({ walletType, device }));
             onCancel(false);
+        } else {
+            if (!isExisting) {
+                setPassphraseState('not-exist-best-practices');
+                setIsExisting(false);
+            } else {
+                setPassphraseState('exists-enter-passphrase');
+                setIsExisting(true);
+
+                dispatch(addWalletThunk({ walletType, device }));
+                onCancel(false);
+            }
         }
     };
 
@@ -81,7 +85,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
             </Row>
             <Column gap={spacings.xxs} width="100%" margin={{ top: spacings.sm }}>
                 <CardButton
-                    data-testid="@switch-device/add-hidden-wallet-button"
+                    data-testid="@switch-device/add-new-hidden-wallet-button"
                     isDisabled={isLocked}
                     onClick={() =>
                         onAddWallet({
@@ -98,7 +102,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                     </Row>
                 </CardButton>
                 <CardButton
-                    data-testid="@switch-device/add-hidden-wallet-button"
+                    data-testid="@switch-device/add-existing-hidden-wallet-button"
                     isDisabled={isLocked}
                     onClick={() =>
                         onAddWallet({
@@ -135,9 +139,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         isFullWidth
                         icon="plus"
                         isDisabled={isLocked}
-                        onClick={() =>
-                            onAddWallet({ walletType: WalletType.STANDARD, isExisting: false })
-                        }
+                        onClick={() => onAddWallet({ walletType: WalletType.STANDARD })}
                     >
                         <Translation id="TR_ADD_WALLET" />
                     </Button>
@@ -155,10 +157,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                                 isDisabled={isLocked}
                                 onClick={() => setIsPassphraseExpanded(true)}
                             >
-                                <Row gap={spacings.xs}>
-                                    <Translation id="TR_ADD_HIDDEN_WALLET" />{' '}
-                                    {!isLocked && <HotkeyBadge hotkey={['ALT', 'KEY_P']} />}
-                                </Row>
+                                <Translation id="TR_ADD_HIDDEN_WALLET" />
                             </Button>
                         )}
                     </>

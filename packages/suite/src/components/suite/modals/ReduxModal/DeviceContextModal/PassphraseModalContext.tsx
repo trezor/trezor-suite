@@ -43,7 +43,6 @@ const initialPassphraseModal: PassphraseModalContextType = {
 export const PassphraseModalContext =
     createContext<PassphraseModalContextType>(initialPassphraseModal);
 
-// move this to redux
 export const PassphraseModalProvider = ({ children }: PassphraseModalProviderProps) => {
     const [passphraseState, setPassphraseState] = useState<PassphraseWalletState>(
         initialPassphraseModal.passphraseState,

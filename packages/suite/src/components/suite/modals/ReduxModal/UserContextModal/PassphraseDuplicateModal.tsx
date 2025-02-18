@@ -1,5 +1,6 @@
-import { authorizeDeviceThunk, switchDuplicatedDevice } from '@suite-common/wallet-core';
+import { switchDuplicatedDevice } from '@suite-common/wallet-core';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
+import TrezorConnect from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -20,27 +21,19 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
     const { isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();
-    const { setPassphraseState, isExisting } = usePassphraseModalContext();
+    const { setPassphraseState } = usePassphraseModalContext();
 
     const handleSwitchDevice = () => {
         setPassphraseState('initial');
-
-        return dispatch(switchDuplicatedDevice({ device, duplicate }));
+        dispatch(switchDuplicatedDevice({ device, duplicate }));
     };
-
-    const handleAuthorizeDevice = () => {
-        if (isExisting) {
-            setPassphraseState('exists-enter-passphrase');
-        } else {
-            setPassphraseState('not-exist-enter-passphrase');
-        }
-
-        return dispatch(authorizeDeviceThunk());
+    const onCancel = () => {
+        TrezorConnect.cancel('auth-confirm-retry');
     };
 
     return (
-        <SwitchDeviceModal>
-            <CardWithDevice device={device} isFullHeaderVisible={false}>
+        <SwitchDeviceModal onCancel={onCancel}>
+            <CardWithDevice device={device} isFullHeaderVisible={false} onCancel={onCancel}>
                 <Column gap={spacings.xs} margin={{ top: spacings.xxs }}>
                     <H3 data-testid="@passphrase-duplicate-header">
                         <Translation id="TR_WALLET_DUPLICATE_TITLE" />
@@ -48,7 +41,7 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
                     <Text variant="tertiary">
                         <Translation id="TR_WALLET_DUPLICATE_DESC" />
                     </Text>
-                    <Column gap={spacings.xs} margin={{ top: spacings.lg }} alignItems="center">
+                    <Column gap={spacings.xs} margin={{ top: spacings.lg }} alignItems="normal">
                         <Tooltip
                             isActive={isDeviceLocked}
                             content={
@@ -62,21 +55,6 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
                                 isFullWidth
                             >
                                 <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
-                            </Button>
-                        </Tooltip>
-                        <Tooltip
-                            isActive={isDeviceLocked}
-                            content={
-                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                            }
-                        >
-                            <Button
-                                variant="tertiary"
-                                onClick={handleAuthorizeDevice}
-                                isDisabled={isDeviceLocked}
-                                isFullWidth
-                            >
-                                <Translation id="TR_WALLET_DUPLICATE_RETRY" />
                             </Button>
                         </Tooltip>
                     </Column>
