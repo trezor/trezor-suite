@@ -124,7 +124,8 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                     </Tooltip>
                 }
             />
-            <Column gap={spacings.xxs}>
+
+            <Column gap={spacings.sm}>
                 {selectedAccountOption?.type === 'SUITE' &&
                     selectedAccountOption?.account?.networkType === 'bitcoin' && (
                         <TradingAddressOptions
@@ -169,7 +170,6 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
 
                 {exchangeQuote?.extraFieldDescription && (
                     <Input
-                        size="small"
                         label={
                             <Translation
                                 id="TR_EXCHANGE_EXTRA_FIELD"
@@ -226,7 +226,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                                     confirmTrade(address, extraField);
                                 }
                             }}
-                            isDisabled={!form.formState.isValid || callInProgress}
+                            isDisabled={!form.formState.isValid || address === '' || callInProgress}
                         >
                             <Translation id="TR_BUY_GO_TO_PAYMENT" />
                         </Button>

@@ -166,10 +166,6 @@ const useTradingVerifyAccount = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [accounts]);
 
-    useEffect(() => {
-        methods.trigger();
-    }, [methods]);
-
     return {
         form: {
             ...methods,
