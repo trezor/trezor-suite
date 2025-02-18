@@ -79,39 +79,30 @@ export const useHandleDeviceConnection = () => {
     const lastRoute = useNavigationState(state => state?.routes.at(-1)?.name);
     const isDeviceSettingsStackFocused = lastRoute === RootStackRoutes.DeviceSettingsStack;
     const isSendStackFocused = lastRoute === RootStackRoutes.SendStack;
+    const isOnboardingStackFocused = lastRoute === RootStackRoutes.OnboardingStack;
     const shouldBlockSendReviewRedirect = isDeviceRemembered && isSendStackFocused;
     const isDeviceCompromisedModalFocused =
         lastRoute === RootStackRoutes.DeviceCompromisedModalScreen;
 
     // When is an uninitialized device model that supports device setup, navigate to device onboarding.
     useEffect(() => {
-        if (isSuspiciousDeviceScreenFocused) return;
         if (
             isDeviceSetupSupported &&
-            !isDeviceInitialized &&
             isDeviceConnected &&
-            isOnboardingFinished &&
+            !isDeviceInitialized &&
             !isPortfolioTrackerDevice &&
-            !isBiometricsOverlayVisible
+            !isBiometricsOverlayVisible &&
+            !isOnboardingStackFocused
         ) {
-            requestPrioritizedDeviceAccess({
-                deviceCallback: () => dispatch(authorizeDeviceThunk()),
+            navigation.navigate(RootStackRoutes.OnboardingStack, {
+                screen: OnboardingStackRoutes.UninitializedDeviceLanding,
             });
-
-            if (!isDeviceInitialized) {
-                navigation.navigate(RootStackRoutes.OnboardingStack, {
-                    screen: OnboardingStackRoutes.UninitializedDeviceLanding,
-                });
-
-                return;
-            }
         }
     }, [
         dispatch,
         isDeviceConnected,
-        isOnboardingFinished,
+        isOnboardingStackFocused,
         isBiometricsOverlayVisible,
-        isSuspiciousDeviceScreenFocused,
         navigation,
         isDeviceInitialized,
         isPortfolioTrackerDevice,
