@@ -25,6 +25,7 @@ const LearnMoreButton = () => {
     return (
         <Button
             size="small"
+            viewLeft="arrowSquareOut"
             onPress={handleButtonPress}
             colorScheme="tertiaryElevation0"
             style={applyStyle(fullWidthButtonStyle)}
