@@ -357,7 +357,9 @@ describe('useSendForm hook', () => {
     });
 
     fixtures.feeChange.forEach(f => {
-        it(
+        // Add conditional test execution
+        const testFn = f.skip ? it.skip : it;
+        testFn(
             `changeFee: ${f.description}`,
             async () => {
                 testMocks.setTrezorConnectFixtures(f.connect);

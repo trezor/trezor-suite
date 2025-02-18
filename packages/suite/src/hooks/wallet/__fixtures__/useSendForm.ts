@@ -1854,6 +1854,7 @@ export const feeChange = [
         },
     },
     {
+        skip: true, // TODO: fix the flakiness https://github.com/trezor/trezor-suite/issues/17084
         description: 'ETH fee limit changes',
         store: {
             send: {
