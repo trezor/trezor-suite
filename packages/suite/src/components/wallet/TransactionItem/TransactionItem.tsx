@@ -155,7 +155,7 @@ export const TransactionItem = memo(
         const isExpandable = allOutputs.length - DEFAULT_LIMIT > 0;
         const toExpand = allOutputs.length - DEFAULT_LIMIT - limit;
 
-        const isTxCancellable = transaction.type !== 'self';
+        const isTxCancellable = transaction.type !== 'self' && network.networkType === 'bitcoin';
 
         const openTxDetailsModal = ({ flow }: OpenModalParams) => {
             if (isActionDisabled) return; // open explorer
