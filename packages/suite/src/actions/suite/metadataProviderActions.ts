@@ -1,7 +1,7 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Device } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { createDeferred } from '@trezor/utils';
+import { createDeferred, typedObjectKeys } from '@trezor/utils';
 
 import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -108,15 +108,13 @@ export const disconnectProvider =
         removeMetadata?: boolean;
     }) =>
     async (dispatch: Dispatch) => {
-        (Object.keys(fetchIntervals) as FetchIntervalTrackingId[]).forEach(
-            (id: FetchIntervalTrackingId) => {
-                const [trackedDataType, trackedClientId] = id.split('-');
-                if (trackedDataType === dataType && trackedClientId === clientId) {
-                    clearInterval(fetchIntervals[id]);
-                    delete fetchIntervals[id];
-                }
-            },
-        );
+        typedObjectKeys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
+            const [trackedDataType, trackedClientId] = id.split('-');
+            if (trackedDataType === dataType && trackedClientId === clientId) {
+                clearInterval(fetchIntervals[id]);
+                delete fetchIntervals[id];
+            }
+        });
 
         // dispose metadata values (not keys)
         if (removeMetadata) {

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Banner, Button, Checkbox, Switch } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { goto } from 'src/actions/suite/routerActions';
@@ -109,9 +110,8 @@ export const Experimental = () => {
         });
     };
 
-    const experimentalFeatures = Object.keys(EXPERIMENTAL_FEATURES).filter(
-        feature =>
-            !EXPERIMENTAL_FEATURES[feature as ExperimentalFeature]?.isDisabled?.({ isDebug }),
+    const experimentalFeatures = typedObjectKeys(EXPERIMENTAL_FEATURES).filter(
+        feature => !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.({ isDebug }),
     );
 
     return (

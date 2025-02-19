@@ -4,6 +4,7 @@ import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { setDebugSettings } from 'src/actions/wallet/coinjoinClientActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
@@ -117,9 +118,7 @@ export const CoinjoinApi = () => {
     return (
         <>
             {coinjoinSymbols.map(symbol => {
-                const environments = Object.keys(
-                    COINJOIN_NETWORKS[symbol] || {},
-                ) as CoinjoinServerEnvironment[];
+                const environments = typedObjectKeys(COINJOIN_NETWORKS[symbol] || {});
 
                 return (
                     <CoordinatorServer
