@@ -1,3 +1,2 @@
+android/**/*
 ios/**/*
-
-!ios/Podfile.lock

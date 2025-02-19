@@ -168,7 +168,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: '26',
+        runtimeVersion: {
+            policy: 'fingerprint',
+        },
         ...(buildType === 'production'
             ? {}
             : {

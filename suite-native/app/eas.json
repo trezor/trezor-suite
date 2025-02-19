@@ -29,7 +29,8 @@
             "autoIncrement": true,
             "developmentClient": true,
             "credentialsSource": "remote",
-            "distribution": "internal"
+            "distribution": "internal",
+            "node": "22.11.0"
         },
         "adhoc": {
             "extends": "preview",
