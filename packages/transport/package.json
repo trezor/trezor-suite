@@ -67,7 +67,6 @@
         "@trezor/protocol": "workspace:*",
         "@trezor/utils": "workspace:*",
         "cross-fetch": "^4.0.0",
-        "long": "^5.2.0",
         "protobufjs": "7.4.0",
         "usb": "^2.14.0"
     },
