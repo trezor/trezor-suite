@@ -21,7 +21,7 @@ Package `@trezor/connect-common` is a public NPM package used as dependency of `
 
     See [#4262](https://github.com/trezor/trezor-suite/issues/4262) for explanation.
 
-1. Test it locally (at least by running `yarn build:libs` to rebuild connect files and `yarn suite:dev` to use/copy them).
+1. Test it locally by running `yarn suite:dev` and/or `yarn suite:dev:desktop`
 
 1. Freeze Suite. At this moment you are all good to _Freeze_ and forward to QA. They should be able to test Suite in its wholeness along with the new firmwares.
 

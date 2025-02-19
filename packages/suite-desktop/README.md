@@ -23,7 +23,7 @@ yarn workspace @trezor/suite-desktop dev
 Prerequisites:
 
 ```
-yarn && yarn build:libs
+yarn
 ```
 
 ### Linux
