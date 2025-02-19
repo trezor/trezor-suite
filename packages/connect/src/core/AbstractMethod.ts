@@ -1,6 +1,6 @@
 import { storage } from '@trezor/connect-common';
 import { Capability } from '@trezor/protobuf/src/messages';
-import { versionUtils } from '@trezor/utils';
+import { typedObjectKeys, versionUtils } from '@trezor/utils';
 
 import { ERRORS, NETWORK } from '../constants';
 import { config } from '../data/config';
@@ -189,7 +189,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
         // Determine the type based on the method name
         this.network = 'bitcoin';
-        (Object.keys(NETWORK.TYPES) as NETWORK.NetworkType[]).forEach(key => {
+        typedObjectKeys(NETWORK.TYPES).forEach(key => {
             if (this.name.startsWith(key)) {
                 this.network = key;
             }

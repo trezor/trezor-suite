@@ -1,4 +1,4 @@
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { FeeInfo, FeeLevel } from '../types';
 
@@ -57,7 +57,7 @@ export const getBitcoinFeeLevels = (coin: CoinsJsonData): FeeInfoWithLevels => {
     // and transform in to FeeLevel object
     const defaultFees = coin.default_fee_b;
     const shortcut = coin.shortcut.toLowerCase();
-    const keys = Object.keys(defaultFees) as unknown as (keyof CoinsJsonData['default_fee_b'])[];
+    const keys = typedObjectKeys(defaultFees);
     const levels = keys
         .sort((levelA, levelB) => defaultFees[levelB] - defaultFees[levelA])
         .map(level => {

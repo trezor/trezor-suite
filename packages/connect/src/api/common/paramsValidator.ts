@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
-import { versionUtils } from '@trezor/utils';
+import { typedObjectKeys, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../../constants';
 import { config } from '../../data/config';
@@ -106,7 +106,7 @@ export const getFirmwareRange = (
     currentRange: FirmwareRange,
 ) => {
     const range = JSON.parse(JSON.stringify(currentRange)) as FirmwareRange;
-    const models = Object.keys(range) as DeviceModelInternal[];
+    const models = typedObjectKeys(range);
     // set minimum required firmware from coins.json (coinInfo)
     if (coinInfo) {
         models.forEach(model => {

@@ -1,3 +1,5 @@
+import { typedObjectKeys } from '@trezor/utils';
+
 import { DeviceModelInternal, FirmwareRange } from '../../../exports';
 
 export const validateParams = [
@@ -213,30 +215,24 @@ export const getFirmwareRange = [
         description: 'range from coinInfo',
         config: EMPTY_CONFIG,
         params: ['signTransaction', DEFAULT_COIN_INFO, DEFAULT_RANGE],
-        result: (Object.keys(DEFAULT_RANGE) as DeviceModelInternal[]).reduce(
-            (acc, model: DeviceModelInternal) => {
-                acc[model] = {
-                    min: DEFAULT_COIN_INFO.support[model],
-                    max: '0',
-                };
+        result: typedObjectKeys(DEFAULT_RANGE).reduce((acc, model: DeviceModelInternal) => {
+            acc[model] = {
+                min: DEFAULT_COIN_INFO.support[model],
+                max: '0',
+            };
 
-                return acc;
-            },
-            {} as FirmwareRange,
-        ),
+            return acc;
+        }, {} as FirmwareRange),
     },
     {
         description: 'coinInfo without support',
         config: EMPTY_CONFIG,
         params: ['signTransaction', { shortcut: 'btc', type: 'bitcoin' }, DEFAULT_RANGE],
-        result: (Object.keys(DEFAULT_COIN_INFO.support) as DeviceModelInternal[]).reduce(
-            (acc, model) => {
-                acc[model] = { min: '0', max: '0' };
+        result: typedObjectKeys(DEFAULT_COIN_INFO.support).reduce((acc, model) => {
+            acc[model] = { min: '0', max: '0' };
 
-                return acc;
-            },
-            {} as FirmwareRange,
-        ),
+            return acc;
+        }, {} as FirmwareRange),
     },
     {
         description: 'coinInfo without T1B1 support',

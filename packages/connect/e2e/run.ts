@@ -9,12 +9,13 @@ import {
     Model,
     TrezorUserEnvLink,
 } from '@trezor/trezor-user-env-link';
+import { typedObjectKeys } from '@trezor/utils';
 
 import argv from './jest.config';
 
 const firmwareArg = process.env.TESTS_FIRMWARE;
 const firmwareUrl = process.env.TESTS_FIRMWARE_URL;
-const firmwareModel = process.env.TESTS_FIRMWARE_MODEL;
+const firmwareModel = process.env.TESTS_FIRMWARE_MODEL as Model;
 const firmwareBranch = process.env.TESTS_FIRMWARE_BRANCH;
 const firmwareBtcOnly = process.env.TESTS_FIRMWARE_BTC_ONLY === 'true';
 
@@ -27,8 +28,8 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
         availableFirmwares[model].find(fw => !fw.replace('-arm', '').includes('-'));
 
     const model =
-        firmwareModel && Object.keys(availableFirmwares).includes(firmwareModel)
-            ? (firmwareModel as Model)
+        firmwareModel && typedObjectKeys(availableFirmwares).includes(firmwareModel)
+            ? firmwareModel
             : 'T2T1';
     const latest = getLatestFirmware(model);
 
