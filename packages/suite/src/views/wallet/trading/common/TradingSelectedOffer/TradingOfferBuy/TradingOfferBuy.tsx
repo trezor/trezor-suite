@@ -15,7 +15,10 @@ export const TradingOfferBuy = ({
     paymentMethodName,
 }: TradingOfferBuyProps) => {
     const cryptoId = selectedQuote?.receiveCurrency;
-    const tradingVerifyAccount = useTradingVerifyAccount({ cryptoId });
+    const tradingVerifyAccount = useTradingVerifyAccount({
+        cryptoId,
+        nonSuiteAccount: !selectedQuote.tags?.includes('noExternalAddress'),
+    });
 
     return (
         <>
