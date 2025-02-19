@@ -20,7 +20,7 @@
     "dependencies": {
         "@everstake/wallet-sdk": "1.0.10",
         "@floating-ui/react": "^0.27.5",
-        "@formatjs/intl": "2.10.0",
+        "@formatjs/intl": "3.1.4",
         "@hookform/resolvers": "3.10.0",
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.6.0",
