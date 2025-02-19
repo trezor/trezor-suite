@@ -10,7 +10,7 @@
  */
 
 import { TimerId } from '@trezor/type-utils';
-import { Deferred, TypedEmitter, createDeferred } from '@trezor/utils';
+import { Deferred, TypedEmitter, createDeferred, typedObjectKeys } from '@trezor/utils';
 
 import type {
     AcquireDoneRequest,
@@ -26,10 +26,6 @@ import type {
 import * as ERRORS from '../errors';
 import type { Descriptor, PathInternal, Success } from '../types';
 import { PathPublic, Session } from '../types';
-
-function typedObjectKeys<T extends Record<any, any>>(obj: T): Array<keyof T> {
-    return Object.keys(obj) as Array<keyof T>;
-}
 
 type DescriptorsDict = Record<PathInternal, Descriptor>;
 

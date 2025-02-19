@@ -19,6 +19,7 @@ import {
     getSynchronize,
     isNotUndefined,
     resolveAfter,
+    typedObjectKeys,
 } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
@@ -26,7 +27,6 @@ import { DEVICE, TransportError, TransportInfo } from '../events';
 import { Device } from './Device';
 import { getBridgeInfo } from '../data/transportInfo';
 import { ConnectSettings, DeviceUniquePath, StaticSessionId } from '../types';
-import { typedObjectKeys } from '../types/utils';
 import { initLog } from '../utils/debug';
 
 const createAuthPenaltyManager = (priority: number) => {
