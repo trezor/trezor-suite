@@ -138,24 +138,40 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                         }
                     >
                         <ButtonGroup size="small">
-                            <Button
-                                onClick={() => fileInputElement?.current?.click()}
-                                isDisabled={isDeviceLocked || !isSupportedHomescreen}
-                                variant="primary"
-                                data-testid="@settings/device/homescreen-upload"
-                                key="@settings/device/homescreen-upload"
+                            <Tooltip
+                                content={
+                                    isDeviceLocked && (
+                                        <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                    )
+                                }
                             >
-                                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
-                            </Button>
-                            <Button
-                                onClick={openGallery}
-                                isDisabled={isDeviceLocked || !isSupportedHomescreen}
-                                data-testid="@settings/device/homescreen-gallery"
-                                key="@settings/device/homescreen-gallery"
-                                variant="primary"
+                                <Button
+                                    onClick={() => fileInputElement?.current?.click()}
+                                    isDisabled={isDeviceLocked || !isSupportedHomescreen}
+                                    variant="primary"
+                                    data-testid="@settings/device/homescreen-upload"
+                                    key="@settings/device/homescreen-upload"
+                                >
+                                    <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE" />
+                                </Button>
+                            </Tooltip>
+                            <Tooltip
+                                content={
+                                    isDeviceLocked && (
+                                        <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                    )
+                                }
                             >
-                                <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
-                            </Button>
+                                <Button
+                                    onClick={openGallery}
+                                    isDisabled={isDeviceLocked || !isSupportedHomescreen}
+                                    data-testid="@settings/device/homescreen-gallery"
+                                    key="@settings/device/homescreen-gallery"
+                                    variant="primary"
+                                >
+                                    <Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY" />
+                                </Button>
+                            </Tooltip>
                         </ButtonGroup>
                     </Tooltip>
                 </ActionColumn>
@@ -179,6 +195,11 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             variant="primary"
                             onClick={resetUpload}
                             isDisabled={isDeviceLocked}
+                            tooltipContent={
+                                isDeviceLocked && (
+                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                )
+                            }
                         >
                             <Translation id="TR_DROP_IMAGE" />
                         </ActionButton>
@@ -220,6 +241,11 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             variant="primary"
                             onClick={resetUpload}
                             isDisabled={isDeviceLocked}
+                            tooltipContent={
+                                isDeviceLocked && (
+                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                )
+                            }
                         >
                             <Translation id="TR_DROP_IMAGE" />
                         </ActionButton>

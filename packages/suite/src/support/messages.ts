@@ -2350,10 +2350,6 @@ export default defineMessages({
         defaultMessage: 'Wallet backup failed. Wipe your Trezor and start the setup process again.',
         id: 'TR_FAILED_BACKUP',
     },
-    TR_BACKUP_SUCCESSFUL: {
-        defaultMessage: 'Wallet backup successful',
-        id: 'TR_BACKUP_SUCCESSFUL',
-    },
     TR_FIAT_RATES_NOT_AVAILABLE: {
         defaultMessage: 'Rate not available.',
         id: 'TR_FIAT_RATES_NOT_AVAILABLE',

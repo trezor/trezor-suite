@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 
-import { ActionColumn, TextColumn } from 'src/components/suite';
+import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { useDevice, usePasswords } from 'src/hooks/suite';
 import { getNextId } from 'src/utils/suite/passwords';
 
@@ -60,9 +60,17 @@ export const PasswordManager = () => {
                     description="Re-implementation of former Trezor Password Manager webextension"
                 />
                 <ActionColumn>
-                    <Button onClick={connect} isDisabled={isDeviceLocked}>
-                        Connect to Dropbox
-                    </Button>
+                    <Tooltip
+                        content={
+                            isDeviceLocked && (
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            )
+                        }
+                    >
+                        <Button onClick={connect} isDisabled={isDeviceLocked}>
+                            Connect to Dropbox
+                        </Button>
+                    </Tooltip>
                     {/* TODO: connect to drive */}
                 </ActionColumn>
             </Section>

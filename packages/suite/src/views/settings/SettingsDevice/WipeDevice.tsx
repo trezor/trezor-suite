@@ -42,6 +42,11 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
                     variant="destructive"
                     isDisabled={isDeviceLocked}
                     data-testid="@settings/device/open-wipe-modal-button"
+                    tooltipContent={
+                        isDeviceLocked && (
+                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                        )
+                    }
                 >
                     <Translation id={headingTranslation} />
                 </ActionButton>

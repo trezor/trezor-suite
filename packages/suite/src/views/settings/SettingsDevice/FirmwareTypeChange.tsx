@@ -90,6 +90,11 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                         onClick={handleAction}
                         data-testid="@settings/device/switch-fw-type-button"
                         isDisabled={isDeviceLocked}
+                        tooltipContent={
+                            isDeviceLocked && (
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            )
+                        }
                     >
                         <Translation
                             id={actionButtonId}

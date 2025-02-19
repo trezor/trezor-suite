@@ -1,6 +1,6 @@
 import { passwordMismatchResetThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
-import { Button, Column, H3, Text } from '@trezor/components';
+import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import {
@@ -41,15 +41,23 @@ export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) 
                         <Translation id="TR_PASSPHRASE_MISMATCH_DESCRIPTION" />
                     </Text>
                 </Column>
-                <Button
-                    variant="primary"
-                    onClick={onStartOver}
-                    isDisabled={isDeviceLocked}
-                    isFullWidth
-                    data-testid="@passphrase-mismatch/start-over"
+                <Tooltip
+                    content={
+                        isDeviceLocked && (
+                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                        )
+                    }
                 >
-                    <Translation id="TR_PASSPHRASE_MISMATCH_START_OVER" />
-                </Button>
+                    <Button
+                        variant="primary"
+                        onClick={onStartOver}
+                        isDisabled={isDeviceLocked}
+                        isFullWidth
+                        data-testid="@passphrase-mismatch/start-over"
+                    >
+                        <Translation id="TR_PASSPHRASE_MISMATCH_START_OVER" />
+                    </Button>
+                </Tooltip>
             </CardWithDevice>
         </SwitchDeviceModal>
     );

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { Button, H3, NewModal, Paragraph } from '@trezor/components';
+import { Button, H3, NewModal, Paragraph, Tooltip } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { onCancel } from 'src/actions/suite/modalActions';
@@ -74,13 +74,21 @@ export const ConfirmUnverifiedModal = ({
                         <Translation id={action.title} />
                     </Button>
                     {isPassphraseRequired && (
-                        <Button
-                            variant="primary"
-                            onClick={enablePassphraseAndContinue}
-                            isDisabled={isDeviceLocked}
+                        <Tooltip
+                            content={
+                                isDeviceLocked && (
+                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                )
+                            }
                         >
-                            <Translation id="TR_ACCOUNT_ENABLE_PASSPHRASE" />
-                        </Button>
+                            <Button
+                                variant="primary"
+                                onClick={enablePassphraseAndContinue}
+                                isDisabled={isDeviceLocked}
+                            >
+                                <Translation id="TR_ACCOUNT_ENABLE_PASSPHRASE" />
+                            </Button>
+                        </Tooltip>
                     )}
                     <Button onClick={handleClose} variant="tertiary">
                         <Translation id="TR_DISMISS" />

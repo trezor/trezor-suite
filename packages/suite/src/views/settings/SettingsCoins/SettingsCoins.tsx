@@ -158,9 +158,7 @@ export const SettingsCoins = () => {
                         <DiscoveryButtonWrapper>
                             <Tooltip
                                 content={
-                                    isDeviceLocked ? (
-                                        <Translation id="TR_CONNECT_YOUR_DEVICE" />
-                                    ) : null
+                                    isDeviceLocked && <Translation id="TR_CONNECT_YOUR_DEVICE" />
                                 }
                             >
                                 <Button onClick={startDiscovery} isDisabled={isDeviceLocked}>

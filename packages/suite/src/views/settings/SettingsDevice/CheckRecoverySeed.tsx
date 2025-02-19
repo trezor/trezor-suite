@@ -19,6 +19,8 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
 
     const handleClick = () => dispatch(goto('recovery-index', { params: { cancelable: true } }));
 
+    if (needsBackup) return null;
+
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.CheckRecoverySeed}>
             <TextColumn
@@ -30,8 +32,13 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
                 <ActionButton
                     data-testid="@settings/device/check-seed-button"
                     onClick={handleClick}
-                    isDisabled={isDeviceLocked || needsBackup}
+                    isDisabled={isDeviceLocked}
                     variant="primary"
+                    tooltipContent={
+                        isDeviceLocked && (
+                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                        )
+                    }
                 >
                     <Translation id="TR_CHECK_SEED" />
                 </ActionButton>

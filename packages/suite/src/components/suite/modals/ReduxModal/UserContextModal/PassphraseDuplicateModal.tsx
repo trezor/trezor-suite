@@ -1,5 +1,5 @@
 import { authorizeDeviceThunk, switchDuplicatedDevice } from '@suite-common/wallet-core';
-import { Button, Column, H3, Text } from '@trezor/components';
+import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -33,22 +33,38 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
                         <Translation id="TR_WALLET_DUPLICATE_DESC" />
                     </Text>
                     <Column gap={spacings.xs} margin={{ top: spacings.lg }} alignItems="center">
-                        <Button
-                            variant="primary"
-                            onClick={handleSwitchDevice}
-                            isDisabled={isDeviceLocked}
-                            isFullWidth
+                        <Tooltip
+                            content={
+                                isDeviceLocked && (
+                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                )
+                            }
                         >
-                            <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
-                        </Button>
-                        <Button
-                            variant="tertiary"
-                            onClick={handleAuthorizeDevice}
-                            isDisabled={isDeviceLocked}
-                            isFullWidth
+                            <Button
+                                variant="primary"
+                                onClick={handleSwitchDevice}
+                                isDisabled={isDeviceLocked}
+                                isFullWidth
+                            >
+                                <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
+                            </Button>
+                        </Tooltip>
+                        <Tooltip
+                            content={
+                                isDeviceLocked && (
+                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                )
+                            }
                         >
-                            <Translation id="TR_WALLET_DUPLICATE_RETRY" />
-                        </Button>
+                            <Button
+                                variant="tertiary"
+                                onClick={handleAuthorizeDevice}
+                                isDisabled={isDeviceLocked}
+                                isFullWidth
+                            >
+                                <Translation id="TR_WALLET_DUPLICATE_RETRY" />
+                            </Button>
+                        </Tooltip>
                     </Column>
                 </Column>
             </CardWithDevice>
