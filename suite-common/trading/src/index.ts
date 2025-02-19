@@ -4,6 +4,7 @@ export * from './regional';
 export * from './utils';
 export * from './constants';
 export * from './reducers/tradingReducer';
+export type { TradingBuyState } from './reducers/buyReducer';
 export * from './middlewares/tradingMiddleware';
 export * from './actions/tradingActions';
 export * from './actions/buyActions';

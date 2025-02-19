@@ -2,6 +2,7 @@ import { Middleware, StoreEnhancer, configureStore } from '@reduxjs/toolkit';
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 import { logger } from 'redux-logger';
 
+import { tradingMiddleware } from '@suite-common/trading';
 import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
 import { blockchainMiddleware } from '@suite-native/blockchain';
 import { prepareButtonRequestMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
@@ -25,6 +26,7 @@ const middlewares: Middleware[] = [
     prepareButtonRequestMiddleware(extraDependencies),
     prepareDiscoveryMiddleware(extraDependencies),
     sendFormMiddleware,
+    tradingMiddleware,
 ];
 
 const enhancers: Array<StoreEnhancer<any, any>> = [];

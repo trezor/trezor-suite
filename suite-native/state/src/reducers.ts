@@ -29,6 +29,7 @@ import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/fe
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
 import { sendFormSlice } from '@suite-native/module-send';
+import { tradingSlice } from '@suite-native/module-trading';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
     deriveAccountTypeFromPaymentType,
@@ -59,6 +60,7 @@ const deviceReducer = prepareDeviceReducer(extraDependencies);
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 const sendFormReducer = sendFormSlice.prepareReducer(extraDependencies);
+const tradingReducer = tradingSlice.prepareReducer(extraDependencies);
 const stakeReducer = prepareStakeReducer(extraDependencies);
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 
@@ -82,6 +84,7 @@ export const prepareRootReducers = async () => {
         send: sendFormReducer,
         fees: feesReducer,
         stake: stakeReducer,
+        trading: tradingReducer,
     });
 
     const walletPersistedReducer = await preparePersistReducer({

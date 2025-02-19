@@ -23,6 +23,9 @@
             "path": "../../suite-common/token-definitions"
         },
         {
+            "path": "../../suite-common/trading"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../blockchain" },
@@ -34,6 +37,7 @@
         { "path": "../graph" },
         { "path": "../message-system" },
         { "path": "../module-send" },
+        { "path": "../module-trading" },
         { "path": "../settings" },
         { "path": "../storage" },
         {
