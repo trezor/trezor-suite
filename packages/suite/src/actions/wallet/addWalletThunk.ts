@@ -7,13 +7,11 @@ import {
     deviceActions,
     selectDeviceThunk,
     selectDevices,
-    selectDiscoveryByDeviceState,
 } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 
 import { getBackgroundRoute } from 'src/utils/suite/router';
 
-import { getDiscoveryStatus } from '../../utils/wallet/getDiscoveryStatus';
 import { goto } from '../suite/routerActions';
 
 export const redirectAfterWalletSelectedThunk = createThunk<void, void, void>(
@@ -41,13 +39,6 @@ export const addWalletThunk = createThunk<
     { walletType: WalletType; device: TrezorDevice },
     void
 >(`${DEVICE_MODULE_PREFIX}/addWalletThunk`, ({ walletType, device }, { dispatch, getState }) => {
-    const discovery = selectDiscoveryByDeviceState(getState(), device?.state);
-    const discoveryStatus = getDiscoveryStatus({ device, discovery });
-
-    if (discoveryStatus !== undefined && discoveryStatus.status === 'loading') {
-        return;
-    }
-
     const addDeviceInstance = async () => {
         await dispatch(
             createDeviceInstanceThunk({
