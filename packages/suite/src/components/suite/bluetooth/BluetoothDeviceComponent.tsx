@@ -3,10 +3,10 @@ import { DeviceModelInternal } from '@trezor/connect';
 import { models } from '@trezor/connect/src/data/models'; // Todo: solve this import issue
 import { RotateDeviceImage } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
-import { BluetoothDevice as BluetoothDeviceType } from '@trezor/transport-bluetooth';
+import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 type BluetoothDeviceProps = {
-    device: BluetoothDeviceType;
+    device: BluetoothDevice;
     flex?: FlexProps['flex'];
     margin?: FlexProps['margin'];
 };
@@ -18,7 +18,7 @@ const getModelEnumFromBytesUtil = (_id: number) => DeviceModelInternal.T3W1;
 // discuss final format of it
 const getColorEnumFromVariantBytesUtil = (variant: number) => variant;
 
-export const BluetoothDevice = ({ device, flex, margin }: BluetoothDeviceProps) => {
+export const BluetoothDeviceComponent = ({ device, flex, margin }: BluetoothDeviceProps) => {
     const model = getModelEnumFromBytesUtil(device.data[2]);
     const color = getColorEnumFromVariantBytesUtil(device.data[1]);
     const colorName = models[model].colors[color.toString()];

@@ -1,7 +1,6 @@
+import { BLUETOOTH_PREFIX } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
-
-import { BLUETOOTH_PREFIX } from './bluetoothActions';
 
 type ThunkResponse = ReturnType<typeof bluetoothIpc.connectDevice>;
 

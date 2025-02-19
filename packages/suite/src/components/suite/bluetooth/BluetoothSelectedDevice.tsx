@@ -1,9 +1,10 @@
+import { BluetoothDeviceState } from '@suite-common/bluetooth';
 import { Card, ElevationContext, Icon, Row, Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
-import { BluetoothDevice } from './BluetoothDevice';
+import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { BluetoothTips } from './BluetoothTips';
-import { BluetoothDeviceState } from '../../../reducers/bluetooth/bluetoothReducer';
 
 const PairedComponent = () => (
     <Row gap={spacings.xs} alignItems="center">
@@ -21,24 +22,24 @@ const PairingComponent = () => (
 );
 
 export type OkComponentProps = {
-    device: BluetoothDeviceState;
+    device: BluetoothDeviceState<BluetoothDevice>;
 };
 
 const OkComponent = ({ device }: OkComponentProps) => (
     <Row gap={spacings.md} alignItems="center" justifyContent="stretch">
-        <BluetoothDevice device={device.device} flex="1" />
+        <BluetoothDeviceComponent device={device.device} flex="1" />
 
-        {device.status.type === 'connected' ? <PairedComponent /> : <PairingComponent />}
+        {device?.status?.type === 'connected' ? <PairedComponent /> : <PairingComponent />}
     </Row>
 );
 
 export type ErrorComponentProps = {
-    device: BluetoothDeviceState;
+    device: BluetoothDeviceState<BluetoothDevice>;
     onReScanClick: () => void;
 };
 
 const ErrorComponent = ({ device, onReScanClick }: ErrorComponentProps) => {
-    if (device.status.type !== 'error') {
+    if (device?.status?.type !== 'error') {
         return null;
     }
 
@@ -46,7 +47,7 @@ const ErrorComponent = ({ device, onReScanClick }: ErrorComponentProps) => {
 };
 
 export type BluetoothSelectedDeviceProps = {
-    device: BluetoothDeviceState;
+    device: BluetoothDeviceState<BluetoothDevice>;
     onReScanClick: () => void;
 };
 
@@ -55,7 +56,7 @@ export const BluetoothSelectedDevice = ({
     onReScanClick,
 }: BluetoothSelectedDeviceProps) => (
     <ElevationContext baseElevation={0}>
-        {device.status.type === 'error' ? (
+        {device?.status?.type === 'error' ? (
             <ErrorComponent onReScanClick={onReScanClick} device={device} />
         ) : (
             <Card>

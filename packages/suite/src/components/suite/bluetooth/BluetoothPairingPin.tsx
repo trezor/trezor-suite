@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 import { Card, Link, NewModal, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
-import { BluetoothDevice as BluetoothDeviceType } from '@trezor/transport-bluetooth';
+import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
-import { BluetoothDevice } from './BluetoothDevice';
+import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 
 const Pin = styled.div`
     display: flex;
@@ -18,7 +18,7 @@ const Pin = styled.div`
 type BluetoothPairingPinProps = {
     onCancel: () => void;
     pairingPin?: string;
-    device: BluetoothDeviceType;
+    device: BluetoothDevice;
 };
 
 export const BluetoothPairingPin = ({ onCancel, pairingPin, device }: BluetoothPairingPinProps) => (
@@ -40,7 +40,7 @@ export const BluetoothPairingPin = ({ onCancel, pairingPin, device }: BluetoothP
                 margin={{ vertical: spacings.xxl, horizontal: spacings.xxl }}
             >
                 <Pin>{pairingPin}</Pin>
-                <BluetoothDevice
+                <BluetoothDeviceComponent
                     device={device}
                     margin={{ vertical: spacings.xxs, horizontal: spacings.xxs }}
                 />

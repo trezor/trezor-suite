@@ -1,13 +1,15 @@
-import { createThunk } from '@suite-common/redux-utils/';
-import { DeviceConnectionStatus, bluetoothIpc } from '@trezor/transport-bluetooth';
-import { Without } from '@trezor/type-utils';
-
 import {
     BLUETOOTH_PREFIX,
     bluetoothAdapterEventAction,
     bluetoothConnectDeviceEventAction,
-    bluetoothDeviceListUpdate,
-} from './bluetoothActions';
+    bluetoothKnownDevicesUpdateAction,
+    bluetoothNearbyDevicesUpdateAction,
+    selectKnownDevices,
+} from '@suite-common/bluetooth';
+import { createThunk } from '@suite-common/redux-utils/';
+import { BluetoothDevice, DeviceConnectionStatus, bluetoothIpc } from '@trezor/transport-bluetooth';
+import { Without } from '@trezor/type-utils';
+
 import { selectSuiteFlags } from '../../reducers/suite/suiteReducer';
 
 type DeviceConnectionStatusWithOptionalId = Without<DeviceConnectionStatus, 'id'> & {
@@ -28,9 +30,27 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             dispatch(bluetoothAdapterEventAction({ isPowered }));
         });
 
-        bluetoothIpc.on('device-list-update', devices => {
-            console.warn('device-list-update', devices);
-            dispatch(bluetoothDeviceListUpdate({ devices }));
+        bluetoothIpc.on('device-list-update', nearbyDevices => {
+            console.warn('device-list-update', nearbyDevices);
+
+            const knownDevices = selectKnownDevices<BluetoothDevice>(getState());
+
+            console.log('nearbyDevices', nearbyDevices);
+
+            // update pairedDevices, id is changed after pairing (linux)
+            const remappedKnownDevices = knownDevices.map(knownDevice => {
+                // find devices with the same address but different id
+                const changed = nearbyDevices.find(
+                    nearbyDevice =>
+                        nearbyDevice.address === knownDevice.address &&
+                        nearbyDevice.id !== knownDevice.id,
+                );
+
+                return changed ? { ...knownDevice, id: changed.id } : knownDevice;
+            });
+
+            dispatch(bluetoothKnownDevicesUpdateAction({ knownDevices: remappedKnownDevices }));
+            dispatch(bluetoothNearbyDevicesUpdateAction({ nearbyDevices }));
         });
 
         bluetoothIpc.on('device-connection-status', connectionStatus => {
@@ -49,7 +69,7 @@ export const initBluetoothThunk = createThunk<void, void, void>(
         });
 
         // TODO: this should be called after trezor/connect init?
-        const knownDevices = getState().bluetooth.pairedDevices;
+        const knownDevices = selectKnownDevices<BluetoothDevice>(getState());
         await bluetoothIpc.init({ knownDevices });
     },
 );

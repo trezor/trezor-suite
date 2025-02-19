@@ -1,12 +1,14 @@
 import { useState } from 'react';
 
+import { bluetoothRemoveKnownDeviceAction } from '@suite-common/bluetooth';
 import { Button } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const BluetoothEraseBonds = () => {
+    const dispatch = useDispatch();
     const device = useSelector(state => state.device.selectedDevice);
 
     const [inProgress, setInProgress] = useState(false);
@@ -15,6 +17,11 @@ export const BluetoothEraseBonds = () => {
         setInProgress(true);
         // TODO: missing button request in FW
         const result = await TrezorConnect.eraseBonds({ device });
+
+        if (device?.bluetoothProps?.id !== undefined) {
+            dispatch(bluetoothRemoveKnownDeviceAction({ id: device.bluetoothProps.id }));
+        }
+
         console.warn('Erase bonds!', result);
         setInProgress(false);
     };
