@@ -5,6 +5,7 @@ import {
     IconName as IconNameDeprecated,
     icons as iconsDeprecated,
 } from '@suite-common/icons-deprecated';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { Icon as IconComponent, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -15,8 +16,8 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-const iconNames = new Set(Object.keys(icons) as IconName[]);
-const iconsDeprecatedNames = new Set(Object.keys(iconsDeprecated) as IconNameDeprecated[]);
+const iconNames = new Set(typedObjectKeys(icons));
+const iconsDeprecatedNames = new Set(typedObjectKeys(iconsDeprecated));
 const allIcons = new Set(
     [...iconNames, ...iconsDeprecatedNames].sort((a, b) => a.localeCompare(b)),
 );

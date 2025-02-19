@@ -1,7 +1,9 @@
 import { Meta, StoryFn } from '@storybook/react';
 import styled from 'styled-components';
 
-import { Flag, FlagType } from './Flag';
+import { typedObjectKeys } from '@trezor/utils';
+
+import { Flag } from './Flag';
 import { FLAGS } from './flags';
 
 const Wrapper = styled.div`
@@ -38,7 +40,7 @@ const meta: Meta = {
 export default meta;
 
 export const All: StoryFn = () => {
-    const flags = Object.keys(FLAGS) as FlagType[];
+    const flags = typedObjectKeys(FLAGS);
 
     return (
         <Wrapper>
