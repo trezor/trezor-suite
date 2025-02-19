@@ -241,7 +241,7 @@ export const useUnstakeEthForm = ({
             setValue(CRYPTO_INPUT, undefined, { shouldDirty: true });
             clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
 
-            const amount = new BigNumber(account.formattedBalance)
+            const amount = new BigNumber(autocompoundBalance)
                 .dividedBy(divisor)
                 .decimalPlaces(network.decimals)
                 .toString();
@@ -249,7 +249,7 @@ export const useUnstakeEthForm = ({
             setValue(CRYPTO_INPUT, amount, { shouldDirty: true, shouldValidate: true });
             await onCryptoAmountChange(amount);
         },
-        [account.formattedBalance, clearErrors, network.decimals, onCryptoAmountChange, setValue],
+        [autocompoundBalance, clearErrors, network.decimals, onCryptoAmountChange, setValue],
     );
 
     const clearForm = useCallback(async () => {
