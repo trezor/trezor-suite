@@ -109,10 +109,13 @@ export const TransactionReviewModalContent = ({
         precomposedTx,
     });
 
-    // for bump fee we have to analyze tx data which are in outputs[0]
+    // for bump fee we have to analyze tx data which are in outputs[0], for legacy in outputs[1]
     const stakeType = isStakeForm(precomposedForm)
         ? precomposedForm.stakeType
-        : getTxStakeNameByDataHex(outputs[0]?.value);
+        : outputs
+              .filter(output => output.type === 'data')
+              .map(output => getTxStakeNameByDataHex(output?.value))
+              .find(type => type) || null;
 
     const onCancel = () => {
         if (isRbfConfirmedError) {

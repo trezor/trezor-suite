@@ -179,6 +179,16 @@ const getOutputLines = (
                 },
             ];
         case 'regular_legacy':
+            if (stakeType) {
+                return [
+                    {
+                        id: 'data',
+                        type: 'default',
+                        value,
+                    },
+                ];
+            }
+
             return [
                 {
                     id: type,
@@ -258,7 +268,7 @@ export const TransactionReviewOutput = ({
             return {
                 ...line,
                 type:
-                    isTrading || relevantAccounts.length > 0
+                    isTrading || stakeType || relevantAccounts.length > 0
                         ? ('safe-address' as OutputElementLine['type'])
                         : line.type,
             };
