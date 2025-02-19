@@ -22,7 +22,7 @@ module.exports = {
     staticDirs: ['../public', { from: '../../suite-data/files', to: '/static' }],
 
     framework: {
-        name: getAbsolutePath('@storybook/nextjs'),
+        name: getAbsolutePath('@storybook/react-webpack5'),
         options: {},
     },
 
