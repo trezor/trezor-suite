@@ -14,9 +14,10 @@ export const SendAccountsScreen = ({
 }: StackProps<SendStackParamList, SendStackRoutes.SendAccounts>) => {
     const { translate } = useTranslate();
 
-    const navigateToSendFormScreen: OnSelectAccount = ({ account }) =>
+    const navigateToSendFormScreen: OnSelectAccount = ({ account, tokenAddress }) =>
         navigation.navigate(SendStackRoutes.SendOutputs, {
             accountKey: account.key,
+            tokenContract: tokenAddress,
         });
 
     return (
