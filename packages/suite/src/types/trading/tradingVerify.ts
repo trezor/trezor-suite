@@ -21,6 +21,7 @@ export interface TradingVerifyFormAccountOptionProps {
 
 export interface TradingVerifyAccountProps {
     cryptoId: CryptoId | undefined;
+    nonSuiteAccount: boolean;
 }
 
 export interface TradingGetTranslationIdsProps {

@@ -29,6 +29,7 @@ const getSelectAccountOptions = (
     suiteReceiveAccounts: Account[] | undefined,
     device: TrezorDevice | undefined,
     isSupportedNetwork: boolean,
+    nonSuiteAccount: boolean,
 ): TradingVerifyFormAccountOptionProps[] => {
     const selectAccountOptions: TradingVerifyFormAccountOptionProps[] = [];
 
@@ -41,7 +42,9 @@ const getSelectAccountOptions = (
         selectAccountOptions.push({ type: 'ADD_SUITE' });
     }
 
-    selectAccountOptions.push({ type: 'NON_SUITE' });
+    if (nonSuiteAccount) {
+        selectAccountOptions.push({ type: 'NON_SUITE' });
+    }
 
     return selectAccountOptions;
 };
@@ -62,6 +65,7 @@ const getTranslationIds = (type: TradingAccountType | undefined): TradingGetTran
 
 const useTradingVerifyAccount = ({
     cryptoId,
+    nonSuiteAccount,
 }: TradingVerifyAccountProps): TradingVerifyAccountReturnProps => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const accounts = useSelector(state => state.wallet.accounts);
@@ -101,8 +105,14 @@ const useTradingVerifyAccount = ({
     }, [accounts, cryptoId, device, isDebug, symbol]);
 
     const selectAccountOptions = useMemo(
-        () => getSelectAccountOptions(suiteReceiveAccounts, device, isSupportedNetwork),
-        [device, suiteReceiveAccounts, isSupportedNetwork],
+        () =>
+            getSelectAccountOptions(
+                suiteReceiveAccounts,
+                device,
+                isSupportedNetwork,
+                nonSuiteAccount,
+            ),
+        [device, suiteReceiveAccounts, isSupportedNetwork, nonSuiteAccount],
     );
     const preselectedAccount = useMemo(
         () =>

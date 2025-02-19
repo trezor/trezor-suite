@@ -26,7 +26,10 @@ export const TradingOfferExchange = ({
 }: TradingOfferExchangeProps) => {
     const { exchangeStep } = useTradingFormContext<TradingExchangeType>();
     const cryptoId = selectedQuote?.receive;
-    const tradingVerifyAccount = useTradingVerifyAccount({ cryptoId });
+    const tradingVerifyAccount = useTradingVerifyAccount({
+        cryptoId,
+        nonSuiteAccount: !selectedQuote.tags?.includes('noExternalAddress'),
+    });
 
     const steps: TradingSelectedOfferStepperItemProps[] = [
         {
