@@ -96,7 +96,7 @@ export const LoggedOutSidebar = () => {
                                     data-testid="@suite/menu/settings"
                                 />
                             </Nav>
-                            <QuickActions isSidebarCollapsed />
+                            <QuickActions hideUpdateStatusBar isSidebarCollapsed />
                         </Column>
                     </TrafficLightOffset>
                 </WelcomeNavColumn>
