@@ -7,6 +7,7 @@ import { FeeLevel } from '@trezor/connect';
 
 import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '../types';
 import { TradingBuyState, buyInitialState, tradingBuyReducer } from './buyReducer';
+import { TRADING_PREFIX } from '../constants';
 
 export interface TradingComposedTransactionInfo {
     composed?: Pick<
@@ -76,7 +77,7 @@ export const initialState: TradingState = {
 };
 
 export const tradingSlice = createSliceWithExtraDeps({
-    name: 'trading-common',
+    name: TRADING_PREFIX,
     initialState,
     reducers: {
         saveInfo(state, action: PayloadAction<InfoResponse>) {

@@ -7,6 +7,7 @@ import type {
     CryptoId,
 } from 'invity-api';
 
+import { TRADING_BUY_PREFIX } from '../constants';
 import { AmountLimitProps } from '../utils/buy/buyUtils';
 
 export interface BuyInfo {
@@ -42,7 +43,7 @@ export const buyInitialState: TradingBuyState = {
 };
 
 export const tradingBuySlice = createSlice({
-    name: 'trading-buy',
+    name: TRADING_BUY_PREFIX,
     initialState: buyInitialState,
     reducers: {
         saveBuyInfo(state, action: PayloadAction<BuyInfo>) {
