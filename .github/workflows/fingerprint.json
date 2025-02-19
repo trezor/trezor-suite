@@ -1,0 +1,1194 @@
+[
+    {
+        "op": "changed",
+        "beforeSource": {
+            "type": "contents",
+            "id": "expoAutolinkingConfig:android",
+            "contents": {
+                "extraDependencies": [],
+                "modules": [
+                    {
+                        "packageName": "@trezor/react-native-usb",
+                        "packageVersion": "1.0.0",
+                        "projects": [
+                            {
+                                "name": "trezor-react-native-usb",
+                                "sourceDir": "../../packages/react-native-usb/android"
+                            }
+                        ],
+                        "modules": ["io.trezor.rnusb.ReactNativeUsbModule"]
+                    },
+                    {
+                        "packageName": "expo",
+                        "packageVersion": "52.0.11",
+                        "projects": [
+                            {
+                                "name": "expo",
+                                "sourceDir": "../../node_modules/expo/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.fetch.ExpoFetchModule"]
+                    },
+                    {
+                        "packageName": "expo-asset",
+                        "packageVersion": "11.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-asset",
+                                "sourceDir": "../../node_modules/expo-asset/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.asset.AssetModule"]
+                    },
+                    {
+                        "packageName": "expo-camera",
+                        "packageVersion": "16.0.4",
+                        "projects": [
+                            {
+                                "name": "expo-camera",
+                                "sourceDir": "../../node_modules/expo-camera/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.camera.CameraViewModule"],
+                        "aarProjects": [
+                            {
+                                "name": "expo-camera$cameraview-aar",
+                                "aarFilePath": "/home/runner/work/trezor-suite/trezor-suite/node_modules/expo-camera/android/libs/cameraview-1.0.0.aar",
+                                "projectDir": "/home/runner/work/trezor-suite/trezor-suite/node_modules/expo-camera/android/build/expo-camera$cameraview-aar"
+                            }
+                        ]
+                    },
+                    {
+                        "packageName": "expo-clipboard",
+                        "packageVersion": "7.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-clipboard",
+                                "sourceDir": "../../node_modules/expo-clipboard/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.clipboard.ClipboardModule"]
+                    },
+                    {
+                        "packageName": "expo-constants",
+                        "packageVersion": "17.0.5",
+                        "projects": [
+                            {
+                                "name": "expo-constants",
+                                "sourceDir": "../../node_modules/expo-constants/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.constants.ConstantsModule"]
+                    },
+                    {
+                        "packageName": "expo-crypto",
+                        "packageVersion": "14.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-crypto",
+                                "sourceDir": "../../node_modules/expo-crypto/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.crypto.CryptoModule"]
+                    },
+                    {
+                        "packageName": "expo-dev-client",
+                        "packageVersion": "5.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-dev-client",
+                                "sourceDir": "../../node_modules/expo-dev-client/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-dev-launcher",
+                        "packageVersion": "5.0.13",
+                        "projects": [
+                            {
+                                "name": "expo-dev-launcher",
+                                "sourceDir": "../../node_modules/expo-dev-launcher/android"
+                            }
+                        ],
+                        "plugins": [
+                            {
+                                "id": "expo-dev-launcher-gradle-plugin",
+                                "group": "expo.modules",
+                                "sourceDir": "../../node_modules/expo-dev-launcher/expo-dev-launcher-gradle-plugin"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-dev-menu",
+                        "packageVersion": "6.0.8",
+                        "projects": [
+                            {
+                                "name": "expo-dev-menu",
+                                "sourceDir": "../../node_modules/expo-dev-menu/android"
+                            }
+                        ],
+                        "modules": [
+                            "expo.modules.devmenu.modules.DevMenuModule",
+                            "expo.modules.devmenu.modules.DevMenuPreferences"
+                        ]
+                    },
+                    {
+                        "packageName": "expo-dev-menu-interface",
+                        "packageVersion": "1.9.1",
+                        "projects": [
+                            {
+                                "name": "expo-dev-menu-interface",
+                                "sourceDir": "../../node_modules/expo-dev-menu-interface/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-device",
+                        "packageVersion": "6.0.2",
+                        "projects": [
+                            {
+                                "name": "expo-device",
+                                "sourceDir": "../../node_modules/expo-device/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.device.DeviceModule"]
+                    },
+                    {
+                        "packageName": "expo-eas-client",
+                        "packageVersion": "0.13.1",
+                        "projects": [
+                            {
+                                "name": "expo-eas-client",
+                                "sourceDir": "../../node_modules/expo-eas-client/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.easclient.EASClientModule"]
+                    },
+                    {
+                        "packageName": "expo-file-system",
+                        "packageVersion": "18.0.4",
+                        "projects": [
+                            {
+                                "name": "expo-file-system",
+                                "sourceDir": "../../node_modules/expo-file-system/android"
+                            }
+                        ],
+                        "modules": [
+                            "expo.modules.filesystem.FileSystemModule",
+                            "expo.modules.filesystem.next.FileSystemNextModule"
+                        ]
+                    },
+                    {
+                        "packageName": "expo-font",
+                        "packageVersion": "13.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-font",
+                                "sourceDir": "../../node_modules/expo-font/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.font.FontLoaderModule"]
+                    },
+                    {
+                        "packageName": "expo-haptics",
+                        "packageVersion": "14.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-haptics",
+                                "sourceDir": "../../node_modules/expo-haptics/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.haptics.HapticsModule"]
+                    },
+                    {
+                        "packageName": "expo-image",
+                        "packageVersion": "2.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-image",
+                                "sourceDir": "../../node_modules/expo-image/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.image.ExpoImageModule"]
+                    },
+                    {
+                        "packageName": "expo-image-loader",
+                        "packageVersion": "5.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-image-loader",
+                                "sourceDir": "../../node_modules/expo-image-loader/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-image-picker",
+                        "packageVersion": "16.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-image-picker",
+                                "sourceDir": "../../node_modules/expo-image-picker/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.imagepicker.ImagePickerModule"]
+                    },
+                    {
+                        "packageName": "expo-json-utils",
+                        "packageVersion": "0.14.0",
+                        "projects": [
+                            {
+                                "name": "expo-json-utils",
+                                "sourceDir": "../../node_modules/expo-json-utils/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-keep-awake",
+                        "packageVersion": "14.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-keep-awake",
+                                "sourceDir": "../../node_modules/expo-keep-awake/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.keepawake.KeepAwakeModule"]
+                    },
+                    {
+                        "packageName": "expo-linear-gradient",
+                        "packageVersion": "14.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-linear-gradient",
+                                "sourceDir": "../../node_modules/expo-linear-gradient/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.lineargradient.LinearGradientModule"]
+                    },
+                    {
+                        "packageName": "expo-linking",
+                        "packageVersion": "7.0.5",
+                        "projects": [
+                            {
+                                "name": "expo-linking",
+                                "sourceDir": "../../node_modules/expo-linking/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.linking.ExpoLinkingModule"]
+                    },
+                    {
+                        "packageName": "expo-local-authentication",
+                        "packageVersion": "14.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-local-authentication",
+                                "sourceDir": "../../node_modules/expo-local-authentication/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.localauthentication.LocalAuthenticationModule"]
+                    },
+                    {
+                        "packageName": "expo-localization",
+                        "packageVersion": "16.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-localization",
+                                "sourceDir": "../../node_modules/expo-localization/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.localization.LocalizationModule"]
+                    },
+                    {
+                        "packageName": "expo-manifests",
+                        "packageVersion": "0.15.2",
+                        "projects": [
+                            {
+                                "name": "expo-manifests",
+                                "sourceDir": "../../node_modules/expo-manifests/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-modules-core",
+                        "packageVersion": "2.0.6",
+                        "projects": [
+                            {
+                                "name": "expo-modules-core",
+                                "sourceDir": "../../node_modules/expo-modules-core/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-navigation-bar",
+                        "packageVersion": "4.0.7",
+                        "projects": [
+                            {
+                                "name": "expo-navigation-bar",
+                                "sourceDir": "../../node_modules/expo-navigation-bar/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.navigationbar.NavigationBarModule"]
+                    },
+                    {
+                        "packageName": "expo-secure-store",
+                        "packageVersion": "14.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-secure-store",
+                                "sourceDir": "../../node_modules/expo-secure-store/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.securestore.SecureStoreModule"]
+                    },
+                    {
+                        "packageName": "expo-splash-screen",
+                        "packageVersion": "0.29.16",
+                        "projects": [
+                            {
+                                "name": "expo-splash-screen",
+                                "sourceDir": "../../node_modules/expo-splash-screen/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.splashscreen.SplashScreenModule"]
+                    },
+                    {
+                        "packageName": "expo-structured-headers",
+                        "packageVersion": "4.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-structured-headers",
+                                "sourceDir": "../../node_modules/expo-structured-headers/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-system-ui",
+                        "packageVersion": "4.0.2",
+                        "projects": [
+                            {
+                                "name": "expo-system-ui",
+                                "sourceDir": "../../node_modules/expo-system-ui/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.systemui.SystemUIModule"]
+                    },
+                    {
+                        "packageName": "expo-updates",
+                        "packageVersion": "0.26.6",
+                        "projects": [
+                            {
+                                "name": "expo-updates",
+                                "sourceDir": "../../node_modules/expo-updates/android"
+                            }
+                        ],
+                        "plugins": [
+                            {
+                                "id": "expo-updates-gradle-plugin",
+                                "group": "expo.modules",
+                                "sourceDir": "../../node_modules/expo-updates/expo-updates-gradle-plugin"
+                            }
+                        ],
+                        "modules": ["expo.modules.updates.UpdatesModule"]
+                    },
+                    {
+                        "packageName": "expo-updates-interface",
+                        "packageVersion": "1.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-updates-interface",
+                                "sourceDir": "../../node_modules/expo-updates-interface/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-video",
+                        "packageVersion": "2.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-video",
+                                "sourceDir": "../../node_modules/expo-video/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.video.VideoModule"]
+                    }
+                ]
+            },
+            "reasons": ["expoAutolinkingAndroid"],
+            "hash": "748977ad8d80e4107dc2674c00286eb8899acf4f"
+        },
+        "afterSource": {
+            "type": "contents",
+            "id": "expoAutolinkingConfig:android",
+            "contents": {
+                "extraDependencies": [],
+                "modules": [
+                    {
+                        "packageName": "@trezor/react-native-usb",
+                        "packageVersion": "1.0.0",
+                        "projects": [
+                            {
+                                "name": "trezor-react-native-usb",
+                                "sourceDir": "../../packages/react-native-usb/android"
+                            }
+                        ],
+                        "modules": ["io.trezor.rnusb.ReactNativeUsbModule"]
+                    },
+                    {
+                        "packageName": "expo",
+                        "packageVersion": "52.0.11",
+                        "projects": [
+                            {
+                                "name": "expo",
+                                "sourceDir": "../../node_modules/expo/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.fetch.ExpoFetchModule"]
+                    },
+                    {
+                        "packageName": "expo-asset",
+                        "packageVersion": "11.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-asset",
+                                "sourceDir": "../../node_modules/expo-asset/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.asset.AssetModule"]
+                    },
+                    {
+                        "packageName": "expo-camera",
+                        "packageVersion": "16.0.4",
+                        "projects": [
+                            {
+                                "name": "expo-camera",
+                                "sourceDir": "../../node_modules/expo-camera/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.camera.CameraViewModule"],
+                        "aarProjects": [
+                            {
+                                "name": "expo-camera$cameraview-aar",
+                                "aarFilePath": "/home/expo/workingdir/build/node_modules/expo-camera/android/libs/cameraview-1.0.0.aar",
+                                "projectDir": "/home/expo/workingdir/build/node_modules/expo-camera/android/build/expo-camera$cameraview-aar"
+                            }
+                        ]
+                    },
+                    {
+                        "packageName": "expo-clipboard",
+                        "packageVersion": "7.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-clipboard",
+                                "sourceDir": "../../node_modules/expo-clipboard/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.clipboard.ClipboardModule"]
+                    },
+                    {
+                        "packageName": "expo-constants",
+                        "packageVersion": "17.0.5",
+                        "projects": [
+                            {
+                                "name": "expo-constants",
+                                "sourceDir": "../../node_modules/expo-constants/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.constants.ConstantsModule"]
+                    },
+                    {
+                        "packageName": "expo-crypto",
+                        "packageVersion": "14.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-crypto",
+                                "sourceDir": "../../node_modules/expo-crypto/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.crypto.CryptoModule"]
+                    },
+                    {
+                        "packageName": "expo-dev-client",
+                        "packageVersion": "5.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-dev-client",
+                                "sourceDir": "../../node_modules/expo-dev-client/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-dev-launcher",
+                        "packageVersion": "5.0.13",
+                        "projects": [
+                            {
+                                "name": "expo-dev-launcher",
+                                "sourceDir": "../../node_modules/expo-dev-launcher/android"
+                            }
+                        ],
+                        "plugins": [
+                            {
+                                "id": "expo-dev-launcher-gradle-plugin",
+                                "group": "expo.modules",
+                                "sourceDir": "../../node_modules/expo-dev-launcher/expo-dev-launcher-gradle-plugin"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-dev-menu",
+                        "packageVersion": "6.0.8",
+                        "projects": [
+                            {
+                                "name": "expo-dev-menu",
+                                "sourceDir": "../../node_modules/expo-dev-menu/android"
+                            }
+                        ],
+                        "modules": [
+                            "expo.modules.devmenu.modules.DevMenuModule",
+                            "expo.modules.devmenu.modules.DevMenuPreferences"
+                        ]
+                    },
+                    {
+                        "packageName": "expo-dev-menu-interface",
+                        "packageVersion": "1.9.1",
+                        "projects": [
+                            {
+                                "name": "expo-dev-menu-interface",
+                                "sourceDir": "../../node_modules/expo-dev-menu-interface/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-device",
+                        "packageVersion": "6.0.2",
+                        "projects": [
+                            {
+                                "name": "expo-device",
+                                "sourceDir": "../../node_modules/expo-device/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.device.DeviceModule"]
+                    },
+                    {
+                        "packageName": "expo-eas-client",
+                        "packageVersion": "0.13.1",
+                        "projects": [
+                            {
+                                "name": "expo-eas-client",
+                                "sourceDir": "../../node_modules/expo-eas-client/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.easclient.EASClientModule"]
+                    },
+                    {
+                        "packageName": "expo-file-system",
+                        "packageVersion": "18.0.4",
+                        "projects": [
+                            {
+                                "name": "expo-file-system",
+                                "sourceDir": "../../node_modules/expo-file-system/android"
+                            }
+                        ],
+                        "modules": [
+                            "expo.modules.filesystem.FileSystemModule",
+                            "expo.modules.filesystem.next.FileSystemNextModule"
+                        ]
+                    },
+                    {
+                        "packageName": "expo-font",
+                        "packageVersion": "13.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-font",
+                                "sourceDir": "../../node_modules/expo-font/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.font.FontLoaderModule"]
+                    },
+                    {
+                        "packageName": "expo-haptics",
+                        "packageVersion": "14.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-haptics",
+                                "sourceDir": "../../node_modules/expo-haptics/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.haptics.HapticsModule"]
+                    },
+                    {
+                        "packageName": "expo-image",
+                        "packageVersion": "2.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-image",
+                                "sourceDir": "../../node_modules/expo-image/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.image.ExpoImageModule"]
+                    },
+                    {
+                        "packageName": "expo-image-loader",
+                        "packageVersion": "5.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-image-loader",
+                                "sourceDir": "../../node_modules/expo-image-loader/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-image-picker",
+                        "packageVersion": "16.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-image-picker",
+                                "sourceDir": "../../node_modules/expo-image-picker/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.imagepicker.ImagePickerModule"]
+                    },
+                    {
+                        "packageName": "expo-json-utils",
+                        "packageVersion": "0.14.0",
+                        "projects": [
+                            {
+                                "name": "expo-json-utils",
+                                "sourceDir": "../../node_modules/expo-json-utils/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-keep-awake",
+                        "packageVersion": "14.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-keep-awake",
+                                "sourceDir": "../../node_modules/expo-keep-awake/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.keepawake.KeepAwakeModule"]
+                    },
+                    {
+                        "packageName": "expo-linear-gradient",
+                        "packageVersion": "14.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-linear-gradient",
+                                "sourceDir": "../../node_modules/expo-linear-gradient/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.lineargradient.LinearGradientModule"]
+                    },
+                    {
+                        "packageName": "expo-linking",
+                        "packageVersion": "7.0.5",
+                        "projects": [
+                            {
+                                "name": "expo-linking",
+                                "sourceDir": "../../node_modules/expo-linking/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.linking.ExpoLinkingModule"]
+                    },
+                    {
+                        "packageName": "expo-local-authentication",
+                        "packageVersion": "14.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-local-authentication",
+                                "sourceDir": "../../node_modules/expo-local-authentication/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.localauthentication.LocalAuthenticationModule"]
+                    },
+                    {
+                        "packageName": "expo-localization",
+                        "packageVersion": "16.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-localization",
+                                "sourceDir": "../../node_modules/expo-localization/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.localization.LocalizationModule"]
+                    },
+                    {
+                        "packageName": "expo-manifests",
+                        "packageVersion": "0.15.2",
+                        "projects": [
+                            {
+                                "name": "expo-manifests",
+                                "sourceDir": "../../node_modules/expo-manifests/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-modules-core",
+                        "packageVersion": "2.0.6",
+                        "projects": [
+                            {
+                                "name": "expo-modules-core",
+                                "sourceDir": "../../node_modules/expo-modules-core/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-navigation-bar",
+                        "packageVersion": "4.0.7",
+                        "projects": [
+                            {
+                                "name": "expo-navigation-bar",
+                                "sourceDir": "../../node_modules/expo-navigation-bar/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.navigationbar.NavigationBarModule"]
+                    },
+                    {
+                        "packageName": "expo-secure-store",
+                        "packageVersion": "14.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-secure-store",
+                                "sourceDir": "../../node_modules/expo-secure-store/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.securestore.SecureStoreModule"]
+                    },
+                    {
+                        "packageName": "expo-splash-screen",
+                        "packageVersion": "0.29.16",
+                        "projects": [
+                            {
+                                "name": "expo-splash-screen",
+                                "sourceDir": "../../node_modules/expo-splash-screen/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.splashscreen.SplashScreenModule"]
+                    },
+                    {
+                        "packageName": "expo-structured-headers",
+                        "packageVersion": "4.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-structured-headers",
+                                "sourceDir": "../../node_modules/expo-structured-headers/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-system-ui",
+                        "packageVersion": "4.0.2",
+                        "projects": [
+                            {
+                                "name": "expo-system-ui",
+                                "sourceDir": "../../node_modules/expo-system-ui/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.systemui.SystemUIModule"]
+                    },
+                    {
+                        "packageName": "expo-updates",
+                        "packageVersion": "0.26.6",
+                        "projects": [
+                            {
+                                "name": "expo-updates",
+                                "sourceDir": "../../node_modules/expo-updates/android"
+                            }
+                        ],
+                        "plugins": [
+                            {
+                                "id": "expo-updates-gradle-plugin",
+                                "group": "expo.modules",
+                                "sourceDir": "../../node_modules/expo-updates/expo-updates-gradle-plugin"
+                            }
+                        ],
+                        "modules": ["expo.modules.updates.UpdatesModule"]
+                    },
+                    {
+                        "packageName": "expo-updates-interface",
+                        "packageVersion": "1.0.0",
+                        "projects": [
+                            {
+                                "name": "expo-updates-interface",
+                                "sourceDir": "../../node_modules/expo-updates-interface/android"
+                            }
+                        ],
+                        "modules": []
+                    },
+                    {
+                        "packageName": "expo-video",
+                        "packageVersion": "2.0.1",
+                        "projects": [
+                            {
+                                "name": "expo-video",
+                                "sourceDir": "../../node_modules/expo-video/android"
+                            }
+                        ],
+                        "modules": ["expo.modules.video.VideoModule"]
+                    }
+                ]
+            },
+            "reasons": ["expoAutolinkingAndroid"],
+            "hash": "9b81f43f9daefac8d9f4d0ebcb20a4a69fe578dd"
+        }
+    },
+    {
+        "op": "changed",
+        "beforeSource": {
+            "type": "contents",
+            "id": "expoConfig",
+            "contents": {
+                "android": {
+                    "adaptiveIcon": {
+                        "backgroundColor": "#E59D17",
+                        "foregroundImage": "./assets/appIcon_android.png",
+                        "monochromeImage": "./assets/appIcon_android.png"
+                    },
+                    "blockedPermissions": [
+                        "FOREGROUND_SERVICE",
+                        "FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+                    ],
+                    "intentFilters": [
+                        {
+                            "action": "VIEW",
+                            "autoVerify": true,
+                            "category": ["BROWSABLE", "DEFAULT"],
+                            "data": [
+                                {
+                                    "host": "dev.suite.sldev.cz",
+                                    "pathPattern": "/connect/.*/.*/deeplink/.*",
+                                    "scheme": "https"
+                                },
+                                {
+                                    "host": "dev.suite.sldev.cz",
+                                    "pathPattern": "/connect/.*/deeplink/.*",
+                                    "scheme": "https"
+                                }
+                            ]
+                        }
+                    ],
+                    "package": "io.trezor.suite.preview",
+                    "permissions": ["android.permission.CAMERA"]
+                },
+                "androidStatusBar": {
+                    "backgroundColor": "#25292E"
+                },
+                "extra": {
+                    "commitHash": "18050b767fddffdbc4fc607a7ec933f0cbeb50ed",
+                    "eas": {
+                        "projectId": "15998f8a-e75c-4b60-959d-6f68e5ff4936"
+                    }
+                },
+                "ios": {
+                    "appleTeamId": "C3P22XVH2C",
+                    "associatedDomains": ["applinks:dev.suite.sldev.cz"],
+                    "bundleIdentifier": "io.trezor.suite.preview",
+                    "icon": "./assets/preview/appIcon.png",
+                    "infoPlist": {
+                        "ITSAppUsesNonExemptEncryption": false,
+                        "NSAppTransportSecurity": {
+                            "NSAllowsArbitraryLoads": true,
+                            "NSExceptionDomains": {
+                                "data.trezor.io": {
+                                    "NSExceptionAllowsInsecureHTTPLoads": true,
+                                    "NSIncludesSubdomains": true
+                                },
+                                "localhost": {
+                                    "NSExceptionAllowsInsecureHTTPLoads": true
+                                }
+                            }
+                        },
+                        "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera to scan your XPUB.",
+                        "NSFaceIDUsageDescription": "$(PRODUCT_NAME) needs Face ID and Touch ID to keep sensitive data about your portfolio private.",
+                        "NSMicrophoneUsageDescription": "This app does not require access to the microphone.",
+                        "UIRequiredDeviceCapabilities": ["armv7"]
+                    },
+                    "supportsTablet": true
+                },
+                "name": "Trezor Suite Lite Preview",
+                "orientation": "portrait",
+                "owner": "trezorcompany-develop",
+                "platforms": ["android", "ios"],
+                "plugins": [
+                    "./plugins/withGradleProperties.js",
+                    "./plugins/withRemoveXcodeLocalEnv.js",
+                    "./plugins/withRemoveiOSNotificationEntitlement.js",
+                    "@trezor/react-native-usb/plugins/withUSBDevice.js",
+                    [
+                        "./plugins/withAndroidMainActivityAttributes.js",
+                        {
+                            "android:allowBackup": false
+                        }
+                    ],
+                    [
+                        "@config-plugins/detox",
+                        {
+                            "subdomains": "*"
+                        }
+                    ],
+                    [
+                        "@sentry/react-native/expo",
+                        {
+                            "organization": "satoshilabs",
+                            "project": "suite-native",
+                            "url": "https://sentry.io/"
+                        }
+                    ],
+                    [
+                        "expo-build-properties",
+                        {
+                            "android": {
+                                "kotlinVersion": "1.9.24",
+                                "minSdkVersion": 28
+                            },
+                            "ios": {
+                                "deploymentTarget": "15.1"
+                            }
+                        }
+                    ],
+                    [
+                        "expo-camera",
+                        {
+                            "cameraPermission": "Allow $(PRODUCT_NAME) to access camera for QR code scanning.",
+                            "microphonePermission": false,
+                            "recordAudioAndroid": false
+                        }
+                    ],
+                    [
+                        "expo-font",
+                        {
+                            "fonts": [
+                                "../../packages/theme/fonts/TTSatoshi-DemiBold.otf",
+                                "../../packages/theme/fonts/TTSatoshi-Medium.otf",
+                                "../../suite-common/icons/iconFontsMobile/TrezorSuiteIcons.ttf"
+                            ]
+                        }
+                    ],
+                    [
+                        "expo-image-picker",
+                        {
+                            "microphonePermission": false,
+                            "photosPermission": "Allow $(PRODUCT_NAME) to access your photos to let you import QR code images."
+                        }
+                    ],
+                    [
+                        "expo-splash-screen",
+                        {
+                            "backgroundColor": "#25292E",
+                            "dark": {
+                                "backgroundColor": "#25292E",
+                                "image": "./assets/splash_icon.png"
+                            },
+                            "image": "./assets/splash_icon.png",
+                            "imageWidth": "200"
+                        }
+                    ],
+                    ["expo-video"],
+                    ["react-native-edge-to-edge"]
+                ],
+                "runtimeVersion": {
+                    "policy": "fingerprint"
+                },
+                "scheme": "trezorsuitelite",
+                "sdkVersion": "52.0.0",
+                "slug": "trezor-suite-preview",
+                "updates": {
+                    "requestHeaders": {
+                        "expo-channel-name": "preview"
+                    },
+                    "url": "https://u.expo.dev/15998f8a-e75c-4b60-959d-6f68e5ff4936"
+                },
+                "userInterfaceStyle": "automatic",
+                "version": "25.2.2"
+            },
+            "reasons": ["expoConfig"],
+            "hash": "73faa14031153992485c8830110cf86f3207d6c8"
+        },
+        "afterSource": {
+            "type": "contents",
+            "id": "expoConfig",
+            "contents": {
+                "android": {
+                    "adaptiveIcon": {
+                        "backgroundColor": "#E59D17",
+                        "foregroundImage": "./assets/appIcon_android.png",
+                        "monochromeImage": "./assets/appIcon_android.png"
+                    },
+                    "blockedPermissions": [
+                        "FOREGROUND_SERVICE",
+                        "FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+                    ],
+                    "intentFilters": [
+                        {
+                            "action": "VIEW",
+                            "autoVerify": true,
+                            "category": ["BROWSABLE", "DEFAULT"],
+                            "data": [
+                                {
+                                    "host": "dev.suite.sldev.cz",
+                                    "pathPattern": "/connect/.*/.*/deeplink/.*",
+                                    "scheme": "https"
+                                },
+                                {
+                                    "host": "dev.suite.sldev.cz",
+                                    "pathPattern": "/connect/.*/deeplink/.*",
+                                    "scheme": "https"
+                                }
+                            ]
+                        }
+                    ],
+                    "package": "io.trezor.suite.preview",
+                    "permissions": ["android.permission.CAMERA"]
+                },
+                "androidStatusBar": {
+                    "backgroundColor": "#25292E"
+                },
+                "extra": {
+                    "commitHash": "18050b767fddffdbc4fc607a7ec933f0cbeb50ed",
+                    "eas": {
+                        "projectId": "15998f8a-e75c-4b60-959d-6f68e5ff4936"
+                    }
+                },
+                "ios": {
+                    "appleTeamId": "C3P22XVH2C",
+                    "associatedDomains": ["applinks:dev.suite.sldev.cz"],
+                    "bundleIdentifier": "io.trezor.suite.preview",
+                    "icon": "./assets/preview/appIcon.png",
+                    "infoPlist": {
+                        "ITSAppUsesNonExemptEncryption": false,
+                        "NSAppTransportSecurity": {
+                            "NSAllowsArbitraryLoads": true,
+                            "NSExceptionDomains": {
+                                "data.trezor.io": {
+                                    "NSExceptionAllowsInsecureHTTPLoads": true,
+                                    "NSIncludesSubdomains": true
+                                },
+                                "localhost": {
+                                    "NSExceptionAllowsInsecureHTTPLoads": true
+                                }
+                            }
+                        },
+                        "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera to scan your XPUB.",
+                        "NSFaceIDUsageDescription": "$(PRODUCT_NAME) needs Face ID and Touch ID to keep sensitive data about your portfolio private.",
+                        "NSMicrophoneUsageDescription": "This app does not require access to the microphone.",
+                        "UIRequiredDeviceCapabilities": ["armv7"]
+                    },
+                    "supportsTablet": true
+                },
+                "name": "Trezor Suite Lite Preview",
+                "orientation": "portrait",
+                "owner": "trezorcompany-develop",
+                "platforms": ["android", "ios", "web"],
+                "plugins": [
+                    "./plugins/withGradleProperties.js",
+                    "./plugins/withRemoveXcodeLocalEnv.js",
+                    "./plugins/withRemoveiOSNotificationEntitlement.js",
+                    "@trezor/react-native-usb/plugins/withUSBDevice.js",
+                    [
+                        "./plugins/withAndroidMainActivityAttributes.js",
+                        {
+                            "android:allowBackup": false
+                        }
+                    ],
+                    [
+                        "@config-plugins/detox",
+                        {
+                            "subdomains": "*"
+                        }
+                    ],
+                    [
+                        "@sentry/react-native/expo",
+                        {
+                            "organization": "satoshilabs",
+                            "project": "suite-native",
+                            "url": "https://sentry.io/"
+                        }
+                    ],
+                    [
+                        "expo-build-properties",
+                        {
+                            "android": {
+                                "kotlinVersion": "1.9.24",
+                                "minSdkVersion": 28
+                            },
+                            "ios": {
+                                "deploymentTarget": "15.1"
+                            }
+                        }
+                    ],
+                    [
+                        "expo-camera",
+                        {
+                            "cameraPermission": "Allow $(PRODUCT_NAME) to access camera for QR code scanning.",
+                            "microphonePermission": false,
+                            "recordAudioAndroid": false
+                        }
+                    ],
+                    [
+                        "expo-font",
+                        {
+                            "fonts": [
+                                "../../packages/theme/fonts/TTSatoshi-DemiBold.otf",
+                                "../../packages/theme/fonts/TTSatoshi-Medium.otf",
+                                "../../suite-common/icons/iconFontsMobile/TrezorSuiteIcons.ttf"
+                            ]
+                        }
+                    ],
+                    [
+                        "expo-image-picker",
+                        {
+                            "microphonePermission": false,
+                            "photosPermission": "Allow $(PRODUCT_NAME) to access your photos to let you import QR code images."
+                        }
+                    ],
+                    [
+                        "expo-splash-screen",
+                        {
+                            "backgroundColor": "#25292E",
+                            "dark": {
+                                "backgroundColor": "#25292E",
+                                "image": "./assets/splash_icon.png"
+                            },
+                            "image": "./assets/splash_icon.png",
+                            "imageWidth": "200"
+                        }
+                    ],
+                    ["expo-video"],
+                    ["react-native-edge-to-edge"]
+                ],
+                "runtimeVersion": {
+                    "policy": "fingerprint"
+                },
+                "scheme": "trezorsuitelite",
+                "sdkVersion": "52.0.0",
+                "slug": "trezor-suite-preview",
+                "updates": {
+                    "requestHeaders": {
+                        "expo-channel-name": "preview"
+                    },
+                    "url": "https://u.expo.dev/15998f8a-e75c-4b60-959d-6f68e5ff4936"
+                },
+                "userInterfaceStyle": "automatic",
+                "version": "25.2.2"
+            },
+            "reasons": ["expoConfig"],
+            "hash": "29f2d588dffabe8c1d8625a495648896add1cf80"
+        }
+    }
+]

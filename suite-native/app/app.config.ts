@@ -171,6 +171,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         runtimeVersion: {
             policy: 'fingerprint',
         },
+        platforms: ['ios', 'android'],
         ...(buildType === 'production'
             ? {}
             : {
