@@ -33,6 +33,7 @@ export enum OnboardingStackRoutes {
     UninitializedDeviceLanding = 'UninitializedDeviceLanding',
     SuspiciousDevice = 'SuspiciousDevice',
     SecurityCheck = 'SecurityCheck',
+    FirmwareInstallationScreen = 'FirmwareInstallationScreen',
 }
 
 export enum AccountsImportStackRoutes {
@@ -47,7 +48,7 @@ export enum DeviceStackRoutes {
     DevicePinProtection = 'DevicePinProtection',
     DeviceAuthenticity = 'DeviceAuthenticity',
     FirmwareUpdate = 'FirmwareUpdate',
-    FirmwareUpdateInProgress = 'FirmwareUpdateInProgress',
+    FirmwareInstallation = 'FirmwareInstallation',
     ContinueOnTrezor = 'ContinueOnTrezor',
 }
 

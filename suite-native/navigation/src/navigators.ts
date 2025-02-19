@@ -123,6 +123,7 @@ export type OnboardingStackParamList = {
         suspicionCause: DeviceSuspicionCause;
     };
     [OnboardingStackRoutes.SecurityCheck]: undefined;
+    [OnboardingStackRoutes.FirmwareInstallationScreen]: undefined;
 };
 
 export type AccountsImportStackParamList = {
@@ -167,7 +168,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceStackRoutes.DevicePinProtection]: undefined;
     [DeviceStackRoutes.DeviceAuthenticity]: undefined;
     [DeviceStackRoutes.FirmwareUpdate]: undefined;
-    [DeviceStackRoutes.FirmwareUpdateInProgress]: undefined;
+    [DeviceStackRoutes.FirmwareInstallation]: undefined;
     [DeviceStackRoutes.ContinueOnTrezor]: undefined;
 };
 

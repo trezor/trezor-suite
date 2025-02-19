@@ -55,7 +55,7 @@ export const FirmwareUpdateScreen = () => {
                 'moduleDeviceSettings.firmware.seedBottomSheet.continueButton',
             ),
             onPressPrimaryButton: () => {
-                navigation.navigate(DeviceStackRoutes.FirmwareUpdateInProgress);
+                navigation.navigate(DeviceStackRoutes.FirmwareInstallation);
             },
             secondaryButtonTitle: translate(
                 'moduleDeviceSettings.firmware.seedBottomSheet.closeButton',

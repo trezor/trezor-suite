@@ -1,4 +1,4 @@
 export * from './nativeFirmwareSlice';
 export * from './components/UpdateProgressIndicatorDemo';
-export * from './screens/FirmwareUpdateInProgressScreen';
+export * from './components/FirmwareInstallationScreenContent';
 export * from './hooks/useIsFirmwareUpdateFeatureEnabled';

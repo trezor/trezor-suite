@@ -17,12 +17,6 @@ import { ConfirmOnTrezorImage, setDeviceForceRememberedThunk } from '@suite-nati
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
 import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
-import {
-    DeviceSettingsStackParamList,
-    DeviceStackRoutes,
-    Screen,
-    StackNavigationProps,
-} from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -33,11 +27,6 @@ import {
 } from '../components/UpdateProgressIndicator';
 import { useFirmware } from '../hooks/useFirmware';
 import { useFirmwareAnalytics } from '../hooks/useFirmwareAnalytics';
-
-type NavigationProp = StackNavigationProps<
-    DeviceSettingsStackParamList,
-    DeviceStackRoutes.FirmwareUpdateInProgress
->;
 
 const bottomButtonsContainerStyle = prepareNativeStyle<{ bottom: number }>((utils, { bottom }) => ({
     position: 'absolute',
@@ -52,11 +41,21 @@ const cancelButtonStyle = prepareNativeStyle(utils => ({
     top: utils.spacings.sp8,
 }));
 
-export const FirmwareUpdateInProgressScreen = () => {
+type FirmwareInstallationScreenContentProps = {
+    onFirmwareInstallationSuccess: () => void;
+    onFirmwareInstallationFailure: () => void;
+};
+
+// This component is shared between `module-onboarding` and `module-device-settings`.
+// Avoid doing anything module specific in this file!!!
+export const FirmwareInstallationScreenContent = ({
+    onFirmwareInstallationSuccess,
+    onFirmwareInstallationFailure,
+}: FirmwareInstallationScreenContentProps) => {
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
-    const navigation = useNavigation<NavigationProp>();
-    const [isMayBeStuckedBottomSheetOpened, setIsMayBeStuckedBottomSheetOpened] =
+    const navigation = useNavigation();
+    const [isMayBeStuckBottomSheetOpened, setIsMayBeStuckBottomSheetOpened] =
         useState<boolean>(false);
     const { bottom: bottomSafeAreaInset } = useSafeAreaInsets();
     const {
@@ -93,19 +92,14 @@ export const FirmwareUpdateInProgressScreen = () => {
         };
     }, [dispatch, resetReducer]);
 
-    const handleFirmwareUpdateFinished = useCallback(() => {
-        requestPrioritizedDeviceAccess({
+    const handleFirmwareUpdateFinished = useCallback(async () => {
+        await requestPrioritizedDeviceAccess({
             deviceCallback: () => dispatch(authorizeDeviceThunk()),
         });
 
-        const initialRoute = navigation.getState().routes.at(0)?.name;
-        if (initialRoute) {
-            navigation.navigate(initialRoute);
-        } else {
-            // This cause should not happen, but just to be safe
-            navigation.popToTop();
-        }
-    }, [dispatch, navigation]);
+        setIsFirmwareInstallationRunning(false);
+        onFirmwareInstallationSuccess();
+    }, [dispatch, onFirmwareInstallationSuccess, setIsFirmwareInstallationRunning]);
 
     const handleCancel = useCallback(() => {
         navigation.goBack();
@@ -113,7 +107,6 @@ export const FirmwareUpdateInProgressScreen = () => {
 
     const startFirmwareUpdate = useCallback(async () => {
         setIsFirmwareInstallationRunning(true);
-
         const result = await firmwareUpdate();
 
         if (!result) {
@@ -128,7 +121,7 @@ export const FirmwareUpdateInProgressScreen = () => {
                 result.payload?.code === 'Failure_ActionCancelled'
             ) {
                 handleAnalyticsReportCancelled();
-                navigation.navigate(DeviceStackRoutes.FirmwareUpdate);
+                onFirmwareInstallationFailure();
 
                 return;
             }
@@ -139,17 +132,9 @@ export const FirmwareUpdateInProgressScreen = () => {
         }
 
         handleAnalyticsReportFinished();
-
-        // wait few seconds to animation to finish and let user orientate little bit
-        setTimeout(() => {
-            // setting this to false will trigger standart device connection flow
-            setIsFirmwareInstallationRunning(false);
-            handleFirmwareUpdateFinished();
-        }, 5000);
     }, [
         setIsFirmwareInstallationRunning,
-        navigation,
-        handleFirmwareUpdateFinished,
+        onFirmwareInstallationFailure,
         firmwareUpdate,
         handleAnalyticsReportFinished,
         handleAnalyticsReportCancelled,
@@ -163,12 +148,12 @@ export const FirmwareUpdateInProgressScreen = () => {
         startFirmwareUpdate();
     }, [startFirmwareUpdate, resetReducer, handleAnalyticsReportStarted]);
 
-    const openMayBeStuckedBottomSheet = useCallback(() => {
-        setIsMayBeStuckedBottomSheetOpened(true);
+    const openMayBeStuckBottomSheet = useCallback(() => {
+        setIsMayBeStuckBottomSheetOpened(true);
     }, []);
 
-    const closeMayBeStuckedBottomSheet = useCallback(() => {
-        setIsMayBeStuckedBottomSheetOpened(false);
+    const closeMayBeStuckBottomSheet = useCallback(() => {
+        setIsMayBeStuckBottomSheetOpened(false);
     }, []);
 
     const handleContactSupport = useCallback(() => {
@@ -186,6 +171,7 @@ export const FirmwareUpdateInProgressScreen = () => {
     }, [startFirmwareUpdate, handleAnalyticsReportStarted]);
 
     const isError = status === 'error';
+    const isDone = status === 'done';
 
     const indicatorStatus: UpdateProgressIndicatorStatus = useMemo(() => {
         const isStarting = (status === 'started' && operation === null) || status === 'initial';
@@ -204,7 +190,7 @@ export const FirmwareUpdateInProgressScreen = () => {
     const bottomButtonOffset = showConfirmOnDevice ? 180 : bottomSafeAreaInset + 12;
 
     return (
-        <Screen>
+        <>
             {isError && (
                 <Animated.View entering={FadeIn} style={applyStyle(cancelButtonStyle)}>
                     <IconButton
@@ -256,8 +242,22 @@ export const FirmwareUpdateInProgressScreen = () => {
                         bottom: bottomButtonOffset,
                     })}
                 >
-                    <Button onPress={openMayBeStuckedBottomSheet} colorScheme="tertiaryElevation0">
+                    <Button onPress={openMayBeStuckBottomSheet} colorScheme="tertiaryElevation0">
                         <Translation id="moduleDeviceSettings.firmware.firmwareUpdateProgress.stuckButton" />
+                    </Button>
+                </Animated.View>
+            )}
+            {isDone && (
+                <Animated.View
+                    entering={FadeInDown}
+                    exiting={FadeOutDown}
+                    layout={LinearTransition}
+                    style={applyStyle(bottomButtonsContainerStyle, {
+                        bottom: bottomButtonOffset,
+                    })}
+                >
+                    <Button onPress={handleFirmwareUpdateFinished}>
+                        <Translation id="generic.buttons.continue" />
                     </Button>
                 </Animated.View>
             )}
@@ -269,10 +269,10 @@ export const FirmwareUpdateInProgressScreen = () => {
                 />
             )}
             <MayBeStuckedBottomSheet
-                isOpened={isMayBeStuckedBottomSheetOpened}
-                onClose={closeMayBeStuckedBottomSheet}
+                isOpened={isMayBeStuckBottomSheetOpened}
+                onClose={closeMayBeStuckBottomSheet}
                 onAnalyticsReportStucked={handleAnalyticsReportStucked}
             />
-        </Screen>
+        </>
     );
 };
