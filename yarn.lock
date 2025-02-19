@@ -12801,6 +12801,8 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/websocket-client": "workspace:*"
     cross-fetch: "npm:^4.0.0"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:5.5.4"
   languageName: unknown
   linkType: soft
 

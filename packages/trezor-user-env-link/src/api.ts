@@ -199,7 +199,6 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
             ...arg,
         };
 
-        console.log('sending emulator-start', params);
         await this.client.send(params);
 
         if (params.wipe) {

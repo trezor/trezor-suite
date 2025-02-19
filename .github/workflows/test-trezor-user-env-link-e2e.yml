@@ -1,0 +1,40 @@
+name: "[Test] trezor-user-env-link e2e"
+
+on:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - ".github/workflows/test-trezor-user-env-link-e2e.yml"
+      - "packages/trezor-user-env/**"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  e2e-test-trezor-user-env-link:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{github.event.after}}
+          fetch-depth: 2
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/trezor-user-env-link
+
+      - name: Run e2e tests
+        run: |
+          docker run -d --network=host ghcr.io/trezor/trezor-user-env:c23309d96f013376a54bf442fe710e80341e6ff3
+          yarn workspace @trezor/trezor-user-env-link test:e2e
