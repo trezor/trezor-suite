@@ -3,20 +3,20 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
 
-import { accountBtc } from '../../__fixtures__/utils';
-import { invityAPI } from '../../invityAPI';
-import { tradingBuyActions } from '../../reducers/buyReducer';
+import { buyThunks } from '../../';
+import { accountBtc } from '../../../__fixtures__/utils';
+import { invityAPI } from '../../../invityAPI';
+import { tradingBuyActions } from '../../../reducers/buyReducer';
 import {
     TradingState,
     initialState,
     prepareTradingReducer,
     tradingActions,
-} from '../../reducers/tradingReducer';
-import { regional } from '../../regional';
-import { buyThunks } from '../../thunks';
-import { prepareTradingMiddleware } from '../tradingMiddleware';
+} from '../../../reducers/tradingReducer';
+import { regional } from '../../../regional';
+import { loadInitialDataThunk } from '../loadInitialDataThunk';
 
-jest.mock('../../invityAPI');
+jest.mock('../../../invityAPI');
 invityAPI.setInvityServersEnvironment = () => {};
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
@@ -45,18 +45,14 @@ const mockedSuiteReducer = createReducer(
     () => {},
 );
 
-const tradingMiddleware = prepareTradingMiddleware({
-    ...extraDependenciesMock,
-    selectors: {
-        ...extraDependenciesMock.selectors,
-        selectSelectedAccount: () => ({ status: 'loaded', account: accountBtc }) as any,
-    },
-});
-
 const initStore = (localInitialState?: Partial<TradingState>) =>
     configureMockStore({
-        middleware: [tradingMiddleware],
-        extra: {},
+        extra: {
+            selectors: {
+                ...extraDependenciesMock.selectors,
+                selectSelectedAccount: () => ({ status: 'loaded', account: accountBtc }) as any,
+            },
+        },
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: tradingReducer,
@@ -96,8 +92,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
         lastLoadedTimestamp: type === 'outdated' ? 0 : mockedLastLoadedTimestamp,
     });
 
-    // await is necessary to check all actions
-    await store.dispatch(tradingActions.loadInvityData());
+    await store.dispatch(loadInitialDataThunk({ activeSection: 'buy' }));
 
     const mockBuyInfo = {
         buyInfo: {
@@ -111,7 +106,19 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
     };
 
     expect(store.getActions()).toEqual([
-        { type: tradingActions.loadInvityData.type, payload: undefined },
+        {
+            payload: undefined,
+            meta: {
+                arg: {
+                    activeSection: 'buy',
+                },
+            },
+            type: `${loadInitialDataThunk.typePrefix}/pending`,
+        },
+        {
+            payload: 'buy',
+            type: tradingActions.setTradingActiveSection.type,
+        },
         {
             type: tradingActions.setLoading.type,
             payload: {
@@ -141,12 +148,21 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
             },
             type: tradingActions.setLoading.type,
         },
+        {
+            payload: undefined,
+            meta: {
+                arg: {
+                    activeSection: 'buy',
+                },
+            },
+            type: `${loadInitialDataThunk.typePrefix}/fulfilled`,
+        },
     ]);
     expect(getCurrentAccountDescriptorMock).toHaveBeenCalledTimes(1);
     expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(1);
 };
 
-describe('tradingMiddleware', () => {
+describe('loadInitialDataThunk', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -175,11 +191,42 @@ describe('tradingMiddleware', () => {
             lastLoadedTimestamp: Date.now(),
         });
 
-        await store.dispatch(tradingActions.loadInvityData());
+        await store.dispatch(loadInitialDataThunk({ activeSection: 'buy' }));
         expect(store.getActions()).toEqual([
-            { type: tradingActions.loadInvityData.type, payload: undefined },
+            {
+                payload: undefined,
+                meta: {
+                    arg: {
+                        activeSection: 'buy',
+                    },
+                },
+                type: `${loadInitialDataThunk.typePrefix}/pending`,
+            },
+            {
+                payload: 'buy',
+                type: tradingActions.setTradingActiveSection.type,
+            },
+            {
+                payload: undefined,
+                meta: {
+                    arg: {
+                        activeSection: 'buy',
+                    },
+                },
+                type: `${loadInitialDataThunk.typePrefix}/fulfilled`,
+            },
         ]);
         expect(getCurrentAccountDescriptorMock).toHaveBeenCalledTimes(1);
         expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(0);
+    });
+
+    it('should update active section', async () => {
+        const store = initStore({
+            lastLoadedTimestamp: Date.now(),
+        });
+
+        await store.dispatch(loadInitialDataThunk({ activeSection: 'exchange' }));
+
+        expect(store.getState().wallet.trading.activeSection).toBe('exchange');
     });
 });

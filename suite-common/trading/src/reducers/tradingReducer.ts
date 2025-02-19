@@ -116,7 +116,6 @@ export const tradingSlice = createSliceWithExtraDeps({
         setTradingFromPrefilledCryptoId(state, action: PayloadAction<CryptoId | undefined>) {
             state.prefilledFromCryptoId = action.payload;
         },
-        loadInvityData() {},
     },
     extraReducers: (builder, extra) => {
         builder

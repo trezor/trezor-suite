@@ -6,6 +6,5 @@ export * from './utils/buy/buyUtils';
 export * from './constants';
 export * from './reducers/tradingReducer';
 export * from './reducers/buyReducer';
-export * from './middlewares/tradingMiddleware';
 export * from './thunks';
 export * from './hooks/useTradingInfo';
