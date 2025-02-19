@@ -4,8 +4,14 @@ import { TitleHeader, VStack } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { DeviceSuspicionCause, Screen, ScreenHeader } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
+import {
+    DeviceSuspicionCause,
+    OnboardingStackParamList,
+    OnboardingStackRoutes,
+    Screen,
+    ScreenHeader,
+    StackProps,
+} from '@suite-native/navigation';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 
 import { SecurityCheckStepCard } from '../components/SecurityCheckStepCard';
@@ -56,8 +62,9 @@ const stepToContentMap = {
     }
 >;
 
-export const SecurityCheckScreen = () => {
-    const { showToast } = useToast();
+export const SecurityCheckScreen = ({
+    navigation,
+}: StackProps<OnboardingStackParamList, OnboardingStackRoutes.SecurityCheck>) => {
     const [currentStep, setCurrentStep] = useState<number>(1);
 
     const handlePressConfirmButton = () => {
@@ -66,8 +73,8 @@ export const SecurityCheckScreen = () => {
 
             return;
         }
-        // TODO: navigate to Firmware install
-        showToast({ variant: 'warning', message: 'TODO: implement next screen' });
+
+        navigation.navigate(OnboardingStackRoutes.FirmwareInstallationScreen);
     };
 
     return (
