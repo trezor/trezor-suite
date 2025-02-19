@@ -49,6 +49,7 @@
         "styled-components": "^6.1.8"
     },
     "devDependencies": {
+        "@babel/preset-react": "^7.26.3",
         "@storybook/addon-actions": "^8.5.4",
         "@storybook/addon-controls": "^8.5.4",
         "@storybook/addon-links": "^8.5.4",
@@ -57,6 +58,7 @@
         "@storybook/client-api": "^7.6.17",
         "@storybook/react": "^8.5.4",
         "@storybook/react-webpack5": "^8.5.8",
+        "@storybook/test": "^8.5.8",
         "@storybook/theming": "^8.5.4",
         "@testing-library/react": "14.2.1",
         "@testing-library/user-event": "^14.6.1",
@@ -64,7 +66,7 @@
         "@types/react": "18.2.79",
         "@types/react-date-range": "^1.4.9",
         "postcss-styled-syntax": "^0.6.4",
-        "storybook": "^8.5.4",
+        "storybook": "8.5.8",
         "stylelint": "^16.14.1",
         "stylelint-config-standard": "^36.0.0",
         "typescript-styled-plugin": "^0.18.3"

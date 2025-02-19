@@ -36,6 +36,7 @@
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
+        "@babel/preset-react": "^7.26.3",
         "@storybook/addon-actions": "^8.5.4",
         "@storybook/addon-controls": "^8.5.4",
         "@storybook/addon-links": "^8.5.4",
@@ -44,10 +45,11 @@
         "@storybook/client-api": "^7.6.17",
         "@storybook/react": "^8.5.4",
         "@storybook/react-webpack5": "^8.5.8",
+        "@storybook/test": "^8.5.8",
         "@storybook/theming": "^8.5.4",
         "@trezor/eslint": "workspace:*",
         "@types/react": "18.2.79",
-        "storybook": "^8.5.4",
+        "storybook": "8.5.8",
         "stylelint": "^16.14.1",
         "typescript-styled-plugin": "^0.18.3"
     }
