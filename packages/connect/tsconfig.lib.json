@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
         "outDir": "lib",
-        "lib": ["webworker"]
+        "lib": ["webworker", "ES2022"]
     },
     "include": ["./src"],
     "references": [
