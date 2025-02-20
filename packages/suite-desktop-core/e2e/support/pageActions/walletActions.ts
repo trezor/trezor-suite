@@ -53,7 +53,7 @@ export class WalletActions {
         this.accountDetailsTabButton = this.page.getByTestId('@wallet/menu/wallet-details');
         this.accountDetails = this.page.getByTestId('@wallet/account-details');
         this.showPublicKeyButton = this.page.getByTestId('@wallets/details/show-xpub-button');
-        this.copyPublicKeyButton = this.page.getByRole('button', { name: 'Copy public key' });
+        this.copyPublicKeyButton = this.page.getByTestId('@metadata/copy-xpub-button');
         this.sendButton = this.page.getByTestId('@wallet/menu/wallet-send');
         this.sendForm = this.page.getByTestId('@wallet/send/outputs-and-options');
         this.receiveButton = this.page.getByTestId('@wallet/menu/wallet-receive');

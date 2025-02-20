@@ -1,85 +1,36 @@
 import { QRCodeSVG } from 'qrcode.react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { Icon, Tooltip, intermediaryTheme, variables } from '@trezor/components';
-import { CSSColor } from '@trezor/theme';
-
-import { Translation } from './Translation';
-
-export const QRCODE_SIZE = 384;
-export const QRCODE_PADDING = 12;
+import { borders, palette, spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
-    margin: auto;
-    max-height: 50vh;
-
-    /* some qr code scanners can't recognize qr codes on dark background, having white border around helps with this */
-    padding: ${QRCODE_PADDING}px;
-    background: ${intermediaryTheme.light.legacy.BG_WHITE};
-    max-width: ${QRCODE_SIZE}px;
-    position: relative;
-
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+
+    ${({ theme }) =>
+        theme.variant === 'dark' &&
+        css`
+            padding: ${spacingsPx.xs};
+            border-radius: ${borders.radii.xs};
+            background-color: ${palette.lightWhiteAlpha1000};
+        `}
 `;
 
-const Message = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    margin-top: 12px;
-    white-space: nowrap;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledIcon = styled(Icon)`
-    display: inline-block;
-    margin-left: 5px;
-    vertical-align: middle;
-`;
-
-const SpanToResetWhitespace = styled.span`
-    white-space: normal;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledTooltip = styled(Tooltip)`
-    display: inline-block;
-`;
-
-interface QrCodeProps {
+type QrCodeProps = {
     value: string;
-    className?: string;
-    showMessage?: boolean;
-    bgColor?: CSSColor;
-    fgColor?: CSSColor;
-}
+};
 
-export const QrCode = ({ value, className, bgColor, fgColor, showMessage }: QrCodeProps) => (
-    <Wrapper className={className}>
+export const QrCode = ({ value }: QrCodeProps) => (
+    <Wrapper>
         <QRCodeSVG
-            bgColor={bgColor || intermediaryTheme.light.legacy.BG_WHITE}
-            fgColor={fgColor || intermediaryTheme.light.legacy.TYPE_DARK_GREY}
+            bgColor="transparent"
+            fgColor={palette.lightGray1000}
             level="Q"
-            size={QRCODE_SIZE}
             value={value}
             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         />
-        {showMessage && (
-            <Message>
-                <SpanToResetWhitespace>
-                    <Translation id="TR_QR_RECEIVE_ADDRESS_CONFIRM" />
-                </SpanToResetWhitespace>
-                <StyledTooltip
-                    content={<Translation id="TR_QR_RECEIVE_ADDRESS_CONFIRM_EXPLANATION" />}
-                >
-                    <StyledIcon
-                        name="info"
-                        size={12}
-                        color={fgColor || intermediaryTheme.light.legacy.TYPE_DARK_GREY}
-                    />
-                </StyledTooltip>
-            </Message>
-        )}
     </Wrapper>
 );

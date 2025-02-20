@@ -1,11 +1,9 @@
-import { getNetwork } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { convertTaprootXpub } from '@trezor/utils';
 
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { ConfirmValueModal, ConfirmValueModalProps } from './ConfirmValueModal/ConfirmValueModal';
@@ -16,7 +14,6 @@ export const ConfirmXpubModal = (
 ) => {
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectSelectedAccount);
-    const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
 
     if (!device) return null;
     // TODO: special case for Connect Popup
@@ -37,23 +34,11 @@ export const ConfirmXpubModal = (
     return (
         <ConfirmValueModal
             account={account}
-            heading={
-                accountLabel ? (
-                    <Translation id="TR_XPUB_MODAL_TITLE_METADATA" values={{ accountLabel }} />
-                ) : (
-                    <Translation
-                        id="TR_XPUB_MODAL_TITLE"
-                        values={{
-                            networkName: getNetwork(account.symbol).name,
-                            accountIndex: `#${account.index + 1}`,
-                        }}
-                    />
-                )
-            }
-            stepLabel={<Translation id="TR_XPUB" />}
+            heading={<Translation id="TR_XPUB" />}
             validateOnDevice={showXpub}
-            copyButtonText={<Translation id="TR_XPUB_MODAL_CLIPBOARD" />}
+            isCopyButtonVisible={true}
             value={xpubWithReplacedApostropheWithH ?? xpub}
+            data-testid="@metadata/copy-xpub-button"
             {...props}
         />
     );

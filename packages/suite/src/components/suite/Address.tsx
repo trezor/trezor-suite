@@ -16,9 +16,10 @@ const addSpacing = (value: string) => value.match(/.{1,4}/g)?.join(' ') || value
 export type AddressProps = {
     value: string;
     isTruncated?: boolean;
+    'data-testid'?: string;
 };
 
-export const Address = ({ value, isTruncated }: AddressProps) => {
+export const Address = ({ value, isTruncated, 'data-testid': dataTestId }: AddressProps) => {
     const isChunked = useSelector(selectAddressDisplayType) === 'chunked';
     const placeholder = isChunked ? TRUNCATION_PLACEHOLDER : TRUNCATION_PLACEHOLDER.trim();
 
@@ -38,5 +39,9 @@ export const Address = ({ value, isTruncated }: AddressProps) => {
         );
     };
 
-    return <AddressWrapper onCopy={handleCopy}>{formattedValue ?? value}</AddressWrapper>;
+    return (
+        <AddressWrapper onCopy={handleCopy} data-testid={dataTestId}>
+            {formattedValue ?? value}
+        </AddressWrapper>
+    );
 };

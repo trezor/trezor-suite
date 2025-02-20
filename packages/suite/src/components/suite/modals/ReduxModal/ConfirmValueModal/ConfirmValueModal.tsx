@@ -1,92 +1,81 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     Banner,
+    Box,
+    BulletList,
+    Button,
     Card,
     Column,
+    H3,
+    IconCircle,
+    InfoItem,
     Link,
     NewModal,
     NewModalProps,
     Paragraph,
     Row,
-    Tooltip,
 } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { ConfirmOnDevice } from '@trezor/product-components';
-import { palette, spacings } from '@trezor/theme';
+import { CoinLogo, ConfirmOnDevice } from '@trezor/product-components';
+import { spacings } from '@trezor/theme';
 
 import { MODAL } from 'src/actions/suite/constants';
-import { Translation } from 'src/components/suite';
+import { AccountLabel, Address, Translation } from 'src/components/suite';
 import { QrCode } from 'src/components/suite/QrCode';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/RippleOptions/DestinationTag';
 
-import {
-    OutputElementLine,
-    TransactionReviewOutputElement,
-} from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
-
-export interface ConfirmValueModalProps
-    extends Pick<NewModalProps, 'onCancel' | 'heading' | 'description'> {
+export type ConfirmValueModalProps = Pick<NewModalProps, 'onCancel' | 'heading'> & {
     account: Account;
-    copyButtonText: ReactNode;
-    stepLabel: ReactNode;
     'data-testid'?: string;
     isConfirmed?: boolean;
+    areStepsVisible?: boolean;
+    isCopyButtonVisible?: boolean;
+    label?: ReactNode;
     validateOnDevice: () => ThunkAction;
     value: string;
-}
+};
 
 export const ConfirmValueModal = ({
     account,
-    copyButtonText,
     'data-testid': copyButtonDataTest,
-    stepLabel,
     heading,
-    description,
+    label,
     isConfirmed,
+    isCopyButtonVisible,
+    areStepsVisible,
     onCancel,
     validateOnDevice,
     value,
 }: ConfirmValueModalProps) => {
+    const [isCopied, setIsCopied] = useState(false);
     const device = useSelector(selectSelectedDevice);
     const modalContext = useSelector(state => state.modal.context);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
+    const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
+    const { symbol, accountType, index } = account;
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
-    const addressConfirmed = isConfirmed || !canConfirmOnDevice;
-    const isCancelable = isActionAbortable || addressConfirmed;
-    const state = addressConfirmed ? 'confirmed' : 'active';
-    const outputLines: OutputElementLine[] = [
-        {
-            id: 'address',
-            value,
-            type: 'safe-address',
-        },
-    ];
+    const isCancelable = isActionAbortable || isConfirmed;
 
     const copy = () => {
         const result = copyToClipboard(value);
+
         if (typeof result !== 'string') {
+            setIsCopied(true);
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }
-    };
-
-    const buttonTooltipContent = () => {
-        if (!addressConfirmed) {
-            return <Translation id="TR_CONFIRM_BEFORE_COPY" />;
-        }
-
-        return null;
     };
 
     const handleOpenGuide = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -101,8 +90,7 @@ export const ConfirmValueModal = ({
         }
     }, [canConfirmOnDevice, dispatch, isConfirmed, modalContext, validateOnDevice]);
 
-    // QR code needs constant colors, not light/dark theme colors
-    const qrCodeFgColor = addressConfirmed ? palette.lightGray1000 : palette.lightGray700;
+    const outputValue = <Address value={value} data-testid="@modal/output-value" />;
 
     return (
         <NewModal.Backdrop onClick={isCancelable ? onCancel : undefined}>
@@ -116,11 +104,21 @@ export const ConfirmValueModal = ({
             )}
             <NewModal.ModalBase
                 heading={heading}
-                description={description}
+                description={
+                    <Row gap={spacings.xxs}>
+                        <CoinLogo size={14} symbol={symbol} />
+                        <AccountLabel
+                            accountLabel={accountLabel}
+                            accountType={accountType}
+                            symbol={symbol}
+                            index={index}
+                        />
+                    </Row>
+                }
                 onCancel={isCancelable ? onCancel : undefined}
-                size="huge"
+                size="small"
             >
-                <Column gap={spacings.xl}>
+                <Column gap={spacings.md}>
                     {!device?.connected && (
                         <Banner icon="warningTriangle" variant="warning">
                             <Paragraph typographyStyle="hint">
@@ -153,33 +151,92 @@ export const ConfirmValueModal = ({
                             />
                         </Banner>
                     )}
-                    <Row gap={spacings.xl} alignItems="stretch">
-                        <Card flex="1" paddingType="small">
-                            <QrCode
-                                value={value}
-                                bgColor="transparent"
-                                fgColor={qrCodeFgColor}
-                                showMessage={!addressConfirmed}
-                            />
-                        </Card>
-                        <Column flex="2" justifyContent="space-between" gap={spacings.lg}>
-                            <TransactionReviewOutputElement
-                                title={stepLabel}
-                                lines={outputLines}
-                                state={state}
-                                account={account}
-                            />
-                            <Tooltip content={buttonTooltipContent()}>
-                                <NewModal.Button
-                                    isDisabled={!addressConfirmed}
-                                    onClick={copy}
-                                    data-testid={copyButtonDataTest}
+                    <Card fillType="flat">
+                        <Row
+                            gap={spacings.xl}
+                            alignItems="stretch"
+                            data-testid="@modal/output-address"
+                        >
+                            <Box aspectRatio="1" flex="1 0 auto" minWidth={120}>
+                                <QrCode value={value} />
+                            </Box>
+                            <Column gap={spacings.lg}>
+                                {label ? (
+                                    <InfoItem label={label}>{outputValue}</InfoItem>
+                                ) : (
+                                    outputValue
+                                )}
+                                {isCopyButtonVisible && (
+                                    <Button
+                                        onClick={copy}
+                                        variant="tertiary"
+                                        data-testid={copyButtonDataTest}
+                                        size="small"
+                                        textWrap={false}
+                                        icon={isCopied ? 'check' : 'copy'}
+                                    >
+                                        <Translation
+                                            id={
+                                                isCopied
+                                                    ? 'TR_COPIED_TO_CLIPBOARD'
+                                                    : 'TR_COPY_TO_CLIPBOARD'
+                                            }
+                                        />
+                                    </Button>
+                                )}
+                            </Column>
+                        </Row>
+                    </Card>
+                    {areStepsVisible && (
+                        <Card>
+                            <Row gap={spacings.lg}>
+                                <IconCircle
+                                    hasBorder={false}
+                                    variant="info"
+                                    size={32}
+                                    name="warningFilled"
+                                />
+                                <H3>
+                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING" />
+                                </H3>
+                            </Row>
+                            <BulletList
+                                isOrdered
+                                margin={{ top: spacings.xxxl }}
+                                gap={spacings.xl}
+                                titleGap={spacings.zero}
+                                bulletGap={spacings.lg}
+                            >
+                                <BulletList.Item
+                                    title={
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
+                                    }
                                 >
-                                    {copyButtonText}
-                                </NewModal.Button>
-                            </Tooltip>
-                        </Column>
-                    </Row>
+                                    <Paragraph variant="tertiary" textWrap="pretty">
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION" />
+                                    </Paragraph>
+                                </BulletList.Item>
+                                <BulletList.Item
+                                    title={
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
+                                    }
+                                >
+                                    <Paragraph variant="tertiary" textWrap="pretty">
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION" />
+                                    </Paragraph>
+                                </BulletList.Item>
+                                <BulletList.Item
+                                    title={
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING" />
+                                    }
+                                >
+                                    <Paragraph variant="tertiary" textWrap="pretty">
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION" />
+                                    </Paragraph>
+                                </BulletList.Item>
+                            </BulletList>
+                        </Card>
+                    )}
                 </Column>
             </NewModal.ModalBase>
         </NewModal.Backdrop>

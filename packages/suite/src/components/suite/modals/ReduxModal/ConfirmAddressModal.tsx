@@ -1,12 +1,5 @@
 import { useCallback } from 'react';
 
-import { cryptoIdToSymbol } from '@suite-common/trading';
-import {
-    getDisplaySymbol,
-    getNetwork,
-    getNetworkDisplaySymbol,
-    getNetworkFeatures,
-} from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
@@ -16,7 +9,6 @@ import {
     ConfirmValueModalProps,
 } from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
 import { useSelector } from 'src/hooks/suite';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
@@ -29,8 +21,7 @@ interface ConfirmAddressModalProps
 export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAddressModalProps) => {
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectAccountIncludingChosenInTrading);
-    const { modalCryptoId } = useSelector(state => state.wallet.trading);
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const isTradingFlow = useSelector(state => !!state.wallet.trading.modalAccountKey);
 
     const validateAddress = useCallback(
         () => showAddress(addressPath, value),
@@ -41,75 +32,14 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
     // TODO: special case for Connect Popup
     if (!account) return <ConfirmActionModal device={device} />;
 
-    const isTokensNetwork = getNetworkFeatures(account.symbol).includes('tokens');
-
-    const getHeading = () => {
-        if (modalCryptoId) {
-            const symbol = cryptoIdToSymbol(modalCryptoId);
-            const { coinSymbol, contractAddress } =
-                cryptoIdToSymbolAndContractAddress(modalCryptoId);
-            const networkName = symbol ? getNetwork(symbol).name : coinSymbol?.toUpperCase();
-            const networkCurrencyName = coinSymbol && getDisplaySymbol(coinSymbol, contractAddress);
-
-            if (contractAddress) {
-                return (
-                    <Translation
-                        id="TR_ADDRESS_MODAL_TITLE_EXCHANGE"
-                        values={{
-                            networkName,
-                            networkCurrencyName,
-                        }}
-                    />
-                );
-            }
-
-            return (
-                <Translation
-                    id="TR_ADDRESS_MODAL_TITLE"
-                    values={{
-                        networkName,
-                    }}
-                />
-            );
-        }
-
-        return (
-            <Translation
-                id="TR_ADDRESS_MODAL_TITLE"
-                values={{
-                    networkName: getNetwork(account.symbol).name,
-                }}
-            />
-        );
-    };
-
     return (
         <ConfirmValueModal
             account={account}
-            heading={getHeading()}
-            description={
-                modalCryptoId ? null : (
-                    <Translation
-                        id={
-                            isTokensNetwork
-                                ? 'TR_ADDRESS_MODAL_DESCRIPTION_TOKENS'
-                                : 'TR_ADDRESS_MODAL_DESCRIPTION'
-                        }
-                        values={{
-                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
-                        }}
-                    />
-                )
-            }
-            stepLabel={<Translation id="TR_RECEIVE_ADDRESS" />}
-            copyButtonText={
-                modalCryptoId ? (
-                    <Translation id="TR_CONFIRM" />
-                ) : (
-                    <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
-                )
-            }
+            heading={<Translation id="TR_RECEIVE" />}
+            label={<Translation id="TR_ADDRESS" />}
             validateOnDevice={validateAddress}
+            areStepsVisible={!isTradingFlow}
+            isCopyButtonVisible={!isTradingFlow}
             value={value}
             data-testid="@metadata/copy-address-button"
             {...props}

@@ -1428,6 +1428,10 @@ export default defineMessages({
         defaultMessage: 'Copy',
         id: 'TR_COPY_TO_CLIPBOARD',
     },
+    TR_COPIED_TO_CLIPBOARD: {
+        defaultMessage: 'Copied',
+        id: 'TR_COPIED_TO_CLIPBOARD',
+    },
     TR_ADDRESS_MODAL_TITLE: {
         defaultMessage: '{networkName} network receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
@@ -8576,6 +8580,35 @@ export default defineMessages({
         id: 'TR_SEND_ADDRESS_CONFIRMATION_NOTE',
         defaultMessage:
             'Verify that the original address matches the address on your Trezor exactly.',
+    },
+    TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING: {
+        id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING',
+        defaultMessage: 'Before you confirm on device',
+    },
+    TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING: {
+        id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING',
+        defaultMessage: 'Copy or scan the address',
+    },
+    TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION: {
+        id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION',
+        defaultMessage: 'Copy from Suite or scan the QR code (best from your Trezor device).',
+    },
+    TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING: {
+        id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING',
+        defaultMessage: 'Paste it where needed',
+    },
+    TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION: {
+        id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION',
+        defaultMessage: 'Use it in an exchange, another wallet, or send it to a friend.',
+    },
+    TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING: {
+        id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING',
+        defaultMessage: 'Verify on your Trezor',
+    },
+    TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION: {
+        id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION',
+        defaultMessage:
+            'Double-check that the pasted address matches what’s on your Trezor’s screen.',
     },
     TR_DISCOVERY_NEW_COINS: {
         id: 'TR_DISCOVERY_NEW_COINS',
