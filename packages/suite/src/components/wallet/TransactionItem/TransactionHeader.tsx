@@ -84,7 +84,12 @@ const getSolTransactionStakeTypeName = (stakeType: StakeType) => {
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
     const { translationString } = useTranslation();
 
-    if (transaction?.ethereumSpecific?.parsedData?.name && transaction.type !== 'failed') {
+    if (
+        transaction?.ethereumSpecific?.parsedData?.name &&
+        transaction.type !== 'failed' &&
+        // Exclude Transfer txs, the default messages are more descriptive
+        transaction.ethereumSpecific.parsedData.name !== 'Transfer'
+    ) {
         return (
             <Row gap={spacings.xxs} overflow="hidden">
                 <span>{transaction.ethereumSpecific.parsedData.name}</span>
@@ -104,6 +109,35 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
                 )}
             </Row>
         );
+    }
+
+    // Swap transaction - 2 tokens, token to native or native to token
+    if (
+        transaction.tokens.length === 2 ||
+        (transaction.tokens.length === 1 &&
+            (transaction.internalTransfers.length === 1 || transaction.targets.length === 1))
+    ) {
+        const combined = [
+            ...transaction.tokens,
+            ...transaction.internalTransfers.map(t => ({
+                type: t.type,
+                symbol: getNetworkDisplaySymbol(transaction.symbol),
+            })),
+            ...transaction.targets.map(_ => ({
+                type: 'sent',
+                symbol: getNetworkDisplaySymbol(transaction.symbol),
+            })),
+        ];
+        const fromSymbol = combined.find(t => t.type === 'sent')?.symbol;
+        const toSymbol = combined.find(t => t.type === 'recv')?.symbol;
+
+        if (fromSymbol && toSymbol) {
+            return (
+                <BlurUrls
+                    text={translationString('TR_SWAP_TRANSACTION', { fromSymbol, toSymbol })}
+                />
+            );
+        }
     }
 
     const isMultiTokenTransaction = transaction.tokens.length > 1;

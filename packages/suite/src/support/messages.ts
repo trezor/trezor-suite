@@ -3272,6 +3272,10 @@ export default defineMessages({
         defaultMessage: 'Coinjoin transactions',
         id: 'TR_COINJOIN_TRANSACTION_BATCH',
     },
+    TR_SWAP_TRANSACTION: {
+        defaultMessage: 'Swap from {fromSymbol} to {toSymbol}',
+        id: 'TR_SWAP_TRANSACTION',
+    },
     TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
         id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',

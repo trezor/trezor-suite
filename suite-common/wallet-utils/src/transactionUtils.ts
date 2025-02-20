@@ -1016,7 +1016,8 @@ export const advancedSearchTransactions = (
  */
 export const getTxHeaderSymbol = (transaction: WalletAccountTransaction) => {
     // check if tx has exactly one token
-    const isSingleTokenTransaction = transaction.tokens.length === 1;
+    const isSingleTokenTransaction =
+        transaction.tokens.length === 1 && transaction.targets.length === 0;
 
     // if there's exactly one token, use its symbol; otherwise, use the main network symbol
     const symbol = isSingleTokenTransaction ? transaction.tokens[0].symbol : transaction.symbol;
