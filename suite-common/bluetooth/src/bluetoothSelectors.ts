@@ -2,18 +2,19 @@ import { createWeakMapSelector } from '@suite-common/redux-utils';
 
 import { BluetoothDeviceCommon, BluetoothDeviceState, BluetoothState } from './bluetoothReducer';
 
-type State<T extends BluetoothDeviceCommon> = {
+export type WithBluetoothState<T extends BluetoothDeviceCommon> = {
     bluetooth: BluetoothState<T>;
 };
 
-export const selectAdapterStatus = <T extends BluetoothDeviceCommon>(state: State<T>) =>
-    state.bluetooth.adapterStatus;
+export const selectAdapterStatus = <T extends BluetoothDeviceCommon>(
+    state: WithBluetoothState<T>,
+) => state.bluetooth.adapterStatus;
 
-export const selectKnownDevices = <T extends BluetoothDeviceCommon>(state: State<T>) =>
+export const selectKnownDevices = <T extends BluetoothDeviceCommon>(state: WithBluetoothState<T>) =>
     state.bluetooth.knownDevices;
 
 export const prepareSelectAllDevices = <T extends BluetoothDeviceCommon>() =>
-    createWeakMapSelector.withTypes<State<T>>()(
+    createWeakMapSelector.withTypes<WithBluetoothState<T>>()(
         [state => state.bluetooth.nearbyDevices, state => state.bluetooth.knownDevices],
         (nearbyDevices, knownDevices) => {
             const map = new Map<string, BluetoothDeviceState<T>>();
@@ -27,9 +28,11 @@ export const prepareSelectAllDevices = <T extends BluetoothDeviceCommon>() =>
                 }
             });
 
-            return Array.from(map.values());
+            return Array.from(map.values()).sort(
+                (a, b) => b.device.lastUpdatedTimestamp - a.device.lastUpdatedTimestamp,
+            );
         },
     );
 
-export const selectScanStatus = <T extends BluetoothDeviceCommon>(state: State<T>) =>
+export const selectScanStatus = <T extends BluetoothDeviceCommon>(state: WithBluetoothState<T>) =>
     state.bluetooth.scanStatus;

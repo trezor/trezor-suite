@@ -9610,7 +9610,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
+    "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
 

@@ -71,11 +71,13 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                 bluetoothNearbyDevicesUpdateAction,
                 (state, { payload: { nearbyDevices } }) => {
                     state.nearbyDevices = nearbyDevices
-                        .sort((a, b) => a.lastUpdatedTimestamp - b.lastUpdatedTimestamp)
+                        .sort((a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp)
                         .map(
                             (device): Draft<BluetoothDeviceState<T>> => ({
                                 device: device as Draft<T>,
-                                status: null,
+                                status:
+                                    state.nearbyDevices.find(it => it.device.id === device.id)
+                                        ?.status ?? null,
                             }),
                         );
                 },
