@@ -48,7 +48,9 @@ jobs:
           eas-version: 14.7.1
           token: ${{ secrets.EXPO_TOKEN_DEVELOP }}
       - name: Install libs
-        run: yarn workspaces focus @suite-native/app
+        run: |
+          yarn workspaces focus @suite-native/app
+          npx patch-package
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
