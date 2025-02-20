@@ -10,6 +10,7 @@ import { createThunk } from '@suite-common/redux-utils/';
 import { BluetoothDevice, DeviceConnectionStatus, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { Without } from '@trezor/type-utils';
 
+import { remapKnownDevicesForLinux } from './remapKnownDevicesForLinux';
 import { selectSuiteFlags } from '../../reducers/suite/suiteReducer';
 
 type DeviceConnectionStatusWithOptionalId = Without<DeviceConnectionStatus, 'id'> & {
@@ -35,18 +36,9 @@ export const initBluetoothThunk = createThunk<void, void, void>(
 
             const knownDevices = selectKnownDevices<BluetoothDevice>(getState());
 
-            console.log('nearbyDevices', nearbyDevices);
-
-            // update pairedDevices, id is changed after pairing (linux)
-            const remappedKnownDevices = knownDevices.map(knownDevice => {
-                // find devices with the same address but different id
-                const changed = nearbyDevices.find(
-                    nearbyDevice =>
-                        nearbyDevice.address === knownDevice.address &&
-                        nearbyDevice.id !== knownDevice.id,
-                );
-
-                return changed ? { ...knownDevice, id: changed.id } : knownDevice;
+            const remappedKnownDevices = remapKnownDevicesForLinux({
+                knownDevices,
+                nearbyDevices,
             });
 
             dispatch(bluetoothKnownDevicesUpdateAction({ knownDevices: remappedKnownDevices }));
