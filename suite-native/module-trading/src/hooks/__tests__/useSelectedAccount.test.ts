@@ -59,7 +59,10 @@ describe('useSelectedAccount', () => {
 
         it('should be set to undefined when isVisible changed to false', () => {
             const { result, rerender } = renderUseSelectedAccountHook(true);
-            result.current.onItemSelect({ account: getBtcAccount() });
+
+            act(() => {
+                result.current.onItemSelect({ account: getBtcAccount() });
+            });
 
             rerender({
                 isVisible: false,
@@ -116,11 +119,9 @@ describe('useSelectedAccount', () => {
     describe('clearSelectedAccount', () => {
         it('should clear selectedAccount', () => {
             const { result } = renderUseSelectedAccountHook(true);
-            act(() => {
-                result.current.onItemSelect({ account: getBtcAccount() });
-            });
 
             act(() => {
+                result.current.onItemSelect({ account: getBtcAccount() });
                 result.current.clearSelectedAccount();
             });
 
