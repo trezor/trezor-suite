@@ -20,7 +20,7 @@ export type MetadataAddPayload = { skipSave?: boolean } & (
           type: 'outputLabel';
           entityKey: string;
           txid: string;
-          outputIndex: number;
+          outputIndex: number | string;
           defaultValue?: string;
           value?: string;
       }
