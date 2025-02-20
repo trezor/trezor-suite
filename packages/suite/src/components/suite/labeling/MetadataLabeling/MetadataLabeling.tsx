@@ -375,12 +375,12 @@ export const MetadataLabeling = ({
     };
 
     const ButtonLikeLabelWithDropdown = useMemo(() => {
-        if (payload.value) {
+        if (payload.value && !editActive) {
             return withDropdown(ButtonLikeLabel);
         }
 
         return ButtonLikeLabel;
-    }, [payload.value]);
+    }, [payload.value, editActive]);
 
     const labelContainerDataTest = `${dataTestBase}/hover-container`;
 
