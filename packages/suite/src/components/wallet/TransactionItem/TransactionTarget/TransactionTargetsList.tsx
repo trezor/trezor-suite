@@ -9,9 +9,9 @@ import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { BlurWrapper } from '../TransactionItemBlurWrapper';
-import { InternalTransfer, TokenTransfer, TransactionTarget } from './TransactionTarget';
+import { TransactionTarget } from './TransactionTarget';
 
-type CombinedTarget =
+export type CombinedTarget =
     | {
           type: 'token';
           payload: TokenTransferType;
@@ -62,6 +62,7 @@ export const TransactionTargetsList = ({
         useAnimation?: boolean;
     }) => {
         const commonProps = {
+            ...target,
             transaction,
             isFirst: i === 0,
             isLast,
@@ -75,15 +76,7 @@ export const TransactionTargetsList = ({
 
         return (
             <BlurWrapper $isBlurred={isPhishingTransaction} key={i}>
-                {target.type === 'target' && (
-                    <TransactionTarget target={target.payload} {...commonProps} />
-                )}
-                {target.type === 'token' && (
-                    <TokenTransfer transfer={target.payload} {...commonProps} />
-                )}
-                {target.type === 'internal' && (
-                    <InternalTransfer transfer={target.payload} {...commonProps} />
-                )}
+                <TransactionTarget {...commonProps} />
             </BlurWrapper>
         );
     };

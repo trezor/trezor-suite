@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -10,7 +12,6 @@ import {
     isTestnet,
 } from '@suite-common/wallet-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { ArrayElement } from '@trezor/type-utils';
 
 import {
     AddressLabeling,
@@ -29,126 +30,23 @@ import { TargetAddressLabel } from './TargetAddressLabel';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { AmountComponent } from '../../AmountComponent';
 import { TransactionTargetLayout } from '../TransactionTargetLayout';
+import { CombinedTarget } from './TransactionTargetsList';
 
-interface BaseTransfer {
-    singleRowLayout?: boolean;
-    useAnimation?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
-}
-
-interface TokenTransferProps extends BaseTransfer {
-    transfer: ArrayElement<WalletAccountTransaction['tokens']>;
-    transaction: WalletAccountTransaction;
-    isPhishingTransaction: boolean;
-}
-
-export const TokenTransfer = ({
-    transfer,
-    transaction,
-    isPhishingTransaction,
-    ...baseLayoutProps
-}: TokenTransferProps) => {
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey(
-        transaction.symbol,
-        fiatCurrencyCode,
-        transfer.contract as TokenAddress,
-    );
-    const historicRate = useSelector(state =>
-        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
-    );
-
-    return (
-        <TransactionTargetLayout
-            {...baseLayoutProps}
-            addressLabel={
-                <TokenTransferAddressLabel
-                    symbol={transaction.symbol}
-                    isPhishingTransaction={isPhishingTransaction}
-                    transfer={transfer}
-                    type={transaction.type}
-                />
-            }
-            amount={
-                <AmountComponent
-                    transfer={transfer}
-                    withLink={false}
-                    withSign={true}
-                    alignMultitoken="flex-end"
-                />
-            }
-            fiatAmount={
-                !isTestnet(transaction.symbol) && transfer.amount ? (
-                    <FiatValue
-                        amount={formatAmount(transfer.amount, transfer.decimals)}
-                        symbol={transaction.symbol}
-                        historicRate={historicRate}
-                        useHistoricRate
-                    />
-                ) : undefined
-            }
-        />
-    );
-};
-
-interface InternalTransferProps extends BaseTransfer {
-    transfer: ArrayElement<WalletAccountTransaction['internalTransfers']>;
-    transaction: WalletAccountTransaction;
-}
-
-export const InternalTransfer = ({
-    transfer,
-    transaction,
-    ...baseLayoutProps
-}: InternalTransferProps) => {
-    const fiatCurrencyCode = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
-    const historicRate = useSelector(state =>
-        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
-    );
-
-    const amount = transfer.amount && formatNetworkAmount(transfer.amount, transaction.symbol);
-    const operation = getTxOperation(transfer.type);
-
-    return (
-        <TransactionTargetLayout
-            {...baseLayoutProps}
-            addressLabel={<AddressLabeling address={transfer.to} symbol={transaction.symbol} />}
-            amount={
-                !baseLayoutProps.singleRowLayout && (
-                    <FormattedCryptoAmount
-                        value={amount}
-                        symbol={transaction.symbol}
-                        signValue={operation}
-                    />
-                )
-            }
-            fiatAmount={
-                !isTestnet(transaction.symbol) && amount ? (
-                    <FiatValue
-                        amount={amount}
-                        symbol={transaction.symbol}
-                        historicRate={historicRate}
-                        useHistoricRate
-                    />
-                ) : undefined
-            }
-        />
-    );
-};
-
-interface TransactionTargetProps extends BaseTransfer {
-    target: ArrayElement<WalletAccountTransaction['targets']>;
+type TransactionTargetProps = CombinedTarget & {
     transaction: WalletAccountTransaction;
     accountKey: string;
     accountMetadata?: AccountLabels;
     isActionDisabled?: boolean;
     isPhishingTransaction: boolean;
-}
+    singleRowLayout?: boolean;
+    useAnimation?: boolean;
+    isFirst?: boolean;
+    isLast?: boolean;
+};
 
 export const TransactionTarget = ({
-    target,
+    type,
+    payload,
     transaction,
     accountMetadata,
     accountKey,
@@ -159,90 +57,161 @@ export const TransactionTarget = ({
     const dispatch = useDispatch();
 
     const fiatCurrencyCode = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
+    const fiatRateKey = getFiatRateKey(
+        transaction.symbol,
+        fiatCurrencyCode,
+        type === 'token' ? (payload.contract as TokenAddress) : undefined,
+    );
     const historicRate = useSelector(state =>
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
-
-    const targetAmount = getTargetAmount(target, transaction);
-    const operation = getTxOperation(transaction.type);
-    const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[target.n];
-
-    const defaultMetadataValue = `${transaction.txid}-${target.n}`;
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
-    const isBeingEdited = defaultMetadataValue === labelingValueBeingEdited;
 
-    const copyAddress = () => {
-        let payload: ToastPayload = { type: 'copy-to-clipboard' };
-        if (!target?.addresses) {
-            // probably should not happen?
-            payload = {
-                type: 'error',
-                error: 'There is nothing to copy',
-            };
-        } else {
-            const result = copyToClipboard(target.addresses.join());
-            if (typeof result === 'string') {
-                payload = {
-                    type: 'error',
-                    error: result,
+    const amount = useMemo(() => {
+        switch (type) {
+            case 'target':
+                return getTargetAmount(payload, transaction);
+            case 'internal':
+                return payload.amount && formatNetworkAmount(payload.amount, transaction.symbol);
+            case 'token':
+                return formatAmount(payload.amount, payload.decimals);
+        }
+    }, [type, payload, transaction]);
+
+    const operation = getTxOperation(type === 'target' ? transaction.type : payload.type);
+
+    const amountComponent = useMemo(() => {
+        switch (type) {
+            case 'target':
+            case 'internal':
+                return amount && !baseLayoutProps.singleRowLayout ? (
+                    <FormattedCryptoAmount
+                        value={amount}
+                        symbol={transaction.symbol}
+                        signValue={operation}
+                    />
+                ) : undefined;
+            case 'token':
+                return (
+                    <AmountComponent
+                        transfer={payload}
+                        withLink={false}
+                        withSign={true}
+                        alignMultitoken="flex-end"
+                    />
+                );
+        }
+    }, [amount, baseLayoutProps.singleRowLayout, operation, transaction.symbol, type, payload]);
+    const fiatAmountComponent = useMemo(
+        () =>
+            !isTestnet(transaction.symbol) && amount ? (
+                <FiatValue
+                    amount={amount}
+                    symbol={transaction.symbol}
+                    historicRate={historicRate}
+                    useHistoricRate
+                />
+            ) : undefined,
+        [amount, historicRate, transaction.symbol],
+    );
+
+    const { addressLabel, isBeingEdited } = useMemo(() => {
+        switch (type) {
+            case 'target': {
+                const targetMetadata =
+                    accountMetadata?.outputLabels?.[transaction.txid]?.[payload.n];
+                const defaultMetadataValue = `${transaction.txid}-${payload.n}`;
+                const isBeingEdited = defaultMetadataValue === labelingValueBeingEdited;
+
+                const copyAddress = () => {
+                    let toast: ToastPayload = { type: 'copy-to-clipboard' };
+                    if (!payload?.addresses) {
+                        // probably should not happen?
+                        toast = {
+                            type: 'error',
+                            error: 'There is nothing to copy',
+                        };
+                    } else {
+                        const result = copyToClipboard(payload.addresses.join());
+                        if (typeof result === 'string') {
+                            toast = {
+                                type: 'error',
+                                error: result,
+                            };
+                        }
+                    }
+                    dispatch(notificationsActions.addToast(toast));
+                };
+
+                return {
+                    addressLabel: (
+                        <MetadataLabeling
+                            isDisabled={isActionDisabled}
+                            defaultVisibleValue={
+                                <TargetAddressLabel
+                                    symbol={transaction.symbol}
+                                    accountMetadata={accountMetadata}
+                                    target={payload}
+                                    type={transaction.type}
+                                />
+                            }
+                            dropdownOptions={[
+                                {
+                                    onClick: copyAddress,
+                                    label: <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />,
+                                    'data-testid': 'copy-address', // hack: This will be prefixed in the withDropdown()
+                                },
+                            ]}
+                            payload={{
+                                type: 'outputLabel',
+                                entityKey: accountKey,
+                                txid: transaction.txid,
+                                outputIndex: payload.n,
+                                defaultValue: defaultMetadataValue,
+                                value: targetMetadata,
+                            }}
+                        />
+                    ),
+                    isBeingEdited,
                 };
             }
+            case 'token':
+                return {
+                    addressLabel: (
+                        <TokenTransferAddressLabel
+                            symbol={transaction.symbol}
+                            isPhishingTransaction={isPhishingTransaction}
+                            transfer={payload}
+                            type={transaction.type}
+                        />
+                    ),
+                };
+            case 'internal':
+                return {
+                    addressLabel: (
+                        <AddressLabeling address={payload.to} symbol={transaction.symbol} />
+                    ),
+                };
         }
-        dispatch(notificationsActions.addToast(payload));
-    };
+    }, [
+        type,
+        payload,
+        transaction,
+        accountMetadata,
+        accountKey,
+        isActionDisabled,
+        isPhishingTransaction,
+        labelingValueBeingEdited,
+        dispatch,
+    ]);
 
     return (
         <TransactionTargetLayout
             {...baseLayoutProps}
             useHiddenPlaceholder={!isBeingEdited}
-            addressLabel={
-                <MetadataLabeling
-                    isDisabled={isActionDisabled}
-                    defaultVisibleValue={
-                        <TargetAddressLabel
-                            symbol={transaction.symbol}
-                            accountMetadata={accountMetadata}
-                            target={target}
-                            type={transaction.type}
-                        />
-                    }
-                    dropdownOptions={[
-                        {
-                            onClick: copyAddress,
-                            label: <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />,
-                            'data-testid': 'copy-address', // hack: This will be prefixed in the withDropdown()
-                        },
-                    ]}
-                    payload={{
-                        type: 'outputLabel',
-                        entityKey: accountKey,
-                        txid: transaction.txid,
-                        outputIndex: target.n,
-                        defaultValue: defaultMetadataValue,
-                        value: targetMetadata,
-                    }}
-                />
-            }
-            amount={
-                targetAmount && !baseLayoutProps.singleRowLayout ? (
-                    <FormattedCryptoAmount
-                        value={targetAmount}
-                        symbol={transaction.symbol}
-                        signValue={operation}
-                    />
-                ) : undefined
-            }
-            fiatAmount={
-                !isTestnet(transaction.symbol) && targetAmount ? (
-                    <FiatValue
-                        amount={targetAmount}
-                        symbol={transaction.symbol}
-                        historicRate={historicRate}
-                        useHistoricRate
-                    />
-                ) : undefined
-            }
+            addressLabel={addressLabel}
+            amount={amountComponent}
+            fiatAmount={fiatAmountComponent}
         />
     );
 };
