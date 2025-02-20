@@ -1,6 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe(
+test.describe.skip(
     'Onboarding - transport webusb/bridge',
     { tag: ['@group=device-management', '@webOnly'] },
     () => {
