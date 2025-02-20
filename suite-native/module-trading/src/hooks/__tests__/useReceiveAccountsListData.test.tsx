@@ -77,7 +77,7 @@ describe('useReceiveAccountsListData', () => {
         );
 
         await waitFor(() => {
-            expect(ret.result.current).not.toBeUndefined();
+            expect(ret.result.current).toBeTruthy();
         });
 
         return ret;
@@ -114,6 +114,15 @@ describe('useReceiveAccountsListData', () => {
                     data: [{ account: expect.objectContaining({ key: 'eth1' }) }],
                 },
             ]);
+        });
+
+        it('should render empty array when wallet accounts are not initialized', async () => {
+            const { result } = await renderUseReceiveAccountsListDataHook('btc', undefined, {
+                ...defaultPreloadedState,
+                wallet: undefined,
+            });
+
+            expect(result.current).toEqual([]);
         });
     });
 

@@ -23,11 +23,7 @@ export const useReceiveAccountsListData = (
         selectVisibleDeviceAccountsByNetworkSymbol(state, symbol),
     );
 
-    return useMemo<SectionListData<ReceiveAccount> | undefined>(() => {
-        if (!accounts) {
-            return undefined;
-        }
-
+    return useMemo<SectionListData<ReceiveAccount>>(() => {
         if (!selectedAccount) {
             const data = accounts.map(account => ({ account }));
 

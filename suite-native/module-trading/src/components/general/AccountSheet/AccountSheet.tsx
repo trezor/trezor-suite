@@ -30,7 +30,7 @@ export const AccountSheet = ({
         isVisible,
     });
 
-    const data = useReceiveAccountsListData(symbol, selectedAccount) ?? [];
+    const data = useReceiveAccountsListData(symbol, selectedAccount);
 
     return (
         <TradingBottomSheetSectionList<ReceiveAccount>
