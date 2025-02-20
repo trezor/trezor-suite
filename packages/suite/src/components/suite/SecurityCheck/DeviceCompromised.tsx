@@ -1,6 +1,9 @@
 import { deviceActions } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
-import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
+import {
+    HELP_CENTER_ENTROPY_CHECK_URL,
+    TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
+} from '@trezor/urls';
 
 import { WelcomeLayout } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
@@ -34,7 +37,7 @@ const useSecurityCheckFailProps = (): SecurityCheckFailProps => {
             text: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
             checklistItems: hardFailureChecklistItems,
             goBack: undefined,
-            supportUrl: TREZOR_SUPPORT_URL, // TODO: add specific URL when it is created
+            supportUrl: HELP_CENTER_ENTROPY_CHECK_URL,
         };
     }
     // revision check has precedence over hash check, because it does not have the ambiguous other-error state

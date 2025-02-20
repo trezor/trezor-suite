@@ -119,6 +119,7 @@ export const HELP_CENTER_FIRMWARE_REVISION_CHECK: Url =
     'https://trezor.io/learn/a/trezor-firmware-authenticity-check';
 export const HELP_CENTER_FIRMWARE_REVISION_CHECK_MOBILE: Url =
     'https://trezor.io/learn/a/trezor-firmware-authenticity-check-mobile';
+export const HELP_CENTER_ENTROPY_CHECK_URL: Url = 'https://trezor.io/learn/a/entropy-check';
 
 export const HELP_CENTER_REPLACE_BY_FEE_ETHEREUM: Url =
     'https://trezor.io/learn/a/replace-by-fee-rbf-ethereum';
