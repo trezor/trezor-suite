@@ -5,6 +5,9 @@ import { DevicePromptActions } from '../devicePromptActions';
 
 export class BackupActions {
     readonly startButton: Locator;
+    readonly undertandWhatSeedIsCheckbox: Locator;
+    readonly hasEnoughTimeCheckbox: Locator;
+    readonly isInPrivateCheckbox: Locator;
     readonly wroteSeedProperlyCheckbox: Locator;
     readonly madeNoDigitalCopyCheckbox: Locator;
     readonly willHideSeedCheckbox: Locator;
@@ -15,6 +18,11 @@ export class BackupActions {
         private devicePrompt: DevicePromptActions,
     ) {
         this.startButton = page.getByTestId('@backup/start-button');
+        this.undertandWhatSeedIsCheckbox = page.getByTestId(
+            '@backup/check-item/understands-what-seed-is',
+        );
+        this.hasEnoughTimeCheckbox = page.getByTestId('@backup/check-item/has-enough-time');
+        this.isInPrivateCheckbox = page.getByTestId('@backup/check-item/is-in-private');
         this.wroteSeedProperlyCheckbox = page.getByTestId('@backup/check-item/wrote-seed-properly');
         this.madeNoDigitalCopyCheckbox = page.getByTestId(
             '@backup/check-item/made-no-digital-copy',

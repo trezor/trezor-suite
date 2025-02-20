@@ -34,6 +34,7 @@ export class DashboardActions {
     readonly passphraseSubmitButton: Locator;
     readonly passphraseShowButton: Locator;
     readonly loading: Locator;
+    readonly notificationNoBackupButton: Locator;
 
     constructor(
         private readonly page: Page,
@@ -62,6 +63,7 @@ export class DashboardActions {
         this.passphraseSubmitButton = this.page.getByTestId('@passphrase/hidden/submit-button');
         this.passphraseShowButton = this.page.getByTestId('@passphrase/show-toggle');
         this.loading = this.page.getByTestId('@dashboard/loading');
+        this.notificationNoBackupButton = this.page.getByTestId('@notification/no-backup/button');
     }
 
     @step()

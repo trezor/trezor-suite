@@ -3,6 +3,7 @@ import { Locator, Page, test } from '@playwright/test';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { CoinsActions } from './coinActions';
+import { DeviceActions } from './deviceActions';
 import { TrezorUserEnvLinkProxy, step } from '../../common';
 import { expect } from '../../customMatchers';
 
@@ -38,6 +39,7 @@ const backgroundImages = {
 export class SettingsActions {
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
     readonly coins: CoinsActions;
+    readonly device: DeviceActions;
 
     readonly settingsMenuButton: Locator;
     readonly settingsHeader: Locator;
@@ -73,6 +75,7 @@ export class SettingsActions {
         private readonly apiURL: string,
     ) {
         this.coins = new CoinsActions(page);
+        this.device = new DeviceActions(page);
 
         this.settingsMenuButton = this.page.getByTestId('@suite/menu/settings');
         this.settingsHeader = this.page.getByTestId('@settings/menu/title');
