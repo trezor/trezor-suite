@@ -24,6 +24,7 @@ import { TrezorUserEnvLink } from '../src';
             console.log('setting up emulator');
             await TrezorUserEnvLink.setupEmu();
 
+            await TrezorUserEnvLink.allowUnsafePaths();
             // todo: run more complex commands, typically those that require interaction with multiple screens (dry run..)
 
             console.log('wiping emulator');
