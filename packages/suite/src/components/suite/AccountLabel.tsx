@@ -17,6 +17,7 @@ const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;
     text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
 `;
 
 interface AccountLabelProps {
