@@ -17,12 +17,13 @@ import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
 import { DropdownMenuItemProps, Menu, MenuProps } from '../Menu/Menu';
 import { Popover, PopoverRef } from '../Popover/Popover';
 import { PopoverPlacement } from '../Popover/utils';
+import { type IconOrComponent } from '../buttons/Button/Button';
 import { IconButton } from '../buttons/IconButton/IconButton';
 
 export const allowedDropdownFrameProps = ['width'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedDropdownFrameProps)[number]>;
 
-const MoreIcon = styled(IconButton)<{ $isToggled: boolean }>`
+const DropdownTriggerStyledIcon = styled(IconButton)<{ $isToggled: boolean }>`
     background: ${({ isDisabled, $isToggled, theme }) =>
         !isDisabled && $isToggled && theme.backgroundNeutralSubdued};
 
@@ -35,6 +36,7 @@ export type DropdownProps = Omit<MenuProps, 'setToggled'> &
     AllowedFrameProps & {
         placement?: PopoverPlacement;
         isDisabled?: boolean;
+        icon?: IconOrComponent;
         renderOnClickPosition?: boolean;
         onToggle?: (isToggled: boolean) => void;
         className?: string;
@@ -59,6 +61,7 @@ export const Dropdown = forwardRef(
             placement,
             onToggle,
             children,
+            icon = 'dotsThree',
             'data-testid': dataTest,
         }: DropdownProps,
         ref,
@@ -110,10 +113,10 @@ export const Dropdown = forwardRef(
                 })}
             </div>
         ) : (
-            <MoreIcon
+            <DropdownTriggerStyledIcon
                 size="small"
                 variant="tertiary"
-                icon="dotsThree"
+                icon={icon}
                 tabIndex={-1}
                 $isToggled={isToggled}
                 isDisabled={isDisabled}
