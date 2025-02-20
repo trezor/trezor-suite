@@ -3,6 +3,8 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 
+import { WebpackSecurityCheckPlugin } from '@trezor/bundler-security';
+
 import { version } from '../package.json';
 import { getDistPathForProject } from './utils';
 
@@ -106,6 +108,7 @@ export const config: webpack.Configuration = {
         hints: false,
     },
     plugins: [
+        new WebpackSecurityCheckPlugin(),
         new webpack.DefinePlugin({
             'process.env.IS_CODESIGN_BUILD': `"${process.env.IS_CODESIGN_BUILD === 'true'}"`, // to keep it as string "true"/"false" and not boolean
         }),

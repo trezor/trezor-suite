@@ -2,6 +2,9 @@
 const { mergeConfig } = require('@react-native/metro-config');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const nodejs = require('node-libs-browser');
+
+const { metroSecureResolver } = require('@trezor/bundler-security/src/metroSecureResolver');
+
 // Learn more https://docs.expo.io/guides/customizing-metro
 
 const jsonExpoConfig = getSentryExpoConfig(__dirname);
@@ -36,7 +39,12 @@ const config = {
         },
         sourceExts,
         resolveRequest: (context, moduleName, platform) => {
-            // index 0 refers to suite-native/app node_modules directory
+            metroSecureResolver({
+                moduleName,
+                originModulePath: context.originModulePath,
+            });
+
+            // web3-validator package handling
             const rootNodeModulesPath = context.nodeModulesPaths[1];
 
             // web3-validator package is by default trying to use non-existing minified index file. This fixes that.

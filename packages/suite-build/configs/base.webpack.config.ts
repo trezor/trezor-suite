@@ -5,6 +5,8 @@ import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 // Get Suite App version from the Suite package.json
+import { WebpackSecurityCheckPlugin } from '@trezor/bundler-security';
+
 import { suiteVersion } from '../../suite/package.json';
 import {
     assetPrefix,
@@ -16,7 +18,6 @@ import {
 } from '../utils/env';
 import { getRevision } from '../utils/git';
 import { getPathForProject } from '../utils/path';
-
 const gitRevision = getRevision();
 
 /**
@@ -158,6 +159,7 @@ const config: webpack.Configuration = {
         ],
     },
     plugins: [
+        new WebpackSecurityCheckPlugin(),
         new webpack.ProgressPlugin(),
         new webpack.DefinePlugin({
             'process.browser': true,

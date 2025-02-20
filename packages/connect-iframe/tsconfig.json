@@ -9,6 +9,7 @@
         { "path": "../connect" },
         { "path": "../connect-analytics" },
         { "path": "../connect-common" },
+        { "path": "../bundler-security" },
         { "path": "../env-utils" },
         { "path": "../eslint" }
     ]

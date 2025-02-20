@@ -72,6 +72,9 @@
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../transactions" },
+        {
+            "path": "../../packages/bundler-security"
+        },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/react-native-usb"
