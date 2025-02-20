@@ -69,6 +69,8 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
                         option => autoLockDelay && autoLockDelay / 1000 === option.value,
                     )}
                     isDisabled={isDeviceLocked}
+                    isTooltipActive={isDeviceLocked}
+                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                     data-testid="@settings/auto-lock-select"
                 />
             </ActionColumn>

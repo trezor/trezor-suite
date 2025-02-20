@@ -1,4 +1,4 @@
-import { Switch } from '@trezor/components';
+import { Switch, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
@@ -39,12 +39,17 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
                 buttonLink={HELP_CENTER_PASSPHRASE_URL}
             />
             <ActionColumn>
-                <Switch
-                    isChecked={passphraseProtection}
-                    onChange={handleChange}
-                    data-testid="@settings/device/passphrase-switch"
-                    isDisabled={isDeviceLocked}
-                />
+                <Tooltip
+                    isActive={isDeviceLocked}
+                    content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+                >
+                    <Switch
+                        isChecked={passphraseProtection}
+                        onChange={handleChange}
+                        data-testid="@settings/device/passphrase-switch"
+                        isDisabled={isDeviceLocked}
+                    />
+                </Tooltip>
             </ActionColumn>
         </SettingsSectionItem>
     );

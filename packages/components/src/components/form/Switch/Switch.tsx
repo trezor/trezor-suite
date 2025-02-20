@@ -72,7 +72,7 @@ const Container = styled.div<{
 `;
 
 const Handle = styled.button<{
-    $disabled?: boolean;
+    $isDisabled?: boolean;
     $isChecked: boolean;
     $isSmall?: boolean; // TODO: legacy prop
 }>`
@@ -87,7 +87,7 @@ const Handle = styled.button<{
     transform: ${({ $isChecked, $isSmall }) =>
         $isChecked && `translateX(${$isSmall ? '14px' : '20px'})`};
     transition: transform 0.25s ease 0s;
-    cursor: ${({ $disabled }) => !$disabled && 'pointer'};
+    cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'pointer')};
 `;
 
 const CheckboxInput = styled.input`
@@ -165,7 +165,7 @@ export const Switch = ({
                 <Handle
                     tabIndex={-1}
                     $isChecked={isChecked}
-                    $disabled={isDisabled}
+                    $isDisabled={isDisabled}
                     type="button"
                     $isSmall={isSmall}
                 />

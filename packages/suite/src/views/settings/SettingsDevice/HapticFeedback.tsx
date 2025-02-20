@@ -1,4 +1,4 @@
-import { Switch } from '@trezor/components';
+import { Switch, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
@@ -42,12 +42,17 @@ export const HapticFeedback = ({ isDeviceLocked }: DeviceLabelProps) => {
                 description={<Translation id="TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_DESC" />}
             />
             <ActionColumn>
-                <Switch
-                    isChecked={hapticEnabled}
-                    onChange={handleChange}
-                    isDisabled={isDeviceLocked}
-                    data-testid="@settings/device/haptic-switch"
-                />
+                <Tooltip
+                    isActive={isDeviceLocked}
+                    content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+                >
+                    <Switch
+                        isChecked={hapticEnabled}
+                        onChange={handleChange}
+                        isDisabled={isDeviceLocked}
+                        data-testid="@settings/device/haptic-switch"
+                    />
+                </Tooltip>
             </ActionColumn>
         </SettingsSectionItem>
     );

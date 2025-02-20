@@ -1,4 +1,4 @@
-import { Switch } from '@trezor/components';
+import { Switch, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
@@ -34,12 +34,17 @@ export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
                 description={<Translation id="TR_DEVICE_SETTINGS_PIN_PROTECTION_DESC" />}
             />
             <ActionColumn>
-                <Switch
-                    isChecked={!!pinProtection}
-                    onChange={handleChange}
-                    isDisabled={isDeviceLocked}
-                    data-testid="@settings/device/pin-switch"
-                />
+                <Tooltip
+                    isActive={isDeviceLocked}
+                    content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+                >
+                    <Switch
+                        isChecked={!!pinProtection}
+                        onChange={handleChange}
+                        isDisabled={isDeviceLocked}
+                        data-testid="@settings/device/pin-switch"
+                    />
+                </Tooltip>
             </ActionColumn>
         </SettingsSectionItem>
     );

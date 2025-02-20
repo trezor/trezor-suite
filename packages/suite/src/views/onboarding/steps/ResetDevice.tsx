@@ -156,13 +156,22 @@ export const ResetDeviceStep = () => {
                     <SelectWrapper>
                         {canChoseBackupType && (
                             <>
-                                <SelectBackupType
-                                    selected={backupType}
-                                    onOpen={() => updateAnalytics({ wasSelectTypeOpened: true })}
-                                    onSelect={setBackupType}
-                                    isDisabled={isDeviceLocked}
-                                    data-testid="@onboarding/select-seed-type-open-dialog"
-                                />
+                                <Tooltip
+                                    isActive={isDeviceLocked}
+                                    content={
+                                        <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                    }
+                                >
+                                    <SelectBackupType
+                                        selected={backupType}
+                                        onOpen={() =>
+                                            updateAnalytics({ wasSelectTypeOpened: true })
+                                        }
+                                        onSelect={setBackupType}
+                                        isDisabled={isDeviceLocked}
+                                        data-testid="@onboarding/select-seed-type-open-dialog"
+                                    />
+                                </Tooltip>
                                 <Divider />
                             </>
                         )}

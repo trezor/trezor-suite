@@ -48,6 +48,8 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
                     options={languageOptions}
                     onChange={onChange}
                     isDisabled={isDeviceLocked}
+                    isTooltipActive={isDeviceLocked}
+                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                     data-testid="@settings/device/firmware-language-select"
                 />
             </ActionColumn>

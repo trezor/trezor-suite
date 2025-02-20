@@ -34,6 +34,8 @@ export const EnableViewOnly = () => {
                     onClick={handleSwitchDeviceClick}
                     variant="primary"
                     isDisabled={!isDeviceConnected}
+                    isTooltipActive={!isDeviceConnected}
+                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >
                     <Translation id="TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON" />
                 </ActionButton>

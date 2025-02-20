@@ -20,10 +20,20 @@ export const ActionColumn = styled.div`
     }
 `;
 
-export const ActionSelect = styled((props: SelectProps) => <Select {...props} size="small" />)`
-    width: 170px;
-    margin: 4px 0 4px 4px;
+type WithTooltipProps = { tooltipContent?: ReactNode; isTooltipActive?: boolean };
 
+export const ActionSelect = styled(
+    ({ tooltipContent, isTooltipActive, ...selectProps }: SelectProps & WithTooltipProps) => (
+        <Tooltip content={tooltipContent} isActive={isTooltipActive} cursor="inherit">
+            <Select
+                {...selectProps}
+                margin={{ top: spacings.xxs, bottom: spacings.xxs, left: spacings.xxs }}
+                size="small"
+                width={170}
+            />
+        </Tooltip>
+    ),
+)`
     &:not(:first-child) {
         margin-left: 8px;
     }
@@ -40,8 +50,8 @@ export const ActionButton = styled(
         isTooltipActive,
         children,
         ...buttonProps
-    }: { tooltipContent?: ReactNode; isTooltipActive?: boolean } & ButtonProps) => (
-        <Tooltip content={tooltipContent} isActive={isTooltipActive}>
+    }: WithTooltipProps & ButtonProps) => (
+        <Tooltip content={tooltipContent} isActive={isTooltipActive} cursor="inherit">
             <Button
                 {...buttonProps}
                 size="small"

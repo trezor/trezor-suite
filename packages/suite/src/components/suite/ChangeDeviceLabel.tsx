@@ -3,7 +3,7 @@ import { ChangeEventHandler, useState } from 'react';
 import styled from 'styled-components';
 
 import { selectDeviceLabel, selectDeviceName } from '@suite-common/wallet-core';
-import { Button, Input } from '@trezor/components';
+import { Button, Input, Tooltip } from '@trezor/components';
 import { breakpointMediaQueries } from '@trezor/styles';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx } from '@trezor/theme';
@@ -83,15 +83,21 @@ export const ChangeDeviceLabel = ({
                 data-testid="@settings/device/label-input"
                 size={isVertical ? 'small' : 'large'}
             />
-            <Button
-                onClick={handleClick}
-                isDisabled={isDisabled}
-                data-testid="@settings/device/label-submit"
-                size={isVertical ? 'small' : 'large'}
+            <Tooltip
+                isActive={isDeviceLocked}
+                content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 isFullWidth
             >
-                <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
-            </Button>
+                <Button
+                    onClick={handleClick}
+                    isDisabled={isDisabled}
+                    data-testid="@settings/device/label-submit"
+                    size={isVertical ? 'small' : 'large'}
+                    isFullWidth
+                >
+                    <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
+                </Button>
+            </Tooltip>
         </Container>
     );
 };

@@ -74,21 +74,26 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
         <SettingsSectionItem anchorId={SettingsAnchor.DisplayRotation}>
             <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DISPLAY_ROTATION" />} />
             <ActionColumn>
-                <SelectBar
-                    isDisabled={isDeviceLocked}
-                    data-testid="@settings/device/rotation-button"
-                    selectedOption={currentRotation ?? undefined}
-                    options={DISPLAY_ROTATIONS}
-                    onChange={(value: DisplayRotationType) => {
-                        dispatch(applySettings({ display_rotation: value }));
-                        analytics.report({
-                            type: EventType.SettingsDeviceChangeOrientation,
-                            payload: {
-                                value: PROTO.Enum_DisplayRotation[value],
-                            },
-                        });
-                    }}
-                />
+                <Tooltip
+                    isActive={isDeviceLocked}
+                    content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+                >
+                    <SelectBar
+                        isDisabled={isDeviceLocked}
+                        data-testid="@settings/device/rotation-button"
+                        selectedOption={currentRotation ?? undefined}
+                        options={DISPLAY_ROTATIONS}
+                        onChange={(value: DisplayRotationType) => {
+                            dispatch(applySettings({ display_rotation: value }));
+                            analytics.report({
+                                type: EventType.SettingsDeviceChangeOrientation,
+                                payload: {
+                                    value: PROTO.Enum_DisplayRotation[value],
+                                },
+                            });
+                        }}
+                    />
+                </Tooltip>
             </ActionColumn>
         </SettingsSectionItem>
     );
