@@ -22,6 +22,7 @@ export const allowedBoxFrameProps = [
     'position',
     'cursor',
     'zIndex',
+    'aspectRatio',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>;
 

@@ -2,10 +2,15 @@ import styled from 'styled-components';
 
 import { SpacingValues } from '@trezor/theme';
 
-import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
-import { TransientProps, makePropsTransient } from '../../utils/transientProps';
+import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../utils/frameProps';
+import { TransientProps } from '../../utils/transientProps';
 
-export const allowedGridFrameProps: FramePropsKeys[] = ['margin', 'width', 'height'];
+export const allowedGridFrameProps: FramePropsKeys[] = ['margin', 'width', 'height', 'flex'];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedGridFrameProps)[number]>;
 
 const Container = styled.div<
@@ -27,16 +32,12 @@ export type GridProps = AllowedFrameProps & {
     children: React.ReactNode;
 };
 
-export const Grid = ({ gap = 0, columns, children, margin, width, height }: GridProps) => (
-    <Container
-        {...makePropsTransient({
-            gap,
-            columns,
-            margin,
-            width,
-            height,
-        })}
-    >
-        {children}
-    </Container>
-);
+export const Grid = ({ columns, gap = 0, children, ...rest }: GridProps) => {
+    const frameProps = pickAndPrepareFrameProps(rest, allowedGridFrameProps);
+
+    return (
+        <Container $columns={columns} $gap={gap} {...frameProps}>
+            {children}
+        </Container>
+    );
+};

@@ -73,10 +73,10 @@ export type FrameProps = {
     overflow?: Overflow;
     pointerEvents?: PointerEvent;
     flex?: Flex;
-    gap?: SpacingValues;
     position?: Position;
     cursor?: Cursor;
     zIndex?: number;
+    aspectRatio?: `${number}` | `${number} / ${number}`;
 };
 export type FramePropsKeys = keyof FrameProps;
 
@@ -117,6 +117,7 @@ export const withFrameProps = ({
     $position,
     $cursor,
     $zIndex,
+    $aspectRatio,
 }: TransientFrameProps) => css`
     ${$margin &&
     (typeof $margin === 'object'
@@ -140,27 +141,27 @@ export const withFrameProps = ({
         : css`
               padding: ${getValueWithUnit($padding)};
           `)}
-        ${$minWidth &&
+    ${typeof $minWidth !== 'undefined' &&
     css`
         min-width: ${getValueWithUnit($minWidth)};
     `};
-    ${$maxWidth &&
+    ${typeof $maxWidth !== 'undefined' &&
     css`
         max-width: ${getValueWithUnit($maxWidth)};
     `};
-    ${$minHeight &&
+    ${typeof $minHeight !== 'undefined' &&
     css`
         min-height: ${getValueWithUnit($minHeight)};
     `};
-    ${$maxHeight &&
+    ${typeof $maxHeight !== 'undefined' &&
     css`
         max-height: ${getValueWithUnit($maxHeight)};
     `};
-    ${$width &&
+    ${typeof $width !== 'undefined' &&
     css`
         width: ${getValueWithUnit($width)};
     `};
-    ${$height &&
+    ${typeof $height !== 'undefined' &&
     css`
         height: ${getValueWithUnit($height)};
     `};
@@ -190,10 +191,14 @@ export const withFrameProps = ({
     css`
         cursor: ${$cursor};
     `};
-    ${$zIndex &&
+    ${typeof $zIndex !== 'undefined' &&
     css`
         z-index: ${$zIndex};
-    `}
+    `};
+    ${typeof $aspectRatio !== 'undefined' &&
+    css`
+        aspect-ratio: ${$aspectRatio};
+    `};
 `;
 
 const getStorybookType = (key: FramePropsKeys) => {
@@ -211,6 +216,7 @@ const getStorybookType = (key: FramePropsKeys) => {
         case 'maxWidth':
         case 'maxHeight':
         case 'flex':
+        case 'aspectRatio':
             return {
                 control: {
                     type: 'text',
@@ -312,6 +318,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('pointerEvents') ? { pointerEvents: undefined } : {}),
             ...(allowedFrameProps.includes('cursor') ? { cursor: undefined } : {}),
             ...(allowedFrameProps.includes('zIndex') ? { zIndex: undefined } : {}),
+            ...(allowedFrameProps.includes('aspectRatio') ? { aspectRatio: undefined } : {}),
         },
         argTypes,
     };
