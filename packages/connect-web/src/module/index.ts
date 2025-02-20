@@ -80,6 +80,8 @@ const TrezorConnect = factory(
 export default TrezorConnect;
 export * from '@trezor/connect/src/exports';
 
-window.addEventListener('beforeunload', () => {
-    impl.dispose();
-});
+if (typeof window !== 'undefined') {
+    window.addEventListener('beforeunload', () => {
+        impl.dispose();
+    });
+}
