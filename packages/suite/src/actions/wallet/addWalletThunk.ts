@@ -44,7 +44,13 @@ export const addWalletThunk = createThunk<
     const discovery = selectDiscoveryByDeviceState(getState(), device?.state);
     const discoveryStatus = getDiscoveryStatus({ device, discovery });
 
-    if (discoveryStatus !== undefined && discoveryStatus.status === 'loading') {
+    if (
+        discoveryStatus !== undefined &&
+        discoveryStatus.status === 'loading' &&
+        // There are situations where we are in the "state" of discovery, but we want to allow for adding a wallet.
+        // See: https://github.com/trezor/trezor-suite/issues/17114 for example
+        discoveryStatus.type === 'discovery'
+    ) {
         return;
     }
 
