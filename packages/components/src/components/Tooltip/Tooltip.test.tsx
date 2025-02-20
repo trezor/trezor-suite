@@ -13,7 +13,10 @@ describe('Tooltip', () => {
         );
 
         const trigger = screen.getByText('Hover me');
-        await userEvent.hover(trigger);
+
+        await act(async () => {
+            await userEvent.hover(trigger);
+        });
 
         const tooltip = screen.getByText(tooltipContent);
         expect(tooltip).toBeInTheDocument();
@@ -26,11 +29,12 @@ describe('Tooltip', () => {
                 <button id="hover-me">Hover me</button>
             </Tooltip>,
         );
-        await act(() => {});
 
         const trigger = screen.getByText('Hover me');
 
-        await userEvent.hover(trigger);
+        await act(async () => {
+            await userEvent.hover(trigger);
+        });
 
         const tooltip = screen.getByText(tooltipContent);
         expect(tooltip).toBeInTheDocument();
@@ -45,7 +49,10 @@ describe('Tooltip', () => {
         );
 
         const trigger = screen.getByText('Hover me');
-        await userEvent.hover(trigger);
+
+        await act(async () => {
+            await userEvent.hover(trigger);
+        });
 
         const tooltip = screen.queryByText(tooltipContent);
         expect(tooltip).not.toBeInTheDocument();
@@ -61,15 +68,18 @@ describe('Tooltip', () => {
 
         const trigger = screen.getByText('Hover me');
 
-        await userEvent.hover(trigger);
+        await act(async () => {
+            await userEvent.hover(trigger);
+        });
 
         const currentTrigger = screen.getByText('Hover me');
         expect(currentTrigger.parentElement).toHaveAttribute('data-state', 'open');
 
-        await userEvent.unhover(trigger);
+        await act(async () => {
+            await userEvent.unhover(trigger);
+        });
 
         const triggerBefore = screen.getByText('Hover me');
-
         // NOTE: for some reason, the content is still in the DOM but the state is definitely closed
         const parent = triggerBefore.parentElement;
         expect(parent).toHaveAttribute('data-state', 'closed');

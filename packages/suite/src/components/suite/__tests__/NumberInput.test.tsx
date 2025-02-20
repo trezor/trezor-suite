@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { Provider } from 'react-redux';
 
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Store } from 'redux';
 
@@ -59,13 +59,15 @@ const testCase = async (
     displayed: string,
     reported: string,
 ) => {
-    // types userInput character by character
-    await userEvent.type(element, userInput);
-
+    // Wrap user events in act() to ensure all updates are flushed.
+    await act(async () => {
+        await userEvent.type(element, userInput);
+    });
     expect(element.value).toBe(displayed);
     expect(onChangeMock).toHaveBeenCalledWith(reported);
-
-    await userEvent.clear(element);
+    await act(async () => {
+        await userEvent.clear(element);
+    });
 };
 
 describe('NumberInput component', () => {
