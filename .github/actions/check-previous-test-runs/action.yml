@@ -25,6 +25,7 @@ runs:
   steps:
     - name: Check Previous Test Runs
       id: check-previous-runs
+      continue-on-error: true
       env:
         GH_TOKEN: ${{ inputs.github_token }}
       run: |
