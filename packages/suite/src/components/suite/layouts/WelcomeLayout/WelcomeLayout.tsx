@@ -129,7 +129,12 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                     <MessageSystemBanner message={bannerMessage} margin={spacings.xs} />
                 )}
 
-                <Row height="100%" width="100%" data-testid="@welcome-layout/body">
+                <Row
+                    height="100%"
+                    width="100%"
+                    data-testid="@welcome-layout/body"
+                    alignItems="normal"
+                >
                     <ElevationDown>
                         <LoggedOutSidebar />
                     </ElevationDown>
