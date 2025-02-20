@@ -419,6 +419,7 @@ export const en = {
             },
             firmwareUpdateScreen: {
                 updateButton: 'Update firmware',
+                skipButton: 'Skip for now',
                 title: 'Firmware update',
                 subtitle: 'New firmware is now available. Update your device now.',
                 changelog: {

@@ -53,7 +53,7 @@ const FirmwareInfo = ({ label, value }: DeviceInfoProps) => {
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceStackRoutes.FirmwareUpdate
+    DeviceStackRoutes.ConfirmFirmwareUpdate
 >;
 
 // TODO: remove this once we finish debugging firmware update
@@ -103,7 +103,7 @@ export const DeviceFirmwareCard = () => {
                             colorScheme="blueBold"
                             size="small"
                             onPress={() => {
-                                navigation.navigate(DeviceStackRoutes.FirmwareUpdate);
+                                navigation.navigate(DeviceStackRoutes.ConfirmFirmwareUpdate);
                             }}
                             isDisabled={isDiscoveryRunning}
                             isLoading={isDiscoveryRunning}

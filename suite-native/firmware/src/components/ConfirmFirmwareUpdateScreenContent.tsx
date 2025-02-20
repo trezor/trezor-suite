@@ -1,8 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import {
     DeviceRootState,
     DiscoveryRootState,
@@ -10,36 +8,25 @@ import {
     selectIsDiscoveryActiveByDeviceState,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { Box, Button, Text } from '@suite-native/atoms';
+import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    DeviceSettingsStackParamList,
-    DeviceStackRoutes,
-    Screen,
-    ScreenHeader,
-    StackNavigationProps,
-} from '@suite-native/navigation';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { FirmwareChangelogButton } from './FirmwareChangelogButton';
 import { FirmwareUpdateVersionCard } from './FirmwareVersionCard';
 
-const firmwareUpdateButtonStyle = prepareNativeStyle(utils => ({
-    marginHorizontal: utils.spacings.sp16,
-    marginBottom: utils.spacings.sp16,
-}));
+type ConfirmFirmwareUpdateScreenProps = {
+    onUpdateConfirmation: () => void;
+    onSkipUpdate?: () => void;
+};
 
-type NavigationProp = StackNavigationProps<
-    DeviceSettingsStackParamList,
-    DeviceStackRoutes.FirmwareUpdate
->;
-
-export const FirmwareUpdateScreen = () => {
-    const { applyStyle } = useNativeStyles();
+export const ConfirmFirmwareUpdateScreenContent = ({
+    onUpdateConfirmation,
+    onSkipUpdate,
+}: ConfirmFirmwareUpdateScreenProps) => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
-    const navigation = useNavigation<NavigationProp>();
 
     const deviceState = useSelector(selectDeviceState);
     const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
@@ -54,27 +41,36 @@ export const FirmwareUpdateScreen = () => {
             primaryButtonTitle: translate(
                 'moduleDeviceSettings.firmware.seedBottomSheet.continueButton',
             ),
-            onPressPrimaryButton: () => {
-                navigation.navigate(DeviceStackRoutes.FirmwareInstallation);
-            },
+            onPressPrimaryButton: onUpdateConfirmation,
             secondaryButtonTitle: translate(
                 'moduleDeviceSettings.firmware.seedBottomSheet.closeButton',
             ),
         });
-    }, [navigation, showAlert, translate]);
+    }, [showAlert, translate, onUpdateConfirmation]);
 
     return (
         <Screen
             header={<ScreenHeader closeActionType="close" />}
             footer={
-                <Button
-                    onPress={handleShowSeedBottomSheet}
-                    style={applyStyle(firmwareUpdateButtonStyle)}
-                    isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
-                    isLoading={isDiscoveryRunning}
-                >
-                    <Translation id="moduleDeviceSettings.firmware.firmwareUpdateScreen.updateButton" />
-                </Button>
+                <VStack spacing="sp12" marginHorizontal="sp16" marginBottom="sp16">
+                    <Button
+                        onPress={handleShowSeedBottomSheet}
+                        isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
+                        isLoading={isDiscoveryRunning}
+                    >
+                        <Translation id="moduleDeviceSettings.firmware.firmwareUpdateScreen.updateButton" />
+                    </Button>
+                    {onSkipUpdate && (
+                        <Button
+                            onPress={onSkipUpdate}
+                            isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
+                            isLoading={isDiscoveryRunning}
+                            colorScheme="tertiaryElevation0"
+                        >
+                            <Translation id="moduleDeviceSettings.firmware.firmwareUpdateScreen.skipButton" />
+                        </Button>
+                    )}
+                </VStack>
             }
         >
             <Box paddingTop="sp16">

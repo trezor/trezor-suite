@@ -27,7 +27,7 @@ export const FirmwareInstallationScreen = () => {
     };
 
     const handleFirmwareInstallationFailure = () => {
-        navigation.navigate(DeviceStackRoutes.FirmwareUpdate);
+        navigation.navigate(DeviceStackRoutes.ConfirmFirmwareUpdate);
     };
 
     return (

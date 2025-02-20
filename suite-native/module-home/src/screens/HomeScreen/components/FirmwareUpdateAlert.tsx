@@ -82,7 +82,7 @@ export const FirmwareUpdateAlert = () => {
 
     const handleUpdateFirmware = () => {
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
-            screen: DeviceStackRoutes.FirmwareUpdate,
+            screen: DeviceStackRoutes.ConfirmFirmwareUpdate,
         });
     };
 
