@@ -1,4 +1,5 @@
-var JSBigInt = require('./biginteger')['JSBigInt'];
+var moduleImport = require('./biginteger');
+var JSBigInt = moduleImport.JSBigInt;
 
 /**
 Copyright (c) 2017, moneroexamples
