@@ -299,6 +299,11 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
+    async allowUnsafePaths() {
+        await this.client.send({ type: 'emulator-allow-unsafe-paths' });
+
+        return null;
+    }
     async selectNumOfWordsEmu(num: number) {
         await this.client.send({ type: 'emulator-select-num-of-words', num });
 
