@@ -78,8 +78,8 @@ export const DeviceFirmwareCard = () => {
 
     const firmwareVersion = getFirmwareVersion(device);
     const firmwareTypeTranslationId = hasBitcoinOnlyFirmware(device)
-        ? 'moduleDeviceSettings.firmware.typeBitcoinOnly'
-        : 'moduleDeviceSettings.firmware.typeUniversal';
+        ? 'firmware.typeBitcoinOnly'
+        : 'firmware.typeUniversal';
 
     const firmwareUpdateProps = (() => {
         if (!isFirmwareUpdateEnabled || !isDeviceBackedUp || !isDeviceConnected) {
@@ -93,7 +93,7 @@ export const DeviceFirmwareCard = () => {
                 return {
                     title: (
                         <Translation
-                            id="moduleDeviceSettings.firmware.updateCard.newVersionAvailable"
+                            id="firmware.updateCard.newVersionAvailable"
                             values={{ version: getFwUpdateVersion(device) }}
                         />
                     ),
@@ -108,14 +108,14 @@ export const DeviceFirmwareCard = () => {
                             isDisabled={isDiscoveryRunning}
                             isLoading={isDiscoveryRunning}
                         >
-                            <Translation id="moduleDeviceSettings.firmware.updateCard.updateButton" />
+                            <Translation id="firmware.updateCard.updateButton" />
                         </Button>
                     ),
                 } as const;
             }
 
             return {
-                title: <Translation id="moduleDeviceSettings.firmware.updateCard.upToDate" />,
+                title: <Translation id="firmware.updateCard.upToDate" />,
                 variant: 'success',
             } as const;
         }
@@ -126,16 +126,16 @@ export const DeviceFirmwareCard = () => {
     return (
         <SettingsCardWithIconLayout
             icon={deviceModelToIconName(deviceModel)}
-            title={<Translation id="moduleDeviceSettings.firmware.title" />}
+            title={<Translation id="firmware.title" />}
             alertBoxProps={firmwareUpdateProps}
         >
             <HStack marginTop="sp12" spacing="sp2">
                 <FirmwareInfo
-                    label={<Translation id="moduleDeviceSettings.firmware.version" />}
+                    label={<Translation id="firmware.version" />}
                     value={firmwareVersion}
                 />
                 <FirmwareInfo
-                    label={<Translation id="moduleDeviceSettings.firmware.type" />}
+                    label={<Translation id="firmware.type" />}
                     value={<Translation id={firmwareTypeTranslationId} />}
                 />
             </HStack>

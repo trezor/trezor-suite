@@ -82,8 +82,8 @@ export const FirmwareUpdateVersionCard = (props: BoxProps) => {
     const { translate } = useTranslate();
 
     const firmwareTypeTranslationId = isBtcOnly
-        ? 'moduleDeviceSettings.firmware.typeBitcoinOnly'
-        : 'moduleDeviceSettings.firmware.typeUniversal';
+        ? 'firmware.typeBitcoinOnly'
+        : 'firmware.typeUniversal';
 
     return (
         <Box flexDirection="row" justifyContent="center" alignItems="center" {...props}>

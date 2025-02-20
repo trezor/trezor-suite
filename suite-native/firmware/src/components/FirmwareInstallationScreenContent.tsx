@@ -226,10 +226,10 @@ export const FirmwareInstallationScreenContent = ({
                     })}
                 >
                     <Button onPress={handleRetry} colorScheme="redBold">
-                        <Translation id="moduleDeviceSettings.firmware.firmwareUpdateProgress.retryButton" />
+                        <Translation id="firmware.firmwareUpdateProgress.retryButton" />
                     </Button>
                     <Button onPress={handleContactSupport} colorScheme="tertiaryElevation0">
-                        <Translation id="moduleDeviceSettings.firmware.firmwareUpdateProgress.contactSupportButton" />
+                        <Translation id="firmware.firmwareUpdateProgress.contactSupportButton" />
                     </Button>
                 </VStack>
             )}
@@ -243,7 +243,7 @@ export const FirmwareInstallationScreenContent = ({
                     })}
                 >
                     <Button onPress={openMayBeStuckBottomSheet} colorScheme="tertiaryElevation0">
-                        <Translation id="moduleDeviceSettings.firmware.firmwareUpdateProgress.stuckButton" />
+                        <Translation id="firmware.firmwareUpdateProgress.stuckButton" />
                     </Button>
                 </Animated.View>
             )}
@@ -264,7 +264,7 @@ export const FirmwareInstallationScreenContent = ({
             {showConfirmOnDevice && (
                 <ConfirmOnTrezorImage
                     bottomSheetText={
-                        <Translation id="moduleDeviceSettings.firmware.firmwareUpdateProgress.confirmOnDeviceMessage" />
+                        <Translation id="firmware.firmwareUpdateProgress.confirmOnDeviceMessage" />
                     }
                 />
             )}

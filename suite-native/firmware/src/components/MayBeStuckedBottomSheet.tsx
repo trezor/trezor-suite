@@ -45,19 +45,19 @@ export const MayBeStuckedBottomSheet = ({
                     <VStack spacing="sp24">
                         <VStack alignItems="center" spacing="sp8">
                             <Text textAlign="center" variant="titleSmall">
-                                <Translation id="moduleDeviceSettings.firmware.stuckedBottomSheet.part1.title" />
+                                <Translation id="firmware.stuckedBottomSheet.part1.title" />
                             </Text>
                             <Text textAlign="center" color="textSubdued">
-                                <Translation id="moduleDeviceSettings.firmware.stuckedBottomSheet.part1.description" />
+                                <Translation id="firmware.stuckedBottomSheet.part1.description" />
                             </Text>
                         </VStack>
 
                         <VStack spacing="sp16">
                             <Button onPress={() => setVisiblePart(2)} colorScheme="yellowBold">
-                                <Translation id="moduleDeviceSettings.firmware.stuckedBottomSheet.part1.continueButton" />
+                                <Translation id="firmware.stuckedBottomSheet.part1.continueButton" />
                             </Button>
                             <Button onPress={handleClose} colorScheme="yellowElevation0">
-                                <Translation id="moduleDeviceSettings.firmware.stuckedBottomSheet.part1.closeButton" />
+                                <Translation id="firmware.stuckedBottomSheet.part1.closeButton" />
                             </Button>
                         </VStack>
                     </VStack>
@@ -68,28 +68,28 @@ export const MayBeStuckedBottomSheet = ({
                     <VStack spacing="sp24">
                         <VStack spacing="sp8">
                             <Text variant="titleSmall">
-                                <Translation id="moduleDeviceSettings.firmware.stuckedBottomSheet.part2.title" />
+                                <Translation id="firmware.stuckedBottomSheet.part2.title" />
                             </Text>
                             <Text color="textSubdued">
-                                <Translation id="moduleDeviceSettings.firmware.stuckedBottomSheet.part2.subtitle" />
+                                <Translation id="firmware.stuckedBottomSheet.part2.subtitle" />
                             </Text>
                         </VStack>
 
                         <VStack spacing="sp2">
                             <NumberedListItem number={1}>
-                                <Translation id="moduleDeviceSettings.firmware.stuckedBottomSheet.part2.tip1" />
+                                <Translation id="firmware.stuckedBottomSheet.part2.tip1" />
                             </NumberedListItem>
                             <NumberedListItem number={2}>
-                                <Translation id="moduleDeviceSettings.firmware.stuckedBottomSheet.part2.tip2" />
+                                <Translation id="firmware.stuckedBottomSheet.part2.tip2" />
                             </NumberedListItem>
                             <NumberedListItem number={3}>
-                                <Translation id="moduleDeviceSettings.firmware.stuckedBottomSheet.part2.tip3" />
+                                <Translation id="firmware.stuckedBottomSheet.part2.tip3" />
                             </NumberedListItem>
                         </VStack>
 
                         <Box flex={1}>
                             <Button onPress={handleClose} colorScheme="primary">
-                                <Translation id="moduleDeviceSettings.firmware.stuckedBottomSheet.part2.gotItButton" />
+                                <Translation id="firmware.stuckedBottomSheet.part2.gotItButton" />
                             </Button>
                         </Box>
                     </VStack>

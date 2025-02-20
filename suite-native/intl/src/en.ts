@@ -399,75 +399,6 @@ export const en = {
     },
     moduleDeviceSettings: {
         title: 'Device settings',
-        firmware: {
-            title: 'Firmware',
-            version: 'Version',
-            type: 'Type',
-            typeUniversal: 'Universal',
-            typeBitcoinOnly: 'Bitcoin-only',
-            seedBottomSheet: {
-                title: 'Make sure you know where to find your wallet backup.',
-                description:
-                    'Although unlikely, you may need to restore your wallet in case of firmware update issue.',
-                continueButton: 'Got it',
-                closeButton: 'I’m not sure',
-            },
-            updateCard: {
-                upToDate: 'You’re all up to date',
-                newVersionAvailable: 'New version available ({version})',
-                updateButton: 'Update',
-            },
-            firmwareUpdateScreen: {
-                updateButton: 'Update firmware',
-                skipButton: 'Skip for now',
-                title: 'Firmware update',
-                subtitle: 'New firmware is now available. Update your device now.',
-                changelog: {
-                    button: 'What’s new?',
-                    title: 'What’s new?',
-                    closeButton: 'Close',
-                    changelogUnavailable: 'No changelog available',
-                },
-            },
-            firmwareUpdateProgress: {
-                initializing: { title: 'Preparing your Trezor' },
-                confirming: { title: 'Confirm firmware update on your Trezor.' },
-                installing: {
-                    title: 'Updating your firmware',
-                },
-                restarting: { title: 'Restarting Trezor.' },
-                validating: { title: 'Validating firmware.' },
-                completed: {
-                    title: 'Firmware installed',
-                    subtitle: 'You’re all set.',
-                },
-                error: {
-                    title: 'Update failed',
-                },
-                dontCloseAppMessage: 'Don’t close the app.',
-                confirmOnDeviceMessage: 'Go to your device and confirm the firmware update.',
-                retryButton: 'Retry',
-                contactSupportButton: 'Contact support',
-                stuckButton: 'Feel like you’re stuck?',
-            },
-            stuckedBottomSheet: {
-                part1: {
-                    title: 'Make sure you have your wallet backup.',
-                    description:
-                        'Having your wallet backup is crucial as the troubleshooting might result in a corrupted state of firmware that will require reinstalling.',
-                    continueButton: 'I have my wallet backup ready',
-                    closeButton: 'Cancel',
-                },
-                part2: {
-                    title: 'Feel like you’re stuck? ',
-                    subtitle: 'Here’s a bunch of things you can try.',
-                    gotItButton: 'Got it',
-                    tip1: 'Reconnect the cable to your phone',
-                    tip2: 'Try a different cable',
-                    tip3: 'Make sure the cable is not twisted and fits the connector properly.',
-                },
-            },
-        },
         pinProtection: {
             title: 'PIN protection',
             content: 'PIN protects your device against physical attack.',
@@ -1391,6 +1322,75 @@ export const en = {
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',
         selectCoinFirst: 'Select coin first',
+    },
+    firmware: {
+        title: 'Firmware',
+        version: 'Version',
+        type: 'Type',
+        typeUniversal: 'Universal',
+        typeBitcoinOnly: 'Bitcoin-only',
+        seedBottomSheet: {
+            title: 'Make sure you know where to find your wallet backup.',
+            description:
+                'Although unlikely, you may need to restore your wallet in case of firmware update issue.',
+            continueButton: 'Got it',
+            closeButton: 'I’m not sure',
+        },
+        updateCard: {
+            upToDate: 'You’re all up to date',
+            newVersionAvailable: 'New version available ({version})',
+            updateButton: 'Update',
+        },
+        firmwareUpdateScreen: {
+            updateButton: 'Update firmware',
+            skipButton: 'Skip for now',
+            title: 'Firmware update',
+            subtitle: 'New firmware is now available. Update your device now.',
+            changelog: {
+                button: 'What’s new?',
+                title: 'What’s new?',
+                closeButton: 'Close',
+                changelogUnavailable: 'No changelog available',
+            },
+        },
+        firmwareUpdateProgress: {
+            initializing: { title: 'Preparing your Trezor' },
+            confirming: { title: 'Confirm firmware update on your Trezor.' },
+            installing: {
+                title: 'Updating your firmware',
+            },
+            restarting: { title: 'Restarting Trezor.' },
+            validating: { title: 'Validating firmware.' },
+            completed: {
+                title: 'Firmware installed',
+                subtitle: 'You’re all set.',
+            },
+            error: {
+                title: 'Update failed',
+            },
+            dontCloseAppMessage: 'Don’t close the app.',
+            confirmOnDeviceMessage: 'Go to your device and confirm the firmware update.',
+            retryButton: 'Retry',
+            contactSupportButton: 'Contact support',
+            stuckButton: 'Feel like you’re stuck?',
+        },
+        stuckedBottomSheet: {
+            part1: {
+                title: 'Make sure you have your wallet backup.',
+                description:
+                    'Having your wallet backup is crucial as the troubleshooting might result in a corrupted state of firmware that will require reinstalling.',
+                continueButton: 'I have my wallet backup ready',
+                closeButton: 'Cancel',
+            },
+            part2: {
+                title: 'Feel like you’re stuck? ',
+                subtitle: 'Here’s a bunch of things you can try.',
+                gotItButton: 'Got it',
+                tip1: 'Reconnect the cable to your phone',
+                tip2: 'Try a different cable',
+                tip3: 'Make sure the cable is not twisted and fits the connector properly.',
+            },
+        },
     },
 };
 

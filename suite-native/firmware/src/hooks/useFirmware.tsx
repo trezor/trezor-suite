@@ -94,49 +94,44 @@ export const useFirmware = (params: UseFirmwareInstallationParams) => {
 
     const translatedText = useMemo(() => {
         let text: { title: TxKeyPath; subtitle?: TxKeyPath } = {
-            title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.initializing.title',
+            title: 'firmware.firmwareUpdateProgress.initializing.title',
         };
 
         const isInitialState = (status === 'started' && operation === null) || status === 'initial';
 
         if (status === 'error') {
             text = {
-                title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.error.title',
+                title: 'firmware.firmwareUpdateProgress.error.title',
             };
         } else if (isInitialState && !confirmOnDevice) {
             text = {
-                title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.initializing.title',
-                subtitle:
-                    'moduleDeviceSettings.firmware.firmwareUpdateProgress.dontCloseAppMessage',
+                title: 'firmware.firmwareUpdateProgress.initializing.title',
+                subtitle: 'firmware.firmwareUpdateProgress.dontCloseAppMessage',
             };
         } else if (isInitialState) {
             text = {
-                title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.confirming.title',
-                subtitle:
-                    'moduleDeviceSettings.firmware.firmwareUpdateProgress.confirmOnDeviceMessage',
+                title: 'firmware.firmwareUpdateProgress.confirming.title',
+                subtitle: 'firmware.firmwareUpdateProgress.confirmOnDeviceMessage',
             };
         } else if (operation === 'validating') {
             text = {
-                title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.validating.title',
-                subtitle:
-                    'moduleDeviceSettings.firmware.firmwareUpdateProgress.dontCloseAppMessage',
+                title: 'firmware.firmwareUpdateProgress.validating.title',
+                subtitle: 'firmware.firmwareUpdateProgress.dontCloseAppMessage',
             };
         } else if (operation === 'restarting') {
             text = {
-                title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.restarting.title',
-                subtitle:
-                    'moduleDeviceSettings.firmware.firmwareUpdateProgress.dontCloseAppMessage',
+                title: 'firmware.firmwareUpdateProgress.restarting.title',
+                subtitle: 'firmware.firmwareUpdateProgress.dontCloseAppMessage',
             };
         } else if (operation === 'completed' || status === 'done') {
             text = {
-                title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.completed.title',
-                subtitle: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.completed.subtitle',
+                title: 'firmware.firmwareUpdateProgress.completed.title',
+                subtitle: 'firmware.firmwareUpdateProgress.completed.subtitle',
             };
         } else if (operation === 'installing') {
             text = {
-                title: 'moduleDeviceSettings.firmware.firmwareUpdateProgress.installing.title',
-                subtitle:
-                    'moduleDeviceSettings.firmware.firmwareUpdateProgress.dontCloseAppMessage',
+                title: 'firmware.firmwareUpdateProgress.installing.title',
+                subtitle: 'firmware.firmwareUpdateProgress.dontCloseAppMessage',
             };
         }
 

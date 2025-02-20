@@ -37,7 +37,7 @@ export const FirmwareChangelogButton = () => {
             <TouchableOpacity style={applyStyle(linkContainerStyle)} onPress={handlePress}>
                 <Icon name="question" size="medium" color="iconSubdued" />
                 <Text variant="body" color="textSubdued" style={applyStyle(linkTextStyle)}>
-                    <Translation id="moduleDeviceSettings.firmware.firmwareUpdateScreen.changelog.button" />
+                    <Translation id="firmware.firmwareUpdateScreen.changelog.button" />
                 </Text>
             </TouchableOpacity>
             <FirmwareChangelog isVisible={isVisible} onClose={handleClose} />

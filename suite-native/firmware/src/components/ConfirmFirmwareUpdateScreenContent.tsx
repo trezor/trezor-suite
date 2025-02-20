@@ -36,15 +36,11 @@ export const ConfirmFirmwareUpdateScreenContent = ({
 
     const handleShowSeedBottomSheet = useCallback(() => {
         showAlert({
-            title: translate('moduleDeviceSettings.firmware.seedBottomSheet.title'),
-            description: translate('moduleDeviceSettings.firmware.seedBottomSheet.description'),
-            primaryButtonTitle: translate(
-                'moduleDeviceSettings.firmware.seedBottomSheet.continueButton',
-            ),
+            title: translate('firmware.seedBottomSheet.title'),
+            description: translate('firmware.seedBottomSheet.description'),
+            primaryButtonTitle: translate('firmware.seedBottomSheet.continueButton'),
             onPressPrimaryButton: onUpdateConfirmation,
-            secondaryButtonTitle: translate(
-                'moduleDeviceSettings.firmware.seedBottomSheet.closeButton',
-            ),
+            secondaryButtonTitle: translate('firmware.seedBottomSheet.closeButton'),
         });
     }, [showAlert, translate, onUpdateConfirmation]);
 
@@ -58,7 +54,7 @@ export const ConfirmFirmwareUpdateScreenContent = ({
                         isDisabled={isDiscoveryRunning || !isFirmwareUpdateEnabled}
                         isLoading={isDiscoveryRunning}
                     >
-                        <Translation id="moduleDeviceSettings.firmware.firmwareUpdateScreen.updateButton" />
+                        <Translation id="firmware.firmwareUpdateScreen.updateButton" />
                     </Button>
                     {onSkipUpdate && (
                         <Button
@@ -67,7 +63,7 @@ export const ConfirmFirmwareUpdateScreenContent = ({
                             isLoading={isDiscoveryRunning}
                             colorScheme="tertiaryElevation0"
                         >
-                            <Translation id="moduleDeviceSettings.firmware.firmwareUpdateScreen.skipButton" />
+                            <Translation id="firmware.firmwareUpdateScreen.skipButton" />
                         </Button>
                     )}
                 </VStack>
@@ -75,12 +71,12 @@ export const ConfirmFirmwareUpdateScreenContent = ({
         >
             <Box paddingTop="sp16">
                 <Text variant="titleMedium">
-                    <Translation id="moduleDeviceSettings.firmware.firmwareUpdateScreen.title" />
+                    <Translation id="firmware.firmwareUpdateScreen.title" />
                 </Text>
             </Box>
             <Box paddingTop="sp8">
                 <Text variant="body" color="textSubdued">
-                    <Translation id="moduleDeviceSettings.firmware.firmwareUpdateScreen.subtitle" />
+                    <Translation id="firmware.firmwareUpdateScreen.subtitle" />
                 </Text>
             </Box>
             <FirmwareUpdateVersionCard marginTop="sp32" marginBottom="sp12" />
