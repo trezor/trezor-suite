@@ -42,11 +42,8 @@ export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) 
                     </Text>
                 </Column>
                 <Tooltip
-                    content={
-                        isDeviceLocked && (
-                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                        )
-                    }
+                    isActive={isDeviceLocked}
+                    content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >
                     <Button
                         variant="primary"

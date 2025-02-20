@@ -75,10 +75,9 @@ export const ConfirmUnverifiedModal = ({
                     </Button>
                     {isPassphraseRequired && (
                         <Tooltip
+                            isActive={isDeviceLocked}
                             content={
-                                isDeviceLocked && (
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                )
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
                             }
                         >
                             <Button

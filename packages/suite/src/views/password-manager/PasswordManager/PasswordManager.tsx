@@ -61,11 +61,8 @@ export const PasswordManager = () => {
                 />
                 <ActionColumn>
                     <Tooltip
-                        content={
-                            isDeviceLocked && (
-                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                            )
-                        }
+                        isActive={isDeviceLocked}
+                        content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                     >
                         <Button onClick={connect} isDisabled={isDeviceLocked}>
                             Connect to Dropbox

@@ -34,10 +34,9 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
                     </Text>
                     <Column gap={spacings.xs} margin={{ top: spacings.lg }} alignItems="center">
                         <Tooltip
+                            isActive={isDeviceLocked}
                             content={
-                                isDeviceLocked && (
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                )
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
                             }
                         >
                             <Button
@@ -50,10 +49,9 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
                             </Button>
                         </Tooltip>
                         <Tooltip
+                            isActive={isDeviceLocked}
                             content={
-                                isDeviceLocked && (
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                )
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
                             }
                         >
                             <Button

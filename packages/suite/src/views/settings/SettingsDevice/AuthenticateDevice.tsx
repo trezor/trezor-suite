@@ -31,11 +31,8 @@ export const AuthenticateDevice = ({ isDeviceLocked }: AuthenticateDeviceProps) 
                     variant="primary"
                     onClick={handleClick}
                     isDisabled={isDeviceLocked}
-                    tooltipContent={
-                        isDeviceLocked && (
-                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                        )
-                    }
+                    isTooltipActive={isDeviceLocked}
+                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >
                     <Translation id="TR_CHECK_ORIGIN" />
                 </ActionButton>

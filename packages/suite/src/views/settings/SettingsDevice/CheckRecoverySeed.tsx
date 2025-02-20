@@ -34,11 +34,8 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
                     onClick={handleClick}
                     isDisabled={isDeviceLocked}
                     variant="primary"
-                    tooltipContent={
-                        isDeviceLocked && (
-                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                        )
-                    }
+                    isTooltipActive={isDeviceLocked}
+                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >
                     <Translation id="TR_CHECK_SEED" />
                 </ActionButton>

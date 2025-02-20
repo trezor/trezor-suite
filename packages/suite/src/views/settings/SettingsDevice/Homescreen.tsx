@@ -139,10 +139,9 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     >
                         <ButtonGroup size="small">
                             <Tooltip
+                                isActive={isDeviceLocked}
                                 content={
-                                    isDeviceLocked && (
-                                        <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                    )
+                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
                                 }
                             >
                                 <Button
@@ -156,10 +155,9 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                                 </Button>
                             </Tooltip>
                             <Tooltip
+                                isActive={isDeviceLocked}
                                 content={
-                                    isDeviceLocked && (
-                                        <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                    )
+                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
                                 }
                             >
                                 <Button
@@ -195,10 +193,9 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             variant="primary"
                             onClick={resetUpload}
                             isDisabled={isDeviceLocked}
+                            isTooltipActive={isDeviceLocked}
                             tooltipContent={
-                                isDeviceLocked && (
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                )
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
                             }
                         >
                             <Translation id="TR_DROP_IMAGE" />
@@ -241,10 +238,9 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                             variant="primary"
                             onClick={resetUpload}
                             isDisabled={isDeviceLocked}
+                            isTooltipActive={isDeviceLocked}
                             tooltipContent={
-                                isDeviceLocked && (
-                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                                )
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
                             }
                         >
                             <Translation id="TR_DROP_IMAGE" />

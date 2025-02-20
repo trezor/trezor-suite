@@ -37,10 +37,11 @@ export const ActionSelect = styled((props: SelectProps) => <Select {...props} si
 export const ActionButton = styled(
     ({
         tooltipContent,
+        isTooltipActive,
         children,
         ...buttonProps
-    }: { tooltipContent?: ReactNode } & ButtonProps) => (
-        <Tooltip content={tooltipContent}>
+    }: { tooltipContent?: ReactNode; isTooltipActive?: boolean } & ButtonProps) => (
+        <Tooltip content={tooltipContent} isActive={isTooltipActive}>
             <Button
                 {...buttonProps}
                 size="small"

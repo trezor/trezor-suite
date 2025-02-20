@@ -128,11 +128,8 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                     onClick={handleUpdate}
                     data-testid="@settings/device/update-button"
                     isDisabled={isDeviceLocked}
-                    tooltipContent={
-                        isDeviceLocked && (
-                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                        )
-                    }
+                    isTooltipActive={isDeviceLocked}
+                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >
                     <Translation
                         id={getButtonLabelId({ device, currentFwVersion, availableFwVersion })}
