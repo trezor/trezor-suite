@@ -112,7 +112,7 @@
         "karma-webpack": "^5.0.1",
         "node-fetch": "^2.6.4",
         "node-libs-browser": "^2.2.1",
-        "ts-node": "^10.9.1",
+        "ts-node": "^10.9.2",
         "tsx": "^4.16.3",
         "web3-utils": "^4.3.2",
         "webpack": "^5.97.1",
