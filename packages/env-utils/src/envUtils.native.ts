@@ -28,7 +28,8 @@ const getOsVersion = () => `${Platform.Version}`;
 
 const getSuiteVersion = () => Constants.expoConfig?.version || '';
 
-const getCommitHash = () => Constants.expoConfig?.extra?.commitHash;
+const getCommitHash = () =>
+    process.env.EAS_BUILD_GIT_COMMIT_HASH || process.env.EXPO_PUBLIC_COMMIT_HASH || '';
 
 const isFirefox = () => false;
 
