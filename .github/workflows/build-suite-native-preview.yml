@@ -31,7 +31,7 @@ jobs:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       EXPO_PUBLIC_ENVIRONMENT: preview
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-      COMMIT_HASH: ${{ github.sha }}
+      COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
     permissions:
       contents: read
       pull-requests: write
