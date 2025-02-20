@@ -74,7 +74,7 @@ export const SecurityCheckScreen = ({
             return;
         }
 
-        navigation.navigate(OnboardingStackRoutes.FirmwareInstallationScreen);
+        navigation.navigate(OnboardingStackRoutes.FirmwareInstallation);
     };
 
     return (

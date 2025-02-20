@@ -11,7 +11,6 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
 import { DeviceModelInternal } from '@trezor/connect';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -76,16 +75,11 @@ const UninitializedDeviceLandingScreenContent = () => {
 export const UninitializedDeviceLandingScreen = ({
     navigation,
 }: StackProps<OnboardingStackParamList, OnboardingStackRoutes.UninitializedDeviceLanding>) => {
-    const { showToast } = useToast();
-
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
 
     const handleConfirmButtonPress = () => {
         if (hasDeviceFirmwareInstalled) {
-            showToast({
-                variant: 'warning',
-                message: 'TODO: add FW update screen to onboarding flow',
-            });
+            navigation.navigate(OnboardingStackRoutes.ConfirmFirmwareUpdate);
         } else {
             navigation.navigate(OnboardingStackRoutes.SecurityCheck);
         }

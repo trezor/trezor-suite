@@ -124,6 +124,7 @@ export type OnboardingStackParamList = {
     };
     [OnboardingStackRoutes.SecurityCheck]: undefined;
     [OnboardingStackRoutes.FirmwareInstallation]: undefined;
+    [OnboardingStackRoutes.ConfirmFirmwareUpdate]: undefined;
 };
 
 export type AccountsImportStackParamList = {

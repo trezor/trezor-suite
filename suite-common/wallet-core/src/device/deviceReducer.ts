@@ -1050,6 +1050,12 @@ export const selectDeviceUpdateFirmwareVersion = (state: DeviceRootState) => {
     return device ? getFwUpdateVersion(device) : null;
 };
 
+export const selectIsLatestFirmwareInstalled = createMemoizedSelector(
+    [selectDeviceFirmwareVersion, selectDeviceUpdateFirmwareVersion],
+    (deviceFirmwareVersion, updateFirmwareVersion) =>
+        deviceFirmwareVersion?.join('.') === updateFirmwareVersion,
+);
+
 export const selectFirmwareChangelog = (state: DeviceRootState) => {
     const device = selectSelectedDevice(state);
     const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(state);
