@@ -35,19 +35,19 @@ export type BluetoothDeviceCommon = {
 
 export type DeviceBluetoothStatusType = DeviceBluetoothStatus['type'];
 
+export type BluetoothDeviceState<T extends BluetoothDeviceCommon> = {
+    device: T;
+    status: DeviceBluetoothStatus | null;
+};
+
 export type BluetoothState<T extends BluetoothDeviceCommon> = {
     adapterStatus: 'unknown' | 'enabled' | 'disabled';
     scanStatus: BluetoothScanStatus;
-    nearbyDevices: Array<{ device: T; status: DeviceBluetoothStatus | null }>;
+    nearbyDevices: BluetoothDeviceState<T>[];
 
     // This will be persisted, those are devices we believed that are paired
     // (because we already successfully paired them in the Suite) in the Operating System
     knownDevices: T[];
-};
-
-export type BluetoothDeviceState<T extends BluetoothDeviceCommon> = {
-    device: T;
-    status: DeviceBluetoothStatus | null;
 };
 
 export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>() => {
