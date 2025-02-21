@@ -1,0 +1,71 @@
+# tiny workflow to run a small subset of popup tests also for visual components changes
+# note that trigger conditions should be exclusive to those in test-connect-popup.yml so that we don't re-build the app
+
+name: "[Build/Test] connect-popup e2e - mini"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  pull_request:
+    paths:
+      - "packages/components/**"
+      - "packages/product-components/**"
+      - "@trezor/asset-utils/**"
+      - "@trezor/dom-utils/**"
+      - "@trezor/env-utils/**"
+      - "@trezor/react-utils/**"
+      - "@trezor/styles/**"
+      - "@trezor/theme/**"
+      - ".github/workflows/test-connect-popup-mini"
+      - ".github/workflows/template-connect-popup-test-params.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  extract-branch:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.extract_branch.outputs.branch }}
+    steps:
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+  # note: the weak part of this workflow is that if rules for running it are not exclusive to those in test-connect-popup.yml, we will re-build the app
+  # which could also affect the test that are in progress
+  build-deploy:
+    needs: [extract-branch]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.extract-branch.outputs.branch }}
+
+      - name: Release connect to dev environment
+        uses: ./.github/actions/release-connect
+        with:
+          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          awsRegion: "eu-central-1"
+          serverHostname: "dev.suite.sldev.cz"
+          serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
+          uploadArtifacts: "true"
+          buildArtifacts: "true"
+          nodeEnv: "development"
+
+  passphrase:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      testName: passphrase.test
+      serverHostname: dev.suite.sldev.cz
+      runWebextension: false
+      runCoreInPopup: false
