@@ -8,7 +8,7 @@ import {
     prepareTradingReducer,
 } from '@suite-common/trading';
 
-import { ReceiveAccount } from './types';
+import { ReceiveAccount, TradeableAsset } from './types';
 
 export interface TradingBuyState extends CommonTradingBuyState {
     selectedReceiveAccount: ReceiveAccount | undefined;
@@ -16,6 +16,7 @@ export interface TradingBuyState extends CommonTradingBuyState {
 
 export interface TradingState extends CommonTradingState {
     buy: TradingBuyState;
+    favouriteAssets: Record<string, TradeableAsset>;
 }
 
 export type TradingRootState = {
@@ -27,7 +28,11 @@ export type TradingRootState = {
 export const initialState: TradingState = {
     ...commonInitialState,
     buy: { ...commonInitialState.buy, selectedReceiveAccount: undefined },
+    favouriteAssets: {},
 };
+
+const getTradeableAssetFavouriteKey = (asset: TradeableAsset) =>
+    asset.contractAddress ? `${asset.symbol}_${asset.contractAddress}` : asset.symbol;
 
 export const tradingSlice = createSliceWithExtraDeps({
     name: 'trading',
@@ -38,6 +43,12 @@ export const tradingSlice = createSliceWithExtraDeps({
             { payload }: PayloadAction<{ selectedReceiveAccount: ReceiveAccount | undefined }>,
         ) => {
             state.buy.selectedReceiveAccount = payload.selectedReceiveAccount;
+        },
+        addTradeableAssetToFavourites: (state, { payload }: PayloadAction<TradeableAsset>) => {
+            state.favouriteAssets[getTradeableAssetFavouriteKey(payload)] = payload;
+        },
+        removeTradeableAssetFromFavourites: (state, { payload }: PayloadAction<TradeableAsset>) => {
+            delete state.favouriteAssets[getTradeableAssetFavouriteKey(payload)];
         },
     },
     extraReducers: (builder, extra) => {
@@ -50,11 +61,28 @@ export const tradingSlice = createSliceWithExtraDeps({
     },
 });
 
-export const { setBuySelectedReceiveAccount } = tradingSlice.actions;
+export const {
+    setBuySelectedReceiveAccount,
+    addTradeableAssetToFavourites,
+    removeTradeableAssetFromFavourites,
+} = tradingSlice.actions;
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
 
 export const selectTradingBuy = (state: TradingRootState) => state.wallet.trading.buy;
+
+export const selectTradingFavouriteAssets = (state: TradingRootState) =>
+    state.wallet.trading.favouriteAssets;
+
+export const selectTradingFavouriteAssetsArray = createMemoizedSelector(
+    [selectTradingFavouriteAssets],
+    assets => Object.values(assets),
+);
+
+export const selectIsTradingFavouriteAsset = createMemoizedSelector(
+    [selectTradingFavouriteAssets, (_state, asset: TradeableAsset) => asset],
+    (assets, asset) => !!assets[getTradeableAssetFavouriteKey(asset)],
+);
 
 export const selectBuySelectedReceiveAccount = (state: TradingRootState) =>
     selectTradingBuy(state).selectedReceiveAccount;

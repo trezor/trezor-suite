@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 
+import { selectTradingFavouriteAssetsArray } from '../../../tradingSlice';
 import {
     ItemRenderConfig,
     SectionListData,
@@ -23,7 +25,7 @@ type ListItemExtraData = {
     isFavourite: boolean;
 };
 
-const mockFavourites: TradeableAsset[] = [
+const mockAssets: TradeableAsset[] = [
     { symbol: 'btc' },
     { symbol: 'eth' },
     {
@@ -31,8 +33,6 @@ const mockFavourites: TradeableAsset[] = [
         contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as TokenAddress,
         name: 'USDC',
     },
-];
-const mockAssets: TradeableAsset[] = [
     { symbol: 'doge' },
     { symbol: 'sol' },
     { symbol: 'dsol' },
@@ -41,8 +41,6 @@ const mockAssets: TradeableAsset[] = [
     { symbol: 'ltc' },
     { symbol: 'arb' },
     { symbol: 'base' },
-    { symbol: 'btc' },
-    { symbol: 'eth' },
     { symbol: 'ada' },
     { symbol: 'bsc' },
 ];
@@ -56,26 +54,16 @@ const keyExtractor = (
 
 const renderItem = (
     asset: TradeableAsset,
-    { sectionData }: ItemRenderConfig<ListItemExtraData>,
+    _: ItemRenderConfig<ListItemExtraData>,
     onAssetSelect: (asset: TradeableAsset) => void,
-) => {
-    const toggleFavourite = () => {
-        // TODO: Implement
-        // eslint-disable-next-line no-console
-        console.log('Not implemented!');
-    };
-
-    return (
-        <TradeableAssetListItem
-            asset={asset}
-            onPress={() => onAssetSelect(asset)}
-            onFavouritePress={toggleFavourite}
-            priceChange={getMockPriceChange()}
-            fiatRate={getMockFiatRate()}
-            isFavourite={sectionData.isFavourite}
-        />
-    );
-};
+) => (
+    <TradeableAssetListItem
+        asset={asset}
+        onPress={() => onAssetSelect(asset)}
+        priceChange={getMockPriceChange()}
+        fiatRate={getMockFiatRate()}
+    />
+);
 
 export const TradeableAssetsSheet = ({
     isVisible,
@@ -87,10 +75,10 @@ export const TradeableAssetsSheet = ({
         onClose();
     };
 
-    const favourites = mockFavourites;
+    const favourites = useSelector(selectTradingFavouriteAssetsArray);
     const assetsData = mockAssets;
 
-    const data = useMemo(
+    const listData = useMemo(
         () =>
             [
                 {
@@ -105,7 +93,10 @@ export const TradeableAssetsSheet = ({
                     data: assetsData,
                     sectionData: { isFavourite: false },
                 },
-            ] as SectionListData<TradeableAsset, ListItemExtraData>,
+            ].filter(({ data }) => data.length > 0) as SectionListData<
+                TradeableAsset,
+                ListItemExtraData
+            >,
         [favourites, assetsData],
     );
 
@@ -115,7 +106,7 @@ export const TradeableAssetsSheet = ({
             onClose={onClose}
             ListEmptyComponent={<TradeAssetsListEmptyComponent />}
             handleComponent={() => <TradeableAssetsSheetHeader onClose={onClose} />}
-            data={data}
+            data={listData}
             keyExtractor={keyExtractor}
             estimatedItemSize={ASSET_ITEM_HEIGHT}
             renderItem={(item, config) => renderItem(item, config, onAssetSelectCallback)}

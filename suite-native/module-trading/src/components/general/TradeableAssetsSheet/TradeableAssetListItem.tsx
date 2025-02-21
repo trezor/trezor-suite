@@ -1,19 +1,24 @@
 import { Pressable } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
 import { Box, HStack, PriceChangeBadge, RoundedIcon, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { FavouriteIcon } from './FavouriteIcon';
+import {
+    TradingRootState,
+    addTradeableAssetToFavourites,
+    removeTradeableAssetFromFavourites,
+    selectIsTradingFavouriteAsset,
+} from '../../../tradingSlice';
 import { TradeableAsset } from '../../../types';
 
-export type AssetListItemProps = {
+export type TradeableAssetListItemProps = {
     asset: TradeableAsset;
     fiatRate: number;
     priceChange: number;
     onPress: () => void;
-    onFavouritePress: () => void;
-    isFavourite?: boolean;
 };
 
 export const ASSET_ITEM_HEIGHT = 68;
@@ -27,20 +32,37 @@ const vStackStyle = prepareNativeStyle(({ spacings }) => ({
 }));
 
 export const TradeableAssetListItem = ({
-    asset: { symbol, contractAddress, name },
+    asset,
     fiatRate,
     priceChange,
     onPress,
-    onFavouritePress,
-    isFavourite = false,
-}: AssetListItemProps) => {
+}: TradeableAssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { DisplaySymbolFormatter, FiatAmountFormatter, NetworkNameFormatter } = useFormatters();
+    const dispatch = useDispatch();
 
+    const isFavourite = useSelector((state: TradingRootState) =>
+        selectIsTradingFavouriteAsset(state, asset),
+    );
+
+    const onFavouritePress = () => {
+        if (isFavourite) {
+            dispatch(removeTradeableAssetFromFavourites(asset));
+        } else {
+            dispatch(addTradeableAssetToFavourites(asset));
+        }
+    };
+
+    const { symbol, contractAddress, name } = asset;
     const assetName = name ?? <NetworkNameFormatter value={symbol} />;
 
     return (
-        <Pressable onPress={onPress} accessibilityRole="radio" accessibilityLabel={name ?? symbol}>
+        <Pressable
+            onPress={onPress}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={name ?? symbol}
+        >
             <HStack alignItems="center" spacing="sp12">
                 <Box justifyContent="center">
                     <RoundedIcon symbol={symbol} contractAddress={contractAddress} />
