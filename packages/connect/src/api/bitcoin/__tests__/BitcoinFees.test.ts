@@ -4,7 +4,7 @@ import coinsJSON from '@trezor/connect-common/files/coins.json';
 
 import { initBlockchain } from '../../../backend/BlockchainLink';
 import { getBitcoinNetwork, parseCoinsJson } from '../../../data/coinInfo';
-import { FeeLevels } from '../Fees';
+import { BitcoinFeeLevels } from '../BitcoinFees';
 
 describe('api/bitcoin/Fees', () => {
     // load coin definitions
@@ -29,7 +29,7 @@ describe('api/bitcoin/Fees', () => {
             });
 
         const backend = await initBlockchain(coinInfo, () => {});
-        const feeLevels = new FeeLevels(coinInfo);
+        const feeLevels = new BitcoinFeeLevels(coinInfo);
 
         expect(feeLevels.levels.length).toEqual(4); // Bitcoin has 4 defined levels in coins.json
         expect(feeLevels.levels.map(l => l.feePerUnit)).toEqual(
@@ -37,7 +37,7 @@ describe('api/bitcoin/Fees', () => {
         ); // preloaded values from coins.json
 
         const smartFeeLevels = await feeLevels.load(backend);
-        expect(smartFeeLevels.map(l => l.feePerUnit)).toEqual(['10', '10', '8.86', '4.69']);
+        expect(smartFeeLevels?.map(l => l.feePerUnit)).toEqual(['10', '10', '8.86', '4.69']);
 
         backend.disconnect();
         spy.mockClear();
@@ -63,10 +63,10 @@ describe('api/bitcoin/Fees', () => {
             });
 
         const backend = await initBlockchain(coinInfo, () => {});
-        const feeLevels = new FeeLevels(coinInfo);
+        const feeLevels = new BitcoinFeeLevels(coinInfo);
 
         const smartFeeLevels = await feeLevels.load(backend);
-        expect(smartFeeLevels.map(l => l.feePerUnit)).toEqual(['10', '8.86', '3.18', '1']);
+        expect(smartFeeLevels?.map(l => l.feePerUnit)).toEqual(['10', '8.86', '3.18', '1']);
 
         backend.disconnect();
         spy.mockClear();
@@ -92,7 +92,7 @@ describe('api/bitcoin/Fees', () => {
             });
 
         const backend = await initBlockchain(coinInfo, () => {});
-        const feeLevels = new FeeLevels(coinInfo);
+        const feeLevels = new BitcoinFeeLevels(coinInfo);
 
         expect(feeLevels.levels.length).toEqual(1); // Testnet has 1 defined levels in coins.json
         expect(feeLevels.levels.map(l => l.feePerUnit)).toEqual(
@@ -100,7 +100,7 @@ describe('api/bitcoin/Fees', () => {
         ); // preloaded values from coins.json
 
         const smartFeeLevels = await feeLevels.load(backend);
-        expect(smartFeeLevels.map(l => l.feePerUnit)).toEqual(['9.24']);
+        expect(smartFeeLevels?.map(l => l.feePerUnit)).toEqual(['9.24']);
 
         backend.disconnect();
         spy.mockClear();

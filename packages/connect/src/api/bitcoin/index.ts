@@ -1,6 +1,6 @@
 export * from './createPendingTx';
 export * from './enhanceSignTx';
-export * from './Fees';
+export * from './BitcoinFees';
 export * from './inputs';
 export * from './outputs';
 export * from './refTx';

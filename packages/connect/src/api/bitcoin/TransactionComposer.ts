@@ -3,7 +3,7 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { ComposeOutput, TransactionInputOutputSortingStrategy, composeTx } from '@trezor/utxo-lib';
 
-import { FeeLevels } from './Fees';
+import { BitcoinFeeLevels } from './BitcoinFees';
 import { Blockchain } from '../../backend/BlockchainLink';
 import type { BitcoinNetworkInfo, DiscoveryAccount, SelectFeeLevel } from '../../types';
 import type {
@@ -36,7 +36,7 @@ export class TransactionComposer {
 
     sortingStrategy: TransactionInputOutputSortingStrategy;
 
-    feeLevels: FeeLevels;
+    feeLevels: BitcoinFeeLevels;
 
     composed: { [key: string]: ComposeResult } = {};
 
@@ -47,7 +47,7 @@ export class TransactionComposer {
         this.blockHeight = 0;
         this.baseFee = options.baseFee || 0;
         this.sortingStrategy = options.sortingStrategy;
-        this.feeLevels = new FeeLevels(options.coinInfo);
+        this.feeLevels = new BitcoinFeeLevels(options.coinInfo);
 
         // map to @trezor/utxo-lib/compose format
         const { addresses } = options.account;
@@ -101,7 +101,7 @@ export class TransactionComposer {
 
                 const tx = this.compose(lastFee.toString());
                 if (tx.type === 'final') {
-                    this.feeLevels.updateCustomFee(lastFee.toString());
+                    this.feeLevels.updateBitcoinCustomFee(lastFee.toString());
                     this.composed.custom = tx;
 
                     return true;
@@ -118,9 +118,9 @@ export class TransactionComposer {
         const tx = this.compose(fee);
         this.composed.custom = tx;
         if (tx.type === 'final') {
-            this.feeLevels.updateCustomFee(tx.feePerByte);
+            this.feeLevels.updateBitcoinCustomFee(tx.feePerByte);
         } else {
-            this.feeLevels.updateCustomFee(fee);
+            this.feeLevels.updateBitcoinCustomFee(fee);
         }
     }
 

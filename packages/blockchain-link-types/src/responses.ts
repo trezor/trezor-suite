@@ -1,4 +1,5 @@
 import type { Block, MempoolTransactionNotification } from './blockbook';
+import { Eip1559Fees } from './blockbook-api';
 import type {
     AccountBalanceHistory,
     AccountInfo,
@@ -98,6 +99,7 @@ export interface EstimateFee {
         feePerUnit: string;
         feePerTx?: string;
         feeLimit?: string;
+        eip1559?: Eip1559Fees;
     }[];
 }
 

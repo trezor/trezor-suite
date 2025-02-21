@@ -2,11 +2,13 @@
 
 import { ERRORS } from '../constants';
 import { AbstractMethod, MethodReturnType, Payload } from '../core/AbstractMethod';
-import { FeeLevels } from './bitcoin/Fees';
 import { validateParams } from './common/paramsValidator';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
 import type { CoinInfo } from '../types';
+import { BitcoinFeeLevels } from './bitcoin/BitcoinFees';
+import { MiscFeeLevels } from './common/MiscFees';
+import { EthereumFeeLevels } from './ethereum/EthereumFees';
 
 type Params = {
     coinInfo: CoinInfo;
@@ -72,8 +74,19 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
             dustLimit: coinInfo.type === 'bitcoin' ? coinInfo.dustLimit : undefined,
             levels: [],
         };
+        const getFees = () => {
+            switch (coinInfo.type) {
+                case 'bitcoin':
+                    return new BitcoinFeeLevels(coinInfo);
+                case 'ethereum':
+                    return new EthereumFeeLevels(coinInfo);
+                default:
+                    return new MiscFeeLevels(coinInfo);
+            }
+        };
+
         if (request && request.feeLevels) {
-            const fees = new FeeLevels(coinInfo);
+            const fees = getFees();
             if (request.feeLevels === 'smart') {
                 const backend = await initBlockchain(coinInfo, this.postMessage, identity);
                 await fees.load(backend);

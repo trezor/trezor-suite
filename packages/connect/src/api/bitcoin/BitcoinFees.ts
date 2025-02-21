@@ -3,9 +3,8 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Blockchain } from '../../backend/BlockchainLink';
-import type { CoinInfo, FeeLevel } from '../../types';
-
-type Blocks = Array<string | undefined>;
+import type { BitcoinNetworkInfo, FeeLevel } from '../../types';
+import { Blocks, findBlocksForFee } from '../common/MiscFees';
 
 const convertFeeRate = (fee: string, minFee: number) => {
     const feePerKB = new BigNumber(fee);
@@ -56,56 +55,20 @@ const findLowest = (blocks: Blocks) =>
         .reverse()
         .find(item => typeof item === 'string');
 
-const findBlocksForFee = (feePerUnit: string, blocks: Blocks) => {
-    const bn = new BigNumber(feePerUnit);
-    // find first occurrence of value lower or equal than requested
-    const lower = blocks.find(b => typeof b === 'string' && bn.gte(b));
-    if (!lower) return -1;
-
-    // if not found get latest know value
-    return blocks.indexOf(lower);
-};
-
-export class FeeLevels {
-    coinInfo: CoinInfo;
+export class BitcoinFeeLevels {
+    coinInfo: BitcoinNetworkInfo;
 
     levels: FeeLevel[];
     longTermFeeRate?: string; // long term fee rate is used by @trezor/utxo-lib composeTx module
 
     blocks: Blocks = [];
 
-    constructor(coinInfo: CoinInfo) {
+    constructor(coinInfo: BitcoinNetworkInfo) {
         this.coinInfo = coinInfo;
         this.levels = coinInfo.defaultFees;
     }
 
-    async loadMisc(blockchain: Blockchain) {
-        try {
-            const [response] = await blockchain.estimateFee({ blocks: [1] });
-            // misc coins should have only one FeeLevel (normal)
-            this.levels[0] = {
-                ...this.levels[0],
-                ...response,
-                // validate `feePerUnit` from the backend
-                // should be lower than `coinInfo.maxFee` and higher than `coinInfo.minFee`
-                // xrp sends values from 1 to very high number occasionally
-                // see: https://github.com/trezor/trezor-suite/blob/develop/packages/blockchain-link/src/workers/ripple/index.ts#L316
-                feePerUnit: Math.min(
-                    this.coinInfo.maxFee,
-                    Math.max(this.coinInfo.minFee, parseInt(response.feePerUnit, 10)),
-                ).toString(),
-            };
-        } catch {
-            // silent
-        }
-
-        return this.levels;
-    }
-
     async load(blockchain: Blockchain) {
-        if (this.coinInfo.type !== 'bitcoin') return this.loadMisc(blockchain);
-        // only for bitcoin-like
-
         let blocks = fillGap(0, 1, 10);
         if (this.levels.length > 1) {
             // multiple levels
@@ -135,7 +98,10 @@ export class FeeLevels {
         try {
             const response = await blockchain.estimateFee({ blocks });
             response.forEach(({ feePerUnit }, index) => {
-                this.blocks[blocks[index]] = convertFeeRate(feePerUnit, this.coinInfo.minFee);
+                this.blocks[blocks[index]] = convertFeeRate(
+                    feePerUnit || '0',
+                    this.coinInfo.minFee,
+                );
             });
 
             this.levels.forEach(level => {
@@ -154,7 +120,7 @@ export class FeeLevels {
         return this.levels;
     }
 
-    updateCustomFee(feePerUnit: string) {
+    updateBitcoinCustomFee(feePerUnit: string) {
         // remove "custom" level from list
         this.levels = this.levels.filter(l => l.label !== 'custom');
         // recreate "custom" level
