@@ -11,8 +11,8 @@ import { expect, test } from '../../support/fixtures';
 
 // In beforeEach, We set initial status to 'SENDING'
 const transactionStates = [
-    { transactionStatus: 'CONVERTING', displayedText: 'Converting' },
     { transactionStatus: 'CONFIRMING', displayedText: 'Pending' },
+    { transactionStatus: 'CONVERTING', displayedText: 'Converting' },
     { transactionStatus: 'SUCCESS', displayedText: 'Approved' },
 ];
 
