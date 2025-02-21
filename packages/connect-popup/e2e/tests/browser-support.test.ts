@@ -23,7 +23,7 @@ const openPopup = async (page: Page) =>
             // It is important to call waitForEvent before click to set up waiting.
             page.waitForEvent('popup'),
             // Opens popup.
-            page.click("div[data-testid='@api-playground/collapsible-box']"),
+            page.getByTestId('@api-playground/collapsible-box').click(),
             page.click("button[data-testid='@submit-button']"),
         ])
     )[0];

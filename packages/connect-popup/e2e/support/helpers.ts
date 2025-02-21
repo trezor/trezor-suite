@@ -116,8 +116,8 @@ export const openPopup = (
     } else {
         triggerPopup.push(explorerPage.waitForEvent('popup'));
     }
-    triggerPopup.push(explorerPage.click("div[data-testid='@api-playground/collapsible-box']"));
-    triggerPopup.push(explorerPage.click("button[data-testid='@submit-button']"));
+    triggerPopup.push(explorerPage.getByTestId('@api-playground/collapsible-box').click());
+    triggerPopup.push(explorerPage.getByTestId('@submit-button').click());
     triggerPopup.push(explorerPage.waitForSelector("[data-testid='@submit-button/spinner']"));
 
     return Promise.all(triggerPopup) as Promise<Page[]>;
@@ -149,7 +149,9 @@ export const setConnectSettings = async (
     { trustedHost = false, connectSrc }: { trustedHost?: boolean; connectSrc?: string },
     _isWebExtension?: boolean,
 ) => {
-    await explorerPage.goto(formatUrl(explorerUrl, `settings/index.html`));
+    await explorerPage.goto(
+        formatUrl(explorerUrl, _isWebExtension ? `settings/index.html` : `settings`),
+    );
     /*if (isWebExtension) {
         // When webextension and using service-worker we need to wait for handshake is confirmed with proxy.
         await explorerPage.waitForSelector("div[data-testid='@settings/handshake-confirmed']");
