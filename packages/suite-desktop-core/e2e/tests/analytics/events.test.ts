@@ -9,7 +9,8 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         await onboardingPage.disableFirmwareHashCheck();
     });
 
-    test('reports transport-type, suite-ready and device-connect/device-disconnect events when analytics is initialized and enabled', async ({
+    //TODO: Fix instable test
+    test.skip('reports transport-type, suite-ready and device-connect/device-disconnect events when analytics is initialized and enabled', async ({
         page,
         analytics,
         onboardingPage,

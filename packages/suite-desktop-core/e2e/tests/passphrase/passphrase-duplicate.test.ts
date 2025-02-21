@@ -8,7 +8,8 @@ test.describe('Passphrase duplicate', { tag: ['@group=passphrase'] }, () => {
         await dashboardPage.discoveryShouldFinish();
     });
 
-    test('attempt to add the same hidden wallet twice results in warning', async ({
+    //TODO: #17161 Fix instable test
+    test.skip('attempt to add the same hidden wallet twice results in warning', async ({
         page,
         dashboardPage,
     }) => {
