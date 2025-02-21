@@ -79,6 +79,7 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata1', '@webOnl
             metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0),
         ).toContainText('submitted by button');
 
+        await onboardingPage.completeTransactionOnboarding();
         await walletPage.exportTransactions('csv');
 
         const download = await page.waitForEvent('download');

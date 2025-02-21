@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { Card, Column, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
+import { selectIsHideSuspiciousTransactions } from 'src/reducers/wallet/settingsReducer';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionList } from './TransactionList';
@@ -33,17 +35,15 @@ export const WalletTransactionList = ({
     isExportable = true,
 }: TransactionListProps) => {
     // NOTE: The number of the displayed pages may be different from the number of the pages for all transactions
+    const suspiciousTransactionsHidden = useSelector(selectIsHideSuspiciousTransactions);
+    const fraudTransactionPossible =
+        suspiciousTransactionsHidden && hasNetworkPotentialFraudTransactions(symbol);
     const [visiblePages, setVisiblePages] = useState(1);
     const result = useVisibleTransactions({
         account,
         numberOfPagesRequested: visiblePages,
+        enableFiltering: fraudTransactionPossible,
     });
-
-    if (!result.isLoading && result.visibleTransactions.length === 0) {
-        return <NoVisibleTransactions />;
-    }
-
-    const fraudTransactionPossible = hasNetworkPotentialFraudTransactions(symbol);
 
     return (
         <TransactionList

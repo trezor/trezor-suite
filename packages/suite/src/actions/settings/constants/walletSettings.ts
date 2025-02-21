@@ -4,3 +4,5 @@ export const CHANGE_NETWORKS = '@wallet-settings/change-networks';
 export const SET_LAST_USED_FEE_LEVEL = '@wallet-settings/set-last-used-fee-level';
 export const FROM_STORAGE = '@wallet-settings/from-storage';
 export const SET_BITCOIN_AMOUNT_UNITS = '@suite/set-bitcoin-amount-units';
+export const TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS =
+    '@wallet-settings/toggle-hide-suspicious-transactions';

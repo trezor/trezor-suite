@@ -15,6 +15,7 @@ export const initialState: State = {
     localCurrency: 'usd',
     discreetMode: false,
     enabledNetworks: ['btc'],
+    hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
     lastUsedFeeLevel: {},
 };
@@ -56,6 +57,10 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
                 draft.bitcoinAmountUnit = action.payload;
                 break;
 
+            case WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS:
+                draft.hideSuspiciousTransactions = !draft.hideSuspiciousTransactions;
+                break;
+
             // no default
         }
     });
@@ -63,6 +68,8 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
 export const selectEnabledNetworks = (state: AppState) => state.wallet.settings.enabledNetworks;
 export const selectLocalCurrency = (state: AppState) => state.wallet.settings.localCurrency;
 export const selectIsDiscreteModeActive = (state: AppState) => state.wallet.settings.discreetMode;
+export const selectIsHideSuspiciousTransactions = (state: AppState) =>
+    state.wallet.settings.hideSuspiciousTransactions;
 export const selectBitcoinAmountUnit = (state: AppState) => state.wallet.settings.bitcoinAmountUnit;
 
 export const selectAreSatsAmountUnit = (state: AppState) => {

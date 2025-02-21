@@ -110,6 +110,7 @@ export const useFetchTransactions = (
                         noLoading: Boolean(options.noLoading),
                     }),
                 );
+            }).finally(() => {
                 setFetching(false);
             });
         },
@@ -122,8 +123,9 @@ export const useFetchTransactions = (
                 if (fetchedAll) return;
                 setFetching(true);
                 await fetchCommon(pagesFetched + 1);
-                setFetching(false);
                 setPagesFetched(pagesFetched + 1);
+            }).finally(() => {
+                setFetching(false);
             }),
         [synchronize, fetchCommon, pagesFetched, fetchedAll],
     );
@@ -136,8 +138,9 @@ export const useFetchTransactions = (
                 await fetchCommon(pagesFetched + 1, {
                     recursive: true,
                 });
-                setFetching(false);
                 setFetchedAll(true);
+            }).finally(() => {
+                setFetching(false);
             }),
         [synchronize, fetchCommon, pagesFetched, fetchedAll],
     );
@@ -148,9 +151,11 @@ export const useFetchTransactions = (
 export const useVisibleTransactions = ({
     account,
     numberOfPagesRequested,
+    enableFiltering = false,
 }: {
     account: Account;
     numberOfPagesRequested: number;
+    enableFiltering?: boolean;
 }) => {
     const allTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, account.key),
@@ -175,7 +180,7 @@ export const useVisibleTransactions = ({
 
     const visibleTransactions = useMemo(
         () =>
-            tokenDefinitions
+            tokenDefinitions && enableFiltering
                 ? allTransactions.filter(
                       transaction =>
                           // NOTE: due to some weirdness, the transaction here can be `undefined`!
@@ -184,7 +189,7 @@ export const useVisibleTransactions = ({
                               : false, // NOTE: when transaction is falsy, hide it
                   )
                 : allTransactions,
-        [allTransactions, tokenDefinitions],
+        [allTransactions, tokenDefinitions, enableFiltering],
     );
 
     const perPage = getTxsPerPage(account.networkType);
@@ -195,6 +200,7 @@ export const useVisibleTransactions = ({
 
     useEffect(() => {
         if (
+            enableFiltering &&
             shouldAttemptToLoadNextPageForVisibleTransactions({
                 totalNumberOfTransactions: allAccountTransactions,
                 currentNumberOfVisibleTransactions: visibleTransactions.length,
@@ -210,6 +216,7 @@ export const useVisibleTransactions = ({
         allAccountTransactions,
         allTransactions.length,
         allTransactionsPagesFetched,
+        enableFiltering,
         fetchPage,
         fetchedAll,
         numberOfPagesRequested,

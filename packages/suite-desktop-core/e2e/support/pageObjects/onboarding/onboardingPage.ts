@@ -115,6 +115,27 @@ export class OnboardingPage {
     }
 
     @step()
+    async completeTransactionOnboarding() {
+        // NOTE: this tooltip may cover the underlying UI so it is not clickable
+        const hideScamTransactionsTooltipGotItButton = await this.page.getByTestId(
+            '@hideScamTransactionsTooltip/gotIt',
+        );
+        const scamTransactionsDropdown = await this.page.getByTestId(
+            '@wallet/accounts/hide-scam-transactions/dropdown',
+        );
+
+        // NOTE: when this is not in the view, it is simply not visible, the test should fail if it should be visible
+        if (!(await scamTransactionsDropdown.isVisible())) {
+            return;
+        }
+
+        await scamTransactionsDropdown.scrollIntoViewIfNeeded();
+        if (await hideScamTransactionsTooltipGotItButton.isVisible()) {
+            await hideScamTransactionsTooltipGotItButton.click();
+        }
+    }
+
+    @step()
     async disableFirmwareHashCheck(options?: { skipSuiteLoadedCheck?: boolean }) {
         // Desktop starts with already disabled firmware hash check. Web needs to disable it.
         if (!isWebProject(this.testInfo)) {

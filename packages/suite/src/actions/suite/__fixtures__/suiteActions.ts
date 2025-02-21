@@ -207,6 +207,7 @@ const initialRun = [
                 showSettingsDesktopAppPromoBanner: true,
                 stakeEthBannerClosed: false,
                 stakeSolBannerClosed: false,
+                suspiciousTransactionsTooltipClosed: false,
                 showDashboardStakingPromoBanner: true,
                 viewOnlyPromoClosed: true,
                 viewOnlyTooltipClosed: true,

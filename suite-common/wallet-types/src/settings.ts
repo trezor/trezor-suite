@@ -21,6 +21,7 @@ export interface WalletSettings {
     localCurrency: FiatCurrencyCode;
     discreetMode: boolean;
     enabledNetworks: NetworkSymbol[];
+    hideSuspiciousTransactions: boolean;
     bitcoinAmountUnit: PROTO.AmountUnit;
     lastUsedFeeLevel: {
         [key: string]: Omit<FeeLevel, 'blocks'>; // Key: Network['symbol']

@@ -30,6 +30,7 @@ export const changeNetworks = createAction(
 export type WalletSettingsAction =
     | ReturnType<typeof changeNetworks>
     | ReturnType<typeof setLocalCurrency>
+    | { type: typeof WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS }
     | { type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE; toggled: boolean }
     | {
           type: typeof WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL;
@@ -110,6 +111,10 @@ export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): WalletSettingsAc
         payload: units,
     };
 };
+
+export const toggleHideSuspiciousTransactions = (): WalletSettingsAction => ({
+    type: WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS,
+});
 
 export const toggleBitcoinAmountUnits = () => (dispatch: Dispatch, getState: GetState) => {
     const currentUnits = getState().wallet.settings.bitcoinAmountUnit;

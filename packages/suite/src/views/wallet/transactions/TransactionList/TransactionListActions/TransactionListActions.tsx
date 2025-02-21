@@ -1,22 +1,19 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 
-import styled from 'styled-components';
-
 import { AccountLabels } from '@suite-common/metadata-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { Row } from '@trezor/components/src/components/Flex/Flex';
+import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { SearchAction } from 'src/components/wallet/SearchAction';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 
 import { ExportAction } from './ExportAction';
-
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-`;
+import { FilterAction } from './FilterAction';
 
 interface TransactionListActionsProps {
     account: Account;
@@ -91,7 +88,7 @@ export const TransactionListActions = ({
     }, [transactionHistoryPrefill, setSearch, onSearch, account, dispatch]);
 
     return (
-        <Wrapper>
+        <Row gap={spacings.xxs}>
             <SearchAction
                 tooltipText="TR_TRANSACTIONS_SEARCH_TOOLTIP"
                 placeholder="TR_SEARCH_TRANSACTIONS"
@@ -102,6 +99,7 @@ export const TransactionListActions = ({
                 onSearch={onSearch}
                 data-testid="@wallet/accounts/search-icon"
             />
+            {hasNetworkPotentialFraudTransactions(account.symbol) && <FilterAction />}
             {isExportable && (
                 <ExportAction
                     account={account}
@@ -109,6 +107,6 @@ export const TransactionListActions = ({
                     accountMetadata={accountMetadata}
                 />
             )}
-        </Wrapper>
+        </Row>
     );
 };

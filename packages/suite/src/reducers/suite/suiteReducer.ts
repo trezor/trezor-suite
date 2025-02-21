@@ -80,6 +80,7 @@ export interface Flags {
     isDashboardPassphraseBannerVisible: boolean;
     viewOnlyPromoClosed: boolean;
     viewOnlyTooltipClosed: boolean;
+    suspiciousTransactionsTooltipClosed: boolean;
     showUnhideTokenModal: boolean;
     showCopyAddressModal: boolean;
     enableAutoupdateOnNextRun: boolean;
@@ -159,6 +160,7 @@ const initialState: SuiteState = {
         showDashboardStakingPromoBanner: true,
         viewOnlyPromoClosed: false,
         viewOnlyTooltipClosed: false,
+        suspiciousTransactionsTooltipClosed: false,
         isDashboardPassphraseBannerVisible: true,
         showCopyAddressModal: true,
         showUnhideTokenModal: true,

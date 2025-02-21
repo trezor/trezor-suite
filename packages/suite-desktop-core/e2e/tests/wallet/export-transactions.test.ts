@@ -31,6 +31,7 @@ test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () 
         dashboardPage,
         settingsPage,
         walletPage,
+        onboardingPage,
     }) => {
         const symbols: NetworkSymbol[] = ['btc', 'ltc', 'eth', 'ada'];
         await settingsPage.navigateTo('coins');
@@ -45,6 +46,7 @@ test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () 
             await walletPage.accountButton({ symbol }).click();
 
             const typesOfExport: ExportType[] = ['pdf', 'csv', 'json'];
+            await onboardingPage.completeTransactionOnboarding();
             for (const type of typesOfExport) {
                 await walletPage.exportTransactions(type);
                 const download = await page.waitForEvent('download');
