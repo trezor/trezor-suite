@@ -45,7 +45,6 @@ test.describe('Trading - Swap Solana', { tag: ['@group=other', '@webOnly'] }, ()
             await settingsPage.coins.enableNetwork('sol');
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await page.pause();
             await walletPage.openSwapTrading();
         },
     );
