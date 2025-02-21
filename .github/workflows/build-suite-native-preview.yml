@@ -114,7 +114,7 @@ jobs:
         # Only create preview builds if there is no build with the same runtimeVersion on EAS already
         if: env.RUNTIME_BUILD_EXISTS_IOS == 'false'
         working-directory: suite-native/app
-        run: eas build --profile preview --platform ios --non-interactive --no-wait
+        run: eas build --profile preview --platform ios --auto-submit --non-interactive --no-wait
 
       - name: Build message system config
         run: yarn message-system-sign-config

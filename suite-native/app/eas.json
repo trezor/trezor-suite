@@ -29,8 +29,14 @@
             "autoIncrement": true,
             "developmentClient": true,
             "credentialsSource": "remote",
-            "distribution": "internal",
-            "node": "22.11.0"
+            "node": "22.11.0",
+            "ios": {
+                "distribution": "store"
+            },
+            "android": {
+                "distribution": "internal",
+                "resourceClass": "large"
+            }
         },
         "adhoc": {
             "extends": "preview",
@@ -42,12 +48,9 @@
                 "EXPO_PUBLIC_CODESIGN_BUILD": "true"
             },
             "autoIncrement": true,
+            "credentialsSource": "remote",
             "android": {
-                "credentialsSource": "remote",
                 "resourceClass": "large"
-            },
-            "ios": {
-                "credentialsSource": "remote"
             }
         },
         "productionAPK": {
@@ -65,9 +68,19 @@
         "develop": {
             "ios": {
                 "bundleIdentifier": "io.trezor.suite.develop",
-                "ascAppId": "1631884497",
+                "ascAppId": "1632206646",
                 "appleTeamId": "C3P22XVH2C"
             }
+        },
+        "preview": {
+            "ios": {
+                "bundleIdentifier": "io.trezor.suite.preview",
+                "ascAppId": "6739429089",
+                "appleTeamId": "C3P22XVH2C"
+            }
+        },
+        "adhoc": {
+            "extends": "preview"
         },
         "production": {
             "android": {
