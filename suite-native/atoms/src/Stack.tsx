@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { View } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, { AnimatedProps } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { NativeSpacing } from '@trezor/theme';
@@ -57,6 +57,6 @@ export const HStack = (props: StackProps) => <Stack {...props} orientation="hori
 const AnimatedStack = Animated.createAnimatedComponent(Stack);
 AnimatedStack.displayName = 'AnimatedStack';
 export const AnimatedVStack = AnimatedStack;
-export const AnimatedHStack = (props: StackProps) => (
+export const AnimatedHStack = (props: AnimatedProps<StackProps>) => (
     <AnimatedStack {...props} orientation="horizontal" />
 );

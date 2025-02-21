@@ -1,7 +1,13 @@
 import { ReactElement, ReactNode, useMemo } from 'react';
+import { FadeInUp, FadeOutUp } from 'react-native-reanimated';
 
 import { UnreachableCaseError } from '@suite-common/suite-utils';
-import { BottomSheetFlashList, BottomSheetFlashListProps, Box, Text } from '@suite-native/atoms';
+import {
+    AnimatedBox,
+    BottomSheetFlashList,
+    BottomSheetFlashListProps,
+    Text,
+} from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type ItemRenderConfig<U> = {
@@ -120,15 +126,23 @@ const renderInternalItem = <T, U>(
     switch (item[0]) {
         case 'sectionHeader':
             return (
-                <Box paddingVertical="sp12">
+                <AnimatedBox paddingVertical="sp12" entering={FadeInUp} exiting={FadeOutUp}>
                     <Text variant="hint" color="textSubdued">
                         {item[1]}
                     </Text>
-                </Box>
+                </AnimatedBox>
             );
 
         case 'item':
-            return <Box style={applyStyle(itemStyle, item[2])}>{renderItem(item[1], item[2])}</Box>;
+            return (
+                <AnimatedBox
+                    entering={FadeInUp}
+                    exiting={FadeOutUp}
+                    style={applyStyle(itemStyle, item[2])}
+                >
+                    {renderItem(item[1], item[2])}
+                </AnimatedBox>
+            );
 
         default:
             throw new UnreachableCaseError(item[0]);
