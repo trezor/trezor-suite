@@ -2961,6 +2961,13 @@
                     "options": {
                         "default": "IMMEDIATE"
                     }
+                },
+                "return_empty_state": {
+                    "type": "bool",
+                    "id": 4,
+                    "options": {
+                        "default": false
+                    }
                 }
             },
             "nested": {
@@ -5120,6 +5127,7 @@
         "UnlockedPathRequest": {
             "fields": {
                 "mac": {
+                    "rule": "required",
                     "type": "bytes",
                     "id": 1
                 }

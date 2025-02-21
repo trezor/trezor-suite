@@ -2729,7 +2729,7 @@ export const UnlockPath = Type.Object(
 export type UnlockedPathRequest = Static<typeof UnlockedPathRequest>;
 export const UnlockedPathRequest = Type.Object(
     {
-        mac: Type.Optional(Type.String()),
+        mac: Type.String(),
     },
     { $id: 'UnlockedPathRequest' },
 );

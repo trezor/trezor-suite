@@ -1776,7 +1776,7 @@ export type UnlockPath = {
 };
 
 export type UnlockedPathRequest = {
-    mac?: string;
+    mac: string;
 };
 
 export type ShowDeviceTutorial = {};
