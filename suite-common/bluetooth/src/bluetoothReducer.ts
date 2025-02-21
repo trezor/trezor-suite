@@ -3,14 +3,7 @@ import { AnyAction, Draft } from '@reduxjs/toolkit';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 
-import {
-    bluetoothAdapterEventAction,
-    bluetoothConnectDeviceEventAction,
-    bluetoothKnownDevicesUpdateAction,
-    bluetoothNearbyDevicesUpdateAction,
-    bluetoothRemoveKnownDeviceAction,
-    bluetoothScanStatusAction,
-} from './bluetoothActions';
+import { bluetoothActions } from './bluetoothActions';
 
 export type BluetoothScanStatus = 'idle' | 'running' | 'error';
 
@@ -60,7 +53,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
 
     return createReducerWithExtraDeps<BluetoothState<T>>(initialState, (builder, extra) =>
         builder
-            .addCase(bluetoothAdapterEventAction, (state, { payload: { isPowered } }) => {
+            .addCase(bluetoothActions.adapterEventAction, (state, { payload: { isPowered } }) => {
                 state.adapterStatus = isPowered ? 'enabled' : 'disabled';
                 if (!isPowered) {
                     state.nearbyDevices = [];
@@ -68,7 +61,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                 }
             })
             .addCase(
-                bluetoothNearbyDevicesUpdateAction,
+                bluetoothActions.nearbyDevicesUpdateAction,
                 (state, { payload: { nearbyDevices } }) => {
                     state.nearbyDevices = nearbyDevices
                         .sort((a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp)
@@ -83,7 +76,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                 },
             )
             .addCase(
-                bluetoothConnectDeviceEventAction,
+                bluetoothActions.connectDeviceEventAction,
                 (state, { payload: { id, connectionStatus } }) => {
                     const device = state.nearbyDevices.find(it => it.device.id === id);
 
@@ -92,15 +85,18 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                     }
                 },
             )
-            .addCase(bluetoothKnownDevicesUpdateAction, (state, { payload: { knownDevices } }) => {
-                state.knownDevices = knownDevices as Draft<T>[];
-            })
-            .addCase(bluetoothRemoveKnownDeviceAction, (state, { payload: { id } }) => {
+            .addCase(
+                bluetoothActions.knownDevicesUpdateAction,
+                (state, { payload: { knownDevices } }) => {
+                    state.knownDevices = knownDevices as Draft<T>[];
+                },
+            )
+            .addCase(bluetoothActions.removeKnownDeviceAction, (state, { payload: { id } }) => {
                 state.knownDevices = state.knownDevices.filter(
                     knownDevice => knownDevice.id !== id,
                 );
             })
-            .addCase(bluetoothScanStatusAction, (state, { payload: { status } }) => {
+            .addCase(bluetoothActions.scanStatusAction, (state, { payload: { status } }) => {
                 state.scanStatus = status;
             })
             .addCase(deviceActions.deviceDisconnect, (state, { payload: { bluetoothProps } }) => {

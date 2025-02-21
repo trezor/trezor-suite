@@ -1,13 +1,4 @@
-export {
-    bluetoothAdapterEventAction,
-    BLUETOOTH_PREFIX,
-    allBluetoothActions,
-    bluetoothConnectDeviceEventAction,
-    bluetoothNearbyDevicesUpdateAction,
-    bluetoothKnownDevicesUpdateAction,
-    bluetoothRemoveKnownDeviceAction,
-    bluetoothScanStatusAction,
-} from './bluetoothActions';
+export { BLUETOOTH_PREFIX, bluetoothActions } from './bluetoothActions';
 
 export { prepareBluetoothReducerCreator } from './bluetoothReducer';
 export type {

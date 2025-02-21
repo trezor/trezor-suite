@@ -8,7 +8,7 @@ import {
 
 export const BLUETOOTH_PREFIX = '@suite/bluetooth';
 
-export const bluetoothAdapterEventAction = createAction(
+const adapterEventAction = createAction(
     `${BLUETOOTH_PREFIX}/adapter-event`,
     ({ isPowered }: { isPowered: boolean }) => ({ payload: { isPowered } }),
 );
@@ -17,7 +17,7 @@ type BluetoothNearbyDevicesUpdateActionPayload = {
     nearbyDevices: BluetoothDeviceCommon[];
 };
 
-export const bluetoothNearbyDevicesUpdateAction = createAction(
+const nearbyDevicesUpdateAction = createAction(
     `${BLUETOOTH_PREFIX}/nearby-devices-update`,
     ({ nearbyDevices }: BluetoothNearbyDevicesUpdateActionPayload) => ({
         payload: { nearbyDevices },
@@ -28,37 +28,37 @@ type BluetoothKnownDevicesUpdateActionPayload = {
     knownDevices: BluetoothDeviceCommon[];
 };
 
-export const bluetoothKnownDevicesUpdateAction = createAction(
+const knownDevicesUpdateAction = createAction(
     `${BLUETOOTH_PREFIX}/known-devices-update`,
     ({ knownDevices }: BluetoothKnownDevicesUpdateActionPayload) => ({
         payload: { knownDevices },
     }),
 );
 
-export const bluetoothRemoveKnownDeviceAction = createAction(
+const removeKnownDeviceAction = createAction(
     `${BLUETOOTH_PREFIX}/remove-known-device`,
     ({ id }: { id: string }) => ({
         payload: { id },
     }),
 );
 
-export const bluetoothConnectDeviceEventAction = createAction(
+const connectDeviceEventAction = createAction(
     `${BLUETOOTH_PREFIX}/connect-device-event`,
     ({ connectionStatus, id }: { id: string; connectionStatus: DeviceBluetoothStatus }) => ({
         payload: { id, connectionStatus },
     }),
 );
 
-export const bluetoothScanStatusAction = createAction(
+const scanStatusAction = createAction(
     `${BLUETOOTH_PREFIX}/scan-status`,
     ({ status }: { status: BluetoothScanStatus }) => ({ payload: { status } }),
 );
 
-export const allBluetoothActions = {
-    bluetoothAdapterEventAction,
-    bluetoothNearbyDevicesUpdateAction,
-    bluetoothConnectDeviceEventAction,
-    bluetoothScanStatusAction,
-    bluetoothKnownDevicesUpdateAction,
-    bluetoothRemoveKnownDeviceAction,
+export const bluetoothActions = {
+    adapterEventAction,
+    nearbyDevicesUpdateAction,
+    connectDeviceEventAction,
+    scanStatusAction,
+    knownDevicesUpdateAction,
+    removeKnownDeviceAction,
 };

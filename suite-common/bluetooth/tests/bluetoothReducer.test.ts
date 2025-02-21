@@ -5,15 +5,7 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 import { deviceActions } from '@suite-common/wallet-core';
 import { Device } from '@trezor/connect';
 
-import {
-    BluetoothDeviceState,
-    bluetoothAdapterEventAction,
-    bluetoothConnectDeviceEventAction,
-    bluetoothKnownDevicesUpdateAction,
-    bluetoothNearbyDevicesUpdateAction,
-    bluetoothRemoveKnownDeviceAction,
-    prepareBluetoothReducerCreator,
-} from '../src';
+import { BluetoothDeviceState, bluetoothActions, prepareBluetoothReducerCreator } from '../src';
 import { BluetoothDeviceCommon, BluetoothState } from '../src/bluetoothReducer';
 
 const bluetoothReducer =
@@ -65,9 +57,9 @@ describe('bluetoothReducer', () => {
         });
 
         expect(store.getState().bluetooth.adapterStatus).toEqual('unknown');
-        store.dispatch(bluetoothAdapterEventAction({ isPowered: true }));
+        store.dispatch(bluetoothActions.adapterEventAction({ isPowered: true }));
         expect(store.getState().bluetooth.adapterStatus).toEqual('enabled');
-        store.dispatch(bluetoothAdapterEventAction({ isPowered: false }));
+        store.dispatch(bluetoothActions.adapterEventAction({ isPowered: false }));
         expect(store.getState().bluetooth.adapterStatus).toEqual('disabled');
     });
 
@@ -88,7 +80,7 @@ describe('bluetoothReducer', () => {
             bluetoothStateDeviceC.device,
         ];
 
-        store.dispatch(bluetoothNearbyDevicesUpdateAction({ nearbyDevices }));
+        store.dispatch(bluetoothActions.nearbyDevicesUpdateAction({ nearbyDevices }));
         expect(store.getState().bluetooth.nearbyDevices).toEqual([
             bluetoothStateDeviceC,
             // No `B` device present, it was dropped
@@ -109,7 +101,7 @@ describe('bluetoothReducer', () => {
         });
 
         store.dispatch(
-            bluetoothConnectDeviceEventAction({
+            bluetoothActions.connectDeviceEventAction({
                 id: 'A',
                 connectionStatus: { type: 'pairing', pin: '12345' },
             }),
@@ -134,10 +126,12 @@ describe('bluetoothReducer', () => {
             bluetoothStateDeviceB.device,
         ];
 
-        store.dispatch(bluetoothKnownDevicesUpdateAction({ knownDevices: knownDeviceToAdd }));
+        store.dispatch(
+            bluetoothActions.knownDevicesUpdateAction({ knownDevices: knownDeviceToAdd }),
+        );
         expect(store.getState().bluetooth.knownDevices).toEqual(knownDeviceToAdd);
 
-        store.dispatch(bluetoothRemoveKnownDeviceAction({ id: 'A' }));
+        store.dispatch(bluetoothActions.removeKnownDeviceAction({ id: 'A' }));
 
         expect(store.getState().bluetooth.knownDevices).toEqual([bluetoothStateDeviceB.device]);
     });
