@@ -1,9 +1,6 @@
 name: "[Build] suite-native preview"
 
 on:
-  push:
-    # push develop(default) branch is necessary for this action to update its fingerprint database
-    branches: [develop]
   pull_request:
     types: [opened, synchronize, labeled]
     paths:
@@ -13,9 +10,7 @@ on:
       - "packages/transport-native-usb/**"
       - "yarn.lock"
       - ".github/workflows/build-suite-native-preview.yml"
-      # list of paths is not complete, but it's always possible to dispatch manually using 'build-mobile' label
-  workflow_dispatch:
-    # manual dispatch will not add any comment to PR, use label 'build-mobile' if PR exists
+      # You can manually dispatch using the ‘preview-mobile’ label only if there are changes in the specified paths.
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -23,7 +18,12 @@ concurrency:
 
 jobs:
   update:
-    if: ( github.event.action != 'labeled' || contains(github.event.pull_request.labels.*.name, 'build-mobile')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
+    if: |
+      (
+        contains(github.event.pull_request.changed_files, 'suite-native/') ||
+        contains(github.event.pull_request.labels.*.name, 'preview-mobile')
+      ) &&
+      (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
     name: EAS Update
     runs-on: ubuntu-latest
     concurrency: fingerprint-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -58,42 +58,63 @@ jobs:
         working-directory: ./suite-native/app
         run: yarn prebuild
 
-      - name: get Expo app fingerprint
-        id: expo-fingerprint
+      - name: Get Expo app fingerprint ANDROID
         working-directory: ./suite-native/app
-        run: USE_RNCORE_AUTOLINKING_FROM_EXPO=1 npx @expo/fingerprint fingerprint:generate --platform android > expo-fingerprint-android.json && node -e "console.log('HASH=' + require('./expo-fingerprint-android.json').hash)" >> $GITHUB_OUTPUT
-
-      - name: Upload fingerprint artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: fingerprint-android.json
-          path: ./suite-native/app/expo-fingerprint-android.json
-          retention-days: 3
-
-      - name: Check runtimeVersion builds
         run: |
-          cd suite-native/app
-          # Read runtimeVersion from dynamic app.json
-          RUNTIME_VERSION=$(npx expo config --json | jq -r '.runtimeVersion')
-          echo "Current runtimeVersion is $RUNTIME_VERSION"
-          FINGERPRINT=${{ steps.expo-fingerprint.outputs.HASH }}
-          echo "Android fingerprint is $FINGERPRINT"
+          npx expo-updates runtimeversion:resolve --platform android > runtimeversion-android.json
+          node -e "console.log('RUNTIME_VERSION_ANDROID=' + require('./runtimeversion-android.json').runtimeVersion)" >> $GITHUB_ENV
+
+      - name: Get Expo app fingerprint iOS
+        working-directory: ./suite-native/app
+        run: |
+          npx expo-updates runtimeversion:resolve --platform ios > runtimeversion-ios.json
+          node -e "console.log('RUNTIME_VERSION_IOS=' + require('./runtimeversion-ios.json').runtimeVersion)" >> $GITHUB_ENV
+
+      - name: Check runtimeVersion build ANDROID
+        working-directory: ./suite-native/app
+        run: |
+          RUNTIME_VERSION_ANDROID=${{ env.RUNTIME_VERSION_ANDROID }}
+          echo "Android fingerprint is $RUNTIME_VERSION_ANDROID"
+
           # Check if there is a build with the same fingerprint on EAS already
-          EXISTING_BUILD=$(eas build:list --status=finished  --build-profile=preview --channel=preview --limit=1  --non-interactive --json --runtime-version=$FINGERPRINT)
-          if [ "$EXISTING_BUILD" = "[]" ]; then
-            echo "No build with runtimeVersion $FINGERPRINT found"
-            echo "RUNTIME_BUILD_EXISTS=false" >> $GITHUB_ENV
+          EXISTING_BUILD_ANDROID=$(eas build:list  --build-profile=preview --channel=preview --limit=1  --non-interactive --json --runtime-version=$RUNTIME_VERSION_ANDROID)
+          if [ "$EXISTING_BUILD_ANDROID" = "[]" ]; then
+            echo "No build with runtimeVersion $EXISTING_BUILD_ANDROID found"
+            echo "RUNTIME_BUILD_EXISTS_ANDROID=false" >> $GITHUB_ENV
           else
-            echo "Found build with runtimeVersion $FINGERPRINT"
-            echo "$EXISTING_BUILD"
-            echo "RUNTIME_BUILD_EXISTS=true" >> $GITHUB_ENV
+            echo "Found build with runtimeVersion $EXISTING_BUILD_ANDROID"
+            echo "$EXISTING_BUILD_ANDROID"
+            echo "RUNTIME_BUILD_EXISTS_ANDROID=true" >> $GITHUB_ENV
           fi
 
-      - name: Create preview builds if fingerprint changed
+      - name: Check runtimeVersion build IOS
+        working-directory: ./suite-native/app
+        run: |
+          RUNTIME_VERSION_IOS=${{ env.RUNTIME_VERSION_IOS }}
+          echo "iOS fingerprint is $RUNTIME_VERSION_IOS"
+
+           # Check if there is a build with the same fingerprint on EAS already
+          EXISTING_BUILD_IOS=$(eas build:list  --build-profile=preview --channel=preview --limit=1  --non-interactive --json --runtime-version=$RUNTIME_VERSION_IOS)
+          if [ "$EXISTING_BUILD_IOS" = "[]" ]; then
+            echo "No build with runtimeVersion $EXISTING_BUILD_IOS found"
+            echo "RUNTIME_BUILD_EXISTS_IOS=false" >> $GITHUB_ENV
+          else
+            echo "Found build with runtimeVersion $EXISTING_BUILD_IOS"
+            echo "$EXISTING_BUILD_IOS"
+            echo "RUNTIME_BUILD_EXISTS_IOS=true" >> $GITHUB_ENV
+          fi
+
+      - name: Create preview builds if fingerprint changed ANDROID
         # Only create preview builds if there is no build with the same runtimeVersion on EAS already
-        if: env.RUNTIME_BUILD_EXISTS == 'false'
+        if: env.RUNTIME_BUILD_EXISTS_ANDROID == 'false'
         working-directory: suite-native/app
-        run: eas build --profile preview --platform all --non-interactive --no-wait
+        run: eas build --profile preview --platform android --non-interactive --no-wait
+
+      - name: Create preview builds if fingerprint changed iOS
+        # Only create preview builds if there is no build with the same runtimeVersion on EAS already
+        if: env.RUNTIME_BUILD_EXISTS_IOS == 'false'
+        working-directory: suite-native/app
+        run: eas build --profile preview --platform ios --non-interactive --no-wait
 
       - name: Build message system config
         run: yarn message-system-sign-config
