@@ -20,9 +20,7 @@ const provider = getCompanyNameFromList(sellQuotesEthereumToken[0].exchange, 'se
 // const { paymentMethodName } = sellTradeEthereum.trade;
 
 test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, () => {
-    test.use({
-        emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
-    });
+    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
         async ({ page, tradingMock, onboardingPage, dashboardPage, settingsPage, walletPage }) => {
             await test.step('Mocking responses', async () => {
@@ -47,7 +45,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, 
         },
     );
 
-    test('Sell Ethereum', async ({ marketPage }) => {
+    test('Sell Ethereum token USDC', async ({ marketPage }) => {
         await test.step('Fill in a sell request', async () => {
             await marketPage.setYouSellAmount(
                 cryptoAmount,
@@ -58,8 +56,8 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, 
         });
 
         await test.step('Confirm sell', async () => {
-            await marketPage.formSellButton.click();
-            await marketPage.sellTermsConfirmButton.click();
+            await marketPage.sellBestOfferButton.click();
+            await marketPage.termsConfirmButton.click();
         });
 
         // TODO: Fix the redirection. I need to troubleshoot this with the team.

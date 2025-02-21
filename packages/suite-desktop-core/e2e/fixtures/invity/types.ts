@@ -66,3 +66,23 @@ export type SellTradeResponse = {
     trade: SellTrade;
     tradeForm: TradeForm;
 };
+
+export type SwapTradeResponse = {
+    receiveAddress: string;
+    sendAddress: string;
+    orderId: string;
+    quoteId: string;
+    status: string;
+    statusUrl: string;
+    exchange: string;
+    send: string;
+    receive: string;
+    exp: string;
+    sendStringAmount: string;
+    receiveStringAmount: string;
+    fee: string;
+    min: number;
+    max: number;
+    rate: number;
+    rateIdentificator: string;
+};

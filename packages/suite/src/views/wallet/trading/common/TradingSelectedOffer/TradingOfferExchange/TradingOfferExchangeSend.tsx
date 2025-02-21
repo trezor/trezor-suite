@@ -37,10 +37,14 @@ export const TradingOfferExchangeSend = () => {
         <>
             {(status === 'CONFIRM' || status === 'SENDING') && sendAddress ? (
                 <Column gap={spacings.lg} flex="1">
-                    <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />}>
+                    <InfoItem
+                        data-testid="@trading/exchange-send/from-account"
+                        label={<Translation id="TR_EXCHANGE_SEND_FROM" />}
+                    >
                         <AccountLabeling account={account} />
                     </InfoItem>
                     <InfoItem
+                        data-testid="@trading/exchange-send/to-address"
                         label={<Translation id="TR_EXCHANGE_SEND_TO" values={{ providerName }} />}
                     >
                         <Address value={sendAddress} />
@@ -48,7 +52,7 @@ export const TradingOfferExchangeSend = () => {
                     <Column margin={{ top: 'auto' }}>
                         <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
                         <Button
-                            data-testid="@trading/offer/exchange/confirm-on-trezor-and-send"
+                            data-testid="@trading/offer/confirm-on-trezor-and-send"
                             isLoading={callInProgress}
                             isDisabled={!device?.connected}
                             onClick={sendTransaction}

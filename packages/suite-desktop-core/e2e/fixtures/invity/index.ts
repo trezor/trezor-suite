@@ -9,11 +9,10 @@ import buyTradeBTC from './buy/trade-bitcoin.json';
 import buyTradeEthereum from './buy/trade-ethereum.json';
 import buyTradeSolanaToken from './buy/trade-solana-token.json';
 import buyWatch from './buy/watch.json';
-import exchangeCoins from './exchange/coins.json';
-import exchangeList from './exchange/list.json';
-import exchangeQuotes from './exchange/quotes.json';
-import exchangeTrade from './exchange/trade.json';
-import exchangeWatch from './exchange/watch.json';
+import swapList from './swap/list.json';
+import swapQuotesSolanaBTC from './swap/quotes-solana-btc.json';
+import swapTradeSolanaBTC from './swap/trade-solana-btc.json';
+import swapWatch from './swap/watch.json';
 import info from './info.json';
 import sellList from './sell/list.json';
 import sellQuotesBTC from './sell/quotes-bitcoin.json';
@@ -31,11 +30,11 @@ import sellWatchSolana from './sell/watch-solana.json';
 const invityUrl = 'https://exchange.trezor.io';
 
 export const invityEndpoint = {
-    exchangeCoins: `${invityUrl}/api/exchange/coins`,
-    exchangeList: `${invityUrl}/api/v3/exchange/list`,
-    exchangeQuotes: `${invityUrl}/api/exchange/quotes`,
-    exchangeTrade: `${invityUrl}/api/exchange/trade`,
-    exchangeWatch: `${invityUrl}/api/exchange/watch/*`,
+    swapCoins: `${invityUrl}/api/v3/exchange/coins`,
+    swapList: `${invityUrl}/api/v3/exchange/list`,
+    swapQuotes: `${invityUrl}/api/v3/exchange/quotes`,
+    swapTrade: `${invityUrl}/api/v3/exchange/trade`,
+    swapWatch: `${invityUrl}/api/v3/exchange/watch/*`,
     info: `${invityUrl}/api/info`,
     buyList: `${invityUrl}/api/v3/buy/list`,
     buyQuotes: `${invityUrl}/api/v3/buy/quotes`,
@@ -56,36 +55,32 @@ export const invityRequest = {
 };
 
 export const invityGeneralResponses = {
-    [invityEndpoint.exchangeCoins]: exchangeCoins,
-    [invityEndpoint.exchangeList]: exchangeList,
-    [invityEndpoint.exchangeQuotes]: exchangeQuotes,
-    [invityEndpoint.exchangeTrade]: exchangeTrade,
-    [invityEndpoint.exchangeWatch]: exchangeWatch,
+    [invityEndpoint.swapList]: swapList,
+    [invityEndpoint.swapWatch]: swapWatch,
     [invityEndpoint.info]: info,
     [invityEndpoint.buyList]: buyList,
     [invityEndpoint.buyWatch]: buyWatch,
     [invityEndpoint.sellList]: sellList,
 };
 
-export const getCompanyNameFromList = (name: string, type: 'buyList' | 'sellList') => {
-    const list = type === 'buyList' ? buyList : sellList;
-    const filteredItems = list.providers.filter(item => item.name === name);
+export const getCompanyNameFromList = (name: string, type: 'sellList' | 'swapList') => {
+    const providersArray = type === 'swapList' ? swapList : sellList.providers;
+    const filteredProviders = providersArray.filter(item => item.name === name);
 
-    if (filteredItems.length !== 1) {
+    if (filteredProviders.length !== 1) {
         throw new Error(
-            `Expected exactly one item, but found ${filteredItems.length}\n${JSON.stringify(filteredItems, null, 2)}`,
+            `Expected exactly one item, but found ${filteredProviders.length}\n${JSON.stringify(filteredProviders, null, 2)}`,
         );
     }
 
-    return filteredItems[0].companyName;
+    return filteredProviders[0].companyName;
 };
 
 export {
-    exchangeCoins,
-    exchangeList,
-    exchangeQuotes,
-    exchangeTrade,
-    exchangeWatch,
+    swapList,
+    swapQuotesSolanaBTC,
+    swapTradeSolanaBTC,
+    swapWatch,
     info,
     buyList,
     buyQuotesBTC,

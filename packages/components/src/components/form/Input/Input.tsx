@@ -151,13 +151,23 @@ const Input = ({
                 onMouseLeave={() => setIsHovered(false)}
             >
                 {innerAddon && innerAddonAlign === 'left' && (
-                    <InputAddon $align="left" ref={measureLeftAddon} $size={size}>
+                    <InputAddon
+                        data-testid={`${dataTest}/input-addon`}
+                        $align="left"
+                        ref={measureLeftAddon}
+                        $size={size}
+                    >
                         {innerAddon}
                     </InputAddon>
                 )}
 
                 {((innerAddon && innerAddonAlign === 'right') || hasShowClearButton) && (
-                    <InputAddon $align="right" ref={measureRightAddon} $size={size}>
+                    <InputAddon
+                        data-testid={`${dataTest}/input-addon`}
+                        $align="right"
+                        ref={measureRightAddon}
+                        $size={size}
+                    >
                         {!hasShowClearButton && innerAddon}
 
                         {hasShowClearButton && <Icon name="xCircle" size={16} onClick={onClear} />}

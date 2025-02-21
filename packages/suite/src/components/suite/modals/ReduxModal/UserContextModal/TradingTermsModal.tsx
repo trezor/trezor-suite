@@ -37,7 +37,6 @@ export const TradingTermsModal = ({
     fromCryptoCurrency,
 }: TradingTermsModalProps) => {
     const providerName = provider || 'unknown provider';
-    const lowercaseType = type.toLowerCase();
     const { device } = useDevice();
     const { cryptoIdToCoinSymbol } = useTradingInfo();
     const iconProps = {
@@ -73,7 +72,7 @@ export const TradingTermsModal = ({
             }
             bottomContent={
                 <NewModal.Button
-                    data-testid={`@trading/${lowercaseType}/offers/trade-terms-confirm-button`}
+                    data-testid="@trading/offers/trade-terms-confirm-button"
                     onClick={() => {
                         decision.resolve(true);
                         onCancel();

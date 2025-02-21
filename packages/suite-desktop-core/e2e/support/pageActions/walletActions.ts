@@ -19,7 +19,7 @@ export class WalletActions {
     readonly stakeAddress: Locator;
     readonly walletExtraDropDown: Locator;
     readonly tradingBuyButton: Locator;
-    readonly coinExchangeButton: Locator;
+    readonly swapButton: Locator;
     readonly tradingDropdownBuyButton: Locator;
     readonly balanceOfAccount = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@wallet/coin-balance/value-${symbol}`);
@@ -46,7 +46,7 @@ export class WalletActions {
         this.stakeAddress = this.page.getByTestId('@cardano/staking/address');
         this.walletExtraDropDown = this.page.getByTestId('@wallet/menu/extra-dropdown');
         this.tradingBuyButton = this.page.getByTestId('@wallet/menu/wallet-trading-buy');
-        this.coinExchangeButton = this.page.getByTestId('@wallet/menu/wallet-trading-exchange');
+        this.swapButton = this.page.getByTestId('@wallet/menu/wallet-trading-exchange');
         this.tradingDropdownBuyButton = this.page
             .getByRole('list')
             .getByTestId('@wallet/menu/wallet-trading-buy');
@@ -129,8 +129,8 @@ export class WalletActions {
     }
 
     @step()
-    async openExchangeMarket(params: WalletParams = {}) {
+    async openSwapTrading(params: WalletParams = {}) {
         await this.accountButton(params).click();
-        await this.coinExchangeButton.click();
+        await this.swapButton.click();
     }
 }

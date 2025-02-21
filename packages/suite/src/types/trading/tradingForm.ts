@@ -291,6 +291,7 @@ export type TradingPaymentMethodHookProps<T extends TradingType> = {
 
 export interface TradingFormInputDefaultProps {
     label?: TranslationKey;
+    'data-testid'?: string;
 }
 
 export interface TradingFormInputCryptoSelectProps<TFieldValues extends FieldValues>

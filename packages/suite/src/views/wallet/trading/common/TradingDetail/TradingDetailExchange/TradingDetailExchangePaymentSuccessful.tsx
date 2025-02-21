@@ -52,7 +52,7 @@ export const TradingDetailExchangePaymentSuccessful = ({ account }: PaymentSucce
     return (
         <Wrapper>
             <Image image="TRADING_SUCCESS" />
-            <Title>
+            <Title data-testid="@trading/transaction/detail/status">
                 <Translation id="TR_EXCHANGE_DETAIL_SUCCESS_TITLE" />
             </Title>
             <Description>

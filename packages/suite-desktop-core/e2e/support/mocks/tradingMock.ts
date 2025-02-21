@@ -2,7 +2,7 @@ import { Page } from '@playwright/test';
 import { cloneDeep } from 'lodash';
 
 import { invityEndpoint, invityGeneralResponses } from '../../fixtures/invity';
-import { SellTradeResponse, TradeResponse } from '../../fixtures/invity/types';
+import { SellTradeResponse, TradeResponse, SwapTradeResponse } from '../../fixtures/invity/types';
 import {
     getSignatureStatusesResponse,
     sendTransactionResponse,
@@ -10,6 +10,8 @@ import {
 import { step } from '../common';
 
 export class TradingMock {
+    readonly watchPeriod = '00:30';
+
     constructor(private page: Page) {
         this.validatePassphraseEnv();
     }
@@ -36,6 +38,16 @@ export class TradingMock {
                 request.postDataJSON(),
             );
             await route.fulfill({ json: redirectedTradeResponse });
+        });
+    }
+
+    @step()
+    async routeSwapTrade(tradeResponse: SwapTradeResponse) {
+        await this.routeInvityGeneralEndpoints();
+        await this.page.route(invityEndpoint.swapTrade, async (route, request) => {
+            const modifiedTradeResponse = cloneDeep(tradeResponse);
+            modifiedTradeResponse.orderId = request.postDataJSON().trade.orderId;
+            await route.fulfill({ json: modifiedTradeResponse });
         });
     }
 
@@ -74,6 +86,15 @@ export class TradingMock {
         await this.page.route(invityEndpoint.buyWatch, async route => {
             await route.fulfill({ json: { status } });
         });
+    }
+
+    async routeAndWaitForWatchResponse(watchUrl: string, watchResponse: object) {
+        await this.page.route(watchUrl, async route => {
+            await route.fulfill({ json: watchResponse });
+        });
+        const watchResponsePromise = this.page.waitForResponse(watchUrl);
+        await this.page.clock.fastForward(this.watchPeriod);
+        await watchResponsePromise;
     }
 
     // This modification allows us to skip the provider's part of the flow and continue further.

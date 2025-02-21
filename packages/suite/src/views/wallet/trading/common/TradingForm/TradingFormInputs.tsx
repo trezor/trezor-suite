@@ -171,6 +171,7 @@ export const TradingFormInputs = () => {
                 <TradingFormInputAccount<TradingExchangeFormProps>
                     accountSelectName={FORM_SEND_CRYPTO_CURRENCY_SELECT}
                     label="TR_FROM"
+                    data-testid="@trading/form/trade-from/select-crypto"
                     methods={{ ...context }}
                 />
                 <Column gap={spacings.xs}>
@@ -203,6 +204,7 @@ export const TradingFormInputs = () => {
                 </Column>
                 <TradingFormInputCryptoSelect<TradingExchangeFormProps>
                     label="TR_TO"
+                    data-testid="@trading/form/trade-to/select-crypto"
                     cryptoSelectName={FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
                     supportedCryptoCurrencies={supportedCryptoCurrencies}
                     methods={{ ...context }}

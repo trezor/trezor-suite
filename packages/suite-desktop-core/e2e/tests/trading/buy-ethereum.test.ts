@@ -41,7 +41,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
         });
 
         await test.step('Create Ethereum account in trade confirmation dialog', async () => {
-            await marketPage.buyTermsConfirmButton.click();
+            await marketPage.termsConfirmButton.click();
             await expect(marketPage.confirmationAccountDropdown).toHaveText(
                 'Select ETHEREUM receive account',
             );

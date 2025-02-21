@@ -106,7 +106,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                             isLoading={callInProgress}
                             isDisabled={!device?.connected}
                             onClick={sendTransaction}
-                            data-testid="@trading/offer/continue-transaction-button"
+                            data-testid="@trading/offer/confirm-on-trezor-and-send"
                         >
                             <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />
                         </Button>

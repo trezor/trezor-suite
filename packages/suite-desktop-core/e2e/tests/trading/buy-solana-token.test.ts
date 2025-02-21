@@ -41,7 +41,7 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
     test('Buy Solana Jupiter token - amount specified in crypto', async ({ page, marketPage }) => {
         await test.step('Request a specific crypto amount of Jupiter token to buy', async () => {
             await marketPage.selectAccount('Jupiter', 'sol');
-            await marketPage.waitForBuyOffersSync();
+            await marketPage.waitForOffersSync();
             await marketPage.youPayFiatCryptoSwitchButton.click();
             const isCryptoInput = true;
             await marketPage.setYouBuyAmount(
@@ -64,7 +64,7 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
             );
             await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
-            await marketPage.confirmTradeButton.click();
+            await marketPage.finishTransactionButton.click();
             await expect(tradeRequestPromise).toHavePayload(invityRequest.buyTradeSolanaPayload, {
                 omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
             });

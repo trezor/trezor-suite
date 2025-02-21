@@ -55,7 +55,7 @@ export const TradingDetailExchangePaymentFailed = ({
     return (
         <Wrapper>
             <Image image="UNI_ERROR" />
-            <H4 margin={{ top: spacings.xl }}>
+            <H4 data-testid="@trading/transaction/detail/status" margin={{ top: spacings.xl }}>
                 <Translation id="TR_EXCHANGE_DETAIL_ERROR_TITLE" />
             </H4>
             <Description>

@@ -1,0 +1,19 @@
+{
+    "receiveAddress": "bc1qhnqs78qhvffm95mjdwet39wnhhydtenk7z5h82",
+    "sendAddress": "JDSWg1a7pP6FP2x86zf4XWYqd23UeGSjbJFhKSa3vYVk",
+    "orderId": "1061e2d760262e1de932",
+    "quoteId": "5d7e2530-cb13-4fd1-80d7-aec23fcb67d4",
+    "status": "CONFIRM",
+    "statusUrl": "https://sideshift.ai/orders/1061e2d760262e1de932",
+    "exchange": "sideshiftfr",
+    "send": "solana",
+    "receive": "bitcoin",
+    "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+    "sendStringAmount": "0.05",
+    "receiveStringAmount": "0.00008533",
+    "fee": "INCLUDED",
+    "min": 0.01,
+    "max": 348.4522911,
+    "rate": 0.0017066,
+    "rateIdentificator": "3a36f454-95c1-4cfb-a0e1-82e77f274829"
+}

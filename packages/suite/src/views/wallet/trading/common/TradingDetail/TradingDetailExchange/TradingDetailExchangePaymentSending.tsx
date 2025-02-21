@@ -20,7 +20,7 @@ interface PaymentSendingProps {
 export const TradingDetailExchangePaymentSending = ({ supportUrl }: PaymentSendingProps) => (
     <Wrapper>
         <Spinner />
-        <H4 margin={{ top: spacings.xl }}>
+        <H4 data-testid="@trading/transaction/detail/status" margin={{ top: spacings.xl }}>
             <Translation id="TR_EXCHANGE_DETAIL_SENDING_TITLE" />
         </H4>
         {supportUrl && (

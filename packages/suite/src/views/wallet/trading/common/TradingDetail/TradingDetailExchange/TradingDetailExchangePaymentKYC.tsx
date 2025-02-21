@@ -58,7 +58,7 @@ export const TradingDetailExchangePaymentKYC = ({
     return (
         <Wrapper>
             <Image image="UNI_WARNING" />
-            <H4 margin={{ top: spacings.xl }}>
+            <H4 data-testid="@trading/transaction/detail/status" margin={{ top: spacings.xl }}>
                 <Translation id="TR_EXCHANGE_DETAIL_KYC_TITLE" />
             </H4>
             <Description>

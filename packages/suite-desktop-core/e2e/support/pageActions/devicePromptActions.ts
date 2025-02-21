@@ -20,7 +20,7 @@ export class DevicePromptActions {
     readonly fiatAmountOf = (section: 'amount' | 'fee' | 'total') =>
         this.page.getByTestId(`@modal/output-${section}`).getByTestId('@modal/fiat-amount');
     readonly reviewAmount: Locator;
-    readonly sellButton: Locator;
+    readonly sendButton: Locator;
 
     constructor(private page: Page) {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
@@ -31,7 +31,7 @@ export class DevicePromptActions {
         this.chunkedText = page.getByTestId('@device-display/chunked-text');
         this.outputValue = page.getByTestId('@modal/output-value');
         this.reviewAmount = page.getByTestId('@modal/transaction-review/amount');
-        this.sellButton = page.getByTestId('@modal/send');
+        this.sendButton = page.getByTestId('@modal/send');
     }
 
     @step()

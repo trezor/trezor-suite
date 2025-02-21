@@ -64,8 +64,10 @@ export class MarketActions {
     readonly accountSearchInput: Locator;
     readonly accountTabFilter = (tab: 'all-networks' | 'eth' | 'pol' | 'bsc' | 'sol') =>
         this.page.getByTestId(`@trading/form/select-crypto/network-tab/${tab}`);
-    readonly accountOption = (cryptoName: string, symbol: NetworkSymbol) =>
-        this.page.getByTestId(`@trading/form/select-crypto/option/${cryptoName}-${symbol}`);
+    readonly accountOption = (cryptoName: string, symbol?: NetworkSymbol) =>
+        this.page.getByTestId(
+            `@trading/form/select-crypto/option/${cryptoName}${symbol ? `-${symbol}` : ''}`,
+        );
     readonly paymentMethodDropdown: Locator;
     readonly paymentMethodOption = (method: PaymentMethods) =>
         this.page.getByTestId(`@trading/form/payment-method-select/option/${method}`);
@@ -79,8 +81,7 @@ export class MarketActions {
     readonly selectThisQuoteButton: Locator;
     // Confirmation modal
     readonly modal: Locator;
-    readonly buyTermsConfirmButton: Locator;
-    readonly sellTermsConfirmButton: Locator;
+    readonly termsConfirmButton: Locator;
     readonly confirmOnTrezorButton: Locator;
     readonly confirmationSection: Locator;
     readonly confirmationAccount: Locator;
@@ -91,25 +92,24 @@ export class MarketActions {
     readonly confirmationAddress: Locator;
     readonly confirmationPaymentMethod: Locator;
     readonly confirmationPaymentId: Locator;
-    readonly confirmTradeButton: Locator;
-    // Exchange
-    readonly exchangeFeeDetails: Locator;
+    readonly finishTransactionButton: Locator;
+    readonly confirmOnTrezorAndSend: Locator;
+    // Swap
+    readonly swapFeeDetails: Locator;
     readonly broadcastButton: Locator;
     readonly sendAddressInput: Locator;
     readonly sendAmountInput: Locator;
     readonly sendButton: Locator;
+    readonly swapBestOfferButton: Locator;
+    readonly swapAmountInputCurrencyTicker: Locator;
+    readonly swapToCryptoInput: Locator;
+    readonly swapTransactionFromAccount: Locator;
+    readonly swapTransactionToAddress: Locator;
     // Transactions
-    readonly transactionList: Locator;
-    readonly transactionInfo: Locator;
-    readonly transactionStatus: Locator;
-    readonly transactionDetailsButton: Locator;
     readonly transactionDetailStatus: Locator;
     readonly proceedToPayButton: Locator;
-    readonly transactionDetail: Locator;
-    readonly watchPeriod = '00:30';
     // Sell
-    readonly formSellButton: Locator;
-    readonly detailSellStatus: Locator;
+    readonly sellBestOfferButton: Locator;
 
     constructor(private page: Page) {
         this.devicePrompt = new DevicePromptActions(page);
@@ -144,12 +144,10 @@ export class MarketActions {
         this.quoteAmount = this.page.getByTestId(quoteAmountLocator);
         this.refreshTime = this.page.getByTestId('@trading/refresh-time-text');
         this.selectThisQuoteButton = this.page.getByTestId('@trading/offers/get-this-deal-button');
+        // Confirmation modal
         this.modal = this.page.getByTestId('@modal');
-        this.buyTermsConfirmButton = this.page.getByTestId(
-            '@trading/buy/offers/trade-terms-confirm-button',
-        );
-        this.sellTermsConfirmButton = this.page.getByTestId(
-            '@trading/sell/offers/trade-terms-confirm-button',
+        this.termsConfirmButton = this.page.getByTestId(
+            '@trading/offers/trade-terms-confirm-button',
         );
         this.confirmOnTrezorButton = this.page.getByTestId(
             '@trading/offer/confirm-on-trezor-button',
@@ -165,39 +163,39 @@ export class MarketActions {
         this.confirmationAddress = this.page.getByTestId('@trading/form/verify/address');
         this.confirmationPaymentMethod = this.page.getByTestId('@trading/form/info/payment-method');
         this.confirmationPaymentId = this.page.getByTestId('@trading/form/verify/extra-id');
-        this.confirmTradeButton = this.page.getByTestId(
+        this.finishTransactionButton = this.page.getByTestId(
             '@trading/offer/continue-transaction-button',
         );
-        this.exchangeFeeDetails = this.page.getByTestId('@wallet/fee-details');
+        this.confirmOnTrezorAndSend = this.page.getByTestId(
+            '@trading/offer/confirm-on-trezor-and-send',
+        );
+        // Swap
+        this.swapFeeDetails = this.page.getByTestId('@wallet/fee-details');
         this.broadcastButton = this.page.getByTestId('broadcast-button');
         this.sendAddressInput = this.page.getByTestId('outputs.0.address');
         this.sendAmountInput = this.page.getByTestId('outputs.0.amount');
         this.sendButton = this.page.getByTestId('@send/review-button');
-        this.transactionList = this.page.getByTestId('@trading/transactions/list');
-        this.transactionInfo = this.page.getByTestId('@trading/transactions/info');
-        this.transactionStatus = this.page.getByTestId('@trading/transactions/status');
-        this.transactionDetailsButton = this.page.getByRole('button', { name: 'View Details' });
+        this.swapBestOfferButton = this.page.getByTestId('@trading/form/exchange-button');
+        this.swapAmountInputCurrencyTicker = this.page.getByTestId(
+            '@trading/form/crypto-input/input-addon',
+        );
+        this.swapToCryptoInput = this.page.getByTestId(
+            '@trading/form/trade-to/select-crypto/input',
+        );
+        this.swapTransactionFromAccount = page.getByTestId('@trading/exchange-send/from-account');
+        this.swapTransactionToAddress = page.getByTestId('@trading/exchange-send/to-address');
+        // Transactions
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
-        this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
-        this.formSellButton = this.page.getByTestId('@trading/form/sell-button');
-        this.detailSellStatus = this.page.getByTestId('@trading/detail-sell/status');
+        // Sell
+        this.sellBestOfferButton = this.page.getByTestId('@trading/form/sell-button');
     }
 
     @step()
-    async waitForBuyOffersSync() {
+    async waitForOffersSync() {
         await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
         //Even though the offer sync is finished, the best offer might not be displayed correctly yet and show 0 BTC
-        await expect(this.bestOfferAmount).not.toHaveText('0 BTC');
-        await expect(this.buyBestOfferButton).toBeEnabled();
-    }
-
-    @step()
-    async waitForSellOffersSync() {
-        await expect(this.offerSpinner).toBeHidden({ timeout: 30000 });
-        //Even though the offer sync is finished, the best offer might not be displayed correctly yet and show 0 BTC
-        await expect(this.bestOfferAmount).not.toHaveText('0');
-        await expect(this.formSellButton).toBeEnabled();
+        await expect(this.bestOfferAmount).not.toHaveText(/^0( w+)?$/);
     }
 
     @step()
@@ -259,7 +257,7 @@ export class MarketActions {
             ...(wantCrypto && { cryptoStringAmount: amount }),
         });
         await quotesResponsePromise;
-        await this.waitForBuyOffersSync();
+        await this.waitForOffersSync();
     }
 
     @step()
@@ -285,13 +283,37 @@ export class MarketActions {
             fiatStringAmount: '',
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
         });
-        await this.waitForSellOffersSync();
+        await this.waitForOffersSync();
+    }
+
+    @step()
+    async setYouSwapAmount(
+        sendStringAmount: string,
+        sendCryptoCurrency: string = 'bitcoin',
+        cryptoTicker: string = 'BTC',
+        receiveCryptoCurrency: string = 'bitcoin',
+    ) {
+        await this.accountDropdown.click();
+        await this.accountOption(sendCryptoCurrency).click();
+        // We should not fill in amount until account change takes effect = correct ticker is displayed
+        await expect(this.swapAmountInputCurrencyTicker).toHaveText(cryptoTicker);
+        const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.swapQuotes);
+        const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.swapQuotes);
+        await expect(this.bestOfferAmount).toHaveText(/0 \w+/);
+        await this.youPayCryptoInput.fill(sendStringAmount);
+        await expect(quotesRequestPromise).toHavePayload({
+            receive: receiveCryptoCurrency,
+            send: sendCryptoCurrency,
+            sendStringAmount,
+            dex: 'enable',
+        });
+        await quotesResponsePromise;
+        await this.waitForOffersSync();
     }
 
     @step()
     async confirmTrade(addressToCheck?: string) {
-        await expect(this.modal).toBeVisible();
-        await this.buyTermsConfirmButton.click();
+        await this.termsConfirmButton.click();
         await this.confirmOnTrezorButton.click();
         if (addressToCheck) {
             await expect(this.devicePrompt.outputValueOf('address')).toHaveText(addressToCheck);
@@ -299,19 +321,20 @@ export class MarketActions {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
         await this.devicePrompt.confirmOnDevicePromptIsHidden();
+        await expect(this.confirmOnTrezorButton).toHaveText('Confirmed on Trezor');
     }
 
     @step()
     async initiateSendConfirmation() {
-        await this.confirmTradeButton.click();
-        await expect(this.devicePrompt.sellButton).toBeDisabled();
+        await this.confirmOnTrezorAndSend.click();
+        await expect(this.devicePrompt.sendButton).toBeDisabled();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
         // Note: We intentionally skip clicking the sell button in tests to prevent actual cryptocurrency transactions.
         // In a real scenario, the user would complete the transaction by clicking this button.
-        await expect(this.devicePrompt.sellButton).toBeEnabled();
+        await expect(this.devicePrompt.sendButton).toBeEnabled();
     }
 
     @step()

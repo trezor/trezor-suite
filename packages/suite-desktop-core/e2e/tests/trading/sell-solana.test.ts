@@ -25,9 +25,7 @@ const { paymentMethodName } = sellTradeSolana.trade;
 const toastText = `${formattedCryptoAmount} sent from Solana #1`;
 
 test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, () => {
-    test.use({
-        emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
-    });
+    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
         async ({
             page,
@@ -63,7 +61,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
         },
     );
 
-    test('Sell Solana', async ({ page, marketPage, devicePrompt }) => {
+    test('Sell Solana', async ({ page, marketPage, tradingMock, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
             await marketPage.setYouSellAmount(cryptoAmount, 'solana');
             await expect(marketPage.bestOfferAmount).toHaveText(fiatAmount);
@@ -71,8 +69,8 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
         });
 
         await test.step('Confirm sell', async () => {
-            await marketPage.formSellButton.click();
-            await marketPage.sellTermsConfirmButton.click();
+            await marketPage.sellBestOfferButton.click();
+            await marketPage.termsConfirmButton.click();
         });
 
         await marketPage.waitForRedirectCompletion();
@@ -95,8 +93,8 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
         // Thanks to our mocked responses, the crypto is actually not send.
         await test.step('Send crypto to provider', async () => {
             await page.clock.install();
-            await devicePrompt.sellButton.click();
-            await expect(marketPage.detailSellStatus).toHaveText('Trade in progress...');
+            await devicePrompt.sendButton.click();
+            await expect(marketPage.transactionDetailStatus).toHaveText('Trade in progress...');
             await expect(
                 page.getByRole('link', { name: "Open partner's support site" }),
             ).toBeVisible();
@@ -107,8 +105,8 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
             await page.route(invityEndpoint.sellWatch, async route => {
                 await route.fulfill({ json: { status: 'SUCCESS' } });
             });
-            await page.clock.fastForward(marketPage.watchPeriod);
-            await expect(marketPage.detailSellStatus).toHaveText('Trade success');
+            await page.clock.fastForward(tradingMock.watchPeriod);
+            await expect(marketPage.transactionDetailStatus).toHaveText('Trade success');
         });
     });
 });

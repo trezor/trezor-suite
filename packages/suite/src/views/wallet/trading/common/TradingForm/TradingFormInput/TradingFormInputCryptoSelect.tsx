@@ -89,6 +89,7 @@ export const TradingFormInputCryptoSelect = <
     supportedCryptoCurrencies,
     methods,
     isDisabled,
+    'data-testid': dataTestId,
 }: TradingFormInputCryptoSelectProps<TFieldValues>) => {
     const context = useTradingFormContext<TradingTradeBuyExchangeType>();
     const { buildCryptoOptions, cryptoIdToPlatformName } = useTradingInfo();
@@ -192,7 +193,7 @@ export const TradingFormInputCryptoSelect = <
         <>
             {isModalActive && (
                 <SelectAssetModal
-                    data-testid="@trading/form/select-crypto"
+                    data-testid={dataTestId ?? '@trading/form/select-crypto'}
                     options={filteredData}
                     onSelectAsset={handleSelectChange}
                     onClose={() => setIsModalActive(false)}
@@ -251,7 +252,7 @@ export const TradingFormInputCryptoSelect = <
                                 </Row>
                             );
                         }}
-                        data-testid="@trading/form/select-crypto"
+                        data-testid={dataTestId ?? '@trading/form/select-crypto'}
                         isClearable={false}
                         isMenuOpen={false}
                         isDisabled={isDisabled}

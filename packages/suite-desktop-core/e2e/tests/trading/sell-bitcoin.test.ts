@@ -21,9 +21,7 @@ const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeBTC.trade;
 
 test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () => {
-    test.use({
-        emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
-    });
+    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
         async ({ page, marketPage, tradingMock, onboardingPage, dashboardPage, walletPage }) => {
             await test.step('Mocking responses', async () => {
@@ -52,9 +50,9 @@ test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () =>
         });
 
         await test.step('Confirm sell', async () => {
-            await marketPage.formSellButton.click();
+            await marketPage.sellBestOfferButton.click();
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.sellTrade);
-            await marketPage.sellTermsConfirmButton.click();
+            await marketPage.termsConfirmButton.click();
             await expect(tradeRequestPromise).toHavePayload(invityRequest.sellTradePayload, {
                 omit: ['returnUrl', 'trade.orderId', 'trade.paymentId', 'trade.refundAddress'],
             });
