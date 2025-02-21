@@ -33,6 +33,7 @@ export class WalletActions {
     readonly revealAddressButton: Locator;
     readonly copyAddressButton: Locator;
     readonly stakingButton: Locator;
+    readonly signAndVerifyButton: Locator;
     readonly stakingCardano: Locator;
     readonly transactionSummaryTitle: Locator;
     readonly transactionItem: Locator;
@@ -60,6 +61,7 @@ export class WalletActions {
         this.revealAddressButton = this.page.getByTestId('@wallet/receive/reveal-address-button');
         this.copyAddressButton = this.page.getByTestId('@metadata/copy-address-button');
         this.stakingButton = this.page.getByTestId('@wallet/menu/staking');
+        this.signAndVerifyButton = this.page.getByTestId('@wallet/menu/wallet-sign-verify');
         this.stakingCardano = this.page.getByTestId('@wallet/cardano/staking');
         this.transactionSummaryTitle = this.page.getByTestId(
             '@wallet/transactions/summary-card/title',
