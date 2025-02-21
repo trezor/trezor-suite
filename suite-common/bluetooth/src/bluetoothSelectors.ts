@@ -26,13 +26,14 @@ export const prepareSelectAllDevices = <T extends BluetoothDeviceCommon>() =>
         [state => state.bluetooth.nearbyDevices, state => state.bluetooth.knownDevices],
         (nearbyDevices, knownDevices) => {
             const map = new Map<string, BluetoothDeviceState<T>>();
-            knownDevices.forEach(knownDevice => {
-                map.set(knownDevice.id, { device: knownDevice, status: null });
-            });
 
             nearbyDevices.forEach(nearbyDevice => {
-                if (!map.has(nearbyDevice.device.id)) {
-                    map.set(nearbyDevice.device.id, nearbyDevice);
+                map.set(nearbyDevice.device.id, nearbyDevice);
+            });
+
+            knownDevices.forEach(knownDevice => {
+                if (!map.has(knownDevice.id)) {
+                    map.set(knownDevice.id, { device: knownDevice, status: null });
                 }
             });
 
