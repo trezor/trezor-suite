@@ -9,10 +9,6 @@ import buyTradeBTC from './buy/trade-bitcoin.json';
 import buyTradeEthereum from './buy/trade-ethereum.json';
 import buyTradeSolanaToken from './buy/trade-solana-token.json';
 import buyWatch from './buy/watch.json';
-import swapList from './swap/list.json';
-import swapQuotesSolanaBTC from './swap/quotes-solana-btc.json';
-import swapTradeSolanaBTC from './swap/trade-solana-btc.json';
-import swapWatch from './swap/watch.json';
 import info from './info.json';
 import sellList from './sell/list.json';
 import sellQuotesBTC from './sell/quotes-bitcoin.json';
@@ -26,6 +22,10 @@ import sellTradeSolana from './sell/trade-solana.json';
 import sellWatchBTC from './sell/watch-bitcoin.json';
 import sellWatchEthereum from './sell/watch-ethereum.json';
 import sellWatchSolana from './sell/watch-solana.json';
+import swapList from './swap/list.json';
+import swapQuotesSolanaBTC from './swap/quotes-solana-btc.json';
+import swapTradeSolanaBTC from './swap/trade-solana-btc.json';
+import swapWatch from './swap/watch.json';
 
 const invityUrl = 'https://exchange.trezor.io';
 

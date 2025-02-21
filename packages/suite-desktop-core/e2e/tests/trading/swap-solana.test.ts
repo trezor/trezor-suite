@@ -25,7 +25,7 @@ const { sendAddress, receiveAddress } = swapTradeSolanaBTC;
 const formattedSendAddress = formatAddress(sendAddress);
 const toastText = `${formattedSendAmount} sent from Solana #1`;
 
-test.describe('Trading - Swap Solana', { tag: ['@group=other'] }, () => {
+test.describe('Trading - Swap Solana', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, tradingMock, walletPage, settingsPage }) => {
@@ -45,6 +45,7 @@ test.describe('Trading - Swap Solana', { tag: ['@group=other'] }, () => {
             await settingsPage.coins.enableNetwork('sol');
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+            await page.pause();
             await walletPage.openSwapTrading();
         },
     );

@@ -2,7 +2,7 @@ import { Page } from '@playwright/test';
 import { cloneDeep } from 'lodash';
 
 import { invityEndpoint, invityGeneralResponses } from '../../fixtures/invity';
-import { SellTradeResponse, TradeResponse, SwapTradeResponse } from '../../fixtures/invity/types';
+import { SellTradeResponse, SwapTradeResponse, TradeResponse } from '../../fixtures/invity/types';
 import {
     getSignatureStatusesResponse,
     sendTransactionResponse,
