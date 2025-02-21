@@ -49,6 +49,7 @@ export const WalletTransactionList = ({
         <TransactionList
             key={account.key} // NOTE: ensure that transaction list is unmounted when account key changes
             customPageFetching={fraudTransactionPossible}
+            customNoTransactions={<NoVisibleTransactions />}
             isPagingLimited={fraudTransactionPossible}
             allTransactions={result.allTransactions}
             transactions={result.visibleTransactions}

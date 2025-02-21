@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
@@ -35,6 +35,7 @@ interface TransactionListProps {
     account: Account;
     isPagingLimited?: boolean;
     customTotalItems?: number;
+    customNoTransactions?: ReactNode;
     isExportable?: boolean;
     customPageFetching?: boolean;
     onPageRequested?: (page: number) => void;
@@ -47,6 +48,7 @@ export const TransactionList = ({
     account,
     symbol,
     isPagingLimited,
+    customNoTransactions,
     customTotalItems,
     onPageRequested,
     isExportable = true,
@@ -171,27 +173,31 @@ export const TransactionList = ({
                 </SkeletonStack>
             ) : (
                 <>
-                    {areTransactionsAvailable ? (
-                        <NoSearchResults />
-                    ) : (
-                        <>
-                            {pendingTxs.length > 0 && (
-                                <PendingGroupHeader txsCount={pendingTxs.length} />
-                            )}
-                            <TransactionGroupedList
-                                transactionGroups={pendingTxsByDate}
-                                symbol={symbol}
-                                account={account}
-                                isPending={true}
-                            />
-                            <TransactionGroupedList
-                                transactionGroups={confirmedTxsByDate}
-                                symbol={symbol}
-                                account={account}
-                                isPending={false}
-                            />
-                        </>
-                    )}
+                    {areTransactionsAvailable && <NoSearchResults />}
+                    {!areTransactionsAvailable &&
+                        (customNoTransactions &&
+                        confirmedTxs.length === 0 &&
+                        pendingTxs.length === 0 ? (
+                            customNoTransactions
+                        ) : (
+                            <>
+                                {pendingTxs.length > 0 && (
+                                    <PendingGroupHeader txsCount={pendingTxs.length} />
+                                )}
+                                <TransactionGroupedList
+                                    transactionGroups={pendingTxsByDate}
+                                    symbol={symbol}
+                                    account={account}
+                                    isPending={true}
+                                />
+                                <TransactionGroupedList
+                                    transactionGroups={confirmedTxsByDate}
+                                    symbol={symbol}
+                                    account={account}
+                                    isPending={false}
+                                />
+                            </>
+                        ))}
                 </>
             )}
 
