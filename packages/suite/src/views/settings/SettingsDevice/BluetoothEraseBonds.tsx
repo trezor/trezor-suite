@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { bluetoothRemoveKnownDeviceAction } from '@suite-common/bluetooth';
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { Button } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
@@ -19,7 +19,7 @@ export const BluetoothEraseBonds = () => {
         const result = await TrezorConnect.eraseBonds({ device });
 
         if (device?.bluetoothProps?.id !== undefined) {
-            dispatch(bluetoothRemoveKnownDeviceAction({ id: device.bluetoothProps.id }));
+            dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }));
         }
 
         console.warn('Erase bonds!', result);

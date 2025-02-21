@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import {
-    bluetoothConnectDeviceEventAction,
-    bluetoothScanStatusAction,
+    bluetoothActions,
     prepareSelectAllDevices,
     selectAdapterStatus,
     selectScanStatus,
@@ -66,7 +65,7 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
     useEffect(() => {
         // Intentionally no `clearScamTimer`, this is first run and if we use this we would create infinite re-render
         const timerId = setTimeout(() => {
-            dispatch(bluetoothScanStatusAction({ status: 'idle' }));
+            dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
         }, SCAN_TIMEOUT);
 
         setScannerTimerId(timerId);
@@ -74,11 +73,11 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
 
     const onReScanClick = () => {
         setSelectedDeviceId(null);
-        dispatch(bluetoothScanStatusAction({ status: 'running' }));
+        dispatch(bluetoothActions.scanStatusAction({ status: 'running' }));
 
         clearScamTimer();
         const timerId = setTimeout(() => {
-            dispatch(bluetoothScanStatusAction({ status: 'idle' }));
+            dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
         }, SCAN_TIMEOUT);
         setScannerTimerId(timerId);
     };
@@ -89,7 +88,7 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
 
         if (!result.success) {
             dispatch(
-                bluetoothConnectDeviceEventAction({
+                bluetoothActions.connectDeviceEventAction({
                     id,
                     connectionStatus: { type: 'error', error: result.error },
                 }),
@@ -102,7 +101,7 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
             );
         } else {
             dispatch(
-                bluetoothConnectDeviceEventAction({
+                bluetoothActions.connectDeviceEventAction({
                     id,
                     connectionStatus: { type: 'connected' },
                 }),

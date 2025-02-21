@@ -1,11 +1,4 @@
-import {
-    BLUETOOTH_PREFIX,
-    bluetoothAdapterEventAction,
-    bluetoothConnectDeviceEventAction,
-    bluetoothKnownDevicesUpdateAction,
-    bluetoothNearbyDevicesUpdateAction,
-    selectKnownDevices,
-} from '@suite-common/bluetooth';
+import { BLUETOOTH_PREFIX, bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils/';
 import { BluetoothDevice, DeviceConnectionStatus, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { Without } from '@trezor/type-utils';
@@ -28,7 +21,7 @@ export const initBluetoothThunk = createThunk<void, void, void>(
 
         bluetoothIpc.on('adapter-event', isPowered => {
             console.warn('adapter-event', isPowered);
-            dispatch(bluetoothAdapterEventAction({ isPowered }));
+            dispatch(bluetoothActions.adapterEventAction({ isPowered }));
         });
 
         bluetoothIpc.on('device-list-update', nearbyDevices => {
@@ -41,8 +34,10 @@ export const initBluetoothThunk = createThunk<void, void, void>(
                 nearbyDevices,
             });
 
-            dispatch(bluetoothKnownDevicesUpdateAction({ knownDevices: remappedKnownDevices }));
-            dispatch(bluetoothNearbyDevicesUpdateAction({ nearbyDevices }));
+            dispatch(
+                bluetoothActions.knownDevicesUpdateAction({ knownDevices: remappedKnownDevices }),
+            );
+            dispatch(bluetoothActions.nearbyDevicesUpdateAction({ nearbyDevices }));
         });
 
         bluetoothIpc.on('device-connection-status', connectionStatus => {
@@ -53,7 +48,7 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             delete copyConnectionStatus.id; // So we dont pollute redux store
 
             dispatch(
-                bluetoothConnectDeviceEventAction({
+                bluetoothActions.connectDeviceEventAction({
                     id: connectionStatus.id,
                     connectionStatus: copyConnectionStatus,
                 }),
