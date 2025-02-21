@@ -1,5 +1,11 @@
 import mockSafeAreaContext from 'react-native-safe-area-context/jest/mock';
 
+if (!window.setImmediate) {
+    window.setImmediate = function (callback) {
+        setTimeout(callback, 0);
+    };
+}
+
 jest.mock('expo-localization', () => {
     const Localization = {
         getLocales: () => [
