@@ -26,6 +26,36 @@ const initialState: BluetoothState<BluetoothDeviceCommon> = {
     knownDevices: [] as BluetoothDeviceCommon[],
 };
 
+const bluetoothStateDeviceA: BluetoothDeviceState<BluetoothDeviceCommon> = {
+    device: {
+        id: 'A',
+        data: [],
+        name: 'Trezor A',
+        lastUpdatedTimestamp: 1,
+    },
+    status: { type: 'pairing' },
+};
+
+const bluetoothStateDeviceB: BluetoothDeviceState<BluetoothDeviceCommon> = {
+    device: {
+        id: 'B',
+        data: [],
+        name: 'Trezor B',
+        lastUpdatedTimestamp: 2,
+    },
+    status: null,
+};
+
+const bluetoothStateDeviceC: BluetoothDeviceState<BluetoothDeviceCommon> = {
+    device: {
+        id: 'C',
+        data: [],
+        name: 'Trezor C',
+        lastUpdatedTimestamp: 3,
+    },
+    status: null,
+};
+
 describe('bluetoothReducer', () => {
     it('sets the bluetooth adapter as enabled/disabled when powered/unpowered', () => {
         const store = configureMockStore({
@@ -42,92 +72,39 @@ describe('bluetoothReducer', () => {
     });
 
     it('sorts the devices based on the `lastUpdatedTimestamp` and keeps the status for already existing device', () => {
-        const alreadyExistingNearbyDevice: BluetoothDeviceState<BluetoothDeviceCommon> = {
-            device: {
-                id: 'A',
-                data: [],
-                name: 'Trezor A',
-                lastUpdatedTimestamp: 1,
-            },
-            status: { type: 'pairing' },
-        };
-
-        const nearbyDeviceToBeDropped: BluetoothDeviceState<BluetoothDeviceCommon> = {
-            device: {
-                id: 'B',
-                data: [],
-                name: 'Trezor B',
-                lastUpdatedTimestamp: 2,
-            },
-            status: null,
-        };
-
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: {
                 bluetooth: {
                     ...initialState,
-                    nearbyDevices: [nearbyDeviceToBeDropped, alreadyExistingNearbyDevice],
+                    nearbyDevices: [bluetoothStateDeviceB, bluetoothStateDeviceA],
                 },
             },
         });
 
         const nearbyDevices: BluetoothDeviceCommon[] = [
-            {
-                id: 'A',
-                data: [],
-                name: 'Trezor A',
-                lastUpdatedTimestamp: 1,
-            },
-            {
-                id: 'C',
-                data: [],
-                name: 'Trezor C',
-                lastUpdatedTimestamp: 3,
-            },
+            bluetoothStateDeviceA.device,
+            bluetoothStateDeviceC.device,
         ];
 
         store.dispatch(bluetoothNearbyDevicesUpdateAction({ nearbyDevices }));
         expect(store.getState().bluetooth.nearbyDevices).toEqual([
-            {
-                device: {
-                    id: 'C',
-                    data: [],
-                    name: 'Trezor C',
-                    lastUpdatedTimestamp: 3,
-                },
-                status: null,
-            },
+            bluetoothStateDeviceC,
             // No `B` device present, it was dropped
             {
-                device: {
-                    id: 'A',
-                    data: [],
-                    name: 'Trezor A',
-                    lastUpdatedTimestamp: 1,
-                },
+                device: bluetoothStateDeviceA.device,
                 status: { type: 'pairing' }, // Keeps the pairing status
             },
         ]);
     });
 
     it('changes the status of the given device during pairing process', () => {
-        const nearbyDevice: BluetoothDeviceState<BluetoothDeviceCommon> = {
-            device: {
-                id: 'A',
-                data: [],
-                name: 'Trezor A',
-                lastUpdatedTimestamp: 1,
-            },
-            status: null,
-        };
-
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: {
-                bluetooth: { ...initialState, nearbyDevices: [nearbyDevice] },
+                bluetooth: { ...initialState, nearbyDevices: [bluetoothStateDeviceA] },
             },
         });
 
@@ -139,7 +116,7 @@ describe('bluetoothReducer', () => {
         );
         expect(store.getState().bluetooth.nearbyDevices).toEqual([
             {
-                device: nearbyDevice.device,
+                device: bluetoothStateDeviceA.device,
                 status: { type: 'pairing', pin: '12345' },
             },
         ]);
@@ -153,18 +130,8 @@ describe('bluetoothReducer', () => {
         });
 
         const knownDeviceToAdd: BluetoothDeviceCommon[] = [
-            {
-                id: 'A',
-                data: [],
-                name: 'Trezor A',
-                lastUpdatedTimestamp: 1,
-            },
-            {
-                id: 'B',
-                data: [],
-                name: 'Trezor B',
-                lastUpdatedTimestamp: 2,
-            },
+            bluetoothStateDeviceA.device,
+            bluetoothStateDeviceB.device,
         ];
 
         store.dispatch(bluetoothKnownDevicesUpdateAction({ knownDevices: knownDeviceToAdd }));
@@ -172,32 +139,15 @@ describe('bluetoothReducer', () => {
 
         store.dispatch(bluetoothRemoveKnownDeviceAction({ id: 'A' }));
 
-        expect(store.getState().bluetooth.knownDevices).toEqual([
-            {
-                id: 'B',
-                data: [],
-                name: 'Trezor B',
-                lastUpdatedTimestamp: 2,
-            },
-        ]);
+        expect(store.getState().bluetooth.knownDevices).toEqual([bluetoothStateDeviceB.device]);
     });
 
     it('removes device from knownDevices when the device is disconnected by TrezorConnect', () => {
-        const alreadyExistingNearbyDevice: BluetoothDeviceState<BluetoothDeviceCommon> = {
-            device: {
-                id: 'A',
-                data: [],
-                name: 'Trezor A',
-                lastUpdatedTimestamp: 1,
-            },
-            status: { type: 'connected' },
-        };
-
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: {
-                bluetooth: { ...initialState, nearbyDevices: [alreadyExistingNearbyDevice] },
+                bluetooth: { ...initialState, nearbyDevices: [bluetoothStateDeviceA] },
             },
         });
 
@@ -211,12 +161,7 @@ describe('bluetoothReducer', () => {
 
     it('stores a device in `knownDevices` when device is connected by TrezorConnect', () => {
         const nearbyDevice: BluetoothDeviceState<BluetoothDeviceCommon> = {
-            device: {
-                id: 'A',
-                data: [],
-                name: 'Trezor A',
-                lastUpdatedTimestamp: 1,
-            },
+            device: bluetoothStateDeviceA.device,
             status: { type: 'connected' },
         };
 
