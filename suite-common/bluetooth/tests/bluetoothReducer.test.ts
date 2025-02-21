@@ -142,7 +142,7 @@ describe('bluetoothReducer', () => {
         expect(store.getState().bluetooth.knownDevices).toEqual([bluetoothStateDeviceB.device]);
     });
 
-    it('removes device from knownDevices when the device is disconnected by TrezorConnect', () => {
+    it('removes device from nearbyDevices when the device is disconnected by TrezorConnect', () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
