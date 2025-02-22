@@ -17,7 +17,8 @@ const verifySignature = async (rawKey: Buffer, data: Uint8Array, signature: Uint
     // use native SubtleCrypto api.
     // Unfortunately `crypto-browserify`.subtle polyfill is missing so needs to be referenced directly from window object (if exists)
     // https://github.com/browserify/crypto-browserify/issues/221
-    const SubtleCrypto = typeof window !== 'undefined' ? window.crypto.subtle : crypto.subtle;
+    const SubtleCrypto =
+        typeof globalThis !== 'undefined' ? globalThis.crypto.subtle : crypto.subtle;
     if (!SubtleCrypto) {
         throw new Error('SubtleCrypto not supported');
     }
