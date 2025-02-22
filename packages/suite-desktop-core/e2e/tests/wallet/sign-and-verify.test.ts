@@ -47,7 +47,7 @@ test.describe('Sign and verify', { tag: ['@group=wallet'] }, () => {
         await page.getByTestId(`@sign-verify/sign-address/option/${PATH}`).click();
         await expect(page.getByTestId('@sign-verify/sign-address/input')).toContainText(ADDRESS);
         await page.getByTestId('@sign-verify/format').click();
-        await page.getByTestId(`select-bar/${true}`).click();
+        await page.getByTestId('select-bar/true').click();
         await page.getByTestId('@sign-verify/submit').click();
         await devicePrompt.waitForPromptAndConfirm(); // Confirm signing address
         await devicePrompt.waitForPromptAndConfirm(); // Confirm message
