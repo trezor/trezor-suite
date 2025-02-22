@@ -50,7 +50,7 @@ const getMockPriceChange = () => Math.random() * 3 - 1;
 const keyExtractor = (
     { symbol, contractAddress }: TradeableAsset,
     { isFavourite }: ListItemExtraData,
-) => `asset_${symbol}_${contractAddress ?? ''}}_${isFavourite ? 'favourite' : 'all'}`;
+) => `asset_${symbol}_${contractAddress ?? ''}_${isFavourite ? 'favourite' : 'all'}`;
 
 const renderItem = (
     asset: TradeableAsset,
