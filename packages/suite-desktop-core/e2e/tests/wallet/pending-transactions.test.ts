@@ -65,7 +65,7 @@ test.describe('Use regtest to test pending transactions', { tag: ['@group=wallet
             await trezorUserEnvLink.pressYes();
             await trezorUserEnvLink.pressYes();
             await trezorUserEnvLink.pressYes();
-            await devicePrompt.sellButton.click();
+            await devicePrompt.sendButton.click();
 
             const pendingTransactionsList = page.getByTestId(
                 '@wallet/accounts/transaction-list/pending/group/0',
