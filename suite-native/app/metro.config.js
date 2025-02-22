@@ -6,8 +6,8 @@ const nodejs = require('node-libs-browser');
 
 const jsonExpoConfig = getSentryExpoConfig(__dirname);
 const defaultSourceExts = jsonExpoConfig.resolver.sourceExts;
-const additionalSOurceExts = process.env.RN_SRC_EXT ? process.env.RN_SRC_EXT.split(',') : [];
-const sourceExts = [...additionalSOurceExts, ...defaultSourceExts];
+const additionalSourceExts = process.env.RN_SRC_EXT ? process.env.RN_SRC_EXT.split(',') : [];
+const sourceExts = [...additionalSourceExts, ...defaultSourceExts];
 
 /**
  * Metro configuration
