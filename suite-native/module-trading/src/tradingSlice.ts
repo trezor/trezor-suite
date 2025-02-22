@@ -31,7 +31,7 @@ export const initialState: TradingState = {
     favouriteAssets: {},
 };
 
-const getTradeableAssetFavouriteKey = (asset: TradeableAsset) =>
+export const getTradeableAssetFavouriteKey = (asset: TradeableAsset) =>
     asset.contractAddress ? `${asset.symbol}_${asset.contractAddress}` : asset.symbol;
 
 export const tradingSlice = createSliceWithExtraDeps({

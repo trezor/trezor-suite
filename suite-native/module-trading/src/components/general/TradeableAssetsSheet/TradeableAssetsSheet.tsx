@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 
-import { selectTradingFavouriteAssetsArray } from '../../../tradingSlice';
+import { getTradeableAssetFavouriteKey, selectTradingFavouriteAssets } from '../../../tradingSlice';
 import {
     ItemRenderConfig,
     SectionListData,
@@ -75,30 +75,41 @@ export const TradeableAssetsSheet = ({
         onClose();
     };
 
-    const favourites = useSelector(selectTradingFavouriteAssetsArray);
-    const assetsData = mockAssets;
+    const favourites = useSelector(selectTradingFavouriteAssets);
 
-    const listData = useMemo(
-        () =>
-            [
-                {
-                    key: 'section_favourites',
-                    label: <Translation id="moduleTrading.tradeableAssetsSheet.favouritesTitle" />,
-                    data: favourites,
-                    sectionData: { isFavourite: true },
-                },
-                {
-                    key: 'section_all',
-                    label: <Translation id="moduleTrading.tradeableAssetsSheet.allTitle" />,
-                    data: assetsData,
-                    sectionData: { isFavourite: false },
-                },
-            ].filter(({ data }) => data.length > 0) as SectionListData<
-                TradeableAsset,
-                ListItemExtraData
-            >,
-        [favourites, assetsData],
-    );
+    const listData = useMemo(() => {
+        const { favouriteData, allData } = mockAssets.reduce(
+            (acc, a) => {
+                const key = getTradeableAssetFavouriteKey(a);
+                if (favourites[key]) {
+                    acc.favouriteData.push(a);
+                } else {
+                    acc.allData.push(a);
+                }
+
+                return acc;
+            },
+            { favouriteData: [] as TradeableAsset[], allData: [] as TradeableAsset[] },
+        );
+
+        return [
+            {
+                key: 'section_favourites',
+                label: <Translation id="moduleTrading.tradeableAssetsSheet.favouritesTitle" />,
+                data: favouriteData,
+                sectionData: { isFavourite: true },
+            },
+            {
+                key: 'section_all',
+                label: <Translation id="moduleTrading.tradeableAssetsSheet.allTitle" />,
+                data: allData,
+                sectionData: { isFavourite: false },
+            },
+        ].filter(({ data }) => data.length > 0) as SectionListData<
+            TradeableAsset,
+            ListItemExtraData
+        >;
+    }, [favourites]);
 
     return (
         <TradingBottomSheetSectionList<TradeableAsset, ListItemExtraData>

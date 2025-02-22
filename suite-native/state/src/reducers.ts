@@ -75,6 +75,13 @@ export const prepareRootReducers = async () => {
         },
     });
 
+    const tradingPersistedReducer = await preparePersistReducer({
+        reducer: tradingReducer,
+        persistedKeys: ['favouriteAssets'],
+        key: 'trading',
+        version: 1,
+    });
+
     const walletReducers = combineReducers({
         accounts: accountsReducer,
         blockchain: blockchainReducer,
@@ -84,7 +91,7 @@ export const prepareRootReducers = async () => {
         send: sendFormReducer,
         fees: feesReducer,
         stake: stakeReducer,
-        trading: tradingReducer,
+        trading: tradingPersistedReducer,
     });
 
     const walletPersistedReducer = await preparePersistReducer({
