@@ -77,7 +77,7 @@ test('popup should display error page when device disconnected and debug mode', 
     await waitAndClick(page, ['@api-playground/collapsible-box']);
     await page.waitForSelector("div[data-testid='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-        state: 'visible',
+        state: 'attached',
     });
 
     log('opening popup');

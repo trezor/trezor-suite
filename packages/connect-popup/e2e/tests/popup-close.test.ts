@@ -82,7 +82,7 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
 
     await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-        state: 'visible',
+        state: 'attached',
     });
 
     log('beforeEach', 'waiting for popup promise');
@@ -219,7 +219,7 @@ test('when user cancels permissions in popup it closes automatically', async ({
     await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-        state: 'visible',
+        state: 'attached',
     });
 
     log('waiting for popup open');
@@ -264,7 +264,7 @@ test('device dialogue cancelled IN POPUP by user', async ({ page, context }) => 
     await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-        state: 'visible',
+        state: 'attached',
     });
 
     log('waiting for popup open');
@@ -339,7 +339,7 @@ test('popup should be focused when a call is in progress and user triggers new c
     await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-        state: 'visible',
+        state: 'attached',
     });
 
     log('waiting for popup open');
@@ -394,7 +394,7 @@ test('popup should close when third party is closed', async ({ page, context }) 
     await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-        state: 'visible',
+        state: 'attached',
     });
     log('waiting for popup open');
     [popup] = await openPopup(browserContext, explorerPage, isWebExtension);

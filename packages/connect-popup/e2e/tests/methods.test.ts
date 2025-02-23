@@ -122,7 +122,7 @@ filteredFixtures.forEach(f => {
 
         log(f.url, 'submitting in connect explorer');
         await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-            state: 'visible',
+            state: 'attached',
         });
         log(f.url, 'waiting for popup promise');
         const [popup] = await openPopup(context, explorerPage, isWebExtension);
