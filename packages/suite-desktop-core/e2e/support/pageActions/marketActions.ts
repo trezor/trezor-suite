@@ -34,6 +34,23 @@ type PaymentMethods =
     | 'bankTransfer'
     | 'revolutPay';
 
+const accountTabFilters = [
+    'all-networks',
+    'eth',
+    'pol',
+    'bsc',
+    'arb',
+    'base',
+    'op',
+    'sol',
+] as const;
+
+type AccountTabFilter = (typeof accountTabFilters)[number];
+
+function isAccountTabFilter(network: string): network is AccountTabFilter {
+    return accountTabFilters.includes(network as AccountTabFilter);
+}
+
 export class MarketActions {
     devicePrompt: DevicePromptActions;
 
@@ -62,7 +79,7 @@ export class MarketActions {
         this.page.getByTestId(`@trading/form/country-select/option/${countryCode}`);
     readonly accountDropdown: Locator;
     readonly accountSearchInput: Locator;
-    readonly accountTabFilter = (tab: 'all-networks' | 'eth' | 'pol' | 'bsc' | 'sol') =>
+    readonly accountTabFilter = (tab: AccountTabFilter) =>
         this.page.getByTestId(`@trading/form/select-crypto/network-tab/${tab}`);
     readonly accountOption = (cryptoName: string, symbol?: NetworkSymbol) =>
         this.page.getByTestId(
@@ -227,6 +244,9 @@ export class MarketActions {
     @step()
     async selectAccount(cryptoName: string, symbol: NetworkSymbol) {
         await this.accountDropdown.click();
+        if (isAccountTabFilter(symbol)) {
+            await this.accountTabFilter(symbol).click();
+        }
         await this.accountSearchInput.fill(cryptoName);
         await this.accountOption(cryptoName, symbol).click();
     }

@@ -68,9 +68,9 @@ export const expect = baseExpect.extend({
             pass: isRequestPayloadMatching,
             message: () =>
                 `Request payload differs from expected.
-                \nDiff: ${diff(requestPayload, expectedPayload)}
-                \nActual: ${JSON.stringify(requestPayload)}
-                \nExpected: ${JSON.stringify(expectedPayload)}`,
+                \nDiff: ${diff(expectedPayload, requestPayload)}
+                \nExpected: ${JSON.stringify(expectedPayload)}
+                \nActual: ${JSON.stringify(requestPayload)}`,
         };
     },
 });

@@ -84,5 +84,6 @@ export type SwapTradeResponse = {
     min: number;
     max: number;
     rate: number;
+    tags?: string[];
     rateIdentificator: string;
 };

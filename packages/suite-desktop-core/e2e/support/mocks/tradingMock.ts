@@ -45,8 +45,7 @@ export class TradingMock {
     async routeSwapTrade(tradeResponse: SwapTradeResponse) {
         await this.routeInvityGeneralEndpoints();
         await this.page.route(invityEndpoint.swapTrade, async (route, request) => {
-            const modifiedTradeResponse = cloneDeep(tradeResponse);
-            modifiedTradeResponse.orderId = request.postDataJSON().trade.orderId;
+            const modifiedTradeResponse = this.updateSwapTradeResponseIds(tradeResponse, request);
             await route.fulfill({ json: modifiedTradeResponse });
         });
     }
@@ -113,6 +112,19 @@ export class TradingMock {
         }
 
         return modifiedResponse;
+    };
+
+    updateSwapTradeResponseIds = (response: SwapTradeResponse, request: any) => {
+        const modifiedTradeResponse = cloneDeep(response);
+        const requestPayload = request.postDataJSON();
+        modifiedTradeResponse.orderId = requestPayload.trade.orderId;
+        modifiedTradeResponse.quoteId = requestPayload.trade.quoteId;
+        modifiedTradeResponse.statusUrl = modifiedTradeResponse.statusUrl.replace(
+            /[^/]+$/, // last segment of a URL path: "https://changehero.io/transaction/thmq1ylxf8gmlm96s8"
+            requestPayload.trade.orderId,
+        );
+
+        return modifiedTradeResponse;
     };
 
     validatePassphraseEnv = () => {

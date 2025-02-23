@@ -1,0 +1,20 @@
+{
+    "receiveAddress": "41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw",
+    "sendAddress": "AazxJU33kMDgGAByimM86jRgePmorBcyQGp7rSnYc81t",
+    "orderId": "thmq1ylxf8gmlm96s8",
+    "quoteId": "b36646f8-2302-464b-b769-ec0440f2f980",
+    "status": "CONFIRM",
+    "statusUrl": "https://changehero.io/transaction/thmq1ylxf8gmlm96s8",
+    "exchange": "changeherofr",
+    "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+    "receive": "solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+    "sendStringAmount": "9",
+    "receiveStringAmount": "8.73550579",
+    "fee": "INCLUDED",
+    "min": 1.0,
+    "max": 96481.41926285958,
+    "rate": 0.9706117549014007,
+    "tags": ["renewed"],
+    "rateIdentificator": "e270b1fd-8358-4dde-ad78-6d816c9f0c33"
+}

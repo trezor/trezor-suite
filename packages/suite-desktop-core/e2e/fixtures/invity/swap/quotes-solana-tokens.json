@@ -1,0 +1,106 @@
+[
+    {
+        "exchange": "changeherofr",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "8.73550579",
+        "fee": "INCLUDED",
+        "min": 1.0,
+        "max": 96481.41926285958,
+        "rate": 0.9706117549014007,
+        "rateIdentificator": "e270b1fd-8358-4dde-ad78-6d816c9f0c33"
+    },
+    {
+        "exchange": "sideshift",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "8.68630294",
+        "fee": "UNKNOWN",
+        "min": 1.0,
+        "max": 50000,
+        "rate": 0.965144771716
+    },
+    {
+        "exchange": "changenow",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "7.516187",
+        "fee": "UNKNOWN",
+        "min": 1.0,
+        "max": "NONE",
+        "rate": 0.8351318888888889
+    },
+    {
+        "exchange": "letsexchange",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "0",
+        "fee": "UNKNOWN",
+        "min": 1.0,
+        "max": 12000000,
+        "rate": 0,
+        "rateIdentificator": "80db5c98-4149-4ed8-800b-179eaf64402e"
+    },
+    {
+        "exchange": "letsexchangefr",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "0",
+        "fee": "INCLUDED",
+        "min": 1.0,
+        "max": 12000000,
+        "rate": 0,
+        "rateIdentificator": "9eb72475-7fff-4188-9702-8ba41f96ca6f"
+    },
+    {
+        "error": "Amount is less than minimal: 57.8965568168974016 usdtsol",
+        "exchange": "changehero"
+    },
+    {
+        "error": "No response from exchange.",
+        "exchange": "changelly"
+    },
+    {
+        "error": "No response from exchange.",
+        "exchange": "changellyfr"
+    },
+    {
+        "error": "Amount out of range.",
+        "exchange": "changenowfr",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "",
+        "fee": "INCLUDED",
+        "min": 1.0,
+        "max": 3660.226302
+    },
+    {
+        "error": "Cannot trade pair solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB-solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.",
+        "exchange": "godexexchange"
+    },
+    {
+        "error": "Cannot trade pair solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB-solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.",
+        "exchange": "moonpayexchange"
+    },
+    {
+        "error": "Amount too low. Minimum deposit amount: 50.",
+        "exchange": "sideshiftfr",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "sendStringAmount": "9.000000000",
+        "fee": "INCLUDED",
+        "min": 60,
+        "max": 50000
+    }
+]

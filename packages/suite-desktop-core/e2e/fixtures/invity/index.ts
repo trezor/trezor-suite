@@ -24,8 +24,10 @@ import sellWatchEthereum from './sell/watch-ethereum.json';
 import sellWatchSolana from './sell/watch-solana.json';
 import swapList from './swap/list.json';
 import swapQuotesSolanaBTC from './swap/quotes-solana-btc.json';
+import swapQuotesSolanaTokens from './swap/quotes-solana-tokens.json';
 import swapQuotesSolanaUSDC from './swap/quotes-solana-usdc.json';
 import swapTradeSolanaBTC from './swap/trade-solana-btc.json';
+import swapTradeSolanaTokens from './swap/trade-solana-tokens.json';
 import swapTradeSolanaUSDC from './swap/trade-solana-usdc.json';
 import swapWatch from './swap/watch.json';
 
@@ -100,8 +102,10 @@ export {
     sellWatchSolana,
     swapList,
     swapQuotesSolanaBTC,
+    swapQuotesSolanaTokens,
     swapQuotesSolanaUSDC,
     swapTradeSolanaBTC,
+    swapTradeSolanaTokens,
     swapTradeSolanaUSDC,
     swapWatch,
 };
