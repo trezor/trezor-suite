@@ -1,0 +1,19 @@
+{
+    "receiveAddress": "bc1qhnqs78qhvffm95mjdwet39wnhhydtenk7z5h82",
+    "sendAddress": "ENk2eeP4umP6cjAGRsVG4NEVKEVQmRn6JEpN8hubv2Hf",
+    "orderId": "wl4p4id5i4zrexlgyu",
+    "quoteId": "3e88c87d-8acd-48cd-83e5-6c4aebb0231c",
+    "status": "CONFIRM",
+    "statusUrl": "https://changehero.io/transaction/wl4p4id5i4zrexlgyu",
+    "exchange": "changeherofr",
+    "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+    "receive": "bitcoin",
+    "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+    "sendStringAmount": "9",
+    "receiveStringAmount": "0.0000912395",
+    "fee": "INCLUDED",
+    "min": 1,
+    "max": 96138.57955918151,
+    "rate": 0.0000101377285657,
+    "rateIdentificator": "20faaffe-1596-40ec-9851-097daa0277ed"
+}

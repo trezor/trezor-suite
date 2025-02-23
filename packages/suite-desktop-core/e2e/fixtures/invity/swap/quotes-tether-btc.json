@@ -1,0 +1,136 @@
+[
+    {
+        "exchange": "changelly",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "bitcoin",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "0.0000917935",
+        "fee": "UNKNOWN",
+        "min": 1.0,
+        "max": 900044.402753,
+        "rate": 0.000010225655555555
+    },
+    {
+        "exchange": "changehero",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "bitcoin",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "0.0000912183",
+        "fee": "UNKNOWN",
+        "min": 1.0,
+        "max": "NONE",
+        "rate": 0.00001013537722222222
+    },
+    {
+        "exchange": "changeherofr",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "bitcoin",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "0.0000912395",
+        "fee": "INCLUDED",
+        "min": 1.0,
+        "max": 96138.57955918151,
+        "rate": 0.0000101377285657,
+        "rateIdentificator": "20faaffe-1596-40ec-9851-097daa0277ed"
+    },
+    {
+        "exchange": "sideshift",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "bitcoin",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "0.0000903635",
+        "fee": "UNKNOWN",
+        "min": 1.0,
+        "max": 30000,
+        "rate": 0.000010080435
+    },
+    {
+        "exchange": "sideshiftfr",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "bitcoin",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "900.000000000",
+        "receiveStringAmount": "0.0000903635",
+        "fee": "INCLUDED",
+        "min": 1.0,
+        "max": 30000,
+        "rate": 0.000010040389,
+        "rateIdentificator": "85d6496c-957e-4d3b-9a85-c936b72d86d2"
+    },
+    {
+        "exchange": "changellyfr",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "bitcoin",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "0.0000901746",
+        "fee": "INCLUDED",
+        "min": 1.0,
+        "max": 400019.734557,
+        "rate": 0.000010045788888888,
+        "rateIdentificator": "dni*QbRHZveN*!1&Dsx4Z9dvut^r!@"
+    },
+    {
+        "exchange": "letsexchange",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "bitcoin",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "0.0000901441",
+        "fee": "UNKNOWN",
+        "min": 1.0,
+        "max": 11000000,
+        "rate": 0.000010060947908,
+        "rateIdentificator": "4698f996-0b47-4a65-bef8-44eadcfe7a72"
+    },
+    {
+        "exchange": "changenow",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "bitcoin",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "0.0089577",
+        "fee": "UNKNOWN",
+        "min": 1.0,
+        "max": "NONE",
+        "rate": 0.000009953
+    },
+    {
+        "exchange": "letsexchangefr",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "bitcoin",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "0.00892048",
+        "fee": "INCLUDED",
+        "min": 1.0,
+        "max": 11000000,
+        "rate": 0.000009956581229,
+        "rateIdentificator": "0f5b0a4b-a69b-4e81-a300-85098dc4c79a"
+    },
+    {
+        "exchange": "changenowfr",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "bitcoin",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "0.00889587",
+        "fee": "INCLUDED",
+        "min": 1.0,
+        "max": 30803.698857,
+        "rate": 0.0000098843,
+        "rateIdentificator": "ukkMWfVYev3b3YdpvIgQNgbr0NK5A9Q0jOAmI6zAB1aUfj3uypfl59iy3weyMn7G3h3SlXbIP59zUwjb764T1RAVG687A/yzoJlCI21YDGDB4Wk5F68GTzb2Wzcu7hNlIFC9STQapkNs37FPjiJWKMLpDWqiM6Lfdx/TOfdiiPBVoS92UD6xYxVg2DVF4Tsj913jc3dKYnQFb9VD4pv7+c1E2cPLFXmt1OAdQsIOmTg="
+    },
+    {
+        "error": "Cannot trade pair solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB-bitcoin.",
+        "exchange": "godexexchange"
+    },
+    {
+        "error": "Cannot trade pair solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB-bitcoin.",
+        "exchange": "moonpayexchange"
+    }
+]

@@ -26,9 +26,11 @@ import swapList from './swap/list.json';
 import swapQuotesSolanaBTC from './swap/quotes-solana-btc.json';
 import swapQuotesSolanaTokens from './swap/quotes-solana-tokens.json';
 import swapQuotesSolanaUSDC from './swap/quotes-solana-usdc.json';
+import swapQuotesTetherBTC from './swap/quotes-tether-btc.json';
 import swapTradeSolanaBTC from './swap/trade-solana-btc.json';
 import swapTradeSolanaTokens from './swap/trade-solana-tokens.json';
 import swapTradeSolanaUSDC from './swap/trade-solana-usdc.json';
+import swapTradeTetherBTC from './swap/trade-tether-btc.json';
 import swapWatch from './swap/watch.json';
 
 const invityUrl = 'https://exchange.trezor.io';
@@ -104,8 +106,10 @@ export {
     swapQuotesSolanaBTC,
     swapQuotesSolanaTokens,
     swapQuotesSolanaUSDC,
+    swapQuotesTetherBTC,
     swapTradeSolanaBTC,
     swapTradeSolanaTokens,
     swapTradeSolanaUSDC,
+    swapTradeTetherBTC,
     swapWatch,
 };
