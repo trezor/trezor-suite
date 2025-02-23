@@ -24,7 +24,9 @@ import sellWatchEthereum from './sell/watch-ethereum.json';
 import sellWatchSolana from './sell/watch-solana.json';
 import swapList from './swap/list.json';
 import swapQuotesSolanaBTC from './swap/quotes-solana-btc.json';
+import swapQuotesSolanaUSDC from './swap/quotes-solana-usdc.json';
 import swapTradeSolanaBTC from './swap/trade-solana-btc.json';
+import swapTradeSolanaUSDC from './swap/trade-solana-usdc.json';
 import swapWatch from './swap/watch.json';
 
 const invityUrl = 'https://exchange.trezor.io';
@@ -77,10 +79,6 @@ export const getCompanyNameFromList = (name: string, type: 'sellList' | 'swapLis
 };
 
 export {
-    swapList,
-    swapQuotesSolanaBTC,
-    swapTradeSolanaBTC,
-    swapWatch,
     info,
     buyList,
     buyQuotesBTC,
@@ -100,4 +98,10 @@ export {
     sellWatchBTC,
     sellWatchEthereum,
     sellWatchSolana,
+    swapList,
+    swapQuotesSolanaBTC,
+    swapQuotesSolanaUSDC,
+    swapTradeSolanaBTC,
+    swapTradeSolanaUSDC,
+    swapWatch,
 };

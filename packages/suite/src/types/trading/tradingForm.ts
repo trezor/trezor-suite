@@ -325,6 +325,7 @@ export interface TradingFormInputAccountProps<TFieldValues extends FieldValues> 
     label?: TranslationKey;
     accountSelectName: FieldPath<TFieldValues>;
     methods: UseFormReturn<TFieldValues>;
+    'data-testid'?: string;
 }
 
 export interface TradingFormInputCurrencyProps {

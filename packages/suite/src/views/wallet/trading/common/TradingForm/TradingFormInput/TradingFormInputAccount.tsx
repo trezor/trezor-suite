@@ -30,6 +30,7 @@ export const TradingFormInputAccount = <
     label,
     accountSelectName,
     methods,
+    'data-testid': dataTestId,
 }: TradingFormInputAccountProps<TFieldValues>) => {
     const {
         type,
@@ -87,7 +88,7 @@ export const TradingFormInputAccount = <
                             isSelected={context === 'value'}
                         />
                     )}
-                    data-testid="@trading/form/select-crypto"
+                    data-testid={dataTestId ?? '@trading/form/select-crypto'}
                     isClearable={false}
                     isSearchable
                     bottomText={

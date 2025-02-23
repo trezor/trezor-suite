@@ -1,0 +1,19 @@
+{
+    "receiveAddress": "0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C",
+    "sendAddress": "ENk2eeP4umP6cjAGRsVG4NEVKEVQmRn6JEpN8hubv2Hf",
+    "orderId": "3b45492e83ae8e",
+    "quoteId": "9fd5573d-fb81-423b-84b6-31903770fecf",
+    "status": "CONFIRM",
+    "statusUrl": "https://changenow.io/exchange/txs/3b45492e83ae8e",
+    "exchange": "changenowfr",
+    "send": "solana",
+    "receive": "ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+    "sendStringAmount": "0.05",
+    "receiveStringAmount": "8.048235582286174",
+    "fee": "INCLUDED",
+    "min": 0.01,
+    "max": 551.4413810596296,
+    "rate": 160.96471164572347,
+    "rateIdentificator": "58c25a03-fced-4a52-abac-191cd28a2be9"
+}

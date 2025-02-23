@@ -102,7 +102,11 @@ export class MarketActions {
     readonly sendButton: Locator;
     readonly swapBestOfferButton: Locator;
     readonly swapAmountInputCurrencyTicker: Locator;
-    readonly swapToCryptoInput: Locator;
+    readonly swapFromAccountInput: Locator;
+    readonly swapFromAccountOption = (cryptoName: string, symbol?: NetworkSymbol) =>
+        this.page.getByTestId(
+            `@trading/form/trade-from/select-crypto/option/${cryptoName}${symbol ? `-${symbol}` : ''}`,
+        );
     readonly swapTransactionFromAccount: Locator;
     readonly swapTransactionToAddress: Locator;
     // Transactions
@@ -179,8 +183,8 @@ export class MarketActions {
         this.swapAmountInputCurrencyTicker = this.page.getByTestId(
             '@trading/form/crypto-input/input-addon',
         );
-        this.swapToCryptoInput = this.page.getByTestId(
-            '@trading/form/trade-to/select-crypto/input',
+        this.swapFromAccountInput = this.page.getByTestId(
+            '@trading/form/trade-from/select-crypto/input',
         );
         this.swapTransactionFromAccount = page.getByTestId('@trading/exchange-send/from-account');
         this.swapTransactionToAddress = page.getByTestId('@trading/exchange-send/to-address');
@@ -287,24 +291,28 @@ export class MarketActions {
     }
 
     @step()
-    async setYouSwapAmount(
-        sendStringAmount: string,
-        sendCryptoCurrency: string = 'bitcoin',
-        cryptoTicker: string = 'BTC',
-        receiveCryptoCurrency: string = 'bitcoin',
-    ) {
-        await this.accountDropdown.click();
-        await this.accountOption(sendCryptoCurrency).click();
+    async setYouSwapAmount(params: {
+        amount: string;
+        sendCurrency: string;
+        sendTicker: string;
+        receiveCurrency: string;
+        receiveSymbol: NetworkSymbol;
+        receiveNetwork: string;
+    }) {
+        await this.selectAccount(params.receiveCurrency, params.receiveSymbol);
+        await this.swapFromAccountInput.click();
+        await this.swapFromAccountOption(params.sendCurrency).click();
         // We should not fill in amount until account change takes effect = correct ticker is displayed
-        await expect(this.swapAmountInputCurrencyTicker).toHaveText(cryptoTicker);
+        await expect(this.swapAmountInputCurrencyTicker).toHaveText(params.sendTicker);
+
         const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.swapQuotes);
         const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.swapQuotes);
         await expect(this.bestOfferAmount).toHaveText(/0 \w+/);
-        await this.youPayCryptoInput.fill(sendStringAmount);
+        await this.youPayCryptoInput.fill(params.amount);
         await expect(quotesRequestPromise).toHavePayload({
-            receive: receiveCryptoCurrency,
-            send: sendCryptoCurrency,
-            sendStringAmount,
+            receive: params.receiveNetwork,
+            send: params.sendCurrency,
+            sendStringAmount: params.amount,
             dex: 'enable',
         });
         await quotesResponsePromise;

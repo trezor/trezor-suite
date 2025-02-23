@@ -204,7 +204,6 @@ export const TradingFormInputs = () => {
                 </Column>
                 <TradingFormInputCryptoSelect<TradingExchangeFormProps>
                     label="TR_TO"
-                    data-testid="@trading/form/trade-to/select-crypto"
                     cryptoSelectName={FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
                     supportedCryptoCurrencies={supportedCryptoCurrencies}
                     methods={{ ...context }}
