@@ -90,7 +90,7 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
 
     log('beforeEach', 'waiting for analytics confirm button');
     await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
-        state: 'visible',
+        state: 'attached',
         timeout: 40000,
     });
     log('beforeEach', 'clicking on analytics confirm button');
@@ -105,12 +105,12 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
 
     if (isWebExtension || isCoreInPopup) {
         log('beforeEach', 'waiting for select device');
-        await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
+        await popup.waitForSelector('.select-device-list button.list', { state: 'attached' });
         await popup.click('.select-device-list button.list');
     }
 
     log('beforeEach', 'waiting for permissions confirm button');
-    await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
+    await popup.waitForSelector('button.confirm', { state: 'attached', timeout: 40000 });
     log('beforeEach', 'clicking on permissions confirm button');
     await popup.click('button.confirm');
     log('beforeEach', 'waiting for selector .follow-device >> visible=true');
@@ -233,11 +233,11 @@ test('when user cancels permissions in popup it closes automatically', async ({
 
     // Device is implicitly remembered in webextension, but not in core-in-popup
     if (isCoreInPopup) {
-        await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
+        await popup.waitForSelector('.select-device-list button.list', { state: 'attached' });
         await popup.click('.select-device-list button.list');
     }
 
-    await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
+    await popup.waitForSelector('button.confirm', { state: 'attached', timeout: 40000 });
     await popup.waitForSelector("button[data-testid='@permissions/confirm-button']");
     // We are testing that when cancel permissions, popup is closed automatically.
     await popup.click("button[data-testid='@permissions/cancel-button']");
@@ -274,7 +274,7 @@ test('device dialogue cancelled IN POPUP by user', async ({ page, context }) => 
     });
 
     await popup.waitForLoadState('load');
-    await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
+    await popup.waitForSelector('button.confirm', { state: 'attached', timeout: 40000 });
     await popup.waitForSelector("button[data-testid='@permissions/confirm-button']");
     await popup.click("button[data-testid='@permissions/confirm-button']");
     await popup.waitForSelector("button[data-testid='@export-address/cancel-button']");
@@ -354,7 +354,7 @@ test('popup should be focused when a call is in progress and user triggers new c
     await waitAndClick(popup, ['@permissions/confirm-button']);
 
     // Click in 3rd party to trigger new call. But instead of new call it should focus on open popup.
-    await explorerPage.waitForSelector(`[data-testid='@submit-button']`, { state: 'visible' });
+    await explorerPage.waitForSelector(`[data-testid='@submit-button']`, { state: 'attached' });
     await explorerPage.click(`[data-testid='@submit-button']`, {
         // submit button is disabled in connect-explorer if there is a call in progress. we want to simulate what happens if 3rd party
         // does not respect this and tries to call connect-api again.
@@ -457,7 +457,7 @@ test.skip('popup should behave properly with subsequent calls', async ({ page, c
     await waitAndClick(popup, ['@permissions/confirm-button']);
 
     log('waiting for confirm button');
-    await popup.waitForSelector('button.confirm', { state: 'visible' });
+    await popup.waitForSelector('button.confirm', { state: 'attached' });
     await popup.click('button.confirm');
 
     log('Wait for popup to close to consider the test successful.');

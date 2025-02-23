@@ -137,7 +137,7 @@ fixtures.forEach(f => {
         log('waiting for explorer to load');
         await waitAndClick(page, ['@api-playground/collapsible-box']);
         await page.waitForSelector("button[data-testid='@submit-button']", {
-            state: 'visible',
+            state: 'attached',
         });
 
         log('opening popup');

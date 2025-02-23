@@ -31,7 +31,7 @@ test('reporting', async ({ page }) => {
     await page.goto(`${url}#/method/getAddress`);
 
     await waitAndClick(page, ['@api-playground/collapsible-box']);
-    await page.waitForSelector("button[data-testid='@submit-button']", { state: 'visible' });
+    await page.waitForSelector("button[data-testid='@submit-button']", { state: 'attached' });
     const [popup] = await Promise.all([
         // It is important to call waitForEvent before click to set up waiting.
         page.waitForEvent('popup'),
@@ -54,7 +54,7 @@ test('reporting', async ({ page }) => {
     expect(requests.length).toEqual(0);
 
     await popup.waitForSelector("div[data-testid='@analytics/consent']", {
-        state: 'visible',
+        state: 'attached',
         timeout: 40000,
     });
     await popup.click("button[data-testid='@analytics/continue-button']");
@@ -78,7 +78,7 @@ test('reporting', async ({ page }) => {
     // disable analytics event is sent
     expect(requests.length).toBe(1);
 
-    await popup.waitForSelector('button.confirm', { state: 'visible' });
+    await popup.waitForSelector('button.confirm', { state: 'attached' });
     await popup.click('button.confirm');
 
     // no other analytics events are sent

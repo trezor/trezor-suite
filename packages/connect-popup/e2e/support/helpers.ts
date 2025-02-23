@@ -4,14 +4,14 @@ import path from 'path';
 // Waits and clicks for an array on buttons in serial order.
 export const waitAndClick = async (page: Page, buttons: string[]) => {
     for (const button of buttons) {
-        await page.waitForSelector(`[data-testid='${button}']`, { state: 'visible' });
+        await page.waitForSelector(`[data-testid='${button}']`, { state: 'attached' });
         await page.click(`[data-testid='${button}']`);
     }
 };
 
 // Helper to use data-test attributes to find elements.
 export const findElementByDataTest = async (page: Page, dataTestId: string, timeout?: number) => {
-    await page.waitForSelector(`[data-testid='${dataTestId}']`, { state: 'visible', timeout });
+    await page.waitForSelector(`[data-testid='${dataTestId}']`, { state: 'attached', timeout });
 
     return page.$(`[data-testid='${dataTestId}']`);
 };

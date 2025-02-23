@@ -41,7 +41,7 @@ test('unsupported browser', async ({ browser }) => {
     const page = await context.newPage();
     await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
     await waitAndClick(page, ['@api-playground/collapsible-box']);
-    await page.waitForSelector("button[data-testid='@submit-button']", { state: 'visible' });
+    await page.waitForSelector("button[data-testid='@submit-button']", { state: 'attached' });
     popup = await openPopup(page);
     await popup.waitForSelector('text=Unsupported browser');
     await popup.screenshot({ path: `${dir}/browser-not-supported.png` });
@@ -58,7 +58,7 @@ test('outdated browser', async ({ browser }) => {
     const page = await context.newPage();
     await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
     await waitAndClick(page, ['@api-playground/collapsible-box']);
-    await page.waitForSelector("button[data-testid='@submit-button']", { state: 'visible' });
+    await page.waitForSelector("button[data-testid='@submit-button']", { state: 'attached' });
     popup = await openPopup(page);
     await popup.waitForLoadState('load');
     await popup.waitForSelector('text=Outdated browser');

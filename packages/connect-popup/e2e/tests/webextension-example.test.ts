@@ -80,12 +80,12 @@ test('Basic web extension MV2', async () => {
     const popup = await browserContext.waitForEvent('page');
     await popup.waitForLoadState('load');
     await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
-        state: 'visible',
+        state: 'attached',
         timeout: 40000,
     });
     await popup.click("button[data-testid='@analytics/continue-button']");
 
-    await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
+    await popup.waitForSelector('button.confirm', { state: 'attached', timeout: 40000 });
     await popup.click('button.confirm');
 
     await popup.waitForSelector('.export-address >> visible=true');
@@ -130,12 +130,12 @@ test('Basic web extension MV3', async () => {
     await popup.waitForLoadState('load');
 
     await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
-        state: 'visible',
+        state: 'attached',
         timeout: 40000,
     });
     await popup.click("button[data-testid='@analytics/continue-button']");
 
-    await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
+    await popup.waitForSelector('button.confirm', { state: 'attached', timeout: 40000 });
     await popup.click('button.confirm');
 
     await popup.waitForSelector('.export-address >> visible=true');

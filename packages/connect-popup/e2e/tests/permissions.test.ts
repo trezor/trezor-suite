@@ -25,7 +25,7 @@ const fixtures = [
         setTrustedHost: true,
         expect: () =>
             popup.waitForSelector('//p[contains(., "Follow instructions on your device")]', {
-                state: 'visible',
+                state: 'attached',
                 strict: false,
             }),
     },

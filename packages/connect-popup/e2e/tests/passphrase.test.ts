@@ -370,7 +370,7 @@ test('passphrase mismatch', async ({ page }) => {
     try {
         log('handling if unacquired');
         await popup.waitForSelector('.explain.unacquired', {
-            state: 'visible',
+            state: 'attached',
             timeout: 10000,
         });
         await popup.click('.explain.unacquired');

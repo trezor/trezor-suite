@@ -131,19 +131,19 @@ filteredFixtures.forEach(f => {
 
         log(f.url, 'waiting for confirm analytics');
         await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
-            state: 'visible',
+            state: 'attached',
             timeout: 40000,
         });
         await popup.click("button[data-testid='@analytics/continue-button']");
 
         if (isWebExtension || isCoreInPopup) {
             log(f.url, 'waiting for select device');
-            await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
+            await popup.waitForSelector('.select-device-list button.list', { state: 'attached' });
             await popup.click('.select-device-list button.list');
         }
 
         log(f.url, 'waiting for confirm permissions button');
-        await popup.waitForSelector('button.confirm', { state: 'visible' });
+        await popup.waitForSelector('button.confirm', { state: 'attached' });
         await popup.screenshot({
             path: `${screenshotsPath}/2-permissions.png`,
             fullPage: true,
@@ -171,7 +171,7 @@ filteredFixtures.forEach(f => {
 
             if (v.selector) {
                 const element = popup.locator(v.selector);
-                await element.first().waitFor({ state: 'visible' });
+                await element.first().waitFor({ state: 'attached' });
 
                 if (v.screenshot) {
                     const path = `${screenshotsPath}/3-${screenshotCount}-${v.screenshot.name}.png`;

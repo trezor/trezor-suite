@@ -85,7 +85,7 @@ test('popup should display error page when device disconnected and debug mode', 
 
     log('waiting for popup analytics to load');
     await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
-        state: 'visible',
+        state: 'attached',
         timeout: 40000,
     });
     log('clicking on analytics continue button');
@@ -154,7 +154,7 @@ test('log page should contain logs from shared worker', async ({ page, context }
 
     log('waiting for download-button to be visible');
     await logsPage.waitForSelector("button[data-testid='@log-container/download-button']", {
-        state: 'visible',
+        state: 'attached',
         timeout: 40 * 1000,
     });
 

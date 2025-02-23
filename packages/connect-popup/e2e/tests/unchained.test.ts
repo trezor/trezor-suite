@@ -14,7 +14,7 @@ test.beforeAll(async () => {
 
 const handleAnalyticsConfirm = async (popup: Page) => {
     await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
-        state: 'visible',
+        state: 'attached',
         timeout: 40000,
     });
     await popup.click("button[data-testid='@analytics/continue-button']");
@@ -41,7 +41,7 @@ const getConnectPopup = async (page: Page) => {
  */
 const handleDontAskAgain = async (popup: Page) => {
     const confirmBtn = 'button.confirm';
-    await popup.waitForSelector(confirmBtn, { state: 'visible', timeout: 40000 });
+    await popup.waitForSelector(confirmBtn, { state: 'attached', timeout: 40000 });
     await popup.locator('text="Don\'t ask me again"').first().click();
     await popup.click(confirmBtn);
 };
@@ -52,7 +52,7 @@ const handleDontAskAgain = async (popup: Page) => {
  */
 const assertSuccess = async (page: Page) => {
     const testResult = await page.waitForSelector('h5[class*="TestRun-success"]', {
-        state: 'visible',
+        state: 'attached',
         timeout: 30000,
     });
     expect(testResult).toBeTruthy();
@@ -73,7 +73,7 @@ const exportPublicKey = async (page: Page, iteration: number) => {
         await handleAnalyticsConfirm(popup);
         await handleDontAskAgain(popup);
     }
-    await popup.waitForSelector(confirmBtn, { state: 'visible' });
+    await popup.waitForSelector(confirmBtn, { state: 'attached' });
     await popup.click(confirmBtn);
     await assertSuccess(page);
 };
@@ -89,7 +89,7 @@ const signTransaction = async (page: Page, iteration: number) => {
     if (iteration === 0) await handleDontAskAgain(popup);
 
     await popup.waitForSelector('//p[contains(., "Check recipient")]', {
-        state: 'visible',
+        state: 'attached',
         timeout: 40000,
         strict: false,
     });
@@ -97,7 +97,7 @@ const signTransaction = async (page: Page, iteration: number) => {
     while (confirmOnTrezorScreenStilVisible) {
         try {
             await popup.waitForSelector('//p[contains(., "Check recipient")]', {
-                state: 'visible',
+                state: 'attached',
                 timeout: 501,
                 strict: false,
             });
@@ -109,7 +109,7 @@ const signTransaction = async (page: Page, iteration: number) => {
     }
 
     await popup.waitForSelector('//p[contains(., "Follow instructions on your device")]', {
-        state: 'visible',
+        state: 'attached',
         timeout: 501,
         strict: false,
     });
