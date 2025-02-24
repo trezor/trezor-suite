@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-02-18T00:00:00+00:00",
-    "sequence": 80,
+    "timestamp": "2025-02-24T00:00:00+00:00",
+    "sequence": 81,
     "actions": [
         {
             "conditions": [
@@ -200,19 +200,19 @@
                 "variant": "info",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "Can’t sync your Polygon PoS balance? This is a known issue that will be fixed in the next official release on February 21. In the meantime, join the Early Access Program and download the latest Trezor Suite update, where the issue is already resolved.",
-                    "en": "Can’t sync your Polygon PoS balance? This is a known issue that will be fixed in the next official release on February 21. In the meantime, join the Early Access Program and download the latest Trezor Suite update, where the issue is already resolved.",
-                    "es": "¿No puedes sincronizar tu saldo de Polygon PoS? Este es un problema conocido que se solucionará en la próxima versión oficial el 21 de febrero. Mientras tanto, únete al Programa de Acceso Anticipado y descarga la última actualización de Trezor Suite, donde el problema ya está resuelto.",
-                    "cs": "Nemůžete synchronizovat svůj zůstatek Polygon PoS? Jedná se o známý problém, který bude vyřešen v příštím oficiálním vydání 21. února. Mezitím se připojte k Programu předběžného přístupu a stáhněte si nejnovější aktualizaci Trezor Suite, kde je problém již vyřešen.",
-                    "ru": "Не удается синхронизировать баланс Polygon PoS? Это известная проблема, которая будет исправлена в следующем официальном релизе 21 февраля. А пока присоединяйтесь к программе раннего доступа и скачайте последнюю версию Trezor Suite, в которой проблема уже решена.",
-                    "ja": "Polygon PoSの残高を同期できませんか？これは既知の問題で、2月21日にリリースされる次の公式アップデートで修正される予定です。それまでの間は、アーリーアクセスプログラムに参加して、すでに問題が解決されている最新のTrezor Suiteアップデートをダウンロードしてください。",
-                    "hu": "Nem sikerül szinkronizálni a Polygon PoS-egyenlegedet? Ez egy ismert hiba, amelyet a következő hivatalos kiadásban, február 21-én fognak javítani. Addig is csatlakozz az Early Access Programhoz, és töltsd le a legújabb Trezor Suite frissítést, ahol a probléma már meg van oldva.",
-                    "it": "Non riesci a sincronizzare il tuo saldo Polygon PoS? Questo è un problema noto che verrà risolto nella prossima versione ufficiale il 21 febbraio. Nel frattempo, unisciti al Programma di Accesso Anticipato e scarica l'ultimo aggiornamento di Trezor Suite, dove il problema è già stato risolto.",
-                    "fr": "Vous n’arrivez pas à synchroniser votre solde Polygon PoS ? Il s’agit d’un problème connu qui sera résolu dans la prochaine version officielle le 21 février. En attendant, rejoignez le programme d’accès anticipé et téléchargez la dernière mise à jour de Trezor Suite, où le problème est déjà corrigé.",
-                    "de": "Können Sie Ihr Polygon PoS-Guthaben nicht synchronisieren? Dies ist ein bekanntes Problem, das in der nächsten offiziellen Veröffentlichung am 21. Februar behoben wird. In der Zwischenzeit nehmen Sie am Early Access-Programm teil und laden Sie das neueste Trezor Suite-Update herunter, in dem das Problem bereits behoben ist.",
-                    "tr": "Polygon PoS bakiyenizi senkronize edemiyor musunuz? Bu, 21 Şubat'taki bir sonraki resmi sürümde düzeltilecek bilinen bir sorundur. Bu arada, Erken Erişim Programına katılın ve sorunun zaten çözüldüğü en son Trezor Suite güncellemesini indirin.",
-                    "pt": "Não consegue sincronizar o seu saldo Polygon PoS? Este é um problema conhecido que será corrigido na próxima versão oficial em 21 de fevereiro. Enquanto isso, participe do Programa de Acesso Antecipado e baixe a atualização mais recente do Trezor Suite, onde o problema já foi resolvido.",
-                    "uk": "Не вдається синхронізувати баланс Polygon PoS? Це відома проблема, яку буде виправлено в наступному офіційному релізі 21 лютого. Тим часом приєднайтеся до програми раннього доступу та завантажте останнє оновлення Trezor Suite, де проблему вже вирішено."
+                    "en-GB": "If you encounter any issues syncing your Polygon PoS accounts, please update your Trezor Suite to the latest version",
+                    "en": "If you encounter any issues syncing your Polygon PoS accounts, please update your Trezor Suite to the latest version",
+                    "es": "Si encuentras algún problema al sincronizar tus cuentas de Polygon PoS, por favor actualiza tu Trezor Suite a la última versión",
+                    "cs": "Pokud narazíte na problémy se synchronizací vašich účtů Polygon PoS, aktualizujte Trezor Suite na nejnovější verzi",
+                    "ru": "Если у вас возникли проблемы с синхронизацией ваших счетов Polygon PoS, обновите Trezor Suite до последней версии",
+                    "ja": "Polygon PoSアカウントの同期に問題がある場合は、Trezor Suiteを最新バージョンに更新してください",
+                    "hu": "Ha bármilyen problémába ütközik a Polygon PoS fiókjainak szinkronizálásakor, frissítse a Trezor Suite alkalmazást a legújabb verzióra",
+                    "it": "Se riscontri problemi di sincronizzazione dei tuoi account Polygon PoS, aggiorna la tua Trezor Suite all'ultima versione",
+                    "fr": "Si vous rencontrez des problèmes de synchronisation de vos comptes Polygon PoS, veuillez mettre à jour votre Trezor Suite vers la dernière version",
+                    "de": "Wenn Sie Probleme beim Synchronisieren Ihrer Polygon PoS-Konten haben, aktualisieren Sie Ihre Trezor Suite auf die neueste Version",
+                    "tr": "Polygon PoS hesaplarınızı senkronize etme konusunda herhangi bir sorunla karşılaşırsanız, Trezor Suite'inizi en son sürüme güncelleyin",
+                    "pt": "Se encontrar problemas ao sincronizar as suas contas Polygon PoS, atualize o seu Trezor Suite para a versão mais recente",
+                    "uk": "Якщо у вас виникли проблеми з синхронізацією ваших рахунків Polygon PoS, оновіть ваш Trezor Suite до останньої версії"
                 },
                 "cta": {
                     "action": "internal-link",
