@@ -205,7 +205,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (
                 deviceActions.connectDevice.match(action) ||
-                bluetoothActions.knownDevicesUpdateAction.match(action)
+                bluetoothActions.knownDevicesUpdateAction.match(action) ||
+                bluetoothActions.removeKnownDeviceAction.match(action)
             ) {
                 api.dispatch(storageActions.saveKnownDevices());
             }

@@ -19,6 +19,8 @@ const getModelEnumFromBytesUtil = (_id: number) => DeviceModelInternal.T3W1;
 const getColorEnumFromVariantBytesUtil = (variant: number) => variant;
 
 export const BluetoothDeviceComponent = ({ device, flex, margin }: BluetoothDeviceProps) => {
+    console.log('____ BluetoothDeviceComponent :: device', device);
+
     const model = getModelEnumFromBytesUtil(device.data[2]);
     const color = getColorEnumFromVariantBytesUtil(device.data[1]);
     const colorName = models[model].colors[color.toString()];
