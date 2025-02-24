@@ -7,7 +7,6 @@ import {
     selectKnownDevices,
     selectScanStatus,
 } from '@suite-common/bluetooth';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { Card, Column, ElevationUp } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BluetoothDevice } from '@trezor/transport-bluetooth';
@@ -24,6 +23,7 @@ import { BluetoothVersionNotCompatible } from './errors/BluetoothVersionNotCompa
 import { bluetoothConnectDeviceThunk } from '../../../actions/bluetooth/bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from '../../../actions/bluetooth/bluetoothStartScanningThunk';
 import { bluetoothStopScanningThunk } from '../../../actions/bluetooth/bluetoothStopScanningThunk';
+import { closeModalApp } from '../../../actions/suite/routerActions';
 import { useDispatch, useSelector } from '../../../hooks/suite';
 
 const SCAN_TIMEOUT = 30_000;
@@ -100,26 +100,8 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
         setSelectedDeviceId(id);
         const result = await dispatch(bluetoothConnectDeviceThunk({ id })).unwrap();
 
-        if (!result.success) {
-            dispatch(
-                bluetoothActions.connectDeviceEventAction({
-                    id,
-                    connectionStatus: { type: 'error', error: result.error },
-                }),
-            );
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: result.error,
-                }),
-            );
-        } else {
-            dispatch(
-                bluetoothActions.connectDeviceEventAction({
-                    id,
-                    connectionStatus: { type: 'connected' },
-                }),
-            );
+        if (uiMode === 'card' && result.success) {
+            dispatch(closeModalApp());
         }
     };
 
