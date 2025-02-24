@@ -298,7 +298,7 @@ export const toggleDeviceAuthenticityCheck = (enable: boolean) => (dispatch: Dis
 
     dispatch({
         type: SUITE.TOGGLE_DEVICE_AUTHENTICITY_CHECK,
-        enable,
+        payload: enable,
     });
 };
 
