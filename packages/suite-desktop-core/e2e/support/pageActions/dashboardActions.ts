@@ -122,11 +122,11 @@ export class DashboardActions {
     }
 
     @step()
-    async addUnusedHiddenWallet(passphrase: string) {
-        await this.addHiddenWallet(passphrase);
+    async addUnusedHiddenWallet(passphrase: string, options?: { skipDiscovery?: boolean }) {
+        await this.addHiddenWallet(passphrase, options);
         await this.page
             .getByTestId('@passphrase-confirmation/step1-open-unused-wallet-button')
-            .click();
+            .click({ timeout: 10_000 });
         await this.page.getByTestId('@passphrase-confirmation/step2-button').click();
         await this.passphraseInput.fill(passphrase);
         await this.passphraseSubmitButton.click();
