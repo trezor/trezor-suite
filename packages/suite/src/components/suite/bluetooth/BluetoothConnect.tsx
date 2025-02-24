@@ -7,6 +7,7 @@ import {
     selectKnownDevices,
     selectScanStatus,
 } from '@suite-common/bluetooth';
+import { selectDevices } from '@suite-common/wallet-core';
 import { Card, Column, ElevationUp } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BluetoothDevice } from '@trezor/transport-bluetooth';
@@ -38,8 +39,11 @@ const selectAllDevices = prepareSelectAllDevices<BluetoothDevice>();
 
 export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => {
     const dispatch = useDispatch();
+
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
     const [scannerTimerId, setScannerTimerId] = useState<TimerId | null>(null);
+
+    const trezorDevices = useSelector(selectDevices);
 
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
     const scanStatus = useSelector(selectScanStatus);
@@ -49,12 +53,23 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
     const lasUpdatedBoundaryTimestamp =
         Date.now() / 1000 - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT_SECONDS;
 
-    const devices = allDevices.filter(device => {
-        if (device.device.lastUpdatedTimestamp >= lasUpdatedBoundaryTimestamp) {
-            return true;
+    const devices = allDevices.filter(it => {
+        const isDeviceAlreadyConnected =
+            trezorDevices.find(trezorDevice => trezorDevice.bluetoothProps?.id === it.device.id) !==
+            undefined;
+
+        if (isDeviceAlreadyConnected) {
+            return false;
         }
 
-        return knownDevices.find(knownDevice => knownDevice.id === device.device.id) !== undefined;
+        const isDeviceUnresponsiveForTooLong =
+            it.device.lastUpdatedTimestamp < lasUpdatedBoundaryTimestamp;
+
+        if (isDeviceUnresponsiveForTooLong) {
+            return knownDevices.find(knownDevice => knownDevice.id === it.device.id) !== undefined;
+        }
+
+        return true;
     });
 
     const selectedDevice =
