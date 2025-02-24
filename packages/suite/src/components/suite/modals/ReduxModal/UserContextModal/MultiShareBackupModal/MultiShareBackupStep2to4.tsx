@@ -15,7 +15,7 @@ import {
     Row,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { ESHOP_KEEP_METAL_SINGLE_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
+import { ESHOP_KEEP_METAL_MULTI_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 
@@ -115,7 +115,7 @@ export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props
                             ),
                             keepLink: chunks => (
                                 <TrezorLink
-                                    href={ESHOP_KEEP_METAL_SINGLE_SHARE_URL}
+                                    href={ESHOP_KEEP_METAL_MULTI_SHARE_URL}
                                     variant="underline"
                                     typographyStyle="hint"
                                 >

@@ -168,6 +168,9 @@ export const TREZOR_SAFE_5_URL: Url = 'https://trezor.io/trezor-safe-5';
 export const ESHOP_KEEP_METAL_SINGLE_SHARE_URL: Url =
     'https://trezor.io/trezor-keep-metal-single-share';
 
+export const ESHOP_KEEP_METAL_MULTI_SHARE_URL: Url =
+    'https://trezor.io/trezor-keep-metal-multi-share';
+
 export const TRADING_DOWNLOAD_INVITY_APP_URL: Url = 'https://get.invity.io';
 
 export const UNINSTALL_BRIDGE_URL: Url = 'https://trezor.io/learn/a/what-is-trezor-bridge';
