@@ -9,6 +9,8 @@ import {
 } from '../../fixtures/solana-responses';
 import { step } from '../common';
 
+export const solanaUrlPattern = /^https:\/\/sol\d+\.trezor\.io\//;
+
 export class TradingMock {
     readonly watchPeriod = '00:30';
 
@@ -55,8 +57,7 @@ export class TradingMock {
     // Thanks to that we are able to test the whole sell flow without sending real crypto.
     @step()
     async routeSolanaSendRequests() {
-        const solUrlPattern = /^https:\/\/sol\d+\.trezor\.io\//;
-        await this.page.route(solUrlPattern, (route, request) => {
+        await this.page.route(solanaUrlPattern, (route, request) => {
             const method = request.method();
             const postData = request.postData();
 

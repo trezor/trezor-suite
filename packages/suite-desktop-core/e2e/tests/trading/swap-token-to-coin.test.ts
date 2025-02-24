@@ -14,7 +14,8 @@ const sendAmount = swapQuotesTetherBTC[2].sendStringAmount!;
 const provider = getCompanyNameFromList(swapQuotesTetherBTC[2].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} USDT`;
 const formattedReceiveAmount = `${localizeNumber(swapQuotesTetherBTC[2].receiveStringAmount!)} BTC`;
-const { sendAddress, receiveAddress } = swapTradeTetherBTC;
+const { sendAddress, receiveAddress, send: tetherMint } = swapTradeTetherBTC;
+const tetherRawMintAddress = tetherMint.split('--')[1];
 const formattedSendAddress = formatAddress(sendAddress);
 const toastText = `${formattedSendAmount} sent from Solana #1`;
 
@@ -26,23 +27,6 @@ test.describe('Trading - Swap token to coin', { tag: ['@group=other', '@webOnly'
                 await page.route(invityEndpoint.swapQuotes, route => {
                     route.fulfill({ json: swapQuotesTetherBTC });
                 });
-
-                // await page.route(invityEndpoint.swapQuotes, async (route, request) => {
-                //     const payload = request.postDataJSON();
-                //     payload.sendStringAmount = '900';
-                //     await route.continue({ postData: payload });
-                // });
-
-                // await page.route(invityEndpoint.swapTrade, async (route, request) => {
-                //     const payload = request.postDataJSON();
-                //     payload.trade.payload.sendStringAmount = '900';
-                //     payload.trade.receiveStringAmount = '873,55057941';
-                //     await route.continue({ postData: payload });
-                // });
-
-                //only send: Transaction signing error: Missing composed data
-                //My mock  : Transaction signing error: Missing composed data
-
                 await tradingMock.routeSwapTrade(swapTradeTetherBTC);
                 await tradingMock.routeSolanaSendRequests();
             });
@@ -58,10 +42,9 @@ test.describe('Trading - Swap token to coin', { tag: ['@group=other', '@webOnly'
 
     test('Swap Solana Tether token to Bitcoin', async ({ marketPage, page, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
-            const solanaTetherToken = 'solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB';
             await marketPage.setYouSwapAmount({
                 amount: sendAmount,
-                sendCurrency: solanaTetherToken,
+                sendCurrency: tetherMint,
                 sendTicker: 'USDT',
                 receiveCurrency: 'Bitcoin',
                 receiveSymbol: 'btc',
@@ -71,7 +54,7 @@ test.describe('Trading - Swap token to coin', { tag: ['@group=other', '@webOnly'
 
         await test.step('Confirm the Swap trade', async () => {
             await expect(marketPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
-            await marketPage.swapBestOfferButton.click();
+            await marketPage.clickSwapBestOfferAndWaitForFees();
             await marketPage.confirmTrade(formatAddress(receiveAddress));
         });
 
@@ -94,15 +77,14 @@ test.describe('Trading - Swap token to coin', { tag: ['@group=other', '@webOnly'
         });
 
         await test.step('Initiate send', async () => {
-            await marketPage.initiateSendConfirmation();
+            await marketPage.initiateSendConfirmation(true);
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
+            await expect(devicePrompt.outputValueOf('contract')).toHaveText(tetherRawMintAddress);
             await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(formattedSendAmount);
         });
-        await page.pause();
 
         // Thanks to our mocked responses, the crypto is actually not send.
         await test.step('Send crypto to provider', async () => {
-            await page.clock.install();
             await devicePrompt.sendButton.click();
             await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
             await expect(marketPage.transactionDetailStatus).toHaveText('Approved');

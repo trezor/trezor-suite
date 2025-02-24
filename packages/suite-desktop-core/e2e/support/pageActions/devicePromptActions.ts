@@ -11,7 +11,7 @@ export class DevicePromptActions {
     readonly chunkedText: Locator;
     readonly outputValue: Locator;
     readonly outputValueOf = (
-        section: 'default' | 'address' | 'data' | 'amount' | 'fee' | 'total',
+        section: 'default' | 'address' | 'data' | 'amount' | 'fee' | 'total' | 'contract',
     ) => this.page.getByTestId(`@modal/output-${section}`).getByTestId('@modal/output-value');
     readonly cryptoAmountOf = (section: 'amount' | 'fee' | 'total') =>
         this.page

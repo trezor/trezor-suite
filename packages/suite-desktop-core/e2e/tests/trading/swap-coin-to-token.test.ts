@@ -14,7 +14,7 @@ const sendAmount = swapQuotesSolanaUSDC[0].sendStringAmount;
 const provider = getCompanyNameFromList(swapQuotesSolanaUSDC[0].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const formattedReceiveAmount = `${localizeNumber(swapQuotesSolanaUSDC[0].receiveStringAmount)} USDC`;
-const { sendAddress, receiveAddress } = swapTradeSolanaUSDC;
+const { sendAddress, receiveAddress, receive: usdcMint } = swapTradeSolanaUSDC;
 const formattedSendAddress = formatAddress(sendAddress);
 const toastText = `${formattedSendAmount} sent from Solana #1`;
 
@@ -49,13 +49,13 @@ test.describe('Trading - Swap coin to token', { tag: ['@group=other', '@webOnly'
                 sendTicker: 'SOL',
                 receiveCurrency: 'USDC',
                 receiveSymbol: 'eth',
-                receiveNetwork: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                receiveNetwork: usdcMint,
             });
         });
 
         await test.step('Confirm the Swap trade', async () => {
             await expect(marketPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
-            await marketPage.swapBestOfferButton.click();
+            await marketPage.clickSwapBestOfferAndWaitForFees();
             await marketPage.confirmTrade(formatAddress(receiveAddress));
         });
 
@@ -85,7 +85,6 @@ test.describe('Trading - Swap coin to token', { tag: ['@group=other', '@webOnly'
 
         // Thanks to our mocked responses, the crypto is actually not send.
         await test.step('Send crypto to provider', async () => {
-            await page.clock.install();
             await devicePrompt.sendButton.click();
             await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
             await expect(marketPage.transactionDetailStatus).toHaveText('Approved');

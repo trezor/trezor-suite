@@ -14,7 +14,8 @@ const sendAmount = swapQuotesSolanaTokens[0].sendStringAmount!;
 const provider = getCompanyNameFromList(swapQuotesSolanaTokens[0].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} USDT`;
 const formattedReceiveAmount = `${localizeNumber(swapQuotesSolanaTokens[0].receiveStringAmount!)} USDC`;
-const { sendAddress, receiveAddress } = swapTradeSolanaTokens;
+const { sendAddress, receiveAddress, send: tetherMint, receive: usdcMint } = swapTradeSolanaTokens;
+const tetherRawMintAddress = tetherMint.split('--')[1];
 const formattedSendAddress = formatAddress(sendAddress);
 const toastText = `${formattedSendAmount} sent from Solana #1`;
 
@@ -26,23 +27,6 @@ test.describe('Trading - Swap tokens', { tag: ['@group=other', '@webOnly'] }, ()
                 await page.route(invityEndpoint.swapQuotes, route => {
                     route.fulfill({ json: swapQuotesSolanaTokens });
                 });
-
-                // await page.route(invityEndpoint.swapQuotes, async (route, request) => {
-                //     const payload = request.postDataJSON();
-                //     payload.sendStringAmount = '900';
-                //     await route.continue({ postData: payload });
-                // });
-
-                // await page.route(invityEndpoint.swapTrade, async (route, request) => {
-                //     const payload = request.postDataJSON();
-                //     payload.trade.payload.sendStringAmount = '900';
-                //     payload.trade.receiveStringAmount = '873,55057941';
-                //     await route.continue({ postData: payload });
-                // });
-
-                //only send: Transaction signing error: Missing composed data
-                //My mock  : Transaction signing error: Missing composed data
-
                 await tradingMock.routeSwapTrade(swapTradeSolanaTokens);
                 await tradingMock.routeSolanaSendRequests();
             });
@@ -58,21 +42,19 @@ test.describe('Trading - Swap tokens', { tag: ['@group=other', '@webOnly'] }, ()
 
     test('Swap Solana tokens', async ({ marketPage, page, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
-            const solanaTetherToken = 'solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB';
-            const solanaUsdcToken = 'solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
             await marketPage.setYouSwapAmount({
                 amount: sendAmount,
-                sendCurrency: solanaTetherToken,
+                sendCurrency: tetherMint,
                 sendTicker: 'USDT',
                 receiveCurrency: 'USDC',
                 receiveSymbol: 'sol',
-                receiveNetwork: solanaUsdcToken,
+                receiveNetwork: usdcMint,
             });
         });
 
         await test.step('Confirm the Swap trade', async () => {
             await expect(marketPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
-            await marketPage.swapBestOfferButton.click();
+            await marketPage.clickSwapBestOfferAndWaitForFees();
             await marketPage.confirmTrade(formatAddress(receiveAddress));
         });
 
@@ -95,15 +77,14 @@ test.describe('Trading - Swap tokens', { tag: ['@group=other', '@webOnly'] }, ()
         });
 
         await test.step('Initiate send', async () => {
-            await marketPage.initiateSendConfirmation();
+            await marketPage.initiateSendConfirmation(true);
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
+            await expect(devicePrompt.outputValueOf('contract')).toHaveText(tetherRawMintAddress);
             await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(formattedSendAmount);
         });
-        await page.pause();
 
         // Thanks to our mocked responses, the crypto is actually not send.
         await test.step('Send crypto to provider', async () => {
-            await page.clock.install();
             await devicePrompt.sendButton.click();
             await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
             await expect(marketPage.transactionDetailStatus).toHaveText('Approved');

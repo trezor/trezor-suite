@@ -55,7 +55,7 @@ test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () 
                 amount: sendAmount,
                 sendCurrency: 'solana',
                 sendTicker: 'SOL',
-                receiveCurrency: 'bitcoin',
+                receiveCurrency: 'Bitcoin',
                 receiveSymbol: 'btc',
                 receiveNetwork: 'bitcoin',
             });
@@ -63,7 +63,7 @@ test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () 
 
         await test.step('Confirm the Swap trade', async () => {
             await expect(marketPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
-            await marketPage.swapBestOfferButton.click();
+            await marketPage.clickSwapBestOfferAndWaitForFees();
             await marketPage.confirmTrade(formatAddress(receiveAddress));
         });
 

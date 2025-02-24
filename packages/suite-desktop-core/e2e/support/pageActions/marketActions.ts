@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, Response } from '@playwright/test';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { regional } from '@suite-common/trading';
@@ -8,6 +8,7 @@ import { buyQuotesBTC, invityEndpoint } from '../../fixtures/invity';
 import { TrezorUserEnvLinkProxy, step } from '../common';
 import { expect } from '../customMatchers';
 import { DevicePromptActions } from './devicePromptActions';
+import { solanaUrlPattern } from '../mocks/tradingMock';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
 const quoteAmountLocator = '@trading/offers/quote/crypto-amount';
@@ -319,9 +320,9 @@ export class MarketActions {
         receiveSymbol: NetworkSymbol;
         receiveNetwork: string;
     }) {
-        await this.selectAccount(params.receiveCurrency, params.receiveSymbol);
         await this.swapFromAccountInput.click();
         await this.swapFromAccountOption(params.sendCurrency).click();
+        await this.selectAccount(params.receiveCurrency, params.receiveSymbol);
         // We should not fill in amount until account change takes effect = correct ticker is displayed
         await expect(this.swapAmountInputCurrencyTicker).toHaveText(params.sendTicker);
 
@@ -340,6 +341,16 @@ export class MarketActions {
     }
 
     @step()
+    async clickSwapBestOfferAndWaitForFees() {
+        // The suite does not wait for these responses and it causes flakiness in automation.
+        // Toast error: 'Transaction signing error: Missing composed data' and not possible to send.
+        // So we have to wait for them manually.
+        const swapFeeCallsPromise = this.promiseForResponseSwapFeeCalls();
+        await this.swapBestOfferButton.click();
+        await swapFeeCallsPromise;
+    }
+
+    @step()
     async confirmTrade(addressToCheck?: string) {
         await this.termsConfirmButton.click();
         await this.confirmOnTrezorButton.click();
@@ -353,9 +364,15 @@ export class MarketActions {
     }
 
     @step()
-    async initiateSendConfirmation() {
+    async initiateSendConfirmation(confirmAlsoToken = false) {
         await this.confirmOnTrezorAndSend.click();
         await expect(this.devicePrompt.sendButton).toBeDisabled();
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await TrezorUserEnvLinkProxy.pressYes();
+        if (confirmAlsoToken) {
+            await this.devicePrompt.confirmOnDevicePromptIsShown();
+            await TrezorUserEnvLinkProxy.pressYes();
+        }
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
@@ -396,5 +413,31 @@ export class MarketActions {
     async waitForRedirectCompletion() {
         await expect(this.page.getByText('Buy & sell')).not.toBeVisible();
         await expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 15000 });
+    }
+
+    @step()
+    promiseForResponseSwapFeeCalls() {
+        const isSolanaResponse = (response: Response, method: string) =>
+            new RegExp(solanaUrlPattern).test(response.url()) &&
+            response.request().postDataJSON().method === method;
+        const getFeeForMessagePromise = this.page.waitForResponse(response =>
+            isSolanaResponse(response, 'getFeeForMessage'),
+        );
+        const getRecentPrioritizationFeesPromise = this.page.waitForResponse(response =>
+            isSolanaResponse(response, 'getRecentPrioritizationFees'),
+        );
+        const simulateTransactionPromise = this.page.waitForResponse(response =>
+            isSolanaResponse(response, 'simulateTransaction'),
+        );
+
+        // We need to wait for each call twice
+        return Promise.all([
+            getFeeForMessagePromise,
+            getRecentPrioritizationFeesPromise,
+            simulateTransactionPromise,
+            getFeeForMessagePromise,
+            getRecentPrioritizationFeesPromise,
+            simulateTransactionPromise,
+        ]);
     }
 }
