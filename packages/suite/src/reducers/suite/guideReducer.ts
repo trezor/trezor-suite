@@ -1,5 +1,3 @@
-import produce from 'immer';
-
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 import * as indexNodeJSON from '@trezor/suite-data/files/guide/index.json';
 
@@ -22,31 +20,43 @@ export const initialState: State = {
     currentNode: null,
 };
 
-const guideReducer = (state: State = initialState, action: Action): State =>
-    produce(state, draft => {
-        switch (action.type) {
-            case GUIDE.OPEN:
-                draft.open = true;
-                break;
-            case GUIDE.CLOSE:
-                draft.open = false;
-                draft.view = 'GUIDE_DEFAULT';
-                break;
-            case GUIDE.SET_VIEW:
-                draft.view = action.payload;
-                break;
-            case GUIDE.SET_INDEX_NODE:
-                draft.indexNode = action.payload;
-                break;
-            case GUIDE.UNSET_NODE:
-                draft.currentNode = null;
-                break;
-            case GUIDE.OPEN_NODE:
-                draft.currentNode = action.payload;
-                break;
-            default:
-                return state;
-        }
-    });
+// NOTE: we cannot use immer in this reducer, because GuideCategory mimics the react node and immer uses Object.freeze()
+const guideReducer = (state: State = initialState, action: Action): State => {
+    switch (action.type) {
+        case GUIDE.OPEN:
+            return {
+                ...state,
+                open: true,
+            };
+        case GUIDE.CLOSE:
+            return {
+                ...state,
+                open: false,
+                view: 'GUIDE_DEFAULT',
+            };
+        case GUIDE.SET_VIEW:
+            return {
+                ...state,
+                view: action.payload,
+            };
+        case GUIDE.SET_INDEX_NODE:
+            return {
+                ...state,
+                indexNode: action.payload,
+            };
+        case GUIDE.UNSET_NODE:
+            return {
+                ...state,
+                currentNode: null,
+            };
+        case GUIDE.OPEN_NODE:
+            return {
+                ...state,
+                currentNode: action.payload,
+            };
+        default:
+            return state;
+    }
+};
 
 export default guideReducer;
