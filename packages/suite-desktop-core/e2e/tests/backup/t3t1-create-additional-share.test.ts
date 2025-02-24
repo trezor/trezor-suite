@@ -35,7 +35,7 @@ test.describe('Create additional share', { tag: ['@group=device-management'] }, 
         }
 
         // [device screen] create additional backup?
-        page.waitForTimeout(1000); // without this timeout, backup on device simply disappears, it stinks TODO: https://github.com/trezor/trezor-suite/issues/17128
+        await page.waitForTimeout(1000); // without this timeout, backup on device simply disappears, it stinks TODO: https://github.com/trezor/trezor-suite/issues/17128
         await trezorUserEnvLink.pressYes();
         await trezorUserEnvLink.readAndConfirmShamirMnemonicEmu({ shares: 3, threshold: 2 });
 
