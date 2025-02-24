@@ -1,9 +1,4 @@
-// Logic of sending data to trezor
-//
-// Logic of "call" is broken to two parts - sending and receiving
-import { Root } from 'protobufjs/light';
-
-import { createMessageFromName, encode as encodeProtobuf } from '@trezor/protobuf';
+import { encodeMessage } from '@trezor/protobuf';
 import { TransportProtocolEncode } from '@trezor/protocol';
 
 import { AsyncResultWithTypedError } from '../types';
@@ -32,19 +27,16 @@ export const createChunks = (data: Buffer, chunkHeader: Buffer, chunkSize: numbe
 };
 
 interface BuildMessageProps {
-    messages: Root;
+    messages: Parameters<typeof encodeMessage>[0];
     name: string;
     data: Record<string, unknown>;
     encode: TransportProtocolEncode;
 }
 
 export const buildMessage = ({ messages, name, data, encode }: BuildMessageProps) => {
-    const { Message, messageType } = createMessageFromName(messages, name);
-    const buffer = encodeProtobuf(Message, data);
+    const { messageType, message } = encodeMessage(messages, name, data);
 
-    return encode(buffer, {
-        messageType,
-    });
+    return encode(message, { messageType });
 };
 
 export const sendChunks = async <T, E>(

@@ -1,7 +1,5 @@
-import { Root } from 'protobufjs/light';
-
-import { createMessageFromType, decode as decodeProtobuf } from '@trezor/protobuf';
-import { TransportProtocol } from '@trezor/protocol';
+import { decodeMessage } from '@trezor/protobuf';
+import type { TransportProtocol } from '@trezor/protocol';
 
 import { success } from './result';
 import { AbstractApi } from '../api/abstract';
@@ -38,7 +36,7 @@ export async function receive<T extends () => ReturnType<AbstractApi['read']>>(
 }
 
 export async function receiveAndParse<T extends () => ReturnType<AbstractApi['read']>>(
-    messages: Root,
+    messages: Parameters<typeof decodeMessage>[0],
     receiver: T,
     protocol: TransportProtocol,
 ) {
@@ -46,11 +44,7 @@ export async function receiveAndParse<T extends () => ReturnType<AbstractApi['re
     if (!readResult.success) return readResult;
 
     const { messageType, payload } = readResult.payload;
-    const { Message, messageName } = createMessageFromType(messages, messageType);
-    const message = decodeProtobuf(Message, payload);
+    const { messageName, message } = decodeMessage(messages, messageType, payload);
 
-    return success({
-        message,
-        type: messageName,
-    });
+    return success({ message, type: messageName });
 }

@@ -1,6 +1,6 @@
-import { Field, Message, Type } from 'protobufjs/light';
+import { Field, Message as MessageType, Type } from 'protobufjs/light';
 
-import { isPrimitiveField } from './utils';
+import { createMessageFromType, isPrimitiveField } from './utils';
 
 const transform = (field: Field, value: any) => {
     if (isPrimitiveField(field.type)) {
@@ -42,10 +42,7 @@ const transform = (field: Field, value: any) => {
     throw new Error(`transport: decode: case not handled: ${field}`);
 };
 
-export function messageToJSON(
-    MessageParam: Message<Record<string, unknown>>,
-    fields: Type['fields'],
-) {
+function messageToJSON(MessageParam: MessageType<Record<string, unknown>>, fields: Type['fields']) {
     // MessageParams was being called with undefined
     if (!MessageParam) {
         return {};
@@ -77,4 +74,15 @@ export const decode = (MessageParam: Type, data: Buffer) => {
     // all required conversions (for example bytes to hex) but we can't use it at the moment for compatibility reasons
     // for example difference between enum decoding when [enum] vs enum
     return messageToJSON(decoded, decoded.$type.fields);
+};
+
+export const decodeMessage = (
+    messages: protobuf.Root,
+    messageType: number | string,
+    data: Buffer,
+) => {
+    const { Message, messageName } = createMessageFromType(messages, messageType);
+    const message = decode(Message, data);
+
+    return { messageName, message };
 };

@@ -1,5 +1,4 @@
-import * as protobuf from 'protobufjs/light';
-
+import { parseConfigure } from '@trezor/protobuf';
 import { bridge as bridgeProtocol, v1 as v1Protocol } from '@trezor/protocol';
 
 import { receiveAndParse } from '../src/utils/receive';
@@ -92,7 +91,7 @@ const fixtures = Array(100)
         },
     }));
 
-const parsedMessages = protobuf.Root.fromJSON({
+const parsedMessages = parseConfigure({
     nested: { hw: { nested: { trezor: { nested: { messages: { nested: messages } } } } } },
 });
 

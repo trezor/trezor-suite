@@ -1,6 +1,6 @@
 import { Enum, Type } from 'protobufjs/light';
 
-import { isPrimitiveField } from './utils';
+import { createMessageFromName, isPrimitiveField } from './utils';
 
 const transform = (fieldType: string, value: any) => {
     if (fieldType === 'bytes') {
@@ -79,4 +79,15 @@ export const encode = (Message: Type, data: Record<string, unknown>) => {
     const bytes = Message.encode(message).finish();
 
     return Buffer.from(bytes);
+};
+
+export const encodeMessage = (
+    messages: protobuf.Root,
+    messageName: string,
+    data: Record<string, unknown>,
+) => {
+    const { Message, messageType } = createMessageFromName(messages, messageName);
+    const message = encode(Message, data);
+
+    return { messageType, message };
 };

@@ -1,6 +1,4 @@
-import * as protobuf from 'protobufjs/light';
-
-import { MessageFromTrezor } from '@trezor/protobuf';
+import { MessageFromTrezor, parseConfigure } from '@trezor/protobuf';
 import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
 import { ScheduleActionParams, ScheduledAction, TypedEmitter, scheduleAction } from '@trezor/utils';
 
@@ -137,7 +135,7 @@ export abstract class AbstractTransport extends TransportEmitter {
     constructor({ messages, logger, id }: AbstractTransportParams) {
         super();
         this.descriptors = [];
-        this.messages = protobuf.Root.fromJSON(messages);
+        this.messages = parseConfigure(messages);
         this.abortController = new AbortController();
         this.logger = logger;
         this.id = id;
@@ -343,7 +341,7 @@ export abstract class AbstractTransport extends TransportEmitter {
     }
 
     public updateMessages(messages: Record<string, any>) {
-        this.messages = protobuf.Root.fromJSON(messages);
+        this.messages = parseConfigure(messages);
     }
 
     protected success<T>(payload: T): Success<T> {
