@@ -2,15 +2,16 @@ import { useMemo } from 'react';
 
 import styled, { css } from 'styled-components';
 
+import { Button } from '@trezor/components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $hasPages?: boolean }>`
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: ${spacingsPx.xxxs};
+    gap: ${$hasPages => ($hasPages ? spacingsPx.xs : spacingsPx.xxxs)};
 `;
 
 const PageItem = styled.div<{ $isActive?: boolean }>`
@@ -75,23 +76,33 @@ export const Pagination = ({
 
     if (!hasPages) {
         return (
-            <Wrapper {...rest}>
+            <Wrapper $hasPages={hasPages} {...rest}>
                 <Actions $isActive={showPrevious}>
-                    <PageItem onClick={() => onPageSelected(currentPage - 1)}>
-                        ‹ <Translation id="TR_PAGINATION_NEWER" />
-                    </PageItem>
+                    <Button
+                        onClick={() => onPageSelected(currentPage - 1)}
+                        icon="caretLeft"
+                        iconAlignment="left"
+                        variant="tertiary"
+                    >
+                        <Translation id="TR_PAGINATION_NEWER" />
+                    </Button>
                 </Actions>
                 <Actions $isActive={!isLastPage}>
-                    <PageItem onClick={() => onPageSelected(currentPage + 1)}>
-                        <Translation id="TR_PAGINATION_OLDER" /> ›
-                    </PageItem>
+                    <Button
+                        onClick={() => onPageSelected(currentPage + 1)}
+                        icon="caretRight"
+                        iconAlignment="right"
+                        variant="tertiary"
+                    >
+                        <Translation id="TR_PAGINATION_OLDER" />
+                    </Button>
                 </Actions>
             </Wrapper>
         );
     }
 
     return (
-        <Wrapper {...rest}>
+        <Wrapper $hasPages={hasPages} {...rest}>
             <Actions $isActive={showPrevious}>
                 {currentPage > 2 && <PageItem onClick={() => onPageSelected(1)}>«</PageItem>}
                 <PageItem onClick={() => onPageSelected(currentPage - 1)}>‹</PageItem>
