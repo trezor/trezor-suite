@@ -27,7 +27,7 @@ const appIconsAndroid = {
         backgroundColor: '#2587A5',
     },
     preview: {
-        backgroundColor: '#E59D17',
+        backgroundColor: '#A59D15', // FIXME
     },
     develop: {
         backgroundColor: '#900B0B',
