@@ -13,7 +13,7 @@ import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Box, Column, ElevationUp, RadioCard, Row, Text } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 import { FeeRate } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { FiatValue } from 'src/components/suite/FiatValue';
 import { useLocales } from 'src/hooks/suite';
@@ -37,7 +37,7 @@ export const FeeCardsWrapper = styled.div<{ $columns: number }>`
     width: 100%;
     display: grid;
     grid-template-columns: repeat(${({ $columns }) => $columns}, 1fr);
-    gap: ${spacings.xs};
+    gap: ${spacingsPx.sm};
     align-items: stretch;
 `;
 
@@ -83,7 +83,7 @@ const FeeCard = ({
     bottomLeftChild,
     bottomRightChild,
 }: FeeCardProps) => (
-    <Box minWidth={FEE_CARD_MIN_WIDTH} margin={spacings.xxs}>
+    <Box minWidth={FEE_CARD_MIN_WIDTH}>
         <ElevationUp>
             <RadioCard onClick={() => changeFeeLevel(value)} isActive={isSelected}>
                 <Column>

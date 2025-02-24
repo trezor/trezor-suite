@@ -48,7 +48,7 @@ export const TradingFormSwitcherExchangeRates = ({
     return (
         <Column gap={spacings.xs}>
             <Translation id="TR_TRADING_RATE" />
-            <Grid columns={2} gap={spacings.md}>
+            <Grid columns={2} gap={spacings.sm}>
                 <Item
                     isSelected={!floatingRateSelected}
                     onClick={() => setValue(FORM_RATE_TYPE, FORM_RATE_FIXED)}
