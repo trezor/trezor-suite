@@ -219,19 +219,19 @@
                     "link": "settings-index",
                     "anchor": "@general-settings/early-access",
                     "label": {
-                        "en-GB": "Join Early Access",
-                        "en": "Join Early Access",
-                        "es": "Únete al Acceso Anticipado",
-                        "cs": "Připojit se k Programu předběžného přístupu",
-                        "ru": "Присоединиться к раннему доступу",
-                        "ja": "Early Accessに参加",
-                        "hu": "Csatlakozás az Early Access programhoz",
-                        "it": "Unisciti all'Early Access",
-                        "fr": "Rejoindre l'accès anticipé",
-                        "de": "Early Access beitreten",
-                        "tr": "Erken Erişime Katıl",
-                        "pt": "Participar do Acesso Antecipado",
-                        "uk": "Приєднатися до раннього доступу"
+                        "en-GB": "Update Suite",
+                        "en": "Update Suite",
+                        "es": "Actualizar Suite",
+                        "cs": "Aktualizovat Suite",
+                        "ru": "Обновить Suite",
+                        "ja": "Suiteのアップデート",
+                        "hu": "Frissítés Suite",
+                        "it": "Aggiorna Suite",
+                        "fr": "Mettre à jour Suite",
+                        "de": "Suite aktualisieren",
+                        "tr": "Suite'i Güncelle",
+                        "pt": "Atualizar Suite",
+                        "uk": "Оновити Suite"
                     }
                 }
             }
