@@ -51,7 +51,7 @@ type FeeCardProps = {
     bottomRightChild: React.ReactNode;
 };
 
-const FEE_CARD_MIN_WIDTH = 180;
+const FEE_CARD_MIN_WIDTH = 220;
 
 type ResizeObserverType = (
     feeOptions: FeeOption[],
