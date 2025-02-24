@@ -30,20 +30,21 @@ export const transformTransaction = (
 ): Transaction => {
     const blockTime =
         typeof tx.date === 'number' && tx.date > 0 ? tx.date + BLOCKTIME_OFFSET : tx.date;
+    const isTokenTransaction = tx.Amount && typeof tx.Amount !== 'string';
 
     let txType: Transaction['type'];
 
     // https://xrpl.org/docs/references/protocol/transactions/transaction-results
     if (meta != null && !meta.TransactionResult?.startsWith('tes')) {
         txType = 'failed';
-    } else if (tx.TransactionType !== 'Payment' || !descriptor) {
+    } else if (tx.TransactionType !== 'Payment' || !descriptor || isTokenTransaction) {
         txType = 'unknown';
     } else {
         txType = tx.Account === descriptor ? 'sent' : 'recv';
     }
 
     const addresses = [tx.Destination];
-    const amount = tx.Amount;
+    const amount = !isTokenTransaction ? tx.Amount : undefined;
     const fee = tx.Fee;
     const destinationTag = tx.DestinationTag;
 
