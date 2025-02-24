@@ -6,6 +6,7 @@ import {
     type Network,
     type NetworkSymbol,
     getNetwork,
+    getNetworkFeatures,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
@@ -145,6 +146,7 @@ export const AssetsView = () => {
                         isSupportedSolStakingNetworkSymbol(account.symbol),
                 ),
                 accounts,
+                isStakeNetwork: getNetworkFeatures(symbol).includes('staking'),
             };
         })
         .filter(data => data !== null) as AssetData[];
@@ -233,6 +235,7 @@ export const AssetsView = () => {
                                 localCurrency={localCurrency}
                                 currentFiatRates={currentFiatRates}
                                 accounts={asset.accounts}
+                                isStakeNetwork={asset.isStakeNetwork}
                             />
                         ))}
                         {discoveryInProgress && <AssetCardSkeleton />}

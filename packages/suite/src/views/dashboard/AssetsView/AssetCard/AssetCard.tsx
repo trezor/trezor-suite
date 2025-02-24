@@ -21,6 +21,7 @@ import {
     variables,
 } from '@trezor/components';
 import { TokenInfo } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -35,9 +36,9 @@ import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
-import { TradingBuyButton } from '../TradingBuyButton';
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
+import { TradingButton } from '../TradingButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
@@ -89,6 +90,7 @@ type AssetCardProps = {
     localCurrency: FiatCurrencyCode;
     currentFiatRates?: RatesByKey;
     accounts: Account[];
+    isStakeNetwork?: boolean;
 };
 
 export const AssetCard = ({
@@ -102,6 +104,7 @@ export const AssetCard = ({
     localCurrency,
     currentFiatRates,
     accounts,
+    isStakeNetwork,
 }: AssetCardProps) => {
     const { symbol } = network;
     const dispatch = useDispatch();
@@ -199,7 +202,7 @@ export const AssetCard = ({
             )}
             {!isTestnet(symbol) && (
                 <Card data-testid="@dashboard/asset/bottom-info">
-                    <Row justifyContent="space-between" gap={spacings.md}>
+                    <Row justifyContent="space-between" flexWrap="wrap" gap={spacings.md}>
                         <InfoItem
                             data-testid="@dashboard/asset/exchange-rate"
                             label={<Translation id="TR_EXCHANGE_RATE" />}
@@ -214,10 +217,28 @@ export const AssetCard = ({
                         >
                             <TrendTicker symbol={symbol} />
                         </InfoItem>
-                        <TradingBuyButton
-                            symbol={symbol}
-                            data-testid={`@dashboard/asset/${symbol}/buy-button`}
-                        />
+
+                        <Row gap={spacings.xs}>
+                            {isStakeNetwork && (
+                                <TradingButton symbol={symbol} routeName="wallet-staking">
+                                    <Translation id="TR_STAKE_STAKE" />
+                                </TradingButton>
+                            )}
+
+                            <TradingButton
+                                symbol={symbol}
+                                routeName="wallet-trading-buy"
+                                data-testid={`@dashboard/asset/${symbol}/buy-button`}
+                                onClick={() => {
+                                    analytics.report({
+                                        type: EventType.AccountsDashboardBuy,
+                                        payload: { symbol },
+                                    });
+                                }}
+                            >
+                                <Translation id="TR_BUY_BUY" />
+                            </TradingButton>
+                        </Row>
                     </Row>
                 </Card>
             )}

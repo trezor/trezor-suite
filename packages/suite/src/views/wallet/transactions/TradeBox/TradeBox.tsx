@@ -1,8 +1,10 @@
+import { Route } from '@suite-common/suite-types';
 import {
     getNetwork,
     getNetworkDisplaySymbol,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import {
     Button,
     Card,
@@ -35,34 +37,42 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { device } = useDevice();
     const isTestnet = getNetwork(account.symbol).testnet;
 
+    const isStakeNetwork = hasNetworkFeatures(account, 'staking');
+
     const ActionButton = ({
         type,
         children,
         isDisabled = false,
     }: {
-        type: 'buy' | 'exchange' | 'sell';
+        type: 'stake' | 'buy' | 'exchange' | 'sell';
         children: React.ReactNode;
         isDisabled?: boolean;
-    }) => (
-        <Button
-            variant="tertiary"
-            size="small"
-            onClick={() => {
-                analytics.report({
-                    type: EventType.AccountsTradeboxButton,
-                    payload: {
-                        symbol: account.symbol,
-                        type,
-                    },
-                });
-                dispatch(goto(`wallet-trading-${type}`, { preserveParams: true }));
-            }}
-            data-testid={`@trading/menu/wallet-trading-${type}`}
-            isDisabled={isDisabled}
-        >
-            {children}
-        </Button>
-    );
+    }) => {
+        const gotoRouteName: Route['name'] =
+            type === 'stake' ? 'wallet-staking' : `wallet-trading-${type}`;
+        const dataTestId = type === 'stake' ? undefined : `@trading/menu/wallet-trading-${type}`;
+
+        return (
+            <Button
+                variant="tertiary"
+                size="small"
+                onClick={() => {
+                    analytics.report({
+                        type: EventType.AccountsTradeboxButton,
+                        payload: {
+                            symbol: account.symbol,
+                            type,
+                        },
+                    });
+                    dispatch(goto(gotoRouteName, { preserveParams: true }));
+                }}
+                data-testid={dataTestId}
+                isDisabled={isDisabled}
+            >
+                {children}
+            </Button>
+        );
+    };
 
     return (
         <DashboardSection heading={<Translation id="TR_NAV_TRADE" />}>
@@ -107,6 +117,11 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         </InfoItem>
                     </Flex>
                     <Row gap={spacings.sm}>
+                        {isStakeNetwork && (
+                            <ActionButton type="stake">
+                                <Translation id="TR_STAKE_STAKE" />
+                            </ActionButton>
+                        )}
                         <ActionButton type="buy">
                             <Translation id="TR_NAV_BUY" />
                         </ActionButton>

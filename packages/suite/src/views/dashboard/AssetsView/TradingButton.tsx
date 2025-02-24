@@ -1,32 +1,35 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, ReactNode } from 'react';
 
+import { Route } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import * as routerActions from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite';
 import { useAccountSearch, useDispatch } from 'src/hooks/suite';
 
-type TradingBuyButtonProps = {
+type TradingButtonProps = {
+    children: ReactNode;
+    onClick?: () => void;
     symbol: NetworkSymbol;
+    routeName: Route['name'];
     'data-testid'?: string;
 };
 
-export const TradingBuyButton = ({ symbol, 'data-testid': dataTest }: TradingBuyButtonProps) => {
+export const TradingButton = ({
+    children,
+    onClick: onButtonClick,
+    symbol,
+    routeName,
+    'data-testid': dataTest,
+}: TradingButtonProps) => {
     const dispatch = useDispatch();
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
     const onClick = (e: MouseEvent<HTMLButtonElement>) => {
-        analytics.report({
-            type: EventType.AccountsDashboardBuy,
-            payload: {
-                symbol,
-            },
-        });
+        onButtonClick?.();
 
         dispatch(
-            routerActions.goto('wallet-trading-buy', {
+            routerActions.goto(routeName, {
                 params: {
                     symbol,
                     accountIndex: 0,
@@ -44,7 +47,7 @@ export const TradingBuyButton = ({ symbol, 'data-testid': dataTest }: TradingBuy
 
     return (
         <Button onClick={onClick} variant="tertiary" data-testid={dataTest} size="small">
-            <Translation id="TR_BUY_BUY" />
+            {children}
         </Button>
     );
 };

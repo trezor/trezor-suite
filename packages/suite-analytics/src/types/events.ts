@@ -213,7 +213,7 @@ export type SuiteAnalyticsEvent =
           type: EventType.AccountsTradeboxButton;
           payload: {
               symbol: string;
-              type: 'exchange' | 'buy' | 'sell';
+              type: 'stake' | 'exchange' | 'buy' | 'sell';
           };
       }
     | TransactionCreatedEvent

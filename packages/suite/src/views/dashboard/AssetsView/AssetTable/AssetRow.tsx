@@ -11,6 +11,7 @@ import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -28,10 +29,10 @@ import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
-import { TradingBuyButton } from '../TradingBuyButton';
 import { AssetStakingRow } from './AssetStakingRow';
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 import { AssetTokenRow } from './AssetTokenRow';
+import { TradingButton } from '../TradingButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
 
 export interface AssetTableRowProps {
@@ -169,10 +170,19 @@ export const AssetRow = memo(
                     <Table.Cell align="right" colSpan={2}>
                         <Row gap={spacings.md}>
                             {!isTestnet(symbol) && (
-                                <TradingBuyButton
+                                <TradingButton
                                     symbol={symbol}
+                                    routeName="wallet-trading-buy"
                                     data-testid={`@dashboard/asset/${symbol}/buy-button`}
-                                />
+                                    onClick={() => {
+                                        analytics.report({
+                                            type: EventType.AccountsDashboardBuy,
+                                            payload: { symbol },
+                                        });
+                                    }}
+                                >
+                                    <Translation id="TR_BUY_BUY" />
+                                </TradingButton>
                             )}
                             <IconButton icon="arrowRight" size="small" variant="tertiary" />
                         </Row>
