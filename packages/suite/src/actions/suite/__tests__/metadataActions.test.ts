@@ -36,7 +36,9 @@ jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 // use real package
 jest.unmock('dropbox');
 // use fetch mock (used in Dropbox constructor, requesting to https://api.dropboxapi.com/)
-jest.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve<any>({}));
+const mockFetchPromise = Promise.resolve<any>({});
+global.fetch = jest.fn().mockImplementation(() => mockFetchPromise);
+jest.spyOn(global, 'fetch').mockImplementation(() => mockFetchPromise);
 
 type MetadataState = ReturnType<typeof metadataReducer>;
 interface InitialState {
