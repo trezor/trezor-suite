@@ -4,6 +4,7 @@ import {
     bluetoothActions,
     prepareSelectAllDevices,
     selectAdapterStatus,
+    selectKnownDevices,
     selectScanStatus,
 } from '@suite-common/bluetooth';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -26,6 +27,7 @@ import { bluetoothStopScanningThunk } from '../../../actions/bluetooth/bluetooth
 import { useDispatch, useSelector } from '../../../hooks/suite';
 
 const SCAN_TIMEOUT = 30_000;
+const UNPAIRED_DEVICES_LAST_UPDATED_LIMIT_SECONDS = 30;
 
 type BluetoothConnectProps = {
     onClose: () => void;
@@ -41,7 +43,19 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
 
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
     const scanStatus = useSelector(selectScanStatus);
-    const devices = useSelector(selectAllDevices);
+    const allDevices = useSelector(selectAllDevices);
+    const knownDevices = useSelector(selectKnownDevices);
+
+    const lasUpdatedBoundaryTimestamp =
+        Date.now() / 1000 - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT_SECONDS;
+
+    const devices = allDevices.filter(device => {
+        if (device.device.lastUpdatedTimestamp >= lasUpdatedBoundaryTimestamp) {
+            return true;
+        }
+
+        return knownDevices.find(knownDevice => knownDevice.id === device.device.id) !== undefined;
+    });
 
     const selectedDevice =
         selectedDeviceId !== null
