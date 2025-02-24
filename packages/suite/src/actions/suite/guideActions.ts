@@ -40,7 +40,7 @@ export const setIndexNode = (payload: GuideCategory) => ({
     payload,
 });
 
-export const unsetNode = () => ({
+export const unsetNode = (): GuideAction => ({
     type: GUIDE.UNSET_NODE,
 });
 

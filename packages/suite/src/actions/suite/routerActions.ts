@@ -33,7 +33,7 @@ export type RouterAction =
       }
     | {
           type: typeof ROUTER.ANCHOR_CHANGE;
-          payload: AnchorType;
+          payload: AnchorType | undefined;
       };
 
 /**

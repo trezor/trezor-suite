@@ -126,23 +126,24 @@ export const disconnectProvider =
         if (provider) {
             await provider.disconnect();
             providerInstance[dataType] = undefined;
-        }
-        // flush reducer
-        dispatch({
-            type: METADATA.REMOVE_PROVIDER,
-            payload: provider,
-        });
-        dispatch({
-            type: METADATA.SET_SELECTED_PROVIDER,
-            payload: { dataType, clientId: undefined },
-        });
 
-        analytics.report({
-            type: EventType.SettingsGeneralLabelingProvider,
-            payload: {
-                provider: '',
-            },
-        });
+            // flush reducer
+            dispatch({
+                type: METADATA.REMOVE_PROVIDER,
+                payload: provider,
+            });
+            dispatch({
+                type: METADATA.SET_SELECTED_PROVIDER,
+                payload: { dataType, clientId: undefined },
+            });
+
+            analytics.report({
+                type: EventType.SettingsGeneralLabelingProvider,
+                payload: {
+                    provider: '',
+                },
+            });
+        }
     };
 
 /**

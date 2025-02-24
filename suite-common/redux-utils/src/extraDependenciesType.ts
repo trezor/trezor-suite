@@ -105,7 +105,7 @@ export type ExtraDependencies = {
                   localCurrency: FiatCurrencyCode;
               }>;
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
-        appChanged: ActionCreatorWithPayload<unknown>;
+        appChanged: ActionCreatorWithPayload<any>;
         setSelectedDevice: ActionCreatorWithPayload<TrezorDevice | undefined>;
         updateSelectedDevice: ActionCreatorWithPayload<TrezorDevice>;
         requestAuthConfirm: ActionCreatorWithoutPayload;

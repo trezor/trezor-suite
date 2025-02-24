@@ -4,6 +4,7 @@ import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 import { analyticsActions } from '@suite-common/analytics';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import { firmwareActions } from '@suite-common/firmware';
+import { addLog } from '@suite-common/logger';
 import { messageSystemActions } from '@suite-common/message-system';
 import type { Route } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -83,7 +84,8 @@ export type Action =
     | ProtocolAction
     | DiscoveryAction
     | DeviceAction
-    | DeviceAuthenticityAction;
+    | DeviceAuthenticityAction
+    | ReturnType<typeof addLog>;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 
@@ -91,7 +93,7 @@ export type ThunkAction = TAction<any, AppState, any, Action>;
 // export type Dispatch = ThunkDispatch<AppState, any, Action>;
 // fixed return type from `dispatch(A)` in actions
 export interface Dispatch extends ThunkDispatch<AppState, any, Action> {
-    <Action>(action: Action): Action extends (...args: any) => infer R ? R : Action;
+    <A extends Action>(action: A): A extends (...args: any) => infer R ? R : A;
 }
 
 export type GetState = () => AppState;

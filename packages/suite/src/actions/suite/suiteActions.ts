@@ -95,12 +95,9 @@ export type SuiteAction =
       }
     | { type: typeof SUITE.SET_SIDEBAR_WIDTH; payload: { width: number } };
 
-export const appChanged = createAction(
-    SUITE.APP_CHANGED,
-    (payload: AppState['router']['app'] | unknown) => ({
-        payload,
-    }),
-);
+export const appChanged = createAction(SUITE.APP_CHANGED, (payload: AppState['router']['app']) => ({
+    payload,
+}));
 
 export const desktopHandshake = (payload: HandshakeElectron): SuiteAction => ({
     type: SUITE.DESKTOP_HANDSHAKE,
@@ -305,7 +302,12 @@ export const toggleDeviceAuthenticityCheck = (enable: boolean) => (dispatch: Dis
 export const toggleFirmwareAuthenticityChecks = (enable: boolean) => (dispatch: Dispatch) => {
     dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
 
-    [SUITE.TOGGLE_FIRMWARE_REVISION_CHECK, SUITE.TOGGLE_FIRMWARE_HASH_CHECK].forEach(type => {
+    const firmwareAuthenticityChecks = [
+        SUITE.TOGGLE_FIRMWARE_REVISION_CHECK,
+        SUITE.TOGGLE_FIRMWARE_HASH_CHECK,
+    ] as const;
+
+    firmwareAuthenticityChecks.forEach(type => {
         dispatch({
             type,
             payload: enable,
