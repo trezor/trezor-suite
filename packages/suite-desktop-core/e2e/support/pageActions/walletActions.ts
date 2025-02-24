@@ -135,4 +135,10 @@ export class WalletActions {
         await this.accountButton(params).click();
         await this.openSwapTradingButton.click();
     }
+
+    @step()
+    async exportTransactions(typeOfExport: string) {
+        await this.page.getByTestId('@wallet/accounts/export-transactions/dropdown').click();
+        await this.page.getByTestId(`@wallet/accounts/export-transactions/${typeOfExport}`).click();
+    }
 }
