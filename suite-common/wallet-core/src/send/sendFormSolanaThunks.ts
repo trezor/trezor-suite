@@ -246,7 +246,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 tx.errorMessage = {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
                     values: {
-                        networkSymbol: getNetworkDisplaySymbol(network.symbol),
+                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
                     },
                 };
             }
