@@ -281,7 +281,9 @@ export const fetchTransactionsPageThunk = createThunk(
             details: 'txs',
             page, // useful for every network except ripple
             pageSize: perPage,
-            ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
+            // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
+            // if back on first page, the marker is reset
+            ...(marker && !isFirstPage ? { marker } : {}),
             suppressBackupWarning: true,
         });
 
