@@ -15,9 +15,6 @@ jobs:
       # todo: this setup is duplicated with test-suite-web-e2e.yml
       matrix:
         include:
-          - TEST_GROUP: "@group_suite"
-            CONTAINERS: "trezor-user-env-unix"
-            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
           - TEST_GROUP: "@group_wallet"
             CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
             CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
@@ -188,12 +185,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - TEST_GROUP: "@group_suite"
-            CONTAINERS: "trezor-user-env-unix"
-            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
-          - TEST_GROUP: "@group_device-management"
-            CONTAINERS: "trezor-user-env-unix"
-            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
           - TEST_GROUP: "@group_wallet"
             CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
             CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
