@@ -10,7 +10,13 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata1', '@webOnl
         await metadataProviderMock.start(MetadataProvider.DROPBOX);
     });
 
-    test('dropbox provider', async ({ page, onboardingPage, dashboardPage, metadataPage }) => {
+    test('dropbox provider', async ({
+        page,
+        onboardingPage,
+        dashboardPage,
+        metadataPage,
+        walletPage,
+    }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
 
@@ -73,8 +79,7 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata1', '@webOnl
             metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0),
         ).toContainText('submitted by button');
 
-        await page.getByTestId('@wallet/accounts/export-transactions/dropdown').click();
-        await page.getByTestId('@wallet/accounts/export-transactions/csv').click();
+        await walletPage.exportTransactions('csv');
 
         const download = await page.waitForEvent('download');
         const downloadPath = await download.path();
