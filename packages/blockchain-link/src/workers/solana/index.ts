@@ -62,8 +62,8 @@ import { IntervalId } from '@trezor/type-utils';
 import { BigNumber, createDeferred, createLazy } from '@trezor/utils';
 
 import { getBaseFee, getPriorityFee } from './fee';
+import { getSolanaStakingData } from './stakingAccounts';
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
-import { getSolanaStakingData } from './utils';
 
 export type SolanaAPI = Readonly<{
     clusterUrl: ClusterUrl;

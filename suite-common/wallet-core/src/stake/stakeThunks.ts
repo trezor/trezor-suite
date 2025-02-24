@@ -11,7 +11,11 @@ import {
 import { TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { EVERSTAKE_ENDPOINT_PREFIX, EVERSTAKE_REWARDS_SOLANA_ENPOINT } from './stakeConstants';
+import {
+    EVERSTAKE_ENDPOINT_PREFIX,
+    EVERSTAKE_REWARDS_SOLANA_ENPOINT,
+    EVERSTAKE_VALIDATOR,
+} from './stakeConstants';
 import { selectEverstakeData } from './stakeSelectors';
 import {
     EVERSTAKE_ASSET_ENDPOINT_TYPES,
@@ -124,7 +128,11 @@ export const fetchEverstakeRewards = createThunk<
         try {
             const response = await fetch(`${EVERSTAKE_REWARDS_SOLANA_ENPOINT}/${address}`, {
                 method: 'POST',
+                body: `validator=${encodeURIComponent(EVERSTAKE_VALIDATOR)}`,
                 signal,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
             });
 
             if (!response.ok) {
