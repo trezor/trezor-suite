@@ -1,13 +1,12 @@
 import { EventType } from '@trezor/suite-analytics';
 import { ExtractByEventType } from '@trezor/suite-web/e2e/support/types';
-import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Backup success', { tag: ['@group=device-management'] }, () => {
     test.use({
         emulatorStartConf: { model: 'T2T1', wipe: true },
-        emulatorSetupConf: { needs_backup: true, mnemonic: MNEMONICS.mnemonic_all },
+        emulatorSetupConf: { needs_backup: true, mnemonic: 'mnemonic_all' },
     });
 
     test.beforeEach(async ({ onboardingPage, analytics }) => {
@@ -52,7 +51,7 @@ test.describe('Backup success', { tag: ['@group=device-management'] }, () => {
         await onboardingPage.backup.wroteSeedProperlyCheckbox.click();
         await onboardingPage.backup.madeNoDigitalCopyCheckbox.click();
         await onboardingPage.backup.willHideSeedCheckbox.click();
-        await expect(onboardingPage.backup.closeButton).not.toBeDisabled();
+        await expect(onboardingPage.backup.closeButton).toBeEnabled();
 
         const createBackupEvent = analytics.findAnalyticsEventByType<
             ExtractByEventType<EventType.CreateBackup>

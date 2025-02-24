@@ -4,7 +4,7 @@ import { test } from '../../support/fixtures';
 
 test.describe('Create additional share', { tag: ['@group=device-management'] }, () => {
     test.use({
-        emulatorSetupConf: { mnemonic: MNEMONICS.mnemonic_academic },
+        emulatorSetupConf: { mnemonic: 'mnemonic_academic' },
     });
 
     test.beforeEach(async ({ onboardingPage }) => {
