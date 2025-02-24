@@ -4,7 +4,11 @@ import * as Device from 'expo-device';
 
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
-import { selectDevices } from '@suite-common/wallet-core';
+import {
+    selectDeviceDiscovery,
+    selectDevices,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import {
     selectEnabledDiscoveryNetworkSymbols,
     selectTokenDefinitionsEnabledNetworks,
@@ -41,6 +45,8 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         selectAreSatsAmountUnit,
         selectLocalCurrency: selectFiatCurrencyCode,
         selectDevices,
+        selectDevice: selectSelectedDevice,
+        selectDeviceDiscovery,
         selectDebugSettings: () => ({
             transports,
         }),
