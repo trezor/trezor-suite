@@ -20,7 +20,7 @@ export const DeviceAuthenticityOptOut = () => {
         dispatch(
             isDeviceAuthenticityCheckEnabled
                 ? openModal({ type: 'device-authenticity-check-opt-out' })
-                : toggleDeviceAuthenticityCheck(false),
+                : toggleDeviceAuthenticityCheck(true),
         );
 
     return (
