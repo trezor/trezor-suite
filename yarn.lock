@@ -12201,6 +12201,7 @@ __metadata:
   resolution: "@trezor/protobuf@workspace:packages/protobuf"
   dependencies:
     "@trezor/schema-utils": "workspace:*"
+    long: "npm:5.2.0"
     protobufjs: "npm:7.4.0"
     protobufjs-cli: "npm:^1.1.3"
     tsx: "npm:^4.16.3"
@@ -12795,8 +12796,6 @@ __metadata:
     cross-fetch: "npm:^4.0.0"
     jest: "npm:29.7.0"
     jest-environment-node: "npm:^29.7.0"
-    long: "npm:^5.2.0"
-    protobufjs: "npm:7.4.0"
     ts-node: "npm:^10.9.2"
     tsx: "npm:^4.16.3"
     usb: "npm:^2.14.0"
@@ -30070,7 +30069,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"long@npm:^5.0.0, long@npm:^5.2.0":
+"long@npm:5.2.0":
+  version: 5.2.0
+  resolution: "long@npm:5.2.0"
+  checksum: 10/9bb47091fea71634d9bf59f150ecc25180c44bead2e1408d78f3ff4ea68f16b38587be413b59acb46fb0bbe51e6823ec8547aa61aa8aef10cae4ff9a2538db3d
+  languageName: node
+  linkType: hard
+
+"long@npm:^5.0.0":
   version: 5.2.4
   resolution: "long@npm:5.2.4"
   checksum: 10/c27c060a683d4d76dc48da12ded0ae49c610aaf10d028ec938829d7bebe916979dcc8b67ed71f8bf6d845a90151b66a9b741a3ee51ec874908e496c2a576697a
