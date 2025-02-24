@@ -82,10 +82,11 @@ export class MarketActions {
     readonly accountSearchInput: Locator;
     readonly accountTabFilter = (tab: AccountTabFilter) =>
         this.page.getByTestId(`@trading/form/select-crypto/network-tab/${tab}`);
-    readonly accountOption = (cryptoName: string, symbol?: NetworkSymbol) =>
-        this.page.getByTestId(
-            `@trading/form/select-crypto/option/${cryptoName}${symbol ? `-${symbol}` : ''}`,
-        );
+    readonly accountOption = (cryptoName: string, symbol?: NetworkSymbol) => {
+        const suffix = symbol ? `${cryptoName}-${symbol}` : cryptoName;
+
+        return this.page.getByTestId(`@trading/form/select-crypto/option/${suffix}`);
+    };
     readonly paymentMethodDropdown: Locator;
     readonly paymentMethodOption = (method: PaymentMethods) =>
         this.page.getByTestId(`@trading/form/payment-method-select/option/${method}`);
@@ -364,12 +365,12 @@ export class MarketActions {
     }
 
     @step()
-    async initiateSendConfirmation(confirmAlsoToken = false) {
+    async initiateSendConfirmation(options?: { confirmAlsoToken: boolean }) {
         await this.confirmOnTrezorAndSend.click();
         await expect(this.devicePrompt.sendButton).toBeDisabled();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
-        if (confirmAlsoToken) {
+        if (options?.confirmAlsoToken) {
             await this.devicePrompt.confirmOnDevicePromptIsShown();
             await TrezorUserEnvLinkProxy.pressYes();
         }
@@ -430,7 +431,7 @@ export class MarketActions {
             isSolanaResponse(response, 'simulateTransaction'),
         );
 
-        // We need to wait for each call twice
+        // Suite calls the each request twice and we have to wait for all of them
         return Promise.all([
             getFeeForMessagePromise,
             getRecentPrioritizationFeesPromise,
