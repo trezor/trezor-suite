@@ -79,6 +79,7 @@ export const openDeferredModal =
             type: MODAL.OPEN_USER_CONTEXT,
             payload: {
                 ...payload,
+                // @ts-expect-error: Tightening types, but I don't know how to resolve this.
                 decision: dfd,
             },
         });

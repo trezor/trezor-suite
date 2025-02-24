@@ -20,6 +20,7 @@ const router = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
                         ...action.payload,
                         settingsBackRoute: {
                             name: router.route?.name ?? 'suite-index',
+                            // @ts-expect-error: Tightening types, but I don't know how to resolve this.
                             params: router.params,
                         },
                     },
