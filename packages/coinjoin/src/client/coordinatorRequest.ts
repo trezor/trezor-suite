@@ -76,6 +76,7 @@ export const coordinatorRequest = async <R = void>(
             const socksErrors = ['Socks5', 'Proxy'];
             const shouldSwitchIdentity =
                 ('code' in e && e.code === 'ECONNRESET') ||
+                ('cause' in e && 'code' in e.cause && e.cause.code === 'UND_ERR_SOCKET') || // equivalent to ECONNRESET in new Node fetch client (undici)
                 ('type' in e &&
                     e.type === 'system' &&
                     socksErrors.some(se => e.message.includes(se)));
