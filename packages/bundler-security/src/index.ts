@@ -1,0 +1,1 @@
+export { WebpackSecurityCheckPlugin } from './WebpackSecurityPlugin';

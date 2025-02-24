@@ -6,12 +6,8 @@ import sortPackageJson from 'sort-package-json';
 
 import templatePackageJsonWeb from './package-template/package.json';
 import templatePackageJsonNative from './package-template-native/package.json';
-// todo: calling yarn generate-package failed on not resolving destructuring imports. default imports seem to work.
-import import1 from './utils/getPrettierConfig';
-import import2 from './utils/getWorkspacesList';
-
-const { getPrettierConfig } = import1;
-const { getWorkspacesList } = import2;
+import { getPrettierConfig } from './utils/getPrettierConfig';
+import { getWorkspacesList } from './utils/getWorkspacesList';
 
 const scopes = {
     '@suite-common': {

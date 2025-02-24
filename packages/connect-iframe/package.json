@@ -19,6 +19,7 @@
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.24.7",
+        "@trezor/bundler-security": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "babel-loader": "^9.1.3",

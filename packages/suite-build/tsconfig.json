@@ -6,6 +6,7 @@
         {
             "path": "../../suite-common/suite-config"
         },
+        { "path": "../bundler-security" },
         { "path": "../suite" },
         { "path": "../eslint" }
     ]
