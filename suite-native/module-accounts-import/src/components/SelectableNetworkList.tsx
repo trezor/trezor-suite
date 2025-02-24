@@ -5,7 +5,10 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { HeaderedCard, VStack } from '@suite-native/atoms';
 import { getNativeMainnetSymbols } from '@suite-native/config';
-import { selectSupportedTestnetNetworkSymbols } from '@suite-native/discovery';
+import {
+    selectAreTestnetsEnabled,
+    selectSupportedTestnetNetworkSymbols,
+} from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 
 type SelectableAssetListProps = {
@@ -31,9 +34,9 @@ const NetworkItemSection = ({
 );
 
 export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps) => {
-    const testnetsSymbols = useSelector(selectSupportedTestnetNetworkSymbols);
-
     const mainnetSymbols = getNativeMainnetSymbols();
+    const testnetSymbols = useSelector(selectSupportedTestnetNetworkSymbols);
+    const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
 
     return (
         <VStack spacing="sp24">
@@ -42,11 +45,13 @@ export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps
                 symbols={mainnetSymbols}
                 onSelectItem={onSelectItem}
             />
-            <NetworkItemSection
-                title={<Translation id="moduleAccountImport.coinList.testnets" />}
-                symbols={testnetsSymbols}
-                onSelectItem={onSelectItem}
-            />
+            {areTestnetsEnabled && (
+                <NetworkItemSection
+                    title={<Translation id="moduleAccountImport.coinList.testnets" />}
+                    symbols={testnetSymbols}
+                    onSelectItem={onSelectItem}
+                />
+            )}
         </VStack>
     );
 };
