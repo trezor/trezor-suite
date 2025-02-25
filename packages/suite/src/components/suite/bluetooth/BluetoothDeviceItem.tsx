@@ -2,7 +2,7 @@ import { Button, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BluetoothDevice as BluetoothDeviceType } from '@trezor/transport-bluetooth';
 
-import { BluetoothDevice } from './BluetoothDevice';
+import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 
 type BluetoothDeviceItemProps = {
     device: BluetoothDeviceType;
@@ -12,7 +12,7 @@ type BluetoothDeviceItemProps = {
 
 export const BluetoothDeviceItem = ({ device, onClick, isDisabled }: BluetoothDeviceItemProps) => (
     <Row onClick={onClick} gap={spacings.md} alignItems="stretch">
-        <BluetoothDevice device={device} flex="1" />
+        <BluetoothDeviceComponent device={device} flex="1" />
         <Button
             variant="primary"
             size="small"

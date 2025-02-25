@@ -1,9 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    bluetoothActions,
+    prepareSelectAllDevices,
+    selectAdapterStatus,
+    selectKnownDevices,
+    selectScanStatus,
+} from '@suite-common/bluetooth';
+import { selectDevices } from '@suite-common/wallet-core';
 import { Card, Column, ElevationUp } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
 import { spacings } from '@trezor/theme';
+import { BluetoothDevice } from '@trezor/transport-bluetooth';
 import { TimerId } from '@trezor/type-utils';
 
 import { BluetoothDeviceList } from './BluetoothDeviceList';
@@ -14,38 +21,61 @@ import { BluetoothSelectedDevice } from './BluetoothSelectedDevice';
 import { BluetoothTips } from './BluetoothTips';
 import { BluetoothNotEnabled } from './errors/BluetoothNotEnabled';
 import { BluetoothVersionNotCompatible } from './errors/BluetoothVersionNotCompatible';
-import {
-    bluetoothConnectDeviceEventAction,
-    bluetoothScanStatusAction,
-} from '../../../actions/bluetooth/bluetoothActions';
 import { bluetoothConnectDeviceThunk } from '../../../actions/bluetooth/bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from '../../../actions/bluetooth/bluetoothStartScanningThunk';
 import { bluetoothStopScanningThunk } from '../../../actions/bluetooth/bluetoothStopScanningThunk';
+import { closeModalApp } from '../../../actions/suite/routerActions';
 import { useDispatch, useSelector } from '../../../hooks/suite';
-import {
-    selectBluetoothDeviceList,
-    selectBluetoothEnabled,
-    selectBluetoothScanStatus,
-} from '../../../reducers/bluetooth/bluetoothSelectors';
 
 const SCAN_TIMEOUT = 30_000;
+const UNPAIRED_DEVICES_LAST_UPDATED_LIMIT_SECONDS = 30;
 
 type BluetoothConnectProps = {
     onClose: () => void;
     uiMode: 'spatial' | 'card';
 };
 
+const selectAllDevices = prepareSelectAllDevices<BluetoothDevice>();
+
 export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => {
     const dispatch = useDispatch();
+
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
     const [scannerTimerId, setScannerTimerId] = useState<TimerId | null>(null);
 
-    const isBluetoothEnabled = useSelector(selectBluetoothEnabled);
-    const scanStatus = useSelector(selectBluetoothScanStatus);
-    const deviceList = useSelector(selectBluetoothDeviceList);
-    const devices = Object.values(deviceList);
+    const trezorDevices = useSelector(selectDevices);
 
-    const selectedDevice = selectedDeviceId !== null ? deviceList[selectedDeviceId] ?? null : null;
+    const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
+    const scanStatus = useSelector(selectScanStatus);
+    const allDevices = useSelector(selectAllDevices);
+    const knownDevices = useSelector(selectKnownDevices);
+
+    const lasUpdatedBoundaryTimestamp =
+        Date.now() / 1000 - UNPAIRED_DEVICES_LAST_UPDATED_LIMIT_SECONDS;
+
+    const devices = allDevices.filter(it => {
+        const isDeviceAlreadyConnected =
+            trezorDevices.find(trezorDevice => trezorDevice.bluetoothProps?.id === it.device.id) !==
+            undefined;
+
+        if (isDeviceAlreadyConnected) {
+            return false;
+        }
+
+        const isDeviceUnresponsiveForTooLong =
+            it.device.lastUpdatedTimestamp < lasUpdatedBoundaryTimestamp;
+
+        if (isDeviceUnresponsiveForTooLong) {
+            return knownDevices.find(knownDevice => knownDevice.id === it.device.id) !== undefined;
+        }
+
+        return true;
+    });
+
+    const selectedDevice =
+        selectedDeviceId !== null
+            ? devices.find(device => device.device.id === selectedDeviceId)
+            : undefined;
 
     useEffect(() => {
         dispatch(bluetoothStartScanningThunk());
@@ -64,7 +94,7 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
     useEffect(() => {
         // Intentionally no `clearScamTimer`, this is first run and if we use this we would create infinite re-render
         const timerId = setTimeout(() => {
-            dispatch(bluetoothScanStatusAction({ status: 'done' }));
+            dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
         }, SCAN_TIMEOUT);
 
         setScannerTimerId(timerId);
@@ -72,55 +102,25 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
 
     const onReScanClick = () => {
         setSelectedDeviceId(null);
-        dispatch(bluetoothScanStatusAction({ status: 'running' }));
+        dispatch(bluetoothActions.scanStatusAction({ status: 'running' }));
 
         clearScamTimer();
         const timerId = setTimeout(() => {
-            dispatch(bluetoothScanStatusAction({ status: 'done' }));
+            dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
         }, SCAN_TIMEOUT);
         setScannerTimerId(timerId);
     };
 
     const onSelect = async (id: string) => {
         setSelectedDeviceId(id);
-
         const result = await dispatch(bluetoothConnectDeviceThunk({ id })).unwrap();
 
-        if (!result.success) {
-            dispatch(
-                bluetoothConnectDeviceEventAction({
-                    id,
-                    connectionStatus: { type: 'error', error: result.error },
-                }),
-            );
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: result.error,
-                }),
-            );
-        } else {
-            // Todo: What to do with error in this flow? UI-Wise
-
-            dispatch(
-                bluetoothConnectDeviceEventAction({
-                    id,
-                    connectionStatus: { type: 'connected' },
-                }),
-            );
-
-            // WAIT for connect event, TODO: figure out better way
-            const closePopupAfterConnection = () => {
-                TrezorConnect.off('device-connect', closePopupAfterConnection);
-                TrezorConnect.off('device-connect_unacquired', closePopupAfterConnection);
-                // setSelectedDeviceStatus({ type: 'error', id }); // Todo: what here?
-            };
-            TrezorConnect.on('device-connect', closePopupAfterConnection);
-            TrezorConnect.on('device-connect_unacquired', closePopupAfterConnection);
+        if (uiMode === 'card' && result.success) {
+            dispatch(closeModalApp());
         }
     };
 
-    if (!isBluetoothEnabled) {
+    if (bluetoothAdapterStatus === 'disabled') {
         return <BluetoothNotEnabled onCancel={onClose} />;
     }
 
@@ -133,8 +133,8 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
     console.log('selectedDevice', selectedDevice);
 
     // This is fake, we scan for devices all the time
-    const isScanning = scanStatus !== 'done';
-    const scanFailed = devices.length === 0 && scanStatus === 'done';
+    const isScanning = scanStatus === 'running';
+    const scanFailed = devices.length === 0 && scanStatus === 'idle';
 
     const handlePairingCancel = () => {
         setSelectedDeviceId(null);
@@ -142,7 +142,8 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
     };
 
     if (
-        selectedDevice !== null &&
+        selectedDevice !== undefined &&
+        selectedDevice.status !== null &&
         selectedDevice.status.type === 'pairing' &&
         (selectedDevice.status.pin?.length ?? 0) > 0
     ) {
@@ -155,7 +156,7 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
         );
     }
 
-    if (selectedDevice !== null) {
+    if (selectedDevice !== undefined) {
         return <BluetoothSelectedDevice device={selectedDevice} onReScanClick={onReScanClick} />;
     }
 

@@ -1,13 +1,9 @@
+import { BLUETOOTH_PREFIX, bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils/';
-import { DeviceConnectionStatus, bluetoothIpc } from '@trezor/transport-bluetooth';
+import { BluetoothDevice, DeviceConnectionStatus, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { Without } from '@trezor/type-utils';
 
-import {
-    BLUETOOTH_PREFIX,
-    bluetoothAdapterEventAction,
-    bluetoothConnectDeviceEventAction,
-    bluetoothDeviceListUpdate,
-} from './bluetoothActions';
+import { remapKnownDevicesForLinux } from './remapKnownDevicesForLinux';
 import { selectSuiteFlags } from '../../reducers/suite/suiteReducer';
 
 type DeviceConnectionStatusWithOptionalId = Without<DeviceConnectionStatus, 'id'> & {
@@ -25,12 +21,23 @@ export const initBluetoothThunk = createThunk<void, void, void>(
 
         bluetoothIpc.on('adapter-event', isPowered => {
             console.warn('adapter-event', isPowered);
-            dispatch(bluetoothAdapterEventAction({ isPowered }));
+            dispatch(bluetoothActions.adapterEventAction({ isPowered }));
         });
 
-        bluetoothIpc.on('device-list-update', devices => {
-            console.warn('device-list-update', devices);
-            dispatch(bluetoothDeviceListUpdate({ devices }));
+        bluetoothIpc.on('device-list-update', nearbyDevices => {
+            console.warn('device-list-update', nearbyDevices);
+
+            const knownDevices = selectKnownDevices<BluetoothDevice>(getState());
+
+            const remappedKnownDevices = remapKnownDevicesForLinux({
+                knownDevices,
+                nearbyDevices,
+            });
+
+            dispatch(
+                bluetoothActions.knownDevicesUpdateAction({ knownDevices: remappedKnownDevices }),
+            );
+            dispatch(bluetoothActions.nearbyDevicesUpdateAction({ nearbyDevices }));
         });
 
         bluetoothIpc.on('device-connection-status', connectionStatus => {
@@ -41,7 +48,7 @@ export const initBluetoothThunk = createThunk<void, void, void>(
             delete copyConnectionStatus.id; // So we dont pollute redux store
 
             dispatch(
-                bluetoothConnectDeviceEventAction({
+                bluetoothActions.connectDeviceEventAction({
                     id: connectionStatus.id,
                     connectionStatus: copyConnectionStatus,
                 }),
@@ -49,7 +56,7 @@ export const initBluetoothThunk = createThunk<void, void, void>(
         });
 
         // TODO: this should be called after trezor/connect init?
-        const knownDevices = getState().bluetooth.pairedDevices;
+        const knownDevices = selectKnownDevices<BluetoothDevice>(getState());
         await bluetoothIpc.init({ knownDevices });
     },
 );

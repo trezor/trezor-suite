@@ -1,11 +1,12 @@
+import { BluetoothDeviceState } from '@suite-common/bluetooth';
 import { Card, Column, Row, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 import { BluetoothDeviceItem } from './BluetoothDeviceItem';
-import { BluetoothDeviceState } from '../../../reducers/bluetooth/bluetoothReducer';
 
 type BluetoothDeviceListProps = {
-    deviceList: BluetoothDeviceState[];
+    deviceList: BluetoothDeviceState<BluetoothDevice>[];
     onSelect: (id: string) => void;
     isScanning: boolean;
     isDisabled: boolean;

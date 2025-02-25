@@ -1,8 +1,8 @@
+import { BluetoothScanStatus } from '@suite-common/bluetooth';
 import { Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { NotTrezorYouAreLookingFor } from './NotTrezorYouAreLookingFor';
-import { BluetoothScanStatus } from '../../../reducers/bluetooth/bluetoothReducer';
 
 type BluetoothScanFooterProps = {
     onReScanClick: () => void;
@@ -23,7 +23,7 @@ export const BluetoothScanFooter = ({
         );
     }
 
-    if (scanStatus === 'done' && numberOfDevices > 0) {
+    if (scanStatus === 'idle' && numberOfDevices > 0) {
         return <NotTrezorYouAreLookingFor onReScanClick={onReScanClick} />;
     }
 

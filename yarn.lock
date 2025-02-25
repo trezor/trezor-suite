@@ -9604,6 +9604,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/bluetooth@workspace:*, @suite-common/bluetooth@workspace:suite-common/bluetooth":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/bluetooth@workspace:suite-common/bluetooth"
+  dependencies:
+    "@reduxjs/toolkit": "npm:1.9.5"
+    "@suite-common/redux-utils": "workspace:*"
+    "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/connect-init@workspace:*, @suite-common/connect-init@workspace:suite-common/connect-init":
   version: 0.0.0-use.local
   resolution: "@suite-common/connect-init@workspace:suite-common/connect-init"
@@ -12788,6 +12798,7 @@ __metadata:
     "@solana/web3.js-version1": "npm:@solana/web3.js@1.95.8"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/assets": "workspace:*"
+    "@suite-common/bluetooth": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"

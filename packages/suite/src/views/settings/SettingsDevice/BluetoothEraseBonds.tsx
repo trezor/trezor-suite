@@ -1,20 +1,27 @@
 import { useState } from 'react';
 
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { Button } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const BluetoothEraseBonds = () => {
+    const dispatch = useDispatch();
     const device = useSelector(state => state.device.selectedDevice);
 
     const [inProgress, setInProgress] = useState(false);
 
-    const onCheckFirmwareAuthenticity = async () => {
+    const onEraseClick = async () => {
         setInProgress(true);
         // TODO: missing button request in FW
         const result = await TrezorConnect.eraseBonds({ device });
+
+        if (device?.bluetoothProps?.id !== undefined) {
+            dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }));
+        }
+
         console.warn('Erase bonds!', result);
         setInProgress(false);
     };
@@ -26,11 +33,7 @@ export const BluetoothEraseBonds = () => {
                 description="Forget pairing credentials. Trezor will no longer be paired with this computer (require bluetooth module restart? or device disconnect? forget your device in system UI?)"
             />
             <ActionColumn>
-                <Button
-                    onClick={onCheckFirmwareAuthenticity}
-                    isLoading={inProgress}
-                    isDisabled={inProgress}
-                >
+                <Button onClick={onEraseClick} isLoading={inProgress} isDisabled={inProgress}>
                     Erase
                 </Button>
             </ActionColumn>

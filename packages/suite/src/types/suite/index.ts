@@ -2,6 +2,7 @@ import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import { analyticsActions } from '@suite-common/analytics';
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
@@ -11,7 +12,6 @@ import { deviceActions, discoveryActions, transactionsActions } from '@suite-com
 import type { BlockchainEvent, TransportEvent, UiEvent } from '@trezor/connect';
 
 import type { BackupAction } from 'src/actions/backup/backupActions';
-import { allBluetoothActions } from 'src/actions/bluetooth/bluetoothActions';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { WalletSettingsAction } from 'src/actions/settings/walletSettingsActions';
@@ -58,7 +58,7 @@ type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discove
 type DeviceAuthenticityAction = ReturnType<
     (typeof deviceAuthenticityActions)[keyof typeof deviceAuthenticityActions]
 >;
-type BluetoothAction = ReturnType<(typeof allBluetoothActions)[keyof typeof allBluetoothActions]>;
+type BluetoothAction = ReturnType<(typeof bluetoothActions)[keyof typeof bluetoothActions]>;
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
