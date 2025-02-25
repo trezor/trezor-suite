@@ -1,3 +1,26 @@
+# 1.3.0
+
+-   refactor(connect): separate bitcoin and misc fee levels (73ba107ee4)
+-   feat(blockchain-link): add support for Solana v2 staking (f12b0240c8)
+-   npm-prerelease: @trezor/blockchain-link-types 1.3.0-beta.1 (ae9fbcf120)
+-   chore(suite): sync types with blockbook (8e843a36d7)
+-   chore: update solana and everstake deps (cf806ff3d0)
+-   npm-prerelease: @trezor/blockchain-link-types 1.2.6-beta.1 (6e5413cfec)
+-   chore(packages): autofix for sort-imports eslint rule (b96c899ebb)
+-   feat(suite): add Destination tag into TxDetail (c46de7a9c3)
+-   feat(blockchain-link): support solana stake types and calculate amounts (b10e27ed77)
+-   fix(blockchain-link): CustomError with message passed as code (5285872b3f)
+-   fix: make types strict to prevent accidental deletion via unused types, the optionality is a trap, they are required (184ebbb7f4)
+-   Revert chore(suite): remove unused types in token (f588fa36a7)
+-   chore(blockchain-link-types): extend token standard type by bep (44358cbc8c)
+-   feat(blockchain-link): add Solana epoch info call and upgrade SDK (2a8262578d)
+-   feat(blockchain-link-types): update blockfrost staking types (d27b94b2e3)
+-   feat(connect): add support of L2 ETH networks (26ff8eada4)
+-   chore(suite): remove unused types in token (efed0f9922)
+-   feat(suite): expand TokenInfo type to work with NFT (6c7b1ab731)
+-   fix(blockchain-link): add stakingAccounts property to AccountInfo interface (e2e907090f)
+-   feat(solana): add support for Token-2022 tokens (9abc7d93dd)
+
 # 1.2.4
 
 -   npm-prerelease: @trezor/blockchain-link-types 1.2.4-beta.1 (32d2ef7bab)
