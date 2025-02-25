@@ -15,7 +15,9 @@ export const getMethod = async (message: IFrameCallMessage): Promise<AbstractMet
 
     const methodModule = getMethodModule(method);
     const methods = methodModule
-        ? await import(/* webpackChunkName: "[request]" */ `../api/${methodModule}/api`)
+        ? await import(
+              /* webpackChunkName: "[request]" */ /* @vite-ignore */ `../api/${methodModule}/api`
+          )
         : Methods;
     const MethodConstructor = methods[method];
 
