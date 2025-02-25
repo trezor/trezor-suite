@@ -116,8 +116,8 @@ jobs:
           #   CONTAINERS: "trezor-user-env-unix"
           - TEST_GROUP: "@group=other"
             CONTAINERS: "trezor-user-env-unix"
-          # - TEST_GROUP: "@group=wallet" # Disabled because there are no webOnly tests in this group
-          #   CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
+          - TEST_GROUP: "@group=wallet"
+            CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
 
     steps:
       - name: Checkout
