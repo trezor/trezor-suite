@@ -23,7 +23,7 @@ for I in **/*.exe **/*.dll; do echo "---Checking $I"---; chktrust "$I"; done
 Certificate file is with extension: `.pfx`
 Env variables for signing: `WIN_CSC_KEY_PASSWORD` `WIN_CSC_LINK`.
 
-## Creating Self-signed pfx and cer certificates with OpenSSL
+## Creating Self-signed .pfx and .cer certificates with OpenSSL
 
 Generate directly the pem:
 
@@ -35,4 +35,10 @@ The pem cannot be used with Microsoft products, so we need to convert it to PKCS
 
 ```bash
 openssl pkcs12 -export -in cert.pem -inkey cert.pem -out cert.pfx
+```
+
+Use like so in the electron-builder `sign-windows` script, providing your own `PATH_TO_CERTIFICATE.pfx` and the pfx password, if used.
+
+```
+`java -jar ../suite-desktop-core/scripts/jsign-6.0.jar --keystore PATH_TO_CERTIFICATE.pfx --storepass PASSWORD --storetype PKCS12 --tsaurl http://timestamp.digicert.com "${configuration.path}"`
 ```
