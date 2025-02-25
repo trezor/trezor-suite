@@ -1,3 +1,15 @@
+# 1.3.0
+
+-   chore(protobuf): update protobuf (fb892d5db8)
+-   Revert chore(transport): move long dep to protobuf package and unify its version with protobufjs (4a6b98bcf3)
+-   chore(transport): move long dep to protobuf package and unify its version with protobufjs (3ab195cf19)
+-   npm-prerelease: @trezor/protobuf 1.3.0-beta.1 (736c4b6620)
+-   npm-prerelease: @trezor/protobuf 1.2.7-beta.1 (36972ab0e7)
+-   chore(packages): autofix for sort-imports eslint rule (b96c899ebb)
+-   chore: enable ESLint rule for as-needed | auto-fix (64fcbde4bd)
+-   chore(protobuf): update definitions (add `ResetDevice.entropy_check`) (3737c9ea00)
+-   feat(connect): introduce internal_model UNKNOWN for non-standard models (289ebe9dde)
+
 # 1.2.6
 
 -   npm-prerelease: @trezor/protobuf 1.2.6-beta.1 (d2bc8b3b1a)
