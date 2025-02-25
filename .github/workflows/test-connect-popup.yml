@@ -24,10 +24,11 @@ on:
       - "packages/connect-explorer-theme/**"
       - "submodules/trezor-common/**"
       - "yarn.lock"
-      - ".github/workflows/connect-dev-release-test.yml"
       - ".github/workflows/template-connect-popup-test-params.yml"
+      - ".github/workflows/test-connect-popup.yml"
       - ".github/actions/release-connect/**"
       - "docker/docker-connect-popup-ci.sh"
+      - "docker/docker-compose.connect-popup-ci.yml"
   workflow_dispatch:
 
 concurrency:
