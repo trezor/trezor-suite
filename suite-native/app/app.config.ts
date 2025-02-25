@@ -144,6 +144,7 @@ const getPlugins = (): ExpoPlugins => {
                 organization: 'satoshilabs',
             },
         ],
+        ['./plugins/withTestflightDevDeploy.js', { enabled: buildType === 'preview' }],
     ];
 
     return [
