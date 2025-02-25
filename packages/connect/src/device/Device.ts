@@ -553,7 +553,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     // note 4: this case can happen also in the 'if' branch. 1] reload app, 2], browser doesn't fire release in time, 3] you get unacquired device, 4] you click
                     //         the 'use device here' button and here you go. Yet I didn't want to burden every TrezorConnect method call with this but we may reconsider this.
                     // note 5: ad note 4. it is not so problematic anymore since cleanup on dispose has been improved in https://github.com/trezor/trezor-suite/pull/16930
-                    if (['v1', 'bridge'].includes(this.protocol.name)) {
+                    // note 6: T1 with older bootloader (1.8.0) doesn't respond to Cancel message, so we better ignore those
+                    if (
+                        ['v1', 'bridge'].includes(this.protocol.name) &&
+                        this.transportDescriptorType !== undefined && // we know the type of device
+                        ![0, 2].includes(this.transportDescriptorType) // ignore model 1 hid or webusb bootloader mode
+                    ) {
                         _log.debug(
                             'sending a preventive cancel on the first encounter with the device',
                         );
