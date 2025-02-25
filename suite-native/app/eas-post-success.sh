@@ -12,8 +12,10 @@ distribute_apk() {
     # Set app ID based on profile
     if [[ "$EAS_BUILD_PROFILE" == "develop" ]]; then
         FIREBASE_APP_ID="1:191883890128:android:625bcdab76b3b3a644bdd5"
+        APK_PATH="/suite-native/app/android/app/build/outputs/apk/release/app-release.apk"
     else
         FIREBASE_APP_ID="1:191883890128:android:a7fd34594f97aa6444bdd5"
+        APK_PATH="/suite-native/app/android/app/build/outputs/apk/debug/app-debug.apk"
     fi
 
     # Distribute APK to develop-testers group using Firebase CLI
