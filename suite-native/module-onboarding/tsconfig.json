@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../atoms" },
+        { "path": "../device" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },

@@ -43,7 +43,8 @@ const cancelButtonStyle = prepareNativeStyle(utils => ({
 
 type FirmwareInstallationScreenContentProps = {
     onFirmwareInstallationSuccess: () => void;
-    onFirmwareInstallationFailure: () => void;
+    onFirmwareInstallationFailure?: () => void;
+    isCancellationAllowed?: boolean;
 };
 
 // This component is shared between `module-onboarding` and `module-device-settings`.
@@ -51,6 +52,7 @@ type FirmwareInstallationScreenContentProps = {
 export const FirmwareInstallationScreenContent = ({
     onFirmwareInstallationSuccess,
     onFirmwareInstallationFailure,
+    isCancellationAllowed = true,
 }: FirmwareInstallationScreenContentProps) => {
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
@@ -121,7 +123,7 @@ export const FirmwareInstallationScreenContent = ({
                 result.payload?.code === 'Failure_ActionCancelled'
             ) {
                 handleAnalyticsReportCancelled();
-                onFirmwareInstallationFailure();
+                onFirmwareInstallationFailure?.();
 
                 return;
             }
@@ -187,11 +189,12 @@ export const FirmwareInstallationScreenContent = ({
     }, [status, operation, isError]);
 
     const showConfirmOnDevice = confirmOnDevice && !isError;
+    const isCancelButtonDisplayed = isCancellationAllowed && isError;
     const bottomButtonOffset = showConfirmOnDevice ? 180 : bottomSafeAreaInset + 12;
 
     return (
         <>
-            {isError && (
+            {isCancelButtonDisplayed && (
                 <Animated.View entering={FadeIn} style={applyStyle(cancelButtonStyle)}>
                     <IconButton
                         iconName="x"

@@ -1,27 +1,24 @@
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CommonActions, useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/core';
+import { useSetAtom } from 'jotai';
 
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
+import { wasDeviceDisconnectedByUserActionAtom } from '@suite-native/device';
 import { useTranslate } from '@suite-native/intl';
-import {
-    AuthorizeDeviceStackRoutes,
-    HomeStackRoutes,
-    RootStackRoutes,
-    Screen,
-    ScreenHeader,
-    ScreenProps,
-} from '@suite-native/navigation';
+import { Screen, ScreenHeader, ScreenProps } from '@suite-native/navigation';
 
 const OnboardingExitButtonScreenHeader = () => {
+    const navigation = useNavigation();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
     const dispatch = useDispatch();
-    const navigation = useNavigation();
     const selectedDevice = useSelector(selectSelectedDevice);
+    const setWasDeviceDisconnectedByUserAction = useSetAtom(wasDeviceDisconnectedByUserActionAtom);
 
-    const handleCancelOnboarding = () => {
+    const handleExitButtonPress = useCallback(() => {
         showAlert({
             title: translate('moduleOnboarding.cancelOnboardingAlert.title'),
             description: translate('moduleOnboarding.cancelOnboardingAlert.description'),
@@ -33,32 +30,26 @@ const OnboardingExitButtonScreenHeader = () => {
             secondaryButtonVariant: 'redElevation0',
             onPressPrimaryButton: () => {
                 if (selectedDevice) {
+                    setWasDeviceDisconnectedByUserAction(true);
                     dispatch(deviceActions.deviceDisconnect(selectedDevice));
-                    navigation.dispatch(
-                        CommonActions.reset({
-                            index: 1,
-                            routes: [
-                                {
-                                    name: RootStackRoutes.AppTabs,
-                                    params: {
-                                        screen: HomeStackRoutes.Home,
-                                    },
-                                },
-                                {
-                                    name: RootStackRoutes.AuthorizeDeviceStack,
-                                    params: {
-                                        screen: AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
-                                    },
-                                },
-                            ],
-                        }),
-                    );
                 }
             },
         });
-    };
+    }, [dispatch, selectedDevice, setWasDeviceDisconnectedByUserAction, translate, showAlert]);
 
-    return <ScreenHeader closeActionType="close" closeAction={handleCancelOnboarding} />;
+    useEffect(() => {
+        // Override default navigation GO_BACK action to align it with the exit button behavior.
+        const unsubscribe = navigation.addListener('beforeRemove', e => {
+            if (e.data.action.type === 'GO_BACK') {
+                e.preventDefault();
+                handleExitButtonPress();
+            }
+        });
+
+        return unsubscribe;
+    }, [handleExitButtonPress, navigation]);
+
+    return <ScreenHeader closeActionType="close" closeAction={handleExitButtonPress} />;
 };
 
 export const OnboardingScreenWithExitButton = ({ children, ...screenProps }: ScreenProps) => (

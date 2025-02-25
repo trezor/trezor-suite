@@ -13,3 +13,4 @@ export * from './selectors';
 export * from './deviceThunks';
 export * from './config/firmware';
 export * from './types';
+export * from './deviceAtoms';

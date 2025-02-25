@@ -16,8 +16,7 @@ export const FirmwareInstallationScreen = () => {
         <OnboardingScreenWithExitButton>
             <FirmwareInstallationScreenContent
                 onFirmwareInstallationSuccess={handleFirmwareInstallationSuccess}
-                // TODO: will be implemented as part of follow up issue: https://github.com/trezor/trezor-suite/issues/16291
-                onFirmwareInstallationFailure={() => null}
+                isCancellationAllowed={false}
             />
         </OnboardingScreenWithExitButton>
     );

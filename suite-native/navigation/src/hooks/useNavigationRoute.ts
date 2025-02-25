@@ -1,17 +1,20 @@
 import { useNavigationState } from '@react-navigation/native';
 import type { NavigationState } from '@react-navigation/routers';
 
+import { AppTabsParamList } from '../navigators';
+
+type AppNavigationState = NavigationState<AppTabsParamList>;
 /**
  * Recursively get the most specific active route name from the hierarchy of navigation states.
  */
-export const getActiveRouteName = (state: NavigationState): string | undefined => {
+export const getActiveRouteName = (state: AppNavigationState): string | undefined => {
     if (!state || !state.routes || state.index == null) return undefined;
 
     const route = state.routes[state.index];
 
-    if (route.state) return getActiveRouteName(route.state as NavigationState);
+    if (route.state) return getActiveRouteName(route.state as AppNavigationState);
 
-    return route.name;
+    return route.params?.screen ?? route.name;
 };
 
 /**
@@ -20,7 +23,8 @@ export const getActiveRouteName = (state: NavigationState): string | undefined =
  * The value should be same as from useRoute hook provided by lib, but that hook can only be used in
  * components downstream of the stack navigators! In components above the navigators, use this hook.
  */
-export const useNavigationRoute = () => useNavigationState(state => getActiveRouteName(state));
+export const useNavigationRoute = () =>
+    useNavigationState(state => getActiveRouteName(state as AppNavigationState));
 
 /**
  * Determine if the most specific active route name matches the query.

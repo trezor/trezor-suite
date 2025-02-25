@@ -35,6 +35,7 @@ import {
     selectHasFirmwareAuthenticityCheckHardFailed,
     selectIsDeviceSetupSupported,
 } from '../selectors';
+import { useHandleOnboardingDeviceDisconnection } from './useHandleOnboardingDeviceDisconnection';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList | RootStackParamList,
@@ -54,17 +55,16 @@ export const useHandleDeviceConnection = () => {
     const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
-
-    const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
-
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailed,
     );
     const isFirmwareAuthenticityCheckDismissed = useSelector(
         selectIsFirmwareAuthenticityCheckDismissed,
     );
-    const shouldNavigateToDeviceCompromisedModal =
-        hasFirmwareAuthenticityCheckHardFailed && !isFirmwareAuthenticityCheckDismissed;
+
+    const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
+    const { handleOnboardingDeviceDisconnection, isOnboardingDeviceDisconnectedAlertDisplayed } =
+        useHandleOnboardingDeviceDisconnection();
 
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
@@ -75,6 +75,9 @@ export const useHandleDeviceConnection = () => {
     const isSuspiciousDeviceScreenFocused = useNavigationRouteMatch(
         OnboardingStackRoutes.SuspiciousDevice,
     );
+    const isConnectAndUnlockDeviceScreenFocused = useNavigationRouteMatch(
+        AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
+    );
 
     const lastRoute = useNavigationState(state => state?.routes.at(-1)?.name);
     const isDeviceSettingsStackFocused = lastRoute === RootStackRoutes.DeviceSettingsStack;
@@ -84,6 +87,9 @@ export const useHandleDeviceConnection = () => {
     const isDeviceCompromisedModalFocused =
         lastRoute === RootStackRoutes.DeviceCompromisedModalScreen;
 
+    const shouldNavigateToDeviceCompromisedModal =
+        hasFirmwareAuthenticityCheckHardFailed && !isFirmwareAuthenticityCheckDismissed;
+
     // When is an uninitialized device model that supports device setup, navigate to device onboarding.
     useEffect(() => {
         if (
@@ -92,7 +98,8 @@ export const useHandleDeviceConnection = () => {
             !isDeviceInitialized &&
             !isPortfolioTrackerDevice &&
             !isBiometricsOverlayVisible &&
-            !isOnboardingStackFocused
+            !isOnboardingStackFocused &&
+            !isOnboardingDeviceDisconnectedAlertDisplayed
         ) {
             navigation.navigate(RootStackRoutes.OnboardingStack, {
                 screen: OnboardingStackRoutes.UninitializedDeviceLanding,
@@ -107,6 +114,7 @@ export const useHandleDeviceConnection = () => {
         isDeviceInitialized,
         isPortfolioTrackerDevice,
         isDeviceSetupSupported,
+        isOnboardingDeviceDisconnectedAlertDisplayed,
     ]);
 
     // At the moment when unauthorized physical device is selected,
@@ -159,9 +167,14 @@ export const useHandleDeviceConnection = () => {
     // In case that the physical device is disconnected, redirect to the home screen and
     // set connecting screen to be displayed again on the next device connection.
     useEffect(() => {
-        if (isFirmwareInstallationRunning) return;
+        if (
+            (isFirmwareInstallationRunning && !isOnboardingStackFocused) ||
+            !isOnboardingFinished ||
+            isConnectAndUnlockDeviceScreenFocused
+        )
+            return;
 
-        if (isNoPhysicalDeviceConnected && isOnboardingFinished) {
+        if (isNoPhysicalDeviceConnected) {
             if (shouldBlockSendReviewRedirect) {
                 return;
             }
@@ -172,6 +185,13 @@ export const useHandleDeviceConnection = () => {
             if (isDeviceCompromisedModalFocused || isSuspiciousDeviceScreenFocused) {
                 return;
             }
+
+            if (isOnboardingStackFocused) {
+                handleOnboardingDeviceDisconnection();
+
+                return;
+            }
+
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {
@@ -187,6 +207,9 @@ export const useHandleDeviceConnection = () => {
         isFirmwareInstallationRunning,
         isDeviceCompromisedModalFocused,
         isSuspiciousDeviceScreenFocused,
+        isOnboardingStackFocused,
+        handleOnboardingDeviceDisconnection,
+        isConnectAndUnlockDeviceScreenFocused,
     ]);
 
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
