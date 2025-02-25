@@ -91,12 +91,21 @@ const ignoreErrors = [
 
 export const SENTRY_CONFIG: Options = {
     dsn: 'https://6d91ca6e6a5d4de7b47989455858b5f6@o117836.ingest.sentry.io/5193825',
-    autoSessionTracking: false, // do not send analytical data to Sentry
-    integrations: [
-        captureConsoleIntegration({
-            levels: ['error'],
-        }),
-    ],
+
+    integrations(integrations) {
+        // integrations will be all default integrations
+        const filteredIntegrations = integrations.filter(function (integration) {
+            return integration.name !== 'Breadcrumbs';
+        });
+
+        filteredIntegrations.push(
+            captureConsoleIntegration({
+                levels: ['error'],
+            }),
+        );
+
+        return filteredIntegrations;
+    },
     beforeSend,
     enabled: !isDevEnv,
     maxValueLength: 500, // default 250 is not enough for some errors

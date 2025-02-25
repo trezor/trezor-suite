@@ -17,7 +17,7 @@
         "test:e2e:update-snapshots": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --grep @snapshot --update-snapshots"
     },
     "dependencies": {
-        "@sentry/electron": "^5.9.0",
+        "@sentry/electron": "^6.1.0",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-constants": "workspace:^",
@@ -54,7 +54,7 @@
         "@playwright/browser-firefox": "^1.49.1",
         "@playwright/browser-webkit": "^1.49.1",
         "@playwright/test": "^1.49.1",
-        "@sentry/webpack-plugin": "^2.22.7",
+        "@sentry/webpack-plugin": "^3.2.1",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@types/electron-localshortcut": "^3.1.3",

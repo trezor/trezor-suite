@@ -191,7 +191,7 @@ const config: webpack.Configuration = {
                       org: 'satoshilabs',
                       project: 'trezor-suite',
                       authToken: sentryAuthToken,
-                      release: { name: sentryRelease, cleanArtifacts: true },
+                      release: { name: sentryRelease },
                       sourcemaps: {
                           assets: path.join(getPathForProject(project), 'build', '**'),
                           ignore: ['static/connect'], // connect does not contain source maps for now

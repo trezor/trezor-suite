@@ -15,11 +15,12 @@ const initSentry = () => {
         // We recommend adjusting this value in production.
         tracesSampleRate: 0.5,
         environment: isDetoxTestBuild() ? 'test' : getEnv(),
-        integrations: [
-            captureConsoleIntegration({
-                levels: ['error'],
-            }),
+        integrations: integrations => [
+            ...integrations,
+            // There seems to be no official way how to add captureConsoleIntegration to Sentry in React Native.
+            captureConsoleIntegration({ levels: ['error'] }) as any,
         ],
+        attachStacktrace: true,
         // You can put EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true to `.env.development.local` to debug Sentry locally.
         enabled:
             !isDebugEnv() || process.env.EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED === 'true',
