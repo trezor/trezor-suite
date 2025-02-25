@@ -169,7 +169,7 @@ jobs:
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/suite-web @trezor/connect-iframe @trezor/connect-web @trezor/suite-data @trezor/suite-build
+          yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
 
       - name: Build suite-web
         env:
