@@ -75,6 +75,4 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
     }
 
     throw new Error('Unexpected passphrase state');
-
-    return null;
 };
