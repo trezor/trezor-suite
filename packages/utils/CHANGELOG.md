@@ -1,3 +1,24 @@
+# 9.3.0
+
+-   chore(utils): typedObjectKeys (30f8f4fc59)
+-   npm-prerelease: @trezor/utils 9.3.0-beta.1 (31f09abf19)
+-   chore(utils): remove createTimeoutPromise (1087ec266e)
+-   refactor(utils): add abort to resolveAfter (fecb9a1ccc)
+-   npm-prerelease: @trezor/utils 9.2.7-beta.2 (4062e3a490)
+-   npm-prerelease: @trezor/utils 9.2.7-beta.1 (b47005fb74)
+-   feat: UI facelift of the Affected transactions in the RBF flow (49fd2cba42)
+-   build(utils): buid for esm (82b3c420ce)
+-   chore(packages): autofix for sort-imports eslint rule (b96c899ebb)
+-   feat(utils): include stackTrace in serializeError (fb496b7f19)
+-   chore(utils): improve `scheduleAction` stack trace (2f01d07c34)
+-   feat(utils): add serializeError helper (d391fde59d)
+-   feat(utils): new isWhitelistedHost (95c1640ef6)
+-   feat(utils): cache with ttl (3c07bce818)
+-   fix: show h instead of apostrophe in taproot xpub to be consistent with firmware (82e7d84f8c)
+-   feat(utils): add create zip util (a640272964)
+-   test(utils): test resolveAfter utils (89fffd0fab)
+-   feat(utils): add resolveAfter util (5913011798)
+
 # 9.2.6
 
 -   npm-prerelease: @trezor/utils 9.2.6-beta.1 (6db4f59670)
