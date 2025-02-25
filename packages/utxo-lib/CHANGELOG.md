@@ -1,3 +1,13 @@
+# 2.3.0
+
+-   npm-prerelease: @trezor/utxo-lib 2.3.0-beta.1 (ee41d6d1a8)
+-   npm-prerelease: @trezor/utxo-lib 2.2.7-beta.1 (3225f30622)
+-   chore(packages): autofix for sort-imports eslint rule (b96c899ebb)
+-   chore: rbf-fee calculation (BIP-125) archeology and documentation (1c875caa7e)
+-   chore: bump int64-buffer (00cb7c42f0)
+-   feat(connect): rename bnb to bsc (cc18737edc)
+-   fix: show proper info for unspendable coinbase transactions (610108e4da)
+
 # 2.2.3
 
 -   npm-prerelease: @trezor/utxo-lib 2.2.3-beta.1 (5927d5b080)
