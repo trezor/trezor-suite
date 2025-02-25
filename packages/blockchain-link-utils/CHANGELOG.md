@@ -1,3 +1,25 @@
+# 1.3.0
+
+-   feat(blockchain-link): add support for Solana v2 staking (f12b0240c8)
+-   npm-prerelease: @trezor/blockchain-link-utils 1.3.0-beta.1 (e9235027ca)
+-   chore(suite): fix tests (b646159ec2)
+-   chore(suite): sync types with blockbook (8e843a36d7)
+-   chore: update solana and everstake deps (cf806ff3d0)
+-   npm-prerelease: @trezor/blockchain-link-utils 1.2.7-beta.1 (86cb20a5a2)
+-   chore(packages): autofix for sort-imports eslint rule (b96c899ebb)
+-   fix(blockchain-link): change success status in failed transactions with missing destination tag (dd6d496fd3)
+-   feat(suite): add Destination tag into TxDetail (c46de7a9c3)
+-   fix(solana): whitelist Serum's Asset Owner program (e6af2c1471)
+-   feat(solana): more generic transaction parsing (89bc5a54fd)
+-   feat(blockchain-link): support solana stake types and calculate amounts (b10e27ed77)
+-   Revert chore(suite): remove unused types in token (f588fa36a7)
+-   chore: enable ESLint rule for as-needed | auto-fix (64fcbde4bd)
+-   feat(blockchain-link): add Solana epoch info call and upgrade SDK (2a8262578d)
+-   feat(connect): add support of L2 ETH networks (26ff8eada4)
+-   chore(suite): remove unused types in token (efed0f9922)
+-   fix(blockchain-link): add stakingAccounts property to AccountInfo interface (e2e907090f)
+-   feat(solana): add support for Token-2022 tokens (9abc7d93dd)
+
 # 1.2.5
 
 -   npm-prerelease: @trezor/blockchain-link-utils 1.2.5-beta.1 (6af3be92af)
