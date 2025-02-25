@@ -56,16 +56,14 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRoo
 export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMemoizedSelector(
     [
         selectVisibleDeviceAccounts,
+        (_state: NativeAccountsRootState, filterValue: string) => filterValue,
         (
             _state: NativeAccountsRootState,
-            filterValue: string,
+            _filterValue: string,
             isSendFilterEnabled: boolean = false,
-        ) => ({
-            filterValue,
-            isSendFilterEnabled,
-        }),
+        ) => isSendFilterEnabled,
     ],
-    (accounts, { filterValue, isSendFilterEnabled }) =>
+    (accounts, filterValue, isSendFilterEnabled) =>
         pipe(
             accounts,
             sortAccountsByNetworksAndAccountTypes,
