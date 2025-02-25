@@ -1,3 +1,9 @@
+# 1.3.0
+
+-   npm-prerelease: @trezor/env-utils 1.3.0-beta.1 (7a125b0091)
+-   npm-prerelease: @trezor/env-utils 1.2.2-beta.1 (cc55141299)
+-   chore(packages): autofix for sort-imports eslint rule (b96c899ebb)
+
 # 1.2.1
 
 -   npm-prerelease: @trezor/env-utils 1.2.1-beta.1 (571dd950c6)
