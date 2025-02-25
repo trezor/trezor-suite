@@ -1,3 +1,9 @@
+# 1.3.0
+
+-   npm-prerelease: @trezor/analytics 1.3.0-beta.1 (d848ffc4d4)
+-   npm-prerelease: @trezor/analytics 1.2.7-beta.1 (327b230fb1)
+-   chore(packages): autofix for sort-imports eslint rule (b96c899ebb)
+
 # 1.2.3
 
 -   npm-prerelease: @trezor/analytics 1.2.3-beta.1 (136e6f103a)
