@@ -7,8 +7,6 @@ import { Translation } from '@suite-native/intl';
 import {
     OnboardingStackParamList,
     OnboardingStackRoutes,
-    Screen,
-    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -16,6 +14,7 @@ import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { HeaderUnderlineSvg } from '../components/HeaderUnderlineSvg';
+import { OnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
 
 const trezorImageStyle = prepareNativeStyle<{ hasDeviceFirmwareInstalled: boolean }>(
     (_, { hasDeviceFirmwareInstalled }) => ({
@@ -98,8 +97,7 @@ export const UninitializedDeviceLandingScreen = ({
     };
 
     return (
-        // TODO: add handling of close button event
-        <Screen header={<ScreenHeader closeActionType="close" />}>
+        <OnboardingScreenWithExitButton>
             <VStack justifyContent="space-between" flex={1} paddingTop="sp16">
                 <VStack spacing="sp32">
                     <UninitializedDeviceLandingScreenContent />
@@ -129,6 +127,6 @@ export const UninitializedDeviceLandingScreen = ({
                     )}
                 </VStack>
             </VStack>
-        </Screen>
+        </OnboardingScreenWithExitButton>
     );
 };

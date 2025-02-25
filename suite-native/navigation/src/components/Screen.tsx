@@ -17,7 +17,7 @@ import { ScreenContentWrapper } from './ScreenContentWrapper';
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
 import { useIsKeyboardShown } from '../hooks/useIsKeyboardShown';
 
-type ScreenProps = {
+export type ScreenProps = {
     children: ReactNode;
     header?: ReactNode;
     footer?: ReactNode;

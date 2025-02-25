@@ -8,12 +8,11 @@ import {
     DeviceSuspicionCause,
     OnboardingStackParamList,
     OnboardingStackRoutes,
-    Screen,
-    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 
+import { OnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
 import { SecurityCheckStepCard } from '../components/SecurityCheckStepCard';
 import { SecuritySealDescription } from '../components/SecuritySealDescription';
 
@@ -78,7 +77,7 @@ export const SecurityCheckScreen = ({
     };
 
     return (
-        <Screen header={<ScreenHeader />}>
+        <OnboardingScreenWithExitButton>
             <VStack justifyContent="flex-start" flex={1} marginTop="sp16">
                 <VStack spacing="sp24">
                     <TitleHeader
@@ -104,6 +103,6 @@ export const SecurityCheckScreen = ({
                     </VStack>
                 </VStack>
             </VStack>
-        </Screen>
+        </OnboardingScreenWithExitButton>
     );
 };

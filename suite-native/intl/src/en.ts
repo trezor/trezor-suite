@@ -828,6 +828,16 @@ export const en = {
             },
             declineButton: 'I’m not sure',
         },
+        deviceDisconnectedAlert: {
+            title: 'Your Trezor has been disconnected',
+            description: 'Connect your Trezor to start again.',
+            reconnectButton: 'Connect Trezor',
+        },
+        cancelOnboardingAlert: {
+            title: 'Are you sure you’d like to cancel your Trezor’s setup?',
+            description: 'Start again at anytime.',
+            continueButton: 'Continue setup',
+        },
     },
     moduleAccountManagement: {
         accountSettingsScreen: {

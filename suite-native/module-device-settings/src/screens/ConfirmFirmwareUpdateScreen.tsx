@@ -1,9 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { ConfirmFirmwareUpdateScreenContent } from '@suite-native/firmware';
+import {
+    ConfirmFirmwareUpdateScreenContent,
+    ConfirmFirmwareUpdateScreenFooter,
+} from '@suite-native/firmware';
 import {
     DeviceSettingsStackParamList,
     DeviceStackRoutes,
+    Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
 
@@ -19,5 +23,15 @@ export const ConfirmFirmwareUpdateScreen = () => {
         navigation.navigate(DeviceStackRoutes.FirmwareInstallation);
     };
 
-    return <ConfirmFirmwareUpdateScreenContent onUpdateConfirmation={handleUpdateConfirmation} />;
+    return (
+        <Screen
+            footer={
+                <ConfirmFirmwareUpdateScreenFooter
+                    onUpdateConfirmation={handleUpdateConfirmation}
+                />
+            }
+        >
+            <ConfirmFirmwareUpdateScreenContent />
+        </Screen>
+    );
 };

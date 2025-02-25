@@ -5,13 +5,18 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { selectIsLatestFirmwareInstalled } from '@suite-common/wallet-core';
 import { selectIsDeviceFirmwareSupported } from '@suite-native/device';
-import { ConfirmFirmwareUpdateScreenContent } from '@suite-native/firmware';
+import {
+    ConfirmFirmwareUpdateScreenContent,
+    ConfirmFirmwareUpdateScreenFooter,
+} from '@suite-native/firmware';
 import {
     OnboardingStackParamList,
     OnboardingStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
+
+import { OnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
 
 type NavigationProp = StackNavigationProps<
     OnboardingStackParamList,
@@ -47,10 +52,16 @@ export const ConfirmFirmwareUpdateScreen = () => {
     };
 
     return (
-        <ConfirmFirmwareUpdateScreenContent
-            onUpdateConfirmation={handleUpdateConfirmation}
-            // Skip action is disabled for devices with unsupported (outdated) firmware.
-            onSkipUpdate={isDeviceFirmwareSupported ? handleSkipUpdate : undefined}
-        />
+        <OnboardingScreenWithExitButton
+            footer={
+                <ConfirmFirmwareUpdateScreenFooter
+                    onUpdateConfirmation={handleUpdateConfirmation}
+                    // Skip action is disabled for devices with unsupported (outdated) firmware.
+                    onSkipUpdate={isDeviceFirmwareSupported ? handleSkipUpdate : undefined}
+                />
+            }
+        >
+            <ConfirmFirmwareUpdateScreenContent />
+        </OnboardingScreenWithExitButton>
     );
 };
