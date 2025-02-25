@@ -13,7 +13,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.5.0-beta.1
+# 9.5.0
 
 Starting with this release we changed de target in all `@trezor` packages to ES2022. It might be problematic in some very old environment or if you use Typescript with lower than ES2022 you might have to add ES2022 lib to your tsconfig. We are also include esm builds in our npm packages. For now only in `@trezor/connect-plugin-stellar` and `@trezor/connect-plugin-ethereum`.
 
