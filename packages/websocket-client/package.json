@@ -1,6 +1,6 @@
 {
     "name": "@trezor/websocket-client",
-    "version": "1.1.0-beta.1",
+    "version": "1.1.0",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/websocket",
     "description": "Shared websocket client implementation",
