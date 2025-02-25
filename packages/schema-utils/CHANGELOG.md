@@ -1,3 +1,9 @@
+# 1.3.0
+
+-   npm-prerelease: @trezor/schema-utils 1.3.0-beta.1 (5c1f9a994d)
+-   npm-prerelease: @trezor/schema-utils 1.2.4-beta.1 (e7c2a7c410)
+-   chore(packages): autofix for sort-imports eslint rule (b96c899ebb)
+
 # 1.2.3
 
 -   npm-prerelease: @trezor/schema-utils 1.2.3-beta.1 (9500133ffe)
