@@ -1,3 +1,30 @@
+# 1.4.0
+
+-   chore(deps): unify ts-node version (3187da7bf4)
+-   Revert chore(transport): move long dep to protobuf package and unify its version with protobufjs (4a6b98bcf3)
+-   chore(transport): move long dep to protobuf package and unify its version with protobufjs (3ab195cf19)
+-   chore(transport): update long from 4.0.0 to 5.2.0 (241eebcb72)
+-   chore(utils): typedObjectKeys (30f8f4fc59)
+-   fix(connect): releasing device on browser reload using sendBeacon api (f308e1a42f)
+-   npm-prerelease: @trezor/transport 1.4.0-beta.1 (4182c7dcd6)
+-   chore(transport): remove unused transport-interface-error (c486d86ef3)
+-   fix(transport): enumerate when UsbDevice without serialNumber disconnects (3f0f817ffd)
+-   fix(transport): close connected UsbDevice if opened (8a1bb83fc0)
+-   fix(transport): transferOut timeout must be inside try block (723a253667)
+-   chore: replace createTimeoutPromise with resolveAfter (fd9f5098ce)
+-   feat(transport): add ping to transports (98af487887)
+-   chore(transport): remove unused export (a12e98efd3)
+-   chore(transport): add another log in usb read error case (9924cb1e40)
+-   fix(transport): usb - write timeout (eb781d8c41)
+-   npm-prerelease: @trezor/transport 1.3.8-beta.1 (38c249b40a)
+-   chore(packages): autofix for sort-imports eslint rule (b96c899ebb)
+-   chore(transport): make messages param required in abstract constructor (6c6244475e)
+-   fix(transport): synchronize usb.getDevices since it returns wrong results when called simultaneously (571439e5dd)
+-   chore(deps): update various @types packages (c6c6b36900)
+-   feat(connect): add `setTransports` method (4880cd3d0c)
+-   refactor(connect): DeviceList init rewritten into abortable tasks (d971ce8bcc)
+-   chore: enable ESLint rule for as-needed | auto-fix (64fcbde4bd)
+
 # 1.3.6
 
 -   npm-prerelease: @trezor/transport 1.3.6-beta.1 (52aae6ddc6)
