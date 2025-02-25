@@ -77,7 +77,7 @@ test.describe('Trading - Swap token to coin', { tag: ['@group=other', '@webOnly'
         });
 
         await test.step('Initiate send', async () => {
-            await marketPage.initiateSendConfirmation(true);
+            await marketPage.initiateSendConfirmation({ confirmAlsoToken: true });
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
             await expect(devicePrompt.outputValueOf('contract')).toHaveText(tetherRawMintAddress);
             await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(formattedSendAmount);
