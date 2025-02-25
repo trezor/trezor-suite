@@ -33,7 +33,9 @@ jobs:
           eas-version: 14.7.1
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Install libs
-        run: yarn workspaces focus @suite-native/app
+        run: |
+          yarn workspaces focus @suite-native/app
+          npx patch-package # Apply global patches.
       - name: Build on EAS Android
         run: eas build
           --platform android
