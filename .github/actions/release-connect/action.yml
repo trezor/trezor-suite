@@ -58,7 +58,7 @@ runs:
       shell: bash
       run: |
         echo -e "\nenableScripts: false" >> .yarnrc.yml
-        yarn workspaces focus @trezor/connect-iframe @trezor/connect-web @trezor/connect-popup @trezor/connect-webextension @trezor/connect-explorer-theme @trezor/connect-explorer
+        yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
 
     - name: Build connect-web
       shell: bash
