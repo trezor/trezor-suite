@@ -16,7 +16,7 @@ export const useLocales = () => {
 
             let dateLocale;
             try {
-                dateLocale = await import(`date-fns/locale/${lang}/index`);
+                dateLocale = await import(/* @vite-ignore */ `date-fns/locale/${lang}/index`);
             } catch {
                 dateLocale = await import(`date-fns/locale/en-US/index`);
 
