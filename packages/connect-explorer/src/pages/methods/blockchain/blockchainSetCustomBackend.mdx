@@ -1,0 +1,57 @@
+import { Type } from '@sinclair/typebox';
+
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
+
+export const BlockchainSetCustomBackendParams = Type.Object({
+    blockchainLink: Type.Object({
+        type: Type.String(),
+        url: Type.String(),
+    }),
+    coin: Type.String(),
+});
+
+## Blockchain: Set custom backend
+
+Set a custom backend URL for a blockchain.
+
+```javascript
+const result = await TrezorConnect.blockchainSetCustomBackend(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+<ParamsTable schema={BlockchainSetCustomBackendParams} />
+
+### Example
+
+```javascript
+TrezorConnect.blockchainSetCustomBackend({
+    blockchainLink: {
+        type: 'blockbook',
+        url: 'https://custom-backend-url.com',
+    },
+    coin: 'eth',
+});
+```
+
+### Result
+
+```javascript
+{
+    success: true,
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

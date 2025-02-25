@@ -1,0 +1,169 @@
+import { Type } from '@sinclair/typebox';
+
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+export const BlockchainEstimateFeeParams = Type.Object({
+    request: Type.Object({
+        feeLevels: Type.Optional(
+            Type.Union(
+                [Type.Literal('preloaded'), Type.Literal('smart'), Type.Literal(undefined)],
+                {
+                    description:
+                        'Automatic fee levels. "preloaded" for using default values, "smart" for calculating values. If set, blocks and specific fields are ignored.',
+                    default: 'smart',
+                },
+            ),
+        ),
+        blocks: Type.Optional(
+            Type.Array(Type.Number(), {
+                description: 'Array of block numbers for which to estimate fee.',
+            }),
+        ),
+        specific: Type.Optional(
+            Type.Object({
+                conservative: Type.Optional(
+                    Type.Boolean({
+                        description:
+                            'BTC-like - provides a fee estimate based on longer time horizon, may return a higher fee.',
+                    }),
+                ),
+                txsize: Type.Optional(
+                    Type.Number({
+                        description: 'BTC-like - size of transaction in bytes.',
+                    }),
+                ),
+                from: Type.Optional(
+                    Type.String({
+                        description: 'ETH - from address.',
+                    }),
+                ),
+                to: Type.Optional(
+                    Type.String({
+                        description: 'ETH - to address.',
+                    }),
+                ),
+                value: Type.Optional(
+                    Type.String({
+                        description: 'ETH - value field.',
+                    }),
+                ),
+                data: Type.Optional(
+                    Type.String({
+                        description: 'ETH - data field/SOL - message.',
+                    }),
+                ),
+                isCreatingAccount: Type.Optional(
+                    Type.Boolean({
+                        description: 'SOL - creating account.',
+                    }),
+                ),
+                newTokenAccountProgramName: Type.Optional(
+                    Type.Union([Type.Literal('spl-token'), Type.Literal('spl-token-2022')], {
+                        description: 'SOL - new token account program name.',
+                    }),
+                ),
+            }),
+        ),
+    }),
+    coin: Type.String(),
+    identity: Type.Optional(Type.String()),
+});
+
+<ApiPlayground
+    options={[
+        {
+            title: 'Advanced schema',
+            method: 'blockchainEstimateFee',
+            schema: BlockchainEstimateFeeParams,
+        },
+    ]}
+/>
+
+## Blockchain: Estimate fee
+
+Estimate fee for a transaction.
+
+```javascript
+const result = await TrezorConnect.blockchainEstimateFee(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+<ParamsTable schema={BlockchainEstimateFeeParams} />
+
+### Example
+
+Estimate fee for a Bitcoin transaction using smart fee levels.
+
+```javascript
+TrezorConnect.blockchainEstimateFee({
+    coin: 'btc',
+    request: {
+        feeLevels: 'smart',
+    },
+});
+```
+
+Estimate fee for a specific Ethereum transaction.
+
+```javascript
+TrezorConnect.blockchainEstimateFee({
+    coin: 'eth',
+    request: {
+        specific: {
+            from: '0x1234567890abcdef1234567890abcdef12345678',
+            to: '0x00000abc00000abc00000abc00000abc00000abc',
+            value: '0x12000',
+            data: '0x0',
+        },
+    },
+});
+```
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        blockTime: 10,
+        minFee: 1,
+        maxFee: 2000,
+        dustLimit: 500,
+        levels: [
+            {
+                label: "high"
+                feePerUnit: "3"
+                blocks: 1
+            }, {
+                label: "normal"
+                feePerUnit: "3"
+                blocks: 1
+            }, {
+                label: "economy"
+                feePerUnit: "3"
+                blocks: 1
+            }, {
+                label: "low"
+                feePerUnit: "2"
+                blocks: 42
+            }
+        ]
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

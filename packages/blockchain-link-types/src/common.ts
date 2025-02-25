@@ -1,14 +1,14 @@
 import type tls from 'tls';
 
-import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
-import type {
+import { Transaction as BlockbookTransaction, VinVout } from './blockbook';
+import {
     AddressAlias,
     TokenTransfer as BlockbookTokenTransfer,
     ContractInfo,
     MultiTokenValue,
     StakingPool,
-} from './blockbook-api';
-import type { SolanaStakingAccount } from './solana';
+} from './blockbook-api-schema';
+import { SolanaStakingAccount } from './solana';
 
 /* Common types used in both params and responses */
 

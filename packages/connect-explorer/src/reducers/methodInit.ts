@@ -13,7 +13,7 @@ import { coinsSelect } from '../constants/coins';
 import { Field, FieldBasic, isFieldBasic } from '../types';
 
 // Convert TypeBox schema to our fields
-const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
+const schemaToFields = (method: string, schema: TSchema, name = ''): Field<any>[] => {
     if (schema[Kind] === 'Object') {
         return Object.keys(schema.properties).flatMap(key => {
             const field = schema.properties[key];
@@ -28,7 +28,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
                 ];
             } */
 
-            return schemaToFields(field, key).map(field => {
+            return schemaToFields(method, field, key).map(field => {
                 const output = {
                     ...field,
                     name: [key, field.name].filter(v => v).join('.'),
@@ -45,12 +45,13 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
             });
         });
     } else if (schema[Kind] === 'Array') {
-        const fields = schemaToFields(schema.items);
+        const fields = schemaToFields(method, schema.items);
 
         return [
             {
                 name: '',
                 type: 'array',
+                optional: schema[OptionalKind] === 'Optional',
                 batch: [
                     {
                         type: '',
@@ -82,7 +83,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
         }
 
         if (schema.$id === 'DerivationPath' || schema.anyOf?.length == 1) {
-            return schemaToFields(schema.anyOf[0]).map(field => ({
+            return schemaToFields(method, schema.anyOf[0]).map(field => ({
                 ...field,
                 optional: field.optional || schema[OptionalKind] === 'Optional',
                 value: !isFieldBasic(field) ? undefined : field.value ?? schema.default,
@@ -94,7 +95,7 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
                     type: 'union',
                     options: schema.anyOf.map(schemaToFields),
                     labels: schema.anyOf.map((s: TSchema) => s[Kind]),
-                    current: schemaToFields(schema.anyOf[0]).map((field, _i, array) => {
+                    current: schemaToFields(method, schema.anyOf[0]).map((field, _i, array) => {
                         if (isFieldBasic(field)) {
                             field.value = field.value ?? schema.default;
                         }
@@ -121,10 +122,26 @@ const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
                 value: 'btc',
                 optional: schema[OptionalKind] === 'Optional',
                 affect: 'path',
-                data: coinsSelect.map(v => ({
-                    ...v,
-                    affectedValue: `${v.affectedValue}/0/0`,
-                })),
+                data: coinsSelect
+                    .filter(
+                        v =>
+                            // For bitcoin methods show only bitcoin-like coins
+                            ![
+                                'authorizeCoinjoin',
+                                'composeTransaction',
+                                'getAddress',
+                                'getOwneshipId',
+                                'getOwneshipProof',
+                                'getPublicKey',
+                                'signMessage',
+                                'signTransaction',
+                                'verifyMessage',
+                            ].includes(method) || v.bitcoinLike,
+                    )
+                    .map(v => ({
+                        ...v,
+                        affectedValue: `${v.affectedValue}/0/0`,
+                    })),
             },
         ];
     }
@@ -168,7 +185,7 @@ export const getMethodState = (methodConfig?: Partial<MethodState>) => {
 export const getMethodStateFromSchema = (method: keyof TrezorConnect, schema: TSchema) => ({
     ...getMethodState({
         name: method,
-        fields: schemaToFields(schema),
+        fields: schemaToFields(method, schema),
         submitButton: 'Submit',
     }),
     schema,

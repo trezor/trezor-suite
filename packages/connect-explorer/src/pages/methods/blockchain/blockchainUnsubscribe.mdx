@@ -1,0 +1,44 @@
+import { Type } from '@sinclair/typebox';
+
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
+
+## Blockchain: Unsubscribe
+
+Disconnect from the blockchain backend, closing the WebSocket connection.
+
+```javascript
+const result = await TrezorConnect.blockchainUnsubscribe(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+<ParamsTable
+    schema={Type.Object({
+        coin: Type.String(),
+        identity: Type.Optional(Type.String()),
+    })}
+/>
+
+### Example
+
+Unsubscribe from Bitcoin backend
+
+```javascript
+TrezorConnect.blockchainUnsubscribe({
+    coin: 'btc',
+});
+```
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        disconnected: true,
+    }
+}
+```

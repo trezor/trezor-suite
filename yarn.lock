@@ -11564,6 +11564,7 @@ __metadata:
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
     "@solana/web3.js": "npm:^2.0.0"
+    "@trezor/schema-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     tsx: "npm:^4.16.3"
