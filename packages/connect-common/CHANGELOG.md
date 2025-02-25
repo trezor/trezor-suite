@@ -1,3 +1,20 @@
+# 0.3.0
+
+-   npm-prerelease: @trezor/connect-common 0.3.0-beta.1 (bc89ee33de)
+-   chore(connect-common): add fw binaries for 2.8.8 and 1.13.0 (6ef17681ba)
+-   npm-prerelease: @trezor/connect-common 0.2.8-beta.1 (e596b27a42)
+-   chore(trezor-common): uptate coins.json and coins-eth.json Replacing testnet 3 with testnet 4 as default Bitcoin Testnet. (0c1db741b4)
+-   chore(packages): autofix for sort-imports eslint rule (b96c899ebb)
+-   chore(connect-common): update coins and coins-eth for T3W1 support (5ba81f81ed)
+-   chore(connect-common): sort coins-eth.json by chain_id (2b32394dfe)
+-   chore(connect): simplify transportInfo (bc7bf5d7a8)
+-   chore(connect-common): add fw binaries for 2.8.7 (4f2733bcbe)
+-   chore(blockchain-link): update networks to use trezor.io proxy servers (c6d420cde0)
+-   feat(suite-native): bnb to bsc migration (b2e666250c)
+-   feat(connect): add support of L2 ETH networks (26ff8eada4)
+-   feat(connect): add Arbitrum one (0865836724)
+-   chore(connect-commmon): decrease min bootloader version for 2.8.3 (ea4a3d8061)
+
 # 0.2.7
 
 -   npm-prerelease: @trezor/connect-common 0.2.7-beta.1 (d876bc6071)
