@@ -32,7 +32,7 @@ export const PassphraseWalletIsNotExistFlow = ({
                 onCancel={onConfirmPassphraseDialogCancel}
                 onSubmit={onSubmit}
                 onBack={() => {
-                    setPassphraseState('not-exist-best-practices');
+                    setPassphraseState('not-exist-enter-passphrase');
                 }}
                 device={device}
                 onDeviceOffer={onDeviceOffer}

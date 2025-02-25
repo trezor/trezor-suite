@@ -10,15 +10,14 @@ export enum PlaywrightProjects {
     Desktop = 'desktop',
 }
 
-const CI_TIMEOUT = 1000 * 180;
-const LOCAL_TIMEOUT = 1000 * 90;
+const TIMEOUT = 1000 * 180;
 
 function getTimeout(): number {
     if (process.env.TEST_TIMEOUT_OVERRIDE) {
         return Number(process.env.TEST_TIMEOUT_OVERRIDE);
     }
 
-    return process.env.GITHUB_ACTION ? CI_TIMEOUT : LOCAL_TIMEOUT;
+    return TIMEOUT;
 }
 
 const config: PlaywrightTestConfig = {

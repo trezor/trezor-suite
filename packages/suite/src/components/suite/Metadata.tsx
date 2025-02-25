@@ -17,6 +17,7 @@ export const Metadata = ({
     url = SUITE_URL,
 }: MetadataProps) => {
     const intl = useIntl();
+
     description = description || intl.formatMessage(messages.TR_SUITE_META_DESCRIPTION);
 
     return (
