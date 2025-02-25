@@ -6,7 +6,70 @@
     "include": ["./scripts"],
     "references": [
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/sentry"
+        },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../coinjoin"
+        },
+        {
+            "path": "../connect"
+        },
+        {
+            "path": "../connect-common"
+        },
+        {
+            "path": "../env-utils"
+        },
+        {
             "path": "../eslint"
+        },
+        {
+            "path": "../ipc-proxy"
+        },
+        {
+            "path": "../node-utils"
+        },
+        {
+            "path": "../request-manager"
+        },
+        {
+            "path": "../suite"
+        },
+        {
+            "path": "../suite-desktop-api"
+        },
+        {
+            "path": "../transport"
+        },
+        {
+            "path": "../transport-bridge"
+        },
+        {
+            "path": "../urls"
+        },
+        {
+            "path": "../utils"
+        },
+        {
+            "path": "../trezor-user-env-link"
+        },
+        {
+            "path": "../type-utils"
         }
     ]
 }
