@@ -149,10 +149,6 @@ export default defineMessages({
         description: 'Used as label for send address input',
         id: 'TR_RECIPIENT_ADDRESS',
     },
-    TR_RECEIVE_ADDRESS: {
-        defaultMessage: 'Receive address',
-        id: 'TR_RECEIVE_ADDRESS',
-    },
     TR_XPUB: {
         defaultMessage: 'Public key (XPUB)',
         id: 'TR_XPUB',
@@ -229,19 +225,19 @@ export default defineMessages({
     },
     TR_TRADING_SWAP_MODAL_TERMS_1: {
         defaultMessage:
-            "I’m here to swap cryptocurrencies. If I were directed to this site for any other reason, I'll contact Trezor Support before proceeding.",
+            "You're here to swap cryptocurrencies. If you were directed to this site for any other reason, contact Trezor Support before proceeding.",
         id: 'TR_TRADING_SWAP_MODAL_TERMS_1',
         dynamic: true,
     },
     TR_TRADING_SWAP_MODAL_TERMS_2: {
         defaultMessage:
-            "I want to swap cryptocurrencies for my own account. I understand that the provider's policies may require identity verification.",
+            "You're swapping cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
         id: 'TR_TRADING_SWAP_MODAL_TERMS_2',
         dynamic: true,
     },
     TR_TRADING_SWAP_MODAL_TERMS_3: {
         defaultMessage:
-            "I understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
+            "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
         id: 'TR_TRADING_SWAP_MODAL_TERMS_3',
         dynamic: true,
     },
@@ -263,13 +259,13 @@ export default defineMessages({
     },
     TR_TRADING_SWAP_MODAL_TERMS_5: {
         defaultMessage:
-            "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
+            "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
         id: 'TR_TRADING_SWAP_MODAL_TERMS_5',
         dynamic: true,
     },
     TR_TRADING_SWAP_MODAL_TERMS_6: {
         defaultMessage:
-            'I understand that cryptocurrencies are an emerging financial tool and that regulations can differ by region. This may increase the risk of fraud, theft, or market instability.',
+            'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
         id: 'TR_TRADING_SWAP_MODAL_TERMS_6',
         dynamic: true,
     },
@@ -296,13 +292,13 @@ export default defineMessages({
     },
     TR_TRADING_SWAP_DEX_MODAL_TERMS_2: {
         defaultMessage:
-            "I want to swap cryptocurrencies for my own account. I understand that the provider's policies may require identity verification.",
+            "You're swapping cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
         id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_2',
         dynamic: true,
     },
     TR_TRADING_SWAP_DEX_MODAL_TERMS_3: {
         defaultMessage:
-            "I understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
+            "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
         id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_3',
         dynamic: true,
     },
@@ -313,7 +309,7 @@ export default defineMessages({
     },
     TR_TRADING_SWAP_DEX_MODAL_TERMS_4: {
         defaultMessage:
-            "I understand that Invity doesn't provide this service. It's governed by {provider}’s Terms and Conditions.",
+            "You understand that Invity doesn't provide this service. It's governed by {provider}’s Terms & Conditions.",
         id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_4',
         dynamic: true,
     },
@@ -324,13 +320,13 @@ export default defineMessages({
     },
     TR_TRADING_SWAP_DEX_MODAL_TERMS_5: {
         defaultMessage:
-            "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
+            "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
         id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_5',
         dynamic: true,
     },
     TR_TRADING_SWAP_DEX_MODAL_TERMS_6: {
         defaultMessage:
-            'I understand that cryptocurrencies are an emerging financial tool and that regulations can differ by region. This may increase the risk of fraud, theft, or market instability.',
+            'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
         id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_6',
         dynamic: true,
     },
@@ -755,7 +751,7 @@ export default defineMessages({
     },
     TR_SELL_MODAL_TERMS_1: {
         defaultMessage:
-            "You're here to sell cryptocurrency. If you were directed to this site for any other reason, contact Trezor Support before proceeding.",
+            "You're here to sell cryptocurrencies. If you were directed to this site for any other reason, contact Trezor Support before proceeding.",
         id: 'TR_SELL_MODAL_TERMS_1',
         dynamic: true,
     },
@@ -767,7 +763,7 @@ export default defineMessages({
     },
     TR_SELL_MODAL_TERMS_3: {
         defaultMessage:
-            'You understand that cryptocurrency transactions are irreversible and may not be refunded. Thus, fraudulent or accidental losses may be unrecoverable.',
+            "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
         id: 'TR_SELL_MODAL_TERMS_3',
         dynamic: true,
     },
@@ -778,7 +774,7 @@ export default defineMessages({
     },
     TR_SELL_MODAL_TERMS_4: {
         defaultMessage:
-            'You understand that Invity does not provide this service. {provider}’s terms govern the service.',
+            "You understand that Invity doesn't provide this service. It's governed by {provider}’s Terms & Conditions.",
         id: 'TR_SELL_MODAL_TERMS_4',
         dynamic: true,
     },
@@ -789,7 +785,7 @@ export default defineMessages({
     },
     TR_SELL_MODAL_TERMS_5: {
         defaultMessage:
-            "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
+            "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
         id: 'TR_SELL_MODAL_TERMS_5',
         dynamic: true,
     },
@@ -934,19 +930,19 @@ export default defineMessages({
     },
     TR_BUY_MODAL_TERMS_1: {
         defaultMessage:
-            "I’m here to buy cryptocurrencies. If I were directed to this site for any other reason, I'll contact {provider} support before proceeding.",
+            "You're here to buy cryptocurrencies. If you were directed to this site for any other reason, contact {provider}  support before proceeding.",
         id: 'TR_BUY_MODAL_TERMS_1',
         dynamic: true,
     },
     TR_BUY_MODAL_TERMS_2: {
         defaultMessage:
-            "I’m using this feature to buy cryptocurrencies that'll be sent to my own account.",
+            "You're buying cryptocurrencies for your own account. You acknowledge that the provider's policies may require identity verification.",
         id: 'TR_BUY_MODAL_TERMS_2',
         dynamic: true,
     },
     TR_BUY_MODAL_TERMS_3: {
         defaultMessage:
-            "I understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
+            "You understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
         id: 'TR_BUY_MODAL_TERMS_3',
         dynamic: true,
     },
@@ -957,7 +953,7 @@ export default defineMessages({
     },
     TR_BUY_MODAL_TERMS_4: {
         defaultMessage:
-            "I understand that Invity doesn't provide this service. It's governed by {provider}’s Terms and Conditions.",
+            "You understand that Invity doesn't provide this service. It's governed by {provider}’s Terms & Conditions.",
         id: 'TR_BUY_MODAL_TERMS_4',
         dynamic: true,
     },
@@ -968,13 +964,13 @@ export default defineMessages({
     },
     TR_BUY_MODAL_TERMS_5: {
         defaultMessage:
-            "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
+            "You're not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
         id: 'TR_BUY_MODAL_TERMS_5',
         dynamic: true,
     },
     TR_BUY_MODAL_TERMS_6: {
         defaultMessage:
-            'I understand that cryptocurrencies are an emerging financial tool and that regulations can differ by region. This may increase the risk of fraud, theft, or market instability.',
+            'You understand that cryptocurrencies are an emerging financial tool and that regulations may vary in different jurisdictions. This may put you at a higher risk of fraud, theft, or market instability.',
         id: 'TR_BUY_MODAL_TERMS_6',
         dynamic: true,
     },
@@ -1448,10 +1444,6 @@ export default defineMessages({
         defaultMessage: 'Receive {displaySymbol} and tokens',
         id: 'TR_ADDRESS_MODAL_DESCRIPTION_TOKENS',
     },
-    TR_XPUB_MODAL_CLIPBOARD: {
-        defaultMessage: 'Copy public key',
-        id: 'TR_XPUB_MODAL_CLIPBOARD',
-    },
     TR_XPUB_MODAL_TITLE: {
         defaultMessage: '{networkName} {accountIndex} public key (XPUB)',
         id: 'TR_XPUB_MODAL_TITLE',
@@ -1490,7 +1482,7 @@ export default defineMessages({
         id: 'TR_IMPORT_CSV_FROM_TEXT',
     },
     TR_DROPZONE: {
-        defaultMessage: 'Drag and drop file here or click to select from files',
+        defaultMessage: 'Drag & drop a file here or click to browse.',
         id: 'TR_DROPZONE',
     },
     TR_DROPZONE_ERROR: {
@@ -1847,7 +1839,7 @@ export default defineMessages({
         id: 'TR_CHECK_RECOVERY_SEED',
     },
     TR_CHECK_SEED: {
-        defaultMessage: 'Check wallet backup',
+        defaultMessage: 'Check',
         id: 'TR_CHECK_SEED',
     },
     TR_CHECK_YOUR_DEVICE: {
@@ -2114,7 +2106,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_WIPE_DEVICE',
     },
     TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON: {
-        defaultMessage: 'Install firmware',
+        defaultMessage: 'Install',
         id: 'TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON',
     },
     TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE: {
@@ -2127,7 +2119,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION',
     },
     TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL: {
-        defaultMessage: 'Edit name',
+        defaultMessage: 'Change name',
         id: 'TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL',
     },
     TR_DEVICE_SETTINGS_DEVICE_LABEL: {
@@ -2140,7 +2132,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64: {
         defaultMessage:
-            'Supports PNG or JPG, 128 x 64 pixels, and using only black and white (not grayscale).',
+            'Supports PNG or JPG (128 x 64 pixels) in pure black and white (no grayscale).',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_BW_128x64',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR: {
@@ -2148,11 +2140,11 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_EDITOR',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR_240x240: {
-        defaultMessage: 'Supports JPG, 240 x 240 px, maximum allowed size is 16 KB.',
+        defaultMessage: 'Supports JPG format, 240x240 px, up to 16 KB.',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_IMAGE_SETTINGS_COLOR_240x240',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY: {
-        defaultMessage: 'Choose from gallery',
+        defaultMessage: 'Gallery',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_SELECT_FROM_GALLERY',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_TITLE: {
@@ -2160,7 +2152,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_TITLE',
     },
     TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE: {
-        defaultMessage: 'Upload image',
+        defaultMessage: 'Upload',
         id: 'TR_DEVICE_SETTINGS_HOMESCREEN_UPLOAD_IMAGE',
     },
     TR_DEVICE_SETTINGS_PASSPHRASE_DESC: {
@@ -2178,7 +2170,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC',
     },
     TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON: {
-        defaultMessage: 'Edit',
+        defaultMessage: 'Change',
         id: 'TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON',
     },
     TR_SAFETY_CHECKS_MODAL_TITLE: {
@@ -2190,7 +2182,7 @@ export default defineMessages({
         id: 'TR_SAFETY_CHECKS_STRICT_LEVEL',
     },
     TR_SAFETY_CHECKS_STRICT_LEVEL_DESC: {
-        defaultMessage: 'Full Trezor security.',
+        defaultMessage: 'Comply with complete Trezor protection & security.',
         id: 'TR_SAFETY_CHECKS_STRICT_LEVEL_DESC',
     },
     TR_SAFETY_CHECKS_PROMPT_LEVEL: {
@@ -2198,12 +2190,12 @@ export default defineMessages({
         id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL',
     },
     TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING: {
-        defaultMessage: "Only change this if you know what you're doing!",
+        defaultMessage: 'Change at your own risk!',
         id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING',
     },
     TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC: {
         defaultMessage:
-            'Allow potentially unsafe actions, such as mismatching keys or allowing extreme fees, by manually approving them on your Trezor.',
+            'Enable potentially unsafe actions, including mismatched keys or high fees, by manually approving them on your Trezor.',
         id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC',
     },
     TR_SAFETY_CHECKS_DISABLED_WARNING: {
@@ -2245,7 +2237,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_TITLE',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_DESC: {
-        defaultMessage: 'Enable brightness customization for display on device',
+        defaultMessage: 'Enable brightness customization for display on device.',
         id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_DESC',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE: {
@@ -2253,7 +2245,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_BUTTON: {
-        defaultMessage: 'Change brightness',
+        defaultMessage: 'Change',
         id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_BUTTON',
     },
     TR_DEVICE_SETTINGS_WIPE_CODE_TITLE: {
@@ -2274,7 +2266,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING',
     },
     TR_DEVICE_SETTINGS_AFTER_DELAY: {
-        defaultMessage: 'After delay',
+        defaultMessage: 'Auto-lock after',
         id: 'TR_DEVICE_SETTINGS_AFTER_DELAY',
     },
     TR_SECURITY_CHECK_HOLOGRAM: {
@@ -4371,12 +4363,12 @@ export default defineMessages({
     },
     TR_CHANGE_PIN: {
         id: 'TR_CHANGE_PIN',
-        defaultMessage: 'Change PIN',
+        defaultMessage: 'Change',
         description: 'Button that initiates pin change',
     },
     TR_SETUP_WIPE_CODE: {
         id: 'TR_SETUP_WIPE_CODE',
-        defaultMessage: 'Set up wipe code',
+        defaultMessage: 'Set up',
     },
     TR_CHANGE_WIPE_CODE: {
         id: 'TR_CHANGE_WIPE_CODE',
@@ -4565,7 +4557,7 @@ export default defineMessages({
     },
     TR_READ_AND_UNDERSTOOD: {
         id: 'TR_READ_AND_UNDERSTOOD',
-        defaultMessage: "I've read and understood the above",
+        defaultMessage: "I've read and understand the warnings above.",
     },
     TR_WIPE_AND_REINSTALL: {
         id: 'TR_WIPE_AND_REINSTALL',
@@ -5145,19 +5137,6 @@ export default defineMessages({
         id: 'TR_CONFIRM_ON_TREZOR',
         defaultMessage: 'Confirm on Trezor',
     },
-    TR_CONFIRM_BEFORE_COPY: {
-        id: 'TR_CONFIRM_BEFORE_COPY',
-        defaultMessage: 'Confirm on Trezor before copying',
-    },
-    TR_QR_RECEIVE_ADDRESS_CONFIRM: {
-        id: 'TR_QR_RECEIVE_ADDRESS_CONFIRM',
-        defaultMessage: 'Confirm on Trezor before scanning',
-    },
-    TR_QR_RECEIVE_ADDRESS_CONFIRM_EXPLANATION: {
-        id: 'TR_QR_RECEIVE_ADDRESS_CONFIRM_EXPLANATION',
-        defaultMessage:
-            "Confirm the receiving address on your Trezor device first, as its trusted display can't be hacked.",
-    },
     TR_MY_ASSETS: {
         id: 'TR_MY_ASSETS',
         defaultMessage: 'Assets',
@@ -5472,7 +5451,7 @@ export default defineMessages({
     },
     DESTINATION_TAG_BANNER_SEND: {
         defaultMessage:
-            'Online exchanges require this to identify your account. Get your destination tag from your Ripple account on your online exchange.',
+            'Online exchanges require this to identify your account. Get your memo/destination tag from your Ripple account on your online exchange.',
         id: 'DESTINATION_TAG_BANNER_SEND',
     },
     DESTINATION_TAG_BANNER_RECEIVE: {
@@ -5481,7 +5460,7 @@ export default defineMessages({
         id: 'DESTINATION_TAG_BANNER_RECEIVE',
     },
     DESTINATION_TAG_NOT_SET: {
-        defaultMessage: "Destination tag isn't set",
+        defaultMessage: "Memo/Destination tag isn't set",
         id: 'DESTINATION_TAG_NOT_SET',
     },
     DESTINATION_TAG_IS_NOT_VALID: {
@@ -5909,7 +5888,7 @@ export default defineMessages({
     },
     TR_CUSTOM_FIRMWARE_BUTTON_INSTALL: {
         id: 'TR_CUSTOM_FIRMWARE_BUTTON_INSTALL',
-        defaultMessage: 'Install firmware',
+        defaultMessage: 'Install',
     },
     TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD: {
         id: 'TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD',
@@ -5917,7 +5896,7 @@ export default defineMessages({
     },
     TR_CUSTOM_FIRMWARE_TITLE_UPLOAD: {
         id: 'TR_CUSTOM_FIRMWARE_TITLE_UPLOAD',
-        defaultMessage: 'Upload firmware',
+        defaultMessage: 'Upload custom firmware',
     },
     TR_CUSTOM_FIRMWARE_VERSION: {
         id: 'TR_CUSTOM_FIRMWARE_VERSION',
@@ -6428,7 +6407,7 @@ export default defineMessages({
     TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION: {
         id: 'TR_CANCEL_TX_FAILED_ALREADY_MINED_DESCRIPTION',
         defaultMessage:
-            "The transaction couldn’t be replaced as it's just been confirmed on the network.",
+            "The transaction couldn’t be canceled as it's just been confirmed on the network.",
     },
     TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED: {
         id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED',
@@ -6437,7 +6416,7 @@ export default defineMessages({
     TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION: {
         id: 'TR_REPLACE_BY_FEE_FAILED_ALREADY_MINED_DESCRIPTION',
         defaultMessage:
-            "The transaction couldn’t be replaced as it's just been confirmed on the Bitcoin network.",
+            "The transaction couldn’t be replaced as it's just been confirmed on the network.",
     },
     TR_BUMP_FEE_SUBTEXT: {
         id: 'TR_BUMP_FEE_SUBTEXT',
@@ -7655,7 +7634,7 @@ export default defineMessages({
     },
     TR_CUSTOM_FIRMWARE_GITHUB: {
         id: 'TR_CUSTOM_FIRMWARE_GITHUB',
-        defaultMessage: 'You can find all official releases on',
+        defaultMessage: 'Find all official releases on',
     },
     TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS: {
         id: 'TR_FIRMWARE_CHECK_AUTHENTICITY_SUCCESS',
@@ -8766,7 +8745,7 @@ export default defineMessages({
     },
     TR_STAKE_ETH_EVERSTAKE_DESC: {
         id: 'TR_STAKE_ETH_EVERSTAKE_DESC',
-        defaultMessage: 'Everstake is a global leader and supplier of staking technology',
+        defaultMessage: 'Everstake is a global leader and supplier of staking technology.',
     },
     TR_STAKE_ETH_MAXIMIZE_REWARDS: {
         id: 'TR_STAKE_ETH_MAXIMIZE_REWARDS',
@@ -8820,11 +8799,11 @@ export default defineMessages({
     },
     TR_STAKE_SIGN_TRANSACTION: {
         id: 'TR_STAKE_SIGN_TRANSACTION',
-        defaultMessage: 'Sign transaction',
+        defaultMessage: 'Sign staking transaction',
     },
     TR_STAKE_ENTER_THE_STAKING_POOL: {
         id: 'TR_STAKE_ENTER_THE_STAKING_POOL',
-        defaultMessage: 'Enter the staking pool',
+        defaultMessage: 'Enter staking pool',
     },
     TR_STAKE_WAIT_FOR_ACTIVATION: {
         id: 'TR_STAKE_WAIT_FOR_ACTIVATION',
@@ -8874,7 +8853,7 @@ export default defineMessages({
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking currently takes up to {count, plural, one {# day} other {# days}}. Once completed, you can trade or send your funds.',
+            'Unstaking currently takes up to {count, plural, one {# day} other {# days}}. Once completed, you can swap or send your funds.',
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
@@ -8888,12 +8867,12 @@ export default defineMessages({
     TR_EVM_MAX_FEE_DESC: {
         id: 'TR_EVM_MAX_FEE_DESC',
         defaultMessage:
-            "The maximum fee you're willing to pay to network validators to get your transaction processed. A higher fee can speed up confirmation, though you'll only pay what's needed if the actual fee is lower.",
+            "The maximum fee you're willing to pay network validators to process your transaction. A higher fee may speed up confirmation times, though you'll only pay what's needed if the actual fee is lower.",
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
         defaultMessage:
-            "The transaction fee you're willing to pay to network miners to ensure your transaction gets processed. A higher fee can speed up confirmation times.",
+            "The fee you're willing to pay network miners to process transaction. A higher fee may speed up confirmation times.",
     },
     TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
@@ -9139,7 +9118,7 @@ export default defineMessages({
     },
     TR_STAKE_YOUR_FUNDS_MAINTAINED: {
         id: 'TR_STAKE_YOUR_FUNDS_MAINTAINED',
-        defaultMessage: 'Your staked funds are maintained by Everstake',
+        defaultMessage: 'Your staked funds are maintained by Everstake.',
     },
     TR_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_STAKE_EVERSTAKE_MANAGES',
@@ -9163,7 +9142,7 @@ export default defineMessages({
     },
     TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE: {
         id: 'TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE',
-        defaultMessage: 'I acknowledge and consent to staking with Everstake',
+        defaultMessage: 'I acknowledge and consent to stake with Everstake.',
     },
     TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN: {
         id: 'TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN',
@@ -9259,7 +9238,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_WALLET_LOADING: {
         id: 'TR_DEVICE_SETTINGS_WALLET_LOADING',
-        defaultMessage: 'Wallet loading',
+        defaultMessage: 'Wallet default',
     },
     TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_TITLE: {
         id: 'TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_TITLE',
@@ -9385,7 +9364,7 @@ export default defineMessages({
     },
     TR_CONNECT_DEVICE_SEND_PROMO_DESCRIPTION: {
         id: 'TR_CONNECT_DEVICE_SEND_PROMO_DESCRIPTION',
-        defaultMessage: 'To send coins, connect your Trezor.',
+        defaultMessage: 'Connect your Trezor to send coins.',
     },
     TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE: {
         id: 'TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE',
@@ -9482,7 +9461,7 @@ export default defineMessages({
     TR_CONNECT_MODAL_REQUEST_DESCRIPTION: {
         id: 'TR_CONNECT_MODAL_REQUEST_DESCRIPTION',
         defaultMessage:
-            'A 3rd party application is trying to connect to your device. Do you want to allow this action?',
+            'A third-party app is requesting to connect to your device. Do you want to allow this?',
     },
     TR_CONNECT_MODAL_PROCESS: {
         id: 'TR_CONNECT_MODAL_PROCESS',
@@ -9490,7 +9469,7 @@ export default defineMessages({
     },
     TR_CONNECT_MODAL_WEB_ORIGIN: {
         id: 'TR_CONNECT_MODAL_WEB_ORIGIN',
-        defaultMessage: 'Web Origin:',
+        defaultMessage: 'Web origin:',
     },
     TR_WALLETCONNECT_SERVICE_VERIFIED: {
         id: 'TR_WALLETCONNECT_SERVICE_VERIFIED',
@@ -9506,24 +9485,24 @@ export default defineMessages({
     },
     TR_WALLETCONNECT_REQUEST: {
         id: 'TR_WALLETCONNECT_REQUEST',
-        defaultMessage: 'A WalletConnect application is requesting to connect.',
+        defaultMessage: 'A WalletConnect app is requesting to connect.',
     },
     TR_WALLETCONNECT_REQUEST_EXPIRED: {
         id: 'TR_WALLETCONNECT_REQUEST_EXPIRED',
-        defaultMessage: 'Request has expired. Please go back to the application and try again.',
+        defaultMessage: 'This request has expired. Return to the app and try again.',
     },
     TR_WALLETCONNECT_IS_SCAM: {
         id: 'TR_WALLETCONNECT_IS_SCAM',
-        defaultMessage: 'The request was detected as a scam and was blocked automatically.',
+        defaultMessage: 'We detected a scam attempt and blocked it for your safety.',
     },
     TR_WALLETCONNECT_UNABLE_TO_VERIFY: {
         id: 'TR_WALLETCONNECT_UNABLE_TO_VERIFY',
         defaultMessage:
-            'We were unable to verify the request authenticity. Please make sure you trust the source.',
+            "We couldn't verify the authenticity of the request. Ensure you trust the source before proceeding.",
     },
     TR_WALLTCONNECT_NEW_CONNECTION_URL: {
         id: 'TR_WALLTCONNECT_NEW_CONNECTION_URL',
-        defaultMessage: 'New Connection URL',
+        defaultMessage: 'New connection URL',
     },
     TR_WALLTCONNECT_SESSIONS: {
         id: 'TR_WALLTCONNECT_SESSIONS',
