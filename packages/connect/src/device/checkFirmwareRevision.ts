@@ -5,9 +5,13 @@ import { downloadReleasesMetadata } from '../data/downloadReleasesMetadata';
 import { FirmwareRelease, VersionArray } from '../types';
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
 import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
+import { HttpRequestError } from '../utils/assets-browser';
 
-const isNodeJSNetworkError = (e: Error) => ['FetchError', 'AbortError'].includes(e.name);
-const isReactNativeNetworkError = (e: Error) =>
+const isNotFoundError = (e: unknown): boolean =>
+    e instanceof HttpRequestError && e.response.status === 404;
+
+const isNodeJSOfflineError = (e: Error) => ['FetchError', 'AbortError'].includes(e.name);
+const isReactNativeOfflineError = (e: Error) =>
     e.name === 'TypeError' && e.message.includes('Network request failed');
 
 /**
@@ -16,10 +20,10 @@ const isReactNativeNetworkError = (e: Error) =>
  * In browser runtime (Suite Web), all fetch errors are lumped together as CORS errors, therefore indistinguishable.
  * (even a request that had no response is CORS error, since a non-existent response does not have CORS headers)
  */
-const isNetworkError = (e: unknown): boolean => {
+const isOfflineError = (e: unknown): boolean => {
     if (!(e instanceof Error)) return false;
 
-    return isNodeJSNetworkError(e) || isReactNativeNetworkError(e);
+    return isNodeJSOfflineError(e) || isReactNativeOfflineError(e);
 };
 
 type GetOnlineReleaseMetadataParams = {
@@ -103,7 +107,11 @@ export const checkFirmwareRevision = async ({
 
             return { success: true };
         } catch (e: unknown) {
-            return isNetworkError(e)
+            // 404 means an unrecognized device model, so it cannot be an officially released firmware.
+            // The model might be defined in local files, but important is, if it's been released to data.trezor.io
+            if (isNotFoundError(e)) return failFirmwareRevisionCheck('firmware-version-unknown');
+
+            return isOfflineError(e)
                 ? failFirmwareRevisionCheck('cannot-perform-check-offline')
                 : failFirmwareRevisionCheck('other-error');
         }
