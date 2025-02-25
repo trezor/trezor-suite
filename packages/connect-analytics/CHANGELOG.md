@@ -1,3 +1,8 @@
+# 1.3.0
+
+-   npm-prerelease: @trezor/connect-analytics 1.2.5-beta.1 (4cfe6ff8b1)
+-   fix(connect): resolve multiple transports (1c89c284c5)
+
 # 1.2.4
 
 -   npm-prerelease: @trezor/connect-analytics 1.2.4-beta.1 (4f0a207d57)
