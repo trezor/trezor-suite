@@ -5,6 +5,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { setConnectSettings, waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
+const isCoreInPopup = process.env.CORE_IN_POPUP === 'true';
 
 let popup: Page;
 
@@ -42,7 +43,12 @@ fixtures.forEach(f => {
     test(f.description, async () => {
         const browserInstance = await chromium.launch();
         const page = await browserInstance.newPage();
-        await setConnectSettings(page, url, { trustedHost: f.setTrustedHost }, false);
+        await setConnectSettings(
+            page,
+            url,
+            { trustedHost: f.setTrustedHost, isCoreInPopup },
+            false,
+        );
 
         await page.click("a[data-testid='@navbar-logo']");
         await page.click("a[href$='/methods/bitcoin/verifyMessage/']");

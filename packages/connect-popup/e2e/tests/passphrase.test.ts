@@ -4,7 +4,6 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import {
     findElementByDataTest,
-    formatUrl,
     getContexts,
     log,
     openPopup,
@@ -40,6 +39,8 @@ test.beforeEach(async ({ page }) => {
     log('beforeEach', 'startEmu');
     await TrezorUserEnvLink.startEmu({
         wipe: true,
+        version: '2.8.7', // todo: use latest
+        model: 'T2T1',
     });
     log('beforeEach', 'setupEmu');
     await TrezorUserEnvLink.setupEmu({
@@ -58,13 +59,17 @@ test.beforeEach(async ({ page }) => {
     explorerUrl = contexts.explorerUrl;
     context = browserContext;
 
-    if (connectSrc) {
-        log('beforeEach', 'applying connect settings');
-        await setConnectSettings(explorerPage, explorerUrl, {
+    log('beforeEach', 'applying connect settings');
+    await setConnectSettings(
+        explorerPage,
+        explorerUrl,
+        {
             trustedHost: false,
             connectSrc,
-        });
-    }
+            isCoreInPopup,
+        },
+        isWebExtension,
+    );
 });
 
 test.afterEach(async () => {
@@ -86,7 +91,8 @@ test('input passphrase in popup and device accepts it', async () => {
     log(`test: ${test.info().title}`);
 
     log(`opening ${explorerUrl}#/method/getAddress`);
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await waitAndClick(explorerPage, ['@navbar-logo']);
+    await explorerPage.click("a[href$='/methods/bitcoin/getAddress/']");
 
     log('waiting for submit button');
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
@@ -123,23 +129,26 @@ test('input passphrase in popup and device accepts it', async () => {
     log('submitting passphrase');
     await waitAndClick(popup, ['@passphrase/hidden/submit-button']);
 
-    log('accepting to see passphrase');
     // Accept to see Passphrase.
+    log('accepting to see passphrase');
     await TrezorUserEnvLink.pressYes();
 
-    log('confirming passphrase is correct');
     // Confirm Passphrase is correct.
+    log('confirming passphrase is correct');
     await TrezorUserEnvLink.pressYes();
 
-    log('confirming right address is displayed');
     // Confirm right address is displayed.
+    log('confirming right address is displayed');
     await TrezorUserEnvLink.pressYes();
 });
 
 test('introduce passphrase in popup and device rejects it', async () => {
     log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    log(`opening ${explorerUrl}#/method/getAddress`);
+    await waitAndClick(explorerPage, ['@navbar-logo']);
+    await explorerPage.click("a[href$='/methods/bitcoin/getAddress/']");
+
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
@@ -183,7 +192,10 @@ test('introduce passphrase successfully next time should not ask for it', async 
 
     log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    log(`opening ${explorerUrl}#/method/getAddress`);
+    await waitAndClick(explorerPage, ['@navbar-logo']);
+    await explorerPage.click("a[href$='/methods/bitcoin/getAddress/']");
+
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
@@ -209,12 +221,12 @@ test('introduce passphrase successfully next time should not ask for it', async 
     // Confirm right address is displayed.
     await TrezorUserEnvLink.pressYes();
 
+    // wait some time, probably for final reload of features to finish
+    await explorerPage.waitForTimeout(1000);
+
     // Wait for submit button
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
-
-    // todo: this is stinky. without this timeout submit button sometimes does not react, needs investigation
-    await explorerPage.waitForTimeout(1000);
 
     // Click on submit button
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -230,8 +242,10 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     test.skip(skipCheck, 'test does not apply for webextension');
 
     log(`test: ${test.info().title}`);
+    log(`opening ${explorerUrl}#/method/getAddress`);
+    await waitAndClick(explorerPage, ['@navbar-logo']);
+    await explorerPage.click("a[href$='/methods/bitcoin/getAddress/']");
 
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
@@ -283,8 +297,9 @@ test('passphrase mismatch', async ({ page }) => {
     log(`test: ${test.info().title}`);
 
     log('start', test.info().title);
-    log('got to: ', `${url}#/method/getAddress`);
-    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    log(`opening ${explorerUrl}#/method/getAddress`);
+    await waitAndClick(explorerPage, ['@navbar-logo']);
+    await explorerPage.click("a[href$='/methods/bitcoin/getAddress/']");
 
     log('Trigger getAddress call');
     // this is a little hack.

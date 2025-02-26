@@ -146,8 +146,12 @@ export const downloadLogs = async (logPage: Page, downloadLogPath: string) => {
 export const setConnectSettings = async (
     explorerPage: Page,
     explorerUrl: string,
-    { trustedHost = false, connectSrc }: { trustedHost?: boolean; connectSrc?: string },
-    _isWebExtension?: boolean,
+    {
+        trustedHost = false,
+        connectSrc,
+        isCoreInPopup,
+    }: { trustedHost?: boolean; connectSrc?: string; isCoreInPopup?: boolean },
+    _isWebExtension: boolean,
 ) => {
     await explorerPage.goto(
         formatUrl(explorerUrl, _isWebExtension ? `settings/index.html` : `settings`),
@@ -164,7 +168,7 @@ export const setConnectSettings = async (
             connectSrc,
         );
     }
-    if (process.env.CORE_IN_POPUP) {
+    if (isCoreInPopup) {
         await waitAndClick(explorerPage, ['@select/coreMode/input']);
         await waitAndClick(explorerPage, ['@select/coreMode/option/popup']);
     }

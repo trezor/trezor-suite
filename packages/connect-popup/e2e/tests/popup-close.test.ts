@@ -25,9 +25,6 @@ const connectSrc = process.env.TREZOR_CONNECT_SRC;
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests
 
 // popup window reference
-let popup: Page;
-// let logPage: Page;
-let popupClosedPromise: Promise<undefined> | undefined;
 let browserContext: BrowserContext | undefined;
 let explorerPage: Page;
 let explorerUrl: string;
@@ -39,7 +36,17 @@ test.beforeAll(async () => {
     log(`url: ${url}`);
 });
 
-const setup = async ({ page, context }: { page: Page; context?: BrowserContext }) => {
+const setup = async ({
+    page,
+    context,
+    passThroughPermissions = true,
+    passThroughApprove = true,
+}: {
+    page: Page;
+    context?: BrowserContext;
+    passThroughPermissions?: boolean;
+    passThroughApprove?: boolean;
+}) => {
     log('beforeEach', 'stopBridge');
     await TrezorUserEnvLink.stopBridge();
     log('beforeEach', 'stopEmu');
@@ -47,6 +54,8 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     log('beforeEach', 'startEmu');
     await TrezorUserEnvLink.startEmu({
         wipe: true,
+        version: '2.8.7', // todo start using latest
+        model: 'T2T1',
     });
     log('beforeEach', 'setupEmu');
     await TrezorUserEnvLink.setupEmu({
@@ -72,13 +81,14 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
         explorerUrl,
         {
             trustedHost: false,
+            isCoreInPopup,
             ...(connectSrc && { connectSrc }),
         },
         isWebExtension,
     );
 
     await waitAndClick(explorerPage, ['@navbar-logo']);
-    await explorerPage.click("a[href$='/methods/bitcoin/verifyMessage/']");
+    await explorerPage.click("a[href$='/methods/bitcoin/getAddress/']");
     await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
 
     await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
@@ -86,7 +96,7 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     });
 
     log('beforeEach', 'waiting for popup promise');
-    [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
+    const [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
     log('beforeEach', 'waiting for analytics confirm button');
     await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
@@ -96,7 +106,7 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     log('beforeEach', 'clicking on analytics confirm button');
     await popup.click("button[data-testid='@analytics/continue-button']");
 
-    popupClosedPromise = new Promise(resolve => {
+    const popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));
     });
 
@@ -109,12 +119,31 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
         await popup.click('.select-device-list button.list');
     }
 
+    if (!passThroughPermissions) {
+        log('beforeach finished');
+
+        return { popup, popupClosedPromise };
+    }
+
     log('beforeEach', 'waiting for permissions confirm button');
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
     log('beforeEach', 'clicking on permissions confirm button');
     await popup.click('button.confirm');
+
+    if (!passThroughApprove) {
+        log('beforeach finished');
+
+        return { popup, popupClosedPromise };
+    }
+
+    log('beforeEach', 'waiting for approve button');
+    await popup.click("button[data-testid='@export-address/confirm-button']");
     log('beforeEach', 'waiting for selector .follow-device >> visible=true');
-    await popup.waitForSelector('.follow-device >> visible=true');
+    await popup.waitForSelector("div[data-testid='@check-address-on-device']");
+
+    log('beforeach finished');
+
+    return { popup, popupClosedPromise };
 };
 
 test.afterEach(async ({ context: _context }, testInfo) => {
@@ -147,11 +176,12 @@ test.afterEach(async ({ context: _context }, testInfo) => {
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
     await resolveAfter(WAIT_AFTER_TEST);
+    log('afterEach', 'done');
 });
 
 test(`popup closed by user`, async ({ page, context }) => {
     log(`test: ${test.info().title}`);
-    await setup({ page, context });
+    const { popup, popupClosedPromise } = await setup({ page, context });
 
     log('simulating user closed popup');
     // user closed popup
@@ -162,7 +192,7 @@ test(`popup closed by user`, async ({ page, context }) => {
 
 test(`device dialog canceled ON DEVICE by user`, async ({ page, context }) => {
     log(`test: ${test.info().title}`);
-    await setup({ page, context });
+    const { popup, popupClosedPromise } = await setup({ page, context });
 
     log('user canceled dialog on device');
     await TrezorUserEnvLink.send({ type: 'emulator-press-no' });
@@ -179,7 +209,7 @@ test(`device dialog canceled ON DEVICE by user`, async ({ page, context }) => {
 
 test(`device disconnected during device interaction`, async ({ page, context }) => {
     log(`test: ${test.info().title}`);
-    await setup({ page, context });
+    const { popup, popupClosedPromise } = await setup({ page, context });
 
     log('user canceled interaction on device');
     await TrezorUserEnvLink.stopEmu();
@@ -204,48 +234,15 @@ test('when user cancels permissions in popup it closes automatically', async ({
     context,
 }) => {
     log(`test: ${test.info().title}`);
-    await setup({ page, context });
-
-    await TrezorUserEnvLink.pressYes();
-    await TrezorUserEnvLink.pressYes();
-    await TrezorUserEnvLink.pressYes();
-
-    popupClosedPromise = new Promise(resolve => {
-        popup.on('close', () => resolve(undefined));
+    const { popup, popupClosedPromise } = await setup({
+        page,
+        context,
+        passThroughPermissions: false,
     });
 
-    await popupClosedPromise;
-
-    await explorerPage.goto(
-        formatUrl(
-            explorerUrl,
-            `methods/bitcoin/getAddress` + (isWebExtension ? `/index.html` : ''),
-        ),
-    );
-    await explorerPage.getByTestId('@api-playground/collapsible-box').click();
-    await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-        state: 'visible',
-    });
-
-    log('waiting for popup open');
-    [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
-
-    popupClosedPromise = new Promise(resolve => {
-        popup.on('close', () => resolve(undefined));
-    });
-
-    await popup.waitForLoadState('load');
-
-    // Device is implicitly remembered in webextension, but not in core-in-popup
-    if (isCoreInPopup) {
-        await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
-        await popup.click('.select-device-list button.list');
-    }
-
-    await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
-    await popup.waitForSelector("button[data-testid='@permissions/confirm-button']");
+    await popup.waitForSelector("[data-testid='@permissions/cancel-button']", { state: 'visible' });
     // We are testing that when cancel permissions, popup is closed automatically.
-    await popup.click("button[data-testid='@permissions/cancel-button']");
+    await popup.click("[data-testid='@permissions/cancel-button']");
     // Wait for popup to close.
     await popupClosedPromise;
 });
@@ -254,39 +251,8 @@ test('device dialogue cancelled IN POPUP by user', async ({ page, context }) => 
     // TODO: this test should also work with webextension and for some reason it does not work in CI but it works locally.
     test.skip(skipCheck, 'todo: skip for now');
     log(`test: ${test.info().title}`);
-    await setup({ page, context });
+    const { popup, popupClosedPromise } = await setup({ page, context, passThroughApprove: false });
 
-    await TrezorUserEnvLink.pressYes();
-    await TrezorUserEnvLink.pressYes();
-    await TrezorUserEnvLink.pressYes();
-
-    popupClosedPromise = new Promise(resolve => {
-        popup.on('close', () => resolve(undefined));
-    });
-
-    await popupClosedPromise;
-
-    await explorerPage.goto(
-        formatUrl(
-            explorerUrl,
-            `methods/bitcoin/getAddress` + (isWebExtension ? `/index.html` : ''),
-        ),
-    );
-    await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
-    await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-        state: 'visible',
-    });
-
-    log('waiting for popup open');
-    [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
-    popupClosedPromise = new Promise(resolve => {
-        popup.on('close', () => resolve(undefined));
-    });
-
-    await popup.waitForLoadState('load');
-    await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
-    await popup.waitForSelector("button[data-testid='@permissions/confirm-button']");
-    await popup.click("button[data-testid='@permissions/confirm-button']");
     await popup.waitForSelector("button[data-testid='@export-address/cancel-button']");
     // We are testing that when cancel Export Bitcoin address, popup is closed automatically.
     await popup.click("button[data-testid='@export-address/cancel-button']");
@@ -302,7 +268,8 @@ test('popup should close and open new one when popup is in error state and user 
     test.skip(skipCheck, 'todo: skip for now');
 
     log(`test: ${test.info().title}`);
-    await setup({ page, context });
+    // eslint-disable-next-line prefer-const
+    let { popup, popupClosedPromise } = await setup({ page, context });
 
     log('rejecting request in device by pressing no');
     await TrezorUserEnvLink.pressNo();
@@ -334,15 +301,9 @@ test('popup should be focused when a call is in progress and user triggers new c
     // TODO: this test should also work with webextension and for some reason it does not work in CI but it works locally.
     test.skip(skipCheck, 'todo: skip for now');
     log(`test: ${test.info().title}`);
-    await setup({ page, context });
+    let { popup, popupClosedPromise } = await setup({ page, context });
 
     await TrezorUserEnvLink.pressYes();
-    await TrezorUserEnvLink.pressYes();
-    await TrezorUserEnvLink.pressYes();
-
-    popupClosedPromise = new Promise(resolve => {
-        popup.on('close', () => resolve(undefined));
-    });
 
     await popupClosedPromise;
 
@@ -392,94 +353,13 @@ test('popup should close when third party is closed', async ({ page, context }) 
     test.skip(skipCheck, 'test does not apply for webextension');
 
     log(`test: ${test.info().title}`);
-    await setup({ page, context });
+    const { popupClosedPromise } = await setup({ page, context });
 
     // We need to skip the after flow because this test closes 3rd party window and there is not window to continue with.
     test.info().annotations.push({ type: 'skip-after-flow' });
-    await TrezorUserEnvLink.pressYes();
-    await TrezorUserEnvLink.pressYes();
-    await TrezorUserEnvLink.pressYes();
-
-    popupClosedPromise = new Promise(resolve => {
-        popup.on('close', () => resolve(undefined));
-    });
-
-    await popupClosedPromise;
-
-    await explorerPage.goto(
-        formatUrl(
-            explorerUrl,
-            `methods/bitcoin/getAddress` + (isWebExtension ? `/index.html` : ''),
-        ),
-    );
-    await explorerPage.click("[data-testid='@api-playground/collapsible-box']");
-    await explorerPage.waitForSelector("button[data-testid='@submit-button']", {
-        state: 'visible',
-    });
-    log('waiting for popup open');
-    [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
-
-    popupClosedPromise = new Promise(resolve => {
-        popup.on('close', () => resolve(undefined));
-    });
-
-    log('waiting for permissions button');
-    await waitAndClick(popup, ['@permissions/confirm-button']);
 
     log('Closing page with 3rd party so we make sure that popup is closed automatically.');
-    await popup.close();
-    log('Wait for popup to close to consider the test successful.');
-    await popupClosedPromise;
-});
-
-// skip note:
-// this test test that you can call getFeatures followed by getPublicKey. The flaky thing about it is that
-// getFeatures call sometimes opens popup and sometimes not. Sometimes it is simply successfully handled
-// without popup being opened and Playwright expects 2 popups to be opened.
-// TODO: consider not opening popup for calls that do not need it.
-// https://github.com/trezor/trezor-suite/issues/14527
-test.skip('popup should behave properly with subsequent calls', async ({ page, context }) => {
-    test.skip(skipCheck);
-
-    log(`test: ${test.info().title}`);
-    await setup({ page, context });
-
-    await TrezorUserEnvLink.pressYes();
-    await TrezorUserEnvLink.pressYes();
-    await TrezorUserEnvLink.pressYes();
-
-    popupClosedPromise = new Promise(resolve => {
-        popup.on('close', () => resolve(undefined));
-    });
-    await popupClosedPromise;
-
-    await explorerPage.goto(formatUrl(explorerUrl, `test` + (isWebExtension ? `/index.html` : '')));
-    await waitAndClick(explorerPage, ['@testpage/init']);
-    await waitAndClick(explorerPage, ['@testpage/subsequentCalls']);
-    log('waiting for popup open');
-
-    [popup] = await waitForPopup(browserContext, explorerPage, isWebExtension);
-
-    popupClosedPromise = new Promise(resolve => {
-        popup.on('close', () => resolve(undefined));
-    });
-
-    await popupClosedPromise;
-
-    log('waiting for second popup open');
-    [popup] = await waitForPopup(browserContext, explorerPage, isWebExtension);
-
-    popupClosedPromise = new Promise(resolve => {
-        popup.on('close', () => resolve(undefined));
-    });
-
-    log('waiting for permissions button');
-    await waitAndClick(popup, ['@permissions/confirm-button']);
-
-    log('waiting for confirm button');
-    await popup.waitForSelector('button.confirm', { state: 'visible' });
-    await popup.click('button.confirm');
-
+    await page.close();
     log('Wait for popup to close to consider the test successful.');
     await popupClosedPromise;
 });

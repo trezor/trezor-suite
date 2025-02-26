@@ -55,8 +55,6 @@ jobs:
       - name: Run connect popup test
         env:
           URL: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
-          # skip settings page, this url is set at build time anyway
-          #TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
           CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           CI_JOB_NAME: ${{ inputs.testName }}-${{ github.run_attempt }}
         run: |
@@ -132,7 +130,6 @@ jobs:
       - name: Run connect popup test
         env:
           URL: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
-          #TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
           IS_WEBEXTENSION: true
         run: |
           ./docker/docker-connect-popup-ci.sh ${{ inputs.testName }}
@@ -177,8 +174,6 @@ jobs:
         env:
           URL: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/?core-mode=popup
           CORE_IN_POPUP: true
-          # skip settings page, this url is set at build time anyway
-          #TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/connect/${{ steps.extract_branch.outputs.branch }}/
           CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           CI_JOB_NAME: ${{ inputs.testName }}-${{ github.run_attempt }}
         run: |

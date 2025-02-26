@@ -329,91 +329,6 @@ const loadDevice = [
     },
 ];
 
-/*const resetDevice = [
-    {
-        url: 'resetDevice',
-        device: {
-            wiped: true,
-        },
-        views: [
-            {
-                selector: '.device-management >> visible=true',
-                screenshot: {
-                    name: 'reset-device',
-                },
-                next: 'button.confirm >> visible=true',
-            },
-            followDevice,
-        ],
-    },
-];*/
-
-const recoverDevice = [
-    {
-        dir: 'device',
-        url: 'recoverDevice',
-        device: {
-            wiped: true,
-        },
-        views: [
-            {
-                selector: '.device-management >> visible=true',
-                screenshot: {
-                    name: 'recover-device',
-                },
-                next: 'button.confirm >> visible=true',
-            },
-            {
-                selector: '.follow-device >> visible=true',
-                screenshot: {
-                    name: 'follow-device-confirm-recovery',
-                },
-                nextEmu: {
-                    type: 'emulator-press-yes',
-                },
-            },
-            {
-                selector: '.follow-device >> visible=true',
-                screenshot: {
-                    name: 'follow-device-select-number-of-words',
-                },
-                nextEmu: {
-                    type: 'emulator-select-num-of-words',
-                    num: 12,
-                },
-            },
-            {
-                selector: '.follow-device >> visible=true',
-                screenshot: {
-                    name: 'follow-device-enter-seed',
-                },
-                nextEmu: {
-                    type: 'emulator-press-yes',
-                },
-            },
-            ...Array(12).fill({
-                selector: '.follow-device >> visible=true',
-                screenshot: {
-                    name: 'follow-device-enter-seed',
-                },
-                nextEmu: {
-                    type: 'emulator-input',
-                    value: 'all',
-                },
-            }),
-            {
-                selector: '.follow-device >> visible=true',
-                screenshot: {
-                    name: 'follow-device-success',
-                },
-                nextEmu: {
-                    type: 'emulator-press-yes',
-                },
-            },
-        ],
-    },
-];
-
 const ethereumGetPublicKey = [
     {
         ...getPublicKey[0],
@@ -610,16 +525,6 @@ const stellarGetAddress = [
     },
 ];
 
-// todo: start using this fixture
-/*const stellarSignTransaction = [
-    {
-        device: initializedDevice,
-        dir: 'stellar',
-        url: 'stellarSignTransaction',
-        views: [followDevice, followDevice],
-    },
-];*/
-
 const rippleGetAddress = [
     {
         ...getAddress[0],
@@ -678,7 +583,6 @@ export const fixtures = [
     ...signMessage,
     ...signTransaction,
     ...verifyMessage,
-    ...recoverDevice,
     ...ethereumGetPublicKey,
     ...ethereumGetAddress,
     ...ethereumGetAddressGoChain,

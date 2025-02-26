@@ -92,13 +92,14 @@ filteredFixtures.forEach(f => {
         );
         context = browserContext;
 
-        if (connectSrc) {
+        if (connectSrc || isCoreInPopup) {
             await setConnectSettings(
                 explorerPage,
                 explorerUrl,
                 {
                     trustedHost: false,
                     connectSrc,
+                    isCoreInPopup,
                 },
                 isWebExtension,
             );
@@ -165,10 +166,6 @@ filteredFixtures.forEach(f => {
         for (const v of f.views) {
             log(f.url, v.selector, 'expecting view');
 
-            if (v.action === 'close') {
-                popup.close({ runBeforeUnload: true });
-            }
-
             if (v.selector) {
                 const element = popup.locator(v.selector);
                 await element.first().waitFor({ state: 'visible' });
@@ -186,7 +183,7 @@ filteredFixtures.forEach(f => {
                 }
             }
 
-            if (v.next) {
+            if ('next' in v && v.next) {
                 const nextElement = popup.locator(v.next);
                 await nextElement.waitFor();
                 // useful for debugging tests
@@ -196,7 +193,7 @@ filteredFixtures.forEach(f => {
 
             log(f.url, v.selector, 'view finished');
 
-            if (v.nextEmu) {
+            if ('nextEmu' in v && v.nextEmu) {
                 // useful for debugging tests
                 // await popup.pause();
                 await TrezorUserEnvLink.send(v.nextEmu);

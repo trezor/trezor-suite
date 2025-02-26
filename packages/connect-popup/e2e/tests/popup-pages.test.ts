@@ -19,6 +19,7 @@ const bridgeVersion = '2.0.33';
 let popup: Page;
 let persistentContext: BrowserContext | undefined;
 
+const isCoreInPopup = process.env.CORE_IN_POPUP === 'true';
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
@@ -63,11 +64,17 @@ test('popup should display error page when device disconnected and debug mode', 
     );
     persistentContext = browserContext;
 
-    if (connectSrc) {
-        await setConnectSettings(explorerPage, explorerUrl, {
-            trustedHost: false,
-            connectSrc,
-        });
+    if (connectSrc || isCoreInPopup) {
+        await setConnectSettings(
+            explorerPage,
+            explorerUrl,
+            {
+                trustedHost: false,
+                connectSrc,
+                isCoreInPopup,
+            },
+            isWebExtension,
+        );
     }
 
     log('opening explorer page');
@@ -128,11 +135,16 @@ test('log page should contain logs from shared worker', async ({ page, context }
     );
     persistentContext = browserContext || context;
 
-    if (connectSrc) {
-        await setConnectSettings(explorerPage, explorerUrl, {
-            trustedHost: false,
-            connectSrc,
-        });
+    if (connectSrc || isCoreInPopup) {
+        await setConnectSettings(
+            explorerPage,
+            explorerUrl,
+            {
+                trustedHost: false,
+                connectSrc,
+            },
+            isWebExtension,
+        );
     }
 
     const verifyMessageUrl = formatUrl(explorerUrl, `methods/bitcoin/verifyMessage/`);
