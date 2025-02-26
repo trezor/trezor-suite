@@ -169,10 +169,6 @@ packages/suite-data/files/translations/master.json
 
 **/build-webextension/**
 
-# cypress download folder
-
-packages/suite-web/e2e/downloads
-
 ### suite-native/app/.gitignore
 
 # Expo

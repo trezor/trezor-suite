@@ -155,8 +155,4 @@ packages/connect-explorer/build-webextension
 
 packages/connect-explorer-theme/style.css
 
-# cypress download folder
-
-packages/suite-web/e2e/downloads
-
 .github
