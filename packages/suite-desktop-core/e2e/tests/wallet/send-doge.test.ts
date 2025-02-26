@@ -29,10 +29,6 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
         await dashboardPage.discoveryShouldFinish();
     });
 
-    test.afterEach(({ blockbookMock }) => {
-        blockbookMock.stop();
-    });
-
     test('Cannot send amount exceeding MAX_SAFE_INTEGER', async ({
         page,
         trezorUserEnvLink,

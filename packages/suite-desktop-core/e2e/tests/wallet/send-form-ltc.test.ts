@@ -22,10 +22,6 @@ test.describe('LTC send form with mocked blockbook', { tag: ['@group=wallet'] },
         await dashboardPage.discoveryShouldFinish();
     });
 
-    test.afterEach(({ blockbookMock }) => {
-        blockbookMock.stop();
-    });
-
     test('spend output originating from mimble-wimble peg out tx', async ({
         page,
         devicePrompt,
@@ -33,7 +29,7 @@ test.describe('LTC send form with mocked blockbook', { tag: ['@group=wallet'] },
         marketPage,
     }) => {
         await walletPage.accountButton({ symbol: 'ltc', type: 'normal', atIndex: 0 }).click();
-        await walletPage.sendButton.click();
+        await walletPage.openSendFormButton.click();
         await marketPage.broadcastButton.click();
         await marketPage.sendAddressInput.fill('ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc');
         await page.getByTestId('outputs.0.setMax').click();

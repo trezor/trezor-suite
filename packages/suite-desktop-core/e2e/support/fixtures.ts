@@ -224,6 +224,7 @@ const test = base.extend<Fixtures>({
     blockbookMock: async ({}, use) => {
         const blockbookMock = new BlockbookMock();
         await use(blockbookMock);
+        blockbookMock.stop();
     },
     tradingMock: async ({ page }, use) => {
         const tradingMock = new TradingMock(page);
