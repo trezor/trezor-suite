@@ -11,7 +11,7 @@ import { getGraphDataForInterval, updateGraphData } from 'src/actions/wallet/gra
 import { HiddenPlaceholder, TransactionsGraph, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import GraphWorker from 'src/support/workers/graph';
+import graphWorkerFactory from 'src/support/workers/graph';
 import { Account } from 'src/types/wallet';
 import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData } from 'src/utils/wallet/graph';
@@ -90,7 +90,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
 
     useEffect(() => {
         if (!graph.isLoading) {
-            const worker = new GraphWorker();
+            const worker = graphWorkerFactory();
             setIsProcessing(true);
             const rawData = getGraphDataForInterval({ deviceState: selectedDeviceState, graph });
 
