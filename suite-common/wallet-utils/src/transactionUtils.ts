@@ -939,7 +939,6 @@ export const simpleSearchTransactions = (
 
     // Find by native token
     const foundTxsForNativeToken = transactions.flatMap(transaction => {
-        // native token
         const displaySymbol = getNetworkDisplaySymbol(transaction.symbol);
         const hasMatchingNativeToken =
             displaySymbol.toLowerCase().includes(search.toLowerCase()) &&
@@ -956,7 +955,6 @@ export const simpleSearchTransactions = (
 
     // Find by token name, symbol or contract
     const foundTxsForToken = transactions.flatMap(transaction => {
-        // other tokens
         const hasMatchingToken = transaction.tokens.some(
             token =>
                 isTokenTransferMatchesSearch(token, search.toLowerCase()) ||
