@@ -12,6 +12,7 @@
     "dependencies": {
         "@sentry/core": "^8.47.0",
         "@suite-common/suite-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     }
 }

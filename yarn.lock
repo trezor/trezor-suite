@@ -9609,6 +9609,7 @@ __metadata:
   dependencies:
     "@sentry/core": "npm:^8.47.0"
     "@suite-common/suite-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft

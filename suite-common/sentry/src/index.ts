@@ -1,6 +1,7 @@
 import { Options, Event as SentryEvent, captureConsoleIntegration } from '@sentry/core';
 
 import { isDevEnv } from '@suite-common/suite-utils';
+import { isCodesignBuild } from '@trezor/env-utils';
 import { redactUserPathFromString } from '@trezor/utils';
 
 export const allowReportTag = 'allowReport';
@@ -101,7 +102,7 @@ export const SENTRY_CONFIG: Options = {
     enabled: !isDevEnv,
     maxValueLength: 500, // default 250 is not enough for some errors
     release: process.env.SENTRY_RELEASE,
-    environment: process.env.SUITE_TYPE,
+    environment: isCodesignBuild() ? 'production' : 'develop',
     normalizeDepth: 4,
     maxBreadcrumbs: 40,
     beforeBreadcrumb,
