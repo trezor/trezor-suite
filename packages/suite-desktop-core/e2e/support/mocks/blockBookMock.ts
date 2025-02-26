@@ -2,6 +2,7 @@ import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
 import { step } from '../common';
 import { fixtures as dogeFixtures } from './doge-endpoints';
+import { fixtures as ethFixtures } from './eth-account';
 import { fixtures as ltcFixtures } from './ltc-mimble-wimble-endpoints';
 
 export class BlockbookMock {
@@ -15,10 +16,23 @@ export class BlockbookMock {
         return `ws://localhost:${this.mockServer.options.port}`;
     }
 
+    private selectFixture(type: 'ltc' | 'doge' | 'eth') {
+        switch (type) {
+            case 'ltc':
+                return ltcFixtures;
+            case 'doge':
+                return dogeFixtures;
+            case 'eth':
+                return ethFixtures;
+            default:
+                throw new Error('Unknown blockbook mock type');
+        }
+    }
+
     @step()
-    async start(type: 'ltc' | 'doge') {
+    async start(type: 'ltc' | 'doge' | 'eth') {
         this.mockServer = await BackendWebsocketServerMock.create('blockbook');
-        const fixtures = type === 'ltc' ? ltcFixtures : dogeFixtures;
+        const fixtures = this.selectFixture(type);
         this.mockServer.setFixtures(fixtures);
     }
 

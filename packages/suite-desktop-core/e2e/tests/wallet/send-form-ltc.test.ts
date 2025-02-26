@@ -1,0 +1,43 @@
+import { test } from '../../support/fixtures';
+
+test.describe('LTC send form with mocked blockbook', { tag: ['@group=wallet'] }, () => {
+    test.use({
+        emulatorSetupConf: {
+            mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
+        },
+    });
+    test.beforeEach(async ({ dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
+        await onboardingPage.completeOnboarding();
+        await dashboardPage.discoveryShouldFinish();
+
+        await settingsPage.navigateTo('coins');
+        await blockbookMock.start('ltc');
+
+        await settingsPage.coins.disableNetwork('btc');
+        await settingsPage.coins.enableNetwork('ltc');
+        await settingsPage.coins.openNetworkAdvanceSettings('ltc');
+        await settingsPage.coins.changeBackend('blockbook', blockbookMock.url);
+
+        await dashboardPage.dashboardMenuButton.click();
+        await dashboardPage.discoveryShouldFinish();
+    });
+
+    test.afterEach(({ blockbookMock }) => {
+        blockbookMock.stop();
+    });
+
+    test('spend output originating from mimble-wimble peg out tx', async ({
+        page,
+        devicePrompt,
+        walletPage,
+        marketPage,
+    }) => {
+        await walletPage.accountButton({ symbol: 'ltc', type: 'normal', atIndex: 0 }).click();
+        await walletPage.sendButton.click();
+        await marketPage.broadcastButton.click();
+        await marketPage.sendAddressInput.fill('ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc');
+        await page.getByTestId('outputs.0.setMax').click();
+        await marketPage.sendButton.click();
+        await devicePrompt.waitForPromptAndConfirm();
+    });
+});

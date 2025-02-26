@@ -1,0 +1,40 @@
+import { expect, test } from '../../support/fixtures';
+
+test.describe('ETH staking', { tag: ['@group=wallet'] }, () => {
+    test.use({
+        emulatorSetupConf: {
+            mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
+        },
+    });
+    test.beforeEach(async ({ dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
+        await onboardingPage.completeOnboarding();
+        await dashboardPage.discoveryShouldFinish();
+
+        await settingsPage.navigateTo('coins');
+        await blockbookMock.start('eth');
+
+        await settingsPage.coins.disableNetwork('btc');
+        await settingsPage.coins.enableNetwork('eth');
+        await settingsPage.coins.openNetworkAdvanceSettings('eth');
+        await settingsPage.coins.changeBackend('blockbook', blockbookMock.url);
+
+        await dashboardPage.dashboardMenuButton.click();
+        await dashboardPage.discoveryShouldFinish();
+    });
+
+    test.afterEach(({ blockbookMock }) => {
+        blockbookMock.stop();
+    });
+
+    test('checks that staking dashboard works', async ({ page, walletPage, marketPage }) => {
+        await walletPage.accountButton({ symbol: 'eth', type: 'normal', atIndex: 0 }).click();
+        await walletPage.sendButton.click();
+        await marketPage.sendAmountInput.fill('1111.456789012345678901');
+        await page.getByTestId('@account-menu/eth/normal/0/staking').click();
+
+        await expect(page.getByTestId('@account/staking/pending')).toHaveText('3,000');
+        await expect(page.getByTestId('@account/staking/staked')).toHaveText('3,000');
+        await expect(page.getByTestId('@account/staking/rewards')).toHaveText('1,234');
+        await expect(page.getByTestId('@account/staking/unstaking')).toHaveText('4,000');
+    });
+});
