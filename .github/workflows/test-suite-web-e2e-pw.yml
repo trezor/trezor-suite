@@ -93,36 +93,38 @@ jobs:
         run: |
           aws s3 sync --delete ./packages/suite-web/build ${DEPLOY_PATH}/web
 
+  generate-e2e-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Set matrix
+        id: set-matrix
+        run: |
+          matrix='[
+            {"TEST_GROUP": "@group=suite"},
+            {"TEST_GROUP": "@group=device-management"},
+            {"TEST_GROUP": "@group=settings"},
+            {"TEST_GROUP": "@group=metadata1"},
+            {"TEST_GROUP": "@group=metadata2"},
+            {"TEST_GROUP": "@group=other"},
+            {"TEST_GROUP": "@group=wallet"}
+          ]'
+
+          if [ "${{ github.event_name }}" == "schedule" ]; then
+            matrix=$(echo $matrix | jq '. += [{"TEST_GROUP": "@group=migrations"}]')
+          fi
+          echo "matrix={\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
+
   e2e-test-suite-web:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     needs:
       - build-web
+      - generate-e2e-matrix
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - TEST_GROUP: "@group=suite"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=device-management"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=settings"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=metadata1"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=metadata2"
-            CONTAINERS: "trezor-user-env-unix"
-          # - TEST_GROUP: "@group=passphrase"
-          #   CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=other"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=wallet"
-            CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
-          - TEST_GROUP: "@group=migrations" # To see the run on PR. Will be removed before merge
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=migrations"
-            CONTAINERS: "trezor-user-env-unix"
-            if: github.event_name == 'schedule'
+      matrix: ${{ fromJson(needs.generate-e2e-matrix.outputs.matrix) }}
 
     steps:
       - name: Checkout
@@ -164,7 +166,7 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn workspaces focus @trezor/suite-desktop-core
           npx playwright install --with-deps
-          docker compose pull ${{ matrix.CONTAINERS }}
+          docker compose pull trezor-user-env-unix
 
       - name: Run Playwright e2e web tests
         if: steps.check-previous-runs.outputs.skip_tests != 'true'
@@ -177,7 +179,7 @@ jobs:
           CURRENTS_CI_BUILD_ID: pr-run-${{github.run_id}}
           PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
         run: |
-          docker compose up -d ${{ matrix.CONTAINERS }}
+          docker compose up -d trezor-user-env-unix
           echo "Starting Playwright Web test group ${{ matrix.TEST_GROUP }}"
           yarn workspace @trezor/suite-desktop-core test:e2e:web --forbid-only --grep="(?=.*${{ matrix.TEST_GROUP }})(?=.*@webOnly)"
 
