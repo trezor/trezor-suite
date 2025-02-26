@@ -18,6 +18,7 @@ import {
     selectAccounts,
     selectCurrentFiatRates,
     selectIsAccountUtxoBased,
+    selectIsPortfolioTrackerDevice,
     selectPendingAccountAddresses,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
@@ -223,6 +224,10 @@ export const selectFreshAccountAddress = (
 };
 
 export const selectHasDeviceAnySendAvailableAccount = createMemoizedSelector(
-    [selectVisibleDeviceAccounts],
-    accounts => pipe(accounts, filterSendAvailableAccounts, A.isNotEmpty),
+    [selectIsPortfolioTrackerDevice, selectVisibleDeviceAccounts],
+    (isPortfolioTrackerDevice, accounts) => {
+        if (isPortfolioTrackerDevice) return false;
+
+        return pipe(accounts, filterSendAvailableAccounts, A.isNotEmpty);
+    },
 );
