@@ -60,6 +60,7 @@ export const AssetTable = ({
                     localCurrency={localCurrency}
                     currentFiatRates={currentFiatRates}
                     accounts={asset.accounts}
+                    isStakeNetwork={asset.isStakeNetwork}
                 />
             ))}
             {discoveryInProgress && <AssetRowSkeleton />}

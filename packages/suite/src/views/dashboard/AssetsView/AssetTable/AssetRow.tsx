@@ -59,6 +59,7 @@ export const AssetRow = memo(
         localCurrency,
         currentFiatRates,
         accounts,
+        isStakeNetwork,
     }: AssetTableRowProps) => {
         const { symbol } = network;
         const dispatch = useDispatch();
@@ -169,6 +170,12 @@ export const AssetRow = memo(
                     </Table.Cell>
                     <Table.Cell align="right" colSpan={2}>
                         <Row gap={spacings.md}>
+                            {isStakeNetwork && (
+                                <TradingButton symbol={symbol} routeName="wallet-staking">
+                                    <Translation id="TR_STAKE_STAKE" />
+                                </TradingButton>
+                            )}
+
                             {!isTestnet(symbol) && (
                                 <TradingButton
                                     symbol={symbol}
