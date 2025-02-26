@@ -42,7 +42,7 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
     }) => {
         await test.step('Open send form for Doge', async () => {
             await walletPage.accountButton({ symbol: 'doge' }).click();
-            await walletPage.sendButton.click();
+            await walletPage.openSendFormButton.click();
         });
 
         await test.step('Fill amount over MAX_SAFE_INTEGER and send', async () => {

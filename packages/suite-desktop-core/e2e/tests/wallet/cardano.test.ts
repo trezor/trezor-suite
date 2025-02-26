@@ -47,7 +47,7 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
         });
 
         await test.step('Verify Cardano send form', async () => {
-            await walletPage.sendButton.click();
+            await walletPage.openSendFormButton.click();
             // await expect(walletPage.sendForm).toHaveScreenshot('cardano-send.png');
             await page.getByTestId('@account-subpage/back').click();
         });

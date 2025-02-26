@@ -118,6 +118,11 @@ jobs:
             CONTAINERS: "trezor-user-env-unix"
           - TEST_GROUP: "@group=wallet"
             CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
+          - TEST_GROUP: "@group=migrations" # To see the run on PR. Will be removed before merge
+            CONTAINERS: "trezor-user-env-unix"
+          - TEST_GROUP: "@group=migrations"
+            CONTAINERS: "trezor-user-env-unix"
+            if: github.event_name == 'schedule'
 
     steps:
       - name: Checkout
@@ -129,7 +134,7 @@ jobs:
       - name: Check previous runs
         id: check-previous-runs
         if: github.event_name == 'pull_request' && github.run_attempt == 1
-        uses: './.github/actions/check-previous-test-runs'
+        uses: "./.github/actions/check-previous-test-runs"
         with:
           github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
           pr_branch: ${{ github.head_ref }}
@@ -201,4 +206,3 @@ jobs:
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-ci-pw.yml
         run: docker compose down
-

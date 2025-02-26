@@ -52,7 +52,7 @@ test.describe('Use regtest to test pending transactions', { tag: ['@group=wallet
 
         // create 2 transactions (one self, one fund another account of mine)
         for (const [index, transaction] of [accounts.account1, accounts.account2].entries()) {
-            await walletPage.sendButton.click();
+            await walletPage.openSendFormButton.click();
             await marketPage.sendAmountInput.fill('0.3');
             await marketPage.sendAddressInput.fill(transaction.address);
             await page.getByTestId('add-output').click();

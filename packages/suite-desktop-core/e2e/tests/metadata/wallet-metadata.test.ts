@@ -97,7 +97,7 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata2', '@webOnl
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressNo();
         await dashboardPage.openDeviceSwitcher();
-        await dashboardPage.openDevice(standardWalletIndex);
+        await dashboardPage.walletAtIndex(standardWalletIndex).click();
 
         // Enable labeling for wallet C
         await dashboardPage.openDeviceSwitcher();

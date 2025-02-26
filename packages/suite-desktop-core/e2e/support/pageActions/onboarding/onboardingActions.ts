@@ -115,13 +115,15 @@ export class OnboardingActions {
     }
 
     @step()
-    async disableFirmwareHashCheck() {
+    async disableFirmwareHashCheck(options?: { skipSuiteLoadedCheck?: boolean }) {
         // Desktop starts with already disabled firmware hash check. Web needs to disable it.
         if (!isWebProject(this.testInfo)) {
             return;
         }
 
-        await this.verifySuiteIsLoaded();
+        if (!options?.skipSuiteLoadedCheck) {
+            await this.verifySuiteIsLoaded();
+        }
         // eslint-disable-next-line @typescript-eslint/no-shadow
         await this.page.evaluate(SuiteActions => {
             window.store.dispatch({
