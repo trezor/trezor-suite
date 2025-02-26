@@ -3254,6 +3254,10 @@ export default defineMessages({
         defaultMessage: 'Fee',
         id: 'TR_TX_FEE',
     },
+    TR_TX_FEE_INCLUDING_RENT: {
+        defaultMessage: 'Fee (incl. rent)',
+        id: 'TR_TX_FEE_INCLUDING_RENT',
+    },
     TR_UNCONFIRMED_TX: {
         defaultMessage: 'Unconfirmed',
         id: 'TR_UNCONFIRMED_TX',
@@ -5532,6 +5536,10 @@ export default defineMessages({
     INCLUDING_FEE: {
         id: 'INCLUDING_FEE',
         defaultMessage: 'Incl. fee',
+    },
+    INCLUDING_FEE_AND_RENT: {
+        id: 'INCLUDING_FEE_AND_RENT',
+        defaultMessage: 'Incl. fee and rent',
     },
     SEND_TRANSACTION: {
         id: 'SEND_TRANSACTION',
@@ -8895,6 +8903,10 @@ export default defineMessages({
         id: 'TR_EVM_MAX_FEE_DESC',
         defaultMessage:
             "The maximum fee you're willing to pay network validators to process your transaction. A higher fee may speed up confirmation times, though you'll only pay what's needed if the actual fee is lower.",
+    },
+    TR_SOL_FEE_DESC: {
+        id: 'TR_SOL_FEE_DESC',
+        defaultMessage: 'XXXXXX TODO',
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',

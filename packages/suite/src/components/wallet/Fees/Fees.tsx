@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
     Control,
     FieldErrors,
@@ -155,6 +156,28 @@ export const Fees = <TFieldValues extends FormState>({
 
     const supportsCustomFee = networkType !== 'solana';
 
+    const feeLabelId = useMemo(() => {
+        switch (networkType) {
+            case 'ethereum':
+                return 'MAX_FEE';
+            case 'solana':
+                return 'TR_TX_FEE_INCLUDING_RENT';
+            default:
+                return 'FEE';
+        }
+    }, [networkType]);
+
+    const feeTooltipTextId = useMemo(() => {
+        switch (networkType) {
+            case 'ethereum':
+                return 'TR_EVM_MAX_FEE_DESC';
+            case 'solana':
+                return 'TR_SOL_FEE_DESC';
+            default:
+                return 'TR_TRANSACTION_FEE_DESC';
+        }
+    }, [networkType]);
+
     return (
         <Column gap={spacings.md}>
             <Row flexWrap="wrap">
@@ -168,21 +191,10 @@ export const Fees = <TFieldValues extends FormState>({
                                 <Tooltip
                                     dashed
                                     maxWidth={328}
-                                    content={
-                                        networkType === 'ethereum' ? (
-                                            <Translation id="TR_EVM_MAX_FEE_DESC" />
-                                        ) : (
-                                            <Translation id="TR_TRANSACTION_FEE_DESC" />
-                                        )
-                                    }
+                                    content={<Translation id={feeTooltipTextId} />}
                                 >
                                     <Text variant="default">
-                                        <Translation
-                                            id={
-                                                label ??
-                                                (networkType === 'ethereum' ? 'MAX_FEE' : 'FEE')
-                                            }
-                                        />
+                                        <Translation id={label ?? feeLabelId} />
                                     </Text>
                                 </Tooltip>
                             </Row>

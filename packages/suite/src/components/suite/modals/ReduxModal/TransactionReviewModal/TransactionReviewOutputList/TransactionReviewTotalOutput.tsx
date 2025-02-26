@@ -30,12 +30,12 @@ const getLines = (
     const isEthereum = networkType === 'ethereum';
     const isSolana = networkType === 'solana';
     const showAmountWithoutFee = isEthereum || isSolana;
-    const feeLabel = ((network: NetworkType) => {
+    const feeLabelId = ((network: NetworkType) => {
         switch (network) {
             case 'ethereum':
                 return 'MAX_FEE';
             case 'solana':
-                return 'TR_TX_FEE';
+                return 'TR_TX_FEE_INCLUDING_RENT';
             default:
                 return 'TR_INCLUDING_FEE';
         }
@@ -76,7 +76,7 @@ const getLines = (
             },
             {
                 id: 'fee',
-                label: <Translation id={feeLabel} />,
+                label: <Translation id={feeLabelId} />,
                 value: precomposedTx.fee,
                 type: 'amount',
             },

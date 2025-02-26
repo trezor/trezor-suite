@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import styled from 'styled-components';
 
 import { formatAmount, formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -26,6 +28,19 @@ export const TotalSent = () => {
     const isTokenTransfer = networkType === 'ethereum' && !!getValues('outputs.0.token');
     const hasTransactionInfo = transactionInfo !== undefined && transactionInfo.type !== 'error';
     const tokenInfo = hasTransactionInfo ? transactionInfo.token : undefined;
+    const includingRent = networkType === 'solana';
+
+    const feeLabelId = useMemo(() => {
+        if (isTokenTransfer) {
+            return 'FEE';
+        }
+
+        if (includingRent) {
+            return 'INCLUDING_FEE_AND_RENT';
+        }
+
+        return 'INCLUDING_FEE';
+    }, [isTokenTransfer, includingRent]);
 
     return (
         <Container>
@@ -54,10 +69,7 @@ export const TotalSent = () => {
                         )}
                     </InfoItem>
 
-                    <InfoItem
-                        label={<Translation id={isTokenTransfer ? 'FEE' : 'INCLUDING_FEE'} />}
-                        direction="row"
-                    >
+                    <InfoItem label={<Translation id={feeLabelId} />} direction="row">
                         {hasTransactionInfo &&
                             (tokenInfo ? (
                                 <FormattedCryptoAmount
