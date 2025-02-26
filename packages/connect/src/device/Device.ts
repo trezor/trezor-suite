@@ -73,6 +73,7 @@ type RunOptions = {
     skipLanguageChecks?: boolean;
 };
 
+export const CANCEL_TIMEOUT = 1_000;
 export const GET_FEATURES_TIMEOUT = 3_000;
 // Due to performance issues in suite-native during app start, original timeout is not sufficient.
 export const GET_FEATURES_TIMEOUT_REACT_NATIVE = 20_000;
@@ -541,10 +542,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 if (fn) {
                     await this.initialize(!!options.useCardanoDerivation);
                 } else {
-                    const getFeaturesTimeout =
-                        DataManager.getSettings('env') === 'react-native'
-                            ? GET_FEATURES_TIMEOUT_REACT_NATIVE
-                            : GET_FEATURES_TIMEOUT;
+                    const isNative = DataManager.getSettings('env') === 'react-native';
+                    const getFeaturesTimeout = isNative
+                        ? GET_FEATURES_TIMEOUT_REACT_NATIVE
+                        : GET_FEATURES_TIMEOUT;
+                    const cancelTimeout = isNative
+                        ? GET_FEATURES_TIMEOUT_REACT_NATIVE
+                        : CANCEL_TIMEOUT;
 
                     // note 1: clear communication with the device using Cancel message. This causes any remaining messages in its transport stack to get flushed.
                     //         this case may happen when communication with the device was abruptly interrupted by unloading connect unexpectedly (example window reload)
@@ -556,17 +560,18 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     // note 6: T1 with older bootloader (1.8.0) doesn't respond to Cancel message, so we better ignore those
                     if (
                         ['v1', 'bridge'].includes(this.protocol.name) &&
-                        this.transportDescriptorType !== undefined && // we know the type of device
                         ![0, 2].includes(this.transportDescriptorType) // ignore model 1 hid or webusb bootloader mode
                     ) {
                         _log.debug(
                             'sending a preventive cancel on the first encounter with the device',
                         );
-                        try {
-                            await this.getCommands().typedCall('Cancel', 'Failure', {});
-                        } catch {
-                            // empty
-                        }
+
+                        await Promise.race([
+                            this.getCommands()
+                                .typedCall('Cancel', 'Failure', {})
+                                .catch(() => {}),
+                            new Promise((_, reject) => setTimeout(reject, cancelTimeout)),
+                        ]).catch(() => this.acquire());
                     }
 
                     let getFeaturesTimeoutId: ReturnType<typeof setTimeout> | undefined;
