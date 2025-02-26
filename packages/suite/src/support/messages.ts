@@ -1416,6 +1416,24 @@ export default defineMessages({
         defaultMessage: 'View details',
         id: 'TR_TRADING_VIEW_DETAILS',
     },
+    TR_TRADING_OTC_INFO_BUY: {
+        defaultMessage:
+            'For purchases over {minimumFiat} {fiatSymbol}, consider using our OTC partner:',
+        id: 'TR_TRADING_OTC_INFO_BUY',
+    },
+    TR_TRADING_OTC_INFO_SELL: {
+        defaultMessage:
+            'For sales over {minimumFiat} {fiatSymbol}, consider using our OTC partner:',
+        id: 'TR_TRADING_OTC_INFO_SELL',
+    },
+    TR_TRADING_OTC_LINK_BUY: {
+        defaultMessage: 'Buy with Mercuryo',
+        id: 'TR_TRADING_OTC_LINK_BUY',
+    },
+    TR_TRADING_OTC_LINK_SELL: {
+        defaultMessage: 'Sell with Mercuryo',
+        id: 'TR_TRADING_OTC_LINK_SELL',
+    },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',

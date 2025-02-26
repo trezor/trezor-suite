@@ -28,6 +28,7 @@ import {
 import { TradingFormOfferCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferCryptoAmount';
 import { TradingFormOfferFiatAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferFiatAmount';
 import { TradingFormOfferItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferItem';
+import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferOTC';
 import { TradingFormOffersSwitcher } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcher';
 
 const getSelectedQuote = (
@@ -158,6 +159,7 @@ export const TradingFormOffer = () => {
             >
                 <Translation id={tradingGetSectionActionLabel(type)} />
             </Button>
+            {(type === 'buy' || type === 'sell') && <TradingFormOfferOTC />}
         </Column>
     );
 };

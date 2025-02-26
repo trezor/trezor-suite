@@ -86,3 +86,11 @@ export type TradingTransaction =
     | TradingTransactionBuy
     | TradingTransactionSell
     | TradingTransactionExchange;
+
+export type TradingOTC = {
+    idWidget: string;
+    idOtcUser: string;
+    apiUrl: string;
+    minimumFiat: string;
+    allowedCurrencies: FiatCurrencyCode[];
+};

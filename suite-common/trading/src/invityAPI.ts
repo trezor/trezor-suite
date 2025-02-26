@@ -27,6 +27,7 @@ import type {
 import type {
     InvityServerEnvironment,
     InvityServers,
+    TradingOTC,
     TradingPaymentMethodType,
     TradingTradeType,
     TradingType,
@@ -83,6 +84,9 @@ class InvityAPI {
     private readonly SELL_FIAT_DO_TRADE = '/api/v3/sell/fiat/trade';
     private readonly SELL_FIAT_CONFIRM = '/api/v3/sell/fiat/confirm';
     private readonly SELL_FIAT_WATCH_TRADE = '/api/v3/sell/fiat/watch/{{counter}}';
+
+    // otc service
+    private readonly OTC_INFO = '/api/v1/otc';
 
     private static accountDescriptor: string;
     private static apiKey: string;
@@ -431,6 +435,18 @@ class InvityAPI {
             console.error(tradesData.logPrefix, error);
 
             return { error: error.toString() };
+        }
+    };
+
+    getOTCData = async (): Promise<TradingOTC | undefined> => {
+        try {
+            const response = await this.request(this.OTC_INFO, {}, 'GET');
+
+            if (response) {
+                return response;
+            }
+        } catch (error) {
+            console.error('[getOTCData]', error);
         }
     };
 }
