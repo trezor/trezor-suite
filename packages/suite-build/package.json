@@ -18,10 +18,13 @@
         "desktop": "PROJECT=desktop yarn run base",
         "dev:desktop": "yarn run desktop",
         "build:desktop": "NODE_ENV=production yarn run desktop",
+        "dev:vite": "yarn rimraf ../suite-web/build && vite --config ./configs/vite.config.ts",
+        "build:vite": "yarn rimraf ../suite-web/build && vite build --config ./configs/vite.config.ts",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch"
     },
     "dependencies": {
+        "@originjs/vite-plugin-commonjs": "^1.0.3",
         "@suite-common/suite-config": "workspace:*",
         "@trezor/bundler-security": "workspace:*",
         "@trezor/suite": "workspace:*",
@@ -33,9 +36,14 @@
         "css-minimizer-webpack-plugin": "^6.0.0",
         "html-webpack-plugin": "^5.6.0",
         "raw-loader": "^4.0.2",
+        "react-refresh": "^0.14.0",
+        "rimraf": "^6.0.1",
         "stream-browserify": "^3.0.0",
         "style-loader": "^3.3.4",
         "terser-webpack-plugin": "^5.3.11",
+        "vite": "^5.1.4",
+        "vite-plugin-node-polyfills": "^0.23.0",
+        "vite-plugin-wasm": "^3.4.1",
         "webpack": "^5.97.1",
         "webpack-bundle-analyzer": "^4.10.1",
         "webpack-merge": "^6.0.1",
@@ -51,7 +59,6 @@
         "@types/copy-webpack-plugin": "^10.1.0",
         "@types/node-fetch": "^2.6.12",
         "@types/webpack-bundle-analyzer": "^4.7.0",
-        "@types/webpack-plugin-serve": "^1.4.6",
-        "react-refresh": "^0.14.0"
+        "@types/webpack-plugin-serve": "^1.4.6"
     }
 }

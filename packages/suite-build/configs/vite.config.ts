@@ -7,8 +7,8 @@ import { Plugin, ViteDevServer, defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import wasm from 'vite-plugin-wasm';
 
-import { suiteVersion } from '../suite/package.json';
-import { assetPrefix, project } from '../suite-build/utils/env';
+import { suiteVersion } from '../../suite/package.json';
+import { assetPrefix, project } from '../utils/env';
 
 // Plugin to serve static files with /static prefix
 const staticAliasPlugin = (): Plugin => ({
@@ -26,6 +26,26 @@ const staticAliasPlugin = (): Plugin => ({
 });
 
 // Plugin to serve core.js in dev mode
+const serveCorePlugin = () => ({
+    name: 'serve-core',
+    configureServer(server: ViteDevServer) {
+        server.middlewares.use(async (req, res, next) => {
+            if (req.url?.endsWith('/js/core.js')) {
+                const code = await server.transformRequest(
+                    resolve(__dirname, '../../connect/src/core/index.ts'),
+                    { ssr: false },
+                );
+                if (code?.code) {
+                    res.setHeader('Content-Type', 'application/javascript');
+                    res.end(code.code);
+
+                    return;
+                }
+            }
+            next();
+        });
+    },
+});
 
 // Plugin to handle workers similar to webpack's worker-loader
 const workerPlugin = (): Plugin => ({
@@ -44,42 +64,21 @@ const workerPlugin = (): Plugin => ({
     },
 });
 
-const serveCorePlugin = () => ({
-    name: 'serve-core',
-    configureServer(server: ViteDevServer) {
-        server.middlewares.use(async (req, res, next) => {
-            if (req.url?.endsWith('/js/core.js')) {
-                const code = await server.transformRequest(
-                    resolve(__dirname, '../connect/src/core/index.ts'),
-                    { ssr: false },
-                );
-                if (code?.code) {
-                    res.setHeader('Content-Type', 'application/javascript');
-                    res.end(code.code);
-
-                    return;
-                }
-            }
-            next();
-        });
-    },
-});
-
 // This helper creates aliases for all workspace packages
 const createWorkspaceAliases = () => {
     const suiteCommonAliases = Object.fromEntries(
-        readdirSync(resolve(__dirname, '../../suite-common'), { withFileTypes: true })
+        readdirSync(resolve(__dirname, '../../../suite-common'), { withFileTypes: true })
             .filter(dirent => dirent.isDirectory())
             .map(dirent => [
                 `@suite-common/${dirent.name}`,
-                resolve(__dirname, '../../suite-common', dirent.name),
+                resolve(__dirname, '../../../suite-common', dirent.name),
             ]),
     );
 
     const trezorPackagesAliases = Object.fromEntries(
-        readdirSync(resolve(__dirname, '../'), { withFileTypes: true })
+        readdirSync(resolve(__dirname, '../../'), { withFileTypes: true })
             .filter(dirent => dirent.isDirectory() && dirent.name !== 'suite-web')
-            .map(dirent => [`@trezor/${dirent.name}`, resolve(__dirname, '../', dirent.name)]),
+            .map(dirent => [`@trezor/${dirent.name}`, resolve(__dirname, '../../', dirent.name)]),
     );
 
     return {
@@ -91,10 +90,10 @@ const createWorkspaceAliases = () => {
 const commitId = execSync('git rev-parse HEAD').toString().trim();
 
 export default defineConfig({
-    root: '.',
+    root: resolve(__dirname, '../src'),
     base: assetPrefix,
     // Use suite-data/files as the public directory
-    publicDir: resolve(__dirname, '../suite-data/files'),
+    publicDir: resolve(__dirname, '../../suite-data/files'),
     plugins: [
         nodePolyfills(),
         staticAliasPlugin(),
@@ -124,7 +123,7 @@ export default defineConfig({
             },
             {
                 find: 'src',
-                replacement: resolve(__dirname, '../suite/src'),
+                replacement: resolve(__dirname, '../../suite/src'),
             },
             ...Object.entries(createWorkspaceAliases()).map(([find, replacement]) => ({
                 find,
@@ -171,6 +170,9 @@ export default defineConfig({
                 },
             ],
         },
+    },
+    build: {
+        outDir: resolve(__dirname, '../../suite-web/build'),
     },
     server: {
         port: 8000,

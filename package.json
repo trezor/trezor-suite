@@ -25,6 +25,7 @@
         "suite:build:web": "yarn workspace @trezor/suite-web build",
         "_______ Start Scripts _______": "Here are standalone scripts for running individual applications for development.",
         "suite:dev": "yarn workspace @trezor/suite-web dev",
+        "suite:dev:vite": "yarn workspace @trezor/suite-web dev:vite",
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev",
         "native:start": "yarn workspace @suite-native/app start",
         "_______ Testing _______": "Testing, linting, type checking...",

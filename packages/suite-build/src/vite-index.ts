@@ -6,7 +6,7 @@
 
 const appElement = document.getElementById('app');
 if (appElement) {
-    import(/* webpackChunkName: "app" */ './Main')
+    import(/* webpackChunkName: "app" */ '../../suite-web/src/Main')
         .then(comp => comp.init(appElement))
         .catch(err => console.error(err)); // Fatal error
 }
