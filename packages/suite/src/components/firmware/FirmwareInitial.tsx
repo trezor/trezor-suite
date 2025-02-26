@@ -134,7 +134,7 @@ export const FirmwareInitial = ({
         useFirmwareInstallation({
             shouldSwitchFirmwareType,
         });
-    const { updateAnalytics } = useOnboarding();
+    const { isActive: isOnboarding, updateAnalytics } = useOnboarding();
     const devices = useSelector(selectDevices);
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
@@ -147,7 +147,9 @@ export const FirmwareInitial = ({
     // todo: move to utils device.ts
     const devicesConnected = devices.filter(device => device?.connected);
     const multipleDevicesConnected = [...new Set(devicesConnected.map(d => d.path))].length > 1;
-    const shouldCheckSeed = device?.mode !== 'initialize';
+
+    // The first condition is a defensive measure against https://github.com/trezor/trezor-suite/issues/17246, I could not reproduce the error.
+    const shouldCheckSeed = !isOnboarding && device?.mode !== 'initialize';
 
     let content;
 
