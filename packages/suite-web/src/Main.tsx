@@ -67,7 +67,7 @@ const Main = () => {
 };
 
 export const init = async (container: HTMLElement) => {
-    if (!window.Cypress) {
+    if (!window.Playwright) {
         initSentry(SENTRY_CONFIG);
     }
 
