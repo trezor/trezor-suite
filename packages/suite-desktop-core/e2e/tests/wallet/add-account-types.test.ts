@@ -131,9 +131,8 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
                 analytics.requests = [];
                 await page.getByTestId(`@account-menu/filter/${coin.symbol}`).click();
                 const numberOfAccountsBefore = await page
-                    .locator(
-                        `[data-testid="@account-menu/normal/group"] > [data-testid*="@account-menu/${coin.symbol}/normal"]`,
-                    )
+                    .getByTestId('@account-menu/normal/group')
+                    .locator(`> [data-testid^="@account-menu/${coin.symbol}/normal/"]`)
                     .count();
 
                 await page.getByTestId('@account-menu/add-account').click();
@@ -143,9 +142,8 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
                 await dashboardPage.discoveryShouldFinish();
 
                 const numberOfAccountsAfter = await page
-                    .locator(
-                        `[data-testid="@account-menu/normal/group"] > [data-testid*="@account-menu/${coin.symbol}/normal"]`,
-                    )
+                    .getByTestId('@account-menu/normal/group')
+                    .locator(`> [data-testid^="@account-menu/${coin.symbol}/normal/"]`)
                     .count();
                 expect(numberOfAccountsAfter).toEqual(numberOfAccountsBefore + 1);
 

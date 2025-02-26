@@ -3,6 +3,7 @@ import fs from 'fs';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { expect, test } from '../../support/fixtures';
+import { ExportType } from '../../support/pageActions/walletActions';
 
 test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () => {
     test.use({
@@ -43,7 +44,7 @@ test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () 
         for (const symbol of symbols) {
             await walletPage.accountButton({ symbol }).click();
 
-            const typesOfExport = ['pdf', 'csv', 'json'];
+            const typesOfExport: ExportType[] = ['pdf', 'csv', 'json'];
             for (const type of typesOfExport) {
                 await walletPage.exportTransactions(type);
                 const download = await page.waitForEvent('download');
