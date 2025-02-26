@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
+import { Route } from '@suite-common/suite-types';
 import {
     Column,
     ElevationDown,
@@ -25,6 +26,7 @@ import { MessageSystemBanner } from 'src/components/suite/banners';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 
+import { selectIsInitialRun } from '../../../../reducers/suite/suiteReducer';
 import { TrafficLightOffset } from '../../TrafficLightOffset';
 import { Nav, SETTINGS_ROUTES } from '../SuiteLayout/Sidebar/Navigation';
 import { NavItem } from '../SuiteLayout/Sidebar/NavigationItem';
@@ -74,6 +76,9 @@ const WelcomeNavColumn = styled.div<{ $elevation: Elevation; $minWidth: number }
 export const LoggedOutSidebar = () => {
     const { elevation } = useElevation();
 
+    const isInitialRun = useSelector(selectIsInitialRun);
+    const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
+
     return (
         <WelcomeWrapper $elevation={elevation}>
             <ElevationUp>
@@ -84,8 +89,8 @@ export const LoggedOutSidebar = () => {
                                 <NavItem
                                     nameId="TR_START"
                                     icon="trezorLogo"
-                                    goToRoute="suite-start"
-                                    routes={['suite-start']}
+                                    goToRoute={startRoute}
+                                    routes={[startRoute]}
                                     data-testid="@suite/menu/suite-start"
                                 />
                                 <NavItem

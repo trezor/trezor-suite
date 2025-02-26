@@ -482,8 +482,10 @@ export const selectIsUnhideTokenModalShown = (state: SuiteRootState) =>
 export const selectIsCopyAddressModalShown = (state: SuiteRootState) =>
     state.suite.flags.showCopyAddressModal;
 
+export const selectIsInitialRun = (state: SuiteRootState) => state.suite.flags.initialRun;
+
 export const selectIsLoggedOut = (state: SuiteRootState & DeviceRootState) =>
-    state.suite.flags.initialRun || state.device?.selectedDevice?.mode !== 'normal';
+    selectIsInitialRun(state) || state.device?.selectedDevice?.mode !== 'normal';
 
 export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
 
