@@ -1,7 +1,7 @@
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import react from '@vitejs/plugin-react';
 import { execSync } from 'child_process';
-import { readdirSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 import { Plugin, ViteDevServer, defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
@@ -21,6 +21,25 @@ const staticAliasPlugin = (): Plugin => ({
                 req.url = req.url.replace('/static/', '/');
             }
             next();
+        });
+    },
+});
+
+// Plugin to handle root path redirects
+const rootRedirectPlugin = (): Plugin => ({
+    name: 'root-redirect',
+    configureServer(server: ViteDevServer) {
+        server.middlewares.use((req, res, next) => {
+            try {
+                // If the request is for the root path, redirect to index.html
+                if (req.url === '/' || req.url === '/index.html') {
+                    req.url = '/index.html';
+                }
+                next();
+            } catch (error) {
+                console.error('Error in rootRedirectPlugin:', error);
+                next(error);
+            }
         });
     },
 });
@@ -64,6 +83,88 @@ const workerPlugin = (): Plugin => ({
     },
 });
 
+// Custom plugin to use the same template as webpack
+const htmlTemplatePlugin = (templateParameters: Record<string, any>): Plugin => {
+    const templatePath = resolve(__dirname, '../../suite-web/src/static/index.html');
+
+    return {
+        name: 'html-template',
+        transformIndexHtml(html) {
+            try {
+                // Read the template file
+                let template = readFileSync(templatePath, 'utf-8');
+
+                // Make sure assetPrefix is defined
+                if (!templateParameters.assetPrefix && templateParameters.assetPrefix !== '') {
+                    console.warn('assetPrefix is undefined, setting to empty string');
+                    templateParameters.assetPrefix = '';
+                }
+
+                const templateLiterals = template.match(/<%=\s*([^%]+?)\s*%>/g) || [];
+                const templateLiteralsNoSpaces = template.match(/<%=([^%]+?)%>/g) || [];
+                const allTemplateLiterals = [...templateLiterals, ...templateLiteralsNoSpaces];
+
+                const processedVariables = new Set<string>();
+                allTemplateLiterals.forEach(literal => {
+                    // Extract the variable name from the template literal
+                    const match =
+                        literal.match(/<%=\s*([^%]+?)\s*%>/) || literal.match(/<%=([^%]+?)%>/);
+                    if (!(match && match[1])) {
+                        return;
+                    }
+                    const variableName = match[1].trim();
+
+                    // Check if the variable exists in templateParameters
+                    if (variableName in templateParameters) {
+                        // Replace all occurrences of this literal with its value
+                        const value =
+                            templateParameters[variableName] !== undefined
+                                ? templateParameters[variableName]
+                                : '';
+
+                        // Only log once per variable name
+                        if (!processedVariables.has(variableName)) {
+                            processedVariables.add(variableName);
+                        }
+
+                        // Replace all occurrences of this literal
+                        template = template.replace(
+                            new RegExp(literal.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+                            value,
+                        );
+                    }
+                });
+
+                // Handle conditional statements <% if(condition) { %> content <% } %>
+                template = template.replace(
+                    /<%\s*if\(([^)]+)\)\s*{\s*%>([\s\S]*?)<%\s*}\s*%>/g,
+                    (match, condition, content) => {
+                        const key = condition.trim();
+
+                        return templateParameters[key] ? content : '';
+                    },
+                );
+
+                // Add the script tag for vite-index.ts
+                template = template.replace(
+                    '</head>',
+                    '<script type="module" src="./vite-index.ts"></script></head>',
+                );
+
+                // Add the app div to the body
+                template = template.replace('</body>', '<div id="app"></div></body>');
+
+                return template;
+            } catch (error) {
+                console.error('Error in htmlTemplatePlugin:', error);
+
+                // Return the original HTML if there's an error
+                return html;
+            }
+        },
+    };
+};
+
 // This helper creates aliases for all workspace packages
 const createWorkspaceAliases = () => {
     const suiteCommonAliases = Object.fromEntries(
@@ -93,14 +194,20 @@ export default defineConfig({
     root: resolve(__dirname, '../src'),
     base: assetPrefix,
     // Use suite-data/files as the public directory
-    publicDir: resolve(__dirname, '../../suite-data/files'),
+    publicDir: resolve(__dirname, '../../../suite-data/files'),
+    // Specify a custom cache directory
+    cacheDir: resolve(__dirname, './.vite'),
     plugins: [
         nodePolyfills(),
         staticAliasPlugin(),
+        rootRedirectPlugin(),
         serveCorePlugin(),
         viteCommonjs(),
         workerPlugin(),
         wasm(),
+        htmlTemplatePlugin({
+            assetPrefix,
+        }),
         react({
             babel: {
                 plugins: [
@@ -131,17 +238,8 @@ export default defineConfig({
             })),
         ],
         preserveSymlinks: true,
-    },
-    define: {
-        'process.browser': true,
-        'process.env.VERSION': JSON.stringify(suiteVersion),
-        'process.env.COMMIT_HASH': JSON.stringify(commitId),
-        'process.env.COMMITHASH': JSON.stringify(commitId),
-        'process.env.SUITE_TYPE': JSON.stringify(project),
-        'process.env.NODE_ENV': JSON.stringify('development'),
-        'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
-        __DEV__: true,
-        ENABLE_REDUX_LOGGER: true,
+        mainFields: ['browser', 'module', 'main'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     },
     optimizeDeps: {
         include: ['@trezor/connect', '@trezor/suite', 'buffer'],
@@ -154,25 +252,18 @@ export default defineConfig({
             define: {
                 global: 'globalThis',
             },
-            plugins: [
-                {
-                    name: 'commonjs',
-                    setup(build) {
-                        build.onLoad({ filter: /\.js$/ }, args => {
-                            if (args.path.includes('packages/')) {
-                                return {
-                                    format: 'cjs',
-                                    loader: 'js',
-                                };
-                            }
-                        });
-                    },
-                },
-            ],
         },
     },
-    build: {
-        outDir: resolve(__dirname, '../../suite-web/build'),
+    define: {
+        'process.browser': true,
+        'process.env.VERSION': JSON.stringify(suiteVersion),
+        'process.env.COMMIT_HASH': JSON.stringify(commitId),
+        'process.env.COMMITHASH': JSON.stringify(commitId),
+        'process.env.SUITE_TYPE': JSON.stringify(project),
+        'process.env.NODE_ENV': JSON.stringify('development'),
+        'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
+        __DEV__: true,
+        ENABLE_REDUX_LOGGER: true,
     },
     server: {
         port: 8000,

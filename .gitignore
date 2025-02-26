@@ -37,6 +37,7 @@ __pycache__/
 .stylelintcache
 *.tsbuildinfo
 .nx
+.vite/
 
 # Vagrant
 .vagrant
