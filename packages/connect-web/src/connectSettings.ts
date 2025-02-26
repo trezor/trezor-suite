@@ -23,19 +23,6 @@ export const getEnv = () => {
 
 declare let global: any;
 
-const processQueryString = (url: string, keys: string[]) => {
-    const searchParams = new URLSearchParams(url);
-    const result: Record<string, string> = {};
-    const paramArray = Array.from(searchParams.entries());
-    paramArray.forEach(([key, value]) => {
-        if (keys.includes(key)) {
-            result[key] = decodeURIComponent(value);
-        }
-    });
-
-    return result;
-};
-
 /**
  * Settings from host
  * @param input Partial<ConnectSettings>
@@ -53,16 +40,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}): Conn
     if (typeof globalSrc === 'string') {
         settings.connectSrc = globalSrc;
         settings.debug = true;
-    }
-
-    if (typeof window !== 'undefined' && typeof window.location?.search === 'string') {
-        const query = processQueryString(window.location.search, ['trezor-connect-src']);
-        // For debugging purposes `connectSrc` could be defined in url query of hosting page. Usage:
-        // https://3rdparty-page.com/?trezor-connect-src=https://localhost:8088/
-        if (query['trezor-connect-src']) {
-            settings.debug = true;
-            settings.connectSrc = query['trezor-connect-src'];
-        }
     }
 
     if (typeof input.env !== 'string') {

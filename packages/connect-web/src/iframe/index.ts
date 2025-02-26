@@ -85,6 +85,9 @@ export const init = async (settings: ConnectSettings) => {
         src = settings.iframeSrc;
     }
 
+    if (!src.startsWith('http://') && !src.startsWith('https://')) {
+        return;
+    }
     instance.setAttribute('src', src);
     if (navigator.usb) {
         instance.setAttribute('allow', 'usb');
