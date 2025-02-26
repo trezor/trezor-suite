@@ -4,6 +4,7 @@ import { fromWei, toWei } from 'web3-utils';
 import { AccountLabels } from '@suite-common/metadata-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { SignOperator } from '@suite-common/suite-types';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Account,
     AccountKey,
@@ -936,8 +937,26 @@ export const simpleSearchTransactions = (
     });
     txsToSearch.push(...foundTxsForAddress);
 
+    // Find by native token
+    const foundTxsForNativeToken = transactions.flatMap(transaction => {
+        // native token
+        const displaySymbol = getNetworkDisplaySymbol(transaction.symbol);
+        const hasMatchingNativeToken =
+            displaySymbol.toLowerCase().includes(search.toLowerCase()) &&
+            (transaction.targets.length !== 0 || transaction.internalTransfers.length !== 0) &&
+            transaction.amount !== '0';
+
+        if (hasMatchingNativeToken) {
+            return transaction.txid;
+        }
+
+        return [];
+    });
+    txsToSearch.push(...foundTxsForNativeToken);
+
     // Find by token name, symbol or contract
     const foundTxsForToken = transactions.flatMap(transaction => {
+        // other tokens
         const hasMatchingToken = transaction.tokens.some(
             token =>
                 isTokenTransferMatchesSearch(token, search.toLowerCase()) ||
