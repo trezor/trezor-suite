@@ -1,5 +1,8 @@
 import { Context } from '@suite-common/message-system';
-import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
+import {
+    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
+} from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -31,6 +34,9 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             {account?.symbol &&
                 isSupportedEthStakingNetworkSymbol(account.symbol) &&
                 route?.name === 'wallet-staking' && <ContextMessage context={Context.ethStaking} />}
+            {account?.symbol &&
+                isSupportedSolStakingNetworkSymbol(account.symbol) &&
+                route?.name === 'wallet-staking' && <ContextMessage context={Context.solStaking} />}
             <AuthConfirmFailed />
             <BackendDisconnected />
             <DeviceUnavailable />
