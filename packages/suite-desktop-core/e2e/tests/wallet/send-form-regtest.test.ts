@@ -25,7 +25,7 @@ test.describe('Send form for bitcoin', { tag: ['@group=wallet'] }, () => {
 
             await dashboardPage.dashboardMenuButton.click();
             await walletPage.accountButton({ symbol: 'regtest' }).click();
-            await walletPage.sendButton.click();
+            await walletPage.openSendFormButton.click();
         },
     );
 
