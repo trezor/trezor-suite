@@ -5323,7 +5323,7 @@ export default defineMessages({
         defaultMessage: 'Send max',
     },
     AMOUNT_IS_NOT_ENOUGH: {
-        defaultMessage: 'Not enough funds',
+        defaultMessage: 'Not enough funds!',
         id: 'AMOUNT_IS_NOT_ENOUGH',
     },
     AMOUNT_EXCEEDS_MAX: {
@@ -8566,7 +8566,7 @@ export default defineMessages({
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING',
-        defaultMessage: 'Before you confirm on device',
+        defaultMessage: 'Before confirming on device',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING',
@@ -8574,24 +8574,25 @@ export default defineMessages({
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION',
-        defaultMessage: 'Copy from Suite or scan the QR code (best from your Trezor device).',
+        defaultMessage: 'Copy from Trezor Suite or scan the QR code on your Trezor device.',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING',
-        defaultMessage: 'Paste it where needed',
+        defaultMessage: 'Use the address where needed',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION',
-        defaultMessage: 'Use it in an exchange, another wallet, or send it to a friend.',
+        defaultMessage:
+            'Enter it on an exchange, in another wallet, or share it with someone to receive funds.',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING',
-        defaultMessage: 'Verify on your Trezor',
+        defaultMessage: 'Verify it on your Trezor',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION',
         defaultMessage:
-            'Double-check that the pasted address matches what’s on your Trezor’s screen.',
+            "Always check the pasted address matches the one displayed on your Trezor's screen.",
     },
     TR_DISCOVERY_NEW_COINS: {
         id: 'TR_DISCOVERY_NEW_COINS',
@@ -8910,7 +8911,7 @@ export default defineMessages({
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
         defaultMessage:
-            "Your {networkDisplaySymbol} will be blocked during this period and can't be canceled. <a>Learn more</a>",
+            "Your {networkDisplaySymbol} will be blocked during this period and can't be canceled.",
     },
     TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD: {
         id: 'TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD',
@@ -9514,6 +9515,6 @@ export default defineMessages({
     },
     TR_CONNECT_BLUETOOTH_BUTTON: {
         id: 'TR_CONNECT_BLUETOOTH_BUTTON',
-        defaultMessage: 'Connect Safe 7 via bluetooth',
+        defaultMessage: 'Connect Trezor Safe 7 via Bluetooth',
     },
 });

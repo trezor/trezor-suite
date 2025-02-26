@@ -301,7 +301,6 @@
   "TR_BACKUP_RECOVERY_SEED_FAILED_TITLE": "Back-up mislukt",
   "TR_BACKUP_SEED_IS_ULTIMATE": "Backup seed is de ultieme sleutel naar uw portemonnee en saldo. Als je het kwijtraakt, is het voor altijd weg en is er geen manier om verloren zaad te herstellen.",
   "TR_BACKUP_SUBHEADING_1": "Uw Trezor zal een lijst met woorden genereren die u moet opschrijven. Deze informatie is het belangrijkste deel van het beveiligen van uw Trezor: het is de enige offline back-up van uw Trezor en alle portemonnees die ermee verbonden zijn.",
-  "TR_BACKUP_SUCCESSFUL": "Back-up succesvol",
   "TR_BALANCE": "Saldo",
   "TR_BASIC_RECOVERY": "basis herstel",
   "TR_BASIC_RECOVERY_OPTION": "Voer woorden in op je computer, herstel duurt ongeveer 2 minuten.",
