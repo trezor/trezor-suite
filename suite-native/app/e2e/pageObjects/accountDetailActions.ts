@@ -16,6 +16,10 @@ class AccountDetailActions {
     async openSend() {
         await element(by.id('@account-detail/send-button')).tap();
     }
+
+    async openReceive() {
+        await element(by.id('@account-detail/receive-button')).tap();
+    }
 }
 
 export const onAccountDetail = new AccountDetailActions();

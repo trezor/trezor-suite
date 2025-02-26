@@ -39,7 +39,11 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
         <VStack spacing="sp24">
             <QRCode data={address} />
             <Pressable onLongPress={handleCopyAddress} style={applyStyle(addressContainer)}>
-                <Text variant="titleSmall" textAlign="center">
+                <Text
+                    variant="titleSmall"
+                    textAlign="center"
+                    testID="@receive/confirmed-receive-address"
+                >
                     {address}
                 </Text>
             </Pressable>
