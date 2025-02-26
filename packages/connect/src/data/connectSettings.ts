@@ -49,6 +49,7 @@ const parseManifest = (manifest?: Manifest) => {
 // `trezord` will block communication anyway
 export const corsValidator = (url?: string) => {
     if (typeof url !== 'string') return;
+    if (url === '../') return url; // suite-web way
     if (url.match(/^https:\/\/([A-Za-z0-9\-_]+\.)*trezor\.io\//)) return url;
     if (url.match(/^https?:\/\/localhost:[58][0-9]{3}\//)) return url;
     if (url.match(/^https:\/\/([A-Za-z0-9\-_]+\.)*sldev\.cz\//)) return url;
@@ -75,7 +76,7 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.trustedHost = input.trustedHost;
     }
 
-    if (typeof input.connectSrc === 'string' && input.connectSrc?.startsWith('http')) {
+    if (typeof input.connectSrc === 'string') {
         settings.connectSrc = corsValidator(input.connectSrc);
     } else if (settings.trustedHost) {
         settings.connectSrc = input.connectSrc;
