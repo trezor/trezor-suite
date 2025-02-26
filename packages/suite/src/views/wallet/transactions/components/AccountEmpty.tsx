@@ -1,4 +1,8 @@
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    getNetwork,
+    getNetworkDisplaySymbol,
+    getNetworkFeatures,
+} from '@suite-common/wallet-config';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -14,7 +18,10 @@ interface AccountEmptyProps {
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const dispatch = useDispatch();
 
+    const isTokensNetwork = getNetworkFeatures(account.symbol).includes('tokens');
+
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkName = getNetwork(account.symbol).name;
 
     const handleNavigateToReceivePage = () => {
         dispatch(goto('wallet-receive', { preserveParams: true }));
@@ -40,10 +47,17 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
         <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_IS_EMPTY_TITLE" />}
             description={
-                <Translation
-                    id="TR_ACCOUNT_IS_EMPTY_DESCRIPTION"
-                    values={{ network: displaySymbol }}
-                />
+                isTokensNetwork ? (
+                    <Translation
+                        id="TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION"
+                        values={{ networkName, networkDisplaySymbol: displaySymbol }}
+                    />
+                ) : (
+                    <Translation
+                        id="TR_ACCOUNT_IS_EMPTY_DESCRIPTION"
+                        values={{ network: displaySymbol }}
+                    />
+                )
             }
             iconName="arrowsLeftRight"
             iconVariant="tertiary"
@@ -52,7 +66,9 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     'data-testid': '@accounts/empty-account/receive',
                     key: '1',
                     onClick: handleNavigateToReceivePage,
-                    children: (
+                    children: isTokensNetwork ? (
+                        <Translation id="TR_RECEIVE" />
+                    ) : (
                         <Translation
                             id="TR_RECEIVE_NETWORK"
                             values={{ networkDisplaySymbol: displaySymbol }}
@@ -63,7 +79,9 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
                     'data-testid': '@accounts/empty-account/buy',
                     key: '2',
                     onClick: handleNavigateToBuyPage,
-                    children: (
+                    children: isTokensNetwork ? (
+                        <Translation id="TR_BUY" />
+                    ) : (
                         <Translation
                             id="TR_BUY_NETWORK"
                             values={{ networkDisplaySymbol: displaySymbol }}

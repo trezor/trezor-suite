@@ -2821,6 +2821,11 @@ export default defineMessages({
         defaultMessage: 'Get started by receiving or buying {network}.',
         id: 'TR_ACCOUNT_IS_EMPTY_DESCRIPTION',
     },
+    TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION: {
+        defaultMessage:
+            'Get started by receiving or buying {networkDisplaySymbol} or any token on the {networkName} network.',
+        id: 'TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION',
+    },
     TR_GENERIC_ERROR_TITLE: {
         defaultMessage: 'Oops! Something went wrong!',
         description: 'Generic error message title',
