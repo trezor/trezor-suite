@@ -2,6 +2,7 @@
 @playwright/browser-firefox
 @playwright/browser-webkit
 @playwright/test
+@currents/playwright
 @currents/cmd
 jest-junit
 @types/lodash

@@ -27,10 +27,10 @@ import history from 'src/support/history';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import AppRouter from './support/Router';
-import { useCypress } from './support/useCypress';
+import { usePlaywright } from './support/usePlaywright';
 
 const Main = () => {
-    useCypress();
+    usePlaywright();
     useTor();
     useDebugLanguageShortcut();
     const formattersConfig = useFormattersConfig();

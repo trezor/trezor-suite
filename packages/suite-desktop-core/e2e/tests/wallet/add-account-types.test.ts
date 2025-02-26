@@ -1,8 +1,8 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EventType } from '@trezor/suite-analytics';
-import { ExtractByEventType } from '@trezor/suite-web/e2e/support/types';
 
 import { expect, test } from '../../support/fixtures';
+import { ExtractByEventType } from '../../support/types';
 
 test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
     test.use({

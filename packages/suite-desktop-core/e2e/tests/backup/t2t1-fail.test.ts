@@ -1,7 +1,7 @@
 import { EventType } from '@trezor/suite-analytics';
-import { ExtractByEventType } from '@trezor/suite-web/e2e/support/types';
 
 import { expect, test } from '../../support/fixtures';
+import { ExtractByEventType } from '../../support/types';
 
 test.describe('Backup fail', { tag: ['@group=device-management'] }, () => {
     test.use({

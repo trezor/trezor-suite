@@ -1,8 +1,8 @@
 import { EventType } from '@trezor/suite-analytics';
-import { ExtractByEventType } from '@trezor/suite-web/e2e/support/types';
 import { splitStringEveryNCharacters } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
+import { ExtractByEventType } from '../../support/types';
 
 const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';
 const defAddr = 'bc1qek0hazgrelpuce8anp72ur4kpgel74ype3pw52';

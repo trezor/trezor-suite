@@ -143,7 +143,7 @@ const test = base.extend<Fixtures>({
             });
         } else {
             await webPage.context().addInitScript(() => {
-                // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/useCypress.ts
+                // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/usePlaywright.ts
                 window.Playwright = true;
             });
             await webPage.goto('./');

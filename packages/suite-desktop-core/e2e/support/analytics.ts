@@ -2,9 +2,9 @@ import { Page } from '@playwright/test';
 
 import { urlSearchParams } from '@trezor/suite/src/utils/suite/metadata';
 import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
-import { EventPayload, Requests } from '@trezor/suite-web/e2e/support/types';
 
 import { step } from './common';
+import { EventPayload, Requests } from './types';
 import { expect } from '../support/fixtures';
 
 export class AnalyticsFixture {
