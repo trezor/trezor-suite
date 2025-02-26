@@ -2,9 +2,10 @@ import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { A, pipe } from '@mobily/ts-belt';
-import { CommonActions, useNavigation } from '@react-navigation/native';
+import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { UnreachableCaseError } from '@suite-common/suite-utils';
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
@@ -49,8 +50,10 @@ export type AddCoinAccountNavigationProps = StackToStackCompositeNavigationProps
     RootStackParamList
 >;
 
+export type AddCoinEnabledAccountType = Exclude<AccountType, 'coinjoin' | 'imported' | 'ledger'>;
+
 export const accountTypeTranslationKeys: Record<
-    Exclude<AccountType, 'coinjoin' | 'imported' | 'ledger'>,
+    AddCoinEnabledAccountType,
     { titleKey: TxKeyPath; subtitleKey: TxKeyPath; descKey: TxKeyPath }
 > = {
     normal: {
@@ -78,6 +81,7 @@ export const accountTypeTranslationKeys: Record<
 export const useAddCoinAccount = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
+    const { name: routeName } = useRoute();
 
     const supportedNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
     const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
@@ -98,7 +102,7 @@ export const useAddCoinAccount = () => {
     } = useAddCoinAccountAlerts();
 
     const [networkSymbolWithTypeToBeAdded, setNetworkSymbolWithTypeToBeAdded] = useState<
-        [NetworkSymbol, AccountType] | null
+        [NetworkSymbol, AddCoinEnabledAccountType] | null
     >(null);
 
     const availableNetworkAccountTypes = useMemo(() => {
@@ -133,7 +137,11 @@ export const useAddCoinAccount = () => {
 
     const setDefaultAccountToBeAdded = (symbol: NetworkSymbol) => {
         const defaultType = getAvailableAccountTypesForNetworkSymbol({ symbol })[0];
-        setNetworkSymbolWithTypeToBeAdded([symbol, defaultType]);
+        const type = defaultType as AddCoinEnabledAccountType;
+
+        if (type) {
+            setNetworkSymbolWithTypeToBeAdded([symbol, type]);
+        }
     };
 
     const navigateToSuccessorScreen = ({
@@ -178,7 +186,62 @@ export const useAddCoinAccount = () => {
                     },
                 });
                 break;
+            case 'trade':
+                if (
+                    routeName === AddCoinAccountStackRoutes.AddCoinDiscoveryFinished ||
+                    routeName === AddCoinAccountStackRoutes.SelectAccountType
+                ) {
+                    navigation.popToTop();
+                }
+                break;
+
+            default:
+                throw new UnreachableCaseError(flowType);
         }
+    };
+
+    const navigateToFailureScreen = ({
+        flowType,
+        errorString,
+    }: {
+        flowType: AddCoinFlowType;
+        errorString: string | undefined;
+    }) => {
+        let screen: AppTabsRoutes;
+        switch (flowType) {
+            case 'home':
+            case 'receive':
+                screen = AppTabsRoutes.HomeStack;
+                break;
+            case 'accounts':
+                screen = AppTabsRoutes.AccountsStack;
+                break;
+            case 'trade':
+                screen = AppTabsRoutes.TradeStack;
+                break;
+
+            default:
+                throw new UnreachableCaseError(flowType);
+        }
+
+        if (errorString === 'Passphrase is incorrect') {
+            showPassphraseAuthAlert();
+        } else {
+            showGeneralErrorAlert();
+        }
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: {
+                            screen,
+                        },
+                    },
+                ],
+            }),
+        );
     };
 
     const clearNetworkWithTypeToBeAdded = () => {
@@ -211,13 +274,16 @@ export const useAddCoinAccount = () => {
         return true;
     };
 
-    const handleAccountTypeSelection = flowType => {
+    const handleAccountTypeSelection = (flowType: AddCoinFlowType) => {
         if (networkSymbolWithTypeToBeAdded) {
             clearNetworkWithTypeToBeAdded();
-            navigation.navigate(AddCoinAccountStackRoutes.SelectAccountType, {
-                accountType: networkSymbolWithTypeToBeAdded[1] ?? NORMAL_ACCOUNT_TYPE,
-                networkSymbol: networkSymbolWithTypeToBeAdded[0],
-                flowType,
+            navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
+                screen: AddCoinAccountStackRoutes.SelectAccountType,
+                params: {
+                    accountType: networkSymbolWithTypeToBeAdded[1] ?? NORMAL_ACCOUNT_TYPE,
+                    networkSymbol: networkSymbolWithTypeToBeAdded[0],
+                    flowType,
+                },
             });
         }
     };
@@ -281,29 +347,7 @@ export const useAddCoinAccount = () => {
             !firstHiddenEmptyAccount && // Do not show error if we are just making the first hidden empty account visible
             isRejected(newAccountResult)
         ) {
-            let screen = AppTabsRoutes.HomeStack;
-            if (flowType === 'accounts') {
-                screen = AppTabsRoutes.AccountsStack;
-            }
-
-            if (newAccountResult.payload === 'Passphrase is incorrect') {
-                showPassphraseAuthAlert();
-            } else {
-                showGeneralErrorAlert();
-            }
-            navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [
-                        {
-                            name: RootStackRoutes.AppTabs,
-                            params: {
-                                screen,
-                            },
-                        },
-                    ],
-                }),
-            );
+            navigateToFailureScreen({ flowType, errorString: newAccountResult.payload });
         }
     };
 
@@ -322,10 +366,21 @@ export const useAddCoinAccount = () => {
 
         if (!enabledDiscoveryNetworkSymbols.includes(symbol)) {
             clearNetworkWithTypeToBeAdded();
-            navigation.replace(AddCoinAccountStackRoutes.AddCoinDiscoveryRunning, {
-                networkSymbol: symbol,
-                flowType,
-            });
+
+            if (flowType === 'trade') {
+                navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
+                    screen: AddCoinAccountStackRoutes.AddCoinDiscoveryRunning,
+                    params: {
+                        networkSymbol: symbol,
+                        flowType,
+                    },
+                });
+            } else {
+                navigation.replace(AddCoinAccountStackRoutes.AddCoinDiscoveryRunning, {
+                    networkSymbol: symbol,
+                    flowType,
+                });
+            }
 
             return;
         }
@@ -339,6 +394,18 @@ export const useAddCoinAccount = () => {
         }
     };
 
+    const handleAccountTypeConfirmation = async (flowType: AddCoinFlowType) => {
+        if (networkSymbolWithTypeToBeAdded) {
+            clearNetworkWithTypeToBeAdded();
+            await new Promise(resolve => setTimeout(resolve, 100));
+            await addCoinAccount({
+                symbol: networkSymbolWithTypeToBeAdded[0],
+                accountType: networkSymbolWithTypeToBeAdded[1],
+                flowType,
+            });
+        }
+    };
+
     return {
         supportedNetworkSymbols,
         onSelectedNetworkItem,
@@ -349,5 +416,6 @@ export const useAddCoinAccount = () => {
         clearNetworkWithTypeToBeAdded,
         getAccountTypeToBeAddedName,
         handleAccountTypeSelection,
+        handleAccountTypeConfirmation,
     };
 };

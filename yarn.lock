@@ -10949,8 +10949,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-trading@workspace:suite-native/module-trading"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
+    "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:1.9.5"
+    "@shopify/flash-list": "npm:^1.7.2"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
@@ -10959,6 +10962,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
+    react-native-safe-area-context: "npm:^4.14.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft

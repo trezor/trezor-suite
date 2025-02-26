@@ -43,7 +43,7 @@ export const AccountSheetHeader = ({
                 onLeftButtonPress={onClose}
                 leftButtonA11yLabel={translate('generic.buttons.close')}
             >
-                <Translation id="moduleTrading.accountSheet.titleStep1" />
+                <Translation id="moduleTrading.accountScreen.titleStep1" />
             </SheetHeaderTitle>
         </VStack>
     );

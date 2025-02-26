@@ -1,88 +1,125 @@
+import { useNavigation } from '@react-navigation/native';
+
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { fireEvent, render } from '@suite-native/test-utils';
+import { PreloadedState, fireEvent, renderWithStore, waitFor } from '@suite-native/test-utils';
 import { Address } from '@trezor/blockchain-link-types';
 
-import { ReceiveAccountPicker, ReceiveAccountPickerProps } from '../ReceiveAccountPicker';
+import { ReceiveAccount } from '../../../types';
+import { ReceiveAccountPicker } from '../ReceiveAccountPicker';
 
-jest.mock('../../general/AccountSheet/AccountSheet');
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: jest.fn(),
+}));
+
+const btcAccountName1 = 'BTC Account #1';
+
+const btcAddressAddress = 'abc123';
+
+const btcAddress: Address = {
+    address: btcAddressAddress,
+    path: '1/1/1',
+    transfers: 0,
+    balance: 0.0,
+    sent: '0',
+    received: '0',
+} as unknown as Address;
+
+const btcAccount: Account = {
+    symbol: 'btc',
+    accountLabel: btcAccountName1,
+    deviceState: 'device@state:1',
+    addresses: {
+        change: [],
+        used: [],
+        unused: [btcAddress],
+    },
+    key: 'btc1',
+    visible: true,
+    networkType: 'bitcoin',
+} as unknown as Account;
+
+const getBuyState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
+    wallet: {
+        trading: {
+            buy: {
+                selectedReceiveAccount,
+            },
+        },
+    },
+});
 
 describe('ReceiveAccountPicker', () => {
-    const renderPicker = ({
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    const renderPicker = async ({
         selectedSymbol,
-        selectedValue,
-        setSelectedValue = jest.fn(),
-        isSheetVisible = false,
-        hideSheet = jest.fn(),
-        showSheet = jest.fn(),
-    }: Partial<ReceiveAccountPickerProps>) =>
-        render(
-            <ReceiveAccountPicker
-                selectedSymbol={selectedSymbol}
-                isSheetVisible={isSheetVisible}
-                hideSheet={hideSheet}
-                showSheet={showSheet}
-                setSelectedValue={setSelectedValue}
-                selectedValue={selectedValue}
-            />,
-        );
+        preloadedState,
+    }: {
+        selectedSymbol: NetworkSymbol | undefined;
+        preloadedState?: PreloadedState;
+    }) => {
+        const result = renderWithStore(<ReceiveAccountPicker selectedSymbol={selectedSymbol} />, {
+            preloadedState,
+        });
+        await waitFor(() => expect(result.getByText('Receive account')).toBeDefined());
 
-    it('should display "Select coin first" when selectedSymbol is not specified', () => {
-        const { getByText } = renderPicker({ selectedSymbol: undefined });
+        return result;
+    };
 
+    it('should display "Select coin first" when selectedSymbol is not specified', async () => {
+        const { getByText } = await renderPicker({ selectedSymbol: undefined });
         expect(getByText('Select coin first')).toBeDefined();
     });
 
-    it('should not call showSheet when selectedSymbol is not specified', () => {
-        const showSheet = jest.fn();
-        const { getByText } = renderPicker({ selectedSymbol: undefined, showSheet });
+    it('should not call showSheet when selectedSymbol is not specified', async () => {
+        const openAccountPicker = jest.fn();
+        const { getByText } = await renderPicker({ selectedSymbol: undefined });
 
         fireEvent.press(getByText('Receive account'));
 
-        expect(showSheet).not.toHaveBeenCalled();
+        expect(openAccountPicker).not.toHaveBeenCalled();
     });
 
-    it('should display "Not selected" when selectedValue is not specified', () => {
-        const { getByText } = renderPicker({ selectedSymbol: 'btc', selectedValue: undefined });
+    it('should display "Not selected" when selectedValue is not specified', async () => {
+        const { getByText } = await renderPicker({ selectedSymbol: 'btc' });
 
         expect(getByText('Not selected')).toBeDefined();
     });
 
-    it('should call showSheet when selectedSymbol is specified and picker pressed', () => {
-        const showSheet = jest.fn();
-        const { getByText } = renderPicker({ selectedSymbol: 'btc', showSheet });
+    it('should call openAccountPicker when selectedSymbol is specified and picker pressed', async () => {
+        const navigate = jest.fn(); // Create a mock function
+        (useNavigation as jest.Mock).mockReturnValue({ navigate });
+
+        const { getByText } = await renderPicker({
+            selectedSymbol: 'etc',
+            preloadedState: getBuyState(undefined),
+        });
 
         fireEvent.press(getByText('Receive account'));
 
-        expect(showSheet).toHaveBeenCalledTimes(1);
+        expect(navigate).toHaveBeenCalledTimes(1);
     });
 
-    it('should display selected account name', () => {
-        const { getByText } = renderPicker({
-            selectedSymbol: 'eth',
-            selectedValue: {
-                account: {
-                    accountLabel: 'Account label',
-                } as unknown as Account,
-            },
-        });
-
-        expect(getByText('Account label')).toBeDefined();
-    });
-
-    it('should display selected account name and address', () => {
-        const { getByText } = renderPicker({
+    it('should display selected account name', async () => {
+        const { getByText } = await renderPicker({
             selectedSymbol: 'btc',
-            selectedValue: {
-                account: {
-                    accountLabel: 'Account label',
-                } as unknown as Account,
-                address: {
-                    address: 'Address',
-                } as unknown as Address,
-            },
+            preloadedState: getBuyState({ account: btcAccount }),
         });
 
-        expect(getByText('Account label')).toBeDefined();
-        expect(getByText('Address')).toBeDefined();
+        expect(getByText(btcAccountName1)).toBeDefined();
+    });
+
+    it('should display selected account name and address', async () => {
+        const { getByText } = await renderPicker({
+            selectedSymbol: 'btc',
+            preloadedState: getBuyState({ account: btcAccount, address: btcAddress }),
+        });
+
+        expect(getByText(btcAccountName1)).toBeDefined();
+        expect(getByText(btcAddressAddress)).toBeDefined();
     });
 });

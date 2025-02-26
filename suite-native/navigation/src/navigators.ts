@@ -143,7 +143,7 @@ export type AccountsImportStackParamList = {
     };
 };
 
-export type AddCoinFlowType = 'home' | 'receive' | 'accounts';
+export type AddCoinFlowType = 'home' | 'receive' | 'accounts' | 'trade';
 
 export type AddCoinAccountStackParamList = {
     [AddCoinAccountStackRoutes.AddCoinAccount]: {
@@ -233,4 +233,5 @@ export type RootStackParamList = {
 
 export type TradingStackParamList = {
     [TradingStackRoutes.Trading]: undefined;
+    [TradingStackRoutes.ReceiveAccounts]: { symbol: NetworkSymbol };
 };

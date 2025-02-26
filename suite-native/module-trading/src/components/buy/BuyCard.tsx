@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
@@ -10,7 +11,8 @@ import { ReceiveAccountCryptoBalance } from './ReceiveAccountCryptoBalance';
 import { ReceiveAccountPicker } from './ReceiveAccountPicker';
 import { TradeableAssetPicker } from './TradeableAssetPicker';
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
-import { ReceiveAccount, TradeableAsset } from '../../types';
+import { selectBuySelectedReceiveAccount, setBuySelectedReceiveAccount } from '../../tradingSlice';
+import { TradeableAsset } from '../../types';
 
 const buySectionStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
     borderBottomWidth: borders.widths.small,
@@ -22,20 +24,17 @@ const buySectionStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
 export const BuyCard = () => {
     const { FiatAmountFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
+    const dispatch = useDispatch();
+    const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
 
     const { selectedValue: selectedAsset, ...restAssetControls } =
         useTradeSheetControls<TradeableAsset>();
-    const {
-        selectedValue: selectedReceiveAccount,
-        setSelectedValue: setReceiveAccount,
-        ...restReceiveAccountControls
-    } = useTradeSheetControls<ReceiveAccount>();
 
     const selectedSymbol = selectedAsset?.symbol;
 
     useEffect(() => {
-        setReceiveAccount(undefined);
-    }, [selectedSymbol, setReceiveAccount]);
+        dispatch(setBuySelectedReceiveAccount({ selectedReceiveAccount: undefined }));
+    }, [dispatch, selectedSymbol]);
 
     return (
         <Card noPadding>
@@ -62,12 +61,7 @@ export const BuyCard = () => {
                     </HStack>
                 </HStack>
             </VStack>
-            <ReceiveAccountPicker
-                selectedSymbol={selectedSymbol}
-                selectedValue={selectedReceiveAccount}
-                setSelectedValue={setReceiveAccount}
-                {...restReceiveAccountControls}
-            />
+            <ReceiveAccountPicker selectedSymbol={selectedSymbol} />
         </Card>
     );
 };

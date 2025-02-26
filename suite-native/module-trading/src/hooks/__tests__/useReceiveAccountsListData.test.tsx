@@ -7,7 +7,7 @@ import {
     waitFor,
 } from '@suite-native/test-utils';
 
-import { useReceiveAccountsListData } from '../useReceiveAccountsListData';
+import { ReceiveAccountsListMode, useReceiveAccountsListData } from '../useReceiveAccountsListData';
 
 describe('useReceiveAccountsListData', () => {
     const defaultPreloadedState = {
@@ -59,10 +59,12 @@ describe('useReceiveAccountsListData', () => {
     const renderUseReceiveAccountsListDataHook = async (
         initialSymbol: NetworkSymbol,
         initialSelectedAccount: undefined | Account,
+        initialMode: ReceiveAccountsListMode,
         preloadedState: PreloadedState = defaultPreloadedState,
     ) => {
         const ret = renderHook(
-            ({ symbol, selectedAccount }) => useReceiveAccountsListData(symbol, selectedAccount),
+            ({ symbol, selectedAccount, mode }) =>
+                useReceiveAccountsListData({ symbol, selectedAccount, mode }),
             {
                 wrapper: ({ children }) => (
                     <StoreProviderForTests preloadedState={preloadedState}>
@@ -72,6 +74,7 @@ describe('useReceiveAccountsListData', () => {
                 initialProps: {
                     symbol: initialSymbol,
                     selectedAccount: initialSelectedAccount,
+                    mode: initialMode,
                 },
             },
         );
@@ -85,7 +88,11 @@ describe('useReceiveAccountsListData', () => {
 
     describe('without account selected', () => {
         it('should display all accounts for given symbol', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook('btc', undefined);
+            const { result } = await renderUseReceiveAccountsListDataHook(
+                'btc',
+                undefined,
+                'account',
+            );
 
             expect(result.current).toEqual([
                 {
@@ -103,9 +110,10 @@ describe('useReceiveAccountsListData', () => {
             const { result, rerender } = await renderUseReceiveAccountsListDataHook(
                 'btc',
                 undefined,
+                'account',
             );
 
-            rerender({ symbol: 'eth', selectedAccount: undefined });
+            rerender({ symbol: 'eth', selectedAccount: undefined, mode: 'account' });
 
             expect(result.current).toEqual([
                 {
@@ -117,10 +125,15 @@ describe('useReceiveAccountsListData', () => {
         });
 
         it('should render empty array when wallet accounts are not initialized', async () => {
-            const { result } = await renderUseReceiveAccountsListDataHook('btc', undefined, {
-                ...defaultPreloadedState,
-                wallet: undefined,
-            });
+            const { result } = await renderUseReceiveAccountsListDataHook(
+                'btc',
+                undefined,
+                'account',
+                {
+                    ...defaultPreloadedState,
+                    wallet: undefined,
+                },
+            );
 
             expect(result.current).toEqual([]);
         });
@@ -131,6 +144,7 @@ describe('useReceiveAccountsListData', () => {
             const { result } = await renderUseReceiveAccountsListDataHook(
                 'eth',
                 defaultPreloadedState.wallet.accounts[2],
+                'address',
             );
 
             expect(result.current).toEqual([]);
@@ -140,6 +154,7 @@ describe('useReceiveAccountsListData', () => {
             const { result } = await renderUseReceiveAccountsListDataHook(
                 'btc',
                 defaultPreloadedState.wallet.accounts[0],
+                'address',
             );
 
             expect(result.current).toEqual([
@@ -174,6 +189,7 @@ describe('useReceiveAccountsListData', () => {
             const { result } = await renderUseReceiveAccountsListDataHook(
                 'btc',
                 defaultPreloadedState.wallet.accounts[1],
+                'address',
             );
 
             expect(result.current).toEqual([]);
@@ -204,6 +220,7 @@ describe('useReceiveAccountsListData', () => {
             const { result } = await renderUseReceiveAccountsListDataHook(
                 'eth',
                 undefined,
+                'account',
                 preloadedState,
             );
 

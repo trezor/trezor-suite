@@ -89,7 +89,7 @@ export const AccountListItem = ({
                                     textColor: 'textDefault',
                                 })}
                                 accessibilityLabel={translate(
-                                    'moduleTrading.accountSheet.balanceCrypto',
+                                    'moduleTrading.accountScreen.balanceCrypto',
                                 )}
                                 isBalance={false}
                                 decimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
@@ -110,7 +110,7 @@ export const AccountListItem = ({
                                 variant="hint"
                                 style={applyStyle(labelTextStyle, { textColor: 'textSubdued' })}
                                 accessibilityLabel={translate(
-                                    'moduleTrading.accountSheet.balanceFiat',
+                                    'moduleTrading.accountScreen.balanceFiat',
                                 )}
                             />
                         )}
@@ -121,7 +121,7 @@ export const AccountListItem = ({
                         <Icon
                             name="caretCircleRight"
                             color="textSecondaryHighlight"
-                            accessibilityHint={translate('moduleTrading.accountSheet.step2Hint')}
+                            accessibilityHint={translate('moduleTrading.accountScreen.step2Hint')}
                         />
                     </Box>
                 )}

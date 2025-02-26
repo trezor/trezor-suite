@@ -25,7 +25,11 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { accountTypeTranslationKeys, useAddCoinAccount } from '../hooks/useAddCoinAccount';
+import {
+    AddCoinEnabledAccountType,
+    accountTypeTranslationKeys,
+    useAddCoinAccount,
+} from '../hooks/useAddCoinAccount';
 
 const GRADIENT_HEIGHT = 48;
 
@@ -82,6 +86,14 @@ const aboutStyle = prepareNativeStyle((utils, { bottomInset }: { bottomInset: nu
     gap: utils.spacings.sp12,
 }));
 
+const getAccountTypeTranslations = (type: AccountType) => {
+    if (!Object.keys(accountTypeTranslationKeys).includes(type)) {
+        return undefined;
+    }
+
+    return accountTypeTranslationKeys[type as AddCoinEnabledAccountType];
+};
+
 export const SelectAccountTypeScreen = ({
     route,
     navigation,
@@ -99,7 +111,8 @@ export const SelectAccountTypeScreen = ({
     const types: AccountType[] = getAvailableAccountTypesForNetworkSymbol({
         symbol: networkSymbol,
     });
-    const { titleKey: accountTypeKey } = accountTypeTranslationKeys[selectedAccountType];
+
+    const accountTypeKey = getAccountTypeTranslations(selectedAccountType)?.titleKey;
 
     const handleClose = () => navigation.goBack();
 
@@ -129,7 +142,11 @@ export const SelectAccountTypeScreen = ({
             >
                 <VStack spacing="sp24" style={applyStyle(itemsStyle)}>
                     {types.map(item => {
-                        const { titleKey, subtitleKey, descKey } = accountTypeTranslationKeys[item];
+                        const intlData = getAccountTypeTranslations(item);
+                        if (!intlData) {
+                            return null;
+                        }
+                        const { titleKey, subtitleKey, descKey } = intlData;
 
                         return (
                             <SelectableItem
@@ -167,7 +184,7 @@ export const SelectAccountTypeScreen = ({
                         <Translation
                             id="moduleAddAccounts.selectAccountTypeScreen.buttons.confirm"
                             values={{
-                                type: _ => translate(accountTypeKey),
+                                type: _ => (accountTypeKey ? translate(accountTypeKey) : undefined),
                             }}
                         />
                     </Button>

@@ -6,6 +6,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { ReceiveAccountsPickerScreen } from '../screens/ReceiveAccountsPickerScreen';
 import { TradingScreen } from '../screens/TradingScreen';
 
 const TradingStack = createNativeStackNavigator<TradingStackParamList>();
@@ -19,6 +20,11 @@ export const TradingStackNavigator = () => (
             options={{ title: TradingStackRoutes.Trading }}
             name={TradingStackRoutes.Trading}
             component={TradingScreen}
+        />
+        <TradingStack.Screen
+            options={{ title: TradingStackRoutes.ReceiveAccounts }}
+            name={TradingStackRoutes.ReceiveAccounts}
+            component={ReceiveAccountsPickerScreen}
         />
     </TradingStack.Navigator>
 );

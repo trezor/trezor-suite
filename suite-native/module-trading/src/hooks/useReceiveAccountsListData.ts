@@ -10,13 +10,22 @@ import {
 import { Account } from '@suite-common/wallet-types/';
 import { useTranslate } from '@suite-native/intl';
 
-import { SectionListData } from '../components/general/TradingBottomSheetSectionList';
+import { SectionListData } from './useSectionList';
 import { ReceiveAccount } from '../types';
 
-export const useReceiveAccountsListData = (
-    symbol: NetworkSymbol,
-    selectedAccount: undefined | Account,
-) => {
+export type ReceiveAccountsListMode = 'account' | 'address';
+
+type UseReceiveAccountsListDataProps = {
+    symbol: NetworkSymbol;
+    selectedAccount: undefined | Account;
+    mode: ReceiveAccountsListMode;
+};
+
+export const useReceiveAccountsListData = ({
+    symbol,
+    selectedAccount,
+    mode,
+}: UseReceiveAccountsListDataProps) => {
     const { translate } = useTranslate();
 
     const accounts = useSelector((state: AccountsRootState & DeviceRootState) =>
@@ -24,7 +33,7 @@ export const useReceiveAccountsListData = (
     );
 
     return useMemo<SectionListData<ReceiveAccount>>(() => {
-        if (!selectedAccount) {
+        if (mode === 'account') {
             const data = accounts.map(account => ({ account }));
 
             return data.length === 0
@@ -39,7 +48,7 @@ export const useReceiveAccountsListData = (
                   ];
         }
 
-        if (!selectedAccount.addresses) {
+        if (!selectedAccount?.addresses) {
             return [];
         }
 
@@ -55,16 +64,16 @@ export const useReceiveAccountsListData = (
         return [
             {
                 key: 'unused',
-                label: translate('moduleTrading.accountSheet.newAddress'),
+                label: translate('moduleTrading.accountScreen.newAddress'),
                 data: unused.slice(0, 1).map(mapAddressToReceiveAccount),
                 sectionData: undefined,
             },
             {
                 key: 'used',
-                label: translate('moduleTrading.accountSheet.usedAddresses'),
+                label: translate('moduleTrading.accountScreen.usedAddresses'),
                 data: used.map(mapAddressToReceiveAccount),
                 sectionData: undefined,
             },
         ].filter(section => section.data.length > 0);
-    }, [accounts, selectedAccount, translate]);
+    }, [accounts, selectedAccount, translate, mode]);
 };

@@ -12,15 +12,34 @@ import { Account } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
 import { Box, Button, Card, Text, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import {
+    AddCoinAccountStackParamList,
+    AddCoinAccountStackRoutes,
+    RootStackParamList,
+    Screen,
+    ScreenHeader,
+    StackProps,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountTypeDecisionBottomSheet } from '../components/AccountTypeDecisionBottomSheet';
 import { useAddCoinAccount } from '../hooks/useAddCoinAccount';
 
+export type AddCoinDiscoveryFinishedScreenNavigationProps = StackToStackCompositeNavigationProps<
+    AddCoinAccountStackParamList,
+    AddCoinAccountStackRoutes.AddCoinDiscoveryFinished,
+    RootStackParamList
+>;
+
 const accountsStyle = prepareNativeStyle(_ => ({ paddingHorizontal: 0, paddingTop: 0 }));
 
-export const AddCoinDiscoveryFinishedScreen = ({ route }) => {
+export const AddCoinDiscoveryFinishedScreen = ({
+    route,
+}: StackProps<
+    AddCoinAccountStackParamList,
+    AddCoinAccountStackRoutes.AddCoinDiscoveryFinished
+>) => {
     const { networkSymbol, flowType } = route.params;
 
     const { applyStyle } = useNativeStyles();
@@ -29,7 +48,7 @@ export const AddCoinDiscoveryFinishedScreen = ({ route }) => {
     ).filter(a => !a.empty);
     const {
         navigateToSuccessorScreen,
-        addCoinAccount,
+        handleAccountTypeConfirmation,
         onSelectedNetworkItem,
         networkSymbolWithTypeToBeAdded,
         clearNetworkWithTypeToBeAdded,
@@ -49,19 +68,7 @@ export const AddCoinDiscoveryFinishedScreen = ({ route }) => {
 
     const handleTypeSelectionTap = () => handleAccountTypeSelection(flowType);
 
-    const handleConfirmTap = () => {
-        if (networkSymbolWithTypeToBeAdded) {
-            // Timeout is needed so AccountTypeDecisionBottomSheet has time to hide otherwise app crashes
-            setTimeout(() => {
-                addCoinAccount({
-                    symbol: networkSymbolWithTypeToBeAdded[0],
-                    accountType: networkSymbolWithTypeToBeAdded[1],
-                    flowType,
-                });
-            }, 100);
-            clearNetworkWithTypeToBeAdded();
-        }
-    };
+    const handleConfirmTap = () => handleAccountTypeConfirmation(flowType);
 
     const titleKey =
         accounts.length === 1
@@ -105,11 +112,7 @@ export const AddCoinDiscoveryFinishedScreen = ({ route }) => {
                 </Box>
             </Card>
             <AccountTypeDecisionBottomSheet
-                coinName={
-                    G.isNotNullable(networkSymbolWithTypeToBeAdded)
-                        ? networkSymbolWithTypeToBeAdded[0]
-                        : ''
-                }
+                coinName={networkSymbol}
                 typeName={getAccountTypeToBeAddedName()}
                 isVisible={G.isNotNullable(networkSymbolWithTypeToBeAdded)}
                 onClose={clearNetworkWithTypeToBeAdded}

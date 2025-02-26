@@ -18,11 +18,18 @@ import {
     toggleEnabledDiscoveryNetworkSymbol,
 } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
-import { AddCoinAccountStackRoutes, Screen } from '@suite-native/navigation';
+import {
+    AddCoinAccountStackParamList,
+    AddCoinAccountStackRoutes,
+    Screen,
+    StackProps,
+} from '@suite-native/navigation';
 
 import { AddCoinAccountNavigationProps, useAddCoinAccount } from '../hooks/useAddCoinAccount';
 
-export const AddCoinDiscoveryRunningScreen = ({ route }) => {
+export const AddCoinDiscoveryRunningScreen = ({
+    route,
+}: StackProps<AddCoinAccountStackParamList, AddCoinAccountStackRoutes.AddCoinDiscoveryRunning>) => {
     const { networkSymbol, flowType } = route.params;
     const dispatch = useDispatch();
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
@@ -45,23 +52,32 @@ export const AddCoinDiscoveryRunningScreen = ({ route }) => {
     };
 
     const handleFinish = () => {
+        if (accounts.length === 0 || hasDiscovery) {
+            return;
+        }
+
+        setLoadingResult('success');
+
+        if (flowType === 'trade') {
+            navigation.popToTop();
+
+            return;
+        }
+
         const normalAccounts = accounts.filter(a => a.accountType === 'normal');
         const nonEmptyAccounts = accounts.filter(a => !a.empty);
-        if (!hasDiscovery) {
-            if (accounts.length > 0) {
-                setLoadingResult('success');
-            }
 
-            if (nonEmptyAccounts.length > 0 && normalAccounts.length > 0) {
-                clearNetworkWithTypeToBeAdded();
-                navigation.replace(AddCoinAccountStackRoutes.AddCoinDiscoveryFinished, {
-                    networkSymbol,
-                    flowType,
-                });
-            } else if (accounts.length > 0) {
-                goToAccountDetail({ account: normalAccounts[0] });
-            }
+        if (nonEmptyAccounts.length > 0 && normalAccounts.length > 0) {
+            clearNetworkWithTypeToBeAdded();
+            navigation.replace(AddCoinAccountStackRoutes.AddCoinDiscoveryFinished, {
+                networkSymbol,
+                flowType,
+            });
+
+            return;
         }
+
+        goToAccountDetail({ account: normalAccounts[0] });
     };
 
     useEffect(() => {

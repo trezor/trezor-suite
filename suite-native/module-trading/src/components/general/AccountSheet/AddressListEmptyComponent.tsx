@@ -4,7 +4,7 @@ import { TradingEmptyComponent } from '../TradingEmptyComponent';
 
 export const AddressListEmptyComponent = () => (
     <TradingEmptyComponent
-        title={<Translation id="moduleTrading.accountSheet.addressEmptyTitle" />}
-        description={<Translation id="moduleTrading.accountSheet.addressEmptyDescription" />}
+        title={<Translation id="moduleTrading.accountScreen.addressEmpty.title" />}
+        description={<Translation id="moduleTrading.accountScreen.addressEmpty.description" />}
     />
 );

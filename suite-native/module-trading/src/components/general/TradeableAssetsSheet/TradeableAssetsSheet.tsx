@@ -5,14 +5,11 @@ import { TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 
 import { getTradeableAssetFavouriteKey, selectTradingFavouriteAssets } from '../../../tradingSlice';
-import {
-    ItemRenderConfig,
-    SectionListData,
-    TradingBottomSheetSectionList,
-} from '../TradingBottomSheetSectionList';
+import { TradingBottomSheetSectionList } from '../TradingBottomSheetSectionList';
 import { TradeAssetsListEmptyComponent } from './TradeAssetsListEmptyComponent';
 import { ASSET_ITEM_HEIGHT, TradeableAssetListItem } from './TradeableAssetListItem';
 import { TradeableAssetsSheetHeader } from './TradeableAssetsSheetHeader';
+import { ItemRenderConfig, SectionListData } from '../../../hooks/useSectionList';
 import { TradeableAsset } from '../../../types';
 
 export type TradeableAssetsSheetProps = {

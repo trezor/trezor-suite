@@ -25,7 +25,7 @@ export const AddCoinAccountScreen = ({
         networkSymbolWithTypeToBeAdded,
         clearNetworkWithTypeToBeAdded,
         handleAccountTypeSelection,
-        addCoinAccount,
+        handleAccountTypeConfirmation,
         getAccountTypeToBeAddedName,
     } = useAddCoinAccount();
 
@@ -33,19 +33,7 @@ export const AddCoinAccountScreen = ({
 
     const handleTypeSelectionTap = () => handleAccountTypeSelection(flowType);
 
-    const handleConfirmTap = () => {
-        if (networkSymbolWithTypeToBeAdded) {
-            // Timeout is needed so AccountTypeDecisionBottomSheet has time to hide otherwise app crashes
-            setTimeout(() => {
-                addCoinAccount({
-                    symbol: networkSymbolWithTypeToBeAdded[0],
-                    accountType: networkSymbolWithTypeToBeAdded[1],
-                    flowType,
-                });
-            }, 100);
-            clearNetworkWithTypeToBeAdded();
-        }
-    };
+    const handleConfirmTap = () => handleAccountTypeConfirmation(flowType);
 
     return (
         <Screen

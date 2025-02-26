@@ -1,20 +1,13 @@
-import { ReactElement, ReactNode, useMemo } from 'react';
-import { FadeInUp, FadeOutUp } from 'react-native-reanimated';
+import { ReactElement } from 'react';
 
-import { UnreachableCaseError } from '@suite-common/suite-utils';
+import { BottomSheetFlashList, BottomSheetFlashListProps } from '@suite-native/atoms';
+
 import {
-    AnimatedBox,
-    BottomSheetFlashList,
-    BottomSheetFlashListProps,
-    Text,
-} from '@suite-native/atoms';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-export type ItemRenderConfig<U> = {
-    isFirst?: boolean;
-    isLast?: boolean;
-    sectionData: U;
-};
+    ItemRenderConfig,
+    ListInternalItemShape,
+    SectionListData,
+    useSectionList,
+} from '../../hooks/useSectionList';
 
 export type TradingBottomSheetSectionListProps<T, U> = Omit<
     BottomSheetFlashListProps<T>,
@@ -35,120 +28,6 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
     noSingletonSectionHeader?: boolean;
 };
 
-export type SectionListData<T, U = undefined> = {
-    key: string;
-    label: ReactNode;
-    sectionData: U;
-    data: T[];
-}[];
-
-type ListInternalItemShape<T, U> =
-    // [type, text, key]
-    | ['sectionHeader', ReactNode, string]
-    // [type, data, config]
-    | ['item', T, ItemRenderConfig<U>];
-
-const SECTION_HEADER_HEIGHT = 48 as const;
-
-const itemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
-    ({ colors, spacings, borders }, { isFirst, isLast }) => ({
-        backgroundColor: colors.backgroundSurfaceElevation1,
-        paddingHorizontal: spacings.sp12,
-        extend: [
-            {
-                condition: !!isFirst,
-                style: {
-                    borderTopLeftRadius: borders.radii.r20,
-                    borderTopRightRadius: borders.radii.r20,
-                },
-            },
-            {
-                condition: !!isLast,
-                style: {
-                    borderBottomLeftRadius: borders.radii.r20,
-                    borderBottomRightRadius: borders.radii.r20,
-                },
-            },
-        ],
-    }),
-);
-
-const transformToInternalFlatListData = <T, U = undefined>(
-    inputData: SectionListData<T, U>,
-    noSingletonSectionHeader: boolean | undefined,
-): ListInternalItemShape<T, U>[] =>
-    inputData.reduce(
-        (acc, { key, label, data, sectionData }) => {
-            const itemsData = data.map(
-                (item, index): ListInternalItemShape<T, U> => [
-                    'item',
-                    item,
-                    {
-                        isFirst: index === 0,
-                        isLast: index === data.length - 1,
-                        sectionData,
-                    },
-                ],
-            );
-
-            if (!noSingletonSectionHeader || inputData.length > 1) {
-                acc.push(['sectionHeader', label, key]);
-            }
-
-            acc.push(...itemsData);
-
-            return acc;
-        },
-        [] as ListInternalItemShape<T, U>[],
-    );
-
-const internalKeyExtractor = <T, U>(
-    item: ListInternalItemShape<T, U>,
-    itemKeyExtractor: (item: T, sectionData: U) => string,
-) => {
-    switch (item[0]) {
-        case 'sectionHeader':
-            return item[2];
-
-        case 'item':
-            return itemKeyExtractor(item[1], item[2].sectionData);
-
-        default:
-            throw new UnreachableCaseError(item[0]);
-    }
-};
-
-const renderInternalItem = <T, U>(
-    item: ListInternalItemShape<T, U>,
-    renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement,
-    applyStyle: ReturnType<typeof useNativeStyles>['applyStyle'],
-): ReactElement => {
-    switch (item[0]) {
-        case 'sectionHeader':
-            return (
-                <AnimatedBox paddingVertical="sp12" entering={FadeInUp} exiting={FadeOutUp}>
-                    <Text variant="hint" color="textSubdued">
-                        {item[1]}
-                    </Text>
-                </AnimatedBox>
-            );
-
-        case 'item':
-            return (
-                <AnimatedBox
-                    entering={FadeInUp}
-                    exiting={FadeOutUp}
-                    style={applyStyle(itemStyle, item[2])}
-                >
-                    {renderItem(item[1], item[2])}
-                </AnimatedBox>
-            );
-
-        default:
-            throw new UnreachableCaseError(item[0]);
-    }
-};
-
 export const TradingBottomSheetSectionList = <T, U = undefined>({
     keyExtractor,
     renderItem,
@@ -157,38 +36,23 @@ export const TradingBottomSheetSectionList = <T, U = undefined>({
     noSingletonSectionHeader,
     ...rest
 }: TradingBottomSheetSectionListProps<T, U>) => {
-    const { applyStyle } = useNativeStyles();
-
-    const sectionsCount = data.length;
-
-    const itemsCount = useMemo(
-        () =>
-            data.reduce(
-                (intermediateDataLength, { data: sectionData }) =>
-                    intermediateDataLength + sectionData.length,
-                0,
-            ),
-        [data],
-    );
-
-    const estimatedListSize = useMemo(
-        () =>
-            itemsCount * estimatedItemSize +
-            (sectionsCount === 1 && noSingletonSectionHeader
-                ? 0
-                : SECTION_HEADER_HEIGHT * sectionsCount),
-        [itemsCount, estimatedItemSize, sectionsCount, noSingletonSectionHeader],
-    );
-
-    const internalData = useMemo(
-        () => transformToInternalFlatListData<T, U>(data, noSingletonSectionHeader),
-        [data, noSingletonSectionHeader],
-    );
+    const {
+        data: internalData,
+        estimatedListSize,
+        keyExtractor: internalKeyExtractor,
+        renderItem: internalRenderItem,
+    } = useSectionList({
+        data,
+        estimatedItemSize,
+        keyExtractor,
+        renderItem,
+        noSingletonSectionHeader,
+    });
 
     return (
         <BottomSheetFlashList<ListInternalItemShape<T, U>>
-            keyExtractor={item => internalKeyExtractor(item, keyExtractor)}
-            renderItem={({ item }) => renderInternalItem(item, renderItem, applyStyle)}
+            keyExtractor={internalKeyExtractor}
+            renderItem={internalRenderItem}
             estimatedItemSize={estimatedItemSize}
             estimatedListHeight={estimatedListSize}
             data={internalData}

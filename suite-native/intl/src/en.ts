@@ -1293,10 +1293,23 @@ export const en = {
             emptyDescription:
                 'We couldn’t find a country matching your search. Try checking the spelling or exploring the list for the right option.',
         },
-        accountSheet: {
-            addressEmptyTitle: 'No address found',
-            addressEmptyDescription:
-                'We couldn’t find an address matching your search. Try checking the spelling or exploring the list for the right option.',
+        accountScreen: {
+            accountEmpty: {
+                viewOnly: {
+                    title: 'No account found',
+                    description: 'You need to connect your device to add new account.',
+                },
+                networkNotEnabled: {
+                    title: 'No account found',
+                    description:
+                        "It seems that you don't have any account matching selected asset.",
+                },
+            },
+            addressEmpty: {
+                title: 'No address found',
+                description:
+                    'We couldn’t find an address matching your search. Try checking the spelling or exploring the list for the right option.',
+            },
             titleStep1: 'Pick account',
             newAddress: 'New address',
             usedAddresses: 'Used addresses',
