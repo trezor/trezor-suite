@@ -71,6 +71,7 @@ type TooltipUiProps = {
     appendTo?: HTMLElement | null | MutableRefObject<HTMLElement | null>;
     zIndex?: ZIndexValues;
     isInline?: boolean;
+    disableFlip?: boolean;
 } & AllowedFrameProps;
 
 export type ManagedTooltipProps = ManagedModeProps & TooltipUiProps & TooltipBoxProps;
@@ -101,6 +102,7 @@ export const Tooltip = ({
     appendTo,
     shift,
     zIndex = zIndices.tooltip,
+    disableFlip = false,
     ...rest
 }: TooltipProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedTooltipFrameProps);
@@ -121,6 +123,7 @@ export const Tooltip = ({
                 offset={offset}
                 shift={shift}
                 delay={delayConfiguration}
+                disableFlip={disableFlip}
             >
                 <TooltipTrigger>
                     <Content

@@ -54,6 +54,7 @@ interface TooltipOptions {
     offset: number;
     shift?: ShiftOptions;
     delay: Delay;
+    disableFlip?: boolean;
 }
 
 type UseTooltipReturn = ReturnType<typeof useInteractions> & {
@@ -71,6 +72,7 @@ export const useTooltip = ({
     offset: offsetValue,
     delay,
     shift,
+    disableFlip = false,
 }: TooltipOptions): UseTooltipReturn => {
     const arrowRef = useRef<SVGSVGElement>(null);
     const [isUncontrolledTooltipOpen, setIsUncontrolledTooltipOpen] = useState(isInitiallyOpen);
@@ -79,17 +81,23 @@ export const useTooltip = ({
     const open = isActive === false ? false : isControlledOpen ?? isUncontrolledTooltipOpen;
     const setOpen = setControlledOpen ?? setIsUncontrolledTooltipOpen;
 
+    const middleware = useMemo(() => {
+        const middlewareArray = [
+            offset(offsetValue),
+            ...(!disableFlip ? [flip()] : []),
+            shiftFloatingUI(shift),
+            arrow({ element: arrowRef }),
+        ];
+
+        return middlewareArray;
+    }, [offsetValue, shift, disableFlip, arrowRef]);
+
     const data = useFloating({
         placement,
         open,
         onOpenChange: setOpen,
         whileElementsMounted: autoUpdate,
-        middleware: [
-            offset(offsetValue),
-            flip(),
-            shiftFloatingUI(shift),
-            arrow({ element: arrowRef }),
-        ],
+        middleware,
     });
 
     const { context } = data;
