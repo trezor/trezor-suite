@@ -1275,8 +1275,7 @@ export const setMax = [
                 payload: {
                     serializedTx: 'serializedABCD',
                     additionalInfo: {
-                        isCreatingAccount: false,
-                        newTokenAccountProgramName: undefined,
+                        newAccountProgramName: undefined,
                     },
                 },
             },

@@ -183,9 +183,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             request: {
                 specific: {
                     data: transaction.payload.serializedTx,
-                    isCreatingAccount: transaction.payload.additionalInfo.isCreatingAccount,
-                    newTokenAccountProgramName:
-                        transaction.payload.additionalInfo.newTokenAccountProgramName,
+                    newAccountProgramName: transaction.payload.additionalInfo.newAccountProgramName,
                 },
             },
         });

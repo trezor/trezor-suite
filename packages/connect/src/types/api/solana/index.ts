@@ -73,8 +73,7 @@ export type SolanaComposedTransaction = Static<typeof SolanaComposedTransaction>
 export const SolanaComposedTransaction = Type.Object({
     serializedTx: Type.String(),
     additionalInfo: Type.Object({
-        isCreatingAccount: Type.Boolean(),
-        newTokenAccountProgramName: Type.Optional(SolanaProgramName),
+        newAccountProgramName: Type.Optional(SolanaProgramName),
         tokenAccountInfo: Type.Optional(SolanaTxTokenAccountInfo),
     }),
 });

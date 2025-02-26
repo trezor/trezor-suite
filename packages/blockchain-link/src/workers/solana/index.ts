@@ -1,3 +1,4 @@
+import { STAKE_ACCOUNT_V2_SIZE } from '@everstake/wallet-sdk-solana';
 import {
     AccountInfoBase,
     ClusterUrl,
@@ -459,17 +460,19 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
     } as const;
 };
 
-const getTokenSize = (programName: TokenProgramName) =>
-    ({ 'spl-token': _getTokenSize(), 'spl-token-2022': _getToken2022Size() })[programName];
+export type AccountProgramName = TokenProgramName | 'staking';
+
+const getAccountProgramSize = (programName: AccountProgramName) =>
+    ({
+        staking: STAKE_ACCOUNT_V2_SIZE,
+        'spl-token': _getTokenSize(),
+        'spl-token-2022': _getToken2022Size(),
+    })[programName];
 
 const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     const api = await request.connect();
 
-    const {
-        data: messageHex,
-        isCreatingAccount,
-        newTokenAccountProgramName = 'spl-token',
-    } = request.payload.specific ?? {};
+    const { data: messageHex, newAccountProgramName } = request.payload.specific ?? {};
 
     if (messageHex == null) {
         throw new Error('Could not estimate fee for transaction.');
@@ -479,9 +482,12 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
 
     const priorityFee = await getPriorityFee(api.rpc, message, transaction.signatures);
     const baseFee = await getBaseFee(api.rpc, message);
-    const accountCreationFee = isCreatingAccount
+
+    const accountCreationFee = newAccountProgramName
         ? await api.rpc
-              .getMinimumBalanceForRentExemption(BigInt(getTokenSize(newTokenAccountProgramName)))
+              .getMinimumBalanceForRentExemption(
+                  BigInt(getAccountProgramSize(newAccountProgramName)),
+              )
               .send()
         : BigInt(0);
 

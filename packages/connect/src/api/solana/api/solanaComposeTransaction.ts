@@ -101,15 +101,12 @@ export default class SolanaComposeTransaction extends AbstractMethod<
             recipientTokenAccounts === undefined &&
             // if the recipient account has no owner, it means it's a new account and needs the token account to be created
             (recipientAccountOwner === SYSTEM_PROGRAM_PUBLIC_KEY || recipientAccountOwner == null);
-        const newTokenAccountProgramName = isCreatingAccount
-            ? this.params.token?.program
-            : undefined;
+        const newAccountProgramName = isCreatingAccount ? this.params.token?.program : undefined;
 
         return {
             serializedTx: tx.serialize(),
             additionalInfo: {
-                isCreatingAccount: !!isCreatingAccount,
-                newTokenAccountProgramName,
+                newAccountProgramName,
                 tokenAccountInfo: tokenTransferTxAndDestinationAddress?.tokenAccountInfo,
             },
         };

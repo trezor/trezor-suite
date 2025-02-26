@@ -137,8 +137,7 @@ async function estimateFee(
         request: {
             specific: {
                 data: txData.tx.txShim.serialize(),
-                isCreatingAccount: false,
-                newTokenAccountProgramName: undefined,
+                newAccountProgramName: 'staking',
             },
         },
     });
