@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
-import { Route } from '@suite-common/suite-types';
 import {
     Column,
     ElevationDown,
@@ -12,13 +11,7 @@ import {
     useElevation,
     variables,
 } from '@trezor/components';
-import {
-    Elevation,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacings,
-    spacingsPx,
-} from '@trezor/theme';
+import { Elevation, spacings, spacingsPx } from '@trezor/theme';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
@@ -26,17 +19,7 @@ import { MessageSystemBanner } from 'src/components/suite/banners';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 
-import { selectIsInitialRun } from '../../../../reducers/suite/suiteReducer';
-import { TrafficLightOffset } from '../../TrafficLightOffset';
-import { Nav, SETTINGS_ROUTES } from '../SuiteLayout/Sidebar/Navigation';
-import { NavItem } from '../SuiteLayout/Sidebar/NavigationItem';
-import { QuickActions } from '../SuiteLayout/Sidebar/QuickActions/QuickActions';
-import { SIDEBAR_MIN_WIDTH } from '../SuiteLayout/Sidebar/Sidebar';
-
-const WelcomeWrapper = styled.div<{ $elevation: Elevation }>`
-    background-color: ${mapElevationToBackground};
-    height: 100%;
-`;
+import { LoggedOutSidebar } from '../LoggedOutSidebar';
 
 const Content = styled.div<{ $elevation: Elevation }>`
     display: flex;
@@ -66,49 +49,6 @@ const ChildrenWrapper = styled.div`
 interface WelcomeLayoutProps {
     children: ReactNode;
 }
-
-const WelcomeNavColumn = styled.div<{ $elevation: Elevation; $minWidth: number }>`
-    border-right: solid 1px ${mapElevationToBorder};
-    min-width: ${({ $minWidth }) => $minWidth}px;
-    height: 100%;
-`;
-
-export const LoggedOutSidebar = () => {
-    const { elevation } = useElevation();
-
-    const isInitialRun = useSelector(selectIsInitialRun);
-    const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
-
-    return (
-        <WelcomeWrapper $elevation={elevation}>
-            <ElevationUp>
-                <WelcomeNavColumn $elevation={elevation} $minWidth={SIDEBAR_MIN_WIDTH}>
-                    <TrafficLightOffset>
-                        <Column justifyContent="space-between" height="100%">
-                            <Nav $isSidebarCollapsed>
-                                <NavItem
-                                    nameId="TR_START"
-                                    icon="trezorLogo"
-                                    goToRoute={startRoute}
-                                    routes={[startRoute]}
-                                    data-testid="@suite/menu/suite-start"
-                                />
-                                <NavItem
-                                    nameId="TR_SETTINGS"
-                                    icon="gearSix"
-                                    goToRoute="settings-index"
-                                    routes={SETTINGS_ROUTES}
-                                    data-testid="@suite/menu/settings"
-                                />
-                            </Nav>
-                            <QuickActions hideUpdateStatusBar isSidebarCollapsed />
-                        </Column>
-                    </TrafficLightOffset>
-                </WelcomeNavColumn>
-            </ElevationUp>
-        </WelcomeWrapper>
-    );
-};
 
 const Right = ({ children }: { children: ReactNode }) => {
     const { elevation } = useElevation();

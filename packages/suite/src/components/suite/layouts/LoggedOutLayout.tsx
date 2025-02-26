@@ -10,6 +10,7 @@ import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutCon
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import { Metadata } from '../Metadata';
+import { LoggedOutSidebar } from './LoggedOutSidebar';
 import {
     AppWrapper,
     Body,
@@ -18,7 +19,6 @@ import {
     PageWrapper,
     Wrapper,
 } from './SuiteLayout/SuiteLayout';
-import { LoggedOutSidebar } from './WelcomeLayout/WelcomeLayout';
 import { ModalSwitcher } from '../modals/ModalSwitcher/ModalSwitcher';
 
 interface LoggedOutLayout {
