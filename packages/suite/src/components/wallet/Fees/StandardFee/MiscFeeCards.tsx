@@ -14,12 +14,13 @@ export const MiscFeeCards = ({
     symbol,
     changeFeeLevel,
 }: StandardFeeProps) => {
-    if (!showFee || !feeOptions.length) {
-        return null;
-    }
+    if (!feeOptions?.length || !showFee) return null;
 
-    const feeOption = feeOptions[0]; // in the future Solana should have it's own Details component
-    const feeAmount = networkType === 'solana' ? feeOption.feePerTx : feeOption.feePerUnit;
+    const isSolanaNetwork = networkType === 'solana';
+
+    const feeOption = feeOptions[0];
+    const shouldShowCurrentFee = !isSolanaNetwork || feeOption.networkAmount;
+    const feeAmount = isSolanaNetwork ? feeOption.feePerTx : feeOption.feePerUnit;
 
     return (
         <FeeCard
@@ -39,9 +40,11 @@ export const MiscFeeCards = ({
                 />
             }
             bottomRightChild={
-                <Text variant="tertiary">
-                    {feeAmount} {getFeeUnits(networkType)}
-                </Text>
+                shouldShowCurrentFee && (
+                    <Text variant="tertiary">
+                        {feeAmount} {getFeeUnits(networkType)}
+                    </Text>
+                )
             }
         />
     );
