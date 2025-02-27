@@ -30,7 +30,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
 
     const feeRate =
         networkType === 'bitcoin' && tx.rbfParams?.feeRate !== undefined ? (
-            <FeeRate feeRate={tx.rbfParams.feeRate} networkType={networkType} />
+            <FeeRate feeRate={tx.rbfParams.feeRate} networkType={networkType} symbol={tx.symbol} />
         ) : null;
 
     const fee = formatNetworkAmount(tx.fee, tx.symbol);

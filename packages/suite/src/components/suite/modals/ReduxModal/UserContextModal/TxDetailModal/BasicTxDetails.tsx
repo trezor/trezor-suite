@@ -151,6 +151,7 @@ export const BasicTxDetails = ({
                         <FeeRate
                             feeRate={tx?.feeRate ? tx.feeRate : getFeeRate(tx)}
                             networkType="bitcoin"
+                            symbol={network.symbol}
                         />
                     </Item>
                 )}
@@ -174,6 +175,7 @@ export const BasicTxDetails = ({
                             <FeeRate
                                 feeRate={fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei')}
                                 networkType="ethereum"
+                                symbol={network.symbol}
                             />
                         </Item>
 

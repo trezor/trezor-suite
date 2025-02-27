@@ -3418,6 +3418,10 @@ export default defineMessages({
         id: 'TR_CURRENT_FEE_CUSTOM_FEES',
         defaultMessage: 'Current network fee:',
     },
+    GAS_LIMIT_IS_NOT_SET: {
+        id: 'GAS_LIMIT_IS_NOT_SET',
+        defaultMessage: 'Set gas limit for this transaction',
+    },
     TR_GAS_LIMIT: {
         id: 'TR_GAS_LIMIT',
         defaultMessage: 'Gas limit',

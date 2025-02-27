@@ -26,8 +26,8 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 
-import { CustomFee } from './CustomFee';
-import { FeeDetails } from './FeeDetails';
+import { CustomFee } from './CustomFee/CustomFee';
+import { StandardFee } from './StandardFee/StandardFee';
 
 const FEE_LEVELS_TRANSLATIONS: Record<FeeLevel['label'], TranslationKey> = {
     custom: 'FEE_LEVEL_ADVANCED',
@@ -37,13 +37,13 @@ const FEE_LEVELS_TRANSLATIONS: Record<FeeLevel['label'], TranslationKey> = {
     low: 'FEE_LEVEL_LOW',
 } as const;
 
-export type FeeOption = {
+export type FeeOptionType = {
     label: React.ReactNode;
     value: FeeLevel['label'];
     blocks?: number;
     feePerUnit?: string;
     networkAmount?: string | null;
-    feePerTx?: string;
+    feePerTx?: string; // Solana specific
 };
 
 const SelectBarWrapper = styled.div`
@@ -71,7 +71,7 @@ const buildFeeOptions = (
     networkType: NetworkType,
     symbol: NetworkSymbol,
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano,
-) => {
+): FeeOptionType[] => {
     const filteredLevels = levels.filter(level => level.label !== 'custom');
 
     const getNetworkAmount = (level: FeeLevel) => {
@@ -145,7 +145,7 @@ export const Fees = <TFieldValues extends FormState>({
     const errors = props.errors as unknown as FieldErrors<FormState>;
 
     const error = errors.selectedFee;
-    const selectedLevel = feeInfo.levels.find(level => level.label === selectedOption)!;
+    const selectedLevel = feeInfo.levels.find(level => level.label === selectedOption);
     const transactionInfo = composedLevels?.[selectedOption];
 
     const feeOptions = buildFeeOptions(feeInfo.levels, networkType, symbol, composedLevels);
@@ -197,7 +197,10 @@ export const Fees = <TFieldValues extends FormState>({
                             orientation="horizontal"
                             selectedOption={isCustomFee ? 'custom' : 'normal'}
                             options={[
-                                { label: <Translation id="FEE_LEVEL_STANDARD" />, value: 'normal' },
+                                {
+                                    label: <Translation id="FEE_LEVEL_STANDARD" />,
+                                    value: 'normal',
+                                },
                                 { label: <Translation id="FEE_LEVEL_ADVANCED" />, value: 'custom' },
                             ]}
                             onChange={() => changeFeeLevel(isCustomFee ? 'normal' : 'custom')}
@@ -207,8 +210,8 @@ export const Fees = <TFieldValues extends FormState>({
                 )}
             </Row>
 
-            {!isCustomFee && (
-                <FeeDetails
+            {!isCustomFee && selectedLevel && (
+                <StandardFee
                     networkType={networkType}
                     feeInfo={feeInfo}
                     selectedLevel={selectedLevel}
@@ -223,6 +226,7 @@ export const Fees = <TFieldValues extends FormState>({
             {isCustomFee && (
                 <>
                     <CustomFee
+                        symbol={symbol}
                         control={control}
                         networkType={networkType}
                         feeInfo={feeInfo}

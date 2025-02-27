@@ -46,9 +46,8 @@ export const TransactionReviewSummary = ({
     ) as string;
     const fees = useSelector(state => state.wallet.fees);
     const locale = useLocales();
-
-    const network = networks[account.symbol];
     const { symbol, accountType, index, networkType } = account;
+    const network = networks[symbol];
     const fee = getFee(networkType, tx);
     const estimateTime = getEstimatedTime(networkType, fees[account.symbol], tx);
 
@@ -87,11 +86,11 @@ export const TransactionReviewSummary = ({
                 <Note iconName="gasPump">
                     <Translation id="TR_GAS_PRICE" />
                     {': '}
-                    <FeeRate feeRate={fee} networkType={network.networkType} />
+                    <FeeRate feeRate={fee} networkType={network.networkType} symbol={symbol} />
                 </Note>
             ) : (
                 <Note iconName="receipt">
-                    <FeeRate feeRate={fee} networkType={network.networkType} />
+                    <FeeRate feeRate={fee} networkType={network.networkType} symbol={symbol} />
                 </Note>
             )}
 

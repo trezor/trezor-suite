@@ -77,6 +77,14 @@ export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is Networ
 export const getNetwork = (symbol: NetworkSymbol): Network => networks[symbol];
 
 /**
+ * Check wether the network has a settlement layer. Used to check Ethereum L2s.
+ * @param symbol
+ * @returns boolean
+ */
+export const hasNetworkSettlementLayer = (symbol: NetworkSymbol) =>
+    !!getNetwork(symbol).settlementLayer;
+
+/**
  * Use instead of getNetwork, if there is not a guarantee that the symbol is a valid network symbol.
  * @param symbol
  */
