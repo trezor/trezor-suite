@@ -676,6 +676,10 @@ const onCallDevice = async (
             useCardanoDerivation: method.useCardanoDerivation,
         });
     } catch (error) {
+        // just a log proving that cause propagates all the way up
+        if (error.cause) {
+            _log.debug('device.run error caught, caused by:', error.cause);
+        }
         // corner case: Device was disconnected during authorization
         // this device_id needs to be stored and penalized with delay on future connection
         // this solves issue with U2F login (leaves space for requests from services which aren't using trezord)
