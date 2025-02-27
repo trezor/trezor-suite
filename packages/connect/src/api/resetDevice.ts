@@ -89,7 +89,9 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             xpubs,
         });
         if (res.error) {
-            await cancelPrompt(this.device);
+            await cancelPrompt(this.device).catch(() => {
+                // error from cancel should be swallowed, we are not interested in it in the error handling above
+            });
             throw new Error(res.error);
         }
 
@@ -103,25 +105,33 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             // entropy check requested but not supported by the firmware
             this.params.entropy_check = false;
         }
-        // Entropy check workflow:
-        // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#entropy-check-workflow
-        // steps: 1 - 4
-        // ResetDevice > EntropyRequest > EntropyAck > EntropyCheckReady (new fw) || Success (old fw)
-        let entropyData = await this.getEntropyData('ResetDevice');
 
-        if (this.params.entropy_check) {
-            const tries = getRandomInt(1, 5);
-            for (let i = 0; i < tries; i++) {
-                // steps: 5 - 6
-                // GetPublicKey > ResetDeviceContinue > EntropyRequest > EntropyAck > EntropyCheckReady
-                try {
+        try {
+            // Entropy check workflow:
+            // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#entropy-check-workflow
+            // steps: 1 - 4
+            // ResetDevice > EntropyRequest > EntropyAck > EntropyCheckReady (new fw) || Success (old fw)
+            let entropyData = await this.getEntropyData('ResetDevice');
+
+            if (this.params.entropy_check) {
+                const tries = getRandomInt(1, 5);
+                for (let i = 0; i < tries; i++) {
+                    // steps: 5 - 6
+                    // GetPublicKey > ResetDeviceContinue > EntropyRequest > EntropyAck > EntropyCheckReady
                     entropyData = await this.entropyCheck(entropyData);
-                } catch (error) {
-                    throw ERRORS.TypedError('Failure_EntropyCheck', error.message);
                 }
+                // step 7 EntropyCheckContinue > Success
+                await cmd.typedCall('EntropyCheckContinue', 'Success', { finish: true });
             }
-            // step 7 EntropyCheckContinue > Success
-            await cmd.typedCall('EntropyCheckContinue', 'Success', { finish: true });
+        } catch (error) {
+            // error.message should be one of these https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/transports/abstract.ts#L59
+            if (
+                error.cause === 'transport-error' &&
+                ERRORS_WITHOUT_DEVICE_INTERACTION.includes(error.message)
+            ) {
+                throw error;
+            }
+            throw ERRORS.TypedError('Failure_EntropyCheck', error.message);
         }
 
         return { message: 'Success' };
