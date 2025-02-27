@@ -44,6 +44,7 @@ Historically, Trezor Connect had its [own repository](https://github.com/trezor/
 Run a dev build:
 
 -   `yarn suite:dev` (web app)
+-   `yarn suite:dev:vite` (⚠️ EXPERIMENTAL: web app with Vite bundler used for **development only**, use `yarn suite:dev` if you want fidelity to production app)
 -   `yarn suite:dev:desktop` (electron app)
 
 ## **Trezor Suite Lite** @suite-native/app
