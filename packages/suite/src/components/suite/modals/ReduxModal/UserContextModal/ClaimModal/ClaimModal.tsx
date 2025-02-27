@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { Banner, Card, Column, InfoItem, NewModal, Paragraph, Tooltip } from '@trezor/components';
+import { Banner, Column, InfoItem, NewModal, Paragraph, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -111,20 +111,17 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
                         <Translation id="TR_STAKE_CLAIM_IN_NEXT_BLOCK" />
                     </InfoItem>
 
-                    <Card paddingType="small" margin={{ vertical: spacings.xs }}>
-                        <Fees
-                            control={control}
-                            errors={errors}
-                            register={register}
-                            feeInfo={feeInfo}
-                            setValue={setValue}
-                            getValues={getValues}
-                            account={account}
-                            composedLevels={composedLevels}
-                            changeFeeLevel={changeFeeLevel}
-                            helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
-                        />
-                    </Card>
+                    <Fees
+                        control={control}
+                        errors={errors}
+                        register={register}
+                        feeInfo={feeInfo}
+                        setValue={setValue}
+                        getValues={getValues}
+                        account={account}
+                        composedLevels={composedLevels}
+                        changeFeeLevel={changeFeeLevel}
+                    />
 
                     {errors[CRYPTO_INPUT] && (
                         <Banner variant="destructive">{errors[CRYPTO_INPUT]?.message}</Banner>

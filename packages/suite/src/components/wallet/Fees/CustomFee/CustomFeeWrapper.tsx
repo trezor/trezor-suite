@@ -10,7 +10,7 @@ interface CustomFeeWrapperProps {
 }
 
 export const CustomFeeWrapper = ({ children }: CustomFeeWrapperProps) => (
-    <Column gap={spacings.xs} margin={{ bottom: spacings.md }}>
+    <Column gap={spacings.xs}>
         <Banner
             icon
             variant="warning"

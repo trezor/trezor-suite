@@ -1,6 +1,6 @@
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { Banner, Card, Column, InfoItem, Tooltip } from '@trezor/components';
+import { Banner, Column, InfoItem, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -74,20 +74,17 @@ export const UnstakeEthForm = () => {
                     {showError && <Banner variant="destructive">{inputError?.message}</Banner>}
                 </Column>
 
-                <Card paddingType="small" margin={{ vertical: spacings.xs }}>
-                    <Fees
-                        control={control}
-                        errors={errors}
-                        register={register}
-                        feeInfo={feeInfo}
-                        setValue={setValue}
-                        getValues={getValues}
-                        account={account}
-                        composedLevels={composedLevels}
-                        changeFeeLevel={changeFeeLevel}
-                        helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
-                    />
-                </Card>
+                <Fees
+                    control={control}
+                    errors={errors}
+                    register={register}
+                    feeInfo={feeInfo}
+                    setValue={setValue}
+                    getValues={getValues}
+                    account={account}
+                    composedLevels={composedLevels}
+                    changeFeeLevel={changeFeeLevel}
+                />
 
                 <InfoItem
                     label={<Translation id="TR_STAKE_UNSTAKING_PERIOD" />}

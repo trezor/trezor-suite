@@ -19,7 +19,7 @@ import {
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Banner, Column, InfoItem, Note, Row, SelectBar, Text, Tooltip } from '@trezor/components';
+import { Banner, Column, InfoItem, Row, SelectBar, Text, Tooltip } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -63,7 +63,6 @@ export interface FeesProps<TFieldValues extends FormState> {
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     label?: TranslationKey;
     rbfForm?: boolean;
-    helperText?: React.ReactNode;
 }
 
 const buildFeeOptions = (
@@ -134,7 +133,6 @@ export const Fees = <TFieldValues extends FormState>({
     composedLevels,
     label,
     rbfForm,
-    helperText,
     ...props
 }: FeesProps<TFieldValues>) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
@@ -271,8 +269,6 @@ export const Fees = <TFieldValues extends FormState>({
                     {error.message}
                 </Banner>
             )}
-
-            {helperText && <Note>{helperText}</Note>}
         </Column>
     );
 };

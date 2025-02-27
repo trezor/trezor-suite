@@ -1,7 +1,6 @@
-import { Card, Column } from '@trezor/components';
+import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 
@@ -43,20 +42,17 @@ export const StakeEthForm = () => {
 
                 <Inputs />
 
-                <Card paddingType="small" margin={{ top: spacings.xs }}>
-                    <Fees
-                        control={control}
-                        errors={errors}
-                        register={register}
-                        feeInfo={feeInfo}
-                        setValue={setValue}
-                        getValues={getValues}
-                        account={account}
-                        composedLevels={composedLevels}
-                        changeFeeLevel={changeFeeLevel}
-                        helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
-                    />
-                </Card>
+                <Fees
+                    control={control}
+                    errors={errors}
+                    register={register}
+                    feeInfo={feeInfo}
+                    setValue={setValue}
+                    getValues={getValues}
+                    account={account}
+                    composedLevels={composedLevels}
+                    changeFeeLevel={changeFeeLevel}
+                />
             </Column>
         </>
     );
