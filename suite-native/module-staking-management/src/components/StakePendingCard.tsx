@@ -3,6 +3,7 @@ import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { Box, Card, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
@@ -15,6 +16,10 @@ import {
 import { NativeStakingRootState } from '@suite-native/staking/src/types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+type StakePendingCardProps = {
+    accountKey: string;
+    handleToggleBottomSheet: (value: boolean) => void;
+};
 const stakingItemStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     alignItems: 'center',
@@ -22,13 +27,23 @@ const stakingItemStyle = prepareNativeStyle(utils => ({
 }));
 
 const valuesContainerStyle = prepareNativeStyle(utils => ({
-    maxWidth: '40%',
+    maxWidth: '45%',
     flexShrink: 0,
     alignItems: 'flex-end',
     paddingLeft: utils.spacings.sp8,
 }));
 
-const getCardAlertProps = (isStakeConfirming: boolean, isStakePending: boolean) => {
+const isSolana = (symbol: NetworkSymbol) => ['sol', 'dsol'].includes(symbol);
+
+const getCardAlertProps = (
+    symbol: NetworkSymbol | null,
+    isStakeConfirming: boolean,
+    isStakePending: boolean,
+) => {
+    if (!symbol) {
+        return { alertTitle: undefined, alertVariant: undefined } as const;
+    }
+
     if (isStakeConfirming && !isStakePending) {
         return {
             alertTitle: <Translation id="staking.stakePendingCard.transactionPending" />,
@@ -37,7 +52,11 @@ const getCardAlertProps = (isStakeConfirming: boolean, isStakePending: boolean) 
     }
     if (!isStakeConfirming && isStakePending) {
         return {
-            alertTitle: <Translation id="staking.stakePendingCard.addingToStakingPool" />,
+            alertTitle: isSolana(symbol) ? (
+                <Translation id="staking.stakePendingCard.activatingStake" />
+            ) : (
+                <Translation id="staking.stakePendingCard.addingToStakingPool" />
+            ),
             alertVariant: 'loading',
         } as const;
     }
@@ -48,10 +67,12 @@ const getCardAlertProps = (isStakeConfirming: boolean, isStakePending: boolean) 
     } as const;
 };
 
-type StakePendingCardProps = {
-    accountKey: string;
-    handleToggleBottomSheet: (value: boolean) => void;
-};
+const getTitle = (symbol: NetworkSymbol) =>
+    isSolana(symbol) ? (
+        <Translation id="staking.stakePendingCard.totalStakeActivating" />
+    ) : (
+        <Translation id="staking.stakePendingCard.totalStakePending" />
+    );
 
 export const StakePendingCard = ({
     accountKey,
@@ -75,20 +96,20 @@ export const StakePendingCard = ({
     );
 
     const cardAlertProps = useMemo(
-        () => getCardAlertProps(isStakeConfirming, isStakePending),
-        [isStakeConfirming, isStakePending],
+        () => getCardAlertProps(symbol, isStakeConfirming, isStakePending),
+        [symbol, isStakeConfirming, isStakePending],
     );
 
     if (!symbol || !cardAlertProps.alertVariant) return null;
+
+    const title = getTitle(symbol);
 
     return (
         <TouchableOpacity onPress={() => handleToggleBottomSheet(true)}>
             <Card {...cardAlertProps}>
                 <Box style={applyStyle(stakingItemStyle)}>
                     <Box flex={1} flexDirection="row" alignItems="center">
-                        <Text>
-                            <Translation id="staking.stakePendingCard.totalStakePending" />
-                        </Text>
+                        <Text>{title}</Text>
                     </Box>
                     <Box style={applyStyle(valuesContainerStyle)}>
                         <CryptoAmountFormatter

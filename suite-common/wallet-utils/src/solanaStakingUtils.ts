@@ -82,6 +82,12 @@ export const getSolAccountTotalStakingBalance = (account: Account) => {
     return formatNetworkAmount(totalStakingBalance, account.symbol);
 };
 
+export const getSolanaCryptoBalanceWithStaking = (account: Account) => {
+    const stakingBalance = getSolAccountTotalStakingBalance(account);
+
+    return new BigNumber(account.formattedBalance).plus(stakingBalance ?? 0).toString();
+};
+
 export const calculateSolanaStakingReward = (accountBalance?: string, apy?: string) => {
     if (!accountBalance || !apy) return '0';
 

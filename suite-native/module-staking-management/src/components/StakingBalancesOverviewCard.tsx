@@ -67,6 +67,12 @@ export const StakingBalancesOverviewCard = ({
 
     if (!symbol) return null;
 
+    const rewardsTitle = ['sol', 'dsol'].includes(symbol) ? (
+        <Translation id="staking.rewardsPerEpoch" />
+    ) : (
+        <Translation id="staking.rewards" />
+    );
+
     return (
         <TouchableOpacity onPress={() => handleToggleBottomSheet(true)}>
             <Card style={applyStyle(stakingCardStyle)}>
@@ -99,7 +105,7 @@ export const StakingBalancesOverviewCard = ({
                         <Box style={applyStyle(stakingItemStyle)}>
                             <Icon name="plusCircle" color="textSubdued" size="medium" />
                             <Text color="textSubdued" variant="label">
-                                <Translation id="staking.rewards" />
+                                {rewardsTitle}
                             </Text>
                         </Box>
                         <CryptoAmountFormatter
