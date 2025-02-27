@@ -8,7 +8,6 @@ import {
     blockchainActions,
     deviceActions,
     discoveryActions,
-    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import {
@@ -112,7 +111,7 @@ const sentryMiddleware =
                     firmware: getFirmwareVersion(action.payload.device),
                     isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload.device),
                     bootloader: getBootloaderVersion(action.payload.device),
-                    model: selectSelectedDevice(state)?.features?.internal_model,
+                    model: action.payload.device.features.internal_model,
                 });
                 break;
             }
