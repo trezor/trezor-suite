@@ -82,7 +82,7 @@ const updateConnectChangelog = async (
         const changelogContent = await readFile(connectChangelogPath, 'utf-8');
         const lines = changelogContent.split('\n');
 
-        const oldContent = lines.slice(9).join('\n');
+        const oldContent = lines.slice(10).join('\n');
 
         const npmTable = [
             { package: 'npm @trezor/connect', stable, canary },
