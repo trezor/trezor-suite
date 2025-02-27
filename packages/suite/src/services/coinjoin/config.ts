@@ -60,7 +60,7 @@ export const COINJOIN_NETWORKS: PartialRecord<CoinjoinSymbol, ServerEnvironment>
             coordinatorUrl: 'https://wasabiwallet.co/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'https://wasabiwallet.co/',
-            blockbookUrls: ['https://tbtc1.trezor.io', 'https://tbtc2.trezor.io'],
+            blockbookUrls: ['https://tbtc4-1.trezor.io', 'https://tbtc4-2.trezor.io'],
             onionDomains: {
                 'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
                 'wasabiwallet.co': 'testwnp3fugjln6vh5vpj7mvq3lkqqwjj3c2aafyu7laxz42kgwh2rad.onion',
@@ -94,8 +94,8 @@ export const COINJOIN_NETWORKS: PartialRecord<CoinjoinSymbol, ServerEnvironment>
             baseBlockHash: '00000000000bb983f68a7bcff154f229f777ff0802788ae26424af9c15db3959',
             /* */
             /* October 1st, 2022  */
-            baseBlockHeight: 2349000,
-            baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
+            baseBlockHeight: 0,
+            baseBlockHash: '00000000da84f2bafbbc53dee25a72ae507ff4914b867c565be350b0da8bf043',
             /* */
             filtersBatchSize: 5000,
             // client settings
@@ -107,9 +107,9 @@ export const COINJOIN_NETWORKS: PartialRecord<CoinjoinSymbol, ServerEnvironment>
             coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/wabisabi/',
             // backend settings
             wabisabiBackendUrl: 'https://dev-coinjoin-testnet.trezor.io/',
-            blockbookUrls: ['https://tbtc1.trezor.io', 'https://tbtc2.trezor.io'],
-            baseBlockHeight: 2349000,
-            baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
+            blockbookUrls: ['https://tbtc4-1.trezor.io', 'https://tbtc4-2.trezor.io'],
+            baseBlockHeight: 0,
+            baseBlockHash: '00000000da84f2bafbbc53dee25a72ae507ff4914b867c565be350b0da8bf043',
             filtersBatchSize: 5000,
             // client settings
             middlewareUrl: 'http://127.0.0.1:8081/',
