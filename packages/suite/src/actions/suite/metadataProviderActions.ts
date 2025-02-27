@@ -130,7 +130,7 @@ export const disconnectProvider =
             // flush reducer
             dispatch({
                 type: METADATA.REMOVE_PROVIDER,
-                payload: provider,
+                payload: { clientId },
             });
             dispatch({
                 type: METADATA.SET_SELECTED_PROVIDER,

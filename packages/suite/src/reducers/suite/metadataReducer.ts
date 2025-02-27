@@ -77,6 +77,10 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 );
                 break;
             case METADATA.SET_SELECTED_PROVIDER:
+                if (!action.payload.clientId) {
+                    delete draft.selectedProvider[action.payload.dataType];
+                    break;
+                }
                 draft.selectedProvider[action.payload.dataType] = action.payload.clientId;
                 break;
             case METADATA.SET_EDITING:

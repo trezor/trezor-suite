@@ -28,11 +28,11 @@ export const fetchPasswords =
 
         // this triggers renewal of access token if needed. Otherwise multiple requests
         // to renew access token are issued by every provider.getFileContent
-        const response = await provider.getProviderDetails();
-        if (!response.success) {
+        const providerDetails = await provider.getProviderDetails();
+        if (!providerDetails.success) {
             return dispatch(
                 metadataProviderActions.handleProviderError({
-                    error: response,
+                    error: providerDetails,
                     action: ProviderErrorAction.LOAD,
                     clientId: provider.clientId,
                 }),
@@ -55,7 +55,7 @@ export const fetchPasswords =
                         dispatch({
                             type: METADATA.SET_DATA,
                             payload: {
-                                provider,
+                                provider: providerDetails.payload,
                                 data: {
                                     [keys.fileName]: decrypted,
                                 },
@@ -76,7 +76,7 @@ export const fetchPasswords =
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     let device = selectSelectedDevice(getState());
 
-    if (!device?.state) {
+    if (!device?.state?.staticSessionId) {
         console.error('no device state!');
 
         return Promise.resolve();

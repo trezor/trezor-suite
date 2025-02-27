@@ -37,7 +37,7 @@ export type MetadataAction =
       }
     | {
           type: typeof METADATA.REMOVE_PROVIDER;
-          payload: MetadataProvider;
+          payload: Pick<MetadataProvider, 'clientId'>;
       }
     | {
           type: typeof METADATA.ADD_PROVIDER;
@@ -46,15 +46,15 @@ export type MetadataAction =
     | {
           type: typeof METADATA.SET_DATA;
           payload: {
-              provider: MetadataProvider;
-              data: Record<string, Labels>;
+              provider: Omit<MetadataProvider, 'data'> & Pick<Partial<MetadataProvider>, 'data'>;
+              data: Record<string, Labels | PasswordManagerState> | undefined;
           };
       }
     | {
           type: typeof METADATA.SET_SELECTED_PROVIDER;
           payload: {
               dataType: DataType;
-              clientId: string;
+              clientId: string | undefined;
           };
       }
     | {
@@ -100,7 +100,7 @@ export const disposeMetadataKeys = () => (dispatch: Dispatch, getState: GetState
     });
 
     devices.forEach(device => {
-        if (device.state) {
+        if (device.state?.staticSessionId) {
             // set metadata as disabled for this device, remove all metadata related information
             dispatch({
                 type: METADATA.SET_DEVICE_METADATA,
@@ -134,7 +134,7 @@ export const setMetadata =
     }: {
         provider: MetadataProvider;
         fileName: string;
-        data: WalletLabels | AccountLabels | PasswordManagerState | undefined;
+        data: WalletLabels | AccountLabels | PasswordManagerState;
     }) =>
     (dispatch: Dispatch) => {
         dispatch({
