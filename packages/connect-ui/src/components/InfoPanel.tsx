@@ -70,9 +70,16 @@ interface InfoPanelProps {
     origin?: string;
     hostLabel?: string;
     topSlot?: ReactNode;
+    showNpmPackageOutdated?: boolean;
 }
 
-export const InfoPanel = ({ method, origin, hostLabel, topSlot }: InfoPanelProps) => (
+export const InfoPanel = ({
+    method,
+    origin,
+    hostLabel,
+    topSlot,
+    showNpmPackageOutdated,
+}: InfoPanelProps) => (
     <>
         <Aside data-testid="@info-panel">
             {/*  notifications appear hear */}
@@ -102,6 +109,14 @@ export const InfoPanel = ({ method, origin, hostLabel, topSlot }: InfoPanelProps
                     <MethodName>{method}</MethodName>
                     <Origin>{hostLabel || origin}</Origin>
                 </Info>
+                {showNpmPackageOutdated && (
+                    <div style={{ whiteSpace: 'initial', fontSize: '10px' }}>
+                        <span style={{ color: '#eb8a00' }}>Deprecation warning: </span>
+                        {hostLabel || origin} is using an outdated version of Trezor Connect. Please
+                        ask developers of {hostLabel || origin} app to update to a newer version of
+                        Trezor Connect npm package to ensure smooth functionality.
+                    </div>
+                )}
             </MainSlot>
         </Aside>
     </>

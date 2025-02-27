@@ -16,9 +16,9 @@
         { "path": "../device-utils" },
         { "path": "../transport" },
         { "path": "../urls" },
+        { "path": "../utils" },
         { "path": "../eslint" },
         { "path": "../node-utils" },
-        { "path": "../trezor-user-env-link" },
-        { "path": "../utils" }
+        { "path": "../trezor-user-env-link" }
     ]
 }

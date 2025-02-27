@@ -4,8 +4,10 @@ import styled from 'styled-components';
 
 import { CoreRequestMessage, POPUP, UI, UI_REQUEST } from '@trezor/connect';
 import { OriginBoundState, storage } from '@trezor/connect-common';
+import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 // views
+
 import { BottomRightFloatingBar } from './components/BottomRightFloatingBar';
 import { InfoPanel } from './components/InfoPanel';
 import { Loader } from './components/Loader';
@@ -163,7 +165,14 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                             origin={state?.settings?.origin}
                             hostLabel={state?.settings?.hostLabel}
                             topSlot={Object.values(Notifications)}
+                            showNpmPackageOutdated={
+                                state?.settings?.env === 'web' &&
+                                // npmVersion missing - pinned iframe version or core-in-popup. we might extend this warning in the future for other cases
+                                !!state?.settings?.npmVersion &&
+                                !isNewerOrEqual(state.settings.npmVersion, '9.2.3')
+                            }
                         />
+
                         {Component && (
                             <div
                                 style={{
@@ -176,7 +185,6 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                                 {Component}
                             </div>
                         )}
-
                         <BottomRightFloatingBar
                             onAnalyticsConfirm={enabled => {
                                 postMessage({

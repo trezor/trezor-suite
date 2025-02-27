@@ -47,6 +47,7 @@ export interface ConnectSettingsInternal {
     popupSrc: string;
     webusbSrc: string;
     version: string;
+    npmVersion?: string;
     priority: number;
     extension?: string;
     env: 'node' | 'web' | 'webextension' | 'electron' | 'react-native';

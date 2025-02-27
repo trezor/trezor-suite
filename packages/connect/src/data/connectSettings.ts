@@ -155,5 +155,9 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.enableFirmwareHashCheck = Boolean(input.enableFirmwareHashCheck);
     }
 
+    if (typeof input.npmVersion === 'string') {
+        settings.npmVersion = input.npmVersion;
+    }
+
     return settings;
 };
