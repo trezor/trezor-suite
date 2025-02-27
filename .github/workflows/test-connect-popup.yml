@@ -22,6 +22,7 @@ on:
       - "packages/connect-examples/webextension-mv2/**"
       - "packages/connect-examples/webextension-mv3/**"
       - "packages/connect-explorer-theme/**"
+      - "packages/trezor-user-env-link/**"
       - "submodules/trezor-common/**"
       - "yarn.lock"
       - ".github/workflows/template-connect-popup-test-params.yml"
@@ -124,7 +125,7 @@ jobs:
       testName: transport.test
       serverHostname: dev.suite.sldev.cz
 
-  # Disabling it for now since after adding testnet 4 as default it is failing and 
+  # Disabling it for now since after adding testnet 4 as default it is failing and
   # it runs not in our code so we cannot update it.
   # unchained:
   #   needs: [build-deploy]
