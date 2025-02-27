@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
 import { Assert } from '@trezor/schema-utils';
+import { ERRORS_WITHOUT_DEVICE_INTERACTION } from '@trezor/transport/src/errors-groups';
 import { getRandomInt } from '@trezor/utils';
 
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
