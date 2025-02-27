@@ -1,4 +1,4 @@
-import { Box, Column, ElevationUp, RadioCard, Row, Text } from '@trezor/components';
+import { Box, Column, RadioCard, Row, Text } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 
 type FeeCardProps = {
@@ -23,23 +23,21 @@ export const FeeCard = ({
     bottomRightChild,
 }: FeeCardProps) => (
     <Box minWidth={FEE_CARD_MIN_WIDTH}>
-        <ElevationUp>
-            <RadioCard onClick={() => changeFeeLevel(value)} isActive={isSelected}>
-                <Column>
-                    <Row justifyContent="space-between">
-                        <Text typographyStyle="highlight">{topLeftChild}</Text>
-                        <Text variant="tertiary" typographyStyle="hint">
-                            {topRightChild}
-                        </Text>
-                    </Row>
-                    <Row justifyContent="space-between" height={24}>
-                        <Text>{bottomLeftChild}</Text>
-                        <Text variant="tertiary" typographyStyle="hint">
-                            {bottomRightChild}
-                        </Text>
-                    </Row>
-                </Column>
-            </RadioCard>
-        </ElevationUp>
+        <RadioCard onClick={() => changeFeeLevel(value)} isActive={isSelected}>
+            <Column>
+                <Row justifyContent="space-between">
+                    <Text typographyStyle="highlight">{topLeftChild}</Text>
+                    <Text variant="tertiary" typographyStyle="hint">
+                        {topRightChild}
+                    </Text>
+                </Row>
+                <Row justifyContent="space-between" height={24}>
+                    <Text>{bottomLeftChild}</Text>
+                    <Text variant="tertiary" typographyStyle="hint">
+                        {bottomRightChild}
+                    </Text>
+                </Row>
+            </Column>
+        </RadioCard>
     </Box>
 );
