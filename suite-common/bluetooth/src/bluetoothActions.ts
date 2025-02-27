@@ -1,6 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { BluetoothDeviceCommon, BluetoothScanStatus } from './bluetoothReducer';
+import {
+    BluetoothDeviceCommon,
+    BluetoothScanStatus,
+    DeviceBluetoothConnectionStatus,
+} from './bluetoothReducer';
 
 export const BLUETOOTH_PREFIX = '@suite/bluetooth';
 
@@ -45,6 +49,19 @@ const connectDeviceEventAction = createAction(
     }),
 );
 
+const updateDeviceConnectionStatus = createAction(
+    `${BLUETOOTH_PREFIX}/update-device-connection-status`,
+    ({
+        deviceId,
+        connectionStatus,
+    }: {
+        deviceId: string;
+        connectionStatus: DeviceBluetoothConnectionStatus;
+    }) => ({
+        payload: { deviceId, connectionStatus },
+    }),
+);
+
 const scanStatusAction = createAction(
     `${BLUETOOTH_PREFIX}/scan-status`,
     ({ status }: { status: BluetoothScanStatus }) => ({ payload: { status } }),
@@ -57,4 +74,5 @@ export const bluetoothActions = {
     scanStatusAction,
     knownDevicesUpdateAction,
     removeKnownDeviceAction,
+    updateDeviceConnectionStatus,
 };
