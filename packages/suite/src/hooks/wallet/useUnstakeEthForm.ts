@@ -70,6 +70,7 @@ export const useUnstakeEthForm = ({
     const amountLimits: AmountLimitProps = {
         currency: symbol,
         maxCrypto: autocompoundBalance,
+        maxFiat: toFiatCurrency(autocompoundBalance, currentRate?.rate) ?? undefined,
     };
 
     const defaultValues = useMemo(() => {
@@ -230,6 +231,7 @@ export const useUnstakeEthForm = ({
             setValue(CRYPTO_INPUT, cryptoValue || '', { shouldDirty: true, shouldValidate: true });
             setValue(OUTPUT_AMOUNT, cryptoValue || '', {
                 shouldDirty: true,
+                shouldValidate: true,
             });
             await composeRequest(FIAT_INPUT);
         },

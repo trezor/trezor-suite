@@ -2,11 +2,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { UnstakeFormState } from '@suite-common/wallet-core';
-import {
-    getInputState,
-    getNonComposeErrorMessage,
-    getStakingDataForNetwork,
-} from '@suite-common/wallet-utils';
+import { getInputState, getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -15,8 +11,13 @@ import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/su
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
-import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';
-import { validateCryptoLimits, validateDecimals, validateMin } from 'src/utils/suite/validation';
+import { FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';
+import {
+    validateCryptoLimits,
+    validateDecimals,
+    validateFiatLimits,
+    validateMin,
+} from 'src/utils/suite/validation';
 
 export const Inputs = () => {
     const { translationString } = useTranslation();
@@ -60,6 +61,13 @@ export const Inputs = () => {
         validate: {
             min: validateMin(translationString),
             decimals: validateDecimals(translationString, { decimals: 2 }),
+            limits: validateFiatLimits(translationString, {
+                amountLimits,
+                localCurrency,
+                formatter: CryptoAmountFormatter,
+                decimals: network.decimals,
+                rate: currentRate?.rate,
+            }),
         },
     };
 
@@ -88,7 +96,6 @@ export const Inputs = () => {
                     rules: cryptoInputRules,
                     maxLength: formInputsMaxLength.amount,
                     innerAddon: <Text variant="tertiary">{networkDisplaySymbol}</Text>,
-                    bottomText: getNonComposeErrorMessage(errors[CRYPTO_INPUT]),
                     inputState: getInputState(cryptoError || fiatError),
                     onChange: onCryptoAmountChange,
                 }}
@@ -104,7 +111,6 @@ export const Inputs = () => {
                               innerAddon: (
                                   <Text variant="tertiary">{localCurrency.toUpperCase()}</Text>
                               ),
-                              bottomText: getNonComposeErrorMessage(errors[FIAT_INPUT]),
                               inputState: getInputState(fiatError || cryptoError),
                               onChange: onFiatAmountChange,
                           }
