@@ -448,7 +448,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
         network: isTestnet ? 'dsol' : 'sol',
         url: api.clusterUrl,
         name: 'Solana',
-        version: (await api.rpc.getVersion().send())['solana-core'],
+        version: '1', // saving request api.rpc.getVersion().send(), version is not used anyways
         decimals: 9,
     };
 
