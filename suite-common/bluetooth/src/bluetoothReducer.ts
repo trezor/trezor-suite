@@ -77,6 +77,18 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                 },
             )
             .addCase(
+                bluetoothActions.updateDeviceConnectionStatus,
+                (state, { payload: { deviceId, connectionStatus } }) => {
+                    state.nearbyDevices = state.nearbyDevices.map(it =>
+                        it.id === deviceId ? { ...it, connectionStatus } : it,
+                    ) as Draft<T>[];
+
+                    state.knownDevices = state.knownDevices.map(it =>
+                        it.id === deviceId ? { ...it, connectionStatus } : it,
+                    ) as Draft<T>[];
+                },
+            )
+            .addCase(
                 bluetoothActions.connectDeviceEventAction,
                 (state, { payload: { device } }) => {
                     state.nearbyDevices = state.nearbyDevices.map(it =>

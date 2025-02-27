@@ -13,6 +13,10 @@ export const selectAdapterStatus = <T extends BluetoothDeviceCommon>(
 export const selectKnownDevices = <T extends BluetoothDeviceCommon>(state: WithBluetoothState<T>) =>
     state.bluetooth.knownDevices;
 
+export const selectNearbyDevices = <T extends BluetoothDeviceCommon>(
+    state: WithBluetoothState<T>,
+) => state.bluetooth.nearbyDevices;
+
 /**
  * We need to have generic `createWeakMapSelector.withTypes` so we need to wrap it into Higher Order Function,
  * but we need to make sure it is called only **once** to not break the memoization. So it is named
