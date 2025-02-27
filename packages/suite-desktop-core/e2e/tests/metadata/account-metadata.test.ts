@@ -112,8 +112,4 @@ test.describe('Account metadata', { tag: ['@group=metadata1', '@webOnly'] }, () 
             'adding label to a newly added account. does it work?',
         );
     });
-
-    test.afterEach(async ({ metadataProviderMock }) => {
-        await metadataProviderMock.stop();
-    });
 });

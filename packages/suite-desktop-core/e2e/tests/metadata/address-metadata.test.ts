@@ -39,8 +39,4 @@ test.describe('Metadata - address labeling', { tag: ['@group=metadata1', '@webOn
         await page.keyboard.press('Enter');
         await expect(page.getByTestId(metadataEl)).toHaveText('meow meow');
     });
-
-    test.afterEach(async ({ metadataProviderMock }) => {
-        await metadataProviderMock.stop();
-    });
 });

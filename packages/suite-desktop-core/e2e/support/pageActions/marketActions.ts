@@ -6,9 +6,9 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { buyQuotesBTC, invityEndpoint } from '../../fixtures/invity';
 import { TrezorUserEnvLinkProxy, step } from '../common';
-import { expect } from '../customMatchers';
 import { DevicePromptActions } from './devicePromptActions';
 import { solanaUrlPattern } from '../mocks/tradingMock';
+import { expect } from '../testExtends/customMatchers';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
 const quoteAmountLocator = '@trading/offers/quote/crypto-amount';

@@ -152,9 +152,5 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
         await metadataPage.account.editLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
     });
 
-    test.afterEach(async ({ metadataProviderMock }) => {
-        await metadataProviderMock.stop();
-    });
-
     // TODO: Add tests for more possible errors
 });

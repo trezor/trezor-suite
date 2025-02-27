@@ -1,7 +1,7 @@
 import { Locator, Request, expect as baseExpect } from '@playwright/test';
 import { diff } from 'jest-diff';
 
-import { isEqualWithOmit } from './common';
+import { isEqualWithOmit } from '../common';
 
 const compareTextAndNumber = async (
     locator: Locator,

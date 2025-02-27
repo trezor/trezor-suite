@@ -6,7 +6,6 @@ import {
 } from '../../support/bridge';
 import { LEGACY_BRIDGE_VERSION, launchSuite, skipFixture } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
-import { AnalyticsActions } from '../../support/pageActions/analyticsActions';
 import { DevicePromptActions } from '../../support/pageActions/devicePromptActions';
 import { OnboardingActions } from '../../support/pageActions/onboarding/onboardingActions';
 
@@ -67,8 +66,6 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
 
         const onboardingPage = new OnboardingActions(
             suite.window,
-            new AnalyticsActions(suite.window),
-            devicePrompt,
             trezorUserEnvLink.defaultModel,
             testInfo,
         );

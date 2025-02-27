@@ -5,7 +5,7 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import { CoinsActions } from './coinActions';
 import { DeviceActions } from './deviceActions';
 import { TrezorUserEnvLinkProxy, step } from '../../common';
-import { expect } from '../../customMatchers';
+import { expect } from '../../testExtends/customMatchers';
 
 export enum Theme {
     System = 'system',

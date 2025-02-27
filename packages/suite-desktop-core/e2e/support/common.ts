@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import test, { TestInfo, _electron as electron } from '@playwright/test';
+import test, { ElectronApplication, Page, TestInfo, _electron as electron } from '@playwright/test';
 import { readdirSync, removeSync } from 'fs-extra';
 import { isEqual, omit } from 'lodash';
 import path from 'path';
@@ -23,6 +23,11 @@ type LaunchSuiteParams = {
     colorScheme?: 'light' | 'dark' | 'no-preference' | null | undefined;
     videoFolder: string;
     viewport: { width: number; height: number };
+};
+
+export type Suite = {
+    electronApp: ElectronApplication;
+    window: Page;
 };
 
 const formatErrorLogMessage = (data: string) => {
@@ -101,7 +106,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     return electronApp;
 };
 
-export const launchSuite = async (params: LaunchSuiteParams) => {
+export const launchSuite = async (params: LaunchSuiteParams): Promise<Suite> => {
     const electronApp = await launchSuiteElectronApp(params);
     const window = await electronApp.firstWindow();
 

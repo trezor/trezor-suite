@@ -58,10 +58,6 @@ test.describe('Google API errors', { tag: ['@group=metadata1', '@webOnly'] }, ()
         );
     });
 
-    test.afterEach(async ({ metadataProviderMock }) => {
-        await metadataProviderMock.stop();
-    });
-
     // TODO: Add tests for more possible errors
     // Reference: https://developers.google.com/drive/api/v3/handle-errors
 });

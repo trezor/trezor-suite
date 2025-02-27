@@ -116,8 +116,4 @@ test.describe('Remembered device', { tag: ['@group=metadata2', '@webOnly'] }, ()
             metadataPage.account.addLabelButton(AccountLabelId.BitcoinDefault1),
         ).not.toBeVisible();
     });
-
-    test.afterEach(async ({ metadataProviderMock }) => {
-        await metadataProviderMock.stop();
-    });
 });

@@ -116,8 +116,4 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata2', '@webOnl
             'still works, metadata enabled for currently not selected device',
         );
     });
-
-    test.afterEach(async ({ metadataProviderMock }) => {
-        await metadataProviderMock.stop();
-    });
 });

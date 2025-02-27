@@ -1,7 +1,7 @@
 import { Locator, Page, test } from '@playwright/test';
 
 import { TrezorUserEnvLinkProxy, step } from '../common';
-import { expect } from '../customMatchers';
+import { expect } from '../testExtends/customMatchers';
 
 export class TrezorInputActions {
     readonly wordSelectInput: Locator;

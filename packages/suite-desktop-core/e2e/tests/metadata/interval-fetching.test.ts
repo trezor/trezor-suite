@@ -63,8 +63,4 @@ test.describe('Account metadata', { tag: ['@group=metadata1', '@webOnly'] }, () 
             );
         });
     });
-
-    test.afterEach(async ({ metadataProviderMock }) => {
-        await metadataProviderMock.stop();
-    });
 });
