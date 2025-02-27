@@ -46,7 +46,8 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const txSignature = tx.ethereumSpecific?.parsedData?.methodId;
-    const isStakeTypeTxNoAmount = isStakeTypeTx(txSignature) && amount.eq(0);
+    const isStakeType = isStakeTypeTx(txSignature) || tx?.solanaSpecific?.stakeType; // ethereum or solana staking tx
+    const isStakeTypeTxNoAmount = isStakeType && amount.eq(0);
 
     return (
         <Table hasBorders={false} isRowHighlightedOnHover={false} typographyStyle="hint">

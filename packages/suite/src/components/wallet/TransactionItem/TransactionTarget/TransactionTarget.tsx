@@ -66,8 +66,12 @@ export const TransactionTarget = ({
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
+    const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeType === 'unstake';
 
     const amount = useMemo(() => {
+        // hide amount for solana unstake transactions
+        if (isSolanaUnstakeTx) return null;
+
         switch (type) {
             case 'target':
                 return getTargetAmount(payload, transaction);
@@ -76,7 +80,7 @@ export const TransactionTarget = ({
             case 'token':
                 return formatAmount(payload.amount, payload.decimals);
         }
-    }, [type, payload, transaction]);
+    }, [type, payload, transaction, isSolanaUnstakeTx]);
 
     const operation = getTxOperation(type === 'target' ? transaction.type : payload.type);
 
