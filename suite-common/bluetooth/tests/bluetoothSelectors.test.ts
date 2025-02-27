@@ -1,46 +1,63 @@
-import { BluetoothDeviceState, prepareSelectAllDevices } from '../src';
+import { prepareSelectAllDevices } from '../src';
 import { BluetoothDeviceCommon, BluetoothState } from '../src/bluetoothReducer';
 import { WithBluetoothState } from '../src/bluetoothSelectors';
 
 const initialState: BluetoothState<BluetoothDeviceCommon> = {
     adapterStatus: 'unknown',
     scanStatus: 'idle',
-    nearbyDevices: [] as BluetoothDeviceState<BluetoothDeviceCommon>[],
+    nearbyDevices: [] as BluetoothDeviceCommon[],
     knownDevices: [] as BluetoothDeviceCommon[],
 };
 
-const pairingDeviceStateA: BluetoothDeviceState<BluetoothDeviceCommon> = {
-    device: {
-        id: 'A',
-        data: [],
-        name: 'Trezor A',
-        lastUpdatedTimestamp: 1,
-    },
-    status: { type: 'pairing' },
+const pairingDeviceStateA: BluetoothDeviceCommon = {
+    id: 'A',
+    data: [],
+    name: 'Trezor A',
+    lastUpdatedTimestamp: 1,
+    connectionStatus: { type: 'pairing' },
 };
 
-const deviceB: BluetoothDeviceCommon = {
+const disconenctedDeviceB: BluetoothDeviceCommon = {
     id: 'B',
     data: [],
     name: 'Trezor B',
     lastUpdatedTimestamp: 2,
+    connectionStatus: { type: 'disconnected' },
+};
+
+const pairingDeviceStateC: BluetoothDeviceCommon = {
+    id: 'C',
+    data: [],
+    name: 'Trezor C',
+    lastUpdatedTimestamp: 3,
+    connectionStatus: { type: 'pairing' },
 };
 
 describe('bluetoothSelectors', () => {
-    it('selects knownDevices and nearbyDevices in one list fot the UI', () => {
+    it('selects knownDevices and nearbyDevices in one list fot the UI, all known devices are', () => {
         const selectAllDevices = prepareSelectAllDevices<BluetoothDeviceCommon>();
 
         const state: WithBluetoothState<BluetoothDeviceCommon> = {
             bluetooth: {
                 ...initialState,
-                nearbyDevices: [pairingDeviceStateA],
-                knownDevices: [pairingDeviceStateA.device, deviceB],
+                knownDevices: [pairingDeviceStateA, disconenctedDeviceB],
+                nearbyDevices: [
+                    {
+                        ...pairingDeviceStateA,
+                        connectionStatus: { type: 'connected' },
+                    },
+                    pairingDeviceStateC,
+                ],
             },
         };
 
         const devices = selectAllDevices(state);
 
-        expect(devices).toEqual([{ device: deviceB, status: null }, pairingDeviceStateA]);
+        expect(devices).toEqual([
+            { ...disconenctedDeviceB, connectionStatus: { type: 'disconnected' } }, // from knownDevices only, first in the list
+            pairingDeviceStateC, // from nearbyDevices only
+            { ...pairingDeviceStateA, connectionStatus: { type: 'connected' } }, // override by nearbyDevices
+        ]);
 
         const devicesSecondTime = selectAllDevices(state);
         expect(devices === devicesSecondTime).toBe(true); // Asserts that `reselect` memoization works

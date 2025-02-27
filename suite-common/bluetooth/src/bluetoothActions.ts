@@ -1,10 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import {
-    BluetoothDeviceCommon,
-    BluetoothScanStatus,
-    DeviceBluetoothStatus,
-} from './bluetoothReducer';
+import { BluetoothDeviceCommon, BluetoothScanStatus } from './bluetoothReducer';
 
 export const BLUETOOTH_PREFIX = '@suite/bluetooth';
 
@@ -44,8 +40,8 @@ const removeKnownDeviceAction = createAction(
 
 const connectDeviceEventAction = createAction(
     `${BLUETOOTH_PREFIX}/connect-device-event`,
-    ({ connectionStatus, id }: { id: string; connectionStatus: DeviceBluetoothStatus }) => ({
-        payload: { id, connectionStatus },
+    ({ device }: { device: BluetoothDeviceCommon }) => ({
+        payload: { device },
     }),
 );
 

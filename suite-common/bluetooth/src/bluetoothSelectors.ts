@@ -1,6 +1,6 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 
-import { BluetoothDeviceCommon, BluetoothDeviceState, BluetoothState } from './bluetoothReducer';
+import { BluetoothDeviceCommon, BluetoothState } from './bluetoothReducer';
 
 export type WithBluetoothState<T extends BluetoothDeviceCommon> = {
     bluetooth: BluetoothState<T>;
@@ -25,21 +25,19 @@ export const prepareSelectAllDevices = <T extends BluetoothDeviceCommon>() =>
     createWeakMapSelector.withTypes<WithBluetoothState<T>>()(
         [state => state.bluetooth.nearbyDevices, state => state.bluetooth.knownDevices],
         (nearbyDevices, knownDevices) => {
-            const map = new Map<string, BluetoothDeviceState<T>>();
+            const map = new Map<string, T>();
 
-            nearbyDevices.forEach(nearbyDevice => {
-                map.set(nearbyDevice.device.id, nearbyDevice);
+            knownDevices.forEach(knownDevice => map.set(knownDevice.id, knownDevice));
+
+            const nearbyDevicesCopy = [...nearbyDevices];
+            nearbyDevicesCopy.reverse(); // We want to have the newest devices first in the UI
+
+            nearbyDevicesCopy.forEach(nearbyDevice => {
+                map.delete(nearbyDevice.id); // Delete and re-add to change the order, replace would keep original order
+                map.set(nearbyDevice.id, nearbyDevice);
             });
 
-            knownDevices.forEach(knownDevice => {
-                if (!map.has(knownDevice.id)) {
-                    map.set(knownDevice.id, { device: knownDevice, status: null });
-                }
-            });
-
-            return Array.from(map.values()).sort(
-                (a, b) => b.device.lastUpdatedTimestamp - a.device.lastUpdatedTimestamp,
-            );
+            return Array.from(map.values());
         },
     );
 

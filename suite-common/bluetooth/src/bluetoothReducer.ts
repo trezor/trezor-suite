@@ -7,14 +7,19 @@ import { bluetoothActions } from './bluetoothActions';
 
 export type BluetoothScanStatus = 'idle' | 'running' | 'error';
 
-export type DeviceBluetoothStatus =
+export type DeviceBluetoothConnectionStatus =
+    | { type: 'disconnected' }
     | { type: 'pairing'; pin?: string }
     | { type: 'paired' }
     | { type: 'connecting' }
     | { type: 'connected' }
     | {
-          type: 'error';
+          type: 'pairing-error'; // This device cannot be paired ever again (new macAddress, new device)
           error: string;
+      }
+    | {
+          type: 'connection-error'; // Out-of-range, offline, in the faraday cage, ...
+          error: string; // Timeout, connection aborted, ...
       };
 
 // Do not export this outside of this suite-common package, Suite uses ist own type
@@ -24,19 +29,15 @@ export type BluetoothDeviceCommon = {
     name: string;
     data: number[]; // Todo: consider typed data-structure for this
     lastUpdatedTimestamp: number;
+    connectionStatus: DeviceBluetoothConnectionStatus;
 };
 
-export type DeviceBluetoothStatusType = DeviceBluetoothStatus['type'];
-
-export type BluetoothDeviceState<T extends BluetoothDeviceCommon> = {
-    device: T;
-    status: DeviceBluetoothStatus | null;
-};
+export type DeviceBluetoothConnectionStatusType = DeviceBluetoothConnectionStatus['type'];
 
 export type BluetoothState<T extends BluetoothDeviceCommon> = {
     adapterStatus: 'unknown' | 'enabled' | 'disabled';
     scanStatus: BluetoothScanStatus;
-    nearbyDevices: BluetoothDeviceState<T>[];
+    nearbyDevices: T[]; // Must be sorted, newest last
 
     // This will be persisted, those are devices we believed that are paired
     // (because we already successfully paired them in the Suite) in the Operating System
@@ -47,7 +48,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
     const initialState: BluetoothState<T> = {
         adapterStatus: 'unknown',
         scanStatus: 'idle',
-        nearbyDevices: [] as BluetoothDeviceState<T>[],
+        nearbyDevices: [] as T[],
         knownDevices: [] as T[],
     };
 
@@ -64,25 +65,27 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                 bluetoothActions.nearbyDevicesUpdateAction,
                 (state, { payload: { nearbyDevices } }) => {
                     state.nearbyDevices = nearbyDevices
-                        .sort((a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp)
-                        .map(
-                            (device): Draft<BluetoothDeviceState<T>> => ({
-                                device: device as Draft<T>,
-                                status:
-                                    state.nearbyDevices.find(it => it.device.id === device.id)
-                                        ?.status ?? null,
-                            }),
-                        );
+                        // Devices with 'pairing-error' status should NOT be displayed in the list, as it
+                        // won't be possible to connect to them ever again. User has to start pairing again,
+                        // which would produce a device with new id.
+                        .filter(
+                            nearbyDevice => nearbyDevice.connectionStatus?.type !== 'pairing-error',
+                        )
+                        .sort(
+                            (a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp,
+                        ) as Draft<T>[];
                 },
             )
             .addCase(
                 bluetoothActions.connectDeviceEventAction,
-                (state, { payload: { id, connectionStatus } }) => {
-                    const device = state.nearbyDevices.find(it => it.device.id === id);
+                (state, { payload: { device } }) => {
+                    state.nearbyDevices = state.nearbyDevices.map(it =>
+                        it.id === device.id ? device : it,
+                    ) as Draft<T>[];
 
-                    if (device !== undefined) {
-                        device.status = connectionStatus;
-                    }
+                    state.knownDevices = state.knownDevices.map(it =>
+                        it.id === device.id ? device : it,
+                    ) as Draft<T>[];
                 },
             )
             .addCase(
@@ -102,7 +105,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             .addCase(deviceActions.deviceDisconnect, (state, { payload: { bluetoothProps } }) => {
                 if (bluetoothProps !== undefined) {
                     state.nearbyDevices = state.nearbyDevices.filter(
-                        it => it.device.id !== bluetoothProps.id,
+                        it => it.id !== bluetoothProps.id,
                     );
                 }
             })
@@ -120,18 +123,16 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                         return;
                     }
 
-                    const deviceState = state.nearbyDevices.find(
-                        it => it.device.id === bluetoothProps.id,
-                    );
+                    const device = state.nearbyDevices.find(it => it.id === bluetoothProps.id);
 
-                    if (deviceState !== undefined) {
+                    if (device !== undefined) {
                         // Once device is fully connected, we save it to the list of known devices
                         // so next time user opens suite we can automatically connect to it.
                         const foundKnownDevice = state.knownDevices.find(
                             it => it.id === bluetoothProps.id,
                         );
                         if (foundKnownDevice === undefined) {
-                            state.knownDevices.push(deviceState.device);
+                            state.knownDevices.push(device);
                         }
                     }
                 },
@@ -139,7 +140,15 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,
                 (state, action: AnyAction) => {
-                    state.knownDevices = action.payload.knownDevices?.bluetooth ?? [];
+                    const loadedKnownDevices = (action.payload.knownDevices?.bluetooth ??
+                        []) as T[];
+
+                    state.knownDevices = loadedKnownDevices.map(
+                        (it): T => ({
+                            ...it,
+                            connectionStatus: { type: 'disconnected' },
+                        }),
+                    ) as Draft<T>[];
                 },
             ),
     );
