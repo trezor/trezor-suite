@@ -160,14 +160,7 @@ const BitcoinDetails = ({
                         }
                         bottomRightChild={
                             <>
-                                <FeeRate
-                                    feeRate={
-                                        hasInfo
-                                            ? transactionInfo.feePerByte
-                                            : selectedLevel.feePerUnit
-                                    }
-                                    networkType={networkType}
-                                />
+                                <FeeRate feeRate={fee.feePerUnit} networkType={networkType} />
                                 {hasInfo ? ` (${transactionInfo.bytes} B)` : ''}
                             </>
                         }
