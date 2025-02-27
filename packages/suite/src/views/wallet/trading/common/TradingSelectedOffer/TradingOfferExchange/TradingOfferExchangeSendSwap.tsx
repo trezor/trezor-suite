@@ -102,10 +102,11 @@ export const TradingOfferExchangeSendSwap = () => {
             if (
                 selectedQuote &&
                 selectedQuote?.dexTx &&
+                selectedQuote.receiveAddress &&
                 !customSlippageError &&
                 customSlippage !== selectedQuote.swapSlippage
             ) {
-                confirmTrade(selectedQuote.dexTx.from, undefined, {
+                confirmTrade(selectedQuote.receiveAddress, undefined, {
                     ...selectedQuote,
                     swapSlippage: customSlippage,
                     approvalType: undefined,
@@ -147,9 +148,9 @@ export const TradingOfferExchangeSendSwap = () => {
         if (value !== CUSTOM_SLIPPAGE) {
             setCustomSlippage(value);
 
-            if (!selectedQuote.dexTx) return;
+            if (!selectedQuote.dexTx || !selectedQuote.receiveAddress) return;
 
-            await confirmTrade(selectedQuote.dexTx.from, undefined, {
+            await confirmTrade(selectedQuote.receiveAddress, undefined, {
                 ...selectedQuote,
                 swapSlippage: value,
                 approvalType: undefined,

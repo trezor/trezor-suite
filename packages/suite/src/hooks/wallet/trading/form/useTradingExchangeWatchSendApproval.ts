@@ -60,8 +60,12 @@ export const useTradingExchangeWatchSendApproval = ({
 
                 dispatch(saveSelectedQuote(updatedSelectedQuote));
 
-                if (selectedQuote.dexTx) {
-                    await confirmTrade(selectedQuote.dexTx.from, undefined, updatedSelectedQuote);
+                if (selectedQuote.dexTx && selectedQuote.receiveAddress) {
+                    await confirmTrade(
+                        selectedQuote.receiveAddress,
+                        undefined,
+                        updatedSelectedQuote,
+                    );
                 }
             }
 

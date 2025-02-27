@@ -87,6 +87,10 @@ export const TradingOfferExchangeSendApproval = () => {
     };
 
     const selectApprovalValue = async (type: ExtendedDexApprovalType) => {
+        if (!selectedQuote.receiveAddress) {
+            return;
+        }
+
         setApprovalType(type);
         if (type !== 'APPROVED') {
             const updatedSelectedQuote = {
@@ -96,12 +100,16 @@ export const TradingOfferExchangeSendApproval = () => {
 
             dispatch(saveSelectedQuote(updatedSelectedQuote));
 
-            await confirmTrade(dexTx.from, undefined, updatedSelectedQuote);
+            await confirmTrade(selectedQuote.receiveAddress, undefined, updatedSelectedQuote);
         }
     };
 
     // if the last step was change in approval, we have to recompute the swap request
     const proceedToSwap = async () => {
+        if (!selectedQuote.receiveAddress) {
+            return;
+        }
+
         if (selectedQuote.approvalType) {
             const updatedSelectedQuote = {
                 ...selectedQuote,
@@ -114,7 +122,11 @@ export const TradingOfferExchangeSendApproval = () => {
                 }),
             );
 
-            const confirmedTrade = await confirmTrade(dexTx.from, undefined, updatedSelectedQuote);
+            const confirmedTrade = await confirmTrade(
+                selectedQuote.receiveAddress,
+                undefined,
+                updatedSelectedQuote,
+            );
 
             if (!confirmedTrade) {
                 return;
