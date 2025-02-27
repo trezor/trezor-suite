@@ -1,9 +1,11 @@
 import { Formatter } from '@suite-common/formatters';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import {
     findToken,
     formatNetworkAmount,
+    fromFiatCurrency,
     isDecimalsValid,
     isInteger,
     networkAmountToSmallestUnit,
@@ -52,8 +54,8 @@ export type AmountLimitProps = {
 
 export type CryptoAmountLimitProps = Pick<AmountLimitProps, 'currency' | 'minCrypto' | 'maxCrypto'>;
 
-interface ValidateLimitsOptions {
-    amountLimits?: CryptoAmountLimitProps;
+interface ValidateCryptoLimitsOptions {
+    amountLimits?: AmountLimitProps;
     areSatsUsed?: boolean;
     formatter: Formatter<string, string>;
 }
@@ -61,7 +63,7 @@ interface ValidateLimitsOptions {
 export const validateCryptoLimits =
     (
         translationString: TranslationFunction,
-        { amountLimits, areSatsUsed, formatter }: ValidateLimitsOptions,
+        { amountLimits, areSatsUsed, formatter }: ValidateCryptoLimitsOptions,
     ) =>
     (value: string) => {
         if (value && amountLimits) {
@@ -98,6 +100,64 @@ export const validateCryptoLimits =
             }
 
             if (amountLimits.maxCrypto && new BigNumber(value).gt(maxCrypto)) {
+                return translationString('TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO', {
+                    maximum: formatter.format(amountLimits.maxCrypto, {
+                        isBalance: true,
+                        symbol: currency,
+                        shouldRedactNumbers: false,
+                        maxDisplayedDecimals: 18,
+                    }),
+                });
+            }
+        }
+    };
+
+interface ValidateFiatLimitsOptions {
+    amountLimits?: AmountLimitProps;
+    localCurrency: FiatCurrencyCode;
+    decimals: number;
+    rate?: number;
+    formatter: Formatter<string, string>;
+}
+
+export const validateFiatLimits =
+    (
+        translationString: TranslationFunction,
+        { amountLimits, localCurrency, formatter, decimals, rate }: ValidateFiatLimitsOptions,
+    ) =>
+    (value: string) => {
+        if (value && amountLimits) {
+            const currency = amountLimits.currency.toLowerCase();
+            const cryptoAmount = fromFiatCurrency(value, decimals, rate);
+            if (!cryptoAmount) return translationString('TR_FIAT_RATES_NOT_AVAILABLE');
+
+            if (amountLimits.minFiat && new BigNumber(value).lt(amountLimits.minFiat)) {
+                return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT', {
+                    minimum: amountLimits.minFiat,
+                    currency: localCurrency.toUpperCase(),
+                });
+            }
+
+            // if fiat validation passes we still need to check crypto amount because of floating-point precision errors
+            if (amountLimits.minCrypto && new BigNumber(cryptoAmount).lt(amountLimits.minCrypto)) {
+                return translationString('TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO', {
+                    minimum: formatter.format(amountLimits.minCrypto, {
+                        isBalance: true,
+                        symbol: currency,
+                        shouldRedactNumbers: false,
+                        maxDisplayedDecimals: 18,
+                    }),
+                });
+            }
+
+            if (amountLimits.maxFiat && new BigNumber(value).gt(amountLimits.maxFiat)) {
+                return translationString('TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT', {
+                    maximum: amountLimits.maxFiat,
+                    currency: localCurrency.toUpperCase(),
+                });
+            }
+
+            if (amountLimits.maxCrypto && new BigNumber(cryptoAmount).gt(amountLimits.maxCrypto)) {
                 return translationString('TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO', {
                     maximum: formatter.format(amountLimits.maxCrypto, {
                         isBalance: true,
