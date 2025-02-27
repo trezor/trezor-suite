@@ -1,4 +1,4 @@
-# TREZOR SUITE MONOREPO
+# EMPTY TREZOR SUITE MONOREPO
 
 Welcome to the Trezor Suite repository! This repository contains the source code for 3 projects:
 
