@@ -435,9 +435,10 @@ const getAccountInfo = async (
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolean) => {
     const api = await request.connect();
+
     const {
         value: { blockhash: blockHash, lastValidBlockHeight: blockHeight },
-    } = await api.rpc.getLatestBlockhash({ commitment: 'finalized' }).send();
+    } = await api.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send();
 
     const serverInfo = {
         testnet: isTestnet,
