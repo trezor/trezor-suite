@@ -44,7 +44,7 @@ export class OnboardingActions {
 
     constructor(
         public page: Page,
-        private readonly model: Model,
+        readonly model: Model,
         private readonly testInfo: TestInfo,
     ) {
         this.analyticsPage = new AnalyticsActions(page);

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Browser, Page, TestInfo, test as base } from '@playwright/test';
+import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 
 import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
@@ -54,14 +54,13 @@ const electronTeardown = async (suite: Suite, testInfo: TestInfo) => {
     await suite.electronApp.close();
 };
 
-const webSetup = async (browser: Browser) => {
+const webSetup = async (browserContext: BrowserContext) => {
     await TrezorUserEnvLinkProxy.startBridge();
-    const context = await browser.newContext();
-    const page = await context.newPage();
+    const page = await browserContext.newPage();
     // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/usePlaywright.ts
     // Which is needed for methods manupalating Redux store like onboardingActions.disableFirmwareHashCheck
     await page.context().addInitScript(() => {
-        (window as any).Playwright = true;
+        window.Playwright = true;
     });
     await page.goto('./');
 
@@ -133,9 +132,11 @@ const suiteBaseTest = base.extend<suiteBaseFixture>({
             await use(suite.window);
             await electronTeardown(suite, testInfo);
         } else {
-            await TrezorUserEnvLinkProxy.startBridge();
-            const page = await webSetup(browser);
+            const browserContext = await browser.newContext();
+            const page = await webSetup(browserContext);
             await use(page);
+            await page.close();
+            await browserContext.close();
         }
 
         await TrezorUserEnvLinkProxy.logTestDetails(

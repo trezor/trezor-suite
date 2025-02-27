@@ -3,6 +3,7 @@ import { BridgeTransport } from '@trezor/transport';
 
 import { expect, test } from '../../support/fixtures';
 import { DashboardActions } from '../../support/pageActions/dashboardActions';
+import { OnboardingActions } from '../../support/pageActions/onboarding/onboardingActions';
 
 const stealBridgeSession = async () => {
     await test.step('Steal Bridge session', async () => {
@@ -84,16 +85,27 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
     test(
         'Overtake session by opening suite new tab',
         { tag: ['@webOnly'] },
-        async ({ context, onboardingPage, dashboardPage, devicePrompt }) => {
+        async ({ context, onboardingPage, dashboardPage, devicePrompt }, testInfo) => {
             await onboardingPage.completeOnboarding();
             await dashboardPage.discoveryShouldFinish();
 
             const pageTwo = await context.newPage();
-            await pageTwo.goto('');
+            await pageTwo.context().addInitScript(() => {
+                window.Playwright = true;
+            });
+            await pageTwo.goto('./');
+            const onboardingPageTwo = new OnboardingActions(
+                pageTwo,
+                onboardingPage.model,
+                testInfo,
+            );
+            await onboardingPageTwo.completeOnboarding();
             const dashboardPageTwo = new DashboardActions(pageTwo, devicePrompt);
             await dashboardPageTwo.discoveryShouldFinish();
             await expect(dashboardPageTwo.deviceStatus).toHaveText('Connected');
             await expect(dashboardPage.deviceStatus).toHaveText('Refresh');
+
+            await pageTwo.close();
         },
     );
 
