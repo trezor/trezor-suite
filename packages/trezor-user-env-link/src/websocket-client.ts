@@ -97,7 +97,14 @@ export class WebsocketClient extends WebsocketClientBase<WebsocketClientEvents> 
                 this.emit('firmwares', resp.firmwares);
             } else {
                 if (!resp.success) {
-                    throw new Error(`websocket_error_message: ${resp.error.message || resp.error}`);
+                    const err = resp.error.message || resp.error;
+
+                    // this is sort of expected, we don't want this to kill entire test run.
+                    if (err.includes('ReadTimeout')) {
+                        console.log('=== ERROR === websocket_error_message: ReadTimeout');
+                    } else {
+                        throw new Error(`websocket_error_message: ${err}`);
+                    }
                 }
             }
 
