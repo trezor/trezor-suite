@@ -9,3 +9,6 @@
 Resolve <!--- link the issue here -->
 
 ## Screenshots:
+
+<!--- Remove the line below to request review from coderabbitai -->
+@coderabbitai ignore
