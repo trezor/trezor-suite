@@ -57,9 +57,7 @@ const Wrapper = styled.div<
     ${({ $isActive }) =>
         $isActive &&
         css`
-            outline-width: ${borders.widths.large};
             outline-color: ${({ theme }) => theme.borderSecondary} !important;
-            outline-offset: -${borders.widths.large};
         `}
 
     ${withFrameProps}
