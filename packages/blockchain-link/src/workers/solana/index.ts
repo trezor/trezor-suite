@@ -384,6 +384,7 @@ const getAccountInfo = async (
                 payload.descriptor,
                 isTestnet,
                 solEpoch,
+                api.clusterUrl,
             );
             misc = {
                 owner: accountInfo?.owner,
