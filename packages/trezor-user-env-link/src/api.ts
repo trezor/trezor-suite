@@ -79,6 +79,20 @@ interface ReadAndConfirmShamirMnemonicEmu {
 
 type StartBridgeVersion = '2.0.32' | '2.0.33' | 'node-bridge';
 
+// Currently, emulator can timeout on press action, suite does not have any way to know about it
+// Without this promiseWithTimeout, suite would fail on next step which complicates debugging
+export function promiseWithTimeout<T>(
+    promise: Promise<T>,
+    errorMessage: string,
+    timeout = 4_500,
+): Promise<T> {
+    const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error(errorMessage)), timeout),
+    );
+
+    return Promise.race([promise, timeoutPromise]);
+}
+
 export const MNEMONICS = {
     mnemonic_all: 'all all all all all all all all all all all all',
     mnemonic_12: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
@@ -243,12 +257,18 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         return null;
     }
     async pressYes() {
-        await this.client.send({ type: 'emulator-press-yes' });
+        await promiseWithTimeout(
+            this.client.send({ type: 'emulator-press-yes' }),
+            'Emulator did not respond to press command in time',
+        );
 
         return null;
     }
     async pressNo() {
-        await this.client.send({ type: 'emulator-press-no' });
+        await promiseWithTimeout(
+            this.client.send({ type: 'emulator-press-no' }),
+            'Emulator did not respond to press command in time',
+        );
 
         return null;
     }
