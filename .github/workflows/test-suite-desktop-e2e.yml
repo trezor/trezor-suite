@@ -3,6 +3,10 @@ name: "[Test] suite-desktop e2e"
 
 on:
   pull_request:
+    types:
+      - opened
+      - ready_for_review
+      - synchronize
     branches:
       - develop
     paths-ignore:
@@ -28,7 +32,7 @@ concurrency:
 
 jobs:
   run-desktop-tests:
-    if: github.repository == 'trezor/trezor-suite'
+    if: github.repository == 'trezor/trezor-suite' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -58,6 +62,7 @@ jobs:
         with:
           github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
           pr_branch: ${{ github.head_ref }}
+          pr_created: ${{ github.event.pull_request.created_at }}
           repo: ${{ github.repository }}
           workflow_name: ${{ github.workflow }}
           job_name: "${{ github.job }} (${{ join(matrix.*, ', ') }})"
