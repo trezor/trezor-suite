@@ -30,7 +30,7 @@ import {
     getEthNetworkAddresses,
     getStakeFormsDefaultValues,
 } from 'src/utils/suite/ethereumStaking';
-import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
+import type { AmountLimitProps } from 'src/utils/suite/validation';
 
 import { useFees } from './form/useFees';
 import { useStakeCompose } from './form/useStakeCompose';
@@ -56,10 +56,12 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     const { MIN_AMOUNT_FOR_STAKING, MIN_FOR_WITHDRAWALS, MIN_BALANCE_FOR_STAKING } =
         getStakingLimitsByNetwork(account);
 
-    const amountLimits: CryptoAmountLimitProps = {
+    const amountLimits: AmountLimitProps = {
         currency: symbol,
         minCrypto: MIN_AMOUNT_FOR_STAKING.toString(),
         maxCrypto: account.formattedBalance,
+        minFiat: toFiatCurrency(MIN_AMOUNT_FOR_STAKING.toString(), currentRate?.rate) ?? undefined,
+        maxFiat: toFiatCurrency(account.formattedBalance, currentRate?.rate) ?? undefined,
     };
 
     const defaultValues = useMemo(() => {

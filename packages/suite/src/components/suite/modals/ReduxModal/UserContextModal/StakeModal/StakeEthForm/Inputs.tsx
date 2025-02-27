@@ -17,6 +17,7 @@ import { validateStakingMax } from 'src/utils/suite/staking';
 import {
     validateCryptoLimits,
     validateDecimals,
+    validateFiatLimits,
     validateMin,
     validateReserveOrBalance,
 } from 'src/utils/suite/validation';
@@ -57,6 +58,12 @@ export const Inputs = () => {
         validate: {
             min: validateMin(translationString),
             decimals: validateDecimals(translationString, { decimals: 2 }),
+            limits: validateFiatLimits(translationString, {
+                amountLimits,
+                localCurrency,
+                cryptoAmount: amount,
+                formatter: CryptoAmountFormatter,
+            }),
         },
     };
 
