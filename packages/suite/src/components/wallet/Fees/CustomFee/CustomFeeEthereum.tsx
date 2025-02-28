@@ -12,6 +12,9 @@ import { validateDecimals } from 'src/utils/suite/validation';
 
 import { CustomFeeBasicProps, FEE_LIMIT, FEE_PER_UNIT } from './CustomFee';
 
+const CUSTOM_MAX_BASE_FEE_PER_GAS = 'customMaxBaseFeePerGas';
+const CUSTOM_MAX_PRIORITY_FEE_PER_GAS = 'customMaxPriorityFeePerGas';
+
 export const CustomFeeEthereum = <TFieldValues extends FormState>({
     networkType,
     feeInfo,
@@ -20,8 +23,13 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
     translationString,
     feeUnits,
     sharedRules,
+    isEip1559,
+    currentBaseFee,
     ...props
-}: CustomFeeBasicProps<TFieldValues>) => {
+}: CustomFeeBasicProps<TFieldValues> & {
+    isEip1559: boolean;
+    currentBaseFee: string;
+}) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { getValues, setValue } = props as unknown as UseFormReturn<FormState>;
     const errors = props.errors as unknown as FieldErrors<FormState>;
@@ -31,6 +39,9 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
     const estimatedFeeLimit = getValues('estimatedFeeLimit');
     const feePerUnitError = errors.feePerUnit;
     const feeLimitError = errors.feeLimit;
+
+    const customMaxBaseFeePerGasError = errors.customMaxBaseFeePerGas;
+    const customMaxPriorityFeePerGasError = errors.customMaxPriorityFeePerGas;
 
     const feeLimitRules = {
         required: translationString('GAS_LIMIT_IS_NOT_SET'),
@@ -66,6 +77,27 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
         },
     };
 
+    const customMaxBaseFeePerGasRules = {
+        ...sharedRules,
+        validate: {
+            ...sharedRules.validate,
+            ethereumDecimalsLimit: feeRules.validate.ethereumDecimalsLimit,
+            // Base fee can't be lower than the current network base fee.
+            customMaxBaseFeePerGas: (value: string) => {
+                const baseFee = new BigNumber(value);
+                if (baseFee.isLessThan(currentBaseFee)) {
+                    return translationString('TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT');
+                }
+            },
+        },
+    };
+
+    const customMaxPriorityFeePerGasRules = {
+        validate: {
+            ethereumDecimalsLimit: feeRules.validate.ethereumDecimalsLimit,
+        },
+    };
+
     const feeLimitValidationProps = {
         onClick: () =>
             estimatedFeeLimit &&
@@ -77,6 +109,20 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
 
     const feeLimitValidationButtonProps =
         feeLimitError?.type === 'feeLimit' ? feeLimitValidationProps : undefined;
+
+    const customMaxBaseFeeValidationProps = {
+        onClick: () =>
+            estimatedFeeLimit &&
+            setValue(CUSTOM_MAX_BASE_FEE_PER_GAS, currentBaseFee, {
+                shouldValidate: true,
+            }),
+        text: translationString('TR_CUSTOM_MAX_BASE_FEE_USE_NETWORK_BASE_FEE'),
+    };
+
+    const customMaxBaseFeeValidationButtonProps =
+        customMaxBaseFeePerGasError?.type === 'customMaxBaseFeePerGas'
+            ? customMaxBaseFeeValidationProps
+            : undefined;
 
     const gasLimitInput = (
         <NumberInput
@@ -96,6 +142,49 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
             }
             rules={feeLimitRules}
         />
+    );
+
+    const eip1559InputFields = (
+        <>
+            {/* Base fee per gas can't be lower than the current network base fee */}
+            <NumberInput
+                label={<Translation id="TR_MAX_BASE_FEE_PER_GAS" />}
+                locale={locale}
+                control={control}
+                inputState={getInputState(customMaxBaseFeePerGasError)}
+                innerAddon={
+                    <Text variant="tertiary" typographyStyle="label">
+                        {feeUnits}
+                    </Text>
+                }
+                name={CUSTOM_MAX_BASE_FEE_PER_GAS}
+                data-testid={CUSTOM_MAX_BASE_FEE_PER_GAS}
+                rules={customMaxBaseFeePerGasRules}
+                bottomText={
+                    customMaxBaseFeePerGasError?.message ? (
+                        <InputError
+                            message={customMaxBaseFeePerGasError?.message}
+                            buttonProps={customMaxBaseFeeValidationButtonProps}
+                        />
+                    ) : null
+                }
+            />
+            <NumberInput
+                label={<Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />}
+                locale={locale}
+                control={control}
+                inputState={getInputState(customMaxPriorityFeePerGasError)}
+                innerAddon={
+                    <Text variant="tertiary" typographyStyle="label">
+                        {feeUnits}
+                    </Text>
+                }
+                name={CUSTOM_MAX_PRIORITY_FEE_PER_GAS}
+                data-testid={CUSTOM_MAX_PRIORITY_FEE_PER_GAS}
+                rules={customMaxPriorityFeePerGasRules}
+                bottomText={customMaxPriorityFeePerGasError?.message || null}
+            />
+        </>
     );
 
     const legacyEvmInputFields = (
@@ -119,7 +208,7 @@ export const CustomFeeEthereum = <TFieldValues extends FormState>({
     return (
         <>
             {gasLimitInput}
-            {legacyEvmInputFields}
+            {isEip1559 ? eip1559InputFields : legacyEvmInputFields}
         </>
     );
 };

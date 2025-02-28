@@ -10,12 +10,20 @@ type CurrentFeeProps = {
     feeIconName: IconName;
     currentFee: string;
     symbol: NetworkSymbol;
+    isEip1559?: boolean;
 };
 
-export const CurrentFee = ({ networkType, feeIconName, currentFee, symbol }: CurrentFeeProps) => (
+// For priority fees it should show current base fee
+export const CurrentFee = ({
+    networkType,
+    feeIconName,
+    currentFee,
+    symbol,
+    isEip1559 = false,
+}: CurrentFeeProps) => (
     <Row justifyContent="space-between">
         <Text variant="tertiary" typographyStyle="hint">
-            <Translation id="TR_CURRENT_FEE_CUSTOM_FEES" />
+            <Translation id={isEip1559 ? 'TR_CURRENT_BASE_FEE' : 'TR_CURRENT_FEE_CUSTOM_FEES'} />
         </Text>
         <Text variant="default" typographyStyle="hint">
             <Row alignItems="center" gap={spacings.xxs}>

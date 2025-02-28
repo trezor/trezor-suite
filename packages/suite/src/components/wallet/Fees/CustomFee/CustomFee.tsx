@@ -6,6 +6,8 @@ import {
     UseFormSetValue,
 } from 'react-hook-form';
 
+import { fromWei } from 'web3-utils';
+
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { FeeInfo, FormState } from '@suite-common/wallet-types';
 import { getFeeUnits, isInteger } from '@suite-common/wallet-utils';
@@ -75,7 +77,17 @@ export const CustomFee = <TFieldValues extends FormState>({
 
     const locale = useSelector(selectLanguage);
 
+    const normalLevel = feeInfo.levels.filter(level => level.label === 'normal')[0];
+
+    const isEip1559 = normalLevel.maxPriorityFeePerGas !== undefined;
+
+    const currentBaseFee = fromWei(Number(normalLevel.baseFeePerGas), 'Gwei');
+
     const getCurrentFee = () => {
+        if (isEip1559) {
+            return `${currentBaseFee}`;
+        }
+
         const { levels } = feeInfo;
         const middleIndex = Math.floor((levels.length - 1) / 2);
 
@@ -92,11 +104,14 @@ export const CustomFee = <TFieldValues extends FormState>({
                 feeIconName={feeIconName}
                 currentFee={getCurrentFee()}
                 symbol={symbol}
+                isEip1559={isEip1559}
             />
             {networkType === 'ethereum' ? (
                 <CustomFeeEthereum
                     {...props}
                     networkType={networkType}
+                    isEip1559={isEip1559}
+                    currentBaseFee={currentBaseFee}
                     feeInfo={feeInfo}
                     register={register}
                     control={control}

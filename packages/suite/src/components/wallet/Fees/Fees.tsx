@@ -45,6 +45,8 @@ export type FeeOptionType = {
     feePerUnit?: string;
     networkAmount?: string | null;
     feePerTx?: string; // Solana specific
+    maxWaitTime?: number; // Ethereum specific
+    effectiveGasPrice?: string; // Ethereum specific
 };
 
 const SelectBarWrapper = styled.div`
@@ -110,8 +112,15 @@ const buildFeeOptions = (
                 };
             });
         case 'ethereum':
-            // legacy fee format
-            return filteredLevels.map(level => buildBasicFeeOptions(level));
+            return filteredLevels.map(level => {
+                const basicFeeOption = buildBasicFeeOptions(level);
+
+                return {
+                    ...basicFeeOption,
+                    maxWaitTime: level.maxWaitTimeEstimate,
+                    effectiveGasPrice: level.effectiveGasPrice,
+                };
+            });
         case 'bitcoin':
             return filteredLevels.map(level => {
                 const basicFeeOption = buildBasicFeeOptions(level);
@@ -144,10 +153,14 @@ export const Fees = <TFieldValues extends FormState>({
     const errors = props.errors as unknown as FieldErrors<FormState>;
 
     const error = errors.selectedFee;
-    const selectedLevel = feeInfo.levels.find(level => level.label === selectedOption);
+    const selectedLevel =
+        feeInfo.levels.find(level => level.label === selectedOption) ||
+        feeInfo.levels.find(level => level.label === 'normal')!;
     const transactionInfo = composedLevels?.[selectedOption];
 
     const feeOptions = buildFeeOptions(feeInfo.levels, networkType, symbol, composedLevels);
+
+    const isEip1559 = feeOptions.some(option => option.effectiveGasPrice);
 
     const hasTransactionInfo = transactionInfo !== undefined && transactionInfo.type !== 'error';
     const networkAmount = hasTransactionInfo
@@ -220,7 +233,7 @@ export const Fees = <TFieldValues extends FormState>({
                 )}
             </Row>
 
-            {!isCustomFee && selectedLevel && (
+            {!isCustomFee && (
                 <StandardFee
                     networkType={networkType}
                     feeInfo={feeInfo}
@@ -251,7 +264,7 @@ export const Fees = <TFieldValues extends FormState>({
                     <Column>
                         <Row gap={spacings.sm} alignItems="baseline" justifyContent="space-between">
                             <Text variant="tertiary" typographyStyle="hint">
-                                <Translation id="FEE" />:
+                                <Translation id={isEip1559 ? 'MAX_FEE' : 'FEE'} />:
                             </Text>
                             {networkAmount && (
                                 <Row gap={spacings.xxs}>
