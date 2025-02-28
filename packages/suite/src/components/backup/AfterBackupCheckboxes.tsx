@@ -13,7 +13,7 @@ export const AfterBackupCheckboxes = () => {
 
     return (
         <Card>
-            <Column gap={spacings.xl} alignItems="center">
+            <Column gap={spacings.xl}>
                 <CheckItem
                     data-testid="@backup/check-item/wrote-seed-properly"
                     onClick={() => dispatch(toggleCheckboxByKey('wrote-seed-properly'))}
