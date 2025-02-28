@@ -101,18 +101,19 @@ const sentryMiddleware =
                     setSentryContext('suite-ready', payload),
                 );
                 break;
-            case DEVICE.CONNECT: {
-                const { features, mode } = action.payload.device;
+            case deviceActions.selectDevice.type:
+            case deviceActions.updateSelectedDevice.type: {
+                if (action.payload) {
+                    const { features, mode } = action.payload;
 
-                if (!features || !mode) return;
-
-                setSentryContext(deviceContextName, {
-                    mode,
-                    firmware: getFirmwareVersion(action.payload.device),
-                    isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload.device),
-                    bootloader: getBootloaderVersion(action.payload.device),
-                    model: action.payload.device.features.internal_model,
-                });
+                    setSentryContext(deviceContextName, {
+                        mode,
+                        firmware: getFirmwareVersion(action.payload),
+                        isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload),
+                        bootloader: getBootloaderVersion(action.payload),
+                        model: features?.internal_model,
+                    });
+                }
                 break;
             }
             case DEVICE.DISCONNECT:
