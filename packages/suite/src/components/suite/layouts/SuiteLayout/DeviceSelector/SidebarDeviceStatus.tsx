@@ -31,6 +31,7 @@ export const SidebarDeviceStatus = () => {
 
     const handleRefreshClick: MouseEventHandler = e => {
         e.stopPropagation();
+        console.log('SidebarDeviceStatus: handleRefreshClick', deviceNeedsRefresh, selectedDevice);
         if (deviceNeedsRefresh) {
             dispatch(acquireDevice(selectedDevice));
         }

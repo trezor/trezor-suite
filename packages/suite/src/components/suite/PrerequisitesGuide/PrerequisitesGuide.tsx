@@ -32,6 +32,7 @@ import { DeviceInitialize } from './DeviceInitialize';
 import { DeviceNoFirmware } from './DeviceNoFirmware';
 import { DeviceRecoveryMode } from './DeviceRecoveryMode';
 import { DeviceSeedless } from './DeviceSeedless';
+import { DeviceTrezorHostProtocolPair } from './DeviceTrezorHostProtocolPair';
 import { DeviceUnknown } from './DeviceUnknown';
 import { DeviceUnreadable } from './DeviceUnreadable';
 import { DeviceUpdateRequired } from './DeviceUpdateRequired';
@@ -82,6 +83,8 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
                     return <DeviceConnect setIsBluetoothConnectOpen={setIsBluetoothConnectOpen} />;
                 case 'device-unacquired':
                     return <DeviceAcquire />;
+                case 'device-unacquired-requires-thp':
+                    return <DeviceTrezorHostProtocolPair />;
                 case 'device-used-elsewhere':
                     return <DeviceUsedElsewhere />;
                 case 'device-unreadable':

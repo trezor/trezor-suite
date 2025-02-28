@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 
+import { getDeviceColorVariant, getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -108,8 +109,8 @@ export const ConfirmValueModal = ({
             {canConfirmOnDevice && (
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                    deviceModelInternal={device.features?.internal_model}
-                    deviceUnitColor={device?.features?.unit_color}
+                    deviceModelInternal={getDeviceInternalModel(device)}
+                    deviceUnitColor={getDeviceColorVariant(device)}
                     isConfirmed={isConfirmed}
                 />
             )}

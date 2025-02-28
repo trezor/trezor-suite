@@ -44,6 +44,8 @@ const getDeviceNeedsAttentionMessage = (
             return 'TR_NEEDS_ATTENTION_UNAVAILABLE';
         case 'unreadable':
             return 'TR_NEEDS_ATTENTION_UNREADABLE';
+        case 'unacquired-thp-required':
+            return 'TR_NEEDS_ATTENTION_UNREADABLE';
 
         case 'connected':
         case 'disconnected':
@@ -114,6 +116,7 @@ export const NeedsAttentionBanner = ({
             case 'used-in-other-window':
             case 'was-used-in-other-window':
             case 'unacquired':
+            case 'unacquired-thp-required':
                 dispatch(acquireDevice(device));
                 break;
 

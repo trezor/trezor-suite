@@ -248,7 +248,7 @@ export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
  */
 export const acquireDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/acquireDevice`,
-    async (requestedDevice: TrezorDevice | undefined, { dispatch, getState }) => {
+    async (requestedDevice: TrezorDevice | undefined, { dispatch, getState, extra }) => {
         const device = requestedDevice || selectSelectedDevice(getState());
 
         if (!device) return;
@@ -259,13 +259,17 @@ export const acquireDevice = createThunk(
         });
 
         if (!response.success) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'acquire-error',
-                    device,
-                    error: response.payload.error,
-                }),
-            );
+            if (response.payload.code === 'Device_ThpPairingTagInvalid') {
+                dispatch(extra.actions.openModal({ type: 'thp-pairing-failed' }));
+            } else {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'acquire-error',
+                        device,
+                        error: response.payload.error,
+                    }),
+                );
+            }
         }
     },
 );
