@@ -411,10 +411,7 @@ export const MetadataLabeling = ({
         showActionButton && (!payload.value || (payload.value && pending));
 
     return (
-        <LabelContainer
-            data-testid={labelContainerDataTest}
-            onClick={e => editActive && e.stopPropagation()}
-        >
+        <LabelContainer data-testid={labelContainerDataTest} onClick={e => e.stopPropagation()}>
             {payload.type === 'outputLabel' ? (
                 <>
                     <ButtonLikeLabelWithDropdown
