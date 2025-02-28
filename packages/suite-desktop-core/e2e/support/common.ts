@@ -1,5 +1,3 @@
- 
-
 import test, { TestInfo } from '@playwright/test';
 import { isEqual, omit } from 'lodash';
 

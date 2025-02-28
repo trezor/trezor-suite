@@ -51,8 +51,20 @@ const test = suiteBaseTest.extend<Fixtures>({
     walletPage: async ({ page }, use) => {
         await use(new WalletActions(page));
     },
-    onboardingPage: async ({ page, emulatorStartConf }, use, testInfo) => {
-        await use(new OnboardingActions(page, emulatorStartConf.model, testInfo));
+    onboardingPage: async (
+        { page, emulatorStartConf, devicePrompt, analyticsPage },
+        use,
+        testInfo,
+    ) => {
+        await use(
+            new OnboardingActions(
+                page,
+                emulatorStartConf.model,
+                testInfo,
+                devicePrompt,
+                analyticsPage,
+            ),
+        );
     },
     analyticsPage: async ({ page }, use) => {
         await use(new AnalyticsActions(page));
@@ -63,8 +75,8 @@ const test = suiteBaseTest.extend<Fixtures>({
     recoveryPage: async ({ page }, use) => {
         await use(new RecoveryActions(page));
     },
-    marketPage: async ({ page }, use) => {
-        await use(new MarketActions(page));
+    marketPage: async ({ page, devicePrompt }, use) => {
+        await use(new MarketActions(page, devicePrompt));
     },
     assetsPage: async ({ page }, use) => {
         await use(new AssetsActions(page));

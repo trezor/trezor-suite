@@ -4,8 +4,6 @@ import { TrezorUserEnvLinkProxy, step } from '../../common';
 import { DevicePromptActions } from '../devicePromptActions';
 
 export class BackupActions {
-    private devicePrompt: DevicePromptActions;
-
     readonly startButton: Locator;
     readonly understandWhatSeedIsCheckbox: Locator;
     readonly hasEnoughTimeCheckbox: Locator;
@@ -15,8 +13,10 @@ export class BackupActions {
     readonly willHideSeedCheckbox: Locator;
     readonly closeButton: Locator;
 
-    constructor(private page: Page) {
-        this.devicePrompt = new DevicePromptActions(page);
+    constructor(
+        private page: Page,
+        private devicePrompt: DevicePromptActions,
+    ) {
         this.startButton = page.getByTestId('@backup/start-button');
         this.understandWhatSeedIsCheckbox = page.getByTestId(
             '@backup/check-item/understands-what-seed-is',

@@ -85,7 +85,10 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
     test(
         'Overtake session by opening suite new tab',
         { tag: ['@webOnly'] },
-        async ({ context, onboardingPage, dashboardPage, devicePrompt }, testInfo) => {
+        async (
+            { context, onboardingPage, dashboardPage, devicePrompt, analyticsPage },
+            testInfo,
+        ) => {
             await onboardingPage.completeOnboarding();
             await dashboardPage.discoveryShouldFinish();
 
@@ -98,6 +101,8 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
                 pageTwo,
                 onboardingPage.model,
                 testInfo,
+                devicePrompt,
+                analyticsPage,
             );
             await onboardingPageTwo.completeOnboarding();
             const dashboardPageTwo = new DashboardActions(pageTwo, devicePrompt);

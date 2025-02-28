@@ -7,6 +7,7 @@ import {
 import { skipFixture } from '../../support/common';
 import { LEGACY_BRIDGE_VERSION, launchSuite } from '../../support/electron';
 import { expect, test } from '../../support/fixtures';
+import { AnalyticsActions } from '../../support/pageActions/analyticsActions';
 import { DevicePromptActions } from '../../support/pageActions/devicePromptActions';
 import { OnboardingActions } from '../../support/pageActions/onboarding/onboardingActions';
 
@@ -69,6 +70,8 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
             suite.window,
             trezorUserEnvLink.defaultModel,
             testInfo,
+            devicePrompt,
+            new AnalyticsActions(suite.window),
         );
         await onboardingPage.completeOnboarding();
 

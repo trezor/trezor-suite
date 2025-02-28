@@ -17,8 +17,6 @@ export class OnboardingActions {
     readonly firmware: FirmwareActions;
     readonly pin: PinActions;
     readonly tutorial: TutorialActions;
-    private readonly devicePrompt: DevicePromptActions;
-    private readonly analyticsPage: AnalyticsActions;
 
     readonly welcomeBody: Locator;
     readonly onboardingContinueButton: Locator;
@@ -46,10 +44,10 @@ export class OnboardingActions {
         public page: Page,
         readonly model: Model,
         private readonly testInfo: TestInfo,
+        private readonly devicePrompt: DevicePromptActions,
+        private readonly analyticsPage: AnalyticsActions,
     ) {
-        this.analyticsPage = new AnalyticsActions(page);
-        this.devicePrompt = new DevicePromptActions(page);
-        this.backup = new BackupActions(page);
+        this.backup = new BackupActions(page, devicePrompt);
         this.firmware = new FirmwareActions(page);
         this.tutorial = new TutorialActions(page);
         this.pin = new PinActions(page);

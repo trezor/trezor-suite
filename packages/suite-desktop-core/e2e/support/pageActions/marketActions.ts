@@ -53,8 +53,6 @@ function isAccountTabFilter(network: string): network is AccountTabFilter {
 }
 
 export class MarketActions {
-    devicePrompt: DevicePromptActions;
-
     // Input and general
     readonly offerSpinner: Locator;
     readonly section: Locator;
@@ -134,8 +132,10 @@ export class MarketActions {
     // Sell
     readonly sellBestOfferButton: Locator;
 
-    constructor(private page: Page) {
-        this.devicePrompt = new DevicePromptActions(page);
+    constructor(
+        private page: Page,
+        private readonly devicePrompt: DevicePromptActions,
+    ) {
         this.offerSpinner = this.page.getByTestId('@trading/offers/loading-spinner');
         this.section = this.page.getByTestId('@trading');
         this.form = this.page.getByTestId('@trading/form');
