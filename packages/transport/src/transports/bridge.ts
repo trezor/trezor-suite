@@ -4,7 +4,7 @@ import {
     bridge as protocolBridge,
     v1 as protocolV1,
 } from '@trezor/protocol';
-import { resolveAfter, versionUtils } from '@trezor/utils';
+import { resolveAfter } from '@trezor/utils';
 
 import {
     AbstractTransport,
@@ -63,14 +63,9 @@ type IncompleteRequestOptions = {
 type BridgeConstructorParameters = AbstractTransportParams & {
     // bridge url
     url?: string;
-    latestVersion?: string;
 };
 
 export class BridgeTransport extends AbstractTransport {
-    /**
-     * information about  the latest version of trezord.
-     */
-    private latestVersion?: string;
     private useProtocolMessages: boolean = false;
     /**
      * url of trezord server.
@@ -81,10 +76,9 @@ export class BridgeTransport extends AbstractTransport {
     public apiType = 'usb' as const;
 
     constructor(params: BridgeConstructorParameters) {
-        const { url = DEFAULT_URL, latestVersion, ...rest } = params || {};
+        const { url = DEFAULT_URL, ...rest } = params || {};
         super(rest);
         this.url = url;
-        this.latestVersion = latestVersion;
     }
 
     ping({ signal }: AbstractTransportMethodParams<'ping'> = {}) {
@@ -106,9 +100,14 @@ export class BridgeTransport extends AbstractTransport {
 
                 this.version = response.payload.version;
 
-                if (this.latestVersion) {
-                    this.isOutdated = versionUtils.isNewer(this.latestVersion, this.version);
+                if (this.version.startsWith('3')) {
+                    this.isOutdated = false;
+                } else {
+                    this.isOutdated =
+                        // as for trezord-go only 2.0.27 (standalone) and 2.0.33 (suite-desktop bundled) are supported
+                        !['2.0.27', '2.0.33'].includes(this.version);
                 }
+
                 this.useProtocolMessages = !!response.payload.protocolMessages;
 
                 this.stopped = false;
