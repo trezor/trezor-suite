@@ -24,6 +24,7 @@ export const SETTINGS_ROUTES: Route['name'][] = [
     'settings-device',
     'settings-coins',
     'settings-debug',
+    'settings-connected-apps',
 ] as const;
 
 const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> = [

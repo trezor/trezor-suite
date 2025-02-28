@@ -101,6 +101,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                     'settings-device',
                     'settings-coins',
                     'settings-debug',
+                    'settings-connected-apps',
                 ])}
                 icon="settings"
             />

@@ -98,6 +98,11 @@ export const routes = [
         app: 'settings',
     },
     {
+        name: 'settings-connected-apps',
+        pattern: '/settings/connected-apps',
+        app: 'settings',
+    },
+    {
         name: 'recovery-index',
         pattern: '/recovery',
         app: 'recovery',

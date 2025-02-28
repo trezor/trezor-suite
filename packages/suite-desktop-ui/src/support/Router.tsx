@@ -7,6 +7,7 @@ import routes from 'src/constants/suite/routes';
 import { Dashboard } from 'src/views/dashboard';
 import PasswordManager from 'src/views/password-manager';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
+import { SettingsConnectedApps } from 'src/views/settings/SettingsConnectedApps/SettingsConnectedApps';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
 import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
@@ -71,6 +72,7 @@ const components: { [key: string]: ComponentType<any> } = {
     'settings-coins': SettingsCoins,
     'settings-debug': SettingsDebug,
     'settings-device': SettingsDevice,
+    'settings-connected-apps': SettingsConnectedApps,
 };
 
 export const AppRouter = memo(() => (

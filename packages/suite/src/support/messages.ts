@@ -3541,6 +3541,10 @@ export default defineMessages({
         id: 'TR_DEBUG_SETTINGS',
         defaultMessage: 'Debug',
     },
+    TR_CONNECTED_APPS: {
+        id: 'TR_CONNECTED_APPS',
+        defaultMessage: 'Connected apps',
+    },
     TR_ACCOUNT_DETAILS_HEADER: {
         id: 'TR_ACCOUNT_DETAILS_HEADER',
         defaultMessage: 'Account details',
