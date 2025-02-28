@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import fs from 'fs';
 import fsExtra from 'fs-extra';
+import path from 'path';
 import prettier from 'prettier';
 import sortPackageJson from 'sort-package-json';
 
@@ -25,12 +26,19 @@ const scopes = {
         templatePath: 'package-template/',
         templatePackageJson: templatePackageJsonWeb,
     },
-};
+} as const;
 
-const exitWithErrorMessage = errorMessage => {
+const exitWithErrorMessage = (errorMessage: string) => {
     console.error(errorMessage);
     process.exit(1);
 };
+
+const isValidScope = (scope: string): scope is keyof typeof scopes =>
+    Object.keys(scopes).includes(scope);
+
+// Get the directory of the current file
+const currentDir = path.dirname(__filename);
+const rootDir = path.resolve(currentDir, '..');
 
 (async () => {
     const newPackage = process.argv?.[2];
@@ -44,19 +52,22 @@ const exitWithErrorMessage = errorMessage => {
 
     const [packageScope, packageName] = newPackage.split('/');
 
-    const validScopes = Object.keys(scopes);
-    if (!validScopes.includes(packageScope)) {
+    if (!isValidScope(packageScope)) {
         exitWithErrorMessage(
             chalk.bold.red(
-                `Invalid scope ${packageScope}. Please use one of the supported scopes: ${validScopes.join(
-                    ', ',
-                )}`,
+                `Invalid scope ${packageScope}. Please use one of the supported scopes: ${Object.keys(
+                    scopes,
+                ).join(', ')}`,
             ),
         );
     }
 
-    const { path, templatePath, templatePackageJson } = scopes[packageScope];
-    const packagePath = `${path}/${packageName}`;
+    const {
+        path: scopePath,
+        templatePath,
+        templatePackageJson,
+    } = scopes[packageScope as keyof typeof scopes];
+    const packagePath = path.join(rootDir, scopePath, packageName);
 
     const workspacesNames = Object.keys(getWorkspacesList());
     if (fs.existsSync(packagePath)) {
@@ -76,12 +87,15 @@ const exitWithErrorMessage = errorMessage => {
     });
 
     const prettierConfig = await getPrettierConfig();
-    const serializeConfig = config =>
+    const serializeConfig = (config: Record<string, unknown>) =>
         prettier.format(JSON.stringify(config).replace(/\\\\/g, '/'), prettierConfig);
-
     try {
-        fsExtra.copySync(`./scripts/${templatePath}`, packagePath);
-        fs.writeFileSync(`${packagePath}/package.json`, await serializeConfig(packageJson));
+        const templateSourcePath = path.join(currentDir, templatePath);
+        fsExtra.copySync(templateSourcePath, packagePath);
+        fs.writeFileSync(
+            path.join(packagePath, 'package.json'),
+            await serializeConfig(packageJson),
+        );
     } catch (error) {
         exitWithErrorMessage(`${error}\n${chalk.bold.red('Package creation failed.')}`);
     }

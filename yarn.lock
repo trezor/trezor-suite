@@ -9538,7 +9538,7 @@ __metadata:
     react: "npm:18.2.0"
     react-redux: "npm:8.0.7"
     semver: "npm:^7.6.3"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
   languageName: unknown
   linkType: soft
 
@@ -11531,7 +11531,7 @@ __metadata:
     "@solana/web3.js": "npm:^2.0.0"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -11547,7 +11547,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -11577,7 +11577,7 @@ __metadata:
     ripple-lib: "npm:^1.10.1"
     socks-proxy-agent: "npm:8.0.4"
     tiny-worker: "npm:^2.3.0"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^5.0.4"
@@ -11685,7 +11685,7 @@ __metadata:
   dependencies:
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -11784,7 +11784,7 @@ __metadata:
     rimraf: "npm:^6.0.1"
     styled-components: "npm:^6.1.8"
     swr: "npm:^2.2.5"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
   languageName: unknown
@@ -11820,7 +11820,7 @@ __metadata:
   dependencies:
     "@trezor/connect": "workspace:^"
     "@trezor/utils": "workspace:^"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -11946,7 +11946,7 @@ __metadata:
     rimraf: "npm:^6.0.1"
     selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.11"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^6.0.1"
@@ -12034,7 +12034,7 @@ __metadata:
     node-fetch: "npm:^2.6.4"
     node-libs-browser: "npm:^2.2.1"
     ts-node: "npm:^10.9.2"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
     web3-utils: "npm:^4.3.2"
     webpack: "npm:^5.97.1"
     ws: "npm:^8.18.0"
@@ -12047,7 +12047,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/crypto-utils@workspace:packages/crypto-utils"
   dependencies:
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -12081,7 +12081,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
   dependencies:
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
     ua-parser-js: "npm:^1.0.37"
   peerDependencies:
     expo-constants: "*"
@@ -12179,7 +12179,7 @@ __metadata:
     long: "npm:5.2.0"
     protobufjs: "npm:7.4.0"
     protobufjs-cli: "npm:^1.1.3"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -12189,7 +12189,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/protocol@workspace:packages/protocol"
   dependencies:
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -12239,7 +12239,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     ts-mixer: "npm:^6.0.3"
     ts-node: "npm:^10.9.2"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -12259,6 +12259,7 @@ __metadata:
     octokit: "npm:3.1.2"
     prettier: "npm:^3.3.2"
     sort-package-json: "npm:^1.57.0"
+    tsx: "npm:^4.19.3"
     yargs: "npm:17.7.2"
   languageName: unknown
   linkType: soft
@@ -12355,7 +12356,7 @@ __metadata:
     postcss-modules-values: "npm:^4.0.0"
     simple-git: "npm:^3.27.0"
     style-loader: "npm:^3.3.4"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
   languageName: unknown
@@ -12541,7 +12542,7 @@ __metadata:
     styled-components: "npm:^6.1.8"
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^36.0.0"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
     webpack: "npm:^5.97.1"
     worker-loader: "npm:^3.0.8"
     ws: "npm:^8.18.0"
@@ -12766,7 +12767,7 @@ __metadata:
     jest: "npm:29.7.0"
     jest-environment-node: "npm:^29.7.0"
     ts-node: "npm:^10.9.2"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
     usb: "npm:^2.14.0"
   peerDependencies:
     tslib: ^2.6.2
@@ -12803,7 +12804,7 @@ __metadata:
   dependencies:
     "@trezor/eslint": "workspace:*"
     bignumber.js: "npm:^9.1.2"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -12836,7 +12837,7 @@ __metadata:
     minimaldata: "npm:^1.0.2"
     pushdata-bitcoin: "npm:^1.0.1"
     tiny-secp256k1: "npm:^1.1.6"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
     typeforce: "npm:^1.18.0"
     varuint-bitcoin: "npm:2.0.0"
     wif: "npm:^5.0.0"
@@ -12862,7 +12863,7 @@ __metadata:
   resolution: "@trezor/websocket-client@workspace:packages/websocket-client"
   dependencies:
     "@trezor/utils": "workspace:*"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
     ws: "npm:^8.18.0"
   peerDependencies:
     tslib: ^2.6.2
@@ -18814,7 +18815,7 @@ __metadata:
   resolution: "connect-example-node@workspace:packages/connect-examples/node"
   dependencies:
     "@trezor/connect": "workspace:*"
-    tsx: "npm:^4.19.2"
+    tsx: "npm:^4.19.3"
   languageName: unknown
   linkType: soft
 
@@ -21778,7 +21779,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.18.0 || ^0.19.0 || ^0.20.0 || ^0.21.0 || ^0.22.0 || ^0.23.0 || ^0.24.0 || ^0.25.0":
+"esbuild@npm:^0.18.0 || ^0.19.0 || ^0.20.0 || ^0.21.0 || ^0.22.0 || ^0.23.0 || ^0.24.0 || ^0.25.0, esbuild@npm:~0.25.0":
   version: 0.25.0
   resolution: "esbuild@npm:0.25.0"
   dependencies:
@@ -21944,7 +21945,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.23.1, esbuild@npm:~0.23.0":
+"esbuild@npm:^0.23.1":
   version: 0.23.1
   resolution: "esbuild@npm:0.23.1"
   dependencies:
@@ -40736,7 +40737,7 @@ __metadata:
     ts-node: "npm:^10.9.2"
     tsconfig-paths: "npm:^4.2.0"
     tslib: "npm:^2.6.2"
-    tsx: "npm:^4.16.3"
+    tsx: "npm:^4.19.3"
     typescript: "npm:5.5.4"
     version-bump-prompt: "npm:^6.1.0"
   dependenciesMeta:
@@ -40973,11 +40974,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^4.16.3, tsx@npm:^4.19.2":
-  version: 4.19.2
-  resolution: "tsx@npm:4.19.2"
+"tsx@npm:^4.19.3":
+  version: 4.19.3
+  resolution: "tsx@npm:4.19.3"
   dependencies:
-    esbuild: "npm:~0.23.0"
+    esbuild: "npm:~0.25.0"
     fsevents: "npm:~2.3.3"
     get-tsconfig: "npm:^4.7.5"
   dependenciesMeta:
@@ -40985,7 +40986,7 @@ __metadata:
       optional: true
   bin:
     tsx: dist/cli.mjs
-  checksum: 10/4c5610ed1fb2f80d766681f8ac7827e1e8118dfe354c18f74800691f3ef1e9ed676a29842ab818806bcf8613cdc97c6af84b5645e768ddb7f4b0527b9100deda
+  checksum: 10/a7e7f41e5593b242772050abacf51908aa8a6d4d9ea6c29e80161eb557d664a0f4cc8d38d0c8c151fddb6c2e9e337af27ba0e269c9707ccd7eeff0e0ea7fcf98
   languageName: node
   linkType: hard
 

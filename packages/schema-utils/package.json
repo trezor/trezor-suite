@@ -24,7 +24,7 @@
         "@sinclair/typebox-codegen": "^0.10.4",
         "@trezor/eslint": "workspace:*",
         "ts-node": "^10.9.2",
-        "tsx": "^4.16.3"
+        "tsx": "^4.19.3"
     },
     "dependencies": {
         "@sinclair/typebox": "^0.33.7",

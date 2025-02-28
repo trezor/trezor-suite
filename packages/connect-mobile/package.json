@@ -19,7 +19,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "devDependencies": {
-        "tsx": "^4.16.3"
+        "tsx": "^4.19.3"
     },
     "dependencies": {
         "@trezor/connect": "workspace:^",

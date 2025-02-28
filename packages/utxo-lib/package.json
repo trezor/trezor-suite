@@ -66,7 +66,7 @@
         "@types/events": "^3.0.3",
         "@types/wif": "^2.0.5",
         "minimaldata": "^1.0.2",
-        "tsx": "^4.16.3"
+        "tsx": "^4.19.3"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
