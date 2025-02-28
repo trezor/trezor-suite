@@ -234,13 +234,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                                     confirmTrade(address, extraField);
                                 }
                             }}
-                            isDisabled={
-                                !form.formState.isValid ||
-                                address === '' ||
-                                callInProgress ||
-                                (exchangeQuote?.extraFieldDescription?.required &&
-                                    extraField === '')
-                            }
+                            isDisabled={!form.formState.isValid || address === '' || callInProgress}
                         >
                             <Translation id="TR_BUY_GO_TO_PAYMENT" />
                         </Button>
