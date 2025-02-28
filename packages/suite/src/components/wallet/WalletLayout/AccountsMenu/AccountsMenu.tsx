@@ -2,9 +2,10 @@ import React from 'react';
 
 import styled from 'styled-components';
 
+import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
-import { Column, Row, useScrollShadow } from '@trezor/components';
+import { Column, Row, SkeletonRectangle, useScrollShadow } from '@trezor/components';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -47,6 +48,7 @@ export const AccountsMenu = () => {
     const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
         useScrollShadow();
     const isSidebarCollapsed = useIsSidebarCollapsed();
+    const isDiscoveryRunning = discovery?.status === DiscoveryStatus.RUNNING;
 
     if (!device || !discovery) {
         if (isSidebarCollapsed) return <Wrapper />;
@@ -71,12 +73,18 @@ export const AccountsMenu = () => {
             <Header>
                 <ExpandedSidebarOnly>
                     <Row justifyContent="space-between" gap={spacings.xs}>
-                        {!isEmpty && <AccountSearchBox />}
-                        <AddAccountButton
-                            isFullWidth={isEmpty}
-                            data-testid="@account-menu/add-account"
-                            device={device}
-                        />
+                        {isDiscoveryRunning ? (
+                            <SkeletonRectangle animate width="100%" height={38} />
+                        ) : (
+                            <>
+                                {!isEmpty && <AccountSearchBox />}
+                                <AddAccountButton
+                                    isFullWidth={isEmpty}
+                                    data-testid="@account-menu/add-account"
+                                    device={device}
+                                />
+                            </>
+                        )}
                     </Row>
                     <CoinsFilter />
                 </ExpandedSidebarOnly>
