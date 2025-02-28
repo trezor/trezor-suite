@@ -1,10 +1,14 @@
+import { useMemo } from 'react';
+
 import styled, { useTheme } from 'styled-components';
 
 import { spacingsPx } from '@trezor/theme';
-import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
+import { HELP_CENTER_ETH_STAKING, HELP_CENTER_SOL_STAKING } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { useSelector } from 'src/hooks/suite';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { EverstakeLogo } from './EverstakeLogo';
 
@@ -30,13 +34,26 @@ export const EverstakeFooter = () => {
     const theme = useTheme();
     const isDarkMode = theme.legacy.THEME === 'dark';
 
+    const account = useSelector(selectSelectedAccount);
+
+    const learnMoreLink = useMemo(() => {
+        switch (account?.networkType) {
+            case 'ethereum':
+                return HELP_CENTER_ETH_STAKING;
+            case 'solana':
+                return HELP_CENTER_SOL_STAKING;
+            default:
+                return undefined;
+        }
+    }, [account]);
+
     return (
         <Wrapper>
             <Left>
                 <Translation id="TR_STAKE_PROVIDED_BY" />{' '}
                 <EverstakeLogo color={isDarkMode ? '#fff' : '#000'} />
             </Left>
-            <LearnMoreButton url={HELP_CENTER_ETH_STAKING} />
+            {learnMoreLink && <LearnMoreButton url={learnMoreLink} />}
         </Wrapper>
     );
 };

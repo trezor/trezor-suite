@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { StakeRootState, selectPoolStatsApyData } from '@suite-common/wallet-core';
@@ -41,6 +41,17 @@ export const EstimatedGains = () => {
         },
     ];
 
+    const learnMoreLink = useMemo(() => {
+        switch (account?.networkType) {
+            case 'ethereum':
+                return HELP_CENTER_ETH_STAKING;
+            case 'solana':
+                return HELP_CENTER_SOL_STAKING;
+            default:
+                return undefined;
+        }
+    }, [account]);
+
     return (
         <Column gap={spacings.lg}>
             <Column>
@@ -73,17 +84,7 @@ export const EstimatedGains = () => {
                 <Translation
                     id="TR_STAKING_YOUR_EARNINGS"
                     values={{
-                        a: chunks => (
-                            <TrezorLink
-                                href={
-                                    account.networkType === 'solana'
-                                        ? HELP_CENTER_SOL_STAKING
-                                        : HELP_CENTER_ETH_STAKING
-                                }
-                            >
-                                {chunks}
-                            </TrezorLink>
-                        ),
+                        a: chunks => <TrezorLink href={learnMoreLink}>{chunks}</TrezorLink>,
                     }}
                 />
             </Paragraph>

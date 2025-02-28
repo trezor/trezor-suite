@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { Banner, Card, Checkbox, Column, NewModal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
+import { HELP_CENTER_ETH_STAKING, HELP_CENTER_SOL_STAKING } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
@@ -49,6 +49,17 @@ export const ConfirmStakeEthModal = ({
         onConfirm();
     };
 
+    const learnMoreLink = useMemo(() => {
+        switch (account?.networkType) {
+            case 'ethereum':
+                return HELP_CENTER_ETH_STAKING;
+            case 'solana':
+                return HELP_CENTER_SOL_STAKING;
+            default:
+                return undefined;
+        }
+    }, [account]);
+
     if (!account) return null;
 
     return (
@@ -83,7 +94,7 @@ export const ConfirmStakeEthModal = ({
                 <Banner
                     icon="hand"
                     rightContent={
-                        <Banner.Button href={HELP_CENTER_ETH_STAKING}>
+                        <Banner.Button href={learnMoreLink}>
                             <Translation id="TR_LEARN_MORE" />
                         </Banner.Button>
                     }
