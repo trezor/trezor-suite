@@ -2,14 +2,7 @@ import { ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    palette,
-    spacingsPx,
-} from '@trezor/theme';
+import { Elevation, borders, mapElevationToBorder, palette, spacingsPx } from '@trezor/theme';
 
 import {
     FrameProps,
@@ -45,7 +38,7 @@ const Wrapper = styled.div<
     padding: ${spacingsPx.md};
     outline: ${borders.widths.small} solid ${mapElevationToBorder};
     outline-offset: -${borders.widths.small};
-    background-color: ${mapElevationToBackground};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
 
     ${({ onClick }) => onClick && 'cursor: pointer;'}
 
