@@ -275,13 +275,17 @@ export const acquireDevice = createThunk(
         });
 
         if (!response.success) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'acquire-error',
-                    device,
-                    error: response.payload.error,
-                }),
-            );
+            if (response.payload.code === 'Device_ThpPairingTagInvalid') {
+                dispatch(extra.actions.openModal({ type: 'thp-pairing-failed' }));
+            } else {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'acquire-error',
+                        device,
+                        error: response.payload.error,
+                    }),
+                );
+            }
         }
 
         if (startDiscovery) {
