@@ -26,7 +26,6 @@ import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
 import { RouterAppWithParams } from '../../../constants/suite/routes';
-import { Redirect } from '../../../support/suite/Redirect';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { useReportDeviceCompromised } from '../SecurityCheck/useReportDeviceCompromised';
@@ -41,17 +40,12 @@ const ROUTES_TO_SKIP_FIRMWARE_CHECK: RouterAppWithParams['app'][] = [
     'firmware-custom',
 ];
 
-const RedirectToDashboard = () => <Redirect to="suite-index" />;
-
-const getFullscreenApp = (
-    route: AppState['router']['route'],
-    isInitialRun: boolean,
-): FC | undefined => {
+const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
     switch (route?.app) {
         case 'start':
-            return isInitialRun ? SuiteStart : RedirectToDashboard;
+            return SuiteStart;
         case 'onboarding':
-            return isInitialRun ? Onboarding : RedirectToDashboard;
+            return Onboarding;
         default:
             return undefined;
     }
@@ -124,7 +118,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     // TODO: murder the fullscreen app logic, there must be a better way
     // i don't like how it's not clear which layout is used
     // and that the prerequisite screen is handled multiple times
-    const FullscreenApp = getFullscreenApp(router.route, initialRun);
+    const FullscreenApp = getFullscreenApp(router.route);
     if (FullscreenApp !== undefined) {
         return <FullscreenApp />;
     }
