@@ -3,7 +3,8 @@ import {
     expectBridgeToBeStopped,
     waitForAppToBeInitialized,
 } from '../../support/bridge';
-import { launchSuite, launchSuiteElectronApp, skipFixture } from '../../support/common';
+import { skipFixture } from '../../support/common';
+import { launchSuite, launchSuiteElectronApp } from '../../support/electron';
 import { expect, test } from '../../support/fixtures';
 
 test.use({ exceptionLogger: skipFixture });

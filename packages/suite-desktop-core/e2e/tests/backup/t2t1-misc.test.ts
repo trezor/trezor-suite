@@ -13,11 +13,11 @@ test.describe('Backup misc', { tag: ['@group=device-management'] }, () => {
 
     test('Backup should reset if modal is closed', async ({ onboardingPage, dashboardPage }) => {
         await dashboardPage.notificationNoBackupButton.click();
-        await onboardingPage.backup.undertandWhatSeedIsCheckbox.click();
+        await onboardingPage.backup.understandWhatSeedIsCheckbox.click();
         await onboardingPage.backup.hasEnoughTimeCheckbox.click();
         await onboardingPage.backup.isInPrivateCheckbox.click();
         await expect(
-            onboardingPage.backup.undertandWhatSeedIsCheckbox.locator('input'),
+            onboardingPage.backup.understandWhatSeedIsCheckbox.locator('input'),
         ).toBeChecked();
         await expect(onboardingPage.backup.hasEnoughTimeCheckbox.locator('input')).toBeChecked();
         await expect(onboardingPage.backup.isInPrivateCheckbox.locator('input')).toBeChecked();
@@ -26,7 +26,7 @@ test.describe('Backup misc', { tag: ['@group=device-management'] }, () => {
 
         //at this moment, after modal was closed and opened again, no checkbox should be checked
         await expect(
-            onboardingPage.backup.undertandWhatSeedIsCheckbox.locator('input'),
+            onboardingPage.backup.understandWhatSeedIsCheckbox.locator('input'),
         ).not.toBeChecked();
         await expect(
             onboardingPage.backup.hasEnoughTimeCheckbox.locator('input'),
@@ -44,7 +44,7 @@ test.describe('Backup misc', { tag: ['@group=device-management'] }, () => {
         await dashboardPage.openDeviceSwitcher();
         await dashboardPage.walletAtIndex(0).click();
         await dashboardPage.notificationNoBackupButton.click();
-        await onboardingPage.backup.undertandWhatSeedIsCheckbox.click();
+        await onboardingPage.backup.understandWhatSeedIsCheckbox.click();
         await onboardingPage.backup.hasEnoughTimeCheckbox.click();
         await onboardingPage.backup.isInPrivateCheckbox.click();
 

@@ -24,7 +24,7 @@ test.describe('Backup success', { tag: ['@group=device-management'] }, () => {
         // access from notification
         await dashboardPage.notificationNoBackupButton.click();
 
-        await onboardingPage.backup.undertandWhatSeedIsCheckbox.click();
+        await onboardingPage.backup.understandWhatSeedIsCheckbox.click();
         await onboardingPage.backup.hasEnoughTimeCheckbox.click();
         await onboardingPage.backup.isInPrivateCheckbox.click();
 

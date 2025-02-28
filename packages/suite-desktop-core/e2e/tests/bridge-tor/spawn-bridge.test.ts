@@ -4,7 +4,8 @@ import {
     expectBridgeToBeStopped,
     waitForAppToBeInitialized,
 } from '../../support/bridge';
-import { LEGACY_BRIDGE_VERSION, launchSuite, skipFixture } from '../../support/common';
+import { skipFixture } from '../../support/common';
+import { LEGACY_BRIDGE_VERSION, launchSuite } from '../../support/electron';
 import { expect, test } from '../../support/fixtures';
 import { DevicePromptActions } from '../../support/pageActions/devicePromptActions';
 import { OnboardingActions } from '../../support/pageActions/onboarding/onboardingActions';

@@ -24,7 +24,7 @@ test.describe('Backup fail', { tag: ['@group=device-management'] }, () => {
         trezorUserEnvLink,
     }) => {
         await dashboardPage.notificationNoBackupButton.click();
-        await onboardingPage.backup.undertandWhatSeedIsCheckbox.click();
+        await onboardingPage.backup.understandWhatSeedIsCheckbox.click();
         await onboardingPage.backup.hasEnoughTimeCheckbox.click();
         await onboardingPage.backup.isInPrivateCheckbox.click();
         await onboardingPage.backup.startButton.click();

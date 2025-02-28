@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
 
-import { launchSuite, skipFixture } from '../../support/common';
+import { skipFixture } from '../../support/common';
+import { launchSuite } from '../../support/electron';
 import { expect, test } from '../../support/fixtures';
 import { NetworkAnalyzer } from '../../support/networkAnalyzer';
 

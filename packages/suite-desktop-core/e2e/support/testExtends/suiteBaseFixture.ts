@@ -3,14 +3,8 @@ import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 
 import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
-import {
-    Suite,
-    TrezorUserEnvLinkProxy,
-    getElectronVideoPath,
-    getUrl,
-    isDesktopProject,
-    launchSuite,
-} from '../common';
+import { TrezorUserEnvLinkProxy, getUrl, isDesktopProject } from '../common';
+import { Suite, getElectronVideoPath, launchSuite } from '../electron';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 
