@@ -40,8 +40,8 @@ export const getSolanaStakingData = async (
                 if (!EVERSTAKE_VOTER_PUBKEYS.includes(voterPubkey)) return; // filter out non-everstake accounts
 
                 return {
-                    rentExemptReserve: fields[0]?.rentExemptReserve,
-                    stake: fields[1]?.delegation?.stake,
+                    rentExemptReserve: fields[0]?.rentExemptReserve.toString(),
+                    stake: fields[1]?.delegation?.stake.toString(),
                     status: stakeState,
                 };
             }

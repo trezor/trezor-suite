@@ -72,8 +72,8 @@ export type { Address } from '@solana/web3.js';
 
 export type SolanaStakingAccount = {
     status: string;
-    stake?: bigint;
-    rentExemptReserve: bigint;
+    stake?: string;
+    rentExemptReserve: string;
 };
 
 export type TokenDetailByMint = { [mint: string]: { name: string; symbol: string } };
