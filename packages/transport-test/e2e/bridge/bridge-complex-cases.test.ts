@@ -20,7 +20,11 @@ describe('restarting bridge', () => {
     let session: Session;
     beforeAll(async () => {
         await TrezorUserEnvLink.connect();
-        await TrezorUserEnvLink.startEmu();
+        await TrezorUserEnvLink.startEmu({
+            // it looks like that any later emulator has trouble recovering from these edge-casey situations
+            version: '2.8.7',
+            model: 'T2T1',
+        });
         await TrezorUserEnvLink.startBridge();
 
         bridge = new BridgeTransport({ messages, id: '' });
