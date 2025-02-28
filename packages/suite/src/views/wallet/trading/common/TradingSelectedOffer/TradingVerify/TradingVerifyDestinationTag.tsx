@@ -1,5 +1,7 @@
 import { ReactNode, useState } from 'react';
 
+import { ExchangeTrade } from 'invity-api';
+
 import { Button, Column, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -11,12 +13,14 @@ export interface TradingVerifyDestinationTagProps {
     inputComponent: ReactNode;
     onToggle?: (toggled: boolean) => void;
     required: boolean;
+    extraFieldDescription?: ExchangeTrade['extraFieldDescription'];
 }
 
 export const TradingVerifyDestinationTag = ({
     inputComponent,
     onToggle,
     required,
+    extraFieldDescription,
 }: TradingVerifyDestinationTagProps) => {
     const { openNodeById } = useGuideOpenNode();
 
@@ -38,7 +42,16 @@ export const TradingVerifyDestinationTag = ({
                 <Switch
                     isChecked={enabled}
                     onChange={handleToggle}
-                    label={<Translation id="DESTINATION_TAG_SWITCH" />}
+                    label={
+                        extraFieldDescription ? (
+                            <Translation
+                                id="TR_EXCHANGE_EXTRA_FIELD_SWITCH"
+                                values={{ extraFieldName: extraFieldDescription.name }}
+                            />
+                        ) : (
+                            <Translation id="DESTINATION_TAG_SWITCH" />
+                        )
+                    }
                     isDisabled={required}
                 />
                 <Button variant="tertiary" type="button" size="tiny" onClick={handleOpenGuide}>

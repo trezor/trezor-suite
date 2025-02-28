@@ -637,6 +637,10 @@ export default defineMessages({
         defaultMessage: '{extraFieldName}',
         id: 'TR_EXCHANGE_EXTRA_FIELD',
     },
+    TR_EXCHANGE_EXTRA_FIELD_SWITCH: {
+        defaultMessage: 'Add {extraFieldName}',
+        id: 'TR_EXCHANGE_EXTRA_FIELD_SWITCH',
+    },
     TR_EXCHANGE_EXTRA_FIELD_REQUIRED: {
         defaultMessage: '{extraFieldName} is required',
         id: 'TR_EXCHANGE_EXTRA_FIELD_REQUIRED',

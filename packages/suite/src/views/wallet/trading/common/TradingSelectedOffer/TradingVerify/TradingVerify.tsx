@@ -182,6 +182,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                         }
                         onToggle={() => form.setValue('extraField', '', { shouldValidate: true })}
                         required={exchangeQuote.extraFieldDescription.required}
+                        extraFieldDescription={exchangeQuote.extraFieldDescription}
                     />
                 )}
 
