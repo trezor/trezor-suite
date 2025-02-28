@@ -23,6 +23,7 @@ import { AccountTypeBadge } from '../../AccountTypeBadge';
 
 const LabelValue = styled.div`
     overflow: hidden;
+    text-align: left;
     text-overflow: ellipsis;
 `;
 
