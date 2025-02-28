@@ -104,23 +104,20 @@ const sentryMiddleware =
             case deviceActions.selectDevice.type:
             case deviceActions.updateSelectedDevice.type: {
                 if (action.payload) {
-                    const { features, mode } = action.payload;
+                    const { connected, features, mode, remember } = action.payload;
 
                     setSentryContext(deviceContextName, {
-                        mode,
+                        bootloader: getBootloaderVersion(action.payload),
+                        connected,
                         firmware: getFirmwareVersion(action.payload),
                         isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload),
-                        bootloader: getBootloaderVersion(action.payload),
+                        mode,
                         model: features?.internal_model,
+                        remember: !!remember,
                     });
                 }
                 break;
             }
-            case DEVICE.DISCONNECT:
-                setSentryContext(deviceContextName, {
-                    disconnected: true,
-                });
-                break;
             case ROUTER.LOCATION_CHANGE:
                 setSentryTag('routerURL', action.payload.url);
                 break;

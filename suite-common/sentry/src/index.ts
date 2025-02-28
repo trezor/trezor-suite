@@ -99,7 +99,7 @@ export const SENTRY_CONFIG: Options = {
         }),
     ],
     beforeSend,
-    enabled: !isDevEnv,
+    enabled: !isDevEnv, // set to true to enable Sentry logging while testing locally
     maxValueLength: 500, // default 250 is not enough for some errors
     release: process.env.SENTRY_RELEASE,
     environment: isCodesignBuild() ? 'production' : 'develop',
