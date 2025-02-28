@@ -60,3 +60,7 @@ svgo
 sharp
 @types/pdfmake
 pdfmake
+@originjs/vite-plugin-commonjs
+vite-plugin-wasm
+vite
+vm-browserify

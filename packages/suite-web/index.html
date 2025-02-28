@@ -5,15 +5,10 @@
         <meta name="google" content="notranslate" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta charset="utf-8" />
-        <link media="all" rel="stylesheet" href="<%= assetPrefix %>/static/fonts/fonts.css" />
-        <link rel="icon" href="<%= assetPrefix %>/static/images/favicons/favicon.png" />
-        <link rel="apple-touch-icon" href="<%= assetPrefix %>/static/images/favicons/favicon.png" />
-        <% if(isOnionLocation) { %>
-        <meta
-            http-equiv="onion-location"
-            content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/web"
-        />
-        <% } %>
+
+        <link media="all" rel="stylesheet" href="/static/fonts/fonts.css" />
+        <link rel="icon" href="/static/images/favicons/favicon.png" />
+        <link rel="apple-touch-icon" href="/static/images/favicons/favicon.png" />
         <script type="text/javascript">
             if (localStorage.getItem('translation_mode') === 'true') {
                 console.warn('INJECTING CROWDIN IN-CONTEXT');
@@ -38,20 +33,11 @@
                 var ai = document.querySelector('link[rel=apple-touch-icon]');
 
                 if (isDM) {
-                    i.setAttribute(
-                        'href',
-                        '<%= assetPrefix %>/static/images/favicons/favicon_dm.png',
-                    );
-                    ai.setAttribute(
-                        'href',
-                        '<%= assetPrefix %>/static/images/favicons/favicon_dm.png',
-                    );
+                    i.setAttribute('href', '/static/images/favicons/favicon_dm.png');
+                    ai.setAttribute('href', '/static/images/favicons/favicon_dm.png');
                 } else {
-                    i.setAttribute('href', '<%= assetPrefix %>/static/images/favicons/favicon.png');
-                    ai.setAttribute(
-                        'href',
-                        '<%= assetPrefix %>/static/images/favicons/favicon.png',
-                    );
+                    i.setAttribute('href', '/static/images/favicons/favicon.png');
+                    ai.setAttribute('href', '/static/images/favicons/favicon.png');
                 }
             }
 
@@ -60,15 +46,15 @@
 
                 // not supported in IE
                 if (_mm.addEventListener) {
-                    _mm.addEventListener('change', function (e) {
-                        return si(e);
-                    });
+                    _mm.addEventListener('change', si);
                 }
 
                 si(_mm);
             }
         </script>
-        <script src="<%= assetPrefix %>/static/browser-detection/index.js"></script>
+        <script type="module" src="./src/vite-index.ts"></script>
     </head>
-    <body></body>
+    <body>
+        <div id="app"></div>
+    </body>
 </html>
