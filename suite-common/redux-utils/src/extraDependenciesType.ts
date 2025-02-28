@@ -107,7 +107,7 @@ export type ExtraDependencies = {
         lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
         appChanged: ActionCreatorWithPayload<unknown>;
         setSelectedDevice: ActionCreatorWithPayload<TrezorDevice | undefined>;
-        updateSelectedDevice: ActionCreatorWithPayload<TrezorDevice | undefined>;
+        updateSelectedDevice: ActionCreatorWithPayload<TrezorDevice>;
         requestAuthConfirm: ActionCreatorWithoutPayload;
         onModalCancel: ActionCreatorWithoutPayload;
         openModal: ActionCreatorWithPayload<UserContextPayload>;

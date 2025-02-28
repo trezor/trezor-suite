@@ -67,7 +67,6 @@ export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void
             }
         }
 
-        // 3. select requested device
         dispatch(deviceActions.selectDevice(payload));
     },
 );

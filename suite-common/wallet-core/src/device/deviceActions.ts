@@ -81,7 +81,7 @@ const selectDevice = createAction(
 
 const updateSelectedDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/updateSelectedDevice`,
-    (payload?: TrezorDevice) => ({ payload }),
+    (payload: TrezorDevice) => ({ payload }),
 );
 
 // Remove button requests for specific device by button request code or all button requests if no code is provided.
