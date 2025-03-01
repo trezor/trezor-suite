@@ -4,11 +4,11 @@ import path from 'path';
 import { csvToJson } from '../../support/csvToJson';
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
+import { MetadataProvider } from '../../support/mocks/metadataMock';
 
 test.describe('Import a BTC csv file', { tag: ['@group=wallet', '@webOnly'] }, () => {
-    test.beforeEach(async ({ metadataProviderMock, onboardingPage, dashboardPage }) => {
-        await metadataProviderMock.start(MetadataProvider.DROPBOX);
+    test.beforeEach(async ({ metadataMock, onboardingPage, dashboardPage }) => {
+        await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
     });

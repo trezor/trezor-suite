@@ -2,7 +2,7 @@ import { Locator, Page } from '@playwright/test';
 
 import { step } from '../../common';
 
-export class PinActions {
+export class PinSection {
     readonly skipButton: Locator;
     readonly setPinButton: Locator;
     readonly skipConfirmButton: Locator;

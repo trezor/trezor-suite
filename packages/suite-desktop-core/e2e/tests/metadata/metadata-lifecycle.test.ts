@@ -1,6 +1,6 @@
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
+import { MetadataProvider } from '../../support/mocks/metadataMock';
 
 test.describe(
     'Metadata - cancel metadata on device',
@@ -12,8 +12,8 @@ test.describe(
                 passphrase_protection: true,
             },
         });
-        test.beforeEach(async ({ metadataProviderMock }) => {
-            await metadataProviderMock.start(MetadataProvider.DROPBOX);
+        test.beforeEach(async ({ metadataMock }) => {
+            await metadataMock.start(MetadataProvider.DROPBOX);
         });
 
         test('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', async ({
@@ -79,8 +79,8 @@ test.describe(
             await trezorUserEnvLink.pressNo();
         });
 
-        test.afterEach(async ({ metadataProviderMock }) => {
-            await metadataProviderMock.stop();
+        test.afterEach(async ({ metadataMock }) => {
+            await metadataMock.stop();
         });
     },
 );

@@ -2,7 +2,7 @@ import { METADATA_LABELING } from '@trezor/suite/src/actions/suite/constants';
 
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
+import { MetadataProvider } from '../../support/mocks/metadataMock';
 
 const providers = [
     {
@@ -24,14 +24,14 @@ test.describe('Account metadata', { tag: ['@group=metadata1', '@webOnly'] }, () 
             onboardingPage,
             dashboardPage,
             metadataPage,
-            metadataProviderMock,
+            metadataMock,
         }) => {
             await page.clock.install();
-            await metadataProviderMock.start(p.provider);
-            await metadataProviderMock.setFileContent(
+            await metadataMock.start(p.provider);
+            await metadataMock.setFileContent(
                 p.file,
-                metadataProviderMock.defaultFileContent,
-                metadataProviderMock.defaultAesKey,
+                metadataMock.defaultFileContent,
+                metadataMock.defaultAesKey,
             );
 
             await onboardingPage.completeOnboarding({ enableViewOnly: true });
@@ -48,13 +48,13 @@ test.describe('Account metadata', { tag: ['@group=metadata1', '@webOnly'] }, () 
                 'already existing label',
             );
 
-            await metadataProviderMock.setFileContent(
+            await metadataMock.setFileContent(
                 p.file,
                 {
-                    ...metadataProviderMock.defaultFileContent,
+                    ...metadataMock.defaultFileContent,
                     accountLabel: 'label from another window',
                 },
-                metadataProviderMock.defaultAesKey,
+                metadataMock.defaultAesKey,
             );
 
             await page.clock.fastForward(METADATA_LABELING.FETCH_INTERVAL);

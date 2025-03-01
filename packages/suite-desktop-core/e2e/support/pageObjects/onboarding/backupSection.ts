@@ -1,9 +1,9 @@
 import { Locator, Page, expect } from '@playwright/test';
 
 import { TrezorUserEnvLinkProxy, step } from '../../common';
-import { DevicePromptActions } from '../devicePromptActions';
+import { DevicePrompt } from '../devicePrompt';
 
-export class BackupActions {
+export class BackupSection {
     readonly startButton: Locator;
     readonly understandWhatSeedIsCheckbox: Locator;
     readonly hasEnoughTimeCheckbox: Locator;
@@ -15,7 +15,7 @@ export class BackupActions {
 
     constructor(
         private page: Page,
-        private devicePrompt: DevicePromptActions,
+        private devicePrompt: DevicePrompt,
     ) {
         this.startButton = page.getByTestId('@backup/start-button');
         this.understandWhatSeedIsCheckbox = page.getByTestId(

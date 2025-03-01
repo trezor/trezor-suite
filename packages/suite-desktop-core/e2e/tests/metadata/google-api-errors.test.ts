@@ -1,25 +1,25 @@
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
+import { MetadataProvider } from '../../support/mocks/metadataMock';
 
 test.describe('Google API errors', { tag: ['@group=metadata1', '@webOnly'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic: 'mnemonic_all' },
     });
 
-    test.beforeEach(async ({ metadataProviderMock }) => {
-        await metadataProviderMock.start(MetadataProvider.GOOGLE);
+    test.beforeEach(async ({ metadataMock }) => {
+        await metadataMock.start(MetadataProvider.GOOGLE);
     });
     test('Malformed token', async ({
         page,
         onboardingPage,
         dashboardPage,
         metadataPage,
-        metadataProviderMock,
+        metadataMock,
     }) => {
         // Simulate API responses for retries with malformed token
         for (let i = 0; i < 4; i++) {
-            metadataProviderMock.setNextResponse({
+            metadataMock.setNextResponse({
                 status: 401,
                 body: {
                     error: {

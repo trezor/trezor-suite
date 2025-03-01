@@ -15,11 +15,11 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
     test('Device disconnected during recovery offers retry', async ({
         page,
         onboardingPage,
-        analyticsPage,
+        analyticsSection,
         devicePrompt,
         trezorUserEnvLink,
     }) => {
-        await analyticsPage.passThroughAnalytics();
+        await analyticsSection.passThroughAnalytics();
         await onboardingPage.firmware.continueButton.click();
 
         // Start wallet recovery process and confirm on device

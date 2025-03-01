@@ -33,7 +33,7 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
         page,
         trezorUserEnvLink,
         walletPage,
-        marketPage,
+        tradingPage,
         devicePrompt,
     }) => {
         await test.step('Open send form for Doge', async () => {
@@ -42,10 +42,10 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
         });
 
         await test.step('Fill amount over MAX_SAFE_INTEGER and send', async () => {
-            await marketPage.broadcastButton.click();
-            await marketPage.sendAddressInput.fill(recipientAddress);
-            await marketPage.sendAmountInput.fill(sendAmount);
-            await marketPage.sendButton.click();
+            await tradingPage.broadcastButton.click();
+            await tradingPage.sendAddressInput.fill(recipientAddress);
+            await tradingPage.sendAmountInput.fill(sendAmount);
+            await tradingPage.sendButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
         });
 

@@ -2,7 +2,7 @@ import { Locator, Page } from '@playwright/test';
 
 import { step } from '../../common';
 
-export class FirmwareActions {
+export class FirmwareSection {
     readonly continueButton: Locator;
     readonly skipButton: Locator;
     readonly skipConfirmButton: Locator;

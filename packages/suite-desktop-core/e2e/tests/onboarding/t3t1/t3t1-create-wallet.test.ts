@@ -15,10 +15,10 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         page,
         onboardingPage,
         devicePrompt,
-        analyticsPage,
+        analyticsSection,
         trezorUserEnvLink,
     }) => {
-        await analyticsPage.passThroughAnalytics();
+        await analyticsSection.passThroughAnalytics();
 
         // Device onboarding steps
         await onboardingPage.firmware.continueButton.click();

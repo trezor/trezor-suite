@@ -7,7 +7,7 @@ import { step } from '../common';
 
 const anyTestIdEndingWithClose = '[data-testid$="close"]';
 
-export class SuiteGuide {
+export class GuidePanel {
     readonly guideButton: Locator;
     readonly supportAndFeedbackButton: Locator;
     readonly bugFormButton: Locator;

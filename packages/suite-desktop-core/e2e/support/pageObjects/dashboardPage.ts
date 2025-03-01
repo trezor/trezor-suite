@@ -1,11 +1,11 @@
 import { Locator, Page, expect } from '@playwright/test';
 
 import { TrezorUserEnvLinkProxy, step } from '../common';
-import { DevicePromptActions } from './devicePromptActions';
+import { DevicePrompt } from './devicePrompt';
 
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
 
-export class DashboardActions {
+export class DashboardPage {
     readonly dashboardMenuButton: Locator;
     readonly discoveryHeader: Locator;
     readonly discoveryBar: Locator;
@@ -38,7 +38,7 @@ export class DashboardActions {
 
     constructor(
         private readonly page: Page,
-        private readonly devicePrompt: DevicePromptActions,
+        private readonly devicePrompt: DevicePrompt,
     ) {
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
         this.discoveryHeader = this.page.getByRole('heading', { name: 'Dashboard' });

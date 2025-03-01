@@ -40,9 +40,9 @@ test.describe('Trading - Swap tokens', { tag: ['@group=other', '@webOnly'] }, ()
         },
     );
 
-    test('Swap Solana tokens', async ({ marketPage, page, devicePrompt }) => {
+    test('Swap Solana tokens', async ({ tradingPage, page, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
-            await marketPage.setYouSwapAmount({
+            await tradingPage.setYouSwapAmount({
                 amount: sendAmount,
                 sendCurrency: tetherMint,
                 sendTicker: 'USDT',
@@ -53,31 +53,31 @@ test.describe('Trading - Swap tokens', { tag: ['@group=other', '@webOnly'] }, ()
         });
 
         await test.step('Confirm the Swap trade', async () => {
-            await expect(marketPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
-            await marketPage.clickSwapBestOfferAndWaitForFees();
-            await marketPage.confirmTrade(formatAddress(receiveAddress));
+            await expect(tradingPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
+            await tradingPage.clickSwapBestOfferAndWaitForFees();
+            await tradingPage.confirmTrade(formatAddress(receiveAddress));
         });
 
         await test.step('Verify all confirmation values', async () => {
-            await expect(marketPage.confirmationAccountDropdown).toContainText('Solana #1');
-            await expect(marketPage.confirmationAddress).toHaveValue(receiveAddress);
-            await expect(marketPage.confirmationCryptoAmount.first()).toHaveText(
+            await expect(tradingPage.confirmationAccountDropdown).toContainText('Solana #1');
+            await expect(tradingPage.confirmationAddress).toHaveValue(receiveAddress);
+            await expect(tradingPage.confirmationCryptoAmount.first()).toHaveText(
                 formattedSendAmount,
             );
-            await expect(marketPage.confirmationCryptoAmount.last()).toHaveText(
+            await expect(tradingPage.confirmationCryptoAmount.last()).toHaveText(
                 formattedReceiveAmount,
             );
-            await expect(marketPage.confirmationProvider).toHaveText(provider);
+            await expect(tradingPage.confirmationProvider).toHaveText(provider);
         });
 
         await test.step('Finish transaction', async () => {
-            await marketPage.finishTransactionButton.click();
-            await expect(marketPage.swapTransactionFromAccount).toContainText('Solana #1');
-            await expect(marketPage.swapTransactionToAddress).toContainText(formattedSendAddress);
+            await tradingPage.finishTransactionButton.click();
+            await expect(tradingPage.swapTransactionFromAccount).toContainText('Solana #1');
+            await expect(tradingPage.swapTransactionToAddress).toContainText(formattedSendAddress);
         });
 
         await test.step('Initiate send', async () => {
-            await marketPage.initiateSendConfirmation({ confirmAlsoToken: true });
+            await tradingPage.initiateSendConfirmation({ confirmAlsoToken: true });
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
             await expect(devicePrompt.outputValueOf('contract')).toHaveText(tetherRawMintAddress);
             await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(formattedSendAmount);
@@ -87,7 +87,7 @@ test.describe('Trading - Swap tokens', { tag: ['@group=other', '@webOnly'] }, ()
         await test.step('Send crypto to provider', async () => {
             await devicePrompt.sendButton.click();
             await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
-            await expect(marketPage.transactionDetailStatus).toHaveText('Approved');
+            await expect(tradingPage.transactionDetailStatus).toHaveText('Approved');
         });
     });
 });

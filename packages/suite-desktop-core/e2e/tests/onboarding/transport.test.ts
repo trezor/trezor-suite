@@ -12,8 +12,8 @@ test.describe.skip(
             await trezorUserEnvLink.startBridge();
         });
 
-        test('Offer webusb as primary choice on web', async ({ page, analyticsPage }) => {
-            await analyticsPage.continueButton.click();
+        test('Offer webusb as primary choice on web', async ({ page, analyticsSection }) => {
+            await analyticsSection.continueButton.click();
             await expect(page.getByTestId('@webusb-button')).toBeVisible({ timeout: 30000 });
             await page.getByTestId('@connect-device-prompt/no-device-detected').click();
             await expect(page.getByTestId('@collapsible-box/body')).toHaveAttribute(

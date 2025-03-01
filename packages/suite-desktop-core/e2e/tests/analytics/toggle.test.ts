@@ -11,7 +11,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
     test('should respect disabled analytics in onboarding with following enabling in settings', async ({
         analytics,
         page,
-        analyticsPage,
+        analyticsSection,
         onboardingPage,
         dashboardPage,
         settingsPage,
@@ -21,7 +21,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
         await settingsPage.analyticsSwitch.click();
         await expect(settingsPage.analyticsSwitch.locator('input')).not.toBeChecked();
 
-        await analyticsPage.continueButton.click(); // Click the button and trigger the request
+        await analyticsSection.continueButton.click(); // Click the button and trigger the request
         await analytics.waitForAnalyticsRequests();
 
         // assert that only "analytics/dispose" event was fired
@@ -98,14 +98,14 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
     test('should respect enabled analytics in onboarding with following disabling in settings', async ({
         analytics,
         page,
-        analyticsPage,
+        analyticsSection,
         onboardingPage,
         settingsPage,
     }) => {
         // pass through onboarding with enabled analytics
         await expect(settingsPage.analyticsSwitch.locator('input')).toBeChecked();
 
-        await analyticsPage.continueButton.click(); // Click the button and trigger the request
+        await analyticsSection.continueButton.click(); // Click the button and trigger the request
         await analytics.waitForAnalyticsRequests(2);
 
         // assert that more than 1 event was fired and it was "suite/ready" and "analytics/enable" for sure

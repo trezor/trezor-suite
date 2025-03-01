@@ -1,13 +1,13 @@
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
+import { MetadataProvider } from '../../support/mocks/metadataMock';
 
 // Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
 // Hovering over fields that may be labeled shows "add label" button upon which is clicked, Suite initiates metadata flow
 test.describe('Account metadata', { tag: ['@group=metadata1', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ metadataProviderMock }) => {
-        await metadataProviderMock.start(MetadataProvider.DROPBOX);
+    test.beforeEach(async ({ metadataMock }) => {
+        await metadataMock.start(MetadataProvider.DROPBOX);
     });
 
     test('dropbox provider', async ({

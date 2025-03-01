@@ -5,10 +5,10 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
         emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.3' },
         setupEmulator: false,
     });
-    test.beforeEach(async ({ analyticsPage, onboardingPage }) => {
+    test.beforeEach(async ({ analyticsSection, onboardingPage }) => {
         await onboardingPage.disableFirmwareHashCheck();
 
-        analyticsPage.passThroughAnalytics();
+        analyticsSection.passThroughAnalytics();
     });
 
     test('Successfully recovers wallet from mnemonic', async ({

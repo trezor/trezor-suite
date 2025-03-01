@@ -1,12 +1,12 @@
 import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
+import { MetadataProvider } from '../../support/mocks/metadataMock';
 
 const standardWalletIndex = 0;
 const hiddenWalletIndex = 1;
 
 test.describe('Metadata - wallet labeling', { tag: ['@group=metadata2', '@webOnly'] }, () => {
-    test.beforeEach(async ({ onboardingPage, dashboardPage, metadataProviderMock }) => {
-        await metadataProviderMock.start(MetadataProvider.DROPBOX);
+    test.beforeEach(async ({ onboardingPage, dashboardPage, metadataMock }) => {
+        await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding({ enableViewOnly: true });
         await dashboardPage.discoveryShouldFinish();
     });
@@ -24,7 +24,7 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata2', '@webOnl
         metadataPage,
         devicePrompt,
         trezorUserEnvLink,
-        metadataProviderMock,
+        metadataMock,
     }) => {
         // Setup standard wallet with label and edit it
         await page.getByTestId('@account-menu/btc/normal/0/label').click();
@@ -63,7 +63,7 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata2', '@webOnl
         await dashboardPage.setViewOnlyForWallet(hiddenWalletIndex, 'enabled');
         await page.waitForTimeout(1000); // wait for changes to db
         await page.reload();
-        await metadataProviderMock.setupWindowStubs();
+        await metadataMock.setupWindowStubs();
 
         // Verify wallet labels after reload
         await dashboardPage.openDeviceSwitcher();

@@ -2,7 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { TrezorUserEnvLinkProxy, step } from '../common';
 
-export class DevicePromptActions {
+export class DevicePrompt {
     readonly confirmOnDevicePrompt: Locator;
     readonly connectDevicePrompt: Locator;
     readonly modal: Locator;

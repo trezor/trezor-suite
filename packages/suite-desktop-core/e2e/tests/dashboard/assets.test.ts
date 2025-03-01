@@ -5,30 +5,36 @@ test.describe('Assets', { tag: ['@group=suite'] }, () => {
         await onboardingPage.completeOnboarding();
     });
 
-    test('User can initiate buy from Assets in table view', async ({ assetsPage, marketPage }) => {
-        await assetsPage.tableIcon.click();
-        await assetsPage.buyAssetButton('btc').click();
-        await expect(marketPage.section).toBeVisible();
+    test('User can initiate buy from Assets in table view', async ({
+        assetsSection,
+        tradingPage,
+    }) => {
+        await assetsSection.tableIcon.click();
+        await assetsSection.buyAssetButton('btc').click();
+        await expect(tradingPage.section).toBeVisible();
     });
 
-    test('User can initiate buy from Assets in grid view', async ({ assetsPage, marketPage }) => {
-        await assetsPage.gridIcon.click();
-        await assetsPage.buyAssetButton('btc').click();
-        await expect(marketPage.section).toBeVisible();
+    test('User can initiate buy from Assets in grid view', async ({
+        assetsSection,
+        tradingPage,
+    }) => {
+        await assetsSection.gridIcon.click();
+        await assetsSection.buyAssetButton('btc').click();
+        await expect(tradingPage.section).toBeVisible();
     });
 
     test('New asset is shown in both grid and row', async ({
-        assetsPage,
+        assetsSection,
         dashboardPage,
         settingsPage,
     }) => {
         await dashboardPage.discoveryShouldFinish();
-        await assetsPage.enableMoreCoins.click();
+        await assetsSection.enableMoreCoins.click();
         await settingsPage.coins.enableNetwork('eth');
         await dashboardPage.navigateTo();
         await dashboardPage.discoveryShouldFinish();
-        await assetsPage.verifyAssetContents();
-        await assetsPage.tableIcon.click();
-        await assetsPage.verifyAssetContents();
+        await assetsSection.verifyAssetContents();
+        await assetsSection.tableIcon.click();
+        await assetsSection.verifyAssetContents();
     });
 });

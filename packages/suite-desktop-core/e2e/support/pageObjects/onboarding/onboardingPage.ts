@@ -5,18 +5,18 @@ import { Model } from '@trezor/trezor-user-env-link';
 
 import { TrezorUserEnvLinkProxy, isWebProject, step } from '../../common';
 import { SeedType } from '../../enums/seedType';
-import { AnalyticsActions } from '../analyticsActions';
-import { DevicePromptActions } from '../devicePromptActions';
-import { BackupActions } from './backupActions';
-import { FirmwareActions } from './firmwareActions';
-import { PinActions } from './pinActions';
-import { TutorialActions } from './tutorialActions';
+import { AnalyticsSection } from '../analyticsSection';
+import { DevicePrompt } from '../devicePrompt';
+import { BackupSection } from './backupSection';
+import { FirmwareSection } from './firmwareSection';
+import { PinSection } from './pinSection';
+import { TutorialSection } from './tutorialSection';
 
-export class OnboardingActions {
-    readonly backup: BackupActions;
-    readonly firmware: FirmwareActions;
-    readonly pin: PinActions;
-    readonly tutorial: TutorialActions;
+export class OnboardingPage {
+    readonly backup: BackupSection;
+    readonly firmware: FirmwareSection;
+    readonly pin: PinSection;
+    readonly tutorial: TutorialSection;
 
     readonly welcomeBody: Locator;
     readonly onboardingContinueButton: Locator;
@@ -44,13 +44,13 @@ export class OnboardingActions {
         public page: Page,
         readonly model: Model,
         private readonly testInfo: TestInfo,
-        private readonly devicePrompt: DevicePromptActions,
-        private readonly analyticsPage: AnalyticsActions,
+        private readonly devicePrompt: DevicePrompt,
+        private readonly analyticsSection: AnalyticsSection,
     ) {
-        this.backup = new BackupActions(page, devicePrompt);
-        this.firmware = new FirmwareActions(page);
-        this.tutorial = new TutorialActions(page);
-        this.pin = new PinActions(page);
+        this.backup = new BackupSection(page, devicePrompt);
+        this.firmware = new FirmwareSection(page);
+        this.tutorial = new TutorialSection(page);
+        this.pin = new PinSection(page);
 
         this.welcomeBody = this.page.getByTestId('@welcome-layout/body');
         this.onboardingContinueButton = this.page.getByTestId('@onboarding/exit-app-button');
@@ -101,7 +101,7 @@ export class OnboardingActions {
     async completeOnboarding({ enableViewOnly = false } = {}) {
         await this.disableFirmwareHashCheck();
         await this.optionallyDismissFwHashCheckError();
-        await this.analyticsPage.continueButton.click();
+        await this.analyticsSection.continueButton.click();
         await this.onboardingContinueButton.click();
         if (this.isModelWithSecureElement()) {
             await this.passThroughAuthenticityCheck();

@@ -45,36 +45,36 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, 
         },
     );
 
-    test('Sell Ethereum token USDC', async ({ marketPage }) => {
+    test('Sell Ethereum token USDC', async ({ tradingPage }) => {
         await test.step('Fill in a sell request', async () => {
-            await marketPage.setYouSellAmount(
+            await tradingPage.setYouSellAmount(
                 cryptoAmount,
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             );
-            await expect(marketPage.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(marketPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
+            await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
+            await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
         });
 
         await test.step('Confirm sell', async () => {
-            await marketPage.sellBestOfferButton.click();
-            await marketPage.termsConfirmButton.click();
+            await tradingPage.sellBestOfferButton.click();
+            await tradingPage.termsConfirmButton.click();
         });
 
         // TODO: Fix the redirection. I need to troubleshoot this with the team.
-        // await marketPage.waitForRedirectCompletion();
+        // await tradingPage.waitForRedirectCompletion();
 
         // await test.step('Verify all confirmation values', async () => {
-        //     await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-        //     await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-        //     await expect(marketPage.confirmationProvider).toHaveText(provider);
-        //     await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
-        //     await expect(marketPage.confirmationAddress).toHaveText(providerAddress);
-        //     await expect(marketPage.confirmationAccount).toHaveText('Bitcoin #1');
-        //     await expect(marketPage.confirmationPaymentId).toHaveText(providerPaymentId);
+        //     await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+        //     await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
+        //     await expect(tradingPage.confirmationProvider).toHaveText(provider);
+        //     await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
+        //     await expect(tradingPage.confirmationAddress).toHaveText(providerAddress);
+        //     await expect(tradingPage.confirmationAccount).toHaveText('Bitcoin #1');
+        //     await expect(tradingPage.confirmationPaymentId).toHaveText(providerPaymentId);
         // });
 
         // await test.step('Initiate send', async () => {
-        //     await marketPage.confirmSend();
+        //     await tradingPage.confirmSend();
         //     await expect(devicePrompt.cryptoAmountOf('amount')).toHaveText(formattedCryptoAmount);
         // });
 

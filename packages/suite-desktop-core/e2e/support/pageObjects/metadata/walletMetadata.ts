@@ -1,7 +1,7 @@
-import { MetadataBaseActions } from './metadataBaseActions';
+import { MetadataBase } from './metadataBase';
 import { step } from '../../common';
 
-export class WalletMetadataActions extends MetadataBaseActions {
+export class WalletMetadata extends MetadataBase {
     private readonly walletSelectorBeginPart = '[data-testid^="@metadata/walletLabel/"]';
     readonly walletLabel = (index: number) =>
         this.page.locator(`${this.walletSelectorBeginPart}[data-testid$=":${index + 1}"]`);

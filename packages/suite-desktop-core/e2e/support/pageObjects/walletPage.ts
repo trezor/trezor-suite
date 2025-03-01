@@ -13,7 +13,7 @@ type WalletParams = {
     tokens?: boolean;
 };
 
-export class WalletActions {
+export class WalletPage {
     readonly transactionSearch: Locator;
     readonly accountSearch: Locator;
     readonly accountChevron: Locator;

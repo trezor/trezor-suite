@@ -2,7 +2,7 @@ import { Locator, Page } from '@playwright/test';
 
 import { step } from '../../common';
 
-export class TutorialActions {
+export class TutorialSection {
     readonly skipTutorialButton: Locator;
     readonly tutorialContinueButton: Locator;
 

@@ -1,7 +1,7 @@
 import { EventType } from '@trezor/suite-analytics';
 
 import { expect, test } from '../../support/fixtures';
-import { Language, Theme } from '../../support/pageActions/settings/settingsActions';
+import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
 import { ExtractByEventType } from '../../support/types';
 
 export enum Currency {

@@ -11,12 +11,12 @@ test.describe(
         test('analytics consent appears on any route that is visited initially. this time /accounts', async ({
             page,
             url,
-            analyticsPage,
+            analyticsSection,
             onboardingPage,
         }) => {
             await page.goto(url + 'accounts');
-            await expect(analyticsPage.heading).toBeVisible({ timeout: 30000 });
-            await analyticsPage.continueButton.click();
+            await expect(analyticsSection.heading).toBeVisible({ timeout: 30000 });
+            await analyticsSection.continueButton.click();
             await page.getByTestId('@onboarding/exit-app-button').click();
 
             if (onboardingPage.isModelWithSecureElement()) {

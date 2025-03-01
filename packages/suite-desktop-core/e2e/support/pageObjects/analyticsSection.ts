@@ -2,7 +2,7 @@ import { Locator, Page } from '@playwright/test';
 
 import { step } from '../common';
 
-export class AnalyticsActions {
+export class AnalyticsSection {
     readonly heading: Locator;
     readonly continueButton: Locator;
     readonly toggleSwitch: Locator;

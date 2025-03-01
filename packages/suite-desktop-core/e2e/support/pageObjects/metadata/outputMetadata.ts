@@ -1,7 +1,7 @@
-import { MetadataBaseActions } from './metadataBaseActions';
+import { MetadataBase } from './metadataBase';
 import { step } from '../../common';
 
-export class OutputMetadataActions extends MetadataBaseActions {
+export class OutputMetadata extends MetadataBase {
     readonly outputLabel = (outputId: string, txNumber: number) =>
         this.page.getByTestId(`${this.getLabelTestId(outputId, txNumber)}/hover-container`);
     readonly outputDropdownCopyAddress = (outputId: string, txNumber: number) =>

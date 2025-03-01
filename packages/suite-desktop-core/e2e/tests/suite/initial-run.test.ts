@@ -7,16 +7,16 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
 
     test('Until user passed through initial run, it will be there after reload', async ({
         page,
-        analyticsPage,
+        analyticsSection,
         onboardingPage,
     }) => {
-        await expect(analyticsPage.toggleSwitch).toBeVisible();
+        await expect(analyticsSection.toggleSwitch).toBeVisible();
         await page.reload();
         // analytics screen is there until user confirms his choice
-        await expect(analyticsPage.toggleSwitch).toBeVisible();
-        await analyticsPage.continueButton.click();
+        await expect(analyticsSection.toggleSwitch).toBeVisible();
+        await analyticsSection.continueButton.click();
         await page.reload();
-        await expect(analyticsPage.toggleSwitch).not.toBeVisible();
+        await expect(analyticsSection.toggleSwitch).not.toBeVisible();
         await expect(onboardingPage.onboardingContinueButton).toBeVisible();
     });
 

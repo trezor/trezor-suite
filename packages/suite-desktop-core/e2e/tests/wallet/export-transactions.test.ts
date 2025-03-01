@@ -3,7 +3,7 @@ import fs from 'fs';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { expect, test } from '../../support/fixtures';
-import { ExportType } from '../../support/pageActions/walletActions';
+import { ExportType } from '../../support/pageObjects/walletPage';
 
 test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () => {
     test.use({

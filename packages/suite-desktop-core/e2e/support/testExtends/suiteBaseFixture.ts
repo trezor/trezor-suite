@@ -52,7 +52,7 @@ const webSetup = async (browserContext: BrowserContext) => {
     await TrezorUserEnvLinkProxy.startBridge();
     const page = await browserContext.newPage();
     // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/usePlaywright.ts
-    // Which is needed for methods manupalating Redux store like onboardingActions.disableFirmwareHashCheck
+    // Which is needed for methods manupalating Redux store like onboardingPage.disableFirmwareHashCheck
     await page.context().addInitScript(() => {
         window.Playwright = true;
     });

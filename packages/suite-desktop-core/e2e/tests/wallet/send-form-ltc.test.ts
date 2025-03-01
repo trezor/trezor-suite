@@ -26,14 +26,14 @@ test.describe('LTC send form with mocked blockbook', { tag: ['@group=wallet'] },
         page,
         devicePrompt,
         walletPage,
-        marketPage,
+        tradingPage,
     }) => {
         await walletPage.accountButton({ symbol: 'ltc', type: 'normal', atIndex: 0 }).click();
         await walletPage.openSendFormButton.click();
-        await marketPage.broadcastButton.click();
-        await marketPage.sendAddressInput.fill('ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc');
+        await tradingPage.broadcastButton.click();
+        await tradingPage.sendAddressInput.fill('ltc1q0lqwsyygg9frql6ujjfhevfculsxwledvv6yzc');
         await page.getByTestId('outputs.0.setMax').click();
-        await marketPage.sendButton.click();
+        await tradingPage.sendButton.click();
         await devicePrompt.waitForPromptAndConfirm();
     });
 });

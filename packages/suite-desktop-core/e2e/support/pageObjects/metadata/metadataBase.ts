@@ -6,7 +6,7 @@ interface MetadataSubmitOptions {
     useButton?: boolean;
 }
 
-export class MetadataBaseActions {
+export class MetadataBase {
     readonly metadataSubmitButton: Locator;
     readonly metadataCancelButton: Locator;
     readonly metadataInput: Locator;

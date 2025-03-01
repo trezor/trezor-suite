@@ -15,12 +15,12 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
 
     test('Success (Shamir backup)', async ({
         page,
-        analyticsPage,
+        analyticsSection,
         onboardingPage,
         devicePrompt,
         trezorUserEnvLink,
     }) => {
-        await analyticsPage.passThroughAnalytics();
+        await analyticsSection.passThroughAnalytics();
         await onboardingPage.firmware.continueButton.click();
 
         // Will be clicking on Shamir backup button

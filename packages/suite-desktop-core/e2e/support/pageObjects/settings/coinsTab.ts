@@ -5,7 +5,7 @@ import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
-export class CoinsActions {
+export class CoinsTab {
     readonly networkButton = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}`);
     readonly networkSymbolAdvanceSettingsButton = (symbol: NetworkSymbol) =>

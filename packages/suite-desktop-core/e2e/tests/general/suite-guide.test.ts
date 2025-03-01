@@ -9,15 +9,15 @@ test.describe('Suite Guide', { tag: '@group=suite' }, () => {
      * 3. Write into feedback field
      * 4. Submit bug report (reporttext)
      */
-    test('Send a bug report', async ({ suiteGuidePage }) => {
-        await suiteGuidePage.openPanel();
-        await suiteGuidePage.supportAndFeedbackButton.click();
-        await suiteGuidePage.sendBugReport({
+    test('Send a bug report', async ({ guidePanel }) => {
+        await guidePanel.openPanel();
+        await guidePanel.supportAndFeedbackButton.click();
+        await guidePanel.sendBugReport({
             location: 'account',
             report: 'Henlo this is testy test writing hangry test user report',
         });
-        await expect(suiteGuidePage.feedbackSuccessToast).toBeVisible();
-        await suiteGuidePage.closeGuide();
+        await expect(guidePanel.feedbackSuccessToast).toBeVisible();
+        await guidePanel.closeGuide();
     });
 
     /**
@@ -26,11 +26,11 @@ test.describe('Suite Guide', { tag: '@group=suite' }, () => {
      * 2. Look up an article
      * 3. Verify that the article is displayed
      */
-    test('Look up an article', async ({ suiteGuidePage }) => {
+    test('Look up an article', async ({ guidePanel }) => {
         const article = 'Install firmware';
-        await suiteGuidePage.openPanel();
-        await suiteGuidePage.lookupArticle(article);
-        await expect(suiteGuidePage.articleHeader).toHaveText(article);
-        await suiteGuidePage.closeGuide();
+        await guidePanel.openPanel();
+        await guidePanel.lookupArticle(article);
+        await expect(guidePanel.articleHeader).toHaveText(article);
+        await guidePanel.closeGuide();
     });
 });

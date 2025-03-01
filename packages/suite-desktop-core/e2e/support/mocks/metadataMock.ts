@@ -54,7 +54,7 @@ const rerouteFetch = `
     };
 `;
 
-export class MetadataProviderMock {
+export class MetadataMock {
     public readonly defaultFileContent = {
         version: '1.0.0',
         accountLabel: 'already existing label',

@@ -6,7 +6,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { buyQuotesBTC, invityEndpoint } from '../../fixtures/invity';
 import { TrezorUserEnvLinkProxy, step } from '../common';
-import { DevicePromptActions } from './devicePromptActions';
+import { DevicePrompt } from './devicePrompt';
 import { solanaUrlPattern } from '../mocks/tradingMock';
 import { expect } from '../testExtends/customMatchers';
 
@@ -52,7 +52,7 @@ function isAccountTabFilter(network: string): network is AccountTabFilter {
     return accountTabFilters.includes(network as AccountTabFilter);
 }
 
-export class MarketActions {
+export class TradingPage {
     // Input and general
     readonly offerSpinner: Locator;
     readonly section: Locator;
@@ -134,7 +134,7 @@ export class MarketActions {
 
     constructor(
         private page: Page,
-        private readonly devicePrompt: DevicePromptActions,
+        private readonly devicePrompt: DevicePrompt,
     ) {
         this.offerSpinner = this.page.getByTestId('@trading/offers/loading-spinner');
         this.section = this.page.getByTestId('@trading');

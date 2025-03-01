@@ -3,7 +3,7 @@ import { Locator, Page, test } from '@playwright/test';
 import { TrezorUserEnvLinkProxy, step } from '../common';
 import { expect } from '../testExtends/customMatchers';
 
-export class TrezorInputActions {
+export class TrezorInput {
     readonly wordSelectInput: Locator;
     readonly pinSubmitButton: Locator;
     readonly pinInput = (index: number) => this.page.getByTestId(`@pin/input/${index}`);

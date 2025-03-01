@@ -1,6 +1,6 @@
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
+import { MetadataProvider } from '../../support/mocks/metadataMock';
 
 test.describe(
     'Metadata - switching between cloud providers',
@@ -16,7 +16,7 @@ test.describe(
             dashboardPage,
             metadataPage,
             settingsPage,
-            metadataProviderMock,
+            metadataMock,
         }) => {
             await onboardingPage.completeOnboarding();
             await dashboardPage.discoveryShouldFinish();
@@ -27,7 +27,7 @@ test.describe(
                 defaultLabel,
             );
 
-            await metadataProviderMock.start(MetadataProvider.DROPBOX);
+            await metadataMock.start(MetadataProvider.DROPBOX);
 
             // Add a label using Dropbox
             await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
@@ -46,7 +46,7 @@ test.describe(
                 page.getByTestId('@settings/metadata/connect-provider-button'),
             ).toBeVisible();
 
-            await metadataProviderMock.stop();
+            await metadataMock.stop();
 
             // Verify that labels are removed after disconnect
             await page.getByTestId('@account-menu/btc/normal/0').click();
@@ -55,7 +55,7 @@ test.describe(
                 defaultLabel,
             );
 
-            await metadataProviderMock.start(MetadataProvider.GOOGLE);
+            await metadataMock.start(MetadataProvider.GOOGLE);
 
             // Connect to Google and add a label
             await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
@@ -73,8 +73,8 @@ test.describe(
             );
         });
 
-        test.afterEach(async ({ metadataProviderMock }) => {
-            await metadataProviderMock.stop();
+        test.afterEach(async ({ metadataMock }) => {
+            await metadataMock.stop();
         });
     },
 );

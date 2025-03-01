@@ -26,38 +26,38 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
         await walletPage.openTrading();
     });
 
-    test('Buy Bitcoin from compared offer', async ({ marketPage }) => {
+    test('Buy Bitcoin from compared offer', async ({ tradingPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
-            await marketPage.setYouBuyAmount(fiatAmount);
-            await expect(marketPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
-            await expect(marketPage.quoteProvider).toHaveText(bestBuyProvider);
-            await marketPage.compareButton.click();
+            await tradingPage.setYouBuyAmount(fiatAmount);
+            await expect(tradingPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
+            await expect(tradingPage.quoteProvider).toHaveText(bestBuyProvider);
+            await tradingPage.compareButton.click();
         });
 
         await test.step('Check offers and chooses the second one', async () => {
-            await expect(marketPage.refreshTime).toHaveText(/Offers refresh in(0:2[5-9]|0:30)/);
-            await expect(marketPage.youPayFiatInput).toHaveValue(localizeNumber(fiatAmount));
-            await expect(marketPage.paymentMethodDropdown).toHaveText(paymentMethodName);
-            await marketPage.validateBuyQuotes();
-            await marketPage.selectThisQuoteButton.nth(1).click();
+            await expect(tradingPage.refreshTime).toHaveText(/Offers refresh in(0:2[5-9]|0:30)/);
+            await expect(tradingPage.youPayFiatInput).toHaveValue(localizeNumber(fiatAmount));
+            await expect(tradingPage.paymentMethodDropdown).toHaveText(paymentMethodName);
+            await tradingPage.validateBuyQuotes();
+            await tradingPage.selectThisQuoteButton.nth(1).click();
         });
 
         await test.step('Confirm trade and verifies confirmation summary', async () => {
-            await marketPage.confirmTrade(formatAddress(receiveAddress));
-            await expect(marketPage.confirmationAddress).toHaveText(receiveAddress);
-            await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(marketPage.confirmationCryptoAmount).toHaveText(secondOfferCryptoAmount);
-            await expect(marketPage.confirmationProvider).toHaveText(secondOfferProvider);
-            await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
-            await expect(marketPage.finishTransactionButton).toBeEnabled();
+            await tradingPage.confirmTrade(formatAddress(receiveAddress));
+            await expect(tradingPage.confirmationAddress).toHaveText(receiveAddress);
+            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmationCryptoAmount).toHaveText(secondOfferCryptoAmount);
+            await expect(tradingPage.confirmationProvider).toHaveText(secondOfferProvider);
+            await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
+            await expect(tradingPage.finishTransactionButton).toBeEnabled();
         });
     });
 
-    test('Buy Bitcoin from best offer', async ({ page, marketPage, tradingMock }) => {
+    test('Buy Bitcoin from best offer', async ({ page, tradingPage, tradingMock }) => {
         await test.step('Request a trade', async () => {
-            await marketPage.setYouBuyAmount(fiatAmount);
-            await marketPage.buyBestOfferButton.click();
-            await marketPage.confirmTrade();
+            await tradingPage.setYouBuyAmount(fiatAmount);
+            await tradingPage.buyBestOfferButton.click();
+            await tradingPage.confirmTrade();
         });
 
         await page.clock.install();
@@ -66,26 +66,26 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
             await tradingMock.changeBuyWatchResponseTo('SUBMITTED');
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
             const watchRequestPromise = page.waitForRequest(invityEndpoint.buyWatch);
-            await marketPage.finishTransactionButton.click();
+            await tradingPage.finishTransactionButton.click();
             await expect(tradeRequestPromise).toHavePayload(invityRequest.buyTradeBTCPayload, {
                 omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
             });
             await expect(watchRequestPromise).toHavePayload(invityRequest.buyWatchPayload, {
                 omit: ['partnerData', 'orderId', 'paymentId'],
             });
-            await expect(marketPage.transactionDetailStatus).toHaveText(
+            await expect(tradingPage.transactionDetailStatus).toHaveText(
                 'Waiting for your payment...',
             );
-            await expect(marketPage.proceedToPayButton).toBeVisible();
+            await expect(tradingPage.proceedToPayButton).toBeVisible();
         });
 
         await test.step('Wait 30s for watch refresh and status change to Approved', async () => {
             await tradingMock.changeBuyWatchResponseTo('SUCCESS');
             await page.clock.fastForward(tradingMock.watchPeriod);
-            await expect(marketPage.transactionDetailStatus).toHaveText('Approved');
-            await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(marketPage.confirmationCryptoAmount).toHaveText(bestBuyCryptoAmount);
-            await expect(marketPage.confirmationProvider).toHaveText(bestBuyProvider);
+            await expect(tradingPage.transactionDetailStatus).toHaveText('Approved');
+            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmationCryptoAmount).toHaveText(bestBuyCryptoAmount);
+            await expect(tradingPage.confirmationProvider).toHaveText(bestBuyProvider);
         });
     });
 });

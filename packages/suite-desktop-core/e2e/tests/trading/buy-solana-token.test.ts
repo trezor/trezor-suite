@@ -38,45 +38,45 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
         },
     );
 
-    test('Buy Solana Jupiter token - amount specified in crypto', async ({ page, marketPage }) => {
+    test('Buy Solana Jupiter token - amount specified in crypto', async ({ page, tradingPage }) => {
         await test.step('Request a specific crypto amount of Jupiter token to buy', async () => {
-            await marketPage.selectAccount('Jupiter', 'sol');
-            await marketPage.waitForOffersSync();
-            await marketPage.youPayFiatCryptoSwitchButton.click();
+            await tradingPage.selectAccount('Jupiter', 'sol');
+            await tradingPage.waitForOffersSync();
+            await tradingPage.youPayFiatCryptoSwitchButton.click();
             const isCryptoInput = true;
-            await marketPage.setYouBuyAmount(
+            await tradingPage.setYouBuyAmount(
                 cryptoAmount,
                 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
                 isCryptoInput,
             );
-            await expect(marketPage.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(marketPage.quoteProvider).toHaveText(provider);
-            await marketPage.buyBestOfferButton.click();
+            await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
+            await expect(tradingPage.quoteProvider).toHaveText(provider);
+            await tradingPage.buyBestOfferButton.click();
         });
 
         await test.step('Confirm the trade', async () => {
-            await marketPage.confirmTrade(formatAddress(receiveAddress));
-            await expect(marketPage.confirmationAccountDropdown).toContainText('Solana #1');
-            await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(marketPage.confirmationProvider).toHaveText(
+            await tradingPage.confirmTrade(formatAddress(receiveAddress));
+            await expect(tradingPage.confirmationAccountDropdown).toContainText('Solana #1');
+            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmationProvider).toHaveText(
                 capitalizeFirstLetter(provider),
             );
-            await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
+            await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
-            await marketPage.finishTransactionButton.click();
+            await tradingPage.finishTransactionButton.click();
             await expect(tradeRequestPromise).toHavePayload(invityRequest.buyTradeSolanaPayload, {
                 omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'],
             });
         });
 
-        await marketPage.waitForRedirectCompletion();
+        await tradingPage.waitForRedirectCompletion();
 
         await test.step('Verify transaction detail', async () => {
-            await expect(marketPage.transactionDetailStatus).toHaveText('Approved');
-            await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(marketPage.confirmationProvider).toHaveText(provider);
+            await expect(tradingPage.transactionDetailStatus).toHaveText('Approved');
+            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmationProvider).toHaveText(provider);
         });
     });
 });

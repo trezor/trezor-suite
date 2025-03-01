@@ -31,25 +31,25 @@ test.describe('Send form for bitcoin', { tag: ['@group=wallet'] }, () => {
 
     test('add and remove output in send form, toggle form options, input data', async ({
         page,
-        marketPage,
+        tradingPage,
         trezorUserEnvLink,
     }) => {
         // test adding and removing outputs
-        await marketPage.sendAmountInput.fill('0.3');
+        await tradingPage.sendAmountInput.fill('0.3');
         await page.getByTestId('add-output').click();
         await page.getByTestId('outputs.1.amount').fill('0.6');
         await page.getByTestId('outputs.0.remove').click();
 
-        await expect(marketPage.sendAmountInput).toBeVisible();
+        await expect(tradingPage.sendAmountInput).toBeVisible();
         await expect(page.getByTestId('outputs.1.amount')).not.toBeVisible();
 
-        await marketPage.sendAddressInput.fill(ADDRESS_INDEX_1);
+        await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);
 
         // add locktime
         await page.getByTestId('add-locktime-button').click();
         await page.getByTestId('locktime-input').fill('1000');
 
-        await marketPage.sendButton.click();
+        await tradingPage.sendButton.click();
         await trezorUserEnvLink.pressYes();
         await trezorUserEnvLink.pressYes();
         await trezorUserEnvLink.pressYes();
@@ -59,36 +59,36 @@ test.describe('Send form for bitcoin', { tag: ['@group=wallet'] }, () => {
 
     test('switch display units to satoshis, fill a form in satoshis and send', async ({
         page,
-        marketPage,
+        tradingPage,
     }) => {
         await page.getByTestId('amount-unit-switch/regtest').click();
 
-        await marketPage.sendAmountInput.fill('300');
+        await tradingPage.sendAmountInput.fill('300');
         await page.getByTestId('add-output').click();
         await page.getByTestId('outputs.1.amount').fill('600');
         await page.getByTestId('outputs.0.remove').click();
 
-        await expect(marketPage.sendAmountInput).toBeVisible();
+        await expect(tradingPage.sendAmountInput).toBeVisible();
         await expect(page.getByTestId('outputs.1.amount')).not.toBeVisible();
 
-        await marketPage.sendAddressInput.fill(ADDRESS_INDEX_1);
+        await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);
     });
 
     test('send tx with OP_RETURN output', async ({
         page,
-        marketPage,
+        tradingPage,
         devicePrompt,
         trezorUserEnvLink,
     }) => {
-        await marketPage.sendAmountInput.fill('0.1');
-        await marketPage.sendAddressInput.fill(ADDRESS_INDEX_1);
+        await tradingPage.sendAmountInput.fill('0.1');
+        await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);
 
         await page.getByTestId('@send/header-dropdown').click();
         await page.getByTestId('@send/header-dropdown/opreturn').click();
 
         await page.getByTestId('outputs.1.dataAscii').fill('meow');
 
-        await marketPage.sendButton.click();
+        await tradingPage.sendButton.click();
         await trezorUserEnvLink.pressYes();
         await trezorUserEnvLink.pressYes();
         await trezorUserEnvLink.pressYes();

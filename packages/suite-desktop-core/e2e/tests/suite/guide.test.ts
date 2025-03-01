@@ -2,58 +2,58 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Guide without device', { tag: ['@group=suite', '@webOnly'] }, () => {
     test.use({ startEmulator: false });
-    test('open / close guide', async ({ page, suiteGuidePage, settingsPage }) => {
+    test('open / close guide', async ({ page, guidePanel, settingsPage }) => {
         // Open guide
-        await suiteGuidePage.openPanel();
-        const firstNode = suiteGuidePage.guideNodes.first().locator('> *').first();
+        await guidePanel.openPanel();
+        const firstNode = guidePanel.guideNodes.first().locator('> *').first();
         const text = await firstNode.innerText();
         await firstNode.click();
-        await expect(suiteGuidePage.guideLabel).toHaveText(text);
+        await expect(guidePanel.guideLabel).toHaveText(text);
         await firstNode.click();
-        await suiteGuidePage.closeGuide();
-        await expect(suiteGuidePage.guideButton).toBeVisible();
+        await guidePanel.closeGuide();
+        await expect(guidePanel.guideButton).toBeVisible();
 
         // Feedback form
-        await suiteGuidePage.openPanel();
-        await suiteGuidePage.supportAndFeedbackButton.click();
-        await suiteGuidePage.feedbackFormButton.click();
+        await guidePanel.openPanel();
+        await guidePanel.supportAndFeedbackButton.click();
+        await guidePanel.feedbackFormButton.click();
         await page.getByTestId('@guide/feedback/suggestion/5').click();
-        await suiteGuidePage.bugInputTextField.fill('Hello!');
-        await suiteGuidePage.submitButton.click();
-        await expect(suiteGuidePage.feedbackSuccessToast).toBeVisible();
+        await guidePanel.bugInputTextField.fill('Hello!');
+        await guidePanel.submitButton.click();
+        await expect(guidePanel.feedbackSuccessToast).toBeVisible();
 
         // Guide over modal
         await settingsPage.navigateTo('application');
         await settingsPage.showLogButton.click();
-        await suiteGuidePage.closeGuide();
-        await suiteGuidePage.openPanel();
-        await expect(suiteGuidePage.guidePanel).toBeVisible();
+        await guidePanel.closeGuide();
+        await guidePanel.openPanel();
+        await expect(guidePanel.guidePanel).toBeVisible();
 
         // Search input
-        await suiteGuidePage.searchInput.fill('trezor');
+        await guidePanel.searchInput.fill('trezor');
         await expect
-            .poll(async () => (await suiteGuidePage.searchResults.all()).length)
+            .poll(async () => (await guidePanel.searchResults.all()).length)
             .toBeGreaterThan(0);
-        await suiteGuidePage.searchInput.fill('meow-wuf-nonsense');
-        await expect(suiteGuidePage.searchNoResults).toBeVisible();
+        await guidePanel.searchInput.fill('meow-wuf-nonsense');
+        await expect(guidePanel.searchNoResults).toBeVisible();
     });
 });
 
 test.describe('Guide with device', { tag: ['@group=suite'] }, () => {
     test('onboarding with device', async ({
         page,
-        analyticsPage,
+        analyticsSection,
         onboardingPage,
-        suiteGuidePage,
+        guidePanel,
     }) => {
         await onboardingPage.disableFirmwareHashCheck();
         await onboardingPage.optionallyDismissFwHashCheckError();
-        await analyticsPage.continueButton.click();
+        await analyticsSection.continueButton.click();
 
-        await suiteGuidePage.openPanel();
+        await guidePanel.openPanel();
         await expect(page.getByTestId('@guide/panel')).toBeVisible();
         await page.getByTestId('@guide/button-feedback').click();
-        await expect(suiteGuidePage.bugFormButton).toBeVisible();
-        await expect(suiteGuidePage.feedbackFormButton).toBeVisible();
+        await expect(guidePanel.bugFormButton).toBeVisible();
+        await expect(guidePanel.feedbackFormButton).toBeVisible();
     });
 });

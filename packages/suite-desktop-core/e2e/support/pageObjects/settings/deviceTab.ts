@@ -2,7 +2,7 @@ import { Locator, Page } from '@playwright/test';
 
 import { step } from '../../common';
 
-export class DeviceActions {
+export class DeviceTab {
     readonly createMultiShareBackupButton: Locator;
     readonly multiShareBackupGotItButton: Locator;
     private readonly firstInfoSubmitButton: Locator;

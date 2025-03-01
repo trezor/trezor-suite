@@ -1,33 +1,33 @@
 import { Locator, Page, expect } from '@playwright/test';
 
 import { TrezorUserEnvLinkProxy, step } from '../../common';
-import { MetadataProvider } from '../../mocks/metadataProviderMock';
-import { DevicePromptActions } from '../devicePromptActions';
-import { AccountMetadataActions } from './accountMetadataActions';
-import { AddressMetadataActions } from './addressMetadataActions';
-import { OutputMetadataActions } from './outputMetadataActions';
-import { WalletMetadataActions } from './walletMetadataActions';
+import { MetadataProvider } from '../../mocks/metadataMock';
+import { DevicePrompt } from '../devicePrompt';
+import { AccountMetadata } from './accountMetadata';
+import { AddressMetadata } from './addressMetadata';
+import { OutputMetadata } from './outputMetadata';
+import { WalletMetadata } from './walletMetadata';
 
-export class MetadataActions {
+export class MetadataPage {
     readonly metadataModal: Locator;
-    readonly account: AccountMetadataActions;
-    readonly output: OutputMetadataActions;
-    readonly wallet: WalletMetadataActions;
-    readonly address: AddressMetadataActions;
+    readonly account: AccountMetadata;
+    readonly output: OutputMetadata;
+    readonly wallet: WalletMetadata;
+    readonly address: AddressMetadata;
 
     readonly metadataProviderButton = (provider: MetadataProvider) =>
         this.page.getByTestId(`@modal/metadata-provider/${provider}-button`);
 
     constructor(
         private readonly page: Page,
-        private readonly devicePrompt: DevicePromptActions,
+        private readonly devicePrompt: DevicePrompt,
     ) {
         this.metadataModal = page.getByTestId('@modal/metadata-provider');
 
-        this.account = new AccountMetadataActions(page);
-        this.output = new OutputMetadataActions(page);
-        this.wallet = new WalletMetadataActions(page);
-        this.address = new AddressMetadataActions(page);
+        this.account = new AccountMetadata(page);
+        this.output = new OutputMetadata(page);
+        this.wallet = new WalletMetadata(page);
+        this.address = new AddressMetadata(page);
     }
 
     @step()

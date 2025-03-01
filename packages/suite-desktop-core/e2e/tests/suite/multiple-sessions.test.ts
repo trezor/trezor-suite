@@ -2,10 +2,10 @@ import * as messages from '@trezor/protobuf/src/messages';
 import { BridgeTransport } from '@trezor/transport';
 
 import { expect, test } from '../../support/fixtures';
-import { AnalyticsActions } from '../../support/pageActions/analyticsActions';
-import { DashboardActions } from '../../support/pageActions/dashboardActions';
-import { DevicePromptActions } from '../../support/pageActions/devicePromptActions';
-import { OnboardingActions } from '../../support/pageActions/onboarding/onboardingActions';
+import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
+import { DashboardPage } from '../../support/pageObjects/dashboardPage';
+import { DevicePrompt } from '../../support/pageObjects/devicePrompt';
+import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingPage';
 
 const stealBridgeSession = async () => {
     await test.step('Steal Bridge session', async () => {
@@ -96,17 +96,17 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
                 window.Playwright = true;
             });
             await pageTwo.goto('./');
-            const analyticsPageTwo = new AnalyticsActions(pageTwo);
-            const devicePromptTwo = new DevicePromptActions(pageTwo);
-            const onboardingPageTwo = new OnboardingActions(
+            const analyticsSectionTwo = new AnalyticsSection(pageTwo);
+            const devicePromptTwo = new DevicePrompt(pageTwo);
+            const onboardingPageTwo = new OnboardingPage(
                 pageTwo,
                 onboardingPage.model,
                 testInfo,
                 devicePromptTwo,
-                analyticsPageTwo,
+                analyticsSectionTwo,
             );
             await onboardingPageTwo.completeOnboarding();
-            const dashboardPageTwo = new DashboardActions(pageTwo, devicePromptTwo);
+            const dashboardPageTwo = new DashboardPage(pageTwo, devicePromptTwo);
             await dashboardPageTwo.discoveryShouldFinish();
             await expect(dashboardPageTwo.deviceStatus).toHaveText('Connected');
             await expect(dashboardPage.deviceStatus).toHaveText('Refresh');

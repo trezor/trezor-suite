@@ -2,8 +2,8 @@ import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
 import { step } from '../common';
 import { fixtures as dogeFixtures } from './doge-endpoints';
-import { fixtures as ethFixtures } from './eth-account';
-import { fixtures as ltcFixtures } from './ltc-mimble-wimble-endpoints';
+import { fixtures as ethFixtures } from './eth-endpoints';
+import { fixtures as ltcFixtures } from './ltc-mw-endpoints';
 
 export class BlockbookMock {
     private mockServer: BackendWebsocketServerMock | undefined;

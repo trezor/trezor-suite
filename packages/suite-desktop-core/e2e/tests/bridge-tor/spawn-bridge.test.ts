@@ -7,9 +7,9 @@ import {
 import { skipFixture } from '../../support/common';
 import { LEGACY_BRIDGE_VERSION, launchSuite } from '../../support/electron';
 import { expect, test } from '../../support/fixtures';
-import { AnalyticsActions } from '../../support/pageActions/analyticsActions';
-import { DevicePromptActions } from '../../support/pageActions/devicePromptActions';
-import { OnboardingActions } from '../../support/pageActions/onboarding/onboardingActions';
+import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
+import { DevicePrompt } from '../../support/pageObjects/devicePrompt';
+import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingPage';
 
 test.use({ exceptionLogger: skipFixture });
 test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
@@ -64,14 +64,14 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         });
         await suite.window.title();
 
-        const devicePrompt = new DevicePromptActions(suite.window);
+        const devicePrompt = new DevicePrompt(suite.window);
 
-        const onboardingPage = new OnboardingActions(
+        const onboardingPage = new OnboardingPage(
             suite.window,
             trezorUserEnvLink.defaultModel,
             testInfo,
             devicePrompt,
-            new AnalyticsActions(suite.window),
+            new AnalyticsSection(suite.window),
         );
         await onboardingPage.completeOnboarding();
 

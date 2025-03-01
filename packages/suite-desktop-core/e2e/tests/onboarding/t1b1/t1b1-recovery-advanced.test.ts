@@ -12,14 +12,14 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
 
     test('Incomplete run of advanced recovery', async ({
         onboardingPage,
-        analyticsPage,
+        analyticsSection,
         devicePrompt,
         recoveryPage,
         page,
         trezorUserEnvLink,
     }) => {
         // Navigate through onboarding steps
-        await analyticsPage.passThroughAnalytics();
+        await analyticsSection.passThroughAnalytics();
         await onboardingPage.firmware.continueButton.click();
         await onboardingPage.recoverWalletButton.click();
 

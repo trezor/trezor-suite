@@ -1,14 +1,14 @@
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
+import { MetadataProvider } from '../../support/mocks/metadataMock';
 
 test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic: 'mnemonic_all' },
     });
 
-    test.beforeEach(async ({ metadataProviderMock }) => {
-        await metadataProviderMock.start(MetadataProvider.DROPBOX);
+    test.beforeEach(async ({ metadataMock }) => {
+        await metadataMock.start(MetadataProvider.DROPBOX);
     });
     test('Malformed token', async ({
         page,
@@ -16,12 +16,12 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
         dashboardPage,
         settingsPage,
         metadataPage,
-        metadataProviderMock,
+        metadataMock,
     }) => {
-        await metadataProviderMock.setFileContent(
+        await metadataMock.setFileContent(
             '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
-            metadataProviderMock.defaultFileContent,
-            metadataProviderMock.defaultAesKey,
+            metadataMock.defaultFileContent,
+            metadataMock.defaultAesKey,
         );
 
         await onboardingPage.completeOnboarding();
@@ -39,7 +39,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
 
         // Simulated API responses for retries with malformed token must be supplied exactly at this point in the flow
         for (let i = 0; i < 4; i++) {
-            metadataProviderMock.setNextResponse({
+            metadataMock.setNextResponse({
                 status: 400,
                 body: 'Error in call to API function "files/upload": The given OAuth 2 access token is malformed.',
                 headers: {
@@ -67,12 +67,12 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
         dashboardPage,
         settingsPage,
         metadataPage,
-        metadataProviderMock,
+        metadataMock,
     }) => {
-        await metadataProviderMock.setFileContent(
+        await metadataMock.setFileContent(
             '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
-            metadataProviderMock.defaultFileContent,
-            metadataProviderMock.defaultAesKey,
+            metadataMock.defaultFileContent,
+            metadataMock.defaultAesKey,
         );
 
         await onboardingPage.completeOnboarding();
@@ -83,7 +83,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
 
         await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 
-        metadataProviderMock.setNextResponse({
+        metadataMock.setNextResponse({
             status: 200,
             body: {
                 name: {
@@ -104,7 +104,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
             },
         });
 
-        metadataProviderMock.setNextResponse({
+        metadataMock.setNextResponse({
             status: 429,
             body: 'Rate limited!',
             headers: {
@@ -125,9 +125,9 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
         dashboardPage,
         settingsPage,
         metadataPage,
-        metadataProviderMock,
+        metadataMock,
     }) => {
-        await metadataProviderMock.setFileContent(
+        await metadataMock.setFileContent(
             '/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
             {
                 version: '1.0.0',
@@ -136,7 +136,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
                 // 1] user manually changed the files (very unlikely);
                 // 2] we screwed app data saving or reading
             },
-            metadataProviderMock.defaultAesKey,
+            metadataMock.defaultAesKey,
         );
 
         await onboardingPage.completeOnboarding();

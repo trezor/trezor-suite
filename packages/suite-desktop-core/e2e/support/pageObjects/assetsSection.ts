@@ -4,7 +4,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../common';
 
-export class AssetsActions {
+export class AssetsSection {
     readonly section: Locator;
     readonly tableIcon: Locator;
     readonly gridIcon: Locator;

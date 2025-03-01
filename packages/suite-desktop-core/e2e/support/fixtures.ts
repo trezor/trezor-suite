@@ -2,90 +2,90 @@
 import { AnalyticsFixture } from './analytics';
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
-import { MetadataProviderMock } from './mocks/metadataProviderMock';
+import { MetadataMock } from './mocks/metadataMock';
 import { TradingMock } from './mocks/tradingMock';
-import { AnalyticsActions } from './pageActions/analyticsActions';
-import { AssetsActions } from './pageActions/assetsActions';
-import { DashboardActions } from './pageActions/dashboardActions';
-import { DevicePromptActions } from './pageActions/devicePromptActions';
-import { MarketActions } from './pageActions/marketActions';
-import { MetadataActions } from './pageActions/metadata/metadataActions';
-import { OnboardingActions } from './pageActions/onboarding/onboardingActions';
-import { RecoveryActions } from './pageActions/recoveryActions';
-import { SettingsActions } from './pageActions/settings/settingsActions';
-import { SuiteGuide } from './pageActions/suiteGuideActions';
-import { TrezorInputActions } from './pageActions/trezorInputActions';
-import { WalletActions } from './pageActions/walletActions';
+import { AnalyticsSection } from './pageObjects/analyticsSection';
+import { AssetsSection } from './pageObjects/assetsSection';
+import { DashboardPage } from './pageObjects/dashboardPage';
+import { DevicePrompt } from './pageObjects/devicePrompt';
+import { GuidePanel } from './pageObjects/guidePanel';
+import { MetadataPage } from './pageObjects/metadata/metadataPage';
+import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
+import { RecoveryPage } from './pageObjects/recoveryPage';
+import { SettingsPage } from './pageObjects/settings/settingsPage';
+import { TradingPage } from './pageObjects/tradingPage';
+import { TrezorInput } from './pageObjects/trezorInput';
+import { WalletPage } from './pageObjects/walletPage';
 import { suiteBaseTest } from './testExtends/suiteBaseFixture';
 
 type Fixtures = {
-    dashboardPage: DashboardActions;
-    settingsPage: SettingsActions;
-    suiteGuidePage: SuiteGuide;
-    walletPage: WalletActions;
-    onboardingPage: OnboardingActions;
-    analyticsPage: AnalyticsActions;
-    devicePrompt: DevicePromptActions;
-    recoveryPage: RecoveryActions;
-    marketPage: MarketActions;
-    assetsPage: AssetsActions;
-    metadataPage: MetadataActions;
-    trezorInput: TrezorInputActions;
+    dashboardPage: DashboardPage;
+    settingsPage: SettingsPage;
+    guidePanel: GuidePanel;
+    walletPage: WalletPage;
+    onboardingPage: OnboardingPage;
+    analyticsSection: AnalyticsSection;
+    devicePrompt: DevicePrompt;
+    recoveryPage: RecoveryPage;
+    tradingPage: TradingPage;
+    assetsSection: AssetsSection;
+    metadataPage: MetadataPage;
+    trezorInput: TrezorInput;
     analytics: AnalyticsFixture;
     indexedDb: IndexedDbFixture;
-    metadataProviderMock: MetadataProviderMock;
+    metadataMock: MetadataMock;
     blockbookMock: BlockbookMock;
     tradingMock: TradingMock;
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
     dashboardPage: async ({ page, devicePrompt }, use) => {
-        await use(new DashboardActions(page, devicePrompt));
+        await use(new DashboardPage(page, devicePrompt));
     },
     settingsPage: async ({ page, url }, use) => {
-        await use(new SettingsActions(page, url));
+        await use(new SettingsPage(page, url));
     },
-    suiteGuidePage: async ({ page }, use) => {
-        await use(new SuiteGuide(page));
+    guidePanel: async ({ page }, use) => {
+        await use(new GuidePanel(page));
     },
     walletPage: async ({ page }, use) => {
-        await use(new WalletActions(page));
+        await use(new WalletPage(page));
     },
     onboardingPage: async (
-        { page, emulatorStartConf, devicePrompt, analyticsPage },
+        { page, emulatorStartConf, devicePrompt, analyticsSection },
         use,
         testInfo,
     ) => {
         await use(
-            new OnboardingActions(
+            new OnboardingPage(
                 page,
                 emulatorStartConf.model,
                 testInfo,
                 devicePrompt,
-                analyticsPage,
+                analyticsSection,
             ),
         );
     },
-    analyticsPage: async ({ page }, use) => {
-        await use(new AnalyticsActions(page));
+    analyticsSection: async ({ page }, use) => {
+        await use(new AnalyticsSection(page));
     },
     devicePrompt: async ({ page }, use) => {
-        await use(new DevicePromptActions(page));
+        await use(new DevicePrompt(page));
     },
     recoveryPage: async ({ page }, use) => {
-        await use(new RecoveryActions(page));
+        await use(new RecoveryPage(page));
     },
-    marketPage: async ({ page, devicePrompt }, use) => {
-        await use(new MarketActions(page, devicePrompt));
+    tradingPage: async ({ page, devicePrompt }, use) => {
+        await use(new TradingPage(page, devicePrompt));
     },
-    assetsPage: async ({ page }, use) => {
-        await use(new AssetsActions(page));
+    assetsSection: async ({ page }, use) => {
+        await use(new AssetsSection(page));
     },
     metadataPage: async ({ page, devicePrompt }, use) => {
-        await use(new MetadataActions(page, devicePrompt));
+        await use(new MetadataPage(page, devicePrompt));
     },
     trezorInput: async ({ page }, use) => {
-        await use(new TrezorInputActions(page));
+        await use(new TrezorInput(page));
     },
     analytics: async ({ page }, use) => {
         await use(new AnalyticsFixture(page));
@@ -93,10 +93,10 @@ const test = suiteBaseTest.extend<Fixtures>({
     indexedDb: async ({ page }, use) => {
         await use(new IndexedDbFixture(page));
     },
-    metadataProviderMock: async ({ page }, use) => {
-        const metadataProviderMock = new MetadataProviderMock(page);
-        await use(metadataProviderMock);
-        await metadataProviderMock.stop();
+    metadataMock: async ({ page }, use) => {
+        const metadataMock = new MetadataMock(page);
+        await use(metadataMock);
+        await metadataMock.stop();
     },
     /* eslint-disable-next-line no-empty-pattern */
     blockbookMock: async ({}, use) => {

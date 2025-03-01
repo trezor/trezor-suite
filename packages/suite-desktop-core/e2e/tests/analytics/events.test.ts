@@ -78,7 +78,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
     test('reports suite-ready after enabling analytics on app initial run', async ({
         analytics,
         page,
-        analyticsPage,
+        analyticsSection,
         settingsPage,
         onboardingPage,
         trezorUserEnvLink,
@@ -131,7 +131,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         await onboardingPage.optionallyDismissFwHashCheckError();
 
         expect(analytics.requests).toHaveLength(0);
-        await analyticsPage.continueButton.click();
+        await analyticsSection.continueButton.click();
         await page.getByTestId('@onboarding/exit-app-button').click();
 
         await analytics.waitForAnalyticsRequests(2);

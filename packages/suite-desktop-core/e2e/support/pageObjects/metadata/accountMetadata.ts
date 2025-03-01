@@ -1,7 +1,7 @@
-import { MetadataBaseActions } from './metadataBaseActions';
+import { MetadataBase } from './metadataBase';
 import { step } from '../../common';
 
-export class AccountMetadataActions extends MetadataBaseActions {
+export class AccountMetadata extends MetadataBase {
     readonly addLabelButton = (accountId: string) =>
         this.page.getByTestId(`${this.getLabelTestId(accountId)}/add-label-button`);
     readonly editLabelButton = (accountId: string) =>

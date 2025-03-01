@@ -1,5 +1,5 @@
 import { expect, test } from '../../support/fixtures';
-import { graphRangeOptions } from '../../support/pageActions/dashboardActions';
+import { graphRangeOptions } from '../../support/pageObjects/dashboardPage';
 
 const rangeData: { range: graphRangeOptions; label: string }[] = [
     { range: 'day', label: '1 day' },

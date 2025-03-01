@@ -1,6 +1,6 @@
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
-import { MetadataProvider } from '../../support/mocks/metadataProviderMock';
+import { MetadataProvider } from '../../support/mocks/metadataMock';
 
 //Metadata - In settings, there is enable metadata switch.
 //On enable, it initiates metadata right away (if device already has state).
@@ -10,12 +10,12 @@ test.describe('Remembered device', { tag: ['@group=metadata2', '@webOnly'] }, ()
         emulatorStartConf: { model: 'T2T1', wipe: true },
         emulatorSetupConf: { mnemonic: 'mnemonic_all' },
     });
-    test.beforeEach(async ({ metadataProviderMock }) => {
-        await metadataProviderMock.start(MetadataProvider.GOOGLE);
-        await metadataProviderMock.setFileContent(
+    test.beforeEach(async ({ metadataMock }) => {
+        await metadataMock.start(MetadataProvider.GOOGLE);
+        await metadataMock.setFileContent(
             'f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
-            metadataProviderMock.defaultFileContent,
-            metadataProviderMock.defaultAesKey,
+            metadataMock.defaultFileContent,
+            metadataMock.defaultAesKey,
         );
     });
 

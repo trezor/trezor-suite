@@ -52,10 +52,10 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
         setupEmulator: false,
     });
 
-    test.beforeEach(async ({ page, onboardingPage, analyticsPage }) => {
+    test.beforeEach(async ({ page, onboardingPage, analyticsSection }) => {
         await onboardingPage.disableFirmwareHashCheck();
 
-        await analyticsPage.passThroughAnalytics();
+        await analyticsSection.passThroughAnalytics();
 
         await onboardingPage.firmware.skip();
         await page.getByTestId('@onboarding/path-recovery-button').click();
@@ -65,7 +65,7 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
         page,
         trezorUserEnvLink,
         onboardingPage,
-        analyticsPage,
+        analyticsSection,
         devicePrompt,
         indexedDb,
     }) => {
@@ -90,7 +90,7 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
         await onboardingPage.disableFirmwareHashCheck();
 
         // Go through analytics opt-out again
-        await analyticsPage.passThroughAnalytics();
+        await analyticsSection.passThroughAnalytics();
 
         // Recovery device persisted after reload
         await devicePrompt.confirmOnDevicePromptIsShown();

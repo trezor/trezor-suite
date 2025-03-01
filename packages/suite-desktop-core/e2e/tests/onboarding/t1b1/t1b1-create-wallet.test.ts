@@ -12,13 +12,13 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
 
     test('Success (basic)', async ({
         page,
-        analyticsPage,
+        analyticsSection,
         onboardingPage,
         devicePrompt,
         trezorUserEnvLink,
     }) => {
         // Pass through analytics and firmware steps
-        await analyticsPage.passThroughAnalytics();
+        await analyticsSection.passThroughAnalytics();
         await onboardingPage.firmware.continueButton.click();
 
         // Start wallet creation

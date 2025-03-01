@@ -29,7 +29,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
     test.beforeEach(
         async ({
             page,
-            marketPage,
+            tradingPage,
             tradingMock,
             onboardingPage,
             dashboardPage,
@@ -56,37 +56,37 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
                 await dashboardPage.deviceSwitchingOpenButton.click();
                 await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
                 await walletPage.openTrading({ symbol: 'sol' });
-                await marketPage.sellTabButton.click();
+                await tradingPage.sellTabButton.click();
             });
         },
     );
 
-    test('Sell Solana', async ({ page, marketPage, tradingMock, devicePrompt }) => {
+    test('Sell Solana', async ({ page, tradingPage, tradingMock, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
-            await marketPage.setYouSellAmount(cryptoAmount, 'solana');
-            await expect(marketPage.bestOfferAmount).toHaveText(fiatAmount);
-            await expect(marketPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
+            await tradingPage.setYouSellAmount(cryptoAmount, 'solana');
+            await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
+            await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
         });
 
         await test.step('Confirm sell', async () => {
-            await marketPage.sellBestOfferButton.click();
-            await marketPage.termsConfirmButton.click();
+            await tradingPage.sellBestOfferButton.click();
+            await tradingPage.termsConfirmButton.click();
         });
 
-        await marketPage.waitForRedirectCompletion();
+        await tradingPage.waitForRedirectCompletion();
 
         await test.step('Verify all confirmation values', async () => {
-            await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(marketPage.confirmationProvider).toHaveText(provider);
-            await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
-            await expect(marketPage.confirmationAddress).toHaveText(providerAddress);
-            await expect(marketPage.confirmationAccount).toHaveText('Solana #1');
-            await expect(marketPage.confirmationPaymentId).toHaveText(providerPaymentId);
+            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmationProvider).toHaveText(provider);
+            await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
+            await expect(tradingPage.confirmationAddress).toHaveText(providerAddress);
+            await expect(tradingPage.confirmationAccount).toHaveText('Solana #1');
+            await expect(tradingPage.confirmationPaymentId).toHaveText(providerPaymentId);
         });
 
         await test.step('Initiate send', async () => {
-            await marketPage.initiateSendConfirmation();
+            await tradingPage.initiateSendConfirmation();
             await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(formattedCryptoAmount);
         });
 
@@ -94,7 +94,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
         await test.step('Send crypto to provider', async () => {
             await page.clock.install();
             await devicePrompt.sendButton.click();
-            await expect(marketPage.transactionDetailStatus).toHaveText('Trade in progress...');
+            await expect(tradingPage.transactionDetailStatus).toHaveText('Trade in progress...');
             await expect(
                 page.getByRole('link', { name: "Open partner's support site" }),
             ).toBeVisible();
@@ -106,7 +106,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
                 await route.fulfill({ json: { status: 'SUCCESS' } });
             });
             await page.clock.fastForward(tradingMock.watchPeriod);
-            await expect(marketPage.transactionDetailStatus).toHaveText('Trade success');
+            await expect(tradingPage.transactionDetailStatus).toHaveText('Trade success');
         });
     });
 });

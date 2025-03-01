@@ -30,7 +30,7 @@ test.describe('Discreet Mode', { tag: ['@group=suite'] }, () => {
 
     test('Balances are hidden when user enables discreet mode', async ({
         analytics,
-        assetsPage,
+        assetsSection,
         dashboardPage,
         walletPage,
     }) => {
@@ -45,12 +45,12 @@ test.describe('Discreet Mode', { tag: ['@group=suite'] }, () => {
         });
 
         await test.step('Verify asset card value is hidden', async () => {
-            await verifyHiddenAndRevealedValue({ locator: assetsPage.assetFiatAmount('btc') });
+            await verifyHiddenAndRevealedValue({ locator: assetsSection.assetFiatAmount('btc') });
         });
 
         await test.step('Verify asset row value is hidden', async () => {
-            await assetsPage.tableIcon.click();
-            await verifyHiddenAndRevealedValue({ locator: assetsPage.assetFiatAmount('btc') });
+            await assetsSection.tableIcon.click();
+            await verifyHiddenAndRevealedValue({ locator: assetsSection.assetFiatAmount('btc') });
         });
 
         await test.step('Verify Portfolio value is hidden', async () => {

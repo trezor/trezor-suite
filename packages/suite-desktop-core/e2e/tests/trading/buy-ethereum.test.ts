@@ -28,39 +28,40 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
         settingsPage,
         devicePrompt,
         walletPage,
-        marketPage,
+        tradingPage,
         trezorUserEnvLink,
     }) => {
         await test.step('Request to buy Ethereum', async () => {
             await walletPage.openBuyTradingButton.click();
-            await marketPage.selectAccount('Ethereum', 'eth');
-            await marketPage.setYouBuyAmount(fiatAmount, 'ethereum');
-            await expect(marketPage.bestOfferAmount).toHaveText(formattedCryptoAmount);
-            await expect(marketPage.quoteProvider).toHaveText(provider);
-            await marketPage.buyBestOfferButton.click();
+            await tradingPage.selectAccount('Ethereum', 'eth');
+            await tradingPage.setYouBuyAmount(fiatAmount, 'ethereum');
+            await expect(tradingPage.bestOfferAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.quoteProvider).toHaveText(provider);
+            await tradingPage.buyBestOfferButton.click();
         });
 
         await test.step('Create Ethereum account in trade confirmation dialog', async () => {
-            await marketPage.termsConfirmButton.click();
-            await expect(marketPage.confirmationAccountDropdown).toHaveText(
+            await tradingPage.termsConfirmButton.click();
+            await expect(tradingPage.confirmationAccountDropdown).toHaveText(
                 'Select ETHEREUM receive account',
             );
-            await expect(marketPage.confirmationAddress).toHaveText('');
+            await expect(tradingPage.confirmationAddress).toHaveText('');
+            await expect(page.getByText('Receive address is required')).toBeVisible();
 
-            await marketPage.confirmationAccountDropdown.click();
+            await tradingPage.confirmationAccountDropdown.click();
             await page.getByRole('option', { name: 'Create a new Ethereum account' }).click();
             await expect(settingsPage.coins.networkButton('eth')).toBeEnabledCoin();
             await page.getByRole('button', { name: 'Find my Ethereum accounts' }).click();
             await dashboardPage.discoveryShouldFinish();
-            await expect(marketPage.confirmationAccountDropdown).toHaveText(
+            await expect(tradingPage.confirmationAccountDropdown).toHaveText(
                 'Ethereum #1Balance: 0 ETH',
             );
 
-            await expect(marketPage.confirmationAddress).toHaveValue(receiveAddress);
+            await expect(tradingPage.confirmationAddress).toHaveValue(receiveAddress);
         });
 
         await test.step('Confirm Trade', async () => {
-            await marketPage.confirmOnTrezorButton.click();
+            await tradingPage.confirmOnTrezorButton.click();
             await expect(devicePrompt.outputValueOf('address')).toHaveText(
                 formatAddress(receiveAddress),
             );
@@ -68,23 +69,23 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
             await trezorUserEnvLink.pressYes();
             await devicePrompt.confirmOnDevicePromptIsHidden();
 
-            await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            await expect(marketPage.confirmationProvider).toHaveText(
+            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmationProvider).toHaveText(
                 capitalizeFirstLetter(provider),
             );
-            await expect(marketPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
+            await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
             //TODO: #16766 Uncomment once the issue with the trade confirmation dialog is fixed
-            //     await marketPage.confirmTradeButton.click();
+            //     await tradingPage.confirmTradeButton.click();
             // });
 
-            // await marketPage.waitForRedirectCompletion();
+            // await tradingPage.waitForRedirectCompletion();
 
             // await test.step('Verify transaction detail', async () => {
-            //     await expect(marketPage.transactionDetailStatus).toHaveText('Approved');
-            //     await expect(marketPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            //     await expect(marketPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            //     await expect(marketPage.confirmationProvider).toHaveText(provider);
+            //     await expect(tradingPage.transactionDetailStatus).toHaveText('Approved');
+            //     await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            //     await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
+            //     await expect(tradingPage.confirmationProvider).toHaveText(provider);
         });
     });
 });

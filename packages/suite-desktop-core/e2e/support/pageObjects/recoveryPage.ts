@@ -2,7 +2,7 @@ import { Locator, Page } from '@playwright/test';
 
 import { step } from '../common';
 
-export class RecoveryActions {
+export class RecoveryPage {
     readonly selectBasicRecoveryButton: Locator;
     readonly userUnderstandsCheckbox: Locator;
     readonly startButton: Locator;

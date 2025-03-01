@@ -44,7 +44,7 @@ test.describe('Use regtest to test pending transactions', { tag: ['@group=wallet
         walletPage,
         dashboardPage,
         devicePrompt,
-        marketPage,
+        tradingPage,
         trezorUserEnvLink,
     }) => {
         await dashboardPage.dashboardMenuButton.click();
@@ -53,12 +53,12 @@ test.describe('Use regtest to test pending transactions', { tag: ['@group=wallet
         // create 2 transactions (one self, one fund another account of mine)
         for (const [index, transaction] of [accounts.account1, accounts.account2].entries()) {
             await walletPage.openSendFormButton.click();
-            await marketPage.sendAmountInput.fill('0.3');
-            await marketPage.sendAddressInput.fill(transaction.address);
+            await tradingPage.sendAmountInput.fill('0.3');
+            await tradingPage.sendAddressInput.fill(transaction.address);
             await page.getByTestId('add-output').click();
             await page.getByTestId('outputs.1.amount').fill('0.7');
             await page.getByTestId('outputs.1.address').fill(transaction.address);
-            await marketPage.sendButton.click();
+            await tradingPage.sendButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
             await trezorUserEnvLink.pressYes();
