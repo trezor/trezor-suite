@@ -126,6 +126,8 @@ export class OnboardingActions {
         }
         // eslint-disable-next-line @typescript-eslint/no-shadow
         await this.page.evaluate(SuiteActions => {
+            // WARNING: If this dispatch is changed as part of refactoring. You need to change also:
+            // packages/suite-desktop-core/e2e/support/electron.ts variable disableHashCheckArgument
             window.store.dispatch({
                 type: SuiteActions.TOGGLE_FIRMWARE_HASH_CHECK,
                 payload: false,

@@ -8,7 +8,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 // specific version of legacy bridge is requested & expected
 export const LEGACY_BRIDGE_VERSION = '2.0.33';
-const disableHashCheckArgument = '--state.suite.settings.isFirmwareHashCheckDisabled=true';
+const disableHashCheckArgument = '--state.suite.settings.enabledSecurityChecks.firmwareHash=false';
 const showDebugMenuArgument = `--state.suite.settings.debug.showDebugMenu=true`;
 
 type LaunchSuiteParams = {
