@@ -91,10 +91,10 @@ const shouldUseLegacyBridge = (store: Dependencies['store']) => {
     if (bridgeLegacy || legacyRequestedBySettings) return true;
     // dev uses node-bridge by default on every platform
     if (isDevEnv) return false;
-    // windows users reported some problems during fw update (not seeing reconnected device)
-    if (isWindows()) return true;
-    // otherwise use node-bridge in the early access program
+
     if (allowPrerelease) return false;
+
+    if (isWindows()) return true;
 
     // handle rollout for regular users
     if (skipNewBridgeRollout) return false;
@@ -104,7 +104,7 @@ const shouldUseLegacyBridge = (store: Dependencies['store']) => {
     }
     const newBridgeRollout = store.getBridgeSettings().newBridgeRollout || 0;
     // note that this variable is duplicated with UI
-    const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0;
+    const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0.01;
     const legacyBridgeReasonRollout = newBridgeRollout >= NEW_BRIDGE_ROLLOUT_THRESHOLD;
 
     return legacyBridgeReasonRollout;
