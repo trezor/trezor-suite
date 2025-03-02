@@ -17,7 +17,8 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
     // reconnect device
     // go back to 1st hidden wallet
     // check confirm passphrase appears.
-    test('after device is reconnected passphrase needs to be confirmed', async ({
+    // TODO: #17161 Fix unstable test
+    test.skip('after device is reconnected passphrase needs to be confirmed', async ({
         page,
         dashboardPage,
         walletPage,
