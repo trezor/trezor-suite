@@ -41,7 +41,7 @@ const info: BridgeInfo = {
     changelog: '',
 };
 
-export const getBridgeInfo = (): BridgeInfo => info;
+const getBridgeInfo = (): BridgeInfo => info;
 
 export const suggestBridgeInstaller = (platform?: string): BridgeInfo => {
     const info2 = getBridgeInfo();

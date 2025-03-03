@@ -9,7 +9,6 @@ import {
 import type { AbstractTransportParams } from '@trezor/transport/src/transports/abstract';
 
 import { ERRORS } from '../constants';
-import { getBridgeInfo } from '../data/transportInfo';
 import { ConnectSettingsTransport } from '../types';
 
 type Params = AbstractTransportParams & { sessionsBackgroundUrl?: string | null };
@@ -32,10 +31,7 @@ const getOrCreateTransport = (
             case 'NodeUsbTransport':
                 return new NodeUsbTransport(params);
             case 'BridgeTransport':
-                return new BridgeTransport({
-                    latestVersion: getBridgeInfo().version.join('.'),
-                    ...params,
-                });
+                return new BridgeTransport(params);
             case 'UdpTransport':
                 return new UdpTransport(params);
         }
