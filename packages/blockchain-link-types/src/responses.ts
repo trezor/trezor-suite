@@ -98,6 +98,7 @@ export interface EstimateFee {
     payload: {
         feePerUnit: string;
         feePerTx?: string;
+        feePayer?: string;
         feeLimit?: string;
         eip1559?: Eip1559Fees;
     }[];

@@ -1,6 +1,7 @@
 import {
     Address,
     Base64EncodedWireTransaction,
+    CompilableTransactionMessage,
     CompiledTransactionMessage,
     GetFeeForMessageApi,
     GetRecentPrioritizationFeesApi,
@@ -9,7 +10,6 @@ import {
     SimulateTransactionApi,
     TransactionMessageBytes,
     TransactionMessageBytesBase64,
-    decompileTransactionMessage,
     getBase64Decoder,
     getCompiledTransactionMessageEncoder,
     getTransactionEncoder,
@@ -56,12 +56,12 @@ export const getBaseFee = async (
 // https://solana.com/developers/guides/advanced/how-to-use-priority-fees#how-do-i-estimate-priority-fees
 export const getPriorityFee = async (
     api: Rpc<GetRecentPrioritizationFeesApi & SimulateTransactionApi>,
+    decompiledMessage: CompilableTransactionMessage,
     compiledMessage: CompiledTransactionMessage,
     signatures: SignaturesMap,
 ) => {
-    const message = decompileTransactionMessage(compiledMessage);
     const affectedAccounts = new Set<Address>(
-        message.instructions
+        decompiledMessage.instructions
             .flatMap(instruction => instruction.accounts ?? [])
             .filter(({ role }) => isWritableRole(role))
             .map(({ address }) => address),

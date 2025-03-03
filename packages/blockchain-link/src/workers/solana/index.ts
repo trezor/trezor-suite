@@ -21,7 +21,7 @@ import {
     createDefaultRpcTransport,
     createSolanaRpcFromTransport,
     createSolanaRpcSubscriptions,
-    decompileTransactionMessage,
+    decompileTransactionMessageFetchingLookupTables,
     getBase16Encoder,
     getBase64Encoder,
     getCompiledTransactionMessageDecoder,
@@ -149,7 +149,7 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     assertTransactionIsFullySigned(transaction);
 
     const compiledMessage = getCompiledTransactionMessageDecoder().decode(transaction.messageBytes);
-    const message = decompileTransactionMessage(compiledMessage);
+    const message = await decompileTransactionMessageFetchingLookupTables(compiledMessage, api.rpc);
     if (isDurableNonceTransaction(message)) {
         // TODO: Handle durable nonce transactions.
         throw new Error('Unimplemented: Confirming durable nonce transactions');
@@ -527,7 +527,17 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     const transaction = pipe(messageHex, getBase16Encoder().encode, getTransactionDecoder().decode);
     const message = pipe(transaction.messageBytes, getCompiledTransactionMessageDecoder().decode);
 
-    const priorityFee = await getPriorityFee(api.rpc, message, transaction.signatures);
+    const decompiledTransactionMessage = await decompileTransactionMessageFetchingLookupTables(
+        message,
+        api.rpc,
+    );
+
+    const priorityFee = await getPriorityFee(
+        api.rpc,
+        decompiledTransactionMessage,
+        message,
+        transaction.signatures,
+    );
     const baseFee = await getBaseFee(api.rpc, message);
 
     const accountCreationFee = newAccountProgramName
@@ -546,6 +556,7 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
                 .toString(10),
             feePerUnit: priorityFee.computeUnitPrice,
             feeLimit: priorityFee.computeUnitLimit,
+            feePayer: decompiledTransactionMessage.feePayer.address,
         },
     ];
 
