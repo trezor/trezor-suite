@@ -1,19 +1,32 @@
 import { WalletKitTypes } from '@reown/walletkit';
+import type { ProposalTypes } from '@walletconnect/types';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { createThunk } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
+import { Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getEthereumEstimateFeeParams } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';
-import { WalletConnectAdapter } from '../walletConnectTypes';
+import {
+    PendingConnectionProposalNetwork,
+    WalletConnectAdapter,
+    WalletConnectNamespace,
+} from '../walletConnectTypes';
+
+const methods = [
+    'eth_sendTransaction',
+    'eth_signTypedData_v4',
+    'personal_sign',
+    'wallet_switchEthereumChain',
+];
 
 const ethereumRequestThunk = createThunk<
-    void,
+    string | undefined,
     {
         event: WalletKitTypes.SessionRequest;
     }
@@ -189,13 +202,76 @@ const ethereumRequestThunk = createThunk<
     }
 });
 
+export const getChainId = (network: Network) => `eip155:${network.chainId}`;
+
+export const getNamespace = (accounts: Account[]) => {
+    const eip155 = {
+        chains: [],
+        accounts: [],
+        methods,
+        events: ['chainChanged', 'accountsChanged'],
+    } as WalletConnectNamespace;
+
+    accounts.forEach(account => {
+        const network = getNetwork(account.symbol);
+        const { networkType } = network;
+
+        if (!account.visible || networkType !== 'ethereum') return;
+
+        const walletConnectChainId = getChainId(network);
+        if (!eip155.chains.includes(walletConnectChainId)) {
+            eip155.chains.push(walletConnectChainId);
+        }
+        const accountId = `${walletConnectChainId}:${account.descriptor}`;
+        if (!eip155.accounts.includes(accountId)) {
+            eip155.accounts.push(accountId);
+        }
+    });
+
+    return { eip155 };
+};
+
+const processNamespaces = (
+    accounts: Account[],
+    networks: PendingConnectionProposalNetwork[],
+    namespaces: ProposalTypes.RequiredNamespaces,
+    required: boolean,
+) =>
+    Object.entries(namespaces).forEach(
+        ([key, namespace]: [string, ProposalTypes.RequiredNamespace]) => {
+            if (key === 'eip155') {
+                namespace.chains?.forEach(chain => {
+                    const alreadyAdded = networks.some(network => network.namespaceId === chain);
+                    if (alreadyAdded) return;
+                    const supported = networksCollection.find(
+                        nc => chain === `eip155:${nc.chainId}`,
+                    );
+                    const getStatus = () => {
+                        if (!supported) return 'unsupported';
+                        const hasAccounts = accounts.some(
+                            account => account.symbol === supported?.symbol,
+                        );
+                        if (hasAccounts) return 'active';
+
+                        return 'inactive';
+                    };
+                    networks.push({
+                        namespaceId: chain,
+                        symbol: supported?.symbol,
+                        name: supported?.name ?? `Unknown (${chain})`,
+                        status: getStatus(),
+                        required,
+                    });
+                });
+            }
+        },
+    );
+
 export const ethereumAdapter = {
-    methods: [
-        'eth_sendTransaction',
-        'eth_signTypedData_v4',
-        'personal_sign',
-        'wallet_switchEthereumChain',
-    ],
+    methods,
     networkType: 'ethereum',
     requestThunk: ethereumRequestThunk,
+    getNamespace,
+    getChainId,
+    processNamespaces,
 } satisfies WalletConnectAdapter;

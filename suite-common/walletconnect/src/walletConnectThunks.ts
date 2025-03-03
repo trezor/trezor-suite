@@ -1,7 +1,6 @@
 import { WalletKit, WalletKitTypes } from '@reown/walletkit';
 import { WalletKit as WalletKitClient } from '@reown/walletkit/dist/types/client';
 import { Core } from '@walletconnect/core';
-import type { ProposalTypes } from '@walletconnect/types';
 import {
     buildApprovedNamespaces,
     buildAuthObject,
@@ -12,12 +11,17 @@ import {
 import { EventType, analytics } from '@suite-common/analytics';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { selectSelectedDevice, selectVisibleSortedDeviceAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-import { getAdapterByMethod, getNamespaces } from './adapters';
+import {
+    getAdapterByMethod,
+    getAdapterByNetwork,
+    getNamespaces,
+    processNamespaces,
+} from './adapters';
 import { walletConnectActions } from './walletConnectActions';
 import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
 import { selectPendingProposal } from './walletConnectReducer';
@@ -94,37 +98,8 @@ export const sessionProposalThunk = createThunk<
     // Check supported networks
     const accounts = selectVisibleSortedDeviceAccounts(getState());
     const networks: PendingConnectionProposalNetwork[] = [];
-    const processNamespace =
-        (required: boolean) =>
-        ([key, namespace]: [string, ProposalTypes.RequiredNamespace]) => {
-            if (key === 'eip155') {
-                namespace.chains?.forEach(chain => {
-                    const alreadyAdded = networks.some(network => network.namespaceId === chain);
-                    if (alreadyAdded) return;
-                    const supported = networksCollection.find(
-                        nc => chain === `eip155:${nc.chainId}`,
-                    );
-                    const getStatus = () => {
-                        if (!supported) return 'unsupported';
-                        const hasAccounts = accounts.some(
-                            account => account.symbol === supported?.symbol,
-                        );
-                        if (hasAccounts) return 'active';
-
-                        return 'inactive';
-                    };
-                    networks.push({
-                        namespaceId: chain,
-                        symbol: supported?.symbol,
-                        name: supported?.name ?? `Unknown (${chain})`,
-                        status: getStatus(),
-                        required,
-                    });
-                });
-            }
-        };
-    Object.entries(event.params.requiredNamespaces).forEach(processNamespace(true));
-    Object.entries(event.params.optionalNamespaces).forEach(processNamespace(false));
+    processNamespaces(accounts, networks, event.params.requiredNamespaces, true);
+    processNamespaces(accounts, networks, event.params.optionalNamespaces, false);
 
     dispatch(
         walletConnectActions.createSessionProposal({
@@ -290,26 +265,34 @@ export const switchSelectedAccountThunk = createThunk<void, { account: Account }
     async ({ account }, { getState }) => {
         const accounts = selectVisibleSortedDeviceAccounts(getState());
         const network = getNetwork(account.symbol);
-        if (!network || !network.chainId) return;
+        if (!network) return;
         const sessions = await walletKit.getActiveSessions();
         const updatedNamespaces = getNamespaces([account, ...accounts]);
+        const chainId = getAdapterByNetwork(network.networkType)?.getChainId(network);
+        if (!chainId) return;
+
         for (const topic in sessions) {
-            walletKit.emitSessionEvent({
-                topic,
-                event: {
-                    name: 'chainChanged',
-                    data: network.chainId,
-                },
-                chainId: `eip155:${network.chainId}`,
-            });
-            walletKit.emitSessionEvent({
-                topic,
-                event: {
-                    name: 'accountsChanged',
-                    data: [...updatedNamespaces.eip155.accounts],
-                },
-                chainId: `eip155:${network.chainId}`,
-            });
+            const session = sessions[topic];
+            for (const namespace in session.namespaces) {
+                if (namespace === 'eip155' && network.chainId) {
+                    walletKit.emitSessionEvent({
+                        topic,
+                        event: {
+                            name: 'chainChanged',
+                            data: network.chainId,
+                        },
+                        chainId,
+                    });
+                }
+                walletKit.emitSessionEvent({
+                    topic,
+                    event: {
+                        name: 'accountsChanged',
+                        data: [...updatedNamespaces[namespace].accounts],
+                    },
+                    chainId,
+                });
+            }
         }
     },
 );
@@ -323,14 +306,18 @@ export const updateAccountsThunk = createThunk(
         const updatedNamespaces = getNamespaces(accounts);
         for (const topic in sessions) {
             const { namespaces: oldNamespaces } = sessions[topic];
-            const namespaces = {
-                ...oldNamespaces,
-                eip155: {
-                    ...oldNamespaces.eip155,
-                    accounts: updatedNamespaces.eip155.accounts,
-                    chains: updatedNamespaces.eip155.chains,
+            const namespaces = Object.keys(oldNamespaces).reduce(
+                (acc, key) => {
+                    acc[key] = {
+                        ...oldNamespaces[key],
+                        accounts: updatedNamespaces[key as any]?.accounts ?? [],
+                        chains: updatedNamespaces[key as any]?.chains ?? [],
+                    };
+
+                    return acc;
                 },
-            };
+                { ...oldNamespaces },
+            );
             await walletKit.updateSession({
                 topic,
                 namespaces,

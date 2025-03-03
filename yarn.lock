@@ -9721,6 +9721,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@walletconnect/core": "npm:^2.18.1"
     "@walletconnect/utils": "npm:^2.18.1"
+    bs58: "npm:^6.0.0"
   languageName: unknown
   linkType: soft
 

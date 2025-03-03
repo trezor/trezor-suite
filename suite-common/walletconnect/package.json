@@ -20,6 +20,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@walletconnect/core": "^2.18.1",
-        "@walletconnect/utils": "^2.18.1"
+        "@walletconnect/utils": "^2.18.1",
+        "bs58": "^6.0.0"
     }
 }

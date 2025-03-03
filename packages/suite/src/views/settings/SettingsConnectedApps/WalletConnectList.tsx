@@ -42,6 +42,7 @@ export const WalletConnectList = () => {
 
     const getNetworks = (session: WalletConnectSession) => {
         const networks: Pick<PendingConnectionProposalNetwork, 'symbol' | 'name'>[] = [];
+        // EVMs
         session.namespaces.eip155?.chains?.forEach(chain => {
             const supported = networksCollection.find(nc => chain === `eip155:${nc.chainId}`);
             if (supported) {
@@ -51,6 +52,16 @@ export const WalletConnectList = () => {
                 });
             }
         });
+        // Solana
+        if (session.namespaces.solana?.chains?.length) {
+            const supported = networksCollection.find(nc => nc.symbol === 'sol');
+            if (supported) {
+                networks.push({
+                    symbol: supported.symbol,
+                    name: supported.name,
+                });
+            }
+        }
 
         return networks;
     };
