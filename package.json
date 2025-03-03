@@ -53,6 +53,7 @@
         "nx:format": "yarn nx format:check",
         "_______ Commands _______": "Useful commands and scripts.",
         "patch": "yarn patch-package",
+        "convert-figma-palette": "yarn tsx ./scripts/convertFigmaPalette.ts",
         "update-project-references": "yarn tsx ./scripts/updateProjectReferences.ts",
         "verify-project-references": "yarn update-project-references --test",
         "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
