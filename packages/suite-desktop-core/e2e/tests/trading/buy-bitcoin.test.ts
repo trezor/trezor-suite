@@ -43,7 +43,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
         });
 
         await test.step('Confirm trade and verifies confirmation summary', async () => {
-            await tradingPage.confirmTrade(formatAddress(receiveAddress));
+            await tradingPage.confirmTrade('Bitcoin #1', formatAddress(receiveAddress));
             await expect(tradingPage.confirmationAddress).toHaveText(receiveAddress);
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(secondOfferCryptoAmount);
@@ -57,7 +57,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
         await test.step('Request a trade', async () => {
             await tradingPage.setYouBuyAmount(fiatAmount);
             await tradingPage.buyBestOfferButton.click();
-            await tradingPage.confirmTrade();
+            await tradingPage.confirmTrade('Bitcoin #1', formatAddress(receiveAddress));
         });
 
         await page.clock.install();
@@ -86,6 +86,11 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(bestBuyCryptoAmount);
             await expect(tradingPage.confirmationProvider).toHaveText(bestBuyProvider);
+        });
+
+        await test.step('Return to account buy form', async () => {
+            await tradingPage.backToAccountButton.click();
+            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy#\/btc\/0\/normal$/);
         });
     });
 });

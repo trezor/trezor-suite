@@ -96,6 +96,7 @@ export class TradingPage {
     readonly quoteAmount: Locator;
     readonly refreshTime: Locator;
     readonly selectThisQuoteButton: Locator;
+    readonly backToAccountButton: Locator;
     // Confirmation modal
     readonly modal: Locator;
     readonly termsConfirmButton: Locator;
@@ -109,6 +110,9 @@ export class TradingPage {
     readonly confirmationAddress: Locator;
     readonly confirmationPaymentMethod: Locator;
     readonly confirmationPaymentId: Locator;
+    readonly confirmationExchangeType: Locator;
+    readonly confirmationTransactionId: Locator;
+    readonly copyTransactionIdButton: Locator;
     readonly finishTransactionButton: Locator;
     readonly confirmOnTrezorAndSend: Locator;
     // Swap
@@ -167,6 +171,7 @@ export class TradingPage {
         this.quoteAmount = this.page.getByTestId(quoteAmountLocator);
         this.refreshTime = this.page.getByTestId('@trading/refresh-time-text');
         this.selectThisQuoteButton = this.page.getByTestId('@trading/offers/get-this-deal-button');
+        this.backToAccountButton = this.page.getByRole('button', { name: 'Back to Account' });
         // Confirmation modal
         this.modal = this.page.getByTestId('@modal');
         this.termsConfirmButton = this.page.getByTestId(
@@ -186,6 +191,11 @@ export class TradingPage {
         this.confirmationAddress = this.page.getByTestId('@trading/form/verify/address');
         this.confirmationPaymentMethod = this.page.getByTestId('@trading/form/info/payment-method');
         this.confirmationPaymentId = this.page.getByTestId('@trading/form/verify/extra-id');
+        this.confirmationExchangeType = this.page.getByTestId('@trading/offer/info/exchange-type');
+        this.confirmationTransactionId = this.page.getByTestId('@trading/transaction-id');
+        this.copyTransactionIdButton = this.page
+            .getByTestId('@trading/form/info')
+            .getByRole('button', { name: 'Copy' });
         this.finishTransactionButton = this.page.getByTestId(
             '@trading/offer/continue-transaction-button',
         );
@@ -352,9 +362,10 @@ export class TradingPage {
     }
 
     @step()
-    async confirmTrade(addressToCheck?: string) {
+    async confirmTrade(accountName: string, addressToCheck?: string) {
         await this.termsConfirmButton.click();
         await this.confirmOnTrezorButton.click();
+        await expect(this.devicePrompt.headerParagraph).toHaveText(accountName);
         if (addressToCheck) {
             await expect(this.devicePrompt.outputValueOf('address')).toHaveText(addressToCheck);
         }

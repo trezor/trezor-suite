@@ -55,7 +55,7 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
         });
 
         await test.step('Confirm the trade', async () => {
-            await tradingPage.confirmTrade(formatAddress(receiveAddress));
+            await tradingPage.confirmTrade('Solana #1', formatAddress(receiveAddress));
             await expect(tradingPage.confirmationAccountDropdown).toContainText('Solana #1');
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
@@ -77,6 +77,11 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
             await expect(tradingPage.confirmationProvider).toHaveText(provider);
+        });
+
+        await test.step('Return to account buy form', async () => {
+            await tradingPage.backToAccountButton.click();
+            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy#\/sol\/0\/normal$/);
         });
     });
 });

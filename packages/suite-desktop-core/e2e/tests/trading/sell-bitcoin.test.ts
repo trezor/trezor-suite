@@ -8,6 +8,7 @@ import {
     sellTradeBTC,
     sellWatchBTC,
 } from '../../fixtures/invity';
+import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -19,6 +20,7 @@ const providerPaymentId = sellWatchBTC.destinationPaymentExtraId;
 const formattedCryptoAmount = `${cryptoAmount} BTC`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeBTC.trade;
+const formattedAddress = formatAddress(sellWatchBTC.destinationAddress);
 
 test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -72,7 +74,12 @@ test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () =>
 
         await test.step('Initiate send', async () => {
             await tradingPage.initiateSendConfirmation();
-            await expect(devicePrompt.cryptoAmountOf('amount')).toHaveText(formattedCryptoAmount);
+            await expect(devicePrompt.headerParagraph).toContainText('Bitcoin #1');
+            await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
+            await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+                formattedCryptoAmount,
+            );
+            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
         });
 
         // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto

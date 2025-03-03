@@ -18,6 +18,7 @@ const provider = getCompanyNameFromList(sellQuotesEthereumToken[0].exchange, 'se
 // const formattedCryptoAmount = `${cryptoAmount} ETH`;
 // const formattedFiatAmount = `€${fiatAmount}`;
 // const { paymentMethodName } = sellTradeEthereum.trade;
+// const formattedAddress = formatAddress(sellWatchEthereum.destinationAddress);
 
 test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -75,7 +76,12 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, 
 
         // await test.step('Initiate send', async () => {
         //     await tradingPage.confirmSend();
-        //     await expect(devicePrompt.cryptoAmountOf('amount')).toHaveText(formattedCryptoAmount);
+        //     await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
+        //     await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
+        //     await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+        //         formattedCryptoAmount,
+        //     );
+        //     await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
         // });
 
         // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto

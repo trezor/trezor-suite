@@ -38,7 +38,7 @@ export const TradingTransactionId = ({ transactionId }: TradingTransactionIdProp
 
     return (
         <Row alignItems="center" justifyContent="space-between" margin={{ top: spacings.sm }}>
-            <LabelWrapper>
+            <LabelWrapper data-testid="@trading/transaction-id">
                 <Translation id="TR_TRADING_TRANS_ID" /> {transactionId}
             </LabelWrapper>
             <ButtonWrapper>

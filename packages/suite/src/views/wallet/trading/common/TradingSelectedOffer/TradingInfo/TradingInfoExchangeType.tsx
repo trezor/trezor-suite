@@ -22,7 +22,7 @@ export const TradingInfoExchangeType = ({
 
     return (
         <Row justifyContent="center" flex="auto">
-            <Text variant="tertiary">
+            <Text data-testid="@trading/offer/info/exchange-type" variant="tertiary">
                 {provider?.isFixedRate && !exchangeQuote.isDex && (
                     <Tooltip content={<Translation id="TR_EXCHANGE_FIXED_OFFERS_INFO" />} hasIcon>
                         <Translation id="TR_EXCHANGE_FIXED" />

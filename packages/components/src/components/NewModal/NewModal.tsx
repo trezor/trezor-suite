@@ -121,12 +121,17 @@ const InnerNewModalBase = ({
 
                                 {(heading || description) && (
                                     <Column flex="1" overflow="hidden">
-                                        {heading && <H3 ellipsisLineCount={1}>{heading}</H3>}
+                                        {heading && (
+                                            <H3 data-testid="@modal/header" ellipsisLineCount={1}>
+                                                {heading}
+                                            </H3>
+                                        )}
                                         {description && (
                                             <Paragraph
                                                 variant="tertiary"
                                                 typographyStyle="hint"
                                                 ellipsisLineCount={2}
+                                                data-testid="@modal/header-paragraph"
                                             >
                                                 {description}
                                             </Paragraph>

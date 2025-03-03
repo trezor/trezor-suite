@@ -23,6 +23,7 @@ const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const formattedReceiveAmount = `${localizeNumber(swapQuotesSolanaBTC[1].receiveStringAmount)} BTC`;
 const { sendAddress, receiveAddress } = swapTradeSolanaBTC;
 const formattedSendAddress = formatAddress(sendAddress);
+const formattedReceiveAddress = formatAddress(receiveAddress);
 const toastText = `${formattedSendAmount} sent from Solana #1`;
 
 test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () => {
@@ -45,7 +46,7 @@ test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () 
             await settingsPage.coins.enableNetwork('sol');
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading();
+            await walletPage.openSwapTrading({ symbol: 'sol' });
         },
     );
 
@@ -64,7 +65,7 @@ test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () 
         await test.step('Confirm the Swap trade', async () => {
             await expect(tradingPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
             await tradingPage.clickSwapBestOfferAndWaitForFees();
-            await tradingPage.confirmTrade(formatAddress(receiveAddress));
+            await tradingPage.confirmTrade('Bitcoin #1', formattedReceiveAddress);
         });
 
         await test.step('Verify all confirmation values', async () => {
@@ -87,8 +88,12 @@ test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () 
 
         await test.step('Initiate send', async () => {
             await tradingPage.initiateSendConfirmation();
+            await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
-            await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(formattedSendAmount);
+            await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
+                formattedSendAmount,
+            );
+            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
         });
 
         // Thanks to our mocked responses, the crypto is actually not send.
@@ -96,8 +101,15 @@ test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () 
             await page.clock.install();
             await devicePrompt.sendButton.click();
             await expect(tradingPage.transactionDetailStatus).toHaveText('Pending');
-            await expect(page.getByRole('link', { name: 'Go to provider support' })).toBeVisible();
             await expect(page.getByTestId('@toast/tx-sent')).toContainText(toastText);
+        });
+
+        await test.step('Verify button opens provider support page in new tab', async () => {
+            const partnerPagePromise = page.context().waitForEvent('page');
+            await page.getByRole('link', { name: 'Go to provider support' }).click();
+            const partnerTab = await partnerPagePromise;
+            await expect(partnerTab).toHaveURL(/https:\/\/sideshift\.ai\/orders\//);
+            await partnerTab.close();
         });
 
         // Statuses: SENDING -> CONVERTING -> CONFIRMING -> SUCCESS
@@ -110,5 +122,16 @@ test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () 
                 await expect(tradingPage.transactionDetailStatus).toHaveText(displayedText);
             });
         }
+
+        await test.step('Verify all transaction values', async () => {
+            await expect(tradingPage.confirmationCryptoAmount.first()).toHaveText(
+                formattedSendAmount,
+            );
+            await expect(tradingPage.confirmationCryptoAmount.last()).toHaveText(
+                formattedReceiveAmount,
+            );
+            await expect(tradingPage.confirmationExchangeType).toHaveText('Fixed-rate offer');
+            await expect(tradingPage.confirmationProvider).toHaveText(provider);
+        });
     });
 });

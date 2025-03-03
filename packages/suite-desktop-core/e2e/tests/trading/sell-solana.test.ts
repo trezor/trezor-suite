@@ -8,6 +8,7 @@ import {
     sellTradeSolana,
     sellWatchSolana,
 } from '../../fixtures/invity';
+import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -18,10 +19,10 @@ const provider = getCompanyNameFromList(sellQuotesSolana[0].exchange, 'sellList'
 // So if me make mistake in updating the test case, and actually send crypto.
 // It will be sent to this address and we will not lose it.
 const providerAddress = sellWatchSolana.destinationAddress;
-const providerPaymentId = sellWatchSolana.destinationPaymentExtraId;
 const formattedCryptoAmount = `${cryptoAmount} SOL`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeSolana.trade;
+const formattedAddress = formatAddress(sellWatchSolana.destinationAddress);
 const toastText = `${formattedCryptoAmount} sent from Solana #1`;
 
 test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, () => {
@@ -82,12 +83,16 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
             await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
             await expect(tradingPage.confirmationAddress).toHaveText(providerAddress);
             await expect(tradingPage.confirmationAccount).toHaveText('Solana #1');
-            await expect(tradingPage.confirmationPaymentId).toHaveText(providerPaymentId);
         });
 
         await test.step('Initiate send', async () => {
             await tradingPage.initiateSendConfirmation();
-            await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(formattedCryptoAmount);
+            await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
+            await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedAddress);
+            await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
+                formattedCryptoAmount,
+            );
+            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
         });
 
         // Thanks to our mocked responses, the crypto is actually not send.
@@ -107,6 +112,14 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
             });
             await page.clock.fastForward(tradingMock.watchPeriod);
             await expect(tradingPage.transactionDetailStatus).toHaveText('Trade success');
+            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmationProvider).toHaveText(provider);
+        });
+
+        await test.step('Return to account sell form', async () => {
+            await tradingPage.backToAccountButton.click();
+            await expect(page).toHaveURL(/\/accounts\/coinmarket\/sell#\/sol\/0\/normal$/);
         });
     });
 });

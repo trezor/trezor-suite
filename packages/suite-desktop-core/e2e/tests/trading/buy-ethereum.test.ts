@@ -58,8 +58,16 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
             await expect(tradingPage.confirmationAddress).toHaveValue(receiveAddress);
         });
 
+        await test.step('Check both Ethereum account are options on Confirmation screen', async () => {
+            await tradingPage.confirmationAccountDropdown.click();
+            await expect(page.getByRole('option', { name: 'Ethereum #1 ' })).toBeVisible();
+            await expect(page.getByRole('option', { name: 'Ethereum #2 ' })).toBeVisible();
+            await tradingPage.confirmationAccountDropdown.click();
+        });
+
         await test.step('Confirm Trade', async () => {
             await tradingPage.confirmOnTrezorButton.click();
+            await expect(devicePrompt.headerParagraph).toHaveText('Ethereum #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(
                 formatAddress(receiveAddress),
             );
@@ -73,17 +81,22 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
                 capitalizeFirstLetter(provider),
             );
             await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
-            //TODO: #16766 Uncomment once the issue with the trade confirmation dialog is fixed
-            //     await tradingPage.confirmTradeButton.click();
-            // });
+            await tradingPage.finishTransactionButton.click();
+        });
 
-            // await tradingPage.waitForRedirectCompletion();
+        await tradingPage.waitForRedirectCompletion();
 
-            // await test.step('Verify transaction detail', async () => {
-            //     await expect(tradingPage.transactionDetailStatus).toHaveText('Approved');
-            //     await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
-            //     await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
-            //     await expect(tradingPage.confirmationProvider).toHaveText(provider);
+        await test.step('Verify transaction detail', async () => {
+            await expect(tradingPage.transactionDetailStatus).toHaveText('Approved');
+            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
+            await expect(tradingPage.confirmationProvider).toHaveText(provider);
+        });
+
+        await test.step('Return to account buy form', async () => {
+            await tradingPage.backToAccountButton.click();
+            // To be confirmed if the navigation should be to BTC where flow started or to ETH which was bought
+            await expect(page).toHaveURL(/\/accounts\/coinmarket\/buy#\/btc\/0\/normal$/);
         });
     });
 });
