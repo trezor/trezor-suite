@@ -90,7 +90,7 @@ export const FirmwareInstallation = ({
                 nested={!!standaloneFwUpdate}
                 disableConfirmWrapper={!!standaloneFwUpdate}
             >
-                <FirmwareOffer customFirmware={customFirmware} targetFirmwareType={targetType} />
+                <FirmwareOffer isCustomFirmware={customFirmware} targetFirmwareType={targetType} />
                 <FirmwareProgressBar />
             </OnboardingStepBox>
         </>

@@ -1,20 +1,19 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { isAddressValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import { Button, Input } from '@trezor/components';
+import { Input, NewModal } from '@trezor/components';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { addToken } from 'src/actions/wallet/tokenActions';
-import { Modal } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { Account } from 'src/types/wallet';
 
-interface AddTokenModalProps {
+type AddTokenModalProps = {
     onCancel: () => void;
-}
+};
 
 export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const [contractAddress, setContractAddress] = useState<string>('');
@@ -112,18 +111,17 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     };
 
     return (
-        <Modal
-            isCancelable
+        <NewModal
             onCancel={onCancel}
             heading={<Translation id="TR_ADD_TOKEN_TITLE" />}
-            bottomBarComponents={
-                <Button
+            bottomContent={
+                <NewModal.Button
                     onClick={handleAddTokenButtonClick}
                     isDisabled={!tokenInfo || !!error}
                     isLoading={isFetching}
                 >
                     <Translation id="TR_ADD_TOKEN_SUBMIT" />
-                </Button>
+                </NewModal.Button>
             }
         >
             <Input
@@ -133,6 +131,6 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 inputState={getInputState()}
                 onChange={onChange}
             />
-        </Modal>
+        </NewModal>
     );
 };

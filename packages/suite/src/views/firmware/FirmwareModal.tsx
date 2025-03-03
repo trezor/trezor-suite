@@ -1,46 +1,29 @@
-import { ReactElement } from 'react';
+import { ReactNode, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import styled from 'styled-components';
-
 import { useFirmwareInstallation } from '@suite-common/firmware';
-import { TranslationKey } from '@suite-common/intl-types';
-import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';
-import { variables } from '@trezor/components';
+import {
+    acquireDevice,
+    selectDevices,
+    selectIsDeviceBackedUp,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
+import { H3, NewModal, Paragraph, Tooltip } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
-import { closeModalApp } from 'src/actions/suite/routerActions';
-import { CheckSeedStep, FirmwareCloseButton, FirmwareInstallation } from 'src/components/firmware';
-import { OnboardingStepBox } from 'src/components/onboarding';
-import { Modal, PrerequisitesGuide, Translation } from 'src/components/suite';
+import { updateAnalytics } from 'src/actions/onboarding/onboardingActions';
+import { closeModalApp, goto } from 'src/actions/suite/routerActions';
+import { CheckSeedStep, FirmwareInstallationStandalone } from 'src/components/firmware';
+import { PrerequisitesGuide, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
 
-const Wrapper = styled.div<{ $isWithTopPadding: boolean }>`
-    display: flex;
-    width: 100%;
-    height: 100%;
-    flex-direction: column;
-    align-items: center;
-    text-align: left;
-    position: relative;
-
-    ${variables.SCREEN_QUERY.ABOVE_TABLET} {
-        padding-top: ${({ $isWithTopPadding }) => $isWithTopPadding && '44px'};
-    }
-`;
-
-const StyledModal = styled(Modal)`
-    width: 620px;
-    min-height: 540px;
-`;
-
 type FirmwareModalProps = {
-    children: ReactElement;
-    heading: TranslationKey;
+    children: ReactNode;
+    heading: ReactNode;
     install: () => void;
-    isCustom?: boolean;
+    isCustomFirmwareUploaded?: boolean;
     shouldSwitchFirmwareType?: boolean;
 };
 
@@ -48,12 +31,13 @@ export const FirmwareModal = ({
     children,
     heading,
     install,
-    isCustom,
+    isCustomFirmwareUploaded,
     shouldSwitchFirmwareType,
 }: FirmwareModalProps) => {
     const {
         resetReducer,
         status,
+        setStatus,
         deviceWillBeWiped,
         error,
         uiEvent,
@@ -61,10 +45,17 @@ export const FirmwareModal = ({
         showConfirmationPill,
     } = useFirmwareInstallation({ shouldSwitchFirmwareType });
     const device = useSelector(selectSelectedDevice);
+    const devices = useSelector(selectDevices);
+    const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
     const dispatch = useDispatch();
     const intl = useIntl();
+    const [isChecked, setIsChecked] = useState(false);
 
+    const isCustomFirmware = typeof isCustomFirmwareUploaded !== 'undefined';
     const deviceModelInternal = uiEvent?.payload.device.features?.internal_model;
+    const devicesConnected = devices.filter(device => device?.connected);
+    const multipleDevicesConnected = [...new Set(devicesConnected.map(d => d.path))].length > 1;
+    const shouldCheckSeed = device?.mode !== 'initialize';
     const isCancelable = ['initial', 'check-seed', 'done', 'error'].includes(status);
     const isAwaitingPinEntry =
         uiEvent?.type === 'button' && uiEvent.payload.code === 'ButtonRequest_PinEntry';
@@ -78,7 +69,12 @@ export const FirmwareModal = ({
     };
     const handlePinCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
 
-    const getComponent = (): ReactElement => {
+    const handleInstall = () => {
+        install();
+        updateAnalytics({ firmware: 'install' });
+    };
+
+    const getContent = () => {
         if (
             (!device?.connected || !device?.features) &&
             ['initial', 'check-seed'].includes(status)
@@ -89,15 +85,14 @@ export const FirmwareModal = ({
         switch (status) {
             case 'error':
                 return (
-                    <OnboardingStepBox
-                        image="FIRMWARE"
-                        heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
-                        description={
+                    <>
+                        <H3>
+                            <Translation id="TR_FW_INSTALLATION_FAILED" />
+                        </H3>
+                        <Paragraph>
                             <Translation id="TOAST_GENERIC_ERROR" values={{ error: error || '' }} />
-                        }
-                        innerActions={<FirmwareCloseButton onClick={handleClose} />}
-                        nested
-                    />
+                        </Paragraph>
+                    </>
                 );
             case 'initial':
                 return children;
@@ -105,43 +100,117 @@ export const FirmwareModal = ({
                 return (
                     <CheckSeedStep
                         deviceWillBeWiped={deviceWillBeWiped}
-                        onSuccess={install}
-                        onClose={handleClose}
+                        setIsChecked={setIsChecked}
+                        isChecked={isChecked}
                     />
                 );
             case 'started':
             case 'done':
                 return (
-                    <FirmwareInstallation
-                        standaloneFwUpdate
+                    <FirmwareInstallationStandalone
                         install={install}
-                        onSuccess={handleClose}
                         onPromptClose={handleClose}
-                        customFirmware={isCustom}
+                        isCustomFirmware={isCustomFirmware}
                     />
                 );
         }
     };
 
+    const getBottomContent = () => {
+        switch (status) {
+            case 'error':
+                return (
+                    <NewModal.Button variant="tertiary" onClick={handleClose}>
+                        <Translation id="TR_CLOSE" />
+                    </NewModal.Button>
+                );
+            case 'initial':
+                return (
+                    <>
+                        <Tooltip
+                            content={<Translation id="TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES" />}
+                            isActive={multipleDevicesConnected}
+                        >
+                            <NewModal.Button
+                                onClick={() =>
+                                    shouldCheckSeed ? setStatus('check-seed') : handleInstall()
+                                }
+                                data-testid="@firmware/install-button"
+                                isDisabled={
+                                    isCustomFirmware
+                                        ? !isCustomFirmwareUploaded
+                                        : multipleDevicesConnected
+                                }
+                            >
+                                <Translation id={shouldCheckSeed ? 'TR_CONTINUE' : 'TR_INSTALL'} />
+                            </NewModal.Button>
+                        </Tooltip>
+                        <NewModal.Button variant="tertiary" onClick={handleClose}>
+                            <Translation id="TR_CANCEL" />
+                        </NewModal.Button>
+                    </>
+                );
+            case 'check-seed':
+                return (
+                    <>
+                        <NewModal.Button
+                            onClick={install}
+                            data-testid="@firmware/confirm-seed-button"
+                            isDisabled={!device?.connected || !isChecked}
+                            variant={deviceWillBeWiped ? 'destructive' : 'primary'}
+                        >
+                            <Translation
+                                id={deviceWillBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_INSTALL'}
+                            />
+                        </NewModal.Button>
+                        <NewModal.Button
+                            variant="tertiary"
+                            onClick={() => {
+                                resetReducer();
+                                dispatch(
+                                    goto(isDeviceBackedUp ? 'recovery-index' : 'backup-index'),
+                                );
+                            }}
+                        >
+                            <Translation
+                                id={isDeviceBackedUp ? 'TR_CHECK_SEED' : 'TR_CREATE_BACKUP'}
+                            />
+                        </NewModal.Button>
+                    </>
+                );
+            case 'done':
+                return (
+                    <NewModal.Button onClick={handleClose} data-testid="@firmware/continue-button">
+                        <Translation id="TR_CLOSE" />
+                    </NewModal.Button>
+                );
+            default:
+                return null;
+        }
+    };
+
     return (
-        <StyledModal
-            isCancelable={isCancelable}
-            modalPrompt={
-                showConfirmationPill && (
-                    <ConfirmOnDevice
-                        title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        deviceModelInternal={deviceModelInternal}
-                        deviceUnitColor={uiEvent?.payload.device.features?.unit_color}
-                        isConfirmed={!confirmOnDevice}
-                        onCancel={isAwaitingPinEntry ? handlePinCancel : undefined}
-                    />
-                )
-            }
-            onCancel={handleClose}
-            data-testid="@firmware-modal"
-            heading={<Translation id={heading} />}
-        >
-            <Wrapper $isWithTopPadding={!isCancelable}>{getComponent()}</Wrapper>
-        </StyledModal>
+        <NewModal.Backdrop onClick={isCancelable ? handleClose : undefined}>
+            {showConfirmationPill && (
+                <ConfirmOnDevice
+                    title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                    deviceModelInternal={deviceModelInternal}
+                    deviceUnitColor={uiEvent?.payload.device.features?.unit_color}
+                    isConfirmed={!confirmOnDevice}
+                    onCancel={isAwaitingPinEntry ? handlePinCancel : undefined}
+                />
+            )}
+            <NewModal.ModalBase
+                onCancel={isCancelable ? handleClose : undefined}
+                data-testid="@firmware-modal"
+                heading={status === 'error' ? undefined : heading}
+                bottomContent={getBottomContent()}
+                size="small"
+                iconName={status === 'error' ? 'warning' : undefined}
+                variant={status === 'error' ? 'destructive' : undefined}
+            >
+                {getContent()}
+            </NewModal.ModalBase>
+        </NewModal.Backdrop>
     );
 };

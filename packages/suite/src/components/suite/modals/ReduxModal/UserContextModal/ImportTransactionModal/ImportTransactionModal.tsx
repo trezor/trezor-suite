@@ -2,13 +2,13 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { parseCSV } from '@suite-common/wallet-utils';
 
 import { Modal, Translation } from 'src/components/suite';
 import { DropZone } from 'src/components/suite/DropZone';
-import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
 import { DelimiterForm } from './DelimiterForm';
 import { ExampleCSV } from './ExampleCSV';
@@ -72,7 +72,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
             <TabSelection selectedTab={mode} setSelectedTab={setMode} />
             {mode === 'form' && <InputCSV onSubmit={onCsvResult} />}
             {mode === 'upload' && (
-                <DropZone accept=".csv,.txt,text/csv" icon="csv" onSelect={onCsvSelect} />
+                <DropZone accept=".csv,.txt,text/csv" iconName="csv" onSelect={onCsvSelect} />
             )}
             <DelimiterForm value={delimiter} onChange={setDelimiter} />
         </StyledModal>

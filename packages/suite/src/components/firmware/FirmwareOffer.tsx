@@ -1,64 +1,24 @@
-import styled from 'styled-components';
-
 import { useFirmwareInstallation } from '@suite-common/firmware';
 import {
     getChangelogUrl,
     getFwUpdateVersion,
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
-import { Icon, Markdown, Tooltip, variables } from '@trezor/components';
+import { Column, H4, Icon, Markdown, Row, Text, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
-const FwVersionWrapper = styled.div`
-    display: flex;
-    width: 100%;
-    max-width: 364px;
-    justify-content: space-between;
-    align-items: center;
-    padding: ${spacingsPx.md} 0;
-`;
-
-const FwVersion = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    text-align: center;
-
-    &:only-child {
-        margin: 0 auto;
-    }
-`;
-
-const Version = styled.div<{ $isNew?: boolean }>`
-    color: ${({ $isNew, theme }) => ($isNew ? theme.backgroundPrimaryDefault : theme.textSubdued)};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-variant-numeric: tabular-nums;
-    margin-top: ${spacingsPx.xs};
-`;
-
-const Label = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
-const StyledLink = styled(TrezorLink)`
-    margin-left: auto;
-    text-decoration: underline;
-
-    path {
-        fill: ${({ theme }) => theme.iconSubdued};
-    }
-`;
-
-interface FirmwareOfferProps {
-    customFirmware?: boolean;
+type FirmwareOfferProps = {
+    isCustomFirmware?: boolean;
     targetFirmwareType?: FirmwareType;
-}
+};
 
-export const FirmwareOffer = ({ customFirmware, targetFirmwareType }: FirmwareOfferProps) => {
+export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: FirmwareOfferProps) => {
     const useDevkit = useSelector(state => state.firmware.useDevkit);
     const { originalDevice } = useFirmwareInstallation();
     const { translationString } = useTranslation();
@@ -68,13 +28,13 @@ export const FirmwareOffer = ({ customFirmware, targetFirmwareType }: FirmwareOf
     }
 
     const currentVersion = getFirmwareVersion(originalDevice);
-    const nextVersion = customFirmware
+    const nextVersion = isCustomFirmware
         ? translationString('TR_CUSTOM_FIRMWARE_VERSION')
         : getFwUpdateVersion(originalDevice);
 
     const isBtcOnly = targetFirmwareType === FirmwareType.BitcoinOnly;
 
-    const parsedChangelog = customFirmware
+    const parsedChangelog = isCustomFirmware
         ? null
         : parseFirmwareChangelog({ release: originalDevice.firmwareRelease.release, isBtcOnly });
     const changelogUrl = getChangelogUrl(originalDevice);
@@ -82,63 +42,70 @@ export const FirmwareOffer = ({ customFirmware, targetFirmwareType }: FirmwareOf
     const currentFirmwareType = getSuiteFirmwareTypeString(originalDevice.firmwareType);
     const futureFirmwareType = getSuiteFirmwareTypeString(targetFirmwareType);
 
-    const nextVersionElement = (
-        <Version $isNew data-testid="@firmware/offer-version/new">
-            {futureFirmwareType ? translationString(futureFirmwareType) : ''}
-            {nextVersion ? ` ${nextVersion}` : ''}
-            {!customFirmware && useDevkit ? ' DEVKIT' : ''}
-        </Version>
-    );
-
     return (
-        <FwVersionWrapper>
+        <Row
+            justifyContent={currentVersion ? 'space-between' : 'center'}
+            maxWidth={360}
+            width="100%"
+            margin={{ vertical: spacings.md, horizontal: 'auto' }}
+        >
             {currentVersion && (
                 <>
-                    <FwVersion>
-                        <Label>
+                    <Column alignItems="center" gap={spacings.xxs}>
+                        <Text typographyStyle="label" variant="tertiary">
                             <Translation id="TR_ONBOARDING_CURRENT_VERSION" />
-                        </Label>
-                        <Version>
+                        </Text>
+                        <Text typographyStyle="hint">
                             {currentFirmwareType ? translationString(currentFirmwareType) : ''}
                             {currentVersion ? ` ${currentVersion}` : ''}
-                        </Version>
-                    </FwVersion>
+                        </Text>
+                    </Column>
                     <Icon name="arrowRight" size={16} />
                 </>
             )}
-            <FwVersion>
-                <Label>
+            <Column alignItems="center" gap={spacings.xxs}>
+                <Text typographyStyle="label" variant="tertiary">
                     <Translation id="TR_ONBOARDING_NEW_VERSION" />
-                </Label>
-                {parsedChangelog ? (
-                    <Tooltip
-                        dashed
-                        isLarge
-                        title={
-                            <>
-                                <Translation
-                                    id="TR_VERSION"
-                                    values={{ version: parsedChangelog.versionString }}
-                                />
-
-                                <StyledLink
+                </Text>
+                <Tooltip
+                    hasIcon
+                    title={
+                        parsedChangelog ? (
+                            <Row justifyContent="space-between" width="100%">
+                                <H4>
+                                    <Translation
+                                        id="TR_VERSION"
+                                        values={{ version: parsedChangelog.versionString }}
+                                    />
+                                </H4>
+                                <TrezorLink
                                     typographyStyle="hint"
-                                    variant="nostyle"
                                     icon="arrowUpRight"
                                     href={changelogUrl}
                                 >
                                     <Translation id="TR_VIEW_ALL" />
-                                </StyledLink>
-                            </>
-                        }
-                        content={<Markdown>{parsedChangelog.changelog}</Markdown>}
+                                </TrezorLink>
+                            </Row>
+                        ) : undefined
+                    }
+                    content={
+                        parsedChangelog ? (
+                            <Markdown>{parsedChangelog.changelog}</Markdown>
+                        ) : undefined
+                    }
+                    isActive={!!parsedChangelog}
+                >
+                    <Text
+                        typographyStyle="hint"
+                        data-testid="@firmware/offer-version/new"
+                        variant="primary"
                     >
-                        {nextVersionElement}
-                    </Tooltip>
-                ) : (
-                    nextVersionElement
-                )}
-            </FwVersion>
-        </FwVersionWrapper>
+                        {futureFirmwareType ? translationString(futureFirmwareType) : ''}
+                        {nextVersion ? ` ${nextVersion}` : ''}
+                        {!isCustomFirmware && useDevkit ? ' DEVKIT' : ''}
+                    </Text>
+                </Tooltip>
+            </Column>
+        </Row>
     );
 };

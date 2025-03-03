@@ -1,46 +1,19 @@
 import { Dispatch, SetStateAction } from 'react';
 
-import styled from 'styled-components';
-
-import { Button } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { BulletList, Button } from '@trezor/components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { DropZone } from 'src/components/suite/DropZone';
-import { InstructionStep } from 'src/components/suite/InstructionStep';
 import { useDevice } from 'src/hooks/suite';
-import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import { validateFirmware } from 'src/utils/firmware';
 
-const Container = styled.div`
-    width: 100%;
-`;
-
-const StyledLink = styled(TrezorLink)`
-    margin-left: ${spacingsPx.xxs};
-`;
-
-const StyledDropZone = styled(DropZone)`
-    min-height: 120px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const InstallButton = styled(Button)`
-    margin: ${spacingsPx.xxl} auto 0;
-`;
-
 type SelectCustomFirmwareProps = {
-    isUploaded: boolean;
-    install: () => void;
     setFirmwareBinary: Dispatch<SetStateAction<ArrayBuffer | undefined>>;
 };
 
-export const SelectCustomFirmware = ({
-    install,
-    isUploaded,
-    setFirmwareBinary,
-}: SelectCustomFirmwareProps) => {
+export const SelectCustomFirmware = ({ setFirmwareBinary }: SelectCustomFirmwareProps) => {
     const { device } = useDevice();
 
     const deviceModel = device?.features?.internal_model;
@@ -54,6 +27,7 @@ export const SelectCustomFirmware = ({
     ) => {
         const fw = await firmware.arrayBuffer();
         const validationError = validateFirmware(fw, device);
+
         if (validationError) {
             setError({ id: validationError });
         } else {
@@ -62,13 +36,10 @@ export const SelectCustomFirmware = ({
     };
 
     return (
-        <Container>
-            <InstructionStep
-                number="1"
-                title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD" />}
-            >
-                <Translation id="TR_CUSTOM_FIRMWARE_GITHUB" />
-                <StyledLink variant="nostyle" href={githubUrl}>
+        <BulletList isOrdered>
+            <BulletList.Item title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD" />}>
+                <Translation id="TR_CUSTOM_FIRMWARE_GITHUB" />{' '}
+                <TrezorLink variant="nostyle" href={githubUrl}>
                     <Button
                         size="tiny"
                         variant="tertiary"
@@ -77,26 +48,15 @@ export const SelectCustomFirmware = ({
                     >
                         github.com
                     </Button>
-                </StyledLink>
-            </InstructionStep>
-
-            <InstructionStep
-                number="2"
-                title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_UPLOAD" />}
-            >
-                <span data-testid="@firmware-modal/input-area">
-                    <StyledDropZone accept=".bin" icon="binary" onSelect={onFirmwareUpload} />
-                </span>
-            </InstructionStep>
-
-            <InstallButton
-                data-testid="@firmware-modal/install-button"
-                variant="primary"
-                isDisabled={!isUploaded}
-                onClick={install}
-            >
-                <Translation id="TR_CUSTOM_FIRMWARE_BUTTON_INSTALL" />
-            </InstallButton>
-        </Container>
+                </TrezorLink>
+            </BulletList.Item>
+            <BulletList.Item title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_UPLOAD" />}>
+                <DropZone
+                    data-testid="@firmware/input-area"
+                    accept=".bin"
+                    onSelect={onFirmwareUpload}
+                />
+            </BulletList.Item>
+        </BulletList>
     );
 };

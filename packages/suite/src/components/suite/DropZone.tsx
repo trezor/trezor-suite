@@ -2,23 +2,20 @@ import { ChangeEvent, DragEvent, MouseEvent, useCallback, useMemo, useRef, useSt
 
 import styled from 'styled-components';
 
-import { Icon, IconName, Paragraph } from '@trezor/components';
-import { borders, spacings } from '@trezor/theme';
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { Column, Icon, IconName, Paragraph, Row, useElevation } from '@trezor/components';
+import { Elevation, borders, mapElevationToBorder, spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import type { ExtendedMessageDescriptor } from 'src/types/suite';
 
-interface DropZoneProps {
-    // 'accept' attribute for underlying HTML file input
+type DropZoneProps = {
     accept?: string;
-    // icon displayed inside Dropzone
-    icon?: IconName;
-    // function which is called after the file is selected
+    iconName?: IconName;
     onSelect: (data: File, setError: (msg: ExtendedMessageDescriptor) => void) => void;
-    className?: string;
-}
+    'data-testid'?: string;
+};
 
-export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
+export const useDropZone = ({ accept, onSelect }: DropZoneProps) => {
     const available = useRef(window.File && window.FileReader && window.FileList && window.Blob);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -115,9 +112,8 @@ export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
             onDragLeave,
             onDrop,
             ref: wrapperRef,
-            className,
         }),
-        [onClick, prevent, onDrop, className, onDragEnter, onDragLeave],
+        [onClick, prevent, onDrop, onDragEnter, onDragLeave],
     );
 
     const getInputProps = useMemo(
@@ -143,21 +139,15 @@ export const useDropZone = ({ accept, onSelect, className }: DropZoneProps) => {
     };
 };
 
-const Wrapper = styled.div`
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: 2px dashed ${({ theme }) => theme.legacy.STROKE_GREY};
+const Wrapper = styled.div<{ $elevation: Elevation }>`
+    border: ${borders.widths.large} dashed ${mapElevationToBorder};
     border-radius: ${borders.radii.xs};
     cursor: pointer;
-    min-height: 250px;
     transition: background-color 0.3s;
 
     &:hover,
     &.dragging {
-        background: ${({ theme }) => theme.legacy.BG_GREY};
+        background: ${mapElevationToBorder};
     }
 
     * {
@@ -169,26 +159,35 @@ const StyledInput = styled.input`
     display: none;
 `;
 
-const Label = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-export const DropZone = (props: DropZoneProps) => {
-    const { getWrapperProps, getInputProps, error, filename } = useDropZone(props);
+export const DropZone = ({
+    accept,
+    iconName = 'binary',
+    onSelect,
+    'data-testid': dataTestId,
+}: DropZoneProps) => {
+    const { getWrapperProps, getInputProps, error, filename } = useDropZone({ accept, onSelect });
+    const { elevation } = useElevation();
 
     return (
-        <Wrapper {...getWrapperProps()}>
-            <StyledInput {...getInputProps()} />
-            <Label>
-                <Icon name={props.icon || 'binary'} margin={{ right: spacings.xs }} />
-                {filename || <Translation id="TR_DROPZONE" />}
-            </Label>
-            {error && (
-                <Paragraph>
-                    <Translation {...error} />
-                </Paragraph>
-            )}
+        <Wrapper {...getWrapperProps()} $elevation={elevation} data-testid={dataTestId}>
+            <Column
+                padding={spacings.lg}
+                minHeight={150}
+                justifyContent="center"
+                alignItems="center"
+                gap={spacings.xs}
+            >
+                <StyledInput {...getInputProps()} />
+                <Row gap={spacings.xs}>
+                    <Icon name={iconName} />
+                    {filename || <Translation id="TR_DROPZONE" />}
+                </Row>
+                {error && (
+                    <Paragraph>
+                        <Translation {...error} />
+                    </Paragraph>
+                )}
+            </Column>
         </Wrapper>
     );
 };

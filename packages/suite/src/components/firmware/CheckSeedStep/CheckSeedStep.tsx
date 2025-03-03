@@ -1,71 +1,53 @@
-import { useState } from 'react';
-
-import styled from 'styled-components';
-
 import { selectIsDeviceBackedUp, selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { Button, Checkbox, Column, variables } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { Banner, Card, Checkbox, Column, H4, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
-import { useDevice, useSelector } from 'src/hooks/suite';
-
-import { FirmwareButtonsRow } from '../Buttons/FirmwareButtonsRow';
-import { FirmwareSwitchWarning } from '../FirmwareSwitchWarning';
-import { FirmwareInstallationBackupButton } from './FirmwareInstallationBackupButton';
-
-const StyledSwitchWarning = styled(FirmwareSwitchWarning)`
-    align-self: flex-start;
-    border-bottom: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin: ${spacingsPx.xs} ${spacingsPx.md};
-    padding-bottom: ${spacingsPx.md};
-    text-transform: uppercase;
-`;
+import { useSelector } from 'src/hooks/suite';
 
 type CheckSeedStepProps = {
     deviceWillBeWiped: boolean;
-    onClose?: () => void;
-    onSuccess: () => void;
+    setIsChecked: (isChecked: boolean) => void;
+    isChecked: boolean;
 };
 
-export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSeedStepProps) => {
+export const CheckSeedStep = ({
+    deviceWillBeWiped,
+    setIsChecked,
+    isChecked,
+}: CheckSeedStepProps) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
-    const { device } = useDevice();
-    const [isChecked, setIsChecked] = useState(false);
 
-    const handleCheckboxClick = () => setIsChecked(prev => !prev);
     const getContent = () => {
-        const noBackupHeading = (
-            <Translation id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP" values={{ deviceLabel }} />
-        );
-
         if (deviceWillBeWiped) {
             return {
                 heading: isDeviceBackedUp ? (
                     <Translation id="TR_CONTINUE_ONLY_WITH_SEED" />
                 ) : (
-                    noBackupHeading
+                    <Translation id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP" values={{ deviceLabel }} />
                 ),
                 description: (
-                    <Column gap={spacings.md}>
-                        <Translation
-                            id={
-                                isDeviceBackedUp
-                                    ? 'TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION'
-                                    : 'TR_SWITCH_FIRMWARE_NO_BACKUP'
-                            }
-                        />
-                        <Translation
-                            id={
-                                isDeviceBackedUp
-                                    ? 'TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION_2'
-                                    : 'TR_SWITCH_FIRMWARE_NO_BACKUP_2'
-                            }
-                        />
-                    </Column>
+                    <>
+                        <Paragraph variant="tertiary">
+                            <Translation
+                                id={
+                                    isDeviceBackedUp
+                                        ? 'TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION'
+                                        : 'TR_SWITCH_FIRMWARE_NO_BACKUP'
+                                }
+                            />
+                        </Paragraph>
+                        <Paragraph variant="tertiary">
+                            <Translation
+                                id={
+                                    isDeviceBackedUp
+                                        ? 'TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION_2'
+                                        : 'TR_SWITCH_FIRMWARE_NO_BACKUP_2'
+                                }
+                            />
+                        </Paragraph>
+                    </>
                 ),
                 checkbox: <Translation id="TR_READ_AND_UNDERSTOOD" />,
             };
@@ -74,12 +56,22 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
         return isDeviceBackedUp
             ? {
                   heading: <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />,
-                  description: <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />,
+                  description: (
+                      <Paragraph variant="tertiary">
+                          <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />
+                      </Paragraph>
+                  ),
                   checkbox: <Translation id="FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC" />,
               }
             : {
-                  heading: noBackupHeading,
-                  description: <Translation id="TR_FIRMWARE_IS_POTENTIALLY_RISKY" />,
+                  heading: (
+                      <Translation id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP" values={{ deviceLabel }} />
+                  ),
+                  description: (
+                      <Paragraph variant="tertiary">
+                          <Translation id="TR_FIRMWARE_IS_POTENTIALLY_RISKY" />
+                      </Paragraph>
+                  ),
                   checkbox: <Translation id="FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC" />,
               };
     };
@@ -87,40 +79,25 @@ export const CheckSeedStep = ({ deviceWillBeWiped, onClose, onSuccess }: CheckSe
     const { heading, description, checkbox } = getContent();
 
     return (
-        <OnboardingStepBox
-            image="FIRMWARE"
-            heading={heading}
-            description={description}
-            innerActions={
-                <FirmwareButtonsRow withCancelButton={deviceWillBeWiped} onClose={onClose}>
-                    <Button
-                        onClick={onSuccess}
-                        data-testid="@firmware/confirm-seed-button"
-                        isDisabled={!device?.connected || !isChecked}
-                    >
-                        <Translation
-                            id={deviceWillBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_CONTINUE'}
-                        />
-                    </Button>
-                    <FirmwareInstallationBackupButton isBackedUp={isDeviceBackedUp} />
-                </FirmwareButtonsRow>
-            }
-            disableConfirmWrapper
-            nested
-        >
+        <Column gap={spacings.md}>
+            <Column gap={spacings.xs} margin={{ bottom: spacings.xs }}>
+                <H4>{heading}</H4>
+                {description}
+            </Column>
             {deviceWillBeWiped && (
-                <StyledSwitchWarning>
+                <Banner variant="destructive" icon="warning">
                     <Translation id="TR_FIRMWARE_SWITCH_WARNING_3" />
-                </StyledSwitchWarning>
+                </Banner>
             )}
-            <Checkbox
-                isChecked={isChecked}
-                onClick={handleCheckboxClick}
-                margin={{ top: spacings.md }}
-                data-testid="@firmware/confirm-seed-checkbox"
-            >
-                {checkbox}
-            </Checkbox>
-        </OnboardingStepBox>
+            <Card>
+                <Checkbox
+                    isChecked={isChecked}
+                    onClick={() => setIsChecked(!isChecked)}
+                    data-testid="@firmware/confirm-seed-checkbox"
+                >
+                    {checkbox}
+                </Checkbox>
+            </Card>
+        </Column>
     );
 };

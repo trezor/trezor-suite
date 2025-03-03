@@ -1,8 +1,8 @@
 import { useFirmwareInstallation } from '@suite-common/firmware';
+import { FirmwareType } from '@trezor/connect';
 
-import { closeModalApp } from 'src/actions/suite/routerActions';
-import { FirmwareInitial } from 'src/components/firmware';
-import { useDispatch } from 'src/hooks/suite';
+import { FirmwareInitialStandalone } from 'src/components/firmware';
+import { Translation } from 'src/components/suite';
 
 import { FirmwareModal } from './FirmwareModal';
 
@@ -14,15 +14,30 @@ export const FirmwareUpdate = ({ shouldSwitchFirmwareType }: FirmwareUpdateProps
     const { firmwareUpdate, targetFirmwareType } = useFirmwareInstallation({
         shouldSwitchFirmwareType,
     });
-    const dispatch = useDispatch();
 
-    const close = () => dispatch(closeModalApp());
     const installTargetFirmware = () =>
         firmwareUpdate({
             firmwareType: targetFirmwareType,
         });
 
-    const heading = shouldSwitchFirmwareType ? 'TR_SWITCH_FIRMWARE' : 'TR_INSTALL_FIRMWARE';
+    const heading = shouldSwitchFirmwareType ? (
+        <Translation
+            id="TR_SWITCH_FIRMWARE_TO"
+            values={{
+                firmwareType: (
+                    <Translation
+                        id={
+                            targetFirmwareType === FirmwareType.BitcoinOnly
+                                ? 'TR_FIRMWARE_TYPE_BITCOIN_ONLY'
+                                : 'TR_FIRMWARE_TYPE_REGULAR'
+                        }
+                    />
+                ),
+            }}
+        />
+    ) : (
+        <Translation id="TR_INSTALL_FIRMWARE" />
+    );
 
     return (
         <FirmwareModal
@@ -30,11 +45,7 @@ export const FirmwareUpdate = ({ shouldSwitchFirmwareType }: FirmwareUpdateProps
             heading={heading}
             install={installTargetFirmware}
         >
-            <FirmwareInitial
-                shouldSwitchFirmwareType={shouldSwitchFirmwareType}
-                standaloneFwUpdate
-                onClose={close}
-            />
+            <FirmwareInitialStandalone shouldSwitchFirmwareType={shouldSwitchFirmwareType} />
         </FirmwareModal>
     );
 };
