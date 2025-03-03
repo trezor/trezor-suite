@@ -1655,7 +1655,7 @@
   "TR_STAKE_ETH_REWARDS_EARN": "Vaše odměny také vydělávají. Nechte je stakovat a sledujte, jak vaše odměny za {networkDisplaySymbol} stoupají.",
   "TR_STAKE_ETH_REWARDS_EARN_APY": "Vaše odměny {networkDisplaySymbol} také vydělávají se sazbou APY. Stakujte své prostředky nebo přidejte další, abyste zvýšili své odměny.",
   "TR_STAKE_ETH_SEE_MONEY_DANCE": "Sledujte, jak se peníze sypou",
-  "TR_STAKE_ETH_WILL_BE_BLOCKED": "Během tohoto období bude vaše {networkDisplaySymbol} zablokováno a toto blokování nelze zrušit. <a>Zjistit více</a>",
+  "TR_STAKE_ETH_WILL_BE_BLOCKED": "Během tohoto období bude vaše {networkDisplaySymbol} zablokováno a toto blokování nelze zrušit.",
   "TR_STAKE_EVERSTAKE_MANAGES": "Everstake spravuje a chrání vaše stakované {networkDisplaySymbol} <t>pomocí svých smart kontraktů, infrastruktury a technologie.</t>",
   "TR_STAKE_EXPECTED_REWARDS": "Očekávané odměny za epochu (až {count, plural, one {# den} few {# dny} other {# dní}})",
   "TR_STAKE_INSTANT": "Okamžité",

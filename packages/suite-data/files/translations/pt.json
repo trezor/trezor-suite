@@ -4,7 +4,7 @@
   "AMOUNT_IS_BELOW_DUST": "O valor deve ser pelo menos {dust}",
   "AMOUNT_IS_LESS_THAN_RESERVE": "A conta receptora requer reserva mínima {reserve} XRP para ativar",
   "AMOUNT_IS_MORE_THAN_RESERVE": "O valor está acima da reserva inutilizável exigida ({reserve} XRP)",
-  "AMOUNT_IS_NOT_ENOUGH": "Não há fundos suficientes",
+  "AMOUNT_IS_NOT_ENOUGH": "Fundos insuficientes",
   "AMOUNT_IS_NOT_INTEGER": "O valor não é um número inteiro",
   "AMOUNT_IS_NOT_IN_RANGE_DECIMALS": "Máximo de {decimals} casas decimais permitido",
   "AMOUNT_IS_NOT_SET": "O valor não está definido",
