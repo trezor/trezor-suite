@@ -1,9 +1,8 @@
 import { MiddlewareAPI } from 'redux';
 
 import { INVITY_API_RELOAD_DATA_AFTER_MS, invityAPI } from '@suite-common/trading';
-import { UI } from '@trezor/connect';
 
-import { MODAL, ROUTER } from 'src/actions/suite/constants';
+import { ROUTER } from 'src/actions/suite/constants';
 import { TRADING_COMMON, TRADING_EXCHANGE, TRADING_SELL } from 'src/actions/wallet/constants';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
 import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
@@ -41,10 +40,9 @@ export const tradingMiddleware =
     (next: Dispatch) =>
     (action: Action): Action => {
         const state = api.getState();
-        const { isLoading, lastLoadedTimestamp } = state.wallet.trading;
+        const { isLoading, lastLoadedTimestamp, modalAccountKey } = state.wallet.trading;
         const { exchangeInfo } = state.wallet.trading.exchange;
         const { sellInfo } = state.wallet.trading.sell;
-        const { router, modal } = state;
         const isRouteChange = action.type === ROUTER.LOCATION_CHANGE;
 
         if (action.type === TRADING_COMMON.LOAD_DATA) {
@@ -115,32 +113,6 @@ export const tradingMiddleware =
             }
         }
 
-        const isTradingRoute = !!router.route?.name.includes('wallet-trading');
-        const isDeviceContext = modal.context === MODAL.CONTEXT_DEVICE;
-        const isUserContext = modal.context === MODAL.CONTEXT_USER;
-
-        const isCloseUiWindowEvent = action.type === UI.CLOSE_UI_WINDOW;
-        const isReceiveModal =
-            isCloseUiWindowEvent && isDeviceContext && modal.windowType === 'ButtonRequest_Address';
-
-        /*
-          isCloseEvent
-            - happens only one time when the whole flow of sending the transaction is closed
-            - isCloseUiWindowEvent can not be used, it is called multiple times during flow because of
-            changing context from CONTEXT_DEVICE (sign transaction) to CONTEXT_USER (summary)
-        */
-        const isCloseEvent = action.type === MODAL.CLOSE;
-        const isOtherFlow = isDeviceContext && modal.windowType === `ButtonRequest_Other`; // passphrase request, etc.
-        const isSigningFlow = isDeviceContext && modal.windowType === 'ButtonRequest_SignTx';
-        const isSummaryFlow = isUserContext && modal.payload.type === 'review-transaction';
-        const isSendModal = isCloseEvent && (isOtherFlow || isSigningFlow || isSummaryFlow);
-
-        // clear modal account on close button requests
-        // it is necessary to clear the state because it could affect the next modal state
-        if (isTradingRoute && (isReceiveModal || isSendModal)) {
-            api.dispatch(tradingCommonActions.setTradingModalAccountKey(undefined));
-        }
-
         next(action);
 
         // get the new state after the action has been processed
@@ -148,9 +120,15 @@ export const tradingMiddleware =
 
         if (isRouteChange) {
             const routeName = newState.router.route?.name;
+            const isTradingRoute = !!routeName?.includes('wallet-trading');
             const isBuy = routeName === 'wallet-trading-buy';
             const isSell = routeName === 'wallet-trading-sell';
             const isExchange = routeName === 'wallet-trading-exchange';
+
+            // it is necessary to clear the state because it could affect the other modal state
+            if (!isTradingRoute && modalAccountKey) {
+                api.dispatch(tradingCommonActions.setTradingModalAccountKey(undefined));
+            }
 
             if (isBuy) {
                 api.dispatch(tradingCommonActions.setActiveSection('buy'));

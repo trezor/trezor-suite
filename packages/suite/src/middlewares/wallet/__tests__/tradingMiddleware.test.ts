@@ -1,5 +1,4 @@
 import { invityAPI } from '@suite-common/trading';
-import { UI } from '@trezor/connect';
 
 import { MODAL, ROUTER } from 'src/actions/suite/constants';
 import { TRADING_COMMON } from 'src/actions/wallet/constants';
@@ -42,6 +41,18 @@ const TRADING_EXCHANGE_ROUTE = {
     url: '/accounts/coinmarket/exchange#/btc/0/normal',
 };
 
+const DEFAULT_ROUTE = {
+    loaded: false,
+    url: '/',
+    pathname: '/',
+    app: 'unknown',
+    route: undefined,
+    params: undefined,
+    settingsBackRoute: {
+        name: 'suite-index',
+    },
+} as RouterState;
+
 type TradingState = ReturnType<typeof tradingReducer>;
 type SelectedAccountState = ReturnType<typeof selectedAccountReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
@@ -54,7 +65,7 @@ interface Args {
     modal?: ModalState;
 }
 
-const getInitialState = ({ trading, selectedAccount }: Args = {}) => ({
+const getInitialState = ({ trading, selectedAccount, router }: Args = {}) => ({
     wallet: {
         trading:
             trading ||
@@ -85,20 +96,7 @@ const getInitialState = ({ trading, selectedAccount }: Args = {}) => ({
         } as any,
         { type: 'foo' } as any,
     ),
-    router: routerReducer(
-        {
-            loaded: false,
-            url: '/',
-            pathname: '/',
-            app: 'unknown',
-            route: undefined,
-            params: undefined,
-            settingsBackRoute: {
-                name: 'suite-index',
-            },
-        } as RouterState,
-        {} as Action,
-    ),
+    router: router ?? routerReducer(DEFAULT_ROUTE, {} as Action),
     modal: modalReducer({ context: MODAL.CONTEXT_NONE }, {} as Action),
 });
 
@@ -229,7 +227,7 @@ describe('tradingMiddleware', () => {
         expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(0);
     });
 
-    it('Test of cleaning modalAccountKey property after receive modal is closed', () => {
+    it('should clean modalAccountKey after leaving trading', () => {
         const store = initStore(
             getInitialState({
                 trading: {
@@ -237,61 +235,20 @@ describe('tradingMiddleware', () => {
                     modalAccountKey: accounts[0].key,
                     lastLoadedTimestamp: Date.now(),
                 },
+                router: routerReducer(TRADING_EXCHANGE_ROUTE as RouterState, {} as Action),
             }),
         );
 
-        // go to trading
+        // go away from trading
         store.dispatch({
             type: ROUTER.LOCATION_CHANGE,
-            payload: TRADING_EXCHANGE_ROUTE,
-        });
-
-        // open modal
-        store.dispatch({
-            type: UI.REQUEST_BUTTON,
             payload: {
-                context: MODAL.CONTEXT_DEVICE,
-                code: 'ButtonRequest_Address',
-            },
-        });
-
-        // close modal
-        store.dispatch({
-            type: UI.CLOSE_UI_WINDOW,
-        });
-
-        expect(store.getState().wallet.trading.modalAccountKey).toEqual(undefined);
-    });
-
-    it('Test of cleaning modalAccountKey property after send modal is closed', () => {
-        const store = initStore(
-            getInitialState({
-                trading: {
-                    ...initialState,
-                    modalAccountKey: accounts[0].key,
-                    lastLoadedTimestamp: Date.now(),
+                ...DEFAULT_ROUTE,
+                route: {
+                    ...DEFAULT_ROUTE.route,
+                    name: 'suite-start',
                 },
-            }),
-        );
-
-        // go to trading
-        store.dispatch({
-            type: ROUTER.LOCATION_CHANGE,
-            payload: TRADING_EXCHANGE_ROUTE,
-        });
-
-        // open modal
-        store.dispatch({
-            type: UI.REQUEST_BUTTON,
-            payload: {
-                context: MODAL.CONTEXT_DEVICE,
-                code: 'ButtonRequest_SignTx',
             },
-        });
-
-        // close modal
-        store.dispatch({
-            type: MODAL.CLOSE,
         });
 
         expect(store.getState().wallet.trading.modalAccountKey).toEqual(undefined);
@@ -302,6 +259,9 @@ describe('tradingMiddleware', () => {
             getInitialState({
                 trading: {
                     ...initialState,
+                },
+                router: {
+                    ...getInitialState().router,
                 },
             }),
         );
