@@ -11,6 +11,20 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.5.1-beta.1
+
+## Feature
+
+-   added backends so that each EVM has 4 endpoints (f5c057c)
+-   logic for rent fee calculation (2650f6b)
+
+## Fixes
+
+-   solana creating account parameter in e2e (356edd4)
+-   reacquire when cancel timeouts (141a29c)
+-   don't cancel preventively on T1 in certain cases (bf6d9ff)
+-   FW revision check for unknown models (522880d)
+
 # 9.5.0
 
 Starting with this release we changed de target in all `@trezor` packages to ES2022. It might be problematic in some very old environment or if you use Typescript with lower than ES2022 you might have to add ES2022 lib to your tsconfig. We are also include esm builds in our npm packages. For now only in `@trezor/connect-plugin-stellar` and `@trezor/connect-plugin-ethereum`.
