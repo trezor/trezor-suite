@@ -26,8 +26,27 @@ const staticAliasPlugin = (): Plugin => ({
     },
 });
 
-// Plugin to serve core.js in dev mode
+// Function to process the HTML template with template variables
+const processTemplate = (template: string): string =>
+    template
+        // Hardcoded replace for the only used webpack template variable. If we need more in future, we may develop a more generic code
+        .replace(/<%=\s*assetPrefix\s*%>/g, assetPrefix)
+        // Remove the webpack template conditional (opening + closing statements as well as the HTML in between)
+        .replace(/<%\s*if\([^%]*%>[\s\S]*?<%\s*}\s*%>/g, '')
+        // Add the script tag for vite-index.ts
+        .replace('</head>', '<script type="module" src="./vite-index.ts"></script></head>')
+        // Add the app div to the body
+        .replace('</body>', '<div id="app"></div></body>');
 
+// Custom plugin to use the same template as webpack
+const htmlTemplatePlugin = (): Plugin => ({
+    name: 'transform-html',
+    // This hook runs before Vite processes the HTML
+    transformIndexHtml: {
+        order: 'pre',
+        handler: (html: string) => processTemplate(html),
+    },
+});
 // Plugin to handle workers similar to webpack's worker-loader
 const workerPlugin = (): Plugin => ({
     name: 'worker-loader',
@@ -45,6 +64,7 @@ const workerPlugin = (): Plugin => ({
     },
 });
 
+// Plugin to serve core.js in dev mode
 const serveCorePlugin = () => ({
     name: 'serve-core',
     configureServer(server: ViteDevServer) {
@@ -138,11 +158,12 @@ if (typeof window !== 'undefined' && typeof globalThis === 'undefined') {
 };
 
 export default defineConfig({
-    root: '.',
+    root: './src/static',
     base: assetPrefix,
     // Use suite-data/files as the public directory
     publicDir: resolve(__dirname, '../suite-data/files'),
     plugins: [
+        htmlTemplatePlugin(),
         injectBufferPolyfillPlugin(),
         staticAliasPlugin(),
         serveCorePlugin(),
