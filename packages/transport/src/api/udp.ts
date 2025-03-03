@@ -20,12 +20,21 @@ export class UdpApi extends AbstractApi {
         type: 'udp4',
         signal: this.listenAbortController.signal,
     });
-    protected communicating = false;
     private debugLink?: boolean;
+    private receivedMessagesBuffer: Buffer[] = [];
 
     constructor({ logger, debugLink }: AbstractApiConstructorParams & { debugLink?: boolean }) {
         super({ logger });
         this.debugLink = debugLink;
+
+        const onMessage = (message: Buffer, _info: UDP.RemoteInfo) => {
+            if (message.toString() === 'PONGPONG') {
+                return;
+            }
+            this.receivedMessagesBuffer.push(message);
+            this.logger?.debug('udp: globalOnMessage log:', message.toString('hex'));
+        };
+        this.interface.addListener('message', onMessage);
     }
 
     listen() {
@@ -78,52 +87,34 @@ export class UdpApi extends AbstractApi {
         });
     }
 
-    public read(_path: string, signal?: AbortSignal) {
-        this.communicating = true;
+    public async read(_path: string, signal?: AbortSignal) {
+        let message = this.receivedMessagesBuffer.shift();
 
-        return new Promise<AbstractApiAwaitedResult<'read'>>(resolve => {
-            /* eslint-disable @typescript-eslint/no-use-before-define */
-            const onClear = () => {
-                this.interface.removeListener('error', onError);
-                this.interface.removeListener('message', onMessage);
-                signal?.removeEventListener('abort', onAbort);
-            };
-            /* eslint-enable @typescript-eslint/no-use-before-define */
-            const onError = (err: Error) => {
-                this.logger?.error(err.message);
+        if (message) {
+            return Promise.resolve(this.success(message));
+        }
 
-                resolve(
-                    this.error({
-                        error: ERRORS.INTERFACE_DATA_TRANSFER,
-                        message: err.message,
-                    }),
-                );
-                onClear();
-            };
-            const onMessage = (message: Buffer, _info: UDP.RemoteInfo) => {
-                if (message.toString() === 'PONGPONG') {
-                    return;
-                }
-                onClear();
+        try {
+            // give emu 500ms to send something
+            this.logger?.debug('udp: read: empty buffer, waiting for messages');
+            await resolveAfter(500, signal);
+        } catch {
+            // signal checked just below
+        }
+        if (signal?.aborted) {
+            return this.error({ error: ERRORS.ABORTED_BY_SIGNAL });
+        }
 
-                resolve(this.success(message));
-            };
-            const onAbort = () => {
-                onClear();
+        message = this.receivedMessagesBuffer.shift();
 
-                return resolve(
-                    this.error({
-                        error: ERRORS.ABORTED_BY_SIGNAL,
-                    }),
-                );
-            };
+        if (!message) {
+            return this.error({
+                error: ERRORS.INTERFACE_DATA_TRANSFER,
+                message: 'no message received',
+            });
+        }
 
-            signal?.addEventListener('abort', onAbort);
-            this.interface.addListener('error', onError);
-            this.interface.addListener('message', onMessage);
-        }).finally(() => {
-            this.communicating = false;
-        });
+        return Promise.resolve(this.success(message));
     }
 
     private async ping(path: string, signal?: AbortSignal) {
@@ -156,7 +147,7 @@ export class UdpApi extends AbstractApi {
             this.interface.addListener('error', onError);
             this.interface.addListener('message', onMessage);
 
-            const timeout = setTimeout(onError, this.communicating ? 10000 : 500);
+            const timeout = setTimeout(onError, 1000);
         });
 
         return pinged;

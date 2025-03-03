@@ -35,7 +35,6 @@ describe('api/udp', () => {
         await api.enumerate(abortController.signal);
         const promise = api.read('1', abortController.signal);
         abortController.abort();
-
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
         expect(result.error).toContain('Aborted by signal');
@@ -43,7 +42,6 @@ describe('api/udp', () => {
 
     it('write aborted', async () => {
         let listeners = 0;
-
         jest.spyOn(UDP, 'createSocket').mockImplementation(() =>
             createUdpSocketMock({
                 send: (...args: any[]) => {
@@ -68,7 +66,7 @@ describe('api/udp', () => {
         const result = await promise;
         if (result.success) throw new Error('Unexpected success');
         expect(result.error).toContain('Aborted by signal');
-        expect(listeners).toBe(0);
+        expect(listeners).toBe(1); // only the global listener is present
     });
 
     it('enumerate aborted', async () => {
