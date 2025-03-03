@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { isDesktop } from '@trezor/env-utils';
 import { spacingsPx } from '@trezor/theme';
 
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
@@ -17,6 +16,7 @@ import {
 import { isTranslationMode } from 'src/utils/suite/l10n';
 
 import { MessageSystemBanner } from '../MessageSystemBanner';
+import { BridgeDeprecated } from './BridgeDeprecatedBanner';
 import { FailedBackup } from './FailedBackupBanner';
 import { FirmwareAuthenticityCheckBanner } from './FirmwareAuthenticityCheckBanner';
 import { FirmwareHashMismatchOnLastUpdateBanner } from './FirmwareHashMismatchOnLastUpdateBanner';
@@ -24,7 +24,6 @@ import { NoBackup } from './NoBackupBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
-import { UpdateBridge } from './UpdateBridgeBanner';
 
 const Container = styled.div<{ $isVisible?: boolean }>`
     width: 100%;
@@ -50,18 +49,6 @@ export const SuiteBanners = () => {
     useEffect(() => {
         setSafetyChecksDismissed(false);
     }, [device?.features?.safety_checks]);
-
-    const showUpdateBridge = () => {
-        if (
-            isDesktop() &&
-            bridge?.version &&
-            ['2.0.27', '2.0.28', '2.0.29'].includes(bridge.version)
-        ) {
-            return false;
-        }
-
-        return bridge?.outdated;
-    };
 
     let banner = null;
     let priority = 0;
@@ -93,8 +80,8 @@ export const SuiteBanners = () => {
         // Let the user dismiss the warning.
         banner = <SafetyChecksBanner onDismiss={() => setSafetyChecksDismissed(true)} />;
         priority = 50;
-    } else if (showUpdateBridge()) {
-        banner = <UpdateBridge />;
+    } else if (bridge?.outdated) {
+        banner = <BridgeDeprecated />;
         priority = 30;
     }
 

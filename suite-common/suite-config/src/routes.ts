@@ -43,6 +43,13 @@ export const routes = [
         params: modalAppParams,
     },
     {
+        name: 'suite-bridge-deprecated',
+        pattern: '/bridge-bridge',
+        app: 'bridge-deprecated',
+        isForegroundApp: true,
+        params: modalAppParams,
+    },
+    {
         name: 'suite-udev',
         pattern: '/udev',
         app: 'udev',

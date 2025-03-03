@@ -9,6 +9,7 @@ import { FirmwareUpdate } from 'src/views/firmware/FirmwareUpdate';
 import { Recovery } from 'src/views/recovery';
 import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 import { BridgeUnavailable } from 'src/views/suite/bridge';
+import { BridgeDeprecated } from 'src/views/suite/bridge-deprecated';
 import { BridgeRequested } from 'src/views/suite/bridge-requested';
 import { UdevRules } from 'src/views/suite/udev';
 import { Version } from 'src/views/suite/version';
@@ -26,6 +27,7 @@ const getForegroundApp = (app: ForegroundAppRoute['app']) => {
         version: Version,
         bridge: BridgeUnavailable,
         'bridge-requested': BridgeRequested,
+        'bridge-deprecated': BridgeDeprecated,
         udev: UdevRules,
         'switch-device': SwitchDevice,
         recovery: Recovery,
