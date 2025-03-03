@@ -1543,7 +1543,7 @@ export default defineMessages({
     },
     TR_ALLOW_ANALYTICS_DESCRIPTION: {
         defaultMessage:
-            'Help us shape a better experience for you. We don’t gather any sensitive data—like balances or transactions. All data remains strictly anonymous and is used only to improve the Trezor ecosystem.',
+            'Help us improve your experience! We never collect sensitive data like balances or transactions. All data is completely anonymous and used solely to enhance the Trezor ecosystem.',
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
     },
     TR_ALLOW_AUTOMATIC_SUITE_UPDATES: {
@@ -5544,7 +5544,7 @@ export default defineMessages({
     },
     INCLUDING_FEE_AND_RENT: {
         id: 'INCLUDING_FEE_AND_RENT',
-        defaultMessage: 'Incl. fee and rent',
+        defaultMessage: 'Incl. fee & rent',
     },
     SEND_TRANSACTION: {
         id: 'SEND_TRANSACTION',
@@ -7373,11 +7373,11 @@ export default defineMessages({
     },
     TR_STAKING_REWARDS_TITLE: {
         id: 'TR_STAKING_REWARDS_TITLE',
-        defaultMessage: 'Cardano Staking is Active',
+        defaultMessage: 'Cardano staking is active',
     },
     TR_STAKING_STAKE_TITLE: {
         id: 'TR_STAKING_STAKE_TITLE',
-        defaultMessage: 'Cardano Staking is NOT Active',
+        defaultMessage: "Cardano staking isn't active",
     },
     TR_STAKING_STAKE_ADDRESS: {
         id: 'TR_STAKING_STAKE_ADDRESS',
@@ -7440,7 +7440,7 @@ export default defineMessages({
     },
     TR_STAKING_REWARDS: {
         id: 'TR_STAKING_REWARDS',
-        defaultMessage: 'Available Rewards',
+        defaultMessage: 'Available rewards',
     },
     TR_STAKING_REWARDS_DESCRIPTION: {
         id: 'TR_STAKING_REWARDS_DESCRIPTION',
@@ -7472,12 +7472,12 @@ export default defineMessages({
     },
     TR_STAKING_ON_3RD_PARTY_TITLE: {
         id: 'TR_STAKING_ON_3RD_PARTY_TITLE',
-        defaultMessage: 'You are delegating on a third-party stake pool',
+        defaultMessage: "You're delegating on a third-party stake pool",
     },
     TR_STAKING_ON_3RD_PARTY_DESCRIPTION: {
         id: 'TR_STAKING_ON_3RD_PARTY_DESCRIPTION',
         defaultMessage:
-            'By staking on a Trezor stake pool you are directly supporting Trezor and the Cardano ecosystem within Trezor Suite.',
+            "By staking on a Trezor stake pool you're directly supporting Trezor and the Cardano ecosystem within Trezor Suite.",
     },
     TR_STAKING_POOL_OVERSATURATED_TITLE: {
         id: 'TR_STAKING_POOL_OVERSATURATED_TITLE',
@@ -8911,7 +8911,8 @@ export default defineMessages({
     },
     TR_SOL_FEE_DESC: {
         id: 'TR_SOL_FEE_DESC',
-        defaultMessage: 'XXXXXX TODO',
+        defaultMessage:
+            "The fee you're willing to pay network miners to process transaction. A higher fee may speed up confirmation times.",
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
@@ -9191,7 +9192,7 @@ export default defineMessages({
     TR_TX_SEND_FAILED_DESCRIPTION: {
         id: 'TR_TX_SEND_FAILED_DESCRIPTION',
         defaultMessage:
-            'The time to sign a {networkName} transaction is limited. It could no longer be submitted because it timed out and is no longer valid.',
+            "The signing time for your {networkName} transaction has expired. The transaction is no longer valid and can't be submitted.",
     },
     TR_TX_CONFIRMATION_TIMER: {
         id: 'TR_TX_CONFIRMATION_TIMER',
@@ -9204,7 +9205,7 @@ export default defineMessages({
     TR_SOLANA_TX_CONFIRMATION_TIMER_DESCRIPTION: {
         id: 'TR_SOLANA_TX_CONFIRMATION_TIMER_DESCRIPTION',
         defaultMessage:
-            'Due to Solana network constraints you have <1 minute to confirm and send the transaction before it times out.',
+            'Due to Solana network limits, you have less than a minute to confirm and send your transaction before it expires.',
     },
     TR_VIEW_ONLY_PROMO_YES: {
         id: 'TR_VIEW_ONLY_PROMO_YES',
