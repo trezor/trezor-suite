@@ -9973,7 +9973,7 @@ __metadata:
     babel-plugin-transform-inline-environment-variables: "npm:^0.4.4"
     babel-plugin-transform-remove-console: "npm:^6.9.4"
     buffer: "npm:^6.0.3"
-    detox: "npm:^20.25.6"
+    detox: "npm:^20.34.4"
     event-target-shim: "npm:6.0.2"
     expo: "npm:52.0.11"
     expo-atlas: "npm:0.3.27"
@@ -20621,16 +20621,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detox-copilot@npm:^0.0.24":
-  version: 0.0.24
-  resolution: "detox-copilot@npm:0.0.24"
-  checksum: 10/828c6b07200480e29f09cf94fd433858cb99d04f925c673ed8e790deac04736f98372c2bee76a65fdd66cfbdf83689d4ab17797297f11a527831fb4b49401a72
+"detox-copilot@npm:^0.0.27":
+  version: 0.0.27
+  resolution: "detox-copilot@npm:0.0.27"
+  checksum: 10/c8c8488b4d3975ccedc8d10e3179fd95b385459f38f50963291d51734d72ad0f4f529bc8f4a04203f06d457a0091050571a6239fc34845d4acc5ad8c9ebced97
   languageName: node
   linkType: hard
 
-"detox@npm:^20.25.6":
-  version: 20.28.0
-  resolution: "detox@npm:20.28.0"
+"detox@npm:^20.34.4":
+  version: 20.34.4
+  resolution: "detox@npm:20.34.4"
   dependencies:
     ajv: "npm:^8.6.3"
     bunyan: "npm:^1.8.12"
@@ -20638,7 +20638,7 @@ __metadata:
     caf: "npm:^15.0.1"
     chalk: "npm:^4.0.0"
     child-process-promise: "npm:^2.2.0"
-    detox-copilot: "npm:^0.0.24"
+    detox-copilot: "npm:^0.0.27"
     execa: "npm:^5.1.1"
     find-up: "npm:^5.0.0"
     fs-extra: "npm:^11.0.0"
@@ -20675,7 +20675,7 @@ __metadata:
       optional: true
   bin:
     detox: local-cli/cli.js
-  checksum: 10/6ff5e83513376fbdc4010b0f181d66b107f0f4394206794395468f77bbf9e9ec51555ca5319b0d51ea9a1a80f00348d198d51130c2a02d33667f72a70ad91533
+  checksum: 10/6228f0b7fadf264a86f9520d5dae7b2e2e24b9fca47c24ad6ebdd87f6bcc069cc934b56c1d99244d59a481de65ce12692b4778a311d93179d8e579d9ca285aec
   languageName: node
   linkType: hard
 
