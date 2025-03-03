@@ -63,7 +63,12 @@ export default [
         blockchain: {
             name: 'Ethereum',
             worker: 'js/blockbook-worker.js',
-            server: ['https://eth1.trezor.io', 'https://eth2.trezor.io'],
+            server: [
+                'https://eth1.trezor.io',
+                'https://eth2.trezor.io',
+                'https://eth3.trezor.io',
+                'https://eth4.trezor.io',
+            ],
             debug: true,
         },
         data: {
@@ -95,7 +100,12 @@ export default [
         blockchain: {
             name: 'BNB Smart Chain',
             worker: 'js/blockbook-worker.js',
-            server: ['https://bsc1.trezor.io', 'https://bsc2.trezor.io'],
+            server: [
+                'https://bsc1.trezor.io',
+                'https://bsc2.trezor.io',
+                'https://bsc3.trezor.io',
+                'https://bsc4.trezor.io',
+            ],
             debug: true,
         },
         data: {
@@ -117,7 +127,12 @@ export default [
         blockchain: {
             name: 'Arbitrum One',
             worker: 'js/blockbook-worker.js',
-            server: ['https://arb1.trezor.io', 'https://arb2.trezor.io'],
+            server: [
+                'https://arb1.trezor.io',
+                'https://arb2.trezor.io',
+                'https://arb3.trezor.io',
+                'https://arb4.trezor.io',
+            ],
             debug: true,
         },
         data: {
@@ -139,7 +154,12 @@ export default [
         blockchain: {
             name: 'Base',
             worker: 'js/blockbook-worker.js',
-            server: ['https://base1.trezor.io', 'https://base2.trezor.io'],
+            server: [
+                'https://base1.trezor.io',
+                'https://base2.trezor.io',
+                'https://base3.trezor.io',
+                'https://base4.trezor.io',
+            ],
             debug: true,
         },
         data: {
@@ -161,7 +181,12 @@ export default [
         blockchain: {
             name: 'Optimism',
             worker: 'js/blockbook-worker.js',
-            server: ['https://op1.trezor.io', 'https://op2.trezor.io'],
+            server: [
+                'https://op1.trezor.io',
+                'https://op2.trezor.io',
+                'https://op3.trezor.io',
+                'https://op4.trezor.io',
+            ],
             debug: true,
         },
         data: {
@@ -627,7 +652,12 @@ export default [
         blockchain: {
             name: 'Polygon PoS',
             worker: 'js/blockbook-worker.js',
-            server: ['https://pol1.trezor.io', 'https://pol2.trezor.io'],
+            server: [
+                'https://pol1.trezor.io',
+                'https://pol2.trezor.io',
+                'https://pol3.trezor.io',
+                'https://pol4.trezor.io',
+            ],
             debug: true,
         },
         data: {
