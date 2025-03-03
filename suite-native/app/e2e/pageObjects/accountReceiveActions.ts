@@ -5,7 +5,7 @@ class AccountReceiveActions {
         await waitFor(element(by.id('@screen/ReceiveAccount'))).toBeVisible();
     }
 
-    async clickShowAddressButton() {
+    async tapShowAddressButton() {
         const showAddressButton = element(by.id('@receive/show-address-button'));
 
         await waitFor(showAddressButton).toBeVisible().withTimeout(30000);

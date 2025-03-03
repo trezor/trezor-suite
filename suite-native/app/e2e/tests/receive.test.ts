@@ -30,7 +30,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Receive', () => {
         await onAccountDetail.openReceive();
         await onAccountReceive.waitForScreen();
 
-        await onAccountReceive.clickShowAddressButton();
+        await onAccountReceive.tapShowAddressButton();
         await TrezorUserEnvLink.pressYes();
         await onAccountReceive.verifyReceiveAddress('bc1qa55m6kz3crfse5xg2rukulyap4eyp75w0puawz');
 
