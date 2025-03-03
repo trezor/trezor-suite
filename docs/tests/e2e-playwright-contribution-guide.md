@@ -1,8 +1,8 @@
 # General Playwright contribution guide
 
-## Page Actions
+## Page Objects
 
-We use `page actions` pattern to encapsulate all UI elements and operations.
+We use `page objects/actions` pattern to encapsulate all UI elements and operations.
 Furthermore, every method in the page object class should have `step` decorator. This decorator wraps the method into playwright `test.step()`. This vastly improves readability of test report.
 
 Example:
@@ -10,7 +10,7 @@ Example:
 ```typescript
 import { step } from '../common';
 
-export class WalletActions {
+export class WalletPage {
     readonly searchInput: Locator;
     readonly accountChevron: Locator;
 
@@ -39,18 +39,20 @@ export class WalletActions {
 
 ✅ Always add an descriptor `@step()` before every `Page` object method.
 
+✅ Page objects naming should clearly indicate what kind object we are dealing with. We use suffixes: `page` for whole pages, `section` for just parts of page, and other suffixes reflecting type of elements they cover: `modal`, `panel`, `input` and `prompt`.
+
 ## Fixtures
 
-To further improve test readability we want to use fixtures to inject our `page actions` into the tests.
+To further improve test readability we want to use fixtures to inject our `page actions` into the tests. Additionally, we use fixtures also for mocks (`blockbookMock`), setups (`page`) and watchers (`exceptionLogger`)
 
 Example:
 
 ```typescript
 import { test as base } from '@playwright/test';
-import { WalletActions } from './pageActions/walletActions';
+import { WalletPage } from './pageActions/walletActions';
 
 const test = base.extend<{
-    walletPage: WalletActions;
+    walletPage: WalletPage;
 }>({
     walletPage: async ({ page }, use) => {
         const walletPage = new WalletActions(page);
@@ -61,7 +63,7 @@ const test = base.extend<{
 export { test };
 ```
 
-✅ Correct way to use `page action` in the test:
+✅ Correct way to use `page fixture` in the test:
 
 ```typescript
 test('Wallet test', async ({ walletPage }) => {
@@ -74,7 +76,7 @@ test('Wallet test', async ({ walletPage }) => {
 
 ```typescript
 test('Wallet test', async ({ page }) => {
-    const walletPage = new WalletActions(page);
+    const walletPage = new WalletPage(page);
     await walletPage.clickAllAccountArrows();
     ...
 });

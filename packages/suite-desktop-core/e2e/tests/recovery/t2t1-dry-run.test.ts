@@ -17,13 +17,13 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@group=device-management'] }, 
 
     test('Standard recovery dry run', async ({
         settingsPage,
-        recoveryPage,
+        recoveryModal,
         trezorUserEnvLink,
         trezorInput,
     }) => {
         await settingsPage.checkSeedButton.click();
-        await recoveryPage.userUnderstandsCheckbox.click();
-        await recoveryPage.startButton.click();
+        await recoveryModal.userUnderstandsCheckbox.click();
+        await recoveryModal.startButton.click();
         await expect(settingsPage.modal).toBeVisible();
         await expect(settingsPage.modal).toContainText(
             'Enter the words directly on your Trezor device in the correct order.',
@@ -35,7 +35,7 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@group=device-management'] }, 
         await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
 
         await trezorUserEnvLink.pressYes();
-        await expect(recoveryPage.successTitle).toHaveText('Wallet backup checked successfully');
+        await expect(recoveryModal.successTitle).toHaveText('Wallet backup checked successfully');
     });
 
     //TODO: #14987 Fix Recovery - dry run test for T2T1

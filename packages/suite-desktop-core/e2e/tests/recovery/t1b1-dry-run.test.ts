@@ -17,19 +17,19 @@ test.describe('Recovery T1B1 - dry run', { tag: ['@group=device-management'] }, 
 
     test('Standard recovery dry run', async ({
         settingsPage,
-        recoveryPage,
+        recoveryModal,
         trezorInput,
         trezorUserEnvLink,
         devicePrompt,
     }) => {
         await settingsPage.checkSeedButton.click();
-        await recoveryPage.initDryCheck('basic', 24);
+        await recoveryModal.initDryCheck('basic', 24);
         await trezorInput.enterPinOnBlindMatrix(pin);
         await trezorInput.inputMnemonicT1B1(mnemonic);
         await expect(devicePrompt.modal).toContainText(
             "Follow the instructions on your Trezor's screen",
         );
         await trezorUserEnvLink.pressYes();
-        await expect(recoveryPage.successTitle).toHaveText('Wallet backup checked successfully');
+        await expect(recoveryModal.successTitle).toHaveText('Wallet backup checked successfully');
     });
 });

@@ -11,7 +11,7 @@ import { DevicePrompt } from './pageObjects/devicePrompt';
 import { GuidePanel } from './pageObjects/guidePanel';
 import { MetadataPage } from './pageObjects/metadata/metadataPage';
 import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
-import { RecoveryPage } from './pageObjects/recoveryPage';
+import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { TradingPage } from './pageObjects/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
@@ -26,7 +26,7 @@ type Fixtures = {
     onboardingPage: OnboardingPage;
     analyticsSection: AnalyticsSection;
     devicePrompt: DevicePrompt;
-    recoveryPage: RecoveryPage;
+    recoveryModal: RecoveryModal;
     tradingPage: TradingPage;
     assetsSection: AssetsSection;
     metadataPage: MetadataPage;
@@ -72,8 +72,8 @@ const test = suiteBaseTest.extend<Fixtures>({
     devicePrompt: async ({ page }, use) => {
         await use(new DevicePrompt(page));
     },
-    recoveryPage: async ({ page }, use) => {
-        await use(new RecoveryPage(page));
+    recoveryModal: async ({ page }, use) => {
+        await use(new RecoveryModal(page));
     },
     tradingPage: async ({ page, devicePrompt }, use) => {
         await use(new TradingPage(page, devicePrompt));
