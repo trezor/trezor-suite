@@ -13,12 +13,10 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
     const { argv } = yargs(hideBin(process.argv))
         .array('read-only')
         .array('ignore')
-        .array('typings')
         .boolean('test') as any;
 
     const readOnlyGlobs: string[] = argv.readOnly || [];
     const ignoreGlobs: string[] = argv.ignore || [];
-    const typingPaths: string[] = argv.typings || [];
     const isTesting = argv.test || false;
 
     const prettierConfig = await getPrettierConfig();
@@ -70,11 +68,6 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
             const workspaceConfigPath = path.resolve(workspacePath, 'tsconfig.json');
             const workspaceLibConfigPath = path.resolve(workspacePath, 'tsconfig.lib.json');
 
-            // actual references of the workspace = typings from argv + parsed package.json (assigned later)
-            const nextWorkspaceReferences = typingPaths.map((typingPath: string) => ({
-                path: path.relative(workspacePath, path.resolve(process.cwd(), typingPath)),
-            }));
-
             const defaultWorkspaceConfig = {
                 extends: path.relative(workspacePath, path.resolve(process.cwd(), 'tsconfig.json')),
                 compilerOptions: { outDir: './libDev' },
@@ -87,6 +80,9 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
 
             // parse tsconfig.lib.json, which may not exist, and shall not be created
             const workspaceLibConfig = parseTSConfigFile(workspaceLibConfigPath);
+
+            // actual references of the workspace from parsed package.json (assigned later)
+            const nextWorkspaceReferences: Array<{ path: string }> = [];
 
             Object.values(workspace.workspaceDependencies).forEach(dependencyLocation => {
                 const dependencyPath = path.resolve(process.cwd(), dependencyLocation);
