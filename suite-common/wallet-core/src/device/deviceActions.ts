@@ -99,7 +99,7 @@ const dismissFirmwareAuthenticityCheck = createAction(
 
 const setEntropyCheckFail = createAction(
     `${DEVICE_MODULE_PREFIX}/setEntropyCheckFail`,
-    (payload: string) => ({ payload }),
+    (payload: string | null) => ({ payload }),
 );
 
 export const deviceActions = {

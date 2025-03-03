@@ -186,14 +186,7 @@ export const resetDevice =
                     vendor: device?.features?.fw_vendor,
                     error: result.payload.error,
                 });
-                const hardErrors: string[] = [
-                    'Invalid session', // returned from firmware when entropy check is not supported
-                    'Missing verifyEntropy data', // entropy check fail
-                    'verifyEntropy xpub mismatch', // entropy check fail
-                ]; // TODO: This is a temporary blacklist to prevent false positives.
-                if (hardErrors.includes(result.payload.error) && device.id) {
-                    dispatch(deviceActions.setEntropyCheckFail(device.id));
-                }
+                dispatch(deviceActions.setEntropyCheckFail(device.id));
             }
         }
 
