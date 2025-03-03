@@ -41,7 +41,10 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
+import {
+    selectAccountIncludingChosenInTrading,
+    selectSelectedAccount,
+} from 'src/reducers/wallet/selectedAccountReducer';
 import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
 
 import { TransactionReviewDetails } from './TransactionReviewDetails';
@@ -117,7 +120,6 @@ export const TransactionReviewModalContent = ({
     isRbfConfirmedError,
 }: TransactionReviewModalContentProps) => {
     const dispatch = useDispatch();
-    const account = useSelector(selectAccountIncludingChosenInTrading);
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
     const isActionAbortable = useSelector(selectIsActionAbortable);
@@ -130,6 +132,10 @@ export const TransactionReviewModalContent = ({
         isStakeState(txInfoState)
             ? selectStakePrecomposedForm(state)
             : selectPrecomposedSendForm(state),
+    );
+
+    const account = useSelector(
+        precomposedForm?.isTrading ? selectAccountIncludingChosenInTrading : selectSelectedAccount,
     );
 
     const shouldCheckTxTimeValidity =
