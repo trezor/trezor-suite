@@ -10,11 +10,7 @@ import {
     discoveryActions,
 } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
-import {
-    getBootloaderVersion,
-    getFirmwareVersion,
-    hasBitcoinOnlyFirmware,
-} from '@trezor/device-utils';
+import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
@@ -103,19 +99,20 @@ const sentryMiddleware =
                 break;
             case deviceActions.selectDevice.type:
             case deviceActions.updateSelectedDevice.type: {
-                if (action.payload) {
-                    const { connected, features, mode, remember } = action.payload;
-
-                    setSentryContext(deviceContextName, {
-                        bootloader: getBootloaderVersion(action.payload),
-                        connected,
-                        firmware: getFirmwareVersion(action.payload),
-                        isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload),
-                        mode,
-                        model: features?.internal_model,
-                        remember: !!remember,
-                    });
-                }
+                setSentryContext(deviceContextName, {
+                    bootloader:
+                        action.payload?.mode === 'bootloader'
+                            ? getBootloaderVersion(action.payload)
+                            : undefined,
+                    connected: action.payload?.connected ?? false, // default to false so that the property is visible in Sentry when device is disconnected
+                    firmwareType: action.payload?.firmwareType, // note that T1B1/T2T1 in bootloader mode report undefined
+                    firmwareVersion: action.payload
+                        ? getFirmwareVersion(action.payload)
+                        : undefined,
+                    mode: action.payload?.mode,
+                    model: action.payload?.features?.internal_model,
+                    remember: action.payload?.remember,
+                });
                 break;
             }
             case ROUTER.LOCATION_CHANGE:
