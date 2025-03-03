@@ -1,6 +1,8 @@
 name: "[Bot] suite-native monthly version bump"
+
 permissions:
   pull-requests: write
+
 on:
   schedule:
     # Runs on the first day of every month at 00:00 UTC
@@ -27,8 +29,9 @@ jobs:
         run: jq --indent 4 --arg version "$NEW_VERSION" '.suiteNativeVersion = $version' suite-native/app/package.json > temp.json && mv temp.json suite-native/app/package.json
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.TREZOR_BOT_TOKEN }}
           commit-message: "chore(suite-native): bump version to ${{ env.NEW_VERSION }}"
           title: "chore(suite-native): bump version to ${{ env.NEW_VERSION }}"
           body: |
