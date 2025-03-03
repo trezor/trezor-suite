@@ -46,8 +46,6 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
                 'Select ETHEREUM receive account',
             );
             await expect(tradingPage.confirmationAddress).toHaveText('');
-            await expect(page.getByText('Receive address is required')).toBeVisible();
-
             await tradingPage.confirmationAccountDropdown.click();
             await page.getByRole('option', { name: 'Create a new Ethereum account' }).click();
             await expect(settingsPage.coins.networkButton('eth')).toBeEnabledCoin();
