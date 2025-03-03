@@ -29,20 +29,19 @@ const getFeeLabel = (networkType: NetworkType) => {
     }
 };
 
-const getDisplayModeStringsMap = (): Record<
-    StakeType,
-    { value: TranslationKey; label: TranslationKey }
-> => ({
+const getDisplayModeStringsMap = (
+    isEverstake: boolean,
+): Record<StakeType, { value: TranslationKey; label: TranslationKey }> => ({
     stake: {
         value: 'TR_STAKE_ON_EVERSTAKE',
         label: 'TR_STAKE_STAKE',
     },
     unstake: {
-        value: 'TR_UNSTAKE_FROM_EVERSTAKE',
+        value: isEverstake ? 'TR_UNSTAKE_FROM_EVERSTAKE' : 'TR_UNSTAKE_FROM_STAKE_ACCOUNT',
         label: 'TR_STAKE_UNSTAKE',
     },
     claim: {
-        value: 'TR_CLAIM_FROM_EVERSTAKE',
+        value: isEverstake ? 'TR_CLAIM_FROM_EVERSTAKE' : 'TR_CLAIM_FROM_STAKE_ACCOUNT',
         label: 'TR_STAKE_CLAIM',
     },
 });
@@ -54,7 +53,7 @@ const getOutputTitle = (
     isRbf: boolean,
     stakeType: StakeType | undefined,
 ): ReactNode | undefined => {
-    const displayModeStringsMap = getDisplayModeStringsMap();
+    const displayModeStringsMap = getDisplayModeStringsMap(networkType === 'ethereum');
 
     switch (type) {
         case 'locktime': {
@@ -102,6 +101,7 @@ const getOutputTitle = (
 
 const getOutputLines = (
     type: ReviewOutput['type'],
+    networkType: NetworkType,
     value: string,
     value2: string = '',
     label: string = '',
@@ -109,7 +109,7 @@ const getOutputLines = (
     stakeType: StakeType | undefined,
     translationString: (key: TranslationKey, values: any) => string,
 ): OutputElementLine[] => {
-    const displayModeStringsMap = getDisplayModeStringsMap();
+    const displayModeStringsMap = getDisplayModeStringsMap(networkType === 'ethereum');
 
     switch (type) {
         case 'gas':
@@ -256,6 +256,7 @@ export const TransactionReviewOutput = ({
 
     const outputLines = getOutputLines(
         type,
+        networkType,
         value,
         value2,
         label,

@@ -7403,9 +7403,17 @@ export default defineMessages({
         id: 'TR_CLAIM_FROM_EVERSTAKE',
         defaultMessage: 'Claim {symbol} from Everstake?',
     },
+    TR_CLAIM_FROM_STAKE_ACCOUNT: {
+        id: 'TR_CLAIM_FROM_STAKE_ACCOUNT',
+        defaultMessage: 'Claim {symbol} from stake account?',
+    },
     TR_UNSTAKE_FROM_EVERSTAKE: {
         id: 'TR_UNSTAKE_FROM_EVERSTAKE',
         defaultMessage: 'Unstake {symbol} from Everstake?',
+    },
+    TR_UNSTAKE_FROM_STAKE_ACCOUNT: {
+        id: 'TR_UNSTAKE_FROM_STAKE_ACCOUNT',
+        defaultMessage: 'Unstake {symbol} from stake account?',
     },
     TR_TX_WITHDRAWAL: {
         id: 'TR_TX_WITHDRAWAL',
