@@ -9539,6 +9539,7 @@ __metadata:
     react-redux: "npm:8.0.7"
     semver: "npm:^7.6.3"
     tsx: "npm:^4.19.3"
+    uuid: "npm:^11.0.5"
   languageName: unknown
   linkType: soft
 

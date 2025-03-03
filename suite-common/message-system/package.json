@@ -10,6 +10,7 @@
         "msg-system-types": "yarn tsx ./scripts/generate-types.ts",
         "validate-config": "yarn tsx ./scripts/validate-config.ts",
         "sign-config": "yarn tsx ./scripts/sign-config.ts",
+        "get-uuid": "yarn tsx ./scripts/get-uuid.ts",
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
@@ -34,7 +35,8 @@
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@types/fs-extra": "^11.0.4",
-        "tsx": "^4.19.3"
+        "tsx": "^4.19.3",
+        "uuid": "^11.0.5"
     },
     "nx": {
         "targets": {
