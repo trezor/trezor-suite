@@ -8,10 +8,6 @@ permissions:
 # run only if there are changes in suite or related libs paths
 on:
   pull_request:
-    types:
-      - opened
-      - ready_for_review
-      - synchronize
     branches:
       - develop
     paths-ignore:
@@ -121,7 +117,7 @@ jobs:
           echo "matrix={\"include\":$(echo $matrix)}" >> $GITHUB_OUTPUT
 
   e2e-test-suite-web:
-    if: github.repository == 'trezor/trezor-suite' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     needs:
       - build-web

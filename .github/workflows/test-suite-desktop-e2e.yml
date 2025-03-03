@@ -3,10 +3,6 @@ name: "[Test] suite-desktop e2e"
 
 on:
   pull_request:
-    types:
-      - opened
-      - ready_for_review
-      - synchronize
     branches:
       - develop
     paths-ignore:
@@ -32,7 +28,7 @@ concurrency:
 
 jobs:
   run-desktop-tests:
-    if: github.repository == 'trezor/trezor-suite' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
