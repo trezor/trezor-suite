@@ -5,6 +5,7 @@ import {
     type Network,
     type NetworkSymbol,
     getCoingeckoId,
+    getNetwork,
     getNetworkByCoingeckoId,
     getNetworkByTradeCryptoId,
 } from '@suite-common/wallet-config';
@@ -168,11 +169,13 @@ export const getTradingNetworkDecimals = ({
     sendCryptoSelect,
     network,
 }: TradingGetDecimalsProps) => {
+    const defaultDecimals = getNetwork('btc').decimals;
+
     if (sendCryptoSelect) {
         return sendCryptoSelect.decimals;
     }
 
-    return network?.decimals ?? 8;
+    return network?.decimals ?? defaultDecimals;
 };
 
 export const getTradingPaymentMethods = <T extends TradingTradeBuySellType>(
