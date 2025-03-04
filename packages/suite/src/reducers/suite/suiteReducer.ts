@@ -568,6 +568,13 @@ export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
         isDebugOnlyHashCheckError(hashCheckError) && !selectIsDebugModeActive(state);
     if (isHiddenBehindDebug) return null;
 
+    if (
+        hashCheckError === 'other-error' &&
+        selectIsFeatureDisabled(state, Feature.firmwareHashCheckOtherError)
+    ) {
+        return null;
+    }
+
     return hashCheckError;
 };
 
