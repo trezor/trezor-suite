@@ -22,7 +22,9 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
     const selectedAccount = useSelector(
         state => state.wallet.selectedAccount,
     ) as SelectedAccountLoaded;
-    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking();
+    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(
+        selectedAccount.network.symbol,
+    );
 
     const {
         account,

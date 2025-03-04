@@ -1,14 +1,20 @@
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Button, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { useDevice } from 'src/hooks/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 
 export const UnstakeButton = () => {
     const { device, isLocked } = useDevice();
-    const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking();
+    const selectedAccount = useSelector(
+        state => state.wallet.selectedAccount,
+    ) as SelectedAccountLoaded;
+    const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking(
+        selectedAccount.network.symbol,
+    );
 
     const {
         isComposing,

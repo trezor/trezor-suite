@@ -28,7 +28,7 @@ export const EmptyStakingCard = () => {
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
     const account = useSelector(selectSelectedAccount);
 
-    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking();
+    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
 
     const apy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
 

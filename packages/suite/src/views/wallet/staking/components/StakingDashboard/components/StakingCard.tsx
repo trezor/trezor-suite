@@ -87,7 +87,7 @@ export const StakingCard = ({
         isUnstakingDisabled,
         stakingMessageContent,
         unstakingMessageContent,
-    } = useMessageSystemStaking();
+    } = useMessageSystemStaking(selectedAccount?.symbol);
 
     const {
         autocompoundBalance = '0',

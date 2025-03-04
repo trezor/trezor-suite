@@ -20,9 +20,18 @@ export type MessageSystemRootState = {
 export const Feature = {
     coinjoin: 'coinjoin',
     killswitch: 'killswitch',
-    ethStake: 'eth.staking.stake',
-    ethUnstake: 'eth.staking.unstake',
-    ethClaim: 'eth.staking.claim',
+    stake: {
+        eth: 'eth.staking.stake',
+        sol: 'sol.staking.stake',
+    },
+    unstake: {
+        eth: 'eth.staking.unstake',
+        sol: 'sol.staking.unstake',
+    },
+    claim: {
+        eth: 'eth.staking.claim',
+        sol: 'sol.staking.claim',
+    },
     firmwareRevisionCheck: 'security.firmware.revisionCheck',
     firmwareRevisionCheckMobile: 'security.firmware.revisionCheck.mobile',
     firmwareHashCheck: 'security.firmware.hashCheck',
@@ -31,7 +40,14 @@ export const Feature = {
     firmwareUpdate: 'device.firmware.update',
 } as const;
 
-export type FeatureDomain = (typeof Feature)[keyof typeof Feature];
+type ExtractFeatureValues<T> =
+    T extends Record<string, infer U>
+        ? U extends Record<string, any>
+            ? ExtractFeatureValues<U>
+            : U
+        : never;
+
+export type FeatureDomain = ExtractFeatureValues<typeof Feature>;
 
 export const Context = {
     coinjoin: 'accounts.coinjoin',

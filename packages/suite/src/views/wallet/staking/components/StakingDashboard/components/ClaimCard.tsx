@@ -17,7 +17,9 @@ export const ClaimCard = () => {
     const claimTxs = useSelector(state =>
         selectAccountClaimTransactions(state, selectedAccount?.key || ''),
     );
-    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking();
+    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(
+        selectedAccount?.symbol,
+    );
 
     const isClaimPending = useMemo(() => claimTxs.some(tx => isPending(tx)), [claimTxs]);
 
