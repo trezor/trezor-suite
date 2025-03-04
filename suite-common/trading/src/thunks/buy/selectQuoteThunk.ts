@@ -13,7 +13,7 @@ import {
     selectTradingBuyQuotesRequest,
 } from '../../selectors/tradingSelectors';
 
-export type SelectQuoteThunk = {
+export type SelectQuoteThunkProps = {
     quote: BuyTrade;
     timer: Timer;
     returnUrl: string;
@@ -26,7 +26,7 @@ export type SelectQuoteThunk = {
 export const selectQuoteThunk = createThunk(
     `${TRADING_BUY_THUNK_PREFIX}/selectQuote`,
     async (
-        { quote, returnUrl, timer, loginRequest, userConsent, nextStep }: SelectQuoteThunk,
+        { quote, returnUrl, timer, loginRequest, userConsent, nextStep }: SelectQuoteThunkProps,
         { dispatch, getState },
     ) => {
         const buyInfo = selectTradingBuyInfo(getState());

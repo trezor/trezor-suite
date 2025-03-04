@@ -14,7 +14,7 @@ import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
 import { BuyInfo, TradingBuyState } from '../../../reducers/buyReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { SelectQuoteThunk } from '../selectQuoteThunk';
+import { SelectQuoteThunkProps } from '../selectQuoteThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
@@ -116,7 +116,7 @@ describe('selectQuoteThunk', () => {
         const mockTimerStop = jest.fn();
         const mockTimer = {
             stop: mockTimerStop,
-        } as unknown as SelectQuoteThunk['timer'];
+        } as unknown as SelectQuoteThunkProps['timer'];
 
         const mockNextStep = jest.fn();
         const mockLoginRequest = jest.fn();
