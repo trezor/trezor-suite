@@ -34,8 +34,7 @@ export const hashCheckErrorScenarios = {
     'check-unsupported': { type: 'skipped', shouldReport: false },
     // could mean counterfeit firmware, but it's also caught by revision check, which handles edge-cases better
     'unknown-release': { type: 'skipped', shouldReport: false },
-    // TODO fix FW hash check unreliability & reenable on production (outside of debug mode)
-    'other-error': { type: 'hardModal', shouldReport: true, debugOnly: true },
+    'other-error': { type: 'hardModal', shouldReport: true },
 } satisfies HashCheckErrorScenarios;
 
 export type SkippedHashCheckError = keyof FilterPropertiesByType<
