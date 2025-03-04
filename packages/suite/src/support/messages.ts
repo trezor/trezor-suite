@@ -8912,7 +8912,7 @@ export default defineMessages({
     TR_SOL_FEE_DESC: {
         id: 'TR_SOL_FEE_DESC',
         defaultMessage:
-            "The fee you're willing to pay network miners to process transaction. A higher fee may speed up confirmation times.",
+            "Network Fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account's storage.",
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
