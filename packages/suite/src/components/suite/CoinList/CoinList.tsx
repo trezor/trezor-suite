@@ -8,7 +8,6 @@ import { versionUtils } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useDiscovery, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 
 import { Coin } from './Coin';
@@ -36,7 +35,6 @@ export const CoinList = ({
     onToggle,
 }: CoinListProps) => {
     const { device, isLocked } = useDevice();
-    const isDebug = useSelector(selectIsDebugModeActive);
 
     const blockchain = useSelector(state => state.wallet.blockchain);
     const isDeviceLocked = !!device && isLocked();
@@ -53,14 +51,7 @@ export const CoinList = ({
     return (
         <Wrapper>
             {networks.map(network => {
-                const {
-                    symbol,
-                    name,
-                    support,
-                    features,
-                    testnet: isTestnet,
-                    networkType,
-                } = network;
+                const { symbol, name, support, features, testnet: isTestnet } = network;
                 const hasCustomBackend = !!blockchain[symbol].backends.selected;
 
                 const firmwareSupportRestriction =
@@ -86,13 +77,7 @@ export const CoinList = ({
                     getCoinUnavailabilityMessage(unavailableReason);
                 const tooltipString = discoveryTooltip || lockedTooltip || unavailabilityTooltip;
 
-                const label = getCoinLabel(
-                    features,
-                    isTestnet,
-                    hasCustomBackend,
-                    networkType,
-                    isDebug,
-                );
+                const label = getCoinLabel(features, isTestnet, hasCustomBackend);
 
                 return (
                     <Tooltip

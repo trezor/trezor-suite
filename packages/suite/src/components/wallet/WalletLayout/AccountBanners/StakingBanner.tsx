@@ -18,7 +18,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive, selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 interface StakingBannerProps {
     account: Account;
@@ -30,8 +30,6 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const { route } = useSelector(state => state.router);
     const apy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
     const theme = useTheme();
-    // TODO: remove when solana staking public
-    const isDebug = useSelector(selectIsDebugModeActive);
 
     const closeBanner = () => {
         switch (account.networkType) {
@@ -62,8 +60,9 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 return {
                     isStakingBannerClosed: stakeSolBannerClosed,
                     minStakingAmount: MIN_SOL_AMOUNT_FOR_STAKING,
-                    isSupportedStakingNetworkSymbol:
-                        isDebug && isSupportedSolStakingNetworkSymbol(account.symbol),
+                    isSupportedStakingNetworkSymbol: isSupportedSolStakingNetworkSymbol(
+                        account.symbol,
+                    ),
                 };
             default:
                 return {

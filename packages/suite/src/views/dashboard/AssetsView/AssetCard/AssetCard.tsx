@@ -7,7 +7,6 @@ import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
-import { selectDebugFilteredAssetAccountsThatStaked } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import {
@@ -34,7 +33,6 @@ import {
 } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
@@ -128,20 +126,10 @@ export const AssetCard = ({
     const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
 
-    // TODO: remove this logic when Solana staking is available
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const debugFilteredStakedAccounts = useSelector(state =>
-        selectDebugFilteredAssetAccountsThatStaked(
-            state,
-            stakingAccountsForAsset,
-            isDebugModeActive,
-        ),
-    );
-
     const { tokensFiatBalance, assetStakingBalance, shouldRenderStakingRow, shouldRenderTokenRow } =
         handleTokensAndStakingData(
             assetTokens,
-            debugFilteredStakedAccounts,
+            stakingAccountsForAsset,
             symbol,
             localCurrency,
             coinDefinitions,

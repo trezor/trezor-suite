@@ -6,7 +6,6 @@ import { CoinLogo } from '@trezor/product-components';
 
 import { Modal, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 
 import { CustomBackends } from './CustomBackends/CustomBackends';
@@ -43,13 +42,12 @@ interface AdvancedCoinSettingsModalProps {
 }
 
 export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSettingsModalProps) => {
-    const isDebug = useSelector(selectIsDebugModeActive);
     const blockchain = useSelector(state => state.wallet.blockchain);
     const network = getNetwork(symbol);
 
-    const { name, networkType, features, testnet: isTestnet } = network;
+    const { name, features, testnet: isTestnet } = network;
     const hasCustomBackend = !!blockchain[symbol].backends.selected;
-    const label = getCoinLabel(features, isTestnet, hasCustomBackend, networkType, isDebug);
+    const label = getCoinLabel(features, isTestnet, hasCustomBackend);
 
     return (
         <Modal

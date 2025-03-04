@@ -6,7 +6,6 @@ import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
-import { selectDebugFilteredAssetAccountsThatStaked } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/blockchain-link-types';
@@ -25,7 +24,6 @@ import {
 } from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
@@ -85,16 +83,6 @@ export const AssetRow = memo(
             account => account.symbol === network.symbol,
         );
 
-        // TODO: remove this logic when Solana staking is available
-        const isDebugModeActive = useSelector(selectIsDebugModeActive);
-        const debugFilteredStakedAccounts = useSelector(state =>
-            selectDebugFilteredAssetAccountsThatStaked(
-                state,
-                stakingAccountsForAsset,
-                isDebugModeActive,
-            ),
-        );
-
         const {
             tokensFiatBalance,
             assetStakingBalance,
@@ -102,7 +90,7 @@ export const AssetRow = memo(
             shouldRenderTokenRow,
         } = handleTokensAndStakingData(
             assetTokens,
-            debugFilteredStakedAccounts,
+            stakingAccountsForAsset,
             symbol,
             localCurrency,
             coinDefinitions,
