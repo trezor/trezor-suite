@@ -796,7 +796,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         if (notDoneYet || wasErrorRetriable) {
             const result = await this.checkFirmwareHash();
-            this.authenticityChecks.firmwareHash = result;
+
+            this.authenticityChecks = {
+                ...this.authenticityChecks,
+                firmwareHash: result,
+            };
 
             if (result === null) return;
             result.attemptCount = attemptsDone + 1;
@@ -902,12 +906,16 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         const release = getRelease(this.features.internal_model, firmwareVersion);
 
-        this.authenticityChecks.firmwareRevision = await checkFirmwareRevision({
+        const result = await checkFirmwareRevision({
             internalModel: this.features.internal_model,
             deviceRevision: this.features.revision,
             firmwareVersion,
             expectedRevision: release?.firmware_revision,
         });
+        this.authenticityChecks = {
+            ...this.authenticityChecks,
+            firmwareRevision: result,
+        };
     }
 
     async changeLanguage({
