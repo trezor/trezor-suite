@@ -37,7 +37,7 @@ export type DeviceReducerState = {
     devices: TrezorDevice[];
     selectedDevice?: TrezorDevice;
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
-    devicesWithFailedEntropyCheck?: string[];
+    devicesWithFailedEntropyCheck?: (string | null)[]; // protobuf allows null values and we want to store this even if a fake device has id set to null
     dismissedSecurityChecks?: {
         firmwareAuthenticity?: string[];
     };

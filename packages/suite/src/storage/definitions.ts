@@ -8,6 +8,7 @@ import type { DeviceWithEmptyPath, MessageSystem } from '@suite-common/suite-typ
 import { SimpleTokenStructure } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { DeviceReducerState } from '@suite-common/wallet-core';
 import type {
     BackendSettings,
     FormState,
@@ -134,7 +135,7 @@ export interface SuiteDBSchema extends DBSchema {
     security: {
         key: 'security';
         value: {
-            devicesWithFailedEntropyCheck: string[];
+            devicesWithFailedEntropyCheck: DeviceReducerState['devicesWithFailedEntropyCheck'];
         };
     };
 }
