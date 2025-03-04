@@ -8871,7 +8871,7 @@ export default defineMessages({
     },
     TR_STAKE_WAIT_FOR_ACTIVATION: {
         id: 'TR_STAKE_WAIT_FOR_ACTIVATION',
-        defaultMessage: 'Your staking will be activated at the start of the next epoch.',
+        defaultMessage: 'Time it takes to stake your SOL.',
     },
     TR_STAKE_WARM_UP_PERIOD: {
         id: 'TR_STAKE_WARM_UP_PERIOD',
@@ -8887,7 +8887,7 @@ export default defineMessages({
     },
     TR_STAKE_WAIT_FOR_DEACTIVATION: {
         id: 'TR_STAKE_WAIT_FOR_DEACTIVATION',
-        defaultMessage: 'Your staking will be deactivated at the start of the next epoch.',
+        defaultMessage: 'Time it takes to unstake your SOL.',
     },
     TR_STAKE_EARN_REWARDS_WEEKLY: {
         id: 'TR_STAKE_EARN_REWARDS_WEEKLY',
@@ -8973,7 +8973,7 @@ export default defineMessages({
     },
     TR_STAKE_ACTIVATION_COULD_TAKE: {
         id: 'TR_STAKE_ACTIVATION_COULD_TAKE',
-        defaultMessage: 'Stake activation usually takes 1 epoch (~3 days).',
+        defaultMessage: 'It takes up to 3 days to stake your SOL.',
     },
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
@@ -8986,7 +8986,7 @@ export default defineMessages({
     },
     TR_STAKE_STAKE: {
         id: 'TR_STAKE_STAKE',
-        defaultMessage: 'Stake',
+        defaultMessage: 'Staked',
     },
     TR_STAKE_UNSTAKE: {
         id: 'TR_STAKE_UNSTAKE',
@@ -9055,7 +9055,7 @@ export default defineMessages({
     },
     TR_STAKE_EXPECTED_REWARDS: {
         id: 'TR_STAKE_EXPECTED_REWARDS',
-        defaultMessage: 'Expected rewards per 1 epoch (~{days} days)',
+        defaultMessage: 'Next estimated reward in ~3 days',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',

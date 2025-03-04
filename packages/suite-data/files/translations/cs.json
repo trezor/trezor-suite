@@ -54,6 +54,7 @@
   "FEE_LEVEL_HIGH": "Vysoký",
   "FEE_LEVEL_LOW": "Nízký",
   "FEE_LEVEL_NORMAL": "Normální",
+  "FEE_LEVEL_STANDARD": "Standardní",
   "FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON": "Při připojování kabelu uvolněte tlačítka.",
   "FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC": "Ano, mám!",
   "FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC": "Přijímám riziko",
