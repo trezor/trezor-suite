@@ -2,76 +2,54 @@ import * as fixtures from '../__fixtures__/buyUtils';
 import { buyUtils } from '../buyUtils';
 
 describe('getAmountLimits', () => {
-    it('should test all scenarios', () => {
-        const currency = 'bitcoin';
+    const currency = 'bitcoin';
 
-        expect(
-            buyUtils.getAmountLimits({
-                request: fixtures.QUOTE_REQUEST_FIAT,
-                quotes: fixtures.MIN_MAX_QUOTES_OK,
-                currency,
-            }),
-        ).toBe(undefined);
-        expect(
-            buyUtils.getAmountLimits({
-                request: fixtures.QUOTE_REQUEST_CRYPTO,
-                quotes: fixtures.MIN_MAX_QUOTES_OK,
-                currency,
-            }),
-        ).toBe(undefined);
+    it.each([
+        [fixtures.QUOTE_REQUEST_FIAT, fixtures.MIN_MAX_QUOTES_OK, undefined],
+        [fixtures.QUOTE_REQUEST_CRYPTO, fixtures.MIN_MAX_QUOTES_OK, undefined],
+        [
+            fixtures.QUOTE_REQUEST_FIAT,
+            fixtures.MIN_MAX_QUOTES_LOW,
+            {
+                currency: 'EUR',
+                minFiat: '20',
+            },
+        ],
+        [
+            fixtures.QUOTE_REQUEST_CRYPTO,
+            fixtures.MIN_MAX_QUOTES_LOW,
+            {
+                currency: 'bitcoin',
+                minCrypto: '0.002',
+            },
+        ],
+        [
+            fixtures.QUOTE_REQUEST_FIAT,
+            fixtures.MIN_MAX_QUOTES_HIGH,
+            {
+                currency: 'EUR',
+                maxFiat: '17045',
+            },
+        ],
+        [
+            fixtures.QUOTE_REQUEST_CRYPTO,
+            fixtures.MIN_MAX_QUOTES_HIGH,
+            {
+                currency: 'bitcoin',
+                maxCrypto: '1.67212968',
+            },
+        ],
+        [
+            fixtures.QUOTE_REQUEST_CRYPTO,
+            fixtures.EMPTY_AMOUNT_QUOTES,
+            {
+                currency: 'bitcoin',
+                maxCrypto: '0.0001',
+            },
+        ],
+    ])('testing getAmountLimits function case %#', (request, quotes, expectedResult) => {
+        const amountLimits = buyUtils.getAmountLimits({ request, quotes, currency });
 
-        expect(
-            buyUtils.getAmountLimits({
-                request: fixtures.QUOTE_REQUEST_FIAT,
-                quotes: fixtures.MIN_MAX_QUOTES_LOW,
-                currency,
-            }),
-        ).toStrictEqual({
-            currency: 'EUR',
-            minFiat: '20',
-        });
-        expect(
-            buyUtils.getAmountLimits({
-                request: fixtures.QUOTE_REQUEST_CRYPTO,
-                quotes: fixtures.MIN_MAX_QUOTES_LOW,
-                currency,
-            }),
-        ).toStrictEqual({
-            currency: 'bitcoin',
-            minCrypto: '0.002',
-        });
-
-        expect(
-            buyUtils.getAmountLimits({
-                request: fixtures.QUOTE_REQUEST_FIAT,
-                quotes: fixtures.MIN_MAX_QUOTES_HIGH,
-                currency,
-            }),
-        ).toStrictEqual({
-            currency: 'EUR',
-            maxFiat: '17045',
-        });
-
-        expect(
-            buyUtils.getAmountLimits({
-                request: fixtures.QUOTE_REQUEST_CRYPTO,
-                quotes: fixtures.MIN_MAX_QUOTES_HIGH,
-                currency,
-            }),
-        ).toStrictEqual({
-            currency: 'bitcoin',
-            maxCrypto: '1.67212968',
-        });
-
-        expect(
-            buyUtils.getAmountLimits({
-                request: fixtures.QUOTE_REQUEST_CRYPTO,
-                quotes: fixtures.EMPTY_AMOUNT_QUOTES,
-                currency,
-            }),
-        ).toStrictEqual({
-            currency: 'bitcoin',
-            maxCrypto: '0.0001',
-        });
+        expect(amountLimits).toStrictEqual(expectedResult);
     });
 });
