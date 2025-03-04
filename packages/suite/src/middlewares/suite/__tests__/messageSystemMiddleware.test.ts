@@ -11,7 +11,6 @@ import WalletReducers from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import messageSystemMiddleware from '../messageSystemMiddleware';
-
 // Type annotation as workaround for type-check error "The inferred type of 'default' cannot be named..."
 const messageSystemReducer: Reducer = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);

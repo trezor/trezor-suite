@@ -1,5 +1,3 @@
-import { Reducer } from '@reduxjs/toolkit';
-
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { logsSlice } from '@suite-common/logger';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
@@ -19,7 +17,7 @@ import window from './windowReducer';
 
 const analytics = prepareAnalyticsReducer(extraDependencies);
 // Type annotation as workaround for type-check error "The inferred type of 'default' cannot be named..."
-const messageSystem: Reducer = prepareMessageSystemReducer(extraDependencies);
+const messageSystem = prepareMessageSystemReducer(extraDependencies);
 const device = prepareDeviceReducer(extraDependencies);
 
 export default {

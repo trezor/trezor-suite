@@ -6,6 +6,7 @@ import {
     renderHook,
     waitFor,
 } from '@suite-native/test-utils';
+import { StaticSessionId } from '@trezor/connect';
 
 import { ReceiveAccountsListMode, useReceiveAccountsListData } from '../useReceiveAccountsListData';
 
@@ -14,7 +15,7 @@ describe('useReceiveAccountsListData', () => {
         device: {
             selectedDevice: {
                 state: {
-                    staticSessionId: 'staticSessionId',
+                    staticSessionId: 'staticSessionId' as StaticSessionId,
                 },
             },
         },
@@ -200,7 +201,7 @@ describe('useReceiveAccountsListData', () => {
                 device: {
                     selectedDevice: {
                         state: {
-                            staticSessionId: 'staticSessionId',
+                            staticSessionId: 'staticSessionId' as StaticSessionId,
                         },
                     },
                 },

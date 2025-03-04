@@ -1,6 +1,8 @@
-import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
+import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
+import { AnyAction } from '@suite-common/redux-utils';
+import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     authConfirm,
@@ -42,7 +44,7 @@ const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (action.type === METADATA.SET_DEVICE_METADATA) return true;
     if (action.type === METADATA.SET_DEVICE_METADATA_PASSWORDS) return true;
 
-    if (Object.values(DEVICE).includes(action.type)) return true;
+    if (isAnyDeviceEventAction(action)) return true;
 
     return false;
 };

@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 
 import type { Protocol } from '@suite-common/suite-constants';
 

@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { isDeviceAcquired } from '@suite-common/suite-utils';

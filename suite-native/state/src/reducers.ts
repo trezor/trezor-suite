@@ -221,7 +221,7 @@ export const prepareRootReducers = async () => {
             discoveryConfig: discoveryConfigPersistedReducer,
             messageSystem: messageSystemPersistedReducer,
             tokenDefinitions: tokenDefinitionsReducer,
-        }),
+        } as const),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.
         persistedKeys: ['wallet', 'graph'],

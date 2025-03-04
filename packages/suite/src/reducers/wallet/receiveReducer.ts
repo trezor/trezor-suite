@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 
 import { ReceiveInfo } from '@suite-common/wallet-types';
 

@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-interface NativeFirmwareState {
+export interface NativeFirmwareState {
     isFirmwareInstallationRunning: boolean;
 }
 

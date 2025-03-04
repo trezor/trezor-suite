@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 
 import { RECOVERY } from 'src/actions/recovery/constants';
 import { SeedInputStatus } from 'src/actions/recovery/recoveryActions';

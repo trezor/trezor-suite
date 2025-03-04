@@ -2,7 +2,6 @@ import { testMocks } from '@suite-common/test-utils';
 import { isUnlocked, prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { extraDependencies } from 'src/support/extraDependencies';
-import { Action } from 'src/types/suite';
 
 import fixtures from '../__fixtures__/deviceReducer';
 
@@ -32,7 +31,7 @@ describe('DEVICE.CONNECT', () => {
             let state: State = f.initialState;
             // console.log('initialSTATE', state);
             f.actions.forEach(a => {
-                state = deviceReducer(state, a as Action);
+                state = deviceReducer(state, a);
             });
             // console.log('afterSTATE', state);
             expect(state.devices.length).toEqual(f.result.length);
@@ -48,7 +47,7 @@ describe('DEVICE.CHANGED', () => {
         it(f.description, () => {
             let state: State = f.initialState;
             f.actions.forEach(a => {
-                state = deviceReducer(state, a as Action);
+                state = deviceReducer(state, a);
             });
             expect(state.devices.length).toEqual(f.result.length);
             state.devices.forEach((device, i) => {
@@ -64,7 +63,7 @@ describe('DEVICE.DISCONNECT', () => {
             let state: State = f.initialState;
             f.actions.forEach(a => {
                 // intentionally use "undefined" as state to cover "initialState" line inside reducer
-                state = deviceReducer(state.devices.length === 0 ? undefined : state, a as Action);
+                state = deviceReducer(state.devices.length === 0 ? undefined : state, a);
             });
             expect(state.devices.length).toEqual(f.result.length);
             state.devices.forEach((device, i) => {
@@ -79,7 +78,7 @@ describe('SUITE.SELECT_DEVICE', () => {
         it(f.description, () => {
             let state: State = f.initialState;
             f.actions.forEach(a => {
-                state = deviceReducer(state, a as Action);
+                state = deviceReducer(state, a);
             });
             expect(state.devices.length).toEqual(f.result.length);
             // console.log('afterSTATE', state);
@@ -115,7 +114,7 @@ describe('SUITE.AUTH_DEVICE', () => {
         it(f.description, () => {
             let state: State = f.initialState;
             f.actions.forEach(a => {
-                state = deviceReducer(state, a as Action);
+                state = deviceReducer(state, a);
             });
             expect(state.devices.length).toEqual(f.result.length);
             state.devices.forEach((device, i) => {
@@ -130,7 +129,7 @@ describe('SUITE.FORGET_DEVICE', () => {
         it(f.description, () => {
             let state: State = f.initialState;
             f.actions.forEach(a => {
-                state = deviceReducer(state, a as Action);
+                state = deviceReducer(state, a);
             });
             expect(state.devices.length).toEqual(f.result.length);
             state.devices.forEach((device, i) => {
@@ -145,7 +144,7 @@ describe('SUITE.REMEMBER_DEVICE', () => {
         it(f.description, () => {
             let state: State = f.initialState;
             f.actions.forEach(a => {
-                state = deviceReducer(state, a as Action);
+                state = deviceReducer(state, a);
             });
             expect(state.devices.length).toEqual(f.result.length);
             state.devices.forEach((device, i) => {

@@ -1,7 +1,9 @@
+import { AnyAction } from '@suite-common/redux-utils';
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
-import { Device, KnownDevice, UnavailableCapability } from '@trezor/connect';
+import { DEVICE, Device, DeviceEvent, KnownDevice, UnavailableCapability } from '@trezor/connect';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
+import { isArrayMember } from '@trezor/utils';
 
 /**
  * Used in Welcome step in Onboarding
@@ -433,3 +435,6 @@ export const isDeviceWithButtons = (
     deviceModel: DeviceModelInternal,
 ): deviceModel is DeviceModelInternal.T1B1 | DeviceModelInternal.T2B1 | DeviceModelInternal.T3B1 =>
     deviceModel.at(2) === 'B';
+
+export const isAnyDeviceEventAction = (action: AnyAction): action is DeviceEvent =>
+    isArrayMember(action.type, Object.values(DEVICE));

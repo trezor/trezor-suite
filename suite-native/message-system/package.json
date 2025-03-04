@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "1.9.5",
+        "@reduxjs/toolkit": "2.6.0",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -26,6 +26,6 @@
         "react": "18.2.0",
         "react-native": "0.76.1",
         "react-native-reanimated": "^3.16.7",
-        "react-redux": "8.0.7"
+        "react-redux": "9.2.0"
     }
 }

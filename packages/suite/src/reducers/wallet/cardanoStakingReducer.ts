@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

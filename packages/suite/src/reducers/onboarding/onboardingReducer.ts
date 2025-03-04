@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 
 import { DEVICE } from '@trezor/connect';
 import { OnboardingAnalytics } from '@trezor/suite-analytics';

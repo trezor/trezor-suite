@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 
 import { accountsActions } from '@suite-common/wallet-core';
 

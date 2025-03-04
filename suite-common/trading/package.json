@@ -11,7 +11,7 @@
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "1.9.5",
+        "@reduxjs/toolkit": "2.6.0",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -22,7 +22,7 @@
         "@trezor/react-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
-        "react-redux": "8.0.7",
+        "react-redux": "9.2.0",
         "uuid": "^11.0.5"
     },
     "devDependencies": {

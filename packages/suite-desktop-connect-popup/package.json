@@ -9,7 +9,7 @@
         "type-check": "yarn g:tsc --build tsconfig.json"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "1.9.5",
+        "@reduxjs/toolkit": "2.6.0",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
@@ -22,6 +22,6 @@
     },
     "devDependencies": {
         "redux-mock-store": "^1.5.4",
-        "redux-thunk": "^2.4.2"
+        "redux-thunk": "^3.1.0"
     }
 }

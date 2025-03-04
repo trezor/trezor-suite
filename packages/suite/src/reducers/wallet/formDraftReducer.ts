@@ -1,6 +1,6 @@
 import { FieldValues } from 'react-hook-form';
 
-import produce from 'immer';
+import { produce } from 'immer';
 
 import { STORAGE } from 'src/actions/suite/constants';
 import { FORM_DRAFT } from 'src/actions/wallet/constants';

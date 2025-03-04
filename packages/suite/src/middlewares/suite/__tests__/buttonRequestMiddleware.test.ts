@@ -10,7 +10,7 @@ import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { configureStore } from 'src/support/tests/configureStore';
-import { Action } from 'src/types/suite';
+import { Action, Dispatch } from 'src/types/suite';
 
 const { getSuiteDevice } = testMocks;
 
@@ -44,8 +44,9 @@ const initStore = (state: State) => {
 describe('buttonRequest middleware', () => {
     it('see what happens on pin change call', async () => {
         const store = initStore(getInitialState());
-        await store.dispatch(connectInitThunk());
-        const call = store.dispatch(deviceSettingsActions.changePin({ remove: false }));
+        const dispatch = store.dispatch as Dispatch;
+        await dispatch(connectInitThunk());
+        const call = dispatch(deviceSettingsActions.changePin({ remove: false }));
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
         // fake few ui events, just like when user is changing PIN
         emitTestEvent(UI_EVENT, {

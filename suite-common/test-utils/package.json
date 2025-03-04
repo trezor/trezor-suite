@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "1.9.5",
+        "@reduxjs/toolkit": "2.6.0",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -20,7 +20,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*",
         "fake-indexeddb": "^4.0.2",
-        "redux": "^4.2.1",
-        "redux-thunk": "^2.4.2"
+        "redux": "^5.0.1",
+        "redux-thunk": "^3.1.0"
     }
 }

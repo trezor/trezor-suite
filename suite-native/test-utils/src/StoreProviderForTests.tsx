@@ -9,7 +9,7 @@ import { BasicProviderForTests } from './BasicProviderForTests';
 
 type ReduxProviderProps = {
     children: ReactNode;
-    preloadedState: PreloadedState;
+    preloadedState: Partial<PreloadedState>;
 };
 
 /*

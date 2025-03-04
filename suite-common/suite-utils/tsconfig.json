@@ -8,6 +8,7 @@
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/urls" }
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" }
     ]
 }

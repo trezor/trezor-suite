@@ -1,6 +1,7 @@
 import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
     accountsActions,
     authorizeDeviceThunk,
@@ -18,7 +19,7 @@ import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { DEVICE } from '@trezor/connect';
 
-import { isAnyDeviceEventAction, isDeviceEventAction } from '../utils';
+import { isDeviceEventAction } from '../utils';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (

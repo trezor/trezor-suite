@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 
 import { BackupStatus, ConfirmKey } from 'src/actions/backup/backupActions';
 import { BACKUP } from 'src/actions/backup/constants';

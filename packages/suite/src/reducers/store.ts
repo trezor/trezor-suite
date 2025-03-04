@@ -1,8 +1,13 @@
 /* eslint-disable import/order */
 // fixes bindActionCreators() https://github.com/reduxjs/redux-thunk/blob/e3d452948d5562b9ce871cc9391403219f83b4ff/extend-redux.d.ts#L11
-/// <reference types="redux-thunk/extend-redux" />
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import thunkMiddleware from 'redux-thunk';
+import {
+    DevToolsEnhancerOptions,
+    Dispatch,
+    Middleware,
+    Reducer,
+    combineReducers,
+    configureStore,
+} from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
 
 import { addLog } from '@suite-common/logger';
@@ -46,38 +51,41 @@ const rootReducer = combineReducers({
 
 export type AppState = ReturnType<typeof rootReducer>;
 
-const middleware = [
-    thunkMiddleware.withExtraArgument(extraDependencies),
-    toastMiddleware,
-    ...suiteMiddlewares,
-    ...walletMiddlewares,
-    ...onboardingMiddlewares,
-    ...backupMiddlewares,
-    ...recoveryMiddlewares,
-];
+const loggerExcludedActions = [addLog.type, accountsActions.updateAccount.type];
 
-const excludedActions = [addLog.type, accountsActions.updateAccountRefreshTimestamp.type];
+const getCustomMiddleware = () => {
+    const middleware = [
+        toastMiddleware,
+        ...suiteMiddlewares,
+        ...walletMiddlewares,
+        ...onboardingMiddlewares,
+        ...backupMiddlewares,
+        ...recoveryMiddlewares,
+    ];
 
-if (!isCodesignBuild()) {
-    const excludeLogger = (_getState: any, action: any): boolean =>
-        // exclude generated lifecycle actions
-        // https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions
-        !action?.meta?.requestId &&
-        // explicitly excluded actions
-        !excludedActions.some(act => action.type === act);
+    if (!isCodesignBuild()) {
+        const excludeLogger = (_getState: any, action: any): boolean =>
+            // exclude generated lifecycle actions
+            // https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions
+            !action?.meta?.requestId &&
+            // explicitly excluded actions
+            !loggerExcludedActions.some(act => action.type === act);
 
-    const logger = createLogger({
-        level: 'info',
-        predicate: excludeLogger,
-        collapsed: true,
-    });
-    middleware.push(logger);
-}
+        const logger = createLogger({
+            level: 'info',
+            predicate: excludeLogger,
+            collapsed: true,
+        });
+        middleware.push(logger);
+    }
 
-const devTools =
+    return middleware as Middleware<Dispatch, AppState>[];
+};
+
+const devTools: DevToolsEnhancerOptions | false =
     typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
         ? {
-              actionsBlacklist: excludedActions,
+              actionsDenylist: loggerExcludedActions,
           }
         : false;
 
@@ -87,6 +95,10 @@ const patchConfirm = (statePatch: any) =>
         `Trezor Suite is starting with partially predefined state. Press OK only if you intended to do that!\n\n` +
             JSON.stringify(statePatch, null, 4),
     );
+
+type RootReducerShape = typeof rootReducer;
+type PreloadedState = Partial<AppState>;
+type InferredAction = Parameters<RootReducerShape>[1];
 
 export const initStore = (
     preloadStoreAction?: PreloadStoreAction,
@@ -100,13 +112,20 @@ export const initStore = (
 
     const patchedState =
         preloadedState && statePatch && patchConfirm(statePatch)
-            ? mergeDeepObject.withOptions({ dotNotation: true }, preloadedState, statePatch)
+            ? mergeDeepObject.withOptions(
+                  { dotNotation: true },
+                  preloadedState,
+                  statePatch as Partial<AppState>,
+              )
             : preloadedState;
 
     return configureStore({
-        reducer: rootReducer,
+        reducer: rootReducer as Reducer<AppState, InferredAction, PreloadedState>,
         preloadedState: patchedState,
-        middleware,
+        middleware: getDefaultMiddleware =>
+            getDefaultMiddleware({
+                thunk: { extraArgument: extraDependencies },
+            }).concat(getCustomMiddleware()),
         devTools,
-    });
+    } as const);
 };

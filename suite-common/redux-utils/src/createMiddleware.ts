@@ -1,7 +1,8 @@
 import { ThunkDispatch } from '@reduxjs/toolkit';
-import { Action, AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
+import { Action, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
 import { ExtraDependencies } from './extraDependenciesType';
+import { AnyAction } from './types';
 
 interface SimpleMiddleware<TAction extends Action, TExtraMiddlewareAPI = {}> {
     (
@@ -17,7 +18,10 @@ export const createMiddleware =
     next =>
     action => {
         try {
-            return simpleMiddleware(action, { ...middlewareAPI, next });
+            return simpleMiddleware(action as TAction, {
+                ...middlewareAPI,
+                next: next as Dispatch,
+            });
         } catch (error) {
             console.error(error);
         }
@@ -34,7 +38,11 @@ export const createMiddlewareWithExtraDeps =
     next =>
     action => {
         try {
-            return simpleMiddleware(action, { ...middlewareAPI, extra, next });
+            return simpleMiddleware(action as TAction, {
+                ...middlewareAPI,
+                extra,
+                next: next as Dispatch,
+            });
         } catch (error) {
             console.error(error);
         }

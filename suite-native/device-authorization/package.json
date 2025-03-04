@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@react-navigation/native": "6.1.18",
-        "@reduxjs/toolkit": "1.9.5",
+        "@reduxjs/toolkit": "2.6.0",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -21,6 +21,6 @@
         "@suite-native/navigation": "workspace:*",
         "@trezor/connect": "workspace:*",
         "react": "18.2.0",
-        "react-redux": "8.0.7"
+        "react-redux": "9.2.0"
     }
 }

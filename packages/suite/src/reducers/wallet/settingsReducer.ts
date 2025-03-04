@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 
 import { networkSymbolCollection } from '@suite-common/wallet-config';
 import type { WalletSettings } from '@suite-common/wallet-types';

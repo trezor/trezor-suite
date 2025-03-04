@@ -7,6 +7,7 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/utils" }
     ],
     "include": [".", "**/*.json"]

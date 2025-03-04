@@ -1,5 +1,3 @@
-import { Middleware } from 'redux';
-
 import { testMocks } from '@suite-common/test-utils';
 import {
     createDiscoveryThunk,
@@ -155,7 +153,7 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const middlewares: Middleware<any, any>[] = [storageMiddleware];
+const middlewares = [storageMiddleware];
 
 const mockStore = configureStore<State, any>(middlewares);
 

@@ -1,9 +1,9 @@
 import { G } from '@mobily/ts-belt';
-import { AnyAction } from '@reduxjs/toolkit';
 import * as semver from 'semver';
 
+import { AnyAction } from '@suite-common/redux-utils';
 import { UnreachableCaseError } from '@suite-common/suite-utils';
-import { DEVICE, Device, DeviceEvent, VersionArray } from '@trezor/connect';
+import { Device, DeviceEvent, VersionArray } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 export const minimalSupportedFirmwareVersion = {
@@ -31,9 +31,6 @@ export const isFirmwareVersionSupported = (
 
     return semver.satisfies(versionString, `>=${minimalVersionString}`);
 };
-
-export const isAnyDeviceEventAction = (action: AnyAction): action is DeviceEvent =>
-    Object.values(DEVICE).includes(action.type);
 
 export const isDeviceEventAction = <T extends DeviceEvent['type']>(
     action: AnyAction,

@@ -1,17 +1,13 @@
 import { D } from '@mobily/ts-belt';
-import { configureStore } from '@reduxjs/toolkit';
 import {
-    Action,
-    AnyAction,
-    CombinedState,
-    Middleware,
-    PreloadedState,
+    Middleware as RTKMiddleware,
     Reducer,
     ReducersMapObject,
-} from 'redux';
+    configureStore,
+} from '@reduxjs/toolkit';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { ExtraDependenciesPartial, createMiddleware } from '@suite-common/redux-utils';
+import { AnyAction, ExtraDependenciesPartial, createMiddleware } from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
 import { extraDependenciesMock } from './extraDependenciesMock';
@@ -20,38 +16,47 @@ export const initPreloadedState = ({
     rootReducer,
     partialState,
 }: {
-    rootReducer: Reducer<any, any>;
-    partialState: PreloadedState<CombinedState<any>>;
+    rootReducer: Reducer<any, any, any>;
+    partialState: any;
 }) => mergeDeepObject(partialState, rootReducer(undefined, { type: 'test-init' }));
 
 /**
  * A mock store for testing Redux async action creators and middleware.
  */
-export function configureMockStore<S = any, A extends Action = AnyAction>({
+export function configureMockStore<S = any, A extends AnyAction = AnyAction>({
     middleware = [],
     extra = {},
     reducer = (state: any) => state,
     preloadedState,
     serializableCheck = {},
 }: {
-    middleware?: Middleware[];
+    middleware?: any[];
     extra?: ExtraDependenciesPartial;
-    reducer?: Reducer<S, A> | ReducersMapObject<S, A>;
-    preloadedState?: PreloadedState<CombinedState<S>>;
+    reducer?: Reducer<S, A, {}> | ReducersMapObject<S, A, {}>;
+    preloadedState?: any;
     serializableCheck?: { ignoredActions?: string[] };
 } = {}) {
     let actions: A[] = [];
 
     const actionLoggerMiddleware = createMiddleware((action, { next }) => {
-        if (action?.meta?.requestId) {
+        if (
+            action?.meta &&
+            typeof action.meta === 'object' &&
+            action.meta !== null &&
+            'requestId' in action.meta
+        ) {
             // requestId is generated random string, and it will break fixtures because they are static, so we remove it
-            if (action?.meta?.arg === undefined) {
+            if (!('arg' in action.meta) || action.meta.arg === undefined) {
                 // only requestId and requestStatus are left, remove meta completely
                 actions.push(D.deleteKey(action, 'meta') as any);
             } else {
                 actions.push({
                     ...action,
-                    meta: D.deleteKeys(action.meta, ['requestId', 'requestStatus']),
+                    meta: {
+                        ...action.meta,
+                        requestId: undefined,
+                        requestStatus: undefined,
+                    },
                 } as any);
             }
         } else {
@@ -70,7 +75,7 @@ export function configureMockStore<S = any, A extends Action = AnyAction>({
                 serializableCheck,
             })
                 .concat([actionLoggerMiddleware])
-                .concat(middleware),
+                .concat(middleware as RTKMiddleware[]),
         reducer,
         preloadedState,
     });
@@ -78,7 +83,7 @@ export function configureMockStore<S = any, A extends Action = AnyAction>({
     return {
         ...store,
         dispatch: store.dispatch as ThunkDispatch<S, any, A>,
-        getActions: () => actions,
+        getActions: () => actions as AnyAction[],
 
         clearActions: () => {
             actions = [];

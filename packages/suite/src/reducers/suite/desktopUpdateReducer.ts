@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 
 import { DesktopAppUpdateState as UpdateState } from '@suite-common/suite-constants';
 import { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';

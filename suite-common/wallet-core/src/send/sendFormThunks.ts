@@ -1,8 +1,7 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
-import { ActionsFromAsyncThunk } from '@reduxjs/toolkit/dist/matchers';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -28,7 +27,8 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import TrezorConnect, { Success } from '@trezor/connect';
+import TrezorConnect, { Success, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
+import { PushedTransaction } from '@trezor/connect/src/types/api/pushTransaction';
 import { cloneObject } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -129,6 +129,10 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
         });
     },
 );
+
+const isSuccessfullyPushedTransaction = (
+    results: SuccessWithDevice<PushedTransaction> | Unsuccessful,
+): results is SuccessWithDevice<PushedTransaction> => results.success;
 
 type CoinSpecificComposeResponse = ActionsFromAsyncThunk<
     | typeof composeBitcoinTransactionFeeLevelsThunk
@@ -310,7 +314,7 @@ export const pushSendFormTransactionThunk = createThunk<
               )} ${token.symbol!.toUpperCase()}`
             : formatNetworkAmount(spentWithoutFee, selectedAccount.symbol, true, areSatoshisUsed);
 
-        if (pushTxResponse.success) {
+        if (isSuccessfullyPushedTransaction(pushTxResponse)) {
             const { txid } = pushTxResponse.payload;
             dispatch(
                 notificationsActions.addToast({
@@ -339,7 +343,7 @@ export const pushSendFormTransactionThunk = createThunk<
             );
         }
 
-        return pushTxResponse.success
+        return isSuccessfullyPushedTransaction(pushTxResponse)
             ? fulfillWithValue(pushTxResponse)
             : rejectWithValue({
                   error: 'push-transaction-failed',
@@ -361,7 +365,7 @@ export const pushSendFormRawTransactionThunk = createThunk(
             identity: payload.identity,
         });
 
-        if (sentTx.success) {
+        if (isSuccessfullyPushedTransaction(sentTx)) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'raw-tx-sent',

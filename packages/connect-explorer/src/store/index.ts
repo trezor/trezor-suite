@@ -1,12 +1,13 @@
-import { applyMiddleware, compose, createStore } from 'redux';
+import { Middleware, applyMiddleware, compose, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
-import thunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 
 import { trezorConnectMiddleware } from '../middlewares/trezorConnectMiddleware';
 import { reducers } from '../reducers';
+import { AppState, Dispatch } from '../types';
 
 const enhancers: any[] = [];
-const middleware = [thunk, trezorConnectMiddleware];
+const middleware = [thunk, trezorConnectMiddleware] as Middleware<Dispatch, AppState>[];
 
 let composedEnhancers: any;
 if (process.env.NODE_ENV === 'development') {

@@ -11,10 +11,10 @@
         "test:unit": "yarn g:jest -c ../../jest.config.native.js"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "1.9.5",
+        "@reduxjs/toolkit": "2.6.0",
         "@suite-native/config": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "react-native": "0.76.1",
-        "react-redux": "8.0.7"
+        "react-redux": "9.2.0"
     }
 }

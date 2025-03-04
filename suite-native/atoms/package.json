@@ -13,7 +13,7 @@
     "dependencies": {
         "@gorhom/bottom-sheet": "5.0.5",
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "1.9.5",
+        "@reduxjs/toolkit": "2.6.0",
         "@shopify/flash-list": "^1.7.2",
         "@shopify/react-native-skia": "^1.11.6",
         "@suite-common/wallet-config": "workspace:*",

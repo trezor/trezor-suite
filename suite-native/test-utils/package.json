@@ -12,7 +12,7 @@
     "dependencies": {
         "@gorhom/bottom-sheet": "5.0.5",
         "@react-navigation/native": "6.1.18",
-        "@reduxjs/toolkit": "1.9.5",
+        "@reduxjs/toolkit": "2.6.0",
         "@suite-common/formatters": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@testing-library/react-native": "13.0.0",
@@ -21,6 +21,6 @@
         "react": "18.2.0",
         "react-native-keyboard-controller": "1.16.5",
         "react-native-safe-area-context": "^4.14.0",
-        "react-redux": "8.0.7"
+        "react-redux": "9.2.0"
     }
 }

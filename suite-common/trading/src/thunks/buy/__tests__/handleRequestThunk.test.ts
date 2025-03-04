@@ -68,7 +68,16 @@ describe('Testing handleRequestThunk', () => {
         const mockAbort = jest.fn();
         const mockAbortController: AbortController = {
             abort: mockAbort,
-            signal: {} as AbortSignal,
+            signal: {
+                addEventListener: jest.fn(),
+                removeEventListener: jest.fn(),
+                aborted: false,
+                onabort: jest.fn(),
+                reason: null,
+                throwIfAborted: jest.fn(),
+                any: jest.fn(),
+                dispatchEvent: jest.fn(),
+            } as AbortSignal,
         };
         jest.spyOn(global, 'AbortController').mockImplementation(() => mockAbortController);
         const mockAbortControllerRef = {

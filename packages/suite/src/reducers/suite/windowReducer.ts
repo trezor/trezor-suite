@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 
 import * as variables from '@trezor/components/src/config/variables'; // can't import from index cause it would import all UI components
 import { getNumberFromPixelString } from '@trezor/utils';

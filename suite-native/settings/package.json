@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "1.9.5",
+        "@reduxjs/toolkit": "2.6.0",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-native/atoms": "workspace:*",

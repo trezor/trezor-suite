@@ -12,7 +12,7 @@
     "dependencies": {
         "@react-navigation/native": "6.1.18",
         "@react-navigation/native-stack": "6.11.0",
-        "@reduxjs/toolkit": "1.9.5",
+        "@reduxjs/toolkit": "2.6.0",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",
@@ -36,6 +36,6 @@
         "react-native": "0.76.1",
         "react-native-reanimated": "^3.16.7",
         "react-native-svg": "^15.9.0",
-        "react-redux": "8.0.7"
+        "react-redux": "9.2.0"
     }
 }
