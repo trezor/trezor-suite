@@ -8,6 +8,7 @@ import {
     supportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
 import { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
+import { getSuiteVersion } from '@trezor/env-utils';
 import { PartialRecord } from '@trezor/type-utils';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
@@ -47,7 +48,10 @@ export const getSolNetworkForWalletSdk = (symbol: NetworkSymbol): SolNetworkConf
 export const selectSolanaWalletSdkNetwork = (symbol: NetworkSymbol, url?: string) => {
     const { network } = getSolNetworkForWalletSdk(symbol);
 
-    return new Solana(network, url);
+    return new Solana(network, {
+        rpc: url,
+        userAgent: `Trezor Suite ${getSuiteVersion()}`,
+    });
 };
 
 export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAccount[]) => {

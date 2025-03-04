@@ -22,6 +22,7 @@
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/env-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
     ]

@@ -1,6 +1,7 @@
 import { Network, Solana, isStake, stakeAccountState } from '@everstake/wallet-sdk-solana';
 
 import { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
+import { getSuiteVersion } from '@trezor/env-utils';
 
 const EVERSTAKE_VOTER_PUBKEYS = [
     '9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF', // mainnet
@@ -15,7 +16,10 @@ export const getSolanaStakingData = async (
 ): Promise<SolanaStakingAccount[]> => {
     const network = isTestnet ? Network.Devnet : Network.Mainnet;
 
-    const solanaClient = new Solana(network, serverUrl);
+    const solanaClient = new Solana(network, {
+        rpc: serverUrl,
+        userAgent: `Trezor Suite ${getSuiteVersion()}`,
+    });
 
     const delegations = await solanaClient.getDelegations(descriptor);
     if (!delegations || !delegations.result) {
