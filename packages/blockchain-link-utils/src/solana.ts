@@ -746,7 +746,7 @@ export const transformTransaction = (
               type,
           );
 
-    const unstakeAmount = isUnstakeTx ? getUnstakeAmount(tx) : undefined;
+    const stakeAmount = isUnstakeTx ? getUnstakeAmount(tx) : amount;
 
     const details = getDetails(tx, nativeEffects, accountAddress, type);
 
@@ -765,8 +765,12 @@ export const transformTransaction = (
         blockHash: tx.transaction.message.recentBlockhash,
         solanaSpecific: {
             status: 'confirmed',
-            stakeType,
-            unstakeAmount,
+            stakeOperation: stakeType
+                ? {
+                      type: stakeType,
+                      amount: stakeAmount,
+                  }
+                : undefined,
         },
     };
 };

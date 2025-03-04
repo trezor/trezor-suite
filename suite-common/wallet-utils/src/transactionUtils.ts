@@ -157,7 +157,7 @@ export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
         : undefined;
 
 export const isTxFeePaid = (tx: WalletAccountTransaction) => {
-    const showFeeRowForSolClaim = tx?.solanaSpecific?.stakeType === 'claim';
+    const showFeeRowForSolClaim = tx?.solanaSpecific?.stakeOperation?.type === 'claim';
 
     return (
         (!!tx.details.vin.find(vin => vin.isOwn || vin.isAccountOwned) && tx.type !== 'joint') ||

@@ -353,7 +353,7 @@ export const selectAccountStakeTypeTransactions = createMemoizedSelector(
             transactions.filter(
                 tx =>
                     isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId) ||
-                    !!tx?.solanaSpecific?.stakeType,
+                    !!tx?.solanaSpecific?.stakeOperation?.type,
             ),
         ),
 );

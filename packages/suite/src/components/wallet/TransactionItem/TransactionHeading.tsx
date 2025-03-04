@@ -133,7 +133,7 @@ export const TransactionHeading = ({
         );
     }
     // hide amount for solana unstake transactions
-    if (transaction?.solanaSpecific?.stakeType === 'unstake') {
+    if (transaction?.solanaSpecific?.stakeOperation?.type === 'unstake') {
         amount = null;
     }
 

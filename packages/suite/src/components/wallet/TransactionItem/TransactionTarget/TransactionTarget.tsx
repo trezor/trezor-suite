@@ -66,7 +66,7 @@ export const TransactionTarget = ({
         selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
     );
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
-    const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeType === 'unstake';
+    const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
 
     const amount = useMemo(() => {
         // hide amount for solana unstake transactions

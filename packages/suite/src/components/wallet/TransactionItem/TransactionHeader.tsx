@@ -99,7 +99,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
             </Row>
         );
     }
-    const solanaStakeType = transaction?.solanaSpecific?.stakeType;
+    const solanaStakeType = transaction?.solanaSpecific?.stakeOperation?.type;
     if (solanaStakeType) {
         return (
             <Row gap={spacings.xxs} overflow="hidden">
