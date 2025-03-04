@@ -2839,7 +2839,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION: {
         defaultMessage:
-            'Get started by receiving or buying {networkDisplaySymbol} or any token on the {networkName} network.',
+            'Get started by buying or receiving {networkDisplaySymbol} or any token on the {networkName} network.',
         id: 'TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION',
     },
     TR_GENERIC_ERROR_TITLE: {
@@ -3229,7 +3229,7 @@ export default defineMessages({
     },
     TR_XPUB_PHISHING_WARNING: {
         defaultMessage:
-            'To prevent phishing attacks, you should verify the public key on your Trezor. {claim}',
+            'To prevent phishing attacks, verify the public key on your Trezor. {claim}',
         id: 'TR_XPUB_PHISHING_WARNING',
     },
     TR_TOO_LONG: {
@@ -7393,7 +7393,7 @@ export default defineMessages({
     },
     TR_STAKING_STAKE_TITLE: {
         id: 'TR_STAKING_STAKE_TITLE',
-        defaultMessage: "Cardano staking isn't active",
+        defaultMessage: 'Cardano Staking is NOT Active',
     },
     TR_STAKING_STAKE_ADDRESS: {
         id: 'TR_STAKING_STAKE_ADDRESS',
@@ -7422,7 +7422,7 @@ export default defineMessages({
     TR_STAKING_YOUR_EARNINGS: {
         id: 'TR_STAKING_YOUR_EARNINGS',
         defaultMessage:
-            'Your earnings are automatically restaked, allowing you to earn <a>compound interest</a>.',
+            'Your rewards are automatically restaked, allowing you to earn <a>compound interest</a>.',
     },
     TR_STAKE_ON_EVERSTAKE: {
         id: 'TR_STAKE_ON_EVERSTAKE',
@@ -7496,12 +7496,12 @@ export default defineMessages({
     },
     TR_STAKING_ON_3RD_PARTY_TITLE: {
         id: 'TR_STAKING_ON_3RD_PARTY_TITLE',
-        defaultMessage: "You're delegating on a third-party stake pool",
+        defaultMessage: "You're delegating on a third-party staking pool",
     },
     TR_STAKING_ON_3RD_PARTY_DESCRIPTION: {
         id: 'TR_STAKING_ON_3RD_PARTY_DESCRIPTION',
         defaultMessage:
-            "By staking on a Trezor stake pool you're directly supporting Trezor and the Cardano ecosystem within Trezor Suite.",
+            "By staking with Trezor, you're directly supporting Trezor and the Cardano ecosystem within Trezor Suite.",
     },
     TR_STAKING_POOL_OVERSATURATED_TITLE: {
         id: 'TR_STAKING_POOL_OVERSATURATED_TITLE',
@@ -7544,7 +7544,7 @@ export default defineMessages({
     },
     TR_STAKING_GETTING_READY: {
         id: 'TR_STAKING_GETTING_READY',
-        defaultMessage: 'Your {networkDisplaySymbol} is preparing to enter',
+        defaultMessage: 'Time it takes to stake your {networkDisplaySymbol}',
     },
     TR_STAKING_REWARDS_ARE_RESTAKED: {
         id: 'TR_STAKING_REWARDS_ARE_RESTAKED',
@@ -7552,7 +7552,7 @@ export default defineMessages({
     },
     TR_STAKING_CONSOLIDATING_FUNDS: {
         id: 'TR_STAKING_CONSOLIDATING_FUNDS',
-        defaultMessage: 'Consolidating your {networkDisplaySymbol} for you',
+        defaultMessage: 'Time it takes to unstake your {networkDisplaySymbol}',
     },
     TR_STAKING_YOUR_UNSTAKED_FUNDS: {
         id: 'TR_STAKING_YOUR_UNSTAKED_FUNDS',
@@ -8781,7 +8781,7 @@ export default defineMessages({
     },
     TR_STAKE_ETH_EARN_REPEAT: {
         id: 'TR_STAKE_ETH_EARN_REPEAT',
-        defaultMessage: 'Stake. Earn rewards. Repeat.',
+        defaultMessage: 'Stake. Receive rewards. Repeat.',
     },
     TR_STAKE_ETH_SEE_MONEY_DANCE: {
         id: 'TR_STAKE_ETH_SEE_MONEY_DANCE',
@@ -8843,7 +8843,7 @@ export default defineMessages({
     TR_STAKE_ANY_AMOUNT_ETH: {
         id: 'TR_STAKE_ANY_AMOUNT_ETH',
         defaultMessage:
-            'Stake a minimum amount of {amount} {networkDisplaySymbol} and start earning rewards. With our current APY rate of {apyPercent}%, your rewards earn too!',
+            'Stake a minimum amount of {amount} {networkDisplaySymbol} and start receiving rewards. With our current APY rate of {apyPercent}%, your rewards earn too!',
     },
     TR_STAKE_LEARN_MORE: {
         id: 'TR_STAKE_LEARN_MORE',
@@ -8891,7 +8891,7 @@ export default defineMessages({
     },
     TR_STAKE_EARN_REWARDS_WEEKLY: {
         id: 'TR_STAKE_EARN_REWARDS_WEEKLY',
-        defaultMessage: 'Earn rewards weekly',
+        defaultMessage: 'Receive rewards weekly',
     },
     TR_STAKE_SIGN_UNSTAKING_TRANSACTION: {
         id: 'TR_STAKE_SIGN_UNSTAKING_TRANSACTION',
@@ -8922,7 +8922,7 @@ export default defineMessages({
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
         defaultMessage:
-            'Your rewards also count. Keep them staked and watch your {networkDisplaySymbol} rewards grow.',
+            'Keep your rewards staked and watch your {networkDisplaySymbol} grow even faster.',
     },
     TR_STAKE_AVAILABLE: {
         id: 'TR_STAKE_AVAILABLE',
@@ -8936,7 +8936,7 @@ export default defineMessages({
     TR_SOL_FEE_DESC: {
         id: 'TR_SOL_FEE_DESC',
         defaultMessage:
-            "Network Fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account's storage.",
+            'Network fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account’s storage.',
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
@@ -9081,7 +9081,7 @@ export default defineMessages({
     },
     TR_STAKE_STAKED_AND_EARNING: {
         id: 'TR_STAKE_STAKED_AND_EARNING',
-        defaultMessage: 'Staked & earning rewards',
+        defaultMessage: 'Staked & receiving rewards',
     },
     TR_STAKE_CLAIM_AFTER_UNSTAKING: {
         id: 'TR_STAKE_CLAIM_AFTER_UNSTAKING',
@@ -9167,7 +9167,7 @@ export default defineMessages({
     TR_STAKE_CAN_CLAIM_WARNING: {
         id: 'TR_STAKE_CAN_CLAIM_WARNING',
         defaultMessage:
-            'You can already claim {amount} {symbol}. {br}Claim now or wait until new unstake is processed.',
+            'You can already claim {amount} {symbol}. {br}Claim now or wait until your new unstake is processed.',
     },
     TR_STAKE_CLAIM_IN_NEXT_BLOCK: {
         id: 'TR_STAKE_CLAIM_IN_NEXT_BLOCK',
