@@ -17,7 +17,7 @@ export const cardanoAccountDetails = `
 `;
 
 export const cardanoStaking = `
-    - heading "Cardano Staking is NOT Active" [level=2]:
+    - heading "Cardano staking isn't active" [level=2]:
       - img
     - text: Staking Cardano is a great way to earn ADA staking rewards as a form of passive income for holding Cardano. By staking your ADA, you actively support the Cardano network and contribute to the stability of the network. Your stake address stake_test1uqyuj8h935q6panx0klttu026rzam0y9c2v97pv3l56uk3s5v5fjr You don't have enough funds on your account. The deposit fee is 2 ADA and is required to register your address to start staking. If you choose to unstake your Cardano you will get the deposit back.
     - button "Delegate" [disabled]:
