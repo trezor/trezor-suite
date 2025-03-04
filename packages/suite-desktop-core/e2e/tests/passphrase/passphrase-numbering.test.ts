@@ -14,10 +14,10 @@ test.describe('Passphrase numbering', { tag: ['@group=passphrase'] }, () => {
 
         // Add two hidden wallets
         await dashboardPage.openDeviceSwitcher();
-        await dashboardPage.addUnusedHiddenWallet(passphraseOne, { skipDiscovery: true });
+        await dashboardPage.addUnusedHiddenWallet(passphraseOne);
 
         await dashboardPage.openDeviceSwitcher();
-        await dashboardPage.addUnusedHiddenWallet(passphraseTwo, { skipDiscovery: true });
+        await dashboardPage.addUnusedHiddenWallet(passphraseTwo);
 
         // assert that wallet labels are correct
         await dashboardPage.openDeviceSwitcher();
@@ -32,7 +32,7 @@ test.describe('Passphrase numbering', { tag: ['@group=passphrase'] }, () => {
         // add standard and another hidden wallet
         await dashboardPage.addStandardWallet();
         await dashboardPage.openDeviceSwitcher();
-        await dashboardPage.addUnusedHiddenWallet(passphraseThree, { skipDiscovery: true });
+        await dashboardPage.addUnusedHiddenWallet(passphraseThree);
 
         // assert that wallet labels are correct
         await dashboardPage.openDeviceSwitcher();
