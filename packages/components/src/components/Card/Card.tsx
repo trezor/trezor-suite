@@ -36,6 +36,7 @@ export const allowedCardFrameProps = [
     'flex',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedCardFrameProps)[number]>;
+type Overflow = FrameProps['overflow'];
 
 type ContainerProps = {
     $fillType: FillType;
@@ -63,22 +64,23 @@ type CardContainerProps = {
     $isClickable: boolean;
     $variant?: CardVariant;
     $hasLabel: boolean;
+    $overflow: Overflow;
 };
 
 const CardContainer = styled.div<CardContainerProps>`
     position: relative;
     border-radius: ${borders.radii.md};
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
-    overflow: hidden;
+    overflow: ${({ $overflow }) => ($overflow)};
     transition:
         background 0.5s,
         border 0.5s,
         box-shadow 0.5s;
 
-    ${({ theme, $variant }) =>
+    ${({ theme, $variant, $overflow }) =>
         $variant &&
         css`
-            overflow: hidden;
+            overflow: ${$overflow};
 
             &::before {
                 content: '';
@@ -99,6 +101,7 @@ export type CardProps = AccessibilityProps &
         label?: ReactNode;
         paddingType?: PaddingType;
         fillType?: FillType;
+        contentOverflow?: Overflow,
         onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
         onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
         onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
@@ -111,6 +114,7 @@ export type CardProps = AccessibilityProps &
 export const Card = ({
     paddingType = 'normal',
     fillType = 'default',
+    contentOverflow = 'hidden',
     heading,
     label,
     onClick,
@@ -170,6 +174,7 @@ export const Card = ({
                 $fillType={fillType}
                 $isClickable={Boolean(onClick)}
                 $variant={variant}
+                $overflow={contentOverflow}
                 onClick={onClick}
                 onMouseEnter={onMouseEnter}
                 className={className}
