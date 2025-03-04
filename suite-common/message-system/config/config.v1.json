@@ -1,7 +1,7 @@
 {
     "version": 1,
     "timestamp": "2025-02-24T00:00:00+00:00",
-    "sequence": 81,
+    "sequence": 82,
     "actions": [
         {
             "conditions": [
@@ -292,6 +292,98 @@
                         "uk": "Оновити Suite"
                     }
                 }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "sol": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": ">25.2.1",
+                        "mobile": "!",
+                        "web": ">25.2.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T2B1",
+                            "firmware": "<2.8.9",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "<2.8.9",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "<2.8.9",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "<2.8.9",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "ccd7b443-1e0e-449e-b58f-affa0459a29d",
+                "priority": 93,
+                "dismissible": true,
+                "variant": "info",
+                "category": ["context"],
+                "content": {
+                    "en-GB": "For the best Solana staking experience, update your Trezor firmware to the latest version.",
+                    "en": "For the best Solana staking experience, update your Trezor firmware to the latest version.",
+                    "es": "Para la mejor experiencia de staking en Solana, actualiza el firmware de tu Trezor a la última versión.",
+                    "cs": "Aby byl váš staking na Solaně co nejefektivnější, aktualizujte firmware vašeho Trezoru na nejnovější verzi.",
+                    "ru": "Для наилучшего опыта стейкинга Solana обновите прошивку вашего Trezor до последней версии.",
+                    "ja": "最高のSolanaステーキング体験を得るために、Trezorのファームウェアを最新バージョンに更新してください。",
+                    "hu": "A legjobb Solana staking élményért frissítsd a Trezor firmware-ét a legújabb verzióra.",
+                    "it": "Per la migliore esperienza di staking su Solana, aggiorna il firmware del tuo Trezor all'ultima versione.",
+                    "fr": "Pour la meilleure expérience de staking sur Solana, mettez à jour le firmware de votre Trezor vers la dernière version.",
+                    "de": "Für das beste Solana-Staking-Erlebnis, aktualisiere die Firmware deines Trezor auf die neueste Version.",
+                    "tr": "En iyi Solana staking deneyimi için Trezor cihazınızın yazılımını en son sürüme güncelleyin.",
+                    "pt": "Para a melhor experiência de staking em Solana, atualize o firmware do seu Trezor para a versão mais recente.",
+                    "uk": "Для найкращого досвіду стейкінгу Solana оновіть прошивку свого Trezor до останньої версії."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "firmware-index",
+                    "label": {
+                        "en-GB": "Update now",
+                        "en": "Update now",
+                        "es": "Actualizar ahora",
+                        "cs": "Aktualizujte nyní",
+                        "ru": "Обновить сейчас",
+                        "ja": "今すぐアップデート",
+                        "hu": "Frissítés most",
+                        "it": "Aggiorna ora",
+                        "fr": "Mettre à jour maintenant",
+                        "de": "Jetzt aktualisieren",
+                        "tr": "Şimdi güncelle",
+                        "pt": "Atualizar agora",
+                        "uk": "Оновити зараз"
+                    }
+                },
+                "context": { "domain": "accounts.sol.staking" }
             }
         },
         {
@@ -1239,7 +1331,7 @@
                 "priority": 96,
                 "dismissible": true,
                 "variant": "critical",
-                "category": "banner",
+                "category": ["banner"],
                 "content": {
                     "en-GB": "Updating the firmware may wipe your Trezor. Verify your backup now to ensure you can recover your assets.",
                     "en": "Updating the firmware may wipe your Trezor. Verify your backup now to ensure you can recover your assets.",
