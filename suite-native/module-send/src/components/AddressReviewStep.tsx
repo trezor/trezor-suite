@@ -27,11 +27,9 @@ const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): Ordered
               iconBorderColor: 'borderElevation0',
           }
         : {
-              iconBackgroundColor: 'backgroundPrimaryDefault',
-              iconNumber: undefined,
               iconName: 'flagCheckered',
+              iconBackgroundColor: 'backgroundPrimaryDefault',
               iconColor: 'iconDefaultInverted',
-              iconSize: 'medium',
           };
 
 const cardStyle = prepareNativeStyle<{ isFinalStep: boolean }>((utils, { isFinalStep }) => ({

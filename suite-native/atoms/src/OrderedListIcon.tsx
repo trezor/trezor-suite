@@ -1,36 +1,26 @@
-import { G } from '@mobily/ts-belt';
 import { RequireExactlyOne } from 'type-fest';
 
-import { Icon, IconName, IconSize } from '@suite-native/icons';
+import { Icon, IconName, IconSize, getIconSize } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
 import { Box } from './Box';
 import { Text } from './Text';
 
-const iconBackgroundStyle = prepareNativeStyle<{ color: Color; borderColor: Color }>(
-    (utils, { color, borderColor }) => ({
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: utils.spacings.sp8,
-        borderRadius: utils.borders.radii.r12,
-        extend: [
-            {
-                condition: G.isNotNullable(color),
-                style: {
-                    backgroundColor: utils.colors[color],
-                },
-            },
-            {
-                condition: G.isNotNullable(borderColor),
-                style: {
-                    borderWidth: utils.borders.widths.small,
-                    borderColor: utils.colors[borderColor],
-                },
-            },
-        ],
-    }),
-);
+const iconBackgroundStyle = prepareNativeStyle<{
+    iconSize: number;
+    backgroundColor: Color;
+    borderColor: Color;
+}>((utils, { iconSize, backgroundColor, borderColor }) => ({
+    width: iconSize + 2 * (utils.spacings.sp8 + utils.borders.widths.small),
+    aspectRatio: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: utils.colors[backgroundColor],
+    borderRadius: utils.borders.radii.r12,
+    borderWidth: utils.borders.widths.small,
+    borderColor: utils.colors[borderColor],
+}));
 
 export type OrderedListIconProps = RequireExactlyOne<
     {
@@ -57,7 +47,8 @@ export const OrderedListIcon = ({
     return (
         <Box
             style={applyStyle(iconBackgroundStyle, {
-                color: iconBackgroundColor,
+                iconSize: getIconSize(iconSize),
+                backgroundColor: iconBackgroundColor,
                 borderColor: iconBorderColor,
             })}
         >

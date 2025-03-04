@@ -6,7 +6,8 @@ import { HStack } from './Stack';
 import { Text } from './Text';
 
 const listItemStyle = prepareNativeStyle(() => ({
-    width: '90%',
+    flexGrow: 1,
+    flexShrink: 1,
 }));
 
 type BottomSheetListItemProps = OrderedListIconProps & {
