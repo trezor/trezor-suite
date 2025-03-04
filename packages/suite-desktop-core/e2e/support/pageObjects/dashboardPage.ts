@@ -35,6 +35,8 @@ export class DashboardPage {
     readonly passphraseShowButton: Locator;
     readonly loading: Locator;
     readonly notificationNoBackupButton: Locator;
+    readonly openUnusedWalletButton1: Locator;
+    readonly openUnusedWalletButton2: Locator;
 
     constructor(
         private readonly page: Page,
@@ -64,6 +66,12 @@ export class DashboardPage {
         this.passphraseShowButton = this.page.getByTestId('@passphrase/show-toggle');
         this.loading = this.page.getByTestId('@dashboard/loading');
         this.notificationNoBackupButton = this.page.getByTestId('@notification/no-backup/button');
+        this.openUnusedWalletButton1 = this.page.getByTestId(
+            '@passphrase-confirmation/step1-open-unused-wallet-button',
+        );
+        this.openUnusedWalletButton2 = this.page.getByTestId(
+            '@passphrase-confirmation/step2-button',
+        );
     }
 
     @step()
@@ -122,12 +130,20 @@ export class DashboardPage {
     }
 
     @step()
-    async addUnusedHiddenWallet(passphrase: string, options?: { skipDiscovery?: boolean }) {
+    async addUnusedHiddenWallet(
+        passphrase: string,
+        // We are not waiting for discovery by expecting discovery bar to be visible for unused wallet
+        // Because sometime the suite is to fast and the discovery bar is not shown at all
+        // This would cause failure of the test even tho the flow completed successfully
+        options: { skipDiscovery?: boolean } = { skipDiscovery: true },
+    ) {
         await this.addHiddenWallet(passphrase, options);
-        await this.page
-            .getByTestId('@passphrase-confirmation/step1-open-unused-wallet-button')
-            .click({ timeout: 10_000 });
-        await this.page.getByTestId('@passphrase-confirmation/step2-button').click();
+        await expect(
+            this.openUnusedWalletButton1,
+            'Expected "Yes, open" button to be enabled. Unused wallet might not finished Discovery.',
+        ).toBeEnabled({ timeout: 30_000 });
+        await this.openUnusedWalletButton1.click();
+        await this.openUnusedWalletButton2.click();
         await this.passphraseInput.fill(passphrase);
         await this.passphraseSubmitButton.click();
 
