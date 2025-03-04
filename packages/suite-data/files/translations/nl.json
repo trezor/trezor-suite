@@ -18,6 +18,7 @@
   "BACKUP_BACKUP_ALREADY_FINISHED_HEADING": "Back-up is al voltooid",
   "BROADCAST": "Verzenden",
   "BROADCAST_TOOLTIP": "Verzend de transactie naar het netwerk.",
+  "BROADCAST_TOOLTIP_DISABLED_LOCKTIME": "Een transactie met een locktime die voorbij het huidige blok of tijdstempel is ingesteld, zal door het netwerk geweigerd worden.",
   "COPY_TRANSACTION_TO_CLIPBOARD": "Transactie naar klembord kopiëren",
   "CUSTOM_FEE_IS_NOT_INTEGER": "Vergoeding is geen geheel getal",
   "CUSTOM_FEE_IS_NOT_SET": "Vergoeding is niet ingesteld",
