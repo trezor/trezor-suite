@@ -6,7 +6,7 @@ import { FilterPropertiesByType } from '@trezor/type-utils';
  * see suite-native/device/src/config/firmware.ts for Suite Lite
  */
 
-type BehaviorBaseType = { shouldReport: boolean; debugOnly?: boolean };
+type BehaviorBaseType = { shouldReport: boolean };
 
 // will be ignored completely
 type SkippedBehavior = BehaviorBaseType & { type: 'skipped' };
@@ -45,9 +45,3 @@ export type SkippedHashCheckError = keyof FilterPropertiesByType<
 export const isSkippedHashCheckError = (
     error: FirmwareHashCheckError,
 ): error is SkippedHashCheckError => hashCheckErrorScenarios[error].type === 'skipped';
-
-export const isDebugOnlyRevisionCheckError = (error: FirmwareRevisionCheckError): boolean =>
-    (revisionCheckErrorScenarios[error] as RevisionErrorBehavior).debugOnly ?? false;
-
-export const isDebugOnlyHashCheckError = (error: FirmwareHashCheckError): boolean =>
-    (hashCheckErrorScenarios[error] as HashErrorBehavior).debugOnly ?? false;

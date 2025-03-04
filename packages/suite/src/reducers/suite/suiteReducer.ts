@@ -21,8 +21,6 @@ import type { Locale } from 'src/config/suite/languages';
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import {
     hashCheckErrorScenarios,
-    isDebugOnlyHashCheckError,
-    isDebugOnlyRevisionCheckError,
     isSkippedHashCheckError,
     revisionCheckErrorScenarios,
 } from 'src/constants/suite/firmware';
@@ -531,10 +529,6 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AppState) => {
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareRevisionCheck);
     if (isDisabledByMessageSystem) return null;
 
-    const isHiddenBehindDebug =
-        isDebugOnlyRevisionCheckError(revisionCheckError) && !selectIsDebugModeActive(state);
-    if (isHiddenBehindDebug) return null;
-
     return revisionCheckError;
 };
 
@@ -563,10 +557,6 @@ export const selectFirmwareHashCheckErrorIfEnabled = (state: AppState) => {
 
     const isDisabledByMessageSystem = selectIsFeatureDisabled(state, Feature.firmwareHashCheck);
     if (isDisabledByMessageSystem) return null;
-
-    const isHiddenBehindDebug =
-        isDebugOnlyHashCheckError(hashCheckError) && !selectIsDebugModeActive(state);
-    if (isHiddenBehindDebug) return null;
 
     if (
         hashCheckError === 'other-error' &&
