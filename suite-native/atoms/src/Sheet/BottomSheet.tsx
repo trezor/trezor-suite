@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { GestureResponderEvent, Pressable } from 'react-native';
+import { GestureResponderEvent, Platform, Pressable } from 'react-native';
 import { PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,7 +25,7 @@ type WrapperStyleProps = {
     insetBottom: number;
 };
 
-const DEFAULT_INSET_BOTTOM = 50;
+const DEFAULT_INSET_BOTTOM = Platform.OS === 'android' ? 48 : 0;
 
 const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation0,

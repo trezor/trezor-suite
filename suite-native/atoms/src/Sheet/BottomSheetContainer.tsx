@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
-import { KeyboardAvoidingView, Platform, Modal as RNModal } from 'react-native';
+import { Modal as RNModal } from 'react-native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 
 import { getWindowHeight, getWindowWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -37,18 +38,12 @@ export const BottomSheetContainer = ({
 
     return (
         <RNModal transparent visible={isVisible} onRequestClose={onClose}>
-            <>
-                <BottomSheetGestureHandler>
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={applyStyle(ContentWrapperStyle)}
-                    >
-                        {children}
-                    </KeyboardAvoidingView>
-                </BottomSheetGestureHandler>
-
-                {ExtraProvider && <ExtraProvider />}
-            </>
+            <BottomSheetGestureHandler>
+                <KeyboardAvoidingView behavior="height" style={applyStyle(ContentWrapperStyle)}>
+                    {children}
+                </KeyboardAvoidingView>
+            </BottomSheetGestureHandler>
+            {ExtraProvider && <ExtraProvider />}
         </RNModal>
     );
 };
