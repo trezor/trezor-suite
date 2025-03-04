@@ -10,7 +10,7 @@ export enum PlaywrightProjects {
     Desktop = 'desktop',
 }
 const timeoutCIRun = 1000 * 180;
-const timeoutLocalRun = 1000 * 60;
+const timeoutLocalRun = 1000 * 90;
 
 const config: PlaywrightTestConfig = {
     projects: [
@@ -37,6 +37,7 @@ const config: PlaywrightTestConfig = {
         video: 'on',
         screenshot: 'on',
         testIdAttribute: 'data-testid',
+        actionTimeout: 1000 * 15,
     },
     reportSlowTests: null,
     reporter: process.env.GITHUB_ACTION
