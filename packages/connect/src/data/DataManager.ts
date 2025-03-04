@@ -5,7 +5,7 @@ import coins from '@trezor/connect-common/files/coins.json';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
-import { parseFirmware } from './firmwareInfo';
+import { parseFirmwareReleases } from './firmwareInfo';
 import { ConnectSettings, DeviceModelInternal } from '../types';
 import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
 
@@ -46,7 +46,7 @@ export class DataManager {
             const modelType = DeviceModelInternal[model as keyof typeof DeviceModelInternal];
             // Check if the firmware data exists for this model
             if (this.assets[firmwareKey]) {
-                parseFirmware(this.assets[firmwareKey], modelType);
+                parseFirmwareReleases(this.assets[firmwareKey], modelType);
             }
         }
     }

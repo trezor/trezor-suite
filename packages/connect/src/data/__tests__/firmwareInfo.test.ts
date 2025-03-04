@@ -1,11 +1,11 @@
 import * as releases2 from '@trezor/connect-common/files/firmware/t2t1/releases.json';
 
 import { DeviceModelInternal } from '../../types';
-import { getFirmwareStatus, getReleases, parseFirmware } from '../firmwareInfo';
+import { getFirmwareStatus, getReleases, parseFirmwareReleases } from '../firmwareInfo';
 
 describe('data/firmwareInfo', () => {
     beforeEach(() => {
-        parseFirmware(releases2, DeviceModelInternal.T2T1);
+        parseFirmwareReleases(releases2, DeviceModelInternal.T2T1);
     });
 
     test('getReleases', () => {

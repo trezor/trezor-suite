@@ -24,7 +24,7 @@ const releases = Object.values(DeviceModelInternal).reduce(
     {} as Record<keyof typeof DeviceModelInternal, FirmwareRelease[] | undefined>,
 );
 
-export const parseFirmware = (json: any, deviceModel: DeviceModelInternal) => {
+export const parseFirmwareReleases = (json: any, deviceModel: DeviceModelInternal) => {
     Object.keys(json).forEach(key => {
         const release = json[key];
         releases[deviceModel]?.push({
