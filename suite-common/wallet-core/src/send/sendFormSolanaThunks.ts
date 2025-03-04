@@ -45,7 +45,8 @@ const calculate = (
         ? amountToSmallestUnit(token.balance!, token.decimals)
         : undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = availableTokenBalance || calculateMax(availableBalance, feeInLamports);
+        const feePlusRentInLamports = BigNumber(feeInLamports).plus(rent).toString()
+        max = availableTokenBalance || calculateMax(availableBalance, feePlusRentInLamports);
         amount = max;
     } else {
         amount = output.amount;
@@ -159,11 +160,11 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             amount: formState.outputs[0].amount,
             token: tokenInfo
                 ? {
-                      mint: tokenInfo.contract,
-                      program: tokenStandardToTokenProgramName(tokenInfo.type),
-                      decimals: tokenInfo.decimals,
-                      accounts: tokenInfo.accounts ?? [],
-                  }
+                    mint: tokenInfo.contract,
+                    program: tokenStandardToTokenProgramName(tokenInfo.type),
+                    decimals: tokenInfo.decimals,
+                    accounts: tokenInfo.accounts ?? [],
+                }
                 : undefined,
             blockHash,
             lastValidBlockHeight,
@@ -298,11 +299,11 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             amount: formState.outputs[0].amount,
             token: token
                 ? {
-                      mint: token.contract,
-                      program: tokenStandardToTokenProgramName(token.type),
-                      decimals: token.decimals,
-                      accounts: token.accounts ?? [],
-                  }
+                    mint: token.contract,
+                    program: tokenStandardToTokenProgramName(token.type),
+                    decimals: token.decimals,
+                    accounts: token.accounts ?? [],
+                }
                 : undefined,
             blockHash,
             lastValidBlockHeight,
@@ -333,8 +334,8 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             serialize: true,
             additionalInfo: transaction.payload.additionalInfo.tokenAccountInfo
                 ? {
-                      tokenAccountsInfos: [transaction.payload.additionalInfo.tokenAccountInfo],
-                  }
+                    tokenAccountsInfos: [transaction.payload.additionalInfo.tokenAccountInfo],
+                }
                 : undefined,
         });
 
