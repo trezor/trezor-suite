@@ -231,6 +231,8 @@ const getAccountInfo = async (
 
     const getAllTxIds = async (tokenAccountPubkeys: string[]) => {
         const sortedTokenAccountPubkeys = tokenAccountPubkeys.sort();
+        // limit to 100 accounts, loading too many would hit the rpc limit
+        sortedTokenAccountPubkeys.splice(100);
 
         const allAccounts = [payload.descriptor, ...sortedTokenAccountPubkeys];
 
