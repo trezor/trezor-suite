@@ -10,6 +10,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
+        "@trezor/node-utils": "workspace:*",
         "chalk": "^4.1.2",
         "dotenv": "^16.4.1",
         "fs-extra": "^11.2.0",

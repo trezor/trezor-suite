@@ -8,7 +8,7 @@
     "main": "dist/app.js",
     "scripts": {
         "dev": "yarn clean && LAUNCH_ELECTRON=true yarn run dev:local",
-        "dev:run": "yarn electron .",
+        "dev:run": "yarn electron . ",
         "dev:prepare": "yarn build:app:dev",
         "dev:local": "yarn workspace @trezor/suite-build run dev:desktop",
         "clean": "yarn g:rimraf ./build-electron && yarn g:rimraf ./build && yarn g:rimraf ./dist",

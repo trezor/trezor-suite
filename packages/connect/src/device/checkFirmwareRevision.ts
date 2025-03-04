@@ -31,7 +31,8 @@ type GetOnlineReleaseMetadataParams = {
     internalModel: string;
 };
 
-const getOnlineReleaseMetadata = async ({
+// TODO(karliatto): check this ???
+export const getOnlineReleaseMetadata = async ({
     firmwareVersion,
     internalModel,
 }: GetOnlineReleaseMetadataParams): Promise<FirmwareRelease | undefined> => {

@@ -19,8 +19,10 @@ export const clearAppCache = () =>
  * Local development: @trezor/suite-desktop-local
  */
 export const initUserData = () => {
+    console.log('initUserData');
     if (isDevEnv) {
         const userDataDirDefault = app.getPath('userData');
+        console.log('userDataDirDefault', userDataDirDefault);
         const userDataDir = `${userDataDirDefault}-local`;
         try {
             fs.accessSync(userDataDir, fs.constants.R_OK);
@@ -58,6 +60,7 @@ export const save = async (
 
 export const read = async (directory: string, name: string): Promise<InvokeResult<string>> => {
     const dir = path.join(app.getPath('userData'), directory);
+    console.log('dir', dir);
     const file = path.join(dir, name);
 
     try {

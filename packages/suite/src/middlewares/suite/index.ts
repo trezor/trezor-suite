@@ -10,6 +10,7 @@ import events from './eventsMiddleware';
 import metadata from './metadataMiddleware';
 import messageSystem from './messageSystemMiddleware';
 import protocol from './protocolMiddleware';
+import firmware from './firmwareMiddleware';
 import router from './routerMiddleware';
 import sentry from './sentryMiddleware';
 
@@ -24,6 +25,7 @@ export default [
     metadata,
     messageSystem,
     protocol,
+    firmware,
     router,
     sentry,
 ];

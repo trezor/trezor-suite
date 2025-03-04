@@ -17,6 +17,7 @@ import {
     isStrictFeatures,
     isValidReleases,
 } from '../utils/firmwareUtils';
+import { downloadReleasesMetadata } from './downloadReleasesMetadata';
 
 // undefined releases should never happen for official firmware, only custom
 const releases = Object.values(DeviceModelInternal).reduce(
@@ -24,7 +25,14 @@ const releases = Object.values(DeviceModelInternal).reduce(
     {} as Record<keyof typeof DeviceModelInternal, FirmwareRelease[] | undefined>,
 );
 
-export const parseFirmware = (json: any, deviceModel: DeviceModelInternal) => {
+// `releasesRemoteLatest` is collecting the releases.json from data.trezor.io
+// we keep the original `releases that was bundled.
+const releasesRemoteLatest = Object.values(DeviceModelInternal).reduce(
+    (acc, key) => ({ ...acc, [key]: [] }),
+    {} as Record<keyof typeof DeviceModelInternal, FirmwareRelease[] | undefined>,
+);
+
+export const fillFirmwareReleases = (json: any, deviceModel: DeviceModelInternal) => {
     Object.keys(json).forEach(key => {
         const release = json[key];
         releases[deviceModel]?.push({
@@ -33,7 +41,25 @@ export const parseFirmware = (json: any, deviceModel: DeviceModelInternal) => {
     });
 };
 
-export const getReleases = (deviceModel: DeviceModelInternal) => releases[deviceModel] || [];
+export const fillFirmwareReleasesRemoteLatest = (json: any, deviceModel: DeviceModelInternal) => {
+    Object.keys(json).forEach(key => {
+        const release = json[key];
+        releasesRemoteLatest[deviceModel]?.push({
+            ...release,
+        });
+    });
+};
+
+console.log('releasesRemoteLatest', releasesRemoteLatest);
+
+// TODO(karliatto): we use just for dev releasesRemoteLatest but it should have a logic to decide what to use.
+export const getReleases = (deviceModel: DeviceModelInternal) =>
+    releasesRemoteLatest[deviceModel] || [];
+
+export const getLatestReleases = async (deviceModel: DeviceModelInternal) => {
+    const latestReleases = await downloadReleasesMetadata({ internal_model: deviceModel });
+    return latestReleases;
+};
 
 const getChangelog = (releases2: FirmwareRelease[], features: StrictFeatures) => {
     // releases are already filtered, so they can be considered "safe".
@@ -248,7 +274,8 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
     };
 };
 
-export const getFirmwareStatus = (features: Features) => {
+// TODO(karliatto): this was not async before. If we try to load  latest releases we will make it async.
+export const getFirmwareStatus = async (features: Features) => {
     // indication that firmware is not installed at all. This information is set to false in bl mode. Otherwise it is null.
     if (features.firmware_present === false) {
         return 'none';
@@ -258,6 +285,8 @@ export const getFirmwareStatus = (features: Features) => {
     if (features.major_version === 1 && features.bootloader_mode) {
         return 'unknown';
     }
+
+    // const latestRelease = await getLatestReleases(features.internal_model);
 
     const info = getInfo({
         features,

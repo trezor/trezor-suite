@@ -42,6 +42,7 @@ import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
 import { InteractionTimeout } from '../utils/interactionTimeout';
 import { createPopupPromiseManager } from '../utils/popupPromiseManager';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
+// import { getLatestReleases, getReleases } from '../data/firmwareInfo';
 
 // custom log
 const _log = initLog('Core');
@@ -338,6 +339,8 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         sendCoreMessage(createUiMessage(UI.DEVICE_NEEDS_BACKUP, device.toMessageObject()));
     }
 
+    // TODO(karliatto): this is interesting where is `firmwareStatus` gettign updated?
+    // TODO(karliatto): if this was outdated in desktop it will compare it to the local latest, but it should real latest from remote
     // notify if firmware is outdated but not required
     if (device.firmwareStatus === 'outdated') {
         // wait for popup handshake
@@ -975,6 +978,7 @@ const handleDeviceSelectionChanges = (context: CoreContext, interruptDevice?: De
             );
         }
     }
+    // TODO(karliatto): add here check for new versions of the device.
 
     // device was disconnected, interrupt pending uiPromises for this device
     if (interruptDevice) {
@@ -984,6 +988,26 @@ const handleDeviceSelectionChanges = (context: CoreContext, interruptDevice?: De
         if (shouldClosePopup) {
             closePopup(context);
             cleanup(context);
+        }
+    }
+};
+
+const handleDeviceChanged = async (context: CoreContext) => {
+    const { deviceList } = context;
+
+    // TODO: do we care if it is deviceList.isConnected() ???
+    // if device needs firmware update it is flagged as not connected
+    if (deviceList.isConnected()) {
+        const onlyDevice = deviceList.getOnlyDevice();
+        if (onlyDevice) {
+            // const version = onlyDevice.getVersion();
+            // const releases = getReleases(onlyDevice.features?.internal_model);
+            // const [lastLocalRelease] = releases;
+            // const lastLocalVersion = lastLocalRelease.version;
+            // const [latestReleases] = await getLatestReleases(onlyDevice.features?.internal_model);
+            // const lastestVersion = latestReleases.version;
+            // const baseUrl = DataManager.getSettings('binFilesBaseUrl');
+            // // if (lastLocalVersion)
         }
     }
 };
@@ -1007,6 +1031,8 @@ const initDeviceList = (context: CoreContext) => {
     });
 
     deviceList.on(DEVICE.CHANGED, device => {
+        // TODO(KARLIATTO): maybe this is better place to wait for device firwmare update.
+        handleDeviceChanged(context);
         sendCoreMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
     });
 

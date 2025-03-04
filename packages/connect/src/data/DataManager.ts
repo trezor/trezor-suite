@@ -5,9 +5,10 @@ import coins from '@trezor/connect-common/files/coins.json';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
-import { parseFirmware } from './firmwareInfo';
+import { fillFirmwareReleases, fillFirmwareReleasesRemoteLatest } from './firmwareInfo';
 import { ConnectSettings, DeviceModelInternal } from '../types';
 import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
+import { downloadReleasesMetadata } from './downloadReleasesMetadata';
 
 type AssetCollection = { [key: string]: Record<string, any> };
 
@@ -17,7 +18,8 @@ export class DataManager {
     private static settings: ConnectSettings;
     private static messages: Record<string, any> = messages;
 
-    static load(settings: ConnectSettings, withAssets = true) {
+    static async load(settings: ConnectSettings, withAssets = true) {
+        console.log('load in DataManager');
         this.settings = settings;
 
         if (!withAssets) return;
@@ -46,7 +48,12 @@ export class DataManager {
             const modelType = DeviceModelInternal[model as keyof typeof DeviceModelInternal];
             // Check if the firmware data exists for this model
             if (this.assets[firmwareKey]) {
-                parseFirmware(this.assets[firmwareKey], modelType);
+                fillFirmwareReleases(this.assets[firmwareKey], modelType);
+            }
+            if (!['unknown', 't3w1'].includes(model.toLowerCase())) {
+                // Try to get the releases from data url. so we have latest one, while keeping the bundleded ones.
+                const latestReleases = await downloadReleasesMetadata({ internal_model: model });
+                fillFirmwareReleasesRemoteLatest(latestReleases, modelType);
             }
         }
     }

@@ -226,6 +226,8 @@ const getBinaryHelper = (
         throw ERRORS.TypedError('Runtime', 'device.firmwareRelease is not set');
     }
 
+    // TODO(karliatto): latest version comes from device.firmwareRelease
+
     const {
         intermediaryVersion,
         release: { version },
@@ -284,6 +286,7 @@ const getBinaryHelper = (
 };
 
 export type Params = {
+    downloadFilePath?: string;
     language?: string;
     baseUrl?: string;
     btcOnly?: boolean;
@@ -308,6 +311,12 @@ export const onCallFirmwareUpdate = async ({
     context: { deviceList, postMessage, initDevice, log, abortSignal },
 }: OnCallFirmwareUpdateParams): Promise<FirmwareUpdateResponse> => {
     log.debug('onCallFirmwareUpdate with params: ', params);
+
+    if (params.downloadFilePath) {
+        // TODO(karliatto): at this point download the required binary to the provided downloadFilePath.
+        // If downloadFilePath was provided it will do nothing else, just download to the path.???
+        // return;
+    }
 
     const device = await initDevice(params?.device?.path);
     if (deviceList.getDeviceCount() > 1) {

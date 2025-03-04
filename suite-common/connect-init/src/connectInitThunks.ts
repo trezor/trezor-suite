@@ -150,6 +150,8 @@ export const connectInitThunk = createThunk(
             ? extra.selectors.selectDesktopBinDir(getState())
             : DATA_URL;
 
+        console.log('binFilesBaseUrl in connectInitThunk', binFilesBaseUrl);
+
         try {
             await TrezorConnect.init({
                 ...connectInitSettings,

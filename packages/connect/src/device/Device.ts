@@ -14,6 +14,8 @@ import {
     versionUtils,
 } from '@trezor/utils';
 
+import { downloadFile } from '@trezor/node-utils';
+
 import { DeviceCommands } from './DeviceCommands';
 import { ERRORS, FIRMWARE, PROTO } from '../constants';
 import { IStateStorage } from './StateStorage';
@@ -626,8 +628,45 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 );
             }
         }
+        // TODO(karliatto): Maybe at this point we want to download the firmware binaries if they are not there yet.
+
+        console.log(
+            'This is right before checking firmware hash, maybe it is good moment to download latest if not present.',
+        );
+        console.log('options', options);
+        // TODO(karliatto): we should find a way to use app.getPath('userData') to get the config dir.
+        // /home/user/.config/@trezor/suite-desktop-dev
+        const firmwareVersion = this.getVersion();
+        console.log('firmwareVersion', firmwareVersion);
+        if (firmwareVersion) {
+            const release = getReleases(this.features.internal_model).find(r =>
+                versionUtils.isEqual(r.version, firmwareVersion),
+            );
+            const btcOnly = false;
+            const ALL_SLASHES_AT_THE_END_REGEX = /\/+$/;
+
+            if (release) {
+                const baseUrl = 'https://data.trezor.io/';
+                const fwUrl = release[btcOnly ? 'url_bitcoinonly' : 'url'];
+                const sanitizedBaseUrl = baseUrl.replace(ALL_SLASHES_AT_THE_END_REGEX, '');
+                // TODO(karliatto): this is just a dev hack, it should probably fix differently, why the bundle releases do not contain
+                // TODO(karliatto): Probably the best would be to handle it in suite-desktop-core and from connect just send event to order it.
+                const justDevFwUrl = fwUrl ? fwUrl.replace('data/', '') : '';
+                console.log('sanitizedBaseUrl', sanitizedBaseUrl);
+                console.log('justDevFwUrl', justDevFwUrl);
+                const url = `${sanitizedBaseUrl}/${justDevFwUrl}`;
+
+                console.log('url', url);
+
+                const filePath = `/home/user/.config/@trezor/suite-desktop-dev/firmwares/trezor-${this.features.internal_model}-${firmwareVersion.join('.')}.bin`;
+
+                const response = await downloadFile(url, filePath);
+                console.log('response', response);
+            }
+        }
 
         if (!options.skipFirmwareChecks) {
+            // TODO(karliatto): this might have to be checked with online firmware?
             await this.checkFirmwareHashWithRetries();
             await this.checkFirmwareRevisionWithRetries();
         }
@@ -768,7 +807,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         const { message } = await this.getCommands().typedCall('Initialize', 'Features', payload);
-        this._updateFeatures(message);
+        await this._updateFeatures(message);
         this.setState({ deriveCardano: payload?.derive_cardano });
     }
 
@@ -816,6 +855,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         });
 
         const baseUrl = DataManager.getSettings('binFilesBaseUrl');
+        console.log('baseUrl in checkFirmwareHash', baseUrl);
         const enabled = DataManager.getSettings('enableFirmwareHashCheck');
         if (!enabled || baseUrl === undefined) return createFailResult('check-skipped');
 
@@ -831,6 +871,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const release = getReleases(this.features.internal_model).find(r =>
             versionUtils.isEqual(r.version, firmwareVersion),
         );
+        console.log('release in device.ts', release);
         // if version is expected to support hash check, but the release is unknown, then firmware is considered unofficial
         if (release === undefined) return createFailResult('unknown-release');
 
@@ -987,7 +1028,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return response.message;
     }
 
-    private _updateFeatures(feat: Features) {
+    private async _updateFeatures(feat: Features) {
         const capabilities = parseCapabilities(feat);
         feat.capabilities = capabilities;
         // GetFeatures doesn't return 'session_id'
@@ -1027,7 +1068,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 });
             }
             this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
-            this._firmwareStatus = getFirmwareStatus(feat);
+            this._firmwareStatus = await getFirmwareStatus(feat);
             this._firmwareRelease = getRelease(feat);
 
             this.availableTranslations = this.firmwareRelease?.translations ?? [];

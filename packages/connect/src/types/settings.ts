@@ -35,6 +35,8 @@ export interface ConnectSettingsPublic {
     _sessionsBackgroundUrl?: null | string;
     // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;
+    // TODO(karliatto): maybe we want to add a new setting that would be:
+    // binFilesLocal?: string;
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.
     enableFirmwareHashCheck?: boolean;
 }
