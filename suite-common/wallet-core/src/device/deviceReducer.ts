@@ -33,7 +33,7 @@ import {
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
-export type State = {
+export type DeviceReducerState = {
     devices: TrezorDevice[];
     selectedDevice?: TrezorDevice;
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
@@ -43,10 +43,10 @@ export type State = {
     };
 };
 
-const initialState: State = { devices: [], selectedDevice: undefined };
+const initialState: DeviceReducerState = { devices: [], selectedDevice: undefined };
 
 export type DeviceRootState = {
-    device: State;
+    device: DeviceReducerState;
 };
 
 // Use the negated form as it better fits the call sites.
@@ -132,11 +132,15 @@ const getShouldUseEmptyPassphrase = (
 };
 /**
  * Action handler: DEVICE.CONNECT + DEVICE.CONNECT_UNACQUIRED
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @param {Device} device
  * @returns
  */
-const connectDevice = (draft: State, device: Device, settings: ConnectDeviceSettings) => {
+const connectDevice = (
+    draft: DeviceReducerState,
+    device: Device,
+    settings: ConnectDeviceSettings,
+) => {
     // connected device is unacquired/unreadable
     if (!device.features) {
         // check if device already exists in reducer
@@ -231,13 +235,13 @@ const connectDevice = (draft: State, device: Device, settings: ConnectDeviceSett
 
 /**
  * Action handler: DEVICE.CHANGED
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @param {(Device | TrezorDevice)} device
  * @param {Partial<AcquiredDevice>} [extended]
  * @returns
  */
 const changeDevice = (
-    draft: State,
+    draft: DeviceReducerState,
     device: Device | TrezorDevice,
     extended?: Partial<AcquiredDevice>,
 ) => {
@@ -299,10 +303,10 @@ const changeDevice = (
 
 /**
  * Action handler: DEVICE.DISCONNECT
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @param {Device} device
  */
-const disconnectDevice = (draft: State, device: TrezorDevice) => {
+const disconnectDevice = (draft: DeviceReducerState, device: TrezorDevice) => {
     // find all devices with "path"
     const affectedDevices = draft.devices.filter(d => d.path === device.path);
     affectedDevices.forEach(d => {
@@ -321,11 +325,11 @@ const disconnectDevice = (draft: State, device: TrezorDevice) => {
 
 /**
  * Action handler: SUITE.SELECT_DEVICE
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @param {TrezorDevice} [device]
  * @returns
  */
-const updateTimestamp = (draft: State, device?: TrezorDevice) => {
+const updateTimestamp = (draft: DeviceReducerState, device?: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
@@ -336,14 +340,14 @@ const updateTimestamp = (draft: State, device?: TrezorDevice) => {
 
 /**
  * Action handler: SUITE.RECEIVE_PASSPHRASE_MODE + SUITE.UPDATE_PASSPHRASE_MODE
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @param {TrezorDevice} device
  * @param {boolean} hidden
  * @param {boolean} [alwaysOnDevice=false]
  * @returns
  */
 const changePassphraseMode = (
-    draft: State,
+    draft: DeviceReducerState,
     device: TrezorDevice,
     hidden: boolean,
     alwaysOnDevice = false,
@@ -369,12 +373,12 @@ const changePassphraseMode = (
 
 /**
  * Action handler: SUITE.AUTH_DEVICE
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @param {TrezorDevice} device
  * @param {DeviceState} state
  * @returns
  */
-const authDevice = (draft: State, device: TrezorDevice, state: DeviceState) => {
+const authDevice = (draft: DeviceReducerState, device: TrezorDevice, state: DeviceState) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
@@ -386,11 +390,11 @@ const authDevice = (draft: State, device: TrezorDevice, state: DeviceState) => {
 
 /**
  * Action handler: SUITE.AUTH_FAILED
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @param {TrezorDevice} device
  * @returns
  */
-const authFailed = (draft: State, device: TrezorDevice) => {
+const authFailed = (draft: DeviceReducerState, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
@@ -401,10 +405,10 @@ const authFailed = (draft: State, device: TrezorDevice) => {
 /**
  * Action handler: authorizeDeviceThunk.pending
  * Reset authFailed flag
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @returns
  */
-const resetAuthFailed = (draft: State) => {
+const resetAuthFailed = (draft: DeviceReducerState) => {
     const device = draft.selectedDevice;
     // only acquired devices
     if (!device || !device.features) return;
@@ -415,12 +419,12 @@ const resetAuthFailed = (draft: State) => {
 
 /**
  * Action handler: SUITE.RECEIVE_AUTH_CONFIRM
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @param {TrezorDevice} device
  * @param {boolean} success
  * @returns
  */
-const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
+const authConfirm = (draft: DeviceReducerState, device: TrezorDevice, success: boolean) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
@@ -432,11 +436,11 @@ const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
 
 /**
  * Action handler: SUITE.CREATE_DEVICE_INSTANCE
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @param {TrezorDevice} device
  * @returns
  */
-const createInstance = (draft: State, device: TrezorDevice) => {
+const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
     // only acquired devices
     if (!device || !device.features) return;
 
@@ -462,12 +466,12 @@ const createInstance = (draft: State, device: TrezorDevice) => {
 /**
  * Action handler: SUITE.REMEMBER_DEVICE
  * Set `remember` field for a single device instance
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @param {TrezorDevice} device
  * @param {boolean} remember
  */
 const remember = (
-    draft: State,
+    draft: DeviceReducerState,
     device: TrezorDevice,
     shouldRemember: boolean,
     forceRemember?: true,
@@ -486,11 +490,15 @@ const remember = (
 /**
  * Action handler: SUITE.FORGET_DEVICE
  * Remove all device instances
- * @param {State} draft
+ * @param {DeviceReducerState} draft
  * @param {TrezorDevice} device
  * @returns
  */
-const forget = (draft: State, device: TrezorDevice, settings: ConnectDeviceSettings) => {
+const forget = (
+    draft: DeviceReducerState,
+    device: TrezorDevice,
+    settings: ConnectDeviceSettings,
+) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
@@ -520,7 +528,7 @@ const forget = (draft: State, device: TrezorDevice, settings: ConnectDeviceSetti
 };
 
 const addButtonRequest = (
-    draft: State,
+    draft: DeviceReducerState,
     device: TrezorDevice | undefined,
     buttonRequest: ButtonRequest,
 ) => {
@@ -534,7 +542,7 @@ const addButtonRequest = (
 };
 
 const removeButtonRequests = (
-    draft: State,
+    draft: DeviceReducerState,
     device?: TrezorDevice,
     buttonRequestCode?: ButtonRequest['code'],
 ) => {
@@ -555,7 +563,7 @@ const removeButtonRequests = (
 };
 
 export const setDeviceAuthenticity = (
-    draft: State,
+    draft: DeviceReducerState,
     device: TrezorDevice,
     result?: StoredAuthenticateDeviceResult,
 ) => {

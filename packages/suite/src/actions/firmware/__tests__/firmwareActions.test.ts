@@ -1,6 +1,6 @@
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { testMocks } from '@suite-common/test-utils';
-import { State as DeviceState } from '@suite-common/wallet-core';
+import { DeviceReducerState } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/connect';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
@@ -16,7 +16,7 @@ type FirmwareState = ReturnType<typeof firmwareReducer>;
 interface InitialState {
     suite?: Partial<SuiteState>;
     firmware?: Partial<FirmwareState>;
-    device?: Partial<DeviceState>;
+    device?: Partial<DeviceReducerState>;
 }
 
 jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());

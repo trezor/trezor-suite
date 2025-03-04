@@ -2,7 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { connectInitThunk } from '@suite-common/connect-init';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
-import { State as DeviceState } from '@suite-common/wallet-core';
+import { DeviceReducerState } from '@suite-common/wallet-core';
 
 import fixtures from '../__fixtures__/publicKeyActions';
 
@@ -73,7 +73,7 @@ const rootReducer = combineReducers({
 });
 
 interface StateOverrides {
-    device?: Pick<DeviceState, 'selectedDevice'>;
+    device?: Pick<DeviceReducerState, 'selectedDevice'>;
     networkType?: string;
 }
 

@@ -2,8 +2,8 @@ import produce from 'immer';
 
 import {
     AccountsRootState,
+    DeviceReducerState,
     DeviceRootState,
-    State,
     deviceActions,
     selectAccountByKey,
     selectDeviceByState,
@@ -200,7 +200,7 @@ export const selectAccountLabels = (state: {
  * Select metadata of type 'labels' for requested device
  */
 export const selectLabelingDataForWallet = (
-    state: { metadata: MetadataState; device: State },
+    state: { metadata: MetadataState; device: DeviceReducerState },
     deviceState?: DeviceState | StaticSessionId,
 ) => {
     if (!deviceState) {

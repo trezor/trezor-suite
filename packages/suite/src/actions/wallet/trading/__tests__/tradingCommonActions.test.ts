@@ -1,4 +1,4 @@
-import { State as DeviceState } from '@suite-common/wallet-core';
+import { DeviceReducerState } from '@suite-common/wallet-core';
 import type { DeepPartial } from '@trezor/type-utils';
 
 import { DEFAULT_STORE } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
@@ -14,7 +14,7 @@ import { ComposedTransactionInfo, tradingReducer } from 'src/reducers/wallet/tra
 import { configureStore } from 'src/support/tests/configureStore';
 
 interface InitialState {
-    device?: DeepPartial<DeviceState>;
+    device?: DeepPartial<DeviceReducerState>;
     suite?: DeepPartial<SuiteState>;
     wallet?: {
         accounts?: ReturnType<typeof accountsReducer>;
