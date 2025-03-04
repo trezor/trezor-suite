@@ -723,11 +723,11 @@ export default defineMessages({
         id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE',
     },
     TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_1: {
-        defaultMessage: 'Simply sign the order — no need to send transactions manually',
+        defaultMessage: 'Simply sign the order—no need to send transactions manually',
         id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_1',
     },
     TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_2: {
-        defaultMessage: 'No gas fees — the smart contract handles everything for you',
+        defaultMessage: 'No gas fees—the smart contract handles everything for you',
         id: 'TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_2',
     },
     TR_TRADING_EXCHANGE_SIGN_BANNER_POINT_3: {
@@ -8973,8 +8973,7 @@ export default defineMessages({
     },
     TR_STAKE_ACTIVATION_COULD_TAKE: {
         id: 'TR_STAKE_ACTIVATION_COULD_TAKE',
-        defaultMessage:
-            'Stake activation usually takes 1 epoch (up to {count, plural, one {# day} other {# days}}).',
+        defaultMessage: 'Stake activation usually takes 1 epoch (~3 days).',
     },
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
@@ -9056,8 +9055,7 @@ export default defineMessages({
     },
     TR_STAKE_EXPECTED_REWARDS: {
         id: 'TR_STAKE_EXPECTED_REWARDS',
-        defaultMessage:
-            'Expected rewards per 1 epoch (up to {count, plural, one {# day} other {# days}})',
+        defaultMessage: 'Expected rewards per 1 epoch (~{days} days)',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',
