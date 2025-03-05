@@ -204,7 +204,7 @@ test(`device dialog canceled ON DEVICE by user`, async ({ page, context }) => {
 
     await popupClosedPromise;
 
-    await explorerPage.waitForSelector('text=Failure_ActionCancelled');
+    await explorerPage.waitForSelector('text=Cancelled');
 });
 
 test(`device disconnected during device interaction`, async ({ page, context }) => {

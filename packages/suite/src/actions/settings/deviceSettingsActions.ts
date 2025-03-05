@@ -52,6 +52,7 @@ export const changePin =
             },
             ...params,
         });
+        console.log('result', result);
         if (result.success) {
             if (!skipSuccessToast) {
                 dispatch(notificationsActions.addToast({ type: 'pin-changed' }));

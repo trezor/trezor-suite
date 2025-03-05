@@ -1,8 +1,10 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
 import { MessagesSchema as Messages } from '@trezor/protobuf';
+import { FailureType } from '@trezor/protobuf/src/messages';
 import { Assert } from '@trezor/schema-utils';
 import { Session, Transport } from '@trezor/transport';
+import { ReadWriteError } from '@trezor/transport/src/transports/abstract';
 import { resolveAfter, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
@@ -29,17 +31,24 @@ type TypedCallResponseMap = {
 };
 type DefaultPayloadMessage = TypedCallResponseMap[keyof MessageType];
 
-const logger = initLog('DeviceCommands');
+type CallReturnType =
+    | { success: true; payload: DefaultPayloadMessage; code?: undefined }
+    | {
+          success: false;
+          error?: any;
+          code?: Messages.FailureType | 'Failure_UnknownCode';
+          message?: string;
+          isTransportError: false;
+      }
+    | {
+          success: false;
+          error: ReadWriteError;
+          code?: undefined;
+          message?: string;
+          isTransportError: true;
+      };
 
-const assertType = (res: DefaultPayloadMessage, resType: MessageKey | MessageKey[]) => {
-    const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
-    if (!splitResTypes.includes(res.type)) {
-        throw ERRORS.TypedError(
-            'Runtime',
-            `assertType: Response of unexpected type: ${res.type}. Should be ${resType}`,
-        );
-    }
-};
+const logger = initLog('DeviceCommands');
 
 const filterForLog = (type: string, msg: any) => {
     const blacklist: { [key: string]: Record<string, string> | string } = {
@@ -294,44 +303,6 @@ export class DeviceCommands {
         return this._getAddress();
     }
 
-    // Sends an async message to the opened device.
-    private async call(
-        type: MessageKey,
-        msg: DefaultPayloadMessage['message'] = {},
-    ): Promise<DefaultPayloadMessage> {
-        logger.debug('Sending', type, filterForLog(type, msg));
-
-        this.callPromise = this.transport.call({
-            session: this.transportSession,
-            name: type,
-            data: msg,
-            protocol: this.device.protocol,
-        });
-
-        const res = await this.callPromise;
-
-        this.callPromise = undefined;
-        if (!res.success) {
-            logger.warn(
-                'Received transport error',
-                res.error,
-                // res.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
-                res.message,
-            );
-            throw new Error(res.error, { cause: 'transport-error' });
-        }
-
-        logger.debug(
-            'Received',
-            res.payload.type,
-            filterForLog(res.payload.type, res.payload.message),
-        );
-
-        // TODO: https://github.com/trezor/trezor-suite/issues/5301
-        // @ts-expect-error
-        return res.payload;
-    }
-
     typedCall<T extends MessageKey, R extends MessageKey[]>(
         type: T,
         resType: R,
@@ -353,72 +324,126 @@ export class DeviceCommands {
         // Assert message type
         // msg is allowed to be undefined for some calls, in that case the schema is an empty object
         Assert(Messages.MessageType.properties[type], msg ?? {});
-        const response = await this._commonCall(type, msg);
-        try {
-            assertType(response, resType);
-        } catch (error) {
-            // handle possible race condition
-            // Bridge may have some unread message in buffer, read it
-            const abortController = new AbortController();
-            const timeout = setTimeout(() => {
-                abortController.abort();
-            }, 500);
 
-            await this.transport
-                .receive({
-                    session: this.transportSession,
-                    protocol: this.device.protocol,
-                    signal: abortController.signal,
-                })
-                .finally(() => {
-                    clearTimeout(timeout);
-                });
-            // throw error anyway, next call should be resolved properly
-            throw error;
+        const response = await this._commonCall(type, msg);
+        if (!response.success) {
+            if (response.isTransportError) {
+                throw new Error(response.error, { cause: 'transport-error' });
+            } else {
+                if (!response.code && !response.message) {
+                    // this should never happen
+                    logger.warn('typedCall', 'missing code and message in response', response);
+                }
+
+                // here we are effectively narrowing what error is propagated upwards. There is probably another level of handling on a higher level that in certain scenarios prefer code, see required changes in tests
+                // consumes messages:
+                // - cancelAuthorizeCoinjoin
+                // consumes code:
+                // - todo:
+                throw new Error(response.message);
+            }
         }
 
-        return response;
+        const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
+        if (splitResTypes.includes(response.payload.type)) {
+            return response.payload;
+        }
+        // handle possible race condition
+        // Bridge may have some unread message in buffer, read it
+        const abortController = new AbortController();
+        const timeout = setTimeout(() => {
+            abortController.abort();
+        }, 500);
+
+        await this.transport
+            .receive({
+                session: this.transportSession,
+                protocol: this.device.protocol,
+                signal: abortController.signal,
+            })
+            .finally(() => {
+                clearTimeout(timeout);
+            });
+
+        // throw error anyway, next call should be resolved properly
+
+        throw ERRORS.TypedError(
+            'Runtime',
+            `assertType: Response of unexpected type: ${response.payload.type}. Should be ${resType}`,
+        );
     }
 
-    async _commonCall(type: MessageKey, msg?: DefaultPayloadMessage['message']) {
+    async _commonCall(
+        type: MessageKey,
+        msg: DefaultPayloadMessage['message'] = {},
+    ): Promise<CallReturnType> {
         if (this.disposed) {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
         }
-        const resp = await this.call(type, msg);
 
-        return this._filterCommonTypes(resp);
+        logger.debug('Sending', type, filterForLog(type, msg));
+
+        this.callPromise = this.transport.call({
+            session: this.transportSession,
+            name: type,
+            data: msg,
+            protocol: this.device.protocol,
+        });
+
+        const res = await this.callPromise;
+        this.callPromise = undefined;
+
+        if (!res.success) {
+            logger.warn(
+                'Received error',
+                res.error,
+                // res.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
+                res.message,
+            );
+
+            return {
+                ...res,
+                isTransportError: true,
+            };
+        }
+
+        logger.debug(
+            'Received',
+            res.payload.type,
+            filterForLog(res.payload.type, res.payload.message),
+        );
+
+        return this._filterCommonTypes(res.payload as DefaultPayloadMessage);
     }
 
-    _filterCommonTypes(res: DefaultPayloadMessage): Promise<DefaultPayloadMessage> {
+    _filterCommonTypes(res: DefaultPayloadMessage): Promise<CallReturnType> {
         this.device.clearCancelableAction();
-
         if (res.type === 'Failure') {
             const { code } = res.message;
             let { message } = res.message;
             // T1B1 does not send any message in firmware update
             // https://github.com/trezor/trezor-firmware/issues/1334
-            // @ts-expect-error, TODO: https://github.com/trezor/trezor-suite/issues/5299
-            if (code === 'Failure_FirmwareError' && !message) {
+            if (code === FailureType.Failure_FirmwareError && !message) {
                 message = 'Firmware installation failed';
             }
             // Failure_ActionCancelled message could be also missing
             // https://github.com/trezor/connect/issues/865
-            // @ts-expect-error, TODO: https://github.com/trezor/trezor-suite/issues/5299
-            if (code === 'Failure_ActionCancelled' && !message) {
+            // TODO: https://github.com/trezor/trezor-suite/issues/5299
+            if (code === FailureType.Failure_ActionCancelled && !message) {
                 message = 'Action cancelled by user';
             }
 
             // pass code and message from firmware error
-            return Promise.reject(
-                new ERRORS.TrezorError(
-                    (code as any) || 'Failure_UnknownCode',
-                    message || 'Failure_UnknownMessage',
-                ),
-            );
+            return Promise.resolve({
+                success: false,
+                code: code || 'Failure_UnknownCode',
+                message: message || 'Failure_UnknownMessage',
+                isTransportError: false,
+            });
         }
 
         if (res.type === 'Features') {
-            return Promise.resolve(res);
+            return Promise.resolve({ success: true, payload: res });
         }
 
         if (res.type === 'ButtonRequest') {
@@ -436,7 +461,7 @@ export class DeviceCommands {
         if (res.type === 'PinMatrixRequest') {
             return promptPin(this.device, res.message.type).then(promptRes =>
                 !promptRes.success
-                    ? Promise.reject(promptRes.error)
+                    ? promptRes
                     : this._commonCall('PinMatrixAck', { pin: promptRes.payload }).then(response =>
                           (this.device.features.unlocked
                               ? Promise.resolve()
@@ -447,10 +472,11 @@ export class DeviceCommands {
             );
         }
 
+        // { value, passphraseOnDevice }
         if (res.type === 'PassphraseRequest') {
             return promptPassphrase(this.device).then(promptRes =>
                 !promptRes.success
-                    ? Promise.reject(promptRes.error)
+                    ? promptRes
                     : this._commonCall(
                           'PassphraseAck',
                           promptRes.payload.passphraseOnDevice
@@ -463,12 +489,12 @@ export class DeviceCommands {
         if (res.type === 'WordRequest') {
             return promptWord(this.device, res.message.type).then(promptRes =>
                 !promptRes.success
-                    ? Promise.reject(promptRes.error)
+                    ? promptRes
                     : this._commonCall('WordAck', { word: promptRes.payload }),
             );
         }
 
-        return Promise.resolve(res);
+        return Promise.resolve({ success: true, payload: res });
     }
 
     private async _getAddress() {

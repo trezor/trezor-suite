@@ -443,6 +443,8 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
 
         return createResponseMessage(method.responseID, true, response, device);
     } catch (error) {
+        console.log('method run catch ', error);
+
         return Promise.reject(error);
     }
 };
@@ -834,12 +836,9 @@ const onDevicePinHandler =
             createUiMessage(UI.REQUEST_PIN, { device: device.toMessageObject(), type }),
         );
         // wait for pin
-        try {
-            const uiResp = await uiPromise.promise;
-            callback(uiResp.payload);
-        } catch (error) {
-            callback(null, error);
-        }
+        const uiResp = await uiPromise.promise;
+        console.log('uiResp', uiResp);
+        callback(uiResp.payload);
     };
 
 const onDeviceWordHandler =
@@ -854,12 +853,8 @@ const onDeviceWordHandler =
             createUiMessage(UI.REQUEST_WORD, { device: device.toMessageObject(), type }),
         );
         // wait for word
-        try {
-            const uiResp = await uiPromise.promise;
-            callback(uiResp.payload);
-        } catch (error) {
-            callback(null, error);
-        }
+        const uiResp = await uiPromise.promise;
+        callback(uiResp.payload);
     };
 
 /**
@@ -882,12 +877,8 @@ const onDevicePassphraseHandler =
             createUiMessage(UI.REQUEST_PASSPHRASE, { device: device.toMessageObject() }),
         );
         // wait for passphrase
-        try {
-            const uiResp = await uiPromise.promise;
-            callback(uiResp.payload);
-        } catch (error) {
-            callback(null, error);
-        }
+        const uiResp = await uiPromise.promise;
+        callback(uiResp.payload);
     };
 
 /**

@@ -184,7 +184,7 @@ test('introduce passphrase in popup and device rejects it', async () => {
 
     await waitAndClick(popup, ['@connect-ui/error-close-button']);
 
-    await explorerPage.waitForSelector('text=Failure_ActionCancelled');
+    await explorerPage.waitForSelector('text=Cancelled');
 });
 
 test('introduce passphrase successfully next time should not ask for it', async () => {
