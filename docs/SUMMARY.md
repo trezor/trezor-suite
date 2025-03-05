@@ -14,7 +14,6 @@
     -   [versioning](./releases/versioning.md)
 -   [Packages](./packages/index.md)
     -   [@trezor/connect](./packages/connect/index.md)
-        -   [debugging](./packages/connect/debugging.md)
         -   [dependencies](./packages/connect/dependencies.md)
         -   [protobuf](./packages/connect/protobuf-type-definitions.md)
         -   [coins support](./packages/connect/supported-coins.md)

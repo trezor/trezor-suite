@@ -25,9 +25,6 @@ const dev = {
         libraryExport: 'default',
     },
     plugins: [
-        // connect-web dev needs to be served from https
-        // to allow injection in 3rd party builds using trezor-connect-src param
-        // for that, you need to generate your own key and cert
         new WebpackPluginServe({
             port: process.env.PORT ? parseInt(process.env.PORT) : 8088,
             hmr: true,
