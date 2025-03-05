@@ -56,7 +56,7 @@ export const isTransportInstance = (transport?: AbstractTransport) => {
 
 const getKey = ({ path, product }: Descriptor) => `${path}${product}`;
 
-type ReadWriteError =
+export type ReadWriteError =
     | typeof ERRORS.HTTP_ERROR
     | typeof ERRORS.WRONG_RESULT_TYPE
     | typeof ERRORS.OTHER_CALL_IN_PROGRESS
