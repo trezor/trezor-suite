@@ -434,34 +434,37 @@ export class DeviceCommands {
         }
 
         if (res.type === 'PinMatrixRequest') {
-            return promptPin(this.device, res.message.type).then(
-                pin =>
-                    this._commonCall('PinMatrixAck', { pin }).then(response => {
-                        if (!this.device.features.unlocked) {
-                            // reload features to after successful PIN
-                            return this.device.getFeatures().then(() => response);
-                        }
-
-                        return response;
-                    }),
-                error => Promise.reject(error),
+            return promptPin(this.device, res.message.type).then(promptRes =>
+                !promptRes.success
+                    ? Promise.reject(promptRes.error)
+                    : this._commonCall('PinMatrixAck', { pin: promptRes.payload }).then(response =>
+                          (this.device.features.unlocked
+                              ? Promise.resolve()
+                              : // reload features to after successful PIN
+                                this.device.getFeatures()
+                          ).then(() => response),
+                      ),
             );
         }
 
         if (res.type === 'PassphraseRequest') {
-            return promptPassphrase(this.device).then(
-                ({ value, passphraseOnDevice }) =>
-                    !passphraseOnDevice
-                        ? this._commonCall('PassphraseAck', { passphrase: value.normalize('NFKD') })
-                        : this._commonCall('PassphraseAck', { on_device: true }),
-                error => Promise.reject(error),
+            return promptPassphrase(this.device).then(promptRes =>
+                !promptRes.success
+                    ? Promise.reject(promptRes.error)
+                    : this._commonCall(
+                          'PassphraseAck',
+                          promptRes.payload.passphraseOnDevice
+                              ? { on_device: true }
+                              : { passphrase: promptRes.payload.value.normalize('NFKD') },
+                      ),
             );
         }
 
         if (res.type === 'WordRequest') {
-            return promptWord(this.device, res.message.type).then(
-                word => this._commonCall('WordAck', { word }),
-                error => Promise.reject(error),
+            return promptWord(this.device, res.message.type).then(promptRes =>
+                !promptRes.success
+                    ? Promise.reject(promptRes.error)
+                    : this._commonCall('WordAck', { word: promptRes.payload }),
             );
         }
 

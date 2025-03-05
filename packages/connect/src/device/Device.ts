@@ -167,7 +167,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     private keepTransportSession = false;
     public commands?: DeviceCommands;
-    private cancelableAction?: (err?: Error) => Promise<unknown>;
+    private cancelableAction?: (err?: string) => Promise<unknown>;
 
     private loaded = false;
 
@@ -465,7 +465,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     setCancelableAction(callback: NonNullable<typeof this.cancelableAction>) {
-        this.cancelableAction = (e?: Error) =>
+        this.cancelableAction = (e?: string) =>
             callback(e)
                 .catch(e2 => {
                     _log.debug('cancelableAction error', e2);
@@ -482,7 +482,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async interruptionFromUser(error: Error) {
         _log.debug('interruptionFromUser');
 
-        await this.cancelableAction?.(error);
+        await this.cancelableAction?.(error.toString());
         await this.commands?.cancel();
 
         if (this.runPromise) {
