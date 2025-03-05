@@ -59,8 +59,6 @@ test.describe(
             await expect(page.getByTestId('@passphrase/input')).not.toBeVisible();
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
 
             // Close connect to data provider modal
             await page.getByTestId('@modal/close-button').click();
