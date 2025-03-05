@@ -32,7 +32,10 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
 
         if (this.device.isBootloader()) {
             // firmware doesn't send this button request in bootloader mode
-            this.device.emit(DEVICE.BUTTON, this.device, { code: 'ButtonRequest_WipeDevice' });
+            this.device.emit(DEVICE.BUTTON, {
+                device: this.device,
+                payload: { code: 'ButtonRequest_WipeDevice' },
+            });
         }
 
         const response = await cmd.typedCall('WipeDevice', 'Success');

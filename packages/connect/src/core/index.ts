@@ -783,8 +783,8 @@ const closePopup = ({ popupPromise, sendCoreMessage }: CoreContext) => {
  * @memberof Core
  */
 const onDeviceButtonHandler =
-    (context: CoreContext, method: AbstractMethod<any>): DeviceEvents['button'] =>
-    async (...[device, request]) => {
+    (context: CoreContext, method: AbstractMethod<any>) =>
+    async ({ device, payload: request }: DeviceEvents['button']) => {
         const { sendCoreMessage } = context;
         // wait for popup handshake
         const addressRequest = request.code === 'ButtonRequest_Address';
@@ -822,8 +822,8 @@ const onDeviceButtonHandler =
  * @memberof Core
  */
 const onDevicePinHandler =
-    (context: CoreContext): DeviceEvents['pin'] =>
-    async (...[device, type, callback]) => {
+    (context: CoreContext) =>
+    async ({ device, type, callback }: DeviceEvents['pin']) => {
         const { uiPromises, sendCoreMessage } = context;
         // wait for popup handshake
         await waitForPopup(context);
@@ -843,8 +843,8 @@ const onDevicePinHandler =
     };
 
 const onDeviceWordHandler =
-    (context: CoreContext): DeviceEvents['word'] =>
-    async (...[device, type, callback]) => {
+    (context: CoreContext) =>
+    async ({ device, type, callback }: DeviceEvents['word']) => {
         const { uiPromises, sendCoreMessage } = context;
         // wait for popup handshake
         await waitForPopup(context);
@@ -870,8 +870,8 @@ const onDeviceWordHandler =
  * @memberof Core
  */
 const onDevicePassphraseHandler =
-    (context: CoreContext): DeviceEvents['passphrase'] =>
-    async (...[device, callback]) => {
+    (context: CoreContext) =>
+    async ({ device, callback }: DeviceEvents['passphrase']) => {
         const { uiPromises, sendCoreMessage } = context;
         // wait for popup handshake
         await waitForPopup(context);
@@ -898,8 +898,8 @@ const onDevicePassphraseHandler =
  * @memberof Core
  */
 const onEmptyPassphraseHandler =
-    (): DeviceEvents['passphrase'] =>
-    (...[_, callback]) => {
+    () =>
+    ({ callback }: DeviceEvents['passphrase']) => {
         callback({ value: '' });
     };
 

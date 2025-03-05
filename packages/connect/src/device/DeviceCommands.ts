@@ -427,7 +427,7 @@ export class DeviceCommands {
             if (res.message.code === 'ButtonRequest_PassphraseEntry') {
                 this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
             } else {
-                this.device.emit(DEVICE.BUTTON, this.device, res.message);
+                this.device.emit(DEVICE.BUTTON, { device: this.device, payload: res.message });
             }
 
             return this._commonCall('ButtonAck', {});

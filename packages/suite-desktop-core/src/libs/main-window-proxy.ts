@@ -3,8 +3,8 @@ import { TypedEmitter } from '@trezor/utils';
 import { StrictBrowserWindow } from '../typed-electron';
 
 interface MainWindowProxyEvents {
-    init: (instance: StrictBrowserWindow) => void;
-    destroy: (instance: StrictBrowserWindow) => void;
+    init: StrictBrowserWindow;
+    destroy: StrictBrowserWindow;
 }
 
 export class MainWindowProxy extends TypedEmitter<MainWindowProxyEvents> {

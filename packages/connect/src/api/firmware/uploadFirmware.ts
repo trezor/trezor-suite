@@ -10,7 +10,7 @@ import { CoreEventMessage, DEVICE, UI, createUiMessage } from '../../events';
 const postConfirmationMessage = (device: Device) => {
     // only if firmware is already installed. fresh device does not require button confirmation
     if (device.features.firmware_present) {
-        device.emit(DEVICE.BUTTON, device, { code: 'ButtonRequest_FirmwareUpdate' });
+        device.emit(DEVICE.BUTTON, { device, payload: { code: 'ButtonRequest_FirmwareUpdate' } });
     }
 };
 

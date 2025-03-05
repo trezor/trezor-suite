@@ -7,17 +7,8 @@ import type { Device, DeviceEvents } from './Device';
 export type PromptCallback<T> = (response: T | null, error?: Error) => void;
 
 type PromptEvents = typeof DEVICE.PIN | typeof DEVICE.PASSPHRASE | typeof DEVICE.WORD;
-// infer all args of Device.emit but one (callback)
-type PromptArgs<T extends unknown[]> = T extends readonly [...infer Args, any] ? Args : never;
-// infer last arg of Device.emit (callback)
-type CallbackArgFn<T extends unknown[]> = T extends readonly [...unknown[], infer Cb] ? Cb : never;
-type AnyFn = (...args: any[]) => any;
-type DeviceEventArgs<K extends keyof DeviceEvents> = DeviceEvents[K] extends AnyFn
-    ? PromptArgs<Parameters<DeviceEvents[K]>>
-    : never;
-type DeviceEventCallback<K extends keyof DeviceEvents> = DeviceEvents[K] extends AnyFn
-    ? CallbackArgFn<Parameters<DeviceEvents[K]>>
-    : never;
+type DeviceEventArgs<K extends PromptEvents> = Omit<DeviceEvents[K], 'callback'>;
+type DeviceEventCallback<K extends PromptEvents> = DeviceEvents[K]['callback'];
 
 export const cancelPrompt = (device: Device, expectResponse = true) => {
     const session = device.getLocalSession();
@@ -40,7 +31,7 @@ export const cancelPrompt = (device: Device, expectResponse = true) => {
     return expectResponse ? device.transport.call(cancelArgs) : device.transport.send(cancelArgs);
 };
 
-const prompt = <E extends PromptEvents>(event: E, ...[device, ...args]: DeviceEventArgs<E>) =>
+const prompt = <E extends PromptEvents>(event: E, { device, ...rest }: DeviceEventArgs<E>) =>
     // return non nullable first arg of PromptCallback<E>
     new Promise<NonNullable<Parameters<DeviceEventCallback<E>>[0]>>((resolve, reject) => {
         const cancelAndReject = (error?: Error) =>
@@ -67,21 +58,19 @@ const prompt = <E extends PromptEvents>(event: E, ...[device, ...args]: DeviceEv
                 }
             };
 
-            const emitArgs = [event, device, ...args, callback] as unknown as Parameters<
-                typeof device.emit<E>
-            >;
-
-            device.emit(...emitArgs);
+            // @ts-expect-error
+            device.emit(event, { device, callback, ...rest });
         } else {
             // this may happen in case communication is out of sync. consider:
             // reload app, send GetFeatures, read PassphraseRequest (from previous session)
             cancelAndReject(ERRORS.TypedError('Runtime', `${event} callback not configured`));
         }
     });
-export const promptPassphrase = (device: Device) => prompt(DEVICE.PASSPHRASE, device);
+
+export const promptPassphrase = (device: Device) => prompt(DEVICE.PASSPHRASE, { device });
 
 export const promptPin = (device: Device, type?: Messages.PinMatrixRequestType) =>
-    prompt(DEVICE.PIN, device, type);
+    prompt(DEVICE.PIN, { device, type });
 
 export const promptWord = (device: Device, type: Messages.WordRequestType) =>
-    prompt(DEVICE.WORD, device, type);
+    prompt(DEVICE.WORD, { device, type });

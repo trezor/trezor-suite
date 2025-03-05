@@ -21,10 +21,10 @@ import type { Log } from '../utils/debug';
 type PostMessage = (message: CoreEventMessage) => void;
 
 const registerEvents = (device: Device, postMessage: PostMessage) => {
-    device.on(DEVICE.BUTTON, (_d, request) => {
+    device.on(DEVICE.BUTTON, ({ device: _, payload }) => {
         postMessage(
             createDeviceMessage(DEVICE.BUTTON, {
-                code: request.code,
+                code: payload.code,
                 device: device.toMessageObject(),
             }),
         );

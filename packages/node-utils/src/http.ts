@@ -76,10 +76,10 @@ type Route = {
  * Events that may be emitted or listened to by HttpServer
  */
 type BaseEvents = {
-    'server/listening': (address: NonNullable<net.AddressInfo>) => void;
-    'server/closing': () => void;
-    'server/closed': () => void;
-    'server/error': (error: string) => void;
+    'server/listening': NonNullable<net.AddressInfo>;
+    'server/closing': void;
+    'server/closed': void;
+    'server/error': string;
 };
 
 /**

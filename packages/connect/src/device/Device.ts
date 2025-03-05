@@ -85,23 +85,23 @@ const parseRunOptions = (options?: RunOptions): RunOptions => {
 };
 
 export interface DeviceEvents {
-    [DEVICE.PIN]: (
-        device: Device,
-        type: PROTO.PinMatrixRequestType | undefined,
-        callback: PromptCallback<UiResponsePin['payload']>,
-    ) => void;
-    [DEVICE.WORD]: (
-        device: Device,
-        type: PROTO.WordRequestType,
-        callback: PromptCallback<UiResponseWord['payload']>,
-    ) => void;
-    [DEVICE.PASSPHRASE]: (
-        device: Device,
-        callback: PromptCallback<UiResponsePassphrase['payload']>,
-    ) => void;
-    [DEVICE.PASSPHRASE_ON_DEVICE]: () => void;
-    [DEVICE.BUTTON]: (device: Device, payload: DeviceButtonRequestPayload) => void;
-    [DEVICE.FIRMWARE_VERSION_CHANGED]: (payload: DeviceVersionChanged['payload']) => void;
+    [DEVICE.PIN]: {
+        device: Device;
+        type: PROTO.PinMatrixRequestType | undefined;
+        callback: PromptCallback<UiResponsePin['payload']>;
+    };
+    [DEVICE.WORD]: {
+        device: Device;
+        type: PROTO.WordRequestType;
+        callback: PromptCallback<UiResponseWord['payload']>;
+    };
+    [DEVICE.PASSPHRASE]: {
+        device: Device;
+        callback: PromptCallback<UiResponsePassphrase['payload']>;
+    };
+    [DEVICE.PASSPHRASE_ON_DEVICE]: void;
+    [DEVICE.BUTTON]: { device: Device; payload: DeviceButtonRequestPayload };
+    [DEVICE.FIRMWARE_VERSION_CHANGED]: DeviceVersionChanged['payload'];
 }
 
 type DeviceLifecycle =
