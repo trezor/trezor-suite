@@ -6,7 +6,7 @@ const pin = '1';
 
 test.describe('Recovery T1B1 - dry run', { tag: ['@group=device-management'] }, () => {
     test.use({
-        emulatorStartConf: { model: 'T1B1', version: '1-latest', wipe: true },
+        emulatorStartConf: { model: 'T1B1', wipe: true },
         emulatorSetupConf: { mnemonic, pin },
     });
 

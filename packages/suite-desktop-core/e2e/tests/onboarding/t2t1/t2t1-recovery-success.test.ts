@@ -2,7 +2,7 @@ import { expect, test } from '../../../support/fixtures';
 
 test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-management'] }, () => {
     test.use({
-        emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.3' },
+        emulatorStartConf: { wipe: true, model: 'T2T1' },
         setupEmulator: false,
     });
     test.beforeEach(async ({ analyticsSection, onboardingPage }) => {
@@ -13,37 +13,29 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
 
     test('Successfully recovers wallet from mnemonic', async ({
         onboardingPage,
-        page,
         devicePrompt,
         trezorUserEnvLink,
     }) => {
         // Start wallet recovery process and confirm on device
-        await onboardingPage.firmware.skip();
+        await onboardingPage.firmware.continueButton.click();
         await onboardingPage.recoverWalletButton.click();
         await onboardingPage.startRecoveryButton.click();
         await devicePrompt.confirmOnDevicePromptIsShown();
-
-        await page.waitForTimeout(1000);
         await trezorUserEnvLink.pressYes();
 
         await devicePrompt.confirmOnDevicePromptIsShown();
-        await page.waitForTimeout(1000);
-        await trezorUserEnvLink.pressYes();
-
-        await page.waitForTimeout(1000);
         await trezorUserEnvLink.selectNumOfWordsEmu(12);
 
-        await page.waitForTimeout(1000);
+        await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
 
         // Input mnemonic
-        await page.waitForTimeout(1000);
         for (let i = 0; i < 12; i++) {
             await trezorUserEnvLink.inputEmu('all');
         }
 
         // Confirm recovery success
-        await page.waitForTimeout(1000);
+        await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
 
         // Finalize recovery, skip pin, and check success

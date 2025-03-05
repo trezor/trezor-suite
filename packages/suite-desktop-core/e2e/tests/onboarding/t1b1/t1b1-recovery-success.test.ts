@@ -5,7 +5,7 @@ const mnemonic =
 
 test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-management'] }, () => {
     test.use({
-        emulatorStartConf: { model: 'T1B1', version: '1-latest', wipe: true },
+        emulatorStartConf: { model: 'T1B1', wipe: true },
         setupEmulator: false,
     });
 

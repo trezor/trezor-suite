@@ -48,7 +48,7 @@ const shareTwoOfThree = [
 
 test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-management'] }, () => {
     test.use({
-        emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.3' },
+        emulatorStartConf: { wipe: true, model: 'T2T1' },
         setupEmulator: false,
     });
 
@@ -57,7 +57,7 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
 
         await analyticsSection.passThroughAnalytics();
 
-        await onboardingPage.firmware.skip();
+        await onboardingPage.firmware.continueButton.click();
         await page.getByTestId('@onboarding/path-recovery-button').click();
     });
 
@@ -73,10 +73,11 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
         await page.getByTestId('@onboarding/recovery/start-button').click();
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.pressYes();
+        await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.selectNumOfWordsEmu(20);
+        await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
-        await page.waitForTimeout(501); // Wait for device release
+        await page.waitForTimeout(500); // Wait for device release
 
         // Disconnect device, reload application
         await trezorUserEnvLink.stopEmu();
@@ -86,7 +87,7 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
         await page.reload();
 
         // Restart emulator and disable firmware hash check
-        await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1', version: '2.5.3' });
+        await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });
         await onboardingPage.disableFirmwareHashCheck();
 
         // Go through analytics opt-out again
@@ -107,8 +108,9 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
         await page.getByTestId('@onboarding/recovery/start-button').click();
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.pressYes();
+        await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.selectNumOfWordsEmu(20);
+        await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
 
         // Enter first Shamir share
@@ -121,7 +123,7 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
         // Disconnect and reconnect device
         await trezorUserEnvLink.stopEmu();
         await devicePrompt.connectDevicePromptIsShown();
-        await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1', version: '2.5.3' });
+        await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });
         await devicePrompt.confirmOnDevicePromptIsShown();
 
         // This is needed, because there seem to be some weird refreshes on the emu

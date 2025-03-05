@@ -3,7 +3,7 @@ import { test } from '../../../support/fixtures';
 
 test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] }, () => {
     test.use({
-        emulatorStartConf: { wipe: true, model: 'T3T1', version: '2-latest' },
+        emulatorStartConf: { wipe: true, model: 'T3T1' },
         setupEmulator: false,
     });
 

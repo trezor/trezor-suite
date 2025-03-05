@@ -7,7 +7,7 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () => {
     test.use({
-        emulatorStartConf: { version: '2-latest', model: 'T2B1', wipe: true },
+        emulatorStartConf: { model: 'T2B1', wipe: true },
     });
 
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {

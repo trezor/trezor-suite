@@ -192,10 +192,13 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         return null;
     }
     async startEmu(arg?: StartEmu) {
+        const defaultV1Firmware = process.env.CANARY_FIRMWARE ? '1-main' : '1-latest';
+        const defaultV2Firmware = process.env.CANARY_FIRMWARE ? '2-main' : '2-latest';
+
         const params = {
             type: 'emulator-start',
             model: this.defaultModel,
-            version: arg?.model === 'T1B1' ? '1-latest' : '2-latest',
+            version: arg?.model === 'T1B1' ? defaultV1Firmware : defaultV2Firmware,
             ...arg,
         };
 

@@ -1,10 +1,8 @@
 import { test } from '../../../support/fixtures';
 
 test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-management'] }, () => {
-    // This test always needs to run the newest possible emulator version
-    // Emulator setup: wipe: true, model: T2T1, version: 2-latest
     test.use({
-        emulatorStartConf: { wipe: true, model: 'T2T1', version: '2-latest' },
+        emulatorStartConf: { wipe: true, model: 'T2T1' },
         setupEmulator: false,
     });
 
@@ -32,7 +30,7 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
         await trezorUserEnvLink.stopEmu();
         await page.waitForTimeout(500);
         await devicePrompt.connectDevicePromptIsShown();
-        await trezorUserEnvLink.startEmu({ model: 'T2T1', version: '2-latest', wipe: false });
+        await trezorUserEnvLink.startEmu({ model: 'T2T1', wipe: false });
 
         // Check that you can retry
         await onboardingPage.retryRecoveryButton.click();

@@ -1,7 +1,7 @@
 import { expect, test } from '../../support/fixtures';
 
 test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
-    test.use({ emulatorStartConf: { model: 'T1B1', version: '1-main', wipe: true } });
+    test.use({ emulatorStartConf: { model: 'T1B1', wipe: true } });
     test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
         // Initiating pin change is not stable when discovery is not yet finished
