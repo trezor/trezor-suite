@@ -107,4 +107,4 @@ jobs:
           echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
           mkdir -p tmp_build_directory
           cp -R ./packages/transport-test/e2e/dist/* tmp_build_directory/
-          aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
+          aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"  --cache-control "max-age=2592000"

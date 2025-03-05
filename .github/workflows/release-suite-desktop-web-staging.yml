@@ -133,7 +133,7 @@ jobs:
       - name: Upload suite-desktop to staging-data.trezor.io canary
         # uploads the files to the staging bucket canary  folder (canary does not have staging percentage set)
         run: |
-          aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/canary
+          aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/canary --cache-control "max-age=2592000"
 
       - name: Set staging percentage
         working-directory:
