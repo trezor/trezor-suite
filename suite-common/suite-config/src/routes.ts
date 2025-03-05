@@ -44,7 +44,7 @@ export const routes = [
     },
     {
         name: 'suite-bridge-deprecated',
-        pattern: '/bridge-bridge',
+        pattern: '/bridge-deprecated',
         app: 'bridge-deprecated',
         isForegroundApp: true,
         params: modalAppParams,
