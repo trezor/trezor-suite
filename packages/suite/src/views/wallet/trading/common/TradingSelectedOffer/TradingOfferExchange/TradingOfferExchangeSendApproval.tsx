@@ -9,6 +9,7 @@ import {
     parseCryptoId,
     useTradingInfo,
 } from '@suite-common/trading';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     Banner,
     Button,
@@ -26,7 +27,7 @@ import { spacings } from '@trezor/theme';
 import { saveSelectedQuote } from 'src/actions/wallet/tradingExchangeActions';
 import { AccountLabeling, Address, Translation } from 'src/components/suite';
 import { IOAddress } from 'src/components/suite/copy/IOAddress';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeWatchSendApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchSendApproval';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
@@ -54,7 +55,6 @@ export const TradingOfferExchangeSendApproval = () => {
         selectedQuote?.status === 'CONFIRM' ? 'APPROVED' : 'MINIMAL',
     );
 
-    const blockchain = useSelector(state => state.wallet.blockchain);
     const { navigateToExchangeForm } = useTradingNavigation(account);
 
     useTradingExchangeWatchSendApproval({
@@ -75,7 +75,7 @@ export const TradingOfferExchangeSendApproval = () => {
     if (!selectedQuote.send) return null;
 
     const symbol = cryptoIdToSymbol(selectedQuote.send);
-    const blockchainNetwork = symbol && blockchain[symbol];
+    const network = symbol && getNetwork(symbol);
 
     const isToken = parseCryptoId(selectedQuote.send)?.contractAddress !== undefined;
 
@@ -148,8 +148,8 @@ export const TradingOfferExchangeSendApproval = () => {
                 <InfoItem label={<Translation id="TR_EXCHANGE_APPROVAL_TXID" />}>
                     <IOAddress
                         txAddress={selectedQuote.approvalSendTxHash}
-                        explorerUrl={blockchainNetwork?.explorer.tx}
-                        explorerUrlQueryString={blockchainNetwork?.explorer.queryString}
+                        explorerUrl={network?.explorer.tx}
+                        explorerUrlQueryString={network?.explorer.queryString}
                     />
                 </InfoItem>
             )}

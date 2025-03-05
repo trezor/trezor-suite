@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 
-import type { TradingExchangeType } from '@suite-common/trading';
-import { Card } from '@trezor/components';
+import { type TradingExchangeType, cryptoIdToNetwork } from '@suite-common/trading';
+import { Card, InfoItem } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
+import { Translation } from 'src/components/suite';
+import { IOAddress } from 'src/components/suite/copy/IOAddress';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
@@ -40,6 +42,9 @@ export const TradingDetailExchange = () => {
         return null;
     }
 
+    const { receiveTxHash, send } = trade.data;
+    const network = send && cryptoIdToNetwork(send);
+
     const tradeStatus = trade?.data?.status || 'CONFIRMING';
     const exchangeTradeFinalStatuses = tradeFinalStatuses['exchange'];
     const showSending =
@@ -61,6 +66,16 @@ export const TradingDetailExchange = () => {
     return (
         <Wrapper>
             <Card>
+                {receiveTxHash && (
+                    <InfoItem label={<Translation id="TR_TXID" />}>
+                        <IOAddress
+                            txAddress={receiveTxHash}
+                            explorerUrl={network?.explorer.tx}
+                            explorerUrlQueryString={network?.explorer.queryString}
+                        />
+                    </InfoItem>
+                )}
+
                 {tradeStatus === 'SUCCESS' && (
                     <TradingDetailExchangePaymentSuccessful account={account} />
                 )}
