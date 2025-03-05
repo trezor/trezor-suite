@@ -43,7 +43,7 @@ test.describe('Trading - Swap coin to token', { tag: ['@group=other', '@webOnly'
 
     test('Swap Solana to USDC', async ({ tradingPage, page, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
-            await tradingPage.setYouSwapAmount({
+            await tradingPage.fillSwapForm({
                 amount: sendAmount,
                 sendCurrency: 'solana',
                 sendTicker: 'SOL',

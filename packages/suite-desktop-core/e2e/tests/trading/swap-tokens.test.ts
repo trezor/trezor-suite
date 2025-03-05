@@ -43,7 +43,7 @@ test.describe('Trading - Swap tokens', { tag: ['@group=other', '@webOnly'] }, ()
 
     test('Swap Solana tokens', async ({ tradingPage, page, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
-            await tradingPage.setYouSwapAmount({
+            await tradingPage.fillSwapForm({
                 amount: sendAmount,
                 sendCurrency: tetherMint,
                 sendTicker: 'USDT',

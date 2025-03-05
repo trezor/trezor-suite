@@ -1,7 +1,13 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { buyQuotesBTC, buyTradeBTC, invityEndpoint, invityRequest } from '../../fixtures/invity';
+import {
+    buyQuotesBTC,
+    buyQuotesBTCUpdate,
+    buyTradeBTC,
+    invityEndpoint,
+    invityRequest,
+} from '../../fixtures/invity';
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
@@ -9,11 +15,14 @@ import { expect, test } from '../../support/fixtures';
 const fiatAmount = buyQuotesBTC[0].fiatStringAmount;
 const bestBuyProvider = capitalizeFirstLetter(buyQuotesBTC[0].exchange);
 const bestBuyCryptoAmount = `${buyQuotesBTC[0].receiveStringAmount} BTC`;
-// secondOffer that matches input criteria has index 5
-const secondOfferProvider = capitalizeFirstLetter(buyQuotesBTC[5].exchange);
-const secondOfferCryptoAmount = `${buyQuotesBTC[5].receiveStringAmount} BTC`;
+const formattedFiatWithoutSymbol = localizeNumber(fiatAmount);
 const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en', 2)}`;
 const { receiveAddress, paymentMethodName } = buyTradeBTC.trade;
+// secondOffer that matches input criteria has index 11
+const updateFiatAmount = buyQuotesBTCUpdate[11].fiatStringAmount;
+const secondOfferProvider = capitalizeFirstLetter(buyQuotesBTCUpdate[11].exchange);
+const secondOfferCryptoAmount = `${buyQuotesBTCUpdate[11].receiveStringAmount} BTC`;
+const formattedUpdateFiatAmount = `CZK ${localizeNumber(updateFiatAmount, 'en', 2)}`;
 
 test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage, walletPage }) => {
@@ -26,26 +35,40 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
         await walletPage.openTrading();
     });
 
-    test('Buy Bitcoin from compared offer', async ({ tradingPage }) => {
+    test('Buy Bitcoin from compared offer', async ({ page, tradingPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
-            await tradingPage.setYouBuyAmount(fiatAmount);
+            await tradingPage.fillBuyForm(fiatAmount);
             await expect(tradingPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
             await expect(tradingPage.quoteProvider).toHaveText(bestBuyProvider);
             await tradingPage.compareButton.click();
         });
 
-        await test.step('Check offers and chooses the second one', async () => {
+        await test.step('Check compared offers', async () => {
+            await expect(tradingPage.youPayFiatInput).toHaveValue(formattedFiatWithoutSymbol);
             await expect(tradingPage.refreshTime).toHaveText(/Offers refresh in(0:2[5-9]|0:30)/);
             await expect(tradingPage.youPayFiatInput).toHaveValue(localizeNumber(fiatAmount));
             await expect(tradingPage.paymentMethodDropdown).toHaveText(paymentMethodName);
-            await tradingPage.validateBuyQuotes();
+            await tradingPage.validateBuyQuotes(buyQuotesBTC);
+        });
+
+        await test.step('Change fiat input to trigger offer update', async () => {
+            await page.route(invityEndpoint.buyQuotes, async route => {
+                await route.fulfill({ json: buyQuotesBTCUpdate });
+            });
+            const quoteRequestPromise = page.waitForRequest(invityEndpoint.buyQuotes);
+            await tradingPage.youPayFiatInput.fill(updateFiatAmount);
+            await quoteRequestPromise;
+            await tradingPage.validateBuyQuotes(buyQuotesBTCUpdate);
+        });
+
+        await test.step('Select second offer', async () => {
             await tradingPage.selectThisQuoteButton.nth(1).click();
         });
 
         await test.step('Confirm trade and verifies confirmation summary', async () => {
             await tradingPage.confirmTrade('Bitcoin #1', formatAddress(receiveAddress));
             await expect(tradingPage.confirmationAddress).toHaveText(receiveAddress);
-            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
+            await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedUpdateFiatAmount);
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(secondOfferCryptoAmount);
             await expect(tradingPage.confirmationProvider).toHaveText(secondOfferProvider);
             await expect(tradingPage.confirmationPaymentMethod).toHaveText(paymentMethodName);
@@ -55,7 +78,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
 
     test('Buy Bitcoin from best offer', async ({ page, tradingPage, tradingMock }) => {
         await test.step('Request a trade', async () => {
-            await tradingPage.setYouBuyAmount(fiatAmount);
+            await tradingPage.fillBuyForm(fiatAmount);
             await tradingPage.buyBestOfferButton.click();
             await tradingPage.confirmTrade('Bitcoin #1', formatAddress(receiveAddress));
         });

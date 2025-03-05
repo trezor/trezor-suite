@@ -48,7 +48,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, 
 
     test('Sell Ethereum token USDC', async ({ tradingPage }) => {
         await test.step('Fill in a sell request', async () => {
-            await tradingPage.setYouSellAmount(
+            await tradingPage.fillSellForm(
                 cryptoAmount,
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             );

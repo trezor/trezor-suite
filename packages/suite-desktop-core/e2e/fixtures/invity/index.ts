@@ -1,4 +1,5 @@
 import buyList from './buy/list.json';
+import buyQuotesBTCUpdate from './buy/quotes-bitcoin-update.json';
 import buyQuotesBTC from './buy/quotes-bitcoin.json';
 import buyQuotesEthereum from './buy/quotes-ethereum.json';
 import buyQuotesSolanaToken from './buy/quotes-solana-token.json';
@@ -86,6 +87,7 @@ export {
     info,
     buyList,
     buyQuotesBTC,
+    buyQuotesBTCUpdate,
     buyQuotesEthereum,
     buyQuotesSolanaToken,
     buyTradeBTC,

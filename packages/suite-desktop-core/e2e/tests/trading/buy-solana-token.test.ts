@@ -44,7 +44,7 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
             await tradingPage.waitForOffersSync();
             await tradingPage.youPayFiatCryptoSwitchButton.click();
             const isCryptoInput = true;
-            await tradingPage.setYouBuyAmount(
+            await tradingPage.fillBuyForm(
                 cryptoAmount,
                 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
                 isCryptoInput,

@@ -34,7 +34,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
         await test.step('Request to buy Ethereum', async () => {
             await walletPage.openBuyTradingButton.click();
             await tradingPage.selectAccount('Ethereum', 'eth');
-            await tradingPage.setYouBuyAmount(fiatAmount, 'ethereum');
+            await tradingPage.fillBuyForm(fiatAmount, 'ethereum');
             await expect(tradingPage.bestOfferAmount).toHaveText(formattedCryptoAmount);
             await expect(tradingPage.quoteProvider).toHaveText(provider);
             await tradingPage.buyBestOfferButton.click();

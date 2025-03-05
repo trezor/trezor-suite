@@ -43,7 +43,7 @@ test.describe('Trading - Swap token to coin', { tag: ['@group=other', '@webOnly'
 
     test('Swap Solana Tether token to Bitcoin', async ({ tradingPage, page, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
-            await tradingPage.setYouSwapAmount({
+            await tradingPage.fillSwapForm({
                 amount: sendAmount,
                 sendCurrency: tetherMint,
                 sendTicker: 'USDT',

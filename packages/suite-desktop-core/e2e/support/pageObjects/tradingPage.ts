@@ -4,7 +4,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { regional } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { buyQuotesBTC, invityEndpoint } from '../../fixtures/invity';
+import { invityEndpoint } from '../../fixtures/invity';
 import { TrezorUserEnvLinkProxy, step } from '../common';
 import { DevicePrompt } from './devicePrompt';
 import { solanaUrlPattern } from '../mocks/tradingMock';
@@ -270,7 +270,7 @@ export class TradingPage {
     }
 
     @step()
-    async setYouBuyAmount(
+    async fillBuyForm(
         amount: string,
         cryptoCurrency: string = 'bitcoin',
         wantCrypto: boolean = false,
@@ -297,7 +297,7 @@ export class TradingPage {
     }
 
     @step()
-    async setYouSellAmount(
+    async fillSellForm(
         amount: string,
         cryptoCurrency: string = 'bitcoin',
         fiatCurrencyCode: FiatCurrencyCode = 'eur',
@@ -323,7 +323,7 @@ export class TradingPage {
     }
 
     @step()
-    async setYouSwapAmount(params: {
+    async fillSwapForm(params: {
         amount: string;
         sendCurrency: string;
         sendTicker: string;
@@ -405,9 +405,9 @@ export class TradingPage {
     }
 
     @step()
-    async validateBuyQuotes() {
+    async validateBuyQuotes(quotesResponse: any[]) {
         const paymentMethod = await this.getSelectedPaymentMethod();
-        const expectedQuotes = buyQuotesBTC.filter(
+        const expectedQuotes = quotesResponse.filter(
             quote => quote.paymentMethod === paymentMethod && quote.error === undefined,
         );
         expect.soft(await this.quotes.count()).toBe(expectedQuotes.length);

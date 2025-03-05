@@ -64,7 +64,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
 
     test('Sell Solana', async ({ page, tradingPage, tradingMock, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
-            await tradingPage.setYouSellAmount(cryptoAmount, 'solana');
+            await tradingPage.fillSellForm(cryptoAmount, 'solana');
             await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
         });

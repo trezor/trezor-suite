@@ -52,7 +52,7 @@ test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () 
 
     test('Swap Solana to Bitcoin', async ({ tradingPage, page, tradingMock, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
-            await tradingPage.setYouSwapAmount({
+            await tradingPage.fillSwapForm({
                 amount: sendAmount,
                 sendCurrency: 'solana',
                 sendTicker: 'SOL',
