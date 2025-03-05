@@ -14,6 +14,7 @@ export default [
                         '**/webpack/**',
                         '**/builds/**',
                         '**/configs/**',
+                        '@vue/preload-webpack-plugin',
                     ],
                 },
             ],

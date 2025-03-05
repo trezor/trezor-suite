@@ -9,6 +9,8 @@ import { FLAGS, routes } from '@suite-common/suite-config';
 import { assetPrefix, isDev } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 
+const PreloadWebpackPlugin = require('@vue/preload-webpack-plugin');
+
 const baseDir = getPathForProject('web');
 const config: webpack.Configuration = {
     target: 'browserslist',
@@ -74,6 +76,13 @@ const config: webpack.Configuration = {
             /@trezor\/connect$/,
             '@trezor/connect-web/src/module',
         ),
+        new PreloadWebpackPlugin({
+            rel: 'prefetch',
+            include: 'asyncChunks',
+            // NOTE: only prefetch js files
+            fileWhitelist: [/\.js$/],
+            fileBlacklist: [/_svg\.js$/, /date-fns/, /json\.js/, /suite-data/],
+        }),
         ...(!isDev ? [new CssMinimizerPlugin()] : []),
     ],
 };
