@@ -42,3 +42,5 @@ export type {
     Target as TransactionTarget,
     AccountBalanceHistory as BlockchainAccountBalanceHistory,
 } from '@trezor/blockchain-link';
+
+export { FirmwareType, type VersionArray } from '@trezor/device-utils';

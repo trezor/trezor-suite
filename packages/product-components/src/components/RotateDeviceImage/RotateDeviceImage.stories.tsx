@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/protobuf';
 
 import {
     RotateDeviceImage as RotateDeviceImageComponent,

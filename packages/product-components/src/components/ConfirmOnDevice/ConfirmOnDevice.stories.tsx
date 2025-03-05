@@ -1,7 +1,8 @@
 import { Meta, StoryFn } from '@storybook/react';
 
 import { StoryColumn } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+// todo: product-components should not depend on protobuf
+import { DeviceModelInternal } from '@trezor/protobuf';
 
 import { ConfirmOnDevice as ConfirmOnDeviceComponent } from './ConfirmOnDevice';
 

@@ -1,7 +1,5 @@
-import { FirmwareType, VersionArray } from '@trezor/connect';
-
 import { isDeviceInBootloaderMode } from './modeUtils';
-import { FirmwareVersionString, PartialDevice } from './types';
+import { FirmwareType, FirmwareVersionString, PartialDevice, VersionArray } from './types';
 
 export const getFirmwareRevision = (device?: PartialDevice) => device?.features?.revision || '';
 
@@ -26,9 +24,8 @@ export const getFirmwareVersion = (device?: PartialDevice): '' | FirmwareVersion
     }
     const { features } = device;
     if (isDeviceInBootloaderMode(device)) {
-        // @ts-expect-error fw_minor and fw_patch is imho always defined. maybe only for some very old firmwares only major version is defined.
         return features.fw_major
-            ? `${features.fw_major}.${features.fw_minor}.${features.fw_patch}`
+            ? `${features.fw_major}.${features.fw_minor!}.${features.fw_patch!}`
             : '';
     }
 

@@ -25,6 +25,9 @@
             "path": "../crypto-utils"
         },
         {
+            "path": "../device-utils"
+        },
+        {
             "path": "../protobuf"
         },
         {

@@ -1,6 +1,6 @@
+import type { VersionArray } from '@trezor/device-utils';
 import { Static, Type } from '@trezor/schema-utils';
 
-import type { VersionArray } from '../firmware';
 import type { Params, Response } from '../params';
 
 export type FirmwareUpdate = Static<typeof FirmwareUpdate>;

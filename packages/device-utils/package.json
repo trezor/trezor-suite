@@ -6,11 +6,9 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
+        "build:lib": "yarn g:rimraf -rf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
-    },
-    "dependencies": {
-        "@trezor/connect": "workspace:*"
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js --passWithNoTests"
     }
 }

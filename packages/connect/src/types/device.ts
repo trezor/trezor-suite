@@ -1,3 +1,4 @@
+import { FeaturesNarrowing, FirmwareType } from '@trezor/device-utils';
 import { Descriptor } from '@trezor/transport';
 
 import type { PROTO } from '../constants';
@@ -25,11 +26,6 @@ export type UnavailableCapability =
     | 'no-support'
     | 'update-required'
     | 'trezor-connect-outdated';
-
-export enum FirmwareType {
-    BitcoinOnly = 'bitcoin-only',
-    Regular = 'regular',
-}
 
 export type StaticSessionId = `${string}@${string}:${number}`;
 
@@ -162,47 +158,5 @@ export type Features = PROTO.Features;
 export { DeviceModelInternal } from '@trezor/protobuf';
 
 export type DisplayRotation = PROTO.DisplayRotation;
-
-type FeaturesNarrowing =
-    | {
-          major_version: 2;
-          fw_major: null;
-          fw_minor: null;
-          fw_patch: null;
-          bootloader_mode: true;
-          firmware_present: false;
-      }
-    | {
-          major_version: 2;
-          fw_major: null;
-          fw_minor: null;
-          fw_patch: null;
-          bootloader_mode: null;
-          firmware_present: null;
-      }
-    | {
-          major_version: 2;
-          fw_major: 2;
-          fw_minor: number;
-          fw_patch: number;
-          bootloader_mode: true;
-          firmware_present: true;
-      }
-    | {
-          major_version: 1;
-          fw_major: null;
-          fw_minor: null;
-          fw_patch: null;
-          bootloader_mode: true;
-          firmware_present: false;
-      }
-    | {
-          major_version: 1;
-          fw_major: null;
-          fw_minor: null;
-          fw_patch: null;
-          bootloader_mode: true;
-          firmware_present: true;
-      };
 
 export type StrictFeatures = Features & FeaturesNarrowing;

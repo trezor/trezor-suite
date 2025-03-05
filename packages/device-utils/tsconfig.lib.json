@@ -1,0 +1,9 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "compilerOptions": {
+        "outDir": "./lib",
+        "types": ["w3c-web-usb", "node"]
+    },
+    "include": ["./src"],
+    "references": []
+}

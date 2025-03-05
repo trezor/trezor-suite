@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { isDeviceWithButtons } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/connect';
-import { pickByDeviceModel } from '@trezor/device-utils';
 
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import { OnboardingButtonCta } from 'src/components/onboarding';
@@ -11,6 +10,7 @@ import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/com
 import { Translation } from 'src/components/suite';
 import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
+import { pickByDeviceModel } from 'src/utils/device/modelUtils';
 
 import RecoveryStepBox from './RecoveryStepBox';
 

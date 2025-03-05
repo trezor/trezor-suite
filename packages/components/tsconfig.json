@@ -27,9 +27,9 @@
             "path": "../../suite-common/validators"
         },
         { "path": "../asset-utils" },
-        { "path": "../connect" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
+        { "path": "../protobuf" },
         { "path": "../react-utils" },
         { "path": "../styles" },
         { "path": "../theme" },

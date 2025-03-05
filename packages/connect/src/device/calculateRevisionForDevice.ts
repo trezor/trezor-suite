@@ -1,6 +1,5 @@
+import { VersionArray } from '@trezor/device-utils';
 import { isNewer } from '@trezor/utils/src/versionUtils';
-
-import { VersionArray } from '../exports';
 
 type calculateRevisionForDeviceParams = {
     commitRevision: string;

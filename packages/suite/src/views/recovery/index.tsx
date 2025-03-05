@@ -9,7 +9,6 @@ import {
 } from '@suite-common/suite-utils';
 import { BulletList, Card, H2, H3, Image, NewModal, Paragraph } from '@trezor/components';
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
-import { pickByDeviceModel } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import {
@@ -26,6 +25,7 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
 import type { WordCount } from 'src/types/recovery';
 import type { ForegroundAppProps } from 'src/types/suite';
+import { pickByDeviceModel } from 'src/utils/device/modelUtils';
 
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';
 import { T1B1InputStep } from './steps/T1B1InputStep';

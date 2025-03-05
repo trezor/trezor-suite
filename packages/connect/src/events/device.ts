@@ -1,6 +1,7 @@
+import type { VersionArray } from '@trezor/device-utils';
+
 import type { PROTO } from '../constants';
 import type { Device } from '../types/device';
-import type { VersionArray } from '../types/firmware';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const DEVICE_EVENT = 'DEVICE_EVENT';

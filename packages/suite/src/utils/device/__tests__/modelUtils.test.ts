@@ -1,12 +1,14 @@
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/protobuf';
 
-export const OPTIONS = {
+import { pickByDeviceModel } from '../modelUtils';
+
+const OPTIONS = {
     default: 'default',
     [DeviceModelInternal.T1B1]: null,
     [DeviceModelInternal.T3T1]: 'T3T1',
 };
 
-export const fixtures = [
+const fixtures = [
     {
         description: 'should return correct value for a given device',
         deviceModelInternal: DeviceModelInternal.T3T1,
@@ -28,3 +30,11 @@ export const fixtures = [
         expectedResult: 'default',
     },
 ];
+
+describe('pickByDeviceModel', () => {
+    fixtures.forEach(f => {
+        it(f.description, () => {
+            expect(pickByDeviceModel(f.deviceModelInternal, OPTIONS)).toBe(f.expectedResult);
+        });
+    });
+});

@@ -11676,10 +11676,10 @@ __metadata:
     "@testing-library/react": "npm:14.2.1"
     "@testing-library/user-event": "npm:^14.6.1"
     "@trezor/asset-utils": "workspace:*"
-    "@trezor/connect": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -12046,6 +12046,7 @@ __metadata:
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
@@ -12093,8 +12094,6 @@ __metadata:
 "@trezor/device-utils@workspace:*, @trezor/device-utils@workspace:packages/device-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/device-utils@workspace:packages/device-utils"
-  dependencies:
-    "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12185,11 +12184,12 @@ __metadata:
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/components": "workspace:*"
-    "@trezor/connect": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -12654,6 +12654,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
     "@trezor/product-components": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/suite-analytics": "workspace:*"

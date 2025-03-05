@@ -2,8 +2,8 @@ import styled, { css } from 'styled-components';
 
 import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { AssetLogo, useElevation } from '@trezor/components';
-import { TokenInfo } from '@trezor/connect';
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 export type TokenIconSetProps = {

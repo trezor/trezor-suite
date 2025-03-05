@@ -1,8 +1,9 @@
+import { VersionArray } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import { getBinary } from './getBinary';
 import { GetInfoProps, getInfo } from '../../data/firmwareInfo';
-import { IntermediaryVersion, VersionArray } from '../../types';
+import { IntermediaryVersion } from '../../types';
 import { httpRequest } from '../../utils/assets';
 import { isStrictFeatures } from '../../utils/firmwareUtils';
 

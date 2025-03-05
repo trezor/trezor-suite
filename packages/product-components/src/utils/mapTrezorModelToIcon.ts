@@ -1,5 +1,5 @@
 import { IconName } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/protobuf';
 
 export const mapTrezorModelToIcon: Record<DeviceModelInternal, IconName> = {
     [DeviceModelInternal.UNKNOWN]: 'trezorModelOneFilled', // Just to provide something that wont break UI
