@@ -35,6 +35,8 @@ test.describe('Trading - Swap tokens', { tag: ['@group=other', '@webOnly'] }, ()
             await dashboardPage.discoveryShouldFinish();
             await settingsPage.navigateTo('coins');
             await settingsPage.coins.enableNetwork('sol');
+            await settingsPage.coins.activateCoinsButton.click();
+            await dashboardPage.discoveryShouldFinish();
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'sol' });

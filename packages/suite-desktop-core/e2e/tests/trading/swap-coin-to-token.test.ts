@@ -35,6 +35,8 @@ test.describe('Trading - Swap coin to token', { tag: ['@group=other', '@webOnly'
             await settingsPage.coins.enableNetwork('sol');
             await settingsPage.coins.enableNetwork('eth');
             await settingsPage.coins.disableNetwork('btc');
+            await settingsPage.coins.activateCoinsButton.click();
+            await dashboardPage.discoveryShouldFinish();
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'sol' });
