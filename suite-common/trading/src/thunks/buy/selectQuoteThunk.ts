@@ -4,6 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Timer } from '@trezor/react-utils';
 
+import { BUY_THUNK_COMMON_PREFIX } from './handleRequestThunk';
 import { tradingBuyActions } from '../../actions/buyActions';
 import { invityAPI } from '../../invityAPI';
 import {
@@ -11,8 +12,6 @@ import {
     selectTradingBuyInfo,
     selectTradingBuyQuotesRequest,
 } from '../../selectors/tradingSelectors';
-
-import { BUY_THUNK_COMMON_PREFIX } from './';
 
 export type SelectQuoteThunk = {
     quote: BuyTrade;

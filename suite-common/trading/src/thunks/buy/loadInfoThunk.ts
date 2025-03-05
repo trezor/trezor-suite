@@ -2,11 +2,10 @@ import { BuyProviderInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 
+import { BUY_THUNK_COMMON_PREFIX } from './handleRequestThunk';
 import { invityAPI } from '../../invityAPI';
 import { BuyInfo } from '../../reducers/buyReducer';
 import { regional } from '../../regional';
-
-import { BUY_THUNK_COMMON_PREFIX } from './';
 
 export const loadInfoThunk = createThunk<BuyInfo>(
     `${BUY_THUNK_COMMON_PREFIX}/loadInfo`,
