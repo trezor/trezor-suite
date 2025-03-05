@@ -319,4 +319,28 @@ describe('bridge', () => {
             await Promise.all([bridge.receive({ session }), bridge.enumerate()]);
         });
     }
+
+    test.only('receive -> abort receive -> call', async () => {
+        const abortController = new AbortController();
+
+        const receivePromise = bridge.receive({ session, signal: abortController.signal });
+        // wait 50ms for receive to start doing something
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        // abort receive
+        abortController.abort();
+
+        await receivePromise;
+
+        const callPromise = bridge.call({ session, name: 'GetFeatures', data: {} });
+
+        const results = await Promise.all([receivePromise, callPromise]);
+        expect(results).toIncludeAllPartialMembers([
+            { success: false, error: 'Aborted by signal' },
+            // should be
+            // { success: true, payload: { type: 'Features', message: expect.any(Object) } },
+            // but returns now:
+            { success: false, error: 'other call in progress' },
+        ]);
+    });
 });
