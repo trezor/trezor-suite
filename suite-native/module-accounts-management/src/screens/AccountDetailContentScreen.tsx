@@ -70,7 +70,6 @@ export const AccountDetailContentScreen = ({
                 )
             }
             noHorizontalPadding
-            isScrollable={false}
         >
             <TransactionList
                 accountKey={accountKey}

@@ -26,9 +26,8 @@ const gradientBackgroundBottomStyle = prepareNativeStyle(() => ({
     height: GRADIENT_HEIGHT,
 }));
 
-const buttonWrapperStyle = prepareNativeStyle(utils => ({
+const buttonWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
-    paddingBottom: utils.spacings.sp16,
 }));
 
 const textColorStyle = prepareNativeStyle(() => ({

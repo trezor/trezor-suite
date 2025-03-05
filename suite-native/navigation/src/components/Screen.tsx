@@ -33,59 +33,46 @@ type ScreenProps = {
 const screenContainerStyle = prepareNativeStyle<{
     backgroundColor: Color;
     insets: EdgeInsets;
-    bottomPadding: number;
-    hasBottomPadding: boolean;
     isMessageBannerDisplayed: boolean;
-}>(
-    (
-        utils,
-        { backgroundColor, bottomPadding, insets, hasBottomPadding, isMessageBannerDisplayed },
-    ) => ({
-        flex: 1,
-        backgroundColor: utils.colors[backgroundColor],
-        paddingTop: Math.max(insets.top, utils.spacings.sp8),
-        extend: [
-            {
-                condition: hasBottomPadding,
-                style: {
-                    paddingBottom: Math.max(insets.bottom, bottomPadding),
-                },
+}>((utils, { backgroundColor, insets, isMessageBannerDisplayed }) => ({
+    flex: 1,
+    backgroundColor: utils.colors[backgroundColor],
+    paddingTop: Math.max(insets.top, utils.spacings.sp8),
+    extend: [
+        {
+            // If the message banner is displayed, the top padding has to be equal to 0
+            // to render the app content right under the banner.
+            condition: isMessageBannerDisplayed,
+            style: {
+                paddingTop: 0,
             },
-            {
-                // If the message banner is displayed, the top padding has to be equal to 0
-                // to render the app content right under the banner.
-                condition: isMessageBannerDisplayed,
-                style: {
-                    paddingTop: 0,
-                },
-            },
-        ],
-    }),
-);
+        },
+    ],
+}));
 
-const screenContentBaseStyle = prepareNativeStyle<{
+const screenContentStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     horizontalPadding: number;
+    applyBottomInset: boolean;
     bottomPadding: number;
-    isScrollable: boolean;
-}>((_, { horizontalPadding, bottomPadding, insets, isScrollable }) => {
-    const { left, right } = insets;
+}>((_, { insets, horizontalPadding, applyBottomInset, bottomPadding }) => {
+    const { left, right, bottom } = insets;
+    const bottomInset = applyBottomInset ? bottom : 0;
 
     return {
         flexGrow: 1,
         paddingLeft: Math.max(left, horizontalPadding),
         paddingRight: Math.max(right, horizontalPadding),
-
-        extend: {
-            // Scrollable screen takes the whole height of the screen. This padding is needed to
-            // prevent the content being "sticked" to the bottom navbar.
-            condition: isScrollable,
-            style: {
-                paddingBottom: bottomPadding,
-            },
-        },
+        paddingBottom: bottomInset + bottomPadding,
     };
 });
+
+const screenFooterStyle = prepareNativeStyle<{
+    insets: EdgeInsets;
+    applyBottomInset: boolean;
+}>((_, { insets, applyBottomInset }) => ({
+    paddingBottom: applyBottomInset ? insets.bottom : 0,
+}));
 
 export const Screen = ({
     children,
@@ -109,7 +96,7 @@ export const Screen = ({
 
     const horizontalPadding = noHorizontalPadding ? 0 : spacings.sp16;
     const bottomPadding = noBottomPadding ? 0 : spacings.sp16;
-    const hasBottomPadding =
+    const applyBottomInset =
         !useContext(BottomTabBarHeightContext) && hasBottomInset && !isKeyboardShown;
     const systemBarsStyle = useAndroidNavigationBarStyle({ backgroundColor });
 
@@ -122,8 +109,6 @@ export const Screen = ({
             style={applyStyle(screenContainerStyle, {
                 backgroundColor,
                 insets,
-                bottomPadding,
-                hasBottomPadding,
                 isMessageBannerDisplayed,
             })}
             testID={`@screen/${name}`}
@@ -137,17 +122,23 @@ export const Screen = ({
                 refreshControl={refreshControl}
             >
                 <Box
-                    style={applyStyle(screenContentBaseStyle, {
+                    style={applyStyle(screenContentStyle, {
                         insets,
+                        applyBottomInset: applyBottomInset && !footer,
                         horizontalPadding,
                         bottomPadding,
-                        isScrollable,
                     })}
                 >
                     {children}
                 </Box>
             </ScreenContentWrapper>
-            <KeyboardStickyView>{footer}</KeyboardStickyView>
+            {footer && (
+                <KeyboardStickyView
+                    style={applyStyle(screenFooterStyle, { insets, applyBottomInset })}
+                >
+                    {footer}
+                </KeyboardStickyView>
+            )}
         </View>
     );
 };

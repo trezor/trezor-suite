@@ -67,7 +67,7 @@ type TransactionListItem =
     | (WalletAccountTransaction | MonthKey);
 
 const sectionListContainerStyle = prepareNativeStyle(utils => ({
-    paddingVertical: utils.spacings.sp8,
+    paddingTop: utils.spacings.sp8,
 }));
 
 const sortKeysPendingFirst = (a: string, b: string) => {
