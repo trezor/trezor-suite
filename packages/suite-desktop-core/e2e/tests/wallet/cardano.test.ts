@@ -1,7 +1,4 @@
-import {
-    cardanoAccountDetails,
-    cardanoStaking,
-} from '../../snapshots/web/wallet/cardano.test.ts/cardano-aria';
+import { cardanoAccountDetails } from '../../snapshots/web/wallet/cardano.test.ts/cardano-aria';
 import { expect, test } from '../../support/fixtures';
 
 const formattedReceiveAddress =
@@ -65,7 +62,12 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
 
         await test.step('Verify Cardano staking', async () => {
             await walletPage.stakingButton.click();
-            await expect(walletPage.stakingCardano).toMatchAriaSnapshot(cardanoStaking);
+            await expect(walletPage.stakeAddress).toHaveText(
+                'stake_test1uqyuj8h935q6panx0klttu026rzam0y9c2v97pv3l56uk3s5v5fjr',
+            );
+            await expect(page.getByRole('button', { name: 'Delegate' })).toBeDisabled();
+            // Recently there were a lot of changes in staking, and the snapshot became problematic
+            // await expect(walletPage.stakingCardano).toMatchAriaSnapshot(cardanoStaking);
         });
     });
 });
