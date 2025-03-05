@@ -13,23 +13,12 @@ import { ERRORS, PROTO } from '../constants';
 import { getReleases } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
 import { DeviceList } from '../device/DeviceList';
-import { CoreEventMessage, DEVICE, UI, createDeviceMessage, createUiMessage } from '../events';
+import { CoreEventMessage, UI, createUiMessage } from '../events';
 import { CommonParams, DeviceUniquePath } from '../types';
 import { FirmwareUpdateResponse } from '../types/api/firmwareUpdate';
 import type { Log } from '../utils/debug';
 
 type PostMessage = (message: CoreEventMessage) => void;
-
-const registerEvents = (device: Device, postMessage: PostMessage) => {
-    device.on(DEVICE.BUTTON, ({ device: _, payload }) => {
-        postMessage(
-            createDeviceMessage(DEVICE.BUTTON, {
-                code: payload.code,
-                device: device.toMessageObject(),
-            }),
-        );
-    });
-};
 
 type ReconnectParams = {
     bootloader: boolean;
@@ -40,6 +29,7 @@ type ReconnectParams = {
 type ReconnectContext = {
     deviceList: DeviceList;
     device: Device;
+    registerEvents: (device: Device) => void;
     postMessage: PostMessage;
     log: Log;
     abortSignal: AbortSignal;
@@ -47,7 +37,7 @@ type ReconnectContext = {
 
 const waitForReconnectedDevice = async (
     { bootloader, method, intermediary }: ReconnectParams,
-    { deviceList, device, postMessage, log, abortSignal }: ReconnectContext,
+    { deviceList, device, registerEvents, postMessage, log, abortSignal }: ReconnectContext,
 ): Promise<Device> => {
     const target = intermediary || !bootloader ? 'normal' : 'bootloader';
 
@@ -112,6 +102,7 @@ const waitForReconnectedDevice = async (
                 'we were unable to read device.features on the first interaction after seeing it, retrying...',
             );
             try {
+                registerEvents(reconnectedDevice);
                 // todo: it keeps printing warning "Previous call is still running" on reconnect from bl to normal
                 await reconnectedDevice.run(undefined, {
                     skipFirmwareChecks: true,
@@ -147,7 +138,7 @@ const waitForReconnectedDevice = async (
         throw ERRORS.TypedError('Method_Interrupted');
     }
 
-    registerEvents(reconnectedDevice, postMessage);
+    registerEvents(reconnectedDevice);
     await reconnectedDevice.waitForFirstRun();
 
     if (!reconnectedDevice.isUsedHere()) {
@@ -292,6 +283,7 @@ export type Params = {
 
 type Context = {
     deviceList: DeviceList;
+    registerEvents: (device: Device) => void;
     postMessage: PostMessage;
     initDevice: (path?: DeviceUniquePath) => Promise<Device>;
     log: Log;
@@ -305,8 +297,9 @@ type OnCallFirmwareUpdateParams = {
 
 export const onCallFirmwareUpdate = async ({
     params,
-    context: { deviceList, postMessage, initDevice, log, abortSignal },
+    context,
 }: OnCallFirmwareUpdateParams): Promise<FirmwareUpdateResponse> => {
+    const { deviceList, registerEvents, postMessage, initDevice, log } = context;
     log.debug('onCallFirmwareUpdate with params: ', params);
 
     const device = await initDevice(params?.device?.path);
@@ -319,7 +312,7 @@ export const onCallFirmwareUpdate = async ({
 
     log.debug('onCallFirmwareUpdate', 'device', device);
 
-    registerEvents(device, postMessage);
+    registerEvents(device);
 
     const { manual, upgrade, language, btcOnly } = getInstallationParams(device, params);
     log.debug('onCallFirmwareUpdate', 'installation params', {
@@ -351,7 +344,7 @@ export const onCallFirmwareUpdate = async ({
 
         reconnectedDevice = await waitForReconnectedDevice(
             { bootloader: true, method: 'manual' },
-            { deviceList, device, log, postMessage, abortSignal },
+            { ...context, device },
         );
     } else {
         // Device supports automatic reboot to bootloader, load translation data and do it
@@ -422,7 +415,7 @@ export const onCallFirmwareUpdate = async ({
         }
         reconnectedDevice = await waitForReconnectedDevice(
             { bootloader: true, method: 'auto' },
-            { deviceList, device, log, postMessage, abortSignal },
+            { ...context, device },
         );
     }
 
@@ -449,7 +442,7 @@ export const onCallFirmwareUpdate = async ({
 
         reconnectedDevice = await waitForReconnectedDevice(
             { bootloader: true, method: 'manual', intermediary: true },
-            { deviceList, device: reconnectedDevice, log, postMessage, abortSignal },
+            { ...context, device: reconnectedDevice },
         );
 
         binaryInfo = await getBinaryHelper(reconnectedDevice, params, log, postMessage, btcOnly);
@@ -467,7 +460,7 @@ export const onCallFirmwareUpdate = async ({
 
     reconnectedDevice = await waitForReconnectedDevice(
         { bootloader: false, method: 'wait' },
-        { deviceList, device: reconnectedDevice, log, postMessage, abortSignal },
+        { ...context, device: reconnectedDevice },
     );
 
     // features.firmware_present non-null value implies that device was initially connected with

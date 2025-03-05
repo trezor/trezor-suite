@@ -193,6 +193,7 @@ const setupTest = () => {
         deviceList,
         postMessage,
         initDevice: () => Promise.resolve(deviceList.getAllDevices()[0]),
+        registerEvents: () => {},
         log: new Log('Test', false),
         abortSignal: new AbortController().signal,
     };

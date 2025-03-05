@@ -639,21 +639,8 @@ const onCallDevice = async (
 
     // device is available
     // set public variables, listeners and run method
-    device.on(DEVICE.BUTTON, onDeviceButtonHandler(context, method));
-    device.on(DEVICE.PIN, onDevicePinHandler(context));
-    device.on(DEVICE.WORD, onDeviceWordHandler(context));
-    device.on(
-        DEVICE.PASSPHRASE,
-        (method.useEmptyPassphrase ? onEmptyPassphraseHandler : onDevicePassphraseHandler)(context),
-    );
-    device.on(DEVICE.PASSPHRASE_ON_DEVICE, () => {
-        sendCoreMessage(
-            createUiMessage(UI.REQUEST_PASSPHRASE_ON_DEVICE, { device: device.toMessageObject() }),
-        );
-    });
-    device.on(DEVICE.FIRMWARE_VERSION_CHANGED, payload => {
-        sendCoreMessage(createDeviceMessage(DEVICE.FIRMWARE_VERSION_CHANGED, payload));
-    });
+    registerDeviceEvents(context, method)(device);
+
     if (useCoreInPopup && env === 'webextension' && origin) {
         device.initStorage(new WebextensionStateStorage(origin));
     }
@@ -783,17 +770,17 @@ const closePopup = ({ popupPromise, sendCoreMessage }: CoreContext) => {
  * @memberof Core
  */
 const onDeviceButtonHandler =
-    (context: CoreContext, method: AbstractMethod<any>) =>
+    (context: CoreContext, method?: AbstractMethod<any>) =>
     async ({ device, payload: request }: DeviceEvents['button']) => {
         const { sendCoreMessage } = context;
         // wait for popup handshake
         const addressRequest = request.code === 'ButtonRequest_Address';
-        if (!addressRequest || (addressRequest && method.useUi)) {
+        if (!addressRequest || (addressRequest && method?.useUi)) {
             await waitForPopup(context);
         }
         const data =
-            typeof method.getButtonRequestData === 'function' && request.code
-                ? method.getButtonRequestData(request.code)
+            typeof method?.getButtonRequestData === 'function' && request.code
+                ? method?.getButtonRequestData(request.code)
                 : undefined;
         // interaction timeout
         startInteractionTimeout(context);
@@ -808,7 +795,7 @@ const onDeviceButtonHandler =
                 data,
             }),
         );
-        if (addressRequest && !method.useUi) {
+        if (addressRequest && !method?.useUi) {
             sendCoreMessage(createUiMessage(UI.ADDRESS_VALIDATION, data));
         }
     };
@@ -901,6 +888,30 @@ const onEmptyPassphraseHandler =
     () =>
     ({ callback }: DeviceEvents['passphrase']) => {
         callback({ value: '' });
+    };
+
+const registerDeviceEvents =
+    (context: CoreContext, method?: AbstractMethod<any>) => (device: Device) => {
+        device.removeAllListeners();
+        device.on(DEVICE.BUTTON, onDeviceButtonHandler(context, method));
+        device.on(DEVICE.PIN, onDevicePinHandler(context));
+        device.on(DEVICE.WORD, onDeviceWordHandler(context));
+        device.on(
+            DEVICE.PASSPHRASE,
+            (method?.useEmptyPassphrase ? onEmptyPassphraseHandler : onDevicePassphraseHandler)(
+                context,
+            ),
+        );
+        device.on(DEVICE.PASSPHRASE_ON_DEVICE, () => {
+            context.sendCoreMessage(
+                createUiMessage(UI.REQUEST_PASSPHRASE_ON_DEVICE, {
+                    device: device.toMessageObject(),
+                }),
+            );
+        });
+        device.on(DEVICE.FIRMWARE_VERSION_CHANGED, payload => {
+            context.sendCoreMessage(createDeviceMessage(DEVICE.FIRMWARE_VERSION_CHANGED, payload));
+        });
     };
 
 /**
@@ -1158,14 +1169,17 @@ export class Core extends EventEmitter {
                 // means that call immediately returns error.
                 if (message.payload.method === 'firmwareUpdate') {
                     assertDeviceListConnected(this.deviceList);
+
+                    const coreContext = this.getCoreContext();
                     onCallFirmwareUpdate({
                         params: message.payload,
                         context: {
                             deviceList: this.deviceList,
                             postMessage: this.sendCoreMessage.bind(this),
-                            initDevice: path => initDevice(this.getCoreContext(), { path }),
+                            initDevice: path => initDevice(coreContext, { path }),
                             log: _log,
                             abortSignal: this.abortController.signal,
+                            registerEvents: registerDeviceEvents(coreContext),
                         },
                     })
                         .then(payload => {
