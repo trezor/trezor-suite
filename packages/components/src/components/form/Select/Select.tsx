@@ -130,6 +130,7 @@ type WrapperProps = TransientProps<
     $isWithPlaceholder: boolean;
     $elevation: Elevation;
     $isLoading?: boolean;
+    $menuFitContent?: boolean;
 };
 
 const SelectWrapper = styled.div<WrapperProps>`
@@ -244,6 +245,11 @@ const SelectWrapper = styled.div<WrapperProps>`
         ${menuStyle};
         border: none;
         z-index: ${zIndices.base};
+        ${({ $menuFitContent }) =>
+            $menuFitContent &&
+            css`
+                width: fit-content;
+            `}
     }
 
     ${({ $isDisabled }) =>
@@ -290,6 +296,7 @@ export type SelectProps = KeyPressScrollProps &
         label?: ReactNode;
         size?: InputSize;
         minValueWidth?: string;
+        menuFitContent?: boolean;
         isMenuOpen?: boolean;
         isLoading?: boolean;
         onChange?: (value: Option, ref?: SelectInstance<Option, boolean> | null) => void;
@@ -322,6 +329,7 @@ export const Select = ({
     useKeyPressScroll,
     isSearchable = false,
     minValueWidth = 'initial',
+    menuFitContent,
     isMenuOpen,
     components,
     onChange,
@@ -410,6 +418,7 @@ export const Select = ({
                 $isSearchable={isSearchable}
                 $size={size}
                 $minValueWidth={minValueWidth}
+                $menuFitContent={menuFitContent}
                 $isDisabled={isDisabled}
                 $isLoading={isLoading}
                 $isMenuOpen={isMenuOpen}
