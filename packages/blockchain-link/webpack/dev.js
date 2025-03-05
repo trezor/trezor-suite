@@ -52,7 +52,6 @@ module.exports = {
         modules: [SRC, 'node_modules'],
         extensions: ['.ts', '.js'],
         fallback: {
-            https: false, // required by ripple-lib
             crypto: require.resolve('crypto-browserify'),
             stream: require.resolve('stream-browserify'),
         },

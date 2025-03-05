@@ -1,17 +1,30 @@
-import { APIOptions, RippleAPI } from 'ripple-lib';
-import { RippleError } from 'ripple-lib/dist/npm/common/errors';
+import {
+    Client,
+    ClientOptions,
+    ErrorResponse,
+    LedgerStream,
+    TransactionStream,
+    XrplError,
+    xrpToDrops,
+} from 'xrpl';
 
-import type { AccountInfo, Response, SubscriptionAccountInfo } from '@trezor/blockchain-link-types';
+import type {
+    AccountInfo,
+    AccountInfoParams,
+    Response,
+    SubscriptionAccountInfo,
+} from '@trezor/blockchain-link-types';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import * as utils from '@trezor/blockchain-link-utils/src/ripple';
+import { getSuiteVersion } from '@trezor/env-utils';
 import { TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 
-type Context = ContextType<RippleAPI>;
+type Context = ContextType<Client>;
 type Request<T> = T & Context;
 
 const DEFAULT_TIMEOUT = 20 * 1000;
@@ -21,12 +34,15 @@ const RESERVE = {
     OWNER: '2000000',
 };
 
-const transformError = (error: any) => {
-    if (error instanceof RippleError) {
+const transformError = (error: unknown) => {
+    if (error instanceof XrplError) {
         const code =
             error.name === 'TimeoutError' ? 'websocket_timeout' : 'websocket_error_message';
         if (error.data) {
-            return new CustomError(code, `${error.name} ${error.data.error_message}`);
+            const errorMessageData = (error.data as { error_message: string }).error_message;
+            const errorMessage = `${error.name} ${errorMessageData}`;
+
+            return new CustomError(code, errorMessage);
         }
 
         return new CustomError(code, error.toString());
@@ -36,49 +52,41 @@ const transformError = (error: any) => {
 };
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
-    const api = await request.connect();
-    const info = await api.getServerInfo();
+    const client = await request.connect();
+    const response = await client.request({
+        command: 'server_info',
+    });
 
     // store current ledger values
-    RESERVE.BASE = api.xrpToDrops(info.validatedLedger.reserveBaseXRP);
-    RESERVE.OWNER = api.xrpToDrops(info.validatedLedger.reserveIncrementXRP);
+    if (response.result.info.validated_ledger != null) {
+        RESERVE.BASE = xrpToDrops(response.result.info.validated_ledger.reserve_base_xrp);
+        RESERVE.OWNER = xrpToDrops(response.result.info.validated_ledger.reserve_inc_xrp);
+    }
 
     return {
         type: RESPONSES.GET_INFO,
         payload: {
-            url: api.connection.getUrl(),
-            ...utils.transformServerInfo(info),
+            url: client.connection.getUrl(),
+            ...utils.transformServerInfo(response),
         },
     } as const;
 };
 
-// Custom request
-// Ripple js api doesn't support "ledger_index": "current", which will fetch data from mempool
-const getMempoolAccountInfo = async (api: RippleAPI, account: string) => {
-    const info = await api.request('account_info', {
+// Custom request to get account info from mempool
+const getMempoolAccountInfo = async (client: Client, account: string) => {
+    const response = await client.request({
+        command: 'account_info',
         account,
         ledger_index: 'current',
         queue: true,
     });
 
     return {
-        xrpBalance: info.account_data.Balance,
-        sequence: info.account_data.Sequence,
-        txs: info.queue_data ? info.queue_data.txn_count : 0,
+        xrpBalance: response.result.account_data.Balance,
+        sequence: response.result.account_data.Sequence,
+        txs: response.result.queue_data ? response.result.queue_data.txn_count : 0,
     };
 };
-
-// Custom request
-// Ripple ja api returns parsed/formatted transactions, use own parsing
-interface RawTxData {
-    marker: {
-        ledger: number;
-        seq: number;
-    };
-    ledger_index_max: number;
-    limit: number;
-    transactions: any[];
-}
 
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
@@ -104,38 +112,44 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     };
 
     try {
-        const api = await request.connect();
-        const info = await api.getAccountInfo(payload.descriptor);
+        const client = await request.connect();
+        const info = await client.request({
+            command: 'account_info',
+            account: payload.descriptor,
+            ledger_index: 'validated',
+        });
+
         const ownersReserve =
-            info.ownerCount > 0
-                ? new BigNumber(info.ownerCount).times(RESERVE.OWNER).toString()
+            info.result.account_data.OwnerCount > 0
+                ? new BigNumber(info.result.account_data.OwnerCount).times(RESERVE.OWNER).toString()
                 : '0';
 
         const reserve = new BigNumber(RESERVE.BASE).plus(ownersReserve).toString();
         const misc = {
-            sequence: info.sequence,
+            sequence: info.result.account_data.Sequence,
             reserve,
         };
         account.misc = misc;
-        account.balance = api.xrpToDrops(info.xrpBalance);
+        account.balance = info.result.account_data.Balance;
         account.availableBalance = new BigNumber(account.balance).minus(reserve).toString();
         account.empty = false;
-    } catch (error) {
+    } catch (error: unknown) {
         // empty account throws error "actNotFound"
         // catch it and respond with empty account
-        if (error instanceof RippleError && error.data && error.data.error === 'actNotFound') {
+        if (error instanceof XrplError && (error.data as ErrorResponse)?.error === 'actNotFound') {
             return {
                 type: RESPONSES.GET_ACCOUNT_INFO,
                 payload: account,
             } as const;
         }
+
         throw error;
     }
 
     // get mempool information
     try {
-        const api = await request.connect();
-        const mempoolInfo = await getMempoolAccountInfo(api, payload.descriptor);
+        const client = await request.connect();
+        const mempoolInfo = await getMempoolAccountInfo(client, payload.descriptor);
         const { misc } = account;
         const reserve: string =
             misc && typeof misc.reserve === 'string' ? misc.reserve : RESERVE.BASE;
@@ -155,33 +169,45 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         } as const;
     }
 
-    const requestOptions = {
+    const client = await request.connect();
+    const response = await client.request({
+        command: 'account_tx',
         account: payload.descriptor,
         ledger_index_min: payload.from ? payload.from : undefined,
         ledger_index_max: payload.to ? payload.to : undefined,
         limit: payload.pageSize || 25,
         marker: payload.marker,
-    };
+        api_version: 2,
+    });
 
-    const api = await request.connect();
-    const transactionsData: RawTxData = await api.request('account_tx', requestOptions);
-    account.history.transactions = transactionsData.transactions.map(raw =>
-        utils.transformTransaction(raw.tx, raw.meta, payload.descriptor),
+    account.history.transactions = response.result.transactions.flatMap(raw =>
+        raw.tx_json != null
+            ? [utils.transformTransaction(raw.hash, raw.tx_json, raw.meta, payload.descriptor)]
+            : [],
     );
 
     return {
         type: RESPONSES.GET_ACCOUNT_INFO,
         payload: {
             ...account,
-            marker: transactionsData.marker,
+            marker: response.result.marker as AccountInfoParams['marker'],
         },
     } as const;
 };
 
 const getTransaction = async ({ connect, payload }: Request<MessageTypes.GetTransaction>) => {
-    const api = await connect();
-    const rawTx = await api.request('tx', { transaction: payload, binary: false });
-    const tx = utils.transformTransaction(rawTx, null);
+    const client = await connect();
+    const rawTx = await client.request({
+        command: 'tx',
+        transaction: payload,
+        binary: false,
+    });
+
+    const tx = utils.transformTransaction(
+        rawTx.result.hash,
+        rawTx.result.tx_json,
+        rawTx.result.meta,
+    );
 
     return {
         type: RESPONSES.GET_TRANSACTION,
@@ -190,30 +216,30 @@ const getTransaction = async ({ connect, payload }: Request<MessageTypes.GetTran
 };
 
 const pushTransaction = async ({ connect, payload }: Request<MessageTypes.PushTransaction>) => {
-    const api = await connect();
+    const client = await connect();
     // tx_blob hex must be in upper case
-    const info = await api.submit(payload.toUpperCase());
+    const info = await client.submit(payload.toUpperCase());
 
-    if (info.resultCode === 'tesSUCCESS') {
+    if (info.result.engine_result === 'tesSUCCESS' && info.result.tx_json.hash) {
         return {
             type: RESPONSES.PUSH_TRANSACTION,
-            // payload: info.resultMessage,
-            // @ts-expect-error this param is not typed in RippleApi
-            payload: info.tx_json.hash,
+            payload: info.result.tx_json.hash,
         } as const;
     }
-    throw new Error(info.resultMessage);
+    throw new Error(info.result.engine_result_message);
 };
 
 const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
-    const api = await request.connect();
-    const fee = await api.getFee();
-    // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 12 drops to 6000+ drops for a moment
+    const client = await request.connect();
+    const fee = await client.request({
+        command: 'fee',
+    });
+
+    // TODO: sometimes rippled returns very high values in "server_info.load_factor" and calculated fee jumps from basic 10 drops to 6000+ drops for a moment
     // investigate more...
-    let drops = api.xrpToDrops(fee);
-    if (new BigNumber(drops).gt('2000')) {
-        drops = '12';
-    }
+
+    const drops = fee.result.drops.base_fee;
+
     const payload =
         request.payload && Array.isArray(request.payload.blocks)
             ? request.payload.blocks.map(() => ({ feePerUnit: drops }))
@@ -225,27 +251,35 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     } as const;
 };
 
-const onNewBlock = ({ post }: Context, event: any) => {
+const onNewBlock = ({ post }: Context, event: LedgerStream) => {
     post({
         id: -1,
         type: RESPONSES.NOTIFICATION,
         payload: {
             type: 'block',
             payload: {
-                blockHeight: event.ledgerVersion,
-                blockHash: event.ledgerHash,
+                blockHeight: event.ledger_index,
+                blockHash: event.ledger_hash,
             },
         },
     });
 };
 
-const onTransaction = ({ state, post }: Context, event: any) => {
+const onTransaction = ({ state, post }: Context, event: TransactionStream) => {
     if (event.type !== 'transaction') return;
     // ignore transactions other than Payment
-    const tx = event.transaction;
-    if (event.transaction.TransactionType !== 'Payment') return;
+    if (event.tx_json?.TransactionType !== 'Payment') return;
+
+    const { tx_json } = event;
 
     const notify = (descriptor: string) => {
+        // Every signed transaction has a unique "hash" that identifies it,
+        // but its type is missing in the event definition.
+        // https://github.com/XRPLF/xrpl.js/issues/2938
+        const { hash } = event as unknown as { hash?: string };
+
+        if (!tx_json || !hash) return;
+
         post({
             id: -1,
             type: RESPONSES.NOTIFICATION,
@@ -253,16 +287,17 @@ const onTransaction = ({ state, post }: Context, event: any) => {
                 type: 'notification',
                 payload: {
                     descriptor,
-                    tx: utils.transformTransaction({ ...event, ...tx }, null, descriptor),
+                    tx: utils.transformTransaction(hash, tx_json, undefined, descriptor),
                 },
             },
         });
     };
 
     const subscribed = state.getAddresses();
-    const sent = subscribed.find(a => a === tx.Account);
+    const sent = subscribed.find(a => a === tx_json.Account);
     if (sent) notify(sent);
-    const recv = subscribed.find(a => a === tx.Destination);
+
+    const recv = subscribed.find(a => a === tx_json.Destination);
     if (recv) notify(recv);
 };
 
@@ -275,10 +310,11 @@ const subscribeAccounts = async (ctx: Context, accounts: SubscriptionAccountInfo
     const uniqueAddresses = state.getAddresses().filter(a => prevAddresses.indexOf(a) < 0);
     if (uniqueAddresses.length > 0) {
         if (!state.getSubscription('notification')) {
-            api.connection.on('transaction', ev => onTransaction(ctx, ev));
+            api.on('transaction', ev => onTransaction(ctx, ev));
             state.addSubscription('notification');
         }
-        await api.request('subscribe', {
+        await api.request({
+            command: 'subscribe',
             accounts_proposed: uniqueAddresses,
         });
     }
@@ -294,18 +330,14 @@ const subscribeAddresses = async (ctx: Context, addresses: string[]) => {
 
     if (uniqueAddresses.length > 0) {
         if (!state.getSubscription('transaction')) {
-            api.connection.on('transaction', ev => onTransaction(ctx, ev));
-            // api.connection.on('ledgerClosed', onLedgerClosed);
+            api.on('transaction', ev => onTransaction(ctx, ev));
             state.addSubscription('transaction');
         }
-        const request = {
-            // accounts: uniqueAddresses,
-            accounts_proposed: uniqueAddresses,
-            // stream: ['transactions', 'transactions_proposed'],
-            // accounts_proposed: mempool ? uniqueAddresses : [],
-        };
 
-        await api.request('subscribe', request);
+        await api.request({
+            command: 'subscribe',
+            accounts_proposed: uniqueAddresses,
+        });
     }
 
     return { subscribed: state.getAddresses().length > 0 };
@@ -314,7 +346,7 @@ const subscribeAddresses = async (ctx: Context, addresses: string[]) => {
 const subscribeBlock = async (ctx: Context) => {
     if (!ctx.state.getSubscription('ledger')) {
         const api = await ctx.connect();
-        api.on('ledger', ev => onNewBlock(ctx, ev));
+        api.on('ledgerClosed', ev => onNewBlock(ctx, ev));
         ctx.state.addSubscription('ledger');
     }
 
@@ -348,12 +380,14 @@ const unsubscribeAddresses = async ({ state, connect }: Context, addresses?: str
         const all = state.getAddresses();
         state.removeAccounts(state.getAccounts());
         state.removeAddresses(all);
-        await api.request('unsubscribe', {
+        await api.request({
+            command: 'unsubscribe',
             accounts_proposed: all,
         });
     } else {
         state.removeAddresses(addresses);
-        await api.request('unsubscribe', {
+        await api.request({
+            command: 'unsubscribe',
             accounts_proposed: addresses,
         });
     }
@@ -377,8 +411,8 @@ const unsubscribeAccounts = async (ctx: Context, accounts?: SubscriptionAccountI
 
 const unsubscribeBlock = async ({ state, connect }: Context) => {
     if (!state.getSubscription('ledger')) return;
-    const api = await connect();
-    api.removeAllListeners('ledger');
+    const client = await connect();
+    client.removeAllListeners('ledgerClosed');
     state.removeSubscription('ledger');
 };
 
@@ -420,7 +454,7 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
     }
 };
 
-class RippleWorker extends BaseWorker<RippleAPI> {
+class RippleWorker extends BaseWorker<Client> {
     pingTimeout?: TimerId;
 
     cleanup() {
@@ -433,45 +467,43 @@ class RippleWorker extends BaseWorker<RippleAPI> {
         super.cleanup();
     }
 
-    protected isConnected(api: RippleAPI | undefined): api is RippleAPI {
-        return api?.isConnected() ?? false;
+    protected isConnected(client: Client | undefined): client is Client {
+        return client?.isConnected() ?? false;
     }
 
-    async tryConnect(url: string): Promise<RippleAPI> {
-        const options: APIOptions = {
-            server: url,
-            timeout: this.settings.timeout || DEFAULT_TIMEOUT, // timeout is used for request and heartbeat (ping), see node_modules/ripple-lib/dist/npm/common/connection.js
+    async tryConnect(url: string): Promise<Client> {
+        const options: ClientOptions = {
+            headers: {
+                'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
+            },
+            timeout: this.settings.timeout || DEFAULT_TIMEOUT, // timeout is used for request and heartbeat (ping)
             connectionTimeout: this.settings.timeout || DEFAULT_TIMEOUT, // connectionTimeout is used only for connection
+            ...(this.proxyAgent && { agent: this.proxyAgent }),
         };
-        // proxy agent is available only in suite because of the patch.
-        // it will fail in standalone trezor-connect implementation where this patch is not present.
-        // TODO: https://github.com/trezor/trezor-suite/issues/4942
-        if (RippleAPI._ALLOW_AGENT) {
-            options.agent = this.proxyAgent;
-        }
-        const api = new RippleAPI(options);
-        // disable websocket auto reconnecting
-        // workaround for RippleApi which doesn't have possibility to disable reconnection
-        // issue: https://github.com/ripple/ripple-lib/issues/1068
-        // override Api (connection) private methods and return never ending promises to prevent this behavior
-        api.connection.reconnect = () => new Promise(() => {});
-        await api.connect();
 
-        // Ripple api does set ledger listener automatically
-        api.on('ledger', ledger => {
+        const client = new Client(url, options);
+        await client.connect();
+
+        // xrpl API automatically sets a ledger listener
+        client.on('ledgerClosed', ledger => {
             // store current ledger values
-            RESERVE.BASE = api.xrpToDrops(ledger.reserveBaseXRP);
-            RESERVE.OWNER = api.xrpToDrops(ledger.reserveIncrementXRP);
+            RESERVE.BASE = ledger.reserve_base.toString();
+            RESERVE.OWNER = ledger.reserve_inc.toString();
         });
 
-        api.on('disconnected', () => {
+        client.on('disconnected', () => {
             this.post({ id: -1, type: RESPONSES.DISCONNECTED, payload: true });
             this.cleanup();
         });
 
         this.post({ id: -1, type: RESPONSES.CONNECTED });
 
-        return api;
+        client.request({
+            command: 'subscribe',
+            streams: ['ledger'],
+        });
+
+        return client;
     }
 
     disconnect() {
@@ -492,7 +524,7 @@ class RippleWorker extends BaseWorker<RippleAPI> {
 
             const response = await onRequest(request);
             this.post({ id: event.data.id, ...response });
-        } catch (error) {
+        } catch (error: unknown) {
             this.errorResponse(event.data.id, transformError(error));
         } finally {
             if (event.data.type !== MESSAGES.DISCONNECT) {

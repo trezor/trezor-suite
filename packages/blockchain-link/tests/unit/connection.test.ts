@@ -1,4 +1,6 @@
 /* eslint-disable jest/no-jasmine-globals */
+import { TimeoutError } from 'xrpl';
+
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
 
 import workers from './worker';
@@ -65,12 +67,22 @@ workers.forEach(instance => {
                     delay: 400, // wait 0.4 sec. to send response
                 },
             ]);
+
+            const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+            blockchain.settings.timeout = 200;
+
             try {
-                blockchain.settings.timeout = 200;
                 await blockchain.getInfo();
                 fail('Did not throw');
             } catch (error) {
-                expect(error.code).toEqual('blockchain_link/websocket_timeout');
+                if (instance.name === 'ripple') {
+                    expect(consoleSpy).toHaveBeenCalled();
+                    expect(consoleSpy).toHaveBeenCalledWith(expect.any(TimeoutError));
+                } else {
+                    expect(error.code).toEqual('blockchain_link/websocket_timeout');
+                }
+            } finally {
+                consoleSpy.mockRestore();
             }
         });
 
@@ -126,7 +138,14 @@ workers.forEach(instance => {
             await new Promise(resolve => setTimeout(resolve, 500));
 
             expect(callback).toHaveBeenCalled();
-            expect(server.getFixtures()!.length).toEqual(2);
+
+            // xrpl.js calls this.getServerInfo() inside the connect() method,
+            // which results in the mock server sending a response and then removing the first fixture
+            if (instance.name === 'ripple') {
+                expect(server.getFixtures()!.length).toEqual(1);
+            } else {
+                expect(server.getFixtures()!.length).toEqual(2);
+            }
         });
 
         it('Handle connect event', () =>
@@ -141,15 +160,7 @@ workers.forEach(instance => {
             new Promise<void>(done => {
                 blockchain.on('disconnected', done);
                 blockchain.connect().then(() => {
-                    // TODO: ripple-lib throws error when disconnect is called immediately
-                    // investigate more, use setTimeout as a workaround
-                    // Error [ERR_UNHANDLED_ERROR]: Unhandled error. (websocket)
-                    // at Connection.RippleAPI.connection.on (../../node_modules/ripple-lib/src/api.ts:133:14)
-                    if (instance.name === 'ripple') {
-                        setTimeout(() => blockchain.disconnect(), 100);
-                    } else {
-                        blockchain.disconnect();
-                    }
+                    blockchain.disconnect();
                 });
             }));
 
@@ -203,20 +214,6 @@ workers.forEach(instance => {
         it('Disconnect without connection', async () => {
             const r = await blockchain.disconnect();
             expect(r).toEqual(true);
-        });
-
-        it('Websocket connection closed without error before connection.open event', async () => {
-            if (instance.name !== 'ripple') return;
-            // auto reconnect RippleApi issue: https://github.com/ripple/ripple-lib/issues/1068
-            server.removeAllListeners('connection');
-            server.on('connection', (ws: any) => ws.close());
-
-            try {
-                await blockchain.connect();
-                fail('Did not throw');
-            } catch (error) {
-                expect(error.code).toEqual('blockchain_link/connect');
-            }
         });
 
         it('Connect error (server field with invalid values)', async () => {

@@ -19,9 +19,9 @@ jws
 @stellar/stellar-sdk
 eth-phishing-detect
 @types/invity-api
-ripple-lib
 ajv
 @types/jws
 json-schema-to-typescript
 @types/bchaddrjs
 bchaddrjs
+xrpl

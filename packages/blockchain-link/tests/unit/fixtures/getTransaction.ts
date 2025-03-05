@@ -91,23 +91,25 @@ const blockfrostTx = {
 };
 
 const xrpFixture = {
-    Account: 'rB8Ai21NLgz85T9js2fKAVTVEDZnbTn8Eu',
-    Amount: '10000000',
-    Destination: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
-    DestinationTag: 1000000999,
-    Fee: '12',
-    Flags: 2147483648,
-    LastLedgerSequence: 21230993,
-    Sequence: 176,
-    SigningPubKey: '02EEFCFCDC10B7ADAD61C9DF80AEF746A7D2439B52AA5155E6D21B4008CDB6AC43',
-    TransactionType: 'Payment',
-    TxnSignature:
-        '3045022100EE2DC777F71513EEAEC9E6F61F8A83FB0ED4C1278D634B71937142F6934C7BCE02200C33939DA39B5654D67B659265ED3616C9C7B66BE864FDED523FA47B336DF539',
-    date: 617181871,
     hash: '34E5B5A710421589B868FDFB5BF9AAD2C08352ED0886E17800867A89FBD317D3',
+    validated: true,
     inLedger: 21230990,
     ledger_index: 21230990,
-    validated: true,
+    tx_json: {
+        Account: 'rB8Ai21NLgz85T9js2fKAVTVEDZnbTn8Eu',
+        DeliverMax: '10000000',
+        Destination: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+        DestinationTag: 1000000999,
+        Fee: '10',
+        Flags: 2147483648,
+        Sequence: 176,
+        SigningPubKey: '02EEFCFCDC10B7ADAD61C9DF80AEF746A7D2439B52AA5155E6D21B4008CDB6AC43',
+        TransactionType: 'Payment',
+        TxnSignature:
+            '3045022100EE2DC777F71513EEAEC9E6F61F8A83FB0ED4C1278D634B71937142F6934C7BCE02200C33939DA39B5654D67B659265ED3616C9C7B66BE864FDED523FA47B336DF539',
+        date: 617181871,
+        ledger_index: 21230990,
+    },
 };
 
 const xrpTx = {
@@ -115,16 +117,16 @@ const xrpTx = {
     type: 'unknown',
     blockHeight: xrpFixture.ledger_index,
     blockHash: xrpFixture.hash,
-    blockTime: xrpFixture.date + 946684800,
-    amount: xrpFixture.Amount,
-    fee: xrpFixture.Fee,
+    blockTime: xrpFixture.tx_json.date + 946684800,
+    amount: xrpFixture.tx_json.DeliverMax,
+    fee: xrpFixture.tx_json.Fee,
 
     targets: [],
     tokens: [],
     internalTransfers: [],
     details: { size: 0, totalInput: '0', totalOutput: '0', vin: [], vout: [] },
     rippleSpecific: {
-        destinationTag: xrpFixture.DestinationTag,
+        destinationTag: xrpFixture.tx_json.DestinationTag,
     },
 };
 

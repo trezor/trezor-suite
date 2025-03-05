@@ -279,7 +279,7 @@ export interface AccountInfo {
         total: number;
     };
     marker?: {
-        // ripple-lib
+        // xrpl.js
         ledger: number;
         seq: number;
     };

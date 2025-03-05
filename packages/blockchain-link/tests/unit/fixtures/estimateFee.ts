@@ -49,8 +49,24 @@ export default {
         {
             description: 'Successfull',
             params: { blocks: [1] },
-            serverFixtures: undefined,
-            response: [{ feePerUnit: '12' }],
+            serverFixtures: [
+                {
+                    method: 'fee',
+                    response: {
+                        type: 'response',
+                        status: 'success',
+                        result: {
+                            drops: {
+                                base_fee: '10',
+                                median_fee: '5000',
+                                minimum_fee: '10',
+                                open_ledger_fee: '10',
+                            },
+                        },
+                    },
+                },
+            ],
+            response: [{ feePerUnit: '10' }],
             error: undefined,
         },
     ],

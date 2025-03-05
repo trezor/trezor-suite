@@ -32,6 +32,7 @@ module.exports = {
         '<rootDir>/../../node_modules/react-native-gesture-handler/jestSetup.js',
         '<rootDir>/../../suite-native/test-utils/src/everstakeJestSetup.js',
         '<rootDir>/../../suite-native/test-utils/src/expoMock.js',
+        '<rootDir>/../../suite-native/test-utils/src/TextEncoderMock.js',
         '<rootDir>/../../suite-native/firmware/src/jestSetup.js',
         '<rootDir>/../../suite-native/connection-status/src/jestSetup.js',
         '<rootDir>/../../suite-native/react-native-graph/src/jestSetup.js',

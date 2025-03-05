@@ -76,7 +76,8 @@ export default [
                         account: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
                         transactions: [
                             {
-                                tx: {
+                                hash: '533A8A2EDBCE914159C5491429763FD39A1F0F19E0F82800C3B7909B67B166A7',
+                                tx_json: {
                                     TransactionType: 'Not-a-Payment',
                                 },
                             },
@@ -95,6 +96,13 @@ export default [
                 unconfirmed: 0,
                 transactions: [
                     {
+                        amount: '0',
+                        blockHash:
+                            '533A8A2EDBCE914159C5491429763FD39A1F0F19E0F82800C3B7909B67B166A7',
+                        blockHeight: undefined,
+                        blockTime: 0,
+                        fee: '0',
+                        feeRate: undefined,
                         type: 'unknown',
                         targets: [],
                         internalTransfers: [],
@@ -107,6 +115,7 @@ export default [
                             totalOutput: '0',
                         },
                         rippleSpecific: { destinationTag: undefined },
+                        txid: '533A8A2EDBCE914159C5491429763FD39A1F0F19E0F82800C3B7909B67B166A7',
                     },
                 ],
             },
@@ -263,12 +272,13 @@ export default [
                         account: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
                         transactions: [
                             {
+                                hash: '533A8A2EDBCE914159C5491429763FD39A1F0F19E0F82800C3B7909B67B166A7',
                                 meta: {
                                     TransactionResult: 'tecDST_TAG_NEEDED',
                                 },
-                                tx: {
+                                tx_json: {
                                     Account: 'r4eEbLKZGbVSBHnSUBZW8i5XaMjGLdqT4a',
-                                    Amount: '25718124',
+                                    DeliverMax: '25718124',
                                     Destination: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
                                     Fee: '6000',
                                     Flags: 2147483648,
@@ -280,7 +290,7 @@ export default [
                                     TxnSignature:
                                         '30440220665BEB140619A36C737929487519B862D1592225568CBEBC248972AD8453D8EE0220020852427CE83EC4BD8A5BFB48B7DA573FFC042A1E3BE9A513FC04F3C3D45B12',
                                     date: 611932692,
-                                    hash: '533A8A2EDBCE914159C5491429763FD39A1F0F19E0F82800C3B7909B67B166A7',
+                                    hash: '',
                                     inLedger: 47455208,
                                     ledger_index: 47455208,
                                 },

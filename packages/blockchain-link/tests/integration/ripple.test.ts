@@ -20,6 +20,24 @@ const backends = [
     },
 ];
 
+const fixtures = [
+    {
+        method: 'fee',
+        response: {
+            type: 'response',
+            status: 'success',
+            result: {
+                drops: {
+                    base_fee: '10',
+                    median_fee: '5000',
+                    minimum_fee: '10',
+                    open_ledger_fee: '10',
+                },
+            },
+        },
+    },
+];
+
 backends.forEach(b => {
     describe(`Ripple ${b.name}`, () => {
         let server: BackendWebsocketServerMock;
@@ -27,6 +45,7 @@ backends.forEach(b => {
 
         beforeEach(async () => {
             server = await BackendWebsocketServerMock.create('ripple');
+            server.setFixtures(fixtures);
             blockchain = new BlockchainLink({
                 name: b.name,
                 worker: b.worker,
@@ -42,7 +61,7 @@ backends.forEach(b => {
 
         it('Get fee', async () => {
             const result = await blockchain.estimateFee({ blocks: [1] });
-            expect(result).toEqual([{ feePerUnit: '12' }]);
+            expect(result).toEqual([{ feePerUnit: '10' }]);
         });
     });
 });

@@ -1,13 +1,15 @@
 // To avoid unnecessary data this fixtures sends notifications with mostly undefined values
 const tx = {
-    // amount: undefined,
-    // blockHash: undefined,
+    amount: '100',
+    blockHash: 'abcd',
+    txid: 'abcd',
     // blockHeight: undefined,
-    // blockTime: undefined,
+    blockTime: 0,
     // fee: undefined,
     // txid: undefined,
     internalTransfers: [],
     tokens: [],
+    fee: '0',
     // targets: [],
     details: {
         vin: [],
@@ -17,12 +19,6 @@ const tx = {
         totalOutput: '0',
     },
 };
-// const target = {
-//     addresses: [],
-//     amount: undefined,
-//     coinbase: undefined,
-//     isAddress: undefined,
-// };
 
 const block = {
     fee_base: 1,
@@ -104,10 +100,13 @@ const notifyAddresses = [
             addresses: ['A'],
         },
         notifications: {
-            transaction: {
+            hash: 'abcd',
+            tx_json: {
                 Account: 'A',
                 Destination: 'B',
                 TransactionType: 'Payment',
+                DeliverMax: '100',
+                DestinationTag: '123',
             },
             Account: 'A',
             type: 'transaction',
@@ -118,8 +117,17 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 type: 'sent',
-                targets: [{ addresses: ['B'], isAddress: true, n: 0 }],
-                rippleSpecific: { destinationTag: undefined },
+                targets: [
+                    {
+                        addresses: ['B'],
+                        isAddress: true,
+                        n: 0,
+                        amount: '100',
+                    },
+                ],
+                rippleSpecific: {
+                    destinationTag: '123',
+                },
             },
         },
     },
@@ -131,10 +139,13 @@ const notifyAddresses = [
             addresses: ['A'],
         },
         notifications: {
-            transaction: {
+            hash: 'abcd',
+            tx_json: {
                 Account: 'B',
                 Destination: 'A',
                 TransactionType: 'Payment',
+                DeliverMax: '100',
+                DestinationTag: '123',
             },
             Account: 'A',
             type: 'transaction',
@@ -145,8 +156,17 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 type: 'recv',
-                targets: [{ addresses: ['A'], isAddress: true, n: 0 }],
-                rippleSpecific: { destinationTag: undefined },
+                targets: [
+                    {
+                        addresses: ['A'],
+                        isAddress: true,
+                        n: 0,
+                        amount: '100',
+                    },
+                ],
+                rippleSpecific: {
+                    destinationTag: '123',
+                },
             },
         },
     },
@@ -158,7 +178,8 @@ const notifyAddresses = [
             addresses: ['A'],
         },
         notifications: {
-            transaction: {
+            hash: 'abcd',
+            tx_json: {
                 TransactionType: 'Not-A-Payment',
             },
             type: 'transaction',
@@ -174,10 +195,12 @@ const notifyAddresses = [
             accounts: [{ descriptor: 'C' }],
         },
         notifications: {
-            transaction: {
+            hash: 'abcd',
+            tx_json: {
                 Account: 'C',
                 Destination: 'B',
                 TransactionType: 'Payment',
+                DeliverMax: '100',
             },
             Account: 'C',
             type: 'transaction',
@@ -188,8 +211,8 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 type: 'sent',
-                targets: [{ addresses: ['B'], isAddress: true, n: 0 }],
-                rippleSpecific: { destinationTag: undefined },
+                targets: [{ addresses: ['B'], isAddress: true, n: 0, amount: '100' }],
+                rippleSpecific: {},
             },
         },
     },
@@ -201,10 +224,12 @@ const notifyAddresses = [
             accounts: [{ descriptor: 'C' }],
         },
         notifications: {
-            transaction: {
+            hash: 'abcd',
+            tx_json: {
                 Account: 'B',
                 Destination: 'C',
                 TransactionType: 'Payment',
+                DeliverMax: '100',
             },
             Account: 'C',
             type: 'transaction',
@@ -215,8 +240,8 @@ const notifyAddresses = [
             tx: {
                 ...tx,
                 type: 'recv',
-                targets: [{ addresses: ['C'], isAddress: true, n: 0 }],
-                rippleSpecific: { destinationTag: undefined },
+                targets: [{ addresses: ['C'], isAddress: true, n: 0, amount: '100' }],
+                rippleSpecific: {},
             },
         },
     },

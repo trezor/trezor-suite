@@ -498,7 +498,7 @@ export const onBlockchainNotificationThunk = createThunk(
 
         // it's pointless to fetch ripple accounts
         // TODO: investigate more how to keep ripple pending tx until they are confirmed/rejected
-        // ripple-lib doesn't send "pending" txs in history
+        // xrpl.js doesn't send "pending" txs in history
         if (account.networkType !== 'ripple') {
             dispatch(syncAccountsWithBlockchainThunk(symbol));
         }

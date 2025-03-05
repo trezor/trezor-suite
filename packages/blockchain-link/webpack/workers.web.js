@@ -35,7 +35,6 @@ module.exports = {
         extensions: ['.ts', '.js'],
         mainFields: ['main', 'module'], // prevent wrapping default exports by harmony export (bignumber.js in ripple issue)
         fallback: {
-            https: false, // required by ripple-lib
             crypto: require.resolve('crypto-browserify'),
             stream: require.resolve('stream-browserify'),
         },
