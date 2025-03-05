@@ -1695,7 +1695,7 @@
   "TR_STAKE_ETH_SEE_MONEY_DANCE": "crwdns35360:0crwdne35360:0",
   "TR_STAKE_ETH_WILL_BE_BLOCKED": "crwdns35364:0{networkDisplaySymbol}crwdne35364:0",
   "TR_STAKE_EVERSTAKE_MANAGES": "crwdns35454:0{networkDisplaySymbol}crwdne35454:0",
-  "TR_STAKE_EXPECTED_REWARDS": "crwdns90664:0{days}crwdne90664:0",
+  "TR_STAKE_EXPECTED_REWARDS": "crwdns90664:0crwdne90664:0",
   "TR_STAKE_INSTANT": "crwdns35366:0crwdne35366:0",
   "TR_STAKE_INSTANTLY_UNSTAKED_WITH_DAYS": "crwdns36010:0amount={amount}crwdnd36010:0symbol={symbol}crwdnd36010:0days={days}crwdne36010:0",
   "TR_STAKE_IN_ACCOUNT": "crwdns36640:0{networkDisplaySymbol}crwdne36640:0",

@@ -8871,7 +8871,7 @@ export default defineMessages({
     },
     TR_STAKE_WAIT_FOR_ACTIVATION: {
         id: 'TR_STAKE_WAIT_FOR_ACTIVATION',
-        defaultMessage: 'Time it takes to stake your SOL.',
+        defaultMessage: 'Time it takes to stake your SOL',
     },
     TR_STAKE_WARM_UP_PERIOD: {
         id: 'TR_STAKE_WARM_UP_PERIOD',
@@ -8887,7 +8887,7 @@ export default defineMessages({
     },
     TR_STAKE_WAIT_FOR_DEACTIVATION: {
         id: 'TR_STAKE_WAIT_FOR_DEACTIVATION',
-        defaultMessage: 'Time it takes to unstake your SOL.',
+        defaultMessage: 'Time it takes to unstake your SOL',
     },
     TR_STAKE_EARN_REWARDS_WEEKLY: {
         id: 'TR_STAKE_EARN_REWARDS_WEEKLY',
