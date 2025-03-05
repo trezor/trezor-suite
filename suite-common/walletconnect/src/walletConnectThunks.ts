@@ -176,10 +176,11 @@ export const sessionProposalApproveThunk = createThunk<
     void,
     {
         eventId: number;
+        selectedDefaultAccounts?: Account[];
     }
 >(
     `${WALLETCONNECT_MODULE}/sessionProposalApproveThunk`,
-    async ({ eventId }, { dispatch, getState }) => {
+    async ({ eventId, selectedDefaultAccounts }, { dispatch, getState }) => {
         try {
             const pendingProposal = selectPendingProposal(getState());
             if (
@@ -191,7 +192,17 @@ export const sessionProposalApproveThunk = createThunk<
             }
 
             const accounts = selectVisibleSortedDeviceAccounts(getState());
-            const supportedNamespaces = getNamespaces(accounts);
+            const accountsInPreferentialOrder = [...(selectedDefaultAccounts || [])];
+            accounts.forEach(account => {
+                if (
+                    !accountsInPreferentialOrder.some(
+                        a => a.descriptor === account.descriptor && a.symbol === account.symbol,
+                    )
+                ) {
+                    accountsInPreferentialOrder.push(account);
+                }
+            });
+            const supportedNamespaces = getNamespaces(accountsInPreferentialOrder);
             const approvedNamespaces = buildApprovedNamespaces({
                 proposal: pendingProposal.params,
                 supportedNamespaces,
