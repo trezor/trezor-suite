@@ -14,6 +14,7 @@ import {
     Banner,
     Button,
     Card,
+    CollapsibleBox,
     Column,
     Divider,
     InfoItem,
@@ -279,9 +280,9 @@ export const TradingOfferExchangeSendApproval = () => {
             )}
 
             {dexTx.data && (selectedQuote.status !== 'CONFIRM' || approvalType === 'ZERO') && (
-                <InfoItem label={<Translation id="TR_EXCHANGE_APPROVAL_DATA" />}>
+                <CollapsibleBox heading={<Translation id="TR_EXCHANGE_APPROVAL_DATA" />}>
                     <BreakableValue>{dexTx.data}</BreakableValue>
-                </InfoItem>
+                </CollapsibleBox>
             )}
 
             <Column>
