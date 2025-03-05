@@ -1,4 +1,4 @@
-var isNode = typeof module !== 'undefined' && typeof module.exports !== 'undefined';
+var isNode = true;
 
 var chai = isNode ? require('chai') : window.chai,
     expect = chai.expect;

@@ -20,7 +20,6 @@ postcss-lightningcss
 @types/bytebuffer
 @types/chrome
 @vitejs/plugin-react
-vitest
 eth-phishing-detect
 pushdata-bitcoin
 @types/karma

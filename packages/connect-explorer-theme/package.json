@@ -27,7 +27,6 @@
         "@trezor/components": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "@vitejs/plugin-react": "^3.0.1",
         "clsx": "^2.1.1",
         "escape-string-regexp": "^5.0.0",
         "flexsearch": "^0.7.31",
@@ -58,8 +57,7 @@
         "postcss-import": "^15.1.0",
         "postcss-lightningcss": "^1.0.1",
         "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "vitest": "^0.34.0"
+        "react-dom": "^18.2.0"
     },
     "sideEffects": [
         "./src/polyfill.ts"

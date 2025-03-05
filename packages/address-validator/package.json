@@ -6,7 +6,7 @@
     "private": true,
     "main": "src/index",
     "scripts": {
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
+        "test:unit": "yarn g:jest -c ./jest.config.js"
     },
     "dependencies": {
         "base-x": "^5.0.0",
