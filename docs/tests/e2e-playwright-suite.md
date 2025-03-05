@@ -70,6 +70,8 @@ Steps:
 
 1. **To enable Electron verbose logging** add env variable LOGLEVEL=debug or any other level
 
+1. **To increase test timeouts** when your local run exceed 1m limit, you can specify test timeout override in `packages/suite-desktop-core/.env`. (UI runner --ui needs to be restarted to reflect the change in `.env`)
+
 ## Contribution
 
 Please follow our general [Playwright contribution guide](e2e-playwright-contribution-guide.md)
@@ -137,7 +139,3 @@ To open last HTML report run:
 ### Currents.dev
 
 Test reports are uploaded to [currents.dev](https://app.currents.dev/)
-
-### Artifacts on CI
-
-Every Playwright test run contains attached artifact of both Playwright report and docker logs. Download, unpack and show with `yarn playwright show-report ./path/to/report`
