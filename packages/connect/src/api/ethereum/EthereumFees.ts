@@ -2,7 +2,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Blockchain } from '../../backend/BlockchainLink';
 import type { EthereumNetworkInfo, FeeLevel } from '../../types';
-import { Blocks, MiscFeeLevels, findBlocksForFee } from '../common/MiscFees';
+import { Blocks, MiscFeeLevels } from '../common/MiscFees';
 
 type EipResponse1559Level = 'low' | 'medium' | 'high';
 type Eip1559Level = 'low' | 'normal' | 'high';
@@ -32,7 +32,7 @@ export class EthereumFeeLevels extends MiscFeeLevels {
                     const level = eip1559[levelKey];
 
                     // We can't pass BaseFeePerGas to firmware, so we calculate the effective gas price here
-                    const calculatedMaxFeePerGas = BigNumber.minimum(
+                    const calculatedMaxBaseFeePerGas = BigNumber.minimum(
                         new BigNumber(level?.maxFeePerGas || '0'),
                         new BigNumber(eip1559.baseFeePerGas || '0').plus(
                             level?.maxPriorityFeePerGas || '0',
@@ -46,8 +46,8 @@ export class EthereumFeeLevels extends MiscFeeLevels {
 
                     return {
                         label,
-                        maxFeePerGas: level?.maxFeePerGas || '0',
-                        effectiveGasPrice: calculatedMaxFeePerGas,
+                        maxFeePerGas: level?.maxFeePerGas,
+                        effectiveGasPrice: calculatedMaxBaseFeePerGas,
                         maxPriorityFeePerGas: level?.maxPriorityFeePerGas || '0',
                         baseFeePerGas: eip1559.baseFeePerGas,
                         minWaitTimeEstimate: level?.minWaitTimeEstimate
@@ -71,23 +71,5 @@ export class EthereumFeeLevels extends MiscFeeLevels {
         }
 
         return this.levels;
-    }
-
-    updateEthereumCustomFee(
-        feePerUnit: string,
-        effectiveGasPrice?: string,
-        maxPriorityFeePerGas?: string,
-    ) {
-        // remove "custom" level from list
-        this.levels = this.levels.filter(l => l.label !== 'custom');
-        // recreate "custom" level
-        const blocks = findBlocksForFee(feePerUnit, this.blocks);
-        this.levels.push({
-            label: 'custom',
-            feePerUnit,
-            blocks,
-            maxPriorityFeePerGas,
-            effectiveGasPrice,
-        });
     }
 }

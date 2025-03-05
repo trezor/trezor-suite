@@ -8,14 +8,6 @@ export const FeeInfo = Type.Object({
     dustLimit: Type.Number(),
 });
 
-export type PriorityFeeEstimationDetails = Static<typeof PriorityFeeEstimationDetails>;
-export const PriorityFeeEstimationDetails = Type.Object({
-    maxFeePerGas: Type.String(),
-    maxPriorityFeePerGas: Type.String(),
-    maxWaitTimeEstimate: Type.Optional(Type.Number()),
-    minWaitTimeEstimate: Type.Optional(Type.Number()),
-});
-
 export type FeeLevel = Static<typeof FeeLevel>;
 export const FeeLevel = Type.Object({
     label: Type.Union([
@@ -32,6 +24,8 @@ export const FeeLevel = Type.Object({
     baseFeePerGas: Type.Optional(Type.String()),
     maxFeePerGas: Type.Optional(Type.String()),
     effectiveGasPrice: Type.Optional(Type.String()),
+    customMaxBaseFeePerGas: Type.Optional(Type.String()),
+    customMaxPriorityFeePerGas: Type.Optional(Type.String()),
     maxPriorityFeePerGas: Type.Optional(Type.String()),
     maxWaitTimeEstimate: Type.Optional(Type.Number()),
     minWaitTimeEstimate: Type.Optional(Type.Number()),
