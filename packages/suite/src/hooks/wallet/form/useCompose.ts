@@ -2,12 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { isFulfilled } from '@reduxjs/toolkit';
+import { fromWei } from 'web3-utils';
 
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
     ComposeActionContext,
     composeSendFormTransactionFeeLevelsThunk,
 } from '@suite-common/wallet-core';
+import { calculateBaseFeeFromEffectiveGasPrice } from '@suite-common/wallet-core/src/send/sendFormEthereumUtils';
 import {
     FormState,
     PrecomposedLevels,
@@ -170,7 +172,17 @@ export const useCompose = <TFieldValues extends FormState>({
                 const prevLevel = composedLevels[prev || 'normal'];
                 const levels = {
                     ...composedLevels,
-                    custom: prevLevel,
+                    custom: {
+                        ...prevLevel,
+                        maxFeePerGas:
+                            'effectiveGasPrice' in prevLevel
+                                ? prevLevel.effectiveGasPrice
+                                : undefined,
+                        maxPriorityFeePerGas:
+                            'maxPriorityFeePerGas' in prevLevel
+                                ? prevLevel.maxPriorityFeePerGas
+                                : undefined,
+                    },
                 } as
                     | (PrecomposedLevels & { custom: PrecomposedTransaction })
                     | (PrecomposedLevelsCardano & { custom: PrecomposedTransactionCardano });
@@ -204,9 +216,28 @@ export const useCompose = <TFieldValues extends FormState>({
                     setValue('selectedFee', nearest);
                     if (nearest === 'custom') {
                         // @ts-expect-error: type = error already filtered above
-                        const { feePerByte, feeLimit } = composed;
+                        const { feePerByte, feeLimit, effectiveGasPrice, maxPriorityFeePerGas } =
+                            composed;
                         setValue('feePerUnit', feePerByte);
                         setValue('feeLimit', feeLimit || '');
+                        setValue('maxFeePerGas', effectiveGasPrice || '');
+                        setValue('maxPriorityFeePerGas', maxPriorityFeePerGas || '');
+                        setValue(
+                            'customMaxBaseFeePerGas',
+                            fromWei(
+                                Number(
+                                    calculateBaseFeeFromEffectiveGasPrice({
+                                        effectiveGasPriceWei: effectiveGasPrice || '0',
+                                        maxPriorityFeePerGasWei: maxPriorityFeePerGas || '0',
+                                    }),
+                                ),
+                                'gwei',
+                            ),
+                        );
+                        setValue(
+                            'customMaxPriorityFeePerGas',
+                            fromWei(maxPriorityFeePerGas || '0', 'gwei'),
+                        );
                     }
                 }
                 // or do nothing, use default composed tx

@@ -3495,6 +3495,18 @@ export default defineMessages({
         id: 'TR_CURRENT_FEE_CUSTOM_FEES',
         defaultMessage: 'Current network fee:',
     },
+    TR_CURRENT_BASE_FEE: {
+        id: 'TR_CURRENT_BASE_FEE',
+        defaultMessage: 'Current network base fee:',
+    },
+    TR_MAX_BASE_FEE_PER_GAS: {
+        id: 'TR_MAX_BASE_FEE_PER_GAS',
+        defaultMessage: 'Max base fee',
+    },
+    TR_CUSTOM_MAX_BASE_FEE_USE_NETWORK_BASE_FEE: {
+        id: 'TR_CUSTOM_MAX_BASE_FEE_USE_NETWORK_BASE_FEE',
+        defaultMessage: 'Use network base fee',
+    },
     GAS_LIMIT_IS_NOT_SET: {
         id: 'GAS_LIMIT_IS_NOT_SET',
         defaultMessage: 'Set gas limit for this transaction',
@@ -5648,6 +5660,10 @@ export default defineMessages({
         description: 'Label in Send form for Ethereum network type',
         id: 'MAX_FEE',
     },
+    WHY_FEES: {
+        defaultMessage: 'Why fees?',
+        id: 'WHY_FEES',
+    },
     EXPECTED_FEE: {
         defaultMessage: 'Expected fee',
         description: 'Label in Send form for Solana network type',
@@ -5673,6 +5689,18 @@ export default defineMessages({
         defaultMessage: 'Low',
         id: 'FEE_LEVEL_LOW',
     },
+    FEE_LEVEL_MEDIUM: {
+        defaultMessage: 'Medium',
+        id: 'FEE_LEVEL_MEDIUM',
+    },
+    TR_MAX_PRIORITY_FEE_PER_GAS: {
+        defaultMessage: 'Priority fee',
+        id: 'TR_MAX_PRIORITY_FEE_PER_GAS',
+    },
+    TR_MAX_FEE_PER_GAS: {
+        defaultMessage: 'Max fee',
+        id: 'TR_MAX_FEE_PER_GAS',
+    },
     CUSTOM_FEE_IS_NOT_SET: {
         defaultMessage:
             'Enter the fee rate you want to spend in order to complete this transaction.',
@@ -5685,6 +5713,10 @@ export default defineMessages({
     CUSTOM_FEE_NOT_IN_RANGE: {
         defaultMessage: 'Enter a fee between {minFee} and {maxFee}',
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
+    },
+    TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT: {
+        defaultMessage: 'Custom base fee can not be below current network base fee.',
+        id: 'TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT',
     },
     CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED: {
         defaultMessage: 'Gas limit too low',

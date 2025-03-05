@@ -1,9 +1,12 @@
 import { useCallback } from 'react';
 
+import { fromWei } from 'web3-utils';
+
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networks } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
+import { calculateBaseFeeFromEffectiveGasPrice } from '@suite-common/wallet-core/src/send/sendFormEthereumUtils';
 import { FormState } from '@suite-common/wallet-types';
 import type { Account, FormOptions } from '@suite-common/wallet-types';
 import { getFeeInfo } from '@suite-common/wallet-utils';
@@ -57,6 +60,13 @@ export const useTradingRecomposeAndSign = () => {
             }
             // prepare the fee levels, set custom values from composed
             // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
+            const customMaxBaseFeePerGas = fromWei(
+                calculateBaseFeeFromEffectiveGasPrice({
+                    effectiveGasPriceWei: composed.maxFeePerGas || '0',
+                    maxPriorityFeePerGasWei: composed.maxPriorityFeePerGas,
+                }) || '0',
+                'gwei',
+            );
             const formState: FormState = {
                 ...DEFAULT_VALUES,
                 outputs: [
@@ -70,6 +80,17 @@ export const useTradingRecomposeAndSign = () => {
                 setMaxOutputId: !composed.token?.contract ? setMaxOutputId : undefined,
                 selectedFee,
                 feePerUnit: composed.feePerByte,
+                maxFeePerGas:
+                    calculateBaseFeeFromEffectiveGasPrice({
+                        effectiveGasPriceWei: composed.maxFeePerGas || '0',
+                        maxPriorityFeePerGasWei: composed.maxPriorityFeePerGas,
+                    }) || '0',
+                maxPriorityFeePerGas: composed.maxPriorityFeePerGas,
+                customMaxBaseFeePerGas,
+                customMaxPriorityFeePerGas: composed.maxPriorityFeePerGas
+                    ? fromWei(composed.maxPriorityFeePerGas, 'gwei')
+                    : undefined,
+                effectiveGasPrice: composed.maxFeePerGas,
                 feeLimit: composed.feeLimit || '',
                 estimatedFeeLimit: composed.estimatedFeeLimit,
                 options,

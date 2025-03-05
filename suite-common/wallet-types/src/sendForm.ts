@@ -17,6 +17,9 @@ export interface FormState {
     setMaxOutputId?: number;
     selectedFee?: FeeLevel['label'];
     feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
+    maxPriorityFeePerGas?: string; // ethereum eip1559 only
+    maxFeePerGas?: string; // ethereum eip1559 only
+    baseFeePerGas?: string; // ethereum eip1559 only
     feeLimit: string; // ethereum only (gasLimit)
     estimatedFeeLimit?: string; // ethereum only (gasLimit)
 
@@ -40,6 +43,9 @@ export interface FormState {
     isCoinControlEnabled: boolean;
     hasCoinControlBeenOpened: boolean;
     anonymityWarningChecked?: boolean;
+    customMaxBaseFeePerGas?: string; // ethereum eip1559 only custom
+    customMaxPriorityFeePerGas?: string; // ethereum eip1559 only custom
+    effectiveGasPrice?: string; // ethereum eip1559 only
     selectedUtxos: AccountUtxo[];
     utxoSorting?: UtxoSorting;
     isTrading?: boolean;

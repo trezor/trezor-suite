@@ -3,6 +3,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     NetworkSymbol,
     externalBackendTypeNetworks,
+    getNetworkFeatures,
     getNetworkOptional,
     isNetworkSymbol,
     isTrezorInfraBasedNetwork,
@@ -126,14 +127,18 @@ export const updateFeeInfoThunk = createThunk(
 
         let newFeeInfo;
 
-        if (network.networkType === 'ethereum') {
-            // NOTE: ethereum smart fees are not implemented properly in @trezor/connect Issue: https://github.com/trezor/trezor-suite/issues/5340
-            // create raw call to @trezor/blockchain-link, receive data and create FeeLevel.normal from it
+        const feeLevels: 'preloaded' | 'smart' = getNetworkFeatures(network.symbol).includes(
+            'eip1559',
+        )
+            ? 'smart'
+            : 'preloaded';
 
+        if (network.networkType === 'ethereum') {
             const result = await TrezorConnect.blockchainEstimateFee({
                 coin: network.symbol,
                 request: {
                     blocks: [2],
+                    feeLevels,
                     specific: {
                         from: '0x0000000000000000000000000000000000000000',
                         to: '0x0000000000000000000000000000000000000000',
@@ -146,7 +151,7 @@ export const updateFeeInfoThunk = createThunk(
                     levels: result.payload.levels.map(l => ({
                         ...l,
                         blocks: -1, // NOTE: @trezor/connect returns -1 for ethereum default
-                        label: 'normal' as const,
+                        label: l.label || ('normal' as const),
                     })),
                 };
             }

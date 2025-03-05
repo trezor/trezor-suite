@@ -1,4 +1,4 @@
-import { fromWei, toWei } from 'web3-utils';
+import { toWei } from 'web3-utils';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -11,16 +11,10 @@ import {
 import {
     Account,
     AddressDisplayOptions,
-    ExternalOutput,
     PrecomposedLevels,
-    PrecomposedTransaction,
     RbfTransactionParams,
 } from '@suite-common/wallet-types';
 import {
-    amountToSmallestUnit,
-    calculateEthFee,
-    calculateMax,
-    calculateTotal,
     formatAmount,
     getAccountIdentity,
     getEthereumEstimateFeeParams,
@@ -30,10 +24,11 @@ import {
     isPending,
     prepareEthereumTransaction,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
+import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
+import { calculateEffectiveGasPrice, calculateEvmTxWithFees } from './sendFormEthereumUtils';
 import {
     ComposeFeeLevelsError,
     ComposeTransactionThunkArguments,
@@ -41,95 +36,6 @@ import {
     SignTransactionThunkArguments,
 } from './sendFormTypes';
 import { selectTransactions } from '../transactions/transactionsReducer';
-
-const calculate = (
-    availableBalance: string,
-    output: ExternalOutput,
-    feeLevel: FeeLevel,
-    token?: TokenInfo,
-): PrecomposedTransaction => {
-    let amount: string;
-    let max: string | undefined;
-    const feeInGwei = calculateEthFee(toWei(feeLevel.feePerUnit, 'gwei'), feeLevel.feeLimit || '0');
-
-    const availableTokenBalance = token
-        ? amountToSmallestUnit(token.balance!, token.decimals)
-        : undefined;
-    if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = availableTokenBalance || calculateMax(availableBalance, feeInGwei);
-        amount = max;
-    } else {
-        amount = output.amount;
-    }
-
-    // total ETH spent (amount + fee), in ERC20 only fee
-    const totalSpent = new BigNumber(calculateTotal(token ? '0' : amount, feeInGwei));
-
-    if (totalSpent.isGreaterThan(availableBalance)) {
-        if (token) {
-            return {
-                type: 'error',
-                error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
-                errorMessage: {
-                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
-                    values: {
-                        feeAmount: fromWei(feeInGwei, 'ether').toString(),
-                    },
-                },
-            } as const;
-        }
-
-        return {
-            type: 'error',
-            error: 'AMOUNT_IS_NOT_ENOUGH',
-            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
-        } as const;
-    }
-
-    // validate if token balance is not 0 or lower than amount
-    if (
-        availableTokenBalance &&
-        (availableTokenBalance === '0' || new BigNumber(amount).gt(availableTokenBalance))
-    ) {
-        return {
-            type: 'error',
-            error: 'AMOUNT_IS_NOT_ENOUGH',
-            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
-        } as const;
-    }
-
-    const payloadData = {
-        type: 'nonfinal' as const,
-        totalSpent: token ? amount : totalSpent.toString(),
-        max,
-        fee: feeInGwei,
-        feePerByte: feeLevel.feePerUnit,
-        feeLimit: feeLevel.feeLimit,
-        token,
-        bytes: 0, // TODO: calculate
-        inputs: [],
-    };
-
-    if (output.type === 'send-max' || output.type === 'payment') {
-        return {
-            ...payloadData,
-            type: 'final',
-            // compatibility with BTC PrecomposedTransaction from @trezor/connect
-            inputs: [],
-            outputsPermutation: [0],
-            outputs: [
-                {
-                    address: output.address,
-                    amount,
-                    script_type: 'PAYTOADDRESS',
-                },
-            ],
-        };
-    }
-
-    return payloadData;
-};
-
 export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
@@ -164,6 +70,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
             coin: account.symbol,
             identity: getAccountIdentity(account),
             request: {
+                feeLevels: 'smart',
                 blocks: [2],
                 specific: {
                     from: account.descriptor,
@@ -212,10 +119,28 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         }
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
         if (formState.selectedFee === 'custom') {
+            const { customMaxPriorityFeePerGas, customMaxBaseFeePerGas, feePerUnit, feeLimit } =
+                formState;
+
+            const customMaxPriorityFeePerGasWei =
+                customMaxPriorityFeePerGas && toWei(Number(customMaxPriorityFeePerGas), 'gwei');
+
+            const customMaxBaseFeePerGasWei =
+                customMaxBaseFeePerGas && toWei(Number(customMaxBaseFeePerGas), 'gwei');
+
+            const effectiveGasPrice = calculateEffectiveGasPrice({
+                maxFeePerGasGwei: customMaxBaseFeePerGas || '0',
+                maxPriorityFeePerGasGwei: customMaxPriorityFeePerGas || '0',
+            });
+
+            //suspect
             predefinedLevels.push({
                 label: 'custom',
-                feePerUnit: formState.feePerUnit,
-                feeLimit: formState.feeLimit,
+                feePerUnit,
+                feeLimit,
+                effectiveGasPrice,
+                maxPriorityFeePerGas: customMaxPriorityFeePerGasWei,
+                maxFeePerGas: customMaxBaseFeePerGasWei,
                 blocks: -1,
             });
         }
@@ -223,7 +148,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
         const resultLevels: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
-            calculate(availableBalance, output, level, tokenInfo),
+            calculateEvmTxWithFees({ availableBalance, output, feeLevel: level, token: tokenInfo }),
         );
         response.forEach((tx, index) => {
             const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
@@ -331,6 +256,8 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             amount: formState.outputs[0].amount,
             data: formState.ethereumDataHex,
             gasLimit: precomposedTransaction.feeLimit || '',
+            maxFeePerGas: precomposedTransaction.maxFeePerGas ?? undefined,
+            maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas ?? undefined,
             gasPrice: precomposedTransaction.feePerByte,
             nonce,
         });

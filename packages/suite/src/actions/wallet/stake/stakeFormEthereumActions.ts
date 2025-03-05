@@ -9,6 +9,7 @@ import {
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
 import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
+import { calculateEffectiveGasPrice } from '@suite-common/wallet-core/src/send/sendFormEthereumUtils';
 import {
     AddressDisplayOptions,
     ExternalOutput,
@@ -16,7 +17,7 @@ import {
     PrecomposedTransactionFinal,
     StakeFormState,
 } from '@suite-common/wallet-types';
-import { calculateEthFee, getAccountIdentity, isPending } from '@suite-common/wallet-utils';
+import { calculateMaxEthFee, getAccountIdentity, isPending } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -31,14 +32,18 @@ import {
 
 import { calculate, composeStakingTransaction } from './stakeFormActions';
 
-const calculateTransaction = (
+const calculateStakingTransaction = (
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
     compareWithAmount = true,
     symbol: NetworkSymbol,
 ): PrecomposedTransaction => {
-    const feeInWei = calculateEthFee(toWei(feeLevel.feePerUnit, 'gwei'), feeLevel.feeLimit || '0');
+    const isEip1559 = feeLevel.maxPriorityFeePerGas !== undefined;
+
+    const feeInWei = isEip1559
+        ? calculateMaxEthFee(feeLevel.effectiveGasPrice, feeLevel.feeLimit)
+        : calculateMaxEthFee(toWei(feeLevel.feePerUnit, 'gwei'), feeLevel.feeLimit);
 
     const stakingParams = {
         feeInBaseUnits: feeInWei,
@@ -82,10 +87,18 @@ export const composeTransaction =
         }
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
         if (formValues.selectedFee === 'custom') {
+            const calculatedEffectiveGasPrice = calculateEffectiveGasPrice({
+                maxFeePerGasGwei: formValues.customMaxBaseFeePerGas || '0',
+                maxPriorityFeePerGasGwei: formValues.customMaxPriorityFeePerGas,
+            });
             predefinedLevels.push({
                 label: 'custom',
                 feePerUnit: formValues.feePerUnit,
                 feeLimit: formValues.feeLimit,
+                customMaxBaseFeePerGas: formValues.customMaxBaseFeePerGas,
+                customMaxPriorityFeePerGas: formValues.customMaxPriorityFeePerGas || '0',
+                effectiveGasPrice: calculatedEffectiveGasPrice,
+                maxPriorityFeePerGas: toWei(Number(formValues.customMaxPriorityFeePerGas), 'gwei'),
                 blocks: -1,
             });
         }
@@ -94,7 +107,7 @@ export const composeTransaction =
             formValues,
             formState,
             predefinedLevels,
-            calculateTransaction,
+            calculateStakingTransaction,
             undefined,
             customFeeLimit,
         );
@@ -150,6 +163,8 @@ export const signTransaction =
                 identity,
                 amount: formValues.outputs[0].amount,
                 gasPrice: transactionInfo.feePerByte,
+                maxFeePerGas: transactionInfo.maxFeePerGas,
+                maxPriorityFeePerGas: transactionInfo.maxPriorityFeePerGas,
                 nonce,
                 chainId: network.chainId,
             });
@@ -161,6 +176,8 @@ export const signTransaction =
                 identity,
                 amount: formValues.outputs[0].amount,
                 gasPrice: transactionInfo.feePerByte,
+                maxFeePerGas: transactionInfo.maxFeePerGas,
+                maxPriorityFeePerGas: transactionInfo.maxPriorityFeePerGas,
                 nonce,
                 chainId: network.chainId,
                 interchanges: UNSTAKE_INTERCHANGES,
@@ -172,6 +189,8 @@ export const signTransaction =
                 from: account.descriptor,
                 identity,
                 gasPrice: transactionInfo.feePerByte,
+                maxFeePerGas: transactionInfo.maxFeePerGas,
+                maxPriorityFeePerGas: transactionInfo.maxPriorityFeePerGas,
                 nonce,
                 chainId: network.chainId,
             });

@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
+import { fromWei, toWei } from 'web3-utils';
+
+import { calculateEffectiveGasPrice } from '@suite-common/wallet-core/src/send/sendFormEthereumUtils';
 import {
     FeeInfo,
     FormState,
@@ -41,8 +44,11 @@ export const useFees = <TFieldValues extends FormState>({
     const selectedFeeRef = useRef(defaultValue);
     const feePerUnitRef = useRef<string | undefined>('');
     const feeLimitRef = useRef<string | undefined>('');
+    const customMaxPriorityFeePerGasRef = useRef<string | undefined>('');
+    const customMaxBaseFeePerGasRef = useRef<string | undefined>('');
     const estimatedFeeLimitRef = useRef<string | undefined>('');
     const saveLastUsedFeeRef = useRef(saveLastUsedFee);
+    const effectiveGasPriceRef = useRef<string | undefined>('');
 
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { clearErrors, getValues, register, setValue, watch } =
@@ -52,6 +58,7 @@ export const useFees = <TFieldValues extends FormState>({
     useEffect(() => {
         register('selectedFee', { shouldUnregister: true });
         register('estimatedFeeLimit', { shouldUnregister: true });
+        register('effectiveGasPrice', { shouldUnregister: true });
     }, [register]);
 
     // watch selectedFee change and update local references
@@ -59,15 +66,29 @@ export const useFees = <TFieldValues extends FormState>({
     useEffect(() => {
         if (selectedFeeRef.current === selectedFee) return;
         selectedFeeRef.current = selectedFee;
-        const { feePerUnit, feeLimit } = getValues();
+        const {
+            feePerUnit,
+            feeLimit,
+            customMaxPriorityFeePerGas,
+            customMaxBaseFeePerGas,
+            effectiveGasPrice, // is used here only to update it in the last used fee level
+        } = getValues();
         feePerUnitRef.current = feePerUnit;
         feeLimitRef.current = feeLimit;
+        customMaxPriorityFeePerGasRef.current = customMaxPriorityFeePerGas;
+        customMaxBaseFeePerGasRef.current = customMaxBaseFeePerGas;
+        effectiveGasPriceRef.current = effectiveGasPrice;
     }, [selectedFee, getValues]);
 
     // watch custom feePerUnit/feeLimit inputs change
     const feePerUnit = watch('feePerUnit');
     const feeLimit = watch('feeLimit');
     const baseFee = watch('baseFee');
+    const customMaxPriorityFeePerGas = watch('customMaxPriorityFeePerGas');
+    const customMaxBaseFeePerGas = watch('customMaxBaseFeePerGas');
+    const maxPriorityFeePerGas = watch('maxPriorityFeePerGas');
+    const maxFeePerGas = watch('maxFeePerGas');
+    const effectiveGasPrice = watch('effectiveGasPrice');
     useEffect(() => {
         if (selectedFeeRef.current !== 'custom') return;
 
@@ -82,7 +103,32 @@ export const useFees = <TFieldValues extends FormState>({
             updateField = 'feeLimit';
         }
 
-        // compose
+        if (
+            customMaxBaseFeePerGas &&
+            customMaxPriorityFeePerGas &&
+            (customMaxPriorityFeePerGasRef.current !== customMaxPriorityFeePerGas ||
+                customMaxBaseFeePerGasRef.current !== customMaxBaseFeePerGas)
+        ) {
+            const effectiveGasPriceNew = calculateEffectiveGasPrice({
+                maxPriorityFeePerGasGwei: customMaxPriorityFeePerGas,
+                maxFeePerGasGwei: customMaxBaseFeePerGas,
+            });
+            setValue('effectiveGasPrice', effectiveGasPriceNew, { shouldValidate: true });
+            effectiveGasPriceRef.current = effectiveGasPriceNew;
+            updateField = 'effectiveGasPrice';
+        }
+
+        if (customMaxBaseFeePerGasRef.current !== customMaxBaseFeePerGas) {
+            customMaxBaseFeePerGasRef.current = customMaxBaseFeePerGas;
+            updateField = 'customMaxBaseFeePerGas';
+        }
+
+        if (customMaxPriorityFeePerGasRef.current !== customMaxPriorityFeePerGas) {
+            customMaxPriorityFeePerGasRef.current = customMaxPriorityFeePerGas;
+            updateField = 'customMaxPriorityFeePerGas';
+        }
+
+        //compose
         if (updateField) {
             if (composeRequest) {
                 composeRequest(updateField);
@@ -95,11 +141,31 @@ export const useFees = <TFieldValues extends FormState>({
                 !errors.feeLimit
             ) {
                 dispatch(
-                    setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 }),
+                    setLastUsedFeeLevel({
+                        label: 'custom',
+                        feePerUnit,
+                        feeLimit,
+                        blocks: -1,
+                        maxPriorityFeePerGas: toWei(customMaxPriorityFeePerGas || '0', 'gwei'),
+                        effectiveGasPrice,
+                    }),
                 );
             }
         }
-    }, [dispatch, feePerUnit, feeLimit, errors.feePerUnit, errors.feeLimit, composeRequest]);
+    }, [
+        dispatch,
+        feePerUnit,
+        effectiveGasPrice,
+        feeLimit,
+        customMaxPriorityFeePerGas,
+        customMaxBaseFeePerGas,
+        maxPriorityFeePerGas,
+        maxFeePerGas,
+        errors.feePerUnit,
+        errors.feeLimit,
+        composeRequest,
+        setValue,
+    ]);
 
     // watch estimatedFee change
     const estimatedFeeLimit = watch('estimatedFeeLimit');
@@ -121,6 +187,8 @@ export const useFees = <TFieldValues extends FormState>({
 
         let feePerUnit;
         let feeLimit;
+        let maxPriorityFeePerGas;
+        let baseFeePerGas;
         if (level === 'custom') {
             // switching to custom FeeLevel for the first time
             const currentLevel = feeInfo.levels.find(
@@ -134,12 +202,19 @@ export const useFees = <TFieldValues extends FormState>({
                     ? transactionInfo.feePerByte
                     : currentLevel.feePerUnit;
             feeLimit = getValues('estimatedFeeLimit') || currentLevel.feeLimit || '';
+            maxPriorityFeePerGas = currentLevel.maxPriorityFeePerGas || undefined;
+            baseFeePerGas = currentLevel.baseFeePerGas || undefined;
         } else if (selectedFeeRef.current === 'custom' && (errors.feePerUnit || errors.feeLimit)) {
             // switching from custom FeeLevel which has an error
             // error should be cleared and levels should be precomposed again
             feePerUnit = '';
             feeLimit = '';
-            clearErrors(['feePerUnit', 'feeLimit']);
+            clearErrors([
+                'feePerUnit',
+                'feeLimit',
+                'customMaxPriorityFeePerGas',
+                'customMaxBaseFeePerGas',
+            ]);
             composeRequest();
         }
 
@@ -150,6 +225,16 @@ export const useFees = <TFieldValues extends FormState>({
             setValue('feePerUnit', feePerUnit);
             feeLimitRef.current = feeLimit;
             setValue('feeLimit', feeLimit);
+        }
+
+        if (typeof maxPriorityFeePerGas === 'string') {
+            customMaxPriorityFeePerGasRef.current = fromWei(maxPriorityFeePerGas, 'gwei');
+            setValue('customMaxPriorityFeePerGas', fromWei(maxPriorityFeePerGas, 'gwei'));
+        }
+
+        if (typeof baseFeePerGas === 'string') {
+            customMaxBaseFeePerGasRef.current = fromWei(baseFeePerGas, 'gwei');
+            setValue('customMaxBaseFeePerGas', fromWei(baseFeePerGas, 'gwei'));
         }
 
         // on change callback

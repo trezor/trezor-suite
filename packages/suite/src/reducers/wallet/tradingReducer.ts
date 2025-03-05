@@ -37,7 +37,14 @@ import { Action } from 'src/types/suite';
 export interface ComposedTransactionInfo {
     composed?: Pick<
         PrecomposedTransactionFinal,
-        'feePerByte' | 'estimatedFeeLimit' | 'feeLimit' | 'token' | 'fee'
+        | 'feePerByte'
+        | 'estimatedFeeLimit'
+        | 'feeLimit'
+        | 'token'
+        | 'fee'
+        | 'maxFeePerGas'
+        | 'maxPriorityFeePerGas'
+        | 'effectiveGasPrice'
     >;
     selectedFee?: FeeLevel['label'];
 }

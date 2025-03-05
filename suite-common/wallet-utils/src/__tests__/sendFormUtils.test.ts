@@ -4,8 +4,8 @@ import { networks } from '@suite-common/wallet-config';
 import * as fixtures from '../__fixtures__/sendFormUtils';
 import { getUtxoOutpoint } from '../accountUtils';
 import {
-    calculateEthFee,
     calculateMax,
+    calculateMaxEthFee,
     calculateTotal,
     findComposeErrors,
     getBitcoinComposeOutputs,
@@ -358,18 +358,18 @@ describe('sendForm utils', () => {
         });
     });
 
-    it('calculateEthFee', () => {
-        expect(calculateEthFee()).toEqual('0');
-        expect(calculateEthFee('', '')).toEqual('0');
-        expect(calculateEthFee('1', '')).toEqual('0');
-        expect(calculateEthFee('0', '1')).toEqual('0');
+    it('calculateMaxEthFee', () => {
+        expect(calculateMaxEthFee()).toEqual('0');
+        expect(calculateMaxEthFee('', '')).toEqual('0');
+        expect(calculateMaxEthFee('1', '')).toEqual('0');
+        expect(calculateMaxEthFee('0', '1')).toEqual('0');
         // @ts-expect-error invalid params
-        expect(calculateEthFee({}, {})).toEqual('0');
+        expect(calculateMaxEthFee({}, {})).toEqual('0');
         // @ts-expect-error invalid params
-        expect(calculateEthFee(() => {}, {})).toEqual('0');
+        expect(calculateMaxEthFee(() => {}, {})).toEqual('0');
         // @ts-expect-error invalid params
-        expect(calculateEthFee(null, true)).toEqual('0');
-        expect(calculateEthFee('1', '2')).toEqual('2');
+        expect(calculateMaxEthFee(null, true)).toEqual('0');
+        expect(calculateMaxEthFee('1', '2')).toEqual('2');
     });
 
     it('getExcludedUtxos', () => {

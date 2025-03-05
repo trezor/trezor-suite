@@ -77,8 +77,10 @@ export type EthTransactionData = {
     amount: string;
     data?: string;
     gasLimit: string;
-    gasPrice: string;
     nonce: string;
+    gasPrice?: string; // this field is not used for EIP1559 transactions (See EthereumTransaction and EthereumTransactionEIP1559 types in connect)
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
 };
 
 export type ExternalOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
@@ -107,6 +109,9 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     max?: string;
     feeLimit?: string;
     estimatedFeeLimit?: string;
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
+    effectiveGasPrice?: string;
     token?: TokenInfo;
     isTokenKnown?: boolean;
     createdTimestamp?: number;

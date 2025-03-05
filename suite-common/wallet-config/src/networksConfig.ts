@@ -57,6 +57,7 @@ export const networks = {
             'coin-definitions',
             'nft-definitions',
             'staking',
+            'eip1559',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {
@@ -87,7 +88,15 @@ export const networks = {
         decimals: 18,
         testnet: false,
         explorer: getExplorerUrls('https://pol1.trezor.io', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'coin-definitions', 'nft-definitions'],
+        features: [
+            'rbf',
+            'sign-verify',
+            'tokens',
+            'nfts',
+            'coin-definitions',
+            'nft-definitions',
+            'eip1559',
+        ],
         backendTypes: ['blockbook'],
         accountTypes: {
             ledger: {
@@ -136,7 +145,15 @@ export const networks = {
         decimals: 18,
         testnet: false,
         explorer: getExplorerUrls('https://arbiscan.io', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'coin-definitions', 'nft-definitions'],
+        features: [
+            'rbf',
+            'sign-verify',
+            'tokens',
+            'nfts',
+            'coin-definitions',
+            'nft-definitions',
+            'eip1559',
+        ],
         backendTypes: ['blockbook'],
         accountTypes: {
             ledger: {
@@ -161,7 +178,15 @@ export const networks = {
         decimals: 18,
         testnet: false,
         explorer: getExplorerUrls('https://basescan.org', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'coin-definitions', 'nft-definitions'],
+        features: [
+            'rbf',
+            'sign-verify',
+            'tokens',
+            'nfts',
+            'coin-definitions',
+            'nft-definitions',
+            'eip1559',
+        ],
         backendTypes: ['blockbook'],
         accountTypes: {
             ledger: {
@@ -186,7 +211,15 @@ export const networks = {
         decimals: 18,
         testnet: false,
         explorer: getExplorerUrls('https://optimistic.etherscan.io', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'coin-definitions', 'nft-definitions'],
+        features: [
+            'rbf',
+            'sign-verify',
+            'tokens',
+            'nfts',
+            'coin-definitions',
+            'nft-definitions',
+            'eip1559',
+        ],
         backendTypes: ['blockbook'],
         accountTypes: {
             ledger: {
@@ -446,7 +479,7 @@ export const networks = {
         decimals: 18,
         testnet: true,
         explorer: getExplorerUrls('https://sepolia1.trezor.io', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'nft-definitions'],
+        features: ['rbf', 'sign-verify', 'tokens', 'nfts', 'nft-definitions', 'eip1559'],
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: undefined,
@@ -462,7 +495,7 @@ export const networks = {
         decimals: 18,
         testnet: true,
         explorer: getExplorerUrls('https://holesky1.trezor.io', 'ethereum'),
-        features: ['rbf', 'sign-verify', 'tokens', 'staking', 'nfts', 'nft-definitions'],
+        features: ['rbf', 'sign-verify', 'tokens', 'staking', 'nfts', 'nft-definitions', 'eip1559'],
         backendTypes: ['blockbook'],
         accountTypes: {},
         coingeckoId: undefined,

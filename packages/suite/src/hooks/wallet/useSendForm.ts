@@ -124,8 +124,13 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 if (lastUsedFee) {
                     feeEnhancement.selectedFee = lastUsedFee.label;
                     if (lastUsedFee.label === 'custom') {
-                        feeEnhancement.feePerUnit = lastUsedFee.feePerUnit;
+                        feeEnhancement.feePerUnit = lastUsedFee.feePerUnit ?? '0';
                         feeEnhancement.feeLimit = lastUsedFee.feeLimit;
+                        feeEnhancement.customMaxPriorityFeePerGas =
+                            lastUsedFee.customMaxPriorityFeePerGas;
+                        feeEnhancement.customMaxBaseFeePerGas = lastUsedFee.customMaxBaseFeePerGas;
+                        feeEnhancement.maxFeePerGas = lastUsedFee.maxFeePerGas;
+                        feeEnhancement.maxPriorityFeePerGas = lastUsedFee.maxPriorityFeePerGas;
                     }
                 }
             }

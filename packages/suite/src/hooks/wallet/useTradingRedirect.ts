@@ -52,6 +52,8 @@ interface ExchangeOfferRedirectParams {
     selectedFee?: FeeLevel['label'];
     feePerByte?: string;
     feeLimit?: string;
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
 }
 
 interface DetailRedirectParams {
@@ -158,6 +160,8 @@ export const useTradingRedirect = () => {
             orderId,
             feeLimit,
             feePerByte,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
             selectedFee,
         } = params;
         const request: ExchangeTradeQuoteRequest = {
@@ -172,6 +176,8 @@ export const useTradingRedirect = () => {
             feeLimit,
             feePerByte: feePerByte || '',
             fee: '', // fee is not passed by redirect, will be recalculated
+            maxFeePerGas,
+            maxPriorityFeePerGas,
         };
         dispatch(saveComposedTransactionInfo({ selectedFee: selectedFee || 'normal', composed }));
         dispatch(tradingExchangeActions.saveTransactionId(orderId));

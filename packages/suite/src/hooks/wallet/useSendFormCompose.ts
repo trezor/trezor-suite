@@ -3,9 +3,11 @@ import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
+import { fromWei } from 'web3-utils';
 
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
+import { calculateBaseFeeFromEffectiveGasPrice } from '@suite-common/wallet-core/src/send/sendFormEthereumUtils';
 import {
     ExcludedUtxos,
     FormState,
@@ -262,9 +264,20 @@ export const useSendFormCompose = ({
                 setValue('selectedFee', nearest);
                 if (nearest === 'custom') {
                     // @ts-expect-error: type = error already filtered above
-                    const { feePerByte, feeLimit } = composed;
+                    const { feePerByte, feeLimit, maxPriorityFeePerGas, maxFeePerGas } = composed;
                     setValue('feePerUnit', feePerByte);
                     setValue('feeLimit', feeLimit || '');
+                    setValue(
+                        'customMaxPriorityFeePerGas',
+                        fromWei(maxPriorityFeePerGas || '0', 'gwei'),
+                    );
+                    setValue(
+                        'customMaxBaseFeePerGas',
+                        calculateBaseFeeFromEffectiveGasPrice({
+                            effectiveGasPriceWei: maxFeePerGas || '0',
+                            maxPriorityFeePerGasWei: maxPriorityFeePerGas || '0',
+                        }),
+                    );
                 }
                 setDraftSaveRequest(true);
             }

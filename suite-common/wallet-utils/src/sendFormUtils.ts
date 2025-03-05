@@ -28,11 +28,18 @@ import type {
     FormState,
     GeneralPrecomposedTransactionFinal,
     Output,
+    PrecomposedTransactionFinal,
     RbfTransactionParams,
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import { ComposeOutput, EthereumTransaction, PROTO, TokenInfo } from '@trezor/connect';
+import {
+    ComposeOutput,
+    EthereumTransaction,
+    EthereumTransactionEIP1559,
+    PROTO,
+    TokenInfo,
+} from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { amountToSmallestUnit, getUtxoOutpoint, networkAmountToSmallestUnit } from './accountUtils';
@@ -81,7 +88,7 @@ export const calculateMax = (availableBalance: string, fee: string): string => {
  * @param {string} [gasLimit] - The gas limit.
  * @returns {string} The calculated fee in wei, or '0' if inputs are invalid.
  */
-export const calculateEthFee = (gasPrice?: string, gasLimit?: string): string => {
+export const calculateMaxEthFee = (gasPrice?: string, gasLimit?: string): string => {
     if (!gasPrice || !gasLimit) {
         return '0';
     }
@@ -139,15 +146,35 @@ export const getEthereumEstimateFeeParams = (
     };
 };
 
-export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
-    const result: EthereumTransaction = {
-        to: txInfo.to,
-        value: getSerializedAmount(txInfo.amount),
-        chainId: txInfo.chainId,
-        nonce: numberToHex(txInfo.nonce),
-        gasLimit: numberToHex(txInfo.gasLimit),
-        gasPrice: numberToHex(toWei(txInfo.gasPrice, 'gwei')),
-    };
+export const prepareEthereumTransaction = (
+    txInfo: EthTransactionData,
+): EthereumTransaction | EthereumTransactionEIP1559 => {
+    let result: EthereumTransaction | EthereumTransactionEIP1559;
+    if (txInfo.maxFeePerGas && txInfo.maxPriorityFeePerGas) {
+        result = {
+            to: txInfo.to,
+            value: getSerializedAmount(txInfo.amount),
+            chainId: txInfo.chainId,
+            nonce: numberToHex(txInfo.nonce),
+            gasLimit: numberToHex(txInfo.gasLimit),
+            gasPrice: undefined, //Not sure if this is a good way to handle this
+            maxFeePerGas: numberToHex(txInfo.maxFeePerGas),
+            maxPriorityFeePerGas: numberToHex(txInfo.maxPriorityFeePerGas),
+        } as EthereumTransactionEIP1559;
+    } else if (txInfo.gasPrice) {
+        result = {
+            to: txInfo.to,
+            value: getSerializedAmount(txInfo.amount),
+            chainId: txInfo.chainId,
+            nonce: numberToHex(txInfo.nonce),
+            gasPrice: numberToHex(toWei(txInfo.gasPrice, 'gwei')), //Not sure if this is a good way to handle this
+            gasLimit: numberToHex(txInfo.gasLimit),
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
+        } as EthereumTransaction;
+    } else {
+        throw new Error('No gas price or maxFeePerGas and maxPriorityFeePerGas provided');
+    }
 
     if (!txInfo.token && txInfo.data) {
         result.data = sanitizeHex(txInfo.data);
@@ -177,8 +204,21 @@ const getFeeLevels = ({ feeInfo, networkType }: GetFeeInfoProps) => {
         feePerUnit: '0',
         blocks: -1,
     });
+    const isEthereum = networkType === 'ethereum';
+    const isEip1559 = feeInfo.levels.some(level => level.maxPriorityFeePerGas);
 
-    if (networkType === 'ethereum') {
+    if (isEthereum) {
+        if (isEip1559) {
+            return levels.map(level => ({
+                ...level,
+                feePerUnit: level.feePerUnit,
+                maxFeePerGas: level.maxFeePerGas,
+                maxPriorityFeePerGas: level.maxPriorityFeePerGas,
+                effectiveGasPrice: level.effectiveGasPrice,
+                feeLimit: level.feeLimit,
+            }));
+        }
+
         // convert wei to gwei
         return levels.map(level => {
             const gwei = new BigNumber(fromWei(level.feePerUnit, 'gwei'));
@@ -228,8 +268,19 @@ const mapNetworkTypeToFeeUnits: Record<NetworkType, string> = {
 
 export const getFeeUnits = (networkType: NetworkType) => mapNetworkTypeToFeeUnits[networkType];
 
-export const getFee = (networkType: NetworkType, tx: GeneralPrecomposedTransactionFinal) => {
-    if (networkType === 'solana') return tx.fee;
+type GetFeeProps = {
+    account: Account;
+    tx: GeneralPrecomposedTransactionFinal;
+    baseFee?: string;
+    shouldUsePriorityFees?: boolean;
+};
+
+export const getFee = ({ account, tx, shouldUsePriorityFees }: GetFeeProps) => {
+    if (account.networkType === 'solana') return tx.fee;
+
+    if (account.networkType === 'ethereum' && shouldUsePriorityFees) {
+        return fromWei((tx as PrecomposedTransactionFinal).maxFeePerGas || '0', 'gwei');
+    }
 
     return tx.feePerByte;
 };

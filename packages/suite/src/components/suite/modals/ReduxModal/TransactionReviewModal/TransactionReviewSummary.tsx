@@ -1,5 +1,5 @@
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { NetworkType, networks } from '@suite-common/wallet-config';
+import { NetworkType, getNetworkFeatures, networks } from '@suite-common/wallet-config';
 import { FeeInfo, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
 import { getFee } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
@@ -48,12 +48,19 @@ export const TransactionReviewSummary = ({
     const locale = useLocales();
     const { symbol, accountType, index, networkType } = account;
     const network = networks[symbol];
-    const fee = getFee(networkType, tx);
+
+    const baseFee = fees[symbol].levels[0].baseFeePerGas;
+    const hasEip1559Feature = getNetworkFeatures(symbol).includes('eip1559');
+    const shouldUsePriorityFees = !!tx.fee && hasEip1559Feature && !!baseFee;
+    const fee = getFee({ account, tx, shouldUsePriorityFees });
+
     const estimateTime = getEstimatedTime(networkType, fees[account.symbol], tx);
 
     const formFeeRate = drafts[currentAccountKey]?.feePerUnit;
     const isFeeCustom = drafts[currentAccountKey]?.selectedFee === 'custom';
     const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== fee;
+
+    const isEthereumNetworkType = networkType === 'ethereum';
 
     return (
         <Row columnGap={spacings.md} rowGap={spacings.xxs} flexWrap="wrap">
@@ -82,17 +89,15 @@ export const TransactionReviewSummary = ({
                 </Note>
             )}
 
-            {networkType === 'ethereum' ? (
-                <Note iconName="gasPump">
-                    <Translation id="TR_GAS_PRICE" />
-                    {': '}
-                    <FeeRate feeRate={fee} networkType={network.networkType} symbol={symbol} />
-                </Note>
-            ) : (
-                <Note iconName="receipt">
-                    <FeeRate feeRate={fee} networkType={network.networkType} symbol={symbol} />
-                </Note>
-            )}
+            <Note iconName={isEthereumNetworkType ? 'gasPump' : 'receipt'}>
+                {isEthereumNetworkType && (
+                    <>
+                        <Translation id="TR_GAS_PRICE" />
+                        {': '}
+                    </>
+                )}
+                <FeeRate feeRate={fee} networkType={network.networkType} symbol={symbol} />
+            </Note>
 
             {isComposedFeeRateDifferent && network.networkType === 'bitcoin' && (
                 <Translation id="TR_FEE_RATE_CHANGED" />

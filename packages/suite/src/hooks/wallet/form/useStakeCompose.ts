@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
+import { fromWei } from 'web3-utils';
+
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { ComposeActionContext, StakeContextValues } from '@suite-common/wallet-core';
+import { calculateBaseFeeFromEffectiveGasPrice } from '@suite-common/wallet-core/src/send/sendFormEthereumUtils';
 import {
     PrecomposedLevels,
     PrecomposedTransaction,
@@ -184,9 +187,22 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                     setValue('selectedFee', nearest);
                     if (nearest === 'custom') {
                         // @ts-expect-error: type = error already filtered above
-                        const { feePerByte, feeLimit } = composed;
+                        const { feePerByte, feeLimit, effectiveGasPrice, maxPriorityFeePerGas } =
+                            composed;
+
                         setValue('feePerUnit', feePerByte);
                         setValue('feeLimit', feeLimit || '');
+                        setValue(
+                            'customMaxPriorityFeePerGas',
+                            fromWei(maxPriorityFeePerGas, 'gwei') || '',
+                        );
+                        setValue(
+                            'customMaxBaseFeePerGas',
+                            calculateBaseFeeFromEffectiveGasPrice({
+                                effectiveGasPriceWei: effectiveGasPrice,
+                                maxPriorityFeePerGasWei: maxPriorityFeePerGas,
+                            }),
+                        );
                     }
                 }
                 // or do nothing, use default composed tx
