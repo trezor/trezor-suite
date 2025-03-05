@@ -36,6 +36,8 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
     const feePerByte = new BigNumber(composedCancelTx.feePerByte);
     const fee = formatNetworkAmount(composedCancelTx.fee, tx.symbol);
 
+    const formattedOutputAmount = formatNetworkAmount(output.amount.toString(), tx.symbol);
+
     return (
         <Card
             fillType="flat"
@@ -106,13 +108,13 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                     <Column gap={spacings.md} alignItems="flex-end">
                         <FormattedCryptoAmount
                             disableHiddenPlaceholder
-                            value={formatNetworkAmount(output.amount.toString(), tx.symbol)}
+                            value={formattedOutputAmount}
                             symbol={tx.symbol}
                         />
                         <Text variant="tertiary" typographyStyle="label">
                             <FiatValue
                                 disableHiddenPlaceholder
-                                amount={output.amount.toString()}
+                                amount={formattedOutputAmount}
                                 symbol={tx.symbol}
                             />
                         </Text>
