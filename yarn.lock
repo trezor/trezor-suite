@@ -12392,7 +12392,6 @@ __metadata:
   resolution: "@trezor/suite-desktop-core@workspace:packages/suite-desktop-core"
   dependencies:
     "@currents/playwright": "npm:^1.10.0"
-    "@electron/fuses": "npm:^1.8.0"
     "@electron/notarize": "npm:2.5.0"
     "@playwright/browser-chromium": "npm:^1.50.1"
     "@playwright/browser-firefox": "npm:^1.50.1"
@@ -12479,7 +12478,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop@workspace:packages/suite-desktop"
   dependencies:
-    "@electron/fuses": "npm:^1.8.0"
     "@electron/notarize": "npm:2.5.0"
     blake-hash: "npm:^2.0.0"
     electron: "npm:34.1.0"
