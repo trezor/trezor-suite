@@ -9,3 +9,7 @@
 Resolve <!--- link the issue here -->
 
 ## Screenshots:
+
+|     |     |     |
+| --- | --- | --- |
+|     |     |     |
