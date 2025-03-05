@@ -10,6 +10,7 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Button,
     Card,
+    CollapsibleBox,
     Column,
     Divider,
     ElevationContext,
@@ -274,9 +275,9 @@ export const TradingOfferExchangeSendSwap = () => {
                 </ElevationContext>
             </Card>
 
-            <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_DATA" />}>
+            <CollapsibleBox heading={<Translation id="TR_EXCHANGE_SWAP_DATA" />}>
                 <BreakableValue>{dexTx.data}</BreakableValue>
-            </InfoItem>
+            </CollapsibleBox>
 
             <Column>
                 <Divider margin={{ top: spacings.xs, bottom: spacings.lg }} />
