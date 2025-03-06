@@ -1,3 +1,8 @@
+# 1.3.1
+
+-   npm-prerelease: @trezor/schema-utils 1.3.1-beta.1 (4bb2472d7a)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+
 # 1.3.0
 
 -   npm-prerelease: @trezor/schema-utils 1.3.0-beta.1 (5c1f9a994d)
