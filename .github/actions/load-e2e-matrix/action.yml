@@ -10,7 +10,7 @@ inputs:
     default: "[]"
 outputs:
   matrix:
-    description: "Generated test matrix"
+    description: "E2e test matrix"
     value: ${{ steps.set-matrix.outputs.matrix }}
 runs:
   using: "composite"
@@ -34,7 +34,7 @@ runs:
         ADDITIONAL_GROUPS_JSON=$(echo '${{ inputs.additional-test-groups }}' | yq -o=json '.')
 
         # Merge additional test groups
-        FINAL_MATRIX=$(jq -c '. + $ADDITIONAL_GROUPS_JSON' <<<"$BASE_MATRIX")
+        FINAL_MATRIX=$(jq -c --argjson groups "$ADDITIONAL_GROUPS_JSON" '. + $groups' <<<"$BASE_MATRIX")
 
         # Wrap in "include" and output
         echo "matrix={\"include\": $FINAL_MATRIX}" >> $GITHUB_OUTPUT

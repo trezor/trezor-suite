@@ -60,6 +60,8 @@ jobs:
   
   load-e2e-matrix:
     if: github.repository == 'trezor/trezor-suite'
+    outputs:
+      matrix: ${{ steps.load-matrix.outputs.matrix }}
     runs-on: ubuntu-latest
     needs:
       - build-web
@@ -67,8 +69,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Load E2E Matrix
-        id: load-e2e-matrix
+      - name: Load e2e Matrix
+        id: load-matrix
         uses: ./.github/actions/load-e2e-matrix
         with:
           project: "web"
