@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import { ElevationUp } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/protobuf';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import { ConfirmOnDeviceContent } from './ConfirmOnDeviceContent';

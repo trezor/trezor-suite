@@ -1,8 +1,9 @@
 import coinsJSONEth from '@trezor/connect-common/files/coins-eth.json';
 import coinsJSON from '@trezor/connect-common/files/coins.json';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { getAllNetworks, parseCoinsJson } from '../../data/coinInfo';
-import { CoinInfo, DeviceModelInternal, Features } from '../../types';
+import { CoinInfo, Features } from '../../types';
 import {
     getUnavailableCapabilities,
     parseCapabilities,

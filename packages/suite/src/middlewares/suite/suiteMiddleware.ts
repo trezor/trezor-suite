@@ -14,7 +14,8 @@ import {
     restartDiscoveryThunk,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
-import { DEVICE, DeviceModelInternal } from '@trezor/connect';
+import { DEVICE } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';

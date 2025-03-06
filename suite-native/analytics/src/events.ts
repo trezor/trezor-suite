@@ -2,7 +2,8 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { DeviceModelInternal, VersionArray } from '@trezor/connect';
+import { VersionArray } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EventType } from './constants';
 import {

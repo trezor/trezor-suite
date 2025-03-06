@@ -1,5 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
-import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
+import { FirmwareType } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 const { getDeviceFeatures, getConnectDevice, getMessageSystemConfig } = testMocks;
 

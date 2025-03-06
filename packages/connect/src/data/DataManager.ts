@@ -2,11 +2,12 @@
 
 import coinsEth from '@trezor/connect-common/files/coins-eth.json';
 import coins from '@trezor/connect-common/files/coins.json';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
 import { parseFirmwareReleases } from './firmwareInfo';
-import { ConnectSettings, DeviceModelInternal } from '../types';
+import { ConnectSettings } from '../types';
 import { firmwareAssets } from '../utils/assetUtils'; // Adjust the path as necessary
 
 type AssetCollection = { [key: string]: Record<string, any> };

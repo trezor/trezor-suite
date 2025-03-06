@@ -1,9 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
+import type { DeviceModelInternal } from '@trezor/device-utils';
 import { typedObjectKeys, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../../constants';
 import { config } from '../../data/config';
-import type { CoinInfo, DeviceModelInternal, FirmwareRange } from '../../types';
+import type { CoinInfo, FirmwareRange } from '../../types';
 import { fromHardened } from '../../utils/pathUtils';
 
 type ParamType = 'string' | 'number' | 'array' | 'array-buffer' | 'boolean' | 'uint' | 'object';

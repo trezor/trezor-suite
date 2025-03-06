@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 export type SetupSupportingDeviceModel = Exclude<
     DeviceModelInternal,

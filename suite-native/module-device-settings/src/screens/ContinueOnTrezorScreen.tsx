@@ -4,7 +4,7 @@ import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Box, Text } from '@suite-native/atoms';
 import { ConnectorImage, DeviceImage } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

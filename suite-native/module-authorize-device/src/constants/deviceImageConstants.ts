@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 export const deviceImageMap: Record<DeviceModelInternal, string> = {
     [DeviceModelInternal.UNKNOWN]: require('../assets/connect/pin-t3t1.png'),

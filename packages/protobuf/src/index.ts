@@ -20,6 +20,3 @@ export const { parseConfigure, decodeMessage, encodeMessage } = (() => {
 export * from './types';
 export * as Messages from './messages';
 export * as MessagesSchema from './messages-schema';
-
-// It's problem to reexport enums when they are under MessagesSchema namespace, check packages/connect/src/types/device.ts
-export { DeviceModelInternal } from './messages-schema';

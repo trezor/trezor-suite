@@ -8,7 +8,8 @@ import {
     isDeviceWithButtons,
 } from '@suite-common/suite-utils';
 import { BulletList, Card, H2, H3, Image, NewModal, Paragraph } from '@trezor/components';
-import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import {

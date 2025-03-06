@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceAnimation, Image, variables } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

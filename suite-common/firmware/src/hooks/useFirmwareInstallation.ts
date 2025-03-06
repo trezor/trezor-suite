@@ -8,8 +8,9 @@ import {
 } from '@suite-common/firmware';
 import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { DEVICE, DeviceModelInternal, FirmwareType, UI } from '@trezor/connect';
+import { DEVICE, FirmwareType, UI } from '@trezor/connect';
 import {
+    DeviceModelInternal,
     getFirmwareVersion,
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,

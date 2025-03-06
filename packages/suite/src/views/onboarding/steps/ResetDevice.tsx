@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Divider, Text, Tooltip } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { OnboardingButtonBack, OnboardingStepBox, OptionsWrapper } from 'src/components/onboarding';

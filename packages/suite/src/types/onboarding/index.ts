@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { FirmwareVersionString } from '@trezor/device-utils/src/types';
 
 import * as STEP from 'src/constants/onboarding/steps';

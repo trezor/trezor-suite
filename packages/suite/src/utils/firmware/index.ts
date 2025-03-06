@@ -1,7 +1,7 @@
 import { satisfies, valid } from 'semver';
 
-import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { FirmwareType } from '@trezor/connect';
+import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 
 import { type ExtendedMessageDescriptor, type TrezorDevice } from 'src/types/suite';
 

@@ -18,12 +18,12 @@ import {
 import {
     AccountUtxo,
     Device,
-    DeviceModelInternal,
     DeviceUniquePath,
     Features,
     FirmwareType,
     TrezorConnect,
 } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';

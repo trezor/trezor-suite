@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { getPackagingUrl } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner, DeviceAnimation, variables } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { typography } from '@trezor/theme';
 import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 

@@ -1,9 +1,6 @@
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
-import {
-    DeviceModelInternal,
-    type DisplayRotation as DisplayRotationType,
-    PROTO,
-} from '@trezor/connect';
+import { type DisplayRotation as DisplayRotationType, PROTO } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';

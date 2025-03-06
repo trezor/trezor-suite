@@ -10,7 +10,7 @@ import {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { ConnectDeviceScreenView } from '../../components/connect/ConnectDeviceScreenView';
 import { PinOnDevice } from '../../components/connect/PinOnDevice';

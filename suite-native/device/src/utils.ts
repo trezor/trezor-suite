@@ -3,7 +3,8 @@ import { AnyAction } from '@reduxjs/toolkit';
 import * as semver from 'semver';
 
 import { UnreachableCaseError } from '@suite-common/suite-utils';
-import { DEVICE, Device, DeviceEvent, DeviceModelInternal, VersionArray } from '@trezor/connect';
+import { DEVICE, Device, DeviceEvent, VersionArray } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 export const minimalSupportedFirmwareVersion = {
     UNKNOWN: [0, 0, 0] as VersionArray,

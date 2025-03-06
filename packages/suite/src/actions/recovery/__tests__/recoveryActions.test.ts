@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import recoveryReducer from 'src/reducers/recovery/recoveryReducer';

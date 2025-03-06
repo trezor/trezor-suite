@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import {
     CHARACTER_OFFSET_FOR_CONTINUES_ARROW,

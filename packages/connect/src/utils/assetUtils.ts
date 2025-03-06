@@ -1,6 +1,5 @@
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { isArrayMember } from '@trezor/utils';
-
-import { DeviceModelInternal } from '../types';
 
 const isDeviceModel = (model: string): model is DeviceModelInternal =>
     isArrayMember(model, Object.values(DeviceModelInternal));

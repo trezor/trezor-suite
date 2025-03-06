@@ -26,7 +26,6 @@
         { "path": "../components" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
-        { "path": "../protobuf" },
         { "path": "../react-utils" },
         { "path": "../theme" },
         { "path": "../urls" },

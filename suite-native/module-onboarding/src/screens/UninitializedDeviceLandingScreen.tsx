@@ -11,7 +11,7 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

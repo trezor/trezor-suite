@@ -184,7 +184,7 @@ const createCustomTypes = () => {
     lines.push(`export type ${UINT_TYPE} = string | number;`, '');
     lines.push('// custom type sint32/64');
     lines.push(`export type ${SINT_TYPE} = string | number;`, '');
-    lines.push(readPatch('customTypes.ts'), '');
+    lines.push(readPatch('../../device-utils/src/deviceModelInternal.ts'), '');
 
     return lines;
 };

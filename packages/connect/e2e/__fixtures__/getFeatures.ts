@@ -1,6 +1,6 @@
 // firmware should be always set. This tests actually tests the fact that
 
-import { DeviceModelInternal } from '../../src/types';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 const emulatorStartOpts = process.env.emulatorStartOpts || global.emulatorStartOpts;
 // @ts-expect-error (here might be bug)

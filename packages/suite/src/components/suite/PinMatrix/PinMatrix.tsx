@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { variables } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
 
 import { onPinSubmit } from 'src/actions/suite/modalActions';

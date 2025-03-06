@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { AlertBox, Box, HStack, Image, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const T3T1ImageStyle = prepareNativeStyle(() => ({

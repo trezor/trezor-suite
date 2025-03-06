@@ -1,5 +1,5 @@
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { WalletLayout } from 'src/components/wallet';
 import { useDevice } from 'src/hooks/suite';

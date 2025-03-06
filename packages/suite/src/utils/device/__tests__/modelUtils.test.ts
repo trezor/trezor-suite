@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/protobuf';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { pickByDeviceModel } from '../modelUtils';
 

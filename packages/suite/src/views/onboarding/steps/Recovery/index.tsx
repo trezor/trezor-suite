@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { isDeviceWithButtons } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import { OnboardingButtonCta } from 'src/components/onboarding';

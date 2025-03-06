@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 import { Button, Tooltip } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { mapTrezorModelToIconDeprecated } from '@trezor/product-components';
 
 interface DeviceButtonProps {

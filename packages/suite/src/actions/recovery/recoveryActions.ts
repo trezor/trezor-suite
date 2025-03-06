@@ -1,5 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import TrezorConnect, { DeviceModelInternal, PROTO, RecoveryDevice, UI } from '@trezor/connect';
+import TrezorConnect, { PROTO, RecoveryDevice, UI } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';

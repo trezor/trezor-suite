@@ -1,6 +1,7 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
 import { randomBytes } from 'crypto';
 
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { TransportProtocol, v1 as v1Protocol } from '@trezor/protocol';
 import { Session } from '@trezor/transport';
 import { type Descriptor, TRANSPORT_ERROR, type Transport } from '@trezor/transport';
@@ -37,7 +38,6 @@ import {
 } from '../events';
 import {
     DeviceFirmwareStatus,
-    DeviceModelInternal,
     DeviceState,
     DeviceStatus,
     Device as DeviceTyped,

@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { goToPreviousStep } from 'src/actions/onboarding/onboardingActions';
 import { setStatus } from 'src/actions/recovery/recoveryActions';

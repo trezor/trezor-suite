@@ -1,5 +1,6 @@
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
-import { Device, DeviceModelInternal, KnownDevice, UnavailableCapability } from '@trezor/connect';
+import { Device, KnownDevice, UnavailableCapability } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
 
 /**

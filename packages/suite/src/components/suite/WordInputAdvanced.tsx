@@ -3,7 +3,8 @@ import { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Button, KEYBOARD_CODE, PinButton } from '@trezor/components';
-import TrezorConnect, { DeviceModelInternal, UI } from '@trezor/connect';
+import TrezorConnect, { UI } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { resolveAfter } from '@trezor/utils';
 

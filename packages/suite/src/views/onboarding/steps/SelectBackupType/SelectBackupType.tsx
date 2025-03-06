@@ -17,7 +17,7 @@ import styled from 'styled-components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner, ElevationUp, Text, useElevation } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import {
     Elevation,
     borders,

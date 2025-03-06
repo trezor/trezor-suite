@@ -1,12 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignTypedData.js
 
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { MessagesSchema } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
 import { ERRORS, PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
-import { DeviceModelInternal, EthereumNetworkInfo } from '../../../types';
+import { EthereumNetworkInfo } from '../../../types';
 import {
     EthereumSignTypedData as EthereumSignTypedDataParams,
     EthereumSignTypedDataTypes,

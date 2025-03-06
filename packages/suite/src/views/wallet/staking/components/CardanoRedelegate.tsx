@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { Card, Column, Icon } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';

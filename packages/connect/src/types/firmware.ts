@@ -1,5 +1,4 @@
-import { VersionArray } from '@trezor/device-utils';
-import { DeviceModelInternal } from '@trezor/protobuf';
+import { DeviceModelInternal, VersionArray } from '@trezor/device-utils';
 import { Type } from '@trezor/schema-utils';
 
 export type FirmwareRange = Record<

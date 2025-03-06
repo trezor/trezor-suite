@@ -1,6 +1,7 @@
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { DeviceModelInternal, FirmwareRange } from '../../../exports';
+import { FirmwareRange } from '../../../types';
 
 export const validateParams = [
     {

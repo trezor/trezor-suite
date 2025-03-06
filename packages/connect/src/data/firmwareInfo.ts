@@ -1,7 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
 
-import { VersionArray } from '@trezor/device-utils';
-import { DeviceModelInternal } from '@trezor/protobuf';
+import { DeviceModelInternal, VersionArray } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import type {

@@ -1,6 +1,6 @@
 import { configureMockStore } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeepPartial } from '@trezor/type-utils';
 
 import suiteReducer from '../../../../reducers/suite/suiteReducer';

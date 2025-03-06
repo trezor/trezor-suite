@@ -1,7 +1,8 @@
 import { connectInitThunk } from '@suite-common/connect-init';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { CommonParams, DeviceModelInternal } from '@trezor/connect';
+import { CommonParams } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
 import * as backupActions from 'src/actions/backup/backupActions';

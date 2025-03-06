@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 export const MAX_LABEL_LENGTH = 16;
 export const DEFAULT_PASSPHRASE_PROTECTION = true;

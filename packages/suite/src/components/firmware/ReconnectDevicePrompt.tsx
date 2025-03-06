@@ -4,8 +4,8 @@ import { useFirmwareInstallation } from '@suite-common/firmware';
 import { TranslationKey } from '@suite-common/intl-types';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { BulletList, Column, DeviceAnimation, H2, NewModal, Paragraph } from '@trezor/components';
-import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { DEVICE, Device, UI } from '@trezor/connect';
+import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 

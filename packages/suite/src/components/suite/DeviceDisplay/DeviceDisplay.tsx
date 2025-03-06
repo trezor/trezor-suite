@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { selectDeviceInternalModel } from '@suite-common/wallet-core';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { DisplayMode } from 'src/types/suite';

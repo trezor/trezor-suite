@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, ButtonGroup, Tooltip, variables } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';

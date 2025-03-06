@@ -13,7 +13,8 @@ import {
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
-import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
+import { FirmwareType } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 import { PartialRecord } from '@trezor/type-utils';

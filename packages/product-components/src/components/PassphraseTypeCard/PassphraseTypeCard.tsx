@@ -5,8 +5,8 @@ import styled, { css } from 'styled-components';
 
 import { formInputsMaxLength } from '@suite-common/validators';
 import { TooltipProps } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { setCaretPosition } from '@trezor/dom-utils';
-import { DeviceModelInternal } from '@trezor/protobuf';
 import { useKeyPress } from '@trezor/react-utils';
 import { borders, spacingsPx } from '@trezor/theme';
 import { countBytesInString } from '@trezor/utils';

@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
 
 import type { TrezorDevice } from 'src/types/suite';

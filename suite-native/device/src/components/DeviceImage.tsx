@@ -1,5 +1,5 @@
 import { Image } from '@suite-native/atoms';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const deviceImageMap: Record<DeviceModelInternal, string> = {

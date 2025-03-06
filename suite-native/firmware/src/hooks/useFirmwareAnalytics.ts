@@ -9,8 +9,12 @@ import {
     FirmwareUpdateStartType,
     analytics,
 } from '@suite-native/analytics';
-import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
-import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
+import { FirmwareType } from '@trezor/connect';
+import {
+    DeviceModelInternal,
+    getBootloaderVersion,
+    getFirmwareVersion,
+} from '@trezor/device-utils';
 
 export const useFirmwareAnalytics = ({
     device,

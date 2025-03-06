@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Icon, IconName, IconProps } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { handleOnCopy } from 'src/utils/suite/deviceDisplay';
 

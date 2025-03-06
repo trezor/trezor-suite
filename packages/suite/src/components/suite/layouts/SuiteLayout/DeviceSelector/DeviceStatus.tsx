@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { selectDeviceLabelOrNameById } from '@suite-common/wallet-core';
 import { Row, Tooltip } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 

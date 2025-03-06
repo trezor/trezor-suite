@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import styled, { useTheme } from 'styled-components';
 
 import { Icon, Image, Row, Text } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/protobuf';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import { CardButton } from '../CardButton/CardButton';
