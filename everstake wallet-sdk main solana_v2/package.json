@@ -1,0 +1,64 @@
+{
+  "name": "@everstake/wallet-sdk-solana",
+  "version": "2.0.8",
+  "description": "Solana - Everstake Wallet SDK",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "pnpm run prebuild && tsup src/index.ts --format cjs,esm --dts",
+    "type-check": "tsc",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
+    "test": "jest",
+    "prebuild": "pnpm run type-check && pnpm run lint && pnpm run test"
+  },
+  "keywords": [
+    "solana",
+    "blockchain",
+    "everstake",
+    "wallet sdk"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/everstake/wallet-sdk.git"
+  },
+  "author": "Everstake",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/everstake/wallet-sdk/issues"
+  },
+  "homepage": "https://github.com/everstake/wallet-sdk#readme",
+  "dependencies": {
+    "@solana-program/compute-budget": "^0.6.1",
+    "@solana-program/system": "^0.6.2",
+    "@solana-program/stake": "^0.1.0",
+    "@solana/web3.js": "2.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.7.0",
+    "@jest/types": "^29.6.3",
+    "@types/jest": "^29.5.12",
+    "eslint": "9.x",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.8.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.3.3",
+    "ts-jest": "^29.2.3",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.2.2",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.17.0"
+  }
+}
