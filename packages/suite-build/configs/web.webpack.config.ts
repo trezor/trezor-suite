@@ -9,7 +9,7 @@ import { FLAGS, routes } from '@suite-common/suite-config';
 import { assetPrefix, isDev } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 
-const PreloadWebpackPlugin = require('@vue/preload-webpack-plugin');
+// const PreloadWebpackPlugin = require('@vue/preload-webpack-plugin');
 
 const baseDir = getPathForProject('web');
 const config: webpack.Configuration = {
@@ -20,20 +20,6 @@ const config: webpack.Configuration = {
     },
     resolve: {
         fallback: { vm: require.resolve('vm-browserify') },
-    },
-    optimization: {
-        splitChunks: {
-            minSize: 100_000,
-            maxInitialRequests: 2,
-            cacheGroups: {
-                main: {
-                    name: 'main',
-                    test: /main/, // Prioritize `main.js`
-                    chunks: 'all',
-                    priority: 100, // High priority
-                },
-            },
-        },
     },
     plugins: [
         new CopyWebpackPlugin({
@@ -90,13 +76,13 @@ const config: webpack.Configuration = {
             /@trezor\/connect$/,
             '@trezor/connect-web/src/module',
         ),
-        new PreloadWebpackPlugin({
-            rel: 'prefetch',
-            include: 'asyncChunks',
-            // NOTE: only prefetch js files
-            fileWhitelist: [/\.js$/],
-            fileBlacklist: [/_svg\.js$/, /date-fns/, /json\.js/, /suite-data/],
-        }),
+        // new PreloadWebpackPlugin({
+        //     rel: 'prefetch',
+        //     include: 'asyncChunks',
+        //     // NOTE: only prefetch js files
+        //     fileWhitelist: [/\.js$/],
+        //     fileBlacklist: [/_svg\.js$/, /date-fns/, /json\.js/, /suite-data/],
+        // }),
         ...(!isDev ? [new CssMinimizerPlugin()] : []),
     ],
 };

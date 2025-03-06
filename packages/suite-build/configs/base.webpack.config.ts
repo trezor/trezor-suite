@@ -1,4 +1,3 @@
-import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
@@ -8,16 +7,8 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { WebpackSecurityCheckPlugin } from '@trezor/bundler-security';
 
 import { suiteVersion } from '../../suite/package.json';
-import {
-    assetPrefix,
-    isAnalyzing,
-    isCodesignBuild,
-    isDev,
-    project,
-    sentryAuthToken,
-} from '../utils/env';
+import { assetPrefix, isAnalyzing, isCodesignBuild, isDev, project } from '../utils/env';
 import { getRevision } from '../utils/git';
-import { getPathForProject } from '../utils/path';
 const gitRevision = getRevision();
 
 /**
@@ -187,21 +178,21 @@ const config: webpack.Configuration = {
                   }),
               ]
             : []),
-        ...(!isDev && sentryAuthToken
-            ? [
-                  sentryWebpackPlugin({
-                      telemetry: false,
-                      org: 'satoshilabs',
-                      project: 'trezor-suite',
-                      authToken: sentryAuthToken,
-                      release: { name: sentryRelease, cleanArtifacts: true },
-                      sourcemaps: {
-                          assets: path.join(getPathForProject(project), 'build', '**'),
-                          ignore: ['static/connect'], // connect does not contain source maps for now
-                      },
-                  }),
-              ]
-            : []),
+        // ...(!isDev && sentryAuthToken
+        //     ? [
+        //           sentryWebpackPlugin({
+        //               telemetry: false,
+        //               org: 'satoshilabs',
+        //               project: 'trezor-suite',
+        //               authToken: sentryAuthToken,
+        //               release: { name: sentryRelease, cleanArtifacts: true },
+        //               sourcemaps: {
+        //                   assets: path.join(getPathForProject(project), 'build', '**'),
+        //                   ignore: ['static/connect'], // connect does not contain source maps for now
+        //               },
+        //           }),
+        //       ]
+        //     : []),
     ],
 };
 
