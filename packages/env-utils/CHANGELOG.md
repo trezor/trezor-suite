@@ -1,3 +1,8 @@
+# 1.3.1
+
+-   npm-prerelease: @trezor/env-utils 1.3.1-beta.1 (c4c43edca8)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+
 # 1.3.0
 
 -   npm-prerelease: @trezor/env-utils 1.3.0-beta.1 (7a125b0091)
