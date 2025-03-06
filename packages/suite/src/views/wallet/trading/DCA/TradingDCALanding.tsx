@@ -15,7 +15,7 @@ import {
     Text,
 } from '@trezor/components';
 import { variables } from '@trezor/components/src/config';
-import { borders, palette, spacings, spacingsPx } from '@trezor/theme';
+import { borders, paletteV1, spacings, spacingsPx } from '@trezor/theme';
 import { TRADING_DOWNLOAD_INVITY_APP_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
@@ -31,7 +31,7 @@ const IconWrapper = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: ${palette.lightSecondaryLime500};
+    background: ${paletteV1.lightSecondaryLime500};
     margin-right: ${spacingsPx.sm};
 `;
 
@@ -55,9 +55,9 @@ const DCAColumn = styled.div`
 
 const Column1 = styled(DCAColumn)`
     gap: ${spacingsPx.xxl};
-    background-color: ${palette.lightPrimaryForest800};
+    background-color: ${paletteV1.lightPrimaryForest800};
     border-radius: ${borders.radii.md};
-    color: ${palette.lightWhiteAlpha1000};
+    color: ${paletteV1.lightWhiteAlpha1000};
 `;
 
 const Column2 = styled(DCAColumn)`
@@ -88,14 +88,14 @@ interface FeatureItemProps {
 const FeatureItem = ({ icon, featureNumber }: FeatureItemProps) => (
     <Row>
         <IconWrapper>
-            <Icon name={icon} size={20} color={palette.lightPrimaryForest800} />
+            <Icon name={icon} size={20} color={paletteV1.lightPrimaryForest800} />
         </IconWrapper>
         <div>
-            <Text typographyStyle="highlight" color={palette.lightSecondaryLime500}>
+            <Text typographyStyle="highlight" color={paletteV1.lightSecondaryLime500}>
                 <Translation id={`TR_TRADING_DCA_FEATURE_${featureNumber}_SUBHEADING`} />
             </Text>
             <Paragraph>
-                <Text color={palette.lightWhiteAlpha1000}>
+                <Text color={paletteV1.lightWhiteAlpha1000}>
                     <Translation id={`TR_TRADING_DCA_FEATURE_${featureNumber}_DESCRIPTION`} />
                 </Text>
             </Paragraph>

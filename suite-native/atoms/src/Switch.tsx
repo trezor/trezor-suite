@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { palette } from '@trezor/theme';
+import { paletteV1 } from '@trezor/theme';
 
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
@@ -54,7 +54,7 @@ const switchContainerStyle = prepareNativeStyle<{ isChecked: boolean }>((utils, 
 const switchCircleStyle = prepareNativeStyle(utils => ({
     width: SWITCH_CIRCLE_SIZE,
     height: SWITCH_CIRCLE_SIZE,
-    backgroundColor: palette.darkGray1000,
+    backgroundColor: paletteV1.darkGray1000,
     borderRadius: utils.borders.radii.round,
     margin: SWITCH_CIRCLE_MARGIN,
     alignSelf: 'center',

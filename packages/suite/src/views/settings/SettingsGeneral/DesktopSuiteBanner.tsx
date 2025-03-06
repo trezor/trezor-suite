@@ -30,7 +30,7 @@ const Container = styled(motion.div)`
     width: 100%;
     padding: 12px 20px;
     border-radius: 12px;
-    background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation0};
+    background: ${({ theme }) => theme.baseFillSurfaceBrandDark};
     overflow: hidden;
 `;
 
@@ -50,6 +50,10 @@ const Content = styled.div`
 
 const TextContainer = styled.div`
     grid-column: 1/3;
+
+    * {
+        color: ${({ theme }) => theme.baseContentPrimaryInverse};
+    }
 `;
 
 const OSIcons = styled.div`
