@@ -1,3 +1,8 @@
+# 9.3.1
+
+-   npm-prerelease: @trezor/utils 9.3.1-beta.1 (9b166f8e30)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+
 # 9.3.0
 
 -   chore(utils): typedObjectKeys (30f8f4fc59)
