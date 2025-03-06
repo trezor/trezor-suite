@@ -2,7 +2,12 @@ import { useState } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import { type TradingTradeType, type TradingType, parseCryptoId } from '@suite-common/trading';
+import {
+    type TradingTradeType,
+    type TradingType,
+    parseCryptoId,
+    useTradingInfo,
+} from '@suite-common/trading';
 import { Button, Column, Paragraph, Row, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -10,7 +15,6 @@ import { Translation } from 'src/components/suite';
 import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/trading/form';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,

@@ -6,6 +6,9 @@
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
+        {
+            "path": "../../packages/address-validator"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/react-utils" },

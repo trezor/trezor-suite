@@ -100,7 +100,37 @@ export type TradingCryptoSelectItemProps = {
     value: CryptoId;
     label: string;
     ticker?: string;
+    type: 'currency';
+    balance?: string;
+    networkName?: string;
 };
+
+export interface TradingSelectAssetOptionGroupProps {
+    type: 'group';
+    label: string;
+    networkName?: string;
+    coingeckoId?: string;
+}
+
+export type TradingCryptoSelectOptionProps =
+    | TradingCryptoSelectItemProps
+    | TradingSelectAssetOptionGroupProps;
+
+export interface TradingInfoProps {
+    cryptoIdToPlatformName: (cryptoId: CryptoId) => string | undefined;
+    cryptoIdToCoinName: (cryptoId: CryptoId) => string | undefined;
+    cryptoIdToCoinSymbol: (cryptoId: CryptoId) => string | undefined;
+    cryptoIdToNativeCoinSymbol: (cryptoId: CryptoId) => string | undefined;
+    cryptoIdToSymbolAndContractAddress: (cryptoId: CryptoId | undefined) => {
+        coinSymbol: NetworkSymbolExtended | undefined;
+        contractAddress: string | undefined;
+    };
+    buildCryptoOptions: (
+        cryptoIds: Set<CryptoId>,
+        excludedCryptoIds?: Set<CryptoId>,
+    ) => TradingCryptoSelectOptionProps[];
+    buildDefaultCryptoOption: (cryptoId: CryptoId | undefined) => TradingCryptoSelectItemProps;
+}
 
 export type TradingOption = { value: string; label: string };
 

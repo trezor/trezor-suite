@@ -5,9 +5,11 @@ import { CryptoId } from 'invity-api';
 
 import {
     CRYPTO_PLATFORM_SEPARATOR,
+    TradingCryptoSelectItemProps,
     cryptoIdToNetwork,
     isCryptoIdForNativeToken,
     parseCryptoId,
+    useTradingInfo,
 } from '@suite-common/trading';
 import { Network, NetworkSymbol, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { Badge, Row, Select, Text } from '@trezor/components';
@@ -28,11 +30,9 @@ import {
 } from 'src/constants/wallet/trading/form';
 import { useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import {
     SelectAssetOptionProps,
     TradingAccountOptionsGroupOptionProps,
-    TradingCryptoSelectItemProps,
     TradingTradeBuyExchangeType,
 } from 'src/types/trading/trading';
 import {

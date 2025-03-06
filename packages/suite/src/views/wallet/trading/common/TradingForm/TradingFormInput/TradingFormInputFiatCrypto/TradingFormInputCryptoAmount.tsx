@@ -1,6 +1,7 @@
 import { FieldErrors } from 'react-hook-form';
 
 import { useFormatters } from '@suite-common/formatters';
+import { useTradingInfo } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { FormState } from '@suite-common/wallet-types';
@@ -15,7 +16,6 @@ import {
 } from 'src/constants/wallet/trading/form';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import {

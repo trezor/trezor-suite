@@ -1,6 +1,7 @@
 import { CryptoId } from 'invity-api';
 
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { useTradingInfo } from '@suite-common/trading';
+
 import * as fixtures from 'src/utils/wallet/trading/__fixtures__/exchangeUtils';
 import {
     getAmountLimits,
@@ -10,8 +11,8 @@ import {
     tradingGetExchangeReceiveCryptoId,
 } from 'src/utils/wallet/trading/exchangeUtils';
 
-jest.mock('src/hooks/wallet/trading/useTradingInfo', () => ({
-    ...jest.requireActual('src/hooks/wallet/trading/useTradingInfo'),
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
     useTradingInfo: jest.fn(),
 }));
 

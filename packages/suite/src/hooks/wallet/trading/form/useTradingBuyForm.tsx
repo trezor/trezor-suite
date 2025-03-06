@@ -15,6 +15,7 @@ import {
     getTradingQuotesByPaymentMethod,
     invityAPI,
     tradingGetSuccessQuotes,
+    useTradingInfo,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { formatAmount } from '@suite-common/wallet-utils';
@@ -37,7 +38,6 @@ import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common
 import { useTradingModalCrypto } from 'src/hooks/wallet/trading/form/common/useTradingModalCrypto';
 import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
 import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';

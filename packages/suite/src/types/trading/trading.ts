@@ -14,6 +14,7 @@ import type {
     TradingBuyType,
     TradingExchangeType,
     TradingPaymentMethodType,
+    TradingSelectAssetOptionGroupProps,
     TradingSellType,
     TradingTransaction,
     TradingTransactionBuy,
@@ -21,7 +22,7 @@ import type {
     TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
-import { AccountType, NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { AccountType } from '@suite-common/wallet-config';
 import { AccountsState } from '@suite-common/wallet-core';
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AssetLogoProps } from '@trezor/components';
@@ -113,22 +114,6 @@ export interface TradingCryptoListProps {
     cryptoName?: string | undefined; // full name
 }
 
-export interface TradingInfoProps {
-    cryptoIdToPlatformName: (cryptoId: CryptoId) => string | undefined;
-    cryptoIdToCoinName: (cryptoId: CryptoId) => string | undefined;
-    cryptoIdToCoinSymbol: (cryptoId: CryptoId) => string | undefined;
-    cryptoIdToNativeCoinSymbol: (cryptoId: CryptoId) => string | undefined;
-    cryptoIdToSymbolAndContractAddress: (cryptoId: CryptoId | undefined) => {
-        coinSymbol: NetworkSymbolExtended | undefined;
-        contractAddress: string | undefined;
-    };
-    buildCryptoOptions: (
-        cryptoIds: Set<CryptoId>,
-        excludedCryptoIds?: Set<CryptoId>,
-    ) => TradingCryptoSelectOptionProps[];
-    buildDefaultCryptoOption: (cryptoId: CryptoId | undefined) => TradingCryptoSelectItemProps;
-}
-
 export interface TradingCoinLogoProps {
     cryptoId: CryptoId;
     size?: 20 | 24;
@@ -136,16 +121,7 @@ export interface TradingCoinLogoProps {
     className?: string;
 }
 
-export interface TradingCryptoSelectItemProps
-    extends Omit<SelectAssetOptionCurrencyProps, 'value' | 'ticker'> {
-    value: CryptoId;
-    label: string;
-    ticker?: string;
-}
-export interface TradingCryptoSelectGroupProps extends SelectAssetOptionGroupProps {}
-export type TradingCryptoSelectOptionProps =
-    | TradingCryptoSelectItemProps
-    | SelectAssetOptionGroupProps;
+export interface TradingCryptoSelectGroupProps extends TradingSelectAssetOptionGroupProps {}
 
 export interface TradingGetSortedAccountsProps {
     accounts: AccountsState;
@@ -244,11 +220,6 @@ export interface SelectAssetOptionCurrencyProps extends AssetOptionBaseProps {
     networkName?: string;
 }
 
-export interface SelectAssetOptionGroupProps {
-    type: 'group';
-    label: string;
-    networkName?: string;
-    coingeckoId?: string;
-}
-
-export type SelectAssetOptionProps = SelectAssetOptionCurrencyProps | SelectAssetOptionGroupProps;
+export type SelectAssetOptionProps =
+    | SelectAssetOptionCurrencyProps
+    | TradingSelectAssetOptionGroupProps;

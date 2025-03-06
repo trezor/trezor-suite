@@ -3,13 +3,12 @@ import React from 'react';
 import { CryptoId } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
-import type { TradingTradeType } from '@suite-common/trading';
+import { TradingTradeType, useTradingInfo } from '@suite-common/trading';
 import { Icon } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import {
     getCryptoQuoteAmountProps,
     isTradingBuyContext,

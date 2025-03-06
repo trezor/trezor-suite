@@ -87,6 +87,7 @@ describe('Testing handleRequestThunk', () => {
                 label: 'Bitcoin',
                 symbol: 'btc',
                 contractAddress: null,
+                type: 'currency',
             },
             countrySelect: {
                 value: 'CZ',

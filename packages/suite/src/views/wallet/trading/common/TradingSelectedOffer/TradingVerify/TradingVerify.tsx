@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import { TradingExchangeType, cryptoIdToNetwork } from '@suite-common/trading';
+import { TradingExchangeType, cryptoIdToNetwork, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import addressValidator from '@trezor/address-validator';
@@ -15,7 +15,6 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { TradingVerifyAccountReturnProps } from 'src/types/trading/tradingVerify';
 import {
     isTradingBuyContext,

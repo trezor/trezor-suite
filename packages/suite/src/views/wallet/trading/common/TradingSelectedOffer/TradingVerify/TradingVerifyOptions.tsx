@@ -1,9 +1,8 @@
-import { parseCryptoId } from '@suite-common/trading';
+import { parseCryptoId, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Select } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import {
     TradingVerifyFormAccountOptionProps,
     TradingVerifyOptionsProps,

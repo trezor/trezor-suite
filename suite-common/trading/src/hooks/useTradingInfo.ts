@@ -1,13 +1,8 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 import { CoinInfo, CryptoId } from 'invity-api';
 
-import {
-    cryptoIdToNetwork,
-    isCryptoIdForNativeToken,
-    parseCryptoId,
-    testnetToProdCryptoId,
-} from '@suite-common/trading';
 import {
     NetworkSymbolExtended,
     getDisplaySymbol,
@@ -16,12 +11,18 @@ import {
 } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
 
-import { useSelector } from 'src/hooks/suite/useSelector';
+import { TradingRootState } from '../selectors/tradingSelectors';
 import {
     TradingCryptoSelectItemProps,
     TradingCryptoSelectOptionProps,
     TradingInfoProps,
-} from 'src/types/trading/trading';
+} from '../types';
+import {
+    cryptoIdToNetwork,
+    isCryptoIdForNativeToken,
+    parseCryptoId,
+    testnetToProdCryptoId,
+} from '../utils';
 
 const supportedAddressValidatorSymbols = new Set(
     addressValidator.getCurrencies().map(c => c.symbol),
@@ -66,7 +67,9 @@ const sortPopularCurrencies = (
 };
 
 export const useTradingInfo = (): TradingInfoProps => {
-    const { platforms = {}, coins = {} } = useSelector(state => state.wallet.trading.info);
+    const { platforms = {}, coins = {} } = useSelector(
+        ({ wallet }: TradingRootState) => wallet.trading.info,
+    );
 
     const cryptoIdToPlatformName = useCallback(
         (cryptoId: CryptoId) => platforms[cryptoId]?.name,

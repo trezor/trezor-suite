@@ -11,3 +11,4 @@ export * from './actions/tradingActions';
 export * from './reducers/buyReducer';
 export * from './thunks/buy';
 export * from './thunks/tradingThunks';
+export * from './hooks/useTradingInfo';

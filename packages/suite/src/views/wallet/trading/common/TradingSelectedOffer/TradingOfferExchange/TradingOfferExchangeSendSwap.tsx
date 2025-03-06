@@ -5,7 +5,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import type { TradingExchangeType } from '@suite-common/trading';
+import { TradingExchangeType, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Button,
@@ -26,7 +26,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { AccountLabeling, Address, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 
 const BreakableValue = styled.span`

@@ -3,7 +3,12 @@ import { useState } from 'react';
 import { DexApprovalType, ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import { type TradingExchangeType, cryptoIdToSymbol, parseCryptoId } from '@suite-common/trading';
+import {
+    type TradingExchangeType,
+    cryptoIdToSymbol,
+    parseCryptoId,
+    useTradingInfo,
+} from '@suite-common/trading';
 import {
     Banner,
     Button,
@@ -24,7 +29,6 @@ import { IOAddress } from 'src/components/suite/copy/IOAddress';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeWatchSendApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchSendApproval';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 
 // add APPROVED means no approval request is necessary

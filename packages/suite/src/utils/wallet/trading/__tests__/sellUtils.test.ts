@@ -1,4 +1,5 @@
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
+import { useTradingInfo } from '@suite-common/trading';
+
 import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
 import { Account } from 'src/types/wallet';
 import * as fixtures from 'src/utils/wallet/trading/__fixtures__/sellUtils';
@@ -17,8 +18,8 @@ const {
     MIN_MAX_QUOTES_LOW,
 } = fixtures;
 
-jest.mock('src/hooks/wallet/trading/useTradingInfo', () => ({
-    ...jest.requireActual('src/hooks/wallet/trading/useTradingInfo'),
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
     useTradingInfo: jest.fn(),
 }));
 

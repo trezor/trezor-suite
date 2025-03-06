@@ -1,10 +1,10 @@
 import { CryptoId } from 'invity-api';
 
+import { useTradingInfo } from '@suite-common/trading';
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
 interface TradingCryptoAmountProps {

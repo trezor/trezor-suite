@@ -4,6 +4,7 @@ import type { MenuPlacement } from 'react-select';
 
 import { CryptoId } from 'invity-api';
 
+import { useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { Column, InfoSegments, Select } from '@trezor/components';
@@ -13,7 +14,6 @@ import { Translation } from 'src/components/suite';
 import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import type { Account } from 'src/types/wallet';

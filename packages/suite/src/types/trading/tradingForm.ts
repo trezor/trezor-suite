@@ -13,6 +13,7 @@ import type {
 
 import type {
     TradingBuyType,
+    TradingCryptoSelectItemProps,
     TradingExchangeType,
     TradingPaymentMethodListProps,
     TradingPaymentMethodProps,
@@ -60,7 +61,6 @@ import { AppState } from 'src/reducers/store';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     TradingAccountOptionsGroupOptionProps,
-    TradingCryptoSelectItemProps,
     TradingGetCryptoQuoteAmountProps,
     TradingGetProvidersInfoProps,
     TradingTradeSellExchangeType,

@@ -3,8 +3,8 @@ import { createQuoteLink, createTxLink, getStatusMessage } from 'src/utils/walle
 
 const { QUOTE_REQUEST_FIAT, QUOTE_REQUEST_CRYPTO, MIN_MAX_QUOTES_OK } = fixtures;
 
-jest.mock('src/hooks/wallet/trading/useTradingInfo', () => ({
-    ...jest.requireActual('src/hooks/wallet/trading/useTradingInfo'),
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
     useTradingInfo: jest.fn(),
 }));
 

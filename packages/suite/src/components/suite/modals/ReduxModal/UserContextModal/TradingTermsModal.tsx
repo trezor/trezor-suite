@@ -1,5 +1,6 @@
 import { CryptoId } from 'invity-api';
 
+import { useTradingInfo } from '@suite-common/trading';
 import {
     Column,
     H4,
@@ -15,7 +16,6 @@ import type { Deferred } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite';
 import { useDevice } from 'src/hooks/suite';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 
 type TradingTermsModalProps = {
     decision: Deferred<boolean>;

@@ -17,6 +17,7 @@ import {
     getUnusedAddressFromAccount,
     invityAPI,
     tradingGetSuccessQuotes,
+    useTradingInfo,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
@@ -44,7 +45,6 @@ import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useT
 import { useTradingModalCrypto } from 'src/hooks/wallet/trading/form/common/useTradingModalCrypto';
 import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
 import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';

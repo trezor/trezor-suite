@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { parseCryptoId } from '@suite-common/trading';
+import { parseCryptoId, useTradingInfo } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { Column, Icon, Row, variables } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
@@ -9,7 +9,6 @@ import { spacings } from '@trezor/theme';
 import { AccountLabeling, Translation } from 'src/components/suite';
 import { FORM_SEND_CRYPTO_CURRENCY_SELECT } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingInfo } from 'src/hooks/wallet/trading/useTradingInfo';
 import { TradingVerifyOptionsItemProps } from 'src/types/trading/tradingVerify';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
