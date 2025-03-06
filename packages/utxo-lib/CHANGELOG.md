@@ -1,3 +1,8 @@
+# 2.3.1
+
+-   npm-prerelease: @trezor/utxo-lib 2.3.1-beta.1 (d1159a83e5)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+
 # 2.3.0
 
 -   npm-prerelease: @trezor/utxo-lib 2.3.0-beta.1 (ee41d6d1a8)
