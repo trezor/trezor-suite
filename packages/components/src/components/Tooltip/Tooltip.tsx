@@ -131,7 +131,7 @@ export const Tooltip = ({
                         $isInline={isInline}
                         as={elType}
                         {...frameProps}
-                        $cursor={frameProps.$cursor ?? 'help'}
+                        $cursor={frameProps.$cursor ?? 'inherit'}
                     >
                         {children}
                         {hasIcon && <Icon name="question" size="medium" />}

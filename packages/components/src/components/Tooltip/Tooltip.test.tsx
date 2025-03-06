@@ -96,7 +96,7 @@ describe('Tooltip', () => {
         expect(screen.getByText('Hover me').parentElement).toHaveStyle({ cursor: 'pointer' });
     });
 
-    it('should should apply the default=help cursor when the passed cursor is undefined', () => {
+    it('should should apply the default=inherit cursor when the passed cursor is undefined', () => {
         const tooltipContent = 'Tooltip Content';
         render(
             <Tooltip content={tooltipContent} cursor={undefined}>
@@ -104,6 +104,6 @@ describe('Tooltip', () => {
             </Tooltip>,
         );
 
-        expect(screen.getByText('Hover me').parentElement).toHaveStyle({ cursor: 'help' });
+        expect(screen.getByText('Hover me').parentElement).toHaveStyle({ cursor: 'inherit' });
     });
 });
