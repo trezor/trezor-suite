@@ -12753,6 +12753,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/json-stable-stringify": "npm:^1"
     esbuild: "npm:^0.23.1"
+    html-inline-script-webpack-plugin: "npm:^3.2.1"
     html-webpack-plugin: "npm:^5.6.0"
     json-stable-stringify: "npm:^1.2.1"
     pkg: "npm:^5.8.1"
@@ -25996,6 +25997,16 @@ __metadata:
   version: 2.0.2
   resolution: "html-escaper@npm:2.0.2"
   checksum: 10/034d74029dcca544a34fb6135e98d427acd73019796ffc17383eaa3ec2fe1c0471dcbbc8f8ed39e46e86d43ccd753a160631615e4048285e313569609b66d5b7
+  languageName: node
+  linkType: hard
+
+"html-inline-script-webpack-plugin@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "html-inline-script-webpack-plugin@npm:3.2.1"
+  peerDependencies:
+    html-webpack-plugin: ^5.0.0
+    webpack: ^5.0.0
+  checksum: 10/f7a67038ee89d6447a0389e92e565fcbe5482091d688096542304ee3d3a163aa3f2d7a725ee5a3eeda707913849cc0dbb2b6489d4fc190951a178492785ebbb5
   languageName: node
   linkType: hard
 

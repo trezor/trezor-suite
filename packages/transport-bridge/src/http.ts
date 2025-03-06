@@ -441,38 +441,6 @@ export class TrezordNode {
                 },
             ]);
 
-            app.get('/ui', [
-                (req, res) => {
-                    const parsedUrl = new URL(req.url, `http://${req.headers.host}/`);
-
-                    const pathname = path.join(__dirname, this.assetPrefix, parsedUrl.pathname);
-
-                    const map: Record<string, string> = {
-                        '.ico': 'image/x-icon',
-                        '.html': 'text/html',
-                        '.js': 'text/javascript',
-                        '.json': 'application/json',
-                        '.css': 'text/css',
-                        '.png': 'image/png',
-                        '.jpg': 'image/jpeg',
-                        '.svg': 'image/svg+xml',
-                    };
-
-                    const { ext } = path.parse(pathname);
-                    fs.stat(pathname)
-                        .then(() => fs.readFile(pathname))
-                        .then(data => {
-                            res.setHeader('Content-type', map[ext] || 'text/plain');
-                            res.end(data);
-                        })
-                        .catch(err => {
-                            this.logger.error('Failed to fetch UI', err);
-                            res.statusCode = 404;
-                            res.end(`File ${pathname} not found!`);
-                        });
-                },
-            ]);
-
             app.get('/logs', [
                 (_req, res) => {
                     res.writeHead(200, {
