@@ -1,3 +1,8 @@
+# 1.3.1
+
+-   npm-prerelease: @trezor/blockchain-link-utils 1.3.1-beta.1 (8f776478e3)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+
 # 1.3.0
 
 -   feat(blockchain-link): add support for Solana v2 staking (f12b0240c8)
