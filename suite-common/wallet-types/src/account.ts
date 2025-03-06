@@ -106,7 +106,7 @@ export type Account = {
     failed?: boolean;
     balance: string;
     availableBalance: string;
-    formattedBalance: string;
+    formattedBalance: string; // Todo? AmountBase<NetworkSymbol> ???
     tokens: AccountInfo['tokens'];
     addresses?: AccountInfo['addresses'];
     utxo: AccountInfo['utxo'];

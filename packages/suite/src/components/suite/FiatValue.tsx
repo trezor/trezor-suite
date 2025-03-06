@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { SkeletonRectangle } from '@trezor/components';
 
@@ -26,17 +27,18 @@ interface Params {
     timestamp: number | null;
 }
 
-type FiatValueProps = UseFiatFromCryptoValueParams & {
-    children?: (props: Params) => ReactElement | null;
-    showApproximationIndicator?: boolean;
-    disableHiddenPlaceholder?: boolean;
-    fiatAmountFormatterOptions?: FormatNumberOptions;
-    fiatRateFormatterOptions?: FormatNumberOptions;
-    shouldConvert?: boolean;
-    showLoadingSkeleton?: boolean;
-    className?: string;
-    isLoading?: boolean;
-};
+type FiatValueProps<TNetworkSymbol extends NetworkSymbol> =
+    UseFiatFromCryptoValueParams<TNetworkSymbol> & {
+        children?: (props: Params) => ReactElement | null;
+        showApproximationIndicator?: boolean;
+        disableHiddenPlaceholder?: boolean;
+        fiatAmountFormatterOptions?: FormatNumberOptions;
+        fiatRateFormatterOptions?: FormatNumberOptions;
+        shouldConvert?: boolean;
+        showLoadingSkeleton?: boolean;
+        className?: string;
+        isLoading?: boolean;
+    };
 
 /**
  * If used without children prop it returns a value of an crypto assets in fiat currency.
@@ -52,7 +54,7 @@ type FiatValueProps = UseFiatFromCryptoValueParams & {
  * @param {FiatValuePropsProps} { amount, symbol, fiatCurrency, ...props }
  * @returns
  */
-export const FiatValue = ({
+export const FiatValue = <TNetworkSymbol extends NetworkSymbol>({
     children,
     amount, // expects a value in full units (BTC not sats)
     className,
@@ -67,7 +69,7 @@ export const FiatValue = ({
     shouldConvert = true,
     showLoadingSkeleton,
     isLoading,
-}: FiatValueProps) => {
+}: FiatValueProps<TNetworkSymbol>) => {
     const { shouldAnimate } = useLoadingSkeleton();
     const { localCurrency, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
         amount,
@@ -78,7 +80,7 @@ export const FiatValue = ({
     });
 
     const { FiatAmountFormatter } = useFormatters();
-    const value = shouldConvert ? fiatAmount : amount;
+    const value = shouldConvert ? fiatAmount : amount.toString();
 
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : HiddenPlaceholder;
 

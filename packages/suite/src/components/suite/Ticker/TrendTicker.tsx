@@ -3,7 +3,12 @@ import styled, { useTheme } from 'styled-components';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
+import {
+    asAmount,
+    asAmountBase,
+    getFiatRateKey,
+    localizePercentage,
+} from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
@@ -36,6 +41,7 @@ interface TickerProps {
     noEmptyStateTooltip?: boolean;
     showLoadingSkeleton?: boolean;
 }
+
 export const TrendTicker = ({
     symbol,
     contractAddress,
@@ -64,7 +70,11 @@ export const TrendTicker = ({
     const emptyStateComponent = noEmptyStateTooltip ? <Empty>—</Empty> : <NoRatesTooltip />;
 
     return (
-        <FiatValue amount="1" symbol={symbol} showLoadingSkeleton={showLoadingSkeleton}>
+        <FiatValue
+            amount={asAmountBase(asAmount('1'))}
+            symbol={symbol}
+            showLoadingSkeleton={showLoadingSkeleton}
+        >
             {({ rate, timestamp }) =>
                 rate && timestamp && percentageChange ? (
                     <PercentageWrapper $isRateGoingUp={isRateGoingUp}>

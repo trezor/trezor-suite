@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
+import { asAmount, asAmountBase } from '@suite-common/wallet-utils';
 import { H2 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx, typography, zIndices } from '@trezor/theme';
@@ -150,7 +151,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                         </CryptoBalance>
                         <ForegroundWrapper>
                             <FiatValue
-                                amount={formattedBalance}
+                                amount={asAmountBase(asAmount(formattedBalance))}
                                 symbol={symbol}
                                 showApproximationIndicator
                             />

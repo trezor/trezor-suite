@@ -23,3 +23,6 @@ export * from './stakingUtils';
 export * from './tokenUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
+
+export { asAmount, toAmountBase, toAmountSats, asAmountBase, asAmountSats } from './AmountTypes';
+export type { AmountBase, AmountSats } from './AmountTypes';

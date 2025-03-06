@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TokenAddress } from '@suite-common/wallet-types';
+import { asAmount, asAmountBase } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
 
 import { FiatValue } from 'src/components/suite';
@@ -38,7 +39,7 @@ export const PriceTicker = ({
 
     return (
         <FiatValue
-            amount="1"
+            amount={asAmountBase(asAmount('1'))}
             symbol={symbol}
             tokenAddress={contractAddress}
             showLoadingSkeleton={showLoadingSkeleton}

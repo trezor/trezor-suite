@@ -286,6 +286,11 @@ export const getAccountDecimals = (symbol: NetworkSymbol) => networks[symbol]?.d
 export const stripNetworkAmount = (amount: string, decimals: number) =>
     new BigNumber(amount).toFixed(decimals, 1);
 
+/**
+ * Converts sats to btc, or similarly for other crypto.
+ *
+ * @deprecated use `toAmountBase` from AmountTypes.ts, however there is issue with token (different decimals from network???)
+ */
 export const formatAmount = (amount: BigNumberValue, decimals: number) => {
     const safeAmount = amount || '0';
     const bAmount = new BigNumber(safeAmount);
