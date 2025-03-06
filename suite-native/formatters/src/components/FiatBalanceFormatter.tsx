@@ -9,7 +9,10 @@ import { AmountText } from './AmountText';
 import { EmptyAmountText } from './EmptyAmountText';
 import { parseBalanceAmount } from '../utils';
 
-type BalanceFormatterProps = FormatterProps<string | null> & { isForcedDiscreetMode?: boolean };
+type BalanceFormatterProps = FormatterProps<string | null> & {
+    isForcedDiscreetMode?: boolean;
+    testID?: string;
+};
 
 const wholeNumberStyle = prepareNativeStyle(utils => ({
     flexShrink: 1,
@@ -17,7 +20,11 @@ const wholeNumberStyle = prepareNativeStyle(utils => ({
     textAlign: 'center',
 }));
 
-export const FiatBalanceFormatter = ({ value, isForcedDiscreetMode }: BalanceFormatterProps) => {
+export const FiatBalanceFormatter = ({
+    value,
+    isForcedDiscreetMode,
+    testID,
+}: BalanceFormatterProps) => {
     const { applyStyle } = useNativeStyles();
     const { FiatAmountFormatter: formatter } = useFormatters();
 
@@ -30,7 +37,7 @@ export const FiatBalanceFormatter = ({ value, isForcedDiscreetMode }: BalanceFor
     const { currencySymbol, wholeNumber, decimalNumber } = parseBalanceAmount(formattedValue);
 
     return (
-        <Box flexDirection="row" alignItems="flex-end" flexShrink={1}>
+        <Box flexDirection="row" alignItems="flex-end" flexShrink={1} testID={testID}>
             <Text variant="titleSmall">{currencySymbol}</Text>
             <AmountText
                 value={wholeNumber}

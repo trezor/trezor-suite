@@ -6,7 +6,7 @@ class SendOutputsReviewActions {
     async waitForScreen() {
         await waitFor(element(by.id('@screen/SendOutputsReview')))
             .toBeVisible()
-            .withTimeout(3000);
+            .withTimeout(10000);
     }
 
     async confirmTransactionOutputs() {

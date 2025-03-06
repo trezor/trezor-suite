@@ -74,6 +74,7 @@ export const SelectItem = ({
             accessibilityRole="radio"
             accessibilityState={{ checked: isSelected }}
             accessibilityLabel={label}
+            testID={`@select/item/${value}`}
         >
             {icon}
             <Box style={applyStyle(underlineSectionStyle, { isLastChild, isSelected })}>

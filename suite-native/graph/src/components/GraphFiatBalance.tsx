@@ -44,8 +44,8 @@ const Balance = ({ selectedPointAtom, latestValue }: BalanceProps) => {
         latestValue || point?.valueLatestTotal || (point?.value ? String(point.value) : '0');
 
     return (
-        <DiscreetTextTrigger>
-            <FiatBalanceFormatter value={fiatValue} />
+        <DiscreetTextTrigger testID="@home/portfolio/fiat-balance-header/discreet-trigger">
+            <FiatBalanceFormatter value={fiatValue} testID="@home/portfolio/fiat-balance-header" />
         </DiscreetTextTrigger>
     );
 };

@@ -11,7 +11,7 @@ import { AboutViewOnlyBottomSheet } from '../components/ViewOnly/AboutViewOnlyBo
 import { DevicesEmpty } from '../components/ViewOnly/DevicesEmpty';
 import { DevicesManagement } from '../components/ViewOnly/DevicesManagement';
 
-export const SettingsViewOnly = () => {
+export const SettingsViewOnlyScreen = () => {
     const { translate } = useTranslate();
     const [isVisibleAboutViewOnly, setIsVisibleAboutViewOnly] = useState(false);
 

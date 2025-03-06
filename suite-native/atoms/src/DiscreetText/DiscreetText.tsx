@@ -58,6 +58,7 @@ export const DiscreetText = ({
             {/* If the DiscreetMode is on, it is hidden with opacity set to zero. */}
             <Box onLayout={handleLayout}>
                 <Text
+                    testID={showAsDiscreet ? 'discreet-text' : 'plain-text'}
                     variant={variant}
                     color={color}
                     ellipsizeMode={ellipsizeMode}

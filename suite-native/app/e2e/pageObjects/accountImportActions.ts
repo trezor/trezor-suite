@@ -20,13 +20,16 @@ class AccountImportActions {
         await onTabBar.navigateToMyAssets();
 
         // after importing some accounts, not all are visible, scrolling might be needed
-        await scrollUntilVisible(by.text(accountName));
+        await scrollUntilVisible(element(by.text(accountName)));
     }
 
     async selectCoin({ networkSymbol }: { networkSymbol: string }) {
         // not all coin types are visible, so first check if visible, if not, scroll
-        await scrollUntilVisible(by.id(`@onboarding/select-coin/${networkSymbol.toLowerCase()}`));
-        await element(by.id(`@onboarding/select-coin/${networkSymbol.toLowerCase()}`)).tap();
+        const coinItemElement = element(
+            by.id(`@onboarding/select-coin/${networkSymbol.toLowerCase()}`),
+        );
+        await scrollUntilVisible(coinItemElement);
+        await coinItemElement.tap();
         await detoxExpect(element(by.id('`@screen/XpubScan`')));
     }
 

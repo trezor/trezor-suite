@@ -30,6 +30,7 @@ export const CryptoUnitsSelector = () => {
             selectValue={bitcoinUnit}
             items={bitcoinUnitsItems}
             onSelectItem={handleSelectUnit}
+            testID="@settings/localization/bitcoin-units-selector"
         />
     );
 };

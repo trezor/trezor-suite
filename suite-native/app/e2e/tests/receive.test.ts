@@ -4,7 +4,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountReceive } from '../pageObjects/accountReceiveActions';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
-import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
+import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
@@ -17,9 +17,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Receive', () => {
         await openApp({ newInstance: true });
         await onOnboarding.skipOnboarding();
 
-        await onCoinEnablingInit.waitForScreen();
-        await onCoinEnablingInit.enableNetwork('btc');
-        await onCoinEnablingInit.clickOnConfirmButton();
+        await onCoinEnabling.waitForInitScreen();
+        await onCoinEnabling.toggleNetwork('btc');
+        await onCoinEnabling.clickOnConfirmButton();
         await onAlertSheet.skipViewOnlyMode();
 
         await onHome.waitForScreen();

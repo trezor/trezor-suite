@@ -11,6 +11,7 @@ type TouchableSwitchRowProps = {
     text: string;
     description?: ReactNode;
     iconName: IconName;
+    testID?: string;
 };
 
 const textStyle = prepareNativeStyle(utils => ({
@@ -28,6 +29,7 @@ export const TouchableSwitchRow = ({
     text,
     description,
     iconName,
+    testID,
 }: TouchableSwitchRowProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -41,6 +43,7 @@ export const TouchableSwitchRow = ({
             accessibilityRole="switch"
             accessibilityLabel={text}
             accessibilityState={{ checked: isChecked }}
+            testID={testID}
         >
             <Box
                 flexDirection="row"

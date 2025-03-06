@@ -120,6 +120,7 @@ export const BottomSheet = ({
                                     }
                                     onScroll={scrollEvent}
                                     keyboardShouldPersistTaps="handled"
+                                    testID="@bottom-sheet/scroll-view"
                                 >
                                     <Animated.View>
                                         <Box paddingHorizontal="sp16" {...boxProps}>

@@ -47,6 +47,7 @@ const DiscreetModeSwitchRow = () => {
 
     return (
         <TouchableSwitchRow
+            testID="@settings/privacy-and-security/discreet-mode-toggle"
             text="Discreet mode"
             description={
                 <Box flexDirection="row" alignItems="center">
@@ -108,7 +109,7 @@ const BiometricsSwitchRow = () => {
     );
 };
 
-export const SettingsPrivacyAndSecurity = () => {
+export const SettingsPrivacyAndSecurityScreen = () => {
     const { translate } = useTranslate();
 
     return (

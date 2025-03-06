@@ -1,16 +1,16 @@
 import { scrollUntilVisible } from '../utils';
 
-class OnCoinEnablingInit {
-    async waitForScreen() {
+class CoinEnablingActions {
+    async waitForInitScreen() {
         await waitFor(element(by.id('@screen/CoinEnablingInit')))
             .toBeVisible()
             .withTimeout(10000);
     }
 
-    async enableNetwork(symbol: string) {
-        const networkIdMatcher = by.id(`@coin-enabling/toggle-${symbol}`);
-        await scrollUntilVisible(networkIdMatcher);
-        await element(networkIdMatcher).tap();
+    async toggleNetwork(symbol: string) {
+        const networkElement = element(by.id(`@coin-enabling/toggle-${symbol}`));
+        await scrollUntilVisible(networkElement);
+        await networkElement.tap();
     }
 
     async clickOnConfirmButton() {
@@ -18,4 +18,4 @@ class OnCoinEnablingInit {
     }
 }
 
-export const onCoinEnablingInit = new OnCoinEnablingInit();
+export const onCoinEnabling = new CoinEnablingActions();

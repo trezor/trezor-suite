@@ -14,6 +14,7 @@ type SelectProps<TItemValue extends SelectItemValue> = {
     selectValue: SelectItemValue;
     onSelectItem: (value: TItemValue) => void;
     selectLabel: ReactNode;
+    testID?: string;
 };
 
 export const Select = <TItemValue extends SelectItemValue>({
@@ -21,6 +22,7 @@ export const Select = <TItemValue extends SelectItemValue>({
     selectLabel,
     selectValue,
     onSelectItem,
+    testID,
 }: SelectProps<TItemValue>) => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -51,6 +53,7 @@ export const Select = <TItemValue extends SelectItemValue>({
                 value={selectedItem?.label ?? null}
                 label={selectLabel}
                 handlePress={() => setIsOpen(true)}
+                testID={testID}
             />
         </>
     );

@@ -31,6 +31,7 @@ export const CurrencySelector = () => {
             selectLabel={<Translation id="moduleSettings.localizations.fiatCurrencyLabel" />}
             selectValue={selectedFiatCurrencyCode}
             onSelectItem={handleSelectCurrency}
+            testID="@settings/localization/currency-selector"
         />
     );
 };

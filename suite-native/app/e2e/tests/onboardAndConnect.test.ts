@@ -4,11 +4,9 @@ import { expect as detoxExpect } from 'detox';
 import { conditionalDescribe } from '@suite-common/test-utils';
 
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
-import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
+import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { disconnectTrezorUserEnv, openApp, prepareTrezorEmulator } from '../utils';
-
-const platform = device.getPlatform();
 
 conditionalDescribe(
     device.getPlatform() === 'android',
@@ -28,25 +26,20 @@ conditionalDescribe(
         it('Navigate to dashboard', async () => {
             await onOnboarding.finishOnboarding();
 
-            if (platform === 'android') {
-                await waitFor(element(by.id('@screen/CoinEnablingInit')))
-                    .toBeVisible()
-                    .withTimeout(10000);
+            await waitFor(element(by.id('@screen/CoinEnablingInit')))
+                .toBeVisible()
+                .withTimeout(10000);
 
-                await onCoinEnablingInit.waitForScreen();
+            await onCoinEnabling.waitForInitScreen();
 
-                await onCoinEnablingInit.enableNetwork('btc');
-                await onCoinEnablingInit.enableNetwork('eth');
+            await onCoinEnabling.toggleNetwork('btc');
+            await onCoinEnabling.toggleNetwork('eth');
 
-                await onCoinEnablingInit.clickOnConfirmButton();
+            await onCoinEnabling.clickOnConfirmButton();
 
-                await onAlertSheet.skipViewOnlyMode();
+            await onAlertSheet.skipViewOnlyMode();
 
-                await detoxExpect(element(by.id('@home/portfolio/header')));
-            } else {
-                await detoxExpect(element(by.text('Hi there!'))).toBeVisible();
-                await detoxExpect(element(by.text('Get started'))).toBeVisible();
-            }
+            await detoxExpect(element(by.id('@home/portfolio/header')));
         });
     },
 );

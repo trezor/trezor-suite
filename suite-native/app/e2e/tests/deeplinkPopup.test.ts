@@ -6,7 +6,7 @@ import TrezorConnect from '@trezor/connect-mobile';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
-import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
+import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import { onHome } from '../pageObjects/homeActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
@@ -62,9 +62,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
         await openApp({ newInstance: true });
         await onOnboarding.skipOnboarding();
 
-        await onCoinEnablingInit.waitForScreen();
-        await onCoinEnablingInit.enableNetwork('regtest');
-        await onCoinEnablingInit.clickOnConfirmButton();
+        await onCoinEnabling.waitForInitScreen();
+        await onCoinEnabling.toggleNetwork('regtest');
+        await onCoinEnabling.clickOnConfirmButton();
 
         await onAlertSheet.skipViewOnlyMode();
 

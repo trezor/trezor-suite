@@ -121,6 +121,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
                     size="extraSmall"
                     colorScheme={device.remember ? 'redElevation0' : 'primary'}
                     onPress={() => (device.remember ? handleDisableViewOnly() : toggleViewOnly())}
+                    testID={`@settings/view-only/toggle-button/${device.features?.label}/${device.walletNumber ?? 0}`}
                 >
                     <Translation
                         id={

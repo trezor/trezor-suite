@@ -12,6 +12,7 @@ type SelectTriggerProps = {
     label: ReactNode;
     icon?: ReactNode;
     handlePress: () => void;
+    testID?: string;
 };
 
 const SELECT_HEIGHT = 58 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
@@ -32,11 +33,11 @@ const selectStyle = prepareNativeStyle(utils => ({
 
 const iconWrapperStyle = prepareNativeStyle(() => ({ marginRight: 1 }));
 
-export const SelectTrigger = ({ value, label, icon, handlePress }: SelectTriggerProps) => {
+export const SelectTrigger = ({ value, label, icon, handlePress, testID }: SelectTriggerProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <TouchableOpacity onPress={handlePress} style={applyStyle(selectStyle)}>
+        <TouchableOpacity onPress={handlePress} style={applyStyle(selectStyle)} testID={testID}>
             <Box>
                 {!!value && (
                     <Text variant="label" color="textSubdued">

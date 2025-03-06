@@ -15,7 +15,7 @@ export const parseBalanceAmount = (value: string) => {
     ];
 
     return {
-        currencySymbol,
+        currencySymbol: currencySymbol ? currencySymbol.trim() : null,
         wholeNumber: wholeNumberPart,
         decimalNumber: decimalNumberPart ? `.${decimalNumberPart}` : '',
     };

@@ -3,7 +3,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
-import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
+import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
@@ -77,9 +77,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.'
             btc_amount: INITIAL_ACCOUNT_BALANCE,
         });
 
-        await onCoinEnablingInit.waitForScreen();
-        await onCoinEnablingInit.enableNetwork('regtest');
-        await onCoinEnablingInit.clickOnConfirmButton();
+        await onCoinEnabling.waitForInitScreen();
+        await onCoinEnabling.toggleNetwork('regtest');
+        await onCoinEnabling.clickOnConfirmButton();
 
         await onAlertSheet.skipViewOnlyMode();
     });

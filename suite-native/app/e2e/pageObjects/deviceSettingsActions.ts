@@ -1,6 +1,6 @@
 import { scrollUntilVisible } from '../utils';
 
-const checkAuthenticityButtonId = by.id('@device-authenticity/check-button');
+const checkAuthenticityButtonElement = element(by.id('@device-authenticity/check-button'));
 
 class DeviceSettingsActions {
     async waitForScreen() {
@@ -31,14 +31,12 @@ class DeviceSettingsActions {
     }
 
     async scrollUntilCheckAuthenticityButtonIsVisible() {
-        await scrollUntilVisible(checkAuthenticityButtonId);
+        await scrollUntilVisible(checkAuthenticityButtonElement);
     }
 
     async tapCheckAuthenticityButton() {
-        const checkAuthenticityButton = element(checkAuthenticityButtonId);
-
-        await waitFor(checkAuthenticityButton).toBeVisible().withTimeout(10000);
-        await checkAuthenticityButton.tap();
+        await waitFor(checkAuthenticityButtonElement).toBeVisible().withTimeout(10000);
+        await checkAuthenticityButtonElement.tap();
     }
 }
 

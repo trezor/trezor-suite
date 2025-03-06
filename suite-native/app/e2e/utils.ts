@@ -15,7 +15,7 @@ const APP_LAUNCH_ARGS = {
     DTXDisableMainRunLoopSync: platform === 'ios',
 };
 
-const TREZOR_DEVICE_LABEL = 'Trezor T - Tester';
+export const TREZOR_E2E_DEVICE_LABEL = 'Trezor T - Tester';
 
 export const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
 
@@ -78,15 +78,18 @@ export const restartApp = async () => {
     }
 };
 
-export const scrollUntilVisible = async (matcher: Detox.NativeMatcher) => {
+export const scrollUntilVisible = async (
+    element: Detox.IndexableNativeElement,
+    scrollViewTestId: string = '@screen/mainScrollView',
+) => {
     try {
         // Try to confirm that the element is visible without scrolling.
-        await detoxExpect(element(matcher)).toBeVisible();
+        await detoxExpect(element).toBeVisible();
     } catch {
         // If the element is not visible, then use the scroll to find it.
-        await waitFor(element(matcher))
+        await waitFor(element)
             .toBeVisible()
-            .whileElement(by.id('@screen/mainScrollView'))
+            .whileElement(by.id(scrollViewTestId))
             .scroll(250, 'down');
     }
 };
@@ -108,7 +111,7 @@ export const prepareTrezorEmulator = async (
         // start with latest officially released firmware (necessary to pass the firmware checks)
         await TrezorUserEnvLink.startEmu({ model: 'T3T1', version: '2-latest', wipe: true });
         await TrezorUserEnvLink.setupEmu({
-            label: TREZOR_DEVICE_LABEL,
+            label: TREZOR_E2E_DEVICE_LABEL,
             mnemonic: seed,
             passphrase_protection,
         });

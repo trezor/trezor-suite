@@ -12,8 +12,8 @@ import { SettingsCustomizationScreen } from '../screens/SettingsCustomizationScr
 import { SettingsDeviceChecksScreen } from '../screens/SettingsDeviceChecksScreen';
 import { SettingsFAQScreen } from '../screens/SettingsFAQScreen';
 import { SettingsLocalizationScreen } from '../screens/SettingsLocalizationScreen';
-import { SettingsPrivacyAndSecurity } from '../screens/SettingsPrivacyAndSecurity';
-import { SettingsViewOnly } from '../screens/SettingsViewOnly';
+import { SettingsPrivacyAndSecurityScreen } from '../screens/SettingsPrivacyAndSecurityScreen';
+import { SettingsViewOnlyScreen } from '../screens/SettingsViewOnlyScreen';
 import { TurnOffFirmwareAuthenticityCheckModalScreen } from '../screens/TurnOffFirmwareAuthenticityCheckModalScreen';
 
 const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
@@ -33,12 +33,12 @@ export const SettingsStackNavigator = () => (
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsPrivacyAndSecurity }}
             name={SettingsStackRoutes.SettingsPrivacyAndSecurity}
-            component={SettingsPrivacyAndSecurity}
+            component={SettingsPrivacyAndSecurityScreen}
         />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsViewOnly }}
             name={SettingsStackRoutes.SettingsViewOnly}
-            component={SettingsViewOnly}
+            component={SettingsViewOnlyScreen}
         />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsFAQ }}
