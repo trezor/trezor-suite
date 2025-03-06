@@ -1,3 +1,9 @@
+# 1.4.1
+
+-   npm-prerelease: @trezor/transport 1.4.1-beta.1 (31d1473977)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+-   feat(connect): add `bluetoothProps` to Device (db9e51ad2a)
+
 # 1.4.0
 
 -   chore(deps): unify ts-node version (3187da7bf4)
