@@ -63,10 +63,20 @@ const config: webpack.Configuration = {
     optimization: {
         splitChunks: {
             cacheGroups: {
+                react: {
+                    chunks: 'initial',
+                    name: 'react',
+                    test: /[\\/]node_modules[\\/]react/,
+                },
                 vendors: {
                     chunks: 'initial',
                     name: 'vendors',
                     test: /[\\/]node_modules[\\/](?!react)/,
+                },
+                components: {
+                    chunks: 'initial',
+                    name: 'components',
+                    test: /[\\/]packages[\\/]components[\\/]/,
                 },
             },
         },

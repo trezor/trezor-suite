@@ -12348,6 +12348,7 @@ __metadata:
     "@types/node-fetch": "npm:^2.6.12"
     "@types/webpack-bundle-analyzer": "npm:^4.7.0"
     "@types/webpack-plugin-serve": "npm:^1.4.6"
+    "@vue/preload-webpack-plugin": "npm:^2.0.0"
     babel-loader: "npm:^9.1.3"
     babel-plugin-styled-components: "npm:^2.1.4"
     copy-webpack-plugin: "npm:^12.0.2"
@@ -14731,6 +14732,16 @@ __metadata:
     "@vue/compiler-dom": "npm:3.4.27"
     "@vue/shared": "npm:3.4.27"
   checksum: 10/c63f401eddbc157a5650ca57d514e0e91891b8a007eb2fff3c2e1a5b11d75305b05dd925e6890e026c1ba5b3f3388ebfbec3d6e19d9c928c0c53530460fb2425
+  languageName: node
+  linkType: hard
+
+"@vue/preload-webpack-plugin@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@vue/preload-webpack-plugin@npm:2.0.0"
+  peerDependencies:
+    html-webpack-plugin: ^5.0.0 || ^4.5.1
+    webpack: ^5.20.0 || ^4.1.0
+  checksum: 10/ddaf1542b2cdece5619eb836c96cc177153b8b1a55833d279358d7042d869e916b461e0fc7e8372504a479b8b8c135885b10738bb9a241c5ae542099deef6341
   languageName: node
   linkType: hard
 
