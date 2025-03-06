@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'react';
+import { useWindowDimensions } from 'react-native';
+
 import { PinFormValues, pinFormSchema } from '@suite-common/validators';
 import { Box, Card, HStack, Image, Loader, Text, VStack } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
@@ -66,6 +69,8 @@ const loaderWrapperStyle = prepareNativeStyle(utils => ({
 }));
 
 export const PinOnKeypad = ({ variant, onSuccess }: PinOnKeypadProps) => {
+    const windowDimensions = useWindowDimensions();
+
     const { applyStyle } = useNativeStyles();
     const form = useForm<PinFormValues>({
         validation: pinFormSchema,
@@ -74,14 +79,28 @@ export const PinOnKeypad = ({ variant, onSuccess }: PinOnKeypadProps) => {
         },
     });
 
+    const [isImageDisplayed, setIsImageDisplayed] = useState(true);
+
+    useEffect(() => {
+        const { height, scale, fontScale } = windowDimensions;
+
+        // If user has too small device or uses accessibility settings for screen content enlargement,
+        // the image is hidden to make sure the the content fits in the screen.
+        if (height < 720 || fontScale > 1 || scale > 3) {
+            setIsImageDisplayed(false);
+        } else {
+            setIsImageDisplayed(true);
+        }
+    }, [windowDimensions]);
+
     const translations = translationsMap[variant];
 
     return (
         <VStack spacing="sp16" alignItems="center" flex={1} marginTop="sp24">
-            <Image source={deviceImageMap.T1B1} width={161} height={194} />
+            {isImageDisplayed && <Image source={deviceImageMap.T1B1} width={161} height={194} />}
             <Form form={form}>
                 <VStack spacing="sp8" alignItems="center">
-                    <Text color="textSubdued">
+                    <Text color="textSubdued" textAlign="center">
                         <Translation id="moduleConnectDevice.pinScreen.form.keypadInfo" />
                     </Text>
                     <Box style={applyStyle(pinProgressWrapperStyle)}>
