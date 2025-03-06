@@ -21,6 +21,20 @@ const config: webpack.Configuration = {
     resolve: {
         fallback: { vm: require.resolve('vm-browserify') },
     },
+    optimization: {
+        splitChunks: {
+            minSize: 100_000,
+            maxInitialRequests: 2,
+            cacheGroups: {
+                main: {
+                    name: 'main',
+                    test: /main/, // Prioritize `main.js`
+                    chunks: 'all',
+                    priority: 100, // High priority
+                },
+            },
+        },
+    },
     plugins: [
         new CopyWebpackPlugin({
             patterns: ['browser-detection', 'fonts', 'images', 'oauth', 'videos', 'guide/assets']
