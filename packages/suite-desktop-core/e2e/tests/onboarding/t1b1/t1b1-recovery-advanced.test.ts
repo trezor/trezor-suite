@@ -40,7 +40,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         await devicePrompt.confirmOnDevicePromptIsShown();
 
         // Restart emulator
-        await trezorUserEnvLink.startEmu({ model: 'T1B1', version: '1-latest' });
+        await trezorUserEnvLink.startEmu({ model: 'T1B1' });
 
         // Retry recovery with basic type
         await onboardingPage.retryRecoveryButton.click();

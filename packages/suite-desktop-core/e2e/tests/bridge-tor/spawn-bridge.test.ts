@@ -54,7 +54,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
     test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async ({
         trezorUserEnvLink,
     }, testInfo) => {
-        await trezorUserEnvLink.startEmu({ wipe: true, version: '2-latest', model: 'T2T1' });
+        await trezorUserEnvLink.startEmu({ wipe: true, model: 'T2T1' });
         await trezorUserEnvLink.setupEmu({});
         await trezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
 

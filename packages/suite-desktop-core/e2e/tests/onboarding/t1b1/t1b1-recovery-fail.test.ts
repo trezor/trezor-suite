@@ -30,7 +30,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         // Disconnect the device
         await trezorUserEnvLink.stopEmu();
         await devicePrompt.connectDevicePromptIsShown();
-        await trezorUserEnvLink.startEmu({ model: 'T1B1', version: '1-latest', wipe: false });
+        await trezorUserEnvLink.startEmu({ model: 'T1B1', wipe: false });
 
         // Retry recovery process
         await onboardingPage.retryRecoveryButton.click();
