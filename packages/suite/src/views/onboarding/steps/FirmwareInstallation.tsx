@@ -10,7 +10,6 @@ import { OnboardingStepBox } from 'src/components/onboarding';
 import { Translation, WebUsbButton } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType, selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-import { TrezorDevice } from 'src/types/suite';
 
 const SelectDevice = styled.div`
     display: flex;
@@ -22,24 +21,11 @@ const SelectDevice = styled.div`
 `;
 
 interface FirmwareInstallationProps {
-    cachedDevice?: TrezorDevice;
-    // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
-    // If it is set to true, then you know it is being rendered in standalone fw update modal
-    standaloneFwUpdate?: boolean;
-    // If true, information about new version is not shown, because we don't know anything about it
-    customFirmware?: boolean;
     install: () => void;
-    onPromptClose?: () => void;
     onSuccess: () => void;
 }
 
-export const FirmwareInstallation = ({
-    standaloneFwUpdate,
-    customFirmware,
-    install,
-    onPromptClose,
-    onSuccess,
-}: FirmwareInstallationProps) => {
+export const FirmwareInstallation = ({ install, onSuccess }: FirmwareInstallationProps) => {
     const { status, showReconnectPrompt, uiEvent, targetType } = useFirmwareInstallation();
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
@@ -70,7 +56,7 @@ export const FirmwareInstallation = ({
                     onClick={onSuccess}
                     data-testid="@firmware/continue-button"
                 >
-                    <Translation id={standaloneFwUpdate ? 'TR_CLOSE' : 'TR_CONTINUE'} />
+                    <Translation id="TR_CONTINUE" />
                 </Button>
             );
         }
@@ -78,19 +64,15 @@ export const FirmwareInstallation = ({
 
     return (
         <>
-            {showReconnectPrompt && (
-                <ReconnectDevicePrompt onClose={onPromptClose} onSuccess={install} />
-            )}
+            {showReconnectPrompt && <ReconnectDevicePrompt onSuccess={install} />}
             <OnboardingStepBox
                 image="FIRMWARE"
                 heading={<Translation id="TR_INSTALL_FIRMWARE" />}
                 device={undefined}
                 isActionAbortable={isActionAbortable}
                 innerActions={getInnerActionComponent()}
-                nested={!!standaloneFwUpdate}
-                disableConfirmWrapper={!!standaloneFwUpdate}
             >
-                <FirmwareOffer isCustomFirmware={customFirmware} targetFirmwareType={targetType} />
+                <FirmwareOffer isCustomFirmware={false} targetFirmwareType={targetType} />
                 <FirmwareProgressBar />
             </OnboardingStepBox>
         </>

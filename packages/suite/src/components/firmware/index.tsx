@@ -1,7 +1,6 @@
 export { CheckSeedStep } from './CheckSeedStep/CheckSeedStep';
 export { ReconnectDevicePrompt } from './ReconnectDevicePrompt';
 export { FirmwareOffer } from './FirmwareOffer';
-export { FirmwareInstallation } from './FirmwareInstallation';
 export { FirmwareInstallationStandalone } from './FirmwareInstallationStandalone';
 export { FirmwareInitial } from './FirmwareInitial';
 export { FirmwareInitialStandalone } from './FirmwareInitialStandalone';

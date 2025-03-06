@@ -3367,10 +3367,15 @@ export default defineMessages({
         description: 'Header for the Sign and Verify form',
         id: 'TR_VERIFY_MESSAGE',
     },
-    TR_WAIT_FOR_REBOOT: {
+    TR_RESTARTING_TREZOR: {
+        defaultMessage: 'Restarting Trezor.',
+        description: 'Info what is happening with users device.',
+        id: 'TR_RESTARTING_TREZOR',
+    },
+    TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED: {
         defaultMessage: 'Restarting Trezor. Enter PIN if prompted.',
         description: 'Info what is happening with users device.',
-        id: 'TR_WAIT_FOR_REBOOT',
+        id: 'TR_RESTARTING_TREZOR_ENTER_PIN_IF_NEEDED',
     },
     TR_VALIDATION: {
         defaultMessage: 'Validating firmware',

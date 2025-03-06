@@ -7,13 +7,14 @@ import {
     Fingerprint,
     FirmwareContinueButton,
     FirmwareInitial,
-    FirmwareInstallation,
     FirmwareRetryButton,
 } from 'src/components/firmware';
 import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
 import { PrerequisitesGuide, Translation } from 'src/components/suite';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
+
+import { FirmwareInstallation } from './FirmwareInstallation';
 
 export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
