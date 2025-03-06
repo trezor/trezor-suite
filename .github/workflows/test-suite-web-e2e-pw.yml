@@ -57,31 +57,31 @@ jobs:
         with:
           aws-role: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
           aws-region: "eu-central-1"
+  
+  load-e2e-matrix:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    needs:
+      - build-web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Load E2E Matrix
+        id: load-e2e-matrix
+        uses: ./.github/actions/load-e2e-matrix
+        with:
+          project: "web"
 
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     needs:
       - build-web
+      - load-e2e-matrix
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - TEST_GROUP: "@group=suite"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=device-management"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=settings"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=metadata1"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=metadata2"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=other"
-            CONTAINERS: "trezor-user-env-unix"
-          - TEST_GROUP: "@group=wallet"
-            CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
-
+      matrix: ${{ fromJson(needs.load-e2e-matrix.outputs.matrix) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
