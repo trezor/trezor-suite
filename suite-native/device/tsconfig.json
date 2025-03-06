@@ -31,6 +31,7 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/styles" },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ],
     "include": [".", "**/*.json"]

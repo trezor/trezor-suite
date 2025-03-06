@@ -4,6 +4,7 @@ export * from './hooks/useHandleDeviceConnection';
 export * from './hooks/useDetectDeviceError';
 export * from './hooks/useReportDeviceConnectToAnalytics';
 export * from './hooks/useReportDeviceCompromised';
+export * from './hooks/useRetryFwAuthenticityChecks';
 export * from './components/ConnectDeviceAnimation';
 export * from './components/ConfirmOnTrezorImage';
 export * from './components/ConnectorImage';

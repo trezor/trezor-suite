@@ -2,6 +2,7 @@ import {
     useDetectDeviceError,
     useHandleDeviceConnection,
     useReportDeviceCompromised,
+    useRetryFwAuthenticityChecks,
 } from '@suite-native/device';
 import { useRenderDeviceCompromisedBanner } from '@suite-native/module-authenticity-checks';
 import { useConnectPopupNavigation } from '@suite-native/module-connect-popup';
@@ -21,4 +22,6 @@ export const useGlobalHooks = () => {
     useDetectDeviceError();
     useReportDeviceCompromised();
     useRenderDeviceCompromisedBanner();
+
+    useRetryFwAuthenticityChecks();
 };

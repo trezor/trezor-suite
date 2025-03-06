@@ -10108,6 +10108,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     lottie-react-native: "npm:^7.1.0"
     react: "npm:18.2.0"
