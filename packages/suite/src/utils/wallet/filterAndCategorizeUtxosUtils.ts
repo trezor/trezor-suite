@@ -23,8 +23,8 @@ export const filterAndCategorizeUtxos = ({
 }: FilterAndCategorizeUtxosParams) => {
     const lowerCaseSearchQuery = searchQuery.toLowerCase();
     const filterUtxos = (utxo: Utxo) =>
-        utxo.address.includes(lowerCaseSearchQuery) ||
-        utxo.txid.includes(lowerCaseSearchQuery) ||
+        utxo.address.toLowerCase().includes(lowerCaseSearchQuery) ||
+        utxo.txid.toLowerCase().includes(lowerCaseSearchQuery) ||
         outputLabels?.[utxo.txid]?.[utxo.vout]?.toLowerCase().includes(lowerCaseSearchQuery);
 
     return {

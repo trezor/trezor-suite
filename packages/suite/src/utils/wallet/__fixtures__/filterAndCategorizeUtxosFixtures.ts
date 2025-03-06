@@ -1,6 +1,6 @@
 import { Utxo } from '@trezor/blockchain-link';
 
-const baseUtxo: Omit<Utxo, 'address'> = {
+export const baseUtxo: Omit<Utxo, 'address'> = {
     txid: '1',
     vout: 1,
     amount: '100',
@@ -30,7 +30,7 @@ type FilterAndCategorize = {
     checkResult: (result: FilterUtxosResult) => boolean;
 };
 
-export const filterByAddress: FilterAndCategorize[] = [
+const filterByAddress: FilterAndCategorize[] = [
     {
         params: {
             searchQuery: 'one',
@@ -76,7 +76,7 @@ export const filterByAddress: FilterAndCategorize[] = [
     },
 ];
 
-export const filterByTxid: FilterAndCategorize[] = [
+const filterByTxid: FilterAndCategorize[] = [
     {
         params: {
             searchQuery: '1',
@@ -122,7 +122,7 @@ export const filterByTxid: FilterAndCategorize[] = [
     },
 ];
 
-export const filterByLabel: FilterAndCategorize[] = [
+const filterByLabel: FilterAndCategorize[] = [
     {
         params: {
             searchQuery: 'label',
@@ -173,3 +173,9 @@ export const filterByLabel: FilterAndCategorize[] = [
             result.filteredDustUtxos.length == 0,
     },
 ];
+
+export const filterAndCategorizeUtxosFixtures = {
+    filterByLabel,
+    filterByAddress,
+    filterByTxid,
+};
