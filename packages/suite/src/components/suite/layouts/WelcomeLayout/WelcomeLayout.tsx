@@ -23,7 +23,6 @@ import { LoggedOutSidebar } from '../LoggedOutSidebar';
 
 const Content = styled.div<{ $elevation: Elevation }>`
     display: flex;
-    position: relative;
     flex-direction: column;
     flex: 3;
     padding: ${spacingsPx.lg};
