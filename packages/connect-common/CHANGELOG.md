@@ -1,3 +1,9 @@
+# 0.3.1
+
+-   npm-prerelease: @trezor/connect-common 0.3.1-beta.1 (f652f8a255)
+-   feat(backend): added backends so that each EVM has 4 endpoints (f5c057c2be)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+
 # 0.3.0
 
 -   npm-prerelease: @trezor/connect-common 0.3.0-beta.1 (bc89ee33de)
