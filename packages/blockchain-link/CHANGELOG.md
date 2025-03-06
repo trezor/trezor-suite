@@ -1,3 +1,16 @@
+# 2.4.1
+
+-   npm-prerelease: @trezor/blockchain-link 2.4.1-beta.1 (be66c4683c)
+-   feat(backend): added backends so that each EVM has 4 endpoints (f5c057c2be)
+-   feat(blockchain-link-type): change bigint to string in persist (3ecc87c3a5)
+-   feat(fee): logic for rent fee calculation (2650f6b510)
+-   fix(blockchain-link): correctly handle Solana server URL (1fe9034132)
+-   fix(suite): hide non-Everstake Solana staking accounts (cbb6cdbe59)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+-   chore(blockchain-link): do not fetch solana rpc version (0959e86389)
+-   chore(blockchain-link): use confirmed Solana blockhash (8c47f52179)
+-   feat(suite): add timer to solana tx modal (c2aea2a9ca)
+
 # 2.4.0
 
 -   feat(blockchain-link): add support for Solana v2 staking (f12b0240c8)
