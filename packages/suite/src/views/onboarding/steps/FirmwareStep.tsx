@@ -15,6 +15,11 @@ import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 import { FirmwareInstallation } from './FirmwareInstallation';
+import { ThpPairingConfirmStep } from './ThpPairingConfirmStep';
+import { ThpPairingFailedStep } from './ThpPairingFailedStep';
+import { ThpPairingStartStep } from './ThpPairingStartStep';
+import { ThpPairingStep } from './ThpPairingStep';
+import { ThpConnectionModal } from '../../../components/suite/modals';
 
 export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
@@ -116,8 +121,26 @@ export const FirmwareStep = () => {
             return (
                 <FirmwareInstallation install={install} onSuccess={goToNextStepAndResetReducer} />
             );
-        default:
-            // 'ensure' type completeness
-            throw new Error(`state "${status}" is not handled here`);
+        case 'thp-pairing-start':
+            return <ThpPairingStartStep />;
+        case 'thp_pairing_request':
+            return device !== undefined ? <ThpConnectionModal device={device} /> : null;
+        case 'thp_connection_request':
+            return <ThpPairingConfirmStep />;
+        case 'thp_autoconnect_credential_request':
+            return <ThpPairingConfirmStep />; // TODO: this is missing?
+        case 'thp-pairing':
+            return device !== undefined ? <ThpPairingStep /> : null;
+        case 'thp-pairing-failed':
+            return <ThpPairingFailedStep />;
+        // This step does not make sense in onboarding, when installing a firmware
+        // for the first time, there is no seed to be backed up before the firmware update
+        case 'check-seed':
+            return null;
+
+        default: {
+            const _unhandledCase: never = status;
+            throw new Error(`Unhandled status: ${_unhandledCase}`);
+        }
     }
 };

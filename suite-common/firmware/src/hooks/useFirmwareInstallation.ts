@@ -106,7 +106,9 @@ export const useFirmwareInstallation = (
             (firmware.uiEvent.payload.target === 'bootloader' ||
                 (firmware.uiEvent.payload.target === 'normal' &&
                     originalDevice?.features?.pin_protection &&
-                    !deviceWillBeWiped)));
+                    !deviceWillBeWiped))) ||
+        // Thp pairing
+        firmware.uiEvent?.type === 'ui-request_thp_pairing';
 
     const showConfirmationPill =
         !showReconnectPrompt &&
