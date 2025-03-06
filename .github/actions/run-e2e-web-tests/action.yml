@@ -1,0 +1,90 @@
+name: 'Run Playwright E2E Web Tests'
+description: 'Runs Playwright E2E tests with Docker and uploads logs'
+inputs:
+  project: 
+    description: 'Playwright project name. (web|desktop)'
+    required: true
+  containers:
+    description: 'Docker containers to pull'
+    required: true
+  test-group:
+    description: 'Test group to run'
+    required: true
+  additional-grep:
+    description: 'Additional grep for PW tests. Use regexp groups with positive lookahead. Example: (?=.*@webOnly)'
+    default: ''
+    required: false
+  currents-project-id:
+    description: 'Currents project ID for reporting'
+    required: true
+  currents-record-key:
+    description: 'Currents record key for reporting'
+    required: true
+  e2e-passphrase:
+    description: 'Passphrase for E2E tests'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Extract Branch Name
+      id: extract_branch
+      shell: bash
+      run: |
+        echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
+    
+    # Electron requires unprivileged user namespaces to function properly. 
+    # Disabling this security rule allows Electron to create sandboxed processes
+    # without requiring elevated privileges, which is essential for running the application.
+    # This is workaround until electron builder solves this issue in future release.
+    - name: Disable security rule 'Restricted unprivileged user namespaces'
+      if: ${{ inputs.project == 'desktop' }}
+      shell: bash
+      run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+        cache: yarn
+
+    - name: Install PW Dependencies
+      if: ${{ inputs.project == 'web' }}
+      shell: bash
+      run: |
+        echo -e "\nenableScripts: false" >> .yarnrc.yml
+        echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+        yarn workspaces focus @trezor/suite-desktop-core
+        npx playwright install --with-deps
+    
+    - name: Pull Docker Images
+      shell: bash
+      env:
+        COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+      run: docker compose pull ${{ inputs.containers }}
+
+    - name: Run Playwright E2E Tests
+      shell: bash
+      env:
+        COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+        BASE_URL: https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/
+        GITHUB_ACTION: true
+        CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
+        CURRENTS_RECORD_KEY: ${{ inputs.currents-record-key }}
+        CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}
+        PASSPHRASE: ${{ inputs.e2e-passphrase }}
+      run: |
+        docker compose up -d trezor-user-env-unix
+        echo "Starting Playwright project ${{ inputs.project }} for test group ${{ inputs.test-group }}"
+        yarn workspace @trezor/suite-desktop-core test:e2e:${{ inputs.project }} --forbid-only --grep="(?=.*${{ inputs.test-group }})${{ inputs.additional-grep }}" 
+    
+    - name: Extract and Upload Logs
+      if: ${{ !cancelled() }}
+      uses: ./.github/actions/upload-test-logs
+      with:
+        test-group: ${{ inputs.test-group }}
+
+    - name: Docker Compose Down
+      shell: bash
+      env:
+        COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+      run: docker compose down

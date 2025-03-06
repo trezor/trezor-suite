@@ -1,0 +1,25 @@
+name: "Build Suite Desktop electron app"
+description: "Builds the Trezor Suite Desktop electron app for e2e testing."
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+        cache: yarn
+
+    - name: Install dependencies, build libs
+      shell: bash
+      run: |
+        yarn install --immutable
+        yarn message-system-sign-config
+        yarn workspace @trezor/suite-data build:lib
+        yarn workspace @trezor/transport-bridge build:lib
+
+    - name: Build Electron app.js for tests
+      shell: bash
+      run: |
+        yarn workspace @trezor/suite-desktop build:app
+        yarn workspace @trezor/suite-desktop build:ui
