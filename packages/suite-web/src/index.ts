@@ -4,14 +4,13 @@
  * After the div is added, MutationObserver detects the change and adds React app to the DOM.
  */
 
+import { init } from './Main';
+
 const observer = new MutationObserver(() => {
     const appElement = document.getElementById('app');
     if (appElement) {
         observer.disconnect();
-
-        import(/* webpackChunkName: "app" */ './Main')
-            .then(comp => comp.init(appElement))
-            .catch(err => console.error(err)); // Fatal error
+        init(appElement);
     }
 });
 
