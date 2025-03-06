@@ -1,3 +1,8 @@
+# 1.1.1
+
+-   npm-prerelease: @trezor/crypto-utils 1.1.1-beta.1 (9c426b4ffa)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+
 # 1.1.0
 
 -   npm-prerelease: @trezor/crypto-utils 1.0.1-beta.1 (a23a8c565e)
