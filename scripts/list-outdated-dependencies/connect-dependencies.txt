@@ -94,3 +94,4 @@ scroll-into-view-if-needed
 @reown/walletkit
 @walletconnect/core
 @walletconnect/utils
+html-inline-script-webpack-plugin

@@ -1,3 +1,4 @@
+import HtmlInlineScriptPlugin from 'html-inline-script-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
@@ -62,10 +63,9 @@ const config: webpack.Configuration = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, '../src/ui/index.html'),
-            filename: 'index.html',
             inject: 'body',
-            publicPath: 'http://127.0.0.1:21325/ui',
         }),
+        new HtmlInlineScriptPlugin(),
     ],
 };
 
