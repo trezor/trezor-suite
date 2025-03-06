@@ -1,3 +1,8 @@
+# 1.3.1
+
+-   npm-prerelease: @trezor/protobuf 1.3.1-beta.1 (6256d4a813)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+
 # 1.3.0
 
 -   chore(protobuf): update protobuf (fb892d5db8)
