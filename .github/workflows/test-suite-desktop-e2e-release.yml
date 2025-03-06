@@ -1,22 +1,12 @@
-name: "[Test] PR Suite Desktop e2e tests"
-# Executed as part of PR checks
+name: "[Test] Release Suite Desktop e2e tests"
+# Triggered by push to release branch
 # Builds the desktop app
 # Runs full e2e test suite for Suite Desktop
 
 on:
-  pull_request:
+  push:
     branches:
-      - develop
-    paths-ignore:
-      - "suite-native/**"
-      - "packages/connect*/**"
-      - "packages/react-native-usb/**"
-      # ignore unrelated github workflows config files
-      - ".github/workflows/connect*"
-      - ".github/workflows/suite-native*"
-      - ".github/workflows/build-desktop*"
-      - ".github/workflows/release*"
-      - ".github/workflows/template*"
+      - release/2*
   workflow_dispatch:
 
 concurrency:
@@ -52,38 +42,22 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Check previous runs
-        id: check-previous-runs
-        if: github.event_name == 'pull_request' && github.run_attempt == 1
-        uses: "./.github/actions/check-previous-test-runs"
-        with:
-          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
-          pr_branch: ${{ github.head_ref }}
-          pr_created: ${{ github.event.pull_request.created_at }}
-          repo: ${{ github.repository }}
-          workflow_name: ${{ github.workflow }}
-          job_name: "${{ github.job }} (${{ join(matrix.*, ', ') }})"
-
       - name: Setup node
-        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Build desktop app
-        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: ./.github/actions/build-desktop
 
       - name: Pull Docker Images
-        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         shell: bash
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
         run: docker compose pull ${{ inputs.containers }}
 
       - name: Run Playwright E2E Tests
-        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: ./.github/actions/run-e2e-tests
         with:
           project: 'desktop'

@@ -1,7 +1,8 @@
-name: "[Test] PR Suite Web e2e tests"
-# Executed as part of PR checks
-# Builds/deploys the web app to dev.suite.sldev.cz/suite-web/<branch-name>/web 
-# Runs e2e test suite for Suite Web, limited to webOnly tests
+name: "[Test] Nightly Suite Web e2e tests"
+# Nightly scheduled check on develop branch
+# Builds/deploys the web app to dev.suite.sldev.cz/suite-web/develop/web 
+# Runs full e2e test suite for Suite Web
+# Runs database migration tests
 
 permissions:
   id-token: write # for fetching the OIDC token
@@ -9,31 +10,8 @@ permissions:
 
 # run only if there are changes in suite or related libs paths
 on:
-  pull_request:
-    branches:
-      - develop
-    paths-ignore:
-      - "suite-native/**"
-      - "packages/connect*/**"
-      # - "packages/suite-desktop*/**"
-      - "packages/react-native-usb/**"
-      # ignore unrelated github workflows config files
-      - ".github/workflows/connect-analytics"
-      - ".github/workflows/connect-common"
-      - ".github/workflows/connect-examples"
-      - ".github/workflows/connect-explorer"
-      - ".github/workflows/connect-iframe"
-      - ".github/workflows/connect-mobile"
-      - ".github/workflows/connect-plugin-*"
-      - ".github/workflows/connect-popup"
-      - ".github/workflows/connect-theme"
-      - ".github/workflows/connect-ui"
-      - ".github/workflows/connect-webextension"
-      - ".github/workflows/suite-native*"
-      - ".github/workflows/build-desktop*"
-      - ".github/workflows/release*"
-      - ".github/workflows/template*"
-      - ".github/actions/release*/**"
+  schedule:
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -81,6 +59,8 @@ jobs:
             CONTAINERS: "trezor-user-env-unix"
           - TEST_GROUP: "@group=wallet"
             CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
+          - TEST_GROUP: "@group=migrations"
+            CONTAINERS: "trezor-user-env-unix"
 
     steps:
       - name: Checkout
@@ -89,26 +69,12 @@ jobs:
           ref: ${{github.event.after}}
           fetch-depth: 2
 
-      - name: Check previous runs
-        id: check-previous-runs
-        if: github.event_name == 'pull_request' && github.run_attempt == 1
-        uses: "./.github/actions/check-previous-test-runs"
-        with:
-          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
-          pr_branch: ${{ github.head_ref }}
-          pr_created: ${{ github.event.pull_request.created_at }}
-          repo: ${{ github.repository }}
-          workflow_name: ${{ github.workflow }}
-          job_name: "${{ github.job }} (${{ join(matrix.*, ', ') }})"
-
       - name: Run Playwright E2E Tests
-        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: ./.github/actions/run-e2e-tests
         with:
           project: 'web'
           containers: ${{ matrix.CONTAINERS }}
           test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep: '(?=.*@webOnly)'
           currents-project-id: 'Og0NOQ'
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
