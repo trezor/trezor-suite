@@ -86,7 +86,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
     settings.iframeSrc = `${src}iframe.html`;
     settings.popupSrc = `${src}popup.html`;
     settings.webusbSrc = `${src}webusb.html`;
-    settings.deeplinkUrl = `${src}deeplink/${DEEPLINK_VERSION}/`;
 
     if (typeof input.transportReconnect === 'boolean') {
         settings.transportReconnect = input.transportReconnect;

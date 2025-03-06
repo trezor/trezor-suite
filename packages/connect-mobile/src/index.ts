@@ -1,7 +1,8 @@
 import EventEmitter from 'events';
 
 import * as ERRORS from '@trezor/connect/src/constants/errors';
-import { parseConnectSettings } from '@trezor/connect/src/data/connectSettings';
+import { corsValidator, parseConnectSettings } from '@trezor/connect/src/data/connectSettings';
+import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import type {
@@ -44,12 +45,22 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
         throw new Error('Unsupported right now');
     }
 
+    private validateConnectSrc(connectSrc?: string) {
+        if (connectSrc === 'trezorsuitelite://connect') return connectSrc;
+
+        return corsValidator(connectSrc);
+    }
+
     public init(settings: InitFullSettings<ConnectSettingsMobile>) {
         if (!settings.deeplinkOpen) {
             throw new Error('TrezorConnect native requires "deeplinkOpen" setting.');
         }
+        const connectSrc = this.validateConnectSrc(settings.connectSrc);
+
         this._settings = {
             ...parseConnectSettings({ ...this._settings, ...settings }),
+            connectSrc: this.validateConnectSrc(settings.connectSrc),
+            deeplinkUrl: `${connectSrc}deeplink/${DEEPLINK_VERSION}/`,
             deeplinkOpen: settings.deeplinkOpen,
             deeplinkCallbackUrl: settings.deeplinkCallbackUrl,
         };
