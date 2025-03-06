@@ -198,7 +198,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     messages: this.messages,
                     name,
                     data,
-                    encode: protocol.encode,
+                    protocol,
                 });
                 const chunks = createChunks(
                     bytes,
@@ -232,7 +232,13 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         );
     }
 
-    public send({ data, session, name, protocol, signal }: AbstractTransportMethodParams<'send'>) {
+    public send({
+        data,
+        session,
+        name,
+        protocol: customProtocol,
+        signal,
+    }: AbstractTransportMethodParams<'send'>) {
         return this.scheduleAction(
             async signal => {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
@@ -243,14 +249,18 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 }
                 const { path } = getPathBySessionResponse.payload;
 
-                const { encode, getChunkHeader } = protocol || v1Protocol;
+                const protocol = customProtocol || v1Protocol;
                 const bytes = buildMessage({
                     messages: this.messages,
                     name,
                     data,
-                    encode,
+                    protocol,
                 });
-                const chunks = createChunks(bytes, getChunkHeader(bytes), this.api.chunkSize);
+                const chunks = createChunks(
+                    bytes,
+                    protocol.getChunkHeader(bytes),
+                    this.api.chunkSize,
+                );
                 const apiWrite = (chunk: Buffer) => this.api.write(path, chunk, signal);
                 const sendResult = await sendChunks(chunks, apiWrite);
 

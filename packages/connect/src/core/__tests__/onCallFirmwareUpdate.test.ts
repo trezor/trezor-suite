@@ -121,7 +121,7 @@ const buildProtobufMessage = (messages: any, override: any = {}) => {
                   revision: LATEST_RELEASE.firmware_revision, // used in calculateFirmwareHashMock
                   ...override.data,
               },
-        encode: protocolV1.encode,
+        protocol: protocolV1,
     }).toString('hex');
 };
 

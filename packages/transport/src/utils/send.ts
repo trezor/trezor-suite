@@ -1,5 +1,5 @@
 import { encodeMessage } from '@trezor/protobuf';
-import { TransportProtocolEncode } from '@trezor/protocol';
+import { TransportProtocol } from '@trezor/protocol';
 
 import { AsyncResultWithTypedError } from '../types';
 
@@ -30,13 +30,13 @@ interface BuildMessageProps {
     messages: Parameters<typeof encodeMessage>[0];
     name: string;
     data: Record<string, unknown>;
-    encode: TransportProtocolEncode;
+    protocol: TransportProtocol;
 }
 
-export const buildMessage = ({ messages, name, data, encode }: BuildMessageProps) => {
+export const buildMessage = ({ messages, name, data, protocol }: BuildMessageProps) => {
     const { messageType, message } = encodeMessage(messages, name, data);
 
-    return encode(message, { messageType });
+    return protocol.encode(message, { messageType });
 };
 
 export const sendChunks = async <T, E>(

@@ -240,7 +240,7 @@ export class BridgeTransport extends AbstractTransport {
                     messages: this.messages,
                     name,
                     data,
-                    encode: protocol.encode,
+                    protocol,
                 });
                 const response = await this.post(`/call`, {
                     params: session,
@@ -275,7 +275,7 @@ export class BridgeTransport extends AbstractTransport {
                     messages: this.messages,
                     name,
                     data,
-                    encode: protocol.encode,
+                    protocol,
                 });
                 const response = await this.post('/post', {
                     params: session,

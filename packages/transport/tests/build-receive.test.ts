@@ -103,7 +103,7 @@ describe('encoding json -> protobuf -> json', () => {
                     messages: parsedMessages,
                     name: f.name,
                     data: f.in,
-                    encode: bridgeProtocol.encode,
+                    protocol: bridgeProtocol,
                 });
                 const { length } = Buffer.from(f.in.source_account);
                 // result length cannot be less than message header/constant (28) + variable source_account length
@@ -128,7 +128,7 @@ describe('encoding json -> protobuf -> json', () => {
                     messages: parsedMessages,
                     name: f.name,
                     data: f.in,
-                    encode: v1Protocol.encode,
+                    protocol: v1Protocol,
                 });
 
                 const chunks = createChunks(result, v1Protocol.getChunkHeader(result), 64);
