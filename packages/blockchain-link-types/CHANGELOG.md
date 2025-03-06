@@ -1,3 +1,10 @@
+# 1.3.1
+
+-   npm-prerelease: @trezor/blockchain-link-types 1.3.1-beta.1 (183dc685f7)
+-   feat(blockchain-link-type): change bigint to string in persist (3ecc87c3a5)
+-   feat(fee): logic for rent fee calculation (2650f6b510)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+
 # 1.3.0
 
 -   refactor(connect): separate bitcoin and misc fee levels (73ba107ee4)
