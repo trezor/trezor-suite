@@ -54,7 +54,7 @@ jobs:
       - name: Check previous runs
         id: check-previous-runs
         if: github.event_name == 'pull_request' && github.run_attempt == 1
-        uses: './.github/actions/check-previous-test-runs'
+        uses: "./.github/actions/check-previous-test-runs"
         with:
           github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
           pr_branch: ${{ github.head_ref }}
@@ -63,7 +63,7 @@ jobs:
           workflow_name: ${{ github.workflow }}
           job_name: "${{ github.job }} (${{ join(matrix.*, ', ') }})"
 
-      # Electron requires unprivileged user namespaces to function properly. 
+      # Electron requires unprivileged user namespaces to function properly.
       # Disabling this security rule allows Electron to create sandboxed processes
       # without requiring elevated privileges, which is essential for running the application.
       # This is workaround until electron builder solves this issue in future release.
@@ -139,4 +139,3 @@ jobs:
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-desktop-ci.yml
         run: docker compose down
-

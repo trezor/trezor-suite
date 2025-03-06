@@ -47,7 +47,7 @@ jobs:
         run: |
           # Cherry-pick the specified range of commits from the fetched develop branch
           git cherry-pick -x ${{ github.event.inputs.cherry_pick_commit_sha_from }}^..${{ github.event.inputs.cherry_pick_commit_sha_to }}
-      
+
       - name: Push intermediary branch
         env:
           BRANCH_NAME: "intermediary-release-branch-of-release/${{ steps.get-current-branch.outputs.branch_name }}"

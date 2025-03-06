@@ -29,7 +29,7 @@ on:
         type: "boolean"
         required: false
         default: false
-      # After migrating from testnet 3 to testnet 4 using `disable_cache_tx=true` should be required for tests where tx are used. 
+      # After migrating from testnet 3 to testnet 4 using `disable_cache_tx=true` should be required for tests where tx are used.
       disable_cache_tx:
         description: "Disable Cache transactions (when `true` tests don't use cache for transactions)"
         type: "string"

@@ -1,30 +1,30 @@
-name: 'Check Previous Runs'
-description: 'Check if a previous run of a job was successful to skip tests'
+name: "Check Previous Runs"
+description: "Check if a previous run of a job was successful to skip tests"
 inputs:
   github_token:
-    description: 'GitHub token for accessing the API'
+    description: "GitHub token for accessing the API"
     required: true
   pr_branch:
-    description: 'The branch of the pull request'
+    description: "The branch of the pull request"
     required: true
   pr_created:
-    description: 'The ISO 8601 timestamp when the PR was created'
+    description: "The ISO 8601 timestamp when the PR was created"
     required: true
   repo:
-    description: 'The repository name'
+    description: "The repository name"
     required: true
   workflow_name:
-    description: 'The workflow name to filter runs'
+    description: "The workflow name to filter runs"
     required: true
   job_name:
-    description: 'The name of the job to check success'
+    description: "The name of the job to check success"
     required: true
 outputs:
   skip_tests:
-    description: 'Indicates whether tests should be skipped'
+    description: "Indicates whether tests should be skipped"
     value: ${{ steps.check-previous-runs.outputs.skip_tests }}
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Check Previous Test Runs
       id: check-previous-runs
