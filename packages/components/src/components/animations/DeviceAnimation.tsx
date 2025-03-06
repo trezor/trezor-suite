@@ -3,8 +3,7 @@ import { CSSProperties, MouseEventHandler, forwardRef } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { getNarrowedDeviceModelInternal } from '@suite-common/suite-utils';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';

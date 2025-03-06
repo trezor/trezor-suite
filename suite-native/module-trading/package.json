@@ -16,6 +16,7 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "expo-linear-gradient": "^14.0.1",
         "react": "18.2.0",
         "react-native": "0.76.1",

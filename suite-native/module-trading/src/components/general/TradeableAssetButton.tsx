@@ -4,10 +4,10 @@ import { Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { useFormatters } from '@suite-common/formatters';
-import { hexToRgba } from '@suite-common/suite-utils';
 import { Text } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { hexToRgba } from '@trezor/utils';
 
 import { useTradeableAssetDominantColor } from '../../hooks/useTradeableAssetDominantColor';
 import { TradeableAsset } from '../../types';

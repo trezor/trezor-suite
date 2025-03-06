@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { hexToRgba } from '@suite-common/suite-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { hexToRgba } from '@trezor/utils';
 
 const screenFooterGradientStyle = prepareNativeStyle(utils => ({
     width: '100%',

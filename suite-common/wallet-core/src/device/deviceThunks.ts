@@ -7,7 +7,6 @@ import {
     getFirstDeviceInstance,
     getNewInstanceNumber,
     getSelectedDevice,
-    isChanged,
     isDeviceAcquired,
     sortByTimestamp,
 } from '@suite-common/suite-utils';
@@ -30,6 +29,7 @@ import TrezorConnect, {
     UI,
 } from '@trezor/connect';
 import { getEnvironment } from '@trezor/env-utils';
+import { isChanged } from '@trezor/utils';
 
 import { DEVICE_MODULE_PREFIX, DeviceConnectActionPayload, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';

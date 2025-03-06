@@ -1,6 +1,6 @@
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
 import { Device, KnownDevice, UnavailableCapability } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
 
 /**
@@ -250,16 +250,6 @@ export const getChangelogUrl = (device: TrezorDevice, revision?: string | null) 
 
     return `https://github.com/trezor/trezor-firmware/blob/${commit}/${folder}/${changelogFile}`;
 };
-
-/**
- * Returns DeviceModelInternal, but returns T3B1 if T2B1 is provided.
- * This is desirable because they both represent the same model (differing internally in the chip) and should behave the same in most situations,
- * so we don't need to provide separate assets, translations keys, URLs etc. for both.
- */
-export const getNarrowedDeviceModelInternal = <T extends DeviceModelInternal>(
-    model: T,
-): T extends DeviceModelInternal.T2B1 ? DeviceModelInternal.T3B1 : T =>
-    (model === DeviceModelInternal.T2B1 ? DeviceModelInternal.T3B1 : model) as any;
 
 export const getCheckBackupUrl = (device?: TrezorDevice) => {
     const deviceModelInternal = device?.features?.internal_model;

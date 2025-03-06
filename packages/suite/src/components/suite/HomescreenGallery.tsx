@@ -1,7 +1,11 @@
 import styled from 'styled-components';
 
-import { getNarrowedDeviceModelInternal, resolveStaticPath } from '@suite-common/suite-utils';
-import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { resolveStaticPath } from '@suite-common/suite-utils';
+import {
+    DeviceModelInternal,
+    getNarrowedDeviceModelInternal,
+    hasBitcoinOnlyFirmware,
+} from '@trezor/device-utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { getHomescreens } from 'src/constants/suite/homescreens';

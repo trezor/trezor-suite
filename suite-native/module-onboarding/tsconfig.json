@@ -8,6 +8,7 @@
         { "path": "../navigation" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/utils" }
     ]
 }

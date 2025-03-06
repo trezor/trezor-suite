@@ -9,7 +9,6 @@ import type {
 } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { isChanged } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingExchangeType,
@@ -28,6 +27,7 @@ import TrezorConnect, {
     EthereumSignTypedDataTypes,
 } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { isChanged } from '@trezor/utils';
 
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
 import { saveQuoteRequest, saveQuotes } from 'src/actions/wallet/tradingExchangeActions';

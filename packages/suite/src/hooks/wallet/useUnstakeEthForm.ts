@@ -3,7 +3,6 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { isChanged } from '@suite-common/suite-utils';
 import {
     UnstakeContextValues as UnstakeContextValuesBase,
     UnstakeFormState,
@@ -17,7 +16,7 @@ import {
     getStakingDataForNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isChanged } from '@trezor/utils';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';

@@ -1,4 +1,3 @@
-import * as comparisonUtils from '@suite-common/suite-utils';
 import { networks } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import {
@@ -10,6 +9,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import { isChanged } from '@trezor/utils';
 
 import { ROUTER } from 'src/actions/suite/constants';
 import * as metadataActions from 'src/actions/suite/metadataActions';
@@ -197,7 +197,7 @@ export const syncSelectedAccount = (action: Action) => (dispatch: Dispatch, getS
     if (!newState) return;
 
     // find differences
-    const stateChanged = comparisonUtils.isChanged(state.wallet.selectedAccount, newState, {
+    const stateChanged = isChanged(state.wallet.selectedAccount, newState, {
         account: [
             'descriptor',
             'availableBalance',

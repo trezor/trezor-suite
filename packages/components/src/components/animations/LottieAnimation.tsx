@@ -4,8 +4,7 @@ import Lottie, { LottieOptions } from 'lottie-react';
 import styled from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { getNarrowedDeviceModelInternal } from '@suite-common/suite-utils';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';

@@ -2,7 +2,6 @@ import { ImageBackground, StyleSheet } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { hexToRgba } from '@suite-common/suite-utils';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -15,6 +14,7 @@ import {
 import { getWindowHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { colorVariants } from '@trezor/theme';
+import { hexToRgba } from '@trezor/utils';
 
 import { E2ESkipOnboardingButton } from '../components/E2ESkipOnboardingButton';
 

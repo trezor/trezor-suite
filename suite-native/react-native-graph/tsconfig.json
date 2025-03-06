@@ -5,9 +5,7 @@
         "noUncheckedIndexedAccess": true
     },
     "references": [
-        {
-            "path": "../../suite-common/suite-utils"
-        },
+        { "path": "../../packages/utils" },
         { "path": "../../packages/eslint" }
     ]
 }

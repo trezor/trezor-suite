@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { isChanged } from '@suite-common/suite-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
@@ -18,6 +17,7 @@ import {
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
+import { isChanged } from '@trezor/utils';
 
 import { TranslationKey } from 'src/components/suite/Translation';
 import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';

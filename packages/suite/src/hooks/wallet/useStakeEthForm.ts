@@ -4,7 +4,6 @@ import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
 import { fromWei } from 'web3-utils';
 
-import { isChanged } from '@suite-common/suite-utils';
 import { StakeContextValues, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
 import {
@@ -14,6 +13,7 @@ import {
     getStakingLimitsByNetwork,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import { isChanged } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';

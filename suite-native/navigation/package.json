@@ -25,6 +25,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "expo-linear-gradient": "14.0.1",
         "expo-linking": "^7.0.5",
         "expo-navigation-bar": "^4.0.2",

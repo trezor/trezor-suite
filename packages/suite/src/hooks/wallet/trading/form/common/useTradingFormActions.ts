@@ -4,7 +4,6 @@ import { useDebounce } from 'react-use';
 
 import { FiatCurrencyCode } from 'invity-api';
 
-import { isChanged } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
@@ -13,7 +12,7 @@ import {
     fromFiatCurrency,
     isZero,
 } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isChanged } from '@trezor/utils';
 
 import {
     FORM_CRYPTO_TOKEN,

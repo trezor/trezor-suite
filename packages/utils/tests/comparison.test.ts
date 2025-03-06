@@ -1,4 +1,6 @@
-export const isChanged = [
+import * as comparisonUtils from '../src/comparison';
+
+const isChanged = [
     {
         testName: 'isChanged',
         prev: {
@@ -163,3 +165,11 @@ export const isChanged = [
         result: false,
     },
 ];
+
+describe('reducer utils', () => {
+    isChanged.forEach(f => {
+        it(`isChanged${f.testName}`, () => {
+            expect(comparisonUtils.isChanged(f.prev, f.current, f.filter)).toEqual(f.result);
+        });
+    });
+});

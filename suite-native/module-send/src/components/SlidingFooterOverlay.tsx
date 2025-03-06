@@ -3,9 +3,9 @@ import Animated, { SlideOutDown, useAnimatedStyle, withTiming } from 'react-nati
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { hexToRgba } from '@suite-common/suite-utils';
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { hexToRgba } from '@trezor/utils';
 
 type SlidingFooterOverlayProps = {
     currentStepIndex: number;

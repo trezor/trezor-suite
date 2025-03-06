@@ -3,13 +3,12 @@ import { useIntl } from 'react-intl';
 
 import {
     getCheckBackupUrl,
-    getNarrowedDeviceModelInternal,
     isDeviceAcquired,
     isDeviceWithButtons,
 } from '@suite-common/suite-utils';
 import { BulletList, Card, H2, H3, Image, NewModal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import {

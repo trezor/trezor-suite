@@ -13,6 +13,8 @@
         "@gorhom/bottom-sheet": "5.0.5",
         "@react-navigation/native": "6.1.18",
         "@reduxjs/toolkit": "1.9.5",
+        "@suite-common/formatters": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "@testing-library/react-native": "13.0.0",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",

@@ -2,8 +2,8 @@ import React, { forwardRef, memo, useCallback, useEffect, useMemo, useRef, useSt
 
 import styled from 'styled-components';
 
-import { isChanged } from '@suite-common/suite-utils';
 import { TimerId } from '@trezor/type-utils';
+import { isChanged } from '@trezor/utils';
 
 function debounce<T extends (...args: unknown[]) => void>(
     func: T,

@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { type DeviceModelInternal } from '@trezor/device-utils';
 import { RequiredKey } from '@trezor/type-utils';
 
 export type NetworkSymbol =
