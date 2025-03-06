@@ -34,6 +34,7 @@ export const NavigationItemBase = styled.div.attrs(() => ({
         background 0.15s;
     cursor: pointer;
     border: 1px solid transparent;
+    -webkit-app-region: no-drag;
     ${getFocusShadowStyle()}
 `;
 
