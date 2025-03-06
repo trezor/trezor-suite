@@ -1,7 +1,7 @@
 import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 
-import { TRADING_THUNK_COMMON_PREFIX, buyThunks } from '../';
-import { INVITY_API_RELOAD_DATA_AFTER_MS } from '../../constants';
+import { buyThunks } from '../';
+import { INVITY_API_RELOAD_DATA_AFTER_MS, TRADING_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
@@ -24,7 +24,7 @@ export const getAccountAccordingToSection = (state: TradingRootState, extra: Ext
 };
 
 export const loadInitialDataThunk = createThunk(
-    `${TRADING_THUNK_COMMON_PREFIX}/loadInitialData`,
+    `${TRADING_THUNK_PREFIX}/loadInitialData`,
     async ({ activeSection }: LoadInitialDataThunkProps, { dispatch, getState, extra }) => {
         const account = getAccountAccordingToSection(getState(), extra);
         const buyInfo = selectTradingBuyInfo(getState());

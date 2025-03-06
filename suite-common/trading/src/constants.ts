@@ -1,6 +1,9 @@
 export const TRADING_PREFIX = '@trading';
 export const TRADING_BUY_PREFIX = '@trading-buy';
 
+export const TRADING_THUNK_PREFIX = `${TRADING_PREFIX}/thunk`;
+export const TRADING_BUY_THUNK_PREFIX = `${TRADING_BUY_PREFIX}/thunk`;
+
 export const INVITY_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
 export const INVITY_API_RELOAD_QUOTES_AFTER_SECONDS = 30;
 

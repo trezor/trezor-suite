@@ -7,7 +7,7 @@ import { Network } from '@suite-common/wallet-config';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { Timer } from '@trezor/react-utils';
 
-import { BUY_THUNK_COMMON_PREFIX } from '../';
+import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
@@ -92,7 +92,7 @@ export type HandleRequestThunkProps = {
 };
 
 export const handleRequestThunk = createThunk(
-    `${BUY_THUNK_COMMON_PREFIX}/handleChange`,
+    `${TRADING_BUY_THUNK_PREFIX}/handleChange`,
     async (
         {
             formValues,

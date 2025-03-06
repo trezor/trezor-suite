@@ -4,7 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from '@suite-common/wallet-types';
 
-import { BUY_THUNK_COMMON_PREFIX } from './handleRequestThunk';
+import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
@@ -20,7 +20,7 @@ export type ConfirmTradeThunkProps = {
 };
 
 export const confirmTradeThunk = createThunk(
-    `${BUY_THUNK_COMMON_PREFIX}/confirmTrade`,
+    `${TRADING_BUY_THUNK_PREFIX}/confirmTrade`,
     async (
         {
             returnUrl,
