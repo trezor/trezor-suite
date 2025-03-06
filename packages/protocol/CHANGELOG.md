@@ -1,3 +1,8 @@
+# 1.2.3
+
+-   npm-prerelease: @trezor/protocol 1.2.3-beta.1 (71c1cd7ee3)
+-   fix(repo): fix generate package script (#17300) (a13f269b99)
+
 # 1.2.2
 
 -   npm-prerelease: @trezor/protocol 1.2.2-beta.1 (7bfeed7f69)
