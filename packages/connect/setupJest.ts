@@ -1,8 +1,9 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { AbstractApiTransport, UsbApi } from '@trezor/transport';
 
-import { DeviceModelInternal, type Features, type FirmwareRelease } from './src/types';
+import { type Features, type FirmwareRelease } from './src/types';
 
 class TestTransport extends AbstractApiTransport {
     name = 'TestTransport' as any;

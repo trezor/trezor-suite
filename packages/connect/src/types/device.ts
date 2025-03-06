@@ -155,8 +155,6 @@ export type UnreadableDevice = BaseDevice & {
 export type Device = KnownDevice | UnknownDevice | UnreadableDevice;
 export type Features = PROTO.Features;
 
-export { DeviceModelInternal } from '@trezor/protobuf';
-
 export type DisplayRotation = PROTO.DisplayRotation;
 
 export type StrictFeatures = Features & FeaturesNarrowing;
