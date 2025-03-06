@@ -274,8 +274,19 @@ export const getFirmwareStatus = (features: Features) => {
     return 'valid';
 };
 
-export const getRelease = (features: Features) =>
+export const getReleaseInfo = (features: Features) =>
     getInfo({
         features,
         releases: getReleases(features?.internal_model),
     });
+
+export const getRelease = (
+    internalModel: DeviceModelInternal,
+    firmwareVersion: VersionArray | undefined,
+): FirmwareRelease | undefined =>
+    getReleases(internalModel).find(
+        r =>
+            firmwareVersion &&
+            versionUtils.isVersionArray(firmwareVersion) &&
+            versionUtils.isEqual(r.version, firmwareVersion),
+    );

@@ -23,7 +23,7 @@ import { cancelPrompt } from './prompts';
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
 import { DataManager } from '../data/DataManager';
 import { getAllNetworks } from '../data/coinInfo';
-import { getFirmwareStatus, getRelease, getReleases } from '../data/firmwareInfo';
+import { getFirmwareStatus, getRelease, getReleaseInfo, getReleases } from '../data/firmwareInfo';
 import { getLanguage } from '../data/getLanguage';
 import { models } from '../data/models';
 import {
@@ -900,14 +900,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             return;
         }
 
-        const releases = getReleases(this.features.internal_model);
-
-        const release = releases.find(
-            r =>
-                firmwareVersion &&
-                versionUtils.isVersionArray(firmwareVersion) &&
-                versionUtils.isEqual(r.version, firmwareVersion),
-        );
+        const release = getRelease(this.features.internal_model, firmwareVersion);
 
         this.authenticityChecks.firmwareRevision = await checkFirmwareRevision({
             internalModel: this.features.internal_model,
@@ -1028,7 +1021,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             }
             this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
             this._firmwareStatus = getFirmwareStatus(feat);
-            this._firmwareRelease = getRelease(feat);
+            this._firmwareRelease = getReleaseInfo(feat);
 
             this.availableTranslations = this.firmwareRelease?.translations ?? [];
         }
