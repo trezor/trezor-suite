@@ -165,6 +165,13 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         );
     }
 
+    public releaseSync(session: Session) {
+        // Obviously not sync as was advertised. Also looks a bit weird but should be the same as before.
+        this.sessionsClient.releaseIntent({ session }).then(res => {
+            if (res.success) this.api.closeDevice(res.payload.path);
+        });
+    }
+
     public call({
         session,
         name,

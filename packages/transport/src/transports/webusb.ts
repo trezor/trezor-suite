@@ -21,5 +21,6 @@ export class WebUsbTransport extends AbstractTransport {
     release = empty;
     stop = empty;
     releaseDevice = empty;
+    releaseSync = emptySync;
     listen = emptySync;
 }

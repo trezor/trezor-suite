@@ -208,6 +208,14 @@ export class BridgeTransport extends AbstractTransport {
         );
     }
 
+    public releaseSync(session: Session) {
+        if (typeof navigator !== 'undefined' && 'sendBeacon' in navigator) {
+            navigator.sendBeacon(`${this.url}/release/${session}?beacon=1`);
+        } else {
+            this.post('/release', { params: session });
+        }
+    }
+
     public releaseDevice() {
         return Promise.resolve(this.success(undefined));
     }

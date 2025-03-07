@@ -238,6 +238,9 @@ export abstract class AbstractTransport extends TransportEmitter {
      */
     abstract releaseDevice(session: Session): AsyncResultWithTypedError<void, string>;
 
+    /** Synchronous variant of release; should be used when disposing */
+    abstract releaseSync(session: Session): void;
+
     /**
      * Encode data and write it to transport layer
      */

@@ -19,5 +19,6 @@ export class UdpTransport extends AbstractTransport {
     release = empty;
     stop = empty;
     releaseDevice = empty;
+    releaseSync = emptySync;
     listen = emptySync;
 }
