@@ -1,0 +1,30 @@
+{
+    "extends": "../../tsconfig.lib.json",
+    "compilerOptions": {
+        "outDir": "./lib"
+    },
+    "include": ["./src"],
+    "references": [
+        {
+            "path": "../components"
+        },
+        {
+            "path": "../eslint"
+        },
+        {
+            "path": "../node-utils"
+        },
+        {
+            "path": "../protocol"
+        },
+        {
+            "path": "../theme"
+        },
+        {
+            "path": "../transport"
+        },
+        {
+            "path": "../utils"
+        }
+    ]
+}
