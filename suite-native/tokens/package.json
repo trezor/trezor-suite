@@ -18,6 +18,6 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "18.2.0"
+        "react": "^19.0.0"
     }
 }

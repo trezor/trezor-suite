@@ -21,7 +21,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/react-native-usb": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "react": "18.2.0",
+        "react": "^19.0.0",
         "react-native": "0.76.1",
         "react-native-reanimated": "^3.16.7",
         "react-native-safe-area-context": "4.14.0",

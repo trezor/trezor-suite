@@ -17,6 +17,6 @@
         "@suite-native/icons": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "react": "18.2.0"
+        "react": "^19.0.0"
     }
 }

@@ -12,6 +12,6 @@
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/redux-utils": "workspace:*",
-        "react": "18.2.0"
+        "react": "^19.0.0"
     }
 }

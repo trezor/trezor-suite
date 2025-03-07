@@ -21,7 +21,7 @@
         "expo-secure-store": "^14.0.0",
         "expo-splash-screen": "0.29.16",
         "jotai": "1.9.1",
-        "react": "18.2.0",
+        "react": "^19.0.0",
         "react-native": "0.76.1",
         "react-native-mmkv": "2.12.2",
         "react-native-restart": "0.0.27",

@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@trezor/type-utils": "workspace:*",
-        "react": "18.2.0",
+        "react": "^19.0.0",
         "react-intl": "^6.6.8"
     }
 }

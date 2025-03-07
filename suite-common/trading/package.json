@@ -21,7 +21,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "18.2.0",
+        "react": "^19.0.0",
         "react-redux": "8.0.7",
         "uuid": "^11.0.5"
     },

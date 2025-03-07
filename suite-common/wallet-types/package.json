@@ -19,6 +19,6 @@
         "@trezor/connect": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "18.2.0"
+        "react": "^19.0.0"
     }
 }

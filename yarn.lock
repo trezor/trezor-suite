@@ -9387,7 +9387,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/redux-utils": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
   languageName: unknown
   linkType: soft
 
@@ -9463,7 +9463,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -9482,7 +9482,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-intl: "npm:^6.6.8"
   languageName: unknown
   linkType: soft
@@ -9503,7 +9503,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -9534,7 +9534,7 @@ __metadata:
   resolution: "@suite-common/intl-types@workspace:suite-common/intl-types"
   dependencies:
     "@trezor/type-utils": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-intl: "npm:^6.6.8"
   languageName: unknown
   linkType: soft
@@ -9568,7 +9568,7 @@ __metadata:
     fs-extra: "npm:^11.2.0"
     json-schema-to-typescript: "npm:^15.0.4"
     jws: "npm:^4.0.0"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-redux: "npm:8.0.7"
     semver: "npm:^7.6.3"
     tsx: "npm:^4.19.3"
@@ -9593,7 +9593,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     lodash: "npm:^4.17.21"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-redux: "npm:8.0.7"
     redux: "npm:^4.2.1"
     reselect: "npm:5.1.1"
@@ -9728,7 +9728,7 @@ __metadata:
     "@trezor/react-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.5"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-redux: "npm:8.0.7"
     uuid: "npm:^11.0.5"
   languageName: unknown
@@ -9808,7 +9808,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
   languageName: unknown
   linkType: soft
 
@@ -9834,7 +9834,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-hook-form: "npm:^7.54.2"
     web3-utils: "npm:^4.3.1"
   languageName: unknown
@@ -9887,7 +9887,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-hook-form: "npm:^7.54.2"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
@@ -9904,7 +9904,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
   languageName: unknown
@@ -10037,7 +10037,7 @@ __metadata:
     lottie-react-native: "npm:^7.1.0"
     metro: "npm:0.81.0"
     node-libs-browser: "npm:^2.2.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-intl: "npm:^6.6.8"
     react-native: "npm:0.76.1"
     react-native-edge-to-edge: "npm:^1.3.1"
@@ -10079,7 +10079,7 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@suite-native/staking": "workspace:*"
     "@suite-native/tokens": "workspace:*"
-    react: "npm:^18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
     react-redux: "npm:8.0.7"
@@ -10108,7 +10108,7 @@ __metadata:
     expo-image: "npm:^2.0.0"
     jotai: "npm:1.9.1"
     lottie-react-native: "npm:^7.1.0"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-gesture-handler: "npm:^2.21.0"
     react-native-keyboard-controller: "npm:1.16.5"
@@ -10131,7 +10131,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     expo-local-authentication: "npm:14.0.1"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-svg: "npm:15.9.0"
   languageName: unknown
@@ -10169,7 +10169,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/styles": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
     react-native-svg: "npm:^15.9.0"
@@ -10198,7 +10198,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@trezor/styles": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10218,7 +10218,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/connect": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -10245,7 +10245,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:1.9.1"
-    react: "npm:^18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
     react-native-safe-area-context: "npm:^4.14.0"
@@ -10290,7 +10290,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
     lottie-react-native: "npm:^7.1.0"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
     react-redux: "npm:8.0.7"
@@ -10320,7 +10320,7 @@ __metadata:
     "@suite-native/tokens": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -10351,7 +10351,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/react-native-usb": "workspace:*"
     "@trezor/styles": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
     react-native-safe-area-context: "npm:4.14.0"
@@ -10375,7 +10375,7 @@ __metadata:
     "@suite-native/tokens": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
     web3-utils: "npm:^4.3.1"
@@ -10390,7 +10390,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-hook-form: "npm:^7.54.2"
     react-native: "npm:0.76.1"
     yup: "npm:^1.4.0"
@@ -10428,7 +10428,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     expo-haptics: "npm:^14.0.0"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
     react-redux: "npm:8.0.7"
@@ -10443,7 +10443,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/toasts": "workspace:*"
     expo-clipboard: "npm:^7.0.0"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
   languageName: unknown
   linkType: soft
 
@@ -10461,7 +10461,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     expo-image: "npm:^2.0.0"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
   languageName: unknown
@@ -10472,7 +10472,7 @@ __metadata:
   resolution: "@suite-native/intl@workspace:suite-native/intl"
   dependencies:
     intl-pluralrules: "npm:^2.0.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-intl: "npm:^6.6.8"
   languageName: unknown
   linkType: soft
@@ -10484,7 +10484,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
   peerDependencies:
     react-native: "*"
     react-native-reanimated: "*"
@@ -10508,7 +10508,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
     react-redux: "npm:8.0.7"
@@ -10553,7 +10553,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-hook-form: "npm:^7.54.2"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
@@ -10595,7 +10595,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10621,7 +10621,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@trezor/styles": "workspace:*"
     expo-linear-gradient: "npm:^14.0.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-safe-area-context: "npm:^4.14.0"
     react-redux: "npm:8.0.7"
@@ -10643,7 +10643,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/urls": "workspace:*"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10675,7 +10675,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
     react-native-svg: "npm:^15.9.0"
@@ -10700,7 +10700,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-mobile": "workspace:*"
     expo-linking: "npm:^7.0.5"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10731,7 +10731,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10763,7 +10763,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10795,7 +10795,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@trezor/styles": "workspace:*"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:3.16.7"
     react-native-svg: "npm:15.9.0"
@@ -10820,7 +10820,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-linear-gradient: "npm:^14.0.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
     react-native-svg: "npm:^15.9.0"
@@ -10869,7 +10869,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     expo-linear-gradient: "npm:^14.0.1"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-hook-form: "npm:^7.54.2"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
@@ -10917,7 +10917,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
     react-redux: "npm:8.0.7"
@@ -10939,7 +10939,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/staking": "workspace:*"
     "@trezor/styles": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -10956,7 +10956,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/utils": "workspace:*"
     expo-linear-gradient: "npm:^14.0.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
     react-redux: "npm:8.0.7"
@@ -10986,7 +10986,7 @@ __metadata:
     expo-linking: "npm:^7.0.5"
     expo-navigation-bar: "npm:^4.0.2"
     expo-system-ui: "npm:^4.0.2"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-edge-to-edge: "npm:^1.3.1"
     react-native-keyboard-controller: "npm:1.16.5"
@@ -11012,7 +11012,7 @@ __metadata:
     "@suite-native/theme": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/styles": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-gesture-handler: "npm:^2.21.0"
     react-native-reanimated: "npm:^3.16.7"
@@ -11035,7 +11035,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     expo-camera: "npm:^16.0.4"
     expo-image-picker: "npm:^16.0.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-qr-code: "npm:2.0.12"
   languageName: unknown
@@ -11049,7 +11049,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.79"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-gesture-handler: "npm:^2.21.0"
     react-native-reanimated: "npm:^3.16.7"
@@ -11086,7 +11086,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-gesture-handler: "npm:^2.21.0"
     react-native-reanimated: "npm:^3.16.7"
@@ -11105,7 +11105,7 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
   languageName: unknown
   linkType: soft
 
@@ -11153,7 +11153,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/redux-logger": "npm:^3.0.11"
     expo-device: "npm:6.0.2"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-redux: "npm:8.0.7"
     redux-devtools-expo-dev-plugin: "npm:1.0.0"
@@ -11176,7 +11176,7 @@ __metadata:
     expo-secure-store: "npm:^14.0.0"
     expo-splash-screen: "npm:0.29.16"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-mmkv: "npm:2.12.2"
     react-native-restart: "npm:0.0.27"
@@ -11196,7 +11196,7 @@ __metadata:
     "@testing-library/react-native": "npm:13.0.0"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native-keyboard-controller: "npm:1.16.5"
     react-native-safe-area-context: "npm:^4.14.0"
     react-redux: "npm:8.0.7"
@@ -11211,7 +11211,7 @@ __metadata:
     "@suite-native/storage": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-fela: "npm:^12.2.1"
     react-native: "npm:0.76.1"
   languageName: unknown
@@ -11227,7 +11227,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:1.9.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native-reanimated: "npm:^3.16.7"
     react-native-safe-area-context: "npm:4.14.0"
   languageName: unknown
@@ -11245,7 +11245,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/utils": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
   languageName: unknown
   linkType: soft
 
@@ -11281,7 +11281,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-gesture-handler: "npm:^2.21.0"
     react-native-reanimated: "npm:^3.16.7"
@@ -11298,7 +11298,7 @@ __metadata:
     expo: "npm:52.0.11"
     expo-video: "npm:^2.0.1"
     prettier: "npm:^3.3.2"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
   languageName: unknown
@@ -11695,9 +11695,9 @@ __metadata:
     lottie-react: "npm:^2.4.0"
     polished: "npm:^4.3.1"
     postcss-styled-syntax: "npm:^0.6.4"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-date-range: "npm:^1.4.0"
-    react-dom: "npm:18.2.0"
+    react-dom: "npm:^19.0.0"
     react-focus-lock: "npm:^2.9.7"
     react-intl: "npm:^6.6.8"
     react-markdown: "npm:^9.0.3"
@@ -11747,7 +11747,7 @@ __metadata:
     "@types/flexsearch": "npm:^0.7.3"
     "@types/git-url-parse": "npm:^9.0.3"
     "@types/react": "npm:^18.2.79"
-    "@types/react-dom": "npm:^18.2.7"
+    "@types/react-dom": "npm:^19.0.4"
     clsx: "npm:^2.1.1"
     concurrently: "npm:^8.0.0"
     escape-string-regexp: "npm:^5.0.0"
@@ -11765,8 +11765,8 @@ __metadata:
     postcss-cli: "npm:^10.1.0"
     postcss-import: "npm:^15.1.0"
     postcss-lightningcss: "npm:^1.0.1"
-    react: "npm:^18.2.0"
-    react-dom: "npm:^18.2.0"
+    react: "npm:^19.0.0"
+    react-dom: "npm:^19.0.0"
     scroll-into-view-if-needed: "npm:^3.1.0"
     styled-components: "npm:^6.1.8"
     tailwindcss: "npm:^3.4.10"
@@ -11811,8 +11811,8 @@ __metadata:
     next-themes: "npm:^0.3.0"
     nextra: "npm:^2.13.4"
     nextra-theme-docs: "npm:^2.13.4"
-    react: "npm:^18.2.0"
-    react-dom: "npm:^18.2.0"
+    react: "npm:^19.0.0"
+    react-dom: "npm:^19.0.0"
     react-inspector: "npm:^6.0.2"
     react-markdown: "npm:^9.0.3"
     react-medium-image-zoom: "npm:^5.2.4"
@@ -11922,7 +11922,7 @@ __metadata:
     copy-webpack-plugin: "npm:^12.0.2"
     eth-phishing-detect: "npm:^1.2.0"
     html-webpack-plugin: "npm:^5.6.0"
-    react-dom: "npm:18.2.0"
+    react-dom: "npm:^19.0.0"
     rimraf: "npm:^6.0.1"
     terser-webpack-plugin: "npm:^5.3.11"
     webpack: "npm:^5.97.1"
@@ -12199,7 +12199,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.79"
     framer-motion: "npm:^11.0.3"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-hook-form: "npm:^7.54.2"
     react-intl: "npm:^6.6.8"
     react-svg: "npm:^16.1.33"
@@ -12252,7 +12252,7 @@ __metadata:
   dependencies:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
   languageName: unknown
   linkType: soft
 
@@ -12322,7 +12322,7 @@ __metadata:
     fela-plugin-unit: "npm:^12.2.1"
     fela-sort-media-query-mobile-first: "npm:^12.2.1"
     polished: "npm:^4.3.1"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-fela: "npm:^12.2.1"
     react-native: "npm:0.76.1"
   languageName: unknown
@@ -12505,9 +12505,9 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.79"
-    "@types/react-dom": "npm:18.2.19"
-    react: "npm:18.2.0"
-    react-dom: "npm:18.2.0"
+    "@types/react-dom": "npm:^19.0.4"
+    react: "npm:^19.0.0"
+    react-dom: "npm:^19.0.0"
     react-helmet-async: "npm:^2.0.5"
     react-redux: "npm:8.0.7"
     react-router-dom: "npm:^5.2.0"
@@ -12571,12 +12571,12 @@ __metadata:
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.79"
-    "@types/react-dom": "npm:18.2.19"
+    "@types/react-dom": "npm:^19.0.4"
     "@types/react-router": "npm:^5.1.20"
     "@types/react-router-dom": "npm:^5.1.7"
     "@vitejs/plugin-react": "npm:^4.2.1"
-    react: "npm:18.2.0"
-    react-dom: "npm:18.2.0"
+    react: "npm:^19.0.0"
+    react-dom: "npm:^19.0.0"
     react-helmet-async: "npm:^2.0.5"
     react-redux: "npm:8.0.7"
     react-router: "npm:^5.2.0"
@@ -12676,7 +12676,7 @@ __metadata:
     "@types/pdfmake": "npm:^0.2.9"
     "@types/qrcode.react": "npm:^1.0.5"
     "@types/react": "npm:18.2.79"
-    "@types/react-dom": "npm:18.2.19"
+    "@types/react-dom": "npm:^19.0.4"
     "@types/react-qr-reader": "npm:^2.1.7"
     "@types/react-test-renderer": "npm:^18.0.7"
     "@types/react-window": "npm:^1.8.8"
@@ -12700,8 +12700,8 @@ __metadata:
     pdfmake: "npm:^0.2.9"
     polished: "npm:^4.3.1"
     qrcode.react: "npm:^3.1.0"
-    react: "npm:18.2.0"
-    react-dom: "npm:18.2.0"
+    react: "npm:^19.0.0"
+    react-dom: "npm:^19.0.0"
     react-focus-lock: "npm:^2.9.7"
     react-helmet-async: "npm:^2.0.5"
     react-hook-form: "npm:^7.54.2"
@@ -12758,8 +12758,8 @@ __metadata:
     html-webpack-plugin: "npm:^5.6.0"
     json-stable-stringify: "npm:^1.2.1"
     pkg: "npm:^5.8.1"
-    react: "npm:18.2.0"
-    react-dom: "npm:18.2.0"
+    react: "npm:^19.0.0"
+    react-dom: "npm:^19.0.0"
     react-intl: "npm:^6.6.8"
     styled-components: "npm:^6.1.8"
     usb: "npm:^2.14.0"
@@ -13978,7 +13978,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prop-types@npm:*, @types/prop-types@npm:^15.7.11":
+"@types/prop-types@npm:^15.7.11":
   version: 15.7.11
   resolution: "@types/prop-types@npm:15.7.11"
   checksum: 10/7519ff11d06fbf6b275029fe03fff9ec377b4cb6e864cac34d87d7146c7f5a7560fd164bdc1d2dbe00b60c43713631251af1fd3d34d46c69cd354602bc0c7c54
@@ -14018,21 +14018,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.19":
-  version: 18.2.19
-  resolution: "@types/react-dom@npm:18.2.19"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 10/98eb760ce78f1016d97c70f605f0b1a53873a548d3c2192b40c897f694fd9c8bb12baeada16581a9c7b26f5022c1d2613547be98284d8f1b82d1611b1e3e7df0
-  languageName: node
-  linkType: hard
-
-"@types/react-dom@npm:^18.0.0, @types/react-dom@npm:^18.2.7":
+"@types/react-dom@npm:^18.0.0":
   version: 18.2.21
   resolution: "@types/react-dom@npm:18.2.21"
   dependencies:
     "@types/react": "npm:*"
   checksum: 10/5c714bc69c3cf979dbf3fb8c66fc42b5b740af54d98c1037c593ac9ad54e5107cfc39fcba8c550f8df924670f55b411898d53c6166a2b15b4ed44a248a358590
+  languageName: node
+  linkType: hard
+
+"@types/react-dom@npm:^19.0.4":
+  version: 19.0.4
+  resolution: "@types/react-dom@npm:19.0.4"
+  peerDependencies:
+    "@types/react": ^19.0.0
+  checksum: 10/f15d470242f0b7cca57dd7e991a2852525ac93b2cb92f7e6c104d7bd6a978c3b1d0ba9b8698f23bc19c16b5cd98a6d160007be52c61196952f57cf019f204254
   languageName: node
   linkType: hard
 
@@ -14093,14 +14093,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.2.55":
-  version: 18.2.55
-  resolution: "@types/react@npm:18.2.55"
+"@types/react@npm:19.0.10":
+  version: 19.0.10
+  resolution: "@types/react@npm:19.0.10"
   dependencies:
-    "@types/prop-types": "npm:*"
-    "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 10/bf8fe19e73575489e63c0726355f164157cd69e75f2a862436ad2c0586e732cb953a7255a6bc73145e8f9506ee7a723f9a569ca9a39c53984e5b12b84e1c718a
+  checksum: 10/10b592d212ebe4b4e0bd42a95c58af3d8dfcb8b3fa4b412d686c2ff8810d5dd3e3a30ebedb31d7b738e33a39c43503e24fe4e6ca8a21d842870043793f4eda98
   languageName: node
   linkType: hard
 
@@ -14142,13 +14140,6 @@ __metadata:
   version: 0.12.2
   resolution: "@types/retry@npm:0.12.2"
   checksum: 10/e5675035717b39ce4f42f339657cae9637cf0c0051cf54314a6a2c44d38d91f6544be9ddc0280587789b6afd056be5d99dbe3e9f4df68c286c36321579b1bf4a
-  languageName: node
-  linkType: hard
-
-"@types/scheduler@npm:*":
-  version: 0.16.2
-  resolution: "@types/scheduler@npm:0.16.2"
-  checksum: 10/b6b4dcfeae6deba2e06a70941860fb1435730576d3689225a421280b7742318d1548b3d22c1f66ab68e414f346a9542f29240bc955b6332c5b11e561077583bc
   languageName: node
   linkType: hard
 
@@ -18784,7 +18775,7 @@ __metadata:
     expo: "npm:52.0.11"
     expo-linking: "npm:^7.0.5"
     expo-status-bar: "npm:^2.0.0"
-    react: "npm:18.2.0"
+    react: "npm:^19.0.0"
     react-native: "npm:0.76.1"
     typescript: "npm:^5.3.3"
   languageName: unknown
@@ -36054,15 +36045,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:18.2.0, react-dom@npm:^18.2.0":
-  version: 18.2.0
-  resolution: "react-dom@npm:18.2.0"
+"react-dom@npm:^19.0.0":
+  version: 19.0.0
+  resolution: "react-dom@npm:19.0.0"
   dependencies:
-    loose-envify: "npm:^1.1.0"
-    scheduler: "npm:^0.23.0"
+    scheduler: "npm:^0.25.0"
   peerDependencies:
-    react: ^18.2.0
-  checksum: 10/ca5e7762ec8c17a472a3605b6f111895c9f87ac7d43a610ab7024f68cd833d08eda0625ce02ec7178cc1f3c957cf0b9273cdc17aa2cd02da87544331c43b1d21
+    react: ^19.0.0
+  checksum: 10/aa64a2f1991042f516260e8b0eca0ae777b6c8f1aa2b5ae096e80bbb6ac9b005aef2bca697969841d34f7e1819556263476bdfea36c35092e8d9aefde3de2d9a
   languageName: node
   linkType: hard
 
@@ -36734,12 +36724,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:18.2.0":
-  version: 18.2.0
-  resolution: "react@npm:18.2.0"
-  dependencies:
-    loose-envify: "npm:^1.1.0"
-  checksum: 10/b9214a9bd79e99d08de55f8bef2b7fc8c39630be97c4e29d7be173d14a9a10670b5325e94485f74cd8bff4966ef3c78ee53c79a7b0b9b70cba20aa8973acc694
+"react@npm:19.0.0":
+  version: 19.0.0
+  resolution: "react@npm:19.0.0"
+  checksum: 10/2490969c503f644703c88990d20e4011fa6119ddeca451e9de48f6d7ab058d670d2852a5fcd3aa3cd90a923ab2815d532637bd4a814add402ae5c0d4f129ee71
   languageName: node
   linkType: hard
 
@@ -38187,12 +38175,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:^0.23.0, scheduler@npm:^0.23.2":
+"scheduler@npm:^0.23.2":
   version: 0.23.2
   resolution: "scheduler@npm:0.23.2"
   dependencies:
     loose-envify: "npm:^1.1.0"
   checksum: 10/e8d68b89d18d5b028223edf090092846868a765a591944760942b77ea1f69b17235f7e956696efbb62c8130ab90af7e0949bfb8eba7896335507317236966bc9
+  languageName: node
+  linkType: hard
+
+"scheduler@npm:^0.25.0":
+  version: 0.25.0
+  resolution: "scheduler@npm:0.25.0"
+  checksum: 10/e661e38503ab29a153429a99203fefa764f28b35c079719eb5efdd2c1c1086522f6653d8ffce388209682c23891a6d1d32fa6badf53c35fb5b9cd0c55ace42de
   languageName: node
   linkType: hard
 

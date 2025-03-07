@@ -32,7 +32,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "react": "18.2.0",
+        "react": "^19.0.0",
         "react-native": "0.76.1",
         "react-native-reanimated": "^3.16.7",
         "react-native-svg": "^15.9.0",
