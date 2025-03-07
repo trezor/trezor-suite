@@ -200,6 +200,7 @@ export default defineConfig({
                             fileName: false,
                         },
                     ],
+                    ['babel-plugin-react-compiler', { target: '18' }],
                 ],
             },
         }),

@@ -120,6 +120,8 @@ const config: webpack.Configuration = {
                                     preprocess: true,
                                 },
                             ],
+                            ['babel-plugin-react-compiler', { target: '18' }],
+
                             ...(isDev ? ['react-refresh/babel'] : []),
                         ],
                     },

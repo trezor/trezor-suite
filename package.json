@@ -147,5 +147,8 @@
             "built": true
         }
     },
-    "packageManager": "yarn@4.5.3"
+    "packageManager": "yarn@4.5.3",
+    "dependencies": {
+        "react-compiler-runtime": "^19.0.0-beta-e993439-20250328"
+    }
 }

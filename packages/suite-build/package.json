@@ -28,6 +28,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/suite": "workspace:*",
         "babel-loader": "^10.0.0",
+        "babel-plugin-react-compiler": "0.0.0-experimental-e993439-20250403",
         "babel-plugin-styled-components": "^2.1.4",
         "copy-webpack-plugin": "^12.0.2",
         "crypto-browserify": "3.12.0",
