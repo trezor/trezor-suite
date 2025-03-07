@@ -2,16 +2,27 @@ import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as walletConnectActions from '@suite-common/walletconnect';
-import { SUITE_BRIDGE_DEEPLINK, SUITE_WALLETCONNECT_DEEPLINK } from '@trezor/urls';
+import {
+    SUITE_ANCHOR_DEEPLINK_PREFIX,
+    SUITE_BRIDGE_DEEPLINK,
+    SUITE_WALLETCONNECT_DEEPLINK,
+} from '@trezor/urls';
+import { isArrayMember } from '@trezor/utils';
 
 import * as routerActions from 'src/actions/suite/routerActions';
+import { goto } from 'src/actions/suite/routerActions';
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import type { Dispatch, GetState } from 'src/types/suite';
+import { Dispatch, GetState } from 'src/types/suite';
 import { parseUri } from 'src/utils/suite/parseUri';
 import { CoinProtocolInfo, getProtocolInfo } from 'src/utils/suite/protocol';
 
 import { PROTOCOL } from './constants';
+import {
+    AnchorSettingSection,
+    SettingsAnchor,
+    mapAnchorToRoute,
+} from '../../constants/suite/anchors';
 
 export type ProtocolAction =
     | {
@@ -61,6 +72,15 @@ export const handleProtocolRequest = (uri: string) => (dispatch: Dispatch, getSt
         const wcUri = parsedUri?.searchParams?.get('uri');
         if (wcUri) {
             dispatch(walletConnectActions.walletConnectPairThunk({ uri: wcUri }));
+        }
+    } else if (uri?.startsWith(SUITE_ANCHOR_DEEPLINK_PREFIX)) {
+        const anchor = uri.replace(SUITE_ANCHOR_DEEPLINK_PREFIX, '');
+
+        if (isArrayMember(anchor, Object.values(SettingsAnchor))) {
+            const [domain] = anchor.split('/');
+
+            const targetRoute = mapAnchorToRoute[domain.replace(/^@/, '') as AnchorSettingSection];
+            dispatch(goto(targetRoute, { anchor }));
         }
     }
 };

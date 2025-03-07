@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 
 import { SectionItem } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { SettingsAnchorValue } from 'src/constants/suite/anchors';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 
 interface SettingsSectionItemProps {
-    anchorId: SettingsAnchor;
+    anchorId: SettingsAnchorValue;
     children: ReactNode;
 }
 
