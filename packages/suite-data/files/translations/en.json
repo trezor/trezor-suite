@@ -1517,6 +1517,7 @@
   "TR_SELECTED": "{amount} selected",
   "TR_SELECT_COIN_FOR_SETTINGS": "Select active coin to change settings",
   "TR_SELECT_DEVICE": "Select device",
+  "TR_SELECT_DEVICE_SHORT": "Select",
   "TR_SELECT_NAME_OR_ADDRESS": "Search by name, symbol, network, or contract address",
   "TR_SELECT_NUMBER_OF_WORDS": "Select the number of words in your wallet backup",
   "TR_SELECT_PASSPHRASE_SOURCE": "Select where to enter passphrase on {deviceLabel}",

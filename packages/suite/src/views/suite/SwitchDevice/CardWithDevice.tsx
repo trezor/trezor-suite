@@ -66,6 +66,8 @@ export const CardWithDevice = ({
     const isUnknown = device.type !== 'acquired';
     const { elevation } = useElevation();
 
+    const deviceResolveIssueCTAMessage = deviceUtils.getDeviceResolveStatusCTAMessage(deviceStatus);
+    const deviceStatusBannerVariant = deviceUtils.getDeviceStatusWarningVariant(deviceStatus);
     const deviceStatusMessage = deviceUtils.getDeviceNeedsAttentionMessage(deviceStatus);
     const isLocked = useDevice().isLocked(true);
     const dispatch = useDispatch();
@@ -99,14 +101,14 @@ export const CardWithDevice = ({
 
                 {needsAttention && (
                     <Banner
-                        variant="warning"
+                        variant={deviceStatusBannerVariant}
                         rightContent={
                             <Banner.Button
                                 onClick={onSolveIssueClick}
                                 data-testid="@switch-device/solve-issue-button"
                                 isDisabled={isLocked}
                             >
-                                <Translation id="TR_SOLVE_ISSUE" />
+                                <Translation id={deviceResolveIssueCTAMessage} />
                             </Banner.Button>
                         }
                     >

@@ -1516,6 +1516,7 @@
   "TR_SELECTED": "Vybrána částka {amount}",
   "TR_SELECT_COIN_FOR_SETTINGS": "Vyberte aktivní kryptoměnu, jejíž nastavení chcete změnit",
   "TR_SELECT_DEVICE": "Vyberte zařízení",
+  "TR_SELECT_DEVICE_SHORT": "Vybrat",
   "TR_SELECT_NAME_OR_ADDRESS": "Zkuste hledat podle názvu, symbolu, sítě nebo adresy kontraktu",
   "TR_SELECT_NUMBER_OF_WORDS": "Vyberte počet slov v záloze peněženky",
   "TR_SELECT_PASSPHRASE_SOURCE": "Vyberte, kam chcete zadat passphrase na zařízení {deviceLabel}.",

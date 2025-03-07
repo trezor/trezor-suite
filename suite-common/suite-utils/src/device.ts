@@ -88,11 +88,35 @@ export const deviceNeedsAttention = (deviceStatus: ReturnType<typeof getStatus>)
     }
 };
 
+export const getDeviceStatusWarningVariant = (
+    deviceStatus: ReturnType<typeof getStatus>,
+): 'warning' | 'info' => {
+    switch (deviceStatus) {
+        case 'bootloader':
+            return 'info';
+        default:
+            return 'warning';
+    }
+};
+
+export const getDeviceResolveStatusCTAMessage = (deviceStatus: ReturnType<typeof getStatus>) => {
+    switch (deviceStatus) {
+        case 'bootloader':
+            return 'TR_SELECT_DEVICE_SHORT';
+        default:
+            return 'TR_SOLVE_ISSUE';
+    }
+};
+
 export const getDeviceNeedsAttentionMessage = (deviceStatus: ReturnType<typeof getStatus>) => {
+    // bootloader:  bootloader
+    // wiped: initialize
+    // without FW: bootloader
+
     switch (deviceStatus) {
         // case 'firmware-recommended':
         case 'bootloader':
-            return 'TR_NEEDS_ATTENTION_BOOTLOADER';
+            return 'TR_NEEDS_ATTENTION_NEW_DEVICE';
         case 'initialize':
             return 'TR_NEEDS_ATTENTION_INITIALIZE';
         case 'seedless':
