@@ -52,10 +52,11 @@ runs:
       shell: bash
       run: |
         echo "::group::Install PW Dependencies"
+        echo "Silently installing Playwright dependencies"
         echo -e "\nenableScripts: false" >> .yarnrc.yml
         echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-        yarn workspaces focus @trezor/suite-desktop-core
-        npx playwright install --with-deps
+        yarn workspaces focus @trezor/suite-desktop-core > /dev/null
+        npx playwright install --with-deps > /dev/null
         echo "::endgroup::"
 
     - name: Pull Docker Images
@@ -66,6 +67,7 @@ runs:
         echo "::group::Pull Docker Images"
         docker compose pull --quiet ${{ inputs.containers }}
         echo "::endgroup::"
+        
     - name: Run Playwright E2E Tests
       shell: bash
       env:
@@ -82,6 +84,7 @@ runs:
         echo "Starting Playwright project ${{ inputs.project }} for test group ${{ inputs.test-group }}"
         yarn workspace @trezor/suite-desktop-core test:e2e:${{ inputs.project }} --forbid-only --grep="(?=.*${{ inputs.test-group }})${{ inputs.additional-grep }}" 
         echo "::endgroup::"
+
     - name: Extract and Upload Logs
       if: ${{ !cancelled() }}
       uses: ./.github/actions/upload-test-logs
