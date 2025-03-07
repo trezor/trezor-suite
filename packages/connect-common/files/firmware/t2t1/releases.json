@@ -1,6 +1,21 @@
 [
     {
         "required": false,
+        "version": [2, 8, 9],
+        "min_bootloader_version": [2, 0, 0],
+        "min_firmware_version": [2, 0, 8],
+        "bootloader_version": [2, 1, 8],
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR"],
+        "url": "firmware/t2t1/trezor-t2t1-2.8.9.bin",
+        "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.8.9-bitcoinonly.bin",
+        "fingerprint": "ec61dba50be195f1cbb78688a0b92fb293c23150b68f5dab3b44420a106fca17",
+        "fingerprint_bitcoinonly": "e5878fa067df9d1256cdcd86f10869930d85e090c39f807c23f8845472e8d995",
+        "firmware_revision": "fad9682201cf9289bba2adb66e6e07ed1cf78936",
+        "changelog": "* Ability to cancel recovery on word count selection screen.\n* Account info for ETH transactions.\n* New UI for confirming long messages.\n* Solana staking confirmation dialogs.",
+        "changelog_bitcoinonly": "* Ability to cancel recovery on word count selection screen.\n* New UI for confirming long messages."
+    },
+    {
+        "required": false,
         "version": [2, 8, 8],
         "min_firmware_version": [2, 0, 8],
         "min_bootloader_version": [2, 0, 0],
