@@ -1,4 +1,4 @@
-import { isEqual } from '@trezor/utils/src/versionUtils';
+import { serializeError, versionUtils } from '@trezor/utils';
 
 import { PROTO } from '../constants';
 import { downloadReleasesMetadata } from '../data/downloadReleasesMetadata';
@@ -37,12 +37,19 @@ const getOnlineReleaseMetadata = async ({
 }: GetOnlineReleaseMetadataParams): Promise<FirmwareRelease | undefined> => {
     const onlineReleases = await downloadReleasesMetadata({ internal_model: internalModel });
 
-    return onlineReleases.find(onlineRelease => isEqual(onlineRelease.version, firmwareVersion));
+    return onlineReleases.find(onlineRelease =>
+        versionUtils.isEqual(onlineRelease.version, firmwareVersion),
+    );
 };
 
 const failFirmwareRevisionCheck = (
     error: FirmwareRevisionCheckError,
-): Extract<FirmwareRevisionCheckResult, { success: false }> => ({ success: false, error });
+    errorPayload?: unknown,
+): Extract<FirmwareRevisionCheckResult, { success: false }> => ({
+    success: false,
+    error,
+    ...(errorPayload ? { errorPayload } : null),
+});
 
 export type CheckFirmwareRevisionParams = {
     firmwareVersion: VersionArray;
@@ -113,7 +120,7 @@ export const checkFirmwareRevision = async ({
 
             return isOfflineError(e)
                 ? failFirmwareRevisionCheck('cannot-perform-check-offline')
-                : failFirmwareRevisionCheck('other-error');
+                : failFirmwareRevisionCheck('other-error', serializeError(e));
         }
     }
 

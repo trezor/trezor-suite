@@ -52,6 +52,7 @@ export type FirmwareRevisionCheckResult =
     | {
           success: false;
           error: FirmwareRevisionCheckError;
+          errorPayload?: unknown;
       };
 
 export type FirmwareHashCheckError =
