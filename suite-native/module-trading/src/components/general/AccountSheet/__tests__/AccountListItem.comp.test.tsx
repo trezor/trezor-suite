@@ -5,10 +5,14 @@ import { Address } from '@trezor/blockchain-link-types';
 import { ReceiveAccount } from '../../../../types';
 import { AccountListItem, AccountListItemProps } from '../AccountListItem';
 
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
-    selectFiatRatesByFiatRateKey: () => ({ rate: 1e8 }),
-}));
+jest.mock('@suite-common/wallet-core', () => {
+    const fiatRate = { rate: 1e8 };
+
+    return {
+        ...jest.requireActual('@suite-common/wallet-core'),
+        selectFiatRatesByFiatRateKey: () => fiatRate,
+    };
+});
 
 describe('AccountListItem', () => {
     const onPressMock = jest.fn();
