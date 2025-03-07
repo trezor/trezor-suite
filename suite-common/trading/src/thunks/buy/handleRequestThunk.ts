@@ -1,5 +1,3 @@
-import { MutableRefObject } from 'react';
-
 import { BuyTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
@@ -29,17 +27,11 @@ export const BUY_THUNK_COMMON_PREFIX = '@trading-buy/thunk';
 
 type GetQuotesRequest = {
     requestData: BuyTradeQuoteRequest;
-    abortControllerRef: MutableRefObject<AbortController | null>;
+    signal: AbortSignal | null;
 };
 
-const getQuotesRequest = async ({ requestData, abortControllerRef }: GetQuotesRequest) => {
-    if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-    }
-
-    abortControllerRef.current = new AbortController();
-
-    const allQuotes = await invityAPI.getBuyQuotes(requestData, abortControllerRef.current.signal);
+const getQuotesRequest = async ({ requestData, signal }: GetQuotesRequest) => {
+    const allQuotes = await invityAPI.getBuyQuotes(requestData, signal);
 
     return allQuotes;
 };
@@ -84,28 +76,18 @@ const getQuoteRequestData = ({
 
 export type HandleRequestThunkProps = {
     formValues: TradingBuyFormProps;
-    turnOffLoading: boolean;
     network: Network;
     timer: Timer;
     shouldSendInSats: boolean | undefined;
-    abortControllerRef: MutableRefObject<AbortController | null>;
 };
 
 export const handleRequestThunk = createThunk(
     `${TRADING_BUY_THUNK_PREFIX}/handleChange`,
     async (
-        {
-            formValues,
-            turnOffLoading,
-            network,
-            timer,
-            shouldSendInSats,
-            abortControllerRef,
-        }: HandleRequestThunkProps,
-        { dispatch, getState },
+        { formValues, network, timer, shouldSendInSats }: HandleRequestThunkProps,
+        { dispatch, getState, fulfillWithValue, signal },
     ) => {
         timer.loading();
-        dispatch(tradingBuyActions.setIsLoading(!turnOffLoading));
 
         const quotesRequest = selectTradingBuyQuotesRequest(getState());
         const requestData = getQuoteRequestData({
@@ -117,20 +99,24 @@ export const handleRequestThunk = createThunk(
 
         if (!requestData) {
             timer.stop();
-            dispatch(tradingBuyActions.setIsLoading(false));
 
             return;
         }
 
         const allQuotes = await getQuotesRequest({
             requestData,
-            abortControllerRef,
+            signal,
         });
+
+        if (signal.aborted) {
+            timer.reset();
+
+            return;
+        }
 
         if (!Array.isArray(allQuotes) || allQuotes.length === 0) {
             timer.stop();
             dispatch(tradingBuyActions.saveQuotes([]));
-            dispatch(tradingBuyActions.setIsLoading(false));
 
             return;
         }
@@ -156,8 +142,9 @@ export const handleRequestThunk = createThunk(
         dispatch(tradingBuyActions.saveQuotes(quotesSuccess));
         dispatch(tradingBuyActions.saveQuoteRequest(requestData));
         dispatch(tradingActions.savePaymentMethods(paymentMethodsFromQuotes));
-        dispatch(tradingBuyActions.setIsLoading(false));
 
         timer.reset();
+
+        return fulfillWithValue(quotesSuccess);
     },
 );

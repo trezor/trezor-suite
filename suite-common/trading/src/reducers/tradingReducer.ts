@@ -8,6 +8,7 @@ import { FeeLevel } from '@trezor/connect';
 import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '../types';
 import { TradingBuyState, buyInitialState, tradingBuyReducer } from './buyReducer';
 import { TRADING_PREFIX } from '../constants';
+import { buyThunks } from '../thunks';
 
 export interface TradingComposedTransactionInfo {
     composed?: Pick<
@@ -120,11 +121,16 @@ export const tradingSlice = createSliceWithExtraDeps({
     },
     extraReducers: (builder, extra) => {
         builder
-
             .addCase(extra.actionTypes.storageLoad, (state, action: AnyAction) => ({
                 ...state,
                 trades: action.payload.tradingTrades ?? state.trades,
             }))
+            .addCase(buyThunks.handleRequestThunk.pending, state => {
+                state.buy.isLoading = true;
+            })
+            .addCase(buyThunks.handleRequestThunk.fulfilled, state => {
+                state.buy.isLoading = false;
+            })
             .addDefaultCase((state, action) => {
                 tradingBuyReducer(state.buy, action);
                 // TODO: prepareSellReducer(extra)(state.sell, action);

@@ -13,7 +13,7 @@ export type TradingRootState = {
     wallet: {
         selectedAccount: SelectedAccountStatus;
         accounts: Account[];
-        tradingNew: TradingState; // TODO: tradingNew is temporary
+        tradingNew: TradingState; // TODO: trading - tradingNew is temporary
     };
     suite: {
         settings: {

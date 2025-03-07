@@ -3,6 +3,7 @@ import { CryptoId, InfoResponse } from 'invity-api';
 import { TradingComposedTransactionInfo, TradingState, tradingActions } from '../tradingReducer';
 import { accounts } from './account';
 import { buyInitialState } from './buyTradingReducer';
+import { buyThunks } from '../../thunks';
 import {
     TradingPaymentMethodListProps,
     TradingTransactionBuy,
@@ -315,6 +316,38 @@ export const tradingFixtures = [
         result: {
             ...initialState,
             ...loadingStatus,
+        },
+    },
+    {
+        description: 'should set loading for buy section, when handleRequestThunk is triggered',
+        initialState,
+        actions: [
+            {
+                type: buyThunks.handleRequestThunk.pending.type,
+            },
+        ],
+        result: {
+            ...initialState,
+            buy: {
+                ...initialState.buy,
+                isLoading: true,
+            },
+        },
+    },
+    {
+        description: 'should set off loading for buy section, when handleRequestThunk is completed',
+        initialState,
+        actions: [
+            {
+                type: buyThunks.handleRequestThunk.fulfilled.type,
+            },
+        ],
+        result: {
+            ...initialState,
+            buy: {
+                ...initialState.buy,
+                isLoading: false,
+            },
         },
     },
 ];
