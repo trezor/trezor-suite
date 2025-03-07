@@ -14,6 +14,7 @@ export interface NetworkIconProps {
 }
 
 export const networkIconSizes = {
+    tiny: 6,
     extraSmall: 9,
     small: 12,
     large: 18,
