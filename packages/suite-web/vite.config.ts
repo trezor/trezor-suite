@@ -159,6 +159,7 @@ if (typeof window !== 'undefined' && typeof globalThis === 'undefined') {
 
 export default defineConfig({
     root: './src/static',
+    cacheDir: resolve(__dirname, '../../node_modules/.vite'),
     base: assetPrefix,
     // Use suite-data/files as the public directory
     publicDir: resolve(__dirname, '../suite-data/files'),
