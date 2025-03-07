@@ -70,8 +70,9 @@ const getWarningMessage = ({
 }) => {
     switch (deviceStatus) {
         case 'bootloader':
-        case 'initialize':
             return 'TR_DEVICE_CONNECTED_NEW_DEVICE_STATE';
+        case 'initialize':
+            return 'TR_DEVICE_CONNECTED_INITIAL_DEVICE_STATE';
         default:
             return showWarning ? 'TR_DEVICE_CONNECTED' : 'TR_DEVICE_CONNECTED_WRONG_STATE';
     }

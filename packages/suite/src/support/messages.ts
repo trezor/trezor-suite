@@ -6898,6 +6898,10 @@ export default defineMessages({
     },
     TR_DEVICE_CONNECTED_NEW_DEVICE_STATE: {
         id: 'TR_DEVICE_CONNECTED_NEW_DEVICE_STATE',
+        defaultMessage: 'New device connected.',
+    },
+    TR_DEVICE_CONNECTED_INITIAL_DEVICE_STATE: {
+        id: 'TR_DEVICE_CONNECTED_INITIAL_DEVICE_STATE',
         defaultMessage: 'Not fully set up device connected.',
     },
     TR_DEVICE_CONNECTED_BOOTLOADER: {
