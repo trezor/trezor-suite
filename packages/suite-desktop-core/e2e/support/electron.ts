@@ -44,6 +44,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     const appDir = path.join(__dirname, '../../../suite-desktop');
     const logLevelArgument = `--log-level=${process.env.LOGLEVEL ?? 'error'}`;
     const viewportArgument = `--width=${options.viewport.width} --height=${options.viewport.height}`;
+    const disableHWAccelerationArgument = '--disable-gpu'; // to fix chromium error GetVSyncParametersIfAvailable()
     if (!options.bridgeDaemon) {
         // TODO: #15646 Find out why currently pw fails to see node-bridge so we default to legacy bridge.
         await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
@@ -56,6 +57,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
             showDebugMenuArgument,
             viewportArgument,
             logLevelArgument,
+            disableHWAccelerationArgument,
             ...(options.bridgeLegacyTest ? ['--bridge-legacy', '--bridge-test'] : []),
             ...(options.bridgeDaemon ? ['--bridge-daemon', '--skip-new-bridge-rollout'] : []),
         ],
