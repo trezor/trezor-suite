@@ -40,7 +40,6 @@ export const preloadStore = async () => {
     const backendSettings = await db.getItemsWithKeys('backendSettings');
     const sendFormDrafts = await db.getItemsWithKeys('sendFormDrafts');
     const formDrafts = await db.getItemsWithKeys('formDrafts');
-    const firmware = await db.getItemByPK('firmware', 'firmware');
     const coinjoinAccounts = await db.getItemsExtended('coinjoinAccounts');
     const coinjoinDebugSettings = await db.getItemByPK('coinjoinDebugSettings', 'debug');
     const tokenManagement = await db.getItemsWithKeys('tokenManagement');
@@ -64,7 +63,6 @@ export const preloadStore = async () => {
             metadata,
             messageSystem,
             backendSettings,
-            firmware,
             coinjoinAccounts,
             coinjoinDebugSettings,
             tokenManagement,

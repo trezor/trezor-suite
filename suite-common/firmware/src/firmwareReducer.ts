@@ -1,6 +1,5 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
-import { isDeviceKnown } from '@suite-common/suite-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 import {
     DEVICE,
@@ -18,11 +17,6 @@ type FirmwareUpdateCommon = {
     cachedDevice?: TrezorDevice;
     // Stores firmware type currently being installed so that it can be displayed to the user during installation
     targetType?: FirmwareType;
-    // Array of device ids where suite claims their firmware might have been "hacked". This information is available only after firmware update is finished
-    // and we need to store this information persistently so that it does not disappear after accidental device reconnection.
-    // todo: in the future we might implement additional check that will validate firmware after every connection
-    //  todo: !
-    firmwareHashInvalid: string[];
     useDevkit: boolean;
     uiEvent?: DeviceButtonRequest | FirmwareProgress | FirmwareReconnect;
 };
@@ -42,7 +36,6 @@ const initialState: FirmwareUpdateState = {
     error: undefined,
     cachedDevice: undefined,
     targetType: undefined,
-    firmwareHashInvalid: [],
     useDevkit: false,
     uiEvent: undefined,
 };
@@ -68,7 +61,6 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         })
         .addCase(firmwareActions.resetReducer, state => ({
             ...initialState,
-            firmwareHashInvalid: state.firmwareHashInvalid,
             useDevkit: state.useDevkit,
         }))
         .addCase(firmwareActions.toggleUseDevkit, (state, { payload }) => {
@@ -78,22 +70,6 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
             state.cachedDevice = payload;
         })
         .addCase(deviceActions.addButtonRequest, extra.reducers.addButtonRequestFirmware)
-        .addCase(deviceActions.connectDevice, (state, { payload: { device } }) => {
-            if (!isDeviceKnown(device)) return;
-
-            // use the automatic hash check to clear device if it hasn't passed hash check done after firmware update
-            // otherwise it'd be stuck in "error" state until next firmware update
-            // in `storageMiddleware` this is persisted into storage (on the same action type)
-            if (device.authenticityChecks?.firmwareHash?.success) {
-                state.firmwareHashInvalid = state.firmwareHashInvalid.filter(
-                    deviceId => deviceId !== device.id,
-                );
-            }
-        })
-        .addMatcher(
-            action => action.type === extra.actionTypes.storageLoad,
-            extra.reducers.storageLoadFirmware,
-        )
         .addMatcher<FirmwareProgress | FirmwareReconnect | DeviceButtonRequest>(
             action =>
                 action.type === UI.FIRMWARE_RECONNECT ||

@@ -456,13 +456,6 @@ export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: Get
     );
 };
 
-export const saveFirmware = () => async (_dispatch: Dispatch, getState: GetState) => {
-    if (!(await db.isAccessible())) return;
-    const { firmware } = getState();
-
-    db.addItem('firmware', { firmwareHashInvalid: firmware.firmwareHashInvalid }, 'firmware', true);
-};
-
 export const saveEntropyCheckFail = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
     const { devicesWithFailedEntropyCheck } = getState().device;
