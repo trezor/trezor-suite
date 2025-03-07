@@ -20,11 +20,11 @@
 
 -   device state to new object format (`device._state` -> `device.state`)
 
-## 47
+## 47
 
 -   migrate matic to pol
 
-## 46
+## 46
 
 -   added `tokenManagement`
 -   added `device.passwords`
@@ -35,7 +35,7 @@
 -   added `historicRates`
 -   remove rates for all transactions since we are using selectors to get rates
 
-## 44
+## 44
 
 -   remove goerli accounts, txs and settings
 
@@ -71,12 +71,12 @@
 
 -   remove persisted coinjoin sessions
 
-## 36
+## 36
 
 -   token `address` to `contract`
 -   remove ropsten accounts, txs and settings
 
-## 35
+## 35
 
 -   saved ethereum network type txs are removed to be fetched again and obtain internal transfers and token transfer contract and standard
 
