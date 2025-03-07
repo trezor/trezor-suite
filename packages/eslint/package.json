@@ -20,5 +20,8 @@
         "eslint-plugin-react": "^7.37.4",
         "eslint-plugin-react-hooks": "^5.1.0",
         "typescript-eslint": "^8.23.0"
+    },
+    "dependencies": {
+        "eslint-plugin-react-compiler": "19.0.0-beta-40c6c23-20250301"
     }
 }

@@ -1,9 +1,11 @@
 import pluginReact from 'eslint-plugin-react';
+import reactCompiler from 'eslint-plugin-react-compiler';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
 
 export const reactConfig = [
     // React
     pluginReact.configs.flat.recommended,
+    reactCompiler.configs.recommended,
     {
         languageOptions: {
             ...pluginReact.configs.flat.recommended.languageOptions,

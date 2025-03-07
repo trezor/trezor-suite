@@ -26,6 +26,7 @@
         "@trezor/bundler-security": "workspace:*",
         "@trezor/suite": "workspace:*",
         "babel-loader": "^9.1.3",
+        "babel-plugin-react-compiler": "19.0.0-beta-40c6c23-20250301",
         "babel-plugin-styled-components": "^2.1.4",
         "copy-webpack-plugin": "^12.0.2",
         "crypto-browserify": "^3.12.0",
