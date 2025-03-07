@@ -14,15 +14,15 @@ describe('Testing trading reducer', () => {
                 extra: {},
                 reducer: combineReducers({
                     wallet: combineReducers({
-                        trading: tradingReducer,
+                        tradingNew: tradingReducer,
                     }),
                 }),
-                preloadedState: { wallet: { trading: f.initialState } },
+                preloadedState: { wallet: { tradingNew: f.initialState } },
             });
             f.actions.forEach(action => {
                 store.dispatch(action);
             });
-            expect(store.getState().wallet.trading).toEqual(f.result);
+            expect(store.getState().wallet.tradingNew).toEqual(f.result);
         });
     });
 });

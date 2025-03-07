@@ -55,7 +55,7 @@ export const tradingBuySlice = createSlice({
         saveQuoteRequest(state, action: PayloadAction<BuyTradeQuoteRequest>) {
             state.quotesRequest = action.payload;
         },
-        saveTransactionId(state, action: PayloadAction<string>) {
+        saveTransactionId(state, action: PayloadAction<string | undefined>) {
             state.transactionId = action.payload;
         },
         saveQuotes(state, action: PayloadAction<BuyTrade[]>) {

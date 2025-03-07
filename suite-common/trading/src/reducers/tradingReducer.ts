@@ -101,7 +101,7 @@ export const tradingSlice = createSliceWithExtraDeps({
         setModalCryptoCurrency(state, action: PayloadAction<CryptoId>) {
             state.modalCryptoId = action.payload;
         },
-        setModalAccountKey(state, action: PayloadAction<string>) {
+        setModalAccountKey(state, action: PayloadAction<string | undefined>) {
             state.modalAccountKey = action.payload;
         },
         setLoading(

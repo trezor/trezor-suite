@@ -29,12 +29,12 @@ describe('handleRequestThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    trading: tradingReducer,
+                    tradingNew: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    trading: {
+                    tradingNew: {
                         ...initialState,
                         info: {
                             ...initialState.info,
@@ -136,7 +136,7 @@ describe('handleRequestThunk', () => {
 
         await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
 
-        const state = store.getState().wallet.trading;
+        const state = store.getState().wallet.tradingNew;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockAbort).toHaveBeenCalledTimes(1);
@@ -168,7 +168,7 @@ describe('handleRequestThunk', () => {
 
         await store.dispatch(buyThunks.handleRequestThunk(inputWithIncorrectData)).unwrap();
 
-        const state = store.getState().wallet.trading;
+        const state = store.getState().wallet.tradingNew;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
@@ -189,7 +189,7 @@ describe('handleRequestThunk', () => {
 
         await store.dispatch(buyThunks.handleRequestThunk(inputWithIncorrectData)).unwrap();
 
-        const state = store.getState().wallet.trading;
+        const state = store.getState().wallet.tradingNew;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
@@ -205,7 +205,7 @@ describe('handleRequestThunk', () => {
 
         await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
 
-        const state = store.getState().wallet.trading;
+        const state = store.getState().wallet.tradingNew;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);

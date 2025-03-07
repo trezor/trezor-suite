@@ -48,7 +48,7 @@ type GetQuoteRequestData = {
     formValues: TradingBuyFormProps;
     quotesRequest: BuyTradeQuoteRequest | undefined;
     network: Network;
-    shouldSendInSats: boolean;
+    shouldSendInSats: boolean | undefined;
 };
 
 const getQuoteRequestData = ({
@@ -87,7 +87,7 @@ export type HandleRequestThunkProps = {
     turnOffLoading: boolean;
     network: Network;
     timer: Timer;
-    shouldSendInSats: boolean;
+    shouldSendInSats: boolean | undefined;
     abortControllerRef: MutableRefObject<AbortController | null>;
 };
 
