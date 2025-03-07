@@ -3,7 +3,6 @@ import { BuyTradeResponse } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from '@suite-common/wallet-types';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { BUY_THUNK_COMMON_PREFIX } from './handleRequestThunk';
 import { tradingActions } from '../../actions/tradingActions';
@@ -16,13 +15,20 @@ export type ConfirmTradeThunkProps = {
     address: string;
     account: Account;
 
+    triggerAnalyticsTradeConfirmation: () => void;
     processResponseData: (response: BuyTradeResponse) => void;
 };
 
 export const confirmTradeThunk = createThunk(
     `${BUY_THUNK_COMMON_PREFIX}/confirmTrade`,
     async (
-        { returnUrl, address, account, processResponseData }: ConfirmTradeThunkProps,
+        {
+            returnUrl,
+            address,
+            account,
+            triggerAnalyticsTradeConfirmation,
+            processResponseData,
+        }: ConfirmTradeThunkProps,
         { dispatch, getState },
     ) => {
         const selectedQuote = selectTradingBuySelectedQuote(getState());
@@ -31,12 +37,7 @@ export const confirmTradeThunk = createThunk(
 
         dispatch(tradingBuyActions.setIsLoading(true));
 
-        analytics.report({
-            type: EventType.TradingConfirmTrade,
-            payload: {
-                type: 'buy',
-            },
-        });
+        triggerAnalyticsTradeConfirmation();
 
         const trade = {
             ...selectedQuote,

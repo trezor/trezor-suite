@@ -3,7 +3,6 @@ import { BuyTradeResponse } from 'invity-api';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
-import { analytics } from '@trezor/suite-analytics';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
@@ -46,7 +45,7 @@ describe('confirmTradeThunk', () => {
         });
 
         const mockProcessResponseData = jest.fn();
-        const mockAnalyticsReport = jest.spyOn(analytics, 'report');
+        const mocktriggerAnalyticsTradeConfirmation = jest.fn();
 
         const tradeForm = {
             form: {
@@ -62,13 +61,13 @@ describe('confirmTradeThunk', () => {
         return {
             store,
             mockProcessResponseData,
-            mockAnalyticsReport,
+            mocktriggerAnalyticsTradeConfirmation,
             tradeForm,
         };
     };
 
     it('should not trigger any action if selectedQuote is not set', async () => {
-        const { store, mockProcessResponseData, mockAnalyticsReport } = getMocks({
+        const { store, mockProcessResponseData, mocktriggerAnalyticsTradeConfirmation } = getMocks({
             selectedQuote: undefined,
         });
 
@@ -82,19 +81,21 @@ describe('confirmTradeThunk', () => {
                     descriptor: 'desc',
                     index: 1,
                 } as Account,
+                triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                 processResponseData: mockProcessResponseData,
             }),
         );
 
         expect(store.getActions().length).toEqual(2);
         expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
-        expect(mockAnalyticsReport).toHaveBeenCalledTimes(0);
+        expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(0);
         expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
     });
 
     describe('should show error toast', () => {
         it('if there is no response', async () => {
-            const { store, mockProcessResponseData, mockAnalyticsReport } = getMocks();
+            const { store, mockProcessResponseData, mocktriggerAnalyticsTradeConfirmation } =
+                getMocks();
 
             invityAPI.doBuyTrade = () => Promise.resolve(undefined as unknown as BuyTradeResponse);
 
@@ -108,6 +109,7 @@ describe('confirmTradeThunk', () => {
                         descriptor: 'desc',
                         index: 1,
                     } as Account,
+                    triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                     processResponseData: mockProcessResponseData,
                 }),
             );
@@ -116,7 +118,7 @@ describe('confirmTradeThunk', () => {
                 .getActions()
                 .find(action => action.type === '@common/in-app-notifications/addToast');
 
-            expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
+            expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
             expect(toastAction?.payload.type).toEqual('error');
             expect(toastAction?.payload.error).toEqual('No response from the server');
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
@@ -124,7 +126,8 @@ describe('confirmTradeThunk', () => {
         });
 
         it('if there is no trade in response', async () => {
-            const { store, mockProcessResponseData, mockAnalyticsReport } = getMocks();
+            const { store, mockProcessResponseData, mocktriggerAnalyticsTradeConfirmation } =
+                getMocks();
 
             invityAPI.doBuyTrade = () => Promise.resolve({} as BuyTradeResponse);
 
@@ -138,6 +141,7 @@ describe('confirmTradeThunk', () => {
                         descriptor: 'desc',
                         index: 1,
                     } as Account,
+                    triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                     processResponseData: mockProcessResponseData,
                 }),
             );
@@ -146,7 +150,7 @@ describe('confirmTradeThunk', () => {
                 .getActions()
                 .find(action => action.type === '@common/in-app-notifications/addToast');
 
-            expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
+            expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
             expect(toastAction?.payload.type).toEqual('error');
             expect(toastAction?.payload.error).toEqual('No response from the server');
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
@@ -154,7 +158,8 @@ describe('confirmTradeThunk', () => {
         });
 
         it('if there is no response trade payment id', async () => {
-            const { store, mockProcessResponseData, mockAnalyticsReport } = getMocks();
+            const { store, mockProcessResponseData, mocktriggerAnalyticsTradeConfirmation } =
+                getMocks();
 
             invityAPI.doBuyTrade = () =>
                 Promise.resolve({
@@ -174,6 +179,7 @@ describe('confirmTradeThunk', () => {
                         descriptor: 'desc',
                         index: 1,
                     } as Account,
+                    triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                     processResponseData: mockProcessResponseData,
                 }),
             );
@@ -182,7 +188,7 @@ describe('confirmTradeThunk', () => {
                 .getActions()
                 .find(action => action.type === '@common/in-app-notifications/addToast');
 
-            expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
+            expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
             expect(toastAction?.payload.type).toEqual('error');
             expect(toastAction?.payload.error).toEqual('No response from the server');
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
@@ -190,7 +196,8 @@ describe('confirmTradeThunk', () => {
         });
 
         it('if there is trade error', async () => {
-            const { store, mockProcessResponseData, mockAnalyticsReport } = getMocks();
+            const { store, mockProcessResponseData, mocktriggerAnalyticsTradeConfirmation } =
+                getMocks();
             const error = 'Error message from API';
 
             invityAPI.doBuyTrade = () =>
@@ -211,6 +218,7 @@ describe('confirmTradeThunk', () => {
                         descriptor: 'desc',
                         index: 1,
                     } as Account,
+                    triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                     processResponseData: mockProcessResponseData,
                 }),
             );
@@ -218,7 +226,7 @@ describe('confirmTradeThunk', () => {
             const toastAction = store
                 .getActions()
                 .find(action => action.type === '@common/in-app-notifications/addToast');
-            expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
+            expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
             expect(toastAction?.payload.type).toEqual('error');
             expect(toastAction?.payload.error).toEqual(error);
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
@@ -227,7 +235,8 @@ describe('confirmTradeThunk', () => {
     });
 
     it('should call processResponseData with response and save trade', async () => {
-        const { store, mockProcessResponseData, mockAnalyticsReport } = getMocks();
+        const { store, mockProcessResponseData, mocktriggerAnalyticsTradeConfirmation } =
+            getMocks();
 
         const dateString = new Date().toISOString();
         jest.spyOn(Date.prototype, 'toISOString').mockImplementation(() => dateString);
@@ -249,13 +258,14 @@ describe('confirmTradeThunk', () => {
                     descriptor: 'desc',
                     index: 1,
                 } as Account,
+                triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                 processResponseData: mockProcessResponseData,
             }),
         );
 
         const { trades } = store.getState().wallet.trading;
 
-        expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
+        expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(mockProcessResponseData).toHaveBeenCalledTimes(1);
         expect(trades.length).toEqual(1);
         expect(trades[0]).toEqual({
