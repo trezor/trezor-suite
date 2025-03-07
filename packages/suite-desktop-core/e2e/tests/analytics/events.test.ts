@@ -83,6 +83,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         onboardingPage,
         trezorUserEnvLink,
     }) => {
+        expect(false).toBe(true);
         await trezorUserEnvLink.startEmu({ wipe: true, model: 'T3T1' });
         await trezorUserEnvLink.setupEmu({
             passphrase_protection: true,
