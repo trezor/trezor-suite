@@ -265,7 +265,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         try {
             await this.initializeTransport(transport, pendingTransportEvent, signal);
         } catch (err) {
-            await this.stopTransport(transport);
+            this.stopTransport(transport);
             throw err;
         }
     }
@@ -392,22 +392,17 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         await Promise.all(promises);
     }
 
-    private async stopTransport(transport: Transport) {
+    private stopTransport(transport: Transport) {
         const devices = this.devices.clear(transport);
 
         // disconnect devices
         devices.forEach(device => {
             // device.disconnect();
             this.emit(DEVICE.DISCONNECT, device);
+            this.authPenaltyManager.remove(device);
+            device.dispose();
         });
 
-        // release all devices
-        await Promise.all(
-            devices.map(async device => {
-                this.authPenaltyManager.remove(device); // TODO is this right?
-                await device.dispose();
-            }),
-        );
         // now we can be relatively sure that release calls have been dispatched
         // and we can safely kill all async subscriptions in transport layer
         transport?.stop();

@@ -1188,11 +1188,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     dispose() {
         this.removeAllListeners();
         if (this.session && this.lastAcquiredHere) {
-            return this.transport.release({
-                session: this.session,
-                path: this.transportPath,
-                onClose: true,
-            });
+            this.transport.releaseSync(this.session);
         }
     }
 

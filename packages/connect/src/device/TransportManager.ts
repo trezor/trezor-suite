@@ -46,7 +46,7 @@ type TransportManagerParams = {
         pendingTransportEvent: boolean,
         signal: AbortSignal,
     ) => Promise<void>;
-    stopTransport: (transport: Transport) => Promise<void>;
+    stopTransport: (transport: Transport) => void;
 };
 
 type InitParams = {
@@ -91,13 +91,15 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
     dispose() {
         this.removeAllListeners();
 
-        return this.lock.override('Disposing', async () => {
+        return this.lock.override('Disposing', () => {
             const { activeTransport } = this;
             if (activeTransport) {
                 clearTimeout(this.upgradeTimeout);
                 delete this.activeTransport;
-                await this.stopTransport(activeTransport);
+                this.stopTransport(activeTransport);
             }
+
+            return Promise.resolve();
         });
     }
 
@@ -144,7 +146,7 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
                 if (activeTransport) {
                     clearTimeout(this.upgradeTimeout);
                     delete this.activeTransport;
-                    await this.stopTransport(activeTransport);
+                    this.stopTransport(activeTransport);
                 }
 
                 if (transport) {
@@ -156,7 +158,7 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
                         this.lock
                             .override('Transport error', async signal => {
                                 delete this.activeTransport;
-                                await this.stopTransport(transport);
+                                this.stopTransport(transport);
                                 if (this.transportReconnect) {
                                     await resolveAfter(1000, signal);
                                     await this.createInitPromise(pendingTransportEvent, signal);
