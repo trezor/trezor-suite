@@ -25,7 +25,6 @@ export type AcquireInput = {
 export type ReleaseInput = {
     path: PathPublic;
     session: Session;
-    onClose?: boolean;
 };
 
 export interface AbstractTransportParams {

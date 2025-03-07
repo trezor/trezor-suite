@@ -134,12 +134,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         );
     }
 
-    public release({
-        path: _,
-        session,
-        onClose,
-        signal,
-    }: AbstractTransportMethodParams<'release'>) {
+    public release({ path: _, session, signal }: AbstractTransportMethodParams<'release'>) {
         return this.scheduleAction(
             async () => {
                 const releaseIntentResponse = await this.sessionsClient.releaseIntent({
@@ -150,10 +145,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return this.error({ error: releaseIntentResponse.error });
                 }
 
-                const releasePromise = this.releaseDevice(session);
-                if (onClose) return this.success(null);
-
-                await releasePromise;
+                await this.api.closeDevice(releaseIntentResponse.payload.path);
 
                 await this.sessionsClient.releaseDone({
                     path: releaseIntentResponse.payload.path,

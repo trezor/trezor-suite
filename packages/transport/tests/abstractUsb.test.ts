@@ -326,7 +326,6 @@ describe('Usb', () => {
             const res = await transport.release({
                 session: acquireRes.payload,
                 path: PathPublic('123'),
-                onClose: false,
             });
             expect(res).toEqual({
                 success: true,

@@ -177,30 +177,13 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L354
-    public release({
-        path: _,
-        session,
-        onClose,
-        signal,
-    }: AbstractTransportMethodParams<'release'>) {
-        if (onClose && typeof navigator !== 'undefined' && 'sendBeacon' in navigator) {
-            navigator.sendBeacon(`${this.url}/release/${session}?beacon=1`);
-
-            return Promise.resolve(this.success(null));
-        }
-
+    public release({ path: _, session, signal }: AbstractTransportMethodParams<'release'>) {
         return this.scheduleAction(
             async signal => {
-                const releasePromise = this.post('/release', {
+                const response = await this.post('/release', {
                     params: session,
                     signal,
                 });
-
-                if (onClose) {
-                    return Promise.resolve(this.success(null));
-                }
-
-                const response = await releasePromise;
 
                 return response.success ? this.success(null) : response;
             },
