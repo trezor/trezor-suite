@@ -93,6 +93,7 @@ export const getDeviceStatusWarningVariant = (
 ): 'warning' | 'info' => {
     switch (deviceStatus) {
         case 'bootloader':
+        case 'initialize':
             return 'info';
         default:
             return 'warning';
@@ -102,6 +103,7 @@ export const getDeviceStatusWarningVariant = (
 export const getDeviceResolveStatusCTAMessage = (deviceStatus: ReturnType<typeof getStatus>) => {
     switch (deviceStatus) {
         case 'bootloader':
+        case 'initialize':
             return 'TR_SELECT_DEVICE_SHORT';
         default:
             return 'TR_SOLVE_ISSUE';

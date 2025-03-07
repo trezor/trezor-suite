@@ -1249,7 +1249,7 @@
   "TR_NAV_TRANSACTIONS": "Overview",
   "TR_NEEDS_ATTENTION_BOOTLOADER": "Trezor is in Bootloader mode.",
   "TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED": "Firmware update required.",
-  "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor has not been set up.",
+  "TR_NEEDS_ATTENTION_INITIALIZE": "Trezor setup incomplete.",
   "TR_NEEDS_ATTENTION_SEEDLESS": "Trezor doesn't have a wallet backup.",
   "TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT": "Failed to communicate with your Trezor",
   "TR_NEEDS_ATTENTION_UNACQUIRED": "Trezor is already in use in another window.",
