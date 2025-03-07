@@ -1,8 +1,12 @@
+import { CryptoId } from 'invity-api';
+
 import { extraDependenciesMock } from '@suite-common/test-utils';
-import { InvityServerEnvironment } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { InvityServerEnvironment, tradingActions } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
 
+import coins from '../__fixtures__/coins.json';
+import platforms from '../__fixtures__/platforms.json';
+import { adaAsset, btcAsset, usdcAsset } from '../__fixtures__/tradeableAssets';
 import {
     TradingState,
     addTradeableAssetToFavourites,
@@ -10,10 +14,12 @@ import {
     removeTradeableAssetFromFavourites,
     selectBuySelectedReceiveAccount,
     selectIsTradingFavouriteAsset,
+    selectTradingBuyCoins,
     selectTradingEnvironment,
     selectTradingFavouriteAssets,
     selectTradingFavouriteAssetsArray,
     setBuySelectedReceiveAccount,
+    setTradingEnvironment,
     tradingSlice,
 } from '../tradingSlice';
 import { TradeableAsset } from '../types';
@@ -96,34 +102,16 @@ describe('tradingSlice', () => {
         describe('favouriteAssets', () => {
             it('addTradeableAssetToFavourites should add asset to favourites', () => {
                 const actions = [
-                    addTradeableAssetToFavourites({
-                        symbol: 'btc',
-                        contractAddress: 'abc',
-                    } as TradeableAsset),
-                    addTradeableAssetToFavourites({
-                        symbol: 'btc',
-                        contractAddress: 'def',
-                        name: 'not really btc',
-                    } as TradeableAsset),
-                    addTradeableAssetToFavourites({
-                        symbol: 'btc',
-                    } as TradeableAsset),
+                    addTradeableAssetToFavourites(btcAsset),
+                    addTradeableAssetToFavourites(usdcAsset),
+                    addTradeableAssetToFavourites(adaAsset),
                 ];
                 const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
                 expect(selectTradingFavouriteAssets({ wallet: { tradingNew: state } })).toEqual({
-                    btc_abc: {
-                        symbol: 'btc',
-                        contractAddress: 'abc',
-                    },
-                    btc_def: {
-                        symbol: 'btc',
-                        contractAddress: 'def',
-                        name: 'not really btc',
-                    },
-                    btc: {
-                        symbol: 'btc',
-                    },
+                    bitcoin: btcAsset,
+                    cardano: adaAsset,
+                    'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': usdcAsset,
                 });
             });
 
@@ -131,23 +119,18 @@ describe('tradingSlice', () => {
                 let prevState: TradingState;
 
                 beforeEach(() => {
-                    prevState = tradingReducer(
-                        undefined,
-                        addTradeableAssetToFavourites({ symbol: 'btc' }),
-                    );
+                    prevState = tradingReducer(undefined, addTradeableAssetToFavourites(btcAsset));
                 });
 
                 it('addTradeableAssetToFavourites should not add same asset twice', () => {
                     const state = tradingReducer(
                         prevState,
-                        addTradeableAssetToFavourites({ symbol: 'btc' }),
+                        addTradeableAssetToFavourites(btcAsset),
                     );
 
                     expect(selectTradingFavouriteAssets({ wallet: { tradingNew: state } })).toEqual(
                         {
-                            btc: {
-                                symbol: 'btc',
-                            },
+                            bitcoin: expect.objectContaining({ coingeckoId: 'bitcoin' }),
                         },
                     );
                 });
@@ -155,7 +138,7 @@ describe('tradingSlice', () => {
                 it('removeTradeableAssetFromFavourites should remove asset from favourites', () => {
                     const state = tradingReducer(
                         prevState,
-                        removeTradeableAssetFromFavourites({ symbol: 'btc' }),
+                        removeTradeableAssetFromFavourites(btcAsset),
                     );
 
                     expect(selectTradingFavouriteAssets({ wallet: { tradingNew: state } })).toEqual(
@@ -166,27 +149,27 @@ describe('tradingSlice', () => {
                 it('selectTradingFavouriteAssetsArray should return memoized array', () => {
                     const state = tradingReducer(
                         prevState,
-                        addTradeableAssetToFavourites({ symbol: 'btc' }),
+                        addTradeableAssetToFavourites(btcAsset),
                     );
 
                     const favouritesArray = selectTradingFavouriteAssetsArray({
                         wallet: { tradingNew: state },
                     });
 
-                    expect(favouritesArray).toEqual([{ symbol: 'btc' }]);
+                    expect(favouritesArray).toEqual([btcAsset]);
                     expect(
                         selectTradingFavouriteAssetsArray({ wallet: { tradingNew: state } }),
                     ).toBe(favouritesArray);
                 });
 
                 it.each([
-                    [true, 'btc', undefined],
-                    [false, 'eth', undefined],
-                    [false, 'eth', 'abc'],
-                ] as [boolean, NetworkSymbol, string | undefined][])(
-                    'selectIsTradingFavouriteAsset should be [%s] for asset with symbol [%s] and contractAddress [%s]',
-                    (expectedValue, symbol, contractAddress) => {
-                        const asset = { symbol, contractAddress } as TradeableAsset;
+                    [true, 'bitcoin'],
+                    [false, 'eth'],
+                    [false, 'eth__0x0000000000000000000000000000000000000000'],
+                ] as [boolean, CryptoId][])(
+                    'selectIsTradingFavouriteAsset should be [%s] for asset with cryptoId [%s] ',
+                    (expectedValue, cryptoId) => {
+                        const asset = { cryptoId } as unknown as TradeableAsset;
 
                         expect(
                             selectIsTradingFavouriteAsset(
@@ -196,6 +179,43 @@ describe('tradingSlice', () => {
                         ).toBe(expectedValue);
                     },
                 );
+            });
+        });
+
+        describe('selectTradeableCoins', () => {
+            let prevState: TradingState;
+
+            beforeEach(() => {
+                prevState = tradingReducer(
+                    undefined,
+                    tradingActions.saveInfo({ coins, platforms }),
+                );
+            });
+
+            it('should select only coins with buy set to true', () => {
+                expect(selectTradingBuyCoins({ wallet: { tradingNew: prevState } })).toEqual([
+                    expect.objectContaining({ cryptoId: 'bitcoin' }),
+                    expect.objectContaining({ cryptoId: 'ethereum' }),
+                    expect.objectContaining({
+                        cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                    }),
+                    expect.objectContaining({
+                        cryptoId: 'base--0x0000000000000000000000000000000000000000',
+                    }),
+                ]);
+            });
+
+            it('should be stable', () => {
+                const first = selectTradingBuyCoins({ wallet: { tradingNew: prevState } });
+                const second = selectTradingBuyCoins({ wallet: { tradingNew: prevState } });
+
+                expect(first).toBe(second);
+            });
+
+            it('should be empty array when coins are not set', () => {
+                prevState = tradingReducer(undefined, { type: 'undefined_action' });
+
+                expect(selectTradingBuyCoins({ wallet: { tradingNew: prevState } })).toEqual([]);
             });
         });
     });
@@ -214,6 +234,12 @@ describe('tradingSlice', () => {
             };
 
             expect(selectTradingEnvironment({ wallet: { tradingNew: state } })).toBe('staging');
+        });
+
+        it('setTradingEnvironment should set trading environment', () => {
+            const state = tradingReducer(undefined, setTradingEnvironment('dev'));
+
+            expect(selectTradingEnvironment({ wallet: { tradingNew: state } })).toBe('dev');
         });
     });
 });

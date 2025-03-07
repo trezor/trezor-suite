@@ -53,12 +53,14 @@ export const TradingBottomSheetSectionList = <T, U = undefined>({
         noSingletonSectionHeader,
     });
 
+    const estimatedListHeight = estimatedListSize + estimatedHeaderHeight + CONTENT_BOTTOM_OFFSET;
+
     return (
         <BottomSheetFlashList<ListInternalItemShape<T, U>>
             keyExtractor={internalKeyExtractor}
             renderItem={internalRenderItem}
             estimatedItemSize={estimatedItemSize}
-            estimatedListHeight={estimatedListSize + estimatedHeaderHeight + CONTENT_BOTTOM_OFFSET}
+            estimatedListHeight={estimatedListHeight}
             data={internalData}
             {...rest}
         />

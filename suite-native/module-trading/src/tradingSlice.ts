@@ -1,4 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
+import { CryptoId } from 'invity-api';
 
 import { createSliceWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import {
@@ -10,6 +11,7 @@ import {
 } from '@suite-common/trading';
 
 import { ReceiveAccount, TradeableAsset } from './types';
+import { coinInfoToTradeableAsset } from './utils';
 
 export interface TradingBuyState extends CommonTradingBuyState {
     selectedReceiveAccount: ReceiveAccount | undefined;
@@ -17,7 +19,7 @@ export interface TradingBuyState extends CommonTradingBuyState {
 
 export interface TradingState extends CommonTradingState {
     buy: TradingBuyState;
-    favouriteAssets: Record<string, TradeableAsset>;
+    favouriteAssets: Record<CryptoId, TradeableAsset>;
     tradingEnvironment: InvityServerEnvironment;
 }
 
@@ -34,9 +36,6 @@ export const initialState: TradingState = {
     tradingEnvironment: 'production',
 };
 
-export const getTradeableAssetFavouriteKey = (asset: TradeableAsset) =>
-    asset.contractAddress ? `${asset.symbol}_${asset.contractAddress}` : asset.symbol;
-
 export const tradingSlice = createSliceWithExtraDeps({
     name: 'trading',
     initialState,
@@ -48,10 +47,10 @@ export const tradingSlice = createSliceWithExtraDeps({
             state.buy.selectedReceiveAccount = payload.selectedReceiveAccount;
         },
         addTradeableAssetToFavourites: (state, { payload }: PayloadAction<TradeableAsset>) => {
-            state.favouriteAssets[getTradeableAssetFavouriteKey(payload)] = payload;
+            state.favouriteAssets[payload.cryptoId] = payload;
         },
         removeTradeableAssetFromFavourites: (state, { payload }: PayloadAction<TradeableAsset>) => {
-            delete state.favouriteAssets[getTradeableAssetFavouriteKey(payload)];
+            delete state.favouriteAssets[payload.cryptoId];
         },
         setTradingEnvironment: (state, { payload }: PayloadAction<InvityServerEnvironment>) => {
             state.tradingEnvironment = payload;
@@ -88,7 +87,7 @@ export const selectTradingFavouriteAssetsArray = createMemoizedSelector(
 
 export const selectIsTradingFavouriteAsset = createMemoizedSelector(
     [selectTradingFavouriteAssets, (_state, asset: TradeableAsset) => asset],
-    (assets, asset) => !!assets[getTradeableAssetFavouriteKey(asset)],
+    (assets, asset) => !!assets[asset.cryptoId],
 );
 
 export const selectBuySelectedReceiveAccount = (state: TradingRootState) =>
@@ -96,3 +95,18 @@ export const selectBuySelectedReceiveAccount = (state: TradingRootState) =>
 
 export const selectTradingEnvironment = (state: TradingRootState) =>
     state.wallet.tradingNew.tradingEnvironment;
+
+export const selectTradingBuyCoins = createMemoizedSelector(
+    [state => state.wallet.tradingNew.info.coins],
+    coins => {
+        if (!coins) {
+            return [];
+        }
+
+        return Object.entries(coins)
+            .filter(([_, { services }]) => services.buy)
+            .map(([cryptoId, coinInfo]) =>
+                coinInfoToTradeableAsset(cryptoId as CryptoId, coinInfo),
+            );
+    },
+);

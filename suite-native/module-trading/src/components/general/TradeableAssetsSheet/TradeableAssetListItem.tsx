@@ -1,10 +1,15 @@
 import { Pressable } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useFormatters } from '@suite-common/formatters';
-import { Box, HStack, PriceChangeBadge, RoundedIcon, Text, VStack } from '@suite-native/atoms';
+import { invariant } from '@suite-common/suite-utils';
+import { cryptoIdToSymbol } from '@suite-common/trading';
+import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { NetworkBadge } from '../NetworkBadge';
+import { NetworkSymbolExtendedFormatter } from '../NetworkSymbolExtendedFormatter';
 import { FavouriteIcon } from './FavouriteIcon';
 import {
     TradingRootState,
@@ -16,8 +21,6 @@ import { TradeableAsset } from '../../../types';
 
 export type TradeableAssetListItemProps = {
     asset: TradeableAsset;
-    fiatRate: number;
-    priceChange: number;
     onPress: () => void;
 };
 
@@ -31,19 +34,18 @@ const vStackStyle = prepareNativeStyle(({ spacings }) => ({
     paddingVertical: spacings.sp12,
 }));
 
-export const TradeableAssetListItem = ({
-    asset,
-    fiatRate,
-    priceChange,
-    onPress,
-}: TradeableAssetListItemProps) => {
+export const TradeableAssetListItem = ({ asset, onPress }: TradeableAssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const { DisplaySymbolFormatter, FiatAmountFormatter, NetworkNameFormatter } = useFormatters();
     const dispatch = useDispatch();
+    const { translate } = useTranslate();
 
     const isFavourite = useSelector((state: TradingRootState) =>
         selectIsTradingFavouriteAsset(state, asset),
     );
+    const { symbol, name, contractAddress, cryptoId } = asset;
+
+    const networkSymbol = cryptoIdToSymbol(cryptoId);
+    invariant(networkSymbol, `Network symbol not found for cryptoId: ${cryptoId}`);
 
     const onFavouritePress = () => {
         if (isFavourite) {
@@ -53,34 +55,36 @@ export const TradeableAssetListItem = ({
         }
     };
 
-    const { symbol, contractAddress, name } = asset;
-    const assetName = name ?? <NetworkNameFormatter value={symbol} />;
-
     return (
         <Pressable
             onPress={onPress}
             accessible={true}
             accessibilityRole="button"
-            accessibilityLabel={name ?? symbol}
+            accessibilityLabel={name}
         >
             <HStack alignItems="center" spacing="sp12">
                 <Box justifyContent="center">
-                    <RoundedIcon symbol={symbol} contractAddress={contractAddress} />
+                    <CryptoIconWithNetwork
+                        symbol={networkSymbol}
+                        contractAddress={contractAddress}
+                    />
                 </Box>
                 <VStack style={applyStyle(vStackStyle)}>
                     <HStack alignItems="center" justifyContent="space-between">
-                        <Text variant="body" color="textDefault">
-                            {assetName}
-                        </Text>
-                        <Text variant="body" color="textDefault">
-                            <FiatAmountFormatter value={fiatRate} />
+                        <Text
+                            variant="body"
+                            color="textDefault"
+                            accessibilityLabel={translate('moduleTrading.coinName')}
+                        >
+                            {name}
                         </Text>
                     </HStack>
-                    <HStack alignItems="center" justifyContent="space-between">
-                        <Text variant="hint" color="textSubdued">
-                            <DisplaySymbolFormatter value={symbol} areAmountUnitsEnabled={false} />
-                        </Text>
-                        <PriceChangeBadge valuePercentageChange={priceChange} />
+                    <HStack alignItems="center" justifyContent="flex-start">
+                        <NetworkSymbolExtendedFormatter
+                            symbol={symbol}
+                            accessibilityLabel={translate('moduleTrading.coinSymbol')}
+                        />
+                        <NetworkBadge cryptoId={cryptoId} />
                     </HStack>
                 </VStack>
                 <Box justifyContent="center">

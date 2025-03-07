@@ -4,7 +4,6 @@ import { BasicProviderForTests, renderHook } from '@suite-native/test-utils';
 import { useNativeStyles } from '@trezor/styles';
 import { CoinsColors, Colors } from '@trezor/theme';
 
-import { TradeableAsset } from '../../types';
 import { useTradeableAssetDominantColor } from '../useTradeableAssetDominantColor';
 
 describe('useTradeableAssetDominantColor', () => {
@@ -16,8 +15,13 @@ describe('useTradeableAssetDominantColor', () => {
         givenContractAddress?: TokenAddress,
     ) =>
         renderHook(
-            ({ symbol, contractAddress }: TradeableAsset) =>
-                useTradeableAssetDominantColor(symbol, contractAddress),
+            ({
+                symbol,
+                contractAddress,
+            }: {
+                symbol: NetworkSymbol;
+                contractAddress: TokenAddress | undefined;
+            }) => useTradeableAssetDominantColor(symbol, contractAddress),
             {
                 initialProps: { symbol: givenSymbol, contractAddress: givenContractAddress },
                 wrapper: BasicProviderForTests,

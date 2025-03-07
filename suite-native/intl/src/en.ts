@@ -1386,6 +1386,9 @@ export const en = {
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',
         selectCoinFirst: 'Select coin first',
+        networkName: 'Network name',
+        coinName: 'Coin name',
+        coinSymbol: 'Coin symbol',
     },
     firmware: {
         title: 'Firmware',

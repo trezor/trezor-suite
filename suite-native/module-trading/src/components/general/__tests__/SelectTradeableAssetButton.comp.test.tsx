@@ -1,5 +1,6 @@
 import { render } from '@suite-native/test-utils';
 
+import { adaAsset } from '../../../__fixtures__/tradeableAssets';
 import { SelectTradeableAssetButton } from '../SelectTradeableAssetButton';
 
 describe('SelectTradeableAssetButton', () => {
@@ -14,21 +15,9 @@ describe('SelectTradeableAssetButton', () => {
 
     it('should render TradeableAssetButton when network is selected', () => {
         const { getByLabelText } = render(
-            <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={{ symbol: 'ada' }} />,
+            <SelectTradeableAssetButton onPress={jest.fn()} selectedAsset={adaAsset} />,
         );
         const button = getByLabelText('Select coin');
         expect(button).toHaveTextContent(/^ADA.$/);
-    });
-
-    it('should render asset name when specified in selectedAsset', () => {
-        const { getByLabelText } = render(
-            <SelectTradeableAssetButton
-                onPress={jest.fn()}
-                selectedAsset={{ symbol: 'eth', name: 'USDC' }}
-            />,
-        );
-
-        const button = getByLabelText('Select coin');
-        expect(button).toHaveTextContent(/^USDC.$/);
     });
 });

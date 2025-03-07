@@ -1,11 +1,9 @@
 import { fireEvent, render } from '@suite-native/test-utils';
 
-import { TradeableAsset } from '../../../types';
+import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { TradeableAssetButton } from '../TradeableAssetButton';
 
 describe('TradeableAssetButton', () => {
-    const btcAsset: TradeableAsset = { symbol: 'btc' };
-
     it('should render display name of given symbol', () => {
         const { getByText } = render(
             <TradeableAssetButton

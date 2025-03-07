@@ -1,54 +1,26 @@
 import { fireEvent, renderWithStore } from '@suite-native/test-utils';
 
-import { TradeableAsset } from '../../../../types';
+import { btcAsset, usdcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { TradeableAssetListItem, TradeableAssetListItemProps } from '../TradeableAssetListItem';
 
 describe('TradeableAssetListItem', () => {
-    const btcAsset: TradeableAsset = { symbol: 'btc' };
-    const usdcAsset = {
-        symbol: 'eth',
-        name: 'USDC',
-        contractAddress: 'contractAddress',
-    } as TradeableAsset;
-
     const renderComponent = async ({
         onPress = jest.fn(),
-        priceChange = 0,
-        fiatRate = 1,
         asset = btcAsset,
     }: Partial<TradeableAssetListItemProps>) => {
-        const result = renderWithStore(
-            <TradeableAssetListItem
-                asset={asset}
-                onPress={onPress}
-                priceChange={priceChange}
-                fiatRate={fiatRate}
-            />,
-        );
+        const result = renderWithStore(<TradeableAssetListItem asset={asset} onPress={onPress} />);
 
         await result.findByAccessibilityHint('Add to favourites');
 
         return result;
     };
 
-    it('should render with correct labels when no name is specified', async () => {
-        const { getByText } = await renderComponent({
-            asset: btcAsset,
-            priceChange: 0.9,
-            fiatRate: 100,
-        });
+    it('should render with correct labels', async () => {
+        const { getByLabelText } = await renderComponent({ asset: usdcAsset });
 
-        expect(getByText('Bitcoin')).toBeDefined();
-        expect(getByText('BTC')).toBeDefined();
-        expect(getByText('$100.00')).toBeDefined();
-        expect(getByText('90.0%')).toBeDefined();
-    });
-
-    it('should render with correct labels when name is specified', async () => {
-        const { getByText } = await renderComponent({ asset: usdcAsset });
-
-        expect(getByText('USDC')).toBeDefined();
-        expect(getByText('ETH')).toBeDefined();
+        expect(getByLabelText('Coin name')).toHaveTextContent('USDC');
+        expect(getByLabelText('Coin symbol')).toHaveTextContent('ETH');
+        expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
     });
 
     it('should call onPress callback when clicked', async () => {

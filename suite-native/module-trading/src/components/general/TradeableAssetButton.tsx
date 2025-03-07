@@ -3,12 +3,13 @@ import { Pressable } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { useFormatters } from '@suite-common/formatters';
-import { Text } from '@suite-native/atoms';
+import { invariant } from '@suite-common/suite-utils';
+import { cryptoIdToSymbol } from '@suite-common/trading';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@trezor/utils';
 
+import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter';
 import { useTradeableAssetDominantColor } from '../../hooks/useTradeableAssetDominantColor';
 import { TradeableAsset } from '../../types';
 
@@ -37,22 +38,20 @@ const gradientBackgroundStyle = prepareNativeStyle(({ colors, borders }) => ({
 }));
 
 export const TradeableAssetButton = ({
-    asset: { symbol, contractAddress, name },
+    asset: { symbol, contractAddress, cryptoId },
     caret,
     onPress,
     accessibilityLabel,
 }: TradeableAssetButtonProps) => {
     const { applyStyle } = useNativeStyles();
-    const { DisplaySymbolFormatter } = useFormatters();
 
-    const dominantAssetColor = useTradeableAssetDominantColor(symbol, contractAddress);
+    const networkSymbol = cryptoIdToSymbol(cryptoId);
+    invariant(networkSymbol, `Network symbol not found for cryptoId: ${cryptoId}`);
+
+    const dominantAssetColor = useTradeableAssetDominantColor(networkSymbol, contractAddress);
     const gradientColors = useMemo<[string, string]>(
         () => [hexToRgba(dominantAssetColor, 0.3), hexToRgba(dominantAssetColor, 0.01)],
         [dominantAssetColor],
-    );
-
-    const displayName = name ?? (
-        <DisplaySymbolFormatter value={symbol} areAmountUnitsEnabled={false} />
     );
 
     return (
@@ -69,10 +68,8 @@ export const TradeableAssetButton = ({
                 accessibilityRole="button"
                 accessibilityLabel={accessibilityLabel}
             >
-                <CryptoIcon symbol={symbol} contractAddress={contractAddress} size="small" />
-                <Text color="textSubdued" variant="callout">
-                    {displayName}
-                </Text>
+                <CryptoIcon symbol={networkSymbol} contractAddress={contractAddress} size="small" />
+                <NetworkSymbolExtendedFormatter symbol={symbol} variant="callout" />
                 {caret && <Icon name="caretDown" color="textSubdued" size="medium" />}
             </Pressable>
         </LinearGradient>

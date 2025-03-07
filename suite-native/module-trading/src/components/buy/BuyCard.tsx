@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
+import { cryptoIdToSymbol } from '@suite-common/trading';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -30,11 +31,12 @@ export const BuyCard = () => {
     const { selectedValue: selectedAsset, ...restAssetControls } =
         useTradeSheetControls<TradeableAsset>();
 
-    const selectedSymbol = selectedAsset?.symbol;
+    const selectedCryptoId = selectedAsset?.cryptoId;
+    const selectedNetworkSymbol = selectedCryptoId ? cryptoIdToSymbol(selectedCryptoId) : undefined;
 
     useEffect(() => {
         dispatch(setBuySelectedReceiveAccount({ selectedReceiveAccount: undefined }));
-    }, [dispatch, selectedSymbol]);
+    }, [dispatch, selectedNetworkSymbol]);
 
     return (
         <Card noPadding>
@@ -61,7 +63,7 @@ export const BuyCard = () => {
                     </HStack>
                 </HStack>
             </VStack>
-            <ReceiveAccountPicker selectedSymbol={selectedSymbol} />
+            <ReceiveAccountPicker selectedSymbol={selectedNetworkSymbol} />
         </Card>
     );
 };
