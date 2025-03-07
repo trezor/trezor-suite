@@ -13,6 +13,7 @@ import {
     blockchainActions,
     deviceActions,
     discoveryActions,
+    explorerActions,
     selectAccountByKey,
     selectDeviceByStaticSessionId,
     selectDevices,
@@ -125,6 +126,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (blockchainActions.setBackend.match(action)) {
                 api.dispatch(storageActions.saveBackend(action.payload.symbol));
+            }
+
+            if (explorerActions.setExplorer.match(action)) {
+                storageActions.saveExplorer(action.payload);
             }
 
             if (

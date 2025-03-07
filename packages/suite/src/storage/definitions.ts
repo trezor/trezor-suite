@@ -8,7 +8,7 @@ import type { MessageState } from '@suite-common/message-system';
 import type { DeviceWithEmptyPath, MessageSystem } from '@suite-common/suite-types';
 import { SimpleTokenStructure } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { DeviceReducerState } from '@suite-common/wallet-core';
 import type {
     BackendSettings,
@@ -40,6 +40,10 @@ export interface SuiteDBSchema extends DBSchema {
             order: number;
             blockTime: number; // TODO: blockTime can be undefined
         };
+    };
+    explorer: {
+        key: NetworkSymbol;
+        value: { symbol: NetworkSymbol; explorer: Explorer };
     };
     sendFormDrafts: {
         key: string; // accountKey

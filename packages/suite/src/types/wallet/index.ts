@@ -5,6 +5,7 @@ import {
     accountsActions,
     blockchainActions,
     discoveryActions,
+    explorerActions,
     sendFormActions,
     stakeActions,
 } from '@suite-common/wallet-core';
@@ -58,6 +59,7 @@ type TokenDefinitionsAction = ReturnType<
 >;
 type AccountsAction = ReturnType<(typeof accountsActions)[keyof typeof accountsActions]>;
 type BlockchainAction = ReturnType<(typeof blockchainActions)[keyof typeof blockchainActions]>;
+type ExplorerAction = ReturnType<(typeof explorerActions)[keyof typeof explorerActions]>;
 type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
 type StakeAction = ReturnType<(typeof stakeActions)[keyof typeof stakeActions]>;
 type SendFormAction = ReturnType<(typeof sendFormActions)[keyof typeof sendFormActions]>;
@@ -73,6 +75,7 @@ type ConnectPopupAction = ReturnType<
 export type WalletAction =
     | TokenDefinitionsAction
     | BlockchainAction
+    | ExplorerAction
     | ReceiveAction
     | SignVerifyAction
     | GraphAction

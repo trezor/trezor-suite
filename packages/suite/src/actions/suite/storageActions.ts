@@ -5,7 +5,7 @@ import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DefinitionType, TokenManagementAction } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { deviceActions, selectDevices } from '@suite-common/wallet-core';
 import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
@@ -27,6 +27,22 @@ import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
+
+export const saveExplorer = async ({
+    symbol,
+    explorer,
+}: {
+    symbol: NetworkSymbol;
+    explorer?: Explorer;
+}) => {
+    if (!(await db.isAccessible())) return;
+
+    db.removeItemByPK('explorer', symbol);
+
+    if (explorer !== undefined) {
+        return db.addItem('explorer', { symbol, explorer }, symbol);
+    }
+};
 
 export const saveDraft = async (formState: FormState, accountKey: string) => {
     if (!(await db.isAccessible())) return;

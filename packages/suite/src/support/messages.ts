@@ -6073,19 +6073,19 @@ export default defineMessages({
     },
     SETTINGS_ADV_COIN_CONN_INFO_URL: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_URL',
-        defaultMessage: 'Currently connected to {url}',
+        defaultMessage: 'Currently connected to',
     },
     SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH',
-        defaultMessage: 'Block hash: {hash}',
+        defaultMessage: 'Block hash',
     },
     SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT',
-        defaultMessage: 'Block height: {height}',
+        defaultMessage: 'Block height',
     },
     SETTINGS_ADV_COIN_CONN_INFO_VERSION: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_VERSION',
-        defaultMessage: 'Backend version: {version}',
+        defaultMessage: 'Backend version',
     },
     SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
@@ -6519,6 +6519,62 @@ export default defineMessages({
     TR_VIEW_IN_EXPLORER: {
         id: 'TR_VIEW_IN_EXPLORER',
         defaultMessage: 'View in explorer',
+    },
+    TR_EXPLORER: {
+        id: 'TR_EXPLORER',
+        defaultMessage: 'Explorer',
+    },
+    TR_EXPLORER_DEFAULT: {
+        id: 'TR_EXPLORER_DEFAULT',
+        defaultMessage: 'Default explorer',
+    },
+    TR_EXPLORER_CUSTOM: {
+        id: 'TR_EXPLORER_CUSTOM',
+        defaultMessage: 'Custom explorer',
+    },
+    TR_EXPLORER_BASE_URL: {
+        id: 'TR_EXPLORER_BASE_URL',
+        defaultMessage: 'Base URL',
+    },
+    TR_EXPLORER_TX: {
+        id: 'TR_EXPLORER_TX',
+        defaultMessage: 'Transaction',
+    },
+    TR_EXPLORER_ACCOUNT: {
+        id: 'TR_EXPLORER_ACCOUNT',
+        defaultMessage: 'Account',
+    },
+    TR_EXPLORER_ADDRESS: {
+        id: 'TR_EXPLORER_ADDRESS',
+        defaultMessage: 'Address',
+    },
+    TR_EXPLORER_NFT: {
+        id: 'TR_EXPLORER_NFT',
+        defaultMessage: 'NFT',
+    },
+    TR_EXPLORER_QUERY_STRING: {
+        id: 'TR_EXPLORER_QUERY_STRING',
+        defaultMessage: 'Query string',
+    },
+    TR_EXPLORER_TOKEN: {
+        id: 'TR_EXPLORER_TOKEN',
+        defaultMessage: 'Token',
+    },
+    TR_EXPLORER_SAVE: {
+        id: 'TR_EXPLORER_SAVE',
+        defaultMessage: 'Save',
+    },
+    TR_EXPLORER_SET_DEFAULT: {
+        id: 'TR_EXPLORER_SET_DEFAULT',
+        defaultMessage: 'Set to default',
+    },
+    TR_EXPLORER_INVALID_URL: {
+        id: 'TR_EXPLORER_INVALID_URL',
+        defaultMessage: 'Invalid URL',
+    },
+    TR_EXPLORER_INVALID_SUFFIX: {
+        id: 'TR_EXPLORER_INVALID_SUFFIX',
+        defaultMessage: 'Field cannot be empty',
     },
     TR_EXPORT_FAIL: {
         id: 'TR_EXPORT_FAIL',

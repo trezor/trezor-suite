@@ -127,6 +127,7 @@ export const extraDependenciesMock: ExtraDependencies = {
     },
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
+        storageLoadExplorer: mockReducer('storageLoadExplorer'),
         storageLoadAccounts: mockReducer('storageLoadAccounts'),
         storageLoadTransactions: mockReducer('storageLoadTransactions'),
         storageLoadHistoricRates: mockReducer('storageLoadHistoricRates'),

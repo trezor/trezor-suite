@@ -1,8 +1,10 @@
 import { ReactNode } from 'react';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { Explorer, getNetwork } from '@suite-common/wallet-config';
+import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import {
     selectAccountByKey,
+    selectExplorer,
     selectIsPhishingTransaction,
     selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
@@ -34,14 +36,13 @@ export const TxDetailModalBase = ({
     bottomContent,
     children,
 }: TxDetailModalProps) => {
-    const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
-
     const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
     const confirmations = useSelector(state =>
         selectTransactionConfirmations(state, tx.txid, accountKey),
     );
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
     const network = getNetwork(account.symbol);
+    const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
 
     const isPhishingTransaction = useSelector(state =>
         selectIsPhishingTransaction(state, tx.txid, accountKey),
@@ -57,8 +58,8 @@ export const TxDetailModalBase = ({
         >
             <Column gap={spacings.md}>
                 <BasicTxDetails
-                    explorerUrl={blockchain.explorer.tx}
-                    explorerUrlQueryString={blockchain.explorer.queryString}
+                    explorerUrl={getExplorerUrl(explorer, 'tx')!}
+                    explorerUrlQueryString={explorer.queryString}
                     tx={tx}
                     network={network}
                     confirmations={confirmations}

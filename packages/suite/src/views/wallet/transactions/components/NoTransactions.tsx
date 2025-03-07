@@ -1,7 +1,10 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import { Explorer } from '@suite-common/wallet-config';
+import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
+import { selectExplorer } from '@suite-common/wallet-core';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { AccountExceptionLayout } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
 interface NoTransactionsProps {
@@ -9,9 +12,8 @@ interface NoTransactionsProps {
 }
 
 export const NoTransactions = ({ account }: NoTransactionsProps) => {
-    const network = getNetwork(account.symbol);
-
-    const explorerUrl = `${network.explorer.account}${account.descriptor}${network.explorer.queryString ?? ''}`;
+    const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
+    const explorerUrl = `${getExplorerUrl(explorer, 'account')}${account.descriptor}${explorer.queryString ?? ''}`;
 
     return (
         <AccountExceptionLayout

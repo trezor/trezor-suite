@@ -11,6 +11,7 @@ import {
     BlockchainState,
     DeviceRootState,
     DiscoveryRootState,
+    ExplorerConfig,
     FiatRatesState,
     TransactionsState,
     deviceActions,
@@ -122,6 +123,14 @@ export const extraDependencies: ExtraDependencies = {
                 if (blockchain) {
                     blockchain.backends = backend.value;
                 }
+            });
+        },
+        storageLoadExplorer: (state: ExplorerConfig, { payload }: StorageLoadAction) => {
+            payload.explorer.forEach(({ symbol, explorer }) => {
+                state[symbol] = {
+                    ...state[symbol],
+                    custom: explorer,
+                };
             });
         },
         storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {

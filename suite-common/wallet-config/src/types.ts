@@ -72,6 +72,7 @@ export type Bip43PathTemplate =
 export type Bip43Path = `m${Level}${Level}${Level}${MaybeLevel}${MaybeLevel}`;
 
 export type Explorer = {
+    base: string;
     tx: string;
     account: string;
     address: string;

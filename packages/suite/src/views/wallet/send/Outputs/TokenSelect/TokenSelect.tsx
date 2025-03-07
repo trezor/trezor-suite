@@ -9,12 +9,17 @@ import {
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
 import {
+    Explorer,
     type NetworkSymbol,
     getCoingeckoId,
     getNetwork,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
-import { selectCurrentFiatRates, updateFiatRatesThunk } from '@suite-common/wallet-core';
+import {
+    selectCurrentFiatRates,
+    selectExplorer,
+    updateFiatRatesThunk,
+} from '@suite-common/wallet-core';
 import { Account, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
@@ -143,6 +148,8 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const [search, setSearch] = useState('');
     const [activeTokenTab, setActiveTokenTab] = useState<TokenTab['tab']>('tokens');
     const [isTokensModalActive, setIsTokensModalActive] = useState(false);
+
+    const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
 
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
     const localCurrency = useSelector(selectLocalCurrency);
@@ -377,7 +384,8 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                                 tokenContractAddress={networkTokenContractAddress}
                                                 shouldAllowCopy={true}
                                                 tokenExplorerUrl={getTokenExplorerUrl(
-                                                    getNetwork(account.symbol),
+                                                    explorer,
+                                                    getNetwork(account.symbol).networkType,
                                                     selectedToken,
                                                 )}
                                                 onCopy={() =>

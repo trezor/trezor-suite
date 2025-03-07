@@ -6,7 +6,8 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { Network } from '@suite-common/wallet-config';
+import { Explorer, Network } from '@suite-common/wallet-config';
+import { selectExplorer } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { getNftContractExplorerUrl, getNftExplorerUrl } from '@suite-common/wallet-utils';
 import { Badge, Button, Dropdown, Icon, IconCircle, Row, Table, Text } from '@trezor/components';
@@ -48,6 +49,7 @@ const NftsRow = ({
     const dispatch = useDispatch();
     const [isCollectionOpen, setIsCollectionOpen] = useState(false);
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
+    const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
     const { account } = selectedAccount;
     const nftItemsCount = nft.ids?.length || nft.multiTokenValues?.length || 0;
     const NftName = <BlurUrls text={nft.name} />;
@@ -119,7 +121,7 @@ const NftsRow = ({
                                             icon: 'arrowUpRight',
                                             onClick: () => {
                                                 window.open(
-                                                    getNftContractExplorerUrl(network, nft),
+                                                    getNftContractExplorerUrl(explorer, nft),
                                                     '_blank',
                                                 );
                                             },
@@ -199,7 +201,7 @@ const NftsRow = ({
                                         <TrezorLink
                                             typographyStyle="label"
                                             variant="nostyle"
-                                            href={getNftExplorerUrl(network, nft, id)}
+                                            href={getNftExplorerUrl(explorer, nft, id)}
                                             target="_blank"
                                             onClick={e => e.stopPropagation()}
                                         >
@@ -236,7 +238,7 @@ const NftsRow = ({
                                         <TrezorLink
                                             typographyStyle="label"
                                             variant="nostyle"
-                                            href={getNftExplorerUrl(network, nft, value?.id || '')}
+                                            href={getNftExplorerUrl(explorer, nft, value?.id || '')}
                                             target="_blank"
                                             onClick={e => e.stopPropagation()}
                                         >

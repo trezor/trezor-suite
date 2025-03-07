@@ -1,5 +1,10 @@
-import { getNetwork } from '@suite-common/wallet-config';
-import { selectAccountByKey, selectIsPhishingTransaction } from '@suite-common/wallet-core';
+import { Explorer, getNetwork } from '@suite-common/wallet-config';
+import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
+import {
+    selectAccountByKey,
+    selectExplorer,
+    selectIsPhishingTransaction,
+} from '@suite-common/wallet-core';
 import { Account, ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getAccountKey } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
@@ -33,10 +38,10 @@ export const DetailModal = ({
     const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
     const network = getNetwork(account.symbol);
+    const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
     const isPhishingTransaction = useSelector(state =>
         selectIsPhishingTransaction(state, tx.txid, accountKey),
     );
-    const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
 
     return (
         <TxDetailModalBase
@@ -60,7 +65,7 @@ export const DetailModal = ({
             onBackClick={undefined}
         >
             <AdvancedTxDetails
-                explorerUrl={blockchain.explorer.tx}
+                explorerUrl={getExplorerUrl(explorer, 'tx')!}
                 defaultTab={tab}
                 network={network}
                 accountType={account.accountType}

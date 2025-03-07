@@ -1,5 +1,6 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectBlockchainExplorerBySymbol } from '@suite-common/wallet-core';
+import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
+import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
+import { selectExplorer } from '@suite-common/wallet-core';
 import { Banner, Column, H4, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
@@ -11,8 +12,10 @@ type AnalyzeInExplorerBannerProps = {
 };
 
 export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBannerProps) => {
-    const explorer = useSelector(state => selectBlockchainExplorerBySymbol(state, symbol));
-    const href = useExternalLink(`${explorer?.tx}${txid}${explorer.queryString ?? ''}`);
+    const explorer = useSelector(state => selectExplorer(state, symbol)) as Explorer;
+    const href = useExternalLink(
+        `${getExplorerUrl(explorer, 'tx')}${txid}${explorer.queryString ?? ''}`,
+    );
 
     return (
         <Banner

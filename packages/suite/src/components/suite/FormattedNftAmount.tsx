@@ -1,6 +1,8 @@
 import { useTheme } from 'styled-components';
 
 import { SignValue } from '@suite-common/suite-types';
+import { getExplorerUrl } from '@suite-common/wallet-config';
+import { selectExplorer } from '@suite-common/wallet-core';
 import { isNftMultitokenTransfer } from '@suite-common/wallet-utils';
 import { Box, Column, Row, Text } from '@trezor/components';
 import { TokenTransfer } from '@trezor/connect';
@@ -34,6 +36,7 @@ export const FormattedNftAmount = ({
     const { translationString } = useTranslation();
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { network } = selectedAccount;
+    const explorer = useSelector(state => selectExplorer(state, network?.symbol));
 
     const symbolComponent = transfer.symbol ? (
         <Text ellipsisLineCount={1}>
@@ -69,7 +72,7 @@ export const FormattedNftAmount = ({
                             </Row>
                             {isWithLink && network?.networkType === 'ethereum' ? (
                                 <TrezorLink
-                                    href={`${network?.explorer.nft}/${transfer.contract}/${token.id}`}
+                                    href={`${getExplorerUrl(explorer, 'nft')}/${transfer.contract}/${token.id}`}
                                     color={theme.textSecondaryHighlight}
                                     variant="underline"
                                     typographyStyle={linkTypographyStyle}
@@ -101,7 +104,7 @@ export const FormattedNftAmount = ({
                     <TrezorLink
                         href={
                             network?.networkType === 'ethereum'
-                                ? `${network?.explorer.nft}/${transfer.contract}/${transfer.amount}`
+                                ? `${getExplorerUrl(explorer, 'nft')}/${transfer.contract}/${transfer.amount}`
                                 : undefined
                         }
                         color={theme.textSecondaryHighlight}

@@ -46,6 +46,7 @@ export const preloadStore = async () => {
         tokenManagement,
         security,
         connect,
+        explorer,
     ] = await Promise.all([
         db.getItemByPK('suiteSettings', 'suite'),
         db.getItemsExtended('devices'),
@@ -67,6 +68,7 @@ export const preloadStore = async () => {
         db.getItemsWithKeys('tokenManagement'),
         db.getItemByPK('security', 'security'),
         db.getItemByPK('connect', 'connect'),
+        db.getItemsExtended('explorer'),
     ]);
 
     return {
@@ -92,6 +94,7 @@ export const preloadStore = async () => {
             tokenManagement,
             security,
             connect,
+            explorer,
         },
     } as const;
 };

@@ -1,5 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Paragraph } from '@trezor/components';
+import { Column, InfoItem, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
@@ -16,18 +17,23 @@ const ConnectionInfo = ({ symbol }: ConnectionInfoProps) => {
     return (
         <Paragraph typographyStyle="hint">
             {connected ? (
-                <>
-                    <Translation id="SETTINGS_ADV_COIN_CONN_INFO_URL" values={{ url }} />
-                    <br />
-                    <Translation id="SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH" values={{ hash }} />
-                    <br />
-                    <Translation
-                        id="SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT"
-                        values={{ height }}
-                    />
-                    <br />
-                    <Translation id="SETTINGS_ADV_COIN_CONN_INFO_VERSION" values={{ version }} />
-                </>
+                <Column gap={spacings.sm}>
+                    <InfoItem label={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_URL" />}>
+                        {url}
+                    </InfoItem>
+
+                    <InfoItem label={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH" />}>
+                        {hash}
+                    </InfoItem>
+
+                    <InfoItem label={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT" />}>
+                        {height}
+                    </InfoItem>
+
+                    <InfoItem label={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_VERSION" />}>
+                        {version}
+                    </InfoItem>
+                </Column>
             ) : (
                 <Translation id="SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED" />
             )}

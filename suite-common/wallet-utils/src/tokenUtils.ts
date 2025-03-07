@@ -1,4 +1,9 @@
-import type { Network, NetworkSymbolExtended } from '@suite-common/wallet-config';
+import {
+    type Explorer,
+    type NetworkSymbolExtended,
+    type NetworkType,
+    getExplorerUrl,
+} from '@suite-common/wallet-config';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
@@ -25,29 +30,30 @@ export const getContractAddressForNetworkSymbol = (
 };
 
 export const getTokenExplorerUrl = (
-    network: Network,
+    explorer: Explorer,
+    networkType: NetworkType,
     token: Pick<TokenInfo, 'contract' | 'fingerprint'>,
 ) => {
-    const explorerUrl =
-        network.networkType === 'cardano' ? network.explorer.token : network.explorer.account;
-    const contractAddress = network.networkType === 'cardano' ? token.fingerprint : token.contract;
-    const queryString = network.explorer.queryString ?? '';
+    const suffix = networkType === 'cardano' ? 'token' : 'account';
+    const explorerUrl = getExplorerUrl(explorer, suffix);
+    const contractAddress = networkType === 'cardano' ? token.fingerprint : token.contract;
+    const queryString = explorer.queryString ?? '';
 
     return `${explorerUrl}${contractAddress}${queryString}`;
 };
 
-export const getNftExplorerUrl = (network: Network, nft: TokenInfo, id: string) => {
-    const explorerUrl = network.explorer.nft;
+export const getNftExplorerUrl = (explorer: Explorer, nft: TokenInfo, id: string) => {
+    const explorerUrl = getExplorerUrl(explorer, 'nft');
     const contractAddressWithId = nft.contract + `/${id}`;
-    const queryString = network.explorer.queryString ?? ''; // queryString is used for solana only.
+    const queryString = explorer.queryString ?? ''; // queryString is used for solana only.
 
     return `${explorerUrl}${contractAddressWithId}${queryString}`;
 };
 
-export const getNftContractExplorerUrl = (network: Network, nft: TokenInfo) => {
-    const explorerUrl = network.explorer.account;
+export const getNftContractExplorerUrl = (explorer: Explorer, nft: TokenInfo) => {
+    const explorerUrl = getExplorerUrl(explorer, 'account');
     const contractAddress = nft.contract;
-    const queryString = network.explorer.queryString ?? '';
+    const queryString = explorer.queryString ?? '';
 
     return `${explorerUrl}${contractAddress}${queryString}`;
 };

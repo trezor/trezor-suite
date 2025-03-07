@@ -3,6 +3,7 @@
 ## 55
 
 - change `tradingTrades` - add `sendAccountKey` and `receiveAccountKey` to each buy, sell, and exchange trade
+- added `explorer` store for custom explorer configuration
 
 ## 54
 

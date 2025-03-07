@@ -6,6 +6,7 @@ import {
     prepareAccountsReducer,
     prepareBlockchainReducer,
     prepareDiscoveryReducer,
+    prepareExplorerReducer,
     prepareFiatRatesReducer,
     prepareSendFormReducer,
     prepareStakeReducer,
@@ -27,6 +28,7 @@ import { tradingReducer } from './tradingReducer';
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
 export const blockchainReducer = prepareBlockchainReducer(extraDependencies);
+export const explorerReducer = prepareExplorerReducer(extraDependencies);
 export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 export const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 export const stakeReducer = prepareStakeReducer(extraDependencies);
@@ -44,6 +46,7 @@ const WalletReducers = combineReducers({
     receive: receiveReducer,
     fees: feesReducer,
     blockchain: blockchainReducer,
+    explorer: explorerReducer,
     trading: tradingReducer,
     tradingNew: tradingNewReducer, // TODO: trading - tradingNew is temporary
     send: sendFormReducer,

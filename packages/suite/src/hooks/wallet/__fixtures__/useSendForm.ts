@@ -2,6 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
@@ -277,6 +278,15 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                     eth: {},
                     xrp: {},
                     sol: { blockHash: 'BuKJXfBwb5BUXK7wACFCBpTHKyzcSfnAXG2NpyHJQhcX' },
+                },
+                () => ({}),
+            ),
+            explorer: createReducer(
+                {
+                    btc: { default: getNetwork('btc').explorer.base },
+                    eth: { default: getNetwork('eth').explorer.base },
+                    xrp: { default: getNetwork('xrp').explorer.base },
+                    sol: { default: getNetwork('sol').explorer.base },
                 },
                 () => ({}),
             ),

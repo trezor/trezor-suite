@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
+    Badge,
     Button,
     Card,
     CollapsibleBox,
@@ -18,6 +19,7 @@ import { spacings } from '@trezor/theme';
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useBackendsForm, useDefaultUrls } from 'src/hooks/settings/backends';
+import { useExplorerForm } from 'src/hooks/settings/useExplorerForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
@@ -25,6 +27,7 @@ import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';
 import ConnectionInfo from './CustomBackends/ConnectionInfo';
 import { TorModal, TorResult } from './CustomBackends/TorModal';
+import { ExplorerConfigForm } from './ExplorerConfigForm';
 
 type AdvancedCoinSettingsModalProps = {
     symbol: NetworkSymbol;
@@ -39,22 +42,19 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
     const dispatch = useDispatch();
     const [torModalOpen, setTorModalOpen] = useState(false);
 
-    const {
-        type,
-        urls,
-        input: { error, name, placeholder, register, reset, validate, value },
-        changeType,
-        addUrl,
-        removeUrl,
-        save,
-        hasOnlyOnions,
-    } = useBackendsForm(symbol);
+    const explorer = useSelector(state => state.wallet.explorer[symbol]);
+    const usesCustomExplorer = explorer.custom !== undefined;
+
+    const explorerForm = useExplorerForm(symbol);
+    const backendsForm = useBackendsForm(symbol);
 
     const onSaveClick = () => {
-        if (!isTorEnabled && hasOnlyOnions()) {
+        explorerForm.save();
+
+        if (!isTorEnabled && backendsForm.hasOnlyOnions()) {
             setTorModalOpen(true);
         } else {
-            save();
+            backendsForm.save();
             onCancel();
         }
     };
@@ -65,12 +65,12 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                 await dispatch(toggleTor(true, modalType));
 
                 setTorModalOpen(false);
-                save();
+                backendsForm.save();
                 onCancel();
 
                 break;
             case 'use-defaults':
-                changeType('default');
+                backendsForm.changeType('default');
                 setTorModalOpen(false);
 
             // no default
@@ -78,9 +78,12 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
     };
 
     const { defaultUrls } = useDefaultUrls(symbol);
-    const { ref: inputRef, ...inputField } = register(name, { validate });
-    const isEditable = type !== 'default';
-    const isSubmitButtonDisabled = isEditable && !!error;
+    const { ref: inputRef, ...inputField } = backendsForm.input.register(backendsForm.input.name, {
+        validate: backendsForm.input.validate,
+    });
+    const isEditable = backendsForm.type !== 'default';
+    const isSubmitButtonDisabled =
+        (isEditable && !!backendsForm.input.error) || !explorerForm.isValid;
 
     return torModalOpen ? (
         <TorModal onResult={onTorResult} />
@@ -120,13 +123,17 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
             <Column gap={spacings.lg}>
                 <Card
                     heading={
-                        <BackendTypeSelect network={network} value={type} onChange={changeType} />
+                        <BackendTypeSelect
+                            network={network}
+                            value={backendsForm.type}
+                            onChange={backendsForm.changeType}
+                        />
                     }
                 >
                     <Column gap={spacings.xxl}>
-                        {(urls.length || (!isEditable && defaultUrls.length)) && (
+                        {(backendsForm.urls.length || (!isEditable && defaultUrls.length)) && (
                             <List bulletComponent={<DotIndicator />} gap={spacings.sm}>
-                                {(isEditable ? urls : defaultUrls).map(url => (
+                                {(isEditable ? backendsForm.urls : defaultUrls).map(url => (
                                     <List.Item
                                         data-testid="@settings/advance/url"
                                         key={url}
@@ -151,7 +158,7 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                                                     variant="tertiary"
                                                     size="tiny"
                                                     icon="trash"
-                                                    onClick={() => removeUrl(url)}
+                                                    onClick={() => backendsForm.removeUrl(url)}
                                                 >
                                                     <Translation id="TR_REMOVE" />
                                                 </Button>
@@ -164,10 +171,10 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                         {isEditable && (
                             <Column gap={spacings.sm}>
                                 <Input
-                                    data-testid={`@settings/advance/${name}`}
-                                    placeholder={placeholder}
-                                    inputState={error ? 'error' : undefined}
-                                    bottomText={error?.message || null}
+                                    data-testid="@settings/advance/url"
+                                    placeholder={backendsForm.input.placeholder}
+                                    inputState={backendsForm.input.error ? 'error' : undefined}
+                                    bottomText={backendsForm.input.error?.message || null}
                                     innerRef={inputRef}
                                     innerAddon={
                                         <Button
@@ -176,10 +183,13 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                                             icon="plus"
                                             data-testid="@settings/advance/button/add"
                                             onClick={() => {
-                                                addUrl(value);
-                                                reset();
+                                                backendsForm.addUrl(backendsForm.input.value);
+                                                backendsForm.input.reset();
                                             }}
-                                            isDisabled={!!error || value === ''}
+                                            isDisabled={
+                                                !!backendsForm.input.error ||
+                                                backendsForm.input.value === ''
+                                            }
                                         >
                                             <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
                                         </Button>
@@ -190,6 +200,27 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                         )}
                     </Column>
                 </Card>
+
+                <CollapsibleBox
+                    heading={
+                        <Row gap={spacings.sm}>
+                            <Translation id="TR_EXPLORER" />
+
+                            {usesCustomExplorer ? (
+                                <Badge variant="warning">
+                                    <Translation id="TR_EXPLORER_CUSTOM" />
+                                </Badge>
+                            ) : (
+                                <Badge variant="primary">
+                                    <Translation id="TR_EXPLORER_DEFAULT" />
+                                </Badge>
+                            )}
+                        </Row>
+                    }
+                >
+                    <ExplorerConfigForm form={explorerForm} />
+                </CollapsibleBox>
+
                 <CollapsibleBox heading={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_TITLE" />}>
                     <ConnectionInfo symbol={symbol} />
                 </CollapsibleBox>

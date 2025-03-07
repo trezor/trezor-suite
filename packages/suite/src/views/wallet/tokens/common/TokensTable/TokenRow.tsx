@@ -8,8 +8,8 @@ import {
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { TradingType, getUnusedAddressFromAccount, toTokenCryptoId } from '@suite-common/trading';
-import { Network, getCoingeckoId } from '@suite-common/wallet-config';
-import { selectSelectedDevice, sendFormActions } from '@suite-common/wallet-core';
+import { Explorer, Network, getCoingeckoId } from '@suite-common/wallet-config';
+import { selectExplorer, selectSelectedDevice, sendFormActions } from '@suite-common/wallet-core';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
@@ -108,8 +108,11 @@ export const TokenRow = ({
         account.symbol,
         token.contract,
     );
+
+    const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
+
     const coingeckoId = getCoingeckoId(account.symbol);
-    const explorerUrl = useExternalLink(getTokenExplorerUrl(network, token));
+    const explorerUrl = useExternalLink(getTokenExplorerUrl(explorer, network.networkType, token));
 
     if (!unusedAddress || !device) return null;
 

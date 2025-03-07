@@ -1283,5 +1283,6 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 55) {
         await migrateToV55(db, oldVersion, newVersion, transaction);
+        db.createObjectStore('explorer');
     }
 };

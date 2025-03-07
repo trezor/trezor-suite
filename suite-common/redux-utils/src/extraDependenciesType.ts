@@ -126,6 +126,7 @@ export type ExtraDependencies = {
     };
     reducers: {
         storageLoadBlockchain: StorageLoadReducer;
+        storageLoadExplorer: StorageLoadReducer;
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
         storageLoadHistoricRates: StorageLoadReducer;

@@ -96,6 +96,11 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
     draft[network.symbol] = {
         url: info.url,
         explorer: {
+            base: `${
+                useBackendAsExplorer
+                    ? info.url + getBlockExplorerUrlSuffix(network.explorer.base)
+                    : network.explorer.base
+            }`,
             tx: `${
                 useBackendAsExplorer
                     ? info.url + getBlockExplorerUrlSuffix(network.explorer.tx)
