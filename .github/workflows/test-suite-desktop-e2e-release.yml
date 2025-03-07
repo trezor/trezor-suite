@@ -41,7 +41,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.sha }}
 
       - name: Setup node
         uses: actions/setup-node@v4
@@ -51,12 +51,6 @@ jobs:
 
       - name: Build desktop app
         uses: ./.github/actions/build-desktop
-
-      - name: Pull Docker Images
-        shell: bash
-        env:
-          COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
-        run: docker compose pull ${{ inputs.containers }}
 
       - name: Run Playwright E2E Tests
         uses: ./.github/actions/run-e2e-tests

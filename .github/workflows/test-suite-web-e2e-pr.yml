@@ -54,9 +54,6 @@ jobs:
 
       - name: Build and Upload Suite Web
         uses: ./.github/actions/build-web
-        with:
-          aws-role: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
-          aws-region: "eu-central-1"
   
   load-e2e-matrix:
     if: github.repository == 'trezor/trezor-suite'
@@ -88,7 +85,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{github.event.after}}
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 2
 
       - name: Check previous runs

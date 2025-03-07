@@ -1,4 +1,4 @@
-name: 'Run Playwright E2E Web Tests'
+name: 'Run Playwright E2E Tests'
 description: 'Runs Playwright E2E tests with Docker and uploads logs'
 inputs:
   project: 
