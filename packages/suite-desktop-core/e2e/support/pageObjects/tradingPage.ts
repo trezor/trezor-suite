@@ -366,10 +366,11 @@ export class TradingPage {
         await this.termsConfirmButton.click();
         await this.confirmOnTrezorButton.click();
         await expect(this.devicePrompt.headerParagraph).toHaveText(accountName);
+        await this.devicePrompt.confirmOnDevicePromptIsShown();
         if (addressToCheck) {
             await expect(this.devicePrompt.outputValueOf('address')).toHaveText(addressToCheck);
+            await expect(this.devicePrompt).toDisplayReceiveAddress(addressToCheck);
         }
-        await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
         await this.devicePrompt.confirmOnDevicePromptIsHidden();
         await expect(this.confirmOnTrezorButton).toHaveText('Confirmed on Trezor');
