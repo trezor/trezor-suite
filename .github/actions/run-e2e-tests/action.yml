@@ -1,38 +1,38 @@
-name: 'Run Playwright E2E Tests'
-description: 'Runs Playwright E2E tests with Docker and uploads logs'
+name: "Run Playwright E2E Tests"
+description: "Runs Playwright E2E tests with Docker and uploads logs"
 inputs:
-  project: 
-    description: 'Playwright project name. (web|desktop)'
+  project:
+    description: "Playwright project name. (web|desktop)"
     required: true
   containers:
-    description: 'Docker containers to pull'
+    description: "Docker containers to pull"
     required: true
   test-group:
-    description: 'Test group to run'
+    description: "Test group to run"
     required: true
   additional-grep:
-    description: 'Additional grep for PW tests. Use regexp groups with positive lookahead. Example: (?=.*@webOnly)'
-    default: ''
+    description: "Additional grep for PW tests. Use regexp groups with positive lookahead. Example: (?=.*@webOnly)"
+    default: ""
     required: false
   currents-project-id:
-    description: 'Currents project ID for reporting'
+    description: "Currents project ID for reporting"
     required: true
   currents-record-key:
-    description: 'Currents record key for reporting'
+    description: "Currents record key for reporting"
     required: true
   e2e-passphrase:
-    description: 'Passphrase for E2E tests'
+    description: "Passphrase for E2E tests"
     required: true
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Extract Branch Name
       id: extract_branch
       shell: bash
       run: |
         echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
-    
-    # Electron requires unprivileged user namespaces to function properly. 
+
+    # Electron requires unprivileged user namespaces to function properly.
     # Disabling this security rule allows Electron to create sandboxed processes
     # without requiring elevated privileges, which is essential for running the application.
     # This is workaround until electron builder solves this issue in future release.
@@ -51,17 +51,21 @@ runs:
       if: ${{ inputs.project == 'web' }}
       shell: bash
       run: |
+        echo "::group::Install PW Dependencies"
         echo -e "\nenableScripts: false" >> .yarnrc.yml
         echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
         yarn workspaces focus @trezor/suite-desktop-core
         npx playwright install --with-deps
-    
+        echo "::endgroup::"
+
     - name: Pull Docker Images
       shell: bash
       env:
         COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
-      run: docker compose pull ${{ inputs.containers }}
-
+      run: |
+        echo "::group::Pull Docker Images"
+        docker compose pull --quiet ${{ inputs.containers }}
+        echo "::endgroup::"
     - name: Run Playwright E2E Tests
       shell: bash
       env:
@@ -73,10 +77,11 @@ runs:
         CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}
         PASSPHRASE: ${{ inputs.e2e-passphrase }}
       run: |
+        echo "::group::Run Playwright E2E Tests"
         docker compose up -d ${{ inputs.containers }}
         echo "Starting Playwright project ${{ inputs.project }} for test group ${{ inputs.test-group }}"
         yarn workspace @trezor/suite-desktop-core test:e2e:${{ inputs.project }} --forbid-only --grep="(?=.*${{ inputs.test-group }})${{ inputs.additional-grep }}" 
-    
+        echo "::endgroup::"
     - name: Extract and Upload Logs
       if: ${{ !cancelled() }}
       uses: ./.github/actions/upload-test-logs

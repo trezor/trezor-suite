@@ -1,11 +1,11 @@
-name: 'Extract and Upload Trezor-user-env Logs'
-description: 'Extracts logs from Trezor-user-env and Regtest, then uploads them as artifacts'
+name: "Extract and Upload Trezor-user-env Logs"
+description: "Extracts logs from Trezor-user-env and Regtest, then uploads them as artifacts"
 inputs:
   test-group:
-    description: 'Test group name for log file naming'
+    description: "Test group name for log file naming"
     required: true
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Extract Trezor-user-env and Regtest logs
       shell: bash

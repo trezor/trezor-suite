@@ -1,6 +1,6 @@
 name: "[Test] PR Suite Web e2e tests"
 # Executed as part of PR checks
-# Builds/deploys the web app to dev.suite.sldev.cz/suite-web/<branch-name>/web 
+# Builds/deploys the web app to dev.suite.sldev.cz/suite-web/<branch-name>/web
 # Runs e2e test suite for Suite Web, limited to webOnly tests
 
 permissions:
@@ -54,7 +54,7 @@ jobs:
 
       - name: Build and Upload Suite Web
         uses: ./.github/actions/build-web
-  
+
   load-e2e-matrix:
     if: github.repository == 'trezor/trezor-suite'
     outputs:
@@ -104,10 +104,10 @@ jobs:
         if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: ./.github/actions/run-e2e-tests
         with:
-          project: 'web'
+          project: "web"
           containers: ${{ matrix.CONTAINERS }}
           test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep: '(?=.*@webOnly)'
-          currents-project-id: 'Og0NOQ'
+          additional-grep: "(?=.*@webOnly)"
+          currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

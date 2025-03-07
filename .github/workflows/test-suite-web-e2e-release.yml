@@ -1,6 +1,6 @@
 name: "[Test] Release Suite Web e2e tests"
 # Triggered by push to release branch
-# Builds/deploys the web app to dev.suite.sldev.cz/suite-web/<branch-name>/web 
+# Builds/deploys the web app to dev.suite.sldev.cz/suite-web/<branch-name>/web
 # Runs e2e full test suite for Suite Web
 
 permissions:
@@ -58,7 +58,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.load-e2e-matrix.outputs.matrix) }}
-            
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,9 +69,9 @@ jobs:
       - name: Run Playwright E2E Tests
         uses: ./.github/actions/run-e2e-tests
         with:
-          project: 'web'
+          project: "web"
           containers: ${{ matrix.CONTAINERS }}
           test-group: ${{ matrix.TEST_GROUP }}
-          currents-project-id: 'Og0NOQ'
+          currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
