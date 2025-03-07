@@ -10774,6 +10774,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:2.6.0"
     "@shopify/flash-list": "npm:^1.7.2"
+    "@suite-common/trading": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
