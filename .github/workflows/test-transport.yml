@@ -45,12 +45,15 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/transport-test
+          yarn install
 
       - name: Setup containers
         run: |
           docker compose -f ./docker/docker-compose.transport-test-ci.yml pull
           docker compose -f ./docker/docker-compose.transport-test-ci.yml up -d
+
+      - name: Build transport-bridge
+        run: yarn workspace @trezor/transport-bridge build:js
 
       - name: Run E2E tests (old-bridge:emu)
         run: yarn workspace @trezor/transport-test test:e2e:old-bridge:emu

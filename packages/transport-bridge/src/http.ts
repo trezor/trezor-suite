@@ -1,6 +1,5 @@
-import fs from 'fs/promises';
+// yarn format adds a newline between imports and eslint removes it...
 import stringify from 'json-stable-stringify';
-import path from 'path';
 
 import {
     HttpServer,
@@ -19,6 +18,9 @@ import { validateProtocolMessage } from '@trezor/transport/src/utils/bridgeProto
 import { Log, Throttler, arrayPartition } from '@trezor/utils';
 
 import { createCore } from './core';
+// todo: the build process now has 2 phases, build:ui (using webpack) and build:js (using esbuild). Ui is then raw-loaded as a string. It would be probably better to streamline the process into a single step
+// @ts-expect-error
+import htmlContent from '../dist/ui/index.html';
 
 const defaults = {
     port: 21325,
@@ -407,22 +409,9 @@ export class TrezordNode {
             ]);
 
             app.get('/status', [
-                async (_req, res) => {
-                    try {
-                        const ui = await fs.readFile(
-                            path.join(__dirname, this.assetPrefix, 'ui/index.html'),
-                            'utf-8',
-                        );
-
-                        res.writeHead(200, { 'Content-Type': 'text/html' });
-
-                        res.end(ui);
-                    } catch (error) {
-                        this.logger.error('Failed to fetch status page', error);
-                        res.writeHead(200, { 'Content-Type': 'text/plain' });
-                        // you need to run yarn workspace @trezor/transport-bridge build:ui to make it available (or build:lib will do)
-                        res.end('Failed to fetch status page');
-                    }
+                (_req, res) => {
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(htmlContent);
                 },
             ]);
 

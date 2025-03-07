@@ -1,8 +1,11 @@
 /* eslint no-console: 0 */
+/* eslint @typescript-eslint/ban-ts-comment: 0 */
 
 import { WebUSB } from 'usb';
 
-import { TrezordNode } from '@trezor/transport-bridge/src';
+// @ts-ignore
+import { type TrezordNode } from '@trezor/transport-bridge';
+import { TrezordNode as TrezordNodeClass } from '@trezor/transport-bridge/dist/index.js';
 import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { Log, scheduleAction } from '@trezor/utils';
 
@@ -24,7 +27,7 @@ const webusb = new WebUSB({
  */
 class Controller extends TrezorUserEnvLinkClass {
     private logger: Console;
-    private nodeBridge: TrezordNode | undefined = undefined;
+    private nodeBridge: TrezordNode | undefined;
 
     private originalApi: {
         connect: typeof TrezorUserEnvLinkClass.prototype.connect;
@@ -55,13 +58,14 @@ class Controller extends TrezorUserEnvLinkClass {
                       this.originalApi.startBridge(version)
                 : env.USE_NODE_BRIDGE
                   ? async () => {
-                        this.nodeBridge = new TrezordNode({
+                        // @ts-expect-error
+                        this.nodeBridge = new TrezordNodeClass({
                             port: 21325,
                             api: !env.USE_HW ? 'udp' : 'usb',
                             logger: new Log('test-bridge', false),
                         });
-
-                        await this.nodeBridge.start();
+                        // @ts-ignore
+                        this.nodeBridge = await this.nodeBridge.start();
 
                         // todo: this shouldn't be here, nodeBridge should be started when start resolves
                         await this.waitForBridgeIsRunning(true);

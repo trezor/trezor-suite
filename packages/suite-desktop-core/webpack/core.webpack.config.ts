@@ -103,6 +103,14 @@ const config: webpack.Configuration = {
                     },
                 },
             },
+            {
+                test: /\.html/,
+                use: [
+                    {
+                        loader: 'raw-loader',
+                    },
+                ],
+            },
         ],
     },
     resolve: {
