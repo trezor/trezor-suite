@@ -3,6 +3,7 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Select } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     TradingVerifyFormAccountOptionProps,
     TradingVerifyOptionsProps,
@@ -17,7 +18,8 @@ export const TradingVerifyOptions = ({
     label,
     onChangeAccount,
 }: TradingVerifyOptionsProps) => {
-    const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingInfo();
+    const context = useTradingFormContext();
+    const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingInfo(context.type);
 
     const { networkId, contractAddress } = parseCryptoId(receiveNetwork);
     const coinSymbol = contractAddress

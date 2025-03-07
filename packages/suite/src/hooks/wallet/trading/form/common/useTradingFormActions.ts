@@ -69,7 +69,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         deviceState: device?.state?.staticSessionId,
     });
     const [isUsedFractionButton, setIsUsedFractionButton] = useState(false);
-    const { buildDefaultCryptoOption } = useTradingInfo();
+    const { buildDefaultCryptoOption } = useTradingInfo(type);
 
     const { getValues, setValue, clearErrors, handleSubmit, control } =
         methods as unknown as UseFormReturn<TradingSellExchangeFormProps>;

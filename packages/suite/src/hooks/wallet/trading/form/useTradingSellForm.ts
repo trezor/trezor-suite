@@ -78,7 +78,7 @@ export const useTradingSellForm = ({
         tradingAccountKey,
         selectedQuote,
     } = useSelector(state => state.wallet.trading.sell);
-    const { cryptoIdToCoinSymbol } = useTradingInfo();
+    const { cryptoIdToCoinSymbol } = useTradingInfo(type);
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
     const [accountKey, setAccountKey] = useTradingAccountKey({
         type,

@@ -1,6 +1,6 @@
 import { CryptoId } from 'invity-api';
 
-import { useTradingInfo } from '@suite-common/trading';
+import { TradingType, useTradingInfo } from '@suite-common/trading';
 import {
     Column,
     H4,
@@ -27,6 +27,13 @@ type TradingTermsModalProps = {
     fromCryptoCurrency?: CryptoId;
 };
 
+const getTradingType = (modalType: TradingTermsModalProps['type']): TradingType => {
+    if (modalType === 'BUY') return 'buy';
+    if (modalType === 'SELL') return 'sell';
+
+    return 'exchange';
+};
+
 export const TradingTermsModal = ({
     decision,
     onCancel,
@@ -38,7 +45,7 @@ export const TradingTermsModal = ({
 }: TradingTermsModalProps) => {
     const providerName = provider || 'unknown provider';
     const { device } = useDevice();
-    const { cryptoIdToCoinSymbol } = useTradingInfo();
+    const { cryptoIdToCoinSymbol } = useTradingInfo(getTradingType(type));
     const iconProps = {
         variant: 'primary',
         size: 50,

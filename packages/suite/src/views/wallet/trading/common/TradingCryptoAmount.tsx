@@ -1,7 +1,7 @@
 import { CryptoId } from 'invity-api';
 import styled from 'styled-components';
 
-import { useTradingInfo } from '@suite-common/trading';
+import { TradingType, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -15,17 +15,19 @@ const LogoWrapper = styled.div`
 `;
 
 export interface TradingCryptoAmountProps {
+    type: TradingType;
     amount?: string | number;
     cryptoId: CryptoId;
     displayLogo?: boolean;
 }
 
 export const TradingCryptoAmount = ({
+    type,
     amount,
     cryptoId,
     displayLogo,
 }: TradingCryptoAmountProps) => {
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(type);
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
 
     if (!amount || amount === '') {

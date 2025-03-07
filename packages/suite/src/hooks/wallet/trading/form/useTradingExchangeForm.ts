@@ -83,7 +83,7 @@ export const useTradingExchangeForm = ({
         selectedQuote,
         addressVerified,
     } = useSelector(state => state.wallet.trading.exchange);
-    const { cryptoIdToCoinSymbol } = useTradingInfo();
+    const { cryptoIdToCoinSymbol, buildDefaultCryptoOption } = useTradingInfo(type);
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
     const [accountKey, setAccountKey] = useTradingAccountKey({
         type,
@@ -96,7 +96,6 @@ export const useTradingExchangeForm = ({
 
     const { callInProgress, timer, device, setCallInProgress, checkQuotesTimer } =
         useTradingInitializer({ selectedAccount, pageType });
-    const { buildDefaultCryptoOption } = useTradingInfo();
 
     const dispatch = useDispatch();
     const {

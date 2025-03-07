@@ -73,6 +73,7 @@ const formatCryptoAmountAsAmount = (amount: number, baseAmount: number, decimals
 
 export const TradingOfferExchangeSendSwap = () => {
     const {
+        type,
         device,
         account,
         callInProgress,
@@ -82,7 +83,7 @@ export const TradingOfferExchangeSendSwap = () => {
         sendTransaction,
         getValues,
     } = useTradingFormContext<TradingExchangeType>();
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(type);
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage ?? '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
     const [customSlippageError, setCustomSlippageError] = useState<

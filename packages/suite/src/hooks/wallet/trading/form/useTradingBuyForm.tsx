@@ -60,7 +60,7 @@ export const useTradingBuyForm = ({
     const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest, selectedQuote } =
         useSelector(state => state.wallet.trading.buy);
     const paymentMethods = useSelector(state => state.wallet.trading.info.paymentMethods);
-    const { cryptoIdToCoinSymbol } = useTradingInfo();
+    const { cryptoIdToCoinSymbol } = useTradingInfo(type);
     const { callInProgress, account, timer, device, setCallInProgress, checkQuotesTimer } =
         useTradingInitializer({ selectedAccount, pageType });
     const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =

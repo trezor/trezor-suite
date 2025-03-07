@@ -74,7 +74,7 @@ export const TradingAddressOptions = <TFieldValues extends TradingBuyAddressOpti
     const accountMetadata = useSelector(state =>
         selectLabelingDataForAccount(state, account?.key || ''),
     );
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(context.type);
 
     useEffect(() => {
         if (!address && addresses) {

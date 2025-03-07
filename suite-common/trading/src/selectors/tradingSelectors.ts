@@ -5,7 +5,7 @@ import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types/src/settings';
 
 import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
-import type { TradingState } from '../reducers/tradingReducer';
+import type { TradingInfo, TradingState } from '../reducers/tradingReducer';
 import { InvityServerEnvironment, TradingFiatCurrenciesProps } from '../types';
 
 // partial copy of Suite state
@@ -49,7 +49,9 @@ export const selectTradingLoadingAndTimestamp = (state: TradingRootState) => ({
     lastLoadedTimestamp: state.wallet.tradingNew.lastLoadedTimestamp,
 });
 
-export const selectTradingInfo = (state: TradingRootState) => state.wallet.tradingNew.info;
+export const selectTradingInfo = (state: TradingRootState) => state.wallet?.tradingNew?.info;
+export const selectTradingInfoLegacy = (state: any) =>
+    state.wallet?.trading?.info as TradingInfo | undefined; // TODO: trading - delete after migration
 
 export const selectTradingBuyInfo = createMemoizedSelector(
     [state => state.wallet.tradingNew.buy],

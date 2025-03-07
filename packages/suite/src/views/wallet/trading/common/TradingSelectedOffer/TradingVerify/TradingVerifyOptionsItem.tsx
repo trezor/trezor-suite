@@ -23,7 +23,7 @@ export const TradingVerifyOptionsItem = ({
     receiveNetwork,
 }: TradingVerifyOptionsItemProps) => {
     const context = useTradingFormContext();
-    const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingInfo();
+    const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingInfo(context.type);
     const iconSize = 24;
 
     if (option.type === 'SUITE') {

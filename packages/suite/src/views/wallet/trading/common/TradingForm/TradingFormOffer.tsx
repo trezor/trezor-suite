@@ -51,7 +51,6 @@ const getSelectedQuote = (
 export const TradingFormOffer = () => {
     const [isCompareLoading, setIsCompareLoading] = useState<boolean>(false);
     const context = useTradingFormContext();
-    const { cryptoIdToPlatformName } = useTradingInfo();
     const {
         type,
         quotes,
@@ -59,6 +58,7 @@ export const TradingFormOffer = () => {
         getValues,
         form: { state },
     } = context;
+    const { cryptoIdToPlatformName } = useTradingInfo(type);
     const providers = getProvidersInfoProps(context);
     const bestScoredQuote = quotes?.[0];
     const quote = getSelectedQuote(context, bestScoredQuote);

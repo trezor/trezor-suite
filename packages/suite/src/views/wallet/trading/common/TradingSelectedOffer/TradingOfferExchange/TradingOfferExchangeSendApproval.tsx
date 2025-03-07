@@ -41,6 +41,7 @@ const BreakableValue = styled.span`
 export const TradingOfferExchangeSendApproval = () => {
     const dispatch = useDispatch();
     const {
+        type,
         device,
         account,
         callInProgress,
@@ -49,7 +50,7 @@ export const TradingOfferExchangeSendApproval = () => {
         confirmTrade,
         sendTransaction,
     } = useTradingFormContext<TradingExchangeType>();
-    const { cryptoIdToCoinSymbol } = useTradingInfo();
+    const { cryptoIdToCoinSymbol } = useTradingInfo(type);
     const [approvalType, setApprovalType] = useState<ExtendedDexApprovalType>(
         selectedQuote?.status === 'CONFIRM' ? 'APPROVED' : 'MINIMAL',
     );
