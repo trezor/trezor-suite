@@ -13,7 +13,7 @@ import {
     tradingActions,
 } from '../../reducers/tradingReducer';
 import { regional } from '../../regional';
-import { buyThunks } from '../../thunks/buy';
+import { buyThunks } from '../../thunks';
 import { prepareTradingMiddleware } from '../tradingMiddleware';
 
 jest.mock('../../invityAPI');

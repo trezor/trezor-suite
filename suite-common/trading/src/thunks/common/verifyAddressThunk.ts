@@ -3,13 +3,12 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { tradingBuyActions } from '../reducers/buyReducer';
-import { tradingActions } from '../reducers/tradingReducer';
-import { getUnusedAddressFromAccount } from '../utils';
+import { TRADING_THUNK_COMMON_PREFIX } from '../';
+import { tradingBuyActions } from '../../reducers/buyReducer';
+import { tradingActions } from '../../reducers/tradingReducer';
+import { getUnusedAddressFromAccount } from '../../utils';
 
-const TRADING_COMMON_PREFIX = '@trading-common/thunk';
-
-interface VerifyAddressThunk {
+export interface VerifyAddressThunk {
     account: Account;
     address: string | undefined;
     path: string | undefined;
@@ -17,8 +16,8 @@ interface VerifyAddressThunk {
     // TODO: | typeof TRADING_EXCHANGE.VERIFY_ADDRESS;
 }
 
-const verifyAddressThunk = createThunk(
-    `${TRADING_COMMON_PREFIX}/verifyAddress`,
+export const verifyAddressThunk = createThunk(
+    `${TRADING_THUNK_COMMON_PREFIX}/verifyAddress`,
     async (
         { account, address, path, tradingAction }: VerifyAddressThunk,
         { dispatch, getState, extra },
@@ -77,7 +76,3 @@ const verifyAddressThunk = createThunk(
         }
     },
 );
-
-export const tradingThunks = {
-    verifyAddressThunk,
-};

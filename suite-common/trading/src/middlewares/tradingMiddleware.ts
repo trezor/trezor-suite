@@ -10,7 +10,7 @@ import {
     selectTradingInfo,
     selectTradingLoadingAndTimestamp,
 } from '../selectors/tradingSelectors';
-import { buyThunks } from '../thunks/buy';
+import { buyThunks } from '../thunks';
 
 export const getAccountAccordingToSection = (state: TradingRootState, extra: ExtraDependencies) => {
     const { account } = extra.selectors.selectSelectedAccount(state);

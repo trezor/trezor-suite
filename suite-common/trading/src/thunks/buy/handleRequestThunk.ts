@@ -7,6 +7,7 @@ import { Network } from '@suite-common/wallet-config';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { Timer } from '@trezor/react-utils';
 
+import { BUY_THUNK_COMMON_PREFIX } from '../';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
