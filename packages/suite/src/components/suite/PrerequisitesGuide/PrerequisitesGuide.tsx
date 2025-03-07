@@ -3,7 +3,11 @@ import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { deviceNeedsAttention, getStatus } from '@suite-common/suite-utils';
+import {
+    deviceNeedsAttention,
+    getStatus,
+    shouldDisplayInitialWarningIcon,
+} from '@suite-common/suite-utils';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, ElevationContext, ElevationDown, Flex, motionEasing } from '@trezor/components';
 
@@ -108,14 +112,18 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
     const handleSwitchDeviceClick = () =>
         dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
 
+    const deviceStatus = (device && getStatus(device)) ?? null;
+
     return (
         <>
             <ConnectDevicePrompt
                 connected={!!device}
+                deviceStatus={deviceStatus}
                 showWarning={
-                    !!(device && deviceNeedsAttention(getStatus(device))) ||
+                    !!(device && deviceStatus && deviceNeedsAttention(deviceStatus)) ||
                     prerequisite === 'transport-bridge'
                 }
+                showWarningIcon={shouldDisplayInitialWarningIcon(deviceStatus)}
                 prerequisite={prerequisite}
             />
 

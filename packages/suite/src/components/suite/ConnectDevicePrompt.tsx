@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
+import { ConnectedDeviceStatus } from '@suite-common/suite-utils';
 import {
     ElevationUp,
     Icon,
@@ -60,12 +61,30 @@ const StyledLottieAnimation = styled(LottieAnimation)<{ $elevation: Elevation }>
     background: ${mapElevationToBackground};
 `;
 
+const getWarningMessage = ({
+    deviceStatus,
+    showWarning,
+}: {
+    deviceStatus: ConnectedDeviceStatus | null;
+    showWarning: boolean;
+}) => {
+    switch (deviceStatus) {
+        case 'bootloader':
+        case 'initialize':
+            return 'TR_DEVICE_CONNECTED_NEW_DEVICE_STATE';
+        default:
+            return showWarning ? 'TR_DEVICE_CONNECTED' : 'TR_DEVICE_CONNECTED_WRONG_STATE';
+    }
+};
+
 const getMessageId = ({
     connected,
+    deviceStatus,
     showWarning,
     prerequisite,
 }: {
     connected: boolean;
+    deviceStatus: ConnectedDeviceStatus | null;
     showWarning: boolean;
     prerequisite?: PrerequisiteType;
 }) => {
@@ -80,7 +99,7 @@ const getMessageId = ({
             return 'TR_NEEDS_ATTENTION_UNABLE_TO_CONNECT';
         default: {
             if (connected) {
-                return !showWarning ? 'TR_DEVICE_CONNECTED' : 'TR_DEVICE_CONNECTED_WRONG_STATE';
+                return getWarningMessage({ deviceStatus, showWarning });
             }
 
             return 'TR_CONNECT_YOUR_DEVICE';
@@ -90,15 +109,17 @@ const getMessageId = ({
 
 interface ConnectDevicePromptProps {
     connected: boolean;
-    showWarning: boolean;
+    showWarning?: boolean;
+    showWarningIcon: boolean;
     allowSwitchDevice?: boolean;
     prerequisite?: PrerequisiteType;
+    deviceStatus: ConnectedDeviceStatus | null;
 }
 
 const ConnectImage = ({
     connected,
-    showWarning,
-}: Pick<ConnectDevicePromptProps, 'connected' | 'showWarning'>) => {
+    showWarningIcon,
+}: Pick<ConnectDevicePromptProps, 'connected' | 'showWarningIcon'>) => {
     const theme = useTheme();
     const { device } = useDevice();
     const { elevation } = useElevation();
@@ -115,11 +136,11 @@ const ConnectImage = ({
             />
 
             <Checkmark>
-                {connected && !showWarning && (
+                {connected && !showWarningIcon && (
                     <Icon name="checkActive" size={24} color={theme.legacy.TYPE_GREEN} />
                 )}
 
-                {showWarning && (
+                {showWarningIcon && (
                     <Icon name="warningTriangle" size={24} color={theme.legacy.TYPE_ORANGE} />
                 )}
             </Checkmark>
@@ -129,8 +150,10 @@ const ConnectImage = ({
 
 export const ConnectDevicePrompt = ({
     prerequisite,
+    deviceStatus,
     connected,
     showWarning,
+    showWarningIcon,
 }: ConnectDevicePromptProps) => {
     const { elevation } = useElevation();
 
@@ -143,10 +166,20 @@ export const ConnectDevicePrompt = ({
             data-testid="@connect-device-prompt"
         >
             <ElevationUp>
-                <ConnectImage connected={connected} showWarning={showWarning} />
+                <ConnectImage
+                    connected={connected}
+                    showWarningIcon={showWarningIcon ?? showWarning}
+                />
 
                 <Text>
-                    <Translation id={getMessageId({ connected, showWarning, prerequisite })} />
+                    <Translation
+                        id={getMessageId({
+                            connected,
+                            showWarning: showWarningIcon ?? showWarning,
+                            deviceStatus,
+                            prerequisite,
+                        })}
+                    />
                 </Text>
             </ElevationUp>
         </Wrapper>

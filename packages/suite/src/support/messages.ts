@@ -6896,6 +6896,10 @@ export default defineMessages({
         id: 'TR_NEEDS_ATTENTION_INITIALIZE',
         defaultMessage: 'Trezor has not been set up.',
     },
+    TR_DEVICE_CONNECTED_NEW_DEVICE_STATE: {
+        id: 'TR_DEVICE_CONNECTED_NEW_DEVICE_STATE',
+        defaultMessage: 'Not fully set up device connected.',
+    },
     TR_DEVICE_CONNECTED_BOOTLOADER: {
         id: 'TR_DEVICE_CONNECTED_BOOTLOADER',
         defaultMessage: 'Device connected in bootloader',

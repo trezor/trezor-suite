@@ -70,11 +70,13 @@ export const getStatus = (device: TrezorDevice) => {
     return 'unknown';
 };
 
-export const deviceNeedsAttention = (deviceStatus: ReturnType<typeof getStatus>) => {
+export type ConnectedDeviceStatus = ReturnType<typeof getStatus>;
+
+export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus) => {
     switch (deviceStatus) {
         // case 'firmware-recommended':
         // case 'unavailable': // this case is already solved in Account view @wallet-components/AccountMode/DeviceUnavailable
-        case 'bootloader':
+        case 'bootloader': // note: this is also state when the device is completely new
         case 'initialize':
         case 'seedless':
         case 'used-in-other-window':
@@ -85,6 +87,20 @@ export const deviceNeedsAttention = (deviceStatus: ReturnType<typeof getStatus>)
             return true;
         default:
             return false;
+    }
+};
+
+export const shouldDisplayInitialWarningIcon = (deviceStatus: ConnectedDeviceStatus | null) => {
+    if (!deviceStatus) {
+        return false;
+    }
+
+    switch (deviceStatus) {
+        case 'bootloader':
+        case 'initialize':
+            return false;
+        default:
+            return true;
     }
 };
 
