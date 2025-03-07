@@ -73,7 +73,7 @@ runs:
         CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}
         PASSPHRASE: ${{ inputs.e2e-passphrase }}
       run: |
-        docker compose up -d trezor-user-env-unix
+        docker compose up -d ${{ inputs.containers }}
         echo "Starting Playwright project ${{ inputs.project }} for test group ${{ inputs.test-group }}"
         yarn workspace @trezor/suite-desktop-core test:e2e:${{ inputs.project }} --forbid-only --grep="(?=.*${{ inputs.test-group }})${{ inputs.additional-grep }}" 
     

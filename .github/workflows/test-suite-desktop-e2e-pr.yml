@@ -76,13 +76,6 @@ jobs:
         if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: ./.github/actions/build-desktop
 
-      - name: Pull Docker Images
-        if: steps.check-previous-runs.outputs.skip_tests != 'true'
-        shell: bash
-        env:
-          COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
-        run: docker compose pull ${{ inputs.containers }}
-
       - name: Run Playwright E2E Tests
         if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: ./.github/actions/run-e2e-tests
