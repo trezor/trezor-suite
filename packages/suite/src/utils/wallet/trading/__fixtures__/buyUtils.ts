@@ -8,6 +8,7 @@ export const QUOTE_REQUEST_FIAT: BuyTradeQuoteRequest = {
     fiatCurrency: 'EUR',
     receiveCurrency: bitcoin,
     fiatStringAmount: '10',
+    paymentMethod: 'creditCard',
 };
 
 export const QUOTE_REQUEST_CRYPTO: BuyTradeQuoteRequest = {
@@ -16,6 +17,7 @@ export const QUOTE_REQUEST_CRYPTO: BuyTradeQuoteRequest = {
     fiatCurrency: 'EUR',
     receiveCurrency: bitcoin,
     cryptoStringAmount: '0.001',
+    paymentMethod: 'creditCard',
 };
 
 export const MIN_MAX_QUOTES_OK: BuyTrade[] = [

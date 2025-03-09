@@ -41,6 +41,7 @@ import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
 import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
 import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingSellFormDefaultValues';
+import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
 import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
@@ -123,6 +124,7 @@ export const useTradingSellForm = ({
 
     const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
         useTradingSellFormDefaultValues(account, sellInfo);
+    const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
     const sellDraftKey = 'trading-sell';
     const { saveDraft, getDraft, removeDraft } = useFormDraft<TradingSellFormProps>(sellDraftKey);
     const draft = getDraft(sellDraftKey);
@@ -152,7 +154,7 @@ export const useTradingSellForm = ({
     const isDraft = !!draft;
     const methods = useForm<TradingSellFormProps>({
         mode: 'onChange',
-        defaultValues: draftUpdated ? draftUpdated : defaultValues,
+        defaultValues: redirectValues || (draftUpdated ? draftUpdated : defaultValues),
     });
     const { register, setValue, reset, control, formState } = methods;
     const values = useWatch<TradingSellFormProps>({ control });
@@ -356,7 +358,7 @@ export const useTradingSellForm = ({
         // without the orderId the return link will point to offers
         const orderId = provider.flow === 'PAYMENT_GATE' ? quote.orderId : undefined;
         const returnUrl = await createQuoteLink(
-            quotesRequest,
+            { ...quotesRequest, paymentMethod: quote.paymentMethod },
             account,
             { selectedFee: selectedFeeRecomposedAndSigned, composed },
             orderId,

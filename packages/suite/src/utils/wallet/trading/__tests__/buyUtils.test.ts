@@ -17,11 +17,11 @@ describe('trading/buy utils', () => {
         };
         // @ts-expect-error
         expect(await createQuoteLink(QUOTE_REQUEST_FIAT, accountMock)).toStrictEqual(
-            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qf/CZ/EUR/10/bitcoin`,
+            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qf/CZ/EUR/10/bitcoin/creditCard`,
         );
         // @ts-expect-error
         expect(await createQuoteLink(QUOTE_REQUEST_CRYPTO, accountMock)).toStrictEqual(
-            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qc/CZ/EUR/0.001/bitcoin`,
+            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qc/CZ/EUR/0.001/bitcoin/creditCard`,
         );
     });
 

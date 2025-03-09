@@ -36,6 +36,7 @@ import { useTradingHandleChange } from 'src/hooks/wallet/trading/form/common/use
 import { useTradingModalCrypto } from 'src/hooks/wallet/trading/form/common/useTradingModalCrypto';
 import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
 import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
+import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
@@ -81,6 +82,7 @@ export const useTradingBuyForm = ({
         defaultPaymentMethod,
         suggestedFiatCurrency,
     } = useTradingBuyFormDefaultValues(account.symbol, buyInfo);
+    const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
     const buyDraftKey = account.key;
     const { saveDraft, getDraft, removeDraft } = useFormDraft<TradingBuyFormProps>('trading-buy');
     const draft = getDraft(buyDraftKey);
@@ -101,11 +103,13 @@ export const useTradingBuyForm = ({
     const isDraft = !!draftUpdated || !!isNotFormPage;
     const methods = useForm<TradingBuyFormProps>({
         mode: 'onChange',
-        defaultValues: isDraft && draftUpdated ? draftUpdated : defaultValues,
+        defaultValues: redirectValues || (isDraft && draftUpdated ? draftUpdated : defaultValues),
     });
     const { register, control, formState, reset, setValue, handleSubmit } = methods;
     const values = useWatch<TradingBuyFormProps>({ control });
-    const previousValues = useRef<typeof values | null>(isNotFormPage ? draftUpdated : null);
+    const previousValues = useRef<typeof values | null>(
+        !isFromRedirect && isNotFormPage ? draftUpdated : null,
+    );
 
     const isInitialDataLoading = !buyInfo || !buyInfo?.buyInfo;
     const noProviders = !isInitialDataLoading && buyInfo?.buyInfo?.providers.length === 0;
@@ -156,7 +160,10 @@ export const useTradingBuyForm = ({
 
         if (!quotesRequest || !provider) return;
 
-        const returnUrl = await createQuoteLink(quotesRequest, account);
+        const returnUrl = await createQuoteLink(
+            { ...quotesRequest, paymentMethod: quote.paymentMethod },
+            account,
+        );
 
         const userConsent = async (provider: string, cryptoCurrency: string) =>
             Boolean(

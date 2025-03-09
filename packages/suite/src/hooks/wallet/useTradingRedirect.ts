@@ -1,7 +1,9 @@
 import {
+    BuyCryptoPaymentMethod,
     BuyTradeQuoteRequest,
     CryptoId,
     ExchangeTradeQuoteRequest,
+    SellCryptoPaymentMethod,
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
@@ -15,7 +17,7 @@ import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
-interface OfferRedirectParams {
+interface BuyOfferRedirectParams {
     symbol: Account['symbol'];
     index: Account['index'];
     accountType: Account['accountType'];
@@ -24,6 +26,7 @@ interface OfferRedirectParams {
     receiveCurrency: CryptoId;
     amount: string;
     country: string;
+    paymentMethod: BuyCryptoPaymentMethod;
 }
 
 interface SellOfferRedirectParams {
@@ -35,6 +38,7 @@ interface SellOfferRedirectParams {
     cryptoCurrency: CryptoId;
     amount: string;
     country: string;
+    paymentMethod: SellCryptoPaymentMethod;
     orderId?: string;
     selectedFee?: FeeLevel['label'];
     feePerByte?: string;
@@ -68,7 +72,7 @@ interface DetailRedirectParams {
 export const useTradingRedirect = () => {
     const dispatch = useDispatch();
 
-    const redirectToOffers = (params: OfferRedirectParams) => {
+    const redirectToBuyOffers = (params: BuyOfferRedirectParams) => {
         const {
             symbol,
             index,
@@ -78,9 +82,10 @@ export const useTradingRedirect = () => {
             receiveCurrency,
             amount,
             country,
+            paymentMethod,
         } = params;
         let request: BuyTradeQuoteRequest;
-        const commonParams = { fiatCurrency, receiveCurrency, country };
+        const commonParams = { fiatCurrency, receiveCurrency, country, paymentMethod };
 
         if (wantCrypto) {
             request = {
@@ -98,7 +103,7 @@ export const useTradingRedirect = () => {
         dispatch(tradingBuyActions.saveQuoteRequest(request));
         dispatch(tradingBuyActions.setIsFromRedirect(true));
         dispatch(
-            goto('wallet-trading-buy-confirm', {
+            goto('wallet-trading-buy-offers', {
                 params: { symbol, accountIndex: index, accountType },
             }),
         );
@@ -114,6 +119,7 @@ export const useTradingRedirect = () => {
             cryptoCurrency,
             amount,
             country,
+            paymentMethod,
             orderId,
             feeLimit,
             feePerByte,
@@ -122,7 +128,7 @@ export const useTradingRedirect = () => {
             maxPriorityFeePerGas,
         } = params;
         let request: SellFiatTradeQuoteRequest;
-        const commonParams = { fiatCurrency, cryptoCurrency, country };
+        const commonParams = { fiatCurrency, cryptoCurrency, country, paymentMethod };
 
         if (amountInCrypto) {
             request = {
@@ -149,7 +155,7 @@ export const useTradingRedirect = () => {
         dispatch(saveComposedTransactionInfo({ selectedFee: selectedFee || 'normal', composed }));
         dispatch(tradingSellActions.saveTransactionId(orderId));
         dispatch(
-            goto('wallet-trading-sell-confirm', {
+            goto(orderId ? 'wallet-trading-sell-confirm' : 'wallet-trading-sell-offers', {
                 params: { symbol, accountIndex: index, accountType },
             }),
         );
@@ -194,7 +200,7 @@ export const useTradingRedirect = () => {
         );
     };
 
-    const redirectToDetail = (params: DetailRedirectParams) => {
+    const redirectToBuyDetail = (params: DetailRedirectParams) => {
         const { transactionId } = params;
 
         dispatch(tradingBuyActions.saveTransactionId(transactionId));
@@ -210,8 +216,8 @@ export const useTradingRedirect = () => {
     };
 
     return {
-        redirectToOffers,
-        redirectToDetail,
+        redirectToBuyOffers,
+        redirectToBuyDetail,
         redirectToSellOffers,
         redirectToExchangeOffers,
     };

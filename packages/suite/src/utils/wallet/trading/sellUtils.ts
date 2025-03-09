@@ -70,9 +70,9 @@ export const createQuoteLink = async (
     let hash: string;
 
     if (request.amountInCrypto) {
-        hash = `qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.cryptoCurrency}`;
+        hash = `qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.cryptoCurrency}/${request.paymentMethod}`;
     } else {
-        hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.cryptoCurrency}`;
+        hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.cryptoCurrency}/${request.paymentMethod}`;
     }
     if (orderId) {
         hash = `p-${hash}/${orderId}`;

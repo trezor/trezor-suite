@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { CryptoId } from 'invity-api';
+import { BuyCryptoPaymentMethod, CryptoId, SellCryptoPaymentMethod } from 'invity-api';
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
@@ -22,8 +22,12 @@ const Wrapper = styled.div`
 `;
 
 export const TradingRedirect = () => {
-    const { redirectToOffers, redirectToDetail, redirectToSellOffers, redirectToExchangeOffers } =
-        useTradingRedirect();
+    const {
+        redirectToBuyOffers,
+        redirectToBuyDetail,
+        redirectToSellOffers,
+        redirectToExchangeOffers,
+    } = useTradingRedirect();
     const router = useSelector(state => state.router);
 
     useEffect(() => {
@@ -32,31 +36,41 @@ export const TradingRedirect = () => {
         if (!params) return;
 
         const redirectCommonParams = {
-            routeType: params[0] as 'detail' | 'offers' | 'sell-offers' | 'exchange-offers',
+            routeType: params[0] as
+                | 'detail'
+                | 'offers'
+                | 'sell-detail'
+                | 'sell-offers'
+                | 'exchange-offers',
             symbol: params[1] as Account['symbol'],
             accountType: params[2] as Account['accountType'],
             index: parseInt(params[3], 10),
         };
 
         if (redirectCommonParams.routeType === 'offers') {
-            redirectToOffers({
+            redirectToBuyOffers({
                 ...redirectCommonParams,
                 wantCrypto: params[4] === 'qc',
                 fiatCurrency: params[6],
                 amount: params[7],
                 receiveCurrency: params[8] as CryptoId,
                 country: params[5],
+                paymentMethod: params[9] as BuyCryptoPaymentMethod,
             });
         }
 
+        if (redirectCommonParams.routeType === 'detail') {
+            redirectToBuyDetail({ ...redirectCommonParams, transactionId: params[4] });
+        }
+
         if (redirectCommonParams.routeType === 'sell-offers') {
-            let feeIndex = 9;
+            let feeIndex = 10;
             let orderId: string | undefined;
             if (params[4].startsWith('p-')) {
-                feeIndex = 10;
+                feeIndex = 11;
                 params[4] = params[4].substring(2);
 
-                orderId = params[9];
+                orderId = params[10];
             }
             redirectToSellOffers({
                 ...redirectCommonParams,
@@ -65,6 +79,7 @@ export const TradingRedirect = () => {
                 amount: params[7],
                 cryptoCurrency: params[8] as CryptoId,
                 country: params[5],
+                paymentMethod: params[9] as SellCryptoPaymentMethod,
                 orderId,
                 selectedFee: params[feeIndex] as FeeLevel['label'],
                 feePerByte: params[feeIndex + 1],
@@ -89,13 +104,9 @@ export const TradingRedirect = () => {
                 feeLimit: params[feeIndex + 4],
             });
         }
-
-        if (redirectCommonParams.routeType === 'detail') {
-            redirectToDetail({ ...redirectCommonParams, transactionId: params[4] });
-        }
     }, [
-        redirectToOffers,
-        redirectToDetail,
+        redirectToBuyOffers,
+        redirectToBuyDetail,
         redirectToSellOffers,
         redirectToExchangeOffers,
         router,

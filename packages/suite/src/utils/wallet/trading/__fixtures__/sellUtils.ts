@@ -8,6 +8,7 @@ export const QUOTE_REQUEST_FIAT: SellFiatTradeQuoteRequest = {
     fiatCurrency: 'EUR',
     cryptoCurrency: bitcoin,
     fiatStringAmount: '10',
+    paymentMethod: 'creditCard',
 };
 
 export const QUOTE_REQUEST_CRYPTO: SellFiatTradeQuoteRequest = {
@@ -16,6 +17,7 @@ export const QUOTE_REQUEST_CRYPTO: SellFiatTradeQuoteRequest = {
     fiatCurrency: 'EUR',
     cryptoCurrency: bitcoin,
     cryptoStringAmount: '0.001',
+    paymentMethod: 'creditCard',
 };
 
 export const MIN_MAX_QUOTES_OK: SellFiatTrade[] = [

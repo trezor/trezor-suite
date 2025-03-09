@@ -11,9 +11,9 @@ export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Ac
     let hash: string;
 
     if (request.wantCrypto) {
-        hash = `qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.receiveCurrency}`;
+        hash = `qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.receiveCurrency}/${request.paymentMethod}`;
     } else {
-        hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.receiveCurrency}`;
+        hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.receiveCurrency}/${request.paymentMethod}`;
     }
 
     const params = `offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
