@@ -37,6 +37,7 @@ import {
     BlockchainRootState,
     selectBlockchainHeightBySymbol,
 } from '../blockchain/blockchainReducer';
+import { isAccountStakingActive } from '../stake/stakeUtils';
 
 export type AccountTransactionsFetchStatusDetail =
     | {
@@ -380,6 +381,29 @@ export const selectAccountClaimTransactions = createMemoizedSelector(
         returnStableArrayIfEmpty(
             transactions.filter(tx => isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId)),
         ),
+);
+
+export const selectAccountIsStakingActive = createMemoizedSelector(
+    [selectAccountClaimTransactions, selectAccountByKey],
+    (claimTransactions, account) => isAccountStakingActive(account, claimTransactions),
+);
+
+export const selectAnyAccountIsStakingActive = createMemoizedSelector(
+    [
+        (state: TransactionsRootState, accounts: Account[]) =>
+            accounts.map(account => ({
+                account,
+                transactions: state.wallet.transactions.transactions[account.key] ?? [],
+            })),
+    ],
+    items =>
+        items.some(({ account, transactions }) => {
+            const claimTransactions = transactions.filter(tx =>
+                isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId),
+            );
+
+            return isAccountStakingActive(account, claimTransactions);
+        }),
 );
 
 export const selectEthAccountHasStaked = createMemoizedSelector(

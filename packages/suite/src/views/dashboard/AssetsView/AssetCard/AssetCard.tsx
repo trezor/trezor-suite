@@ -7,6 +7,7 @@ import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
+import { selectAnyAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import {
@@ -126,10 +127,15 @@ export const AssetCard = ({
     const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
 
+    const isStakingActive = useSelector(state =>
+        selectAnyAccountIsStakingActive(state, stakingAccountsForAsset),
+    );
+
     const { tokensFiatBalance, assetStakingBalance, shouldRenderStakingRow, shouldRenderTokenRow } =
         handleTokensAndStakingData(
             assetTokens,
             stakingAccountsForAsset,
+            isStakingActive,
             symbol,
             localCurrency,
             coinDefinitions,

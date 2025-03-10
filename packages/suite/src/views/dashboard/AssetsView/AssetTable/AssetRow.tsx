@@ -6,6 +6,7 @@ import { AssetFiatBalance } from '@suite-common/assets';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
+import { selectAnyAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account, RatesByKey } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/blockchain-link-types';
@@ -83,6 +84,10 @@ export const AssetRow = memo(
             account => account.symbol === network.symbol,
         );
 
+        const isStakingActive = useSelector(state =>
+            selectAnyAccountIsStakingActive(state, stakingAccountsForAsset),
+        );
+
         const {
             tokensFiatBalance,
             assetStakingBalance,
@@ -91,6 +96,7 @@ export const AssetRow = memo(
         } = handleTokensAndStakingData(
             assetTokens,
             stakingAccountsForAsset,
+            isStakingActive,
             symbol,
             localCurrency,
             coinDefinitions,

@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
+import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Card, Column, Icon, Row, SkeletonStack, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -14,6 +15,7 @@ import {
     Translation,
 } from 'src/components/suite';
 import { Pagination } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
 import { useSolanaRewards } from 'src/hooks/wallet/useSolanaRewards';
 import { Account } from 'src/types/wallet';
 import SkeletonTransactionItem from 'src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
@@ -48,8 +50,14 @@ export const RewardsList = ({ account }: RewardsListProps) => {
         }
     };
 
+    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+
     if (!isSolanaMainnet || !totalItems) {
-        return <RewardsEmpty />;
+        if (isStakingActive) {
+            return <RewardsEmpty />;
+        }
+
+        return null;
     }
 
     return (

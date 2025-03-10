@@ -1,7 +1,6 @@
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { selectEthAccountHasStaked, selectSolAccountHasStaked } from '@suite-common/wallet-core';
+import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
@@ -33,12 +32,10 @@ export const AccountSection = ({
     } = account;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
-    const hasEthStaked = useSelector(state => selectEthAccountHasStaked(state, account.key));
-    const hasSolStaked = useSelector(state => selectSolAccountHasStaked(state, account.key));
-
-    const isStakeShown = isSupportedStakingNetworkSymbol(symbol) && (hasEthStaked || hasSolStaked);
 
     const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);
+
+    const isStakeShown = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const tokens = getTokens({
         tokens: accountTokens,

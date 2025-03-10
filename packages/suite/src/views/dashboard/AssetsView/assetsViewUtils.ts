@@ -15,6 +15,7 @@ import {
 export const handleTokensAndStakingData = (
     assetTokens: TokenInfo[],
     accountsThatStaked: Account[],
+    isStakingActive: boolean,
     symbol: NetworkSymbol,
     localCurrency: FiatCurrencyCode,
     coinDefinitions?: TokenDefinition,
@@ -40,7 +41,9 @@ export const handleTokensAndStakingData = (
         (total, token) => total.plus(token?.fiatValue ?? 0),
         new BigNumber(0),
     );
-    const shouldRenderStakingRow = accountsThatStaked.length > 0 && assetStakingBalance.gt(0);
+
+    const shouldRenderStakingRow =
+        accountsThatStaked.length > 0 && assetStakingBalance.gt(0) && isStakingActive;
     const shouldRenderTokenRow = tokens.shownWithBalance?.length > 0 && tokensFiatBalance.gt(0);
 
     return {
