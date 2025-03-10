@@ -15,7 +15,7 @@ import {
     getTransactionEncoder,
     isWritableRole,
     pipe,
-} from '@solana/web3.js';
+} from '@solana/kit';
 
 import { COMPUTE_BUDGET_PROGRAM_ID } from '@trezor/blockchain-link-utils/src/solana';
 import { BigNumber } from '@trezor/utils/src/bigNumber';

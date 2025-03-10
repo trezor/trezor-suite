@@ -7986,6 +7986,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solana-program/compute-budget@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@solana-program/compute-budget@npm:0.7.0"
+  peerDependencies:
+    "@solana/kit": ^2.1.0
+  checksum: 10/340a6d525935c97cc84a9d470088ab59d8aeb77e2f308182c7576393d1a7eb0003b9346e05fc542f42ff17dbfb63c13fcd404d38eacba363e9362ff5bbdadfbf
+  languageName: node
+  linkType: hard
+
 "@solana-program/stake@npm:^0.1.0":
   version: 0.1.0
   resolution: "@solana-program/stake@npm:0.1.0"
@@ -8004,21 +8013,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana-program/token-2022@npm:^0.3.4":
-  version: 0.3.4
-  resolution: "@solana-program/token-2022@npm:0.3.4"
+"@solana-program/system@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@solana-program/system@npm:0.7.0"
   peerDependencies:
-    "@solana/web3.js": ^2.0.0
-  checksum: 10/2796442d935793b42e6271cca71e13335031839f458d7a394f14ed0630d9eb70c15021f3a4306dfb306580df0aedf5b8b8364cd14914dad58aec003ae694fd9d
+    "@solana/kit": ^2.1.0
+  checksum: 10/d17bd89d9fa8ef5b25e453b945a243075b5bb45d2cc0bf83e43651112b9eb2e494415f655cb412c483644d671fed1d47b22548717a17dea209e6a6e73c7ba691
   languageName: node
   linkType: hard
 
-"@solana-program/token@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "@solana-program/token@npm:0.4.1"
+"@solana-program/token-2022@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@solana-program/token-2022@npm:0.4.0"
   peerDependencies:
-    "@solana/web3.js": ^2.0.0
-  checksum: 10/c85e83bd43019fb6d0b1e5c0105b0e45fc073ff7bbd1bdb472c37c3ed462f96702ef2461942100c6bd94499e8881106fc90f272b9e45f304c601eb8909e90330
+    "@solana/kit": ^2.1.0
+    "@solana/sysvars": ^2.1.0
+  checksum: 10/157c60dee5a54606e9709b35006e0c18a9611d005f68baf228442d45feb7e1e18995342a1c0088763cb41fccade33c3a2f560d7c25e8aaea3410759e96c02bd5
+  languageName: node
+  linkType: hard
+
+"@solana-program/token@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "@solana-program/token@npm:0.5.1"
+  peerDependencies:
+    "@solana/kit": ^2.1.0
+  checksum: 10/1bdea4884532ab64fb0471717b913b112102eef796dc5cfb472cd6e206931bc44c454cb75761fd145bded9580fc93c3b32a7723b677f90fd9266600189e6bb7b
   languageName: node
   linkType: hard
 
@@ -11957,8 +11976,8 @@ __metadata:
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
     "@everstake/wallet-sdk-solana": "npm:2.0.8"
-    "@solana-program/token": "npm:^0.4.1"
-    "@solana-program/token-2022": "npm:^0.3.4"
+    "@solana-program/token": "npm:^0.5.1"
+    "@solana-program/token-2022": "npm:^0.4.0"
     "@solana/kit": "npm:^2.0.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
@@ -12394,10 +12413,10 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@noble/hashes": "npm:^1.6.1"
     "@scure/bip39": "npm:^1.5.1"
-    "@solana-program/compute-budget": "npm:^0.6.1"
-    "@solana-program/system": "npm:^0.6.2"
-    "@solana-program/token": "npm:^0.4.1"
-    "@solana-program/token-2022": "npm:^0.3.4"
+    "@solana-program/compute-budget": "npm:^0.7.0"
+    "@solana-program/system": "npm:^0.7.0"
+    "@solana-program/token": "npm:^0.5.1"
+    "@solana-program/token-2022": "npm:^0.4.0"
     "@solana/kit": "npm:^2.0.0"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
