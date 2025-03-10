@@ -44,7 +44,6 @@ type SelectDeviceThunkParams = {
  * Called from:
  * - `@trezor/connect` events handler `handleDeviceConnect`, `handleDeviceDisconnect`
  * - from user action in `@suite-components/DeviceMenu`
- * @param {(Device | TrezorDevice | undefined)} device
  */
 export const selectDeviceThunk = createThunk<void, SelectDeviceThunkParams, void>(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,

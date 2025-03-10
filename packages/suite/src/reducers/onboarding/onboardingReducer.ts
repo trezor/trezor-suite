@@ -6,7 +6,7 @@ import { OnboardingAnalytics } from '@trezor/suite-analytics';
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import * as STEP from 'src/constants/onboarding/steps';
 import type { AnyPath, AnyStepId } from 'src/types/onboarding';
-import { Action, TrezorDevice } from 'src/types/suite';
+import { Action } from 'src/types/suite';
 
 export interface OnboardingRootState {
     onboarding: OnboardingState;
@@ -26,7 +26,7 @@ export type BackupType = (typeof selectBackupTypes)[number];
 export interface OnboardingState {
     backupType: BackupType;
     isActive: boolean;
-    prevDevice: TrezorDevice | null;
+    prevDeviceId: string | null;
     activeStepId: AnyStepId;
     path: AnyPath[];
     onboardingAnalytics: Partial<OnboardingAnalytics>;
@@ -40,7 +40,7 @@ const initialState: OnboardingState = {
     // prevDevice is used only in firmwareUpdate so maybe move it to firmwareUpdate
     // and here leave only isMatchingPrevDevice ?
 
-    prevDevice: null,
+    prevDeviceId: null,
     activeStepId: STEP.ID_FIRMWARE_STEP,
     path: [],
     onboardingAnalytics: {},
@@ -82,7 +82,7 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 draft.path = removePath(action.payload, state);
                 break;
             case DEVICE.DISCONNECT:
-                draft.prevDevice = action.payload;
+                draft.prevDeviceId = action.payload.id ?? null;
                 break;
             case ONBOARDING.ANALYTICS:
                 draft.onboardingAnalytics = { ...state.onboardingAnalytics, ...action.payload };

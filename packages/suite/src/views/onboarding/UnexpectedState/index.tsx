@@ -27,12 +27,11 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
 
-    const { prevDevice, activeStepId, showPinMatrix } = useOnboarding();
+    const { prevDeviceId, activeStepId, showPinMatrix } = useOnboarding();
 
     const activeStep = steps.find(s => s.id === activeStepId);
 
     const isNotSameDevice = useMemo(() => {
-        const prevDeviceId = prevDevice?.id;
         // if no device was connected before, assume it is same device
         if (!prevDeviceId) {
             return false;
@@ -44,7 +43,7 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
         }
 
         return deviceId !== prevDeviceId;
-    }, [prevDevice, device]);
+    }, [prevDeviceId, device]);
 
     const UnexpectedStateComponent = useMemo(() => {
         if (!activeStep?.prerequisites) return null;

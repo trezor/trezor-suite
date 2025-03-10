@@ -35,11 +35,12 @@ export const connectInitThunk = createThunk(
 
         // set event listeners and dispatch as
         TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...eventData }) => {
-            // dispatch event as action
-
             if (eventData.type === DEVICE.CONNECT || eventData.type === DEVICE.CONNECT_UNACQUIRED) {
+                // This special case here allows us to "inject" extra data into action's payload
+                // and change the type of the action (in this case DeviceEvent type !== Redux Action type)
                 dispatch(deviceConnectThunks({ type: eventData.type, device: eventData.payload }));
             } else {
+                // dispatch event as action
                 dispatch({ type: eventData.type, payload: eventData.payload });
             }
         });

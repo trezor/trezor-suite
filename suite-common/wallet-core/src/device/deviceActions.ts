@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
 import { WalletType } from '@suite-common/wallet-types';
-import { DEVICE, Device, DeviceVersionChanged } from '@trezor/connect';
+import { DEVICE, Device } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
@@ -28,16 +28,6 @@ const deviceChanged = createAction(DEVICE.CHANGED, (payload: Device | TrezorDevi
 const deviceDisconnect = createAction(DEVICE.DISCONNECT, (payload: TrezorDevice) => ({
     payload,
 }));
-
-// this action is not used but is required because of the typings
-// changed here: https://github.com/trezor/trezor-suite/commit/c02412bccf80da7c827f624b7a7c85cdedf278c5#diff-2e9d057f0bfe2cc92fe50d4ce28838622d9e79fcca010ab8847a0fa288da13fd
-// in fact action is dispatched from connectInitThunk same as the rest of events
-const deviceFirmwareVersionChanged = createAction(
-    DEVICE.FIRMWARE_VERSION_CHANGED,
-    (payload: DeviceVersionChanged['payload']) => ({
-        payload,
-    }),
-);
 
 const updatePassphraseMode = createAction(
     `${DEVICE_MODULE_PREFIX}/updatePassphraseMode`,
@@ -118,5 +108,4 @@ export const deviceActions = {
     updateSelectedDevice,
     removeButtonRequests,
     setEntropyCheckFail,
-    deviceFirmwareVersionChanged,
 };
