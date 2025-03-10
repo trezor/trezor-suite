@@ -170,6 +170,9 @@ export class CoreInIframe implements ConnectFactoryDependencies<ConnectSettingsW
         if (!this._settings.transports?.length) {
             this._settings.transports = ['BridgeTransport', 'WebUsbTransport'];
         }
+        if (!this._settings.coreMode) {
+            this._settings.coreMode = 'auto';
+        }
 
         if (this._settings.lazyLoad) {
             // reset "lazyLoad" after first use
