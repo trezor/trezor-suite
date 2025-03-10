@@ -39,6 +39,7 @@ export const en = {
                     'Your Trezor may be counterfeit. To ensure your safety, receiving funds has been disabled. Contact Trezor Support immediately.',
                 contactSupportButton: 'Contact Trezor Support',
             },
+            fwRevisionCheckOtherError: "Couldn't perform firmware authenticity check.",
         },
         tokens: '+ Tokens',
     },

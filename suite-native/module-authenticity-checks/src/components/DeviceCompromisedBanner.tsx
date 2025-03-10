@@ -9,13 +9,21 @@ import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL } from '@trezor/urls';
 
-import { deviceCompromisedBannerAtom } from '../DeviceCompromisedBannerAtoms';
+import {
+    DeviceCompromisedBannerVariant,
+    deviceCompromisedBannerAtom,
+} from '../DeviceCompromisedBannerAtoms';
 
-const containerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundAlertRedSubtleOnElevation0,
-    // MessageSystemBanner critical variant has the same bgColor, so the margin serves to separate them visually
-    marginBottom: utils.spacings.sp1,
-}));
+const containerStyle = prepareNativeStyle<{ bannerVariant: DeviceCompromisedBannerVariant }>(
+    (utils, { bannerVariant }) => ({
+        backgroundColor:
+            bannerVariant === 'other-error'
+                ? utils.colors.backgroundAlertYellowBold
+                : utils.colors.backgroundAlertRedSubtleOnElevation0,
+        // MessageSystemBanner critical variant has the same bgColor, so the margin serves to separate them visually
+        marginBottom: utils.spacings.sp1,
+    }),
+);
 
 const contentStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
     (utils, { topSafeAreaInset }) => ({
@@ -55,13 +63,18 @@ export const DeviceCompromisedBanner = ({ topSafeAreaInset }: DeviceCompromisedB
 
     if (bannerVariant === 'none') return null;
 
+    const titleTranslationId =
+        bannerVariant === 'other-error'
+            ? 'generic.banners.fwRevisionCheckOtherError'
+            : 'generic.banners.deviceCompromised.title';
+
     return (
-        <View style={applyStyle(containerStyle)}>
+        <View style={applyStyle(containerStyle, { bannerVariant })}>
             <VStack spacing="sp2" style={applyStyle(contentStyle, { topSafeAreaInset })}>
                 <HStack alignItems="center">
                     <Icon name="warningCircle" size="mediumLarge" />
                     <Text variant="highlight">
-                        <Translation id="generic.banners.deviceCompromised.title" />
+                        <Translation id={titleTranslationId} />
                     </Text>
                 </HStack>
                 {bannerVariant === 'extended' && <ExtendedBannerContent />}
