@@ -1,4 +1,4 @@
-import { AccountRole } from '@solana/web3.js';
+import { AccountRole } from '@solana/kit';
 
 import {
     SYSTEM_PROGRAM_PUBLIC_KEY,
