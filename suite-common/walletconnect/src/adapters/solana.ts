@@ -23,7 +23,7 @@ const methods = [
     'solana_requestAccounts',
     'solana_signTransaction',
     'solana_signAndSendTransaction',
-    // NOTE: 'solana_signMessage' is not supported in FW
+    'solana_signMessage',
 ];
 
 const solanaSignTransaction = createThunk<
@@ -147,14 +147,25 @@ const solanaRequestThunk = createThunk<
 
             return { signature: pushResponse.payload.txid };
         }
+        case 'solana_signMessage': {
+            // Signing arbitrary messages for Solana is not supported in FW
+            // We indicate support for it in the adapter for compatibility, since some apps request it but don't actually use it
+            throw new Error('solana_signMessage not supported');
+        }
     }
 });
 
+// https://github.com/reown-com/blockchain-api/blob/master/SUPPORTED_CHAINS.md#solana
+enum SolanaChainIds {
+    MAINNET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    TESTNET = 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+    MAINNET_LEGACY = 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ',
+}
+
 export const getChainId = (network: Network) =>
-    // https://github.com/reown-com/blockchain-api/blob/master/SUPPORTED_CHAINS.md#solana
     network.testnet
-        ? 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1'
-        : 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+        ? [SolanaChainIds.TESTNET]
+        : [SolanaChainIds.MAINNET, SolanaChainIds.MAINNET_LEGACY];
 
 export const getNamespace = (accounts: Account[]) => {
     const solana = {
@@ -170,11 +181,13 @@ export const getNamespace = (accounts: Account[]) => {
 
         if (!account.visible || networkType !== 'solana') return;
 
-        const walletConnectChainId = getChainId(network);
-        if (!solana.chains.includes(walletConnectChainId)) {
-            solana.chains.push(walletConnectChainId);
+        const walletConnectChainIds = getChainId(network);
+        for (const walletConnectChainId of walletConnectChainIds) {
+            if (!solana.chains.includes(walletConnectChainId)) {
+                solana.chains.push(walletConnectChainId);
+            }
+            solana.accounts.push(`${walletConnectChainId}:${account.descriptor}`);
         }
-        solana.accounts.push(`${walletConnectChainId}:${account.descriptor}`);
     });
 
     return { solana };
@@ -190,11 +203,13 @@ const processNamespaces = (
         ([key, namespace]: [string, ProposalTypes.RequiredNamespace]) => {
             if (key === 'solana') {
                 namespace.chains?.forEach(chain => {
-                    const alreadyAdded = networks.some(network => network.namespaceId === chain);
-                    if (alreadyAdded) return;
                     const supported = networksCollection
                         .filter(nc => nc.networkType === 'solana')
-                        .find(nc => chain === getChainId(nc));
+                        .find(nc => getChainId(nc).includes(chain as SolanaChainIds));
+                    const alreadyAdded = networks.some(
+                        network => network.symbol === supported?.symbol,
+                    );
+                    if (alreadyAdded) return;
                     const getStatus = () => {
                         if (!supported) return 'unsupported';
                         const hasAccounts = accounts.some(

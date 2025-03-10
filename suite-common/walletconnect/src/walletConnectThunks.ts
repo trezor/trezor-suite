@@ -279,7 +279,7 @@ export const switchSelectedAccountThunk = createThunk<void, { account: Account }
         if (!network) return;
         const sessions = await walletKit.getActiveSessions();
         const updatedNamespaces = getNamespaces([account, ...accounts]);
-        const chainId = getAdapterByNetwork(network.networkType)?.getChainId(network);
+        const chainId = getAdapterByNetwork(network.networkType)?.getChainId(network)?.[0];
         if (!chainId) return;
 
         for (const topic in sessions) {

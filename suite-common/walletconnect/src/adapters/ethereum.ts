@@ -202,7 +202,7 @@ const ethereumRequestThunk = createThunk<
     }
 });
 
-export const getChainId = (network: Network) => `eip155:${network.chainId}`;
+export const getChainId = (network: Network) => [`eip155:${network.chainId}`];
 
 export const getNamespace = (accounts: Account[]) => {
     const eip155 = {
@@ -218,13 +218,15 @@ export const getNamespace = (accounts: Account[]) => {
 
         if (!account.visible || networkType !== 'ethereum') return;
 
-        const walletConnectChainId = getChainId(network);
-        if (!eip155.chains.includes(walletConnectChainId)) {
-            eip155.chains.push(walletConnectChainId);
-        }
-        const accountId = `${walletConnectChainId}:${account.descriptor}`;
-        if (!eip155.accounts.includes(accountId)) {
-            eip155.accounts.push(accountId);
+        const walletConnectChainIds = getChainId(network);
+        for (const walletConnectChainId of walletConnectChainIds) {
+            if (!eip155.chains.includes(walletConnectChainId)) {
+                eip155.chains.push(walletConnectChainId);
+            }
+            const accountId = `${walletConnectChainId}:${account.descriptor}`;
+            if (!eip155.accounts.includes(accountId)) {
+                eip155.accounts.push(accountId);
+            }
         }
     });
 

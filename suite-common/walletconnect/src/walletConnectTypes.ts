@@ -11,7 +11,7 @@ export interface WalletConnectAdapter {
     requestThunk: SuiteCompatibleThunk<{
         event: WalletKitTypes.SessionRequest;
     }>;
-    getChainId: (network: Network) => string;
+    getChainId: (network: Network) => string[];
     getNamespace: (accounts: Account[]) => Record<string, WalletConnectNamespace>;
     processNamespaces: (
         accounts: Account[],
