@@ -12,8 +12,6 @@ export const E2ESkipOnboardingButton = () => {
     const navigation = useNavigation();
 
     const redirectToHome = () => {
-        dispatch(setIsOnboardingFinished());
-
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,
@@ -27,6 +25,10 @@ export const E2ESkipOnboardingButton = () => {
                 ],
             }),
         );
+
+        // Timeout is needed to ensure that navigation event already finished before changing  the redux state.
+        // Situation when app was still focused on the onboarding screen but the state was already change made e2e tests flaky.
+        setTimeout(() => dispatch(setIsOnboardingFinished()), 500);
     };
 
     return (
