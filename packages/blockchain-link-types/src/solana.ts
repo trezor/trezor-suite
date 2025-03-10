@@ -6,7 +6,7 @@ import type {
     AccountInfoWithJsonData,
     GetTransactionApi,
     Signature,
-} from '@solana/web3.js';
+} from '@solana/kit';
 
 import type {
     GetObjectWithKey,
@@ -68,7 +68,7 @@ export type AccountInfo<
         | AccountInfoWithJsonData['data'],
 > = AccountInfoBase & Readonly<{ data: TData }>;
 
-export type { Address } from '@solana/web3.js';
+export type { Address } from '@solana/kit';
 
 export type SolanaStakingAccount = {
     status: string;

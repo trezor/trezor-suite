@@ -32,7 +32,7 @@ import {
     mainnet,
     pipe,
     sendAndConfirmTransactionFactory,
-} from '@solana/web3.js';
+} from '@solana/kit';
 import { getTokenSize as _getTokenSize } from '@solana-program/token';
 import { getTokenSize as _getToken2022Size } from '@solana-program/token-2022';
 

@@ -7,7 +7,7 @@ import {
     getBase16Codec,
     getTransactionEncoder,
     pipe,
-} from '@solana/web3.js';
+} from '@solana/kit';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {

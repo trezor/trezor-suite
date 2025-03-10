@@ -1,10 +1,10 @@
 import { install } from 'react-native-quick-crypto';
 
-import { CustomEvent } from '@whatwg-node/events'; // to work with Solana/web3.js
-import { Event, EventTarget } from 'event-target-shim'; // to work with Solana/web3.js
-import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'; // to work with Solana/web3.js
+import { CustomEvent } from '@whatwg-node/events'; // to work with @solana/kit
+import { Event, EventTarget } from 'event-target-shim'; // to work with @solana/kit
+import 'abortcontroller-polyfill/dist/polyfill-patch-fetch'; // to work with @solana/kit
 
-// Event, EventTarget and CustomEvent are needed for Solana/web3.js to work
+// Event, EventTarget and CustomEvent are needed for @solana/kit to work
 globalThis.Event = Event;
 globalThis.EventTarget = EventTarget;
 globalThis.CustomEvent = CustomEvent;

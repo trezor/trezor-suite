@@ -5,7 +5,7 @@ import {
     type SignatureBytes,
     type Transaction,
     type TransactionMessage,
-} from '@solana/web3.js';
+} from '@solana/kit';
 
 import type { TokenAccount } from '@trezor/blockchain-link-types';
 import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
@@ -17,7 +17,7 @@ import { Blockchain } from '../../backend/Blockchain';
 const { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } = SolanaBlockchainLinkUtils;
 
 const loadSolanaLib = async () =>
-    await import(/* webpackChunkName: "vendor-solana-web3js" */ '@solana/web3.js');
+    await import(/* webpackChunkName: "vendor-solana-kit" */ '@solana/kit');
 const loadSolanaComputeBudgetProgramLib = async () =>
     await import(
         /* webpackChunkName: "vendor-solana-program-compute-budget" */ '@solana-program/compute-budget'
@@ -98,7 +98,7 @@ const addPriorityFees = async <TMessage extends TransactionMessage>(
     priorityFees: PriorityFees,
 ) => {
     const [
-        // @solana/web3.js
+        // @solana/kit
         { prependTransactionMessageInstructions },
         // @solana-program/compute-budget
         { getSetComputeUnitLimitInstruction, getSetComputeUnitPriceInstruction },
@@ -128,7 +128,7 @@ export const buildTransferTransaction = async (
     priorityFees: PriorityFees,
 ) => {
     const [
-        // @solana/web3.js
+        // @solana/kit
         {
             address,
             appendTransactionMessageInstruction,
@@ -182,7 +182,7 @@ export const buildTokenTransferInstruction = async (
     tokenProgramName: TokenProgramName,
 ) => {
     const [
-        // @solana/web3.js
+        // @solana/kit
         { address, createNoopSigner },
         // @solana-program/token or @solana-program/token-2022
         { getTransferCheckedInstruction },
@@ -204,7 +204,7 @@ export const getAssociatedTokenAccountAddress = async (
     tokenProgramName: TokenProgramName,
 ) => {
     const [
-        // @solana/web3.js
+        // @solana/kit
         { address },
         // @solana-program/token or @solana-program/token-2022
         { findAssociatedTokenPda },
@@ -227,7 +227,7 @@ export const buildCreateAssociatedTokenAccountInstruction = async (
     tokenProgramName: TokenProgramName,
 ) => {
     const [
-        // @solana/web3.js
+        // @solana/kit
         { address, createNoopSigner },
         // @solana-program/token or @solana-program/token-2022
         { getCreateAssociatedTokenInstruction },

@@ -1,4 +1,4 @@
-import { address } from '@solana/web3.js';
+import { address } from '@solana/kit';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol } from '@suite-common/wallet-config';
