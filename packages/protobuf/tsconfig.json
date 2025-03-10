@@ -1,9 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "allowSyntheticDefaultImports": true
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "include": ["src"],
     "references": [{ "path": "../schema-utils" }]
 }
