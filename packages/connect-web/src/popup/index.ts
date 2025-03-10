@@ -3,7 +3,14 @@
 import EventEmitter from 'events';
 
 import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect/src/data/version';
-import { CoreEventMessage, IFRAME, IFrameLoaded, POPUP, UI } from '@trezor/connect/src/events';
+import {
+    CoreEventMessage,
+    DEVICE_EVENT,
+    IFRAME,
+    IFrameLoaded,
+    POPUP,
+    UI,
+} from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { Log } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
@@ -339,6 +346,8 @@ export class PopupManager extends EventEmitter {
                     `Content script version mismatch. Expected ${CONTENT_SCRIPT_VERSION}, got ${contentScriptVersion}`,
                 );
             }
+        } else if (message.event === DEVICE_EVENT) {
+            this.emit(DEVICE_EVENT, message);
         }
     }
 
