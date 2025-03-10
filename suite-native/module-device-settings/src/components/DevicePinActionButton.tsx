@@ -62,7 +62,7 @@ export const DevicePinActionButton = ({
     type,
     colorScheme,
 }: DevicePinActionButtonProps) => {
-    const { isDiscoveryRunning } = useSettingsProtection();
+    const { isDiscoveryRunning, isDeviceConnected, handleConnectDevice } = useSettingsProtection();
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
     const { showToast } = useToast();
@@ -100,6 +100,8 @@ export const DevicePinActionButton = ({
     );
 
     const changePin = useCallback(async () => {
+        if (!isDeviceConnected) return handleConnectDevice();
+
         navigation.navigate(DeviceStackRoutes.DevicePinProtection);
         analytics.report({
             type: EventType.DeviceSettingsPinProtectionChange,
@@ -137,7 +139,16 @@ export const DevicePinActionButton = ({
                 showError('moduleDeviceSettings.pinProtection.errors.pinMismatch', changePin);
             }
         }
-    }, [navigation, dispatch, device, type, showSuccess, showError]);
+    }, [
+        navigation,
+        dispatch,
+        device,
+        type,
+        showSuccess,
+        showError,
+        isDeviceConnected,
+        handleConnectDevice,
+    ]);
 
     return (
         <Button

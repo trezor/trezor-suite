@@ -9,7 +9,6 @@ import {
     selectDeviceModel,
     selectDeviceReleaseInfo,
     selectIsDeviceBackedUp,
-    selectIsDeviceConnected,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -63,11 +62,10 @@ export const DeviceFirmwareCard = () => {
     const deviceModel = useSelector(selectDeviceModel);
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     const navigation = useNavigation<NavigationProp>();
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
-    const { isDiscoveryRunning } = useSettingsProtection();
+    const { isDiscoveryRunning, handleConnectDevice, isDeviceConnected } = useSettingsProtection();
 
     if (!device || !deviceModel) {
         return null;
@@ -79,7 +77,7 @@ export const DeviceFirmwareCard = () => {
         : 'firmware.typeUniversal';
 
     const firmwareUpdateProps = (() => {
-        if (!isFirmwareUpdateEnabled || !isDeviceBackedUp || !isDeviceConnected) {
+        if (!isFirmwareUpdateEnabled || !isDeviceBackedUp) {
             return undefined;
         }
 
@@ -100,6 +98,7 @@ export const DeviceFirmwareCard = () => {
                             colorScheme="blueBold"
                             size="small"
                             onPress={() => {
+                                if (!isDeviceConnected) return handleConnectDevice();
                                 navigation.navigate(DeviceStackRoutes.ConfirmFirmwareUpdate);
                             }}
                             isDisabled={isDiscoveryRunning}

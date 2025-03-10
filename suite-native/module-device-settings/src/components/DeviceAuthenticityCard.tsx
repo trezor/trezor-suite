@@ -30,7 +30,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const DeviceAuthenticityCard = () => {
     const navigation = useNavigation<NavigationProp>();
-    const { isDiscoveryRunning } = useSettingsProtection();
+    const { isDiscoveryRunning, isDeviceConnected, handleConnectDevice } = useSettingsProtection();
     const { showAlert } = useAlert();
 
     const device = useSelector(selectSelectedDevice);
@@ -45,6 +45,7 @@ export const DeviceAuthenticityCard = () => {
     );
 
     const checkAuthenticity = useCallback(async () => {
+        if (!isDeviceConnected) return handleConnectDevice();
         navigation.navigate(DeviceStackRoutes.DeviceAuthenticity);
 
         const result = await requestPrioritizedDeviceAccess({
@@ -82,7 +83,7 @@ export const DeviceAuthenticityCard = () => {
                 reportCheckResult('failed');
             }
         }
-    }, [device, navigation, reportCheckResult]);
+    }, [device, navigation, reportCheckResult, handleConnectDevice, isDeviceConnected]);
 
     const showInfoAlert = useCallback(() => {
         showAlert({
