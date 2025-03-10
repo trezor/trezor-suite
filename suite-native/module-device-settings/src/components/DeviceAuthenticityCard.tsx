@@ -19,6 +19,9 @@ import {
 import { SettingsCardWithIconLayout } from '@suite-native/settings';
 import TrezorConnect from '@trezor/connect';
 
+import { LoadingIndicator } from './LoadingIndicator';
+import { useSettingsProtection } from '../hooks/useSettingsProtection';
+
 type NavigationProp = StackToStackCompositeNavigationProps<
     DeviceAuthenticityStackParamList,
     DeviceAuthenticityStackRoutes,
@@ -27,6 +30,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const DeviceAuthenticityCard = () => {
     const navigation = useNavigation<NavigationProp>();
+    const { isDiscoveryRunning } = useSettingsProtection();
     const { showAlert } = useAlert();
 
     const device = useSelector(selectSelectedDevice);
@@ -118,8 +122,13 @@ export const DeviceAuthenticityCard = () => {
                     colorScheme="tertiaryElevation0"
                     onPress={showInfoAlert}
                     testID="@device-authenticity/check-button"
+                    disabled={isDiscoveryRunning}
                 >
-                    <Translation id="moduleDeviceSettings.authenticity.checkButton" />
+                    {isDiscoveryRunning ? (
+                        <LoadingIndicator />
+                    ) : (
+                        <Translation id="moduleDeviceSettings.authenticity.checkButton" />
+                    )}
                 </Button>
             </VStack>
         </SettingsCardWithIconLayout>

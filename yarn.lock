@@ -10604,6 +10604,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
+    react-native-reanimated: "npm:^3.16.7"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft

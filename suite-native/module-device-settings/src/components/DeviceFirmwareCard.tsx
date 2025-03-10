@@ -6,13 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import {
-    DeviceRootState,
-    DiscoveryRootState,
     selectDeviceModel,
     selectDeviceReleaseInfo,
     selectIsDeviceBackedUp,
     selectIsDeviceConnected,
-    selectIsDiscoveryActiveByDeviceState,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -28,6 +25,8 @@ import {
 import { SettingsCardWithIconLayout } from '@suite-native/settings';
 import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { useSettingsProtection } from '../hooks/useSettingsProtection';
 
 const firmwareInfoStyle = prepareNativeStyle(() => ({
     flexGrow: 1,
@@ -66,11 +65,9 @@ export const DeviceFirmwareCard = () => {
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
-    const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
-        selectIsDiscoveryActiveByDeviceState(state, device?.state),
-    );
     const navigation = useNavigation<NavigationProp>();
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
+    const { isDiscoveryRunning } = useSettingsProtection();
 
     if (!device || !deviceModel) {
         return null;

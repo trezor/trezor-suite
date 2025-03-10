@@ -17,6 +17,9 @@ import {
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
+import { LoadingIndicator } from './LoadingIndicator';
+import { useSettingsProtection } from '../hooks/useSettingsProtection';
+
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,
     DeviceStackRoutes.DevicePinProtection
@@ -59,6 +62,7 @@ export const DevicePinActionButton = ({
     type,
     colorScheme,
 }: DevicePinActionButtonProps) => {
+    const { isDiscoveryRunning } = useSettingsProtection();
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
     const { showToast } = useToast();
@@ -141,8 +145,9 @@ export const DevicePinActionButton = ({
             colorScheme={colorScheme}
             size="small"
             testID={`@device-pin-protection/${type}-button`}
+            isDisabled={isDiscoveryRunning}
         >
-            {children}
+            {isDiscoveryRunning ? <LoadingIndicator /> : children}
         </Button>
     );
 };
