@@ -8,8 +8,6 @@ import {
     UseFormSetValue,
 } from 'react-hook-form';
 
-import styled from 'styled-components';
-
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
@@ -20,9 +18,9 @@ import {
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Banner, Column, InfoItem, Row, SelectBar, Text, Tooltip } from '@trezor/components';
+import { Banner, Column, Row, SelectBar, Text, Tooltip } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
@@ -46,11 +44,6 @@ export type FeeOptionType = {
     networkAmount?: string | null;
     feePerTx?: string; // Solana specific
 };
-
-const SelectBarWrapper = styled.div`
-    justify-self: end;
-    margin-top: ${spacingsPx.xs};
-`;
 
 export interface FeesProps<TFieldValues extends FormState> {
     account: Account;
@@ -180,46 +173,26 @@ export const Fees = <TFieldValues extends FormState>({
 
     return (
         <Column gap={spacings.md}>
-            <Row flexWrap="wrap">
-                <Row flex="1">
-                    <InfoItem
-                        direction="row"
-                        typographyStyle="body"
-                        verticalAlignment="bottom"
-                        label={
-                            <Row gap={spacings.xs}>
-                                <Tooltip
-                                    dashed
-                                    maxWidth={328}
-                                    content={<Translation id={feeTooltipTextId} />}
-                                >
-                                    <Text variant="default">
-                                        <Translation id={label ?? feeLabelId} />
-                                    </Text>
-                                </Tooltip>
-                            </Row>
-                        }
-                    />
-                </Row>
+            <Row flexWrap="wrap" justifyContent="space-between" gap={spacings.sm}>
+                <Tooltip hasIcon maxWidth={328} content={<Translation id={feeTooltipTextId} />}>
+                    <Translation id={label ?? feeLabelId} />
+                </Tooltip>
                 {supportsCustomFee && (
-                    <SelectBarWrapper>
-                        <SelectBar
-                            orientation="horizontal"
-                            selectedOption={isCustomFee ? 'custom' : 'normal'}
-                            options={[
-                                {
-                                    label: <Translation id="FEE_LEVEL_STANDARD" />,
-                                    value: 'normal',
-                                },
-                                { label: <Translation id="FEE_LEVEL_ADVANCED" />, value: 'custom' },
-                            ]}
-                            onChange={() => changeFeeLevel(isCustomFee ? 'normal' : 'custom')}
-                            isFullWidth
-                        />
-                    </SelectBarWrapper>
+                    <SelectBar
+                        orientation="horizontal"
+                        selectedOption={isCustomFee ? 'custom' : 'normal'}
+                        size="small"
+                        options={[
+                            {
+                                label: <Translation id="FEE_LEVEL_STANDARD" />,
+                                value: 'normal',
+                            },
+                            { label: <Translation id="FEE_LEVEL_ADVANCED" />, value: 'custom' },
+                        ]}
+                        onChange={() => changeFeeLevel(isCustomFee ? 'normal' : 'custom')}
+                    />
                 )}
             </Row>
-
             {!isCustomFee && selectedLevel && (
                 <StandardFee
                     networkType={networkType}
@@ -232,7 +205,6 @@ export const Fees = <TFieldValues extends FormState>({
                     changeFeeLevel={changeFeeLevel}
                 />
             )}
-
             {isCustomFee && (
                 <>
                     <CustomFee
