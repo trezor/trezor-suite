@@ -1,52 +1,48 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { BuyTrade, BuyTradeQuoteRequest, CryptoId } from 'invity-api';
+import type { BuyTrade, BuyTradeResponse, CryptoId } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    AmountLimitProps,
+    TradingBuyFormProps,
     type TradingBuyType,
-    addIdsToQuotes,
-    buyUtils,
+    buyThunks,
     cryptoIdToNetwork,
-    filterQuotesAccordingTags,
-    getTradingPaymentMethods,
     getTradingQuotesByPaymentMethod,
-    invityAPI,
-    tradingGetSuccessQuotes,
-    useTradingInfo,
+    selectTradingBuy,
+    selectTradingPaymentMethods,
+    tradingBuyActions,
+    tradingThunks,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
-import { formatAmount } from '@suite-common/wallet-utils';
+import { Account } from '@suite-common/wallet-types';
 import { isDesktop } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isChanged } from '@trezor/utils';
 
+import { openDeferredModal } from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
-import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
-import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
-import * as tradingInfoActions from 'src/actions/wallet/tradingInfoActions';
+import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import {
     FORM_CRYPTO_INPUT,
     FORM_DEFAULT_CRYPTO_CURRENCY,
     FORM_FIAT_INPUT,
-    FORM_PAYMENT_METHOD_SELECT,
 } from 'src/constants/wallet/trading/form';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
+import { useTradingHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingHandleChange';
 import { useTradingModalCrypto } from 'src/hooks/wallet/trading/form/common/useTradingModalCrypto';
 import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
 import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
-import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
+import { Dispatch } from 'src/types/suite';
 import { UseTradingFormProps } from 'src/types/trading/trading';
-import { TradingBuyFormContextProps, TradingBuyFormProps } from 'src/types/trading/tradingForm';
-import type { AmountLimitProps } from 'src/utils/suite/validation';
+import { TradingBuyFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
-import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
 
@@ -57,22 +53,24 @@ export const useTradingBuyForm = ({
     const type = 'buy';
     const isNotFormPage = pageType !== 'form';
     const dispatch = useDispatch();
-    const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest, selectedQuote } =
-        useSelector(state => state.wallet.trading.buy);
-    const paymentMethods = useSelector(state => state.wallet.trading.info.paymentMethods);
-    const { cryptoIdToCoinSymbol } = useTradingInfo(type);
-    const { callInProgress, account, timer, device, setCallInProgress, checkQuotesTimer } =
-        useTradingInitializer({ selectedAccount, pageType });
+    const {
+        addressVerified,
+        buyInfo,
+        isFromRedirect,
+        quotes,
+        quotesRequest,
+        selectedQuote,
+        amountLimits,
+        isLoading,
+    } = useSelector(selectTradingBuy);
+    const paymentMethods = useSelector(selectTradingPaymentMethods);
+    const { account, timer, device, checkQuotesTimer } = useTradingInitializer({
+        selectedAccount,
+        pageType,
+    });
     const { navigateToBuyForm, navigateToBuyOffers, navigateToBuyConfirm } =
         useTradingNavigation(account);
 
-    // states
-    const [amountLimits, setAmountLimits] = useState<AmountLimitProps | undefined>(undefined);
-    const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(
-        isNotFormPage ? quotes : undefined,
-    );
-    const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
-    const abortControllerRef = useRef<AbortController | null>(null);
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 
@@ -113,16 +111,14 @@ export const useTradingBuyForm = ({
     const noProviders = !isInitialDataLoading && buyInfo?.buyInfo?.providers.length === 0;
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues = (values.fiatInput || values.cryptoInput) && !!values.currencySelect?.value;
-    const isFirstRequest = innerQuotes === undefined;
-    const isFormLoading =
-        isInitialDataLoading || formState.isSubmitting || isSubmittingHelper || isFirstRequest;
+    const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
     const isFormInvalid = !(formIsValid && hasValues);
     const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 
     const quotesByPaymentMethod = getTradingQuotesByPaymentMethod<TradingBuyType>(
-        innerQuotes,
+        quotes,
         values?.paymentMethod?.value ?? '',
-    );
+    ) as BuyTrade[];
     // based on selected cryptoSymbol, because of using for validation cryptoInput
     const network =
         cryptoIdToNetwork(
@@ -141,130 +137,13 @@ export const useTradingBuyForm = ({
         },
     });
 
-    const getQuotesRequest = useCallback(
-        async (request: BuyTradeQuoteRequest, offLoading?: boolean) => {
-            setIsSubmittingHelper(!offLoading);
-
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
-
-            // no need to fetch quotes if amount is not set
-            if (
-                (!request.fiatStringAmount && !request.cryptoStringAmount) ||
-                !request.receiveCurrency
-            ) {
-                timer.stop();
-                setIsSubmittingHelper(false);
-
-                return;
-            }
-
-            abortControllerRef.current = new AbortController();
-
-            const allQuotes = await invityAPI.getBuyQuotes(
-                request,
-                abortControllerRef.current.signal,
-            );
-
-            return allQuotes;
-        },
-        [timer],
-    );
-
-    const getQuoteRequestData = useCallback((): BuyTradeQuoteRequest => {
-        const {
-            fiatInput,
-            cryptoInput,
-            currencySelect,
-            cryptoSelect,
-            countrySelect,
-            amountInCrypto,
-        } = methods.getValues();
-        const decimals = getTradingNetworkDecimals({ network });
-        const cryptoStringAmount =
-            cryptoInput && shouldSendInSats ? formatAmount(cryptoInput, decimals) : cryptoInput;
-
-        const request = {
-            wantCrypto: amountInCrypto,
-            fiatCurrency: currencySelect
-                ? currencySelect?.value.toUpperCase()
-                : quotesRequest?.fiatCurrency ?? '',
-            receiveCurrency: cryptoSelect?.value ?? quotesRequest?.receiveCurrency,
-            country: countrySelect?.value ?? quotesRequest?.country,
-            fiatStringAmount: fiatInput ?? quotesRequest?.fiatStringAmount,
-            cryptoStringAmount: cryptoStringAmount ?? quotesRequest?.cryptoStringAmount,
-        };
-
-        return request;
-    }, [methods, network, shouldSendInSats, quotesRequest]);
-
-    const handleChange = useCallback(
-        async (offLoading?: boolean) => {
-            timer.loading();
-
-            const quoteRequest = getQuoteRequestData();
-            const allQuotes = await getQuotesRequest(quoteRequest, offLoading);
-
-            if (!Array.isArray(allQuotes) || allQuotes.length === 0) {
-                timer.stop();
-                setInnerQuotes([]);
-                setIsSubmittingHelper(false);
-
-                return;
-            }
-
-            // processed quotes and without alternative quotes
-            const quotesDefault = filterQuotesAccordingTags<TradingBuyType>(
-                addIdsToQuotes<TradingBuyType>(allQuotes, 'buy'),
-            );
-            // without errors
-            const quotesSuccess = tradingGetSuccessQuotes<TradingBuyType>(quotesDefault) ?? [];
-
-            const bestQuote = quotesSuccess?.[0];
-            const bestQuotePaymentMethod = bestQuote?.paymentMethod;
-            const bestQuotePaymentMethodName =
-                bestQuote?.paymentMethodName ?? bestQuotePaymentMethod;
-            const paymentMethodSelected = values.paymentMethod?.value;
-            const paymentMethodsFromQuotes =
-                getTradingPaymentMethods<TradingBuyType>(quotesSuccess);
-            const isSelectedPaymentMethodAvailable =
-                paymentMethodsFromQuotes.find(item => item.value === paymentMethodSelected) !==
-                undefined;
-            const symbol =
-                cryptoIdToCoinSymbol(quoteRequest.receiveCurrency) ?? quoteRequest.receiveCurrency;
-            const limits = buyUtils.getAmountLimits({
-                request: quoteRequest,
-                quotes: quotesDefault,
-                currency: symbol,
-            }); // from all quotes except alternative
-
-            setInnerQuotes(quotesSuccess);
-            dispatch(tradingBuyActions.saveQuotes(quotesSuccess));
-            dispatch(tradingBuyActions.saveQuoteRequest(quoteRequest));
-            dispatch(tradingInfoActions.savePaymentMethods(paymentMethodsFromQuotes));
-            setAmountLimits(limits);
-
-            if (!paymentMethodSelected || !isSelectedPaymentMethodAvailable) {
-                setValue(FORM_PAYMENT_METHOD_SELECT, {
-                    value: bestQuotePaymentMethod ?? '',
-                    label: bestQuotePaymentMethodName ?? '',
-                });
-            }
-
-            setIsSubmittingHelper(false);
-            timer.reset();
-        },
-        [
-            timer,
-            values.paymentMethod?.value,
-            cryptoIdToCoinSymbol,
-            getQuoteRequestData,
-            getQuotesRequest,
-            dispatch,
-            setValue,
-        ],
-    );
+    const { handleChange } = useTradingHandleChange({
+        formValues: values as TradingBuyFormProps,
+        network,
+        timer,
+        shouldSendInSats,
+        setValue,
+    });
 
     const goToOffers = async () => {
         await handleChange();
@@ -274,101 +153,95 @@ export const useTradingBuyForm = ({
 
     const selectQuote = async (quote: BuyTrade) => {
         const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
-        if (quotesRequest) {
-            const result = await dispatch(
-                tradingBuyActions.openTradingBuyConfirmModal(
-                    provider?.companyName,
-                    cryptoIdToCoinSymbol(quote.receiveCurrency!),
+
+        if (!quotesRequest || !provider) return;
+
+        const returnUrl = await createQuoteLink(quotesRequest, account);
+
+        const userConsent = async (provider: string, cryptoCurrency: string) =>
+            Boolean(
+                await dispatch(
+                    openDeferredModal({
+                        type: 'trading-buy-terms',
+                        provider,
+                        cryptoCurrency,
+                    }),
                 ),
             );
 
-            if (result) {
-                // empty quoteId means the partner requests login first, requestTrade to get login screen
-                if (!quote.quoteId) {
-                    const returnUrl = await createQuoteLink(quotesRequest, account);
-                    const response = await invityAPI.doBuyTrade({ trade: quote, returnUrl });
-                    if (response) {
-                        if (response.trade.status === 'LOGIN_REQUEST' && response.tradeForm) {
-                            dispatch(
-                                tradingCommonActions.submitRequestForm(response.tradeForm.form),
-                            );
-                        } else {
-                            const errorMessage = `[doBuyTrade] ${response.trade.status} ${response.trade.error}`;
-                            console.log(errorMessage);
-                        }
-                    } else {
-                        const errorMessage = 'No response from the server';
-                        console.log(`[doBuyTrade] ${errorMessage}`);
-                        dispatch(
-                            notificationsActions.addToast({
-                                type: 'error',
-                                error: errorMessage,
-                            }),
-                        );
-                    }
-                } else {
-                    dispatch(tradingBuyActions.saveSelectedQuote(quote));
-
-                    timer.stop();
-
+        await dispatch(
+            buyThunks.selectQuoteThunk({
+                quote,
+                timer,
+                returnUrl,
+                loginRequest: submitRequestForm,
+                userConsent,
+                nextStep: () => {
                     navigateToBuyConfirm();
-                }
-            }
-        }
+                },
+            }),
+        );
     };
 
     const confirmTrade = async (address: string) => {
-        setCallInProgress(true);
         if (!selectedQuote) return;
 
-        analytics.report({
-            type: EventType.TradingConfirmTrade,
-            payload: {
-                type,
-            },
-        });
-
         const returnUrl = await createTxLink(selectedQuote, account);
-        const quote = { ...selectedQuote, receiveAddress: address };
-        const response = await invityAPI.doBuyTrade({
-            trade: quote,
-            returnUrl,
-        });
 
-        if (!response || !response.trade || !response.trade.paymentId) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: 'No response from the server',
-                }),
-            );
-        } else if (response.trade.error) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: response.trade.error,
-                }),
-            );
-        } else {
-            dispatch(
-                tradingBuyActions.saveTrade(response.trade, account, new Date().toISOString()),
-            );
+        const processResponseData = (response: BuyTradeResponse) => {
             if (response.tradeForm) {
-                dispatch(tradingCommonActions.submitRequestForm(response.tradeForm.form));
+                dispatch(submitRequestForm(response.tradeForm.form));
             }
             if (isDesktop()) {
-                dispatch(tradingBuyActions.saveTransactionDetailId(response.trade.paymentId));
+                if (response.trade.paymentId) {
+                    dispatch(tradingBuyActions.saveTransactionId(response.trade.paymentId));
+                }
                 dispatch(
                     routerActions.goto('wallet-trading-buy-detail', {
                         params: selectedAccount.params,
                     }),
                 );
             }
-        }
-        setCallInProgress(false);
+        };
+
+        const triggerAnalyticsTradeConfirmation = () => {
+            analytics.report({
+                type: EventType.TradingConfirmTrade,
+                payload: {
+                    type: 'buy',
+                },
+            });
+        };
+
+        await dispatch(
+            buyThunks.confirmTradeThunk({
+                address,
+                returnUrl,
+                account,
+                processResponseData,
+                triggerAnalyticsTradeConfirmation,
+            }),
+        );
     };
 
-    useTradingLoadData();
+    const verifyAddress =
+        (account: Account, address: string | undefined, path: string | undefined) =>
+        async (dispatch: Dispatch) => {
+            await dispatch(
+                tradingThunks.verifyAddressThunk({
+                    account,
+                    address,
+                    path,
+                    tradingAction: tradingBuyActions.verifyAddress.type,
+                }),
+            );
+        };
+
+    // TODO: trading - is it possible to have buyInfo before render?
+    useEffect(() => {
+        dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
+    }, [dispatch]);
+
     useTradingModalCrypto({
         receiveCurrency: values.cryptoSelect?.value as CryptoId | undefined,
     });
@@ -421,6 +294,7 @@ export const useTradingBuyForm = ({
         }
     }, [previousValues, values, isNotFormPage, pageType, handleChange, handleSubmit]);
 
+    // TODO: trading - this will not be necessary if data will load before this hook
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got buyInfo from Invity API server
         if (!isDraft && buyInfo) {
@@ -481,15 +355,6 @@ export const useTradingBuyForm = ({
         ],
     );
 
-    // eslint-disable-next-line arrow-body-style
-    useEffect(() => {
-        return () => {
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
-        };
-    }, []);
-
     return {
         type,
         form: {
@@ -514,7 +379,7 @@ export const useTradingBuyForm = ({
         cryptoInputValue: values.cryptoInput,
         formState,
         device,
-        callInProgress,
+        callInProgress: isLoading,
         addressVerified,
         timer,
         quotes: quotesByPaymentMethod,
@@ -523,8 +388,10 @@ export const useTradingBuyForm = ({
         selectQuote,
         confirmTrade,
         goToOffers,
-        verifyAddress: tradingBuyActions.verifyAddress,
+        verifyAddress,
         removeDraft,
-        setAmountLimits,
+        setAmountLimits: (limits: AmountLimitProps | undefined) => {
+            dispatch(tradingBuyActions.setAmountLimits(limits));
+        },
     };
 };

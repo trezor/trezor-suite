@@ -6,6 +6,7 @@ import { messageSystemActions } from '@suite-common/message-system';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { TokenManagementAction } from '@suite-common/token-definitions';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
+import { tradingActions } from '@suite-common/trading';
 import {
     accountsActions,
     blockchainActions,
@@ -263,9 +264,15 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     }
                     break;
                 }
+                // TODO: trading - delete after refactor
                 case TRADING_COMMON.SAVE_TRADE: {
                     const { type, ...trade } = action;
                     storageActions.saveTradingTrade(trade);
+                    break;
+                }
+                case tradingActions.saveTrade.type: {
+                    const { type, ...trade } = action;
+                    storageActions.saveTradingTrade(trade.payload);
                     break;
                 }
                 case METADATA.ENABLE:

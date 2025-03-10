@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 
+import { prepareTradingReducer } from '@suite-common/trading';
 import {
     feesReducer,
     prepareAccountsReducer,
@@ -32,6 +33,7 @@ export const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 export const stakeReducer = prepareStakeReducer(extraDependencies);
 export const sendFormReducer = prepareSendFormReducer(extraDependencies);
 export const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
+export const tradingNewReducer = prepareTradingReducer(extraDependencies);
 
 const WalletReducers = combineReducers({
     fiat: fiatRatesReducer,
@@ -45,6 +47,7 @@ const WalletReducers = combineReducers({
     fees: feesReducer,
     blockchain: blockchainReducer,
     trading: tradingReducer,
+    tradingNew: tradingNewReducer, // TODO: trading - tradingNew is temporary
     send: sendFormReducer,
     accountSearch: accountSearchReducer,
     formDrafts: formDraftReducer,

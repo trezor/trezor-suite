@@ -1,25 +1,21 @@
 import {
-    BuyTradeQuoteRequest,
     CryptoId,
     ExchangeTradeQuoteRequest,
     InfoResponse,
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
-import type { TradingTransactionBuy, TradingTransactionExchange } from '@suite-common/trading';
+import type { TradingTransactionExchange } from '@suite-common/trading';
 
 import { STORAGE } from 'src/actions/suite/constants';
 import {
-    TRADING_BUY,
     TRADING_COMMON,
     TRADING_EXCHANGE,
     TRADING_INFO,
     TRADING_SELL,
 } from 'src/actions/wallet/constants';
-import { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
 import { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
 import {
-    buyQuotes,
     exchangeQuotes,
     sellQuotes,
 } from 'src/reducers/wallet/__fixtures__/tradingReducerFixtures';
@@ -133,74 +129,6 @@ describe('settings reducer', () => {
         ).toEqual({ ...initialState, info: { ...initialState.info, ...info } });
     });
 
-    it('TRADING_BUY.SAVE_BUY_INFO', () => {
-        const buyInfo: BuyInfo = {
-            buyInfo: {
-                country: 'cz',
-                providers: [],
-                defaultAmountsOfFiatCurrencies: new Map([['usd', '1000']]),
-            },
-            providerInfos: {},
-            supportedCryptoCurrencies: new Set(['BTC', 'ETH']) as Set<CryptoId>,
-            supportedFiatCurrencies: new Set(['usd']),
-        };
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_BUY.SAVE_BUY_INFO,
-                buyInfo,
-            }),
-        ).toEqual({ ...initialState, buy: { ...initialState.buy, buyInfo } });
-    });
-
-    it('TRADING_BUY.SET_IS_FROM_REDIRECT', () => {
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_BUY.SET_IS_FROM_REDIRECT,
-                isFromRedirect: true,
-            } as any),
-        ).toEqual({ ...initialState, buy: { ...initialState.buy, isFromRedirect: true } });
-    });
-
-    it('TRADING_BUY.SAVE_QUOTE_REQUEST', () => {
-        const request: BuyTradeQuoteRequest = {
-            fiatCurrency: 'EUR',
-            receiveCurrency: 'BTC' as CryptoId,
-            wantCrypto: false,
-            country: 'CZ',
-            fiatStringAmount: '1',
-        };
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_BUY.SAVE_QUOTE_REQUEST,
-                request,
-            }),
-        ).toEqual({ ...initialState, buy: { ...initialState.buy, quotesRequest: request } });
-    });
-
-    it('TRADING_BUY.SAVE_TRANSACTION_DETAIL_ID', () => {
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_BUY.SAVE_TRANSACTION_DETAIL_ID,
-                transactionId: '1234-1234-1234',
-            }),
-        ).toEqual({
-            ...initialState,
-            buy: { ...initialState.buy, transactionId: '1234-1234-1234' },
-        });
-    });
-
-    it('TRADING_BUY.SAVE_QUOTES', () => {
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_BUY.SAVE_QUOTES,
-                quotes: buyQuotes,
-            }),
-        ).toEqual({
-            ...initialState,
-            buy: { ...initialState.buy, quotes: buyQuotes },
-        });
-    });
-
     it('TRADING_SELL.SELL_QUOTES', () => {
         expect(
             tradingReducer(undefined, {
@@ -223,26 +151,6 @@ describe('settings reducer', () => {
             ...initialState,
             exchange: { ...initialState.exchange, quotes: exchangeQuotes },
         });
-    });
-
-    it('TRADING_BUY.VERIFY_ADDRESS', () => {
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_BUY.VERIFY_ADDRESS,
-                addressVerified: '1abcdef',
-            }),
-        ).toEqual({ ...initialState, buy: { ...initialState.buy, addressVerified: '1abcdef' } });
-    });
-
-    it('TRADING_BUY.DISPOSE', () => {
-        expect(
-            tradingReducer(
-                { ...initialState, buy: { ...initialState.buy, addressVerified: '1abcdef' } },
-                {
-                    type: TRADING_BUY.DISPOSE,
-                },
-            ),
-        ).toEqual(initialState);
     });
 
     it('TRADING_EXCHANGE.SAVE_EXCHANGE_INFO', () => {
@@ -289,31 +197,6 @@ describe('settings reducer', () => {
     });
 
     it('SAVE_TRADE', () => {
-        const tradeBuy: TradingTransactionBuy = {
-            date: 'ddd',
-            key: 'buy-key',
-            tradeType: 'buy',
-            data: {
-                fiatStringAmount: '47.12',
-                fiatCurrency: 'EUR',
-                receiveCurrency: 'BTC' as CryptoId,
-                receiveStringAmount: '0.004705020432603938',
-                rate: 10014.834297738,
-                quoteId: 'd369ba9e-7370-4a6e-87dc-aefd3851c735',
-                exchange: 'mercuryo',
-                minFiat: 20.03,
-                maxFiat: 2000.05,
-                minCrypto: 0.002,
-                maxCrypto: 0.19952,
-                paymentMethod: 'creditCard',
-            },
-            account: {
-                symbol: 'btc',
-                descriptor: 'asdfasdfasdfasdfas',
-                accountIndex: 0,
-                accountType: 'normal',
-            },
-        };
         const tradeExchange: TradingTransactionExchange = {
             date: 'ddd',
             key: 'exchange-key',
@@ -341,20 +224,10 @@ describe('settings reducer', () => {
         };
 
         expect(
-            tradingReducer(undefined, {
-                type: TRADING_COMMON.SAVE_TRADE,
-                ...tradeBuy,
-            }),
-        ).toEqual({
-            ...initialState,
-            trades: [tradeBuy],
-        });
-
-        expect(
             tradingReducer(
                 {
                     ...initialState,
-                    trades: [tradeExchange, tradeBuy],
+                    trades: [tradeExchange],
                 },
                 {
                     type: TRADING_COMMON.SAVE_TRADE,
@@ -363,7 +236,7 @@ describe('settings reducer', () => {
             ),
         ).toEqual({
             ...initialState,
-            trades: [tradeBuy, updatedTradeExchange],
+            trades: [updatedTradeExchange],
         });
     });
 
@@ -403,32 +276,6 @@ describe('settings reducer', () => {
         ).toEqual({
             ...initialState,
             sell: { ...initialState.sell, quotesRequest: request },
-        });
-    });
-
-    it('TRADING_BUY.CLEAR_QUOTES', () => {
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_BUY.CLEAR_QUOTES,
-            }),
-        ).toEqual({
-            ...initialState,
-            buy: { ...initialState.buy, quotes: undefined },
-        });
-    });
-
-    it('TRADING_BUY.SAVE_QUOTE', () => {
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_BUY.SAVE_QUOTE,
-                quote: buyQuotes[0],
-            }),
-        ).toEqual({
-            ...initialState,
-            buy: {
-                ...initialState.buy,
-                selectedQuote: buyQuotes[0],
-            },
         });
     });
 

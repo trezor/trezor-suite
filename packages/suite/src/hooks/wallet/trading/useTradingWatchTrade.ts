@@ -16,9 +16,9 @@ import {
     type TradingTransaction,
     type TradingType,
     invityAPI,
+    tradingActions,
 } from '@suite-common/trading';
 
-import { saveTrade as saveBuyTrade } from 'src/actions/wallet/tradingBuyActions';
 import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/tradingExchangeActions';
 import { saveTrade as saveSellTrade } from 'src/actions/wallet/tradingSellActions';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
@@ -41,6 +41,13 @@ const tradingWatchTrade = async <T extends TradingType>({
     removeDraft,
 }: TradingWatchTradeProps<T>) => {
     const response = await invityAPI.watchTrade<T>(trade.data, trade.tradeType, refreshCount);
+    const accountData = {
+        descriptor: account.descriptor,
+        symbol: account.symbol,
+        accountType: account.accountType,
+        accountIndex: account.index,
+    };
+
     if (!response) return;
     if (response.status && response.status !== trade.data.status) {
         const newDate = new Date().toISOString();
@@ -53,7 +60,15 @@ const tradingWatchTrade = async <T extends TradingType>({
                 error: buyResponse.error,
             };
 
-            dispatch(saveBuyTrade(tradeData, account, newDate));
+            dispatch(
+                tradingActions.saveTrade({
+                    tradeType: 'buy',
+                    data: tradeData,
+                    key: tradeData.paymentId,
+                    account: accountData,
+                    date: newDate,
+                }),
+            );
         }
 
         if (trade.tradeType === 'sell') {

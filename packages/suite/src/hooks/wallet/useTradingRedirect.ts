@@ -5,11 +5,11 @@ import {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
+import { tradingBuyActions } from '@suite-common/trading';
 import { FeeLevel } from '@trezor/connect';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
-import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
 import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
 import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
 import { useDispatch } from 'src/hooks/suite';
@@ -185,7 +185,7 @@ export const useTradingRedirect = () => {
     const redirectToDetail = (params: DetailRedirectParams) => {
         const { transactionId } = params;
 
-        dispatch(tradingBuyActions.saveTransactionDetailId(transactionId));
+        dispatch(tradingBuyActions.saveTransactionId(transactionId));
         dispatch(
             goto('wallet-trading-buy-detail', {
                 params: {

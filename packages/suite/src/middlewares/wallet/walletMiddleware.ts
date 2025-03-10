@@ -2,6 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import type { MiddlewareAPI } from 'redux';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { tradingBuyActions } from '@suite-common/trading';
 import {
     accountsActions,
     blockchainActions,
@@ -21,7 +22,6 @@ import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
-import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
 import { selectSelectedAccountKey } from 'src/reducers/wallet/selectedAccountReducer';
 import type { Action, AppState, Dispatch } from 'src/types/suite';
 

@@ -1,7 +1,5 @@
 import { produce } from 'immer';
 import type {
-    BuyTrade,
-    BuyTradeQuoteRequest,
     Coins,
     CryptoId,
     ExchangeTrade,
@@ -11,23 +9,22 @@ import type {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
-import type {
-    TradingPaymentMethodListProps,
-    TradingTransaction,
-    TradingType,
+import {
+    type TradingPaymentMethodListProps,
+    type TradingTransaction,
+    type TradingType,
+    selectTradingBuyInfo,
 } from '@suite-common/trading';
 import type { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import type { FeeLevel } from '@trezor/connect';
 
 import { STORAGE } from 'src/actions/suite/constants';
 import {
-    TRADING_BUY,
     TRADING_COMMON,
     TRADING_EXCHANGE,
     TRADING_INFO,
     TRADING_SELL,
 } from 'src/actions/wallet/constants';
-import type { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
 import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
 import type { SellInfo } from 'src/actions/wallet/tradingSellActions';
 import { AppState } from 'src/reducers/store';
@@ -49,15 +46,6 @@ interface Info {
     platforms?: Platforms;
     coins?: Coins;
     paymentMethods: TradingPaymentMethodListProps[];
-}
-
-interface Buy extends TradingTradeCommonProps {
-    buyInfo?: BuyInfo;
-    isFromRedirect: boolean;
-    quotesRequest?: BuyTradeQuoteRequest;
-    quotes: BuyTrade[] | undefined;
-    selectedQuote: BuyTrade | undefined;
-    addressVerified: string | undefined;
 }
 
 interface Exchange extends TradingTradeCommonProps {
@@ -84,7 +72,6 @@ interface Sell extends TradingTradeCommonProps {
 
 export interface State {
     info: Info;
-    buy: Buy;
     exchange: Exchange;
     sell: Sell;
     composedTransactionInfo: ComposedTransactionInfo;
@@ -102,15 +89,6 @@ export const initialState: State = {
         platforms: undefined,
         coins: undefined,
         paymentMethods: [],
-    },
-    buy: {
-        transactionId: undefined,
-        isFromRedirect: false,
-        buyInfo: undefined,
-        quotesRequest: undefined,
-        selectedQuote: undefined,
-        quotes: [],
-        addressVerified: undefined,
     },
     exchange: {
         exchangeInfo: undefined,
@@ -153,33 +131,6 @@ export const tradingReducer = (state: State = initialState, action: Action): Sta
                 break;
             case TRADING_INFO.SAVE_PAYMENT_METHODS:
                 draft.info.paymentMethods = action.paymentMethods;
-                break;
-            case TRADING_BUY.SAVE_BUY_INFO:
-                draft.buy.buyInfo = action.buyInfo;
-                break;
-            case TRADING_BUY.SET_IS_FROM_REDIRECT:
-                draft.buy.isFromRedirect = action.isFromRedirect;
-                break;
-            case TRADING_BUY.SAVE_QUOTE_REQUEST:
-                draft.buy.quotesRequest = action.request;
-                break;
-            case TRADING_BUY.SAVE_TRANSACTION_DETAIL_ID:
-                draft.buy.transactionId = action.transactionId;
-                break;
-            case TRADING_BUY.SAVE_QUOTES:
-                draft.buy.quotes = action.quotes;
-                break;
-            case TRADING_BUY.SAVE_QUOTE:
-                draft.buy.selectedQuote = action.quote;
-                break;
-            case TRADING_BUY.CLEAR_QUOTES:
-                draft.buy.quotes = undefined;
-                break;
-            case TRADING_BUY.VERIFY_ADDRESS:
-                draft.buy.addressVerified = action.addressVerified;
-                break;
-            case TRADING_BUY.DISPOSE:
-                draft.buy.addressVerified = undefined;
                 break;
             case TRADING_COMMON.SET_TRADING_FROM_PREFILLED_CRYPTO_ID:
                 draft.prefilledFromCryptoId = action.prefilledFromCryptoId;
@@ -261,9 +212,13 @@ export const selectSupportedSymbols =
     (type: TradingType) =>
     (state: AppState): Set<CryptoId> | undefined => {
         const { trading } = state.wallet;
+
         switch (type) {
-            case 'buy':
-                return trading.buy.buyInfo?.supportedCryptoCurrencies;
+            case 'buy': {
+                const buyInfo = selectTradingBuyInfo(state);
+
+                return buyInfo?.supportedCryptoCurrencies;
+            }
             case 'exchange':
                 return trading.exchange.exchangeInfo?.sellSymbols;
             case 'sell':

@@ -19,7 +19,7 @@ import { PROTO } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
-import { TRADING_BUY, TRADING_COMMON, TRADING_EXCHANGE } from 'src/actions/wallet/constants';
+import { TRADING_COMMON, TRADING_EXCHANGE } from 'src/actions/wallet/constants';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
@@ -84,7 +84,7 @@ export const verifyAddress =
         account: Account,
         address: string | undefined,
         path: string | undefined,
-        tradingAction: typeof TRADING_EXCHANGE.VERIFY_ADDRESS | typeof TRADING_BUY.VERIFY_ADDRESS,
+        tradingAction: typeof TRADING_EXCHANGE.VERIFY_ADDRESS,
     ) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectSelectedDevice(getState());

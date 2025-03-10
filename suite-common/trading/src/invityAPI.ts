@@ -242,6 +242,8 @@ class InvityAPI {
 
             return response;
         } catch (error) {
+            if (error.name === 'AbortError') return;
+
             console.error('[getExchangeQuotes]', error);
         }
     };
@@ -287,6 +289,8 @@ class InvityAPI {
 
             return response;
         } catch (error) {
+            if (error.name === 'AbortError') return;
+
             console.error('[getBuyQuotes]', error);
         }
     };
@@ -348,6 +352,8 @@ class InvityAPI {
 
             return response;
         } catch (error) {
+            if (error.name === 'AbortError') return;
+
             console.error('[getSellQuotes]', error);
         }
     };

@@ -21,7 +21,10 @@ interface ConfirmAddressModalProps
 export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAddressModalProps) => {
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectAccountIncludingChosenInTrading);
-    const isTradingFlow = useSelector(state => !!state.wallet.trading.modalAccountKey);
+    const isTradingFlow = useSelector(
+        state =>
+            !!state.wallet.trading.modalAccountKey || !!state.wallet.tradingNew.modalAccountKey,
+    );
 
     const validateAddress = useCallback(
         () => showAddress(addressPath, value),

@@ -11,11 +11,13 @@ import { AnyAction, Dispatch } from 'redux';
 
 import { TokenDefinitionsState } from '@suite-common/token-definitions';
 import type {
+    TradingBuyInfoSelector,
     TradingBuyType,
     TradingExchangeType,
     TradingPaymentMethodType,
     TradingSelectAssetOptionGroupProps,
     TradingSellType,
+    TradingStateSelector,
     TradingTransaction,
     TradingTransactionBuy,
     TradingTransactionExchange,
@@ -30,7 +32,6 @@ import { StaticSessionId } from '@trezor/connect';
 import { AssetOptionBaseProps } from '@trezor/product-components';
 import { Timer } from '@trezor/react-utils';
 
-import type { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
 import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
 import type { SellInfo } from 'src/actions/wallet/tradingSellActions';
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
@@ -74,7 +75,7 @@ export type TradingTradeMapProps = {
 export type TradingTradeDetailBuySellType = BuyTrade | SellFiatTrade;
 
 export type TradingTradeInfoMapProps = {
-    buy: BuyInfo;
+    buy: TradingBuyInfoSelector;
     sell: SellInfo;
     exchange: ExchangeInfo;
 };
@@ -87,6 +88,7 @@ export interface TradingGetTypedTradeProps {
 
 export interface TradingGetDetailDataProps {
     trading: State;
+    tradingNew: TradingStateSelector;
     tradeType: TradingType;
 }
 

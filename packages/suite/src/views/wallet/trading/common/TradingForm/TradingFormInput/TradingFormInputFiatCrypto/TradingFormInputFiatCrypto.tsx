@@ -1,10 +1,9 @@
-import { useTradingInfo } from '@suite-common/trading';
+import { TradingBuyFormProps, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { Translation } from 'src/components/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    TradingBuyFormProps,
     TradingExchangeFormProps,
     TradingFormInputFiatCryptoWrapProps,
     TradingSellFormProps,

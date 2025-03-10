@@ -4,6 +4,7 @@ import type { FieldPath, FieldValues, UseFormReturn } from 'react-hook-form';
 import type {
     BankAccount,
     BuyTrade,
+    BuyTradeQuoteRequest,
     CryptoId,
     ExchangeTrade,
     ExchangeTradeQuoteRequest,
@@ -12,6 +13,8 @@ import type {
 } from 'invity-api';
 
 import type {
+    TradingBuyFormProps,
+    TradingBuyInfoSelector,
     TradingBuyType,
     TradingCryptoSelectItemProps,
     TradingExchangeType,
@@ -37,7 +40,6 @@ import {
 import { FeeLevel } from '@trezor/connect';
 import { Timer } from '@trezor/react-utils';
 
-import type { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
 import { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
 import { SellInfo } from 'src/actions/wallet/tradingSellActions';
 import type { TranslationKey } from 'src/components/suite/Translation';
@@ -69,16 +71,6 @@ import type { Account } from 'src/types/wallet';
 import { SendContextValues } from 'src/types/wallet/sendForm';
 import { Option } from 'src/types/wallet/tradingCommonTypes';
 import { AmountLimitProps, CryptoAmountLimitProps } from 'src/utils/suite/validation';
-
-export interface TradingBuyFormProps {
-    fiatInput?: string;
-    cryptoInput?: string;
-    currencySelect: Option;
-    cryptoSelect: TradingCryptoSelectItemProps;
-    countrySelect: Option;
-    paymentMethod?: TradingPaymentMethodListProps;
-    amountInCrypto: boolean;
-}
 
 export interface TradingBuyFormDefaultValuesProps {
     defaultValues: TradingBuyFormProps;
@@ -180,10 +172,10 @@ export interface TradingBuyFormContextProps
         TradingCommonFormProps,
         TradingCommonFormBuySellProps {
     type: TradingBuyType;
-    buyInfo?: BuyInfo;
+    buyInfo?: TradingBuyInfoSelector;
     cryptoInputValue?: string;
-    quotesRequest: AppState['wallet']['trading']['buy']['quotesRequest'];
-    quotes: AppState['wallet']['trading']['buy']['quotes'];
+    quotesRequest: BuyTradeQuoteRequest | undefined;
+    quotes: BuyTrade[];
     selectedQuote: BuyTrade | undefined;
     trade?: TradingTransactionBuy;
     addressVerified: string | undefined;

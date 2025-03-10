@@ -1,7 +1,7 @@
 import { FieldErrors } from 'react-hook-form';
 
 import { useFormatters } from '@suite-common/formatters';
-import { useTradingInfo } from '@suite-common/trading';
+import { TradingBuyFormProps, useTradingInfo } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { FormState } from '@suite-common/wallet-types';
@@ -24,7 +24,6 @@ import {
 } from 'src/types/trading/trading';
 import {
     TradingAllFormProps,
-    TradingBuyFormProps,
     TradingFormInputFiatCryptoProps,
     TradingSellExchangeFormProps,
 } from 'src/types/trading/tradingForm';

@@ -1,4 +1,5 @@
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
+import { tradingActions, tradingBuyActions } from '@suite-common/trading';
 import {
     accountsActions,
     blockchainActions,
@@ -16,7 +17,6 @@ import { GraphAction } from 'src/actions/wallet/graphActions';
 import { ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
 import { TradingCommonAction } from 'src/actions/wallet/trading/tradingCommonActions';
-import { TradingBuyAction } from 'src/actions/wallet/tradingBuyActions';
 import { TradingExchangeAction } from 'src/actions/wallet/tradingExchangeActions';
 import { TradingInfoAction } from 'src/actions/wallet/tradingInfoActions';
 import { TradingSellAction } from 'src/actions/wallet/tradingSellActions';
@@ -61,6 +61,8 @@ type BlockchainAction = ReturnType<(typeof blockchainActions)[keyof typeof block
 type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
 type StakeAction = ReturnType<(typeof stakeActions)[keyof typeof stakeActions]>;
 type SendFormAction = ReturnType<(typeof sendFormActions)[keyof typeof sendFormActions]>;
+type TradingAction = ReturnType<(typeof tradingActions)[keyof typeof tradingActions]>;
+type TradingBuyAction = ReturnType<(typeof tradingBuyActions)[keyof typeof tradingBuyActions]>;
 
 export type WalletAction =
     | TokenDefinitionsAction
@@ -71,9 +73,10 @@ export type WalletAction =
     | DiscoveryAction
     | TradingInfoAction
     | TradingExchangeAction
-    | TradingBuyAction
     | TradingSellAction
     | TradingCommonAction
+    | TradingAction
+    | TradingBuyAction
     | SendFormAction
     | AccountSearchAction
     | FormDraftAction

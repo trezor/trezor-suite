@@ -1,9 +1,11 @@
 import { BuyProviderInfo } from 'invity-api';
 
-import type { TradingTransactionBuy as TradingTxBuy } from '@suite-common/trading';
+import {
+    type TradingTransactionBuy as TradingTxBuy,
+    tradingBuyActions,
+} from '@suite-common/trading';
 import { Button } from '@trezor/components';
 
-import { saveTransactionDetailId } from 'src/actions/wallet/tradingBuyActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
@@ -34,7 +36,7 @@ export const TradingTransactionBuy = ({
     const { exchange, paymentMethod, paymentMethodName } = trade.data;
 
     const handleViewDetailsButtonClick = () => {
-        dispatch(saveTransactionDetailId(trade.key || ''));
+        dispatch(tradingBuyActions.saveTransactionId(trade.key ?? ''));
         navigateToBuyDetail();
     };
 

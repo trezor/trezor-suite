@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
 
-import { selectTradingInfoLegacy } from '../selectors/tradingSelectors';
+import { selectTradingInfo, selectTradingInfoLegacy } from '../selectors/tradingSelectors';
 import {
     TradingCryptoSelectItemProps,
     TradingCryptoSelectOptionProps,
@@ -74,19 +74,18 @@ const sortPopularCurrencies = (
  *
  * @param section used only for purpose in refactored desktop trading
  */
-export const useTradingInfo = (_section?: TradingType): TradingInfoProps => {
+export const useTradingInfo = (section?: TradingType): TradingInfoProps => {
     const tradingInfo = useSelector(selectTradingInfoLegacy);
-    // const tradingNewInfo = useSelector(selectTradingInfo);
+    const tradingNewInfo = useSelector(selectTradingInfo);
 
-    const getInfo = () =>
-        /*
+    const getInfo = () => {
         if (section) {
             // TODO: trading - refactor only buy is refactored for now
             return section === 'buy' ? tradingNewInfo : tradingInfo;
         }
-        */
 
-        tradingInfo;
+        return tradingInfo;
+    };
     const info = getInfo();
 
     const { platforms, coins } = useMemo(

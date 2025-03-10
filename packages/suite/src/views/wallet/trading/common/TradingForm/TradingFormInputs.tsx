@@ -1,3 +1,4 @@
+import { TradingBuyFormProps } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { formatAmount } from '@suite-common/wallet-utils';
 import { Column, FractionButton, FractionButtonProps, Row } from '@trezor/components';
@@ -17,7 +18,6 @@ import {
 } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
-    TradingBuyFormProps,
     TradingExchangeFormProps,
     TradingSellFormProps,
     TradingUseFormActionsReturnProps,

@@ -3,13 +3,13 @@ import { useMemo } from 'react';
 import { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import {
+    type TradingBuyInfoSelector,
     type TradingPaymentMethodListProps,
     getDefaultCountry,
     useTradingInfo,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 
-import { BuyInfo } from 'src/actions/wallet/tradingBuyActions';
 import {
     FORM_DEFAULT_FIAT_CURRENCY,
     FORM_DEFAULT_PAYMENT_METHOD,
@@ -21,7 +21,7 @@ import { buildFiatOption } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
-    buyInfo: BuyInfo | undefined,
+    buyInfo: TradingBuyInfoSelector | undefined,
 ): TradingBuyFormDefaultValuesProps => {
     const { buildDefaultCryptoOption } = useTradingInfo('buy');
     const prefilledFromCryptoId = useSelector(state => state.wallet.trading.prefilledFromCryptoId);

@@ -205,6 +205,7 @@ export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellTyp
     quotes: TradingTradeMapProps[T][] | undefined,
     currentPaymentMethod: TradingPaymentMethodProps,
 ) => {
+    // TODO: trading - delete after trading will be refactored
     if (!quotes) return;
 
     return quotes.filter(

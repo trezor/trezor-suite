@@ -1,3 +1,4 @@
+import { TradingState as TradingNewState } from '@suite-common/trading';
 import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
@@ -15,6 +16,7 @@ export type SelectedAccountRootState = {
 export type SelectedAccountRootStateWithTrading = SelectedAccountRootState & {
     wallet: {
         trading: TradingState;
+        tradingNew: TradingNewState;
     };
 };
 
@@ -55,9 +57,15 @@ export const selectAccountIncludingChosenInTrading = (
     state: SelectedAccountRootStateWithTrading,
 ) => {
     const { modalAccountKey } = state.wallet.trading;
+    const { modalAccountKey: modalAccountKeyNew } = state.wallet.tradingNew;
 
+    // TODO: trading - temporary solution, should not be in the conflict
     if (modalAccountKey) {
         return selectAccountByKey(state, modalAccountKey) ?? undefined;
+    }
+
+    if (modalAccountKeyNew) {
+        return selectAccountByKey(state, modalAccountKeyNew) ?? undefined;
     }
 
     const selectedAccount = selectSelectedAccount(state);

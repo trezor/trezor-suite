@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { TradingBuyFormProps } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
@@ -12,7 +13,7 @@ import {
     FORM_SEND_CRYPTO_CURRENCY_SELECT,
 } from 'src/constants/wallet/trading/form';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingBuyFormProps, TradingSellFormProps } from 'src/types/trading/tradingForm';
+import { TradingSellFormProps } from 'src/types/trading/tradingForm';
 import {
     isTradingBuyContext,
     isTradingExchangeContext,

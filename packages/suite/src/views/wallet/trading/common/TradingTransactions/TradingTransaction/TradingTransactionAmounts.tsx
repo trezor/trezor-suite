@@ -3,7 +3,6 @@ import { Icon, Row, iconSizes } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingTestWrapper } from 'src/views/wallet/trading';
 
 const Arrow = () => (
@@ -17,8 +16,7 @@ interface TradingTransactionAmountsProps {
 }
 
 export const TradingTransactionAmounts = ({ trade }: TradingTransactionAmountsProps) => {
-    const { type } = useTradingFormContext();
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(type);
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(trade.tradeType);
 
     if (trade.tradeType === 'sell') {
         const { cryptoStringAmount, cryptoCurrency, fiatStringAmount, fiatCurrency } = trade.data;

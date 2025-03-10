@@ -1,4 +1,11 @@
-import { invityAPI } from '@suite-common/trading';
+import { combineReducers } from 'redux';
+
+import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import {
+    invityAPI,
+    prepareTradingReducer,
+    initialState as tradingNewInitialState,
+} from '@suite-common/trading';
 
 import { MODAL, ROUTER } from 'src/actions/suite/constants';
 import { TRADING_COMMON } from 'src/actions/wallet/constants';
@@ -9,8 +16,9 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { initialState, tradingReducer } from 'src/reducers/wallet/tradingReducer';
-import { configureStore } from 'src/support/tests/configureStore';
 import { Action } from 'src/types/suite';
+
+// TODO: trading - refactor after/during moving to suite-common
 
 jest.mock('@suite-common/trading');
 invityAPI.setInvityServersEnvironment = () => {};
@@ -67,75 +75,62 @@ interface Args {
 
 const getInitialState = ({ trading, selectedAccount, router }: Args = {}) => ({
     wallet: {
+        tradingNew: tradingNewInitialState,
         trading:
-            trading ||
-            tradingReducer(
-                {
-                    isLoading: false,
-                    lastLoadedTimestamp: 0,
-                } as any,
-                { type: 'foo' } as any,
-            ),
+            trading ??
+            ({
+                isLoading: false,
+                lastLoadedTimestamp: 0,
+            } as any),
         selectedAccount:
-            selectedAccount ||
-            selectedAccountReducer(
-                {
-                    status: 'loaded',
-                    account: ACCOUNT,
-                } as any,
-                { type: 'foo' } as any,
-            ),
+            selectedAccount ??
+            ({
+                status: 'loaded',
+                account: ACCOUNT,
+            } as any),
     },
-    suite: suiteReducer(
-        {
-            settings: {
-                debug: {
-                    invityServerEnvironment: 'dev',
-                },
+    suite: {
+        settings: {
+            debug: {
+                invityServerEnvironment: 'dev',
             },
         } as any,
-        { type: 'foo' } as any,
-    ),
+    },
     router: router ?? routerReducer(DEFAULT_ROUTE, {} as Action),
     modal: modalReducer({ context: MODAL.CONTEXT_NONE }, {} as Action),
 });
 
 type State = ReturnType<typeof getInitialState>;
 
-const mockStore = configureStore<State, Action>([tradingMiddleware]);
-
 const initStore = (state: State) => {
-    const store = mockStore(state);
-    store.subscribe(() => {
-        const action = store.getActions().pop();
-        const state = store.getState();
-        const { trading, selectedAccount } = state.wallet;
-        const { settings } = state.suite;
-        state.wallet = {
-            trading: tradingReducer(trading, action),
-            selectedAccount: selectedAccountReducer(selectedAccount, action),
-        };
-        state.suite = suiteReducer(
-            {
+    const { settings } = state.suite;
+    const { trading, tradingNew, selectedAccount } = state.wallet;
+
+    const store = configureMockStore({
+        extra: {},
+        reducer: combineReducers({
+            wallet: combineReducers({
+                trading: tradingReducer,
+                tradingNew: prepareTradingReducer(extraDependenciesMock),
+                selectedAccount: selectedAccountReducer,
+            }),
+            suite: suiteReducer,
+            router: routerReducer,
+            modal: modalReducer,
+        }),
+        preloadedState: {
+            wallet: {
+                trading: { ...initialState, ...trading },
+                tradingNew,
+                selectedAccount,
+            },
+            suite: {
                 settings,
             } as any,
-            action,
-        );
-        state.router = routerReducer(
-            {
-                ...state.router,
-            } as any,
-            action,
-        );
-        state.modal = modalReducer(
-            {
-                ...state.modal,
-            } as any,
-            action,
-        );
-
-        // add action back to stack
-        store.getActions().push(action);
+            router: (state.router ? { ...state.router } : {}) as any,
+            modal: (state.modal ? { ...state.modal } : {}) as any,
+        },
+        middleware: [tradingMiddleware],
     });
 
     return store;
@@ -166,8 +161,8 @@ describe('tradingMiddleware', () => {
 
         store.dispatch({ type: TRADING_COMMON.LOAD_DATA });
         expect(store.getActions()).toEqual([
-            { type: TRADING_COMMON.SET_LOADING, isLoading: true, lastLoadedTimestamp: 0 },
             { type: TRADING_COMMON.LOAD_DATA },
+            { type: TRADING_COMMON.SET_LOADING, isLoading: true, lastLoadedTimestamp: 0 },
         ]);
         expect(getCurrentAccountDescriptorMock).toHaveBeenCalledTimes(1);
         expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(1);
@@ -193,8 +188,8 @@ describe('tradingMiddleware', () => {
 
         store.dispatch({ type: TRADING_COMMON.LOAD_DATA });
         expect(store.getActions()).toEqual([
-            { type: TRADING_COMMON.SET_LOADING, isLoading: true, lastLoadedTimestamp: 0 },
             { type: TRADING_COMMON.LOAD_DATA },
+            { type: TRADING_COMMON.SET_LOADING, isLoading: true, lastLoadedTimestamp: 0 },
         ]);
         expect(getCurrentAccountDescriptorMock).toHaveBeenCalledTimes(1);
         expect(setInvityServersEnvironmentMock).toHaveBeenCalledTimes(1);

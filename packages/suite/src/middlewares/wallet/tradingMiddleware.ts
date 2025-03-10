@@ -1,11 +1,15 @@
 import { MiddlewareAPI } from 'redux';
 
-import { INVITY_API_RELOAD_DATA_AFTER_MS, invityAPI } from '@suite-common/trading';
+import {
+    INVITY_API_RELOAD_DATA_AFTER_MS,
+    invityAPI,
+    tradingActions,
+    tradingBuyActions,
+} from '@suite-common/trading';
 
 import { ROUTER } from 'src/actions/suite/constants';
 import { TRADING_COMMON, TRADING_EXCHANGE, TRADING_SELL } from 'src/actions/wallet/constants';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
-import * as tradingBuyActions from 'src/actions/wallet/tradingBuyActions';
 import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
 import * as tradingInfoAction from 'src/actions/wallet/tradingInfoActions';
 import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
@@ -48,7 +52,6 @@ export const tradingMiddleware =
         if (action.type === TRADING_COMMON.LOAD_DATA) {
             const account = getAccountAccordingToRoute(state);
             const { platforms, coins } = state.wallet.trading.info;
-            const { buyInfo } = state.wallet.trading.buy;
 
             const currentAccountDescriptor = invityAPI.getCurrentAccountDescriptor();
             const isDifferentAccount = currentAccountDescriptor !== account?.descriptor;
@@ -79,14 +82,6 @@ export const tradingMiddleware =
                     loadPromises.push(
                         invityAPI.getInfo().then(info => {
                             api.dispatch(tradingInfoAction.saveInfo(info));
-                        }),
-                    );
-                }
-
-                if (isDifferentAccount || !buyInfo) {
-                    loadPromises.push(
-                        tradingBuyActions.loadBuyInfo().then(buyInfo => {
-                            api.dispatch(tradingBuyActions.saveBuyInfo(buyInfo));
                         }),
                     );
                 }
@@ -124,15 +119,28 @@ export const tradingMiddleware =
             const isBuy = routeName === 'wallet-trading-buy';
             const isSell = routeName === 'wallet-trading-sell';
             const isExchange = routeName === 'wallet-trading-exchange';
+            const newModalAccountKey = newState.wallet.trading.modalAccountKey;
 
             // it is necessary to clear the state because it could affect the other modal state
-            if (!isTradingRoute && modalAccountKey) {
+            if (!isTradingRoute && (modalAccountKey || newModalAccountKey)) {
                 api.dispatch(tradingCommonActions.setTradingModalAccountKey(undefined));
+                api.dispatch(tradingActions.setModalAccountKey(undefined));
             }
 
             if (isBuy) {
                 api.dispatch(tradingCommonActions.setActiveSection('buy'));
-                api.dispatch(tradingBuyActions.saveTransactionDetailId(undefined));
+
+                api.dispatch(tradingBuyActions.saveTransactionId(undefined));
+
+                // TODO: trading - delete after refactor (clear for sell, exchange - temporary)
+                if (modalAccountKey) {
+                    api.dispatch(tradingCommonActions.setTradingModalAccountKey(undefined));
+                }
+            }
+
+            // TODO: trading - clear only for buy - temporary
+            if (!isBuy && newModalAccountKey) {
+                api.dispatch(tradingActions.setModalAccountKey(undefined));
             }
 
             if (isSell) {
@@ -156,6 +164,7 @@ export const tradingMiddleware =
 
             if (cleanupPrefilledFromCryptoId) {
                 api.dispatch(tradingCommonActions.setTradingPrefilledFromCryptoId(undefined));
+                api.dispatch(tradingActions.setTradingFromPrefilledCryptoId(undefined));
             }
         }
 

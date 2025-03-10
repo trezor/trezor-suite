@@ -5,6 +5,7 @@ import { CryptoId } from 'invity-api';
 
 import {
     CRYPTO_PLATFORM_SEPARATOR,
+    TradingBuyFormProps,
     TradingCryptoSelectItemProps,
     cryptoIdToNetwork,
     isCryptoIdForNativeToken,
@@ -36,7 +37,6 @@ import {
     TradingTradeBuyExchangeType,
 } from 'src/types/trading/trading';
 import {
-    TradingBuyFormProps,
     TradingExchangeFormProps,
     TradingFormInputCryptoSelectProps,
 } from 'src/types/trading/tradingForm';

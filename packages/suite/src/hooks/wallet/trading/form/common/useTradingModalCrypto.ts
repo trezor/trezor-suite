@@ -9,6 +9,11 @@ interface TradingModalCryptoProps {
     receiveCurrency: CryptoId | undefined;
 }
 
+/**
+ * Will save CryptoId which is used in confirm modals later
+ *
+ * TODO: trading - change to new reducer after all sections are implemented
+ */
 export const useTradingModalCrypto = ({ receiveCurrency }: TradingModalCryptoProps) => {
     const dispatch = useDispatch();
 
@@ -19,14 +24,15 @@ export const useTradingModalCrypto = ({ receiveCurrency }: TradingModalCryptoPro
         });
     }, [receiveCurrency, dispatch]);
 
+    // TODO: trading - could be moved to middleware to have safer cleanup
     // after unmount set off CryptoSymbol for modals
-    // eslint-disable-next-line arrow-body-style
-    useEffect(() => {
-        return () => {
+    useEffect(
+        () => () => {
             dispatch({
                 type: SET_MODAL_CRYPTO_CURRENCY,
                 modalCryptoId: undefined,
             });
-        };
-    }, [dispatch]);
+        },
+        [dispatch],
+    );
 };

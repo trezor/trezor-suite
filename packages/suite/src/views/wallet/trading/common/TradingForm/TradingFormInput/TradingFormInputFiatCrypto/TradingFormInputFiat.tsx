@@ -1,5 +1,6 @@
 import { FieldErrors, UseControllerProps } from 'react-hook-form';
 
+import { TradingBuyFormProps } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getInputState } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
@@ -12,7 +13,6 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import {
     TradingAllFormProps,
-    TradingBuyFormProps,
     TradingFormInputFiatCryptoProps,
     TradingSellExchangeFormProps,
 } from 'src/types/trading/tradingForm';

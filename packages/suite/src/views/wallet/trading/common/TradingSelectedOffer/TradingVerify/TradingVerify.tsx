@@ -2,7 +2,12 @@ import { useEffect, useMemo } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import { TradingExchangeType, cryptoIdToNetwork, useTradingInfo } from '@suite-common/trading';
+import {
+    TradingExchangeType,
+    cryptoIdToNetwork,
+    tradingBuyActions,
+    useTradingInfo,
+} from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import addressValidator from '@trezor/address-validator';
@@ -10,7 +15,6 @@ import { Button, Column, Divider, Input, Paragraph, Tooltip } from '@trezor/comp
 import { spacings } from '@trezor/theme';
 
 import * as modalActions from 'src/actions/suite/modalActions';
-import { TRADING_BUY } from 'src/actions/wallet/constants';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
@@ -99,10 +103,8 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
 
     // close modals and reset addressVerified on device connection change
     useEffect(() => {
-        dispatch({
-            type: TRADING_BUY.VERIFY_ADDRESS,
-            addressVerified: undefined,
-        });
+        // TODO: trading - no need for exchange verify?
+        dispatch(tradingBuyActions.verifyAddress(undefined));
         dispatch(modalActions.onCancel());
     }, [device?.connected, dispatch]);
 

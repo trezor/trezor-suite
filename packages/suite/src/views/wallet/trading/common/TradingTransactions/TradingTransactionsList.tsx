@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
+
 import styled from 'styled-components';
 
+import { selectTradingBuyProviders, selectTradingTrades } from '@suite-common/trading';
 import { H3, Paragraph, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
@@ -30,14 +33,25 @@ const TransactionCount = styled.div`
 
 export const TradingTransactionsList = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const allTransactions = useSelector(state => state.wallet.trading.trades);
+    const oldTradingAllTransactions = useSelector(state => state.wallet.trading.trades);
     const activeSection = useSelector(state => state.wallet.trading.activeSection);
-    const buyProviders = useSelector(state => state.wallet.trading.buy.buyInfo?.providerInfos);
+    const buyProviders = useSelector(selectTradingBuyProviders);
+    const newTradingAllTransactions = useSelector(selectTradingTrades);
     const exchangeProviders = useSelector(
         state => state.wallet.trading.exchange.exchangeInfo?.providerInfos,
     );
     const sellProviders = useSelector(state => state.wallet.trading.sell.sellInfo?.providerInfos);
     const isBuyAndSell = activeSection !== 'exchange';
+    const newTradingBuyTransactions = newTradingAllTransactions.filter(
+        transaction => transaction.tradeType === 'buy',
+    );
+    const oldTradingSellAndExchange = oldTradingAllTransactions.filter(
+        transaction => transaction.tradeType !== 'buy',
+    );
+    const allTransactions = useMemo(
+        () => [...oldTradingSellAndExchange, ...newTradingBuyTransactions],
+        [oldTradingSellAndExchange, newTradingBuyTransactions],
+    );
 
     useTradingLoadData();
 
