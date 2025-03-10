@@ -17,9 +17,9 @@ const baseDirUI = getPathForProject('desktop-ui');
 const baseDir = getPathForProject('desktop');
 
 const config: webpack.Configuration = {
-    // Electron 34 runs on Chromium 132 https://www.electronjs.org/blog/electron-34-0#stack-changes
-    // but we are limited to 130 (supported by latest browserslist, as included by latest webpack)
-    target: 'browserslist:Chrome >= 130',
+    // Electron 35 runs on Chromium 134 https://www.electronjs.org/blog/electron-35-0#stack-changes
+    // but we are limited to 133 (supported by latest browserslist, as included by latest webpack)
+    target: 'browserslist:Chrome >= 133',
     entry: [path.join(baseDirUI, 'src', 'index.tsx')],
     output: {
         path: path.join(baseDir, 'build'),

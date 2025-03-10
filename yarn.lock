@@ -12289,7 +12289,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
   dependencies:
-    electron: "npm:34.1.0"
+    electron: "npm:35.0.1"
   languageName: unknown
   linkType: soft
 
@@ -12352,7 +12352,7 @@ __metadata:
     "@types/ws": "npm:^8.5.13"
     chalk: "npm:^4.1.2"
     dotenv: "npm:^16.4.7"
-    electron: "npm:34.1.0"
+    electron: "npm:35.0.1"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
     electron-updater: "npm:6.5.0"
@@ -12407,7 +12407,7 @@ __metadata:
     "@electron/fuses": "npm:^1.8.0"
     "@electron/notarize": "npm:2.5.0"
     blake-hash: "npm:^2.0.0"
-    electron: "npm:34.1.0"
+    electron: "npm:35.0.1"
     electron-builder: "npm:26.0.3"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
@@ -18581,7 +18581,7 @@ __metadata:
   dependencies:
     "@trezor/connect": "workspace:*"
     "@trezor/eslint": "workspace:*"
-    electron: "npm:34.1.0"
+    electron: "npm:35.0.1"
     electron-builder: "npm:26.0.3"
   languageName: unknown
   linkType: soft
@@ -18591,7 +18591,7 @@ __metadata:
   resolution: "connect-example-electron-renderer-popup@workspace:packages/connect-examples/electron-renderer-with-popup"
   dependencies:
     "@trezor/eslint": "workspace:*"
-    electron: "npm:34.1.0"
+    electron: "npm:35.0.1"
     electron-builder: "npm:26.0.3"
   languageName: unknown
   linkType: soft
@@ -18606,7 +18606,7 @@ __metadata:
     babel-loader: "npm:^9.1.3"
     concurrently: "npm:^8.2.2"
     copy-webpack-plugin: "npm:^12.0.2"
-    electron: "npm:34.1.0"
+    electron: "npm:35.0.1"
     electron-builder: "npm:26.0.3"
     html-webpack-plugin: "npm:^5.6.0"
     terser-webpack-plugin: "npm:^5.3.11"
@@ -21044,16 +21044,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:34.1.0":
-  version: 34.1.0
-  resolution: "electron@npm:34.1.0"
+"electron@npm:35.0.1":
+  version: 35.0.1
+  resolution: "electron@npm:35.0.1"
   dependencies:
     "@electron/get": "npm:^2.0.0"
-    "@types/node": "npm:^20.9.0"
+    "@types/node": "npm:^22.7.7"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10/318e668404e42c68187643225fc23a4f53b974bcb2d00392165905a65dc48b922899c313aebda0acff6fa5780c0ff0057f5886c11d7077182c5dbfcc9c21969e
+  checksum: 10/4e963e8a5b8d9053aa2b6e97938138049dd0abbfd27fa5980cf8eb8ab742fd7271c5d2ba97d596c0610c69309f66e1a2caf10bb1d51a1597f83119935e528683
   languageName: node
   linkType: hard
 
