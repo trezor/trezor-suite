@@ -5,6 +5,7 @@ import * as ERRORS from '@trezor/connect/src/constants/errors';
 import {
     CallMethodAnyResponse,
     CallMethodPayload,
+    DEVICE_EVENT,
     IFRAME,
     POPUP,
     UI_EVENT,
@@ -106,6 +107,9 @@ export class CoreInPopup implements ConnectFactoryDependencies<ConnectSettingsWe
             if (this._popupManager) this._popupManager.close();
             this._popupManager = new popup.PopupManager(this._settings, {
                 logger: this.popupManagerLogger,
+            });
+            this._popupManager.on(DEVICE_EVENT, event => {
+                this.eventEmitter.emit(DEVICE_EVENT, event);
             });
             setLogWriter(() => this.logWriterFactory(this._popupManager!));
         }

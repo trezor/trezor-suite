@@ -33,8 +33,10 @@ interface TradingVerifyProps {
 export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const { cryptoIdToNativeCoinSymbol, cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const context = useTradingFormContext<TradingExchangeType>();
+    const { cryptoIdToNativeCoinSymbol, cryptoIdToSymbolAndContractAddress } = useTradingInfo(
+        context.type,
+    );
     const { callInProgress, device, verifyAddress, addressVerified, confirmTrade } = context;
     const exchangeQuote = isTradingExchangeContext(context) ? context.selectedQuote : null;
     const {

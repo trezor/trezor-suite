@@ -11,21 +11,23 @@ const footerStyle = prepareNativeStyle(utils => ({
     borderBottomRightRadius: utils.borders.radii.r16,
 }));
 
+export type TradeAccountsListFooterProps = {
+    hasTextualDivider: boolean;
+    onAddAccountTap: () => void;
+};
+
 export const TradeAccountsListFooter = ({
     hasTextualDivider,
     onAddAccountTap,
-}: {
-    hasTextualDivider: boolean;
-    onAddAccountTap: () => void;
-}) => {
+}: TradeAccountsListFooterProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Box style={applyStyle(footerStyle)}>
             {hasTextualDivider ? (
-                <Divider marginBottom="sp16" />
-            ) : (
                 <TextDivider title="generic.orSeparator" />
+            ) : (
+                <Divider marginBottom="sp16" />
             )}
             <Box paddingTop="sp8" paddingHorizontal="sp16">
                 <Button

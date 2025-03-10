@@ -6,6 +6,7 @@ import { config } from '@trezor/connect/src/data/config';
 import { DEFAULT_DOMAIN } from '@trezor/connect/src/data/version';
 import {
     CoreEventMessage,
+    DEVICE_EVENT,
     IFRAME,
     IFrameCallMessage,
     IFrameLogRequest,
@@ -486,6 +487,9 @@ const initCoreInPopup = async (
         handleUIAffectingMessage(message);
         if (message.type === RESPONSE_EVENT) {
             handleResponseEvent(message);
+        }
+        if (message.event === DEVICE_EVENT) {
+            postMessageToParent(message);
         }
     };
     const coreManager = initCoreState();

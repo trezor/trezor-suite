@@ -46,12 +46,11 @@ type ApplicationLogModalProps = { onCancel: () => void };
 export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
     const logs = useSelector(selectLogs);
-    const state = useSelector(state => state);
+    const applicationInfo = useSelector(state => getApplicationInfo(state, hideSensitiveInfo));
     const { ShadowTop, ShadowBottom, ShadowContainer, onScroll, scrollElementRef } =
         useScrollShadow();
 
     const actionLog = getApplicationLog(logs, hideSensitiveInfo);
-    const applicationInfo = getApplicationInfo(state, hideSensitiveInfo);
     const log = prettifyLog([applicationInfo, ...actionLog]);
 
     const download = () => {

@@ -84,7 +84,7 @@ export const actionSequence = <A extends UserAction[]>(
             p.then(async () => {
                 const element = findByTestId(action.element);
                 if (action.type === 'hover') {
-                    await user.hover(element);
+                    await act(() => user.hover(element));
                 }
                 if (action.type === 'click') {
                     const isDisabled = element.getAttributeNames().includes('disabled');
@@ -92,20 +92,20 @@ export const actionSequence = <A extends UserAction[]>(
                         throw new Error('Unable to perform pointer interaction');
                     }
 
-                    await user.click(element);
+                    await act(() => user.click(element));
                 } else if (action.type === 'input') {
                     const { value } = action;
                     const typeUser = userEvent.setup(
                         action.delay ? { delay: action.delay } : undefined,
                     );
                     if (!value) {
-                        await typeUser.clear(element);
+                        await act(() => typeUser.clear(element));
                     } else {
-                        await typeUser.type(element, value);
+                        await act(() => typeUser.type(element, value));
                     }
 
                     // NOTE: typing or clearing inputs requires extra user action for proper render
-                    await user.click(element);
+                    await act(() => user.click(element));
                 }
 
                 // wait for compose
@@ -115,6 +115,7 @@ export const actionSequence = <A extends UserAction[]>(
                 if (action.expectRerender) {
                     await waitForRender();
                 }
+
                 // action complete. run test
                 if (callback) callback(action);
             }),

@@ -20,6 +20,7 @@ export interface CryptoIconProps {
 }
 
 export const cryptoIconSizes = {
+    tiny: 16,
     extraSmall: 24,
     small: 32,
     large: 48,

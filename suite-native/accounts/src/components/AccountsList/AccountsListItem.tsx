@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { Account, AccountKey } from '@suite-common/wallet-types';
-import { Badge, RoundedIcon } from '@suite-native/atoms';
+import { Badge } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     FiatAmountFormatter,
     NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import {
@@ -90,7 +90,7 @@ export const AccountsListItem = ({
             isNativeCoinOnly ? (
                 <CryptoIconWithNetwork symbol={account.symbol} />
             ) : (
-                <RoundedIcon symbol={account.symbol} />
+                <CryptoIcon symbol={account.symbol} />
             ),
         [account.symbol, isNativeCoinOnly],
     );

@@ -157,11 +157,6 @@ export const extraDependencies: ExtraDependencies = {
             payload.accounts.map(acc =>
                 acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
             ),
-        storageLoadFirmware: (state, { payload }: StorageLoadAction) => {
-            if (payload.firmware?.firmwareHashInvalid) {
-                state.firmwareHashInvalid = payload.firmware.firmwareHashInvalid;
-            }
-        },
         storageLoadDiscovery: (_, { payload }: StorageLoadAction) => payload.discovery,
         addButtonRequestFirmware: (
             state,

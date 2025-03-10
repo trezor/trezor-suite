@@ -60,7 +60,7 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
     const context = useTradingFormContext();
     const { amountLimits, account, network } = context;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(context.type);
     const {
         control,
         formState: { errors },

@@ -67,6 +67,7 @@ const initStore = ({ send, fees, selectedAccount, coinjoin, bitcoinAmountUnit }:
                 coinjoin,
                 settings: { bitcoinAmountUnit, enabledNetworks: ['thol'] },
             },
+            suite: { settings: { language: 'en' } },
         },
     });
 

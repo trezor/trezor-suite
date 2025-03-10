@@ -6,8 +6,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from 'src/constants/suite/firmware';
-import { useDevice, useSelector } from 'src/hooks/suite';
-import { selectFirmwareRevisionCheckError } from 'src/reducers/suite/suiteReducer';
+import { useDevice } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
 
 export const reportCheckFail = (
@@ -57,20 +56,25 @@ const useCommonData = () => {
 
 const useReportRevisionCheck = () => {
     const commonData = useCommonData();
-    const errorType = useSelector(selectFirmwareRevisionCheckError);
+    const { device } = useDevice();
+
+    const revCheck = isDeviceAcquired(device) ? device.authenticityChecks?.firmwareRevision : null;
+    const isError = revCheck && !revCheck.success;
+    const errorType = isError ? revCheck.error : null;
+    const errorPayload = isError ? revCheck.errorPayload : null;
 
     useEffect(() => {
-        if (errorType !== null && revisionCheckErrorScenarios[errorType].shouldReport) {
-            reportCheckFail('Firmware revision', { ...commonData, errorType });
+        if (!errorType) return;
+        if (revisionCheckErrorScenarios[errorType].shouldReport) {
+            reportCheckFail('Firmware revision', { ...commonData, errorType }, errorPayload);
         }
-    }, [commonData, errorType]);
+    }, [commonData, errorType, errorPayload]);
 };
 
 const useReportHashCheck = () => {
     const { device } = useDevice();
     const commonData = useCommonData();
 
-    // `errorPayload` must also be extracted, which is why `selectFirmwareHashCheckError` would be impractical
     const hashCheck = isDeviceAcquired(device) ? device.authenticityChecks?.firmwareHash : null;
     const isError = hashCheck && !hashCheck.success;
     const errorType = isError ? hashCheck.error : null;

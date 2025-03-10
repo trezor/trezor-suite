@@ -19,7 +19,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
     }) => {
         // Pass through analytics and firmware steps
         await analyticsSection.passThroughAnalytics();
-        await onboardingPage.firmware.continueButton.click();
+        await onboardingPage.firmware.continueThroughFirmware();
 
         // Start wallet creation
         await page.getByTestId('@onboarding/path-create-button').click();

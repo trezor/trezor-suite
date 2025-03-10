@@ -5,7 +5,8 @@ import { atom } from 'jotai';
  * - 'none': Banner is hidden
  * - 'brief': Shows banner with only title
  * - 'extended': Shows banner with title, subtitle and CTA
+ * - 'other-error': Shows only a warning banner that check could not be performed
  */
-type DeviceCompromisedBannerVariant = 'none' | 'brief' | 'extended';
+export type DeviceCompromisedBannerVariant = 'none' | 'brief' | 'extended' | 'other-error';
 
 export const deviceCompromisedBannerAtom = atom<DeviceCompromisedBannerVariant>('none');

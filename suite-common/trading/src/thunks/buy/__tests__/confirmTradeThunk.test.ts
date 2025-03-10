@@ -27,12 +27,12 @@ describe('confirmTradeThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    trading: tradingReducer,
+                    tradingNew: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    trading: {
+                    tradingNew: {
                         ...initialState,
                         buy: {
                             ...initialState.buy,
@@ -89,7 +89,7 @@ describe('confirmTradeThunk', () => {
         expect(store.getActions().length).toEqual(2);
         expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
         expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(0);
-        expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
+        expect(store.getState().wallet.tradingNew.buy.isLoading).toBeFalsy();
     });
 
     describe('should show error toast', () => {
@@ -122,7 +122,7 @@ describe('confirmTradeThunk', () => {
             expect(toastAction?.payload.type).toEqual('error');
             expect(toastAction?.payload.error).toEqual('No response from the server');
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
+            expect(store.getState().wallet.tradingNew.buy.isLoading).toBeFalsy();
         });
 
         it('if there is no trade in response', async () => {
@@ -154,7 +154,7 @@ describe('confirmTradeThunk', () => {
             expect(toastAction?.payload.type).toEqual('error');
             expect(toastAction?.payload.error).toEqual('No response from the server');
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
+            expect(store.getState().wallet.tradingNew.buy.isLoading).toBeFalsy();
         });
 
         it('if there is no response trade payment id', async () => {
@@ -192,7 +192,7 @@ describe('confirmTradeThunk', () => {
             expect(toastAction?.payload.type).toEqual('error');
             expect(toastAction?.payload.error).toEqual('No response from the server');
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
+            expect(store.getState().wallet.tradingNew.buy.isLoading).toBeFalsy();
         });
 
         it('if there is trade error', async () => {
@@ -230,7 +230,7 @@ describe('confirmTradeThunk', () => {
             expect(toastAction?.payload.type).toEqual('error');
             expect(toastAction?.payload.error).toEqual(error);
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
-            expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
+            expect(store.getState().wallet.tradingNew.buy.isLoading).toBeFalsy();
         });
     });
 
@@ -263,7 +263,7 @@ describe('confirmTradeThunk', () => {
             }),
         );
 
-        const { trades } = store.getState().wallet.trading;
+        const { trades } = store.getState().wallet.tradingNew;
 
         expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(mockProcessResponseData).toHaveBeenCalledTimes(1);
@@ -280,6 +280,6 @@ describe('confirmTradeThunk', () => {
                 accountIndex: 1,
             },
         });
-        expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
+        expect(store.getState().wallet.tradingNew.buy.isLoading).toBeFalsy();
     });
 });

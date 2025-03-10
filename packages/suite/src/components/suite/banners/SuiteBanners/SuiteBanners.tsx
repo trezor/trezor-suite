@@ -19,7 +19,6 @@ import { MessageSystemBanner } from '../MessageSystemBanner';
 import { BridgeDeprecated } from './BridgeDeprecatedBanner';
 import { FailedBackup } from './FailedBackupBanner';
 import { FirmwareAuthenticityCheckBanner } from './FirmwareAuthenticityCheckBanner';
-import { FirmwareHashMismatchOnLastUpdateBanner } from './FirmwareHashMismatchOnLastUpdateBanner';
 import { NoBackup } from './NoBackupBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
@@ -39,7 +38,6 @@ export const SuiteBanners = () => {
     const bridge = useSelector(selectTransportOfType('BridgeTransport'));
     const device = useSelector(selectSelectedDevice);
     const isOnline = useSelector(state => state.suite.online);
-    const firmwareHashInvalid = useSelector(state => state.firmware.firmwareHashInvalid);
     const bannerMessage = useSelector(selectBannerMessage);
     const firmwareRevisionError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const firmwareHashError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
@@ -52,13 +50,8 @@ export const SuiteBanners = () => {
 
     let banner = null;
     let priority = 0;
-    // this handles firmware hash being invalid after a firmware update, not the regular firmware hash check
-    if (device?.id && firmwareHashInvalid.includes(device.id)) {
-        banner = <FirmwareHashMismatchOnLastUpdateBanner />;
-        priority = 92;
-    }
-    // the regular firmware hash check, and revision id check, either of them may fail
-    else if (firmwareRevisionError || firmwareHashError) {
+    // firmware hash & revision check (performed when connecting a device), either of them may fail
+    if (firmwareRevisionError || firmwareHashError) {
         banner = <FirmwareAuthenticityCheckBanner />;
         priority = 91;
     } else if (device?.features?.unfinished_backup) {

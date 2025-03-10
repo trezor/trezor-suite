@@ -9,7 +9,7 @@ import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 export const useOnboarding = () => {
     const dispatch = useDispatch();
 
-    const { onboarding, modal } = useSelector(state => state);
+    const { onboarding, modal } = useSelector(({ onboarding, modal }) => ({ onboarding, modal }));
 
     const showPinMatrix =
         modal.context === '@modal/context-device' && modal.windowType === UI.REQUEST_PIN;

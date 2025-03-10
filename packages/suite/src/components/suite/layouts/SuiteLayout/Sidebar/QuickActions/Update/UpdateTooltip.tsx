@@ -86,10 +86,9 @@ type SuiteRowProps = {
 const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
     const theme = useTheme();
 
-    const { desktopUpdate } = useSelector(state => state);
+    const suiteNewVersion = useSelector(state => state.desktopUpdate.latest?.version);
 
     const suiteCurrentVersion = process.env.VERSION || '';
-    const suiteNewVersion = desktopUpdate.latest?.version;
 
     return (
         <TooltipRow

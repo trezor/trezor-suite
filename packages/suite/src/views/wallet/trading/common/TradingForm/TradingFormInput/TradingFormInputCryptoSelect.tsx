@@ -92,7 +92,7 @@ export const TradingFormInputCryptoSelect = <
     'data-testid': dataTestId,
 }: TradingFormInputCryptoSelectProps<TFieldValues>) => {
     const context = useTradingFormContext<TradingTradeBuyExchangeType>();
-    const { buildCryptoOptions, cryptoIdToPlatformName } = useTradingInfo();
+    const { buildCryptoOptions, cryptoIdToPlatformName } = useTradingInfo(context.type);
     const { control } = methods;
     const [isModalActive, setIsModalActive] = useState(false);
     const [activeTab, setActiveTab] = useState<Network | null>(null);

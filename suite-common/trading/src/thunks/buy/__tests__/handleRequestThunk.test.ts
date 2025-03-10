@@ -4,7 +4,7 @@ import { CryptoId } from 'invity-api';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 
-import { buyThunks } from '../';
+import { buyThunks } from '../../';
 import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
@@ -29,12 +29,12 @@ describe('handleRequestThunk', () => {
             extra: {},
             reducer: combineReducers({
                 wallet: combineReducers({
-                    trading: tradingReducer,
+                    tradingNew: tradingReducer,
                 }),
             }),
             preloadedState: {
                 wallet: {
-                    trading: {
+                    tradingNew: {
                         ...initialState,
                         info: {
                             ...initialState.info,
@@ -65,25 +65,6 @@ describe('handleRequestThunk', () => {
             reset: mockTimerReset,
         } as unknown as HandleRequestThunkProps['timer'];
 
-        const mockAbort = jest.fn();
-        const mockAbortController: AbortController = {
-            abort: mockAbort,
-            signal: {
-                addEventListener: jest.fn(),
-                removeEventListener: jest.fn(),
-                aborted: false,
-                onabort: jest.fn(),
-                reason: null,
-                throwIfAborted: jest.fn(),
-                any: jest.fn(),
-                dispatchEvent: jest.fn(),
-            } as AbortSignal,
-        };
-        jest.spyOn(global, 'AbortController').mockImplementation(() => mockAbortController);
-        const mockAbortControllerRef = {
-            current: mockAbortController,
-        };
-
         const formValues: TradingBuyFormProps = {
             fiatInput: '1000',
             cryptoInput: '0',
@@ -110,11 +91,9 @@ describe('handleRequestThunk', () => {
         };
         const input: HandleRequestThunkProps = {
             formValues,
-            turnOffLoading: false,
             network: getNetwork('btc'),
             timer: mockTimer,
             shouldSendInSats: false,
-            abortControllerRef: mockAbortControllerRef,
         };
 
         return {
@@ -122,24 +101,21 @@ describe('handleRequestThunk', () => {
             mockTimerLoading,
             mockTimerStop,
             mockTimerReset,
-            mockAbort,
-            mockAbortControllerRef,
             store,
         };
     };
 
     it('should successfully request quotes and save them', async () => {
-        const { input, store, mockTimerLoading, mockTimerReset, mockAbort } = getMocks();
+        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+        const mockQuotes = [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES];
 
-        invityAPI.getBuyQuotes = () =>
-            Promise.resolve([...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES]);
+        invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
 
-        await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
+        const quotesResponse = await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
 
-        const state = store.getState().wallet.trading;
+        const state = store.getState().wallet.tradingNew;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
-        expect(mockAbort).toHaveBeenCalledTimes(1);
         expect(state.buy.amountLimits).toBeUndefined();
         expect(state.buy.quotes?.length).toEqual(2);
         expect(state.buy.quotesRequest).toEqual({
@@ -153,6 +129,7 @@ describe('handleRequestThunk', () => {
         expect(state.info.paymentMethods.length).toEqual(1);
         expect(state.isLoading).toBe(false);
         expect(mockTimerReset).toHaveBeenCalledTimes(1);
+        expect(quotesResponse).toEqual([mockQuotes[1], mockQuotes[6]]);
     });
 
     it('should not save quotes when incorrect fiatInput and cryptoInput', async () => {
@@ -166,15 +143,18 @@ describe('handleRequestThunk', () => {
             },
         };
 
-        await store.dispatch(buyThunks.handleRequestThunk(inputWithIncorrectData)).unwrap();
+        const quotesResponse = await store
+            .dispatch(buyThunks.handleRequestThunk(inputWithIncorrectData))
+            .unwrap();
 
-        const state = store.getState().wallet.trading;
+        const state = store.getState().wallet.tradingNew;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
         expect(state.buy.quotesRequest).toBeUndefined();
         expect(state.buy.quotes?.length).toEqual(0);
         expect(state.isLoading).toBe(false);
+        expect(quotesResponse).toEqual(undefined);
     });
 
     it('should not save quotes when incorrect cryptoSelect', async () => {
@@ -187,15 +167,18 @@ describe('handleRequestThunk', () => {
             },
         };
 
-        await store.dispatch(buyThunks.handleRequestThunk(inputWithIncorrectData)).unwrap();
+        const quotesResponse = await store
+            .dispatch(buyThunks.handleRequestThunk(inputWithIncorrectData))
+            .unwrap();
 
-        const state = store.getState().wallet.trading;
+        const state = store.getState().wallet.tradingNew;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
         expect(state.buy.quotesRequest).toBeUndefined();
         expect(state.buy.quotes?.length).toEqual(0);
         expect(state.isLoading).toBe(false);
+        expect(quotesResponse).toEqual(undefined);
     });
 
     it('should not save quotes when empty array is returned from in the response', async () => {
@@ -203,12 +186,33 @@ describe('handleRequestThunk', () => {
 
         invityAPI.getBuyQuotes = () => Promise.resolve([]);
 
-        await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
+        const quotesResponse = await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
 
-        const state = store.getState().wallet.trading;
+        const state = store.getState().wallet.tradingNew;
 
         expect(mockTimerLoading).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
+        expect(state.buy.quotes?.length).toEqual(0);
+        expect(state.buy.quotesRequest).toBeUndefined();
+        expect(state.isLoading).toBe(false);
+        expect(quotesResponse).toEqual(undefined);
+    });
+
+    it('should not save quotes, when request is aborted', async () => {
+        const { input, store, mockTimerLoading, mockTimerReset } = getMocks();
+
+        invityAPI.getBuyQuotes = () => Promise.resolve([]);
+
+        const promise = store.dispatch(buyThunks.handleRequestThunk(input));
+
+        promise.abort();
+
+        await promise;
+
+        const state = store.getState().wallet.tradingNew;
+
+        expect(mockTimerLoading).toHaveBeenCalledTimes(1);
+        expect(mockTimerReset).toHaveBeenCalledTimes(1);
         expect(state.buy.quotes?.length).toEqual(0);
         expect(state.buy.quotesRequest).toBeUndefined();
         expect(state.isLoading).toBe(false);

@@ -130,7 +130,6 @@ export type ExtraDependencies = {
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
         storageLoadHistoricRates: StorageLoadReducer;
-        storageLoadFirmware: StorageLoadReducer;
         storageLoadDiscovery: StorageLoadReducer;
         addButtonRequestFirmware: AddButtonRequestReducer;
         setDeviceMetadataReducer: BaseReducer;

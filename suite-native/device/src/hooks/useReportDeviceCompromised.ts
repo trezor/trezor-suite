@@ -3,14 +3,24 @@ import { useSelector } from 'react-redux';
 
 import * as Sentry from '@sentry/react-native';
 
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { revisionCheckErrorScenarios } from '../config/firmware';
-import { selectFirmwareRevisionCheckError } from '../selectors';
 
-const reportCheckFail = (checkType: 'Firmware revision', contextData: any) => {
-    Sentry.captureException(`${checkType} check failed! ${JSON.stringify(contextData)}`);
+const reportCheckFail = (
+    checkType: 'Firmware revision',
+    contextData: any,
+    errorPayload?: unknown,
+) => {
+    const payloadLabel = `${checkType} check failed!`;
+    Sentry.withScope(scope => {
+        scope.setExtra('errorPayload', errorPayload);
+        const exceptionForSentry = new Error(`${payloadLabel} ${JSON.stringify(contextData)}`);
+        exceptionForSentry.name = 'reportCheckFail'; // Custom issue title
+        Sentry.captureException(exceptionForSentry, scope);
+    });
 };
 
 const useCommonData = () => {
@@ -28,15 +38,17 @@ const useCommonData = () => {
 
 export const useReportDeviceCompromised = () => {
     const commonData = useCommonData();
+    const device = useSelector(selectSelectedDevice);
 
-    const revisionCheckError = useSelector(selectFirmwareRevisionCheckError);
+    const revCheck = isDeviceAcquired(device) ? device.authenticityChecks?.firmwareRevision : null;
+    const isError = revCheck && !revCheck.success;
+    const errorType = isError ? revCheck.error : null;
+    const errorPayload = isError ? revCheck.errorPayload : null;
 
     useEffect(() => {
-        if (
-            revisionCheckError !== null &&
-            revisionCheckErrorScenarios[revisionCheckError].shouldReport
-        ) {
-            reportCheckFail('Firmware revision', { ...commonData, revisionCheckError });
+        if (!errorType) return;
+        if (revisionCheckErrorScenarios[errorType].shouldReport) {
+            reportCheckFail('Firmware revision', { ...commonData, errorType }, errorPayload);
         }
-    }, [commonData, revisionCheckError]);
+    }, [commonData, errorType, errorPayload]);
 };

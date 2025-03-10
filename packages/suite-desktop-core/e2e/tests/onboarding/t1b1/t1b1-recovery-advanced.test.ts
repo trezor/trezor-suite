@@ -20,7 +20,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
     }) => {
         // Navigate through onboarding steps
         await analyticsSection.passThroughAnalytics();
-        await onboardingPage.firmware.continueButton.click();
+        await onboardingPage.firmware.continueThroughFirmware();
         await onboardingPage.recoverWalletButton.click();
 
         // Select advanced recovery

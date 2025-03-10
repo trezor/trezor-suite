@@ -5,6 +5,7 @@ import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
+import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
 interface TradingCryptoAmountProps {
@@ -13,7 +14,8 @@ interface TradingCryptoAmountProps {
 }
 
 export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCryptoAmountProps) => {
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
+    const { type } = useTradingFormContext();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(type);
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
 
     if (!coinSymbol) {

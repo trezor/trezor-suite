@@ -63,6 +63,7 @@ export const TradingUtilsPrice = ({
                         <>
                             {receiveCurrency && (
                                 <TradingCryptoAmount
+                                    type={type}
                                     amount={receiveAmount}
                                     cryptoId={receiveCurrency}
                                     displayLogo

@@ -10,7 +10,6 @@ export const FeatureFlag = {
     IsConnectPopupEnabled: 'isConnectPopupEnabled',
     IsDeviceOnboardingEnabled: 'isDeviceOnboardingEnabled',
     IsTradingEnabled: 'isTradingEnabled',
-    IsFwRevisionCheckEnabled: 'IsFwRevisionCheckEnabled',
 } as const;
 
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -28,7 +27,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsConnectPopupEnabled]: isDevelopOrDebugEnv(),
     [FeatureFlag.IsDeviceOnboardingEnabled]: isDebugEnv() && !isDetoxTestBuild(),
     [FeatureFlag.IsTradingEnabled]: isDebugEnv(),
-    [FeatureFlag.IsFwRevisionCheckEnabled]: isDevelopOrDebugEnv(),
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -38,7 +36,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsConnectPopupEnabled,
     FeatureFlag.IsDeviceOnboardingEnabled,
     FeatureFlag.IsTradingEnabled,
-    FeatureFlag.IsFwRevisionCheckEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({

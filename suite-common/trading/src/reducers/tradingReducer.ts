@@ -7,6 +7,8 @@ import { FeeLevel } from '@trezor/connect';
 
 import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '../types';
 import { TradingBuyState, buyInitialState, tradingBuyReducer } from './buyReducer';
+import { TRADING_PREFIX } from '../constants';
+import { buyThunks } from '../thunks';
 
 export interface TradingComposedTransactionInfo {
     composed?: Pick<
@@ -76,7 +78,7 @@ export const initialState: TradingState = {
 };
 
 export const tradingSlice = createSliceWithExtraDeps({
-    name: 'trading-common',
+    name: TRADING_PREFIX,
     initialState,
     reducers: {
         saveInfo(state, action: PayloadAction<InfoResponse>) {
@@ -100,7 +102,7 @@ export const tradingSlice = createSliceWithExtraDeps({
         setModalCryptoCurrency(state, action: PayloadAction<CryptoId>) {
             state.modalCryptoId = action.payload;
         },
-        setModalAccountKey(state, action: PayloadAction<string>) {
+        setModalAccountKey(state, action: PayloadAction<string | undefined>) {
             state.modalAccountKey = action.payload;
         },
         setLoading(
@@ -116,15 +118,19 @@ export const tradingSlice = createSliceWithExtraDeps({
         setTradingFromPrefilledCryptoId(state, action: PayloadAction<CryptoId | undefined>) {
             state.prefilledFromCryptoId = action.payload;
         },
-        loadInvityData() {},
     },
     extraReducers: (builder, extra) => {
         builder
-
             .addCase(extra.actionTypes.storageLoad, (state, action: AnyAction) => ({
                 ...state,
                 trades: action.payload.tradingTrades ?? state.trades,
             }))
+            .addCase(buyThunks.handleRequestThunk.pending, state => {
+                state.buy.isLoading = true;
+            })
+            .addCase(buyThunks.handleRequestThunk.fulfilled, state => {
+                state.buy.isLoading = false;
+            })
             .addDefaultCase((state, action) => {
                 tradingBuyReducer(state.buy, action);
                 // TODO: prepareSellReducer(extra)(state.sell, action);

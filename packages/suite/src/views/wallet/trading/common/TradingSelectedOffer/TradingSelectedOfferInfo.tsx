@@ -33,7 +33,10 @@ export const TradingSelectedOfferInfo = ({
         <Column gap={spacings.xl} data-testid="@trading/form/info">
             {type !== 'exchange' && (
                 <>
-                    <TradingInfoHeader receiveCurrency={quoteAmounts?.receiveCurrency} />
+                    <TradingInfoHeader
+                        receiveCurrency={quoteAmounts?.receiveCurrency}
+                        type={type}
+                    />
                     <Divider margin={{}} />
                 </>
             )}

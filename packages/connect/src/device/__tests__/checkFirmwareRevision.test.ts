@@ -109,7 +109,7 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
             params: createDeviceParams({
                 expectedRevision: undefined, // firmware not known by local releases.json file
             }),
-            expected: { success: false, error: 'other-error' },
+            expected: { success: false, error: 'other-error', errorPayload: expect.anything() },
         },
     ])(`$it`, async ({ params, expected, httpRequestMock }) => {
         if (httpRequestMock !== undefined) {

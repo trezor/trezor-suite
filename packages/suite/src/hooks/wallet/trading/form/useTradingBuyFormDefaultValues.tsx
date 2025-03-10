@@ -23,7 +23,7 @@ export const useTradingBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
     buyInfo: BuyInfo | undefined,
 ): TradingBuyFormDefaultValuesProps => {
-    const { buildDefaultCryptoOption } = useTradingInfo();
+    const { buildDefaultCryptoOption } = useTradingInfo('buy');
     const prefilledFromCryptoId = useSelector(state => state.wallet.trading.prefilledFromCryptoId);
     const cryptoId = prefilledFromCryptoId || networks[accountSymbol]?.tradeCryptoId;
 

@@ -76,11 +76,7 @@ export const TransactionIcon = ({
             )}
             {iconSymbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>
-                    <CryptoIcon
-                        symbol={iconSymbol}
-                        contractAddress={contractAddress}
-                        size="extraSmall"
-                    />
+                    <CryptoIcon symbol={iconSymbol} contractAddress={contractAddress} size="tiny" />
                 </Box>
             )}
         </Box>

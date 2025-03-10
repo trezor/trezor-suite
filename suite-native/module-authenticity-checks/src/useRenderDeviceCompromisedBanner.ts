@@ -37,6 +37,10 @@ export const useRenderDeviceCompromisedBanner = () => {
             return setBannerVariant('none');
         }
 
+        if (revisionCheckError === 'other-error') {
+            return setBannerVariant('other-error');
+        }
+
         setBannerVariant(isExtendedBanner ? 'extended' : 'brief');
     }, [isRouteExcluded, isExtendedBanner, revisionCheckError, setBannerVariant]);
 };

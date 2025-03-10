@@ -20,13 +20,14 @@ export const TradingFormInputFiatCrypto = <
     showLabel = true,
     ...formProps
 }: TradingFormInputFiatCryptoWrapProps<TFieldValues>) => {
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const {
         type,
         form: {
             state: { isFormLoading, toggleAmountInCrypto },
         },
     } = useTradingFormContext();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(type);
+
     const {
         cryptoCurrencyLabel,
         cryptoInputName,

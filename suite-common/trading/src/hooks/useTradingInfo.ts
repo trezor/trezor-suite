@@ -1,5 +1,4 @@
-import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback, useMemo } from 'react';
 
 import { CoinInfo, CryptoId } from 'invity-api';
 
@@ -11,11 +10,12 @@ import {
 } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
 
-import { TradingRootState } from '../selectors/tradingSelectors';
+import { selectTradingInfoLegacy } from '../selectors/tradingSelectors';
 import {
     TradingCryptoSelectItemProps,
     TradingCryptoSelectOptionProps,
     TradingInfoProps,
+    TradingType,
 } from '../types';
 import {
     cryptoIdToNetwork,
@@ -23,6 +23,7 @@ import {
     parseCryptoId,
     testnetToProdCryptoId,
 } from '../utils';
+import { useSelector } from './useSelector';
 
 const supportedAddressValidatorSymbols = new Set(
     addressValidator.getCurrencies().map(c => c.symbol),
@@ -66,9 +67,34 @@ const sortPopularCurrencies = (
     return 0;
 };
 
-export const useTradingInfo = (): TradingInfoProps => {
-    const { platforms = {}, coins = {} } = useSelector(
-        ({ wallet }: TradingRootState) => wallet.trading.info,
+/**
+ * TODO: trading - delete section after migration
+ *
+ * TODO: trading - cryptoIdToPlatformName, cryptoIdToCoinName, cryptoIdToNativeCoinSymbol, cryptoIdToCoinSymbol, cryptoIdToSymbolAndContractAddress - could be refactored to selectors
+ *
+ * @param section used only for purpose in refactored desktop trading
+ */
+export const useTradingInfo = (_section?: TradingType): TradingInfoProps => {
+    const tradingInfo = useSelector(selectTradingInfoLegacy);
+    // const tradingNewInfo = useSelector(selectTradingInfo);
+
+    const getInfo = () =>
+        /*
+        if (section) {
+            // TODO: trading - refactor only buy is refactored for now
+            return section === 'buy' ? tradingNewInfo : tradingInfo;
+        }
+        */
+
+        tradingInfo;
+    const info = getInfo();
+
+    const { platforms, coins } = useMemo(
+        () => ({
+            platforms: info?.platforms ?? {},
+            coins: info?.coins ?? {},
+        }),
+        [info],
     );
 
     const cryptoIdToPlatformName = useCallback(

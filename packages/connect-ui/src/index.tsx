@@ -169,7 +169,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                                 state?.settings?.env === 'web' &&
                                 // npmVersion missing - pinned iframe version or core-in-popup. we might extend this warning in the future for other cases
                                 !!state?.settings?.npmVersion &&
-                                !isNewerOrEqual(state.settings.npmVersion, '9.2.3')
+                                !isNewerOrEqual(state.settings.npmVersion, '9.4.0')
                             }
                         />
 

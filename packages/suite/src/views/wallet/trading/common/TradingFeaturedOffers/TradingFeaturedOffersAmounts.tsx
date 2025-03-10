@@ -55,8 +55,8 @@ const TradingFeaturedOffersAmount = ({
 };
 
 export const TradingFeaturedOffersAmounts = ({ quote }: TradingFeaturedOffersAmountsProps) => {
-    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo();
     const context = useTradingFormContext();
+    const { cryptoIdToSymbolAndContractAddress } = useTradingInfo(context.type);
     const quoteProps = getCryptoQuoteAmountProps(quote, context);
 
     if (!quoteProps?.receiveCurrency) return null;

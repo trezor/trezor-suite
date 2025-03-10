@@ -171,9 +171,9 @@ type FwAuthenticityCheckState = NativeDeviceRootState &
 export const selectFirmwareRevisionCheckErrorIfEnabled = (state: FwAuthenticityCheckState) => {
     const revisionCheckError = selectFirmwareRevisionCheckError(state);
     const { isFirmwareRevisionCheckEnabled } = state.appSettings;
-    const isFeatureFlagEnabled = selectIsFeatureFlagEnabled(
+    const isDeviceConnectEnabled = selectIsFeatureFlagEnabled(
         state,
-        FeatureFlag.IsFwRevisionCheckEnabled,
+        FeatureFlag.IsDeviceConnectEnabled,
     );
     const isMessageSystemFeatureEnabled = selectIsFeatureEnabled(
         state,
@@ -181,7 +181,7 @@ export const selectFirmwareRevisionCheckErrorIfEnabled = (state: FwAuthenticityC
         true,
     );
     const isCheckEnabled =
-        isFirmwareRevisionCheckEnabled && isFeatureFlagEnabled && isMessageSystemFeatureEnabled;
+        isFirmwareRevisionCheckEnabled && isDeviceConnectEnabled && isMessageSystemFeatureEnabled;
 
     return isCheckEnabled ? revisionCheckError : null;
 };

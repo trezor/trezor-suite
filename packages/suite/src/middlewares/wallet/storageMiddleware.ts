@@ -311,10 +311,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     storageActions.removeFormDraft(action.key);
                     break;
 
-                case deviceActions.connectDevice.type: // so that firmwareReducer.addCase for the same action is persisted
-                    api.dispatch(storageActions.saveFirmware());
-                    break;
-
                 case deviceActions.setEntropyCheckFail.type:
                     api.dispatch(storageActions.saveEntropyCheckFail());
                     break;
