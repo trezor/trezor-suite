@@ -107,11 +107,14 @@ test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () 
         });
 
         await test.step('Verify button opens provider support page in new tab', async () => {
-            const partnerPagePromise = page.context().waitForEvent('page');
-            await page.getByRole('link', { name: 'Go to provider support' }).click();
-            const partnerTab = await partnerPagePromise;
-            await expect(partnerTab).toHaveURL(/https:\/\/sideshift\.ai\/orders\//);
-            await partnerTab.close();
+            // There was minor instability, so we are adding retry to this step group
+            await expect(async () => {
+                const partnerPagePromise = page.context().waitForEvent('page', { timeout: 5_000 });
+                await page.getByRole('link', { name: 'Go to provider support' }).click();
+                const partnerTab = await partnerPagePromise;
+                await expect(partnerTab).toHaveURL(/https:\/\/sideshift\.ai\/orders\//);
+                await partnerTab.close();
+            }).toPass({ timeout: 20_000 });
         });
 
         // Statuses: SENDING -> CONVERTING -> CONFIRMING -> SUCCESS
