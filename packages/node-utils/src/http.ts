@@ -342,7 +342,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     };
 }
 
-const checkOrigin = ({
+export const checkOrigin = ({
     request,
     allowedOrigin,
     pathname,
@@ -362,16 +362,18 @@ const checkOrigin = ({
     }
 
     if (origin) {
-        isOriginAllowed = origins.some(o => {
-            try {
+        try {
+            const checkedHostname = `.${new URL(origin).hostname}`;
+            isOriginAllowed = origins.some(o =>
                 // match from the end to allow subdomains
-                return new URL(origin).hostname.endsWith(new URL(o).hostname);
-            } catch (error) {
-                // If parsing URL fails we don't want it to crash but silently logs error.
-                logger.error(`Failed parsing URL: ${error}`);
-            }
-        });
+                checkedHostname.endsWith('.' + o),
+            );
+        } catch (error) {
+            // If parsing URL fails we don't want it to crash but silently logs error.
+            logger.error(`Failed parsing URL: ${error}`);
+        }
     }
+
     if (!isOriginAllowed) {
         logger.warn(`Origin rejected for ${pathname}`);
         logger.warn(`- Received: origin: '${origin}'`);
@@ -438,24 +440,6 @@ const checkReferer = ({
 
     return true;
 };
-
-/**
- * Built-middleware "allow origin"
- */
-export const allowOrigins =
-    (allowedOrigin: string[]): AnyRequestHandler =>
-    (request, _response, next, { logger }) => {
-        if (
-            checkOrigin({
-                request,
-                allowedOrigin,
-                pathname: request.url,
-                logger,
-            })
-        ) {
-            next(request, _response);
-        }
-    };
 
 /**
  * Built-middleware "allow referers"
