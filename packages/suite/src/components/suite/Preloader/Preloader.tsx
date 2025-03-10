@@ -93,7 +93,8 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     // display Loader as full page view
     if (lifecycle.status !== 'ready' || !router.loaded || !isTransportInitialized) {
-        return <InitialLoading timeout={90} />;
+        // TODO: multiplied by 5, temporarily. Now initActions incorrectly awaits altcoin specific logic which can trigger this timeout easily for bigger accounts
+        return <InitialLoading timeout={90 * 5} />;
     }
 
     if (
