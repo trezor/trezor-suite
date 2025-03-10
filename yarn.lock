@@ -3412,15 +3412,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@everstake/wallet-sdk-solana@npm:2.0.8":
-  version: 2.0.8
-  resolution: "@everstake/wallet-sdk-solana@npm:2.0.8"
+"@everstake/wallet-sdk-solana@npm:2.0.9":
+  version: 2.0.9
+  resolution: "@everstake/wallet-sdk-solana@npm:2.0.9"
   dependencies:
     "@solana-program/compute-budget": "npm:^0.6.1"
     "@solana-program/stake": "npm:^0.1.0"
     "@solana-program/system": "npm:^0.6.2"
     "@solana/web3.js": "npm:2.0.0"
-  checksum: 10/0c82365fe2582c02cdf7cfc75cb9d28ed198522906ab9875c79a9a69c3b1d389e0d76563447178ef160c090368bc264f28b2ff2edf8934eb1d92ea867afd25c2
+  checksum: 10/3803e9235431a8613d869e3df0845986490f39b09f526d35eff54f61e401c2753cde43bcefcf223401e65af7ed533704fd84ece647c37183aaaa7bd71eb4b708
   languageName: node
   linkType: hard
 
@@ -9778,7 +9778,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
-    "@everstake/wallet-sdk-solana": "npm:2.0.8"
+    "@everstake/wallet-sdk-solana": "npm:2.0.9"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -11572,7 +11572,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@everstake/wallet-sdk-solana": "npm:2.0.8"
+    "@everstake/wallet-sdk-solana": "npm:2.0.9"
     "@solana-program/token": "npm:^0.5.1"
     "@solana-program/token-2022": "npm:^0.4.0"
     "@solana/kit": "npm:^2.0.0"

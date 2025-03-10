@@ -12,7 +12,7 @@
         "test-unit:watch": "yarn g:jest -c ../../jest.config.base.js -o --watch"
     },
     "dependencies": {
-        "@everstake/wallet-sdk-solana": "2.0.8",
+        "@everstake/wallet-sdk-solana": "2.0.9",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
