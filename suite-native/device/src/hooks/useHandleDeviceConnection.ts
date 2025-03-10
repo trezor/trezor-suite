@@ -75,9 +75,6 @@ export const useHandleDeviceConnection = () => {
     const isSuspiciousDeviceScreenFocused = useNavigationRouteMatch(
         DeviceOnboardingStackRoutes.SuspiciousDevice,
     );
-    const isConnectAndUnlockDeviceScreenFocused = useNavigationRouteMatch(
-        AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
-    );
 
     const lastRoute = useNavigationState(state => state?.routes.at(-1)?.name);
     const isDeviceSettingsStackFocused = lastRoute === RootStackRoutes.DeviceSettingsStack;
@@ -170,11 +167,7 @@ export const useHandleDeviceConnection = () => {
     // In case that the physical device is disconnected, redirect to the home screen and
     // set connecting screen to be displayed again on the next device connection.
     useEffect(() => {
-        if (
-            isFirmwareInstallationRunning ||
-            !isOnboardingFinished ||
-            isConnectAndUnlockDeviceScreenFocused
-        )
+        if ((isFirmwareInstallationRunning && !isOnboardingStackFocused) || !isOnboardingFinished)
             return;
 
         if (isNoPhysicalDeviceConnected) {
@@ -212,7 +205,6 @@ export const useHandleDeviceConnection = () => {
         isSuspiciousDeviceScreenFocused,
         isOnboardingStackFocused,
         handleOnboardingDeviceDisconnection,
-        isConnectAndUnlockDeviceScreenFocused,
         isDeviceOnboardingStackFocused,
     ]);
 

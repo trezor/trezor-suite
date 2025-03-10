@@ -6,13 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
 import {
-    DeviceRootState,
-    DiscoveryRootState,
     selectDeviceModel,
     selectDeviceReleaseInfo,
     selectIsDeviceBackedUp,
-    selectIsDeviceConnected,
-    selectIsDiscoveryActiveByDeviceState,
+    selectIsDeviceDiscoveryActive,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -64,11 +61,8 @@ export const DeviceFirmwareCard = () => {
     const deviceModel = useSelector(selectDeviceModel);
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
-    const isDeviceConnected = useSelector(selectIsDeviceConnected);
+    const isDiscoveryRunning = useSelector(selectIsDeviceDiscoveryActive);
 
-    const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
-        selectIsDiscoveryActiveByDeviceState(state, device?.state),
-    );
     const navigation = useNavigation<NavigationProp>();
     const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 
@@ -82,7 +76,7 @@ export const DeviceFirmwareCard = () => {
         : 'firmware.typeUniversal';
 
     const firmwareUpdateProps = (() => {
-        if (!isFirmwareUpdateEnabled || !isDeviceBackedUp || !isDeviceConnected) {
+        if (!isFirmwareUpdateEnabled || !isDeviceBackedUp) {
             return undefined;
         }
 

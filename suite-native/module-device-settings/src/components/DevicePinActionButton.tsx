@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { removeButtonRequests, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    removeButtonRequests,
+    selectIsDeviceDiscoveryActive,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, ButtonColorScheme } from '@suite-native/atoms';
@@ -59,6 +63,8 @@ export const DevicePinActionButton = ({
     type,
     colorScheme,
 }: DevicePinActionButtonProps) => {
+    const isDiscoveryRunning = useSelector(selectIsDeviceDiscoveryActive);
+
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
     const { showToast } = useToast();
@@ -141,6 +147,8 @@ export const DevicePinActionButton = ({
             colorScheme={colorScheme}
             size="small"
             testID={`@device-pin-protection/${type}-button`}
+            isDisabled={isDiscoveryRunning}
+            isLoading={isDiscoveryRunning}
         >
             {children}
         </Button>

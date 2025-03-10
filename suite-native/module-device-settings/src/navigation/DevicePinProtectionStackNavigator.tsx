@@ -10,6 +10,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import {
     ConfirmNewPinScreen,
@@ -20,6 +21,8 @@ import {
 const DevicePinProtectionStack = createNativeStackNavigator<DevicePinProtectionStackParamList>();
 
 export const DevicePinProtectionStackNavigator = () => {
+    const { isDeviceConnected } = useDeviceConnectionGuard();
+
     const buttonRequestCodes = useSelector(selectDeviceButtonRequestsCodes);
     const lastButtonRequestCode = A.last(buttonRequestCodes);
 
@@ -27,6 +30,8 @@ export const DevicePinProtectionStackNavigator = () => {
     const isEnterNewPin = lastButtonRequestCode === 'PinMatrixRequestType_NewFirst';
     const isConfirmNewPin = lastButtonRequestCode === 'PinMatrixRequestType_NewSecond';
     const isContinueOnTrezor = !isEnterCurrentPin && !isEnterNewPin && !isConfirmNewPin;
+
+    if (!isDeviceConnected) return;
 
     // To indicate progress to the user we need separate screens for individual steps of the flow.
     // At the same time we need just one available so that navigation.goBack() works as expected.

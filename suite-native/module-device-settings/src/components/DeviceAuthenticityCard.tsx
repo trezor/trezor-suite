@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectIsDeviceDiscoveryActive, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-native/analytics';
 import { Button, IconListTextItem, Text, VStack } from '@suite-native/atoms';
@@ -27,6 +27,8 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const DeviceAuthenticityCard = () => {
     const navigation = useNavigation<NavigationProp>();
+    const isDiscoveryRunning = useSelector(selectIsDeviceDiscoveryActive);
+
     const { showAlert } = useAlert();
 
     const device = useSelector(selectSelectedDevice);
@@ -118,6 +120,8 @@ export const DeviceAuthenticityCard = () => {
                     colorScheme="tertiaryElevation0"
                     onPress={showInfoAlert}
                     testID="@device-authenticity/check-button"
+                    disabled={isDiscoveryRunning}
+                    isLoading={isDiscoveryRunning}
                 >
                     <Translation id="moduleDeviceSettings.authenticity.checkButton" />
                 </Button>
