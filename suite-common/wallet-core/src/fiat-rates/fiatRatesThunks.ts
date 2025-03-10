@@ -181,7 +181,10 @@ export const fetchFiatRatesThunk = createThunk(
 
         if (tickers.length === 0) return;
 
-        return dispatch(
+        // NOTE: do not await it here, leave it just to return
+        // updateFiatRatesThunk is handled in the reducer and we don't need to wait for
+        // all the token fiat rates to be loaded as it slows down start of the app massively
+        dispatch(
             updateFiatRatesThunk({
                 tickers,
                 localCurrency,
@@ -189,6 +192,8 @@ export const fetchFiatRatesThunk = createThunk(
                 fetchAttemptTimestamp: Date.now() as Timestamp,
             }),
         );
+
+        return;
     },
 );
 
