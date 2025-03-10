@@ -1,5 +1,4 @@
 import { HStack, Text } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
@@ -21,9 +20,8 @@ export const CountryOfResidencePicker = () => {
             >
                 {selectedValue ? (
                     <HStack>
-                        <Icon name={selectedValue.flag} size="medium" />
                         <Text color="textSubdued" variant="body">
-                            {selectedValue.name}
+                            {selectedValue.value}
                         </Text>
                     </HStack>
                 ) : (
@@ -36,7 +34,7 @@ export const CountryOfResidencePicker = () => {
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
                 onCountrySelect={setSelectedValue}
-                selectedCountryId={selectedValue?.id}
+                selectedCountryId={selectedValue?.value}
             />
         </>
     );

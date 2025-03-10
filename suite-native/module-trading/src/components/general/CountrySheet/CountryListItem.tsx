@@ -2,13 +2,11 @@ import { ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
 import { Card, HStack, Radio, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type CountryListItemProps = {
-    flag: IconName;
-    id: string;
-    name: ReactNode;
+    value: string;
+    label: ReactNode;
     isSelected: boolean;
     onPress: () => void;
 };
@@ -19,7 +17,7 @@ const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
     marginVertical: spacings.sp4,
 }));
 
-export const CountryListItem = ({ flag, name, onPress, id, isSelected }: CountryListItemProps) => {
+export const CountryListItem = ({ label, onPress, value, isSelected }: CountryListItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -27,12 +25,11 @@ export const CountryListItem = ({ flag, name, onPress, id, isSelected }: Country
             <Card>
                 <HStack alignItems="center" justifyContent="space-between">
                     <HStack>
-                        <Icon name={flag} size="medium" />
                         <Text variant="body" color="textDefault">
-                            {name}
+                            {label}
                         </Text>
                     </HStack>
-                    <Radio value={id} onPress={onPress} isChecked={isSelected} />
+                    <Radio value={value} onPress={onPress} isChecked={isSelected} />
                 </HStack>
             </Card>
         </Pressable>

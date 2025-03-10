@@ -1,3 +1,4 @@
+import { regional } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -13,21 +14,7 @@ export type CountrySheetProps = {
     selectedCountryId?: string;
 };
 
-const mockCountries: Country[] = [
-    { id: 'us', name: 'United States', flag: 'flag' },
-    { id: 'cz', name: 'Czech Republic', flag: 'flagCheckered' },
-    { id: 'sk', name: 'Slovakia', flag: 'flag' },
-    { id: 'de', name: 'Germany', flag: 'flagCheckered' },
-    { id: 'fr', name: 'France', flag: 'flag' },
-    { id: 'es', name: 'Spain', flag: 'flagCheckered' },
-    { id: 'it', name: 'Italy', flag: 'flag' },
-    { id: 'pl', name: 'Poland', flag: 'flagCheckered' },
-    { id: 'hu', name: 'Hungary', flag: 'flag' },
-    { id: 'at', name: 'Austria', flag: 'flagCheckered' },
-    { id: 'ch', name: 'Switzerland', flag: 'flag' },
-];
-
-const keyExtractor = (item: Country) => item.id;
+const keyExtractor = (item: Country) => item.value;
 const getEstimatedListHeight = (itemsCount: number) => itemsCount * COUNTRY_LIST_ITEM_HEIGHT;
 
 export const CountrySheet = ({
@@ -40,8 +27,6 @@ export const CountrySheet = ({
         onCountrySelect(country);
         onClose();
     };
-
-    const data: Country[] = mockCountries;
 
     return (
         <BottomSheetFlashList<Country>
@@ -58,11 +43,11 @@ export const CountrySheet = ({
                 <CountryListItem
                     {...item}
                     onPress={() => onCountrySelectCallback(item)}
-                    isSelected={item.id === selectedCountryId}
+                    isSelected={item.value === selectedCountryId}
                 />
             )}
-            data={data}
-            estimatedListHeight={getEstimatedListHeight(data.length)}
+            data={regional.countriesOptions}
+            estimatedListHeight={getEstimatedListHeight(regional.countriesOptions.length)}
             estimatedItemSize={COUNTRY_LIST_ITEM_HEIGHT}
             keyExtractor={keyExtractor}
         />
