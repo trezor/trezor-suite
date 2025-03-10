@@ -19,7 +19,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         trezorUserEnvLink,
     }) => {
         await analyticsSection.passThroughAnalytics();
-        await onboardingPage.firmware.continueButton.click();
+        await onboardingPage.firmware.continueThroughFirmware();
 
         // Will be clicking on Shamir backup button
         await onboardingPage.createWalletButton.click();

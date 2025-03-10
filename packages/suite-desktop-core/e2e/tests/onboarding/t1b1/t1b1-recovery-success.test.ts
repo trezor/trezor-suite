@@ -25,7 +25,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         await analyticsSection.passThroughAnalytics();
 
         // Start wallet recovery process
-        await onboardingPage.firmware.continueButton.click();
+        await onboardingPage.firmware.continueThroughFirmware();
         await onboardingPage.recoverWalletButton.click();
         await recoveryModal.selectWordCount(24);
         await recoveryModal.selectBasicRecoveryButton.click();

@@ -17,7 +17,7 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
         trezorUserEnvLink,
     }) => {
         // Start wallet recovery process and confirm on device
-        await onboardingPage.firmware.continueButton.click();
+        await onboardingPage.firmware.continueThroughFirmware();
         await onboardingPage.recoverWalletButton.click();
         await onboardingPage.startRecoveryButton.click();
         await devicePrompt.confirmOnDevicePromptIsShown();
