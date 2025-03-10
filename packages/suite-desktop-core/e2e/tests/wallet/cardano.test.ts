@@ -1,8 +1,9 @@
 import { cardanoAccountDetails } from '../../snapshots/web/wallet/cardano.test.ts/cardano-aria';
+import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
-const formattedReceiveAddress =
-    'addr _tes t1qp hsv6 vspp 4l3n vmqz w529 teq2 ha08 s0fg jvzg hzh6 28uc cfey 0wtr gp5r mxvl d7kh c745 x9mk 7gts 5ctu zerl f4ed rq5a t0x5';
+const receiveAddress =
+    'addr_test1qphsv6vspp4l3nvmqzw529teq2ha08s0fgjvzghzh628uccfey0wtrgp5rmxvld7khc745x9mk7gts5ctuzerlf4edrq5at0x5';
 
 // todo: setup emu with 24 words mnemonic so that we can test different cardano derivation and its 'auto-discovery; feature
 //mnemonic: 'clot trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',
@@ -20,6 +21,7 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
         devicePrompt,
         settingsPage,
         walletPage,
+        trezorUserEnvLink,
     }) => {
         await settingsPage.coins.enableNetwork('tada');
         await settingsPage.coins.openNetworkAdvanceSettings('tada');
@@ -52,10 +54,12 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
         await test.step('Verify Cardano receive form', async () => {
             await walletPage.receiveButton.click();
             await walletPage.revealAddressButton.click();
-            await devicePrompt.waitForPromptAndConfirm();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await expect(devicePrompt).toDisplayReceiveAddress(receiveAddress, 'fullLine');
+            await trezorUserEnvLink.pressYes();
             await expect(walletPage.copyAddressButton).toBeEnabled();
-            await expect(devicePrompt.outputValue).toHaveText(formattedReceiveAddress);
-            // await expect(settingsPage.modal).toHaveScreenshot('cardano-receive.png');
+            await expect(devicePrompt.outputValue).toHaveText(formatAddress(receiveAddress));
+            await devicePrompt.confirmOnDevicePromptIsShown();
             await settingsPage.modalCloseButton.click();
             await page.getByTestId('@account-subpage/back').click();
         });

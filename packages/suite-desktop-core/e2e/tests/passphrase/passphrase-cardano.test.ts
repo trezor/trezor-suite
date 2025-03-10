@@ -1,9 +1,8 @@
-import { splitStringEveryNCharacters } from '@trezor/utils';
-
+import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 const correctPassphraseAddr =
-    'addr1qx3ufjpwcx30ee73a7r29surauze6yt0jvr7c3rnahw0hnppg7qp5xvslcfucsqqayrtjhm4u66x';
+    'addr1qx3ufjpwcx30ee73a7r29surauze6yt0jvr7c3rnahw0hnppg7qp5xvslcfucsqqayrtjhm4u66xsw987ae6ugydlzzsqdsfz4';
 const passphrase = 'secret passphrase A';
 
 test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
@@ -57,10 +56,13 @@ test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
         await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
         await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
 
-        await expect(page.getByTestId('@modal/output-value')).toContainText(
-            splitStringEveryNCharacters(correctPassphraseAddr, 4).join(' '),
+        await expect(page.getByTestId('@modal/output-value')).toHaveText(
+            formatAddress(correctPassphraseAddr),
         );
-        await devicePrompt.waitForPromptAndConfirm(); // Confirm receive address
+
+        await devicePrompt.confirmOnDevicePromptIsShown();
+        await expect(devicePrompt).toDisplayReceiveAddress(correctPassphraseAddr, 'fullLine');
+        await trezorUserEnvLink.pressYes(); // Confirm receive address
 
         await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
         await page.getByTestId('@modal/close-button').click();

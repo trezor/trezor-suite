@@ -17,7 +17,6 @@ const formattedReceiveAmount = `${localizeNumber(swapQuotesTetherBTC[2].receiveS
 const { sendAddress, receiveAddress, send: tetherMint } = swapTradeTetherBTC;
 const tetherRawMintAddress = tetherMint.split('--')[1];
 const formattedSendAddress = formatAddress(sendAddress);
-const formattedReceiveAddress = formatAddress(receiveAddress);
 const toastText = `${formattedSendAmount} sent from Solana #1`;
 
 test.describe('Trading - Swap token to coin', { tag: ['@group=other', '@webOnly'] }, () => {
@@ -58,7 +57,7 @@ test.describe('Trading - Swap token to coin', { tag: ['@group=other', '@webOnly'
         await test.step('Confirm the Swap trade', async () => {
             await expect(tradingPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
             await tradingPage.clickSwapBestOfferAndWaitForFees();
-            await tradingPage.confirmTrade('Bitcoin #1', formattedReceiveAddress);
+            await tradingPage.confirmTrade('Bitcoin #1', receiveAddress);
         });
 
         await test.step('Verify all confirmation values', async () => {

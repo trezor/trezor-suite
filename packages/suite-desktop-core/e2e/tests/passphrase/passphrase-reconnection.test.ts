@@ -1,5 +1,4 @@
-import { splitStringEveryNCharacters } from '@trezor/utils';
-
+import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';
@@ -39,9 +38,9 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
             .click();
         await walletPage.receiveButton.click();
         await walletPage.revealAddressButton.click();
-        await expect(page.getByTestId('@modal/output-value')).toContainText(
-            splitStringEveryNCharacters(abcAddr, 4).join(' '),
-        );
+        await expect(page.getByTestId('@modal/output-value')).toHaveText(formatAddress(abcAddr));
+        await devicePrompt.confirmOnDevicePromptIsShown();
+        await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
         await trezorUserEnvLink.pressYes(); // confirm address
 
         await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
@@ -68,9 +67,9 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
         await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
 
         // check address
-        await expect(page.getByTestId('@modal/output-value')).toContainText(
-            splitStringEveryNCharacters(abcAddr, 4).join(' '),
-        );
+        await expect(page.getByTestId('@modal/output-value')).toHaveText(formatAddress(abcAddr));
+        await devicePrompt.confirmOnDevicePromptIsShown();
+        await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
         await trezorUserEnvLink.pressYes(); // confirm address
 
         await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();

@@ -1,6 +1,6 @@
 import { EventType } from '@trezor/suite-analytics';
-import { splitStringEveryNCharacters } from '@trezor/utils';
 
+import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { ExtractByEventType } from '../../support/types';
 
@@ -23,6 +23,7 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
     test('basic flow', async ({
         page,
         analytics,
+        devicePrompt,
         dashboardPage,
         walletPage,
         trezorUserEnvLink,
@@ -42,9 +43,9 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
             .click();
         await walletPage.receiveButton.click();
         await walletPage.revealAddressButton.click();
-        await expect(page.getByTestId('@modal/output-value')).toContainText(
-            splitStringEveryNCharacters(abcAddr, 4).join(' '),
-        );
+        await expect(page.getByTestId('@modal/output-value')).toHaveText(formatAddress(abcAddr));
+        await devicePrompt.confirmOnDevicePromptIsShown();
+        await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
         await trezorUserEnvLink.pressYes(); // confirm address
 
         await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
@@ -69,9 +70,9 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
         await expect(walletPage.revealAddressButton).not.toBeDisabled();
 
         await walletPage.revealAddressButton.click();
-        await expect(page.getByTestId('@modal/output-value')).toContainText(
-            splitStringEveryNCharacters(defAddr, 4).join(' '),
-        );
+        await expect(page.getByTestId('@modal/output-value')).toHaveText(formatAddress(defAddr));
+        await devicePrompt.confirmOnDevicePromptIsShown();
+        await expect(devicePrompt).toDisplayReceiveAddress(defAddr);
         await trezorUserEnvLink.pressYes(); // confirm address
 
         await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
@@ -89,9 +90,9 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
         await expect(walletPage.revealAddressButton).not.toBeDisabled();
 
         await walletPage.revealAddressButton.click();
-        await expect(page.getByTestId('@modal/output-value')).toContainText(
-            splitStringEveryNCharacters(abcAddr, 4).join(' '),
-        );
+        await expect(page.getByTestId('@modal/output-value')).toHaveText(formatAddress(abcAddr));
+        await devicePrompt.confirmOnDevicePromptIsShown();
+        await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
         await trezorUserEnvLink.pressYes(); // confirm address
 
         await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();

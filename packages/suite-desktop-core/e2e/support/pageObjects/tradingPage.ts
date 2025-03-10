@@ -5,7 +5,7 @@ import { regional } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { invityEndpoint } from '../../fixtures/invity';
-import { TrezorUserEnvLinkProxy, step } from '../common';
+import { TrezorUserEnvLinkProxy, formatAddress, step } from '../common';
 import { DevicePrompt } from './devicePrompt';
 import { solanaUrlPattern } from '../mocks/tradingMock';
 import { expect } from '../testExtends/customMatchers';
@@ -368,7 +368,9 @@ export class TradingPage {
         await expect(this.devicePrompt.headerParagraph).toHaveText(accountName);
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         if (addressToCheck) {
-            await expect(this.devicePrompt.outputValueOf('address')).toHaveText(addressToCheck);
+            await expect(this.devicePrompt.outputValueOf('address')).toHaveText(
+                formatAddress(addressToCheck),
+            );
             await expect(this.devicePrompt).toDisplayReceiveAddress(addressToCheck);
         }
         await TrezorUserEnvLinkProxy.pressYes();

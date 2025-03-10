@@ -89,7 +89,7 @@ export class DevicePrompt {
 
     // Serves to quickly get the text from the device display and end the test
     @step()
-    async debugJSONFromDisplay() {
+    async debugThrowJSONFromDisplay() {
         const debugState = await TrezorUserEnvLinkProxy.getDebugState();
         const json = JSON.parse(debugState.tokens.join(''));
         throw new Error(`Debug JSON: ${JSON.stringify(json, null, 2)}`);
@@ -99,8 +99,13 @@ export class DevicePrompt {
     async getDisplayContent() {
         const debugState = await TrezorUserEnvLinkProxy.getDebugState();
         const json = JSON.parse(debugState.tokens.join(''));
+        if (!json || !json.header || !json.content || !json.footer) {
+            throw new Error(
+                `Display content invalid, should contain header, content, footer: ${JSON.stringify(json)}`,
+            );
+        }
         // The structure of the JSON differs between situations.
-        // We will have to add more logic as start validate more situations
+        // We will have to add more logic as we start validate more situations.
         const header = {
             title: json.header.title.text,
             ...(json.header.subtitle && { subtitle: json.header.subtitle.text }),

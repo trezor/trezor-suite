@@ -58,7 +58,7 @@ test.describe('Trading - Swap coin to token', { tag: ['@group=other', '@webOnly'
         await test.step('Confirm the Swap trade', async () => {
             await expect(tradingPage.bestOfferAmount).toHaveText(formattedReceiveAmount);
             await tradingPage.clickSwapBestOfferAndWaitForFees();
-            await tradingPage.confirmTrade('Ethereum #1', formatAddress(receiveAddress));
+            await tradingPage.confirmTrade('Ethereum #1', receiveAddress);
         });
 
         await test.step('Verify all confirmation values', async () => {

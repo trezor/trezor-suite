@@ -2,8 +2,10 @@ import { Locator, Request, expect as baseExpect } from '@playwright/test';
 import { diff } from 'jest-diff';
 import { isEqual } from 'lodash';
 
-import { isEqualWithOmit } from '../common';
+import { formatAddress, isEqualWithOmit } from '../common';
 import { DevicePrompt } from '../pageObjects/devicePrompt';
+
+type TransformMods = 'fourTetragrams' | 'fullLine';
 
 const compareTextAndNumber = async (
     locator: Locator,
@@ -38,12 +40,33 @@ const compareDisplayContent = async (
     };
 };
 
-const transformAddressToArrayWithNewlines = (address: string) => {
-    // Address is split to lines of 4 parts on Display so it can fit.
-    // We want to evaluate existence of newlines in the address.
-    const fourPartsOfAddress = /(\S+\s\S+\s\S+\s\S+)/g;
+const addNewlinesToAddress = (address: string, regex: RegExp, newLineFormat: string) =>
+    address
+        .replace(regex, match => `${match}${newLineFormat}`)
+        .trim()
+        .split(' ');
 
-    return address.replace(fourPartsOfAddress, '$1 \n').trim().split(' ');
+const transformAddress = (address: string, mode: TransformMods = 'fourTetragrams') => {
+    // Address is split to lines on Display so it can fit. There are different formats:
+    // 1. Four tetragrams of address:
+    // bc1q pyfv fvm5 2zx7
+    // gek8 6ajj 5pkk ne3h
+    // 385a da8r 2y
+    // 1. Full lines (18 chars) of address:
+    // bc1qpyfvfvm52zx7ge
+    // k86ajj5pkkne3h385a
+    // da8r2y
+    // We want to evaluate format and existence of newlines in the address.
+    const fourTetragramsOfAddress = /(\S+\s\S+\s\S+\s\S+)/g; //4 x 4 characters
+    const fullLineOfAddress = /.{18}/g; //18 characters
+
+    if (mode === 'fourTetragrams') {
+        return addNewlinesToAddress(formatAddress(address), fourTetragramsOfAddress, ' \n');
+    }
+
+    if (mode === 'fullLine') {
+        return addNewlinesToAddress(address, fullLineOfAddress, ' \n ');
+    }
 };
 
 export const expect = baseExpect.extend({
@@ -101,11 +124,15 @@ export const expect = baseExpect.extend({
         };
     },
 
-    async toDisplayReceiveAddress(devicePrompt: DevicePrompt, expectedAddress: string) {
-        const expectedAddressWithNewlines = transformAddressToArrayWithNewlines(expectedAddress);
+    async toDisplayReceiveAddress(
+        devicePrompt: DevicePrompt,
+        expectedAddress: string,
+        transformMode: TransformMods = 'fourTetragrams',
+    ) {
+        const transformedExpectedAddress = transformAddress(expectedAddress, transformMode);
         const expectedContent = {
             header: { title: 'Receive address' },
-            body: [expectedAddressWithNewlines],
+            body: [transformedExpectedAddress],
             footer: 'Swipe up',
         };
 
@@ -117,10 +144,10 @@ export const expect = baseExpect.extend({
     },
 
     async toDisplayRecipientAddress(devicePrompt: DevicePrompt, expectedAddress: string) {
-        const expectedAddressWithNewlines = transformAddressToArrayWithNewlines(expectedAddress);
+        const transformedExpectedAddress = transformAddress(expectedAddress);
         const expectedContent = {
             header: { title: 'Address', subtitle: 'Recipient #1' },
-            body: [expectedAddressWithNewlines],
+            body: [transformedExpectedAddress],
             footer: 'Swipe up',
         };
 

@@ -8,7 +8,6 @@ import {
     invityEndpoint,
     invityRequest,
 } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -66,7 +65,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
         });
 
         await test.step('Confirm trade and verifies confirmation summary', async () => {
-            await tradingPage.confirmTrade('Bitcoin #1', formatAddress(receiveAddress));
+            await tradingPage.confirmTrade('Bitcoin #1', receiveAddress);
             await expect(tradingPage.confirmationAddress).toHaveText(receiveAddress);
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedUpdateFiatAmount);
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(secondOfferCryptoAmount);
@@ -80,7 +79,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => 
         await test.step('Request a trade', async () => {
             await tradingPage.fillBuyForm(fiatAmount);
             await tradingPage.buyBestOfferButton.click();
-            await tradingPage.confirmTrade('Bitcoin #1', formatAddress(receiveAddress));
+            await tradingPage.confirmTrade('Bitcoin #1', receiveAddress);
         });
 
         await page.clock.install();

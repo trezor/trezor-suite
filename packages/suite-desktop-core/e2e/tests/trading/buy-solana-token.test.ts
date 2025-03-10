@@ -7,7 +7,6 @@ import {
     invityEndpoint,
     invityRequest,
 } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -55,7 +54,7 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
         });
 
         await test.step('Confirm the trade', async () => {
-            await tradingPage.confirmTrade('Solana #1', formatAddress(receiveAddress));
+            await tradingPage.confirmTrade('Solana #1', receiveAddress);
             await expect(tradingPage.confirmationAccountDropdown).toContainText('Solana #1');
             await expect(tradingPage.confirmationCryptoAmount).toHaveText(formattedCryptoAmount);
             await expect(tradingPage.confirmationFiatAmount).toHaveText(formattedFiatAmount);
