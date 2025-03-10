@@ -23,7 +23,7 @@
         "@trezor/utils": "workspace:*",
         "react": "18.2.0",
         "react-redux": "9.2.0",
-        "uuid": "^11.0.5"
+        "uuid": "^11.1.0"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
