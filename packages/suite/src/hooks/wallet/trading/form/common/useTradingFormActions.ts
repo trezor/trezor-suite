@@ -185,6 +185,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
         setAccountOnChange(account);
         setExchangeReceiveCrypto(selected);
+        setValue(FORM_SEND_CRYPTO_CURRENCY_SELECT, selected);
 
         changeFeeLevel('normal'); // reset fee level
     };

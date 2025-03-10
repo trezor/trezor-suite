@@ -713,12 +713,12 @@ export const useTradingExchangeForm = ({
         register('setMaxOutputId');
     }, [register]);
 
-    // react-hook-form reset, set default values
+    // when draft doesn't exist, we need to bind actual default values - that happens when we've got exchangeInfo from Invity API server
     useEffect(() => {
-        if (!isDraft && defaultValues) {
+        if (!isDraft && exchangeInfo && isInitialDataLoading) {
             reset(defaultValues);
         }
-    }, [reset, isDraft, defaultValues]);
+    }, [reset, isDraft, exchangeInfo, defaultValues, isInitialDataLoading]);
 
     useEffect(() => {
         if (!quotesRequest && isNotFormPage) {

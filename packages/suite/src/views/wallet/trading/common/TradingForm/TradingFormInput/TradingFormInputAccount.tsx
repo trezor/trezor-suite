@@ -53,14 +53,13 @@ export const TradingFormInputAccount = <
         <Controller
             name={accountSelectName}
             control={control}
-            render={({ field: { onChange, value } }) => (
+            render={({ field: { value } }) => (
                 <Select
                     value={value}
                     labelLeft={label && <Translation id={label} />}
                     options={optionGroups}
                     onChange={async (selected: TradingAccountOptionsGroupOptionProps) => {
-                        await onCryptoCurrencyChange(selected); // order matters, this has to be called before onChange
-                        onChange(selected);
+                        await onCryptoCurrencyChange(selected);
                     }}
                     filterOption={createFilter<TradingCryptoListProps>({
                         stringify: option => `${option.label} ${option.data.cryptoName}`,

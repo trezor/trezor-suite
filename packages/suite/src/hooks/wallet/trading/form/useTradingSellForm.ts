@@ -585,10 +585,10 @@ export const useTradingSellForm = ({
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got sellInfo from Invity API server
-        if (!isDraft && sellInfo && !formState.isDirty) {
+        if (!isDraft && sellInfo && isInitialDataLoading) {
             reset(defaultValues);
         }
-    }, [reset, sellInfo, defaultValues, isDraft, isNotFormPage, formState.isDirty]);
+    }, [reset, sellInfo, defaultValues, isDraft, isNotFormPage, isInitialDataLoading]);
 
     useDebounce(
         () => {
