@@ -27,7 +27,6 @@ describe('featureFlagsSlice', () => {
                 isConnectPopupEnabled: true,
                 isTradingEnabled: true,
                 isDeviceOnboardingEnabled: true,
-                IsFwRevisionCheckEnabled: true,
             });
         });
 
@@ -53,7 +52,6 @@ describe('featureFlagsSlice', () => {
                 isConnectPopupEnabled: false,
                 isTradingEnabled: false,
                 isDeviceOnboardingEnabled: false,
-                IsFwRevisionCheckEnabled: false,
             });
         });
 
@@ -79,7 +77,6 @@ describe('featureFlagsSlice', () => {
                 isConnectPopupEnabled: false,
                 isTradingEnabled: false,
                 isDeviceOnboardingEnabled: false,
-                IsFwRevisionCheckEnabled: false,
             });
         });
     });
