@@ -4230,12 +4230,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:3.10.0":
-  version: 3.10.0
-  resolution: "@hookform/resolvers@npm:3.10.0"
+"@hookform/resolvers@npm:^4.1.3":
+  version: 4.1.3
+  resolution: "@hookform/resolvers@npm:4.1.3"
+  dependencies:
+    "@standard-schema/utils": "npm:^0.3.0"
   peerDependencies:
     react-hook-form: ^7.0.0
-  checksum: 10/92d3601b2cedb4f52e9e086cc4bd6a20b493f59ecfb1af8b8e465057f0445aa83cf5a6d482a831cdf5d1321a73269173633222eefde0adb515d3820c1525b0cb
+  checksum: 10/7cd4a872509c79053fd3a377bc2831348453b60f1af41564442b574d4f36b6303f751e715d01c2d9291b484581ae0152045e779aefafdd66802055e24eff7762
   languageName: node
   linkType: hard
 
@@ -8759,6 +8761,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@standard-schema/utils@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@standard-schema/utils@npm:0.3.0"
+  checksum: 10/7084f875d322792f2e0a5904009434c8374b9345b09ba89828b68fd56fa3c2b366d35bf340d9e8c72736ef01793c2f70d350c372ed79845dc3566c58d34b4b51
+  languageName: node
+  linkType: hard
+
 "@stellar/js-xdr@npm:^3.1.2":
   version: 3.1.2
   resolution: "@stellar/js-xdr@npm:3.1.2"
@@ -10252,7 +10261,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
-    "@hookform/resolvers": "npm:3.10.0"
+    "@hookform/resolvers": "npm:^4.1.3"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
@@ -12477,7 +12486,7 @@ __metadata:
     "@floating-ui/react": "npm:^0.27.5"
     "@formatjs/cli": "npm:6.6.1"
     "@formatjs/intl": "npm:3.1.4"
-    "@hookform/resolvers": "npm:3.10.0"
+    "@hookform/resolvers": "npm:^4.1.3"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.6.0"
     "@sentry/core": "npm:^8.47.0"
