@@ -8,10 +8,10 @@ import {
     RequestHandler,
     RequestWithParams,
     Response,
-    allowOrigins,
     parseBodyJSON,
     parseBodyText,
 } from '@trezor/node-utils';
+import { checkOrigin } from '@trezor/node-utils/src/http';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 import { UNEXPECTED_ERROR } from '@trezor/transport/src/errors';
 import { Descriptor, PathPublic, Session } from '@trezor/transport/src/types';
@@ -221,16 +221,36 @@ export class TrezordNode {
                     ) {
                         next(req, res);
                     } else {
-                        allowOrigins([
-                            'https://sldev.cz',
-                            'https://trezor.io',
-                            'http://localhost',
-                            // When using Tor it will send string "null" as default, and it will not allow calling to localhost.
-                            // To allow it to be sent, you can go to about:config and set the attributes below:
-                            // "network.http.referer.hideOnionSource - false"
-                            // "network.proxy.allow_hijacking_localhost - false"
-                            'http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
-                        ])(req, res, next, context);
+                        const isOriginAllowed = checkOrigin({
+                            request: req,
+                            allowedOrigin: [
+                                'sldev.cz',
+                                'trezor.io',
+                                'localhost',
+                                // When using Tor it will send string "null" as default, and it will not allow calling to localhost.
+                                // To allow it to be sent, you can go to about:config and set the attributes below:
+                                // "network.http.referer.hideOnionSource - false"
+                                // "network.proxy.allow_hijacking_localhost - false"
+                                'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
+                            ],
+                            pathname: req.url,
+                            logger: context.logger,
+                        });
+
+                        if (isOriginAllowed) {
+                            next(req, res);
+                        } else {
+                            // error handling identic to legacy trezord-go
+                            switch (req.url) {
+                                case '/enumerate':
+                                case '/listen':
+                                    res.statusCode = 403;
+                                    break;
+                                default:
+                                    res.statusCode = 404;
+                            }
+                            res.end();
+                        }
                     }
                 },
             ]);
