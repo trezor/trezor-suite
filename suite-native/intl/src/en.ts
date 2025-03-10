@@ -1254,10 +1254,10 @@ export const en = {
         },
         staked: 'Staked',
         rewards: 'Rewards',
-        rewardsPerEpoch: 'Rewards per Epoch',
+        rewardsPerEpoch: 'Next estimated reward',
         apy: 'Annual percentage yield',
         stakingCanBeManaged: 'Staking can be currently managed only in',
-        trezorDesktop: 'Trezor Suite for desktop.',
+        trezorDesktop: 'Trezor Suite for desktop or web.',
         stakePendingCard: {
             totalStakePending: 'Total stake pending',
             addingToStakingPool: 'Adding to staking pool',
