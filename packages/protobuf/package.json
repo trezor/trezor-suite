@@ -35,7 +35,7 @@
     },
     "dependencies": {
         "@trezor/schema-utils": "workspace:*",
-        "long": "5.2.0",
+        "long": "5.2.5",
         "protobufjs": "7.4.0"
     },
     "devDependencies": {
