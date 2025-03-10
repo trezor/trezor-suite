@@ -88,33 +88,23 @@ export class UdpApi extends AbstractApi {
     }
 
     public async read(_path: string, signal?: AbortSignal) {
-        let message = this.receivedMessagesBuffer.shift();
+        while (true) {
+            if (signal?.aborted) {
+                return this.error({ error: ERRORS.ABORTED_BY_SIGNAL });
+            }
+            const message = this.receivedMessagesBuffer.shift();
 
-        if (message) {
-            return Promise.resolve(this.success(message));
+            if (message) {
+                return Promise.resolve(this.success(message));
+            }
+
+            try {
+                this.logger?.debug('udp: read: empty buffer, waiting for messages');
+                await resolveAfter(100, signal);
+            } catch {
+                // empty, checked above
+            }
         }
-
-        try {
-            // give emu 500ms to send something
-            this.logger?.debug('udp: read: empty buffer, waiting for messages');
-            await resolveAfter(500, signal);
-        } catch {
-            // signal checked just below
-        }
-        if (signal?.aborted) {
-            return this.error({ error: ERRORS.ABORTED_BY_SIGNAL });
-        }
-
-        message = this.receivedMessagesBuffer.shift();
-
-        if (!message) {
-            return this.error({
-                error: ERRORS.INTERFACE_DATA_TRANSFER,
-                message: 'no message received',
-            });
-        }
-
-        return Promise.resolve(this.success(message));
     }
 
     private async ping(path: string, signal?: AbortSignal) {
