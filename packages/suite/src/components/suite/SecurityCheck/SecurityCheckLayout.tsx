@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { DeviceAnimation, Image, variables } from '@trezor/components';
+import { DeviceAnimation, Image } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { breakpointMediaQueries } from '@trezor/styles';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -12,7 +13,7 @@ const Wrapper = styled.div`
     gap: 24px;
     width: 100%;
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
+    ${breakpointMediaQueries.below_md} {
         grid-template-columns: 1fr;
         flex-direction: column;
     }

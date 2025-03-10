@@ -67,7 +67,13 @@ export const SecurityCheckFail = ({
                     </Button>
                 )}
                 <Flex>
-                    <Button href={chatUrl} isFullWidth size="large" variant={supportButtonVariant}>
+                    <Button
+                        textWrap={false}
+                        href={chatUrl}
+                        isFullWidth
+                        size="large"
+                        variant={supportButtonVariant}
+                    >
                         <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
                     </Button>
                 </Flex>
