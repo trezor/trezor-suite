@@ -6,7 +6,7 @@
         "jsx": "preserve",
         "module": "ESNext",
         "moduleResolution": "Bundler",
-        "target": "esnext",
+        "target": "ES2023",
         "removeComments": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,

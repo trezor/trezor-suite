@@ -89,14 +89,14 @@
         "s": "yarn native:start"
     },
     "resolutions": {
-        "typescript": "5.6.3",
+        "typescript": "5.7.3",
         "react-native": "0.76.1",
         "prettier": "3.2.5",
         "type-fest": "4.24.0",
         "bcrypto": "5.4.0",
         "react": "18.2.0",
         "electron": "35.0.1",
-        "@types/node": "22.10.1",
+        "@types/node": "22.13.10",
         "@types/react": "18.2.55",
         "bn.js": "5.2.1",
         "node-gyp": "10.2.0",
@@ -119,7 +119,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@types/jest": "29.5.12",
-        "@types/node": "22.10.1",
+        "@types/node": "22.13.10",
         "@types/prettier": "^3.0.0",
         "@types/semver": "^7.5.6",
         "@types/tar": "^6.1.11",
@@ -143,7 +143,7 @@
         "tsconfig-paths": "^4.2.0",
         "tslib": "^2.6.2",
         "tsx": "^4.19.3",
-        "typescript": "5.6.3",
+        "typescript": "5.7.3",
         "version-bump-prompt": "^6.1.0"
     },
     "dependenciesMeta": {

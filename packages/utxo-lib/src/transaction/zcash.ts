@@ -309,8 +309,10 @@ function getExtraData(tx: TransactionBase<ZcashSpecific>) {
     return tx.toBuffer().subarray(offset);
 }
 
-function getBlake2bDigestHash(buffer: Buffer, personalization: string | Buffer) {
-    const hash = blake2b(buffer, undefined, 32, undefined, Buffer.from(personalization));
+function getBlake2bDigestHash(buffer: Buffer, personalization: string | Buffer<ArrayBufferLike>) {
+    const personalizedBuffer =
+        typeof personalization === 'string' ? Buffer.from(personalization) : personalization;
+    const hash = blake2b(buffer, undefined, 32, undefined, personalizedBuffer);
 
     return Buffer.from(hash);
 }

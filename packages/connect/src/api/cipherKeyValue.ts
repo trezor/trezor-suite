@@ -34,11 +34,14 @@ export default class CipherKeyValue extends AbstractMethod<
         this.params = payload.bundle.map(batch => ({
             address_n: validatePath(batch.path),
             key: batch.key,
-            value: batch.value instanceof Buffer ? batch.value.toString('hex') : batch.value,
+            value:
+                batch.value instanceof Buffer
+                    ? batch.value.toString('hex')
+                    : (batch.value as string),
             encrypt: batch.encrypt,
             ask_on_encrypt: batch.askOnEncrypt,
             ask_on_decrypt: batch.askOnDecrypt,
-            iv: batch.iv instanceof Buffer ? batch.iv.toString('hex') : batch.iv,
+            iv: batch.iv instanceof Buffer ? batch.iv.toString('hex') : (batch.iv as string),
         }));
     }
 

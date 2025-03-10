@@ -136,7 +136,7 @@
         "@suite-common/test-utils": "workspace:^",
         "@trezor/connect-mobile": "workspace:^",
         "@types/jest": "^29.5.12",
-        "@types/node": "22.10.1",
+        "@types/node": "22.13.10",
         "babel-plugin-transform-inline-environment-variables": "^0.4.4",
         "babel-plugin-transform-remove-console": "^6.9.4",
         "detox": "^20.34.4",
@@ -145,7 +145,7 @@
         "jest-junit": "^16.0.0",
         "metro": "0.81.0",
         "ts-jest": "^29.1.2",
-        "typescript": "^5.3.3"
+        "typescript": "5.7.3"
     },
     "private": true
 }
