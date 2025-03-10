@@ -1,13 +1,16 @@
 import { extraDependenciesMock } from '@suite-common/test-utils';
+import { InvityServerEnvironment } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
 import {
     TradingState,
     addTradeableAssetToFavourites,
+    initialState,
     removeTradeableAssetFromFavourites,
     selectBuySelectedReceiveAccount,
     selectIsTradingFavouriteAsset,
+    selectTradingEnvironment,
     selectTradingFavouriteAssets,
     selectTradingFavouriteAssetsArray,
     setBuySelectedReceiveAccount,
@@ -55,6 +58,7 @@ describe('tradingSlice', () => {
 
             expect(state.buy.selectedReceiveAccount).toBeUndefined();
             expect(state.favouriteAssets).toEqual({});
+            expect(state.tradingEnvironment).toBe('production');
         });
     });
 
@@ -189,6 +193,23 @@ describe('tradingSlice', () => {
                     },
                 );
             });
+        });
+    });
+
+    describe('tradingEnvironment', () => {
+        it('should have production as initial trading environment', () => {
+            const state = tradingReducer(undefined, { type: 'undefined_action' });
+
+            expect(selectTradingEnvironment({ wallet: { trading: state } })).toBe('production');
+        });
+
+        it('should correctly select trading environment', () => {
+            const state = {
+                ...initialState,
+                tradingEnvironment: 'staging' as InvityServerEnvironment,
+            };
+
+            expect(selectTradingEnvironment({ wallet: { trading: state } })).toBe('staging');
         });
     });
 });

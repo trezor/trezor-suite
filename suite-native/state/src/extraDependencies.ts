@@ -13,6 +13,7 @@ import {
     selectEnabledDiscoveryNetworkSymbols,
     selectTokenDefinitionsEnabledNetworks,
 } from '@suite-native/discovery';
+import { selectTradingEnvironment } from '@suite-native/module-trading';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinUnits,
@@ -50,6 +51,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
         selectDebugSettings: () => ({
             transports,
         }),
+        selectTradingEnvironment,
     } as Partial<ExtraDependencies['selectors']>,
     thunks: {} as Partial<ExtraDependencies['thunks']>,
     actions: {

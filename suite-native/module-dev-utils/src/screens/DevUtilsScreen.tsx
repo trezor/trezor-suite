@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 
-import { Button, Card, TitleHeader, VStack } from '@suite-native/atoms';
+import { Button, Card, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
 import {
     DevUtilsStackParamList,
@@ -21,6 +21,7 @@ import { FeatureFlags } from '../components/FeatureFlags';
 import { MessageSystemInfo } from '../components/MessageSystemInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
 import { TestnetsToggle } from '../components/TestnetsToggle';
+import { TradingEnvironmentSelect } from '../components/TradingEnvironmentSelect';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     DevUtilsStackParamList,
@@ -52,7 +53,6 @@ export const DevUtilsScreen = () => {
                                 <DevicePassphraseSwitch />
                             </>
                         )}
-
                         <Button
                             onPress={() => {
                                 const errorMessage = `Sentry test error - ${Date.now()}`;
@@ -69,6 +69,10 @@ export const DevUtilsScreen = () => {
                 </Card>
                 <Card>
                     <TestnetsToggle />
+                </Card>
+                <Card>
+                    <Text variant="highlight">Trading</Text>
+                    <TradingEnvironmentSelect />
                 </Card>
                 <MessageSystemInfo />
             </VStack>

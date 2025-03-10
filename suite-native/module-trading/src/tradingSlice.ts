@@ -4,6 +4,7 @@ import { createSliceWithExtraDeps, createWeakMapSelector } from '@suite-common/r
 import {
     TradingBuyState as CommonTradingBuyState,
     TradingState as CommonTradingState,
+    InvityServerEnvironment,
     initialState as commonInitialState,
     prepareTradingReducer,
 } from '@suite-common/trading';
@@ -17,6 +18,7 @@ export interface TradingBuyState extends CommonTradingBuyState {
 export interface TradingState extends CommonTradingState {
     buy: TradingBuyState;
     favouriteAssets: Record<string, TradeableAsset>;
+    tradingEnvironment: InvityServerEnvironment;
 }
 
 export type TradingRootState = {
@@ -29,6 +31,7 @@ export const initialState: TradingState = {
     ...commonInitialState,
     buy: { ...commonInitialState.buy, selectedReceiveAccount: undefined },
     favouriteAssets: {},
+    tradingEnvironment: 'production',
 };
 
 export const getTradeableAssetFavouriteKey = (asset: TradeableAsset) =>
@@ -50,6 +53,9 @@ export const tradingSlice = createSliceWithExtraDeps({
         removeTradeableAssetFromFavourites: (state, { payload }: PayloadAction<TradeableAsset>) => {
             delete state.favouriteAssets[getTradeableAssetFavouriteKey(payload)];
         },
+        setTradingEnvironment: (state, { payload }: PayloadAction<InvityServerEnvironment>) => {
+            state.tradingEnvironment = payload;
+        },
     },
     extraReducers: (builder, extra) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
@@ -65,6 +71,7 @@ export const {
     setBuySelectedReceiveAccount,
     addTradeableAssetToFavourites,
     removeTradeableAssetFromFavourites,
+    setTradingEnvironment,
 } = tradingSlice.actions;
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
@@ -86,3 +93,6 @@ export const selectIsTradingFavouriteAsset = createMemoizedSelector(
 
 export const selectBuySelectedReceiveAccount = (state: TradingRootState) =>
     selectTradingBuy(state).selectedReceiveAccount;
+
+export const selectTradingEnvironment = (state: TradingRootState) =>
+    state.wallet.trading.tradingEnvironment;
