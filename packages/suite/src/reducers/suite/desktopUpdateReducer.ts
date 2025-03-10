@@ -36,6 +36,10 @@ export interface DesktopUpdateState {
     justUpdatedInteractedWith: boolean;
 }
 
+type DesktopUpdateRootState = {
+    desktopUpdate: DesktopUpdateState;
+};
+
 const initialState: DesktopUpdateState = {
     enabled: false,
     state: UpdateState.NotAvailable,
@@ -109,5 +113,7 @@ const desktopUpdateReducer = (
             // no default
         }
     });
+
+export const selectDesktopUpdate = (state: DesktopUpdateRootState) => state.desktopUpdate;
 
 export default desktopUpdateReducer;

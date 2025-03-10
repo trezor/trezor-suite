@@ -15,7 +15,7 @@ import {
     setUpdateModalVisibility,
 } from 'src/actions/suite/desktopUpdateActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
+import { UpdateState, selectDesktopUpdate } from 'src/reducers/suite/desktopUpdateReducer';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { getAppUpdatePayload } from 'src/utils/suite/analytics';
 
@@ -32,7 +32,7 @@ interface DesktopUpdaterProps {
 
 export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
     const dispatch = useDispatch();
-    const { desktopUpdate } = useSelector(state => state);
+    const desktopUpdate = useSelector(selectDesktopUpdate);
 
     const desktopUpdateState = desktopUpdate.state;
 
