@@ -10,6 +10,7 @@ import {
 } from './abstract';
 import * as ERRORS from '../errors';
 import { DescriptorApiLevel, PathInternal } from '../types';
+import { readMessageBuffer } from '../utils/readMessageBuffer';
 
 export class UdpApi extends AbstractApi {
     chunkSize = 64;
@@ -21,17 +22,20 @@ export class UdpApi extends AbstractApi {
         signal: this.listenAbortController.signal,
     });
     private debugLink?: boolean;
-    private receivedMessagesBuffer: Buffer[] = [];
+    private readBuffer: ReturnType<typeof readMessageBuffer>;
 
     constructor({ logger, debugLink }: AbstractApiConstructorParams & { debugLink?: boolean }) {
         super({ logger });
         this.debugLink = debugLink;
+        this.readBuffer = readMessageBuffer();
 
-        const onMessage = (message: Buffer, _info: UDP.RemoteInfo) => {
+        const onMessage = (message: Buffer, info: UDP.RemoteInfo) => {
             if (message.toString() === 'PONGPONG') {
                 return;
             }
-            this.receivedMessagesBuffer.push(message);
+
+            const id = `${info.address}:${info.port}`;
+            this.readBuffer.onMessage(id, message);
             this.logger?.debug('udp: globalOnMessage log:', message.toString('hex'));
         };
         this.interface.addListener('message', onMessage);
@@ -87,34 +91,8 @@ export class UdpApi extends AbstractApi {
         });
     }
 
-    public async read(_path: string, signal?: AbortSignal) {
-        let message = this.receivedMessagesBuffer.shift();
-
-        if (message) {
-            return Promise.resolve(this.success(message));
-        }
-
-        try {
-            // give emu 500ms to send something
-            this.logger?.debug('udp: read: empty buffer, waiting for messages');
-            await resolveAfter(500, signal);
-        } catch {
-            // signal checked just below
-        }
-        if (signal?.aborted) {
-            return this.error({ error: ERRORS.ABORTED_BY_SIGNAL });
-        }
-
-        message = this.receivedMessagesBuffer.shift();
-
-        if (!message) {
-            return this.error({
-                error: ERRORS.INTERFACE_DATA_TRANSFER,
-                message: 'no message received',
-            });
-        }
-
-        return Promise.resolve(this.success(message));
+    public read(path: string, signal?: AbortSignal) {
+        return this.readBuffer.read(path, signal);
     }
 
     private async ping(path: string, signal?: AbortSignal) {
