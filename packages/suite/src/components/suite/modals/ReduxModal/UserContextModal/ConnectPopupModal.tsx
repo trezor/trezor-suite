@@ -1,5 +1,7 @@
+import { useState } from 'react';
+
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
-import { H2, NewModal, Paragraph } from '@trezor/components';
+import { Checkbox, Column, H2, NewModal, Paragraph } from '@trezor/components';
 import { ERRORS } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
@@ -7,12 +9,24 @@ import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const ConnectPopupModal = () => {
+    const [isRemembered, setIsRemembered] = useState(false);
+
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
     if (!popupCall || popupCall?.state !== 'request') return null;
 
-    const { methodTitle, confirmLabel, processName, origin } = popupCall;
-    const onConfirm = () => dispatch(connectPopupActions.approveCall());
+    const { methodTitle, confirmLabel, processName, origin, permissionTypes } = popupCall;
+    const onConfirm = () => {
+        if (isRemembered && processName && origin)
+            dispatch(
+                connectPopupActions.rememberAppPermissions({
+                    processName,
+                    origin,
+                    types: permissionTypes,
+                }),
+            );
+        dispatch(connectPopupActions.approveCall());
+    };
     const onCancel = () =>
         dispatch(connectPopupActions.rejectCall(ERRORS.TypedError('Method_Cancel')));
 
@@ -33,22 +47,37 @@ export const ConnectPopupModal = () => {
             }
             heading={<Translation id="TR_TREZOR_CONNECT" />}
         >
-            <H2>{methodTitle}</H2>
+            <Column gap={spacings.xs}>
+                <H2>{methodTitle}</H2>
 
-            {processName && (
-                <Paragraph margin={{ top: spacings.xs }}>
-                    <Translation id="TR_CONNECT_MODAL_PROCESS" /> <strong>{processName}</strong>
-                </Paragraph>
-            )}
-            {origin && (
-                <Paragraph>
-                    <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" /> <strong>{origin}</strong>
-                </Paragraph>
-            )}
+                <Column>
+                    {processName && (
+                        <Paragraph>
+                            <Translation id="TR_CONNECT_MODAL_PROCESS" />{' '}
+                            <strong>{processName}</strong>
+                        </Paragraph>
+                    )}
+                    {origin && (
+                        <Paragraph>
+                            <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" />{' '}
+                            <strong>{origin}</strong>
+                        </Paragraph>
+                    )}
+                </Column>
 
-            <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
-                <Translation id="TR_CONNECT_MODAL_REQUEST_DESCRIPTION" />
-            </Paragraph>
+                <Paragraph variant="tertiary">
+                    <Translation id="TR_CONNECT_MODAL_REQUEST_DESCRIPTION" />
+                </Paragraph>
+
+                {processName !== 'WalletConnect' && (
+                    <Checkbox
+                        isChecked={isRemembered}
+                        onClick={() => setIsRemembered(!isRemembered)}
+                    >
+                        <Translation id="TR_CONNECT_MODAL_REMEMBER" />
+                    </Checkbox>
+                )}
+            </Column>
         </NewModal>
     );
 };

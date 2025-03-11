@@ -2,6 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
+import { connectPopupActions } from '@suite-common/connect-popup';
 import { messageSystemActions } from '@suite-common/message-system';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { TokenManagementAction } from '@suite-common/token-definitions';
@@ -214,6 +215,15 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (sendFormActions.removeDraft.match(action)) {
                 storageActions.removeDraft(action.payload.accountKey);
+            }
+
+            if (
+                isAnyOf(
+                    connectPopupActions.rememberAppPermissions,
+                    connectPopupActions.forgetAppPermissions,
+                )(action)
+            ) {
+                storageActions.saveConnectSettings();
             }
 
             switch (action.type) {

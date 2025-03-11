@@ -4,10 +4,12 @@ import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { CallMethodParams, CallMethodResponse, ERRORS } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect/src/constants/errors';
+import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
 import { createDeferred } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
+import { selectConnectAppPermissions } from './connectPopupReducer';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
@@ -58,20 +60,35 @@ export const connectPopupCallThunkInner = createThunk<
                 return;
             }
 
-            const confirmation = createDeferred();
-            dispatch(extra.actions.lockDevice(true));
-            dispatch(
-                connectPopupActions.initiateCall({
-                    state: 'request',
-                    method,
-                    methodTitle: methodInfo.payload.confirmation?.label ?? methodInfo.payload.info,
-                    confirmLabel: methodInfo.payload.confirmation?.customConfirmButton?.label,
-                    processName,
-                    origin,
-                    confirmation,
-                }),
+            // Check if permission remembered
+            const rememberedApps = selectConnectAppPermissions(getState());
+            const isRemembered = rememberedApps.some(
+                app =>
+                    app.origin === origin &&
+                    app.processName === processName &&
+                    methodInfo.payload.requiredPermissions.every((permission: MethodPermission) =>
+                        app.types.includes(permission),
+                    ),
             );
-            await confirmation.promise;
+
+            if (!isRemembered) {
+                const confirmation = createDeferred();
+                dispatch(extra.actions.lockDevice(true));
+                dispatch(
+                    connectPopupActions.initiateCall({
+                        state: 'request',
+                        method,
+                        methodTitle:
+                            methodInfo.payload.confirmation?.label ?? methodInfo.payload.info,
+                        confirmLabel: methodInfo.payload.confirmation?.customConfirmButton?.label,
+                        processName,
+                        origin,
+                        confirmation,
+                        permissionTypes: methodInfo.payload.requiredPermissions,
+                    }),
+                );
+                await confirmation.promise;
+            }
 
             const device = selectSelectedDevice(getState());
             if (!device) {

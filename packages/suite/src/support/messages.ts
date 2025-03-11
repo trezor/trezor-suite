@@ -9595,6 +9595,10 @@ export default defineMessages({
         defaultMessage:
             'A third-party app is requesting to connect to your device. Do you want to allow this?',
     },
+    TR_CONNECT_MODAL_REMEMBER: {
+        id: 'TR_CONNECT_MODAL_REMEMBER',
+        defaultMessage: 'Always allow for this app',
+    },
     TR_CONNECT_MODAL_PROCESS: {
         id: 'TR_CONNECT_MODAL_PROCESS',
         defaultMessage: 'Process:',

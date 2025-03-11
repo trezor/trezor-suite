@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { ConnectPopupCall } from './connectPopupTypes';
+import { AppRememberedPermission, ConnectPopupCall } from './connectPopupTypes';
 
 export const ACTION_PREFIX = '@suite-common/connect-popup';
 
@@ -16,9 +16,25 @@ const rejectCall = createAction(`${ACTION_PREFIX}/rejectCall`, (payload: Error) 
     payload,
 }));
 
+const rememberAppPermissions = createAction(
+    `${ACTION_PREFIX}/rememberAppPermissions`,
+    (payload: AppRememberedPermission) => ({
+        payload,
+    }),
+);
+
+const forgetAppPermissions = createAction(
+    `${ACTION_PREFIX}/forgetAppPermissions`,
+    (payload: AppRememberedPermission) => ({
+        payload,
+    }),
+);
+
 export const connectPopupActions = {
     initiateCall,
     approveCall,
     finishCall,
     rejectCall,
+    rememberAppPermissions,
+    forgetAppPermissions,
 } as const;

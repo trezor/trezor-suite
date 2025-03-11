@@ -1,4 +1,5 @@
 import { TrezorError } from '@trezor/connect/src/constants/errors';
+import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { Deferred } from '@trezor/utils';
 
 export type ConnectPopupCall =
@@ -9,6 +10,7 @@ export type ConnectPopupCall =
           confirmLabel: string;
           processName?: string;
           origin?: string;
+          permissionTypes: MethodPermission[];
           confirmation: Deferred<void>;
       }
     | {
@@ -22,3 +24,9 @@ export type ConnectPopupCall =
     | {
           state: 'finished';
       };
+
+export type AppRememberedPermission = {
+    processName: string;
+    origin: string;
+    types: MethodPermission[];
+};

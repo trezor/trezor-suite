@@ -1,10 +1,11 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';
-import { ConnectPopupCall } from './connectPopupTypes';
+import { AppRememberedPermission, ConnectPopupCall } from './connectPopupTypes';
 
 export type ConnectPopupState = {
     activeCall?: ConnectPopupCall;
+    permissions: AppRememberedPermission[];
 };
 
 type ConnectPopupStateRootState = {
@@ -13,6 +14,7 @@ type ConnectPopupStateRootState = {
 
 const connectPopupInitialState: ConnectPopupState = {
     activeCall: undefined,
+    permissions: [],
 };
 
 export const prepareConnectPopupReducer = createReducerWithExtraDeps(
@@ -33,9 +35,19 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 if (state.activeCall?.state === 'request')
                     state.activeCall.confirmation.reject(payload);
                 state.activeCall = undefined;
+            })
+            .addCase(connectPopupActions.rememberAppPermissions, (state, { payload }) => {
+                state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
+                state.permissions.push(payload);
+            })
+            .addCase(connectPopupActions.forgetAppPermissions, (state, { payload }) => {
+                state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
             });
     },
 );
 
 export const selectConnectPopupCall = (state: ConnectPopupStateRootState) =>
     state.wallet.connectPopup.activeCall;
+
+export const selectConnectAppPermissions = (state: ConnectPopupStateRootState) =>
+    state.wallet.connectPopup.permissions;

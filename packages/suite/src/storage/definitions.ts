@@ -3,6 +3,7 @@ import { FieldValues } from 'react-hook-form';
 import type { DBSchema } from 'idb';
 
 import { AnalyticsState } from '@suite-common/analytics';
+import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import type { MessageState } from '@suite-common/message-system';
 import type { DeviceWithEmptyPath, MessageSystem } from '@suite-common/suite-types';
 import { SimpleTokenStructure } from '@suite-common/token-definitions';
@@ -136,6 +137,12 @@ export interface SuiteDBSchema extends DBSchema {
         key: 'security';
         value: {
             devicesWithFailedEntropyCheck: DeviceReducerState['devicesWithFailedEntropyCheck'];
+        };
+    };
+    connect: {
+        key: 'connect';
+        value: {
+            permissions: AppRememberedPermission[];
         };
     };
 }
