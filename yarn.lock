@@ -11980,6 +11980,8 @@ __metadata:
 "@trezor/device-utils@workspace:*, @trezor/device-utils@workspace:packages/device-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/device-utils@workspace:packages/device-utils"
+  dependencies:
+    tsx: "npm:^4.19.3"
   languageName: unknown
   linkType: soft
 

@@ -18,5 +18,8 @@
         "test:unit": "yarn g:jest -c ../../jest.config.base.js --passWithNoTests",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
+    },
+    "devDependencies": {
+        "tsx": "^4.19.3"
     }
 }
