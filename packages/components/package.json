@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "@floating-ui/react": "^0.27.5",
+        "@storybook/addon-docs": "^8.6.4",
         "@suite-common/icons": "workspace:*",
         "@suite-common/icons-deprecated": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
@@ -65,7 +66,7 @@
         "@types/react": "18.2.79",
         "@types/react-date-range": "^1.4.9",
         "postcss-styled-syntax": "^0.6.4",
-        "storybook": "8.5.8",
+        "storybook": "^8.6.4",
         "stylelint": "^16.14.1",
         "stylelint-config-standard": "^36.0.0",
         "typescript-styled-plugin": "^0.18.3"

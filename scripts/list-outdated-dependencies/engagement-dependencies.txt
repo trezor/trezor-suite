@@ -6,6 +6,7 @@
 @storybook/addon-links
 @storybook/addon-viewport
 @storybook/addons
+@storybook/addon-docs
 @storybook/client-api
 @storybook/react
 @storybook/react-webpack5

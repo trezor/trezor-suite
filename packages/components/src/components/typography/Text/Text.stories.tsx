@@ -25,7 +25,6 @@ const meta: Meta = {
 export default meta;
 
 export const Text: StoryObj = {
-    // @ts-expect-error: the type of Textcomponent is union of objects and hence hard to fullfill
     render: props => (
         <Wrapper>
             <ColoredBlock>
