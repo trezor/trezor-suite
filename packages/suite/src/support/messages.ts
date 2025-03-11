@@ -8818,7 +8818,7 @@ export default defineMessages({
     },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
-        defaultMessage: '*Annual Percentage Yield',
+        defaultMessage: '*Annual percentage yield',
     },
     TR_STAKE_ETH_LOCK_FUNDS: {
         id: 'TR_STAKE_ETH_LOCK_FUNDS',
@@ -9011,7 +9011,7 @@ export default defineMessages({
     },
     TR_STAKE_STAKE: {
         id: 'TR_STAKE_STAKE',
-        defaultMessage: 'Staked',
+        defaultMessage: 'Stake',
     },
     TR_STAKE_UNSTAKE: {
         id: 'TR_STAKE_UNSTAKE',
@@ -9027,7 +9027,7 @@ export default defineMessages({
     },
     TR_STAKE_APY: {
         id: 'TR_STAKE_APY',
-        defaultMessage: 'Annual Percentage Yield',
+        defaultMessage: 'Annual percentage yield',
     },
     TR_STAKE_APY_ABBR: {
         id: 'TR_STAKE_APY_ABBR',
@@ -9622,7 +9622,6 @@ export default defineMessages({
         id: 'TR_CONNECT_BLUETOOTH_BUTTON',
         defaultMessage: 'Connect Trezor Safe 7 via Bluetooth',
     },
-
     TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED: {
         id: 'TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED',
         defaultMessage: 'Your Trezor Bridge version will soon be deprecated.',
