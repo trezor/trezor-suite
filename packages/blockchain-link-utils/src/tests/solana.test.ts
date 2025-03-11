@@ -33,7 +33,8 @@ describe('solana/utils', () => {
         fixtures.extractAccountBalanceDiff.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 const result = extractAccountBalanceDiff(
-                    input.transaction as SolanaValidParsedTxWithMeta,
+                    // @ts-expect-error Fixtures don't fully implement this interface.
+                    input.transaction as ParsedTransactionWithMeta,
                     input.address,
                 );
                 expect(result).toEqual(expectedOutput);
