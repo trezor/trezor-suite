@@ -20,7 +20,7 @@ runs:
       shell: bash
       run: |
         # Determine the correct matrix file
-        MATRIX_FILE="${GITHUB_ACTION_PATH}/matrix-base-${{ inputs.project }}.yml"
+        MATRIX_FILE="${{ github.workspace }}/packages/suite-desktop-core/e2e/ci/matrix-base-${{ inputs.project }}.yml"
 
         if [[ ! -f "$MATRIX_FILE" ]]; then
           echo "Error: Matrix file for project '${{ inputs.project }}' not found!" >&2
