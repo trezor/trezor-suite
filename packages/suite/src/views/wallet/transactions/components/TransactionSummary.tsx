@@ -75,9 +75,9 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const dataInterval: [number, number] =
         selectedRange.label === 'all'
             ? [
-                  intervalGraphData[0]?.data[0]?.time,
-                  intervalGraphData[0]?.data[intervalGraphData[0].data.length - 1]?.time,
-              ]
+                intervalGraphData[0]?.data[0]?.time,
+                intervalGraphData[0]?.data[intervalGraphData[0].data.length - 1]?.time,
+            ]
             : [getUnixTime(selectedRange.startDate), getUnixTime(selectedRange.endDate)];
 
     const onRefresh = () => dispatch(updateGraphData([account]));
@@ -113,7 +113,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                             </Card>
                         ) : (
                             <HiddenPlaceholder enforceIntensity={8}>
-                                <Card>
+                                <Card overflow='visible'>
                                     <Row height={320} overflow="visible" alignItems="stretch">
                                         <TransactionsGraph
                                             hideToolbar

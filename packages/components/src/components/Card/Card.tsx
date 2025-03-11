@@ -114,7 +114,7 @@ export type CardProps = AccessibilityProps &
 export const Card = ({
     paddingType = 'normal',
     fillType = 'default',
-    contentOverflow = 'hidden',
+    overflow = 'hidden',
     heading,
     label,
     onClick,
@@ -129,7 +129,7 @@ export const Card = ({
 }: CardProps) => {
     const { elevation } = useElevation();
     const theme = useTheme();
-    const frameProps = pickAndPrepareFrameProps(rest, allowedCardFrameProps);
+    const frameProps = pickAndPrepareFrameProps({ overflow, ...rest }, allowedCardFrameProps);
 
     const content = (
         <>
@@ -174,7 +174,7 @@ export const Card = ({
                 $fillType={fillType}
                 $isClickable={Boolean(onClick)}
                 $variant={variant}
-                $overflow={contentOverflow}
+                $overflow={frameProps.$overflow}
                 onClick={onClick}
                 onMouseEnter={onMouseEnter}
                 className={className}
