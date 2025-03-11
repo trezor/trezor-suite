@@ -186,7 +186,10 @@ export const resetDevice =
                     vendor: device?.features?.fw_vendor,
                     error: result.payload.error,
                 });
-                dispatch(deviceActions.setEntropyCheckFail(device.id));
+                // TODO: temporary exception to avoid false positives
+                if (result.payload.error !== 'device disconnected during action') {
+                    dispatch(deviceActions.setEntropyCheckFail(device.id));
+                }
             }
         }
 
