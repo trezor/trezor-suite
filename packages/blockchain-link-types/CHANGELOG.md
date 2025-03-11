@@ -1,3 +1,8 @@
+# 1.3.2
+
+-   chore: replace `@solana/web3.js` with `@solana/kit` (6356bafe6d)
+-   npm-release: @trezor/connect 9.5.2-beta.1 (#17529) (3d7542843b)
+
 # 1.3.1
 
 -   npm-prerelease: @trezor/blockchain-link-types 1.3.1-beta.1 (183dc685f7)
