@@ -2,139 +2,51 @@ import { KeyboardEvent, ReactNode, useCallback, useEffect, useState } from 'reac
 
 import styled, { css } from 'styled-components';
 
-import { breakpointMediaQueries } from '@trezor/styles';
 import {
     Elevation,
     borders,
     mapElevationToBackground,
     nextElevation,
     spacings,
-    spacingsPx,
-    typography,
 } from '@trezor/theme';
 
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import { SelectBarOrientation, SelectBarSize } from './types';
+import { mapSizeToPadding, mapSizeToTypographyStyle, mapStateToTextVariant } from './utils';
+import { Box, Grid, useMediaQuery } from '../../../';
+import { variables } from '../../../config';
+import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { useElevation } from '../../ElevationContext/ElevationContext';
+import { Column, Flex } from '../../Flex/Flex';
+import { Text } from '../../typography/Text/Text';
 
-export const allowedSelectBarFrameProps = ['margin', 'width'] as const satisfies FramePropsKeys[];
+export const allowedSelectBarFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectBarFrameProps)[number]>;
 
-export const orientations = ['horizontal', 'vertical', 'auto'] as const;
-export type Orientation = (typeof orientations)[number];
+const GAP = spacings.xxs;
 
-export const DEFAULT_ORIENTATION = 'auto';
+const getTranslateValue = (index: number = 0) => `calc(${index * 100}% + ${index * GAP}px)`;
 
-const getTranslateValue = (index: number) => {
-    const value = index * 100;
+const getPuckDimension = (optionsCount: number) =>
+    `calc((100% - ${(optionsCount - 1) * GAP}px) / ${optionsCount})`;
 
-    if (!index) {
-        return;
-    }
-
-    return `calc(${value}% + ${index * spacings.xxs}px)`;
-};
-
-const getPuckWidth = (optionsCount: number) =>
-    `calc((100% - 8px - ${(optionsCount - 1) * spacings.xxs}px) / ${optionsCount})`;
-
-const columnWrapper = css`
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-`;
-const columnOption = css`
-    grid-auto-flow: row;
-    width: 100%;
-    border-radius: ${borders.radii.lg};
-`;
-const columnPuck = ({
-    $selectedIndex: selectedIndex,
-    $optionsCount,
-}: {
-    $optionsCount: number;
-    $selectedIndex: number;
-}) => css`
-    left: 4px;
-    right: 4px;
-    top: 4px;
-    width: auto;
-    height: ${getPuckWidth($optionsCount)};
-    transform: ${`translateY(${getTranslateValue(selectedIndex)})`};
-`;
-
-const Wrapper = styled.div<
-    TransientProps<AllowedFrameProps> & { $isFullWidth?: boolean; $orientation: Orientation }
->`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.sm};
-    width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'auto')};
-
-    ${({ $orientation }) =>
-        $orientation === 'auto' &&
-        css`
-            ${breakpointMediaQueries.below_sm} {
-                ${columnWrapper}
-            }
-        `}
-
-    ${({ $orientation }) => $orientation === 'vertical' && columnWrapper}
-
-
-    ${withFrameProps}
-`;
-
-const Label = styled.span`
-    color: ${({ theme }) => theme.textSubdued};
-    text-transform: capitalize;
-`;
-
-const Options = styled.div<{
-    $optionsCount: number;
-    $isFullWidth?: boolean;
-    $elevation: Elevation;
-    $orientation: Orientation;
-}>`
-    position: relative;
-    display: grid;
-    grid-auto-columns: ${({ $optionsCount }) => `minmax(${getPuckWidth($optionsCount)}, 1fr)`};
-    grid-auto-flow: column;
-    gap: ${spacingsPx.xxs};
-    padding: ${spacingsPx.xxs};
+const Options = styled.div<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};
-    border-radius: ${borders.radii.full};
-    width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'auto')};
-
-    ${({ $orientation }) =>
-        $orientation === 'auto' &&
-        css`
-            ${breakpointMediaQueries.below_sm} {
-                ${columnOption}
-            }
-        `}
-
-    ${({ $orientation }) => $orientation === 'vertical' && columnOption}
+    border-radius: ${borders.radii.lg};
+    flex: 1;
 `;
 
 const Puck = styled.div<{
     $optionsCount: number;
     $selectedIndex: number;
     $elevation: Elevation;
-    $orientation: Orientation;
+    $orientation: SelectBarOrientation;
 }>`
     position: absolute;
-    left: 4px;
-    top: 4px;
-    bottom: 4px;
-    width: ${({ $optionsCount }) => getPuckWidth($optionsCount)};
-    padding: ${spacingsPx.xxs} ${spacingsPx.xl};
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: ${({ $optionsCount }) => getPuckDimension($optionsCount)};
     background: ${mapElevationToBackground};
     border-radius: ${borders.radii.full};
     box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
@@ -145,57 +57,25 @@ const Puck = styled.div<{
 
     ${getFocusShadowStyle()}
 
-    ${({ $orientation, $optionsCount, $selectedIndex }) =>
-        $orientation === 'auto' &&
+    ${({ $orientation, $selectedIndex, $optionsCount }) =>
+        $orientation === 'vertical' &&
         css`
-            ${breakpointMediaQueries.below_sm} {
-                ${columnPuck({ $optionsCount, $selectedIndex })}
-            }
+            bottom: auto;
+            right: 0;
+            width: auto;
+            height: ${getPuckDimension($optionsCount)};
+            transform: ${`translateY(${getTranslateValue($selectedIndex)})`};
         `}
-
-    ${({ $orientation }) => $orientation === 'vertical' && columnPuck}
-`;
-
-const WidthMock = styled.span`
-    height: 0;
-    visibility: hidden;
-    ${typography.highlight}
 `;
 
 const Option = styled.div<{ $isSelected: boolean; $isDisabled: boolean }>`
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 36px;
-    padding: ${spacingsPx.xxs} ${spacingsPx.xl};
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.body}
-    text-transform: capitalize;
-    white-space: nowrap;
     transition: color 0.175s;
-    cursor: pointer;
 
     &:hover {
         color: ${({ theme, $isSelected, $isDisabled }) =>
             !$isSelected && !$isDisabled && theme.textDefault};
     }
-
-    ${({ $isSelected }) =>
-        $isSelected &&
-        css`
-            color: ${({ theme }) => theme.textPrimaryDefault};
-            ${typography.highlight}
-        `}
-
-    ${({ $isDisabled }) =>
-        $isDisabled &&
-        css`
-            color: ${({ theme }) => theme.textDisabled};
-            pointer-events: auto;
-            cursor: not-allowed;
-        `}
 `;
 
 type ValueTypes = number | string | boolean;
@@ -212,8 +92,8 @@ export type SelectBarProps<V extends ValueTypes> = {
     onChange?: (value: V) => void;
     isDisabled?: boolean;
     isFullWidth?: boolean;
-    orientation?: 'horizontal' | 'vertical' | 'auto';
-    className?: string;
+    orientation?: SelectBarOrientation;
+    size?: SelectBarSize;
     'data-testid'?: string;
 } & AllowedFrameProps;
 
@@ -225,14 +105,14 @@ export const SelectBar = <V extends ValueTypes>({
     onChange,
     isDisabled = false,
     isFullWidth,
-    orientation = DEFAULT_ORIENTATION,
-    className,
+    orientation = 'auto',
+    size = 'large',
     'data-testid': dataTest,
-    ...rest
+    margin,
 }: SelectBarProps<V>) => {
     const [selectedOptionIn, setSelected] = useState<ValueTypes | undefined>(selectedOption);
     const { elevation } = useElevation();
-    const frameProps = pickAndPrepareFrameProps(rest, allowedSelectBarFrameProps);
+    const isBelowMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
 
     useEffect(() => {
         if (selectedOption !== undefined) {
@@ -282,49 +162,78 @@ export const SelectBar = <V extends ValueTypes>({
     };
 
     const selectedIndex = options.findIndex(option => option.value === selectedOptionIn);
+    const isVertical = orientation === 'vertical' || (orientation === 'auto' && isBelowMobile);
 
     return (
-        <Wrapper
-            className={className}
-            $isFullWidth={isFullWidth}
+        <Flex
             data-testid={dataTest}
-            $orientation={orientation}
-            {...frameProps}
+            direction={isVertical ? 'column' : 'row'}
+            margin={margin}
+            width={isFullWidth || isVertical ? '100%' : 'auto'}
+            alignItems={isVertical ? 'stretch' : 'center'}
+            gap={spacings.sm}
         >
-            {label && <Label>{label}</Label>}
+            {label && (
+                <Text
+                    case="capitalize"
+                    variant="tertiary"
+                    typographyStyle={mapSizeToTypographyStyle(size)}
+                >
+                    {label}
+                </Text>
+            )}
 
-            <Options
-                $optionsCount={options.length}
-                $isFullWidth={isFullWidth}
-                $elevation={elevation}
-                $orientation={orientation}
-            >
-                <Puck
-                    $optionsCount={options.length}
-                    $selectedIndex={selectedIndex}
-                    $elevation={nextElevation[elevation]}
-                    $orientation={orientation}
-                    tabIndex={0}
-                    onKeyDown={handleKeyboardNav}
-                />
+            <Options $elevation={elevation}>
+                <Box margin={spacings.xxs} position={{ type: 'relative' }}>
+                    <Puck
+                        $optionsCount={options.length}
+                        $selectedIndex={selectedIndex}
+                        $elevation={nextElevation[elevation]}
+                        $orientation={isVertical ? 'vertical' : orientation}
+                        tabIndex={0}
+                        onKeyDown={handleKeyboardNav}
+                    />
+                    <Grid columns={isVertical ? 1 : options.length} gap={GAP}>
+                        {options.map(option => {
+                            const isSelected =
+                                selectedOptionIn !== undefined
+                                    ? selectedOptionIn === option.value
+                                    : false;
 
-                {options.map(option => (
-                    <Option
-                        key={String(option.value)}
-                        onClick={handleOptionClick(option)}
-                        $isDisabled={!!isDisabled}
-                        $isSelected={
-                            selectedOptionIn !== undefined
-                                ? selectedOptionIn === option.value
-                                : false
-                        }
-                        data-testid={`select-bar/${String(option.value)}`}
-                    >
-                        <span>{option.label}</span>
-                        <WidthMock>{option.label}</WidthMock>
-                    </Option>
-                ))}
+                            return (
+                                <Text
+                                    key={String(option.value)}
+                                    variant={mapStateToTextVariant(isDisabled, isSelected)}
+                                    typographyStyle={mapSizeToTypographyStyle(size, isSelected)}
+                                    case="capitalize"
+                                    textWrap="nowrap"
+                                    as="div"
+                                    cursor={isDisabled ? 'not-allowed' : 'pointer'}
+                                >
+                                    <Option
+                                        onClick={handleOptionClick(option)}
+                                        $isDisabled={!!isDisabled}
+                                        $isSelected={isSelected}
+                                        data-testid={`select-bar/${String(option.value)}`}
+                                    >
+                                        <Column
+                                            padding={mapSizeToPadding(size)}
+                                            alignItems="center"
+                                        >
+                                            {option.label}
+                                            <Box height={0} overflow="hidden">
+                                                <Text typographyStyle="highlight">
+                                                    {option.label}
+                                                </Text>
+                                            </Box>
+                                        </Column>
+                                    </Option>
+                                </Text>
+                            );
+                        })}
+                    </Grid>
+                </Box>
             </Options>
-        </Wrapper>
+        </Flex>
     );
 };

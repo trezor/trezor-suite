@@ -8,7 +8,7 @@ import { TransientProps, makePropsTransient } from '../../utils/transientProps';
 export const textWraps = ['balance', 'break-word', 'pretty', 'nowrap'];
 export type TextWrap = (typeof textWraps)[number];
 
-export const textCase = ['uppercase', 'lowercase', 'titlecase'] as const;
+export const textCase = ['uppercase', 'lowercase', 'titlecase', 'capitalize'] as const;
 export type TextCase = (typeof textCase)[number];
 
 export type TextProps = {
