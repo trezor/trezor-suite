@@ -3,6 +3,6 @@
     "compilerOptions": {
         "outDir": "libESM",
         "module": "ESNext",
-        "target": "esnext"
+        "target": "ES2023"
     }
 }

@@ -30,7 +30,7 @@ type FormatterProps<TInput, TDataContext extends DataContext> = {
 export interface Formatter<TInput, TOutput, TDataContext extends DataContext = DataContext> {
     /** Formats a value. */
     format: FormatMethod<TInput, TOutput, TDataContext>;
-    (props: FormatterProps<TInput, TDataContext>): JSX.Element | null;
+    (props: FormatterProps<TInput, TDataContext>): JSX.Element;
     /** Name of the formatter for easier debugging and profiling. */
     displayName?: string;
 }

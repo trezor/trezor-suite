@@ -6,7 +6,7 @@
         "outDir": "../dist",
         "noEmit": false,
         "jsx": "preserve",
-        "target": "esnext",
+        "target": "ES2023",
         "sourceMap": true,
         "lib": [
             "dom",
