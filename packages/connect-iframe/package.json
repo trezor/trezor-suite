@@ -27,7 +27,7 @@
         "es6-promise": "^4.2.8",
         "html-webpack-plugin": "^5.6.0",
         "rimraf": "^6.0.1",
-        "terser-webpack-plugin": "^5.3.11",
+        "terser-webpack-plugin": "^5.3.14",
         "webpack": "^5.97.1",
         "webpack-cli": "^5.1.4",
         "webpack-merge": "^6.0.1",

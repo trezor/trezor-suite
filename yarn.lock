@@ -11713,7 +11713,7 @@ __metadata:
     es6-promise: "npm:^4.2.8"
     html-webpack-plugin: "npm:^5.6.0"
     rimraf: "npm:^6.0.1"
-    terser-webpack-plugin: "npm:^5.3.11"
+    terser-webpack-plugin: "npm:^5.3.14"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^6.0.1"
@@ -11790,7 +11790,7 @@ __metadata:
     html-webpack-plugin: "npm:^5.6.0"
     react-dom: "npm:18.2.0"
     rimraf: "npm:^6.0.1"
-    terser-webpack-plugin: "npm:^5.3.11"
+    terser-webpack-plugin: "npm:^5.3.14"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^5.0.4"
@@ -11852,7 +11852,7 @@ __metadata:
     html-webpack-plugin: "npm:^5.6.0"
     rimraf: "npm:^6.0.1"
     selfsigned: "npm:^2.4.1"
-    terser-webpack-plugin: "npm:^5.3.11"
+    terser-webpack-plugin: "npm:^5.3.14"
     tsx: "npm:^4.19.3"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
@@ -11882,7 +11882,7 @@ __metadata:
     copy-webpack-plugin: "npm:^12.0.2"
     events: "npm:^3.3.0"
     rimraf: "npm:^6.0.1"
-    terser-webpack-plugin: "npm:^5.3.11"
+    terser-webpack-plugin: "npm:^5.3.14"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^6.0.1"
@@ -12228,7 +12228,7 @@ __metadata:
     react-refresh: "npm:^0.14.0"
     stream-browserify: "npm:^3.0.0"
     style-loader: "npm:^3.3.4"
-    terser-webpack-plugin: "npm:^5.3.11"
+    terser-webpack-plugin: "npm:^5.3.14"
     vm-browserify: "npm:^1.1.2"
     webpack: "npm:^5.97.1"
     webpack-bundle-analyzer: "npm:^4.10.1"
@@ -12346,7 +12346,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     openpgp: "npm:^6.1.0"
     systeminformation: "npm:^5.25.11"
-    terser-webpack-plugin: "npm:^5.3.11"
+    terser-webpack-plugin: "npm:^5.3.14"
     webpack: "npm:^5.97.1"
     ws: "npm:^8.18.0"
     xvfb-maybe: "npm:^0.2.1"
@@ -18614,7 +18614,7 @@ __metadata:
     electron: "npm:34.1.0"
     electron-builder: "npm:26.0.3"
     html-webpack-plugin: "npm:^5.6.0"
-    terser-webpack-plugin: "npm:^5.3.11"
+    terser-webpack-plugin: "npm:^5.3.14"
     wait-on: "npm:^7.0.1"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
@@ -40162,6 +40162,28 @@ __metadata:
     uglify-js:
       optional: true
   checksum: 10/a8f7c92c75aa42628adfa4d171d4695c366c1852ecb4a24e72dd6fec86e383e12ac24b627e798fedff4e213c21fe851cebc61be3ab5a2537e6e42bea46690aa3
+  languageName: node
+  linkType: hard
+
+"terser-webpack-plugin@npm:^5.3.14":
+  version: 5.3.14
+  resolution: "terser-webpack-plugin@npm:5.3.14"
+  dependencies:
+    "@jridgewell/trace-mapping": "npm:^0.3.25"
+    jest-worker: "npm:^27.4.5"
+    schema-utils: "npm:^4.3.0"
+    serialize-javascript: "npm:^6.0.2"
+    terser: "npm:^5.31.1"
+  peerDependencies:
+    webpack: ^5.1.0
+  peerDependenciesMeta:
+    "@swc/core":
+      optional: true
+    esbuild:
+      optional: true
+    uglify-js:
+      optional: true
+  checksum: 10/5b7290f7edb179b83cefb8827c12371ddddc088cf251cf58a1c738d82628331ae6604273b61fe991d77411d4bb6b7178c3826aa47edf01b4ee21f973d6c8b8fb
   languageName: node
   linkType: hard
 

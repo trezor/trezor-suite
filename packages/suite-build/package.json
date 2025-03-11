@@ -35,7 +35,7 @@
         "raw-loader": "^4.0.2",
         "stream-browserify": "^3.0.0",
         "style-loader": "^3.3.4",
-        "terser-webpack-plugin": "^5.3.11",
+        "terser-webpack-plugin": "^5.3.14",
         "vm-browserify": "^1.1.2",
         "webpack": "^5.97.1",
         "webpack-bundle-analyzer": "^4.10.1",
