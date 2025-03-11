@@ -11,6 +11,10 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.5.2-beta.2
+
+Replace @solana/web3.js with @solana/kit
+
 # 9.5.2-beta.1
 
 ## Feature
