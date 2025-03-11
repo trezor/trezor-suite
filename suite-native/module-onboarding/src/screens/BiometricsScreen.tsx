@@ -46,6 +46,8 @@ export const BiometricsScreen = ({
     };
 
     const exitOnboardingFlow = () => {
+        dispatch(setIsOnboardingFinished());
+
         navigation.dispatch(
             CommonActions.reset({
                 index: 0,
@@ -59,14 +61,6 @@ export const BiometricsScreen = ({
                 ],
             }),
         );
-
-        // FIXME: Hotfix temporary solution.
-        // Timeout is needed to ensure that navigation event already finishes before changing the redux state.
-        // Situation when the onboarding screen was still focused but the state was already changed made `useHandleDeviceConnection`
-        // to display the device disconnected alert even if it should not be displayed.
-        setTimeout(() => {
-            dispatch(setIsOnboardingFinished());
-        }, 500);
     };
 
     const handleEnableButtonPress = async () => {

@@ -83,6 +83,7 @@ export const useHandleDeviceConnection = () => {
     const isDeviceSettingsStackFocused = lastRoute === RootStackRoutes.DeviceSettingsStack;
     const isSendStackFocused = lastRoute === RootStackRoutes.SendStack;
     const isOnboardingStackFocused = lastRoute === RootStackRoutes.OnboardingStack;
+    const isDeviceOnboardingStackFocused = lastRoute === RootStackRoutes.DeviceOnboardingStack;
     const shouldBlockSendReviewRedirect = isDeviceRemembered && isSendStackFocused;
     const isDeviceCompromisedModalFocused =
         lastRoute === RootStackRoutes.DeviceCompromisedModalScreen;
@@ -186,7 +187,7 @@ export const useHandleDeviceConnection = () => {
                 return;
             }
 
-            if (isOnboardingStackFocused) {
+            if (isDeviceOnboardingStackFocused) {
                 handleOnboardingDeviceDisconnection();
 
                 return;
@@ -210,6 +211,7 @@ export const useHandleDeviceConnection = () => {
         isOnboardingStackFocused,
         handleOnboardingDeviceDisconnection,
         isConnectAndUnlockDeviceScreenFocused,
+        isDeviceOnboardingStackFocused,
     ]);
 
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
