@@ -577,33 +577,42 @@ export const enhanceHistory = ({
     txids,
 });
 
+export const areTokenFiatRatesLoading = (
+    account: Account,
+    localCurrency: string,
+    rates: RatesByKey,
+) =>
+    (account.tokens ?? []).some(token => {
+        const tokenFiatRateKey = getFiatRateKey(
+            account.symbol,
+            localCurrency as FiatCurrencyCode,
+            token.contract as TokenAddress,
+        );
+
+        return rates?.[tokenFiatRateKey]?.isLoading;
+    });
+
 export const getAccountTokensFiatBalance = (
     account: Account,
     localCurrency: string,
     rates?: RatesByKey,
     tokens?: Account['tokens'],
-) => {
-    let totalBalance = new BigNumber(0);
+) =>
+    (tokens ?? [])
+        .reduce((total, token) => {
+            const tokenFiatRateKey = getFiatRateKey(
+                account.symbol,
+                localCurrency as FiatCurrencyCode,
+                token.contract as TokenAddress,
+            );
 
-    // sum fiat value of all tokens
-    tokens?.forEach(t => {
-        const tokenFiatRateKey = getFiatRateKey(
-            account.symbol,
-            localCurrency as FiatCurrencyCode,
-            t.contract as TokenAddress,
-        );
+            const tokenFiatRate = rates?.[tokenFiatRateKey];
 
-        const tokenFiatRate = rates?.[tokenFiatRateKey];
-        if (tokenFiatRate?.rate && t.balance) {
-            const tokenBalance = toFiatCurrency(t.balance, tokenFiatRate.rate, 2);
-            if (tokenBalance) {
-                totalBalance = totalBalance.plus(tokenBalance);
-            }
-        }
-    });
-
-    return totalBalance.toFixed();
-};
+            return tokenFiatRate?.rate && token.balance
+                ? total.plus(toFiatCurrency(token.balance, tokenFiatRate.rate, 2) ?? 0)
+                : total;
+        }, new BigNumber(0))
+        .toFixed();
 
 export const getAssetTokensFiatBalance = (
     accounts: Account[],

@@ -42,6 +42,7 @@ interface AccountItemProps {
     isGroup?: boolean;
     tokens?: Account['tokens'];
     dataTestKey?: string;
+    isFiatLoading?: boolean;
     onClick?: () => void;
 }
 
@@ -58,6 +59,7 @@ export const AccountItem = forwardRef(
             customFiatValue,
             isGroup,
             dataTestKey,
+            isFiatLoading,
             onClick,
         }: AccountItemProps,
         ref: Ref<HTMLDivElement>,
@@ -90,6 +92,7 @@ export const AccountItem = forwardRef(
 
         const content = (
             <AccountRow
+                isFiatLoading={Boolean(isFiatLoading)}
                 isSelected={isSelected}
                 isGroup={isGroup}
                 isGroupSelected={isGroupSelected}

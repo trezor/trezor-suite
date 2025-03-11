@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import {
+    areTokenFiatRatesLoading,
     getAccountTokensFiatBalance,
     getAccountTotalStakingBalance,
 } from '@suite-common/wallet-utils';
@@ -61,7 +62,10 @@ export const AccountItemsGroup = ({
     const localCurrency = useSelector(selectLocalCurrency);
     const rates = useSelector(selectCurrentFiatRates);
 
-    const tokensFiatBalance = getAccountTokensFiatBalance(account, localCurrency, rates, tokens);
+    const isFiatLoading = areTokenFiatRatesLoading(account, localCurrency, rates ?? {});
+    const tokensFiatBalance = isFiatLoading
+        ? (0).toFixed()
+        : getAccountTokensFiatBalance(account, localCurrency, rates, tokens);
 
     const tokensRoutes = ['wallet-tokens', 'wallet-tokens-hidden'];
 
@@ -104,6 +108,7 @@ export const AccountItemsGroup = ({
                         customFiatValue={tokensFiatBalance}
                         tokens={tokens}
                         dataTestKey={`${dataTestKey}/tokens`}
+                        isFiatLoading={isFiatLoading}
                     />
                 )}
             </Column>

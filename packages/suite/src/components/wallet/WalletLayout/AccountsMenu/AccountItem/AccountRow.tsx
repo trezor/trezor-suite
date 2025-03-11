@@ -25,6 +25,7 @@ type AccountRowProps = {
     accountType: AccountType;
     index?: number;
     formattedBalance: string;
+    isFiatLoading?: boolean;
 };
 
 const Wrapper = styled(NavigationItemBase)<{
@@ -61,6 +62,7 @@ export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
             accountType,
             index,
             formattedBalance,
+            isFiatLoading,
         },
         ref,
     ) => (
@@ -86,6 +88,7 @@ export const AccountRow = forwardRef<HTMLDivElement, AccountRowProps>(
                 index={index}
                 formattedBalance={formattedBalance}
                 dataTestKey={dataTestKey}
+                isFiatLoading={Boolean(isFiatLoading)}
             />
         </Wrapper>
     ),

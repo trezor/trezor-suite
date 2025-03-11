@@ -46,6 +46,7 @@ type ItemContentProps = {
     index?: number;
     formattedBalance: string;
     dataTestKey?: string;
+    isFiatLoading?: boolean;
 };
 
 const FiatValueRenderComponent = ({ value }: { value: JSX.Element | null }) => {
@@ -65,6 +66,7 @@ export const AccountItemContent = ({
     index,
     formattedBalance,
     dataTestKey,
+    isFiatLoading,
 }: ItemContentProps) => {
     const { FiatAmountFormatter } = useFormatters();
     const localCurrency = useSelector(selectLocalCurrency);
@@ -91,12 +93,16 @@ export const AccountItemContent = ({
                 </AccountLabelContainer>
                 {customFiatValue && !isTestnet(symbol) ? (
                     <HiddenPlaceholder>
-                        <FiatAmountFormatter
-                            value={customFiatValue}
-                            currency={localCurrency}
-                            minimumFractionDigits={0}
-                            maximumFractionDigits={0}
-                        />
+                        {isFiatLoading ? (
+                            <SkeletonRectangle animate={shouldAnimate} />
+                        ) : (
+                            <FiatAmountFormatter
+                                value={customFiatValue}
+                                currency={localCurrency}
+                                minimumFractionDigits={0}
+                                maximumFractionDigits={0}
+                            />
+                        )}
                     </HiddenPlaceholder>
                 ) : (
                     <FiatValue
