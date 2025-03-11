@@ -3127,6 +3127,10 @@ export default defineMessages({
         defaultMessage: 'Connect & unlock your Trezor to change settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
+    TR_SETTINGS_DEVICE_VIEW_ONLY_DISABLED_TOOLTIP: {
+        defaultMessage: 'Not available while the device is setting up.',
+        id: 'TR_SETTINGS_DEVICE_VIEW_ONLY_DISABLED_TOOLTIP',
+    },
     TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION: {
         defaultMessage: 'To access more coins, install <button>{regular}</button> firmware.',
         id: 'TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION',

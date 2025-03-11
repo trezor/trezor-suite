@@ -1,3 +1,5 @@
+import { getStatus } from '@suite-common/suite-utils';
+
 import { goto } from 'src/actions/suite/routerActions';
 import {
     ActionButton,
@@ -22,6 +24,8 @@ export const EnableViewOnly = () => {
         );
 
     const isDeviceConnected = device?.connected && device?.available;
+    const deviceStatus = device && getStatus(device);
+    const newlyConnectedDevice = deviceStatus === 'bootloader' || deviceStatus === 'initialize';
 
     return (
         <SectionItem data-testid="@settings/device/enable-view-only">
@@ -33,9 +37,15 @@ export const EnableViewOnly = () => {
                 <ActionButton
                     onClick={handleSwitchDeviceClick}
                     variant="primary"
-                    isDisabled={!isDeviceConnected}
-                    isTooltipActive={!isDeviceConnected}
-                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+                    isDisabled={!isDeviceConnected || newlyConnectedDevice}
+                    isTooltipActive={!isDeviceConnected || newlyConnectedDevice}
+                    tooltipContent={
+                        newlyConnectedDevice ? (
+                            <Translation id="TR_SETTINGS_DEVICE_VIEW_ONLY_DISABLED_TOOLTIP" />
+                        ) : (
+                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                        )
+                    }
                 >
                     <Translation id="TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON" />
                 </ActionButton>
