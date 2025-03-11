@@ -101,7 +101,6 @@ export type CardProps = AccessibilityProps &
         label?: ReactNode;
         paddingType?: PaddingType;
         fillType?: FillType;
-        contentOverflow?: Overflow,
         onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
         onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
         onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
