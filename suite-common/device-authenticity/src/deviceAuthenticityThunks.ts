@@ -4,17 +4,25 @@ import TrezorConnect, { AuthenticateDeviceResult } from '@trezor/connect';
 
 import { ACTION_PREFIX, deviceAuthenticityActions } from './deviceAuthenticityActions';
 
-export const checkDeviceAuthenticityThunk = createThunk(
+type CheckDeviceAuthenticityThunkParams = {
+    allowDebugKeys: boolean;
+    skipSuccessToast?: boolean;
+};
+
+type CheckDeviceAuthenticityThunkResult =
+    | AuthenticateDeviceResult
+    | { error: string; valid?: boolean }
+    | undefined;
+
+export const checkDeviceAuthenticityThunk = createThunk<
+    CheckDeviceAuthenticityThunkResult,
+    CheckDeviceAuthenticityThunkParams,
+    void
+>(
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,
     async (
-        {
-            allowDebugKeys,
-            skipSuccessToast,
-        }: {
-            allowDebugKeys: boolean;
-            skipSuccessToast?: boolean;
-        },
-        { dispatch, getState, extra },
+        { allowDebugKeys, skipSuccessToast },
+        { dispatch, getState, extra, fulfillWithValue },
     ) => {
         const {
             selectors: { selectDevice },
@@ -31,10 +39,7 @@ export const checkDeviceAuthenticityThunk = createThunk(
             allowDebugKeys,
         });
 
-        let storedResult:
-            | AuthenticateDeviceResult
-            | { error: string; valid?: boolean }
-            | undefined = result.payload;
+        let storedResult: CheckDeviceAuthenticityThunkResult = result.payload;
         let toastPayload: ToastPayload | undefined;
 
         if (!result.success) {
@@ -70,5 +75,7 @@ export const checkDeviceAuthenticityThunk = createThunk(
         }
 
         dispatch(deviceAuthenticityActions.result({ device, result: storedResult }));
+
+        return fulfillWithValue(storedResult);
     },
 );

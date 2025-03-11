@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { TranslationKey } from '@suite-common/intl-types';
-import { selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
 import { Icon, IconName, List, NewModal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -21,16 +20,17 @@ export const AuthenticateDeviceModal = () => {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const selectedDeviceAuthenticity = useSelector(selectSelectedDeviceAuthenticity);
 
     const handleClick = async () => {
         setIsLoading(true);
 
-        await dispatch(checkDeviceAuthenticityThunk({ allowDebugKeys: isDebugModeActive }));
+        const result = await dispatch(
+            checkDeviceAuthenticityThunk({ allowDebugKeys: isDebugModeActive }),
+        ).unwrap();
 
         setIsLoading(false);
 
-        if (selectedDeviceAuthenticity?.valid === false) {
+        if (result?.valid === false) {
             dispatch(openModal({ type: 'authenticate-device-fail' }));
         }
     };
