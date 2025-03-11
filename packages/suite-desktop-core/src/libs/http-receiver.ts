@@ -117,7 +117,12 @@ export const createHttpReceiver = () => {
         (request, response) => {
             try {
                 const { searchParams } = new URL(request.url, 'http://127.0.0.1:21335'); // hostname is not important here, just to be able to validate relative URL
-                const action = new URL(searchParams.get('a') || '').href; // action has to be a valid URL, otherwise throw an error
+                const { href: action, protocol } = new URL(searchParams.get('a') || ''); // action has to be a valid URL, otherwise throw an error
+
+                if (protocol !== 'https:' && protocol !== 'http:') {
+                    return response.end('invalid request');
+                }
+
                 const content = `
             Forwarding to ${xssFilters.inHTML(action)}...
             <form id="buy-form" method="POST" action="${xssFilters.inDoubleQuotes(action)}">
