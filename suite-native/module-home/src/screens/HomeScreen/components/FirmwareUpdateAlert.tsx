@@ -12,7 +12,7 @@ import {
     selectDeviceReleaseInfo,
     selectDeviceState,
     selectDeviceUpdateFirmwareVersion,
-    selectIsDeviceConnectedAndAuthorized,
+    selectIsDeviceConnected,
     selectIsDiscoveryActiveByDeviceState,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
@@ -56,7 +56,7 @@ export const FirmwareUpdateAlert = () => {
     const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const deviceId = useSelector(selectDeviceId);
-    const isConnected = useSelector(selectIsDeviceConnectedAndAuthorized);
+    const isConnected = useSelector(selectIsDeviceConnected);
     const deviceState = useSelector(selectDeviceState);
     const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
         selectIsDiscoveryActiveByDeviceState(state, deviceState),
