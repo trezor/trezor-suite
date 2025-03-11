@@ -12,6 +12,7 @@ packages/suite-desktop-core/
 packages/suite-desktop-ui/
 packages/suite-storage/
 packages/suite-web/
+packages/transport-bluetooth/
 
 ### content of all .gitignore files is not applied if .easignore is present
 
