@@ -104,7 +104,7 @@ const StoreTitle = styled(Image)<{ $isDark: boolean }>`
     margin: 2px auto 6px;
 `;
 
-const QR = styled(QrCode)`
+const QRBox = styled.div`
     width: 140px;
     height: 140px;
     padding: 4px;
@@ -140,11 +140,13 @@ const StoreBadge = ({
             content={
                 <Column alignItems="center">
                     <StoreTitle
-                        $isDark={currentTheme === 'dark'}
+                        $isDark={currentTheme == 'dark'}
                         image={`${image}_TITLE`}
                         height={26}
                     />
-                    <QR value={url} />
+                    <QRBox>
+                        <QrCode value={url} />
+                    </QRBox>
                 </Column>
             }
         >
