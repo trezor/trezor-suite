@@ -16,7 +16,7 @@
         "@trezor/node-utils": "workspace:^",
         "@trezor/utils": "workspace:*",
         "node-fetch": "^2.6.4",
-        "socks-proxy-agent": "8.0.4"
+        "socks-proxy-agent": "8.0.5"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
