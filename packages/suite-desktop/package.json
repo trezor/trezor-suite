@@ -27,7 +27,7 @@
         "electron-store": "8.2.0",
         "electron-updater": "6.5.0",
         "openpgp": "^6.1.0",
-        "usb": "^2.14.0"
+        "usb": "^2.15.0"
     },
     "devDependencies": {
         "@electron/fuses": "^1.8.0",
