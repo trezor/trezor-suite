@@ -27,7 +27,7 @@ export const restartApp = () => {
     app.quit();
 };
 
-const tryParseJson = (value: any) => {
+const tryParseJson = (value: string) => {
     try {
         return JSON.parse(value);
     } catch {
@@ -35,13 +35,28 @@ const tryParseJson = (value: any) => {
     }
 };
 
-export const processStatePatch = () =>
+/**
+ * Parse each statePatch arg, which may be either a JSON, or a key value pair as [dot.notation.path: value]
+ */
+const parseAssignment = (assignment: string) => {
+    const keyValuePair = assignment.split('=');
+    if (keyValuePair.length !== 2) return tryParseJson(keyValuePair[0]);
+    const [key, value] = keyValuePair;
+
+    return { [key]: tryParseJson(value) };
+};
+
+type ProcessStatePatchResult = Record<string, any> | undefined;
+
+/**
+ * Get all state patches from process args and parse them to return an aggregated state object patch
+ */
+export const processStatePatch = (): ProcessStatePatchResult =>
     process.argv
-        .filter(arg => /^--state[.=]/.test(arg))
-        .map(arg => arg.slice(2).split('=')[0])
-        .map(arg => [arg.slice(6), tryParseJson(app.commandLine.getSwitchValue(arg))] as const)
-        .map(([key, value]) => (key ? { [key]: value } : value))
-        .reduce<Record<string, any> | undefined>(
+        .map(arg => arg.match(/^--state=(.+)/))
+        .filter(arg => arg !== null)
+        .map(match => parseAssignment(match[1]))
+        .reduce<ProcessStatePatchResult>(
             (prev, cur) => mergeDeepObject.withOptions({ dotNotation: true }, prev ?? {}, cur),
             undefined,
         );

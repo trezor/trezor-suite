@@ -8,8 +8,9 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 // specific version of legacy bridge is requested & expected
 export const LEGACY_BRIDGE_VERSION = '2.0.33';
-const disableHashCheckArgument = '--state.suite.settings.enabledSecurityChecks.firmwareHash=false';
-const showDebugMenuArgument = `--state.suite.settings.debug.showDebugMenu=true`;
+const disableHashCheckStatePatch =
+    '--state=suite.settings.enabledSecurityChecks.firmwareHash=false';
+const showDebugMenuStatePatch = `--state=suite.settings.debug.showDebugMenu=true`;
 
 type LaunchSuiteParams = {
     rmUserData?: boolean;
@@ -53,13 +54,13 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
         cwd: appDir,
         args: [
             path.join(appDir, './dist/app.js'),
-            disableHashCheckArgument,
-            showDebugMenuArgument,
             viewportArgument,
             logLevelArgument,
             disableHWAccelerationArgument,
             ...(options.bridgeLegacyTest ? ['--bridge-legacy', '--bridge-test'] : []),
             ...(options.bridgeDaemon ? ['--bridge-daemon', '--skip-new-bridge-rollout'] : []),
+            disableHashCheckStatePatch,
+            showDebugMenuStatePatch,
         ],
         colorScheme: params.colorScheme,
         locale: params.locale,
