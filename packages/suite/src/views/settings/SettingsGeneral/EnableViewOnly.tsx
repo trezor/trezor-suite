@@ -1,4 +1,4 @@
-import { getStatus } from '@suite-common/suite-utils';
+import { isDevicePerceivedAsNew } from '@suite-common/suite-utils';
 
 import { goto } from 'src/actions/suite/routerActions';
 import {
@@ -24,8 +24,7 @@ export const EnableViewOnly = () => {
         );
 
     const isDeviceConnected = device?.connected && device?.available;
-    const deviceStatus = device && getStatus(device);
-    const newlyConnectedDevice = deviceStatus === 'bootloader' || deviceStatus === 'initialize';
+    const newlyConnectedDevice = isDevicePerceivedAsNew(device);
 
     return (
         <SectionItem data-testid="@settings/device/enable-view-only">
@@ -40,11 +39,13 @@ export const EnableViewOnly = () => {
                     isDisabled={!isDeviceConnected || newlyConnectedDevice}
                     isTooltipActive={!isDeviceConnected || newlyConnectedDevice}
                     tooltipContent={
-                        newlyConnectedDevice ? (
-                            <Translation id="TR_SETTINGS_DEVICE_VIEW_ONLY_DISABLED_TOOLTIP" />
-                        ) : (
-                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                        )
+                        <Translation
+                            id={
+                                newlyConnectedDevice
+                                    ? 'TR_SETTINGS_DEVICE_VIEW_ONLY_DISABLED_TOOLTIP'
+                                    : 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED'
+                            }
+                        />
                     }
                 >
                     <Translation id="TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON" />

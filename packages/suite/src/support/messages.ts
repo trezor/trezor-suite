@@ -5946,6 +5946,10 @@ export default defineMessages({
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
         defaultMessage: 'Connect & unlock device to change',
     },
+    TR_DISABLED_SWITCH_NEW_DEVICE_TOOLTIP: {
+        id: 'TR_DISABLED_SWITCH_NEW_DEVICE_TOOLTIP',
+        defaultMessage: 'Not available while the device is setting up.',
+    },
     TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP: {
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP',
         defaultMessage: 'Update your firmware to change your homescreen',

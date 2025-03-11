@@ -1,3 +1,4 @@
+import { isDevicePerceivedAsNew } from '@suite-common/suite-utils';
 import { LoadingContent, Switch, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
@@ -40,7 +41,25 @@ export const Labeling = () => {
     // - Labeling enabled without any device connected
     // - Labeling enabled with the device connected inside Settings
     // The initialization of Labeling then start when user select a Wallet.
-    const isDisabled = isLocked() || device?.mode !== 'normal' || !device?.state?.staticSessionId;
+
+    const newlyConnectedDevice = isDevicePerceivedAsNew(device);
+    const isDisabled =
+        isLocked() ||
+        device?.mode !== 'normal' ||
+        !device?.state?.staticSessionId ||
+        newlyConnectedDevice;
+
+    const getTooltipContent = () => {
+        if (newlyConnectedDevice) {
+            return <Translation id="TR_DISABLED_SWITCH_NEW_DEVICE_TOOLTIP" />;
+        }
+
+        if (isDiscoveryRunning) {
+            return null;
+        }
+
+        return <Translation id="TR_DISABLED_SWITCH_TOOLTIP" />;
+    };
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.Labeling}>
@@ -55,13 +74,11 @@ export const Labeling = () => {
             />
             <ActionColumn>
                 <Tooltip
+                    isActive={isDisabled && !isDiscoveryRunning}
                     maxWidth={280}
                     offset={10}
                     placement="top"
-                    content={
-                        isDisabled &&
-                        !isDiscoveryRunning && <Translation id="TR_DISABLED_SWITCH_TOOLTIP" />
-                    }
+                    content={getTooltipContent()}
                 >
                     <Switch
                         isDisabled={isDisabled || metadata.initiating}

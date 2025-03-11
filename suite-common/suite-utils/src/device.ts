@@ -72,6 +72,17 @@ export const getStatus = (device: TrezorDevice) => {
 
 export type ConnectedDeviceStatus = ReturnType<typeof getStatus>;
 
+export const isDevicePerceivedAsNew = (device: TrezorDevice | null | undefined) => {
+    if (!device) {
+        return false;
+    }
+
+    const deviceStatus = getStatus(device);
+
+    // NOTE: when a new device is bought and connected = bootloader, when wiped = initialize
+    return deviceStatus === 'bootloader' || deviceStatus === 'initialize';
+};
+
 export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus) => {
     switch (deviceStatus) {
         // case 'firmware-recommended':
