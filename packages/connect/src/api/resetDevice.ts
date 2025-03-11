@@ -106,13 +106,13 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             this.params.entropy_check = false;
         }
 
-        try {
-            // Entropy check workflow:
-            // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#entropy-check-workflow
-            // steps: 1 - 4
-            // ResetDevice > EntropyRequest > EntropyAck > EntropyCheckReady (new fw) || Success (old fw)
-            let entropyData = await this.getEntropyData('ResetDevice');
+        // Entropy check workflow:
+        // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#entropy-check-workflow
+        // steps: 1 - 4
+        // ResetDevice > EntropyRequest > EntropyAck > EntropyCheckReady (new fw) || Success (old fw)
+        let entropyData = await this.getEntropyData('ResetDevice'); // this call is intentionally excluded from the catch error handling below because it is not in the 'critical' phase yet
 
+        try {
             if (this.params.entropy_check) {
                 const tries = getRandomInt(1, 5);
                 for (let i = 0; i < tries; i++) {
