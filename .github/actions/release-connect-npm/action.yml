@@ -29,6 +29,8 @@ inputs:
       - protocol
       - protobuf
       - schema-utils
+      - crypto-utils
+      - device-utils
       - connect
       - connect-web
       - connect-webextension
