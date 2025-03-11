@@ -13,6 +13,7 @@ import { DeviceCompromisedModalScreen } from '@suite-native/module-authenticity-
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
 import { ConnectPopupScreen } from '@suite-native/module-connect-popup';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
+import { DeviceOnboardingStackNavigator } from '@suite-native/module-device-onboarding';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { SendStackNavigator } from '@suite-native/module-send';
@@ -90,6 +91,10 @@ export const RootStackNavigator = () => {
             />
             {/* Navigation flows that start by push from bottom animation on the first screen of its stack. */}
             <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
+                <RootStack.Screen
+                    name={RootStackRoutes.DeviceOnboardingStack}
+                    component={DeviceOnboardingStackNavigator}
+                />
                 <RootStack.Screen
                     name={RootStackRoutes.AccountsImport}
                     component={AccountsImportStackNavigator}

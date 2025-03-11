@@ -10,17 +10,17 @@ import {
     ConfirmFirmwareUpdateScreenFooter,
 } from '@suite-native/firmware';
 import {
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 
-import { OnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
+import { DeviceOnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
 
 type NavigationProp = StackNavigationProps<
-    OnboardingStackParamList,
-    OnboardingStackRoutes.ConfirmFirmwareUpdate
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate
 >;
 
 export const ConfirmFirmwareUpdateScreen = () => {
@@ -41,7 +41,7 @@ export const ConfirmFirmwareUpdateScreen = () => {
     );
 
     const handleUpdateConfirmation = () => {
-        navigation.navigate(OnboardingStackRoutes.FirmwareInstallation);
+        navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInstallation);
     };
 
     const handleSkipUpdate = () => {
@@ -52,7 +52,7 @@ export const ConfirmFirmwareUpdateScreen = () => {
     };
 
     return (
-        <OnboardingScreenWithExitButton
+        <DeviceOnboardingScreenWithExitButton
             footer={
                 <ConfirmFirmwareUpdateScreenFooter
                     onUpdateConfirmation={handleUpdateConfirmation}
@@ -62,6 +62,6 @@ export const ConfirmFirmwareUpdateScreen = () => {
             }
         >
             <ConfirmFirmwareUpdateScreenContent />
-        </OnboardingScreenWithExitButton>
+        </DeviceOnboardingScreenWithExitButton>
     );
 };

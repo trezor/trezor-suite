@@ -21,9 +21,9 @@ import {
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
     DeviceSuspicionCause,
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -40,8 +40,8 @@ type SecurityCheckStepCardProps = {
 };
 
 type NavigationProps = StackNavigationProps<
-    OnboardingStackParamList,
-    OnboardingStackRoutes.SecurityCheck
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes.SecurityCheck
 >;
 
 const ANIMATION_DURATION = 300;
@@ -71,7 +71,7 @@ export const SecurityCheckStepCard = ({
     const headerColor: Color = isChecked ? 'textPrimaryDefault' : 'textSubdued';
 
     const navigateToSuspiciousDeviceScreen = () => {
-        navigation.navigate(OnboardingStackRoutes.SuspiciousDevice, {
+        navigation.navigate(DeviceOnboardingStackRoutes.SuspiciousDevice, {
             suspicionCause,
         });
     };
@@ -128,7 +128,7 @@ export const SecurityCheckStepCard = ({
                                 colorScheme="tertiaryElevation0"
                                 onPress={navigateToSuspiciousDeviceScreen}
                             >
-                                <Translation id="moduleOnboarding.securityCheckScreen.declineButton" />
+                                <Translation id="moduleDeviceOnboarding.securityCheckScreen.declineButton" />
                             </Button>
                         </HStack>
                     </AnimatedVStack>

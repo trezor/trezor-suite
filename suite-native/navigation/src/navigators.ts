@@ -19,6 +19,7 @@ import {
     AuthorizeDeviceStackRoutes,
     DevUtilsStackRoutes,
     DeviceAuthenticityStackRoutes,
+    DeviceOnboardingStackRoutes,
     DevicePinProtectionStackRoutes,
     DeviceStackRoutes,
     HomeStackRoutes,
@@ -118,13 +119,16 @@ export type OnboardingStackParamList = {
     [OnboardingStackRoutes.Welcome]: undefined;
     [OnboardingStackRoutes.AnalyticsConsent]: undefined;
     [OnboardingStackRoutes.Biometrics]: undefined;
-    [OnboardingStackRoutes.UninitializedDeviceLanding]: undefined;
-    [OnboardingStackRoutes.SuspiciousDevice]: {
+};
+
+export type DeviceOnboardingStackParamList = {
+    [DeviceOnboardingStackRoutes.UninitializedDeviceLanding]: undefined;
+    [DeviceOnboardingStackRoutes.SuspiciousDevice]: {
         suspicionCause: DeviceSuspicionCause;
     };
-    [OnboardingStackRoutes.SecurityCheck]: undefined;
-    [OnboardingStackRoutes.FirmwareInstallation]: undefined;
-    [OnboardingStackRoutes.ConfirmFirmwareUpdate]: undefined;
+    [DeviceOnboardingStackRoutes.SecurityCheck]: undefined;
+    [DeviceOnboardingStackRoutes.FirmwareInstallation]: undefined;
+    [DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate]: undefined;
 };
 
 export type AccountsImportStackParamList = {
@@ -207,6 +211,7 @@ export type AuthorizeDeviceStackParamList = {
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.OnboardingStack]: NavigatorScreenParams<OnboardingStackParamList>;
+    [RootStackRoutes.DeviceOnboardingStack]: NavigatorScreenParams<DeviceOnboardingStackParamList>;
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };

@@ -5,24 +5,24 @@ import { IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import {
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
     DeviceSuspicionCause,
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 
-import { OnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
+import { DeviceOnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
 import { SecurityCheckStepCard } from '../components/SecurityCheckStepCard';
 import { SecuritySealDescription } from '../components/SecuritySealDescription';
 
 const stepToContentMap = {
     1: {
-        header: <Translation id="moduleOnboarding.securityCheckScreen.step1.header" />,
+        header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step1.header" />,
         suspicionCause: 'untrustedReseller',
         description: (
             <Translation
-                id="moduleOnboarding.securityCheckScreen.step1.description"
+                id="moduleDeviceOnboarding.securityCheckScreen.step1.description"
                 values={{
                     link: linkChunk => (
                         <Link
@@ -39,14 +39,16 @@ const stepToContentMap = {
         icon: 'seal',
     },
     2: {
-        header: <Translation id="moduleOnboarding.securityCheckScreen.step2.header" />,
+        header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.header" />,
         description: <SecuritySealDescription />,
         icon: 'selectionSlash',
         suspicionCause: 'securitySeal',
     },
     3: {
-        header: <Translation id="moduleOnboarding.securityCheckScreen.step3.header" />,
-        description: <Translation id="moduleOnboarding.securityCheckScreen.step3.description" />,
+        header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step3.header" />,
+        description: (
+            <Translation id="moduleDeviceOnboarding.securityCheckScreen.step3.description" />
+        ),
         icon: 'package',
         suspicionCause: 'packaging',
     },
@@ -63,7 +65,7 @@ const stepToContentMap = {
 
 export const SecurityCheckScreen = ({
     navigation,
-}: StackProps<OnboardingStackParamList, OnboardingStackRoutes.SecurityCheck>) => {
+}: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.SecurityCheck>) => {
     const [currentStep, setCurrentStep] = useState<number>(1);
 
     const handlePressConfirmButton = () => {
@@ -73,18 +75,20 @@ export const SecurityCheckScreen = ({
             return;
         }
 
-        navigation.navigate(OnboardingStackRoutes.FirmwareInstallation);
+        navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInstallation);
     };
 
     return (
-        <OnboardingScreenWithExitButton>
+        <DeviceOnboardingScreenWithExitButton>
             <VStack justifyContent="flex-start" flex={1} marginTop="sp16">
                 <VStack spacing="sp24">
                     <TitleHeader
                         titleVariant="titleMedium"
-                        title={<Translation id="moduleOnboarding.securityCheckScreen.title" />}
+                        title={
+                            <Translation id="moduleDeviceOnboarding.securityCheckScreen.title" />
+                        }
                         subtitle={
-                            <Translation id="moduleOnboarding.securityCheckScreen.subtitle" />
+                            <Translation id="moduleDeviceOnboarding.securityCheckScreen.subtitle" />
                         }
                     />
                     <VStack spacing="sp16">
@@ -103,6 +107,6 @@ export const SecurityCheckScreen = ({
                     </VStack>
                 </VStack>
             </VStack>
-        </OnboardingScreenWithExitButton>
+        </DeviceOnboardingScreenWithExitButton>
     );
 };

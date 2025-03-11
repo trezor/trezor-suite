@@ -22,8 +22,8 @@ import {
     AppTabsRoutes,
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
+    DeviceOnboardingStackRoutes,
     HomeStackRoutes,
-    OnboardingStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
@@ -73,7 +73,7 @@ export const useHandleDeviceConnection = () => {
     // We should not redirect him away so he can read the screen content and decide what to do.
     // If the device is connected again, he still should stay on that screen.
     const isSuspiciousDeviceScreenFocused = useNavigationRouteMatch(
-        OnboardingStackRoutes.SuspiciousDevice,
+        DeviceOnboardingStackRoutes.SuspiciousDevice,
     );
     const isConnectAndUnlockDeviceScreenFocused = useNavigationRouteMatch(
         AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice,
@@ -101,8 +101,8 @@ export const useHandleDeviceConnection = () => {
             !isOnboardingStackFocused &&
             !isOnboardingDeviceDisconnectedAlertDisplayed
         ) {
-            navigation.navigate(RootStackRoutes.OnboardingStack, {
-                screen: OnboardingStackRoutes.UninitializedDeviceLanding,
+            navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
+                screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
             });
         }
     }, [

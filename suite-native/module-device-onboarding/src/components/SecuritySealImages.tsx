@@ -51,7 +51,7 @@ export const SecuritySealImages = () => {
                 textVariant="hint"
                 contentColor="textDefault"
                 title={
-                    <Translation id="moduleOnboarding.securityCheckScreen.step2.modal.alertBox" />
+                    <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.modal.alertBox" />
                 }
             />
         </VStack>

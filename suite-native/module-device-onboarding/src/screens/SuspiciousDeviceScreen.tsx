@@ -6,10 +6,10 @@ import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
     AppTabsRoutes,
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
     DeviceSuspicionCause,
     HomeStackRoutes,
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
@@ -35,8 +35,8 @@ export const SuspiciousDeviceScreen = ({
     route,
     navigation,
 }: StackToStackCompositeScreenProps<
-    OnboardingStackParamList,
-    OnboardingStackRoutes.SuspiciousDevice,
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes.SuspiciousDevice,
     RootStackParamList
 >) => {
     const { suspicionCause } = route.params;
@@ -71,9 +71,11 @@ export const SuspiciousDeviceScreen = ({
                 <VStack spacing="sp32">
                     <TitleHeader
                         titleVariant="titleMedium"
-                        title={<Translation id="moduleOnboarding.suspiciousDeviceScreen.title" />}
+                        title={
+                            <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.title" />
+                        }
                         subtitle={
-                            <Translation id="moduleOnboarding.suspiciousDeviceScreen.subtitle" />
+                            <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.subtitle" />
                         }
                     />
                     <VStack spacing="sp24">
@@ -83,7 +85,7 @@ export const SuspiciousDeviceScreen = ({
                             textVariant="highlight"
                             icon="plugs"
                         >
-                            <Translation id="moduleOnboarding.suspiciousDeviceScreen.bullet1" />
+                            <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet1" />
                         </IconListTextItem>
                         <IconListTextItem
                             iconSize="large"
@@ -91,7 +93,7 @@ export const SuspiciousDeviceScreen = ({
                             textVariant="highlight"
                             icon="handPalm"
                         >
-                            <Translation id="moduleOnboarding.suspiciousDeviceScreen.bullet2" />
+                            <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet2" />
                         </IconListTextItem>
                         <IconListTextItem
                             iconSize="large"
@@ -99,7 +101,7 @@ export const SuspiciousDeviceScreen = ({
                             textVariant="highlight"
                             icon="chatCircle"
                         >
-                            <Translation id="moduleOnboarding.suspiciousDeviceScreen.bullet3" />
+                            <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet3" />
                         </IconListTextItem>
                     </VStack>
                 </VStack>
@@ -108,7 +110,7 @@ export const SuspiciousDeviceScreen = ({
                     colorScheme="yellowBold"
                     onPress={handleContactSupportButtonPress}
                 >
-                    <Translation id="moduleOnboarding.suspiciousDeviceScreen.contactSupportButton" />
+                    <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.contactSupportButton" />
                 </Button>
             </VStack>
         </Screen>

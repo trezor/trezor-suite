@@ -70,12 +70,12 @@ export const useHandleOnboardingDeviceDisconnection = () => {
                 // We need to wait for the navigation to be completed before showing the alert.
                 setTimeout(() => {
                     showAlert({
-                        title: translate('moduleOnboarding.deviceDisconnectedAlert.title'),
+                        title: translate('moduleDeviceOnboarding.deviceDisconnectedAlert.title'),
                         description: translate(
-                            'moduleOnboarding.deviceDisconnectedAlert.description',
+                            'moduleDeviceOnboarding.deviceDisconnectedAlert.description',
                         ),
                         primaryButtonTitle: translate(
-                            'moduleOnboarding.deviceDisconnectedAlert.reconnectButton',
+                            'moduleDeviceOnboarding.deviceDisconnectedAlert.reconnectButton',
                         ),
                         pictogramVariant: 'critical',
                         primaryButtonVariant: 'redBold',

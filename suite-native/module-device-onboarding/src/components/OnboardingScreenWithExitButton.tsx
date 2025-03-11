@@ -10,7 +10,7 @@ import { wasDeviceDisconnectedByUserActionAtom } from '@suite-native/device';
 import { useTranslate } from '@suite-native/intl';
 import { Screen, ScreenHeader, ScreenProps } from '@suite-native/navigation';
 
-const OnboardingExitButtonScreenHeader = () => {
+const DeviceOnboardingExitButtonScreenHeader = () => {
     const navigation = useNavigation();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
@@ -20,12 +20,12 @@ const OnboardingExitButtonScreenHeader = () => {
 
     const handleExitButtonPress = useCallback(() => {
         showAlert({
-            title: translate('moduleOnboarding.cancelOnboardingAlert.title'),
-            description: translate('moduleOnboarding.cancelOnboardingAlert.description'),
+            title: translate('moduleDeviceOnboarding.cancelOnboardingAlert.title'),
+            description: translate('moduleDeviceOnboarding.cancelOnboardingAlert.description'),
             primaryButtonTitle: translate('generic.buttons.cancel'),
             primaryButtonVariant: 'redBold',
             secondaryButtonTitle: translate(
-                'moduleOnboarding.cancelOnboardingAlert.continueButton',
+                'moduleDeviceOnboarding.cancelOnboardingAlert.continueButton',
             ),
             secondaryButtonVariant: 'redElevation0',
             onPressPrimaryButton: () => {
@@ -52,8 +52,8 @@ const OnboardingExitButtonScreenHeader = () => {
     return <ScreenHeader closeActionType="close" closeAction={handleExitButtonPress} />;
 };
 
-export const OnboardingScreenWithExitButton = ({ children, ...screenProps }: ScreenProps) => (
-    <Screen header={<OnboardingExitButtonScreenHeader />} {...screenProps}>
+export const DeviceOnboardingScreenWithExitButton = ({ children, ...screenProps }: ScreenProps) => (
+    <Screen header={<DeviceOnboardingExitButtonScreenHeader />} {...screenProps}>
         {children}
     </Screen>
 );

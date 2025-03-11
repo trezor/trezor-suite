@@ -33,7 +33,7 @@ export const SecuritySealDescription = () => {
         <>
             <Text variant="highlight">
                 <Translation
-                    id="moduleOnboarding.securityCheckScreen.step2.description"
+                    id="moduleDeviceOnboarding.securityCheckScreen.step2.description"
                     values={{
                         link: linkChunk => (
                             <Link
@@ -61,14 +61,14 @@ export const SecuritySealDescription = () => {
                                     <VStack spacing="sp16">
                                         <Box>
                                             <Text variant="highlight">
-                                                <Translation id="moduleOnboarding.securityCheckScreen.step2.modal.title" />
+                                                <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.modal.title" />
                                             </Text>
                                             <Text>
-                                                <Translation id="moduleOnboarding.securityCheckScreen.step2.modal.paragraph1" />
+                                                <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.modal.paragraph1" />
                                             </Text>
                                         </Box>
                                         <Text>
-                                            <Translation id="moduleOnboarding.securityCheckScreen.step2.modal.paragraph2" />
+                                            <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.modal.paragraph2" />
                                         </Text>
                                     </VStack>
                                 </VStack>

@@ -777,7 +777,8 @@ export const en = {
                 notNow: 'Not now',
             },
         },
-
+    },
+    moduleDeviceOnboarding: {
         uninitializedDeviceLandingScreen: {
             noFirmware: {
                 title: 'Now it’s just you\nand your crypto',

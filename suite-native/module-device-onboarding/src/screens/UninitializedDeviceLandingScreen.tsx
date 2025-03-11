@@ -5,8 +5,8 @@ import { Box, Button, Image, Text, TextButton, TitleHeader, VStack } from '@suit
 import { SetupSupportingDeviceModel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -14,7 +14,7 @@ import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { HeaderUnderlineSvg } from '../components/HeaderUnderlineSvg';
-import { OnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
+import { DeviceOnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
 
 const trezorImageStyle = prepareNativeStyle<{ hasDeviceFirmwareInstalled: boolean }>(
     (_, { hasDeviceFirmwareInstalled }) => ({
@@ -45,17 +45,17 @@ const UninitializedDeviceLandingScreenContent = () => {
             {hasDeviceFirmwareInstalled ? (
                 <TitleHeader
                     title={
-                        <Translation id="moduleOnboarding.uninitializedDeviceLandingScreen.firmware.title" />
+                        <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.firmware.title" />
                     }
                     titleVariant="titleMedium"
                     subtitle={
-                        <Translation id="moduleOnboarding.uninitializedDeviceLandingScreen.firmware.subtitle" />
+                        <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.firmware.subtitle" />
                     }
                 />
             ) : (
                 <Box alignItems="center">
                     <Text variant="titleMedium" textAlign="center" style={{ letterSpacing: -0.5 }}>
-                        <Translation id="moduleOnboarding.uninitializedDeviceLandingScreen.noFirmware.title" />
+                        <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.noFirmware.title" />
                     </Text>
                     <HeaderUnderlineSvg />
                 </Box>
@@ -73,31 +73,34 @@ const UninitializedDeviceLandingScreenContent = () => {
 
 export const UninitializedDeviceLandingScreen = ({
     navigation,
-}: StackProps<OnboardingStackParamList, OnboardingStackRoutes.UninitializedDeviceLanding>) => {
+}: StackProps<
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes.UninitializedDeviceLanding
+>) => {
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
 
     const handleConfirmButtonPress = () => {
         if (hasDeviceFirmwareInstalled) {
-            navigation.navigate(OnboardingStackRoutes.ConfirmFirmwareUpdate);
+            navigation.navigate(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);
         } else {
-            navigation.navigate(OnboardingStackRoutes.SecurityCheck);
+            navigation.navigate(DeviceOnboardingStackRoutes.SecurityCheck);
         }
     };
 
     const handleNeverUsedThisDeviceButtonPress = () => {
-        navigation.navigate(OnboardingStackRoutes.SuspiciousDevice, {
+        navigation.navigate(DeviceOnboardingStackRoutes.SuspiciousDevice, {
             suspicionCause: 'firmwareAlreadyInstalled',
         });
     };
 
     const handleDeviceLooksDifferentButtonPress = () => {
-        navigation.navigate(OnboardingStackRoutes.SuspiciousDevice, {
+        navigation.navigate(DeviceOnboardingStackRoutes.SuspiciousDevice, {
             suspicionCause: 'deviceLooksDifferent',
         });
     };
 
     return (
-        <OnboardingScreenWithExitButton>
+        <DeviceOnboardingScreenWithExitButton>
             <VStack justifyContent="space-between" flex={1} paddingTop="sp16">
                 <VStack spacing="sp32">
                     <UninitializedDeviceLandingScreenContent />
@@ -106,7 +109,7 @@ export const UninitializedDeviceLandingScreen = ({
                         onPress={handleDeviceLooksDifferentButtonPress}
                         testID="@onboarding/UninitializedDeviceLandingScreen/deviceLooksDifferentBtn"
                     >
-                        <Translation id="moduleOnboarding.uninitializedDeviceLandingScreen.lookDifferentLabel" />
+                        <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.lookDifferentLabel" />
                     </TextButton>
                 </VStack>
                 <VStack spacing="sp12">
@@ -114,7 +117,7 @@ export const UninitializedDeviceLandingScreen = ({
                         onPress={handleConfirmButtonPress}
                         testID="@onboarding/UninitializedDeviceLandingScreen/confirmBtn"
                     >
-                        <Translation id="moduleOnboarding.uninitializedDeviceLandingScreen.noFirmware.button" />
+                        <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.noFirmware.button" />
                     </Button>
                     {hasDeviceFirmwareInstalled && (
                         <Button
@@ -122,11 +125,11 @@ export const UninitializedDeviceLandingScreen = ({
                             onPress={handleNeverUsedThisDeviceButtonPress}
                             testID="@onboarding/UninitializedDeviceLandingScreen/declineBtn"
                         >
-                            <Translation id="moduleOnboarding.uninitializedDeviceLandingScreen.firmware.noButton" />
+                            <Translation id="moduleDeviceOnboarding.uninitializedDeviceLandingScreen.firmware.noButton" />
                         </Button>
                     )}
                 </VStack>
             </VStack>
-        </OnboardingScreenWithExitButton>
+        </DeviceOnboardingScreenWithExitButton>
     );
 };

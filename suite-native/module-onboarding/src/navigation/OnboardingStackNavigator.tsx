@@ -8,11 +8,6 @@ import {
 
 import { AnalyticsConsentScreen } from '../screens/AnalyticsConsentScreen';
 import { BiometricsScreen } from '../screens/BiometricsScreen';
-import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
-import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
-import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
-import { SuspiciousDeviceScreen } from '../screens/SuspiciousDeviceScreen';
-import { UninitializedDeviceLandingScreen } from '../screens/UninitializedDeviceLandingScreen';
 import { WelcomeScreen } from '../screens/WelcomeScreen';
 
 export const OnboardingStack = createNativeStackNavigator<OnboardingStackParamList>();
@@ -30,26 +25,6 @@ export const OnboardingStackNavigator = () => (
         <OnboardingStack.Screen
             name={OnboardingStackRoutes.Biometrics}
             component={BiometricsScreen}
-        />
-        <OnboardingStack.Screen
-            name={OnboardingStackRoutes.UninitializedDeviceLanding}
-            component={UninitializedDeviceLandingScreen}
-        />
-        <OnboardingStack.Screen
-            name={OnboardingStackRoutes.SuspiciousDevice}
-            component={SuspiciousDeviceScreen}
-        />
-        <OnboardingStack.Screen
-            name={OnboardingStackRoutes.SecurityCheck}
-            component={SecurityCheckScreen}
-        />
-        <OnboardingStack.Screen
-            name={OnboardingStackRoutes.FirmwareInstallation}
-            component={FirmwareInstallationScreen}
-        />
-        <OnboardingStack.Screen
-            name={OnboardingStackRoutes.ConfirmFirmwareUpdate}
-            component={ConfirmFirmwareUpdateScreen}
         />
     </OnboardingStack.Navigator>
 );

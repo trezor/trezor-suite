@@ -1,7 +1,7 @@
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
 import { useToast } from '@suite-native/toasts';
 
-import { OnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
+import { DeviceOnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
 
 export const FirmwareInstallationScreen = () => {
     const { showToast } = useToast();
@@ -13,11 +13,11 @@ export const FirmwareInstallationScreen = () => {
     };
 
     return (
-        <OnboardingScreenWithExitButton>
+        <DeviceOnboardingScreenWithExitButton>
             <FirmwareInstallationScreenContent
                 onFirmwareInstallationSuccess={handleFirmwareInstallationSuccess}
                 isCancellationAllowed={false}
             />
-        </OnboardingScreenWithExitButton>
+        </DeviceOnboardingScreenWithExitButton>
     );
 };
