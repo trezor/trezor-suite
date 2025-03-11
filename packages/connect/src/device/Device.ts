@@ -1223,7 +1223,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 type: 'unacquired',
                 label: 'Unacquired device',
                 name: this.name,
-                transportSessionOwner: this.transportSessionOwner,
+                transportSessionOwner: this.lastAcquiredHere
+                    ? undefined
+                    : this.transportSessionOwner,
                 bluetoothProps: this.bluetoothProps,
             };
         }
