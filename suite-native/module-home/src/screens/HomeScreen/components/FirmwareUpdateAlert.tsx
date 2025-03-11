@@ -12,6 +12,7 @@ import {
     selectDeviceReleaseInfo,
     selectDeviceState,
     selectDeviceUpdateFirmwareVersion,
+    selectIsDeviceBackedUp,
     selectIsDeviceConnected,
     selectIsDiscoveryActiveByDeviceState,
     selectIsPortfolioTrackerDevice,
@@ -57,6 +58,7 @@ export const FirmwareUpdateAlert = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const deviceId = useSelector(selectDeviceId);
     const isConnected = useSelector(selectIsDeviceConnected);
+    const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
     const deviceState = useSelector(selectDeviceState);
     const isDiscoveryRunning = useSelector((state: DiscoveryRootState & DeviceRootState) =>
         selectIsDiscoveryActiveByDeviceState(state, deviceState),
@@ -101,6 +103,7 @@ export const FirmwareUpdateAlert = () => {
         isPortfolioTrackerDevice ||
         isDiscoveryRunning ||
         !isConnected ||
+        !isDeviceBackedUp ||
         isClosed
     ) {
         return null;
