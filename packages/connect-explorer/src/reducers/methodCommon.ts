@@ -35,7 +35,10 @@ export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = 
     if (field.omit) {
         return params;
     }
-    if (field.optional && ((!field.value && field.value !== 0) || field.value === '')) {
+    if (
+        field.optional &&
+        ((!field.value && field.value !== 0 && field.value !== false) || field.value === '')
+    ) {
         return params;
     }
 
