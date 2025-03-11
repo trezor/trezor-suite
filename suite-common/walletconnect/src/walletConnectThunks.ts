@@ -220,6 +220,7 @@ export const sessionProposalApproveThunk = createThunk<
             dispatch(
                 walletConnectActions.saveSession({
                     ...session,
+                    validation: pendingProposal.validation,
                 }),
             );
         } catch (error) {

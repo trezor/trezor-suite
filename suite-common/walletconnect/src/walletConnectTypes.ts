@@ -20,6 +20,7 @@ export interface WalletConnectNamespace {
 
 export interface WalletConnectSession {
     topic: string;
+    validation?: 'VALID' | 'INVALID' | 'UNKNOWN';
     pairingTopic: string;
     expiry: number;
     acknowledged: boolean;

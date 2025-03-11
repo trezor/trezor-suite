@@ -3,7 +3,7 @@ import styled, { DefaultTheme } from 'styled-components';
 import { UIVariant } from '@trezor/components/src/config/types';
 import { CSSColor, Color } from '@trezor/theme';
 
-type StatusLightVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive'>;
+type StatusLightVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive' | 'info'>;
 
 type MapArgs = {
     $variant: StatusLightVariant;
@@ -15,6 +15,7 @@ const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => 
         primary: 'backgroundPrimarySubtleOnElevation0',
         warning: 'backgroundAlertRedSubtleOnElevation0',
         destructive: 'backgroundAlertRedSubtleOnElevation0',
+        info: 'backgroundAlertBlueSubtleOnElevation0',
     };
 
     return theme[colorMap[$variant]];
@@ -25,6 +26,7 @@ const getInnerBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
         primary: 'backgroundPrimaryDefault',
         warning: 'backgroundAlertYellowBold',
         destructive: 'backgroundAlertRedBold',
+        info: 'textAlertBlue',
     };
 
     return theme[colorMap[$variant]];

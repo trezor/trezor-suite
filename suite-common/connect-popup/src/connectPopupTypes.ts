@@ -26,7 +26,7 @@ export type ConnectPopupCall =
       };
 
 export type AppRememberedPermission = {
-    processName: string;
     origin: string;
+    processName: string;
     types: MethodPermission[];
 };
