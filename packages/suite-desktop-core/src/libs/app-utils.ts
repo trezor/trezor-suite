@@ -35,17 +35,7 @@ const tryParseJson = (value: string) => {
     }
 };
 
-/**
- * Parse each statePatch arg, which may be either a JSON, or a key value pair as [dot.notation.path: value]
- */
-const parseAssignment = (assignment: string) => {
-    const keyValuePair = assignment.split('=');
-    if (keyValuePair.length !== 2) return tryParseJson(keyValuePair[0]);
-    const [key, value] = keyValuePair;
-
-    return { [key]: tryParseJson(value) };
-};
-
+const STATE_ASSIGNMENT_REGEX = /^--(state[^=]*)=(.+)$/;
 type ProcessStatePatchResult = Record<string, any> | undefined;
 
 /**
@@ -53,10 +43,14 @@ type ProcessStatePatchResult = Record<string, any> | undefined;
  */
 export const processStatePatch = (): ProcessStatePatchResult =>
     process.argv
-        .map(arg => arg.match(/^--state=(.+)/))
-        .filter(arg => arg !== null)
-        .map(match => parseAssignment(match[1]))
+        .map(arg => arg.match(STATE_ASSIGNMENT_REGEX))
+        .filter(match => match !== null)
+        .map((assignment: RegExpMatchArray) => {
+            const [_, key, value] = assignment;
+
+            return { [key]: tryParseJson(value) };
+        })
         .reduce<ProcessStatePatchResult>(
             (prev, cur) => mergeDeepObject.withOptions({ dotNotation: true }, prev ?? {}, cur),
             undefined,
-        );
+        )?.state;
