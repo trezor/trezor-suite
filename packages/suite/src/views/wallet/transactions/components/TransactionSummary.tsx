@@ -114,7 +114,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                             </Card>
                         ) : (
                             <HiddenPlaceholder enforceIntensity={8}>
-                                <Card>
+                                <Card overflow="visible">
                                     <Row height={320} overflow="visible" alignItems="stretch">
                                         <TransactionsGraph
                                             hideToolbar

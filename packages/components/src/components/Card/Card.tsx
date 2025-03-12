@@ -42,7 +42,9 @@ type ContainerProps = {
     $hasLabel: boolean;
 };
 
-const Container = styled.section<ContainerProps & TransientProps<AllowedFrameProps>>`
+type TransientAllowedFrameProps = TransientProps<AllowedFrameProps>;
+
+const Container = styled.section<ContainerProps & TransientAllowedFrameProps>`
     width: 100%;
     border-radius: ${borders.radii.md};
 
@@ -63,13 +65,14 @@ type CardContainerProps = {
     $isClickable: boolean;
     $variant?: CardVariant;
     $hasLabel: boolean;
+    $overflow: TransientAllowedFrameProps['$overflow'];
 };
 
 const CardContainer = styled.div<CardContainerProps>`
     position: relative;
     border-radius: ${borders.radii.md};
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
-    overflow: hidden;
+    overflow: ${({ $overflow }) => ($overflow ? $overflow : 'hidden')};
     height: 100%;
     transition:
         background 0.5s,
@@ -79,8 +82,6 @@ const CardContainer = styled.div<CardContainerProps>`
     ${({ theme, $variant }) =>
         $variant &&
         css`
-            overflow: hidden;
-
             &::before {
                 content: '';
                 position: absolute;
@@ -177,6 +178,7 @@ export const Card = ({
                 className={className}
                 onMouseLeave={onMouseLeave}
                 data-testid={dataTest}
+                $overflow={frameProps.$overflow}
                 {...withAccessibilityProps({ tabIndex })}
             >
                 {fillType === 'flat' ? (
