@@ -24,38 +24,38 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const Text: StoryObj = {
-    render: props => (
+export const Text: StoryObj<typeof TextComponent> = {
+    render: ({ variant, color, ...rest }) => (
         <Wrapper>
             <ColoredBlock>
-                <TextComponent {...props}>
+                <TextComponent {...rest}>
                     This is just a plain text with inherited color from its parent
                 </TextComponent>
             </ColoredBlock>
             <Block>
-                <TextComponent variant="default" {...props}>
+                <TextComponent variant="default" {...rest}>
                     This is <strong>default</strong> variant
                 </TextComponent>
-                <TextComponent variant="primary" {...props}>
+                <TextComponent variant="primary" {...rest}>
                     This is <strong>primary</strong> variant
                 </TextComponent>
-                <TextComponent variant="info" {...props}>
+                <TextComponent variant="info" {...rest}>
                     This is <TextComponent typographyStyle="highlight">info</TextComponent> variant
                 </TextComponent>
-                <TextComponent variant="warning" {...props}>
+                <TextComponent variant="warning" {...rest}>
                     This is <strong>warning</strong> variant
                 </TextComponent>
-                <TextComponent variant="destructive" {...props}>
+                <TextComponent variant="destructive" {...rest}>
                     This is <strong>destructive</strong> variant
                 </TextComponent>
             </Block>
             <Block>
-                <TextComponent color="#9be887" {...props}>
+                <TextComponent color="#9be887" {...rest}>
                     This is <strong>custom</strong> color variant
                 </TextComponent>
             </Block>
             <Block>
-                <TextComponent variant="info" typographyStyle="titleMedium" {...props}>
+                <TextComponent variant="info" typographyStyle="titleMedium" {...rest}>
                     This is just a plain Medium Title
                 </TextComponent>
             </Block>

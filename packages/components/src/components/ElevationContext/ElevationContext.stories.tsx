@@ -18,6 +18,7 @@ import {
     useElevation,
 } from './ElevationContext';
 import { Card } from '../Card/Card';
+import { Button } from '../buttons/Button/Button';
 import { Textarea } from '../form/Textarea/Textarea';
 import { Modal } from '../modals/Modal/Modal';
 
@@ -78,6 +79,7 @@ const Box = ({ children }: { children?: ReactNode }) => {
     return (
         <UiBox $elevation={elevation}>
             <div>Elevation: {elevation}</div>
+            <Button variant="tertiary">tertiary button</Button>
             <ElevationUp>{children}</ElevationUp>
         </UiBox>
     );
@@ -90,7 +92,7 @@ export const ElevationContext: StoryObj = {
                 <ElevationDown>
                     <Box />
                 </ElevationDown>
-
+                <Box />
                 <ElevationUp>
                     <Box>
                         <Box>

@@ -81,10 +81,10 @@ const mapElevationToButtonBackground = ({
 
         // Button lies always on elevation so for example Button that lies has elevation 0, lies on elevation -1.
         // This is why the values here a shifted by 1.
-        0: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevationNegative`,
-        1: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation0`,
-        2: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation1`,
-        3: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation2`,
+        0: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation0`,
+        1: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation1`,
+        2: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation2`,
+        3: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation3`,
     };
 
     return theme[map[elevation]];

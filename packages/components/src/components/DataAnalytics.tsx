@@ -3,9 +3,8 @@ import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { spacingsPx } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 
-import { variables } from '../config';
 import { Card } from './Card/Card';
 import { CollapsibleBox } from './CollapsibleBox/CollapsibleBox';
 import { Button } from './buttons/Button/Button';
@@ -32,30 +31,23 @@ const ButtonWrapper = styled.div`
     align-self: center;
 `;
 
-const StyledButton = styled(Button)`
-    min-width: 180px;
-`;
-
 const Label = styled.span`
     margin-left: ${spacingsPx.lg};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    ${typography.hint};
+    color: ${({ theme }) => theme.textDefault};
     align-items: center;
     display: flex;
 `;
 
 const Heading = styled.h2`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
+    ${typography.callout};
+    color: ${({ theme }) => theme.textDefault};
     text-align: left;
 `;
 
 const Description = styled.span`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    ${typography.hint};
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 const Category = styled.div`
@@ -185,12 +177,13 @@ export const DataAnalytics = ({
                 </ContentWrapper>
 
                 <ButtonWrapper>
-                    <StyledButton
+                    <Button
                         data-testid="@analytics/continue-button"
                         onClick={() => onConfirm(trackingEnabled)}
+                        minWidth={180}
                     >
                         <FormattedMessage id="TR_CONFIRM" defaultMessage="Confirm" />
-                    </StyledButton>
+                    </Button>
                 </ButtonWrapper>
             </Wrapper>
         </Card>

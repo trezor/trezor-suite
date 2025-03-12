@@ -1,9 +1,8 @@
+import { colorVariants } from '@trezor/theme';
+import { hexToRgba } from '@trezor/utils';
+
 import { expect, test } from '../../support/fixtures';
 
-const veryDarkGreyColor = 'rgb(23, 23, 23)';
-const darkGreyColor = 'rgb(31, 31, 31)';
-const veryLightGreyColor = 'rgb(246, 246, 246)';
-const lightGreyColor = 'rgb(234, 235, 237)';
 enum ColorScheme {
     Light = 'light',
     Dark = 'dark',
@@ -14,22 +13,22 @@ const testCases = [
         testName: 'Light English',
         userPreferences: { colorScheme: ColorScheme.Light },
         text: 'Anonymous data collection',
-        textColor: darkGreyColor,
-        bodyBackgroundColor: veryLightGreyColor,
+        textColor: colorVariants.standard.textDefault,
+        bodyBackgroundColor: colorVariants.standard.backgroundSurfaceElevation0,
     },
     {
         testName: 'Dark English',
         userPreferences: { colorScheme: ColorScheme.Dark },
         text: 'Anonymous data collection',
-        textColor: lightGreyColor,
-        bodyBackgroundColor: veryDarkGreyColor,
+        textColor: colorVariants.dark.textDefault,
+        bodyBackgroundColor: colorVariants.dark.backgroundSurfaceElevation0,
     },
     {
         testName: 'Dark Spanish',
         userPreferences: { locale: 'es-ES', colorScheme: ColorScheme.Dark },
         text: 'Recogida de datos anónimos',
-        textColor: lightGreyColor,
-        bodyBackgroundColor: veryDarkGreyColor,
+        textColor: colorVariants.dark.textDefault,
+        bodyBackgroundColor: colorVariants.dark.backgroundSurfaceElevation0,
     },
 ];
 
@@ -40,10 +39,10 @@ testCases.forEach(({ testName, userPreferences, text, textColor, bodyBackgroundC
         test(testName, async ({ onboardingPage, analyticsSection }) => {
             await onboardingPage.optionallyDismissFwHashCheckError();
             await expect(analyticsSection.heading).toHaveText(text);
-            await expect(analyticsSection.heading).toHaveCSS('color', textColor);
+            await expect(analyticsSection.heading).toHaveCSS('color', hexToRgba(textColor));
             await expect(onboardingPage.page.locator('body')).toHaveCSS(
                 'background-color',
-                bodyBackgroundColor,
+                hexToRgba(bodyBackgroundColor),
             );
         });
     });
