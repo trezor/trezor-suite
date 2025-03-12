@@ -50,7 +50,7 @@
     },
     "devDependencies": {
         "@babel/preset-react": "^7.26.3",
-        "@storybook/addon-actions": "^8.5.4",
+        "@storybook/addon-actions": "^8.6.4",
         "@storybook/addon-controls": "^8.5.4",
         "@storybook/addon-links": "^8.5.4",
         "@storybook/addon-viewport": "^8.5.4",
