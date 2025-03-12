@@ -142,94 +142,96 @@ export const AssetCard = ({
             onClick={handleCardClick}
             data-testid={`@dashboard/asset-item/${symbol}`}
         >
-            <Column gap={spacings.xxxl} flex="1" margin={spacings.xs}>
-                <Row justifyContent="space-between">
-                    <AssetCardInfo
-                        network={network}
-                        assetsFiatBalances={assetsFiatBalances}
-                        index={index}
-                    />
-                    <Icon size={16} name="arrowRightLong" variant="disabled" />
-                </Row>
-                {!failed ? (
-                    <Column>
-                        <FiatAmount data-testid={`@dashboard/asset/${symbol}/fiat-amount`}>
-                            <FiatHeader
-                                symbol={symbol}
-                                amount={cryptoValue}
-                                size="medium"
-                                localCurrency={localCurrency}
-                            />
-                        </FiatAmount>
-                        <CoinAmount>
-                            <AmountUnitSwitchWrapper symbol={symbol}>
-                                <CoinBalance value={cryptoValue} symbol={symbol} />
-                            </AmountUnitSwitchWrapper>
-                        </CoinAmount>
-                    </Column>
-                ) : (
-                    <FailedContainer>
-                        <WarningIcon
-                            name="warningTriangle"
-                            color={theme.legacy.TYPE_RED}
-                            size={14}
+            <Column justifyContent="space-between" height="100%">
+                <Column gap={spacings.xxxl} flex="1" margin={spacings.xs}>
+                    <Row justifyContent="space-between">
+                        <AssetCardInfo
+                            network={network}
+                            assetsFiatBalances={assetsFiatBalances}
+                            index={index}
                         />
-                        <Translation id="TR_DASHBOARD_ASSET_FAILED" />
-                    </FailedContainer>
+                        <Icon size={16} name="arrowRightLong" variant="disabled" />
+                    </Row>
+                    {!failed ? (
+                        <Column>
+                            <FiatAmount data-testid={`@dashboard/asset/${symbol}/fiat-amount`}>
+                                <FiatHeader
+                                    symbol={symbol}
+                                    amount={cryptoValue}
+                                    size="medium"
+                                    localCurrency={localCurrency}
+                                />
+                            </FiatAmount>
+                            <CoinAmount>
+                                <AmountUnitSwitchWrapper symbol={symbol}>
+                                    <CoinBalance value={cryptoValue} symbol={symbol} />
+                                </AmountUnitSwitchWrapper>
+                            </CoinAmount>
+                        </Column>
+                    ) : (
+                        <FailedContainer>
+                            <WarningIcon
+                                name="warningTriangle"
+                                color={theme.legacy.TYPE_RED}
+                                size={14}
+                            />
+                            <Translation id="TR_DASHBOARD_ASSET_FAILED" />
+                        </FailedContainer>
+                    )}
+                </Column>
+                {(shouldRenderStakingRow || shouldRenderTokenRow) && (
+                    <AssetCardTokensAndStakingInfo
+                        symbol={symbol}
+                        tokensFiatBalance={tokensFiatBalance.toString()}
+                        assetStakingBalance={assetStakingBalance.toString()}
+                        shouldRenderStaking={shouldRenderStakingRow}
+                        shouldRenderTokens={shouldRenderTokenRow}
+                        accounts={accounts}
+                    />
+                )}
+                {!isTestnet(symbol) && (
+                    <Card data-testid="@dashboard/asset/bottom-info">
+                        <Row justifyContent="space-between" flexWrap="wrap" gap={spacings.md}>
+                            <InfoItem
+                                data-testid="@dashboard/asset/exchange-rate"
+                                label={<Translation id="TR_EXCHANGE_RATE" />}
+                                flex="0"
+                            >
+                                <PriceTicker symbol={symbol} />
+                            </InfoItem>
+                            <InfoItem
+                                data-testid="@dashboard/asset/week-change"
+                                label={<Translation id="TR_7D_CHANGE" />}
+                                flex="0"
+                            >
+                                <TrendTicker symbol={symbol} />
+                            </InfoItem>
+
+                            <Row gap={spacings.xs}>
+                                {isStakeNetwork && (
+                                    <TradingButton symbol={symbol} routeName="wallet-staking">
+                                        <Translation id="TR_STAKE_STAKE" />
+                                    </TradingButton>
+                                )}
+
+                                <TradingButton
+                                    symbol={symbol}
+                                    routeName="wallet-trading-buy"
+                                    data-testid={`@dashboard/asset/${symbol}/buy-button`}
+                                    onClick={() => {
+                                        analytics.report({
+                                            type: EventType.AccountsDashboardBuy,
+                                            payload: { symbol },
+                                        });
+                                    }}
+                                >
+                                    <Translation id="TR_BUY_BUY" />
+                                </TradingButton>
+                            </Row>
+                        </Row>
+                    </Card>
                 )}
             </Column>
-            {(shouldRenderStakingRow || shouldRenderTokenRow) && (
-                <AssetCardTokensAndStakingInfo
-                    symbol={symbol}
-                    tokensFiatBalance={tokensFiatBalance.toString()}
-                    assetStakingBalance={assetStakingBalance.toString()}
-                    shouldRenderStaking={shouldRenderStakingRow}
-                    shouldRenderTokens={shouldRenderTokenRow}
-                    accounts={accounts}
-                />
-            )}
-            {!isTestnet(symbol) && (
-                <Card data-testid="@dashboard/asset/bottom-info">
-                    <Row justifyContent="space-between" flexWrap="wrap" gap={spacings.md}>
-                        <InfoItem
-                            data-testid="@dashboard/asset/exchange-rate"
-                            label={<Translation id="TR_EXCHANGE_RATE" />}
-                            flex="0"
-                        >
-                            <PriceTicker symbol={symbol} />
-                        </InfoItem>
-                        <InfoItem
-                            data-testid="@dashboard/asset/week-change"
-                            label={<Translation id="TR_7D_CHANGE" />}
-                            flex="0"
-                        >
-                            <TrendTicker symbol={symbol} />
-                        </InfoItem>
-
-                        <Row gap={spacings.xs}>
-                            {isStakeNetwork && (
-                                <TradingButton symbol={symbol} routeName="wallet-staking">
-                                    <Translation id="TR_STAKE_STAKE" />
-                                </TradingButton>
-                            )}
-
-                            <TradingButton
-                                symbol={symbol}
-                                routeName="wallet-trading-buy"
-                                data-testid={`@dashboard/asset/${symbol}/buy-button`}
-                                onClick={() => {
-                                    analytics.report({
-                                        type: EventType.AccountsDashboardBuy,
-                                        payload: { symbol },
-                                    });
-                                }}
-                            >
-                                <Translation id="TR_BUY_BUY" />
-                            </TradingButton>
-                        </Row>
-                    </Row>
-                </Card>
-            )}
         </Card>
     );
 };

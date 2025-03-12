@@ -70,6 +70,7 @@ const CardContainer = styled.div<CardContainerProps>`
     border-radius: ${borders.radii.md};
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
     overflow: hidden;
+    height: 100%;
     transition:
         background 0.5s,
         border 0.5s,
@@ -149,6 +150,7 @@ export const Card = ({
                     paddingType,
                     hasHeading: !!heading,
                 })}
+                height="100%"
             >
                 {children}
             </Box>
