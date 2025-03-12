@@ -50,14 +50,11 @@ interface Installer {
 export const UdevDownload = () => {
     const udev = useSelector(selectUdevInstaller);
 
-    const hasPreferred = udev !== undefined && udev.packages.some(p => p.preferred);
-
     const installers: Installer[] = udev
         ? udev.packages.map(p => ({
               label: p.name,
               value: DATA_URL + p.url.substring(1),
-              // preferred is not available on the desktop, so we fallback on the DEB package as it is the most common
-              preferred: hasPreferred ? p.preferred : p.name === 'DEB package',
+              preferred: p.preferred,
           }))
         : [];
 

@@ -10,6 +10,7 @@ import type { MessageFactoryFn } from '../types/utils';
 export { TRANSPORT } from '@trezor/transport/src/constants';
 
 export const TRANSPORT_EVENT = 'TRANSPORT_EVENT';
+
 export interface BridgeInfo {
     version: number[];
     packages: {

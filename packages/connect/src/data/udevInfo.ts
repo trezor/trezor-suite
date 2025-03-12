@@ -13,22 +13,22 @@ const info: UdevInfo = {
             name: 'DEB package',
             platform: ['deb32', 'deb64'],
             url: '/udev/trezor-udev_2_all.deb',
+            preferred: true, // DEB package is the most common
         },
     ],
 };
 
-export const suggestUdevInstaller = (platform?: string) => {
-    const info2 = info;
-    // check if preferred field was already added
-    if (!info2.packages.find(p => p.preferred)) {
-        if (platform) {
-            // override UdevInfo packages, add preferred field
-            info2.packages = info2.packages.map(p => ({
-                ...p,
-                preferred: p.platform.indexOf(platform) >= 0,
-            }));
-        }
+export const suggestUdevInstaller = (platform?: string): UdevInfo => {
+    // `platform` is not available on the desktop, in that case we assume the preferred as DEB
+
+    if (platform !== undefined) {
+        return {
+            packages: info.packages.map(it => ({
+                ...it,
+                preferred: it.platform.indexOf(platform) >= 0,
+            })),
+        };
     }
 
-    return info2;
+    return info;
 };
