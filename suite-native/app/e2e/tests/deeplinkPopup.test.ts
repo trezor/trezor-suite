@@ -3,7 +3,7 @@ import http from 'http';
 
 import { conditionalDescribe } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect-mobile';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
@@ -24,7 +24,7 @@ const SERVER_URL = `http://localhost:${SERVER_PORT}`;
 let server: http.Server | undefined;
 
 const openUriScheme = (url: string, platformToOpen: 'android') => {
-    const command = `npx uri-scheme open '${url.replace(/'/g, '')}' --${platformToOpen}`;
+    const command = `npx uri-scheme open '${url.replace(/'/g, '%27')}' --${platformToOpen} --raw`;
 
     exec(command, (err, stdout, stderr) => {
         if (err) {
@@ -83,6 +83,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
     });
 
     beforeEach(async () => {
+        await prepareTrezorEmulator(MNEMONICS.mnemonic_12);
         await restartApp();
 
         await device.reverseTcpPort(SERVER_PORT);
@@ -124,14 +125,15 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
         const expectedResponse = {
             id: 1,
             payload: {
-                path: [49, 0, 0, 0, 0],
-                serializedPath: 'm/49/0/0/0/0',
-                address: '3J7UQSLAaFh1nkUomVdm8ArifPEvYfNr1o',
+                path: [2147483697, 2147483648, 2147483648, 0, 0],
+                serializedPath: "m/49'/0'/0'/0/0",
+                address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
             },
             success: true,
         };
 
         if (JSON.stringify(response) !== JSON.stringify(expectedResponse)) {
+            console.error('Received:', response);
             throw new Error('Result does not match expected.');
         }
     });
