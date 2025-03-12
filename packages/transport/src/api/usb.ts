@@ -35,8 +35,7 @@ export class UsbApi extends AbstractApi {
     private forceReadSerialOnConnect?: boolean;
     private abortController = new AbortController();
     private debugLink?: boolean;
-    private synchronizeCreateDevices = getSynchronize();
-    private synchronizeGetDevices = getSynchronize();
+    private synchronizeAll = getSynchronize();
 
     constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
         super({ logger });
@@ -54,7 +53,7 @@ export class UsbApi extends AbstractApi {
             // during fw update on windows throws LIBUSB_ERROR_IO on every transferOut
             if (event.device.opened) {
                 this.logger?.debug('usb: onconnect: device already opened, closing');
-                await event.device.close();
+                await this.synchronizeAll(() => event.device.close());
             }
 
             return this.createDevices([event.device], this.abortController.signal)
@@ -180,7 +179,7 @@ export class UsbApi extends AbstractApi {
         try {
             this.logger?.debug('usb: enumerate');
             const devices = await this.abortableMethod(
-                () => this.synchronizeGetDevices(() => this.usbInterface.getDevices()),
+                () => this.synchronizeAll(() => this.usbInterface.getDevices()),
                 { signal },
             );
 
@@ -203,11 +202,13 @@ export class UsbApi extends AbstractApi {
             this.logger?.debug('usb: device.transferIn');
             const res = await this.abortableMethod(
                 () =>
-                    device.transferIn(
-                        this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
-                        this.chunkSize,
+                    this.synchronizeAll(() =>
+                        device.transferIn(
+                            this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
+                            this.chunkSize,
+                        ),
                     ),
-                { signal, onAbort: () => device?.reset() },
+                { signal, onAbort: () => this.synchronizeAll(() => device?.reset()) },
             );
             this.logger?.debug(
                 `usb: device.transferIn done. status: ${res.status}, byteLength: ${res.data?.byteLength}.`,
@@ -237,7 +238,7 @@ export class UsbApi extends AbstractApi {
 
         const timeout = setTimeout(() => {
             this.logger?.debug('usb: device.transfer out take suspiciously long. timing out.');
-            device?.reset().catch(() => {});
+            this.synchronizeAll(() => device?.reset().catch(() => {}));
         }, 1000);
 
         try {
@@ -246,11 +247,13 @@ export class UsbApi extends AbstractApi {
 
             const result = await this.abortableMethod(
                 () =>
-                    device.transferOut(
-                        this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
-                        newArray,
+                    this.synchronizeAll(() =>
+                        device.transferOut(
+                            this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
+                            newArray,
+                        ),
                     ),
-                { signal, onAbort: () => device?.reset() },
+                { signal, onAbort: () => this.synchronizeAll(() => device?.reset()) },
             );
             this.logger?.debug(`usb: device.transferOut done.`);
             if (result.status !== 'ok') {
@@ -295,6 +298,8 @@ export class UsbApi extends AbstractApi {
         try {
             this.logger?.debug(`usb: device.open`);
             await this.abortableMethod(() => device.open(), { signal });
+            // await this.abortableMethod(() => this.synchronizeAll(() => device.open()), { signal });
+
             this.logger?.debug(`usb: device.open done. device: ${this.formatDeviceForLog(device)}`);
         } catch (err) {
             this.logger?.error(`usb: device.open error ${err}`);
@@ -323,7 +328,11 @@ export class UsbApi extends AbstractApi {
             try {
                 // reset fails on ChromeOS and windows
                 this.logger?.debug('usb: device.reset');
-                await this.abortableMethod(() => device?.reset(), { signal });
+                // calls before this reset are NOT synchronized  because this reset needs be called in order to acquire device by another application. device.reset triggers transferIn abort
+                // TODO: (doesn't it trigger two resets?)
+                await this.abortableMethod(() => device?.reset(), {
+                    signal,
+                });
                 this.logger?.debug(`usb: device.reset done.`);
             } catch (err) {
                 this.logger?.error(
@@ -336,7 +345,10 @@ export class UsbApi extends AbstractApi {
             const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
             this.logger?.debug(`usb: device.claimInterface: ${interfaceId}`);
             // claim device for exclusive access by this app
-            await this.abortableMethod(() => device.claimInterface(interfaceId), { signal });
+            await this.abortableMethod(
+                () => this.synchronizeAll(() => device.claimInterface(interfaceId)),
+                { signal },
+            );
             this.logger?.debug(`usb: device.claimInterface done: ${interfaceId}.`);
         } catch (err) {
             this.logger?.error(`usb: device.claimInterface error ${err}.`);
@@ -351,53 +363,54 @@ export class UsbApi extends AbstractApi {
     }
 
     public async closeDevice(path: string) {
-        let device = this.findDevice(path);
-        if (!device) {
-            return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
-        }
+        this.logger?.debug(`usb: closeDevice ${path}`);
 
-        this.logger?.debug(`usb: closeDevice. device.opened: ${device.opened}`);
-
-        if (device.opened) {
-            if (!this.debugLink) {
-                try {
-                    // NOTE: `device.reset()` interrupts transfers for all interfaces (debugLink and normal)
-                    await device.reset();
-                } catch (err) {
-                    this.logger?.error(
-                        `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
-                    );
-                }
-            }
-        }
-
-        device = this.findDevice(path);
-        if (device?.opened) {
+        if (!this.debugLink) {
             try {
-                const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
-                this.logger?.debug(`usb: device.releaseInterface: ${interfaceId}`);
-
-                await device.releaseInterface(interfaceId);
-                this.logger?.debug(`usb: device.releaseInterface done: ${interfaceId}.`);
-            } catch (err) {
-                this.logger?.error(`usb: releaseInterface error ${err}.`);
-                // ignore
-            }
-        }
-        device = this.findDevice(path);
-        if (device?.opened) {
-            try {
-                this.logger?.debug(`usb: device.close`);
-                await device.close();
-                this.logger?.debug(`usb: device.close done.`);
-            } catch (err) {
-                this.logger?.debug(`usb: device.close error ${err}.`);
-
-                return this.error({
-                    error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE,
-                    message: err.message,
+                // NOTE: `device.reset()` interrupts transfers for all interfaces (debugLink and normal)
+                await this.synchronizeAll(() => {
+                    const device = this.findDevice(path);
+                    if (device?.opened) {
+                        return device.reset();
+                    }
                 });
+            } catch (err) {
+                this.logger?.error(`usb: device.reset error ${err}`);
             }
+        }
+
+        try {
+            const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
+            this.logger?.debug(`usb: device.releaseInterface: ${interfaceId}`);
+
+            await this.synchronizeAll(() => {
+                const device = this.findDevice(path);
+                if (device?.opened) {
+                    return device.releaseInterface(interfaceId);
+                }
+            });
+            this.logger?.debug(`usb: device.releaseInterface done: ${interfaceId}.`);
+        } catch (err) {
+            this.logger?.error(`usb: releaseInterface error ${err}.`);
+            // ignore
+        }
+
+        try {
+            this.logger?.debug(`usb: device.close`);
+            await this.synchronizeAll(() => {
+                const device = this.findDevice(path);
+                if (device?.opened) {
+                    return device.close();
+                }
+            });
+            this.logger?.debug(`usb: device.close done.`);
+        } catch (err) {
+            this.logger?.debug(`usb: device.close error ${err}.`);
+
+            return this.error({
+                error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE,
+                message: err.message,
+            });
         }
 
         return this.success(undefined);
@@ -413,7 +426,7 @@ export class UsbApi extends AbstractApi {
     }
 
     private createDevices(devices: USBDevice[], signal?: AbortSignal) {
-        return this.synchronizeCreateDevices(async () => {
+        return this.synchronizeAll(async () => {
             let bootloaderId = 0;
 
             const getPathFromUsbDevice = (device: USBDevice) => {
