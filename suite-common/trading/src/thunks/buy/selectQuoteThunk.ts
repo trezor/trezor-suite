@@ -8,9 +8,9 @@ import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import {
-    cryptoIdToCoinSymbol,
     selectTradingBuyInfo,
     selectTradingBuyQuotesRequest,
+    selectTradingCoinSymbolByCryptoId,
 } from '../../selectors/tradingSelectors';
 
 export type SelectQuoteThunkProps = {
@@ -39,7 +39,7 @@ export const selectQuoteThunk = createThunk(
         // consent to continue (modal)
         const result = await userConsent(
             provider.name,
-            cryptoIdToCoinSymbol(getState(), quote.receiveCurrency),
+            selectTradingCoinSymbolByCryptoId(getState(), quote.receiveCurrency) ?? 'unknown',
         );
 
         if (!result) return;

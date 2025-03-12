@@ -14,5 +14,6 @@
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/utils" },
         { "path": "../test-utils" }
-    ]
+    ],
+    "include": [".", "**/*.json"]
 }

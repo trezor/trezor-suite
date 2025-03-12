@@ -10,8 +10,8 @@ import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
 import {
-    cryptoIdToCoinSymbol,
     selectTradingBuyQuotesRequest,
+    selectTradingCoinSymbolByCryptoId,
 } from '../../selectors/tradingSelectors';
 import type { TradingBuyFormProps, TradingBuyType } from '../../types';
 import {
@@ -30,11 +30,8 @@ type GetQuotesRequest = {
     signal: AbortSignal | null;
 };
 
-const getQuotesRequest = async ({ requestData, signal }: GetQuotesRequest) => {
-    const allQuotes = await invityAPI.getBuyQuotes(requestData, signal);
-
-    return allQuotes;
-};
+const getQuotesRequest = ({ requestData, signal }: GetQuotesRequest) =>
+    invityAPI.getBuyQuotes(requestData, signal);
 
 type GetQuoteRequestData = {
     formValues: TradingBuyFormProps;
@@ -130,7 +127,7 @@ export const handleRequestThunk = createThunk(
         const paymentMethodsFromQuotes = getTradingPaymentMethods<TradingBuyType>(quotesSuccess);
 
         const symbol =
-            cryptoIdToCoinSymbol(getState(), requestData.receiveCurrency) ??
+            selectTradingCoinSymbolByCryptoId(getState(), requestData.receiveCurrency) ??
             requestData.receiveCurrency;
         const limits = buyUtils.getAmountLimits({
             request: requestData,

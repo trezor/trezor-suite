@@ -3,7 +3,6 @@ import { useCallback, useMemo } from 'react';
 import { CoinInfo, CryptoId } from 'invity-api';
 
 import {
-    NetworkSymbolExtended,
     getDisplaySymbol,
     getNetwork,
     getNetworkByTradeCryptoId,
@@ -24,6 +23,13 @@ import {
     testnetToProdCryptoId,
 } from '../utils';
 import { useSelector } from './useSelector';
+import {
+    getTradingCoinInfoByCryptoId,
+    getTradingCoinSymbolByCryptoId,
+    getTradingNativeCoinSymbolByCryptoId,
+    getTradingPlatformsInfoByCryptoId,
+    getTradingSymbolAndContractAddressByCryptoId,
+} from '../utils/infoUtils';
 
 const supportedAddressValidatorSymbols = new Set(
     addressValidator.getCurrencies().map(c => c.symbol),
@@ -70,8 +76,6 @@ const sortPopularCurrencies = (
 /**
  * TODO: trading - delete section after migration
  *
- * TODO: trading - cryptoIdToPlatformName, cryptoIdToCoinName, cryptoIdToNativeCoinSymbol, cryptoIdToCoinSymbol, cryptoIdToSymbolAndContractAddress - could be refactored to selectors
- *
  * @param section used only for purpose in refactored desktop trading
  */
 export const useTradingInfo = (section?: TradingType): TradingInfoProps => {
@@ -97,31 +101,28 @@ export const useTradingInfo = (section?: TradingType): TradingInfoProps => {
     );
 
     const cryptoIdToPlatformName = useCallback(
-        (cryptoId: CryptoId) => platforms[cryptoId]?.name,
+        (cryptoId: CryptoId) => getTradingPlatformsInfoByCryptoId(platforms, cryptoId)?.name,
         [platforms],
     );
 
-    const cryptoIdToCoinName = useCallback((cryptoId: CryptoId) => coins[cryptoId]?.name, [coins]);
+    const cryptoIdToCoinName = useCallback(
+        (cryptoId: CryptoId) => getTradingCoinInfoByCryptoId(coins, cryptoId)?.name,
+        [coins],
+    );
 
     const cryptoIdToNativeCoinSymbol = useCallback(
-        (cryptoId: CryptoId) => {
-            const { networkId } = parseCryptoId(cryptoId);
-
-            return platforms[networkId]?.nativeCoinSymbol ?? coins[networkId]?.symbol;
-        },
+        (cryptoId: CryptoId) => getTradingNativeCoinSymbolByCryptoId(platforms, coins, cryptoId),
         [platforms, coins],
     );
 
     const cryptoIdToCoinSymbol = useCallback(
-        (cryptoId: CryptoId) => coins[cryptoId]?.symbol?.toUpperCase(),
+        (cryptoId: CryptoId) => getTradingCoinSymbolByCryptoId(coins, cryptoId),
         [coins],
     );
 
     const cryptoIdToSymbolAndContractAddress = useCallback(
-        (cryptoId: CryptoId | undefined) => ({
-            coinSymbol: cryptoId && (coins[cryptoId]?.symbol as NetworkSymbolExtended | undefined),
-            contractAddress: cryptoId && parseCryptoId(cryptoId).contractAddress,
-        }),
+        (cryptoId: CryptoId | undefined) =>
+            getTradingSymbolAndContractAddressByCryptoId(coins, cryptoId),
         [coins],
     );
 

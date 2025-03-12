@@ -1,12 +1,20 @@
-import { CryptoId, FiatCurrencyCode } from 'invity-api';
+import { Coins, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types/src/settings';
 
 import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
 import type { TradingInfo, TradingState } from '../reducers/tradingReducer';
 import { InvityServerEnvironment, TradingFiatCurrenciesProps } from '../types';
+import {
+    getTradingCoinInfoByCryptoId,
+    getTradingCoinSymbolByCryptoId,
+    getTradingNativeCoinSymbolByCryptoId,
+    getTradingPlatformsInfoByCryptoId,
+    getTradingSymbolAndContractAddressByCryptoId,
+} from '../utils/infoUtils';
 
 // partial copy of Suite state
 export type TradingRootState = {
@@ -115,8 +123,44 @@ export const selectTradingPaymentMethods = (state: TradingRootState) =>
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.tradingNew.trades);
 
-export const cryptoIdToCoinSymbol = (state: TradingRootState, cryptoId: CryptoId) => {
+export const selectTradingCoinInfoByCryptoId = (state: TradingRootState, cryptoId: CryptoId) => {
     const { coins = {} } = state.wallet.tradingNew.info;
 
-    return coins[cryptoId]?.symbol?.toUpperCase();
+    return getTradingCoinInfoByCryptoId(coins, cryptoId);
 };
+
+export const selectTradingCoinSymbolByCryptoId = (state: TradingRootState, cryptoId: CryptoId) => {
+    const { coins = {} } = state.wallet.tradingNew.info;
+
+    return getTradingCoinSymbolByCryptoId(coins, cryptoId);
+};
+
+export const selectTradingPlatformByCryptoId = (state: TradingRootState, cryptoId: CryptoId) => {
+    const { platforms = {} } = state.wallet.tradingNew.info;
+
+    return getTradingPlatformsInfoByCryptoId(platforms, cryptoId);
+};
+
+export const selectTradingNativeCoinSymbolByCryptoId = (
+    state: TradingRootState,
+    cryptoId: CryptoId,
+) => {
+    const { coins = {}, platforms = {} } = state.wallet.tradingNew.info;
+
+    return getTradingNativeCoinSymbolByCryptoId(platforms, coins, cryptoId);
+};
+
+export const selectTradingSymbolAndContractAddressByCryptoId: (
+    state: TradingRootState,
+    cryptoId: CryptoId,
+) => {
+    coinSymbol: NetworkSymbolExtended | undefined;
+    contractAddress: string | undefined;
+} = createMemoizedSelector(
+    [
+        ({ wallet }: TradingRootState, _: CryptoId): Coins | undefined =>
+            wallet.tradingNew.info.coins,
+        (_: TradingRootState, cryptoId: CryptoId): CryptoId => cryptoId,
+    ],
+    getTradingSymbolAndContractAddressByCryptoId,
+);
