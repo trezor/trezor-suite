@@ -42,6 +42,7 @@ runs:
         WORKFLOW_ID=$(gh workflow list \
           --repo "$REPO" \
           --json id,name \
+          --limit 100 \
           --jq ".[] | select(.name == \"${WORKFLOW_NAME}\") | .id")
 
         # Fetch previous PR runs
