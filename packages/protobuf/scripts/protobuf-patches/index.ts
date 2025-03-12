@@ -252,7 +252,9 @@ export const TYPE_PATCH = {
 };
 
 export const readPatch = (file: string) =>
-    fs.readFileSync(path.join(__dirname, file), 'utf8').replace(/^\/\/ @ts-nocheck.*\n?/gm, '');
+    fs
+        .readFileSync(path.join(__dirname, file), 'utf8')
+        .replace(/^\/\/ (@ts-nocheck|eslint-disable-next-line).*\n?/gm, '');
 
 export const DEFINITION_PATCH = {
     TxInputType: () => readPatch('./TxInputType.ts'),

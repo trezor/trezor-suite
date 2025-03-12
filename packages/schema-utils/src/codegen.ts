@@ -7,9 +7,12 @@ export function generate(code: string) {
     // Since there are some issues with typeof
     code = code.replace(/typeof undefined/g, 'undefined');
     code = code.replace(/keyof typeof/g, 'keyof');
-    // Ignore types added at end of message.ts, these are too complex for the generator
-    if (code.indexOf('export type MessageKey = keyof MessageType') >= 0) {
-        code = code.substring(0, code.indexOf('export type MessageKey = keyof MessageType'));
+    let helpers = '';
+    // Duplicate types added at end of message.ts, as these are too complex for the generator
+    const helpersIndex = code.indexOf('// @COPY');
+    if (helpersIndex >= 0) {
+        helpers = code.substring(helpersIndex);
+        code = code.substring(0, helpersIndex);
     }
     // Make generator aware of custom types
     const customTypesMapping = {
@@ -59,23 +62,7 @@ export function generate(code: string) {
     output = `/* eslint-disable camelcase */\n${output}`;
     // Add types for message schema
     if (output.indexOf('export type MessageType =') > -1) {
-        output = `${output}\n
-// custom type uint32/64 may be represented as string
-export type UintType = string | number;
-
-export type MessageKey = keyof MessageType;
-
-export type MessageResponse<T extends MessageKey> = {
-    type: T;
-    message: MessageType[T];
-};
-
-export type TypedCall = <T extends MessageKey, R extends MessageKey>(
-    type: T,
-    resType: R,
-    message?: MessageType[T],
-) => Promise<MessageResponse<R>>;
-`;
+        output = `${output}\n\n${helpers}`;
     }
 
     return output;

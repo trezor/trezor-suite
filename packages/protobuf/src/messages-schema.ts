@@ -3820,8 +3820,7 @@ export const MessageType = Type.Object(
     { $id: 'MessageType' },
 );
 
-// custom type uint32/64 may be represented as string
-export type UintType = string | number;
+// @COPY from this marker to the EOF, types are copied into messages-schema
 
 export type MessageKey = keyof MessageType;
 
