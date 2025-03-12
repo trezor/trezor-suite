@@ -5,6 +5,7 @@ import {
     type TradingTransactionBuy,
     type TradingType,
     selectTrading,
+    selectTradingBuyInfo,
     tradingThunks,
 } from '@suite-common/trading';
 
@@ -12,9 +13,9 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { selectTradingSellInfo } from 'src/reducers/wallet/tradingReducer';
 import {
     TradingGetDetailDataProps,
-    TradingGetTypedInfoTradeProps,
     TradingGetTypedTradeProps,
     TradingTradeInfoMapProps,
     TradingTradeMapProps,
@@ -48,35 +49,19 @@ const getTypedTrade = <T extends TradingType>({
     return trade as TradingTradeMapProps[T];
 };
 
-const getTypedInfoTrade = <T extends keyof TradingTradeMapProps>({
-    trading,
-    tradeType,
-}: TradingGetTypedInfoTradeProps): TradingTradeInfoMapProps[T] => {
-    switch (tradeType) {
-        case 'sell': {
-            const { sellInfo } = trading.sell;
-
-            return sellInfo as TradingTradeInfoMapProps[T];
-        }
-        default: {
-            const { exchangeInfo } = trading.exchange;
-
-            return exchangeInfo as TradingTradeInfoMapProps[T];
-        }
-    }
-};
-
 const getTradingDetailData = <T extends TradingType>({
     trading,
     tradingNew,
     tradeType,
+    infos,
 }: TradingGetDetailDataProps): TradingGetDetailDataOutputProps<T> => {
     const { trades } = trading;
+    const info = infos[tradeType] as TradingTradeInfoMapProps[T];
 
     // TODO: trading - temporary hack solution using new reducer state
     if (tradeType === 'buy') {
         const { trades } = tradingNew;
-        const { buyInfo, transactionId } = tradingNew.buy;
+        const { transactionId } = tradingNew.buy;
 
         const trade = getTypedTrade<T>({
             trades,
@@ -86,7 +71,7 @@ const getTradingDetailData = <T extends TradingType>({
 
         return {
             transactionId,
-            info: buyInfo as TradingTradeInfoMapProps[T],
+            info,
             trade,
         };
     }
@@ -96,10 +81,6 @@ const getTradingDetailData = <T extends TradingType>({
         trades,
         tradeType,
         transactionId,
-    });
-    const info = getTypedInfoTrade<T>({
-        trading,
-        tradeType,
     });
 
     return {
@@ -116,10 +97,18 @@ export const useTradingDetail = <T extends TradingType>({
     const trading = useSelector(state => state.wallet.trading);
     const tradingNew = useSelector(selectTrading);
     const { account } = selectedAccount;
+    const buyInfo = useSelector(selectTradingBuyInfo);
+    const sellInfo = useSelector(selectTradingSellInfo);
+    const { exchangeInfo } = trading.exchange;
     const { info, transactionId, trade } = getTradingDetailData<T>({
         trading,
         tradingNew,
         tradeType,
+        infos: {
+            buy: buyInfo,
+            sell: sellInfo,
+            exchange: exchangeInfo,
+        },
     });
     const dispatch = useDispatch();
 

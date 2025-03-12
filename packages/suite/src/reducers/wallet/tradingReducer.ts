@@ -9,6 +9,7 @@ import type {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
+import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TradingPaymentMethodListProps,
     type TradingTransaction,
@@ -26,7 +27,7 @@ import {
     TRADING_SELL,
 } from 'src/actions/wallet/constants';
 import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
-import type { SellInfo } from 'src/actions/wallet/tradingSellActions';
+import type { SellInfo, TradingSellInfoSelector } from 'src/actions/wallet/tradingSellActions';
 import { AppState } from 'src/reducers/store';
 import { Action } from 'src/types/suite';
 
@@ -208,6 +209,23 @@ export const tradingReducer = (state: State = initialState, action: Action): Sta
         }
     });
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<AppState>();
+
+export const selectTradingSellInfo = createMemoizedSelector(
+    [state => state.wallet.trading.sell],
+    (sell): TradingSellInfoSelector | undefined => {
+        const { sellInfo } = sell;
+
+        if (!sellInfo) return;
+
+        return {
+            ...sellInfo,
+            supportedCryptoCurrencies: new Set(sellInfo.supportedCryptoCurrencies),
+            supportedFiatCurrencies: new Set(sellInfo.supportedFiatCurrencies),
+        };
+    },
+);
+
 export const selectSupportedSymbols =
     (type: TradingType) =>
     (state: AppState): Set<CryptoId> | undefined => {
@@ -222,6 +240,6 @@ export const selectSupportedSymbols =
             case 'exchange':
                 return trading.exchange.exchangeInfo?.sellSymbols;
             case 'sell':
-                return trading.sell.sellInfo?.supportedCryptoCurrencies;
+                return selectTradingSellInfo(state)?.supportedCryptoCurrencies;
         }
     };

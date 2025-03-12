@@ -8,7 +8,7 @@ import {
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { FormState, Output } from '@suite-common/wallet-types';
 
-import { SellInfo } from 'src/actions/wallet/tradingSellActions';
+import { TradingSellInfoSelector } from 'src/actions/wallet/tradingSellActions';
 import {
     FORM_DEFAULT_FIAT_CURRENCY,
     FORM_DEFAULT_PAYMENT_METHOD,
@@ -24,7 +24,7 @@ import {
 
 export const useTradingSellFormDefaultValues = (
     account: Account,
-    sellInfo: SellInfo | undefined,
+    sellInfo: TradingSellInfoSelector | undefined,
 ): TradingSellFormDefaultValuesProps => {
     const country = sellInfo?.sellList?.country;
     const cryptoGroups = useTradingBuildAccountGroups('sell');

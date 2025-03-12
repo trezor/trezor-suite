@@ -47,6 +47,7 @@ import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { useTradingRecomposeAndSign } from 'src/hooks/wallet/useTradingRecomposeAndSign';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { selectTradingSellInfo } from 'src/reducers/wallet/tradingReducer';
 import {
     TradingAccountOptionsGroupOptionProps,
     UseTradingFormProps,
@@ -70,7 +71,6 @@ export const useTradingSellForm = ({
     const isNotFormPage = pageType !== 'form';
     const dispatch = useDispatch();
     const {
-        sellInfo,
         quotesRequest,
         isFromRedirect,
         quotes,
@@ -78,6 +78,7 @@ export const useTradingSellForm = ({
         tradingAccountKey,
         selectedQuote,
     } = useSelector(state => state.wallet.trading.sell);
+    const sellInfo = useSelector(selectTradingSellInfo);
     const { cryptoIdToCoinSymbol } = useTradingInfo(type);
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
     const [accountKey, setAccountKey] = useTradingAccountKey({

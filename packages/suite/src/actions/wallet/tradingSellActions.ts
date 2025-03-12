@@ -18,9 +18,17 @@ import { TRADING_COMMON, TRADING_SELL } from './constants';
 export interface SellInfo {
     sellList?: SellListResponse;
     providerInfos: { [name: string]: SellProviderInfo };
-    supportedFiatCurrencies: Set<string>;
-    supportedCryptoCurrencies: Set<CryptoId>;
+    supportedFiatCurrencies: string[];
+    supportedCryptoCurrencies: CryptoId[];
 }
+
+export type TradingSellInfoSelector = Omit<
+    SellInfo,
+    'supportedCryptoCurrencies' | 'supportedFiatCurrencies'
+> & {
+    supportedCryptoCurrencies: Set<CryptoId>;
+    supportedFiatCurrencies: Set<string>;
+};
 
 export type TradingSellAction =
     | { type: typeof TRADING_SELL.SAVE_SELL_INFO; sellInfo: SellInfo }
@@ -58,22 +66,22 @@ export const loadSellInfo = async (): Promise<SellInfo> => {
         sellList.providers.forEach(provider => (providerInfos[provider.name] = provider));
     }
 
-    const supportedFiatCurrencies = new Set<string>();
-    const supportedCryptoCurrencies = new Set<CryptoId>();
-    sellList?.providers.forEach(p => {
-        if (p.tradedFiatCurrencies) {
-            p.tradedFiatCurrencies
+    const supportedFiatCurrencies: string[] = [];
+    const supportedCryptoCurrencies: CryptoId[] = [];
+    sellList?.providers.forEach(provider => {
+        if (provider.tradedFiatCurrencies) {
+            provider.tradedFiatCurrencies
                 .map(currency => currency.toLowerCase())
-                .forEach(currency => supportedFiatCurrencies.add(currency));
+                .forEach(currency => supportedFiatCurrencies.push(currency));
         }
-        p.tradedCoins.forEach(coin => supportedCryptoCurrencies.add(coin));
+        provider.tradedCoins.forEach(coin => supportedCryptoCurrencies.push(coin));
     });
 
     return {
         sellList,
         providerInfos,
-        supportedFiatCurrencies,
-        supportedCryptoCurrencies,
+        supportedFiatCurrencies: [...new Set(supportedFiatCurrencies)],
+        supportedCryptoCurrencies: [...new Set(supportedCryptoCurrencies)],
     };
 };
 
