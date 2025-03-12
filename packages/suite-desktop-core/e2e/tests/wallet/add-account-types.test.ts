@@ -64,7 +64,6 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
         for (const { coin, accounts } of accountTypes) {
             for (const { type } of accounts) {
                 await test.step(`Add and verify ${type} account for ${coin}`, async () => {
-                    await page.getByTestId('@account-menu/normal').click();
                     const numberOfAccountsBefore = await page
                         .getByTestId(`@account-menu/${type}/group`)
                         .locator(

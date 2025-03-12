@@ -144,7 +144,7 @@ export const expect = baseExpect.extend({
             expectedContent = {
                 header: { title: 'Receive address' },
                 body: [transformedExpectedAddress],
-                footer: 'Swipe up',
+                footer: 'Tap to continue',
             };
         }
 
