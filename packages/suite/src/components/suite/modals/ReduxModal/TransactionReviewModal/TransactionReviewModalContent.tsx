@@ -401,7 +401,7 @@ export const TransactionReviewModalContent = ({
                     deviceModelInternal={deviceModelInternal}
                     deviceUnitColor={device?.features?.unit_color}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
-                    onCancel={onCancel}
+                    onCancel={isSending ? undefined : onCancel}
                 />
             )}
             <NewModal.ModalBase
