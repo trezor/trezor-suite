@@ -1,4 +1,4 @@
-import { createDeferred, getSynchronize, resolveAfter } from '@trezor/utils';
+import { arrayPartition, createDeferred, getSynchronize, resolveAfter } from '@trezor/utils';
 
 import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
 import {
@@ -488,20 +488,16 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    private deviceIsHid(device: USBDevice) {
-        return device.vendorId === T1_HID_VENDOR;
-    }
-
     private filterDevices(devices: USBDevice[]) {
-        const trezorDevices = devices.filter(dev => {
-            const isTrezor = TREZOR_USB_DESCRIPTORS.some(
+        const trezorDevices = devices.filter(dev =>
+            TREZOR_USB_DESCRIPTORS.some(
                 desc => dev.vendorId === desc.vendorId && dev.productId === desc.productId,
-            );
-
-            return isTrezor;
-        });
-        const hidDevices = trezorDevices.filter(dev => this.deviceIsHid(dev));
-        const nonHidDevices = trezorDevices.filter(dev => !this.deviceIsHid(dev));
+            ),
+        );
+        const [hidDevices, nonHidDevices] = arrayPartition(
+            trezorDevices,
+            device => device.vendorId === T1_HID_VENDOR,
+        );
 
         return [hidDevices, nonHidDevices];
     }
