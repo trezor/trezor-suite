@@ -1,0 +1,78 @@
+name: "[Test] Nightly Suite Web e2e tests"
+# Nightly scheduled check on develop branch
+# Builds/deploys the web app to dev.suite.sldev.cz/suite-web/develop/web
+# Runs full e2e test suite for Suite Web
+# Uses firmware built nightly from main branch
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  DEV_SERVER_URL: "https://dev.suite.sldev.cz"
+  STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
+
+jobs:
+  build-web:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and Upload Suite Web
+        uses: ./.github/actions/build-web
+
+  load-e2e-matrix:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.load-matrix.outputs.matrix }}
+    needs:
+      - build-web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Load e2e Matrix
+        id: load-matrix
+        uses: ./.github/actions/load-e2e-matrix
+        with:
+          project: "web"
+
+  run-e2e-suite-web-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    needs:
+      - build-web
+      - load-e2e-matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.load-e2e-matrix.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+
+      - name: Run Playwright E2E Tests
+        uses: ./.github/actions/run-e2e-tests
+        env:
+          CANARY_FIRMWARE: "true"
+        with:
+          project: "web"
+          containers: ${{ matrix.CONTAINERS }}
+          test-group: ${{ matrix.TEST_GROUP }}
+          currents-project-id: "Og0NOQ"
+          currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+          e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
