@@ -1,7 +1,8 @@
 export const fixtures = [
     {
         method: 'GET',
-        path: '/oauth?code=meow',
+        path: '/oauth',
+        search: '?code=meow',
         result: {
             emit: ['oauth/response', { search: '?code=meow' }],
             response: {
@@ -11,7 +12,8 @@ export const fixtures = [
     },
     {
         method: 'GET',
-        path: '/oauth?foo=moo',
+        path: '/oauth',
+        search: '?code=meow',
         result: {
             response: {
                 status: 200,

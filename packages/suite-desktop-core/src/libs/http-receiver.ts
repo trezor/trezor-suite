@@ -98,6 +98,7 @@ export const createHttpReceiver = () => {
             response.end(template);
         },
     ]);
+    httpReceiver.deactivateRoute('/oauth');
 
     httpReceiver.get('/buy-redirect', [
         allowReferers(['', 'localhost:3000', '*.invity.io', 'invity.io']),
@@ -111,6 +112,7 @@ export const createHttpReceiver = () => {
             response.end(template);
         },
     ]);
+    httpReceiver.deactivateRoute('/buy-redirect');
 
     httpReceiver.get('/buy-post', [
         allowReferers(['']), // No referer
@@ -148,6 +150,7 @@ export const createHttpReceiver = () => {
             }
         },
     ]);
+    httpReceiver.deactivateRoute('/buy-post');
 
     httpReceiver.get('/sell-redirect', [
         allowReferers(['']), // No referer
@@ -161,6 +164,7 @@ export const createHttpReceiver = () => {
             response.end(template);
         },
     ]);
+    httpReceiver.deactivateRoute('/sell-redirect');
 
     httpReceiver.get('/exchange-redirect', [
         allowReferers(['']), // No referer
@@ -174,6 +178,7 @@ export const createHttpReceiver = () => {
             response.end(template);
         },
     ]);
+    httpReceiver.deactivateRoute('/exchange-redirect');
 
     return httpReceiver;
 };
