@@ -30,7 +30,7 @@ const Container = styled(motion.div)`
     width: 100%;
     padding: 12px 20px;
     border-radius: 12px;
-    background: ${({ theme }) => theme.legacy.BG_GREEN};
+    background: ${({ theme }) => theme.baseFillSurfaceBrandDark};
     overflow: hidden;
 `;
 
@@ -52,7 +52,7 @@ const TextContainer = styled.div`
     grid-column: 1/3;
 
     * {
-        color: ${({ theme }) => theme.legacy.TYPE_WHITE};
+        color: ${({ theme }) => theme.baseContentPrimaryInverse};
     }
 `;
 
@@ -62,10 +62,6 @@ const OSIcons = styled.div`
     align-items: center;
     gap: 6px;
     opacity: 0.7;
-
-    path {
-        fill: ${({ theme }) => theme.legacy.BG_WHITE};
-    }
 `;
 
 export const DesktopSuiteBanner = () => {
@@ -110,6 +106,7 @@ export const DesktopSuiteBanner = () => {
                             onClick={handleClose}
                             data-testid="@banner/install-desktop-suite/close-button"
                             size="small"
+                            variant="tertiary"
                         />
                     </Box>
 
@@ -128,7 +125,7 @@ export const DesktopSuiteBanner = () => {
                         </TextContainer>
 
                         <Button
-                            variant="tertiary"
+                            variant="primary"
                             href={href}
                             onClick={() =>
                                 analytics.report({
@@ -140,9 +137,9 @@ export const DesktopSuiteBanner = () => {
                         </Button>
 
                         <OSIcons>
-                            <Icon name="osMac" />
-                            <Icon name="osLinux" />
-                            <Icon name="osWindows" size={20} />
+                            <Icon name="osMac" variant="primary" />
+                            <Icon name="osLinux" variant="primary" />
+                            <Icon name="osWindows" variant="primary" size={20} />
                         </OSIcons>
                     </Content>
                 </Container>

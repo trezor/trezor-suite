@@ -1,7 +1,7 @@
 import { QRCodeSVG } from 'qrcode.react';
 import styled, { css } from 'styled-components';
 
-import { borders, palette, spacingsPx } from '@trezor/theme';
+import { borders, paletteV1, spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
         css`
             padding: ${spacingsPx.xs};
             border-radius: ${borders.radii.xs};
-            background-color: ${palette.lightWhiteAlpha1000};
+            background-color: ${paletteV1.lightWhiteAlpha1000};
         `}
 `;
 
@@ -27,7 +27,7 @@ export const QrCode = ({ value }: QrCodeProps) => (
     <Wrapper>
         <QRCodeSVG
             bgColor="transparent"
-            fgColor={palette.lightGray1000}
+            fgColor={paletteV1.lightGray1000}
             level="Q"
             value={value}
             style={{ width: '100%', height: '100%', objectFit: 'contain' }}

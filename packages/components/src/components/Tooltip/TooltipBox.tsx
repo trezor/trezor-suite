@@ -2,7 +2,7 @@ import { ReactElement, ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { borders, palette, spacings, spacingsPx, typography } from '@trezor/theme';
+import { borders, paletteV1, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Icon, IconName } from '../Icon/Icon';
 
@@ -27,7 +27,7 @@ type TooltipContainerStyledProps = {
 };
 
 const TooltipContainerStyled = styled.div<TooltipContainerStyledProps>`
-    background: ${palette.darkGray300};
+    background: ${paletteV1.darkGray300};
     color: ${({ theme }) => theme.textDefault};
     border-radius: ${TOOLTIP_BORDER_RADIUS};
     text-align: left;

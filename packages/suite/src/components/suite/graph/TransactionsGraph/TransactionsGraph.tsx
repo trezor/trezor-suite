@@ -53,7 +53,7 @@ const Description = styled.div`
     justify-content: center;
     align-items: center;
     text-align: center;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     flex: 1;
 `;
 
@@ -239,49 +239,12 @@ export const TransactionsGraph = memo(
                                                 ? Number(balanceValueFn(data)) || yDomain[0]
                                                 : Number(balanceValueFn(data))
                                         }
-                                        stroke={theme.legacy.TYPE_ORANGE}
+                                        stroke={theme.baseBorderWarning}
                                         dot={false}
                                         activeDot={false}
                                     />
                                 )}
-                                <defs>
-                                    <linearGradient
-                                        id="greenGradient"
-                                        x1="0"
-                                        y1="0"
-                                        x2="0"
-                                        y2="100%"
-                                        spreadMethod="reflect"
-                                    >
-                                        <stop
-                                            offset="0"
-                                            stopColor={theme.legacy.GRADIENT_GREEN_START}
-                                        />
-                                        <stop
-                                            offset="1"
-                                            stopColor={theme.legacy.GRADIENT_GREEN_END}
-                                        />
-                                    </linearGradient>
-                                </defs>
-                                <defs>
-                                    <linearGradient
-                                        id="redGradient"
-                                        x1="0"
-                                        y1="0"
-                                        x2="0"
-                                        y2="100%"
-                                        spreadMethod="reflect"
-                                    >
-                                        <stop
-                                            offset="0"
-                                            stopColor={theme.legacy.GRADIENT_RED_START}
-                                        />
-                                        <stop
-                                            offset="1"
-                                            stopColor={theme.legacy.GRADIENT_RED_END}
-                                        />
-                                    </linearGradient>
-                                </defs>
+
                                 <defs>
                                     <filter id="shadow" x="-2" y="-10" width="50" height="50">
                                         <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
@@ -305,7 +268,7 @@ export const TransactionsGraph = memo(
                                             filter={isBarColored(index) ? 'url(#shadow)' : ''}
                                             fill={
                                                 isBarColored(index)
-                                                    ? 'url(#greenGradient)'
+                                                    ? theme.baseBorderBrand
                                                     : '#aeaeae'
                                             }
                                         />
@@ -322,7 +285,7 @@ export const TransactionsGraph = memo(
                                             filter={isBarColored(index) ? 'url(#shadow)' : ''}
                                             fill={
                                                 isBarColored(index)
-                                                    ? 'url(#redGradient)'
+                                                    ? theme.baseBorderNegative
                                                     : '#dfdfdf'
                                             }
                                         />

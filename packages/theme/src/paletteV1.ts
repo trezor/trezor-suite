@@ -1,6 +1,6 @@
 import { CSSColor } from './types';
 
-export const palette: Record<string, CSSColor> = {
+export const paletteV1: Record<string, CSSColor> = {
     coinsAdaSubdued: '#3468D14D',
     coinsBchBold: '#0AC18E',
     coinsBchSubdued: '#0AC18E4D',

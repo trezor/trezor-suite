@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Elevation, borders, mapElevationToBorder, palette, spacingsPx } from '@trezor/theme';
+import { Elevation, borders, mapElevationToBorder, paletteV1, spacingsPx } from '@trezor/theme';
 
 import {
     FrameProps,
@@ -71,7 +71,7 @@ export const RadioCard = ({ isActive, onClick, children, ...rest }: RadioCardPro
             {isActive && (
                 <Box position={{ type: 'absolute', top: '-3px', right: '-3px' }}>
                     <IconWrapper>
-                        <Icon name="check" size="small" color={palette.lightWhiteAlpha1000} />
+                        <Icon name="check" size="small" color={paletteV1.lightWhiteAlpha1000} />
                     </IconWrapper>
                 </Box>
             )}

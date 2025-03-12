@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
 import { Button, Icon, Text, Tooltip } from '@trezor/components';
-import { borders, palette, spacingsPx, zIndices } from '@trezor/theme';
+import { borders, paletteV1, spacingsPx, zIndices } from '@trezor/theme';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
@@ -18,8 +18,8 @@ const Icons = styled.div`
 `;
 
 const IconContainer = styled.div`
-    border: solid 1px ${palette.lightWhiteAlpha400};
-    background-color: ${palette.darkGray300};
+    border: solid 1px ${paletteV1.lightWhiteAlpha400};
+    background-color: ${paletteV1.darkGray300};
     border-radius: ${borders.radii.full};
     padding: 4px;
 
