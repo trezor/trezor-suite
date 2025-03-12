@@ -135,7 +135,7 @@ export class DashboardPage {
     async addUnusedHiddenWallet(
         passphrase: string,
         // We are not waiting for discovery by expecting discovery bar to be visible for unused wallet
-        // Because sometime the suite is to fast and the discovery bar is not shown at all
+        // Because sometimes the pressYes action takes 5,5s and suite in meantime can finish discovery
         // This would cause failure of the test even tho the flow completed successfully
         options: { skipDiscovery?: boolean } = { skipDiscovery: true },
     ) {

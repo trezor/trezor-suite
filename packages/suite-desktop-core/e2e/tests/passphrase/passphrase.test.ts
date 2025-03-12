@@ -106,7 +106,7 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
     test('Fail to confirm passphrase and retry', async ({ page, dashboardPage, devicePrompt }) => {
         // add 1st hidden wallet
         await dashboardPage.openDeviceSwitcher();
-        await dashboardPage.addHiddenWallet('abc');
+        await dashboardPage.addHiddenWallet('abc', { skipDiscovery: true });
 
         await page.getByTestId('@passphrase-confirmation/step1-open-unused-wallet-button').click();
         await page.getByTestId('@passphrase-confirmation/step2-button').click();
