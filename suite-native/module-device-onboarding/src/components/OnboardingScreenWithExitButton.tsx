@@ -7,6 +7,7 @@ import { useSetAtom } from 'jotai';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { wasDeviceDisconnectedByUserActionAtom } from '@suite-native/device';
+import { useFirmware } from '@suite-native/firmware';
 import { useTranslate } from '@suite-native/intl';
 import { Screen, ScreenHeader, ScreenProps } from '@suite-native/navigation';
 
@@ -17,6 +18,7 @@ const DeviceOnboardingExitButtonScreenHeader = () => {
     const dispatch = useDispatch();
     const selectedDevice = useSelector(selectSelectedDevice);
     const setWasDeviceDisconnectedByUserAction = useSetAtom(wasDeviceDisconnectedByUserActionAtom);
+    const { setIsFirmwareInstallationRunning } = useFirmware();
 
     const handleExitButtonPress = useCallback(() => {
         showAlert({
@@ -30,12 +32,20 @@ const DeviceOnboardingExitButtonScreenHeader = () => {
             secondaryButtonVariant: 'redElevation0',
             onPressPrimaryButton: () => {
                 if (selectedDevice) {
+                    setIsFirmwareInstallationRunning(false);
                     setWasDeviceDisconnectedByUserAction(true);
                     dispatch(deviceActions.deviceDisconnect(selectedDevice));
                 }
             },
         });
-    }, [dispatch, selectedDevice, setWasDeviceDisconnectedByUserAction, translate, showAlert]);
+    }, [
+        dispatch,
+        selectedDevice,
+        setWasDeviceDisconnectedByUserAction,
+        setIsFirmwareInstallationRunning,
+        translate,
+        showAlert,
+    ]);
 
     useEffect(() => {
         // Override default navigation GO_BACK action to align it with the exit button behavior.

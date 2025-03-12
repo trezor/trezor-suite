@@ -45,6 +45,7 @@ type FirmwareInstallationScreenContentProps = {
     onFirmwareInstallationSuccess: () => void;
     onFirmwareInstallationFailure?: () => void;
     isCancellationAllowed?: boolean;
+    isRetryAllowed?: boolean;
 };
 
 // This component is shared between `module-onboarding` and `module-device-settings`.
@@ -53,6 +54,7 @@ export const FirmwareInstallationScreenContent = ({
     onFirmwareInstallationSuccess,
     onFirmwareInstallationFailure,
     isCancellationAllowed = true,
+    isRetryAllowed = true,
 }: FirmwareInstallationScreenContentProps) => {
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
@@ -228,9 +230,11 @@ export const FirmwareInstallationScreenContent = ({
                         bottom: bottomButtonOffset,
                     })}
                 >
-                    <Button onPress={handleRetry} colorScheme="redBold">
-                        <Translation id="firmware.firmwareUpdateProgress.retryButton" />
-                    </Button>
+                    {isRetryAllowed && (
+                        <Button onPress={handleRetry} colorScheme="redBold">
+                            <Translation id="firmware.firmwareUpdateProgress.retryButton" />
+                        </Button>
+                    )}
                     <Button onPress={handleContactSupport} colorScheme="tertiaryElevation0">
                         <Translation id="firmware.firmwareUpdateProgress.contactSupportButton" />
                     </Button>

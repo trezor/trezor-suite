@@ -17,6 +17,7 @@ export const FirmwareInstallationScreen = () => {
             <FirmwareInstallationScreenContent
                 onFirmwareInstallationSuccess={handleFirmwareInstallationSuccess}
                 isCancellationAllowed={false}
+                isRetryAllowed={false}
             />
         </DeviceOnboardingScreenWithExitButton>
     );

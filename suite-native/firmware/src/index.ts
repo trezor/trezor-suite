@@ -4,3 +4,4 @@ export * from './components/FirmwareInstallationScreenContent';
 export * from './components/ConfirmFirmwareUpdateScreenContent';
 export * from './components/ConfirmFirmwareUpdateScreenFooter';
 export * from './hooks/useIsFirmwareUpdateFeatureEnabled';
+export * from './hooks/useFirmware';

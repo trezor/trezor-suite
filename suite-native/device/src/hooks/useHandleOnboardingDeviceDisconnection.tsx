@@ -82,7 +82,10 @@ export const useHandleOnboardingDeviceDisconnection = () => {
                         secondaryButtonTitle: translate('generic.buttons.cancel'),
                         secondaryButtonVariant: 'redElevation0',
                         onPressPrimaryButton: hideDeviceDisconnectedAlert,
-                        onPressSecondaryButton: hideDeviceDisconnectedAlert,
+                        onPressSecondaryButton: () => {
+                            hideDeviceDisconnectedAlert();
+                            navigation.goBack();
+                        },
                     });
                 }, 300);
             }

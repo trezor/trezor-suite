@@ -96,11 +96,13 @@ export const useHandleDeviceConnection = () => {
         if (
             isDeviceSetupSupported &&
             isDeviceConnected &&
+            isOnboardingFinished &&
             !isDeviceInitialized &&
             !isPortfolioTrackerDevice &&
             !isBiometricsOverlayVisible &&
-            !isOnboardingStackFocused &&
-            !isOnboardingDeviceDisconnectedAlertDisplayed
+            !isDeviceOnboardingStackFocused &&
+            !isOnboardingDeviceDisconnectedAlertDisplayed &&
+            !isFirmwareInstallationRunning
         ) {
             navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
                 screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
@@ -109,12 +111,14 @@ export const useHandleDeviceConnection = () => {
     }, [
         dispatch,
         isDeviceConnected,
-        isOnboardingStackFocused,
+        isOnboardingFinished,
         isBiometricsOverlayVisible,
         navigation,
         isDeviceInitialized,
         isPortfolioTrackerDevice,
         isDeviceSetupSupported,
+        isDeviceOnboardingStackFocused,
+        isFirmwareInstallationRunning,
         isOnboardingDeviceDisconnectedAlertDisplayed,
     ]);
 
@@ -169,7 +173,7 @@ export const useHandleDeviceConnection = () => {
     // set connecting screen to be displayed again on the next device connection.
     useEffect(() => {
         if (
-            (isFirmwareInstallationRunning && !isOnboardingStackFocused) ||
+            isFirmwareInstallationRunning ||
             !isOnboardingFinished ||
             isConnectAndUnlockDeviceScreenFocused
         )
