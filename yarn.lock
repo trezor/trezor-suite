@@ -8710,16 +8710,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-controls@npm:^8.5.4":
-  version: 8.5.6
-  resolution: "@storybook/addon-controls@npm:8.5.6"
+"@storybook/addon-controls@npm:^8.6.4":
+  version: 8.6.4
+  resolution: "@storybook/addon-controls@npm:8.6.4"
   dependencies:
     "@storybook/global": "npm:^5.0.0"
     dequal: "npm:^2.0.2"
     ts-dedent: "npm:^2.0.0"
   peerDependencies:
-    storybook: ^8.5.6
-  checksum: 10/1fd3a2c0c1ca6f7ab5af9f2e184ae120e6fb7b06b86d4fa8476811607b9fbb45f188c23a13b06fdae9bf356f2865bbffce5350173e4690b66f15f2072cea1c60
+    storybook: ^8.6.4
+  checksum: 10/744cea849cb25b72f48cf47d93a14e092d14377446941dacfd3e5a3207bf43c6c9055b37606dae5714a55cbe4dee3ceffc2d1e467b596db1f25b13066823b313
   languageName: node
   linkType: hard
 
@@ -11564,7 +11564,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.26.3"
     "@floating-ui/react": "npm:^0.27.5"
     "@storybook/addon-actions": "npm:^8.6.4"
-    "@storybook/addon-controls": "npm:^8.5.4"
+    "@storybook/addon-controls": "npm:^8.6.4"
     "@storybook/addon-docs": "npm:^8.6.4"
     "@storybook/addon-links": "npm:^8.5.4"
     "@storybook/addon-viewport": "npm:^8.5.4"
@@ -12080,7 +12080,7 @@ __metadata:
   dependencies:
     "@babel/preset-react": "npm:^7.26.3"
     "@storybook/addon-actions": "npm:^8.6.4"
-    "@storybook/addon-controls": "npm:^8.5.4"
+    "@storybook/addon-controls": "npm:^8.6.4"
     "@storybook/addon-links": "npm:^8.5.4"
     "@storybook/addon-viewport": "npm:^8.5.4"
     "@storybook/addons": "npm:^7.6.17"
