@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import {
     createDiscoveryThunk,
+    getAccountsByDeviceState,
     selectCurrentFiatRates,
     selectDeviceThunk,
     selectDiscoveryByDeviceState,
@@ -45,6 +46,7 @@ export const WalletInstance = ({
 }: WalletInstanceProps) => {
     const [contentType, setContentType] = useState<null | ContentType>('default');
     const accounts = useSelector(state => state.wallet.accounts);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
     const editing = useSelector(state => state.metadata.editing);
@@ -78,8 +80,23 @@ export const WalletInstance = ({
     const handleClick = discoveryProcess
         ? () => {
               if (!editing) {
+                  const nextDeviceAccounts = instance.state
+                      ? getAccountsByDeviceState(accounts, instance.state)
+                      : [];
+
+                  // NOTE: attempt to determine, if the currently selected account
+                  // has a corresponding account in the next device accounts
+                  // if not, enforce switching URL to dashboard
+                  const nextAccount = nextDeviceAccounts.find(
+                      account =>
+                          account.symbol === selectedAccount.params?.symbol &&
+                          account.index === selectedAccount.params?.accountIndex,
+                  );
+
                   dispatch(selectDeviceThunk({ device: instance }));
-                  dispatch(redirectAfterWalletSelectedThunk());
+                  dispatch(
+                      redirectAfterWalletSelectedThunk({ forceDeviceDashboard: !nextAccount }),
+                  );
                   onCancel(false);
               }
           }
