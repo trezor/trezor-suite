@@ -59,7 +59,6 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
         if (freshAccountAddress)
             setValue(addressFieldName, freshAccountAddress.address, {
                 shouldValidate: true,
-                shouldTouch: true,
             });
     };
 

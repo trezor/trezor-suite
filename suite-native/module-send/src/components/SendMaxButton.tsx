@@ -7,6 +7,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { isAddressValid } from '@suite-common/wallet-utils';
 import { Button } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
@@ -36,7 +37,7 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
         selectAccountTokenBalance(state, accountKey, tokenContract),
     );
 
-    const { hasError: hasAddressError, isTouched: isAddressTouched } = useField({
+    const { value: addressValue } = useField({
         name: getOutputFieldName(outputIndex, 'address'),
     });
 
@@ -47,10 +48,10 @@ export const SendMaxButton = ({ outputIndex, accountKey, tokenContract }: SendMa
 
     const formValues = watch();
 
-    const isAddressValid = isAddressTouched && !hasAddressError;
+    const isAddressInputValid = symbol && isAddressValid(addressValue, symbol);
 
     const isMainnetSendMaxAvailable =
-        !tokenContract && formValues.outputs.length === 1 && isAddressValid;
+        !tokenContract && formValues.outputs.length === 1 && isAddressInputValid;
     const isSendMaxAvailable = tokenContract || isMainnetSendMaxAvailable;
 
     const calculateFeeLevelsMaxAmount = useCallback(async () => {
