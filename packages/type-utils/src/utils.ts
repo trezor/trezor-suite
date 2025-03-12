@@ -110,7 +110,7 @@ export type FilterPropertiesByType<T, ValueFilter> = {
 };
 
 /**
- * Removed the type from the union where `{ type: U }`.
+ * Removed the type from the union where `{ KeyName: ValueToExclude }`.
  *
  * Example:
  *  ```
@@ -120,11 +120,15 @@ export type FilterPropertiesByType<T, ValueFilter> = {
  *     | { type: 'C' | 'D' | 'E'; cde: boolean };
  *
  *  // { type: 'A', a: string } | { type: 'B', b: number } | { type: 'D' | 'E', cde: boolean };
- *  type NotC = FilterOutFromUnionByTypeProperty<T1, 'C'>;
+ *  type NotC = FilterOutFromUnionByTypeProperty<T1, 'type', 'C'>;
  *  ```
  */
-export type FilterOutFromUnionByTypeProperty<T, U> = T extends { type: infer P }
-    ? P extends U
+export type FilterOutFromUnionByTypeProperty<
+    Union,
+    KeyName extends keyof Union,
+    ValueToExclude extends Union[KeyName],
+> = Union extends { [K in KeyName]: infer ActualValue }
+    ? ActualValue extends ValueToExclude
         ? never
-        : { type: Exclude<P, U> } & Omit<T, 'type'>
-    : T;
+        : { [K in KeyName]: Exclude<ActualValue, ValueToExclude> } & Omit<Union, KeyName>
+    : Union;

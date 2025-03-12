@@ -44,6 +44,7 @@ export type {
 
 type FilteredDeviceEvents = FilterOutFromUnionByTypeProperty<
     DeviceEvent,
+    'type',
     // Those types are remapped onto different actions in the connectInitThunks.ts and not used directly
     // as the rest of the DeviceEvents.
     typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED
