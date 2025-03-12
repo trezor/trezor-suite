@@ -37,7 +37,7 @@ export const WalletConnect = () => {
                         value={connectionUrl}
                         onChange={e => setConnectionUrl(e.target.value)}
                         size="small"
-                        placeholder={translationString('TR_WALLTCONNECT_NEW_CONNECTION_URL')}
+                        placeholder={translationString('TR_WALLETCONNECT_NEW_CONNECTION_URL')}
                     />
                     <ActionButton onClick={handleConnect}>
                         <Translation id="TR_CONNECT" />
@@ -45,7 +45,7 @@ export const WalletConnect = () => {
                 </Row>
             </SectionItem>
             <SectionItem>
-                <TextColumn title={<Translation id="TR_WALLTCONNECT_SESSIONS" />} />
+                <TextColumn title={<Translation id="TR_WALLETCONNECT_SESSIONS" />} />
                 <ActionColumn>
                     <Column gap={spacings.md}>
                         {sessions.map(session => (

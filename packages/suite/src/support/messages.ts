@@ -9606,12 +9606,12 @@ export default defineMessages({
         defaultMessage:
             "We couldn't verify the authenticity of the request. Ensure you trust the source before proceeding.",
     },
-    TR_WALLTCONNECT_NEW_CONNECTION_URL: {
-        id: 'TR_WALLTCONNECT_NEW_CONNECTION_URL',
+    TR_WALLETCONNECT_NEW_CONNECTION_URL: {
+        id: 'TR_WALLETCONNECT_NEW_CONNECTION_URL',
         defaultMessage: 'New connection URL',
     },
-    TR_WALLTCONNECT_SESSIONS: {
-        id: 'TR_WALLTCONNECT_SESSIONS',
+    TR_WALLETCONNECT_SESSIONS: {
+        id: 'TR_WALLETCONNECT_SESSIONS',
         defaultMessage: 'Sessions',
     },
     TR_BLUETOOTH: {
