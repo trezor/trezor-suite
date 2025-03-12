@@ -106,7 +106,25 @@ export const BluetoothConnect = ({ onClose, uiMode }: BluetoothConnectProps) => 
     };
 
     if (bluetoothAdapterStatus === 'disabled') {
-        return <BluetoothNotEnabled onCancel={onClose} />;
+        return (
+            <Column gap={spacings.sm} flex="1">
+                <Card paddingType="none">
+                    <Column
+                        gap={spacings.md}
+                        margin={{ vertical: spacings.xxs, horizontal: spacings.xxs }}
+                        alignItems="stretch"
+                    >
+                        <BluetoothScanHeader
+                            isScanning={false}
+                            onClose={onClose}
+                            numberOfDevices={devices.length}
+                        />
+                        <BluetoothNotEnabled />
+                    </Column>
+                </Card>
+            </Column>
+        );
+        // return <BluetoothNotEnabled onCancel={onClose} />;
     }
 
     // Todo: incompatible version

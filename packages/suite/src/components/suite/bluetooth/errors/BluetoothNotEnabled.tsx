@@ -1,14 +1,10 @@
 import { useState } from 'react';
 
-import { Banner, Column, NewModal, Text } from '@trezor/components';
+import { Banner, Button, Card, Column, Icon, Row, Text } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
-type BluetoothNotEnabledProps = {
-    onCancel: () => void;
-};
-
-export const BluetoothNotEnabled = ({ onCancel }: BluetoothNotEnabledProps) => {
+export const BluetoothNotEnabled = () => {
     const [hasDeeplinkFailed, setHasDeeplinkFailed] = useState(false);
 
     const openSettings = async () => {
@@ -20,20 +16,9 @@ export const BluetoothNotEnabled = ({ onCancel }: BluetoothNotEnabledProps) => {
     };
 
     return (
-        <NewModal
-            onCancel={onCancel}
-            variant="info"
-            iconName="bluetooth"
-            bottomContent={
-                <>
-                    <NewModal.Button onClick={openSettings}>Enable bluetooth</NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
-                        Cancel
-                    </NewModal.Button>
-                </>
-            }
-        >
+        <Card>
             <Column alignItems="start" gap={spacings.xs}>
+                <Icon name="bluetooth" />
                 <Text typographyStyle="titleSmall">Enable bluetooth on your computer</Text>
                 <Text typographyStyle="body" variant="tertiary">
                     Or connect your Trezor via cable.
@@ -43,7 +28,10 @@ export const BluetoothNotEnabled = ({ onCancel }: BluetoothNotEnabledProps) => {
                         Cannot open bluetooth settings. Please enable bluetooth manually.
                     </Banner>
                 )}
+                <Row>
+                    <Button onClick={openSettings}>Open settings and enable bluetooth</Button>
+                </Row>
             </Column>
-        </NewModal>
+        </Card>
     );
 };
