@@ -5,7 +5,7 @@ import { isEqual } from 'lodash';
 import { formatAddress, isEqualWithOmit } from '../common';
 import { DevicePrompt } from '../pageObjects/devicePrompt';
 
-type TransformMods = 'fourTetragrams' | 'fullLine';
+type LineFormats = 'fourTetragrams' | 'fullLine';
 
 const compareTextAndNumber = async (
     locator: Locator,
@@ -46,7 +46,7 @@ const addNewlinesToAddress = (address: string, regex: RegExp, newLineFormat: str
         .trim()
         .split(' ');
 
-const transformAddress = (address: string, mode: TransformMods = 'fourTetragrams') => {
+const transformAddress = (address: string, lineFormat: LineFormats = 'fourTetragrams') => {
     // Address is split to lines on Display so it can fit. There are different formats:
     // 1. Four tetragrams of address:
     // bc1q pyfv fvm5 2zx7
@@ -60,11 +60,11 @@ const transformAddress = (address: string, mode: TransformMods = 'fourTetragrams
     const fourTetragramsOfAddress = /(\S+\s\S+\s\S+\s\S+)/g; //4 x 4 characters
     const fullLineOfAddress = /.{18}/g; //18 characters
 
-    if (mode === 'fourTetragrams') {
+    if (lineFormat === 'fourTetragrams') {
         return addNewlinesToAddress(formatAddress(address), fourTetragramsOfAddress, ' \n');
     }
 
-    if (mode === 'fullLine') {
+    if (lineFormat === 'fullLine') {
         return addNewlinesToAddress(address, fullLineOfAddress, ' \n ');
     }
 };
@@ -127,14 +127,26 @@ export const expect = baseExpect.extend({
     async toDisplayReceiveAddress(
         devicePrompt: DevicePrompt,
         expectedAddress: string,
-        transformMode: TransformMods = 'fourTetragrams',
+        options: { lineFormat: LineFormats; specialAccountType?: string } = {
+            lineFormat: 'fourTetragrams',
+        },
     ) {
-        const transformedExpectedAddress = transformAddress(expectedAddress, transformMode);
-        const expectedContent = {
-            header: { title: 'Receive address' },
-            body: [transformedExpectedAddress],
-            footer: 'Swipe up',
-        };
+        const transformedExpectedAddress = transformAddress(expectedAddress, options.lineFormat);
+
+        let expectedContent;
+        if (options.specialAccountType) {
+            expectedContent = {
+                header: { title: 'Receive address' },
+                body: [[options.specialAccountType], transformedExpectedAddress],
+                footer: 'Tap to continue',
+            };
+        } else {
+            expectedContent = {
+                header: { title: 'Receive address' },
+                body: [transformedExpectedAddress],
+                footer: 'Swipe up',
+            };
+        }
 
         return await compareDisplayContent(
             devicePrompt,

@@ -111,9 +111,9 @@ export class DevicePrompt {
             ...(json.header.subtitle && { subtitle: json.header.subtitle.text }),
         };
 
-        if (json.content.content.paragraphs.length !== 1) {
+        if (json.content.content.paragraphs.length < 1) {
             throw new Error(
-                `Expected only one paragraph in display JSON, JSON: ${JSON.stringify(json.content.content.paragraphs)}`,
+                `Expected at least one paragraph in display JSON, JSON: ${JSON.stringify(json.content.content.paragraphs)}`,
             );
         }
         const body = json.content.content.paragraphs;

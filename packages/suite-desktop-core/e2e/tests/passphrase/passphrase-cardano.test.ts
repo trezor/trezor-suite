@@ -61,7 +61,9 @@ test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
         );
 
         await devicePrompt.confirmOnDevicePromptIsShown();
-        await expect(devicePrompt).toDisplayReceiveAddress(correctPassphraseAddr, 'fullLine');
+        await expect(devicePrompt).toDisplayReceiveAddress(correctPassphraseAddr, {
+            lineFormat: 'fullLine',
+        });
         await trezorUserEnvLink.pressYes(); // Confirm receive address
 
         await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();

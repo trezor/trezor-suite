@@ -24,11 +24,11 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
         trezorUserEnvLink,
     }) => {
         await settingsPage.coins.enableNetwork('tada');
-        await settingsPage.coins.openNetworkAdvanceSettings('tada');
+        // await settingsPage.coins.openNetworkAdvanceSettings('tada');
         // await expect(settingsPage.modal).toHaveScreenshot('cardano-advanced-settings.png', {
         //     mask: [settingsPage.coins.coinAddressInput],
         // });
-        await settingsPage.modalCloseButton.click();
+        // await settingsPage.modalCloseButton.click();
 
         await test.step('Verify Cardano account details', async () => {
             await dashboardPage.navigateTo();
@@ -55,7 +55,10 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
             await walletPage.receiveButton.click();
             await walletPage.revealAddressButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await expect(devicePrompt).toDisplayReceiveAddress(receiveAddress, 'fullLine');
+            await expect(devicePrompt).toDisplayReceiveAddress(receiveAddress, {
+                lineFormat: 'fullLine',
+                specialAccountType: 'Legacy Testnet',
+            });
             await trezorUserEnvLink.pressYes();
             await expect(walletPage.copyAddressButton).toBeEnabled();
             await expect(devicePrompt.outputValue).toHaveText(formatAddress(receiveAddress));
