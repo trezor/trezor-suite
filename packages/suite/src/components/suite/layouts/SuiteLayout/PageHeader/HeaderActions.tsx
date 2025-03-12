@@ -1,114 +1,35 @@
-import styled from 'styled-components';
+import { ButtonGroup, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { ButtonGroup, Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
-import { spacingsPx } from '@trezor/theme';
-
-import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { Translation } from 'src/components/suite/Translation';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { selectWindowSize } from 'src/reducers/suite/windowReducer';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { WalletParams } from 'src/types/wallet';
 
-const Container = styled.div`
-    display: flex;
-    align-items: center;
-    gap: ${spacingsPx.xxs};
-`;
-
-type ActionItem = {
-    id: string;
-    icon?: IconName;
-    callback: () => void;
-    title: JSX.Element;
-    'data-testid'?: string;
-    isHidden?: boolean;
-};
+import { HeaderDropdown } from './HeaderDropdown';
+import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 
 export const HeaderActions = () => {
+    const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-
-    const dispatch = useDispatch();
     const { device } = useDevice();
-    const layoutSize = useSelector(selectWindowSize);
-    const showTradingButtons = layoutSize === 'XLARGE';
 
     const accountType = account?.accountType || routerParams?.accountType || '';
-
-    const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
-        if (account?.symbol) {
-            analytics.report({
-                type: EventType.AccountsActions,
-                payload: { symbol: account.symbol, action: routeName },
-            });
-        }
-        dispatch(goto(routeName, options));
-    };
-
-    const additionalActions: ActionItem[] = [
-        {
-            id: 'wallet-sign-verify',
-            callback: () => {
-                goToWithAnalytics('wallet-sign-verify', { preserveParams: true });
-            },
-            title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
-            icon: 'pencilUnderscored',
-            // show dots when acc missing as they are hidden only in case of XRP
-            isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
-        },
-        {
-            id: 'wallet-trading-buy',
-            callback: () => {
-                goToWithAnalytics('wallet-trading-buy', { preserveParams: true });
-            },
-            title: <Translation id="TR_TRADING_BUY_AND_SELL" />,
-            icon: 'currencyCircleDollar',
-            isHidden: showTradingButtons,
-        },
-    ];
-
-    const visibleAdditionalActions = additionalActions?.filter(action => !action.isHidden);
-
     const isTradingAvailable = !['coinjoin'].includes(accountType);
     const isAccountLoading = selectedAccount.status === 'loading';
-
     const isDeviceConnected = device?.connected && device?.available;
+    const buttonVariant = isDeviceConnected ? 'primary' : 'tertiary';
 
     return (
-        <Container>
-            {visibleAdditionalActions?.length > 0 && (
-                <AppNavigationTooltip>
-                    <Dropdown
-                        placement={{ position: 'bottom', alignment: 'start' }}
-                        isDisabled={isAccountLoading}
-                        data-testid="@wallet/menu/extra-dropdown"
-                        items={[
-                            {
-                                key: 'extra',
-                                options: visibleAdditionalActions.map<DropdownMenuItemProps>(
-                                    item => ({
-                                        key: item.id,
-                                        onClick: isAccountLoading ? undefined : item.callback,
-                                        label: item.title,
-                                        'data-testid': `@wallet/menu/${item.id}`,
-                                    }),
-                                ),
-                            },
-                        ]}
-                    />
-                </AppNavigationTooltip>
-            )}
+        <Row gap={spacings.xxs} alignItems="center">
+            <HeaderDropdown isDisabled={isAccountLoading} showSignAndVerify />
 
-            {isTradingAvailable && (
-                <TradeActions selectedAccount={selectedAccount} hideBuyAndSellBelowDesktop />
-            )}
+            {isTradingAvailable && <TradeActions selectedAccount={selectedAccount} />}
 
             <AppNavigationTooltip>
                 <ButtonGroup size="small" isDisabled={isAccountLoading}>
@@ -119,7 +40,7 @@ export const HeaderActions = () => {
                             goToWithAnalytics('wallet-send', { preserveParams: true });
                         }}
                         data-testid="@wallet/menu/wallet-send"
-                        variant={isDeviceConnected ? 'primary' : 'tertiary'}
+                        variant={buttonVariant}
                     >
                         <Translation id="TR_NAV_SEND" />
                     </HeaderActionButton>
@@ -131,12 +52,12 @@ export const HeaderActions = () => {
                             goToWithAnalytics('wallet-receive', { preserveParams: true });
                         }}
                         data-testid="@wallet/menu/wallet-receive"
-                        variant={isDeviceConnected ? 'primary' : 'tertiary'}
+                        variant={buttonVariant}
                     >
                         <Translation id="TR_NAV_RECEIVE" />
                     </HeaderActionButton>
                 </ButtonGroup>
             </AppNavigationTooltip>
-        </Container>
+        </Row>
     );
 };

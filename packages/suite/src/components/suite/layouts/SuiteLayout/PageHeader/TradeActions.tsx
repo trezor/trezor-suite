@@ -1,9 +1,8 @@
-import styled, { css } from 'styled-components';
-
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
-import { Row, variables } from '@trezor/components';
+import { Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { breakpointThresholds } from '@trezor/styles';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -14,25 +13,13 @@ import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/Pag
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 
-// instant without computing the layout
-const ShowOnLargeDesktopWrapper = styled.div<{ $isActive?: boolean }>`
-    ${({ $isActive }) =>
-        $isActive &&
-        css`
-            ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
-                display: none;
-            }
-        `}
-`;
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
+
 interface TradeActionsProps {
     selectedAccount?: SelectedAccountStatus;
-    hideBuyAndSellBelowDesktop?: boolean;
 }
 
-export const TradeActions = ({
-    selectedAccount,
-    hideBuyAndSellBelowDesktop,
-}: TradeActionsProps) => {
+export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     const dispatch = useDispatch();
     const account = selectedAccount?.account;
     const device = useSelector(selectSelectedDevice);
@@ -59,10 +46,14 @@ export const TradeActions = ({
 
     const isAccountLoading = selectedAccount ? selectedAccount.status === 'loading' : false;
 
+    const { contentWidth } = useResponsiveContext();
+    const isContentAreaLarge = contentWidth ? contentWidth > breakpointThresholds.lg : true;
+    const isContentAreaMedium = contentWidth ? contentWidth > breakpointThresholds.md : true;
+
     return (
         <Row gap={spacings.xxs}>
             <AppNavigationTooltip>
-                <ShowOnLargeDesktopWrapper $isActive={hideBuyAndSellBelowDesktop}>
+                {isContentAreaLarge && (
                     <HeaderActionButton
                         icon="currencyCircleDollar"
                         onClick={() => {
@@ -77,8 +68,8 @@ export const TradeActions = ({
                     >
                         <Translation id="TR_TRADING_BUY_AND_SELL" />
                     </HeaderActionButton>
-                </ShowOnLargeDesktopWrapper>
-                {!hasBitcoinOnlyFirmware(device) && (
+                )}
+                {!hasBitcoinOnlyFirmware(device) && isContentAreaMedium && (
                     <HeaderActionButton
                         icon="arrowsLeftRight"
                         onClick={() => {

@@ -3,7 +3,8 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Route } from '@suite-common/suite-types';
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { Row } from '@trezor/components';
+import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
@@ -12,6 +13,7 @@ import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/rout
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 import { HeaderActions } from './HeaderActions';
+import { HeaderDropdown } from './HeaderDropdown';
 import { PageName } from './PageNames/PageName';
 
 const Container = styled.div`
@@ -49,7 +51,13 @@ export const PageHeader = ({ backRoute, children }: PageHeaderProps) => {
     ) : (
         <Container>
             <PageName backRoute={backRoute} />
-            {routeName === 'suite-index' && <TradeActions />}
+
+            {routeName === 'suite-index' && (
+                <Row gap={spacings.xxs}>
+                    <HeaderDropdown />
+                    <TradeActions />
+                </Row>
+            )}
             {!!selectedAccount && isAccountTabPage && <HeaderActions />}
         </Container>
     );

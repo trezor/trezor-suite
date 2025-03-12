@@ -1,7 +1,7 @@
 import { Button, ButtonProps, IconButton, IconButtonProps } from '@trezor/components';
+import { breakpointThresholds } from '@trezor/styles';
 
-import { useSelector } from 'src/hooks/suite';
-import { selectWindowSize } from 'src/reducers/suite/windowReducer';
+import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 
 export const HeaderActionButton = ({
     icon,
@@ -13,12 +13,11 @@ export const HeaderActionButton = ({
     children,
 }: Pick<ButtonProps, 'onClick' | 'data-testid' | 'variant' | 'size' | 'isDisabled' | 'children'> &
     Pick<IconButtonProps, 'icon'>) => {
-    const layoutSize = useSelector(selectWindowSize);
-
-    const isMobileLayout = layoutSize === 'TINY';
+    const { contentWidth } = useResponsiveContext();
+    const isContentAreaSmall = contentWidth ? contentWidth < breakpointThresholds.sm : false;
     const commonProps = { icon, onClick, 'data-testid': dataTestId, variant, size, isDisabled };
 
-    return isMobileLayout ? (
+    return isContentAreaSmall ? (
         <IconButton {...commonProps} />
     ) : (
         <Button {...commonProps}>{children}</Button>
