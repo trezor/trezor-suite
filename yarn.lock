@@ -8756,14 +8756,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-viewport@npm:^8.5.4":
-  version: 8.5.6
-  resolution: "@storybook/addon-viewport@npm:8.5.6"
+"@storybook/addon-viewport@npm:^8.6.4":
+  version: 8.6.4
+  resolution: "@storybook/addon-viewport@npm:8.6.4"
   dependencies:
     memoizerific: "npm:^1.11.3"
   peerDependencies:
-    storybook: ^8.5.6
-  checksum: 10/05572c742308e7a2caf9a1771c42420fb46a793024d90e6fc7fd2d8b71d5b86e80b6224ae01e1045fce873fed44c342797d2f3ff00371f2140703e4be0521d4d
+    storybook: ^8.6.4
+  checksum: 10/21e490f2e546afeaf74180b54137a0bc3de5a58e99ebc8e3adef07f9d0b8d9f0c50c1420bf6e6d956f74247d390938db78e446c2e3b0159a466cf36d3e69b6ff
   languageName: node
   linkType: hard
 
@@ -11566,7 +11566,7 @@ __metadata:
     "@storybook/addon-controls": "npm:^8.6.4"
     "@storybook/addon-docs": "npm:^8.6.4"
     "@storybook/addon-links": "npm:^8.6.4"
-    "@storybook/addon-viewport": "npm:^8.5.4"
+    "@storybook/addon-viewport": "npm:^8.6.4"
     "@storybook/addons": "npm:^7.6.17"
     "@storybook/client-api": "npm:^7.6.17"
     "@storybook/react": "npm:^8.5.4"
@@ -12081,7 +12081,7 @@ __metadata:
     "@storybook/addon-actions": "npm:^8.6.4"
     "@storybook/addon-controls": "npm:^8.6.4"
     "@storybook/addon-links": "npm:^8.6.4"
-    "@storybook/addon-viewport": "npm:^8.5.4"
+    "@storybook/addon-viewport": "npm:^8.6.4"
     "@storybook/addons": "npm:^7.6.17"
     "@storybook/client-api": "npm:^7.6.17"
     "@storybook/react": "npm:^8.5.4"

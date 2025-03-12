@@ -40,7 +40,7 @@
         "@storybook/addon-actions": "^8.6.4",
         "@storybook/addon-controls": "^8.6.4",
         "@storybook/addon-links": "^8.6.4",
-        "@storybook/addon-viewport": "^8.5.4",
+        "@storybook/addon-viewport": "^8.6.4",
         "@storybook/addons": "^7.6.17",
         "@storybook/client-api": "^7.6.17",
         "@storybook/react": "^8.5.4",
