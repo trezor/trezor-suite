@@ -12,6 +12,8 @@ export class BackupSection {
     readonly madeNoDigitalCopyCheckbox: Locator;
     readonly willHideSeedCheckbox: Locator;
     readonly closeButton: Locator;
+    readonly noDeviceModal: Locator;
+    readonly errorModal: Locator;
 
     constructor(
         private page: Page,
@@ -29,6 +31,8 @@ export class BackupSection {
         );
         this.willHideSeedCheckbox = page.getByTestId('@backup/check-item/will-hide-seed');
         this.closeButton = page.getByTestId('@backup/close-button');
+        this.noDeviceModal = page.getByTestId('@backup/no-device');
+        this.errorModal = page.getByTestId('@backup/error-message');
     }
 
     @step()

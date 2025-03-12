@@ -14,8 +14,7 @@ test.describe('Backup fail', { tag: ['@group=device-management'] }, () => {
         await analytics.interceptAnalytics();
     });
 
-    //TEST: #17241 Fix unstable test
-    test.skip('Device disconnected during action', async ({
+    test('Device disconnected during action', async ({
         page,
         analytics,
         onboardingPage,
@@ -23,25 +22,30 @@ test.describe('Backup fail', { tag: ['@group=device-management'] }, () => {
         devicePrompt,
         trezorUserEnvLink,
     }) => {
-        await dashboardPage.notificationNoBackupButton.click();
-        await onboardingPage.backup.understandWhatSeedIsCheckbox.click();
-        await onboardingPage.backup.hasEnoughTimeCheckbox.click();
-        await onboardingPage.backup.isInPrivateCheckbox.click();
-        await onboardingPage.backup.startButton.click();
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.stopEmu();
+        await test.step('Start backup', async () => {
+            await dashboardPage.notificationNoBackupButton.click();
+            await onboardingPage.backup.understandWhatSeedIsCheckbox.click();
+            await onboardingPage.backup.hasEnoughTimeCheckbox.click();
+            await onboardingPage.backup.isInPrivateCheckbox.click();
+            await onboardingPage.backup.startButton.click();
+            await devicePrompt.waitForPromptAndConfirm();
+        });
 
-        // This screen is not always visible. Sometimes it goes directly to '@backup/error-message'
-        // await expect(page.getByTestId('@backup/no-device')).toBeVisible();
+        await test.step('Simulate disconnect', async () => {
+            await trezorUserEnvLink.stopEmu();
+            await expect(onboardingPage.backup.noDeviceModal).toBeVisible({ timeout: 30_000 });
+        });
 
-        await trezorUserEnvLink.startEmu();
+        await test.step('Simulate reconnect and check errors', async () => {
+            await trezorUserEnvLink.startEmu();
+            await expect(page.getByTestId('@toast/backup-failed')).toBeVisible({ timeout: 30_000 });
+            await expect(onboardingPage.backup.errorModal).toBeVisible({ timeout: 30_000 });
+        });
 
-        await expect(page.getByTestId('@backup/error-message')).toBeVisible({ timeout: 30000 });
-
-        // Now go to dashboard and see if security card and notification reflects backup failed state correctly
-        await onboardingPage.backup.closeButton.click();
-        await expect(page.getByTestId('@notification/failed-backup/cta')).toBeVisible();
+        await test.step('Check dashboard notification error banner', async () => {
+            await onboardingPage.backup.closeButton.click();
+            await expect(dashboardPage.notificationFailedBackup).toBeVisible();
+        });
 
         const createBackupEvent = analytics.findAnalyticsEventByType<
             ExtractByEventType<EventType.CreateBackup>
