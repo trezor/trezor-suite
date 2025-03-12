@@ -35,6 +35,9 @@ export const cancelPrompt = (device: Device, expectResponse = true) => {
     return expectResponse ? device.transport.call(cancelArgs) : device.transport.send(cancelArgs);
 };
 
+const extractMessage = (payload?: Messages.MessageResponse) =>
+    (payload && 'message' in payload.message && payload.message.message) || '';
+
 const prompt = <E extends PromptEvents>(event: E, { device, ...rest }: DeviceEventArgs<E>) =>
     // return non nullable first arg of PromptCallback<E>
     new Promise<PromptReturnType<E>>(resolve => {
@@ -43,8 +46,8 @@ const prompt = <E extends PromptEvents>(event: E, { device, ...rest }: DeviceEve
                 response.success
                     ? resolve({
                           success: false,
-                          error: error || (response.payload?.message.message as string),
-                          message: response.payload?.message.message as string,
+                          error: error || extractMessage(response.payload),
+                          message: extractMessage(response.payload),
                           isTransportError: !response.success,
                       })
                     : resolve({

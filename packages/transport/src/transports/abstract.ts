@@ -1,4 +1,4 @@
-import { MessageFromTrezor, loadDefinitions, parseConfigure } from '@trezor/protobuf';
+import { Messages, loadDefinitions, parseConfigure } from '@trezor/protobuf';
 import { PROTOCOL_MALFORMED, TransportProtocol } from '@trezor/protocol';
 import { ScheduleActionParams, ScheduledAction, TypedEmitter, scheduleAction } from '@trezor/utils';
 
@@ -260,7 +260,7 @@ export abstract class AbstractTransport extends TransportEmitter {
             session: Session;
             protocol?: TransportProtocol;
         } & AbortableParam,
-    ): AsyncResultWithTypedError<MessageFromTrezor, ReadWriteError>;
+    ): AsyncResultWithTypedError<Messages.MessageResponse, ReadWriteError>;
 
     /**
      * Send and read after that
@@ -272,7 +272,7 @@ export abstract class AbstractTransport extends TransportEmitter {
             data: Record<string, unknown>;
             protocol?: TransportProtocol;
         } & AbortableParam,
-    ): AsyncResultWithTypedError<MessageFromTrezor, ReadWriteError>;
+    ): AsyncResultWithTypedError<Messages.MessageResponse, ReadWriteError>;
 
     /**
      * Stop transport = remove all listeners + try to release session + cancel all requests

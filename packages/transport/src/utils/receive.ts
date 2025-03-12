@@ -44,7 +44,7 @@ export async function receiveAndParse<T extends () => ReturnType<AbstractApi['re
     if (!readResult.success) return readResult;
 
     const { messageType, payload } = readResult.payload;
-    const { messageName, message } = decodeMessage(messages, messageType, payload);
+    const message = decodeMessage(messages, messageType, payload);
 
-    return success({ message, type: messageName });
+    return success(message);
 }

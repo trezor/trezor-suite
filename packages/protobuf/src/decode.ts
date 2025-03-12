@@ -1,5 +1,6 @@
 import { Field, Message as MessageType, Type } from 'protobufjs/light';
 
+import type { MessageResponse } from './messages';
 import { createMessageFromType, isPrimitiveField } from './utils';
 
 const transform = (field: Field, value: any) => {
@@ -84,5 +85,5 @@ export const decodeMessage = (
     const { Message, messageName } = createMessageFromType(messages, messageType);
     const message = decode(Message, data);
 
-    return { messageName, message };
+    return { type: messageName, message } as MessageResponse;
 };

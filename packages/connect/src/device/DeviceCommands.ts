@@ -18,20 +18,16 @@ import { initLog } from '../utils/debug';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
 import { getScriptType, getSerializedPath, isTaprootPath, toHardened } from '../utils/pathUtils';
 
-type MessageType = Messages.MessageType;
-type MessageKey = keyof MessageType;
-type TypedPayload<T extends MessageKey> = {
-    type: T;
-    message: MessageType[T];
-};
-type TypedCallResponseMap = {
-    [K in keyof MessageType]: TypedPayload<K>;
-};
-type DefaultPayloadMessage = TypedCallResponseMap[keyof MessageType];
+type TypedCall = Messages.TypedCall;
+
+export type { TypedCall };
 
 const logger = initLog('DeviceCommands');
 
-const assertType = (res: DefaultPayloadMessage, resType: MessageKey | MessageKey[]) => {
+const assertType = (
+    res: Messages.MessageResponse,
+    resType: Messages.MessageKey | Messages.MessageKey[],
+) => {
     const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
     if (!splitResTypes.includes(res.type)) {
         throw ERRORS.TypedError(
@@ -295,10 +291,10 @@ export class DeviceCommands {
     }
 
     // Sends an async message to the opened device.
-    private async call(
-        type: MessageKey,
-        msg: DefaultPayloadMessage['message'] = {},
-    ): Promise<DefaultPayloadMessage> {
+    private async call<T extends Messages.MessageKey>(
+        type: T,
+        msg: Messages.MessagePayload<T>,
+    ): Promise<Messages.MessageResponse> {
         logger.debug('Sending', type, filterForLog(type, msg));
 
         this.callPromise = this.transport.call({
@@ -327,32 +323,30 @@ export class DeviceCommands {
             filterForLog(res.payload.type, res.payload.message),
         );
 
-        // TODO: https://github.com/trezor/trezor-suite/issues/5301
-        // @ts-expect-error
         return res.payload;
     }
 
-    typedCall<T extends MessageKey, R extends MessageKey[]>(
+    typedCall<T extends Messages.MessageKey, R extends Messages.MessageKey[]>(
         type: T,
         resType: R,
-        msg?: MessageType[T],
-    ): Promise<TypedCallResponseMap[R[number]]>;
-    typedCall<T extends MessageKey, R extends MessageKey>(
+        msg?: Messages.MessagePayload<T>,
+    ): Promise<Messages.MessageResponse<R[number]>>;
+    typedCall<T extends Messages.MessageKey, R extends Messages.MessageKey>(
         type: T,
         resType: R,
-        msg?: MessageType[T],
-    ): Promise<TypedPayload<R>>;
+        msg?: Messages.MessagePayload<T>,
+    ): Promise<Messages.MessageResponse<R>>;
     async typedCall(
-        type: MessageKey,
-        resType: MessageKey | MessageKey[],
-        msg?: DefaultPayloadMessage['message'],
+        type: Messages.MessageKey,
+        resType: Messages.MessageKey | Messages.MessageKey[],
+        msg: Messages.MessagePayload = {},
     ) {
         if (this.disposed) {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
         }
         // Assert message type
         // msg is allowed to be undefined for some calls, in that case the schema is an empty object
-        Assert(Messages.MessageType.properties[type], msg ?? {});
+        Assert(Messages.MessageType.properties[type], msg);
         const response = await this._commonCall(type, msg);
         try {
             assertType(response, resType);
@@ -380,7 +374,7 @@ export class DeviceCommands {
         return response;
     }
 
-    async _commonCall(type: MessageKey, msg?: DefaultPayloadMessage['message']) {
+    async _commonCall<T extends Messages.MessageKey>(type: T, msg: Messages.MessagePayload<T>) {
         if (this.disposed) {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
         }
@@ -389,7 +383,7 @@ export class DeviceCommands {
         return this._filterCommonTypes(resp);
     }
 
-    _filterCommonTypes(res: DefaultPayloadMessage): Promise<DefaultPayloadMessage> {
+    _filterCommonTypes(res: Messages.MessageResponse): Promise<Messages.MessageResponse> {
         this.device.clearCancelableAction();
 
         if (res.type === 'Failure') {
@@ -589,5 +583,3 @@ export class DeviceCommands {
         }
     }
 }
-
-export type TypedCall = DeviceCommands['typedCall'];

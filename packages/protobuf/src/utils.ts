@@ -2,7 +2,7 @@
 
 import * as protobuf from 'protobufjs/light';
 
-import type { MessageFromTrezor } from './types';
+import type { MessageKey } from './messages';
 
 const primitiveTypes = [
     'bool',
@@ -58,13 +58,13 @@ export const createMessageFromType = (messages: protobuf.Root, messageType: numb
 
         return {
             Message,
-            messageName: messageType as MessageFromTrezor['type'],
+            messageName: messageType as MessageKey,
         };
     }
 
     const messageTypes = messages.lookupEnum('MessageType');
 
-    const messageName = messageTypes.valuesById[messageType] as MessageFromTrezor['type'];
+    const messageName = messageTypes.valuesById[messageType] as MessageKey;
 
     const Message = messages.lookupType(messageName);
 
