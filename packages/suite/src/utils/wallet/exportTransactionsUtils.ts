@@ -127,8 +127,8 @@ const loadPdfMake = async () => {
         .default;
     const fonts = (await import(/* webpackChunkName: "pdfFonts" */ 'pdfmake/build/vfs_fonts'))
         .default;
-    if (fonts?.pdfMake?.vfs) {
-        pdfMake.vfs = fonts.pdfMake.vfs;
+    if (fonts?.vfs) {
+        pdfMake.vfs = fonts.vfs;
     }
 
     return pdfMake;
