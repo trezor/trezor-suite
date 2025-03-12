@@ -58,8 +58,12 @@ export const initBackground: ModuleInitBackground = ({ mainWindowProxy, mainThre
         // when httpReceiver was asked to provide current address for given pathname
         ipcMain.handle('server/request-address', (ipcEvent, pathname) => {
             validateIpcMessage(ipcEvent);
+            const address = receiver.getRouteAddress(pathname);
+            if (address) {
+                receiver.activateRoute(pathname);
+            }
 
-            return receiver.getRouteAddress(pathname);
+            return address;
         });
 
         const connectPopupEnabled = hasSwitch('expose-connect-ws') || isDevEnv;

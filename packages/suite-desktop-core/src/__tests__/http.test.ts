@@ -27,8 +27,9 @@ describe('http receiver', () => {
 
             const address = receiver.getServerAddress();
             if (!address) return; // ts-stuff
-            const url = `http://${address.address}:${address.port}${f.path}`;
+            const url = `http://${address.address}:${address.port}${f.path}${f.search}`;
 
+            receiver.activateRoute(f.path);
             expect(spy).toHaveBeenLastCalledWith('server/listening', {
                 port: 21335,
                 address: '127.0.0.1',
