@@ -392,4 +392,25 @@ describe('HttpServer', () => {
         );
         expect(res.status).toEqual(403);
     });
+
+    test('any registered route is active  by default and can be deactivated', async () => {
+        const handler = jest.fn((_request, response) => {
+            response.end('ok');
+        });
+        server.get('/foo', [handler]);
+        server.get('/bar', [handler]);
+        await server.start();
+        const address = server.getServerAddress();
+        expect(address).toBeDefined();
+        let res = await fetch(`http://${address.address}:${address.port}/foo`);
+        expect(res.status).toEqual(200);
+        res = await fetch(`http://${address.address}:${address.port}/bar`);
+        expect(res.status).toEqual(200);
+
+        server.deactivateRoute('/foo');
+        res = await fetch(`http://${address.address}:${address.port}/foo`);
+        expect(res.status).toEqual(404);
+        res = await fetch(`http://${address.address}:${address.port}/bar`);
+        expect(res.status).toEqual(200);
+    });
 });
