@@ -3,8 +3,14 @@ import { ChangeEvent, DragEvent, MouseEvent, useCallback, useMemo, useRef, useSt
 import styled from 'styled-components';
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { Column, Icon, IconName, Paragraph, Row, useElevation } from '@trezor/components';
-import { Elevation, borders, mapElevationToBorder, spacings } from '@trezor/theme';
+import { Column, Icon, IconName, Paragraph, Row, Text, useElevation } from '@trezor/components';
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    spacings,
+} from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
@@ -140,14 +146,14 @@ export const useDropZone = ({ accept, onSelect }: DropZoneProps) => {
 };
 
 const Wrapper = styled.div<{ $elevation: Elevation }>`
-    border: ${borders.widths.large} dashed ${mapElevationToBorder};
     border-radius: ${borders.radii.xs};
+    background: ${mapElevationToBackground};
     cursor: pointer;
-    transition: background-color 0.3s;
 
     &:hover,
     &.dragging {
-        background: ${mapElevationToBorder};
+        outline: ${borders.widths.large} solid ${mapElevationToBorder};
+        outline-offset: -${borders.widths.large};
     }
 
     * {
@@ -179,11 +185,17 @@ export const DropZone = ({
             >
                 <StyledInput {...getInputProps()} />
                 <Row gap={spacings.xs}>
-                    <Icon name={iconName} />
-                    {filename || <Translation id="TR_DROPZONE" />}
+                    <Icon
+                        name={iconName}
+                        size="mediumLarge"
+                        variant={filename ? 'default' : 'tertiary'}
+                    />
+                    <Text typographyStyle="hint" variant={filename ? 'default' : 'tertiary'}>
+                        {filename || <Translation id="TR_DROPZONE" />}
+                    </Text>
                 </Row>
                 {error && (
-                    <Paragraph>
+                    <Paragraph typographyStyle="hint" variant="destructive">
                         <Translation {...error} />
                     </Paragraph>
                 )}

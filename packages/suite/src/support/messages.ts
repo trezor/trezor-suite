@@ -1524,12 +1524,16 @@ export default defineMessages({
         defaultMessage: 'Hide example',
         id: 'TR_IMPORT_CSV_MODAL_HIDE_EXAMPLE',
     },
+    TR_IMPORT_CSV_MODAL_DELIMITER: {
+        defaultMessage: 'Delimiter',
+        id: 'TR_IMPORT_CSV_MODAL_DELIMITER',
+    },
     TR_IMPORT_CSV_MODAL_DELIMITER_DEFAULT: {
-        defaultMessage: 'Auto detect delimiter',
+        defaultMessage: 'Auto',
         id: 'TR_IMPORT_CSV_MODAL_DELIMITER_DEFAULT',
     },
     TR_IMPORT_CSV_MODAL_DELIMITER_CUSTOM: {
-        defaultMessage: 'Custom delimiter',
+        defaultMessage: 'Custom',
         id: 'TR_IMPORT_CSV_MODAL_DELIMITER_CUSTOM',
     },
     TR_IMPORT_CSV_FROM_FILE: {

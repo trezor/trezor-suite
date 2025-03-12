@@ -30,7 +30,7 @@ test.describe('Import a BTC csv file', { tag: ['@group=wallet', '@webOnly'] }, (
 
         const csvFilePath = path.join(__dirname, '../../fixtures/btcTest.csv');
         await dashboardPage.modal.locator('input[type=file]').setInputFiles(csvFilePath);
-        await dashboardPage.modal.waitFor({ state: 'detached' });
+        await dashboardPage.modal.getByTestId('@import-csv/import-button').click();
 
         const csvData = fs.readFileSync(csvFilePath, 'utf8');
         const convertedData = csvToJson(csvData);

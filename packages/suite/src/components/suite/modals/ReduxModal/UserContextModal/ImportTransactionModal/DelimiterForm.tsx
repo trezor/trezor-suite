@@ -1,76 +1,55 @@
 import { useEffect, useRef, useState } from 'react';
 
-import styled from 'styled-components';
-
-import { Input, Switch, variables } from '@trezor/components';
+import { Input, Row, SelectBar } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    min-height: 36px; /* Input height */
-    margin-top: 16px;
-`;
-
-const Label = styled.span`
-    padding: 0 14px;
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    white-space: nowrap;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledInput = styled(Input)`
-    width: 120px;
-`;
-
-interface DelimiterFormProps {
+type DelimiterFormProps = {
     value?: string;
     onChange: (value?: string) => void;
-}
+};
 
 export const DelimiterForm = ({ value, onChange }: DelimiterFormProps) => {
-    const [custom, setCustom] = useState(false);
+    const [mode, setMode] = useState<'default' | 'custom'>('default');
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     // handle `custom` change and focus the input
     useEffect(() => {
+        onChange(undefined);
+
         if (inputRef.current) {
             inputRef.current.focus();
         }
-    }, [custom]);
+    }, [mode, onChange]);
 
     return (
-        <Wrapper>
-            <Switch
-                onChange={() => {
-                    if (custom) {
-                        // reset delimiter value in parent component
-                        onChange(undefined);
-                    }
-                    setCustom(!custom);
-                }}
-                isChecked={!custom}
+        <Row gap={spacings.md} justifyContent="space-between">
+            <SelectBar
+                label={<Translation id="TR_IMPORT_CSV_MODAL_DELIMITER" />}
+                options={[
+                    {
+                        label: <Translation id="TR_IMPORT_CSV_MODAL_DELIMITER_DEFAULT" />,
+                        value: 'default',
+                    },
+                    {
+                        label: <Translation id="TR_IMPORT_CSV_MODAL_DELIMITER_CUSTOM" />,
+                        value: 'custom',
+                    },
+                ]}
+                selectedOption={mode}
+                onChange={setMode}
+                size="small"
             />
-            <Label>
-                <Translation
-                    id={
-                        custom
-                            ? 'TR_IMPORT_CSV_MODAL_DELIMITER_CUSTOM'
-                            : 'TR_IMPORT_CSV_MODAL_DELIMITER_DEFAULT'
-                    }
-                />
-            </Label>
-            {custom && (
-                <StyledInput
-                    size="small"
+            {mode === 'custom' && (
+                <Input
+                    maxWidth={120}
                     onChange={({ target }) => onChange(target.value)}
                     defaultValue={value}
                     innerRef={inputRef}
+                    size="small"
                 />
             )}
-        </Wrapper>
+        </Row>
     );
 };
