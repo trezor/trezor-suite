@@ -11,6 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@braintree/sanitize-url": "^7.1.1",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "ajv": "^8.17.1"

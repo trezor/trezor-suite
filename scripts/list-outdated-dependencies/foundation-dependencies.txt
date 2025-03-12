@@ -32,6 +32,7 @@ electron-updater
 electron-localshortcut
 openpgp
 systeminformation
+@braintree/sanitize-url
 
 # FORMS
 @hookform/resolvers

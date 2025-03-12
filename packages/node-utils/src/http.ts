@@ -1,3 +1,4 @@
+import { sanitizeUrl } from '@braintree/sanitize-url';
 import * as http from 'http';
 import * as net from 'net';
 import * as url from 'url';
@@ -288,7 +289,23 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             this.logger.info(`Request ${request.method} ${request.url} aborted`);
         });
 
-        const { pathname } = url.parse(request.url, true);
+        const { protocol, hostname, pathname, query } = url.parse(request.url, true);
+
+        if (query) {
+            for (const key in query) {
+                if (Object.prototype.hasOwnProperty.call(query, key)) {
+                    const sanitized = sanitizeUrl(query[key] as string);
+                    if (sanitized !== query[key]) {
+                        response.statusCode = 403;
+
+                        return response.end();
+                    }
+                    query[key] = sanitized;
+                }
+            }
+        }
+        request.url = url.format({ protocol, hostname, pathname, query });
+
         if (!pathname) {
             const msg = `url ${request.url} could not be parsed`;
             this.emitter.emit('server/error', msg);
@@ -312,20 +329,33 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
             return;
         }
+
         const paramsSegments = pathname
             .replace(route.pathname, '')
             .split('/')
             .filter(segment => segment);
 
         const requestWithParams = request as RequestWithParams;
-        requestWithParams.params = route.params.reduce(
-            (acc, param, index) => {
-                acc[param.replace(':', '')] = paramsSegments[index];
+        try {
+            requestWithParams.params = route.params.reduce(
+                (acc, param, index) => {
+                    if (!paramsSegments[index]) return acc;
+                    const sanitized = sanitizeUrl(paramsSegments[index]);
+                    if (sanitized !== paramsSegments[index]) {
+                        throw new Error('suspicious param segment');
+                    }
 
-                return acc;
-            },
-            {} as Record<string, string>,
-        );
+                    acc[param.replace(':', '')] = sanitized;
+
+                    return acc;
+                },
+                {} as Record<string, string>,
+            );
+        } catch {
+            response.statusCode = 403;
+
+            return response.end();
+        }
 
         const handlers = [
             ...this.routes

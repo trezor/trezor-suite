@@ -1736,6 +1736,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@braintree/sanitize-url@npm:^7.1.1":
+  version: 7.1.1
+  resolution: "@braintree/sanitize-url@npm:7.1.1"
+  checksum: 10/a8a5535c5a0a459ba593a018c554b35493dff004fd09d7147db67243df83bce3d410b89ee7dc2d95cce195b85b877c72f8ca149e1040110a945d193c67293af0
+  languageName: node
+  linkType: hard
+
 "@changesets/changelog-github@npm:^0.4.8":
   version: 0.4.8
   resolution: "@changesets/changelog-github@npm:0.4.8"
@@ -12034,6 +12041,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/node-utils@workspace:packages/node-utils"
   dependencies:
+    "@braintree/sanitize-url": "npm:^7.1.1"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     ajv: "npm:^8.17.1"
