@@ -91,7 +91,7 @@ export const prepareRootReducers = async () => {
         send: sendFormReducer,
         fees: feesReducer,
         stake: stakeReducer,
-        trading: tradingPersistedReducer,
+        tradingNew: tradingPersistedReducer,
     });
 
     const walletPersistedReducer = await preparePersistReducer({

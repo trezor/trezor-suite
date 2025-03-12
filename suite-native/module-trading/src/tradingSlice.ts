@@ -23,7 +23,7 @@ export interface TradingState extends CommonTradingState {
 
 export type TradingRootState = {
     wallet: {
-        trading: TradingState;
+        tradingNew: TradingState;
     };
 };
 
@@ -76,10 +76,10 @@ export const {
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
 
-export const selectTradingBuy = (state: TradingRootState) => state.wallet.trading.buy;
+export const selectTradingBuy = (state: TradingRootState) => state.wallet.tradingNew.buy;
 
 export const selectTradingFavouriteAssets = (state: TradingRootState) =>
-    state.wallet.trading.favouriteAssets;
+    state.wallet.tradingNew.favouriteAssets;
 
 export const selectTradingFavouriteAssetsArray = createMemoizedSelector(
     [selectTradingFavouriteAssets],
@@ -95,4 +95,4 @@ export const selectBuySelectedReceiveAccount = (state: TradingRootState) =>
     selectTradingBuy(state).selectedReceiveAccount;
 
 export const selectTradingEnvironment = (state: TradingRootState) =>
-    state.wallet.trading.tradingEnvironment;
+    state.wallet.tradingNew.tradingEnvironment;

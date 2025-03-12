@@ -72,7 +72,7 @@ describe('tradingSlice', () => {
                 }),
             );
 
-            expect(selectBuySelectedReceiveAccount({ wallet: { trading: state } })).toBe(
+            expect(selectBuySelectedReceiveAccount({ wallet: { tradingNew: state } })).toBe(
                 receiveAccount,
             );
         });
@@ -88,7 +88,9 @@ describe('tradingSlice', () => {
             ];
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
-            expect(selectBuySelectedReceiveAccount({ wallet: { trading: state } })).toBeUndefined();
+            expect(
+                selectBuySelectedReceiveAccount({ wallet: { tradingNew: state } }),
+            ).toBeUndefined();
         });
 
         describe('favouriteAssets', () => {
@@ -109,7 +111,7 @@ describe('tradingSlice', () => {
                 ];
                 const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
-                expect(selectTradingFavouriteAssets({ wallet: { trading: state } })).toEqual({
+                expect(selectTradingFavouriteAssets({ wallet: { tradingNew: state } })).toEqual({
                     btc_abc: {
                         symbol: 'btc',
                         contractAddress: 'abc',
@@ -141,11 +143,13 @@ describe('tradingSlice', () => {
                         addTradeableAssetToFavourites({ symbol: 'btc' }),
                     );
 
-                    expect(selectTradingFavouriteAssets({ wallet: { trading: state } })).toEqual({
-                        btc: {
-                            symbol: 'btc',
+                    expect(selectTradingFavouriteAssets({ wallet: { tradingNew: state } })).toEqual(
+                        {
+                            btc: {
+                                symbol: 'btc',
+                            },
                         },
-                    });
+                    );
                 });
 
                 it('removeTradeableAssetFromFavourites should remove asset from favourites', () => {
@@ -154,7 +158,7 @@ describe('tradingSlice', () => {
                         removeTradeableAssetFromFavourites({ symbol: 'btc' }),
                     );
 
-                    expect(selectTradingFavouriteAssets({ wallet: { trading: state } })).toEqual(
+                    expect(selectTradingFavouriteAssets({ wallet: { tradingNew: state } })).toEqual(
                         {},
                     );
                 });
@@ -166,13 +170,13 @@ describe('tradingSlice', () => {
                     );
 
                     const favouritesArray = selectTradingFavouriteAssetsArray({
-                        wallet: { trading: state },
+                        wallet: { tradingNew: state },
                     });
 
                     expect(favouritesArray).toEqual([{ symbol: 'btc' }]);
-                    expect(selectTradingFavouriteAssetsArray({ wallet: { trading: state } })).toBe(
-                        favouritesArray,
-                    );
+                    expect(
+                        selectTradingFavouriteAssetsArray({ wallet: { tradingNew: state } }),
+                    ).toBe(favouritesArray);
                 });
 
                 it.each([
@@ -186,7 +190,7 @@ describe('tradingSlice', () => {
 
                         expect(
                             selectIsTradingFavouriteAsset(
-                                { wallet: { trading: prevState } },
+                                { wallet: { tradingNew: prevState } },
                                 asset,
                             ),
                         ).toBe(expectedValue);
@@ -200,7 +204,7 @@ describe('tradingSlice', () => {
         it('should have production as initial trading environment', () => {
             const state = tradingReducer(undefined, { type: 'undefined_action' });
 
-            expect(selectTradingEnvironment({ wallet: { trading: state } })).toBe('production');
+            expect(selectTradingEnvironment({ wallet: { tradingNew: state } })).toBe('production');
         });
 
         it('should correctly select trading environment', () => {
@@ -209,7 +213,7 @@ describe('tradingSlice', () => {
                 tradingEnvironment: 'staging' as InvityServerEnvironment,
             };
 
-            expect(selectTradingEnvironment({ wallet: { trading: state } })).toBe('staging');
+            expect(selectTradingEnvironment({ wallet: { tradingNew: state } })).toBe('staging');
         });
     });
 });

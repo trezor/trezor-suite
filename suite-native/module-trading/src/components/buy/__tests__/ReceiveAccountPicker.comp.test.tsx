@@ -42,7 +42,7 @@ const btcAccount: Account = {
 
 const getBuyState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
     wallet: {
-        trading: {
+        tradingNew: {
             buy: {
                 selectedReceiveAccount,
             },
