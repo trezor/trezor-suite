@@ -72,6 +72,7 @@ type Route = {
     pathname: string;
     params: string[];
     handler: AnyRequestHandler[];
+    isActive: boolean;
 };
 /**
  * Events that may be emitted or listened to by HttpServer
@@ -218,6 +219,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             pathname: `/${basePathname}`,
             params: paramsSegments,
             handler,
+            isActive: true,
         });
     }
 
@@ -243,7 +245,22 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             pathname: '*',
             handler,
             params: [],
+            isActive: true,
         });
+    }
+
+    public activateRoute(pathname: string) {
+        const route = this.routes.find(r => r.pathname === pathname);
+        if (route) {
+            route.isActive = true;
+        }
+    }
+
+    public deactivateRoute(pathname: string) {
+        const route = this.routes.find(r => r.pathname === pathname);
+        if (route) {
+            route.isActive = false;
+        }
     }
 
     /**
@@ -326,6 +343,13 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         if (!route.handler.length) {
             this.emitter.emit('server/error', `No handlers registered for route ${pathname}`);
             this.logger.warn(`No handlers registered for route ${pathname}`);
+
+            return;
+        }
+
+        if (!route.isActive) {
+            response.statusCode = 404;
+            response.end();
 
             return;
         }
