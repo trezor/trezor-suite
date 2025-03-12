@@ -14,6 +14,7 @@
         "core:web": "PROJECT=\"suite-web\" yarn workspace @trezor/connect-iframe build:core-module",
         "web": "yarn run core:web && PROJECT=web yarn run base",
         "dev:web": "yarn run web",
+        "dev:web:vite": "vite",
         "build:web": "NODE_ENV=production yarn run web",
         "desktop": "PROJECT=desktop yarn run base",
         "dev:desktop": "yarn run desktop",
@@ -46,6 +47,7 @@
     },
     "devDependencies": {
         "@babel/plugin-proposal-class-properties": "^7.18.6",
+        "@originjs/vite-plugin-commonjs": "^1.0.3",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
         "@sentry/webpack-plugin": "^2.22.7",
         "@trezor/eslint": "workspace:*",
@@ -53,6 +55,9 @@
         "@types/node-fetch": "^2.6.12",
         "@types/webpack-bundle-analyzer": "^4.7.0",
         "@types/webpack-plugin-serve": "^1.4.6",
-        "react-refresh": "^0.14.0"
+        "@vitejs/plugin-react": "^4.2.1",
+        "react-refresh": "^0.14.0",
+        "vite": "^6.2.1",
+        "vite-plugin-wasm": "^3.4.1"
     }
 }

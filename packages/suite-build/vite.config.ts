@@ -7,9 +7,7 @@ import { Plugin, ViteDevServer, defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
 
 import { suiteVersion } from '../suite/package.json';
-
-// Use require instead of import for TypeScript files
-const { assetPrefix, project } = require('../suite-build/utils/env');
+import { assetPrefix, project } from './utils/env';
 
 // Plugin to serve static files with /static prefix
 const staticAliasPlugin = (): Plugin => ({
@@ -158,7 +156,7 @@ if (typeof window !== 'undefined' && typeof globalThis === 'undefined') {
 };
 
 export default defineConfig({
-    root: './src/static',
+    root: '../suite-web/src/static',
     cacheDir: resolve(__dirname, '../../node_modules/.vite'),
     base: assetPrefix,
     // Use suite-data/files as the public directory
