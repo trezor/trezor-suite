@@ -40,7 +40,7 @@ import {
 import { FeeLevel } from '@trezor/connect';
 import { Timer } from '@trezor/react-utils';
 
-import { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
+import { TradingExchangeInfoSelector } from 'src/actions/wallet/tradingExchangeActions';
 import { TradingSellInfoSelector } from 'src/actions/wallet/tradingSellActions';
 import type { TranslationKey } from 'src/components/suite/Translation';
 import {
@@ -241,7 +241,7 @@ export interface TradingExchangeFormContextProps
     exchangeStep: TradingExchangeStepType;
     feeInfo: FeeInfo;
 
-    exchangeInfo?: ExchangeInfo;
+    exchangeInfo?: TradingExchangeInfoSelector;
     defaultCurrency: Option;
     amountLimits?: CryptoAmountLimitProps;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;

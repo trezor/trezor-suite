@@ -2,7 +2,8 @@ import { CryptoId, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { invityAPI } from '@suite-common/trading';
 
-import { tradingReducer } from 'src/reducers/wallet/tradingReducer';
+import { AppState } from 'src/reducers/store';
+import { selectTradingExchangeInfo, tradingReducer } from 'src/reducers/wallet/tradingReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 
 import * as tradingExchangeActions from '../tradingExchangeActions';
@@ -108,7 +109,7 @@ describe('Trading Exchange Actions', () => {
 
         return tradingExchangeActions.loadExchangeInfo().then(exchangeInfo => {
             store.dispatch(tradingExchangeActions.saveExchangeInfo(exchangeInfo));
-            expect(store.getState().wallet.trading.exchange.exchangeInfo).toEqual({
+            expect(selectTradingExchangeInfo(store.getState() as AppState)).toEqual({
                 exchangeList,
                 providerInfos: { changenow: exchangeList[0], changenowfr: exchangeList[1] },
                 buySymbols: new Set<string>(['XMR', 'BTC', 'ETH', 'BCH']),

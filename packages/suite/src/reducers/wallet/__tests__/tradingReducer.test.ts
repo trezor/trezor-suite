@@ -156,8 +156,8 @@ describe('settings reducer', () => {
     it('TRADING_EXCHANGE.SAVE_EXCHANGE_INFO', () => {
         const exchangeInfo: ExchangeInfo = {
             providerInfos: {},
-            buySymbols: new Set(['BTC', 'ETH']) as Set<CryptoId>,
-            sellSymbols: new Set(['USDT@ETH']) as Set<CryptoId>,
+            buySymbols: ['BTC', 'ETH'] as CryptoId[],
+            sellSymbols: ['USDT@ETH'] as CryptoId[],
         };
         expect(
             tradingReducer(undefined, {

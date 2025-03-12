@@ -26,7 +26,10 @@ import {
     TRADING_INFO,
     TRADING_SELL,
 } from 'src/actions/wallet/constants';
-import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
+import type {
+    ExchangeInfo,
+    TradingExchangeInfoSelector,
+} from 'src/actions/wallet/tradingExchangeActions';
 import type { SellInfo, TradingSellInfoSelector } from 'src/actions/wallet/tradingSellActions';
 import { AppState } from 'src/reducers/store';
 import { Action } from 'src/types/suite';
@@ -226,19 +229,29 @@ export const selectTradingSellInfo = createMemoizedSelector(
     },
 );
 
+export const selectTradingExchangeInfo = createMemoizedSelector(
+    [state => state.wallet.trading.exchange],
+    (exchange): TradingExchangeInfoSelector | undefined => {
+        const { exchangeInfo } = exchange;
+
+        if (!exchangeInfo) return;
+
+        return {
+            ...exchangeInfo,
+            buySymbols: new Set(exchangeInfo.buySymbols),
+            sellSymbols: new Set(exchangeInfo.sellSymbols),
+        };
+    },
+);
+
 export const selectSupportedSymbols =
     (type: TradingType) =>
     (state: AppState): Set<CryptoId> | undefined => {
-        const { trading } = state.wallet;
-
         switch (type) {
-            case 'buy': {
-                const buyInfo = selectTradingBuyInfo(state);
-
-                return buyInfo?.supportedCryptoCurrencies;
-            }
+            case 'buy':
+                return selectTradingBuyInfo(state)?.supportedCryptoCurrencies;
             case 'exchange':
-                return trading.exchange.exchangeInfo?.sellSymbols;
+                return selectTradingExchangeInfo(state)?.sellSymbols;
             case 'sell':
                 return selectTradingSellInfo(state)?.supportedCryptoCurrencies;
         }

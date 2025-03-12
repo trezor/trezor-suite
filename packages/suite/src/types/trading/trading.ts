@@ -32,7 +32,7 @@ import { StaticSessionId } from '@trezor/connect';
 import { AssetOptionBaseProps } from '@trezor/product-components';
 import { Timer } from '@trezor/react-utils';
 
-import type { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
+import type { TradingExchangeInfoSelector } from 'src/actions/wallet/tradingExchangeActions';
 import type { TradingSellInfoSelector } from 'src/actions/wallet/tradingSellActions';
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 import { State } from 'src/reducers/wallet/tradingReducer';
@@ -77,7 +77,7 @@ export type TradingTradeDetailBuySellType = BuyTrade | SellFiatTrade;
 export type TradingTradeInfoMapProps = {
     buy: TradingBuyInfoSelector;
     sell: TradingSellInfoSelector;
-    exchange: ExchangeInfo;
+    exchange: TradingExchangeInfoSelector;
 };
 
 export interface TradingGetTypedTradeProps {
@@ -93,7 +93,7 @@ export interface TradingGetDetailDataProps {
     infos: {
         buy: TradingBuyInfoSelector | undefined;
         sell: TradingSellInfoSelector | undefined;
-        exchange: ExchangeInfo | undefined;
+        exchange: TradingExchangeInfoSelector | undefined;
     };
 }
 

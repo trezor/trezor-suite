@@ -450,8 +450,8 @@ export const EXCHANGE_INFO: ExchangeInfo = {
             isRefundRequired: false,
         },
     },
-    buySymbols: new Set(),
-    sellSymbols: new Set(),
+    buySymbols: [],
+    sellSymbols: [],
 };
 export const MIN_MAX_QUOTES_OK: ExchangeTrade[] = [
     {

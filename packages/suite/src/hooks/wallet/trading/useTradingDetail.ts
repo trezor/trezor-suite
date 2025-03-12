@@ -13,7 +13,10 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { selectTradingSellInfo } from 'src/reducers/wallet/tradingReducer';
+import {
+    selectTradingExchangeInfo,
+    selectTradingSellInfo,
+} from 'src/reducers/wallet/tradingReducer';
 import {
     TradingGetDetailDataProps,
     TradingGetTypedTradeProps,
@@ -99,7 +102,7 @@ export const useTradingDetail = <T extends TradingType>({
     const { account } = selectedAccount;
     const buyInfo = useSelector(selectTradingBuyInfo);
     const sellInfo = useSelector(selectTradingSellInfo);
-    const { exchangeInfo } = trading.exchange;
+    const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const { info, transactionId, trade } = getTradingDetailData<T>({
         trading,
         tradingNew,

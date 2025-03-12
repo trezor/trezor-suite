@@ -50,6 +50,7 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { useTradingRecomposeAndSign } from 'src/hooks/wallet/useTradingRecomposeAndSign';
+import { selectTradingExchangeInfo } from 'src/reducers/wallet/tradingReducer';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import {
     TradingExchangeFormContextProps,
@@ -74,7 +75,6 @@ export const useTradingExchangeForm = ({
     const type = 'exchange';
     const isNotFormPage = pageType !== 'form';
     const {
-        exchangeInfo,
         quotesRequest,
         isFromRedirect,
         quotes,
@@ -83,6 +83,7 @@ export const useTradingExchangeForm = ({
         selectedQuote,
         addressVerified,
     } = useSelector(state => state.wallet.trading.exchange);
+    const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const { cryptoIdToCoinSymbol, buildDefaultCryptoOption } = useTradingInfo(type);
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
     const [accountKey, setAccountKey] = useTradingAccountKey({

@@ -19,9 +19,14 @@ import { TRADING_COMMON, TRADING_EXCHANGE } from './constants';
 export interface ExchangeInfo {
     exchangeList?: ExchangeListResponse;
     providerInfos: { [name: string]: ExchangeProviderInfo };
+    buySymbols: CryptoId[];
+    sellSymbols: CryptoId[];
+}
+
+export type TradingExchangeInfoSelector = Omit<ExchangeInfo, 'buySymbols' | 'sellSymbols'> & {
     buySymbols: Set<CryptoId>;
     sellSymbols: Set<CryptoId>;
-}
+};
 
 export type TradingExchangeAction =
     | { type: typeof TRADING_EXCHANGE.SAVE_EXCHANGE_INFO; exchangeInfo: ExchangeInfo }
@@ -59,32 +64,30 @@ export const loadExchangeInfo = async (): Promise<ExchangeInfo> => {
     const exchangeList = await invityAPI.getExchangeList();
 
     if (!exchangeList || exchangeList.length === 0) {
-        return { providerInfos: {}, buySymbols: new Set(), sellSymbols: new Set() };
+        return { providerInfos: {}, buySymbols: [], sellSymbols: [] };
     }
 
     const providerInfos: { [name: string]: ExchangeProviderInfo } = {};
-    exchangeList.forEach(e => (providerInfos[e.name] = e));
+    exchangeList.forEach(exchange => (providerInfos[exchange.name] = exchange));
 
     // merge symbols supported by at least one partner
-    const buySymbolsArray: CryptoId[] = [];
-    const sellSymbolsArray: CryptoId[] = [];
-    exchangeList.forEach(p => {
-        if (p.buyTickers) {
-            buySymbolsArray.push(...p.buyTickers);
+    const buySymbols: CryptoId[] = [];
+    const sellSymbols: CryptoId[] = [];
+
+    exchangeList.forEach(provider => {
+        if (provider.buyTickers) {
+            buySymbols.push(...provider.buyTickers);
         }
-        if (p.sellTickers) {
-            sellSymbolsArray.push(...p.sellTickers);
+        if (provider.sellTickers) {
+            sellSymbols.push(...provider.sellTickers);
         }
     });
-
-    const buySymbols = new Set<CryptoId>(buySymbolsArray);
-    const sellSymbols = new Set<CryptoId>(sellSymbolsArray);
 
     return {
         exchangeList,
         providerInfos,
-        buySymbols,
-        sellSymbols,
+        buySymbols: [...new Set(buySymbols)],
+        sellSymbols: [...new Set(sellSymbols)],
     };
 };
 
