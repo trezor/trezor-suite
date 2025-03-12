@@ -22,6 +22,7 @@ import { hideBin } from 'yargs/helpers';
 
     const normalizeName = (name: string) =>
         name
+            .replace(/(-1)/g, 'Negative')
             .replace(/-/g, ' ')
             .replace(/\//g, ' ')
             .replace(/[^a-zA-Z0-9 ]/g, '')
