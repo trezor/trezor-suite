@@ -7,6 +7,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" }

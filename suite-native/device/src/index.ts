@@ -10,6 +10,7 @@ export * from './components/ConnectDeviceAnimation';
 export * from './components/ConfirmOnTrezorImage';
 export * from './components/ConnectorImage';
 export * from './components/DeviceImage';
+export * from './components/ContinueOnTrezorScreenContent';
 export * from './utils';
 export * from './selectors';
 export * from './deviceThunks';

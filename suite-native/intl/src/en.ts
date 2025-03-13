@@ -859,6 +859,9 @@ export const en = {
             },
             declineButton: 'I’m not sure',
         },
+        deviceTutorialScreen: {
+            title: 'Continue with short tutorial on Trezor',
+        },
         deviceDisconnectedAlert: {
             title: 'Your Trezor has been disconnected',
             description: 'Connect your Trezor to start again.',

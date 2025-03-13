@@ -41,6 +41,7 @@ export enum DeviceOnboardingStackRoutes {
     SecurityCheck = 'SecurityCheck',
     FirmwareInstallation = 'FirmwareInstallation',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
+    DeviceTutorial = 'DeviceTutorial',
 }
 
 export enum AccountsImportStackRoutes {

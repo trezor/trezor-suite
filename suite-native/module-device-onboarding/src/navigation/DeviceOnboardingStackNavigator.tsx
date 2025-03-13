@@ -7,6 +7,7 @@ import {
 } from '@suite-native/navigation';
 
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
+import { DeviceTutorialScreen } from '../screens/DeviceTutorialScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
 import { SuspiciousDeviceScreen } from '../screens/SuspiciousDeviceScreen';
@@ -38,6 +39,10 @@ export const DeviceOnboardingStackNavigator = () => (
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate}
             component={ConfirmFirmwareUpdateScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.DeviceTutorial}
+            component={DeviceTutorialScreen}
         />
     </DeviceOnboardingStack.Navigator>
 );

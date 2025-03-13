@@ -32,6 +32,7 @@
         "@suite-native/settings": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",

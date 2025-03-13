@@ -128,6 +128,7 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.SecurityCheck]: undefined;
     [DeviceOnboardingStackRoutes.FirmwareInstallation]: undefined;
     [DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate]: undefined;
+    [DeviceOnboardingStackRoutes.DeviceTutorial]: undefined;
 };
 
 export type AccountsImportStackParamList = {

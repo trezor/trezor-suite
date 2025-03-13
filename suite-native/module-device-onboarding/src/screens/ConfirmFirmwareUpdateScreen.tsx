@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { selectIsLatestFirmwareInstalled } from '@suite-common/wallet-core';
 import { selectIsDeviceFirmwareSupported } from '@suite-native/device';
@@ -12,20 +12,17 @@ import {
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackNavigationProps,
+    StackProps,
 } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
 
-type NavigationProp = StackNavigationProps<
+export const ConfirmFirmwareUpdateScreen = ({
+    navigation,
+}: StackProps<
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate
->;
-
-export const ConfirmFirmwareUpdateScreen = () => {
-    const { showToast } = useToast();
-    const navigation = useNavigation<NavigationProp>();
+>) => {
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
     const isLatestFirmwareInstalled = useSelector(selectIsLatestFirmwareInstalled);
 
@@ -33,11 +30,8 @@ export const ConfirmFirmwareUpdateScreen = () => {
     useFocusEffect(
         useCallback(() => {
             if (isLatestFirmwareInstalled)
-                showToast({
-                    message: 'latest FW already installed, TODO: skip this screen/step',
-                    variant: 'warning',
-                });
-        }, [isLatestFirmwareInstalled, showToast]),
+                navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
+        }, [isLatestFirmwareInstalled, navigation]),
     );
 
     const handleUpdateConfirmation = () => {
@@ -45,10 +39,7 @@ export const ConfirmFirmwareUpdateScreen = () => {
     };
 
     const handleSkipUpdate = () => {
-        showToast({
-            message: 'Skipping firmware update, TODO: navigate to device AC screen',
-            variant: 'warning',
-        });
+        navigation.navigate(DeviceOnboardingStackRoutes.DeviceTutorial);
     };
 
     return (

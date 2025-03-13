@@ -5,9 +5,7 @@
         {
             "path": "../../suite-common/message-system"
         },
-        {
-            "path": "../../suite-common/trading"
-        },
+        { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-core"
         },
