@@ -23,6 +23,7 @@
         { "path": "../atoms" },
         { "path": "../settings" },
         { "path": "../tokens" },
+        { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/utils" }
     ]

@@ -39,7 +39,7 @@ const indicatorContainer = prepareNativeStyle(utils => ({
     maxWidth: '40%',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginTop: utils.spacings.sp2,
+    gap: utils.spacings.sp4,
 }));
 
 const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorProps) => {
@@ -80,19 +80,16 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                             values={{ coinName }}
                         />
                     </Text>
-                    {currentValue && (
-                        <FiatAmountFormatter
-                            symbol={symbol}
-                            value={`${currentValue}`}
-                            variant="titleSmall"
-                            isDiscreetText={false}
-                            numberOfLines={1}
-                            adjustsFontSizeToFit
-                        />
-                    )}
+                    <FiatAmountFormatter
+                        symbol={symbol}
+                        value={currentValue ? `${currentValue}` : null}
+                        variant="titleSmall"
+                        isDiscreetText={false}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                    />
                 </Box>
             </Box>
-
             <PriceChangeIndicator valuePercentageChange={valuePercentageChange} />
         </Card>
     );

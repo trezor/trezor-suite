@@ -22,6 +22,7 @@ export const FiatAmountFormatter = React.memo(
     ({
         symbol,
         value,
+        variant,
         isDiscreetText = true,
         isLoading = false,
         ...otherProps
@@ -29,16 +30,21 @@ export const FiatAmountFormatter = React.memo(
         const { FiatAmountFormatter: formatter } = useFormatters();
 
         if (!!symbol && isTestnet(symbol)) {
-            return <EmptyAmountText />;
+            return <EmptyAmountText variant={variant} />;
         }
         if (isLoading || value === null) {
-            return <EmptyAmountSkeleton />;
+            return <EmptyAmountSkeleton variant={variant} />;
         }
 
         const formattedValue = formatter.format(value);
 
         return (
-            <AmountText value={formattedValue} isDiscreetText={isDiscreetText} {...otherProps} />
+            <AmountText
+                value={formattedValue}
+                variant={variant}
+                isDiscreetText={isDiscreetText}
+                {...otherProps}
+            />
         );
     },
 );

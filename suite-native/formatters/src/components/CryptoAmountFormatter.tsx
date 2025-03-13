@@ -10,7 +10,6 @@ import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { formatNumberWithThousandCommas } from '../utils';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
-import { EmptyAmountText } from './EmptyAmountText';
 
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | null | number> &
     TextProps & {
@@ -37,10 +36,8 @@ export const CryptoAmountFormatter = React.memo(
         const { CryptoAmountFormatter: formatter } = useFormatters();
 
         if (value === null || isLoading) {
-            return <EmptyAmountSkeleton />;
+            return <EmptyAmountSkeleton variant={variant} />;
         }
-
-        if (G.isNullable(value)) return <EmptyAmountText />;
 
         const maxDisplayedDecimals = decimals ?? getNetwork(symbol).decimals;
 
