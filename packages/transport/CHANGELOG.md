@@ -1,3 +1,11 @@
+# 1.4.2
+
+-   npm-prerelease: @trezor/transport 1.4.2-beta.2 (8bac92fdc8)
+-   fix(transport): `UDP` read from buffer or promise (444ace3bb9)
+-   npm-release: @trezor/connect 9.5.2-beta.1 (#17529) (3d7542843b)
+-   feat(transport): load protobuf definitions (04cc60bd84)
+-   chore(connect): change `buildMessage` param. `encode` > `protocol` (cdd43fe629)
+
 # 1.4.1
 
 -   npm-prerelease: @trezor/transport 1.4.1-beta.1 (31d1473977)
