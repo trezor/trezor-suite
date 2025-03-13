@@ -19,7 +19,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         const daemonApp = await launchSuiteElectronApp({
             bridgeDaemon: true,
             bridgeLegacyTest: false,
-            videoFolder: testInfo.outputDir,
+            artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         });
 
@@ -29,7 +29,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
 
         // launch UI
         const suite = await launchSuite({
-            videoFolder: testInfo.outputDir,
+            artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         });
         const title = await suite.window.title();

@@ -24,7 +24,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         request,
     }, testInfo) => {
         const suite = await launchSuite({
-            videoFolder: testInfo.outputDir,
+            artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         });
         const title = await suite.window.title();
@@ -59,7 +59,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         await trezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
 
         const suite = await launchSuite({
-            videoFolder: testInfo.outputDir,
+            artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         });
         await suite.window.title();

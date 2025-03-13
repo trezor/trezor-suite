@@ -23,7 +23,7 @@ const electronSetup = async (testInfo: TestInfo, locale: string | undefined, col
     const suite = await launchSuite({
         locale,
         colorScheme,
-        videoFolder: testInfo.outputDir,
+        artefactFolder: testInfo.outputDir,
         viewport: testInfo.project.use.viewport!,
     });
 
@@ -37,6 +37,11 @@ const electronSetup = async (testInfo: TestInfo, locale: string | undefined, col
 const electronTeardown = async (suite: Suite, testInfo: TestInfo) => {
     const tracePath = `${testInfo.outputDir}/trace.electron.zip`;
     await suite.window.context().tracing.stop({ path: tracePath });
+    testInfo.attachments.push({
+        name: 'electron-logs',
+        path: `${testInfo.outputDir}/electron-app.log`,
+        contentType: 'text/plain',
+    });
     testInfo.attachments.push({
         name: 'trace',
         path: tracePath,

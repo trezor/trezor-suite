@@ -39,7 +39,7 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
     /* eslint-disable-next-line no-empty-pattern */
     test('Tor loading screen: happy path', async ({}, testInfo) => {
         const suiteArgs = {
-            videoFolder: testInfo.outputDir,
+            artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         };
         test.setTimeout(timeout);
@@ -64,7 +64,7 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
     /* eslint-disable-next-line no-empty-pattern */
     test('Tor loading screen: making sure that all the request go throw Tor', async ({}, testInfo) => {
         const suiteArgs = {
-            videoFolder: testInfo.outputDir,
+            artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         };
 
@@ -97,7 +97,7 @@ test.describe.skip('Tor loading screen', { tag: ['@group=suite', '@desktopOnly']
     /* eslint-disable-next-line no-empty-pattern */
     test('Tor loading screen: disable tor while loading', async ({}, testInfo) => {
         const suiteArgs = {
-            videoFolder: testInfo.outputDir,
+            artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         };
         test.setTimeout(timeout);
