@@ -1,3 +1,10 @@
+# 2.4.2
+
+-   npm-prerelease: @trezor/blockchain-link 2.4.2-beta.2 (8e9f390bf2)
+-   chore: update all `@solana-program/*` deps to use ones that depend on `@solana/kit` (b7446ce635)
+-   chore: replace `@solana/web3.js` with `@solana/kit` (6356bafe6d)
+-   npm-release: @trezor/connect 9.5.2-beta.1 (#17529) (3d7542843b)
+
 # 2.4.1
 
 -   npm-prerelease: @trezor/blockchain-link 2.4.1-beta.1 (be66c4683c)
