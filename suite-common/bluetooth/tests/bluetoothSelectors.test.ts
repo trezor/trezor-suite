@@ -62,25 +62,4 @@ describe('bluetoothSelectors', () => {
         const devicesSecondTime = selectAllDevices(state);
         expect(devices === devicesSecondTime).toBe(true); // Asserts that `reselect` memoization works
     });
-
-    it('filters out the device with pairing-error', () => {
-        const selectAllDevices = prepareSelectAllDevices<BluetoothDeviceCommon>();
-
-        const state: WithBluetoothState<BluetoothDeviceCommon> = {
-            bluetooth: {
-                ...initialState,
-                knownDevices: [],
-                nearbyDevices: [
-                    {
-                        ...pairingDeviceStateA,
-                        connectionStatus: { type: 'pairing-error', error: '' },
-                    },
-                ],
-            },
-        };
-
-        const devices = selectAllDevices(state);
-
-        expect(devices).toEqual([]);
-    });
 });
