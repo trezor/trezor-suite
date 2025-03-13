@@ -1,3 +1,10 @@
+# 0.3.2
+
+-   npm-prerelease: @trezor/connect-common 0.3.2-beta.2 (9c5bbd9601)
+-   npm-release: @trezor/connect 9.5.2-beta.1 (#17529) (3d7542843b)
+-   fix(connect-common): revert t3b1 min_bootloader_version bump (3f9e16c788)
+-   chore(connect-common): add fw binaries for 2.8.9 (63a69af876)
+
 # 0.3.1
 
 -   npm-prerelease: @trezor/connect-common 0.3.1-beta.1 (f652f8a255)
