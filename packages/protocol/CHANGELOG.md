@@ -1,3 +1,9 @@
+# 1.2.4
+
+-   npm-prerelease: @trezor/protocol 1.2.4-beta.2 (5ea9011fdb)
+-   npm-release: @trezor/connect 9.5.2-beta.1 (#17529) (3d7542843b)
+-   feat(protocol): add `protocol-v2` (7ff4f19571)
+
 # 1.2.3
 
 -   npm-prerelease: @trezor/protocol 1.2.3-beta.1 (71c1cd7ee3)
