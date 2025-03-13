@@ -31,7 +31,7 @@ type TabRoute = Route['name'] | undefined;
 export type NavigationItem = {
     id: Route['name'];
     callback: () => void;
-    title: JSX.Element;
+    title: React.ReactNode;
     'data-testid'?: string;
     isHidden?: boolean;
     activeRoutes?: TabRoute[];

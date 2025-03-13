@@ -23,10 +23,7 @@ import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
-import {
-    ResponsiveContextProvider,
-    useResponsiveContext,
-} from 'src/support/suite/ResponsiveContext';
+import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { MobileMenu } from './MobileMenu/MobileMenu';
@@ -159,53 +156,51 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
         <ElevationContext baseElevation={-1}>
             <Wrapper ref={wrapperRef} data-testid="@suite-layout">
                 <PageWrapper>
-                    <ResponsiveContextProvider>
-                        <NewModal.Provider>
-                            <ModalContextProvider>
-                                <Metadata title={title} />
+                    <NewModal.Provider>
+                        <ModalContextProvider>
+                            <Metadata title={title} />
 
-                                <ModalSwitcher />
+                            <ModalSwitcher />
 
-                                {isMobileLayout && <CoinjoinBars />}
+                            {isMobileLayout && <CoinjoinBars />}
 
-                                {isMobileLayout && <MobileMenu />}
+                            {isMobileLayout && <MobileMenu />}
 
-                                <DiscoveryProgress />
+                            <DiscoveryProgress />
 
-                                <LayoutContext.Provider value={setLayoutPayload}>
-                                    <Body data-testid="@suite-layout/body">
-                                        <Columns>
-                                            {!isMobileLayout && (
-                                                <ElevationDown>
-                                                    <Sidebar />
-                                                </ElevationDown>
-                                            )}
-                                            <MainContent>
-                                                {!isMobileLayout && <CoinjoinBars />}
-                                                <SuiteBanners />
-                                                <AppWrapper
-                                                    data-testid="@app"
-                                                    ref={scrollRef}
-                                                    id={SCROLL_WRAPPER_ID}
-                                                >
-                                                    <ElevationUp>
-                                                        {isMobileLayout && isAccountPage && (
-                                                            <MobileAccountsMenu />
-                                                        )}
-                                                        {layoutHeader}
+                            <LayoutContext.Provider value={setLayoutPayload}>
+                                <Body data-testid="@suite-layout/body">
+                                    <Columns>
+                                        {!isMobileLayout && (
+                                            <ElevationDown>
+                                                <Sidebar />
+                                            </ElevationDown>
+                                        )}
+                                        <MainContent>
+                                            {!isMobileLayout && <CoinjoinBars />}
+                                            <SuiteBanners />
+                                            <AppWrapper
+                                                data-testid="@app"
+                                                ref={scrollRef}
+                                                id={SCROLL_WRAPPER_ID}
+                                            >
+                                                <ElevationUp>
+                                                    {isMobileLayout && isAccountPage && (
+                                                        <MobileAccountsMenu />
+                                                    )}
+                                                    {layoutHeader}
 
-                                                        <ContentWrapper>{children}</ContentWrapper>
-                                                    </ElevationUp>
-                                                </AppWrapper>
-                                            </MainContent>
-                                        </Columns>
-                                    </Body>
-                                </LayoutContext.Provider>
+                                                    <ContentWrapper>{children}</ContentWrapper>
+                                                </ElevationUp>
+                                            </AppWrapper>
+                                        </MainContent>
+                                    </Columns>
+                                </Body>
+                            </LayoutContext.Provider>
 
-                                {!isMobileLayout && <GuideButton />}
-                            </ModalContextProvider>
-                        </NewModal.Provider>
-                    </ResponsiveContextProvider>
+                            {!isMobileLayout && <GuideButton />}
+                        </ModalContextProvider>
+                    </NewModal.Provider>
                 </PageWrapper>
 
                 <GuideRouter />

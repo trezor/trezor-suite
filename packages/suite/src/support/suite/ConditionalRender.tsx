@@ -2,10 +2,15 @@ import { useResponsiveContext } from './ResponsiveContext';
 
 export type ContainerType = 'content' | 'sidebar';
 
-export type UseConditionalRenderProps = {
+type ExclusiveWidthOrMinMaxWidth =
+    | { minWidth?: number; maxWidth?: number; width?: undefined }
+    | {
+          width?: number;
+          minWidth?: undefined;
+          maxWidth?: undefined;
+      };
+export type UseConditionalRenderProps = ExclusiveWidthOrMinMaxWidth & {
     container: ContainerType;
-    minWidth?: number;
-    maxWidth?: number;
     width?: number;
 };
 

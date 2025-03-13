@@ -28,6 +28,7 @@ import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import AppRouter from './support/Router';
 import { usePlaywright } from './support/usePlaywright';
+import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 
 const Main = () => {
     usePlaywright();
@@ -42,22 +43,24 @@ const Main = () => {
             <ConnectedThemeProvider>
                 <RouterProvider history={history}>
                     <ModalContextProvider>
-                        <ErrorBoundary>
-                            <Autodetect />
-                            <Resize />
-                            <Protocol />
-                            <OnlineStatus />
-                            <RouterHandler />
-                            <ConnectedIntlProvider>
-                                <FormatterProvider config={formattersConfig}>
-                                    <Metadata />
-                                    <ToastContainer />
-                                    <Preloader>
-                                        <AppRouter />
-                                    </Preloader>
-                                </FormatterProvider>
-                            </ConnectedIntlProvider>
-                        </ErrorBoundary>
+                        <ResponsiveContextProvider>
+                            <ErrorBoundary>
+                                <Autodetect />
+                                <Resize />
+                                <Protocol />
+                                <OnlineStatus />
+                                <RouterHandler />
+                                <ConnectedIntlProvider>
+                                    <FormatterProvider config={formattersConfig}>
+                                        <Metadata />
+                                        <ToastContainer />
+                                        <Preloader>
+                                            <AppRouter />
+                                        </Preloader>
+                                    </FormatterProvider>
+                                </ConnectedIntlProvider>
+                            </ErrorBoundary>
+                        </ResponsiveContextProvider>
                     </ModalContextProvider>
                 </RouterProvider>
             </ConnectedThemeProvider>

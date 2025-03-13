@@ -12,8 +12,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
-
-import { ConditionalRender } from '../../../../../support/suite/ConditionalRender';
+import { ConditionalRender } from 'src/support/suite/ConditionalRender';
 
 interface TradeActionsProps {
     selectedAccount?: SelectedAccountStatus;

@@ -1,7 +1,7 @@
 import { Button, ButtonProps, IconButton, IconButtonProps } from '@trezor/components';
 import { breakpointThresholds } from '@trezor/styles';
 
-import { ConditionalRender } from '../../../../../support/suite/ConditionalRender';
+import { ConditionalRender } from 'src/support/suite/ConditionalRender';
 
 export const HeaderActionButton = ({
     icon,
