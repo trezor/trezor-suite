@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
@@ -22,10 +20,6 @@ import { DropZone } from 'src/components/suite/DropZone';
 
 import { DelimiterForm } from './DelimiterForm';
 import { useExampleCSV } from './useExampleCSV';
-
-const ExampleWrapper = styled.pre`
-    font-family: monospace;
-`;
 
 type ImportTransactionModalProps = {
     onCancel: () => any;
@@ -93,8 +87,8 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
                     hasDivider={false}
                 >
                     <Card paddingType="normal">
-                        <Paragraph typographyStyle="label">
-                            <ExampleWrapper>{exampleCSV}</ExampleWrapper>
+                        <Paragraph typographyStyle="label" as="pre" isMonospaced>
+                            {exampleCSV}
                         </Paragraph>
                     </Card>
                 </CollapsibleBox>
