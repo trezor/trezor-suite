@@ -28,8 +28,11 @@ export type Suite = {
 const formatErrorLogMessage = (data: string) => {
     const red = '\x1b[31m';
     const reset = '\x1b[0m';
+    const bold = '\x1b[1m';
+    const unbold = '\x1b[22m';
+    const timestamp = new Date().toISOString();
 
-    return `${red}${data}${reset}`;
+    return `${timestamp} - ${bold}${red}ERROR${unbold}: ${data}${reset}`;
 };
 
 export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
@@ -82,7 +85,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
         });
     }
 
-    const logFilePath = path.join(options.artefactFolder, 'electron-app.log');
+    const logFilePath = path.join(options.artefactFolder, 'electron-logs.txt');
     ensureDirSync(options.artefactFolder);
     const logStream = createWriteStream(logFilePath, { flags: 'a' });
 

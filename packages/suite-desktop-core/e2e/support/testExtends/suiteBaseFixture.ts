@@ -38,8 +38,8 @@ const electronTeardown = async (suite: Suite, testInfo: TestInfo) => {
     const tracePath = `${testInfo.outputDir}/trace.electron.zip`;
     await suite.window.context().tracing.stop({ path: tracePath });
     testInfo.attachments.push({
-        name: 'electron-logs',
-        path: `${testInfo.outputDir}/electron-app.log`,
+        name: 'electron-logs.txt',
+        path: `${testInfo.outputDir}/electron-logs.txt`,
         contentType: 'text/plain',
     });
     testInfo.attachments.push({
