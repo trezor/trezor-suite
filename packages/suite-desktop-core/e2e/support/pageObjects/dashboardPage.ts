@@ -122,24 +122,22 @@ export class DashboardPage {
         await TrezorUserEnvLinkProxy.pressYes();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
 
         if (options?.skipDiscovery) {
+            await TrezorUserEnvLinkProxy.pressYes();
+
             return;
         }
 
-        await this.discoveryShouldFinish();
+        // Sometimes the pressYes action takes 5,5s and suite in meantime can finish discovery
+        // This would cause failure of the test even tho the flow continued correctly
+        // Solution is to fire both Promises asynchronously and wait for both to finish
+        await Promise.all([TrezorUserEnvLinkProxy.pressYes(), this.discoveryShouldFinish()]);
     }
 
     @step()
-    async addUnusedHiddenWallet(
-        passphrase: string,
-        // We are not waiting for discovery by expecting discovery bar to be visible for unused wallet
-        // Because sometimes the pressYes action takes 5,5s and suite in meantime can finish discovery
-        // This would cause failure of the test even tho the flow completed successfully
-        options: { skipDiscovery?: boolean } = { skipDiscovery: true },
-    ) {
-        await this.addHiddenWallet(passphrase, options);
+    async addUnusedHiddenWallet(passphrase: string) {
+        await this.addHiddenWallet(passphrase);
         await expect(
             this.openUnusedWalletButton1,
             'Expected "Yes, open" button to be enabled. Unused wallet might not finished Discovery.',
