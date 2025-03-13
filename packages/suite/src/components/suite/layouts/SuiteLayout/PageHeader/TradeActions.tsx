@@ -13,7 +13,7 @@ import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/Pag
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 
-import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
+import { ConditionalRender } from '../../../../../support/suite/ConditionalRender';
 
 interface TradeActionsProps {
     selectedAccount?: SelectedAccountStatus;
@@ -46,14 +46,10 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
 
     const isAccountLoading = selectedAccount ? selectedAccount.status === 'loading' : false;
 
-    const { contentWidth } = useResponsiveContext();
-    const isContentAreaLarge = contentWidth ? contentWidth > breakpointThresholds.lg : true;
-    const isContentAreaMedium = contentWidth ? contentWidth > breakpointThresholds.md : true;
-
     return (
         <Row gap={spacings.xxs}>
             <AppNavigationTooltip>
-                {isContentAreaLarge && (
+                <ConditionalRender container="content" minWidth={breakpointThresholds.lg}>
                     <HeaderActionButton
                         icon="currencyCircleDollar"
                         onClick={() => {
@@ -68,22 +64,24 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
                     >
                         <Translation id="TR_TRADING_BUY_AND_SELL" />
                     </HeaderActionButton>
-                )}
-                {!hasBitcoinOnlyFirmware(device) && isContentAreaMedium && (
-                    <HeaderActionButton
-                        icon="arrowsLeftRight"
-                        onClick={() => {
-                            goToWithAnalytics('wallet-trading-exchange', {
-                                preserveParams: true,
-                            });
-                        }}
-                        data-testid="@wallet/menu/wallet-trading-exchange"
-                        variant="tertiary"
-                        size="small"
-                        isDisabled={isAccountLoading}
-                    >
-                        <Translation id="TR_TRADING_SWAP" />
-                    </HeaderActionButton>
+                </ConditionalRender>
+                {!hasBitcoinOnlyFirmware(device) && (
+                    <ConditionalRender container="content" minWidth={breakpointThresholds.md}>
+                        <HeaderActionButton
+                            icon="arrowsLeftRight"
+                            onClick={() => {
+                                goToWithAnalytics('wallet-trading-exchange', {
+                                    preserveParams: true,
+                                });
+                            }}
+                            data-testid="@wallet/menu/wallet-trading-exchange"
+                            variant="tertiary"
+                            size="small"
+                            isDisabled={isAccountLoading}
+                        >
+                            <Translation id="TR_TRADING_SWAP" />
+                        </HeaderActionButton>
+                    </ConditionalRender>
                 )}
             </AppNavigationTooltip>
         </Row>

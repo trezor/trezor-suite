@@ -143,7 +143,6 @@ interface SuiteLayoutProps {
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
-    const sidebarWidthFromRedux = useSelector(state => state.suite.settings.sidebarWidth);
 
     const [{ title, layoutHeader }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
@@ -160,7 +159,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
         <ElevationContext baseElevation={-1}>
             <Wrapper ref={wrapperRef} data-testid="@suite-layout">
                 <PageWrapper>
-                    <ResponsiveContextProvider sidebarWidthFromRedux={sidebarWidthFromRedux}>
+                    <ResponsiveContextProvider>
                         <NewModal.Provider>
                             <ModalContextProvider>
                                 <Metadata title={title} />

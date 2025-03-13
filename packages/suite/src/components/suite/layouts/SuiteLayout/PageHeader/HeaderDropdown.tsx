@@ -5,7 +5,7 @@ import { breakpointThresholds } from '@trezor/styles';
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 import { useSelector } from '../../../../../hooks/suite';
 import { selectSelectedAccount } from '../../../../../reducers/wallet/selectedAccountReducer';
-import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
+import { useConditionalRender } from '../../../../../support/suite/ConditionalRender';
 import { AppNavigationTooltip } from '../../../AppNavigation/AppNavigationTooltip';
 import { Translation } from '../../../Translation';
 
@@ -23,11 +23,17 @@ type HeaderDropdownProps = {
     showSignAndVerify?: boolean;
 };
 export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdownProps) => {
-    const { contentWidth } = useResponsiveContext();
-    const isContentAreaLarge = contentWidth ? contentWidth > breakpointThresholds.lg : true;
-    const isContentAreaMedium = contentWidth ? contentWidth > breakpointThresholds.md : true;
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);
+
+    const isTradingVisible = useConditionalRender({
+        container: 'content',
+        minWidth: breakpointThresholds.lg,
+    });
+    const isSwapVisible = useConditionalRender({
+        container: 'content',
+        minWidth: breakpointThresholds.md,
+    });
 
     const additionalActions: ActionItem[] = [
         ...(showSignAndVerify
@@ -38,9 +44,9 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
                           goToWithAnalytics('wallet-sign-verify', { preserveParams: true });
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
-                      icon: 'pencilUnderscored',
+                      icon: 'pencilUnderscored' as const,
                       isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
-                  } as ActionItem,
+                  },
               ]
             : []),
         {
@@ -50,7 +56,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             },
             title: <Translation id="TR_TRADING_BUY_AND_SELL" />,
             icon: 'currencyCircleDollar',
-            isHidden: isContentAreaLarge,
+            isHidden: isTradingVisible,
         },
         {
             id: 'wallet-swap',
@@ -61,7 +67,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             },
             title: <Translation id="TR_TRADING_SWAP" />,
             icon: 'arrowsLeftRight',
-            isHidden: isContentAreaMedium,
+            isHidden: isSwapVisible,
         },
     ];
 

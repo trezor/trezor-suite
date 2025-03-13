@@ -1,7 +1,7 @@
 import { Button, ButtonProps, IconButton, IconButtonProps } from '@trezor/components';
 import { breakpointThresholds } from '@trezor/styles';
 
-import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
+import { ConditionalRender } from '../../../../../support/suite/ConditionalRender';
 
 export const HeaderActionButton = ({
     icon,
@@ -13,13 +13,16 @@ export const HeaderActionButton = ({
     children,
 }: Pick<ButtonProps, 'onClick' | 'data-testid' | 'variant' | 'size' | 'isDisabled' | 'children'> &
     Pick<IconButtonProps, 'icon'>) => {
-    const { contentWidth } = useResponsiveContext();
-    const isContentAreaSmall = contentWidth ? contentWidth < breakpointThresholds.sm : false;
     const commonProps = { icon, onClick, 'data-testid': dataTestId, variant, size, isDisabled };
 
-    return isContentAreaSmall ? (
-        <IconButton {...commonProps} />
-    ) : (
-        <Button {...commonProps}>{children}</Button>
+    return (
+        <>
+            <ConditionalRender container="content" maxWidth={breakpointThresholds.sm}>
+                <IconButton {...commonProps} />
+            </ConditionalRender>
+            <ConditionalRender container="content" minWidth={breakpointThresholds.sm}>
+                <Button {...commonProps}>{children}</Button>
+            </ConditionalRender>
+        </>
     );
 };
