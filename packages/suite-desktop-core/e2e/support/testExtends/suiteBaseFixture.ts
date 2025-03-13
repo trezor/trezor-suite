@@ -3,8 +3,8 @@ import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 
 import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
-import { TrezorUserEnvLinkProxy, getUrl, isDesktopProject } from '../common';
-import { Suite, getElectronVideoPath, launchSuite } from '../electron';
+import { TrezorUserEnvLinkProxy, getUrl, getVideoPath, isDesktopProject } from '../common';
+import { Suite, launchSuite } from '../electron';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 
@@ -27,7 +27,9 @@ const electronSetup = async (testInfo: TestInfo, locale: string | undefined, col
         viewport: testInfo.project.use.viewport!,
     });
 
-    await suite.window.context().tracing.start({ screenshots: true, snapshots: true });
+    await suite.window
+        .context()
+        .tracing.start({ screenshots: true, snapshots: true, sources: true });
 
     return suite;
 };
@@ -42,7 +44,7 @@ const electronTeardown = async (suite: Suite, testInfo: TestInfo) => {
     });
     testInfo.attachments.push({
         name: 'video',
-        path: getElectronVideoPath(testInfo.outputDir),
+        path: getVideoPath(testInfo.outputDir),
         contentType: 'video/webm',
     });
     await suite.electronApp.close();
@@ -59,6 +61,16 @@ const webSetup = async (browserContext: BrowserContext) => {
     await page.goto('./');
 
     return page;
+};
+
+const webTeardown = async (page: Page, browserContext: BrowserContext, testInfo: TestInfo) => {
+    await page.close();
+    await browserContext.close();
+    testInfo.attachments.push({
+        name: 'video',
+        path: getVideoPath(testInfo.outputDir),
+        contentType: 'video/webm',
+    });
 };
 
 const trezorEnvSetup = async (
@@ -126,11 +138,14 @@ const suiteBaseTest = base.extend<suiteBaseFixture>({
             await use(suite.window);
             await electronTeardown(suite, testInfo);
         } else {
-            const browserContext = await browser.newContext();
+            const browserContext = await browser.newContext({
+                recordVideo: {
+                    dir: testInfo.outputPath(),
+                },
+            });
             const page = await webSetup(browserContext);
             await use(page);
-            await page.close();
-            await browserContext.close();
+            await webTeardown(page, browserContext, testInfo);
         }
 
         await TrezorUserEnvLinkProxy.logTestDetails(

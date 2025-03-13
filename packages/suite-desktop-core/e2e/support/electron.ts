@@ -83,13 +83,15 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
         });
     }
 
-    // #15670 Bug in desktop app that loglevel is ignored so we conditionally don't log to stdout
+    // Electron logs so far didn't bring any value to the test logs.
+    // That is why we are logging only if LOGLEVEL is set.
     if (process.env.LOGLEVEL) {
+        // #15670 Bug in desktop app that loglevel is ignored
         electronApp.process().stdout?.on('data', data => console.log(data.toString()));
+        electronApp
+            .process()
+            .stderr?.on('data', data => console.error(formatErrorLogMessage(data.toString())));
     }
-    electronApp
-        .process()
-        .stderr?.on('data', data => console.error(formatErrorLogMessage(data.toString())));
 
     await electronApp.evaluate(
         (_, [resourcesPath]) => {
@@ -110,17 +112,4 @@ export const launchSuite = async (params: LaunchSuiteParams): Promise<Suite> => 
     const window = await electronApp.firstWindow();
 
     return { electronApp, window };
-};
-
-export const getElectronVideoPath = (videoFolder: string) => {
-    const videoFilenames = readdirSync(videoFolder).filter(file => file.endsWith('.webm'));
-    if (videoFilenames.length > 1) {
-        console.error(
-            formatErrorLogMessage(
-                `Warning: More than one electron video file found in the output directory: ${videoFolder}\nAttaching only the first one: ${videoFilenames[0]}`,
-            ),
-        );
-    }
-
-    return path.join(videoFolder, videoFilenames[0]);
 };

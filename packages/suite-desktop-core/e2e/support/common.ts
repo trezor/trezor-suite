@@ -1,5 +1,7 @@
 import test, { TestInfo } from '@playwright/test';
 import { isEqual, omit } from 'lodash';
+import { readdirSync } from 'node:fs';
+import path from 'node:path';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { splitStringEveryNCharacters } from '@trezor/utils';
@@ -63,3 +65,14 @@ export async function skipFixture({}, use: (r: void) => Promise<void>) {
     await use();
 }
 /* eslint-enable no-empty-pattern, react-hooks/rules-of-hooks */
+
+export const getVideoPath = (videoFolder: string) => {
+    const videoFilenames = readdirSync(videoFolder).filter(file => file.endsWith('.webm'));
+    if (videoFilenames.length > 1) {
+        console.error(
+            `Warning: More than one test video file found in the output directory: ${videoFolder}\nAttaching only the first one: ${videoFilenames[0]}`,
+        );
+    }
+
+    return path.join(videoFolder, videoFilenames[0]);
+};
