@@ -36,6 +36,7 @@ import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { AppRouter } from './support/Router';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
+import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 
 const Main = () => {
     useTor();
@@ -50,24 +51,26 @@ const Main = () => {
             <ConnectedThemeProvider>
                 <RouterProvider history={history}>
                     <ModalContextProvider>
-                        <ErrorBoundary>
-                            <Autodetect />
-                            <Resize />
-                            <Protocol />
-                            <OnlineStatus />
-                            <RouterHandler />
-                            <ConnectedIntlProvider>
-                                <FormatterProvider config={formattersConfig}>
-                                    <DesktopUpdater>
-                                        <Metadata />
-                                        <ToastContainer />
-                                        <Preloader>
-                                            <AppRouter />
-                                        </Preloader>
-                                    </DesktopUpdater>
-                                </FormatterProvider>
-                            </ConnectedIntlProvider>
-                        </ErrorBoundary>
+                        <ResponsiveContextProvider>
+                            <ErrorBoundary>
+                                <Autodetect />
+                                <Resize />
+                                <Protocol />
+                                <OnlineStatus />
+                                <RouterHandler />
+                                <ConnectedIntlProvider>
+                                    <FormatterProvider config={formattersConfig}>
+                                        <DesktopUpdater>
+                                            <Metadata />
+                                            <ToastContainer />
+                                            <Preloader>
+                                                <AppRouter />
+                                            </Preloader>
+                                        </DesktopUpdater>
+                                    </FormatterProvider>
+                                </ConnectedIntlProvider>
+                            </ErrorBoundary>
+                        </ResponsiveContextProvider>
                     </ModalContextProvider>
                 </RouterProvider>
             </ConnectedThemeProvider>
