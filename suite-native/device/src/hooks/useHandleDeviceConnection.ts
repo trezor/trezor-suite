@@ -128,13 +128,13 @@ export const useHandleDeviceConnection = () => {
         if (isFirmwareInstallationRunning || isSuspiciousDeviceScreenFocused) return;
 
         if (
+            isDeviceInitialized &&
             isDeviceConnected &&
             isOnboardingFinished &&
             !isPortfolioTrackerDevice &&
             !isDeviceConnectedAndAuthorized &&
             !isBiometricsOverlayVisible &&
-            !shouldNavigateToDeviceCompromisedModal &&
-            !isDeviceSetupSupported
+            !shouldNavigateToDeviceCompromisedModal
         ) {
             requestPrioritizedDeviceAccess({
                 deviceCallback: () => dispatch(authorizeDeviceThunk()),
@@ -156,7 +156,6 @@ export const useHandleDeviceConnection = () => {
         isDeviceConnected,
         isOnboardingFinished,
         isPortfolioTrackerDevice,
-        isNoPhysicalDeviceConnected,
         isDeviceConnectedAndAuthorized,
         isBiometricsOverlayVisible,
         navigation,
@@ -165,7 +164,6 @@ export const useHandleDeviceConnection = () => {
         isFirmwareInstallationRunning,
         isDeviceInitialized,
         shouldNavigateToDeviceCompromisedModal,
-        isDeviceSetupSupported,
         isSuspiciousDeviceScreenFocused,
     ]);
 
