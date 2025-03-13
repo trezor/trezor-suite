@@ -23,7 +23,6 @@ export const FeeLevel = Type.Object({
     feePerTx: Type.Optional(Type.String()), // fee for BlockchainEstimateFeeParams.request.specific
     baseFeePerGas: Type.Optional(Type.String()),
     maxFeePerGas: Type.Optional(Type.String()),
-    effectiveGasPrice: Type.Optional(Type.String()),
     customMaxBaseFeePerGas: Type.Optional(Type.String()),
     customMaxPriorityFeePerGas: Type.Optional(Type.String()),
     maxPriorityFeePerGas: Type.Optional(Type.String()),

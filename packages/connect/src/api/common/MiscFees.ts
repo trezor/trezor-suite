@@ -34,7 +34,7 @@ export class MiscFeeLevels {
         try {
             const [response] = await blockchain.estimateFee({ blocks: [1] });
 
-            //misc coins should have only one FeeLevel (normal)
+            // misc coins should have only one FeeLevel (normal)
             this.levels[0] = {
                 ...this.levels[0],
                 ...response,

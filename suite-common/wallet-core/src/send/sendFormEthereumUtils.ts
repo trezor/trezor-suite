@@ -25,7 +25,7 @@ export type CalculateEvmTxWithFeesProps = {
  */
 
 type CalculateEffectiveGasPriceProps = {
-    maxFeePerGasGwei: string;
+    maxFeePerGasGwei?: string;
     maxPriorityFeePerGasGwei?: string;
 };
 
@@ -39,10 +39,24 @@ export const calculateEffectiveGasPrice = ({
     if (!maxPriorityFeePerGasGwei) {
         maxPriorityFeePerGasGwei = '0';
     }
-    const baseFee = BigNumber(toWei(maxFeePerGasGwei, 'gwei'));
-    const priorityFee = BigNumber(toWei(maxPriorityFeePerGasGwei, 'gwei'));
+    const baseFee = new BigNumber(toWei(maxFeePerGasGwei, 'gwei'));
+    const priorityFee = new BigNumber(toWei(maxPriorityFeePerGasGwei, 'gwei'));
 
     return baseFee.plus(priorityFee).toString();
+};
+
+export const calculateEffectiveGasPriceGwei = ({
+    maxFeePerGasGwei,
+    maxPriorityFeePerGasGwei,
+}: CalculateEffectiveGasPriceProps) => {
+    if (!maxFeePerGasGwei) {
+        return undefined;
+    }
+    if (!maxPriorityFeePerGasGwei) {
+        maxPriorityFeePerGasGwei = '0';
+    }
+
+    return new BigNumber(maxFeePerGasGwei).plus(maxPriorityFeePerGasGwei).toString();
 };
 
 /**

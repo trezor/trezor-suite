@@ -49,9 +49,10 @@ export const TransactionReviewSummary = ({
     const { symbol, accountType, index, networkType } = account;
     const network = networks[symbol];
 
-    const baseFee = fees[symbol].levels[0].baseFeePerGas;
     const hasEip1559Feature = getNetworkFeatures(symbol).includes('eip1559');
-    const shouldUsePriorityFees = !!tx.fee && hasEip1559Feature && !!baseFee;
+
+    const shouldUsePriorityFees =
+        !!tx.fee && hasEip1559Feature && !!fees[symbol].levels[0].baseFeePerGas;
     const fee = getFee({ account, tx, shouldUsePriorityFees });
 
     const estimateTime = getEstimatedTime(networkType, fees[account.symbol], tx);

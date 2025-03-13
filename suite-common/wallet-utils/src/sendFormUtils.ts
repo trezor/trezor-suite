@@ -204,24 +204,10 @@ const getFeeLevels = ({ feeInfo, networkType }: GetFeeInfoProps) => {
         feePerUnit: '0',
         blocks: -1,
     });
-    const isEthereum = networkType === 'ethereum';
-    const isEip1559 = feeInfo.levels.some(level => level.maxPriorityFeePerGas);
 
-    if (isEthereum) {
-        if (isEip1559) {
-            return levels.map(level => ({
-                ...level,
-                feePerUnit: level.feePerUnit,
-                maxFeePerGas: level.maxFeePerGas,
-                maxPriorityFeePerGas: level.maxPriorityFeePerGas,
-                effectiveGasPrice: level.effectiveGasPrice,
-                feeLimit: level.feeLimit,
-            }));
-        }
-
-        // convert wei to gwei
+    if (networkType === 'ethereum') {
         return levels.map(level => {
-            const gwei = new BigNumber(fromWei(level.feePerUnit, 'gwei'));
+            const gwei = new BigNumber(fromWei(level.feePerUnit, 'gwei')); // convert wei to gwei
             // blockbook/geth may return 0 in feePerUnit. if this happens set at least minFee
             const feePerUnit =
                 level.label !== 'custom' && gwei.lt(feeInfo.minFee)
@@ -231,7 +217,6 @@ const getFeeLevels = ({ feeInfo, networkType }: GetFeeInfoProps) => {
             return {
                 ...level,
                 feePerUnit,
-                feeLimit: level.feeLimit,
             };
         });
     }

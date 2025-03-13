@@ -13,6 +13,10 @@ import styled from 'styled-components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
+    calculateEffectiveGasPrice,
+    calculateEffectiveGasPriceGwei,
+} from '@suite-common/wallet-core/src/send/sendFormEthereumUtils';
+import {
     FeeInfo,
     FormState,
     PrecomposedLevels,
@@ -45,7 +49,7 @@ export type FeeOptionType = {
     feePerUnit?: string;
     networkAmount?: string | null;
     feePerTx?: string; // Solana specific
-    maxWaitTime?: number; // Ethereum specific
+    maxWaitTimeEstimate?: number; // Ethereum specific
     effectiveGasPrice?: string; // Ethereum specific
 };
 
@@ -117,8 +121,11 @@ const buildFeeOptions = (
 
                 return {
                     ...basicFeeOption,
-                    maxWaitTime: level.maxWaitTimeEstimate,
-                    effectiveGasPrice: level.effectiveGasPrice,
+                    maxWaitTimeEstimate: level.maxWaitTimeEstimate,
+                    effectiveGasPrice: calculateEffectiveGasPriceGwei({
+                        maxFeePerGasGwei: level.baseFeePerGas,
+                        maxPriorityFeePerGasGwei: level.maxPriorityFeePerGas,
+                    }),
                 };
             });
         case 'bitcoin':

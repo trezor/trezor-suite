@@ -26,8 +26,8 @@ export const EthereumFeeCards = ({
     const isEip1559 = feeOptions[0].effectiveGasPrice !== undefined;
 
     const getTimeEstimate = (fee: FeeOptionType) => {
-        if (isEip1559) {
-            return `~${formatDurationStrict(fee.maxWaitTime || 0, locale)}`;
+        if (isEip1559 && fee.maxWaitTimeEstimate) {
+            return `~${formatDurationStrict(fee.maxWaitTimeEstimate / 1000, locale)}`;
         }
 
         return '';

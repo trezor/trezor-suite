@@ -57,7 +57,7 @@ export const networks = {
             'coin-definitions',
             'nft-definitions',
             'staking',
-            'eip1559',
+            //      'eip1559',
         ],
         backendTypes: ['blockbook'],
         accountTypes: {

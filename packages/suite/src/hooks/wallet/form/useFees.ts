@@ -109,7 +109,7 @@ export const useFees = <TFieldValues extends FormState>({
             (customMaxPriorityFeePerGasRef.current !== customMaxPriorityFeePerGas ||
                 customMaxBaseFeePerGasRef.current !== customMaxBaseFeePerGas)
         ) {
-            const effectiveGasPriceNew = calculateEffectiveGasPrice({
+            const effectiveGasPriceNew = calculateEffectiveGasPriceGwei({
                 maxPriorityFeePerGasGwei: customMaxPriorityFeePerGas,
                 maxFeePerGasGwei: customMaxBaseFeePerGas,
             });
