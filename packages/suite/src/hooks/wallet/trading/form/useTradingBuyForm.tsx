@@ -174,7 +174,9 @@ export const useTradingBuyForm = ({
                 quote,
                 timer,
                 returnUrl,
-                loginRequest: submitRequestForm,
+                loginRequest: form => {
+                    dispatch(submitRequestForm(form));
+                },
                 userConsent,
                 nextStep: () => {
                     navigateToBuyConfirm();
