@@ -9,6 +9,7 @@ import { spacings, zIndices } from '@trezor/theme';
 import { useModalTarget } from './NewModalProvider';
 import { NewModalAlignment } from './types';
 import { mapAlignmentToAlignItems, mapAlignmentToJustifyContent } from './utils';
+import { Margin } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Column } from '../Flex/Flex';
 
@@ -16,21 +17,21 @@ export type NewModalBackdropProps = {
     onClick?: () => void;
     children?: ReactNode;
     alignment?: NewModalAlignment;
-    padding?: number;
+    margin?: Margin;
 };
 
-const Wrapper = styled.div<{ $padding: number }>`
-    padding: ${({ $padding }) => $padding}px;
+const Wrapper = styled.div`
     backdrop-filter: blur(5px);
     background: rgb(0 0 0 / 30%);
-    height: 100%;
+    height: 100vh;
+    overflow: auto;
 `;
 
 export const NewModalBackdrop = ({
     onClick,
     children,
     alignment = { x: 'center', y: 'center' },
-    padding = spacings.xs,
+    margin = spacings.xs,
 }: NewModalBackdropProps) => {
     const modalTarget = useModalTarget();
 
@@ -38,12 +39,12 @@ export const NewModalBackdrop = ({
         // eslint-disable-next-line jsx-a11y/no-autofocus
         <FocusLock autoFocus={false}>
             <Box position={{ type: 'absolute', inset: 0 }} zIndex={zIndices.modal} overflow="auto">
-                <Wrapper onClick={onClick} $padding={padding}>
+                <Wrapper onClick={onClick}>
                     <Column
                         alignItems={mapAlignmentToAlignItems(alignment)}
                         justifyContent={mapAlignmentToJustifyContent(alignment)}
                         gap={spacings.md}
-                        height="100%"
+                        margin={margin}
                     >
                         {children}
                     </Column>

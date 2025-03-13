@@ -30,7 +30,6 @@ const Wrapper = styled.div<{ $isAnimationTriggered?: boolean; $isSidebarCollapse
     padding: ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md};
     align-items: center;
     border-radius: ${borders.radii.sm};
-    border: 1px solid transparent;
     transition: ${focusStyleTransition};
     white-space: nowrap;
     ${({ $isSidebarCollapsed }) =>

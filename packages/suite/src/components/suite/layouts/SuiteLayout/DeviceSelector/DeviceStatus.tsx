@@ -24,7 +24,9 @@ type DeviceStatusProps = {
 
 const DeviceWrapper = styled.div<{ $isLowerOpacity: boolean }>`
     display: flex;
+    justify-content: center;
     opacity: ${({ $isLowerOpacity }) => $isLowerOpacity && 0.4};
+    width: 24px;
 `;
 
 export const DeviceStatus = ({

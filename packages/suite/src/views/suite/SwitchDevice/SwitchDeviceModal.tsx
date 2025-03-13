@@ -38,7 +38,7 @@ export const SwitchDeviceModal = ({
     });
 
     return (
-        <NewModal.Backdrop onClick={onCancel} alignment={{ x: 'left', y: 'top' }} padding={5}>
+        <NewModal.Backdrop onClick={onCancel} alignment={{ x: 'left', y: 'top' }} margin={4}>
             <TrafficLightOffset>
                 <Container
                     onClick={e => e.stopPropagation()} // needed because of the Backdrop implementation
