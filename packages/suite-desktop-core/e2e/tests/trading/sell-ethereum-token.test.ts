@@ -36,10 +36,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, 
             await onboardingPage.completeOnboarding();
 
             await test.step('Enable Ethereum and open its token sell trading', async () => {
-                await settingsPage.navigateTo('coins');
-                await settingsPage.coins.enableNetwork('eth');
-                await settingsPage.coins.activateCoinsButton.click();
-                await dashboardPage.discoveryShouldFinish();
+                await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
                 await dashboardPage.deviceSwitchingOpenButton.click();
                 await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
                 await walletPage.openSellTradingOfToken('eth', 'USD Coin');

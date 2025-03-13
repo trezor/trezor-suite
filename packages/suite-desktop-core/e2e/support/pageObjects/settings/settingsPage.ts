@@ -1,5 +1,6 @@
 import { Locator, Page, test } from '@playwright/test';
 
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { CoinsTab } from './coinsTab';
@@ -214,5 +215,23 @@ export class SettingsPage {
         await this.page.getByTestId('@safety-checks-apply').click();
         await expect(this.confirmOnDevicePrompt).toBeVisible();
         await TrezorUserEnvLinkProxy.pressYes();
+    }
+
+    @step()
+    async changeNetworks(options: {
+        enableNetworks: NetworkSymbol[];
+        disableNetworks?: NetworkSymbol[];
+    }) {
+        await this.navigateTo('coins');
+        for (const network of options.enableNetworks) {
+            this.coins.enableNetwork(network);
+        }
+
+        for (const network of options.disableNetworks ?? []) {
+            this.coins.disableNetwork(network);
+        }
+
+        await this.coins.activateCoinsButton.click();
+        await this.discoveryShouldFinish();
     }
 }

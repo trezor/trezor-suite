@@ -26,19 +26,14 @@ test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () 
      */
     test('Go to account and try to export all possible variants (pdf, csv, json)', async ({
         page,
-        dashboardPage,
         settingsPage,
         walletPage,
         onboardingPage,
     }) => {
         const symbols: NetworkSymbol[] = ['btc', 'ltc', 'eth', 'ada'];
-        await settingsPage.navigateTo('coins');
-        for (const symbol of symbols.filter(s => s !== 'btc')) {
-            await settingsPage.coins.enableNetwork(symbol);
-        }
-
-        await dashboardPage.dashboardMenuButton.click();
-        await dashboardPage.discoveryShouldFinish();
+        await settingsPage.changeNetworks({
+            enableNetworks: symbols.filter(symbol => symbol !== 'btc'),
+        });
 
         for (const symbol of symbols) {
             await walletPage.openAccount({ symbol });

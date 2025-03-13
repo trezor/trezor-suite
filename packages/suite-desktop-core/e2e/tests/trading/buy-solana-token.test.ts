@@ -18,23 +18,18 @@ const formattedFiatAmount = `CZK ${fiatAmount}`;
 const { receiveAddress, paymentMethodName } = buyTradeSolanaToken.trade;
 
 test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () => {
-    test.beforeEach(
-        async ({ page, tradingMock, onboardingPage, settingsPage, walletPage, dashboardPage }) => {
-            await page.route(invityEndpoint.buyQuotes, async route => {
-                await route.fulfill({ json: buyQuotesSolanaToken });
-            });
-            await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeSolanaToken);
-            await onboardingPage.completeOnboarding();
+    test.beforeEach(async ({ page, tradingMock, onboardingPage, settingsPage, walletPage }) => {
+        await page.route(invityEndpoint.buyQuotes, async route => {
+            await route.fulfill({ json: buyQuotesSolanaToken });
+        });
+        await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeSolanaToken);
+        await onboardingPage.completeOnboarding();
 
-            await test.step('Enable Solana and open its trading', async () => {
-                await settingsPage.navigateTo('coins');
-                await settingsPage.coins.enableNetwork('sol');
-                await dashboardPage.navigateTo();
-                await dashboardPage.discoveryShouldFinish();
-                await walletPage.openTrading({ symbol: 'sol' });
-            });
-        },
-    );
+        await test.step('Enable Solana and open its trading', async () => {
+            await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+            await walletPage.openTrading({ symbol: 'sol' });
+        });
+    });
 
     test('Buy Solana Jupiter token - amount specified in crypto', async ({ page, tradingPage }) => {
         await test.step('Request a specific crypto amount of Jupiter token to buy', async () => {

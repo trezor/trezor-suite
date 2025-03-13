@@ -51,10 +51,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
             await onboardingPage.completeOnboarding();
 
             await test.step('Enable Solana and open its sell trading', async () => {
-                await settingsPage.navigateTo('coins');
-                await settingsPage.coins.enableNetwork('sol');
-                await settingsPage.coins.activateCoinsButton.click();
-                await dashboardPage.discoveryShouldFinish();
+                await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
                 await dashboardPage.deviceSwitchingOpenButton.click();
                 await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
                 await walletPage.openTrading({ symbol: 'sol' });

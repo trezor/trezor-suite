@@ -22,14 +22,7 @@ test.describe.skip(
     () => {
         test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
         test.beforeEach(
-            async ({
-                page,
-                onboardingPage,
-                dashboardPage,
-                settingsPage,
-                trezorUserEnvLink,
-                walletPage,
-            }) => {
+            async ({ page, onboardingPage, settingsPage, trezorUserEnvLink, walletPage }) => {
                 const payments = [
                     { address: accounts.account1.address, amount: 10 },
                     { address: accounts.account2.address, amount: 10 },
@@ -46,11 +39,10 @@ test.describe.skip(
                 await page.waitForTimeout(5_000);
 
                 await onboardingPage.completeOnboarding();
-                await settingsPage.navigateTo('coins');
-                await settingsPage.coins.disableNetwork('btc');
-                await settingsPage.coins.enableNetwork('regtest');
-                await dashboardPage.dashboardMenuButton.click();
-                await page.discoveryShouldFinish();
+                await settingsPage.changeNetworks({
+                    enableNetworks: ['regtest'],
+                    disableNetworks: ['btc'],
+                });
                 expect(
                     await walletPage.getAccountsCount('regtest'),
                     'expected 3 Regtest accounts to be discovered. They might not have been mined yet',

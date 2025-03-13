@@ -27,12 +27,7 @@ test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
             await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible();
         }
 
-        await settingsPage.navigateTo('coins');
-        await settingsPage.coins.enableNetwork('ada');
-
-        // starting discovery triggers passphrase dialogue
-        await dashboardPage.dashboardMenuButton.click();
-        await dashboardPage.discoveryShouldFinish();
+        await settingsPage.changeNetworks({ enableNetworks: ['ada'] });
         await dashboardPage.openDeviceSwitcher();
         await dashboardPage.addUnusedHiddenWallet(passphrase);
 

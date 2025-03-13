@@ -2,16 +2,9 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Sign and verify ETH', { tag: ['@group=wallet'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ dashboardPage, onboardingPage, settingsPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-
-        await settingsPage.navigateTo('coins');
-
-        await settingsPage.coins.disableNetwork('btc');
-        await settingsPage.coins.enableNetwork('eth');
-
-        await dashboardPage.dashboardMenuButton.click();
-        await dashboardPage.discoveryShouldFinish();
+        await settingsPage.changeNetworks({ enableNetworks: ['eth'], disableNetworks: ['btc'] });
     });
 
     const MESSAGE_SIGN = 'hello world';

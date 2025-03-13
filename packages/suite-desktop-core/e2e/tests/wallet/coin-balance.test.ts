@@ -15,10 +15,8 @@ test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
     }) => {
         await trezorUserEnvLink.sendToAddressAndMineBlock({ address, btc_amount: 1 });
         await test.step('Regtest discovered with non zero value', async () => {
-            await settingsPage.navigateTo('coins');
-            await settingsPage.coins.enableNetwork('regtest');
+            await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });
             await dashboardPage.navigateTo();
-            await dashboardPage.discoveryShouldFinish();
             await expect(walletPage.accountLabel({ symbol: 'regtest' })).toHaveText(
                 'Bitcoin Regtest #1',
             );

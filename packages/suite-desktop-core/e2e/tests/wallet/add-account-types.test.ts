@@ -23,12 +23,7 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
      * 5. Get the number of accounts again
      * 6. Verify that the current number is equal to previous number + 1
      */
-    test('Add-account-types-btc-like', async ({
-        page,
-        settingsPage,
-        dashboardPage,
-        walletPage,
-    }) => {
+    test('Add-account-types-btc-like', async ({ page, settingsPage, walletPage }) => {
         const accountTypes = [
             {
                 coin: 'btc',
@@ -45,15 +40,13 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
             },
         ];
 
-        await settingsPage.navigateTo('coins');
-        for (const { coin } of accountTypes.filter(
-            ({ coin: coinSymbol }) => coinSymbol !== 'btc',
-        )) {
-            await settingsPage.coins.enableNetwork(coin as NetworkSymbol);
-        }
+        const coinsWithoutBTC = accountTypes
+            .map(account => account.coin)
+            .filter(coin => coin !== 'btc');
 
-        await dashboardPage.dashboardMenuButton.click();
-        await dashboardPage.discoveryShouldFinish();
+        await settingsPage.changeNetworks({
+            enableNetworks: coinsWithoutBTC as NetworkSymbol[],
+        });
 
         const chevrons = await walletPage.accountChevron.all();
         for (const chevron of chevrons) {
@@ -113,15 +106,10 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
             { symbol: 'ada', path: `m/1852'/1815'/1'` },
             { symbol: 'eth', path: `m/44'/60'/0'/0/1` },
         ];
-
-        await settingsPage.navigateTo('coins');
-        for (const coin of coins) {
-            await settingsPage.coins.enableNetwork(coin.symbol as NetworkSymbol);
-        }
-
-        await dashboardPage.dashboardMenuButton.click();
+        await settingsPage.changeNetworks({
+            enableNetworks: coins.map(coin => coin.symbol) as NetworkSymbol[],
+        });
         await walletPage.openAccount();
-        await dashboardPage.discoveryShouldFinish();
 
         analytics.interceptAnalytics();
         await page.getByTestId(`@account-menu/filter-accounts`).click();

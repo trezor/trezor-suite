@@ -8,13 +8,10 @@ test.describe('Look up a BTC account', { tag: ['@group=wallet'] }, () => {
     });
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.navigateTo('coins');
-        await settingsPage.coins.enableNetwork('ltc');
+        await settingsPage.changeNetworks({ enableNetworks: ['ltc'] });
     });
 
-    test('Search for bitcoin in accounts', async ({ dashboardPage, walletPage }) => {
-        await dashboardPage.navigateTo();
-        await dashboardPage.discoveryShouldFinish();
+    test('Search for bitcoin in accounts', async ({ walletPage }) => {
         await walletPage.accountSearch.fill('bitcoin');
         await expect(walletPage.accountButton({ symbol: 'ltc' })).not.toBeVisible();
         await expect(walletPage.accountButton({ symbol: 'btc' })).toBeVisible();
