@@ -149,6 +149,7 @@ const connectDevice = (
             // and ignore this action if so
             return;
         }
+        const currentTime = new Date().getTime();
         draft.devices.push({
             ...device,
             connected: true,
@@ -157,7 +158,11 @@ const connectDevice = (
             buttonRequests: [],
             metadata: {},
             passwords: {},
-            ts: new Date().getTime(),
+            firstConnectedTimestamp:
+                'firstConnectedTimestamp' in device
+                    ? Number(device.firstConnectedTimestamp ?? currentTime)
+                    : currentTime,
+            ts: currentTime,
         });
 
         return;
@@ -189,6 +194,7 @@ const connectDevice = (
 
     const useEmptyPassphrase = getShouldUseEmptyPassphrase(device, deviceInstance, settings);
 
+    const currentTime = new Date().getTime();
     const newDevice: TrezorDevice = {
         ...device,
         state: device._state,
@@ -202,7 +208,11 @@ const connectDevice = (
         buttonRequests: [],
         metadata: {},
         passwords: {},
-        ts: new Date().getTime(),
+        firstConnectedTimestamp:
+            'firstConnectedTimestamp' in device
+                ? Number(device.firstConnectedTimestamp ?? currentTime)
+                : currentTime,
+        ts: currentTime,
     };
 
     // update affected devices
@@ -336,7 +346,10 @@ const updateTimestamp = (draft: DeviceReducerState, device?: TrezorDevice) => {
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     // update timestamp
-    draft.devices[index].ts = new Date().getTime();
+    const currentTime = new Date().getTime();
+    draft.devices[index].ts = currentTime;
+    draft.devices[index].firstConnectedTimestamp =
+        draft.devices[index].firstConnectedTimestamp ?? currentTime;
 };
 
 /**
@@ -447,6 +460,7 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
 
     const isPortfolioTrackerDevice = device.id === PORTFOLIO_TRACKER_DEVICE_ID;
 
+    const currentTime = new Date().getTime();
     const newDevice: TrezorDevice = {
         ...device,
         passphraseOnDevice: false,
@@ -456,7 +470,8 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
         state: isPortfolioTrackerDevice ? device.state : undefined,
         walletNumber: undefined,
         authConfirm: false,
-        ts: new Date().getTime(),
+        ts: currentTime,
+        firstConnectedTimestamp: device.firstConnectedTimestamp ?? currentTime,
         buttonRequests: [],
         metadata: {},
         passwords: {},

@@ -1,5 +1,5 @@
 import * as deviceUtils from '@suite-common/suite-utils';
-import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectDevices } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -10,19 +10,13 @@ import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
 
 export const SwitchDevice = ({ onCancel }: ForegroundAppProps) => {
-    const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
 
     // exclude selectedDevice from list, because other devices could have a higher priority
     // and we want to have selectedDevice on top
-    const sortedDevices = deviceUtils
-        .getFirstDeviceInstance(devices)
-        .filter(d => !deviceUtils.isSelectedDevice(selectedDevice, d));
-
-    // append selectedDevice at top of the list
-    if (selectedDevice) {
-        sortedDevices.unshift(selectedDevice);
-    }
+    const sortedDevices = deviceUtils.getFirstDeviceInstance(devices, {
+        sortingFn: deviceUtils.sortDevicesForDeviceList,
+    });
 
     return (
         <SwitchDeviceModal isAnimationEnabled onCancel={onCancel}>

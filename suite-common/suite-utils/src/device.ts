@@ -344,7 +344,7 @@ export const sortByTimestamp = (devices: TrezorDevice[]): TrezorDevice[] =>
         return b.ts - a.ts;
     });
 
-export const sortByPriority = (a: TrezorDevice, b: TrezorDevice) => {
+const sortByPriority = (a: TrezorDevice, b: TrezorDevice) => {
     // sort by priority:
     // 1. unacquired
     // 2. force remembered
@@ -379,6 +379,18 @@ export const sortByPriority = (a: TrezorDevice, b: TrezorDevice) => {
     if (!b.ts || !a.ts) return 1;
 
     return b.ts - a.ts;
+};
+
+export const sortDevicesForDeviceList = (a: TrezorDevice, b: TrezorDevice) => {
+    // sort by priority:
+    // 1. when the device was first connected - oldests come first
+    // when device is "ejected" / completely forgotten, it is last in the list
+
+    if (!b.firstConnectedTimestamp && !a.firstConnectedTimestamp) return 0;
+    if (!b.firstConnectedTimestamp && a.firstConnectedTimestamp) return -1;
+    if (!b.firstConnectedTimestamp || !a.firstConnectedTimestamp) return 1;
+
+    return a.firstConnectedTimestamp - b.firstConnectedTimestamp;
 };
 
 /**
@@ -437,7 +449,14 @@ export const getDeviceInstancesGroupedByDeviceId = (devices: TrezorDevice[]): Ac
  * @param {TrezorDevice[]} devices
  * @returns {TrezorDevice[]}
  */
-export const getFirstDeviceInstance = (devices: TrezorDevice[]) =>
+export const getFirstDeviceInstance = (
+    devices: TrezorDevice[],
+    options: {
+        sortingFn: (a: TrezorDevice, b: TrezorDevice) => number;
+    } = {
+        sortingFn: sortByPriority,
+    },
+) =>
     // filter device instances
     devices
         .reduce((result, dev) => {
@@ -451,7 +470,7 @@ export const getFirstDeviceInstance = (devices: TrezorDevice[]) =>
             // base (np passphrase) or first passphrase instance
             return result.concat(instances[0]);
         }, [] as TrezorDevice[])
-        .sort(sortByPriority);
+        .sort(options.sortingFn);
 
 export const getPhysicalDeviceUniqueIds = (devices: TrezorDevice[]) =>
     [...new Set(devices.map(d => d.id))].filter(id => id) as string[];
