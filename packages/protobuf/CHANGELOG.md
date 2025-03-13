@@ -1,3 +1,12 @@
+# 1.3.2
+
+-   npm-prerelease: @trezor/protobuf 1.3.2-beta.2 (68749e6701)
+-   npm-release: @trezor/connect 9.5.2-beta.1 (#17529) (3d7542843b)
+-   fix(protobuf): fix DeviceModelInternal read patch path (3bdcbfc508)
+-   chore(protobuf): exclude nostr (b18b8da051)
+-   feat(protobuf): load definitions (f4f4fadcfc)
+-   chore: move DeviceModelInternal to device-utils (0bcf666672)
+
 # 1.3.1
 
 -   npm-prerelease: @trezor/protobuf 1.3.1-beta.1 (6256d4a813)
