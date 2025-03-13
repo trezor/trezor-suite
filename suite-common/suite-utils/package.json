@@ -8,8 +8,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
-        "test-unit:watch": "yarn g:jest -c ../../jest.config.base.js -o --watch"
+        "test:unit": "yarn g:jest",
+        "test-unit:watch": "yarn g:jest -o --watch"
     },
     "dependencies": {
         "@suite-common/suite-config": "workspace:*",
