@@ -16,8 +16,10 @@ import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
 import { HowToUpdateBottomSheet } from '../components/HowToUpdateBottomSheet';
+import { useDeviceChangedCheck } from '../hooks/useDeviceChangedCheck';
 
 export const DeviceSettingsModalScreen = () => {
+    useDeviceChangedCheck();
     const { translate } = useTranslate();
 
     const device = useSelector(selectSelectedDevice);
