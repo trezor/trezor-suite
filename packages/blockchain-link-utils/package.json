@@ -25,6 +25,10 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
+        "@solana/addresses": "^2.1.0",
+        "@solana/keys": "^2.1.0",
+        "@solana/rpc-api": "^2.1.0",
+        "@solana/rpc-types": "^2.1.0",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",

@@ -19,7 +19,6 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@solana/kit": "^2.0.0",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*"
     },

@@ -47,9 +47,7 @@ import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import type {
-    ParsedTransactionWithMeta,
     SolanaTokenAccountInfo,
-    SolanaValidParsedTxWithMeta,
     TokenDetailByMint,
 } from '@trezor/blockchain-link-types/src/solana';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
@@ -58,6 +56,10 @@ import {
     tokenProgramsInfo,
     transformTokenInfo,
 } from '@trezor/blockchain-link-utils/src/solana';
+import type {
+    ParsedTransactionWithMeta,
+    SolanaValidParsedTxWithMeta,
+} from '@trezor/blockchain-link-utils/src/solana-types';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { IntervalId } from '@trezor/type-utils';
 import { BigNumber, createDeferred, createLazy } from '@trezor/utils';

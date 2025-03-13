@@ -1,8 +1,4 @@
 import { TokenTransfer, Transaction } from '@trezor/blockchain-link-types/src';
-import {
-    ParsedTransactionWithMeta,
-    SolanaValidParsedTxWithMeta,
-} from '@trezor/blockchain-link-types/src/solana';
 
 import {
     ApiTokenAccount,
@@ -17,6 +13,7 @@ import {
     transformTokenInfo,
     transformTransaction,
 } from '../solana';
+import { ParsedTransactionWithMeta, SolanaValidParsedTxWithMeta } from '../solana-types';
 import { fixtures } from './fixtures/solana';
 
 describe('solana/utils', () => {

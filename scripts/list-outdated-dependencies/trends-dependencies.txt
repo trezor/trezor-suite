@@ -9,6 +9,10 @@
 @solana-program/system
 @solana-program/token
 @solana-program/token-2022
+@solana/addresses
+@solana/keys
+@solana/rpc-api
+@solana/rpc-types
 web3-utils
 jws
 @metamask/eth-sig-util

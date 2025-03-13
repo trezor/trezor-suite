@@ -8121,7 +8121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/addresses@npm:2.1.0":
+"@solana/addresses@npm:2.1.0, @solana/addresses@npm:^2.1.0":
   version: 2.1.0
   resolution: "@solana/addresses@npm:2.1.0"
   dependencies:
@@ -8264,7 +8264,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/keys@npm:2.1.0":
+"@solana/keys@npm:2.1.0, @solana/keys@npm:^2.1.0":
   version: 2.1.0
   resolution: "@solana/keys@npm:2.1.0"
   dependencies:
@@ -8342,7 +8342,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/rpc-api@npm:2.1.0":
+"@solana/rpc-api@npm:2.1.0, @solana/rpc-api@npm:^2.1.0":
   version: 2.1.0
   resolution: "@solana/rpc-api@npm:2.1.0"
   dependencies:
@@ -8488,7 +8488,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/rpc-types@npm:2.1.0":
+"@solana/rpc-types@npm:2.1.0, @solana/rpc-types@npm:^2.1.0":
   version: 2.1.0
   resolution: "@solana/rpc-types@npm:2.1.0"
   dependencies:
@@ -11470,7 +11470,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:
-    "@solana/kit": "npm:^2.0.0"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     tsx: "npm:^4.19.3"
@@ -11484,6 +11483,10 @@ __metadata:
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@solana/addresses": "npm:^2.1.0"
+    "@solana/keys": "npm:^2.1.0"
+    "@solana/rpc-api": "npm:^2.1.0"
+    "@solana/rpc-types": "npm:^2.1.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
