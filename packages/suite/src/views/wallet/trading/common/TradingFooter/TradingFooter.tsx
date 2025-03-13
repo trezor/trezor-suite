@@ -12,12 +12,7 @@ import { TradingFooterLogoWrapper } from 'src/views/wallet/trading';
 import { TradingProvidedByInvity } from 'src/views/wallet/trading/common/TradingFooter/TradingProvidedByInvity';
 
 const Wrapper = styled.div`
-    margin-top: ${spacingsPx.xxxl};
-`;
-
-const WrapperBorder = styled.div`
-    padding-top: ${spacingsPx.lg};
-    border-top: 1px solid ${({ theme }) => theme.borderElevation1};
+    margin-top: ${spacingsPx.xl};
 `;
 
 const Left = styled.div`
@@ -77,6 +72,7 @@ const Text = styled.div`
 `;
 
 const linkStyle = css`
+    ${typography.hint}
     color: ${({ theme }) => theme.textSubdued};
     cursor: pointer;
 
@@ -119,48 +115,46 @@ export const TradingFooter = () => {
 
     return (
         <Wrapper>
-            <WrapperBorder>
-                <Row justifyContent="center">
-                    <Left>
-                        <TradingProvidedByInvity />
-                    </Left>
-                    <Right>
-                        {toggled && (
-                            <FooterBox ref={menuRef}>
-                                <Header>
-                                    <BoxLeft>
-                                        <TradingFooterLogoWrapper>
-                                            <Link href={INVITY_URL} target="_blank">
-                                                <Image width={70} image="INVITY_LOGO" />
-                                            </Link>
-                                        </TradingFooterLogoWrapper>
-                                    </BoxLeft>
-                                    <BoxRight>
-                                        <Link href={INVITY_URL}>invity.io</Link>
-                                        <IconWrapper onClick={() => setToggled(false)}>
-                                            <Icon name="close" size={16} />
-                                        </IconWrapper>
-                                    </BoxRight>
-                                </Header>
-                                <FooterText>
-                                    <Translation id="TR_BUY_FOOTER_TEXT_1" />
-                                </FooterText>
-                                <FooterText>
-                                    <Translation id="TR_BUY_FOOTER_TEXT_2" />
-                                </FooterText>
-                            </FooterBox>
-                        )}
+            <Row justifyContent="center">
+                <Left>
+                    <TradingProvidedByInvity />
+                </Left>
+                <Right>
+                    {toggled && (
+                        <FooterBox ref={menuRef}>
+                            <Header>
+                                <BoxLeft>
+                                    <TradingFooterLogoWrapper>
+                                        <Link href={INVITY_URL} target="_blank">
+                                            <Image width={70} image="INVITY_LOGO" />
+                                        </Link>
+                                    </TradingFooterLogoWrapper>
+                                </BoxLeft>
+                                <BoxRight>
+                                    <Link href={INVITY_URL}>invity.io</Link>
+                                    <IconWrapper onClick={() => setToggled(false)}>
+                                        <Icon name="close" size={16} />
+                                    </IconWrapper>
+                                </BoxRight>
+                            </Header>
+                            <FooterText>
+                                <Translation id="TR_BUY_FOOTER_TEXT_1" />
+                            </FooterText>
+                            <FooterText>
+                                <Translation id="TR_BUY_FOOTER_TEXT_2" />
+                            </FooterText>
+                        </FooterBox>
+                    )}
 
-                        <StyledLink href={DATA_TOS_INVITY_URL} variant="nostyle">
-                            <Translation id="TR_TERMS_OF_USE_INVITY" />
-                        </StyledLink>
-                        <VerticalDivider />
-                        <LearnMoreToggle ref={toggleRef} onClick={() => setToggled(true)}>
-                            <Translation id="TR_BUY_LEARN_MORE" />
-                        </LearnMoreToggle>
-                    </Right>
-                </Row>
-            </WrapperBorder>
+                    <StyledLink href={DATA_TOS_INVITY_URL} variant="nostyle">
+                        <Translation id="TR_TERMS_OF_USE_INVITY" />
+                    </StyledLink>
+                    <VerticalDivider />
+                    <LearnMoreToggle ref={toggleRef} onClick={() => setToggled(true)}>
+                        <Translation id="TR_BUY_LEARN_MORE" />
+                    </LearnMoreToggle>
+                </Right>
+            </Row>
         </Wrapper>
     );
 };

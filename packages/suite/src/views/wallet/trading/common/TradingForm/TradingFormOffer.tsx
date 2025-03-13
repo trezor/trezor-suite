@@ -82,71 +82,75 @@ export const TradingFormOffer = () => {
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     return (
-        <Column gap={spacings.lg}>
-            <Column gap={spacings.xs} data-testid="@trading/best-offer">
-                <Translation id={amountLabels.offerLabel} />
-                {shouldDisplayFiatAmount ? (
-                    <TradingFormOfferFiatAmount amount={tradingGetRoundedFiatAmount(sendAmount)} />
-                ) : (
-                    <TradingFormOfferCryptoAmount
-                        amount={
-                            !state.isLoadingOrInvalid && bestScoredQuoteAmounts?.receiveAmount
-                                ? bestScoredQuoteAmounts.receiveAmount
-                                : '0'
-                        }
-                        cryptoId={
-                            !state.isLoadingOrInvalid && receiveCurrency
-                                ? receiveCurrency
-                                : (selectedCrypto?.value as CryptoId)
-                        }
-                    />
-                )}
-                {isTradingExchangeContext(context) && contractAddress && network && (
-                    <Paragraph typographyStyle="label" variant="tertiary">
-                        <Translation
-                            id="TR_TRADING_ON_NETWORK_CHAIN"
-                            values={{
-                                networkName: network,
-                            }}
+        <Column gap={spacings.lg} justifyContent="space-between" height="100%">
+            <div>
+                <Column gap={spacings.xs} data-testid="@trading/best-offer">
+                    <Translation id={amountLabels.offerLabel} />
+                    {shouldDisplayFiatAmount ? (
+                        <TradingFormOfferFiatAmount
+                            amount={tradingGetRoundedFiatAmount(sendAmount)}
                         />
-                    </Paragraph>
-                )}
-            </Column>
-            <Column gap={spacings.xxs} margin={{ vertical: spacings.md }}>
-                <Row justifyContent="space-between">
-                    <Translation id="TR_TRADING_YOUR_BEST_OFFER" />
-                    <TextButton
-                        onClick={async () => {
-                            setIsCompareLoading(true);
-                            await goToOffers();
-                        }}
-                        size="small"
-                        isDisabled={state.isLoadingOrInvalid}
-                        isLoading={isCompareLoading}
-                        data-testid="@trading/form/compare-button"
-                        type="button"
-                    >
-                        <Translation id="TR_TRADING_COMPARE_OFFERS" />
-                    </TextButton>
-                </Row>
-                {isTradingExchangeContext(context) ? (
-                    <TradingFormOffersSwitcher
-                        context={context}
-                        isFormLoading={state.isFormLoading}
-                        isFormInvalid={state.isFormInvalid}
-                        providers={providers}
-                        bestRatedQuote={bestRatedQuote}
-                    />
-                ) : (
-                    <TradingFormOfferItem
-                        bestQuote={quote}
-                        isFormLoading={state.isFormLoading}
-                        isFormInvalid={state.isFormInvalid}
-                        providers={providers}
-                        isBestRate={bestRatedQuote?.orderId === quote?.orderId}
-                    />
-                )}
-            </Column>
+                    ) : (
+                        <TradingFormOfferCryptoAmount
+                            amount={
+                                !state.isLoadingOrInvalid && bestScoredQuoteAmounts?.receiveAmount
+                                    ? bestScoredQuoteAmounts.receiveAmount
+                                    : '0'
+                            }
+                            cryptoId={
+                                !state.isLoadingOrInvalid && receiveCurrency
+                                    ? receiveCurrency
+                                    : (selectedCrypto?.value as CryptoId)
+                            }
+                        />
+                    )}
+                    {isTradingExchangeContext(context) && contractAddress && network && (
+                        <Paragraph typographyStyle="label" variant="tertiary">
+                            <Translation
+                                id="TR_TRADING_ON_NETWORK_CHAIN"
+                                values={{
+                                    networkName: network,
+                                }}
+                            />
+                        </Paragraph>
+                    )}
+                </Column>
+                <Column gap={spacings.xxs} margin={{ vertical: spacings.md }}>
+                    <Row justifyContent="space-between">
+                        <Translation id="TR_TRADING_YOUR_BEST_OFFER" />
+                        <TextButton
+                            onClick={async () => {
+                                setIsCompareLoading(true);
+                                await goToOffers();
+                            }}
+                            size="small"
+                            isDisabled={state.isLoadingOrInvalid}
+                            isLoading={isCompareLoading}
+                            data-testid="@trading/form/compare-button"
+                            type="button"
+                        >
+                            <Translation id="TR_TRADING_COMPARE_OFFERS" />
+                        </TextButton>
+                    </Row>
+                    {isTradingExchangeContext(context) ? (
+                        <TradingFormOffersSwitcher
+                            context={context}
+                            isFormLoading={state.isFormLoading}
+                            isFormInvalid={state.isFormInvalid}
+                            providers={providers}
+                            bestRatedQuote={bestRatedQuote}
+                        />
+                    ) : (
+                        <TradingFormOfferItem
+                            bestQuote={quote}
+                            isFormLoading={state.isFormLoading}
+                            isFormInvalid={state.isFormInvalid}
+                            providers={providers}
+                            isBestRate={bestRatedQuote?.orderId === quote?.orderId}
+                        />
+                    )}
+                </Column>
+            </div>
             <Button
                 onClick={() => {
                     if (quote) {
