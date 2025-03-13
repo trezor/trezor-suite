@@ -49,11 +49,12 @@ interface WelcomeLayoutProps {
     children: ReactNode;
 }
 
-const Right = ({ children }: { children: ReactNode }) => {
+const Right = ({ bannerSlot, children }: { bannerSlot?: ReactNode; children: ReactNode }) => {
     const { elevation } = useElevation();
 
     return (
         <Content $elevation={elevation}>
+            {bannerSlot ?? null}
             <ChildrenWrapper>
                 <ElevationUp>{children}</ElevationUp>
             </ChildrenWrapper>
@@ -69,10 +70,6 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
     return (
         <ElevationDown>
             <Column height="100%" width="100%">
-                {bannerMessage && (
-                    <MessageSystemBanner message={bannerMessage} margin={spacings.xs} />
-                )}
-
                 <Row
                     height="100%"
                     width="100%"
@@ -83,7 +80,15 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                         <LoggedOutSidebar />
                     </ElevationDown>
 
-                    <Right>{children}</Right>
+                    <Right
+                        bannerSlot={
+                            bannerMessage && (
+                                <MessageSystemBanner message={bannerMessage} margin={spacings.xs} />
+                            )
+                        }
+                    >
+                        {children}
+                    </Right>
 
                     <GuideButton />
                     <GuideRouter />
