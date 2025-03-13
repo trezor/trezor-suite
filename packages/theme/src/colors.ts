@@ -264,7 +264,7 @@ export const colorVariants: Record<ThemeColorVariant, Colors> = {
         borderOnElevation0: paletteV1.darkGray300,
         borderOnElevation1: paletteV1.darkGray400,
         borderSecondary: paletteV1.darkSecondaryGreen800,
-        borderSubtleInverted: paletteV1.LightBlackAlpha600,
+        borderSubtleInverted: paletteV1.lightBlackAlpha600,
         iconAlertBlue: paletteV1.darkAccentBlue800,
         iconAlertPurple: paletteV1.darkAccentPurple800,
         iconAlertRed: paletteV1.darkAccentRed800,

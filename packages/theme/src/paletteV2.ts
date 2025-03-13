@@ -1,6 +1,6 @@
 import { CSSColor } from './types';
 
-export const paletteV2: Record<string, CSSColor> = {
+export const paletteV2 = {
     globalTransparent: '#FFFFFF00',
     lightNeutralGrey900: '#1F1F1F',
     lightNeutralGrey800: '#2E2E2E',
@@ -318,4 +318,4 @@ export const paletteV2: Record<string, CSSColor> = {
     globalWhiteAlpha75: '#FFFFFF17',
     globalWhiteAlpha50: '#FFFFFF0F',
     globalWhiteAlpha25: '#FFFFFF08',
-};
+} as const satisfies Record<string, CSSColor>;

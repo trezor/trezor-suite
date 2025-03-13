@@ -1,6 +1,6 @@
 import { CSSColor } from './types';
 
-export const paletteV1: Record<string, CSSColor> = {
+export const paletteV1 = {
     coinsAdaSubdued: '#3468D14D',
     coinsBchBold: '#0AC18E',
     coinsBchSubdued: '#0AC18E4D',
@@ -217,4 +217,4 @@ export const paletteV1: Record<string, CSSColor> = {
     lightWhiteAlpha700: '#FFFFFFE3',
     lightWhiteAlpha800: '#FFFFFFED',
     lightWhiteAlpha900: '#FFFFFFF5',
-};
+} as const satisfies Record<string, CSSColor>;
