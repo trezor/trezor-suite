@@ -12,7 +12,7 @@ export const bluetoothDisconnectDeviceThunk = createThunk<
     { id: string },
     void
 >(
-    `${BLUETOOTH_PREFIX}/bluetoothConnectDeviceThunk`,
+    `${BLUETOOTH_PREFIX}/bluetoothDisconnectDeviceThunk`,
     async ({ id }, { fulfillWithValue, dispatch }) => {
         console.log('_____calling: bluetoothIpc.disconnectDevice(id)', id);
         const result = await bluetoothIpc.disconnectDevice(id);
