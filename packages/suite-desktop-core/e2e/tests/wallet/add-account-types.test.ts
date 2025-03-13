@@ -121,7 +121,7 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
         }
 
         await dashboardPage.dashboardMenuButton.click();
-        await walletPage.accountButton().click();
+        await walletPage.openAccount();
         await dashboardPage.discoveryShouldFinish();
 
         analytics.interceptAnalytics();

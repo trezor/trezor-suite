@@ -15,6 +15,7 @@ test.describe('Google API errors', { tag: ['@group=metadata1', '@webOnly'] }, ()
         onboardingPage,
         dashboardPage,
         metadataPage,
+        walletPage,
         metadataMock,
     }) => {
         // Simulate API responses for retries with malformed token
@@ -45,7 +46,7 @@ test.describe('Google API errors', { tag: ['@group=metadata1', '@webOnly'] }, ()
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
 
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
         await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
 
         await metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE, {

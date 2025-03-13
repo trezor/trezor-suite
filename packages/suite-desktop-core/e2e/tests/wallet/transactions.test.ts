@@ -21,7 +21,7 @@ test.describe('Account transactions overview', { tag: ['@group=wallet'] }, () =>
         dashboardPage,
     }) => {
         await test.step('Cycle thru all time range filters', async () => {
-            await walletPage.accountButton({ symbol: 'btc' }).click();
+            await walletPage.openAccount({ symbol: 'btc' });
             for (const { range, label } of rangeData) {
                 await dashboardPage.graphRangeSelector(range).click();
                 const labelElement = walletPage.transactionSummaryTitle.getByText(label);
@@ -44,6 +44,6 @@ test.describe('Account transactions overview', { tag: ['@group=wallet'] }, () =>
 
         // go to a certain accounts page and verify you are on that page
         // await page.getByTestId('@account-menu/legacy').click();
-        // await walletPage.accountButton({ symbol: 'btc', type: 'legacy' }).click();
+        // await walletPage.openAccount({ symbol: 'btc', type: 'legacy' });
     });
 });

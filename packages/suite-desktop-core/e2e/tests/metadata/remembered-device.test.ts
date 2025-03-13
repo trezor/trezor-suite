@@ -25,6 +25,7 @@ test.describe('Remembered device', { tag: ['@group=metadata2', '@webOnly'] }, ()
         dashboardPage,
         settingsPage,
         metadataPage,
+        walletPage,
         devicePrompt,
         trezorUserEnvLink,
     }) => {
@@ -38,7 +39,7 @@ test.describe('Remembered device', { tag: ['@group=metadata2', '@webOnly'] }, ()
         await metadataPage.passThroughInitMetadata(MetadataProvider.GOOGLE);
 
         // Now metadata is enabled, go to accounts and see what we got loaded from provider
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
 
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
             'already existing label',
@@ -49,7 +50,7 @@ test.describe('Remembered device', { tag: ['@group=metadata2', '@webOnly'] }, ()
         await settingsPage.navigateTo('application');
         await page.getByTestId('@settings/metadata/disconnect-provider-button').click();
         await expect(page.getByTestId('@settings/metadata/connect-provider-button')).toBeVisible();
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).not.toContainText(
             'already existing label',
         );
@@ -65,7 +66,7 @@ test.describe('Remembered device', { tag: ['@group=metadata2', '@webOnly'] }, ()
         // device not saved, disable metadata
         await settingsPage.navigateTo('application');
         await page.getByTestId('@settings/metadata-switch').click();
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).not.toContainText(
             'label',
         );
@@ -94,7 +95,7 @@ test.describe('Remembered device', { tag: ['@group=metadata2', '@webOnly'] }, ()
         // Now again, lets try disconnecting provider
         await settingsPage.navigateTo('application');
         await page.getByTestId('@settings/metadata/disconnect-provider-button').click();
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
 
         // Disconnecting removes labels
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText('Bitcoin');
@@ -109,7 +110,7 @@ test.describe('Remembered device', { tag: ['@group=metadata2', '@webOnly'] }, ()
         // device saved, disable metadata
         await settingsPage.navigateTo('application');
         await page.getByTestId('@settings/metadata-switch').click();
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
 
         // Now it is not possible to add labels, keys are gone and device is not connected
         await expect(

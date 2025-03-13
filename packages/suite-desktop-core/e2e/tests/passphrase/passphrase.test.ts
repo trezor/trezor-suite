@@ -34,13 +34,11 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
 
         await analytics.interceptAnalytics();
 
-        await walletPage
-            .accountButton({
-                symbol: 'btc',
-                type: 'normal',
-                atIndex: 0,
-            })
-            .click();
+        await walletPage.openAccount({
+            symbol: 'btc',
+            type: 'normal',
+            atIndex: 0,
+        });
         await walletPage.receiveButton.click();
         await walletPage.revealAddressButton.click();
         await expect(page.getByTestId('@modal/output-value')).toHaveText(formatAddress(abcAddr));

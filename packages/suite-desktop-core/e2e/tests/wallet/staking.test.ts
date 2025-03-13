@@ -23,7 +23,7 @@ test.describe('ETH staking', { tag: ['@group=wallet'] }, () => {
     });
 
     test('checks that staking dashboard works', async ({ page, walletPage, tradingPage }) => {
-        await walletPage.accountButton({ symbol: 'eth', type: 'normal', atIndex: 0 }).click();
+        await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
         await walletPage.openSendFormButton.click();
         await tradingPage.sendAmountInput.fill('1111.456789012345678901');
         await page.getByTestId('@account-menu/eth/normal/0/staking').click();

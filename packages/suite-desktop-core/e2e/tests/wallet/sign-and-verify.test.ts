@@ -12,7 +12,7 @@ test.describe('Sign and verify', { tag: ['@group=wallet'] }, () => {
     test.beforeEach(async ({ page, walletPage, onboardingPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
-        await page.getByTestId('@account-menu/btc/normal/0/label').click();
+        await walletPage.openAccount();
         await page.waitForTimeout(500); // wait until is the dropdown loaded
         await walletPage.walletExtraDropDown.click();
         await walletPage.signAndVerifyButton.click();

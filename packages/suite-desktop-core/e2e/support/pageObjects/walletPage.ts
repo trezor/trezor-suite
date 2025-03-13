@@ -8,7 +8,7 @@ export type ExportType = 'pdf' | 'csv' | 'json';
 
 type WalletParams = {
     symbol?: NetworkSymbol;
-    type?: 'normal' | 'legacy' | 'ledger';
+    type?: 'normal' | 'legacy' | 'segwit' | 'ledger';
     atIndex?: number;
     tokens?: boolean;
 };
@@ -40,6 +40,7 @@ export class WalletPage {
     readonly transactionSummaryTitle: Locator;
     readonly transactionItem: Locator;
     readonly transactionAddress: Locator;
+    readonly fiatAmount: Locator;
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
@@ -70,6 +71,7 @@ export class WalletPage {
         );
         this.transactionItem = this.page.getByTestId('@wallet/transaction-item');
         this.transactionAddress = this.page.getByTestId('@wallet/transaction/target-address');
+        this.fiatAmount = this.page.getByTestId('@wallet/account-top-panel/fiat-amount');
     }
 
     accountButton = ({
@@ -84,6 +86,17 @@ export class WalletPage {
 
     accountLabel = ({ symbol = 'btc', type = 'normal', atIndex = 0 }: WalletParams = {}): Locator =>
         this.page.getByTestId(`@account-menu/${symbol}/${type}/${atIndex}/label`);
+
+    @step()
+    async openAccount({
+        symbol = 'btc',
+        type = 'normal',
+        atIndex = 0,
+        tokens = false,
+    }: WalletParams = {}) {
+        await this.accountButton({ symbol, type, atIndex, tokens }).click();
+        await expect(this.fiatAmount).toBeVisible();
+    }
 
     @step()
     async filterTransactions(transaction: string) {
@@ -101,12 +114,12 @@ export class WalletPage {
     @step()
     async checkStakesOfCardanoAccounts() {
         const cardanoAccounts = [
-            this.accountButton({ symbol: 'ada' }),
-            this.accountButton({ symbol: 'ada', type: 'legacy' }),
-            this.accountButton({ symbol: 'ada', type: 'ledger' }),
-        ];
+            { symbol: 'ada' },
+            { symbol: 'ada', type: 'legacy' },
+            { symbol: 'ada', type: 'ledger' },
+        ] as WalletParams[];
         for (const account of cardanoAccounts) {
-            await account.click();
+            await this.openAccount(account);
             await this.walletStakingButton.click();
             await expect(this.stakeAddress).toBeVisible();
         }
@@ -121,20 +134,20 @@ export class WalletPage {
 
     @step()
     async openTrading(params: WalletParams = {}) {
-        await this.accountButton(params).click();
+        await this.openAccount(params);
         await this.openBuyTradingButton.click();
     }
 
     @step()
     async openSellTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
-        await this.accountButton({ symbol, tokens: true }).click();
+        await this.openAccount({ symbol, tokens: true });
         await this.page.getByRole('row', { name: tokenName }).getByRole('button').first().click();
         await this.page.getByTestId('@trading/tokens/sell-button').click();
     }
 
     @step()
     async openSwapTrading(params: WalletParams = {}) {
-        await this.accountButton(params).click();
+        await this.openAccount(params);
         await this.openSwapTradingButton.click();
     }
 

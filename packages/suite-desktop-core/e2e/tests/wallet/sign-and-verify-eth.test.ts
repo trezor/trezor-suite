@@ -29,8 +29,7 @@ test.describe('Sign and verify ETH', { tag: ['@group=wallet'] }, () => {
      * 6. Check that notification was rendered and correct message was generated
      */
     test('Sign ETH', async ({ page, devicePrompt, walletPage }) => {
-        await walletPage.accountButton({ symbol: 'eth', type: 'normal', atIndex: 0 }).click();
-        await page.waitForTimeout(500); // wait until is the dropdown loaded
+        await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
         await walletPage.walletExtraDropDown.click();
         await walletPage.signAndVerifyButton.click();
         await page.getByTestId('@sign-verify/message').fill(MESSAGE_SIGN);
@@ -52,8 +51,7 @@ test.describe('Sign and verify ETH', { tag: ['@group=wallet'] }, () => {
      * 7. Check that notification was rendered and correct message was generated
      */
     test('Verify ETH', async ({ page, devicePrompt, walletPage }) => {
-        await walletPage.accountButton({ symbol: 'eth', type: 'normal', atIndex: 0 }).click();
-        await page.waitForTimeout(500); // wait until is the dropdown loaded
+        await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
         await walletPage.walletExtraDropDown.click();
         await walletPage.signAndVerifyButton.click();
 

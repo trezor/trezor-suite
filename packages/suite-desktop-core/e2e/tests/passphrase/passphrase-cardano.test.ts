@@ -46,7 +46,7 @@ test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
         await restartEmulator();
 
         // reveal cardano address
-        await walletPage.accountButton({ symbol: 'ada', type: 'normal', atIndex: 0 }).click();
+        await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
         await walletPage.receiveButton.click();
         await walletPage.revealAddressButton.click();
 

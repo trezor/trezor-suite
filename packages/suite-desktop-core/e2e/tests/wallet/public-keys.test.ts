@@ -39,7 +39,7 @@ test.describe('Public Keys', { tag: ['@group=wallet'] }, () => {
                 });
             }
             await test.step('Verify Public key preview', async () => {
-                await walletPage.accountButton({ symbol }).click();
+                await walletPage.openAccount({ symbol });
                 await walletPage.accountDetailsTabButton.click();
                 await walletPage.showPublicKeyButton.click();
                 await expect(async () => {

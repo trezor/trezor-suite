@@ -24,7 +24,7 @@ test.describe('Send form for bitcoin', { tag: ['@group=wallet'] }, () => {
             await trezorUserEnvLink.mineBlocks({ block_amount: 1 });
 
             await dashboardPage.dashboardMenuButton.click();
-            await walletPage.accountButton({ symbol: 'regtest' }).click();
+            await walletPage.openAccount({ symbol: 'regtest' });
             await walletPage.openSendFormButton.click();
         },
     );

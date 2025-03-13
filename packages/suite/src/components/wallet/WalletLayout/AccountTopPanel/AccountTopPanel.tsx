@@ -85,6 +85,7 @@ export const AccountTopPanel = forwardRef<HTMLDivElement>((_, ref) => {
                         amount={account.formattedBalance}
                         size="large"
                         localCurrency={localCurrency}
+                        data-testid="@wallet/account-top-panel/fiat-amount"
                     />
                 </div>
             </AmountsWrapper>

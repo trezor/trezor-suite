@@ -13,6 +13,7 @@ test.describe(
             url,
             analyticsSection,
             onboardingPage,
+            walletPage,
         }) => {
             await page.goto(url + 'accounts');
             await expect(analyticsSection.heading).toBeVisible({ timeout: 30000 });
@@ -26,7 +27,7 @@ test.describe(
 
             await onboardingPage.onboardingViewOnlyEnableButton.click();
             await expect(page.getByTestId('@suite-layout/body')).toBeVisible();
-            await page.getByTestId('@account-menu/btc/normal/0').click();
+            await walletPage.openAccount();
             await expect(page.getByTestId('@wallet/menu/wallet-send')).toBeVisible();
         });
     },

@@ -83,7 +83,7 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
             await page.goto(`${suiteDevInstance}/${migrateToVersion}`);
             await expect(dashboardPage.graph).toBeVisible({ timeout: 30_000 });
             await page.getByTestId('@account-menu/normal').click();
-            await walletPage.accountButton({ symbol: 'btc' }).click();
+            await walletPage.openAccount({ symbol: 'btc' });
             await dashboardPage.openDeviceSwitcher();
             await expect(
                 page.getByTestId('@menu/switch-device').getByTestId('@deviceStatus-disconnected'),

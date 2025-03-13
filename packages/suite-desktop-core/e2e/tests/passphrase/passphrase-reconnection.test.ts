@@ -29,13 +29,11 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
         await dashboardPage.openDeviceSwitcher();
         await dashboardPage.addUnusedHiddenWallet('abc');
 
-        await walletPage
-            .accountButton({
-                symbol: 'btc',
-                type: 'normal',
-                atIndex: 0,
-            })
-            .click();
+        await walletPage.openAccount({
+            symbol: 'btc',
+            type: 'normal',
+            atIndex: 0,
+        });
         await walletPage.receiveButton.click();
         await walletPage.revealAddressButton.click();
         await expect(page.getByTestId('@modal/output-value')).toHaveText(formatAddress(abcAddr));

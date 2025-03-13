@@ -16,6 +16,7 @@ test.describe('Account metadata', { tag: ['@group=metadata1', '@webOnly'] }, () 
         dashboardPage,
         metadataPage,
         settingsPage,
+        walletPage,
     }) => {
         await onboardingPage.completeOnboarding();
 
@@ -79,14 +80,14 @@ test.describe('Account metadata', { tag: ['@group=metadata1', '@webOnly'] }, () 
 
         // Test switching between accounts
         await page.getByTestId('@account-menu/segwit').click();
-        await page.getByTestId('@account-menu/btc/segwit/0').click();
+        await walletPage.openAccount({ symbol: 'btc', type: 'segwit', atIndex: 0 });
 
         await metadataPage.account.addLabel(AccountLabelId.BitcoinSegwit1, 'typing into one input');
         await expect(
             metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit1),
         ).toBeVisible();
 
-        await page.getByTestId('@account-menu/btc/segwit/1').click();
+        await walletPage.openAccount({ symbol: 'btc', type: 'segwit', atIndex: 1 });
 
         await expect(
             metadataPage.account.successLabel(AccountLabelId.BitcoinSegwit2),
@@ -100,7 +101,7 @@ test.describe('Account metadata', { tag: ['@group=metadata1', '@webOnly'] }, () 
         await expect(dashboardPage.graph).toBeVisible();
 
         // Add and label a new account
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
         await page.getByTestId('@account-menu/add-account').click();
         await settingsPage.coins.networkButton('btc').click();
         await page.getByTestId('@add-account').click();

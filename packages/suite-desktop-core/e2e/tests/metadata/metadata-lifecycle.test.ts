@@ -22,6 +22,7 @@ test.describe(
             dashboardPage,
             settingsPage,
             metadataPage,
+            walletPage,
             devicePrompt,
             trezorUserEnvLink,
         }) => {
@@ -35,7 +36,7 @@ test.describe(
 
             // Navigate to account and hover over add label button
             await page.getByTestId('@suite/menu/suite-index').click();
-            await page.getByTestId('@account-menu/btc/normal/0').click();
+            await walletPage.openAccount();
             await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressNo();

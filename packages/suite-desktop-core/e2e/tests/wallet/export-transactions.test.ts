@@ -13,7 +13,7 @@ test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () 
     });
     test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage }) => {
         await onboardingPage.completeOnboarding();
-        await walletPage.accountButton().click();
+        await walletPage.openAccount();
         await dashboardPage.discoveryShouldFinish();
     });
 
@@ -43,7 +43,7 @@ test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () 
         await dashboardPage.discoveryShouldFinish();
 
         for (const symbol of symbols) {
-            await walletPage.accountButton({ symbol }).click();
+            await walletPage.openAccount({ symbol });
 
             const typesOfExport: ExportType[] = ['pdf', 'csv', 'json'];
             await onboardingPage.completeTransactionOnboarding();

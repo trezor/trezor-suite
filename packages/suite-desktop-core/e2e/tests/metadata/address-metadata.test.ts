@@ -9,7 +9,13 @@ test.describe('Metadata - address labeling', { tag: ['@group=metadata1', '@webOn
         await metadataMock.start(MetadataProvider.GOOGLE);
     });
 
-    test('google provider', async ({ page, onboardingPage, metadataPage, dashboardPage }) => {
+    test('google provider', async ({
+        page,
+        onboardingPage,
+        metadataPage,
+        dashboardPage,
+        walletPage,
+    }) => {
         // Pass through onboarding and device authentication
         await onboardingPage.completeOnboarding();
 
@@ -19,7 +25,7 @@ test.describe('Metadata - address labeling', { tag: ['@group=metadata1', '@webOn
         await expect(page.getByTestId('@account-menu/btc/normal/0')).toBeVisible();
 
         // Interact with accounts and metadata
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
         await page.getByTestId('@wallet/menu/wallet-receive').click();
         await page.getByTestId('@wallet/receive/used-address/show-more').click();
         await page.getByTestId(`${metadataEl}/add-label-button`).click();

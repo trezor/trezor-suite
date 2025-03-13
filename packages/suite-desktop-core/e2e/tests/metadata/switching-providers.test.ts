@@ -17,12 +17,13 @@ test.describe(
             metadataPage,
             settingsPage,
             metadataMock,
+            walletPage,
         }) => {
             await onboardingPage.completeOnboarding();
             await dashboardPage.discoveryShouldFinish();
 
             // Navigate to account and verify initial state
-            await page.getByTestId('@account-menu/btc/normal/0').click();
+            await walletPage.openAccount();
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
                 defaultLabel,
             );
@@ -49,7 +50,7 @@ test.describe(
             await metadataMock.stop();
 
             // Verify that labels are removed after disconnect
-            await page.getByTestId('@account-menu/btc/normal/0').click();
+            await walletPage.openAccount();
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toBeVisible();
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
                 defaultLabel,

@@ -16,6 +16,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
         dashboardPage,
         settingsPage,
         metadataPage,
+        walletPage,
         metadataMock,
     }) => {
         await metadataMock.setFileContent(
@@ -32,7 +33,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
 
         await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
 
         await metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1).click();
         await metadataPage.account.editLabelButton(AccountLabelId.BitcoinDefault1).click();
@@ -62,11 +63,11 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
     });
 
     test.skip('Success after retrying GET request', async ({
-        page,
         onboardingPage,
         dashboardPage,
         settingsPage,
         metadataPage,
+        walletPage,
         metadataMock,
     }) => {
         await metadataMock.setFileContent(
@@ -112,7 +113,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
             },
         });
 
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
         await metadataPage.account.editLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
         await expect(
             metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1),
@@ -120,11 +121,11 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
     });
 
     test('Incomplete data returned from provider', async ({
-        page,
         onboardingPage,
         dashboardPage,
         settingsPage,
         metadataPage,
+        walletPage,
         metadataMock,
     }) => {
         await metadataMock.setFileContent(
@@ -147,7 +148,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
 
         await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
         // just enter some label, this indicates that app did not crash
         await metadataPage.account.editLabel(AccountLabelId.BitcoinDefault1, 'Kvooo');
     });

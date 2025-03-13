@@ -20,7 +20,7 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata1', '@webOnl
         await onboardingPage.completeOnboarding();
         await dashboardPage.discoveryShouldFinish();
 
-        await page.getByTestId('@account-menu/btc/normal/0').click();
+        await walletPage.openAccount();
 
         await metadataPage.output.clickAddLabelButton(OutputLabelId.BitcoinDefault1, 0);
 
@@ -30,7 +30,7 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata1', '@webOnl
 
         // go to legacy account 6, it has txs with multiple outputs
         await page.getByTestId('@account-menu/legacy').click();
-        await page.getByTestId('@account-menu/btc/legacy/5/label').click();
+        await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 5 });
 
         // Try to open multiple metadata inputs
         await metadataPage.output.clickAddLabelButton(OutputLabelId.BitcoinLegacy6, 0);
@@ -45,7 +45,7 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata1', '@webOnl
         ).toContainText('output 3');
 
         // label "send to myself tx"
-        await page.getByTestId('@account-menu/btc/legacy/9/label').click();
+        await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 9 });
         await metadataPage.output.addLabel(OutputLabelId.BitcoinLegacy10, 0, 'really to myself');
         await expect(
             metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0),
