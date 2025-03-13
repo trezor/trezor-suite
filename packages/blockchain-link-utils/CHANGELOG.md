@@ -1,3 +1,9 @@
+# 1.3.2
+
+-   npm-prerelease: @trezor/blockchain-link-utils 1.3.2-beta.2 (9e84c16e80)
+-   fix(blockchain-link-utils): ignore incomplete type in unit test (b82c1b36ec)
+-   npm-release: @trezor/connect 9.5.2-beta.1 (#17529) (3d7542843b)
+
 # 1.3.1
 
 -   npm-prerelease: @trezor/blockchain-link-utils 1.3.1-beta.1 (8f776478e3)
