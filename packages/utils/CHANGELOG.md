@@ -1,3 +1,9 @@
+# 9.3.2
+
+-   npm-prerelease: @trezor/utils 9.3.2-beta.2 (f3abb09122)
+-   npm-release: @trezor/connect 9.5.2-beta.1 (#17529) (3d7542843b)
+-   chore: more refactorign to remove connect from components (3736dec0a5)
+
 # 9.3.1
 
 -   npm-prerelease: @trezor/utils 9.3.1-beta.1 (9b166f8e30)
