@@ -93,6 +93,9 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     electronApp
         .process()
         .stderr?.on('data', data => logStream.write(formatErrorLogMessage(data.toString())));
+    electronApp.process().on('close', () => {
+        logStream.end();
+    });
 
     await electronApp.evaluate(
         (_, [resourcesPath]) => {

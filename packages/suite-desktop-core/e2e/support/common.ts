@@ -68,7 +68,7 @@ export async function skipFixture({}, use: (r: void) => Promise<void>) {
 
 export const getVideoPath = (videoFolder: string) => {
     const videoFilenames = readdirSync(videoFolder).filter(file => file.endsWith('.webm'));
-    if (videoFilenames.length > 1) {
+    if (videoFilenames.length !== 1) {
         console.error(
             `Warning: More than one test video file found in the output directory: ${videoFolder}\nAttaching only the first one: ${videoFilenames[0]}`,
         );
