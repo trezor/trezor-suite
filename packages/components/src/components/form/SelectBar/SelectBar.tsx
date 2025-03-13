@@ -221,7 +221,7 @@ export const SelectBar = <V extends ValueTypes>({
                                             alignItems="center"
                                         >
                                             {option.label}
-                                            <Box height={0} overflow="hidden">
+                                            <Box height={0} overflow="hidden" aria-hidden>
                                                 <Text typographyStyle="highlight">
                                                     {option.label}
                                                 </Text>
