@@ -34,8 +34,8 @@ const A = styled.a<AProps>`
     align-items: center;
 
     gap: ${spacingsPx.xxs};
-    ${withTextProps}
 
+    ${withTextProps}
     &:hover {
         text-decoration: underline;
     }
@@ -96,8 +96,10 @@ const Link = ({
             rel="noreferrer noopener"
             data-testid={dataTest}
             onClick={(e: MouseEvent<any>) => {
-                e.stopPropagation();
-                onClick?.(e);
+                if (onClick !== undefined) {
+                    e.stopPropagation();
+                    onClick(e);
+                }
             }}
             $variant={variant}
             className={className}
