@@ -14,7 +14,6 @@ export const bluetoothDisconnectDeviceThunk = createThunk<
 >(
     `${BLUETOOTH_PREFIX}/bluetoothConnectDeviceThunk`,
     async ({ id }, { fulfillWithValue, dispatch }) => {
-        console.log('_____calling: bluetoothIpc.disconnectDevice(id)', id);
         const result = await bluetoothIpc.disconnectDevice(id);
 
         if (!result.success) {
@@ -31,8 +30,6 @@ export const bluetoothDisconnectDeviceThunk = createThunk<
                     error: result.error,
                 }),
             );
-        } else {
-            console.log('_____SUCCESS!!!: bluetoothIpc.disconnectDevice(id)', id);
         }
 
         return fulfillWithValue({ success: result.success });
