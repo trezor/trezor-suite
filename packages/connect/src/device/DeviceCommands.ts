@@ -24,19 +24,6 @@ export type { TypedCall };
 
 const logger = initLog('DeviceCommands');
 
-const assertType = (
-    res: Messages.MessageResponse,
-    resType: Messages.MessageKey | Messages.MessageKey[],
-) => {
-    const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
-    if (!splitResTypes.includes(res.type)) {
-        throw ERRORS.TypedError(
-            'Runtime',
-            `assertType: Response of unexpected type: ${res.type}. Should be ${resType}`,
-        );
-    }
-};
-
 const filterForLog = (type: string, msg: any) => {
     const blacklist: { [key: string]: Record<string, string> | string } = {
         PassphraseAck: {
@@ -290,42 +277,6 @@ export class DeviceCommands {
         return this._getAddress();
     }
 
-    // Sends an async message to the opened device.
-    private async call<T extends Messages.MessageKey>(
-        type: T,
-        msg: Messages.MessagePayload<T>,
-    ): Promise<Messages.MessageResponse> {
-        logger.debug('Sending', type, filterForLog(type, msg));
-
-        this.callPromise = this.transport.call({
-            session: this.transportSession,
-            name: type,
-            data: msg,
-            protocol: this.device.protocol,
-        });
-
-        const res = await this.callPromise;
-
-        this.callPromise = undefined;
-        if (!res.success) {
-            logger.warn(
-                'Received transport error',
-                res.error,
-                // res.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
-                res.message,
-            );
-            throw new Error(res.error, { cause: 'transport-error' });
-        }
-
-        logger.debug(
-            'Received',
-            res.payload.type,
-            filterForLog(res.payload.type, res.payload.message),
-        );
-
-        return res.payload;
-    }
-
     typedCall<T extends Messages.MessageKey, R extends Messages.MessageKey[]>(
         type: T,
         resType: R,
@@ -341,15 +292,19 @@ export class DeviceCommands {
         resType: Messages.MessageKey | Messages.MessageKey[],
         msg: Messages.MessagePayload = {},
     ) {
-        if (this.disposed) {
-            throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
-        }
         // Assert message type
         // msg is allowed to be undefined for some calls, in that case the schema is an empty object
         Assert(Messages.MessageType.properties[type], msg);
-        const response = await this._commonCall(type, msg);
+        const response = await this.callLoop(type, msg);
+
         try {
-            assertType(response, resType);
+            const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
+            if (!splitResTypes.includes(response.type)) {
+                throw ERRORS.TypedError(
+                    'Runtime',
+                    `assertType: Response of unexpected type: ${response.type}. Should be ${resType}`,
+                );
+            }
         } catch (error) {
             // handle possible race condition
             // Bridge may have some unread message in buffer, read it
@@ -374,95 +329,124 @@ export class DeviceCommands {
         return response;
     }
 
-    async _commonCall<T extends Messages.MessageKey>(type: T, msg: Messages.MessagePayload<T>) {
-        if (this.disposed) {
-            throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
-        }
-        const resp = await this.call(type, msg);
+    async callLoop<T extends Messages.MessageKey>(
+        type: T,
+        msg: Messages.MessagePayload<T>,
+    ): Promise<Messages.MessageResponse> {
+        let [name, data] = [type, msg];
+        let pinUnlocked = false;
 
-        return this._filterCommonTypes(resp);
-    }
-
-    _filterCommonTypes(res: Messages.MessageResponse): Promise<Messages.MessageResponse> {
-        this.device.clearCancelableAction();
-
-        if (res.type === 'Failure') {
-            const { code } = res.message;
-            let { message } = res.message;
-            // T1B1 does not send any message in firmware update
-            // https://github.com/trezor/trezor-firmware/issues/1334
-            // @ts-expect-error, TODO: https://github.com/trezor/trezor-suite/issues/5299
-            if (code === 'Failure_FirmwareError' && !message) {
-                message = 'Firmware installation failed';
-            }
-            // Failure_ActionCancelled message could be also missing
-            // https://github.com/trezor/connect/issues/865
-            // @ts-expect-error, TODO: https://github.com/trezor/trezor-suite/issues/5299
-            if (code === 'Failure_ActionCancelled' && !message) {
-                message = 'Action cancelled by user';
+        while (true) {
+            if (this.disposed) {
+                throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
             }
 
-            // pass code and message from firmware error
-            return Promise.reject(
-                new ERRORS.TrezorError(
-                    (code as any) || 'Failure_UnknownCode',
-                    message || 'Failure_UnknownMessage',
-                ),
-            );
-        }
+            logger.debug('Sending', name, filterForLog(name, data));
 
-        if (res.type === 'Features') {
-            return Promise.resolve(res);
-        }
+            this.callPromise = this.transport
+                .call({
+                    session: this.transportSession,
+                    name,
+                    data,
+                    protocol: this.device.protocol,
+                })
+                .finally(() => {
+                    this.callPromise = undefined;
+                });
 
-        if (res.type === 'ButtonRequest') {
-            this.device.setCancelableAction(() => this.cancelWithFallback());
+            const response = await this.callPromise;
 
-            if (res.message.code === 'ButtonRequest_PassphraseEntry') {
-                this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
-            } else {
-                this.device.emit(DEVICE.BUTTON, { device: this.device, payload: res.message });
+            if (!response.success) {
+                // res.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
+                logger.warn('Received transport error', response.error, response.message);
+                throw new Error(response.error, { cause: 'transport-error' });
             }
 
-            return this._commonCall('ButtonAck', {});
-        }
+            const res = response.payload;
 
-        if (res.type === 'PinMatrixRequest') {
-            return promptPin(this.device, res.message.type).then(promptRes =>
-                !promptRes.success
-                    ? Promise.reject(promptRes.error)
-                    : this._commonCall('PinMatrixAck', { pin: promptRes.payload }).then(response =>
-                          (this.device.features.unlocked
-                              ? Promise.resolve()
-                              : // reload features to after successful PIN
-                                this.device.getFeatures()
-                          ).then(() => response),
-                      ),
-            );
-        }
+            logger.debug('Received', res.type, filterForLog(res.type, res.message));
 
-        if (res.type === 'PassphraseRequest') {
-            return promptPassphrase(this.device).then(promptRes =>
-                !promptRes.success
-                    ? Promise.reject(promptRes.error)
-                    : this._commonCall(
-                          'PassphraseAck',
-                          promptRes.payload.passphraseOnDevice
-                              ? { on_device: true }
-                              : { passphrase: promptRes.payload.value.normalize('NFKD') },
-                      ),
-            );
-        }
+            this.device.clearCancelableAction();
 
-        if (res.type === 'WordRequest') {
-            return promptWord(this.device, res.message.type).then(promptRes =>
-                !promptRes.success
-                    ? Promise.reject(promptRes.error)
-                    : this._commonCall('WordAck', { word: promptRes.payload }),
-            );
-        }
+            switch (res.type) {
+                case 'Failure': {
+                    const { code, message } = res.message;
 
-        return Promise.resolve(res);
+                    // pass code and message from firmware error
+                    return Promise.reject(
+                        new ERRORS.TrezorError(
+                            (code as any) || 'Failure_UnknownCode',
+                            message ||
+                                // T1B1 does not send any message in firmware update
+                                // https://github.com/trezor/trezor-firmware/issues/1334
+                                (code === Messages.FailureType.Failure_FirmwareError &&
+                                    'Firmware installation failed') ||
+                                // Failure_ActionCancelled message could be also missing
+                                // https://github.com/trezor/connect/issues/865
+                                (code === Messages.FailureType.Failure_ActionCancelled &&
+                                    'Action cancelled by user') ||
+                                'Failure_UnknownMessage',
+                        ),
+                    );
+                }
+                case 'ButtonRequest': {
+                    this.device.setCancelableAction(() => this.cancelWithFallback());
+
+                    if (res.message.code === 'ButtonRequest_PassphraseEntry') {
+                        this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
+                    } else {
+                        this.device.emit(DEVICE.BUTTON, {
+                            device: this.device,
+                            payload: res.message,
+                        });
+                    }
+
+                    [name, data] = ['ButtonAck', {}];
+                    break;
+                }
+                case 'PinMatrixRequest': {
+                    const promptRes = await promptPin(this.device, res.message.type);
+                    if (!promptRes.success) {
+                        return Promise.reject(promptRes.error);
+                    }
+
+                    pinUnlocked = true;
+                    [name, data] = ['PinMatrixAck', { pin: promptRes.payload }];
+                    break;
+                }
+                case 'PassphraseRequest': {
+                    const promptRes = await promptPassphrase(this.device);
+                    if (!promptRes.success) {
+                        return Promise.reject(promptRes.error);
+                    }
+
+                    [name, data] = [
+                        'PassphraseAck',
+                        promptRes.payload.passphraseOnDevice
+                            ? { on_device: true }
+                            : { passphrase: promptRes.payload.value.normalize('NFKD') },
+                    ];
+                    break;
+                }
+                case 'WordRequest': {
+                    const promptRes = await promptWord(this.device, res.message.type);
+                    if (!promptRes.success) {
+                        return Promise.reject(promptRes.error);
+                    }
+
+                    [name, data] = ['WordAck', { word: promptRes.payload }];
+                    break;
+                }
+                default: {
+                    // reload features after successful PIN; TODO improve
+                    if (pinUnlocked && !this.device.features.unlocked) {
+                        await this.device.getFeatures();
+                    }
+
+                    return res;
+                }
+            }
+        }
     }
 
     private async _getAddress() {
