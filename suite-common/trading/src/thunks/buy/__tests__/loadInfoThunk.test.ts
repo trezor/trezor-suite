@@ -1,5 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { FiatCurrenciesProps } from 'invity-api';
+import { BuyCryptoPaymentMethod, BuyProviderInfo, CryptoId, FiatCurrenciesProps } from 'invity-api';
 
 import { configureMockStore } from '@suite-common/test-utils';
 
@@ -75,5 +75,41 @@ describe('loadInfoThunk', () => {
             supportedFiatCurrencies: [],
             supportedCryptoCurrencies: [],
         });
+    });
+
+    it('should build supportedFiatCurrencies and supportedCryptoCurrencies from providers', async () => {
+        const provider1: BuyProviderInfo = {
+            name: 'PROVIDER 1',
+            companyName: 'COMPANY 1',
+            tradedCoins: ['bitcoin'] as CryptoId[],
+            tradedFiatCurrencies: ['EUR'],
+            logo: 'logo1',
+            isActive: true,
+            paymentMethods: [] as BuyCryptoPaymentMethod[],
+            supportedCountries: [],
+        };
+
+        const buyInfoAPI = {
+            country: 'CZ',
+            suggestedFiatCurrency: 'CZK',
+            providers: [provider1] as BuyProviderInfo[],
+            defaultAmountsOfFiatCurrencies: {
+                czk: 2500,
+            } as FiatCurrenciesProps,
+        };
+
+        invityAPI.getBuyList = () => Promise.resolve(buyInfoAPI);
+
+        const buyInfoData = await store.dispatch(buyThunks.loadInfoThunk()).unwrap();
+
+        expect(buyInfoData).toEqual(
+            expect.objectContaining({
+                providerInfos: {
+                    'PROVIDER 1': provider1,
+                },
+                supportedFiatCurrencies: ['eur'],
+                supportedCryptoCurrencies: ['bitcoin'],
+            }),
+        );
     });
 });

@@ -1,6 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
-import { getNetwork } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
 import * as BUY_FIXTURE from '../__fixtures__/buyUtils';
@@ -10,7 +10,9 @@ import { accountBtc, accountEth } from '../__fixtures__/utils';
 import type { TradingAccountOptionsGroupOptionProps } from '../types';
 import {
     addIdsToQuotes,
+    cryptoIdToSymbol,
     filterQuotesAccordingTags,
+    getDefaultCountry,
     getTagAndInfoNote,
     getTradingNetworkDecimals,
     getTradingPaymentMethods,
@@ -19,6 +21,7 @@ import {
     isCryptoIdForNativeToken,
     mapTestnetSymbol,
     testnetToProdCryptoId,
+    toTokenCryptoId,
 } from '../utils';
 
 describe('getUnusedAddressFromAccount', () => {
@@ -36,12 +39,20 @@ describe('getUnusedAddressFromAccount', () => {
 });
 
 describe('mapTestnetCryptoCurrency', () => {
-    it('should transform testnet network symbol to mainnet', () => {
-        expect(mapTestnetSymbol('btc')).toStrictEqual('btc');
-        expect(mapTestnetSymbol('eth')).toStrictEqual('eth');
-        expect(mapTestnetSymbol('test')).toStrictEqual('btc');
-        expect(mapTestnetSymbol('txrp')).toStrictEqual('xrp');
-    });
+    it.each([
+        ['btc', 'btc'],
+        ['eth', 'eth'],
+        ['test', 'btc'],
+        ['tsep', 'eth'],
+        ['thol', 'eth'],
+        ['txrp', 'xrp'],
+        ['tada', 'ada'],
+    ] as [NetworkSymbol, NetworkSymbol][])(
+        'should transform testnet network symbol [%s] to mainnet',
+        (symbol, expectedValue) => {
+            expect(mapTestnetSymbol(symbol)).toStrictEqual(expectedValue);
+        },
+    );
 });
 
 describe('getTagAndInfoNote', () => {
@@ -98,6 +109,7 @@ describe('addIdsToQuotes', () => {
         const quotesExchange = [...EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK];
 
         expect(addIdsToQuotes([], 'buy')).toStrictEqual([]);
+        expect(addIdsToQuotes(undefined, 'buy')).toStrictEqual([]);
         expect(addIdsToQuotes(quotes, 'buy').length).toStrictEqual(
             quotes.filter(q => q.orderId && q.paymentId).length,
         );
@@ -211,5 +223,43 @@ describe('getTradingNetworkDecimals', () => {
         });
 
         expect(decimalsWithAccount).toEqual(sendCryptoSelect.decimals);
+    });
+});
+
+describe('cryptoIdToSymbol', () => {
+    it.each([
+        ['bitcoin', 'btc'],
+        ['ethereum', 'eth'],
+        ['ethereum--0x1234123412341234123412341234123412341234', 'eth'],
+    ] as [CryptoId, NetworkSymbol][])(
+        'should return correct symbol for %s',
+        (cryptoId, expectedSymbol) => {
+            expect(cryptoIdToSymbol(cryptoId)).toBe(expectedSymbol);
+        },
+    );
+});
+
+describe('toTokenCryptoId', () => {
+    it('should return correct token cryptoId', () => {
+        expect(toTokenCryptoId('eth', '0x1234123412341234123412341234123412341234')).toBe(
+            'ethereum--0x1234123412341234123412341234123412341234',
+        );
+    });
+});
+
+describe('getDefaultCountry', () => {
+    it('should return default country for unknown country', () => {
+        expect(getDefaultCountry()).toEqual({ label: '🌍 Worldwide', value: 'unknown' });
+    });
+
+    it('should return correct value', () => {
+        expect(getDefaultCountry('US')).toEqual({
+            label: '🇺🇸 United States of America',
+            value: 'US',
+        });
+    });
+
+    it('should return default country for non existing code', () => {
+        expect(getDefaultCountry('XX')).toEqual({ label: '🌍 Worldwide', value: 'unknown' });
     });
 });
