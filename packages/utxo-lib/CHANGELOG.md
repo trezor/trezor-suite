@@ -1,3 +1,7 @@
+# 2.3.2
+
+-   npm-prerelease: @trezor/utxo-lib 2.3.2-beta.1 (d2bcdc8348)
+
 # 2.3.1
 
 -   npm-prerelease: @trezor/utxo-lib 2.3.1-beta.1 (d1159a83e5)
