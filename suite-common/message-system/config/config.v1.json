@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-02-24T00:00:00+00:00",
-    "sequence": 82,
+    "timestamp": "2025-03-13T00:00:00+00:00",
+    "sequence": 83,
     "actions": [
         {
             "conditions": [
@@ -561,6 +561,127 @@
                         "pt": "Atualizar agora",
                         "uk": "Оновити зараз"
                     }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=25.2.1",
+                        "mobile": "!",
+                        "web": ">=25.2.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "8901bcbb-d9b2-4901-bfc3-3669175f04a8",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "info",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "New Trezor firmware is available! Please update your device.",
+                    "en": "New Trezor firmware is available! Please update your device.",
+                    "es": "¡Hay disponible un nuevo firmware de Trezor! Por favor, actualiza tu dispositivo.",
+                    "cs": "Je k dispozici nový firmware pro Trezor! Aktualizujte prosím své zařízení.",
+                    "ru": "Доступна новая прошивка Trezor! Пожалуйста, обновите ваше устройство.",
+                    "ja": "新しいTrezorファームウェアが利用可能です！デバイスをアップデートしてください。",
+                    "hu": "Új Trezor firmware érhető el! Kérjük, frissítse a készülékét.",
+                    "it": "È disponibile un nuovo firmware Trezor! Si prega di aggiornare il dispositivo.",
+                    "fr": "Un nouveau firmware Trezor est disponible ! Veuillez mettre à jour votre appareil.",
+                    "de": "Neue Trezor-Firmware verfügbar! Bitte aktualisieren Sie Ihr Gerät.",
+                    "tr": "Yeni Trezor yazılımı mevcut! Lütfen cihazınızı güncelleyin.",
+                    "pt": "Está disponível um novo firmware Trezor! Por favor, atualize o seu dispositivo.",
+                    "uk": "Доступна нова прошивка Trezor! Будь ласка, оновіть ваш пристрій."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "firmware-index",
+                    "label": {
+                        "en-GB": "Update now",
+                        "en": "Update now",
+                        "es": "Actualizar ahora",
+                        "cs": "Aktualizovat teď",
+                        "ru": "Обновить сейчас",
+                        "ja": "今すぐアップデート",
+                        "hu": "Frissítés most",
+                        "it": "Aggiorna ora",
+                        "fr": "Mettre à jour maintenant",
+                        "de": "Jetzt aktualisieren",
+                        "tr": "Şimdi Güncelle",
+                        "pt": "Atualizar agora",
+                        "uk": "Оновити зараз"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "!",
+                        "mobile": "25.2.1",
+                        "web": "!"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "1",
+                            "firmware": "1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "49e7400f-c457-4309-b0bb-a221f6b09b36",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "info",
+                "category": ["banner"],
+                "content": {
+                    "en-GB": "New Trezor firmware is available! Please update your device.",
+                    "en": "New Trezor firmware is available! Please update your device.",
+                    "es": "¡Hay disponible un nuevo firmware de Trezor! Por favor, actualiza tu dispositivo.",
+                    "cs": "Je k dispozici nový firmware pro Trezor! Aktualizujte prosím své zařízení.",
+                    "ru": "Доступна новая прошивка Trezor! Пожалуйста, обновите ваше устройство.",
+                    "ja": "新しいTrezorファームウェアが利用可能です！デバイスをアップデートしてください。",
+                    "hu": "Új Trezor firmware érhető el! Kérjük, frissítse a készülékét.",
+                    "it": "È disponibile un nuovo firmware Trezor! Si prega di aggiornare il dispositivo.",
+                    "fr": "Un nouveau firmware Trezor est disponible ! Veuillez mettre à jour votre appareil.",
+                    "de": "Neue Trezor-Firmware verfügbar! Bitte aktualisieren Sie Ihr Gerät.",
+                    "tr": "Yeni Trezor yazılımı mevcut! Lütfen cihazınızı güncelleyin.",
+                    "pt": "Está disponível um novo firmware Trezor! Por favor, atualize o seu dispositivo.",
+                    "uk": "Доступна нова прошивка Trezor! Будь ласка, оновіть ваш пристрій."
                 }
             }
         },
