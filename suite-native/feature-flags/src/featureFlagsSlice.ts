@@ -1,6 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { isDebugEnv, isDetoxTestBuild, isDevelopOrDebugEnv } from '@suite-native/config';
 import { isAndroid } from '@trezor/env-utils';
 
 export const FeatureFlag = {
@@ -22,13 +21,19 @@ export type FeatureFlagsRootState = {
 };
 
 export const featureFlagsInitialState: FeatureFlagsState = {
-    [FeatureFlag.IsDeviceConnectEnabled]: isAndroid() || (isDebugEnv() && !isDetoxTestBuild()),
-    [FeatureFlag.IsCardanoSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
-    [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
-    [FeatureFlag.IsConnectPopupEnabled]: isDevelopOrDebugEnv(),
-    [FeatureFlag.IsDeviceOnboardingEnabled]: isDebugEnv() && !isDetoxTestBuild(),
-    [FeatureFlag.IsTradingEnabled]: isDebugEnv(),
-    [FeatureFlag.IsWalletConnectEnabled]: isDevelopOrDebugEnv(),
+    [FeatureFlag.IsDeviceConnectEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_DEVICE_CONNECT_ENABLED === 'true' ||
+        (isAndroid() && process.env.EXPO_PUBLIC_FF_IS_DEVICE_CONNECT_ENABLED !== 'false'),
+    [FeatureFlag.IsCardanoSendEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_CARDANO_SEND_ENABLED === 'true',
+    [FeatureFlag.IsRegtestEnabled]: process.env.EXPO_PUBLIC_FF_IS_REGTEST_ENABLED === 'true',
+    [FeatureFlag.IsConnectPopupEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED === 'true',
+    [FeatureFlag.IsDeviceOnboardingEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_DEVICE_ONBOARDING_ENABLED === 'true',
+    [FeatureFlag.IsTradingEnabled]: process.env.EXPO_PUBLIC_FF_IS_TRADING_ENABLED === 'true',
+    [FeatureFlag.IsWalletConnectEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_WALLET_CONNECT_ENABLED === 'true',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [

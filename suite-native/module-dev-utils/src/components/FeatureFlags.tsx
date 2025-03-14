@@ -1,6 +1,7 @@
 import { Box, Card, CheckBox, Text, VStack } from '@suite-native/atoms';
 import {
     FeatureFlag as FeatureFlagEnum,
+    featureFlagsInitialState,
     useFeatureFlag,
     useToggleFeatureFlag,
 } from '@suite-native/feature-flags';
@@ -21,7 +22,7 @@ const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {
 
     return (
         <Box flexDirection="row" justifyContent="space-between">
-            <Text>{featureFlagsTitleMap[featureFlag]}</Text>
+            <Text>{`${featureFlagsTitleMap[featureFlag]} [${featureFlagsInitialState[featureFlag]}]`}</Text>
             <CheckBox isChecked={value} onChange={toggleFeatureFlag} />
         </Box>
     );
@@ -30,7 +31,7 @@ const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {
 export const FeatureFlags = () => (
     <Card>
         <VStack spacing="sp8">
-            <Text variant="titleSmall">Feature Flags</Text>
+            <Text variant="titleSmall">Feature Flags [default value]</Text>
             <VStack>
                 {Object.values(FeatureFlagEnum).map(featureFlag => (
                     <FeatureFlag key={featureFlag} featureFlag={featureFlag} />

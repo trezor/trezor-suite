@@ -7,8 +7,7 @@
     "build": {
         "develop": {
             "env": {
-                "EXPO_PUBLIC_ENVIRONMENT": "develop",
-                "EXPO_PUBLIC_CODESIGN_BUILD": "false"
+                "EXPO_PUBLIC_ENVIRONMENT": "develop"
             },
             "channel": "develop",
             "autoIncrement": true,
@@ -22,8 +21,7 @@
         },
         "preview": {
             "env": {
-                "EXPO_PUBLIC_ENVIRONMENT": "preview",
-                "EXPO_PUBLIC_CODESIGN_BUILD": "false"
+                "EXPO_PUBLIC_ENVIRONMENT": "preview"
             },
             "channel": "preview",
             "autoIncrement": true,

@@ -130,6 +130,7 @@ jobs:
           ASSETS_DEST_PATH: ./android/app/build/outputs/apk/release/unpacked/res/
           ENTRY_FILE_PATH: ./suite-native/app/index.js
           EXPO_PUBLIC_IS_DETOX_BUILD: true
+          EXPO_PUBLIC_FF_IS_REGTEST_ENABLED: true
           EXPO_PUBLIC_ENVIRONMENT: debug
         run: npx react-native bundle --platform android --dev false --entry-file $ENTRY_FILE_PATH --bundle-output $JS_BUNDLE_PATH --assets-dest $ASSETS_DEST_PATH
 

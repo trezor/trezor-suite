@@ -10198,7 +10198,6 @@ __metadata:
   resolution: "@suite-native/feature-flags@workspace:suite-native/feature-flags"
   dependencies:
     "@reduxjs/toolkit": "npm:2.6.0"
-    "@suite-native/config": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     react-native: "npm:0.76.1"
     react-redux: "npm:9.2.0"

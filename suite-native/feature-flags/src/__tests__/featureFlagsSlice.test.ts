@@ -5,38 +5,7 @@ describe('featureFlagsSlice', () => {
     });
 
     describe('initial state', () => {
-        it('should have correct initial state for debug environment on android', () => {
-            jest.mock('@suite-native/config', () => ({
-                ...jest.requireActual('@suite-native/config'),
-                isDebugEnv: () => true,
-                isDevelopOrDebugEnv: () => true,
-            }));
-            jest.mock('@trezor/env-utils', () => ({
-                ...jest.requireActual('@trezor/env-utils'),
-                isAndroid: () => true,
-            }));
-
-            const { featureFlagsReducer } = require('../featureFlagsSlice');
-
-            const initialState = featureFlagsReducer(undefined, { type: 'undefined_action' });
-
-            expect(initialState).toEqual({
-                isDeviceConnectEnabled: true,
-                isCardanoSendEnabled: true,
-                isRegtestEnabled: true,
-                isConnectPopupEnabled: true,
-                isTradingEnabled: true,
-                isDeviceOnboardingEnabled: true,
-                isWalletConnectEnabled: true,
-            });
-        });
-
-        it('should have correct initial state for production environment on android', () => {
-            jest.mock('@suite-native/config', () => ({
-                ...jest.requireActual('@suite-native/config'),
-                isDebugEnv: () => false,
-                isDevelopOrDebugEnv: () => false,
-            }));
+        it('should have correct initial state on android', () => {
             jest.mock('@trezor/env-utils', () => ({
                 ...jest.requireActual('@trezor/env-utils'),
                 isAndroid: () => true,
@@ -57,12 +26,7 @@ describe('featureFlagsSlice', () => {
             });
         });
 
-        it('should have correct initial state for production environment on iOS', () => {
-            jest.mock('@suite-native/config', () => ({
-                ...jest.requireActual('@suite-native/config'),
-                isDebugEnv: () => false,
-                isDevelopOrDebugEnv: () => false,
-            }));
+        it('should have correct initial state on iOS', () => {
             jest.mock('@trezor/env-utils', () => ({
                 ...jest.requireActual('@trezor/env-utils'),
                 isAndroid: () => false,
