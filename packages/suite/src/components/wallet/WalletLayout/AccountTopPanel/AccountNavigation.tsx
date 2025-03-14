@@ -10,16 +10,6 @@ import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { WalletParams } from 'src/types/wallet';
 
-export const ACCOUNT_TABS = [
-    'wallet-index',
-    'wallet-details',
-    'wallet-tokens',
-    'wallet-nfts',
-    'wallet-nfts-hidden',
-    'wallet-tokens-hidden',
-    'wallet-staking',
-];
-
 export const AccountNavigation = () => {
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(state => state.router.params) as WalletParams;

@@ -1,8 +1,17 @@
 import { ROUTER } from 'src/actions/suite/constants';
-import { ACCOUNT_TABS } from 'src/components/wallet/WalletLayout/AccountTopPanel/AccountNavigation';
 import type { AnchorType } from 'src/constants/suite/anchors';
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
 import { Action } from 'src/types/suite';
+
+const ACCOUNT_TABS = [
+    'wallet-index',
+    'wallet-details',
+    'wallet-tokens',
+    'wallet-nfts',
+    'wallet-nfts-hidden',
+    'wallet-tokens-hidden',
+    'wallet-staking',
+];
 
 export type RouterState = {
     loaded: boolean;
