@@ -332,19 +332,22 @@ export class UsbApi extends AbstractApi {
                 // empty
             }
         }
-        try {
-            const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
-            this.logger?.debug(`usb: device.claimInterface: ${interfaceId}`);
-            // claim device for exclusive access by this app
-            await this.abortableMethod(() => device.claimInterface(interfaceId), { signal });
-            this.logger?.debug(`usb: device.claimInterface done: ${interfaceId}.`);
-        } catch (err) {
-            this.logger?.error(`usb: device.claimInterface error ${err}.`);
 
-            return this.error({
-                error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
-                message: err.message,
-            });
+        const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
+        if (!this.isInterfaceClaimed(device, interfaceId)) {
+            try {
+                this.logger?.debug(`usb: device.claimInterface: ${interfaceId}`);
+                // claim device for exclusive access by this app
+                await this.abortableMethod(() => device.claimInterface(interfaceId), { signal });
+                this.logger?.debug(`usb: device.claimInterface done: ${interfaceId}.`);
+            } catch (err) {
+                this.logger?.error(`usb: device.claimInterface error ${err}.`);
+
+                return this.error({
+                    error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
+                    message: err.message,
+                });
+            }
         }
 
         return this.success(undefined);
@@ -372,9 +375,9 @@ export class UsbApi extends AbstractApi {
         }
 
         device = this.findDevice(path);
-        if (device?.opened) {
+        const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
+        if (device?.opened && this.isInterfaceClaimed(device, interfaceId)) {
             try {
-                const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
                 this.logger?.debug(`usb: device.releaseInterface: ${interfaceId}`);
 
                 await device.releaseInterface(interfaceId);
@@ -502,6 +505,10 @@ export class UsbApi extends AbstractApi {
         return [hidDevices, nonHidDevices];
     }
 
+    private isInterfaceClaimed(device: USBDevice, interfaceId: number) {
+        return device.configuration?.interfaces.find(i => i.interfaceNumber === interfaceId)
+            ?.claimed;
+    }
     // https://github.com/trezor/trezord-go/blob/db03d99230f5b609a354e3586f1dfc0ad6da16f7/usb/libusb.go#L545
     private handleReadWriteError(err: Error) {
         if (
