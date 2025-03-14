@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 import { mergeDeepObject } from '@trezor/utils';
 
 import { app } from '../typed-electron';
@@ -54,3 +57,18 @@ export const processStatePatch = (): ProcessStatePatchResult =>
             (prev, cur) => mergeDeepObject.withOptions({ dotNotation: true }, prev ?? {}, cur),
             undefined,
         )?.state;
+
+export const removeElectronAppData = () => {
+    const localDataDir = app.getPath('userData');
+    const filesToDelete = fs.readdirSync(localDataDir);
+    filesToDelete.forEach(file => {
+        // omitting Cache folder it sometimes prevents the deletion and is not necessary to delete for test idempotency
+        if (file !== 'Cache') {
+            try {
+                fs.rmSync(path.join(localDataDir, file), { recursive: true });
+            } catch {
+                // If files does not exist do nothing.
+            }
+        }
+    });
+};

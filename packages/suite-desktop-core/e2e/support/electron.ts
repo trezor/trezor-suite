@@ -1,5 +1,5 @@
 import { ElectronApplication, Page, _electron as electron } from '@playwright/test';
-import { createWriteStream, ensureDirSync, readdirSync, removeSync } from 'fs-extra';
+import { createWriteStream, ensureDirSync } from 'fs-extra';
 import path from 'path';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
@@ -61,6 +61,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
             disableHWAccelerationArgument,
             ...(options.bridgeLegacyTest ? ['--bridge-legacy', '--bridge-test'] : []),
             ...(options.bridgeDaemon ? ['--bridge-daemon', '--skip-new-bridge-rollout'] : []),
+            ...(options.rmUserData ? ['--remove-user-data-on-start'] : []),
             disableHashCheckStatePatch,
             showDebugMenuStatePatch,
         ],
@@ -68,22 +69,6 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
         locale: params.locale,
         recordVideo: { dir: options.artefactFolder, size: options.viewport },
     });
-
-    const localDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'));
-
-    if (options.rmUserData) {
-        const filesToDelete = readdirSync(localDataDir);
-        filesToDelete.forEach(file => {
-            // omitting Cache folder it sometimes prevents the deletion and is not necessary to delete for test idempotency
-            if (file !== 'Cache') {
-                try {
-                    removeSync(`${localDataDir}/${file}`);
-                } catch {
-                    // If files does not exist do nothing.
-                }
-            }
-        });
-    }
 
     const logFilePath = path.join(options.artefactFolder, 'electron-logs.txt');
     ensureDirSync(options.artefactFolder);
@@ -96,17 +81,6 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     electronApp.process().on('close', () => {
         logStream.end();
     });
-
-    await electronApp.evaluate(
-        (_, [resourcesPath]) => {
-            // This runs in the main Electron process.
-            // override global variable defined in app.ts
-            global.resourcesPath = resourcesPath;
-
-            return global.resourcesPath;
-        },
-        [path.join(appDir, 'build/static')],
-    );
 
     return electronApp;
 };

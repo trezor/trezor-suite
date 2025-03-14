@@ -15,7 +15,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         await trezorUserEnvLink.stopBridge();
     });
 
-    test('App in daemon mode spawns bridge', async ({ request }, testInfo) => {
+    test('App in daemon mode spawns node-bridge', async ({ request }, testInfo) => {
         const daemonApp = await launchSuiteElectronApp({
             bridgeDaemon: true,
             bridgeLegacyTest: false,
@@ -27,7 +27,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
             await expectBridgeToBeRunning(request);
         }).toPass({ timeout: 3_000 });
 
-        // launch UI
+        // launch UI, with node-bridge already running in background
         const suite = await launchSuite({
             artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,

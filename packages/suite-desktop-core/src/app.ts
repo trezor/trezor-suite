@@ -9,7 +9,7 @@ import { TimerId } from '@trezor/type-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
 import { hangDetect } from './hang-detect';
-import { processStatePatch, restartApp } from './libs/app-utils';
+import { processStatePatch, removeElectronAppData, restartApp } from './libs/app-utils';
 import { APP_NAME } from './libs/constants';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { Logger } from './libs/logger';
@@ -32,6 +32,13 @@ if (isDevEnv) app.setVersion(process.env.VERSION);
 global.resourcesPath = isDevEnv
     ? path.join(__dirname, '..', 'build', 'static')
     : process.resourcesPath;
+
+const parseRemoveUserDataSwitch = () => {
+    if (process.argv.includes('--remove-user-data-on-start')) {
+        removeElectronAppData();
+    }
+};
+parseRemoveUserDataSwitch();
 
 const createMainWindow = (winBounds: WinBounds) => {
     const mainWindow = new BrowserWindow({
