@@ -52,13 +52,9 @@ export const DashboardPassphraseBanner = () => {
     };
 
     return (
-        <AnimatePresence>
+        <AnimatePresence onExitComplete={handleClose}>
             {isVisible && (
-                <Container
-                    key="container"
-                    {...bannerAnimationConfig}
-                    onAnimationComplete={handleClose}
-                >
+                <Container key="container" {...bannerAnimationConfig}>
                     <Banner
                         variant="tertiary"
                         icon="asterisk"

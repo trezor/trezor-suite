@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
 
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import { Column, ElevationContext, Icon, Row, Text } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
@@ -17,6 +17,27 @@ import { Translation, TranslationKey } from '../../../../../Translation';
 
 type ContainerProps = { $elevation: Elevation };
 
+const heartbeat = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  5% {
+    transform: scale(1.05);
+  }
+  10% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(1.05);
+  }
+  20% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
 const Container = styled.div<ContainerProps>`
     margin: ${spacingsPx.md};
     display: flex;
@@ -26,6 +47,8 @@ const Container = styled.div<ContainerProps>`
     border-radius: ${borders.radii.sm};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
     cursor: ${({ onClick }) => (onClick !== undefined ? 'pointer' : undefined)};
+    animation: ${heartbeat} 10s infinite;
+    animation-delay: 10s;
 `;
 
 const CloseIconBackground = styled.div`
