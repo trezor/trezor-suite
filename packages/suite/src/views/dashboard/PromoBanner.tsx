@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Button, Column, Icon, Image, Row, Tooltip, variables } from '@trezor/components';
+import { Button, Column, Icon, Image, Row, Text, Tooltip, variables } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
@@ -24,8 +24,7 @@ const Container = styled.div`
     align-items: center;
     width: 100%;
     height: 70px;
-    border-top: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation0};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         border-radius: 20px;
@@ -47,13 +46,15 @@ const promoContainerCss = css`
 `;
 
 const DesktopPromoContainer = styled.div`
-    ${promoContainerCss}
+    ${promoContainerCss};
     min-width: 50%;
-    border-right: 1px solid ${({ theme }) => theme.legacy.STROKE_GREY};
+    display: flex;
+    justify-content: space-between;
+    border-right: 1px solid ${({ theme }) => theme.borderElevation0};
 `;
 
 const MobilePromoContainer = styled.div`
-    ${promoContainerCss}
+    ${promoContainerCss};
     justify-content: start;
 
     ${variables.SCREEN_QUERY.MOBILE} {
@@ -69,25 +70,6 @@ const OSIcons = styled.div`
     gap: 6px;
     margin-top: 2px;
     opacity: 0.7;
-`;
-
-const StyledLink = styled(TrezorLink)`
-    margin-left: auto;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const DesktopLinkButton = styled(Button)`
-    background: ${({ theme }) => theme.legacy.STROKE_GREY};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    transition: opacity 0.15s;
-    opacity: 0.6;
-
-    &:hover,
-    &:focus {
-        background: ${({ theme }) => theme.legacy.STROKE_GREY};
-        opacity: 1;
-    }
 `;
 
 // eslint-disable-next-line local-rules/no-override-ds-component
@@ -188,31 +170,34 @@ export const PromoBanner = () => {
         <Container>
             {isWeb() && !isMobileLayout && (
                 <DesktopPromoContainer>
-                    <Image image="HOLLOW_APP_LOGO" width={44} height={44} />
+                    <Row gap={spacings.xs}>
+                        <Image image="HOLLOW_APP_LOGO" width={44} height={44} />
 
-                    <div>
-                        <Translation id="TR_MOBILE_APP_PROMO_TEXT" />
+                        <div>
+                            <Text typographyStyle="label">
+                                <Translation id="TR_MOBILE_APP_PROMO_TEXT" />
+                            </Text>
 
-                        <OSIcons>
-                            <Icon name="osMac" size={14} />
-                            <Icon name="osLinux" size={14} />
-                            <Icon name="osWindows" size={12} />
-                        </OSIcons>
-                    </div>
+                            <OSIcons>
+                                <Icon name="osMac" size={14} />
+                                <Icon name="osLinux" size={14} />
+                                <Icon name="osWindows" size={12} />
+                            </OSIcons>
+                        </div>
+                    </Row>
 
-                    <StyledLink
+                    <Button
                         href={SUITE_URL}
-                        variant="nostyle"
+                        variant="tertiary"
+                        size="small"
                         onClick={() =>
                             analytics.report({
                                 type: EventType.GetDesktopApp,
                             })
                         }
                     >
-                        <DesktopLinkButton>
-                            <Translation id="TR_DESKTOP_APP_PROMO_GET" />
-                        </DesktopLinkButton>
-                    </StyledLink>
+                        <Translation id="TR_DESKTOP_APP_PROMO_GET" />
+                    </Button>
                 </DesktopPromoContainer>
             )}
 
@@ -228,10 +213,12 @@ export const PromoBanner = () => {
                                 : 0,
                     }}
                 >
-                    <Translation
-                        values={{ b: text => <b>{text}</b> }}
-                        id="TR_MOBILE_APP_PROMO_TEXT_FOOTER"
-                    />
+                    <Text typographyStyle="label">
+                        <Translation
+                            values={{ b: text => <b>{text}</b> }}
+                            id="TR_MOBILE_APP_PROMO_TEXT_FOOTER"
+                        />
+                    </Text>
 
                     <Row gap={spacings.xxs}>
                         <StoreBadge
