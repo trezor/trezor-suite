@@ -1,13 +1,13 @@
 /**
  * Enable DevTools
  */
-import { app } from 'electron';
-
 import { isDevEnv } from '@suite-common/suite-utils';
+
+import { hasSwitch } from '../libs/process-switches';
 
 import type { ModuleInit } from './index';
 
-const openDevToolsFlag = app.commandLine.hasSwitch('open-devtools');
+const openDevToolsFlag = hasSwitch('open-devtools');
 
 export const SERVICE_NAME = 'dev-tools';
 

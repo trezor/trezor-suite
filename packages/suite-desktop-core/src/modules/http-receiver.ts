@@ -6,6 +6,7 @@ import { validateIpcMessage } from '@trezor/ipc-proxy';
 
 import { exposeConnectWs } from '../libs/connect-ws';
 import { createHttpReceiver } from '../libs/http-receiver';
+import { hasSwitch } from '../libs/process-switches';
 import { app, ipcMain } from '../typed-electron';
 
 import type { ModuleInitBackground } from './index';
@@ -61,7 +62,7 @@ export const initBackground: ModuleInitBackground = ({ mainWindowProxy, mainThre
             return receiver.getRouteAddress(pathname);
         });
 
-        const connectPopupEnabled = app.commandLine.hasSwitch('expose-connect-ws') || isDevEnv;
+        const connectPopupEnabled = hasSwitch('expose-connect-ws') || isDevEnv;
         ipcMain.handle('connect-popup/enabled', ipcEvent => {
             validateIpcMessage(ipcEvent);
 

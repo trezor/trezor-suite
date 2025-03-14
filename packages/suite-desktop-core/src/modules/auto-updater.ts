@@ -11,6 +11,7 @@ import { isDevEnv, isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { HandshakeElectron } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable } from '@trezor/utils';
 
+import { getSwitchValue, hasSwitch } from '../libs/process-switches';
 import { verifySignature } from '../libs/update-checker';
 import { b2t } from '../libs/utils';
 import { app, ipcMain } from '../typed-electron';
@@ -24,10 +25,10 @@ const defaultFeedURL = {
 };
 
 // Runtime flags
-const enableUpdater = app.commandLine.hasSwitch('enable-updater');
-const disableUpdater = app.commandLine.hasSwitch('disable-updater');
-const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
-const updaterURL = app.commandLine.getSwitchValue('updater-url');
+const enableUpdater = hasSwitch('enable-updater');
+const disableUpdater = hasSwitch('disable-updater');
+const preReleaseFlag = hasSwitch('pre-release');
+const updaterURL = getSwitchValue('updater-url');
 
 export const SERVICE_NAME = 'auto-updater';
 

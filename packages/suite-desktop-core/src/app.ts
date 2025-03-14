@@ -14,6 +14,7 @@ import { APP_NAME } from './libs/constants';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { Logger } from './libs/logger';
 import { MainWindowProxy } from './libs/main-window-proxy';
+import { hasSwitch } from './libs/process-switches';
 import { createInterceptor } from './libs/request-interceptor';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
@@ -34,7 +35,7 @@ global.resourcesPath = isDevEnv
     : process.resourcesPath;
 
 const parseRemoveUserDataSwitch = () => {
-    if (process.argv.includes('--remove-user-data-on-start')) {
+    if (hasSwitch('remove-user-data-on-start')) {
         removeElectronAppData();
     }
 };
@@ -158,8 +159,8 @@ const init = async () => {
 
     // Daemon mode with no UI
     const { wasOpenedAtLogin } = app.getLoginItemSettings();
-    const daemon = app.commandLine.hasSwitch('bridge-daemon') || wasOpenedAtLogin;
-    const daemonShowUI = app.commandLine.hasSwitch('bridge-daemon-show-ui'); // show UI immediately even in daemon mode
+    const daemon = hasSwitch('bridge-daemon') || wasOpenedAtLogin;
+    const daemonShowUI = hasSwitch('bridge-daemon-show-ui'); // show UI immediately even in daemon mode
     if (daemon && !daemonShowUI) {
         logger.info('main', 'App is hidden, starting bridge only');
         app.dock?.hide(); // hide dock icon on macOS

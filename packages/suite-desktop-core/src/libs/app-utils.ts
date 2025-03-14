@@ -45,6 +45,7 @@ type ProcessStatePatchResult = Record<string, any> | undefined;
  * Get all state patches from process args and parse them to return an aggregated state object patch
  */
 export const processStatePatch = (): ProcessStatePatchResult =>
+    // not using getSwitchValue because this is a very customized way to parse process switches
     process.argv
         .map(arg => arg.match(STATE_ASSIGNMENT_REGEX))
         .filter(match => match !== null)

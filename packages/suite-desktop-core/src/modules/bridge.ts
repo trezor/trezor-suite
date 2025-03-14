@@ -8,19 +8,20 @@ import { InvokeResult } from '@trezor/suite-desktop-api';
 import { TrezordNode } from '@trezor/transport-bridge';
 import { scheduleAction } from '@trezor/utils';
 
+import { hasSwitch } from '../libs/process-switches';
 import { BridgeProcess } from '../libs/processes/BridgeProcess';
 import { ThreadProxy } from '../libs/thread-proxy';
 import { b2t } from '../libs/utils';
-import { app, ipcMain } from '../typed-electron';
+import { ipcMain } from '../typed-electron';
 
 import type { Dependencies } from './index';
 
-const bridgeLegacy = app.commandLine.hasSwitch('bridge-legacy');
+const bridgeLegacy = hasSwitch('bridge-legacy');
 // bridge node is intended for internal testing
-const bridgeTest = app.commandLine.hasSwitch('bridge-test');
-const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
+const bridgeTest = hasSwitch('bridge-test');
+const bridgeDev = hasSwitch('bridge-dev');
 
-const skipNewBridgeRollout = app.commandLine.hasSwitch('skip-new-bridge-rollout');
+const skipNewBridgeRollout = hasSwitch('skip-new-bridge-rollout');
 
 export const SERVICE_NAME = 'bridge';
 

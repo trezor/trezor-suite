@@ -9,6 +9,7 @@ import { ensureDirectoryExists } from '@trezor/node-utils';
 import { TimerId } from '@trezor/type-utils';
 
 import { getBuildInfo, getComputerInfo } from './info';
+import { getSwitchValue, hasSwitch } from './process-switches';
 
 const logLevels = ['mute', 'error', 'warn', 'info', 'debug'] as const;
 
@@ -28,7 +29,7 @@ export type Options = {
     memoryCap: number; // Maximum number of messages stored in memory
 };
 
-const logLevelSwitchValue = app?.commandLine.getSwitchValue('log-level');
+const logLevelSwitchValue = getSwitchValue('log-level');
 const logLevelByEnv = isDevEnv ? 'debug' : 'error';
 const logLevelDefault = isLogLevel(logLevelSwitchValue) ? logLevelSwitchValue : logLevelByEnv;
 
@@ -52,12 +53,11 @@ export class Logger implements ILogger {
 
         this.defaultOptions = {
             colors: true,
-            writeToConsole: !app?.commandLine.hasSwitch('log-no-print'),
-            writeToDisk: app?.commandLine.hasSwitch('log-write'),
-            outputFile: app?.commandLine.getSwitchValue('log-file') || 'trezor-suite-log-%tt.txt',
+            writeToConsole: !hasSwitch('log-no-print'),
+            writeToDisk: hasSwitch('log-write'),
+            outputFile: getSwitchValue('log-file') || 'trezor-suite-log-%tt.txt',
             outputPath:
-                app?.commandLine.getSwitchValue('log-path') ||
-                (userDataDir ? `${userDataDir}/logs` : process.cwd()),
+                getSwitchValue('log-path') || (userDataDir ? `${userDataDir}/logs` : process.cwd()),
             logFormat: '%dt - %lvl(%top): %rep%msg',
             dedupeTimeout: 500,
             writeToMemory: false,

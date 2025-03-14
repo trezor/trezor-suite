@@ -11,6 +11,7 @@ import { getFreePort } from '@trezor/node-utils';
 import { BootstrapEvent } from '@trezor/request-manager';
 import { BootstrapTorEvent, HandshakeTorModule, TorStatus } from '@trezor/suite-desktop-api';
 
+import { hasSwitch } from '../libs/process-switches';
 import { TorExternalProcess } from '../libs/processes/TorExternalProcess';
 import { TorProcess, TorProcessStatus } from '../libs/processes/TorProcess';
 import { app, ipcMain } from '../typed-electron';
@@ -306,7 +307,7 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
         handleTorProcessStatus(status);
     });
 
-    if (app.commandLine.hasSwitch('tor')) {
+    if (hasSwitch('tor')) {
         logger.info('tor', 'Tor enabled by command line option.');
         store.setTorSettings({ ...store.getTorSettings(), running: true });
     }

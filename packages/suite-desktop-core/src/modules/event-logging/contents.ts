@@ -1,8 +1,7 @@
-import { app } from 'electron';
-
+import { hasSwitch } from '../../libs/process-switches';
 import type { ModuleInit } from '../index';
 
-const logUI = app.commandLine.hasSwitch('log-ui');
+const logUI = hasSwitch('log-ui');
 
 export const SERVICE_NAME = 'content';
 
