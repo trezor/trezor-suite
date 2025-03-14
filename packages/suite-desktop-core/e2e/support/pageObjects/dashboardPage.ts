@@ -153,7 +153,10 @@ export class DashboardPage {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
 
-        await this.modal.waitFor({ state: 'detached' });
+        await expect(
+            this.modal,
+            'expected Device Prompt to be hidden. pressYes may failed.',
+        ).toBeHidden();
     }
 
     @step()
