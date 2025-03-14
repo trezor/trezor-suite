@@ -35,6 +35,7 @@ on:
       - ".github/workflows/release*"
       - ".github/workflows/template*"
       - ".github/actions/release*/**"
+      - "**.md"
   workflow_dispatch:
 
 concurrency:

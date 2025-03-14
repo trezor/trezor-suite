@@ -22,6 +22,7 @@ on:
       - ".github/workflows/build-desktop*"
       - ".github/workflows/release*"
       - ".github/workflows/template*"
+      - "**.md"
   workflow_dispatch:
 
 concurrency:

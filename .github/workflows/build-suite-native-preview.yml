@@ -13,6 +13,7 @@ on:
       - "packages/transport-native-usb/**"
       - "yarn.lock"
       - ".github/workflows/build-suite-native-preview.yml"
+      - '!**.md'
       # list of paths is not complete, but it's always possible to dispatch manually using 'build-mobile' label
   workflow_dispatch:
     # manual dispatch will not add any comment to PR, use label 'build-mobile' if PR exists

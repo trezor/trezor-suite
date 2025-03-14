@@ -12,6 +12,7 @@ on:
       - "suite-common/**"
       - "packages/connect/**"
       - ".github/workflows/test-suite-native-e2e-android.yml"
+      - '!**.md'
   push:
     branches:
       - release-native/*
@@ -182,9 +183,9 @@ jobs:
     needs: prepare_android_test_app
     strategy:
       fail-fast: false
-      matrix: 
-        TEST_GROUP: [0, 1, 2, 3]  
-      
+      matrix:
+        TEST_GROUP: [0, 1, 2, 3]
+
     steps:
       - name: Checkout project
         uses: actions/checkout@v4

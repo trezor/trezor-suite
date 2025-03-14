@@ -11,6 +11,7 @@ on:
       - "ci/**"
       - ".vscode/**"
       - ".maestro/**"
+      - "**.md"
   pull_request:
     types: [labeled]
   workflow_dispatch:
