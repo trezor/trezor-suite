@@ -411,3 +411,5 @@ jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
 jest.mock('react-native-keyboard-controller', () =>
     require('react-native-keyboard-controller/jest'),
 );
+
+jest.mock('@gorhom/bottom-sheet', () => require('@gorhom/bottom-sheet/mock'));
