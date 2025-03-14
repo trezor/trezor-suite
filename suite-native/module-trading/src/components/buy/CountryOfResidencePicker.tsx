@@ -20,12 +20,24 @@ export const CountryOfResidencePicker = () => {
             >
                 {selectedValue ? (
                     <HStack>
-                        <Text color="textSubdued" variant="body">
+                        <Text
+                            color="textSubdued"
+                            variant="body"
+                            accessibilityLabel={translate(
+                                'moduleTrading.tradingScreen.selectedCountryOfResidence',
+                            )}
+                        >
                             {selectedValue.label}
                         </Text>
                     </HStack>
                 ) : (
-                    <Text color="textDisabled" variant="body">
+                    <Text
+                        color="textDisabled"
+                        variant="body"
+                        accessibilityLabel={translate(
+                            'moduleTrading.tradingScreen.noCountryOfResidence',
+                        )}
+                    >
                         {translate('moduleTrading.notSelected')}
                     </Text>
                 )}

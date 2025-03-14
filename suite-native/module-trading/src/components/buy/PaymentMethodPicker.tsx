@@ -77,12 +77,24 @@ export const PaymentMethodPicker = () => {
             >
                 {selectedValue ? (
                     <HStack>
-                        <Text color="textSubdued" variant="body">
+                        <Text
+                            color="textSubdued"
+                            variant="body"
+                            accessibilityLabel={translate(
+                                'moduleTrading.tradingScreen.selectedPaymentMethod',
+                            )}
+                        >
                             {selectedValue.label}
                         </Text>
                     </HStack>
                 ) : (
-                    <Text color="textDisabled" variant="body">
+                    <Text
+                        color="textDisabled"
+                        variant="body"
+                        accessibilityLabel={translate(
+                            'moduleTrading.tradingScreen.noPaymentMethod',
+                        )}
+                    >
                         {translate('moduleTrading.notSelected')}
                     </Text>
                 )}

@@ -1307,7 +1307,11 @@ export const en = {
             buyTitle: 'Buy',
             receiveAccount: 'Receive account',
             paymentMethod: 'Payment method',
+            noPaymentMethod: 'No payment method selected',
+            selectedPaymentMethod: 'Selected payment method',
             countryOfResidence: 'Country of residence',
+            noCountryOfResidence: 'No country of residence selected',
+            selectedCountryOfResidence: 'Selected country of residence',
             provider: 'Provider',
             continueButton: 'Continue',
             footer: {
