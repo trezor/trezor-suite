@@ -7,6 +7,7 @@ const serializeDevice = (device: TrezorDevice): Omit<TrezorDevice, 'path'> & { p
     ...device,
     path: '',
     remember: true,
+    temporaryRemember: false,
     connected: false,
     buttonRequests: [],
 });
@@ -18,7 +19,7 @@ export const devicePersistTransform = createTransform<
     inboundState =>
         pipe(
             inboundState,
-            A.filter(device => !!device.remember),
+            A.filter(device => !!device.remember && device.temporaryRemember !== true),
             A.map(serializeDevice),
         ),
     undefined,

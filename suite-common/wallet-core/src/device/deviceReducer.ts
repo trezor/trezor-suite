@@ -194,6 +194,7 @@ const connectDevice = (
         state: device._state,
         useEmptyPassphrase,
         remember: false,
+        temporaryRemember: false,
         connected: true,
         available: true,
         authConfirm: false,
@@ -488,6 +489,31 @@ const remember = (
 };
 
 /**
+ * This actions is used to temporary remember device for fw update
+ * @param {DeviceReducerState} draft
+ * @param {TrezorDevice} device
+ * @param {boolean} temporaryRemember
+ */
+const setTemporaryRememberedDevice = (
+    draft: DeviceReducerState,
+    device: TrezorDevice,
+    temporaryRemember: boolean,
+) => {
+    if (!device || !device.features) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    const selectedInstance = draft.devices[index];
+    if (!selectedInstance) return;
+
+    if (temporaryRemember && !selectedInstance.remember) {
+        selectedInstance.temporaryRemember = true;
+        selectedInstance.remember = true;
+    } else if (!temporaryRemember && selectedInstance.temporaryRemember) {
+        selectedInstance.temporaryRemember = false;
+        selectedInstance.remember = false;
+    }
+};
+
+/**
  * Action handler: SUITE.FORGET_DEVICE
  * Remove all device instances
  * @param {DeviceReducerState} draft
@@ -607,6 +633,9 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         })
         .addCase(deviceActions.rememberDevice, (state, { payload }) => {
             remember(state, payload.device, payload.remember, payload.forceRemember);
+        })
+        .addCase(deviceActions.setTemporaryRememberedDevice, (state, { payload }) => {
+            setTemporaryRememberedDevice(state, payload.device, payload.temporaryRemember);
         })
         .addCase(deviceActions.forgetDevice, (state, { payload }) => {
             forget(state, payload.device, payload.settings);

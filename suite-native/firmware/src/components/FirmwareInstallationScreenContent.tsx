@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { authorizeDeviceThunk } from '@suite-common/wallet-core';
 import { Box, Button, IconButton, Text, VStack } from '@suite-native/atoms';
-import { ConfirmOnTrezorImage, setDeviceForceRememberedThunk } from '@suite-native/device';
+import { ConfirmOnTrezorImage, setTemporaryRememberedDeviceThunk } from '@suite-native/device';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
 import { SUITE_LITE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
@@ -46,6 +46,7 @@ type FirmwareInstallationScreenContentProps = {
     onFirmwareInstallationFailure?: () => void;
     isCancellationAllowed?: boolean;
     isRetryAllowed?: boolean;
+    isTemporaryRememeberAllowed?: boolean;
 };
 
 // This component is shared between `module-onboarding` and `module-device-settings`.
@@ -55,6 +56,7 @@ export const FirmwareInstallationScreenContent = ({
     onFirmwareInstallationFailure,
     isCancellationAllowed = true,
     isRetryAllowed = true,
+    isTemporaryRememeberAllowed = true,
 }: FirmwareInstallationScreenContentProps) => {
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
@@ -87,14 +89,16 @@ export const FirmwareInstallationScreenContent = ({
     const openLink = useOpenLink();
 
     useEffect(() => {
+        if (!isTemporaryRememeberAllowed) return;
+
         // This will prevent device from being forgotten after firmware update, so discovery will not run again
-        dispatch(setDeviceForceRememberedThunk({ forceRemember: true }));
+        dispatch(setTemporaryRememberedDeviceThunk({ temporaryRemember: true }));
 
         return () => {
-            dispatch(setDeviceForceRememberedThunk({ forceRemember: false }));
+            dispatch(setTemporaryRememberedDeviceThunk({ temporaryRemember: false }));
             resetReducer();
         };
-    }, [dispatch, resetReducer]);
+    }, [dispatch, resetReducer, isTemporaryRememeberAllowed]);
 
     const handleFirmwareUpdateFinished = useCallback(async () => {
         await requestPrioritizedDeviceAccess({
