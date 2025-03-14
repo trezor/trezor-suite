@@ -45,6 +45,7 @@ export const NewModalBackdrop = ({
                         justifyContent={mapAlignmentToJustifyContent(alignment)}
                         gap={spacings.md}
                         margin={margin}
+                        height={`calc(100vh - ${(margin as number) * 2}px)`}
                     >
                         {children}
                     </Column>
