@@ -183,4 +183,12 @@ export const expect = baseExpect.extend({
             'expect Summary to match',
         );
     },
+
+    toContainSubObject(superObject: any, subObject: any) {
+        return {
+            pass: baseExpect.objectContaining(subObject).asymmetricMatch(superObject),
+            message: () =>
+                `expected superObject to have subObject. Diff:\n${diff(subObject, superObject)}`,
+        };
+    },
 });
