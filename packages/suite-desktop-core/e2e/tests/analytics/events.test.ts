@@ -34,6 +34,9 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         await page.reload();
         await analytics.interceptAnalytics();
         await onboardingPage.optionallyDismissFwHashCheckError();
+        if (await devicePrompt.connectDevicePrompt.isVisible()) {
+            await devicePrompt.acquireDeviceButton.click();
+        }
         await page.getByTestId('@onboarding/exit-app-button').click();
 
         // 1 SuiteReady, 2 DeviceConnect, 3 TransportType
