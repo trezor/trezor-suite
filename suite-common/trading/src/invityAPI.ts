@@ -8,7 +8,6 @@ import type {
     BuyTradeRequest,
     BuyTradeResponse,
     ConfirmExchangeTradeRequest,
-    CountryInfo,
     ExchangeListResponse,
     ExchangeTrade,
     ExchangeTradeQuoteRequest,
@@ -49,8 +48,6 @@ type BodyType =
 type SignalType = AbortSignal | null | undefined;
 
 class InvityAPI {
-    private readonly UNKNOWN_COUNTRY = 'unknown';
-
     readonly SERVERS: InvityServers = {
         production: 'https://exchange.trezor.io',
         staging: 'https://staging-exchange.invity.io',
@@ -62,8 +59,6 @@ class InvityAPI {
 
     // info service
     private readonly INFO = '/api/info';
-    private readonly DETECT_COUNTRY_INFO = '/api/info/country';
-    private readonly GET_COUNTRY_INFO = '/api/info/country/{{country}}';
 
     // exchange service
     private readonly EXCHANGE_LIST = '/api/v3/exchange/list';
@@ -121,9 +116,7 @@ class InvityAPI {
     }
 
     setInvityServersEnvironment(serverEnvironment: InvityServerEnvironment) {
-        if (serverEnvironment) {
-            this.serverEnvironment = serverEnvironment;
-        }
+        this.serverEnvironment = serverEnvironment;
     }
 
     private getOptionAPIHeader() {
@@ -183,22 +176,6 @@ class InvityAPI {
         });
     }
 
-    fetchCountryInfo = async (country: string): Promise<CountryInfo> => {
-        try {
-            const url =
-                country && country !== this.UNKNOWN_COUNTRY
-                    ? this.GET_COUNTRY_INFO.replace('{{country}}', country)
-                    : this.DETECT_COUNTRY_INFO;
-            const response: CountryInfo = await this.request(url, {}, 'GET');
-
-            return response;
-        } catch (error) {
-            console.error('[fetchCountryInfo]', error);
-        }
-
-        return { country: this.UNKNOWN_COUNTRY };
-    };
-
     getInfo = async (): Promise<InfoResponse> => {
         try {
             const response = await this.request(this.INFO, {}, 'GET');
@@ -212,14 +189,13 @@ class InvityAPI {
         return { platforms: {}, coins: {} };
     };
 
-    getExchangeList = async (): Promise<ExchangeListResponse | []> => {
+    getExchangeList = async (): Promise<ExchangeListResponse> => {
         try {
             const response = await this.request(this.EXCHANGE_LIST, {}, 'GET');
-            if (!response || response.length === 0) {
-                return [];
-            }
 
-            return response;
+            if (response) {
+                return response;
+            }
         } catch (error) {
             console.error('[getExchangeList]', error);
         }
