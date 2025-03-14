@@ -1390,7 +1390,7 @@
   "TR_PAYMENT_METHOD_TEN31SEPA": "TEN31 SEPA",
   "TR_PAYMENT_METHOD_UNKNOWN": "未知",
   "TR_PAYMENT_METHOD_WORLDPAYCREDIT": "Worldpay Credit",
-  "TR_PENDING_TX_HEADING": "待办中 {count, plural, one {transaction} other {transactions}}",
+  "TR_PENDING_TX_HEADING": "有 {count} 笔交易正等待处理",
   "TR_PERSONALIZATION": "自定义",
   "TR_PIN": "PIN码",
   "TR_PIN_HEADING_FIRST": "设置新的PIN码",
