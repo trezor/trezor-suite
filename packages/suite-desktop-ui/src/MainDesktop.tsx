@@ -38,7 +38,7 @@ import { AppRouter } from './support/Router';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 
-const Main = () => {
+const MainDesktop = () => {
     useTor();
     useDebugLanguageShortcut();
     const formattersConfig = useFormattersConfig();
@@ -142,7 +142,7 @@ export const init = async (container: HTMLElement) => {
     // finally render whole app
     root.render(
         <ReduxProvider store={store}>
-            <Main />
+            <MainDesktop />
         </ReduxProvider>,
     );
 };

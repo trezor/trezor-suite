@@ -9,7 +9,7 @@ const observer = new MutationObserver(() => {
     if (appElement) {
         observer.disconnect();
 
-        import(/* webpackChunkName: "app" */ './Main')
+        import(/* webpackChunkName: "app" */ './MainWeb')
             .then(comp => comp.init(appElement))
             .catch(err => console.error(err)); // Fatal error
     }

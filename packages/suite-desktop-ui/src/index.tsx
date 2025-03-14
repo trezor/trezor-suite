@@ -1,4 +1,4 @@
-import { init } from './Main';
+import { init } from './MainDesktop';
 
 window.onload = () => {
     const appElement = document.getElementById('app');

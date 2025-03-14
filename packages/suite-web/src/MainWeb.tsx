@@ -30,7 +30,7 @@ import AppRouter from './support/Router';
 import { usePlaywright } from './support/usePlaywright';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 
-const Main = () => {
+const MainWeb = () => {
     usePlaywright();
     useTor();
     useDebugLanguageShortcut();
@@ -83,7 +83,7 @@ export const init = async (container: HTMLElement) => {
 
     root.render(
         <ReduxProvider store={store}>
-            <Main />
+            <MainWeb />
         </ReduxProvider>,
     );
 };
