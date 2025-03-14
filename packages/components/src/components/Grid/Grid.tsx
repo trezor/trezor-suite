@@ -21,7 +21,7 @@ const Container = styled.div<
 >`
     display: grid;
     gap: ${({ $gap }) => $gap}px;
-    grid-template-columns: repeat(${({ $columns }) => $columns}, minmax(0, 1fr));
+    grid-template-columns: repeat(${({ $columns }) => $columns}, minmax(min-content, 1fr));
 
     ${withFrameProps}
 `;
