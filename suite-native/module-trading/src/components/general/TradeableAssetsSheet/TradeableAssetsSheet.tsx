@@ -8,7 +8,7 @@ import { getTradeableAssetFavouriteKey, selectTradingFavouriteAssets } from '../
 import { TradingBottomSheetSectionList } from '../TradingBottomSheetSectionList';
 import { TradeAssetsListEmptyComponent } from './TradeAssetsListEmptyComponent';
 import { ASSET_ITEM_HEIGHT, TradeableAssetListItem } from './TradeableAssetListItem';
-import { TradeableAssetsSheetHeader } from './TradeableAssetsSheetHeader';
+import { HEADER_HEIGHT, TradeableAssetsSheetHeader } from './TradeableAssetsSheetHeader';
 import { ItemRenderConfig, SectionListData } from '../../../hooks/useSectionList';
 import { TradeableAsset } from '../../../types';
 
@@ -117,6 +117,7 @@ export const TradeableAssetsSheet = ({
             data={listData}
             keyExtractor={keyExtractor}
             estimatedItemSize={ASSET_ITEM_HEIGHT}
+            estimatedHeaderHeight={HEADER_HEIGHT}
             renderItem={(item, config) => renderItem(item, config, onAssetSelectCallback)}
             noSingletonSectionHeader
         />
