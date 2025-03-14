@@ -43,14 +43,18 @@ export const TradingOverviewRow = ({
             style={applyStyle(pressableStyle, { noBottomBorder })}
         >
             <HStack paddingHorizontal="sp20" justifyContent="space-between">
-                <Box paddingVertical="sp20">
+                <Box paddingVertical="sp20" flex={0}>
                     <Text color="textDefault" variant="body">
                         {title}
                     </Text>
                 </Box>
                 <HStack flex={1} justifyContent="flex-end" alignItems="center">
-                    {children}
-                    <Icon name="caretDown" size="medium" color="textSubdued" />
+                    <Box flex={1} justifyContent="flex-end" alignItems="flex-end">
+                        {children}
+                    </Box>
+                    <Box flex={0}>
+                        <Icon name="caretDown" size="medium" color="textSubdued" />
+                    </Box>
                 </HStack>
             </HStack>
         </Pressable>

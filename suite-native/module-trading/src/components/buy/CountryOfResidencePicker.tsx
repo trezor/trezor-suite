@@ -21,7 +21,7 @@ export const CountryOfResidencePicker = () => {
                 {selectedValue ? (
                     <HStack>
                         <Text color="textSubdued" variant="body">
-                            {selectedValue.value}
+                            {selectedValue.label}
                         </Text>
                     </HStack>
                 ) : (
