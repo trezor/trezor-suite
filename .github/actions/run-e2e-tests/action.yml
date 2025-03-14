@@ -76,7 +76,8 @@ runs:
         GITHUB_ACTION: true
         CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
         CURRENTS_RECORD_KEY: ${{ inputs.currents-record-key }}
-        CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}
+        CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
+        GH_BRANCH: ${{ env.branch }} # Used by Currents reporter
         PASSPHRASE: ${{ inputs.e2e-passphrase }}
       run: |
         docker compose up -d ${{ inputs.containers }}
