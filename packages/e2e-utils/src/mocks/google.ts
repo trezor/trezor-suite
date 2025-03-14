@@ -52,7 +52,7 @@ export class GoogleMock {
         app.use((req, res, next) => {
             if (req.method === 'OPTIONS') {
                 res.setHeader('Access-Control-Allow-Origin', '*');
-                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PATCH');
                 res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
                 res.setHeader('Access-Control-Allow-Credentials', 'true');
 
@@ -61,7 +61,7 @@ export class GoogleMock {
 
             // Handle normal requests
             res.setHeader('Access-Control-Allow-Origin', '*');
-            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PATCH');
             res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
             this.requests.push(req.url);
 
