@@ -86,28 +86,28 @@ export const Sidebar = () => {
                 disabledWidthInterval={[84, 240]}
             >
                 <Container $elevation={elevation}>
-                    <ElevationUp>
-                        <TrafficLightOffset>
-                            <Content>
-                                <DeviceSelector />
+                    <TrafficLightOffset>
+                        <Content>
+                            <DeviceSelector />
+                            <ElevationUp>
                                 <Navigation />
-                                <AccountsMenu />
+                            </ElevationUp>
+                            <AccountsMenu />
 
-                                {showUpdateBannerNotification && !isSidebarCollapsed && (
-                                    <UpdateNotificationBanner
-                                        updateStatusDevice={updateStatusDevice}
-                                        updateStatusSuite={updateStatusSuite}
-                                        onClose={onNotificationBannerClosed}
-                                    />
-                                )}
-
-                                <QuickActions
-                                    isSidebarCollapsed={isSidebarCollapsed}
-                                    showUpdateBannerNotification={showUpdateBannerNotification}
+                            {showUpdateBannerNotification && !isSidebarCollapsed && (
+                                <UpdateNotificationBanner
+                                    updateStatusDevice={updateStatusDevice}
+                                    updateStatusSuite={updateStatusSuite}
+                                    onClose={onNotificationBannerClosed}
                                 />
-                            </Content>
-                        </TrafficLightOffset>
-                    </ElevationUp>
+                            )}
+
+                            <QuickActions
+                                isSidebarCollapsed={isSidebarCollapsed}
+                                showUpdateBannerNotification={showUpdateBannerNotification}
+                            />
+                        </Content>
+                    </TrafficLightOffset>
                 </Container>
             </ResizableBox>
         </Wrapper>

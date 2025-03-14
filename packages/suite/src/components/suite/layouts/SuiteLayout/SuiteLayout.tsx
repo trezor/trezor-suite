@@ -26,6 +26,7 @@ import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
+import { DebugLegend } from './DebugLegend';
 import { MobileMenu } from './MobileMenu/MobileMenu';
 import { Sidebar } from './Sidebar/Sidebar';
 import { useAppShortcuts } from './useAppShortcuts';
@@ -140,7 +141,7 @@ interface SuiteLayoutProps {
 
 export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const selectedAccount = useSelector(selectSelectedAccount);
-
+    const theme = useSelector(state => state.suite.settings.theme);
     const [{ title, layoutHeader }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
     const { isMobileLayout } = useLayoutSize();
@@ -205,6 +206,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
                 <GuideRouter />
             </Wrapper>
+            {theme.variant === 'debug' && <DebugLegend />}
         </ElevationContext>
     );
 };

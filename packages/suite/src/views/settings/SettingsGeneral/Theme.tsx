@@ -86,20 +86,23 @@ export const Theme = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.Theme}>
-            <TextColumn
-                title={<Translation id="TR_COLOR_SCHEME" />}
-                description={<Translation id="TR_COLOR_SCHEME_DESCRIPTION" />}
-            />
-            <ActionColumn>
-                <ActionSelect
-                    useKeyPressScroll
-                    value={selectedValue}
-                    options={optionGroups}
-                    onChange={onChange}
-                    data-testid="@theme/color-scheme-select"
+        <>
+            <SettingsSectionItem anchorId={SettingsAnchor.Theme}>
+                <TextColumn
+                    title={<Translation id="TR_COLOR_SCHEME" />}
+                    description={<Translation id="TR_COLOR_SCHEME_DESCRIPTION" />}
                 />
-            </ActionColumn>
-        </SettingsSectionItem>
+
+                <ActionColumn>
+                    <ActionSelect
+                        useKeyPressScroll
+                        value={selectedValue}
+                        options={optionGroups}
+                        onChange={onChange}
+                        data-testid="@theme/color-scheme-select"
+                    />
+                </ActionColumn>
+            </SettingsSectionItem>
+        </>
     );
 };
