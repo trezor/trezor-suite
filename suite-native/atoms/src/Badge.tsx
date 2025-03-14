@@ -23,8 +23,7 @@ type BadgeProps = {
     iconSize?: IconSize;
     elevation?: SurfaceElevation;
     isDisabled?: boolean;
-    style?: BoxProps['style'];
-};
+} & BoxProps;
 
 type BadgeStyle = {
     backgroundColorElevation0: Color;
@@ -121,6 +120,7 @@ export const Badge = ({
     elevation = '0',
     isDisabled = false,
     style,
+    ...boxProps
 }: BadgeProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const {
@@ -161,6 +161,7 @@ export const Badge = ({
                 style,
             ]}
             spacing={utils.spacings.sp4}
+            {...boxProps}
         >
             {icon && getBadgeIcon(icon)}
             <Text color={textColor} variant={textVariant} numberOfLines={1} ellipsizeMode="tail">
