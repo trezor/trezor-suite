@@ -1,49 +1,12 @@
 import { useCallback } from 'react';
 
-import styled, { css } from 'styled-components';
-
-import { Button, LoadingContent } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Button, LoadingContent, Row } from '@trezor/components';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { GraphRangeSelector, Translation } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useFastAccounts } from 'src/hooks/wallet';
 import { GraphRange } from 'src/types/wallet/graph';
-
-const Wrapper = styled.div<{ $hideBorder: boolean }>`
-    display: flex;
-    flex-flow: row wrap;
-    padding: ${spacingsPx.lg};
-    ${({ $hideBorder }) =>
-        !$hideBorder &&
-        css`
-            border-bottom: solid 1px ${({ theme }) => theme.legacy.STROKE_GREY};
-        `}
-`;
-
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-`;
-
-const Right = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const Buttons = styled.div`
-    display: flex;
-    gap: ${spacingsPx.md};
-    flex-flow: row wrap;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const WalletEmptyButton = styled(Button)`
-    min-width: 120px;
-`;
 
 export type PortfolioCardHeaderProps = {
     fiatAmount: string;
@@ -54,7 +17,6 @@ export type PortfolioCardHeaderProps = {
     isDiscoveryRunning?: boolean;
     isMissingFiatRate?: boolean;
     showGraphControls: boolean;
-    hideBorder: boolean;
     receiveClickHandler: () => void;
 };
 
@@ -67,7 +29,6 @@ export const PortfolioCardHeader = ({
     isDiscoveryRunning,
     isMissingFiatRate,
     showGraphControls,
-    hideBorder,
     receiveClickHandler,
 }: PortfolioCardHeaderProps) => {
     const accounts = useFastAccounts();
@@ -83,16 +44,13 @@ export const PortfolioCardHeader = ({
     if (!isWalletLoading && !isWalletError) {
         if (isWalletEmpty) {
             actions = (
-                <>
-                    <Buttons>
-                        <WalletEmptyButton
-                            onClick={receiveClickHandler}
-                            data-testid="@dashboard/receive-button"
-                        >
-                            <Translation id="TR_RECEIVE" />
-                        </WalletEmptyButton>
-                    </Buttons>
-                </>
+                <Button
+                    onClick={receiveClickHandler}
+                    data-testid="@dashboard/receive-button"
+                    minWidth={120}
+                >
+                    <Translation id="TR_RECEIVE" />
+                </Button>
             );
         } else if (showGraphControls) {
             actions = (
@@ -105,18 +63,16 @@ export const PortfolioCardHeader = ({
     }
 
     return (
-        <Wrapper $hideBorder={hideBorder}>
-            <Left>
-                <LoadingContent size={24} isLoading={isDiscoveryRunning || isMissingFiatRate}>
-                    <FiatHeader
-                        data-testid="@dashboard/portfolio/fiat-amount"
-                        size="large"
-                        amount={fiatAmount}
-                        localCurrency={localCurrency}
-                    />
-                </LoadingContent>
-            </Left>
-            <Right>{actions}</Right>
-        </Wrapper>
+        <Row justifyContent="space-between">
+            <LoadingContent size={24} isLoading={isDiscoveryRunning || isMissingFiatRate}>
+                <FiatHeader
+                    data-testid="@dashboard/portfolio/fiat-amount"
+                    size="large"
+                    amount={fiatAmount}
+                    localCurrency={localCurrency}
+                />
+            </LoadingContent>
+            {actions}
+        </Row>
     );
 };

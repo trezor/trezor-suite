@@ -1,11 +1,8 @@
 import { memo, useMemo } from 'react';
 
-import styled from 'styled-components';
-
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { Card, Column, Dropdown, Tooltip } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
@@ -20,23 +17,6 @@ import { DashboardGraph } from './DashboardGraph';
 import { EmptyWallet } from './EmptyWallet';
 import { PortfolioCardException } from './PortfolioCardException';
 import { PortfolioCardHeader } from './PortfolioCardHeader';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledDropdown = styled(Dropdown)`
-    display: flex;
-    height: 38px;
-`;
-
-const SkeletonTransactionsGraphWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: 20px 0;
-    height: 320px;
-`;
-
-const Wrapper = styled.div`
-    display: flex;
-`;
 
 export const PortfolioCard = memo(() => {
     const currentFiatRates = useSelector(selectCurrentFiatRates);
@@ -62,11 +42,9 @@ export const PortfolioCard = memo(() => {
         body = <PortfolioCardException exception={discoveryStatus} discovery={discovery} />;
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
         body = dashboardGraphHidden ? null : (
-            <SkeletonTransactionsGraphWrapper>
-                <Wrapper>
-                    <GraphSkeleton data-testid="@dashboard/loading" />
-                </Wrapper>
-            </SkeletonTransactionsGraphWrapper>
+            <Column height={320}>
+                <GraphSkeleton data-testid="@dashboard/loading" />
+            </Column>
         );
     } else if (isDeviceEmpty) {
         body = <EmptyWallet />;
@@ -91,6 +69,19 @@ export const PortfolioCard = memo(() => {
 
     const goToReceive = () => dispatch(goto('wallet-receive'));
     const heading = <Translation id="TR_MY_PORTFOLIO" />;
+    const header =
+        discoveryStatus && discoveryStatus.status === 'exception' ? null : (
+            <PortfolioCardHeader
+                showGraphControls={showGraphControls}
+                fiatAmount={walletBalance}
+                localCurrency={localCurrency}
+                isWalletEmpty={isWalletEmpty}
+                isWalletLoading={isWalletLoading}
+                isWalletError={isWalletError}
+                isDiscoveryRunning={isDiscoveryRunning}
+                receiveClickHandler={goToReceive}
+            />
+        );
 
     return (
         <DashboardSection
@@ -105,7 +96,7 @@ export const PortfolioCard = memo(() => {
             }
             actions={
                 !isWalletEmpty && !isWalletLoading && !isWalletError ? (
-                    <StyledDropdown
+                    <Dropdown
                         placement={{ position: 'bottom', alignment: 'start' }}
                         items={[
                             {
@@ -139,30 +130,13 @@ export const PortfolioCard = memo(() => {
                 ) : undefined
             }
         >
-            <Card paddingType="none">
-                {discoveryStatus && discoveryStatus.status === 'exception' ? null : (
-                    <PortfolioCardHeader
-                        showGraphControls={showGraphControls}
-                        hideBorder={!body}
-                        fiatAmount={walletBalance}
-                        localCurrency={localCurrency}
-                        isWalletEmpty={isWalletEmpty}
-                        isWalletLoading={isWalletLoading}
-                        isWalletError={isWalletError}
-                        isDiscoveryRunning={isDiscoveryRunning}
-                        receiveClickHandler={goToReceive}
-                    />
-                )}
-
-                {body && (
-                    <Column
-                        justifyContent="center"
-                        minHeight={329}
-                        flex="1"
-                        margin={{ left: spacings.lg, right: spacings.lg }}
-                    >
+            <Card heading={body ? header : null} paddingType="large">
+                {body ? (
+                    <Column justifyContent="center" minHeight={329}>
                         {body}
                     </Column>
+                ) : (
+                    header
                 )}
             </Card>
         </DashboardSection>
