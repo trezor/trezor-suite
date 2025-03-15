@@ -1,6 +1,5 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
-import { deviceActions } from '@suite-common/wallet-core';
 import {
     DEVICE,
     DeviceButtonRequest,
@@ -44,7 +43,7 @@ type RootState = {
     firmware: typeof initialState;
 };
 
-export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
+export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, builder => {
     builder
         .addCase(firmwareActions.setStatus, (state, { payload }) => {
             state.status = payload;
@@ -69,7 +68,6 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         .addCase(firmwareActions.cacheDevice, (state, { payload }) => {
             state.cachedDevice = payload;
         })
-        .addCase(deviceActions.addButtonRequest, extra.reducers.addButtonRequestFirmware)
         .addMatcher<FirmwareProgress | FirmwareReconnect | DeviceButtonRequest>(
             action =>
                 action.type === UI.FIRMWARE_RECONNECT ||

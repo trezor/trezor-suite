@@ -29,7 +29,6 @@ import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './typ
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
-type AddButtonRequestReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload: any }) => void;
 
 type ConnectInitSettings = {
@@ -131,7 +130,6 @@ export type ExtraDependencies = {
         storageLoadTransactions: StorageLoadTransactionsReducer;
         storageLoadHistoricRates: StorageLoadReducer;
         storageLoadDiscovery: StorageLoadReducer;
-        addButtonRequestFirmware: AddButtonRequestReducer;
         setDeviceMetadataReducer: BaseReducer;
         setDeviceMetadataPasswordsReducer: BaseReducer;
         storageLoadDevices: StorageLoadReducer;

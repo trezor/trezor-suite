@@ -39,7 +39,7 @@ import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 import { METADATA, STORAGE } from '../actions/suite/constants';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
-import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
+import { AppState, TrezorDevice } from '../types/suite';
 
 const connectSrc = '../';
 // 'https://localhost:8088/';
@@ -158,19 +158,6 @@ export const extraDependencies: ExtraDependencies = {
                 acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
             ),
         storageLoadDiscovery: (_, { payload }: StorageLoadAction) => payload.discovery,
-        addButtonRequestFirmware: (
-            state,
-            {
-                payload,
-            }: PayloadAction<{
-                device?: TrezorDevice;
-                buttonRequest: ButtonRequest;
-            }>,
-        ) => {
-            if (payload.buttonRequest?.code === 'ButtonRequest_FirmwareUpdate') {
-                state.status = 'waiting-for-confirmation';
-            }
-        },
         setDeviceMetadataReducer: (
             state,
             {
