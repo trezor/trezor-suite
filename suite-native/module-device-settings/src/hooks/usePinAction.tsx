@@ -135,11 +135,4 @@ export const usePinAction = () => {
         // handlePinAction is excluded as it depends on device object that could unintentionally trigger the useEffect
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isDeviceConnected]);
-
-    useEffect(
-        () => () => {
-            TrezorConnect.cancel();
-        },
-        [],
-    );
 };

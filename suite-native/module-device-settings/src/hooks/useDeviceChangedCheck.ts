@@ -13,6 +13,7 @@ import {
     SettingsStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import TrezorConnect from '@trezor/connect';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SettingsStackParamList,
@@ -35,6 +36,7 @@ export const useDeviceChangedCheck = () => {
 
         // Check for device mismatch only after initial device ID is set
         if (initialDeviceIdRef.current && device?.id && initialDeviceIdRef.current !== device.id) {
+            TrezorConnect.cancel();
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {

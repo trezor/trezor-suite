@@ -17,7 +17,9 @@ export const FirmwareInstallationScreen = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const handleFirmwareInstallationSuccess = () => {
-        const initialRoute = navigation.getState().routes.at(0)?.name;
+        const initialRoute = navigation.getState().routes.at(0)
+            ?.name as DeviceStackRoutes.DeviceSettings;
+
         if (initialRoute) {
             navigation.navigate(initialRoute);
         } else {

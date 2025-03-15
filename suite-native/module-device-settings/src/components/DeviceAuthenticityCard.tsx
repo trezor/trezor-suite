@@ -3,11 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceDiscoveryActive, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-native/analytics';
 import { Button, IconListTextItem, Text, VStack } from '@suite-native/atoms';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceAuthenticityStackParamList,
@@ -17,7 +15,6 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { SettingsCardWithIconLayout } from '@suite-native/settings';
-import TrezorConnect from '@trezor/connect';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     DeviceAuthenticityStackParamList,
@@ -31,56 +28,9 @@ export const DeviceAuthenticityCard = () => {
 
     const { showAlert } = useAlert();
 
-    const device = useSelector(selectSelectedDevice);
-
-    const reportCheckResult = useCallback(
-        (result: DeviceAuthenticityCheckResult) =>
-            analytics.report({
-                type: EventType.DeviceSettingsAuthenticityCheck,
-                payload: { result },
-            }),
-        [],
-    );
-
-    const checkAuthenticity = useCallback(async () => {
+    const navigateToDeviceAuthenticityStack = useCallback(() => {
         navigation.navigate(DeviceStackRoutes.DeviceAuthenticity);
-
-        const result = await requestPrioritizedDeviceAccess({
-            deviceCallback: () =>
-                TrezorConnect.authenticateDevice({
-                    device: {
-                        path: device?.path,
-                    },
-                }),
-        });
-        if (!result.success) {
-            return;
-        }
-
-        const { success, payload } = result.payload;
-        if (success) {
-            const checkResult = payload.valid ? 'successful' : 'compromised';
-            const configExpired = payload.error === 'CA_PUBKEY_NOT_FOUND' && payload.configExpired;
-            navigation.navigate(DeviceAuthenticityStackRoutes.AuthenticitySummary, {
-                checkResult: configExpired ? 'successful' : checkResult,
-            });
-            reportCheckResult(configExpired ? 'configExpired' : checkResult);
-        } else {
-            const errorCode = payload.code;
-            if (errorCode === 'Failure_ActionCancelled' || errorCode === 'Failure_PinCancelled') {
-                navigation.goBack();
-                reportCheckResult('cancelled');
-            } else if (errorCode === 'Method_Interrupted' || errorCode === undefined) {
-                // navigation.goBack() already called via the X button (or the device was disconnected)
-                reportCheckResult('cancelled');
-            } else {
-                navigation.navigate(DeviceAuthenticityStackRoutes.AuthenticitySummary, {
-                    checkResult: 'compromised',
-                });
-                reportCheckResult('failed');
-            }
-        }
-    }, [device, navigation, reportCheckResult]);
+    }, [navigation]);
 
     const showInfoAlert = useCallback(() => {
         showAlert({
@@ -102,9 +52,9 @@ export const DeviceAuthenticityCard = () => {
             primaryButtonTitle: (
                 <Translation id="moduleDeviceSettings.authenticity.info.letsDoItButton" />
             ),
-            onPressPrimaryButton: checkAuthenticity,
+            onPressPrimaryButton: navigateToDeviceAuthenticityStack,
         });
-    }, [showAlert, checkAuthenticity]);
+    }, [showAlert, navigateToDeviceAuthenticityStack]);
 
     return (
         <SettingsCardWithIconLayout

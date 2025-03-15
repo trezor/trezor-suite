@@ -6,6 +6,7 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { useDeviceAuthenticityAction } from '../hooks/useDeviceAuthenticityAction';
 import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceAuthenticitySummaryScreen } from '../screens/DeviceAuthenticitySummaryScreen';
@@ -13,6 +14,7 @@ import { DeviceAuthenticitySummaryScreen } from '../screens/DeviceAuthenticitySu
 const DeviceAuthenticityStack = createNativeStackNavigator<DeviceAuthenticityStackParamList>();
 
 export const DeviceAuthenticityStackNavigator = () => {
+    useDeviceAuthenticityAction();
     const { isDeviceConnected } = useDeviceConnectionGuard();
 
     if (!isDeviceConnected) return;
