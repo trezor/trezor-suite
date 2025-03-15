@@ -11,6 +11,7 @@ import {
 } from '@suite-native/navigation';
 
 import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
+import { usePinAction } from '../hooks/usePinAction';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import {
     ConfirmNewPinScreen,
@@ -21,6 +22,7 @@ import {
 const DevicePinProtectionStack = createNativeStackNavigator<DevicePinProtectionStackParamList>();
 
 export const DevicePinProtectionStackNavigator = () => {
+    usePinAction();
     const { isDeviceConnected } = useDeviceConnectionGuard();
 
     const buttonRequestCodes = useSelector(selectDeviceButtonRequestsCodes);

@@ -150,6 +150,8 @@ export type AccountsImportStackParamList = {
 
 export type AddCoinFlowType = 'home' | 'receive' | 'accounts' | 'trade';
 
+export type PinActionType = 'enable' | 'change' | 'disable';
+
 export type AddCoinAccountStackParamList = {
     [AddCoinAccountStackRoutes.AddCoinAccount]: {
         flowType: AddCoinFlowType;
@@ -171,7 +173,9 @@ export type AddCoinAccountStackParamList = {
 
 export type DeviceSettingsStackParamList = {
     [DeviceStackRoutes.DeviceSettings]: undefined;
-    [DeviceStackRoutes.DevicePinProtection]: undefined;
+    [DeviceStackRoutes.DevicePinProtection]: {
+        type: PinActionType;
+    };
     [DeviceStackRoutes.DeviceAuthenticity]: undefined;
     [DeviceStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceStackRoutes.FirmwareInstallation]: undefined;
