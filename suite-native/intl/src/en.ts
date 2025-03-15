@@ -475,16 +475,6 @@ export const en = {
                 },
             },
         },
-        updateHowTo: {
-            title: 'How to update firmware',
-            subtitle: 'Follow these steps:',
-            lines: {
-                1: '1. Connect Trezor to Desktop Suite',
-                2: '2. Navigate to Settings menu',
-                3: '3. Install new firmware',
-            },
-            button: 'Learn more @ Trezor.io',
-        },
     },
     moduleReceive: {
         receiveTitle: 'Receive',

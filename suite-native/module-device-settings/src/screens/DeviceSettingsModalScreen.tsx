@@ -1,21 +1,15 @@
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import {
-    selectDeviceModel,
-    selectDeviceReleaseInfo,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
-import { Button, Text, VStack } from '@suite-native/atoms';
+import { selectDeviceModel, selectSelectedDevice } from '@suite-common/wallet-core';
+import { Text, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { useTranslate } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { DeviceAuthenticityCard } from '../components/DeviceAuthenticityCard';
 import { DeviceFirmwareCard } from '../components/DeviceFirmwareCard';
 import { DevicePinProtectionCard } from '../components/DevicePinProtectionCard';
-import { HowToUpdateBottomSheet } from '../components/HowToUpdateBottomSheet';
 import { useDeviceChangedCheck } from '../hooks/useDeviceChangedCheck';
 
 export const DeviceSettingsModalScreen = () => {
@@ -24,17 +18,10 @@ export const DeviceSettingsModalScreen = () => {
 
     const device = useSelector(selectSelectedDevice);
     const deviceModel = useSelector(selectDeviceModel);
-    const deviceReleaseInfo = useSelector(selectDeviceReleaseInfo);
-
-    const [isUpdateSheetOpen, setIsUpdateSheetOpen] = useState<boolean>(false);
-
-    const isUpgradable = deviceReleaseInfo?.isNewer ?? false;
 
     if (!device || !deviceModel) {
         return null;
     }
-
-    const handleUpdateClick = () => setIsUpdateSheetOpen(true);
 
     return (
         <Screen
@@ -53,17 +40,7 @@ export const DeviceSettingsModalScreen = () => {
                 <DeviceFirmwareCard />
                 <DevicePinProtectionCard />
                 {SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel] && <DeviceAuthenticityCard />}
-                {isUpgradable && (
-                    <Button colorScheme="primary" onPress={handleUpdateClick}>
-                        <Translation id="moduleDeviceSettings.updateHowTo.title" />
-                    </Button>
-                )}
             </VStack>
-            <HowToUpdateBottomSheet
-                isVisible={isUpdateSheetOpen}
-                onClose={setIsUpdateSheetOpen}
-                title={<Translation id="moduleDeviceSettings.updateHowTo.title" />}
-            />
         </Screen>
     );
 };
