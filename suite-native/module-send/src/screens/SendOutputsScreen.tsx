@@ -244,7 +244,7 @@ export const SendOutputsScreen = ({
 
     // TODO: Fetch periodically. So if the user stays on the screen for a long time, the fee info is updated in the background.
     useEffect(() => {
-        if (account) dispatch(updateFeeInfoThunk(account.symbol));
+        if (account) dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol }));
     }, [account, dispatch]);
 
     if (!account || !networkFeeInfo) return null;

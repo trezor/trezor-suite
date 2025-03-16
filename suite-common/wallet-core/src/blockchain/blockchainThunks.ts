@@ -3,6 +3,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     NetworkSymbol,
     externalBackendTypeNetworks,
+    getNetwork,
     getNetworkOptional,
     isNetworkSymbol,
     isTrezorInfraBasedNetwork,
@@ -19,6 +20,7 @@ import {
     getAreSatoshisUsed,
     getBackendFromSettings,
     getCustomBackends,
+    isEip1559,
     isTrezorConnectBackendType,
     shouldSubscribeBlocks,
     shouldUseIdentities,
@@ -110,30 +112,35 @@ export const preloadFeeInfoThunk = createThunk(
 // shouldn't this be in fee thunks instead?
 export const updateFeeInfoThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/updateFeeInfoThunk`,
-
-    async (symbol: string, { dispatch, getState }) => {
-        const network = getNetworkOptional(symbol.toLowerCase());
+    async (
+        { networkSymbol, forceUpdate }: { networkSymbol: string; forceUpdate?: boolean },
+        { dispatch, getState, extra },
+    ) => {
+        const network = getNetworkOptional(networkSymbol.toLowerCase());
         if (!network) return;
         const blockchainInfo = selectNetworkBlockchainInfo(getState(), network.symbol);
         const feeInfo = selectNetworkFeeInfo(getState(), network.symbol);
+        const device = extra.selectors.selectDevice(getState());
+        // TODO: remove when EIP-1559 complete
+        const isDebugModeActive = extra.selectors.selectDebugSettings(getState()).showDebugMenu;
 
         if (
             feeInfo &&
             feeInfo.blockHeight > 0 &&
-            blockchainInfo.blockHeight - feeInfo.blockHeight < 10
-        )
+            blockchainInfo.blockHeight - feeInfo.blockHeight < 10 &&
+            !forceUpdate
+        ) {
             return;
+        }
 
         let newFeeInfo;
 
         if (network.networkType === 'ethereum') {
-            // NOTE: ethereum smart fees are not implemented properly in @trezor/connect Issue: https://github.com/trezor/trezor-suite/issues/5340
-            // create raw call to @trezor/blockchain-link, receive data and create FeeLevel.normal from it
-
             const result = await TrezorConnect.blockchainEstimateFee({
                 coin: network.symbol,
                 request: {
                     blocks: [2],
+                    feeLevels: 'smart',
                     specific: {
                         from: '0x0000000000000000000000000000000000000000',
                         to: '0x0000000000000000000000000000000000000000',
@@ -141,14 +148,30 @@ export const updateFeeInfoThunk = createThunk(
                 },
             });
             if (result.success) {
-                newFeeInfo = {
-                    ...result.payload,
-                    levels: result.payload.levels.map(l => ({
-                        ...l,
-                        blocks: -1, // NOTE: @trezor/connect returns -1 for ethereum default
-                        label: 'normal' as const,
-                    })),
-                };
+                const feeLevelBase = result.payload.levels[0];
+                const isEip1559ActivatedAndAvailable =
+                    getNetwork(network.symbol).features.includes('eip1559') &&
+                    isEip1559(feeLevelBase) &&
+                    isDebugModeActive &&
+                    !device?.unavailableCapabilities?.['eip1559'];
+
+                if (isEip1559ActivatedAndAvailable) {
+                    newFeeInfo = result.payload;
+                } else {
+                    newFeeInfo = {
+                        ...result.payload,
+                        levels: [
+                            {
+                                ...feeLevelBase,
+                                baseFeePerGas: undefined,
+                                maxFeePerGas: undefined,
+                                maxPriorityFeePerGas: undefined,
+                                maxWaitTimeEstimate: undefined,
+                                label: 'normal' as const,
+                            },
+                        ],
+                    };
+                }
             }
         } else {
             const result = await TrezorConnect.blockchainEstimateFee({
@@ -398,7 +421,7 @@ export const onBlockchainConnectThunk = createThunk(
         await dispatch(
             subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true, onConnect: true }),
         );
-        await dispatch(updateFeeInfoThunk(network.symbol));
+        await dispatch(updateFeeInfoThunk({ networkSymbol: network.symbol }));
         // update accounts for connected network
         await dispatch(syncAccountsWithBlockchainThunk(network.symbol));
         dispatch(blockchainActions.connected(network.symbol));

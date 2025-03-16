@@ -1,5 +1,9 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+export const isEip1559 = (
+    tx: Record<string, any> | null | undefined,
+): tx is { maxFeePerGas: string } => !!tx && !!tx.maxFeePerGas;
+
 export const decimalToHex = (dec: number): string => new BigNumber(dec).toString(16);
 
 export const padLeftEven = (hex: string): string => (hex.length % 2 !== 0 ? `0${hex}` : hex);

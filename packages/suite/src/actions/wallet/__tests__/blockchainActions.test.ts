@@ -62,6 +62,7 @@ const getInitialState = (
     },
     suite: {
         device: { state: '1stTestnetAddress@device_id:0' }, // device is needed for notification/event
+        settings: { debug: { showDebugMenu: false } },
     },
     window: {
         isVisible: true,
@@ -215,9 +216,9 @@ describe('Blockchain Actions', () => {
             }),
         );
         // try invalid coin
-        await store.dispatch(updateFeeInfoThunk('btc-invalid'));
+        await store.dispatch(updateFeeInfoThunk({ networkSymbol: 'btc-invalid' }));
         // will not trigger update because of blockHeight's
-        await store.dispatch(updateFeeInfoThunk('btc'));
+        await store.dispatch(updateFeeInfoThunk({ networkSymbol: 'btc' }));
         expect(TrezorConnect.blockchainEstimateFee).toHaveBeenCalledTimes(0);
 
         // preload fee info failed in connect
