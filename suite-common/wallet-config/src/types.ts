@@ -58,7 +58,8 @@ export type NetworkFeature =
     | 'tokens'
     | 'staking'
     | 'coin-definitions'
-    | 'nft-definitions';
+    | 'nft-definitions'
+    | 'eip1559';
 
 type Level = `/${number}'`;
 type MaybeApostrophe = `'` | '';

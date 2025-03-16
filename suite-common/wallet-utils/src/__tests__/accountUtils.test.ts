@@ -236,6 +236,7 @@ describe('account utils', () => {
             'coin-definitions',
             'nft-definitions',
             'staking',
+            'eip1559',
         ]);
         expect(getNetworkAccountFeatures(coinjoinAcc)).toEqual(['rbf', 'amount-unit']);
         // when account does not have features defined, take them from root network object
