@@ -4,7 +4,17 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Blockchain } from '../../backend/BlockchainLink';
 import type { BitcoinNetworkInfo, FeeLevel } from '../../types';
-import { Blocks, findBlocksForFee } from '../common/MiscFees';
+import { Blocks } from '../common/MiscFees';
+
+const findBlocksForFee = (feePerUnit: string, blocks: Blocks) => {
+    const fee = new BigNumber(feePerUnit);
+    // find first occurrence of value lower or equal than requested
+    const lower = blocks.find(block => typeof block === 'string' && fee.gte(block));
+    if (!lower) return -1;
+
+    // if not found get latest know value
+    return blocks.indexOf(lower);
+};
 
 const convertFeeRate = (fee: string, minFee: number) => {
     const feePerKB = new BigNumber(fee);
