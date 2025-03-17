@@ -41,10 +41,10 @@ export const mapVariantToIconBackground = ({
     };
 
     const borderColorMap: Record<IconCircleVariant, Color> = {
-        primary: 'backgroundPrimarySubtleOnElevation2',
-        warning: 'backgroundAlertYellowSubtleOnElevation2',
-        destructive: 'backgroundAlertRedSubtleOnElevation2',
-        info: 'backgroundAlertBlueSubtleOnElevation2',
+        primary: 'backgroundPrimarySubtleOnElevation1',
+        warning: 'backgroundAlertYellowSubtleOnElevation1',
+        destructive: 'backgroundAlertRedSubtleOnElevation1',
+        info: 'backgroundAlertBlueSubtleOnElevation1',
         tertiary: 'backgroundTertiaryDefaultOnElevation1',
     };
 
