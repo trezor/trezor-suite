@@ -70,6 +70,8 @@ export const useTradingRecomposeAndSign = () => {
                 setMaxOutputId: !composed.token?.contract ? setMaxOutputId : undefined,
                 selectedFee,
                 feePerUnit: composed.feePerByte,
+                maxFeePerGas: composed.maxFeePerGas,
+                maxPriorityFeePerGas: composed.maxPriorityFeePerGas,
                 feeLimit: composed.feeLimit || '',
                 estimatedFeeLimit: composed.estimatedFeeLimit,
                 options,

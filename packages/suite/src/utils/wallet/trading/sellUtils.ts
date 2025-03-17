@@ -81,6 +81,8 @@ export const createQuoteLink = async (
         hash += `/${composedInfo.selectedFee}`;
         if (composedInfo.selectedFee === 'custom') {
             hash += `/${composedInfo.composed?.feePerByte}`;
+            hash += `/${composedInfo.composed?.maxFeePerGas}`;
+            hash += `/${composedInfo.composed?.maxPriorityFeePerGas}`;
             if (composedInfo.composed?.feeLimit) {
                 hash += `/${composedInfo.composed?.feeLimit}`;
             }

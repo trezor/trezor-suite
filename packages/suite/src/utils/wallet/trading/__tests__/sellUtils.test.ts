@@ -95,18 +95,20 @@ describe('trading/sell utils', () => {
             selectedFee: 'custom',
             composed: {
                 feePerByte: '1',
-                feeLimit: '2',
+                maxFeePerGas: '2',
+                maxPriorityFeePerGas: '3',
+                feeLimit: '4',
             },
         } as ComposedTransactionInfo;
         expect(
             await createQuoteLink(QUOTE_REQUEST_FIAT, accountMock, composedInfoMock),
         ).toStrictEqual(
-            `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/qf/CZ/EUR/10/bitcoin/custom/1/2`,
+            `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/qf/CZ/EUR/10/bitcoin/custom/1/2/3/4`,
         );
         expect(
             await createQuoteLink(QUOTE_REQUEST_CRYPTO, accountMock, composedInfoMock),
         ).toStrictEqual(
-            `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/qc/CZ/EUR/0.001/bitcoin/custom/1/2`,
+            `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/qc/CZ/EUR/0.001/bitcoin/custom/1/2/3/4`,
         );
         expect(
             await createQuoteLink(
@@ -116,7 +118,7 @@ describe('trading/sell utils', () => {
                 '42134432141234',
             ),
         ).toStrictEqual(
-            `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/p-qc/CZ/EUR/0.001/bitcoin/42134432141234/custom/1/2`,
+            `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/p-qc/CZ/EUR/0.001/bitcoin/42134432141234/custom/1/2/3/4`,
         );
     });
 

@@ -68,7 +68,9 @@ export const TradingRedirect = () => {
                 orderId,
                 selectedFee: params[feeIndex] as FeeLevel['label'],
                 feePerByte: params[feeIndex + 1],
-                feeLimit: params[feeIndex + 2],
+                maxFeePerGas: params[feeIndex + 2],
+                maxPriorityFeePerGas: params[feeIndex + 3],
+                feeLimit: params[feeIndex + 4],
             });
         }
 
@@ -82,7 +84,9 @@ export const TradingRedirect = () => {
                 orderId: params[7],
                 selectedFee: params[feeIndex] as FeeLevel['label'],
                 feePerByte: params[feeIndex + 1],
-                feeLimit: params[feeIndex + 2],
+                maxFeePerGas: params[feeIndex + 2],
+                maxPriorityFeePerGas: params[feeIndex + 3],
+                feeLimit: params[feeIndex + 4],
             });
         }
 
