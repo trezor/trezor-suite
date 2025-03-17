@@ -628,6 +628,11 @@ export const init =
             if (!providerResult) {
                 dispatch({ type: METADATA.SET_INITIATING, payload: false });
                 dispatch({ type: METADATA.SET_EDITING, payload: undefined });
+                // NOTE: when the provider is not initialized
+                // disable metadata labeling for all but only when it was off before this invocation
+                if (!globalLabelingEnabledBeforeToggle) {
+                    dispatch(metadataActions.disableMetadata());
+                }
 
                 return false;
             }
