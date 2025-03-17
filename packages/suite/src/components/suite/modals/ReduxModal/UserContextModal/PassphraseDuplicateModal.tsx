@@ -32,7 +32,7 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
                     <Text variant="tertiary">
                         <Translation id="TR_WALLET_DUPLICATE_DESC" />
                     </Text>
-                    <Column gap={spacings.xs} margin={{ top: spacings.lg }} alignItems="center">
+                    <Column gap={spacings.xs} margin={{ top: spacings.lg }} alignItems="stretch">
                         <Tooltip
                             isActive={isDeviceLocked}
                             content={
