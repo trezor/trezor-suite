@@ -583,7 +583,8 @@ export const init =
         }
 
         // 1. set metadata enabled globally
-        if (!getState().metadata.enabled) {
+        const globalLabelingEnabledBeforeToggle = getState().metadata.enabled;
+        if (!globalLabelingEnabledBeforeToggle) {
             dispatch(metadataActions.enableMetadata());
         }
 
@@ -601,6 +602,12 @@ export const init =
                         failed: true,
                     },
                 });
+
+                // NOTE: when the request for the device fails / is cancelled on the device
+                // disable metadata labeling for all but only when it was off before this invocation
+                if (!globalLabelingEnabledBeforeToggle) {
+                    dispatch(metadataActions.disableMetadata());
+                }
 
                 return false;
             }
