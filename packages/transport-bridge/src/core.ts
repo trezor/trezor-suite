@@ -220,15 +220,6 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         logger?.debug(`core: call: retrieved path ${path} for session ${session}`);
 
         return api.runInIsolation({ lock: { read: true, write: true }, path }, async () => {
-            const openResult = await api.openDevice(path, false, signal);
-
-            if (!openResult.success) {
-                logger?.error(`core: call: api.openDevice error: ${openResult.error}`);
-
-                return openResult;
-            }
-            logger?.debug(`core: call: api.openDevice done`);
-
             logger?.debug('core: call: writeUtil');
             const writeResult = await writeUtil({ path, data, signal, protocol });
             if (!writeResult.success) {
@@ -262,11 +253,6 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         const protocol = getProtocol(protocolName);
         const { path } = sessionsResult.payload;
 
-        const openResult = await api.openDevice(path, false, signal);
-        if (!openResult.success) {
-            return openResult;
-        }
-
         const writeResult = await writeUtil({ path, data, signal, protocol });
 
         return createProtocolMessageResponse(writeResult, protocolName);
@@ -291,11 +277,6 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         const { path } = sessionsResult.payload;
 
         return api.runInIsolation({ lock: { read: true, write: false }, path }, async () => {
-            const openResult = await api.openDevice(path, false, signal);
-            if (!openResult.success) {
-                return openResult;
-            }
-
             const readResult = await readUtil({ path, signal, protocol });
 
             return createProtocolMessageResponse(readResult, protocolName);
