@@ -1,11 +1,15 @@
-import { HomescreenGallery, Modal, Translation } from 'src/components/suite';
+import { Card, NewModal } from '@trezor/components';
+
+import { HomescreenGallery, Translation } from 'src/components/suite';
 
 type BackgroundGalleryModalProps = {
     onCancel: () => void;
 };
 
 export const BackgroundGalleryModal = ({ onCancel }: BackgroundGalleryModalProps) => (
-    <Modal isCancelable onCancel={onCancel} heading={<Translation id="TR_HOMESCREEN_GALLERY" />}>
-        <HomescreenGallery />
-    </Modal>
+    <NewModal heading={<Translation id="TR_HOMESCREEN_GALLERY" />} onCancel={onCancel} size="small">
+        <Card>
+            <HomescreenGallery />
+        </Card>
+    </NewModal>
 );
