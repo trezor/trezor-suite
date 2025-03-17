@@ -249,6 +249,52 @@ describe('verifyAddressThunk', () => {
         expect(store.getState().wallet.tradingNew.buy.addressVerified).toEqual(undefined);
     });
 
+    it('should not update verified address when a confirmation of address on device is not successful (no permission)', async () => {
+        const store = configureMockStore({
+            extra: {},
+            reducer: combineReducers({
+                wallet: combineReducers({
+                    tradingNew: tradingReducer,
+                }),
+                suite: mockedSuiteReducer(extraDependenciesMock),
+            }),
+            preloadedState: {
+                wallet: {
+                    tradingNew: initialState,
+                },
+            },
+        });
+
+        const account = accounts[0];
+        const addressData = account.addresses?.unused[0];
+
+        (selectSelectedDevice as jest.Mock).mockImplementation(() => ({
+            connected: true,
+            available: true,
+            useEmptyPassphrase: true,
+        }));
+
+        (confirmAddressOnDeviceThunk as unknown as jest.Mock).mockImplementation(
+            createThunk('@suite/device/confirmAddressOnDeviceThunk', () => ({
+                success: false,
+                payload: {
+                    code: 'Method_PermissionsNotGranted',
+                },
+            })),
+        );
+
+        await store.dispatch(
+            tradingThunks.verifyAddressThunk({
+                account,
+                address: addressData?.address,
+                path: addressData?.path,
+                tradingAction: tradingBuyActions.verifyAddress.type,
+            }),
+        );
+
+        expect(store.getState().wallet.tradingNew.buy.addressVerified).toEqual(undefined);
+    });
+
     it('should not update verified address when a confirmation of address on device is not successful', async () => {
         const store = configureMockStore({
             extra: {},

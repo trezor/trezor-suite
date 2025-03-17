@@ -1,5 +1,7 @@
 import { CryptoId, InfoResponse } from 'invity-api';
 
+import { extraDependenciesMock } from '@suite-common/test-utils';
+
 import { TradingComposedTransactionInfo, TradingState, tradingActions } from '../tradingReducer';
 import { accounts } from './account';
 import { buyInitialState } from './buyTradingReducer';
@@ -135,17 +137,20 @@ export const tradingFixtures = [
         result: initialState,
     },
     {
-        description: 'should call STORAGE.LOAD',
+        description: 'should call STORAGE.LOAD and set trades from the storage',
         initialState,
         actions: [
             {
-                type: 'STORAGE.LOAD',
+                type: extraDependenciesMock.actionTypes.storageLoad,
                 payload: {
-                    tradingTrades: initialState.trades,
+                    tradingTrades: [tradeBuy],
                 },
             },
         ],
-        result: initialState,
+        result: {
+            ...initialState,
+            trades: [tradeBuy],
+        },
     },
     {
         description: 'should set modal account',

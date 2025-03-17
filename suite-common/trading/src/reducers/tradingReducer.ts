@@ -1,4 +1,4 @@
-import { AnyAction, PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
 import { Coins, CryptoId, InfoResponse, Platforms } from 'invity-api';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
@@ -77,6 +77,10 @@ export const initialState: TradingState = {
     prefilledFromCryptoId: undefined,
 };
 
+type StorageActionPayload = {
+    tradingTrades?: TradingTransaction[];
+};
+
 export const tradingSlice = createSliceWithExtraDeps({
     name: TRADING_PREFIX,
     initialState,
@@ -121,10 +125,13 @@ export const tradingSlice = createSliceWithExtraDeps({
     },
     extraReducers: (builder, extra) => {
         builder
-            .addCase(extra.actionTypes.storageLoad, (state, action: AnyAction) => ({
-                ...state,
-                trades: action.payload.tradingTrades ?? state.trades,
-            }))
+            .addCase(
+                extra.actionTypes.storageLoad,
+                (state, action: PayloadAction<StorageActionPayload>) => ({
+                    ...state,
+                    trades: action.payload.tradingTrades ?? state.trades,
+                }),
+            )
             .addCase(buyThunks.handleRequestThunk.pending, state => {
                 state.buy.isLoading = true;
             })
