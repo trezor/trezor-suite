@@ -59,14 +59,14 @@ const Container = styled.div<{
 
             :focus-within:has(:focus-visible) {
                 background: ${$isChecked
-                    ? theme.backgroundPrimaryDefault
-                    : theme.backgroundNeutralDisabled};
+                    ? theme.stateFillElementBrandBoldActiveHovered
+                    : theme.stateFillElementNeutralBoldHovered};
             }
 
             &:hover {
                 background: ${$isChecked
-                    ? theme.backgroundPrimaryPressed
-                    : theme.backgroundNeutralSubdued};
+                    ? theme.stateFillElementBrandBoldActiveHovered
+                    : theme.stateFillElementNeutralBoldHovered};
             }
         `};
 `;
@@ -83,7 +83,7 @@ const Handle = styled.button<{
     border: none;
     left: 1px;
     border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.legacy.TYPE_WHITE};
+    background: ${({ theme }) => theme.baseContentReversePrimary};
     transform: ${({ $isChecked, $isSmall }) =>
         $isChecked && `translateX(${$isSmall ? '14px' : '20px'})`};
     transition: transform 0.25s ease 0s;

@@ -11,11 +11,13 @@ type LabelColorOptions = {
 };
 
 export const getInputColor = (theme: DefaultTheme, { checked, disabled }: InputColorOptions) => {
-    if (!checked) {
-        return theme.backgroundNeutralSubdued;
+    if (checked) {
+        return disabled
+            ? theme.stateFillElementBrandBoldActiveDisabled
+            : theme.stateFillElementBrandBoldActive;
     }
 
-    return disabled ? theme.backgroundPrimarySubtleOnElevation0 : theme.backgroundPrimaryDefault;
+    return disabled ? theme.stateFillElementBoldDisabled : theme.baseFillElementNeutralBold;
 };
 
 export const getLabelColor = (theme: DefaultTheme, { alert, disabled }: LabelColorOptions) => {
