@@ -589,7 +589,12 @@ export const areTokenFiatRatesLoading = (
             token.contract as TokenAddress,
         );
 
-        return rates?.[tokenFiatRateKey]?.isLoading;
+        // NOTE: designed the rate as loading only if it is loading and NO rate is currently available
+        return (
+            rates?.[tokenFiatRateKey]?.isLoading &&
+            !rates?.[tokenFiatRateKey]?.rate &&
+            rates?.[tokenFiatRateKey]?.rate !== 0
+        );
     });
 
 export const getAccountTokensFiatBalance = (
