@@ -266,7 +266,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    public async openDevice(path: string, first: boolean, signal?: AbortSignal) {
+    public async openDevice(path: string, reset: boolean, signal?: AbortSignal) {
         // note: multiple retries to open device. reason:  when another window acquires device, changed session
         // is broadcasted to other clients. they are responsible for releasing interface, which takes some time.
         // if there is only one client working with device, this will succeed using only one attempt.
@@ -275,7 +275,7 @@ export class UsbApi extends AbstractApi {
         // I would need to throw artificially which is not nice.
         for (let i = 0; i < 5; i++) {
             this.logger?.debug(`usb: openDevice attempt ${i}`);
-            const res = await this.openInternal(path, first, signal);
+            const res = await this.openInternal(path, reset, signal);
             if (res.success || signal?.aborted) {
                 return res;
             }
@@ -283,10 +283,10 @@ export class UsbApi extends AbstractApi {
             await resolveAfter(100 * i);
         }
 
-        return this.openInternal(path, first, signal);
+        return this.openInternal(path, reset, signal);
     }
 
-    private async openInternal(path: string, first: boolean, signal?: AbortSignal) {
+    private async openInternal(path: string, reset: boolean, signal?: AbortSignal) {
         const device = this.findDevice(path);
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
@@ -308,7 +308,7 @@ export class UsbApi extends AbstractApi {
             });
         }
 
-        if (first) {
+        if (reset) {
             if (device.configuration?.configurationValue !== CONFIGURATION_ID) {
                 try {
                     this.logger?.debug(`usb: device.selectConfiguration ${CONFIGURATION_ID}`);
