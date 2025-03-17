@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
-import { Elevation, borders, mapElevationToBorder, paletteV1, spacingsPx } from '@trezor/theme';
+import { Elevation, borders, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
 import {
     FrameProps,
@@ -38,41 +38,44 @@ const Wrapper = styled.div<
     padding: ${spacingsPx.md};
     outline: ${borders.widths.small} solid ${mapElevationToBorder};
     outline-offset: -${borders.widths.small};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-
+    background: ${({ theme }) => theme.baseFillSurfacePage};
     ${({ onClick }) => onClick && 'cursor: pointer;'}
 
     &:hover,
     &:focus {
-        outline-color: ${({ theme }) => theme.borderInputDefault};
+        outline-color: ${({ theme }) => theme.baseContentEmphasis};
     }
 
     ${({ $isActive }) =>
         $isActive &&
         css`
-            outline-color: ${({ theme }) => theme.borderSecondary} !important;
+            outline-color: ${({ theme }) => theme.baseContentBrand} !important;
         `}
 
     ${withFrameProps}
 `;
 
-const IconWrapper = styled.div`
+const IconBackground = styled.div`
     border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.borderSecondary};
-    padding: ${spacingsPx.xxxs};
+    background: ${({ theme }) => theme.baseFillSurfacePage};
 `;
 
 export const RadioCard = ({ isActive, onClick, children, ...rest }: RadioCardProps) => {
     const { elevation } = useElevation();
+    const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(rest, allowedRadioCardFrameProps);
 
     return (
         <Wrapper $isActive={isActive} onClick={onClick} $elevation={elevation} {...frameProps}>
             {isActive && (
-                <Box position={{ type: 'absolute', top: '-3px', right: '-3px' }}>
-                    <IconWrapper>
-                        <Icon name="check" size="small" color={paletteV1.lightWhiteAlpha1000} />
-                    </IconWrapper>
+                <Box position={{ type: 'absolute', top: '-6px', right: '-6px' }}>
+                    <IconBackground>
+                        <Icon
+                            name="checkCircleFilled"
+                            size="mediumLarge"
+                            color={theme.baseContentBrand}
+                        />
+                    </IconBackground>
                 </Box>
             )}
             {children}
