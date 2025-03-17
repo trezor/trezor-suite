@@ -1,0 +1,63 @@
+[
+    {
+        "symbol": "btc",
+        "accountLabel": "BTC Account #1",
+        "deviceState": "staticSessionId",
+        "key": "btc1",
+        "networkType": "bitcoin",
+        "accountType": "normal",
+        "addresses": {
+            "used": [
+                { "address": "USED1", "path": "path_USED1", "balance": "10000000" },
+                { "address": "USED2", "path": "path_USED2", "balance": "20000000" }
+            ],
+            "change": [{ "address": "CHANGE1", "path": "path_CHANGE1" }],
+            "unused": [
+                { "address": "UNUSED1", "path": "path_UNUSED1" },
+                { "address": "UNUSED2", "path": "path_UNUSED2" }
+            ]
+        },
+        "visible": true
+    },
+    {
+        "symbol": "btc",
+        "accountLabel": "BTC Account #2",
+        "deviceState": "staticSessionId",
+        "key": "btc2",
+        "networkType": "bitcoin",
+        "accountType": "legacy",
+        "addresses": {
+            "used": [],
+            "change": [],
+            "unused": []
+        },
+        "visible": true
+    },
+    {
+        "symbol": "eth",
+        "accountLabel": "ETH Account #1",
+        "deviceState": "staticSessionId",
+        "key": "eth1",
+        "networkType": "ethereum",
+        "accountType": "normal",
+        "visible": true
+    },
+    {
+        "symbol": "eth",
+        "accountLabel": "ETH Account #2",
+        "deviceState": "staticSessionId",
+        "key": "eth2",
+        "networkType": "ethereum",
+        "accountType": "legacy",
+        "visible": true
+    },
+    {
+        "symbol": "eth",
+        "accountLabel": "ETH Account #3 HIDDEN",
+        "deviceState": "staticSessionId",
+        "key": "eth3",
+        "networkType": "ethereum",
+        "accountType": "legacy",
+        "visible": false
+    }
+]

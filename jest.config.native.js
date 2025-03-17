@@ -28,6 +28,7 @@ module.exports = {
     ],
     setupFiles: [
         '<rootDir>/../../node_modules/@shopify/react-native-skia/jestSetup.js',
+        '<rootDir>/../../node_modules/@shopify/flash-list/jestSetup.js',
         '<rootDir>/../../node_modules/react-native-gesture-handler/jestSetup.js',
         '<rootDir>/../../suite-native/test-utils/src/everstakeJestSetup.js',
         '<rootDir>/../../suite-native/test-utils/src/expoMock.js',

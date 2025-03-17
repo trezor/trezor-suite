@@ -3,6 +3,7 @@ import { Account } from '@suite-common/wallet-types';
 import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { StaticSessionId } from '@trezor/connect';
 
+import accounts from '../../__fixtures__/accounts.json';
 import { ReceiveAccountsListMode, useReceiveAccountsListData } from '../useReceiveAccountsListData';
 
 describe('useReceiveAccountsListData', () => {
@@ -14,42 +15,7 @@ describe('useReceiveAccountsListData', () => {
                 },
             },
         },
-        wallet: {
-            accounts: [
-                {
-                    symbol: 'btc',
-                    accountLabel: 'BTC Account #1',
-                    deviceState: 'staticSessionId',
-                    key: 'btc1',
-                    addresses: {
-                        used: [{ address: 'USED1' }, { address: 'USED2' }],
-                        change: [{ address: 'CHANGE1' }],
-                        unused: [{ address: 'UNUSED1' }, { address: 'UNUSED2' }],
-                    },
-                    visible: true,
-                },
-                {
-                    symbol: 'btc',
-                    accountLabel: 'BTC Account #2',
-                    deviceState: 'staticSessionId',
-                    key: 'btc2',
-                    addresses: {
-                        used: [],
-                        change: [],
-                        unused: [],
-                    },
-                    visible: true,
-                },
-                {
-                    symbol: 'eth',
-                    accountLabel: 'ETH Account #1',
-                    deviceState: 'staticSessionId',
-                    addresses: undefined,
-                    key: 'eth1',
-                    visible: true,
-                },
-            ] as unknown as Account[],
-        },
+        wallet: { accounts: accounts as Account[] },
     };
 
     const renderUseReceiveAccountsListDataHook = (
@@ -104,7 +70,10 @@ describe('useReceiveAccountsListData', () => {
                 {
                     key: '',
                     label: '',
-                    data: [{ account: expect.objectContaining({ key: 'eth1' }) }],
+                    data: [
+                        { account: expect.objectContaining({ key: 'eth1' }) },
+                        { account: expect.objectContaining({ key: 'eth2' }) },
+                    ],
                 },
             ]);
         });
@@ -149,7 +118,7 @@ describe('useReceiveAccountsListData', () => {
                     data: [
                         {
                             account: expect.objectContaining({ key: 'btc1' }),
-                            address: { address: 'UNUSED1' },
+                            address: { address: 'UNUSED1', path: 'path_UNUSED1' },
                         },
                     ],
                 },
@@ -159,11 +128,11 @@ describe('useReceiveAccountsListData', () => {
                     data: [
                         {
                             account: expect.objectContaining({ key: 'btc1' }),
-                            address: { address: 'USED1' },
+                            address: { address: 'USED1', balance: '10000000', path: 'path_USED1' },
                         },
                         {
                             account: expect.objectContaining({ key: 'btc1' }),
-                            address: { address: 'USED2' },
+                            address: { address: 'USED2', balance: '20000000', path: 'path_USED2' },
                         },
                     ],
                 },

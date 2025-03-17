@@ -11,15 +11,15 @@ const footerStyle = prepareNativeStyle(utils => ({
     borderBottomRightRadius: utils.borders.radii.r16,
 }));
 
-export type TradeAccountsListFooterProps = {
+export type AccountsListFooterProps = {
     hasTextualDivider: boolean;
     onAddAccountTap: () => void;
 };
 
-export const TradeAccountsListFooter = ({
+export const AccountsListFooter = ({
     hasTextualDivider,
     onAddAccountTap,
-}: TradeAccountsListFooterProps) => {
+}: AccountsListFooterProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (

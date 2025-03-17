@@ -14,10 +14,12 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { ACCOUNT_LIST_ITEM_HEIGHT, AccountListItem } from './AccountListItem';
+import { AccountListAddressItem } from './AccountListAddressItem';
+import { ACCOUNT_LIST_ITEM_HEIGHT } from './AccountListBaseItem';
+import { AccountListItem } from './AccountListItem';
+import { AccountsListFooter } from './AccountsListFooter';
 import { AddressListEmptyComponent } from './AddressListEmptyComponent';
 import { NoAccountsComponent } from './NoAccountsComponent';
-import { TradeAccountsListFooter } from './TradeAccountsListFooter';
 import {
     ReceiveAccountsListMode,
     useReceiveAccountsListData,
@@ -35,11 +37,11 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-type TradeAccountsListProps = {
+export type AccountsListProps = {
     symbol: NetworkSymbol;
     pickerMode: ReceiveAccountsListMode;
     onAddAccountTap: () => void;
-    setPickerMode: (mode: ReceiveAccountsListMode) => void;
+    onSetPickerMode: (mode: ReceiveAccountsListMode) => void;
 };
 
 const DEFAULT_INSET_BOTTOM = 25;
@@ -50,15 +52,15 @@ const contentContainerStyle = prepareNativeStyle<{
     paddingBottom: Math.max(insetBottom, utils.spacings.sp16),
 }));
 
-const keyExtractor = (item: ReceiveAccount) =>
+export const keyExtractor = (item: ReceiveAccount) =>
     `${item.account.key}_${item.address?.address ?? 'address_undefined'}`;
 
-export const TradeAccountsList = ({
+export const AccountsList = ({
     symbol,
     pickerMode,
     onAddAccountTap,
-    setPickerMode,
-}: TradeAccountsListProps) => {
+    onSetPickerMode,
+}: AccountsListProps) => {
     const navigation = useNavigation<NavigationProp>();
     const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
@@ -77,16 +79,19 @@ export const TradeAccountsList = ({
         dispatch(setBuySelectedReceiveAccount({ selectedReceiveAccount: receiveAccount }));
         const hasAddresses = receiveAccount.account.addresses;
         if (receiveAccount.account && hasAddresses) {
-            setPickerMode('address');
+            onSetPickerMode('address');
         }
         if ((hasAddresses && receiveAccount.address) || !hasAddresses) {
             navigation.popToTop();
         }
     };
 
-    const renderItem = (item: ReceiveAccount) => (
-        <AccountListItem receiveAccount={item} onPress={() => onItemSelect(item)} symbol={symbol} />
-    );
+    const renderItem = (item: ReceiveAccount) =>
+        pickerMode === 'account' ? (
+            <AccountListItem receiveAccount={item} onPress={() => onItemSelect(item)} />
+        ) : (
+            <AccountListAddressItem receiveAccount={item} onPress={() => onItemSelect(item)} />
+        );
 
     const {
         data: internalData,
@@ -99,17 +104,15 @@ export const TradeAccountsList = ({
         keyExtractor,
         renderItem,
         noSingletonSectionHeader: true,
-        isLastItemRounded: isDeviceInViewOnlyMode,
+        isLastItemRounded: isDeviceInViewOnlyMode || pickerMode === 'address',
     });
+
     const insetBottom = Math.max(insetsBottom, DEFAULT_INSET_BOTTOM);
 
     const shouldHaveFooter = !isDeviceInViewOnlyMode && pickerMode === 'account';
 
     const footer = shouldHaveFooter ? (
-        <TradeAccountsListFooter
-            hasTextualDivider={itemsCount > 0}
-            onAddAccountTap={onAddAccountTap}
-        />
+        <AccountsListFooter hasTextualDivider={itemsCount > 0} onAddAccountTap={onAddAccountTap} />
     ) : null;
 
     const filter = '';

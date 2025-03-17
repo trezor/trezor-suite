@@ -17,7 +17,7 @@ import {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 
-import { TradeAccountsList } from '../components/general/AccountSheet/TradeAccountsList';
+import { AccountsList } from '../components/general/AccountSheet/AccountsList';
 import { ReceiveAccountsListMode } from '../hooks/useReceiveAccountsListData';
 import { selectBuySelectedReceiveAccount } from '../tradingSlice';
 
@@ -56,11 +56,11 @@ export const ReceiveAccountsPickerScreen = () => {
 
     return (
         <Screen header={<ScreenHeader content={title} closeActionType="close" />}>
-            <TradeAccountsList
+            <AccountsList
                 symbol={symbol}
                 pickerMode={pickerMode}
                 onAddAccountTap={handleAddAccount}
-                setPickerMode={setPickerMode}
+                onSetPickerMode={setPickerMode}
             />
             <AccountTypeDecisionBottomSheet
                 coinName={symbol}
