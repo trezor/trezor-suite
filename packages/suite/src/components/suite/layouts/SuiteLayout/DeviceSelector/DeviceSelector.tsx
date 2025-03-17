@@ -113,15 +113,15 @@ export const DeviceSelector = () => {
     }, [countChanged]);
 
     const handleSwitchDeviceClick = () => {
-        if (!discoveryInProgress) {
-            dispatch(
-                goto('suite-switch-device', {
-                    params: {
-                        cancelable: true,
-                    },
-                }),
-            );
-        }
+        // if (!discoveryInProgress) {
+        dispatch(
+            goto('suite-switch-device', {
+                params: {
+                    cancelable: true,
+                },
+            }),
+        );
+        // }
     };
 
     const { isSidebarCollapsed } = useResponsiveContext();
