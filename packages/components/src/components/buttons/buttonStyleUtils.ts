@@ -65,7 +65,7 @@ export type ButtonState = 'normal' | 'hover';
 export const mapElevationToBackgroundToken = ({ $elevation }: { $elevation: Elevation }): Color =>
     `backgroundSurfaceElevation${$elevation === -1 ? 'Negative' : $elevation}`;
 
-const mapElevationToButtonBackground = ({
+const mapElevationToButtonOnBackground = ({
     elevation,
     theme,
     state,
@@ -77,11 +77,11 @@ const mapElevationToButtonBackground = ({
     const capitalizedState = capitalizeFirstLetter(state);
 
     const map: Record<Elevation, Color> = {
-        '-1': `interactionBackgroundTertiaryDefault${capitalizedState}OnElevationNegative`, // For example left menu is negative elevation
-        0: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation0`,
-        1: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation1`,
-        2: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation2`,
-        3: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation3`,
+        '-1': `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation3`, // For example left menu is negative elevation
+        0: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevationNegative`,
+        1: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation0`,
+        2: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation1`,
+        3: `interactionBackgroundTertiaryDefault${capitalizedState}OnElevation2`,
     };
 
     return theme[map[elevation]];
@@ -120,12 +120,12 @@ export const useVariantStyle = (
             textSubtle: theme.textPrimaryDefault,
         },
         tertiary: {
-            background: mapElevationToButtonBackground({
+            background: mapElevationToButtonOnBackground({
                 elevation,
                 theme,
                 state: 'normal',
             }),
-            backgroundHover: mapElevationToButtonBackground({
+            backgroundHover: mapElevationToButtonOnBackground({
                 elevation,
                 theme,
                 state: 'hover',
