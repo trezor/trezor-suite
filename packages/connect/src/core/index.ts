@@ -770,8 +770,8 @@ const closePopup = ({ popupPromise, sendCoreMessage }: CoreContext) => {
  * @memberof Core
  */
 const onDeviceButtonHandler =
-    (context: CoreContext, method?: AbstractMethod<any>) =>
-    async ({ device, payload: request }: DeviceEvents['button']) => {
+    (device: Device, context: CoreContext, method?: AbstractMethod<any>) =>
+    async ({ payload: request }: DeviceEvents['button']) => {
         const { sendCoreMessage } = context;
         // wait for popup handshake
         const addressRequest = request.code === 'ButtonRequest_Address';
@@ -800,17 +800,9 @@ const onDeviceButtonHandler =
         }
     };
 
-/**
- * Handle pin request from Device.
- * @param {Device} device
- * @param {string} protobuf.PinMatrixRequestType
- * @param {Function} callback
- * @returns {Promise<void>}
- * @memberof Core
- */
 const onDevicePinHandler =
-    (context: CoreContext) =>
-    async ({ device, type, callback }: DeviceEvents['pin']) => {
+    (device: Device, context: CoreContext) =>
+    async ({ type, callback }: DeviceEvents['pin']) => {
         const { uiPromises, sendCoreMessage } = context;
         // wait for popup handshake
         await waitForPopup(context);
@@ -823,15 +815,19 @@ const onDevicePinHandler =
         // wait for pin
         try {
             const uiResp = await uiPromise.promise;
-            callback(uiResp.payload);
+            if (uiResp.payload == null) {
+                callback({ success: false, error: `${UI.RECEIVE_PIN} missing payload` });
+            } else {
+                callback({ success: true, payload: uiResp.payload });
+            }
         } catch (error) {
-            callback(null, error);
+            callback({ success: false, error });
         }
     };
 
 const onDeviceWordHandler =
-    (context: CoreContext) =>
-    async ({ device, type, callback }: DeviceEvents['word']) => {
+    (device: Device, context: CoreContext) =>
+    async ({ type, callback }: DeviceEvents['word']) => {
         const { uiPromises, sendCoreMessage } = context;
         // wait for popup handshake
         await waitForPopup(context);
@@ -843,22 +839,19 @@ const onDeviceWordHandler =
         // wait for word
         try {
             const uiResp = await uiPromise.promise;
-            callback(uiResp.payload);
+            if (uiResp.payload == null) {
+                callback({ success: false, error: `${UI.RECEIVE_WORD} missing payload` });
+            } else {
+                callback({ success: true, payload: uiResp.payload });
+            }
         } catch (error) {
-            callback(null, error);
+            callback({ success: false, error });
         }
     };
 
-/**
- * Handle passphrase request from Device.
- * @param {Device} device
- * @param {Function} callback
- * @returns {Promise<void>}
- * @memberof Core
- */
 const onDevicePassphraseHandler =
-    (context: CoreContext) =>
-    async ({ device, callback }: DeviceEvents['passphrase']) => {
+    (device: Device, context: CoreContext) =>
+    async ({ callback }: DeviceEvents['passphrase']) => {
         const { uiPromises, sendCoreMessage } = context;
         // wait for popup handshake
         await waitForPopup(context);
@@ -871,9 +864,13 @@ const onDevicePassphraseHandler =
         // wait for passphrase
         try {
             const uiResp = await uiPromise.promise;
-            callback(uiResp.payload);
+            if (uiResp.payload == null) {
+                callback({ success: false, error: `${UI.RECEIVE_PASSPHRASE} missing payload` });
+            } else {
+                callback({ success: true, payload: uiResp.payload });
+            }
         } catch (error) {
-            callback(null, error);
+            callback({ success: false, error });
         }
     };
 
@@ -887,18 +884,19 @@ const onDevicePassphraseHandler =
 const onEmptyPassphraseHandler =
     () =>
     ({ callback }: DeviceEvents['passphrase']) => {
-        callback({ value: '' });
+        callback({ success: true, payload: { value: '' } });
     };
 
 const registerDeviceEvents =
     (context: CoreContext, method?: AbstractMethod<any>) => (device: Device) => {
         device.removeAllListeners();
-        device.on(DEVICE.BUTTON, onDeviceButtonHandler(context, method));
-        device.on(DEVICE.PIN, onDevicePinHandler(context));
-        device.on(DEVICE.WORD, onDeviceWordHandler(context));
+        device.on(DEVICE.BUTTON, onDeviceButtonHandler(device, context, method));
+        device.on(DEVICE.PIN, onDevicePinHandler(device, context));
+        device.on(DEVICE.WORD, onDeviceWordHandler(device, context));
         device.on(
             DEVICE.PASSPHRASE,
             (method?.useEmptyPassphrase ? onEmptyPassphraseHandler : onDevicePassphraseHandler)(
+                device,
                 context,
             ),
         );

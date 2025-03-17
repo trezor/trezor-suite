@@ -6,7 +6,6 @@ import { getRandomInt } from '@trezor/utils';
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
 import { ERRORS, PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { cancelPrompt } from '../device/prompts';
 import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
@@ -89,9 +88,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             xpubs,
         });
         if (res.error) {
-            await cancelPrompt(this.device).catch(() => {
-                // error from cancel should be swallowed, we are not interested in it in the error handling above
-            });
+            await cmd.cancelCall();
             throw new Error(res.error);
         }
 

@@ -2,8 +2,8 @@
 
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
-import { Session, Transport } from '@trezor/transport';
-import { resolveAfter, versionUtils } from '@trezor/utils';
+import { Session, TRANSPORT_ERROR, Transport } from '@trezor/transport';
+import { createDeferred, resolveAfter, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
 import { Device } from './Device';
@@ -11,7 +11,6 @@ import { resolveDescriptorForTaproot } from './resolveDescriptorForTaproot';
 import { getBech32Network, getSegwitNetwork } from '../data/coinInfo';
 import { DEVICE } from '../events';
 import type { BitcoinNetworkInfo, CoinInfo, Network } from '../types';
-import { cancelPrompt, promptPassphrase, promptPin, promptWord } from './prompts';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
 import { getAccountAddressN } from '../utils/accountUtils';
 import { initLog } from '../utils/debug';
@@ -58,10 +57,9 @@ const filterForLog = (type: string, msg: any) => {
 };
 
 export class DeviceCommands {
-    device: Device;
-
-    transport: Transport;
-    transportSession: Session;
+    readonly device: Device;
+    readonly transport: Transport;
+    readonly transportSession: Session;
 
     disposed: boolean;
 
@@ -72,10 +70,6 @@ export class DeviceCommands {
         this.transport = transport;
         this.transportSession = transportSession;
         this.disposed = false;
-    }
-
-    dispose() {
-        this.disposed = true;
     }
 
     isDisposed() {
@@ -329,12 +323,14 @@ export class DeviceCommands {
         return response;
     }
 
-    async callLoop<T extends Messages.MessageKey>(
+    private async callLoop<T extends Messages.MessageKey>(
         type: T,
         msg: Messages.MessagePayload<T>,
     ): Promise<Messages.MessageResponse> {
         let [name, data] = [type, msg];
         let pinUnlocked = false;
+        const session = this.transportSession;
+        const { protocol } = this.device;
 
         while (true) {
             if (this.disposed) {
@@ -344,12 +340,7 @@ export class DeviceCommands {
             logger.debug('Sending', name, filterForLog(name, data));
 
             this.callPromise = this.transport
-                .call({
-                    session: this.transportSession,
-                    name,
-                    data,
-                    protocol: this.device.protocol,
-                })
+                .call({ session, name, data, protocol })
                 .finally(() => {
                     this.callPromise = undefined;
                 });
@@ -366,7 +357,7 @@ export class DeviceCommands {
 
             logger.debug('Received', res.type, filterForLog(res.type, res.message));
 
-            this.device.clearCancelableAction();
+            this.clearCancel();
 
             switch (res.type) {
                 case 'Failure': {
@@ -390,7 +381,23 @@ export class DeviceCommands {
                     );
                 }
                 case 'ButtonRequest': {
-                    this.device.setCancelableAction(() => this.cancelWithFallback());
+                    this.awaitCancel().then(async ({ resolve }) => {
+                        /**
+                         * Bridge version =< 2.0.28 throws "other call in progress" error.
+                         * as workaround takeover transportSession (acquire) before sending Cancel, this will resolve previous pending call.
+                         */
+                        if (
+                            this.transport.name === 'BridgeTransport' &&
+                            !versionUtils.isNewer(this.transport.version, '2.0.28')
+                        ) {
+                            // UI_EVENT is send right before ButtonAck, make sure that ButtonAck is sent
+                            await resolveAfter(1);
+                            await this.device.acquire().catch(() => {});
+                        }
+
+                        await this.cancelCall(false);
+                        resolve();
+                    });
 
                     if (res.message.code === 'ButtonRequest_PassphraseEntry') {
                         this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
@@ -405,9 +412,20 @@ export class DeviceCommands {
                     break;
                 }
                 case 'PinMatrixRequest': {
-                    const promptRes = await promptPin(this.device, res.message.type);
+                    const promptRes = await Promise.race([
+                        this.device.prompt(DEVICE.PIN, { type: res.message.type }),
+                        this.awaitCancel().then(resp => ({ success: false as const, ...resp })),
+                    ]);
+                    this.clearCancel();
+
                     if (!promptRes.success) {
-                        return Promise.reject(promptRes.error);
+                        const cancelRes = await this.cancelCall();
+
+                        if ('resolve' in promptRes) promptRes.resolve();
+
+                        return Promise.reject(
+                            cancelRes.success ? promptRes.error : cancelRes.error,
+                        );
                     }
 
                     pinUnlocked = true;
@@ -415,9 +433,20 @@ export class DeviceCommands {
                     break;
                 }
                 case 'PassphraseRequest': {
-                    const promptRes = await promptPassphrase(this.device);
+                    const promptRes = await Promise.race([
+                        this.device.prompt(DEVICE.PASSPHRASE, {}),
+                        this.awaitCancel().then(resp => ({ success: false as const, ...resp })),
+                    ]);
+                    this.clearCancel();
+
                     if (!promptRes.success) {
-                        return Promise.reject(promptRes.error);
+                        const cancelRes = await this.cancelCall();
+
+                        if ('resolve' in promptRes) promptRes.resolve();
+
+                        return Promise.reject(
+                            cancelRes.success ? promptRes.error : cancelRes.error,
+                        );
                     }
 
                     [name, data] = [
@@ -429,9 +458,20 @@ export class DeviceCommands {
                     break;
                 }
                 case 'WordRequest': {
-                    const promptRes = await promptWord(this.device, res.message.type);
+                    const promptRes = await Promise.race([
+                        this.device.prompt(DEVICE.WORD, { type: res.message.type }),
+                        this.awaitCancel().then(resp => ({ success: false as const, ...resp })),
+                    ]);
+                    this.clearCancel();
+
                     if (!promptRes.success) {
-                        return Promise.reject(promptRes.error);
+                        const cancelRes = await this.cancelCall();
+
+                        if ('resolve' in promptRes) promptRes.resolve();
+
+                        return Promise.reject(
+                            cancelRes.success ? promptRes.error : cancelRes.error,
+                        );
                     }
 
                     [name, data] = ['WordAck', { word: promptRes.payload }];
@@ -447,6 +487,24 @@ export class DeviceCommands {
                 }
             }
         }
+    }
+
+    cancelCall(expectResponse = true) {
+        if (this.disposed) {
+            return Promise.resolve({
+                success: false as const,
+                error: TRANSPORT_ERROR.SESSION_NOT_FOUND,
+            });
+        }
+
+        const cancelArgs = {
+            session: this.transportSession,
+            name: 'Cancel',
+            data: {},
+            protocol: this.device.protocol,
+        };
+
+        return expectResponse ? this.transport.call(cancelArgs) : this.transport.send(cancelArgs);
     }
 
     private async _getAddress() {
@@ -533,37 +591,32 @@ export class DeviceCommands {
         );
     }
 
-    async cancelWithFallback() {
-        const { name, version } = this.transport;
-        if (name === 'BridgeTransport' && !versionUtils.isNewer(version, '2.0.28')) {
-            /**
-             * Bridge version =< 2.0.28 throws "other call in progress" error.
-             * as workaround takeover transportSession (acquire) before sending Cancel, this will resolve previous pending call.
-             */
-            try {
-                // UI_EVENT is send right before ButtonAck, make sure that ButtonAck is sent
-                await resolveAfter(1);
-                await this.device.acquire();
-                await cancelPrompt(this.device, false);
-            } catch {
-                // ignore whatever happens
-            }
-        } else {
-            return cancelPrompt(this.device, false);
-        }
+    private cancelFn?: (err: string) => Promise<void>;
+
+    private awaitCancel() {
+        const dfd = createDeferred<{ error: string; resolve: () => void }>();
+        this.cancelFn = error => {
+            const { promise, resolve } = createDeferred();
+            dfd.resolve({ resolve, error });
+
+            return promise;
+        };
+
+        return dfd.promise;
     }
 
-    async cancel() {
-        if (this.disposed) {
-            return;
-        }
-        this.dispose();
-        if (this.callPromise) {
-            try {
-                await this.callPromise;
-            } catch {
-                // do nothing
-            }
+    private clearCancel() {
+        this.cancelFn = undefined;
+    }
+
+    async cancel(reason: string) {
+        await this.cancelFn?.(reason);
+    }
+
+    async dispose() {
+        if (!this.disposed) {
+            this.disposed = true;
+            await this.callPromise?.catch(() => {});
         }
     }
 }

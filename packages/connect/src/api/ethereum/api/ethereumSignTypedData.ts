@@ -232,7 +232,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
                 }
                 if (memberData === null || memberData === undefined) {
                     // Cancel the request so the device isn't left hanging
-                    cmd.typedCall('Cancel', 'Success');
+                    cmd.cancelCall();
                     throw ERRORS.TypedError(
                         'Runtime',
                         `Value from member path ${member_path} is missing in the data object`,
