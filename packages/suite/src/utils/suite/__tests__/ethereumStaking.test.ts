@@ -56,7 +56,7 @@ import {
 describe('transformTx', () => {
     transformTxFixtures.forEach(test => {
         it(test.description, () => {
-            const result = transformTx(test.tx, test.gasPrice, test.nonce, test.chainId);
+            const result = transformTx(test.tx, test.nonce, test.chainId, test.gasPrice);
             expect(result).toEqual(test.result);
             expect(result).not.toHaveProperty('from');
         });

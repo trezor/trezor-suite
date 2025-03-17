@@ -23,7 +23,12 @@ import {
     isSupportedEthStakingNetworkSymbol,
     sanitizeHex,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { EthereumTransaction, InternalTransfer, Success } from '@trezor/connect';
+import TrezorConnect, {
+    EthereumTransaction,
+    EthereumTransactionEIP1559,
+    InternalTransfer,
+    Success,
+} from '@trezor/connect';
 import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
 import { PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -299,23 +304,43 @@ export const getStakeFormsDefaultValues = ({
 
 export const transformTx = (
     tx: any,
-    gasPrice: string,
     nonce: string,
     chainId: number,
-): EthereumTransaction => {
-    const transformedTx = {
-        ...tx,
-        gasLimit: numberToHex(tx.gasLimit),
-        gasPrice: numberToHex(toWei(gasPrice, 'gwei')),
-        nonce: numberToHex(nonce),
-        chainId,
-        data: sanitizeHex(tx.data),
+    gasPrice?: string,
+    maxFeePerGas?: string,
+    maxPriorityFeePerGas?: string,
+): EthereumTransaction | EthereumTransactionEIP1559 => {
+    let result: EthereumTransaction | EthereumTransactionEIP1559;
+
+    const commonTxData = {
+        to: tx.to,
         // in send form, the amount is in ether, here in wei because it is converted earlier in stake, unstake, claimToWithdraw methods
         value: numberToHex(tx.value),
+        chainId,
+        nonce: numberToHex(nonce),
+        gasLimit: numberToHex(tx.gasLimit),
+        data: sanitizeHex(tx.data),
     };
-    delete transformedTx.from;
 
-    return transformedTx;
+    if (maxFeePerGas) {
+        result = {
+            ...commonTxData,
+            gasPrice: undefined,
+            maxFeePerGas: numberToHex(toWei(maxFeePerGas, 'gwei')),
+            maxPriorityFeePerGas: numberToHex(toWei(maxPriorityFeePerGas || '0', 'gwei')),
+        } as EthereumTransactionEIP1559;
+    } else if (gasPrice) {
+        result = {
+            ...commonTxData,
+            gasPrice: numberToHex(toWei(gasPrice, 'gwei')),
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
+        } as EthereumTransaction;
+    } else {
+        throw new Error('No gas price or maxFeePerGas and maxPriorityFeePerGas provided');
+    }
+
+    return result;
 };
 
 interface PrepareStakeEthTxParams {
@@ -323,14 +348,16 @@ interface PrepareStakeEthTxParams {
     identity?: string;
     from: string;
     amount: string;
-    gasPrice: string;
+    gasPrice: string | undefined;
     nonce: string;
     chainId: number;
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
 }
 export type PrepareStakeEthTxResponse =
     | {
           success: true;
-          tx: EthereumTransaction;
+          tx: EthereumTransaction | EthereumTransactionEIP1559;
       }
     | {
           success: false;
@@ -344,6 +371,8 @@ export const prepareStakeEthTx = async ({
     gasPrice,
     nonce,
     chainId,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     identity,
 }: PrepareStakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
@@ -353,7 +382,15 @@ export const prepareStakeEthTx = async ({
             symbol,
             identity,
         });
-        const transformedTx = transformTx(tx, gasPrice, nonce, chainId);
+
+        const transformedTx = transformTx(
+            tx,
+            nonce,
+            chainId,
+            gasPrice,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+        );
 
         return {
             success: true,
@@ -382,6 +419,8 @@ export const prepareUnstakeEthTx = async ({
     chainId,
     identity,
     interchanges = UNSTAKE_INTERCHANGES,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
 }: PrepareUnstakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
         const tx = await unstake({
@@ -391,7 +430,15 @@ export const prepareUnstakeEthTx = async ({
             interchanges,
             symbol,
         });
-        const transformedTx = transformTx(tx, gasPrice, nonce, chainId);
+
+        const transformedTx = transformTx(
+            tx,
+            nonce,
+            chainId,
+            gasPrice,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+        );
 
         return {
             success: true,
@@ -416,10 +463,19 @@ export const prepareClaimEthTx = async ({
     gasPrice,
     nonce,
     chainId,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
 }: PrepareClaimEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
         const tx = await claimWithdrawRequest({ from, symbol, identity });
-        const transformedTx = transformTx(tx, gasPrice, nonce, chainId);
+        const transformedTx = transformTx(
+            tx,
+            nonce,
+            chainId,
+            gasPrice,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+        );
 
         return {
             success: true,

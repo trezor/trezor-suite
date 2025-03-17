@@ -184,9 +184,13 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                     setValue('selectedFee', nearest);
                     if (nearest === 'custom') {
                         // @ts-expect-error: type = error already filtered above
-                        const { feePerByte, feeLimit } = composed;
+                        const { feePerByte, feeLimit, maxFeePerGas, maxPriorityFeePerGas } =
+                            composed;
+
                         setValue('feePerUnit', feePerByte);
                         setValue('feeLimit', feeLimit || '');
+                        setValue('maxPriorityFeePerGas', maxPriorityFeePerGas);
+                        setValue('maxFeePerGas', maxFeePerGas || '');
                     }
                 }
                 // or do nothing, use default composed tx

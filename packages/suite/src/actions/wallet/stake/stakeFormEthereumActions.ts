@@ -16,7 +16,7 @@ import {
     PrecomposedTransactionFinal,
     StakeFormState,
 } from '@suite-common/wallet-types';
-import { calculateEthFee, getAccountIdentity, isPending } from '@suite-common/wallet-utils';
+import { calculateTotalGasCost, getAccountIdentity, isPending } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -31,17 +31,20 @@ import {
 
 import { calculate, composeStakingTransaction } from './stakeFormActions';
 
-const calculateTransaction = (
+const calculateStakingTransaction = (
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
     compareWithAmount = true,
     symbol: NetworkSymbol,
 ): PrecomposedTransaction => {
-    const feeInWei = calculateEthFee(toWei(feeLevel.feePerUnit, 'gwei'), feeLevel.feeLimit || '0');
+    const totalGasCostInWei = calculateTotalGasCost(
+        toWei(feeLevel.maxFeePerGas || feeLevel.feePerUnit, 'gwei'),
+        feeLevel.feeLimit,
+    );
 
     const stakingParams = {
-        feeInBaseUnits: feeInWei,
+        feeInBaseUnits: totalGasCostInWei,
         minBalanceForStakingInBaseUnits: toWei(MIN_ETH_BALANCE_FOR_STAKING.toString(), 'ether'),
         minAmountForStakingInBaseUnits: toWei(MIN_ETH_AMOUNT_FOR_STAKING.toString(), 'ether'),
         minAmountForWithdrawalInBaseUnits: toWei(MIN_ETH_FOR_WITHDRAWALS.toString(), 'ether'),
@@ -86,6 +89,8 @@ export const composeTransaction =
                 label: 'custom',
                 feePerUnit: formValues.feePerUnit,
                 feeLimit: formValues.feeLimit,
+                maxFeePerGas: formValues.maxFeePerGas,
+                maxPriorityFeePerGas: formValues.maxPriorityFeePerGas || '0',
                 blocks: -1,
             });
         }
@@ -94,7 +99,7 @@ export const composeTransaction =
             formValues,
             formState,
             predefinedLevels,
-            calculateTransaction,
+            calculateStakingTransaction,
             undefined,
             customFeeLimit,
         );
@@ -150,6 +155,8 @@ export const signTransaction =
                 identity,
                 amount: formValues.outputs[0].amount,
                 gasPrice: transactionInfo.feePerByte,
+                maxFeePerGas: transactionInfo.maxFeePerGas,
+                maxPriorityFeePerGas: transactionInfo.maxPriorityFeePerGas,
                 nonce,
                 chainId: network.chainId,
             });
@@ -161,6 +168,8 @@ export const signTransaction =
                 identity,
                 amount: formValues.outputs[0].amount,
                 gasPrice: transactionInfo.feePerByte,
+                maxFeePerGas: transactionInfo.maxFeePerGas,
+                maxPriorityFeePerGas: transactionInfo.maxPriorityFeePerGas,
                 nonce,
                 chainId: network.chainId,
                 interchanges: UNSTAKE_INTERCHANGES,
@@ -172,6 +181,8 @@ export const signTransaction =
                 from: account.descriptor,
                 identity,
                 gasPrice: transactionInfo.feePerByte,
+                maxFeePerGas: transactionInfo.maxFeePerGas,
+                maxPriorityFeePerGas: transactionInfo.maxPriorityFeePerGas,
                 nonce,
                 chainId: network.chainId,
             });

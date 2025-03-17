@@ -81,6 +81,8 @@ export const calculate = (
         max,
         fee: feeInBaseUnits,
         feePerByte: feeLevel.feePerUnit,
+        maxFeePerGas: feeLevel.maxFeePerGas || undefined,
+        maxPriorityFeePerGas: feeLevel.maxPriorityFeePerGas || undefined,
         feeLimit: feeLevel.feeLimit,
         bytes: 0,
         inputs: [],
