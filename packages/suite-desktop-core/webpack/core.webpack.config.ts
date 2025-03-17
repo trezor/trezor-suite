@@ -43,9 +43,14 @@ const source = path.join(__dirname, '..', 'src');
 const dist = path.join(__dirname, '../../suite-desktop/dist');
 
 const threadPath = path.join(source, 'threads');
-const threads = sync(`${threadPath}/**/*.ts`).map(
-    u => `threads${u.replace(threadPath, '').replace('.ts', '')}`,
-);
+const threads = sync(`${threadPath}/**/*.ts`).map(globMatch => {
+    // glob sync has non-standard output on Windows,
+    // so we need to process the glob matches with node.path to normalize them both for Unix & Windows
+    const absPath = path.resolve(globMatch);
+    const relPath = path.relative(threadPath, absPath);
+
+    return path.join(`threads`, relPath.replace('.ts', ''));
+});
 
 /* **** EXTERNALS **** */
 
