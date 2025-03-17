@@ -12047,6 +12047,7 @@ __metadata:
   dependencies:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    ajv: "npm:^8.17.1"
   languageName: unknown
   linkType: soft
 

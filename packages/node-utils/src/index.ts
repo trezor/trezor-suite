@@ -12,3 +12,4 @@ export {
 } from './http';
 export { checkFileExists } from './checkFileExists';
 export { checkSocks5Proxy } from './checkSocks5Proxy';
+export { validateJsonSchema } from './validateJsonSchema';

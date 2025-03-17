@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "ajv": "^8.17.1"
     }
 }
