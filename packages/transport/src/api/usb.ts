@@ -309,17 +309,22 @@ export class UsbApi extends AbstractApi {
         }
 
         if (first) {
-            try {
-                this.logger?.debug(`usb: device.selectConfiguration ${CONFIGURATION_ID}`);
-                await this.abortableMethod(() => device.selectConfiguration(CONFIGURATION_ID), {
-                    signal,
-                });
-                this.logger?.debug(`usb: device.selectConfiguration done: ${CONFIGURATION_ID}.`);
-            } catch (err) {
-                this.logger?.error(
-                    `usb: device.selectConfiguration error ${err}. device: ${this.formatDeviceForLog(device)}`,
-                );
+            if (device.configuration?.configurationValue !== CONFIGURATION_ID) {
+                try {
+                    this.logger?.debug(`usb: device.selectConfiguration ${CONFIGURATION_ID}`);
+                    await this.abortableMethod(() => device.selectConfiguration(CONFIGURATION_ID), {
+                        signal,
+                    });
+                    this.logger?.debug(
+                        `usb: device.selectConfiguration done: ${CONFIGURATION_ID}.`,
+                    );
+                } catch (err) {
+                    this.logger?.error(
+                        `usb: device.selectConfiguration error ${err}. device: ${this.formatDeviceForLog(device)}`,
+                    );
+                }
             }
+
             try {
                 // reset fails on ChromeOS and windows
                 this.logger?.debug('usb: device.reset');
