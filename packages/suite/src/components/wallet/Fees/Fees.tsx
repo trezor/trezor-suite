@@ -15,34 +15,38 @@ import {
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
-    PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Banner, Column, Row, SelectBar, Text, Tooltip } from '@trezor/components';
+import { Banner, Column, Row, SelectBar, Tooltip } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 
 import { CustomFee } from './CustomFee/CustomFee';
 import { StandardFee } from './StandardFee/StandardFee';
 
-const FEE_LEVELS_TRANSLATIONS: Record<FeeLevel['label'], TranslationKey> = {
-    custom: 'FEE_LEVEL_ADVANCED',
-    high: 'FEE_LEVEL_HIGH',
-    normal: 'FEE_LEVEL_NORMAL',
-    economy: 'FEE_LEVEL_LOW',
-    low: 'FEE_LEVEL_LOW',
-} as const;
+export const getFeeLevelTranslationId = (label: FeeLevel['label']): TranslationKey =>
+    (
+        ({
+            custom: 'FEE_LEVEL_ADVANCED',
+            high: 'FEE_LEVEL_HIGH',
+            normal: 'FEE_LEVEL_NORMAL',
+            economy: 'FEE_LEVEL_LOW',
+            low: 'FEE_LEVEL_LOW',
+        }) as const
+    )[label];
 
 export type FeeOptionType = {
-    label: React.ReactNode;
     value: FeeLevel['label'];
     blocks?: number;
     feePerUnit?: string;
     networkAmount?: string | null;
     feePerTx?: string; // Solana specific
+    // EIP-1559
+    maxWaitTimeEstimate?: number;
+    maxFeePerGas?: string;
 };
 
 export interface FeesProps<TFieldValues extends FormState> {
@@ -84,9 +88,8 @@ const buildFeeOptions = (
         const { networkAmount } = getNetworkAmount(level);
 
         return {
-            label: <Translation id={FEE_LEVELS_TRANSLATIONS[level.label]} />,
+            ...level,
             value: level.label,
-            feePerUnit: level.feePerUnit,
             networkAmount,
         };
     };
@@ -103,7 +106,6 @@ const buildFeeOptions = (
                 };
             });
         case 'ethereum':
-            // legacy fee format
             return filteredLevels.map(level => buildBasicFeeOptions(level));
         case 'bitcoin':
             return filteredLevels.map(level => {
@@ -137,15 +139,13 @@ export const Fees = <TFieldValues extends FormState>({
     const errors = props.errors as unknown as FieldErrors<FormState>;
 
     const error = errors.selectedFee;
-    const selectedLevel = feeInfo.levels.find(level => level.label === selectedOption);
+    // TODO: remove saving fee in draft or resolve this as it does not find level when eip-1559 and next time legacy
+    const selectedLevel =
+        feeInfo.levels.find(level => level.label === selectedOption) ||
+        feeInfo.levels.find(level => level.label === 'normal')!;
     const transactionInfo = composedLevels?.[selectedOption];
 
     const feeOptions = buildFeeOptions(feeInfo.levels, networkType, symbol, composedLevels);
-
-    const hasTransactionInfo = transactionInfo !== undefined && transactionInfo.type !== 'error';
-    const networkAmount = hasTransactionInfo
-        ? formatNetworkAmount(transactionInfo.fee, symbol)
-        : null;
 
     const supportsCustomFee = networkType !== 'solana';
 
@@ -193,7 +193,8 @@ export const Fees = <TFieldValues extends FormState>({
                     />
                 )}
             </Row>
-            {!isCustomFee && selectedLevel && (
+
+            {!isCustomFee && (
                 <StandardFee
                     networkType={networkType}
                     feeInfo={feeInfo}
@@ -206,47 +207,17 @@ export const Fees = <TFieldValues extends FormState>({
                 />
             )}
             {isCustomFee && (
-                <>
-                    <CustomFee
-                        symbol={symbol}
-                        control={control}
-                        networkType={networkType}
-                        feeInfo={feeInfo}
-                        errors={errors}
-                        register={register}
-                        getValues={getValues}
-                        setValue={setValue}
-                        composedFeePerByte={
-                            (transactionInfo as PrecomposedTransactionFinal)?.feePerByte
-                        }
-                    />
-                    <Column>
-                        <Row gap={spacings.sm} alignItems="baseline" justifyContent="space-between">
-                            <Text variant="tertiary" typographyStyle="hint">
-                                <Translation id="FEE" />:
-                            </Text>
-                            {networkAmount && (
-                                <Row gap={spacings.xxs}>
-                                    <Text variant="default" typographyStyle="hint">
-                                        <FormattedCryptoAmount
-                                            disableHiddenPlaceholder
-                                            value={networkAmount}
-                                            symbol={symbol}
-                                        />
-                                    </Text>
-                                    <Text variant="tertiary" typographyStyle="hint">
-                                        <FiatValue
-                                            disableHiddenPlaceholder
-                                            amount={networkAmount}
-                                            symbol={symbol}
-                                            showApproximationIndicator
-                                        />
-                                    </Text>
-                                </Row>
-                            )}
-                        </Row>
-                    </Column>
-                </>
+                <CustomFee
+                    symbol={symbol}
+                    control={control}
+                    networkType={networkType}
+                    feeInfo={feeInfo}
+                    errors={errors}
+                    register={register}
+                    getValues={getValues}
+                    setValue={setValue}
+                    transactionInfo={transactionInfo}
+                />
             )}
             {error && (
                 <Banner icon variant="destructive">

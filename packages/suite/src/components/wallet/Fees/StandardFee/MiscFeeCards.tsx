@@ -1,10 +1,11 @@
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
-import { FiatValue } from 'src/components/suite';
+import { FiatValue, Translation } from 'src/components/suite';
 
 import { FeeCard } from './FeeCard';
 import { StandardFeeProps } from './StandardFee';
+import { getFeeLevelTranslationId } from '../Fees';
 
 // Solana, Ripple, Cardano and other networks with only one option
 export const MiscFeeCards = ({
@@ -18,23 +19,25 @@ export const MiscFeeCards = ({
 
     const isSolanaNetwork = networkType === 'solana';
 
-    const feeOption = feeOptions[0];
-    const shouldShowCurrentFee = !isSolanaNetwork || feeOption.networkAmount;
-    const feeAmount = isSolanaNetwork ? feeOption.feePerTx : feeOption.feePerUnit;
+    const fee = feeOptions[0];
+    const shouldShowCurrentFee = !isSolanaNetwork || fee.networkAmount;
+    const feeAmount = isSolanaNetwork ? fee.feePerTx : fee.feePerUnit;
 
     return (
         <FeeCard
-            value={feeOption.value}
+            value={fee.value}
             isSelected={true}
             changeFeeLevel={changeFeeLevel}
             topLeftChild={
-                <span data-testid={`@fee-card/${feeOption.value}`}>{feeOption.label}</span>
+                <span data-testid={`@fee-card/${fee.value}`}>
+                    <Translation id={getFeeLevelTranslationId(fee.value)} />
+                </span>
             }
             topRightChild=""
             bottomLeftChild={
                 <FiatValue
                     disableHiddenPlaceholder
-                    amount={feeOption.networkAmount || ''}
+                    amount={fee.networkAmount || ''}
                     symbol={symbol}
                     showApproximationIndicator
                 />

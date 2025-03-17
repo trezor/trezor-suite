@@ -7,12 +7,15 @@ import {
 } from 'react-hook-form';
 
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
-import { FeeInfo, FormState } from '@suite-common/wallet-types';
-import { getFeeUnits, isInteger } from '@suite-common/wallet-utils';
+import { FeeInfo, FormState, PrecomposedTransaction } from '@suite-common/wallet-types';
+import { formatNetworkAmount, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
+import { Column, Row, Text } from '@trezor/components';
+import { PrecomposedTransactionCardano } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { useTranslation } from 'src/hooks/suite';
 import { TranslationFunction } from 'src/hooks/suite/useTranslation';
-import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 import { CurrentFee } from './CurrentFee';
 import { CustomFeeEthereum } from './CustomFeeEthereum';
@@ -28,10 +31,9 @@ export type CustomFeeBasicProps<TFieldValues extends FormState> = {
     errors: FieldErrors<TFieldValues>;
     register: UseFormRegister<TFieldValues>;
     control: Control;
+    composedFeePerByte: string;
     setValue: UseFormSetValue<TFieldValues>;
     getValues: UseFormGetValues<TFieldValues>;
-    composedFeePerByte: string;
-    locale: string;
     translationString: TranslationFunction;
     feeUnits: string;
     sharedRules: {
@@ -49,7 +51,7 @@ interface CustomFeeProps<TFieldValues extends FormState> {
     control: Control;
     setValue: UseFormSetValue<TFieldValues>;
     getValues: UseFormGetValues<TFieldValues>;
-    composedFeePerByte: string;
+    transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
 }
 
 export const CustomFee = <TFieldValues extends FormState>({
@@ -58,7 +60,7 @@ export const CustomFee = <TFieldValues extends FormState>({
     feeInfo,
     register,
     control,
-    composedFeePerByte,
+    transactionInfo,
     ...props
 }: CustomFeeProps<TFieldValues>) => {
     const { translationString } = useTranslation();
@@ -73,53 +75,70 @@ export const CustomFee = <TFieldValues extends FormState>({
         },
     };
 
-    const locale = useSelector(selectLanguage);
+    const networkAmount =
+        transactionInfo && transactionInfo.type !== 'error'
+            ? formatNetworkAmount(transactionInfo.fee, symbol)
+            : null;
 
-    const getCurrentFee = () => {
-        const { levels } = feeInfo;
-        const middleIndex = Math.floor((levels.length - 1) / 2);
-
-        return levels[middleIndex].feePerUnit;
-    };
-
-    const feeIconName = networkType === 'ethereum' ? 'gasPump' : 'receipt';
     const feeUnits = getFeeUnits(networkType);
 
     return (
-        <CustomFeeWrapper>
-            <CurrentFee
-                networkType={networkType}
-                feeIconName={feeIconName}
-                currentFee={getCurrentFee()}
-                symbol={symbol}
-            />
-            {networkType === 'ethereum' ? (
-                <CustomFeeEthereum
-                    {...props}
-                    networkType={networkType}
-                    feeInfo={feeInfo}
-                    register={register}
-                    control={control}
-                    composedFeePerByte={composedFeePerByte}
-                    feeUnits={feeUnits}
-                    translationString={translationString}
-                    locale={locale}
-                    sharedRules={sharedRules}
-                />
-            ) : (
-                <CustomFeeMisc
-                    {...props}
-                    networkType={networkType}
-                    feeInfo={feeInfo}
-                    register={register}
-                    control={control}
-                    composedFeePerByte={composedFeePerByte}
-                    feeUnits={feeUnits}
-                    translationString={translationString}
-                    locale={locale}
-                    sharedRules={sharedRules}
-                />
-            )}
-        </CustomFeeWrapper>
+        <>
+            <CustomFeeWrapper>
+                <CurrentFee networkType={networkType} networkSymbol={symbol} feeInfo={feeInfo} />
+                {networkType === 'ethereum' ? (
+                    <CustomFeeEthereum
+                        {...props}
+                        networkType={networkType}
+                        feeInfo={feeInfo}
+                        register={register}
+                        control={control}
+                        feeUnits={feeUnits}
+                        translationString={translationString}
+                        sharedRules={sharedRules}
+                    />
+                ) : (
+                    <CustomFeeMisc
+                        {...props}
+                        networkType={networkType}
+                        feeInfo={feeInfo}
+                        register={register}
+                        control={control}
+                        composedFeePerByte={
+                            transactionInfo?.type === 'final' ? transactionInfo.feePerByte : ''
+                        }
+                        feeUnits={feeUnits}
+                        translationString={translationString}
+                        sharedRules={sharedRules}
+                    />
+                )}
+            </CustomFeeWrapper>
+            <Column>
+                <Row gap={spacings.sm} alignItems="baseline" justifyContent="space-between">
+                    <Text variant="tertiary" typographyStyle="hint">
+                        <Translation id={networkType === 'ethereum' ? 'MAX_FEE' : 'FEE'} />:
+                    </Text>
+                    {networkAmount && (
+                        <Row gap={spacings.xxs}>
+                            <Text variant="default" typographyStyle="hint">
+                                <FormattedCryptoAmount
+                                    disableHiddenPlaceholder
+                                    value={networkAmount}
+                                    symbol={symbol}
+                                />
+                            </Text>
+                            <Text variant="tertiary" typographyStyle="hint">
+                                <FiatValue
+                                    disableHiddenPlaceholder
+                                    amount={networkAmount}
+                                    symbol={symbol}
+                                    showApproximationIndicator
+                                />
+                            </Text>
+                        </Row>
+                    )}
+                </Row>
+            </Column>
+        </>
     );
 };

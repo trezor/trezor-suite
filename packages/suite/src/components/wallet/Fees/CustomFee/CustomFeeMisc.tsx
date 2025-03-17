@@ -1,4 +1,5 @@
 import { FieldErrors, FieldPath, UseFormReturn } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { FormState } from '@suite-common/wallet-types';
 import { getInputState } from '@suite-common/wallet-utils';
@@ -7,6 +8,7 @@ import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 import { validateDecimals } from 'src/utils/suite/validation';
 
 import { CustomFeeBasicProps, FEE_LIMIT, FEE_PER_UNIT } from './CustomFee';
@@ -17,12 +19,13 @@ export const CustomFeeMisc = <TFieldValues extends FormState>({
     register,
     control,
     composedFeePerByte,
-    locale,
     translationString,
     feeUnits,
     sharedRules,
     ...props
 }: CustomFeeBasicProps<TFieldValues>) => {
+    const locale = useSelector(selectLanguage);
+
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { getValues } = props as unknown as UseFormReturn<FormState>;
     const errors = props.errors as unknown as FieldErrors<FormState>;

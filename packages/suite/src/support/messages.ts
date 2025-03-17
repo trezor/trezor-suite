@@ -3513,6 +3513,10 @@ export default defineMessages({
         id: 'TR_CURRENT_FEE_CUSTOM_FEES',
         defaultMessage: 'Current network fee:',
     },
+    TR_CURRENT_BASE_FEE: {
+        id: 'TR_CURRENT_BASE_FEE',
+        defaultMessage: 'Current network base fee:',
+    },
     GAS_LIMIT_IS_NOT_SET: {
         id: 'GAS_LIMIT_IS_NOT_SET',
         defaultMessage: 'Set gas limit for this transaction',
@@ -5690,6 +5694,14 @@ export default defineMessages({
         defaultMessage: 'Low',
         id: 'FEE_LEVEL_LOW',
     },
+    TR_MAX_PRIORITY_FEE_PER_GAS: {
+        defaultMessage: 'Max priority fee',
+        id: 'TR_MAX_PRIORITY_FEE_PER_GAS',
+    },
+    TR_MAX_FEE_PER_GAS: {
+        defaultMessage: 'Max fee per gas',
+        id: 'TR_MAX_FEE_PER_GAS',
+    },
     CUSTOM_FEE_IS_NOT_SET: {
         defaultMessage:
             'Enter the fee rate you want to spend in order to complete this transaction.',
@@ -5702,6 +5714,11 @@ export default defineMessages({
     CUSTOM_FEE_NOT_IN_RANGE: {
         defaultMessage: 'Enter a fee between {minFee} and {maxFee}',
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
+    },
+    TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT: {
+        defaultMessage: 'Custom base fee can not be below current network base fee.',
+        id: 'TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT',
+        description: 'TODO',
     },
     CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED: {
         defaultMessage: 'Gas limit too low',

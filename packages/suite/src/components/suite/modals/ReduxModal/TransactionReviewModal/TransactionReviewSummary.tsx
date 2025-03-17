@@ -1,7 +1,7 @@
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { NetworkType, networks } from '@suite-common/wallet-config';
 import { FeeInfo, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
-import { getFee } from '@suite-common/wallet-utils';
+import { getFee, isEip1559 } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -19,6 +19,7 @@ const getEstimatedTime = (
 ): number | undefined => {
     const matchedFeeLevel = symbolFees.levels.find(item => item.feePerUnit === tx.feePerByte);
 
+    // TODO: estimated EVM time, blocks logic in connect
     if (networkType !== 'bitcoin' || !matchedFeeLevel) return;
 
     return matchedFeeLevel.blocks * symbolFees.blockTime * 60;
@@ -48,12 +49,14 @@ export const TransactionReviewSummary = ({
     const locale = useLocales();
     const { symbol, accountType, index, networkType } = account;
     const network = networks[symbol];
-    const fee = getFee(networkType, tx);
+    const fee = getFee(account.networkType, tx);
     const estimateTime = getEstimatedTime(networkType, fees[account.symbol], tx);
 
     const formFeeRate = drafts[currentAccountKey]?.feePerUnit;
     const isFeeCustom = drafts[currentAccountKey]?.selectedFee === 'custom';
     const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== fee;
+
+    const isEthereumNetworkType = networkType === 'ethereum';
 
     return (
         <Row columnGap={spacings.md} rowGap={spacings.xxs} flexWrap="wrap">
@@ -74,21 +77,26 @@ export const TransactionReviewSummary = ({
                 </Note>
             )}
 
-            {!!tx.feeLimit && network.networkType !== 'solana' && (
-                <Note iconName="gasPump">
-                    <Translation id="TR_GAS_LIMIT" />
-                    {': '}
-                    {tx.feeLimit}
-                </Note>
+            {isEthereumNetworkType && (
+                <>
+                    <Note iconName="gasPump">
+                        <Translation id="TR_GAS_LIMIT" />
+                        {': '}
+                        {tx.feeLimit}
+                    </Note>
+                    <Note iconName="gasPump">
+                        {isEip1559(tx) ? (
+                            <Translation id="TR_MAX_FEE_PER_GAS" />
+                        ) : (
+                            <Translation id="TR_GAS_PRICE" />
+                        )}
+                        {': '}
+                        <FeeRate feeRate={fee} networkType={network.networkType} symbol={symbol} />
+                    </Note>
+                </>
             )}
 
-            {networkType === 'ethereum' ? (
-                <Note iconName="gasPump">
-                    <Translation id="TR_GAS_PRICE" />
-                    {': '}
-                    <FeeRate feeRate={fee} networkType={network.networkType} symbol={symbol} />
-                </Note>
-            ) : (
+            {!['ethereum', 'solana'].includes(networkType) && (
                 <Note iconName="receipt">
                     <FeeRate feeRate={fee} networkType={network.networkType} symbol={symbol} />
                 </Note>
