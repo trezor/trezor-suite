@@ -1,31 +1,18 @@
-import { Card, Text } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { Card } from '@suite-native/atoms';
 
 import { CountryOfResidencePicker } from './CountryOfResidencePicker';
 import { PaymentMethodPicker } from './PaymentMethodPicker';
-import { TradingOverviewRow } from '../general/TradingOverviewRow';
+import { TradingProviderPicker } from './TradingProviderPicker';
+import { TradingBuyForm } from '../../types';
 
-const notImplementedCallback = () => {
-    // eslint-disable-next-line no-console
-    console.log('Not implemented');
+export type PaymentCardProps = {
+    form: TradingBuyForm;
 };
 
-export const PaymentCard = () => {
-    const { translate } = useTranslate();
-
-    return (
-        <Card noPadding>
-            <PaymentMethodPicker />
-            <CountryOfResidencePicker />
-            <TradingOverviewRow
-                title={translate('moduleTrading.tradingScreen.provider')}
-                onPress={notImplementedCallback}
-                noBottomBorder
-            >
-                <Text color="textSubdued" variant="body">
-                    Anycoin
-                </Text>
-            </TradingOverviewRow>
-        </Card>
-    );
-};
+export const PaymentCard = ({ form }: PaymentCardProps) => (
+    <Card noPadding>
+        <PaymentMethodPicker form={form} />
+        <CountryOfResidencePicker form={form} />
+        <TradingProviderPicker form={form} />
+    </Card>
+);

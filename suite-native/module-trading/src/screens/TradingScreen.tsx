@@ -3,14 +3,15 @@ import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 
-import { BuyCard } from '../components/buy/BuyCard';
-import { Confirmation } from '../components/buy/Confirmation';
-import { PaymentCard } from '../components/buy/PaymentCard';
+import { BuyForm } from '../components/buy/BuyForm';
+import { BuyFormSkeleton } from '../components/buy/BuyFormSkeleton';
 import { TradingFooter } from '../components/general/TradingFooter';
-import { useMockedTradingInfo } from '../hooks/useMockedTradingInfo';
+import { useTradingBuyData } from '../hooks/useTradingBuyData';
 
 export const TradingScreen = () => {
-    useMockedTradingInfo();
+    const { isLoading, lastLoadedTimestamp } = useTradingBuyData();
+
+    const displaySkeleton = isLoading || lastLoadedTimestamp === 0;
 
     return (
         <Screen header={<DeviceManagerScreenHeader />}>
@@ -18,9 +19,7 @@ export const TradingScreen = () => {
                 <Text variant="titleSmall" color="textDefault">
                     <Translation id="moduleTrading.tradingScreen.buyTitle" />
                 </Text>
-                <BuyCard />
-                <PaymentCard />
-                <Confirmation />
+                {displaySkeleton ? <BuyFormSkeleton /> : <BuyForm />}
                 <TradingFooter />
             </VStack>
         </Screen>

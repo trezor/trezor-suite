@@ -48,5 +48,15 @@
             "sell": false,
             "exchange": true
         }
+    },
+    "eos": {
+        "symbol": "eos",
+        "name": "EOS",
+        "coingeckoId": "eos",
+        "services": {
+            "buy": true,
+            "sell": true,
+            "exchange": true
+        }
     }
 }

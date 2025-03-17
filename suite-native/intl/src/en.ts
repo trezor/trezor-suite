@@ -1303,6 +1303,8 @@ export const en = {
             receiveAccount: 'Receive account',
             paymentMethod: 'Payment method',
             noPaymentMethod: 'No payment method selected',
+            selectedProvider: 'Selected provider',
+            noProvider: 'No provider selected',
             selectedPaymentMethod: 'Selected payment method',
             countryOfResidence: 'Country of residence',
             noCountryOfResidence: 'No country of residence selected',

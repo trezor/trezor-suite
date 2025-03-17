@@ -5,7 +5,7 @@ import { CryptoId } from 'invity-api';
 
 import { useTranslate } from '@suite-native/intl';
 
-import { selectTradingFavouriteAssets } from '../tradingSlice';
+import { selectTradingFavouriteAssets } from '../selectors/favouritesSelectors';
 import { TradeableAsset } from '../types';
 import { SectionListData } from './useSectionList';
 

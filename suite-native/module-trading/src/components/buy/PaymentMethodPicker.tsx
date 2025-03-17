@@ -2,13 +2,16 @@ import { useMemo } from 'react';
 
 import { BuyTrade, CryptoId } from 'invity-api';
 
-import { TradingPaymentMethodListProps, getTradingPaymentMethods } from '@suite-common/trading';
+import { getTradingPaymentMethods } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
+import { TradingBuyForm } from '../../types';
 import { PaymentMethodsSheet } from '../general/PaymentMethodsSheet/PaymentMethodsSheet';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
+
+export type PaymentMethodPickerProps = { form: TradingBuyForm };
 
 const bitcoin = 'bitcoin' as CryptoId;
 
@@ -61,11 +64,10 @@ const mockedQuotes: BuyTrade[] = [
     },
 ];
 
-export const PaymentMethodPicker = () => {
+export const PaymentMethodPicker = ({ form }: PaymentMethodPickerProps) => {
     const { translate } = useTranslate();
-
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
-        useTradeSheetControls<TradingPaymentMethodListProps>();
+        useTradeSheetControls(form, 'paymentMethod');
 
     const methods = useMemo(() => getTradingPaymentMethods(mockedQuotes), []);
 

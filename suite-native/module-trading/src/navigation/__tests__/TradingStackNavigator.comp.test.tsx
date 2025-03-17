@@ -2,10 +2,17 @@ import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { TradingStackNavigator } from '../TradingStackNavigator';
 
+jest.mock('../../hooks/useTradingBuyData', () => ({
+    useTradingBuyData: () => ({
+        isLoading: true,
+        lastLoadedTimestamp: 0,
+    }),
+}));
+
 describe('TradingStackNavigator', () => {
     it('should render', async () => {
-        const { getAllByText } = await renderWithStoreProviderAsync(<TradingStackNavigator />);
+        const { getByText } = await renderWithStoreProviderAsync(<TradingStackNavigator />);
 
-        expect(getAllByText('Buy').length).toBe(2);
+        expect(getByText('Buy')).toBeDefined();
     });
 });

@@ -1,8 +1,4 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
 import { useFormatters } from '@suite-common/formatters';
-import { cryptoIdToSymbol } from '@suite-common/trading';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -11,9 +7,12 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ReceiveAccountCryptoBalance } from './ReceiveAccountCryptoBalance';
 import { ReceiveAccountPicker } from './ReceiveAccountPicker';
 import { TradeableAssetPicker } from './TradeableAssetPicker';
-import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
-import { selectBuySelectedReceiveAccount, setBuySelectedReceiveAccount } from '../../tradingSlice';
-import { TradeableAsset } from '../../types';
+import { TradingBuyForm } from '../../types';
+import { getSelectedSymbolFromBuyForm } from '../../utils/tradeableAssetUtils';
+
+type BuyCardProps = {
+    form: TradingBuyForm;
+};
 
 const buySectionStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
     borderBottomWidth: borders.widths.small,
@@ -22,21 +21,12 @@ const buySectionStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
     gap: spacings.sp20,
 }));
 
-export const BuyCard = () => {
+export const BuyCard = ({ form }: BuyCardProps) => {
     const { FiatAmountFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
-    const dispatch = useDispatch();
-    const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
 
-    const { selectedValue: selectedAsset, ...restAssetControls } =
-        useTradeSheetControls<TradeableAsset>();
-
-    const selectedCryptoId = selectedAsset?.cryptoId;
-    const selectedNetworkSymbol = selectedCryptoId ? cryptoIdToSymbol(selectedCryptoId) : undefined;
-
-    useEffect(() => {
-        dispatch(setBuySelectedReceiveAccount({ selectedReceiveAccount: undefined }));
-    }, [dispatch, selectedNetworkSymbol]);
+    const [fiatAmount, selectedReceiveAccount] = form.watch(['fiatValue', 'receiveAccount']);
+    const selectedNetworkSymbol = getSelectedSymbolFromBuyForm(form);
 
     return (
         <Card noPadding>
@@ -45,7 +35,7 @@ export const BuyCard = () => {
                     <Translation id="moduleTrading.tradingScreen.buyTitle" />
                 </Text>
                 <HStack justifyContent="space-between" alignItems="center">
-                    <TradeableAssetPicker selectedValue={selectedAsset} {...restAssetControls} />
+                    <TradeableAssetPicker form={form} />
                     <Text variant="titleMedium" color="textDisabled">
                         0.0
                     </Text>
@@ -57,7 +47,7 @@ export const BuyCard = () => {
                     />
                     <HStack>
                         <Text variant="body" color="textSubdued">
-                            <FiatAmountFormatter value={0} />
+                            <FiatAmountFormatter value={fiatAmount} />
                         </Text>
                         <Icon name="arrowsDownUp" color="iconSubdued" />
                     </HStack>

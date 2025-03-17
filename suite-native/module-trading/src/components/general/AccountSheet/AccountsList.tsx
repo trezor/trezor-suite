@@ -25,10 +25,8 @@ import {
     useReceiveAccountsListData,
 } from '../../../hooks/useReceiveAccountsListData';
 import { useSectionList } from '../../../hooks/useSectionList';
-import {
-    selectBuySelectedReceiveAccount,
-    setBuySelectedReceiveAccount,
-} from '../../../tradingSlice';
+import { selectBuySelectedReceiveAccount } from '../../../selectors/buySelectors';
+import { setBuySelectedReceiveAccount } from '../../../tradingSlice';
 import { ReceiveAccount } from '../../../types';
 
 type NavigationProp = StackToStackCompositeNavigationProps<

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectTradingBuyCoins } from '../../tradingSlice';
+import { selectBuyTradeableAssetsSorted } from '../../selectors/buySelectors';
 import {
     TradeableAssetsSheet,
     TradeableAssetsSheetProps,
@@ -9,7 +9,7 @@ import {
 export type BuyTradeableAssetsSheetProps = Omit<TradeableAssetsSheetProps, 'assets'>;
 
 export const BuyTradeableAssetsSheet = (props: BuyTradeableAssetsSheetProps) => {
-    const assets = useSelector(selectTradingBuyCoins);
+    const assets = useSelector(selectBuyTradeableAssetsSorted);
 
     return <TradeableAssetsSheet assets={assets} {...props} />;
 };

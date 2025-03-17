@@ -1,0 +1,13 @@
+{
+    "name": "invity",
+    "companyName": "Invity Finance",
+    "logo": "invity.svg",
+    "isActive": true,
+    "tradedCoins": ["bitcoin"],
+    "tradedFiatCurrencies": ["EUR", "CZK"],
+    "supportedCountries": ["CZ", "DK"],
+    "paymentMethods": ["creditCard", "googlePay", "applePay"],
+    "brandName": "Invity Finance",
+    "statusUrl": "https://checkout.invity.io/#status/{{paymentId}}",
+    "supportUrl": ""
+}

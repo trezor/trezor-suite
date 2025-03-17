@@ -1,20 +1,29 @@
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import {
+    fireEvent,
+    renderHookWithStoreProviderAsync,
+    renderWithBasicProvider,
+} from '@suite-native/test-utils';
 
+import { useTradingBuyForm } from '../../../hooks/useTradingBuyForm';
 import { CountryOfResidencePicker } from '../CountryOfResidencePicker';
 
 describe('CountryOfResidencePicker', () => {
-    const renderReceiveAccountPicker = () => renderWithBasicProvider(<CountryOfResidencePicker />);
+    const renderCountryOfResidencePicker = async () => {
+        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
 
-    it('should display "Not selected" when in default state', () => {
-        const { getByLabelText } = renderReceiveAccountPicker();
+        return renderWithBasicProvider(<CountryOfResidencePicker form={result.current} />);
+    };
+
+    it('should display "Not selected" when in default state', async () => {
+        const { getByLabelText } = await renderCountryOfResidencePicker();
 
         expect(getByLabelText('No country of residence selected')).toHaveTextContent(
             'Not selected',
         );
     });
 
-    it('should allow to select country', () => {
-        const { getByText, getByLabelText } = renderReceiveAccountPicker();
+    it('should allow to select country', async () => {
+        const { getByText, getByLabelText } = await renderCountryOfResidencePicker();
 
         // select country
         fireEvent.press(getByText('Country of residence'));

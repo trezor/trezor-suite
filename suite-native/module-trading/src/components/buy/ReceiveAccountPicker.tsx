@@ -14,7 +14,7 @@ import {
 } from '@suite-native/navigation';
 import { Color } from '@trezor/theme';
 
-import { selectBuySelectedReceiveAccount } from '../../tradingSlice';
+import { selectBuySelectedReceiveAccount } from '../../selectors/buySelectors';
 import { AccountAddress } from '../general/AccountAddress';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 

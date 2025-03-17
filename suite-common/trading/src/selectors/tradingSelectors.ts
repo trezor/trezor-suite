@@ -4,10 +4,12 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/r
 import { NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types/src/settings';
+import addressValidator from '@trezor/address-validator';
 
 import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
 import type { TradingInfo, TradingState } from '../reducers/tradingReducer';
 import { InvityServerEnvironment, TradingFiatCurrenciesProps } from '../types';
+import { cryptoIdToNetwork, testnetToProdCryptoId } from '../utils';
 import {
     getTradingCoinInfoByCryptoId,
     getTradingCoinSymbolByCryptoId,
@@ -52,10 +54,16 @@ export type TradingStateSelector = Omit<TradingState, 'buy'> & { buy: TradingBuy
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
 
-export const selectTradingLoadingAndTimestamp = (state: TradingRootState) => ({
-    isLoading: state.wallet.tradingNew.isLoading,
-    lastLoadedTimestamp: state.wallet.tradingNew.lastLoadedTimestamp,
-});
+export const selectTradingLoadingAndTimestamp = createMemoizedSelector(
+    [
+        (state: TradingRootState) => state.wallet.tradingNew.isLoading,
+        (state: TradingRootState) => state.wallet.tradingNew.lastLoadedTimestamp,
+    ],
+    (isLoading, lastLoadedTimestamp) => ({
+        isLoading,
+        lastLoadedTimestamp,
+    }),
+);
 
 export const selectTradingInfo = (state: TradingRootState) => state.wallet?.tradingNew?.info;
 export const selectTradingInfoLegacy = (state: any) =>
@@ -163,4 +171,38 @@ export const selectTradingSymbolAndContractAddressByCryptoId: (
         (_: TradingRootState, cryptoId: CryptoId): CryptoId => cryptoId,
     ],
     getTradingSymbolAndContractAddressByCryptoId,
+);
+
+export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
+    [
+        ({ wallet }) => wallet.tradingNew.info.coins,
+        ({ wallet }) => wallet.tradingNew.info.platforms,
+        ({ wallet }) =>
+            returnStableArrayIfEmpty<CryptoId>(
+                wallet.tradingNew.buy.buyInfo?.supportedCryptoCurrencies,
+            ),
+    ],
+    (coins, platforms, supportedCryptoIds) => {
+        if (!coins || !platforms) {
+            return [];
+        }
+
+        const supportedAddressValidatorSymbols = new Set(
+            addressValidator.getCurrencies().map(c => c.symbol),
+        );
+
+        const uniqueSupportedCryptoIds = [...new Set(supportedCryptoIds).values()];
+
+        return uniqueSupportedCryptoIds
+            .filter(cryptoId => !!coins[cryptoId])
+            .filter(cryptoId => cryptoIdToNetwork(cryptoId))
+            .filter(cryptoId => {
+                const prodCryptoId = testnetToProdCryptoId(cryptoId);
+                const nativeCoinSymbol =
+                    cryptoIdToNetwork(prodCryptoId)?.symbol ??
+                    getTradingNativeCoinSymbolByCryptoId(platforms, coins, prodCryptoId);
+
+                return nativeCoinSymbol && supportedAddressValidatorSymbols.has(nativeCoinSymbol);
+            });
+    },
 );

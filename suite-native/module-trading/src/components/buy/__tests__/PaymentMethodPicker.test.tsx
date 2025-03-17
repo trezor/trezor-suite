@@ -1,17 +1,26 @@
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import {
+    fireEvent,
+    renderHookWithStoreProviderAsync,
+    renderWithBasicProvider,
+} from '@suite-native/test-utils';
 
+import { useTradingBuyForm } from '../../../hooks/useTradingBuyForm';
 import { PaymentMethodPicker } from '../PaymentMethodPicker';
 
 describe('PaymentMethodPicker', () => {
-    const renderPaymentMethodPicker = () => renderWithBasicProvider(<PaymentMethodPicker />);
+    const renderPaymentMethodPicker = async () => {
+        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
 
-    it('should display "Not selected" when in default state', () => {
-        const { getByLabelText } = renderPaymentMethodPicker();
+        return renderWithBasicProvider(<PaymentMethodPicker form={result.current} />);
+    };
+
+    it('should display "Not selected" when in default state', async () => {
+        const { getByLabelText } = await renderPaymentMethodPicker();
         expect(getByLabelText('No payment method selected')).toHaveTextContent('Not selected');
     });
 
-    it('should allow to select payment method', () => {
-        const { getByText, getByLabelText } = renderPaymentMethodPicker();
+    it('should allow to select payment method', async () => {
+        const { getByText, getByLabelText } = await renderPaymentMethodPicker();
 
         fireEvent.press(getByText('Payment method'));
         fireEvent.press(getByText('Credit Card'));

@@ -1,7 +1,8 @@
-import { Coins, CryptoId, Platforms } from 'invity-api';
+import { Coins, CryptoId, FiatCurrenciesProps, Platforms } from 'invity-api';
 
 import coins from '../../__fixtures__/coins.json';
 import platforms from '../../__fixtures__/platforms.json';
+import { TradingBuyState } from '../../reducers/buyReducer';
 import { initialState } from '../../reducers/tradingReducer';
 import { TradingPaymentMethodListProps } from '../../types';
 import {
@@ -11,6 +12,7 @@ import {
     selectTradingBuyProviders,
     selectTradingBuyQuotesRequest,
     selectTradingBuySelectedQuote,
+    selectTradingBuySupportedCryptoIds,
     selectTradingCoinInfoByCryptoId,
     selectTradingCoinSymbolByCryptoId,
     selectTradingInfoLegacy,
@@ -22,36 +24,71 @@ import {
 } from '../tradingSelectors';
 
 describe('tradingSelectors', () => {
-    const state = {
-        wallet: {
-            tradingNew: {
-                ...initialState,
-                buy: {
-                    ...initialState.buy,
-                    quotesRequest: {
-                        wantCrypto: true,
-                        fiatCurrency: 'fiatCurrency',
-                        paymentMethod: 'eps',
-                        receiveCurrency: 'bitcoin',
-                    },
-                    selectedQuote: {
-                        paymentMethod: 'eps',
-                    },
-                },
-                info: {
-                    paymentMethods: [
-                        {
-                            value: 'creditCard',
-                            label: 'Credit Card label',
-                        },
-                    ] as TradingPaymentMethodListProps[],
-                    coins: coins as Coins,
-                    platforms: platforms as Platforms,
-                },
-                trades: [{ tradeType: 'buy' }],
+    let state: TradingRootState;
+
+    const getBuyState = () =>
+        ({
+            ...initialState.buy,
+            quotesRequest: {
+                wantCrypto: true,
+                fiatCurrency: 'fiatCurrency',
+                paymentMethod: 'eps',
+                receiveCurrency: 'bitcoin' as CryptoId,
             },
-        },
-    } as TradingRootState;
+            selectedQuote: {
+                paymentMethod: 'eps',
+            },
+            buyInfo: {
+                buyInfo: {
+                    country: 'CZ',
+                    providers: [] as any[],
+                    defaultAmountsOfFiatCurrencies: { usd: 150, eur: 100 } as FiatCurrenciesProps,
+                    suggestedFiatCurrency: 'CZK',
+                },
+                supportedCryptoCurrencies: [
+                    'eos',
+                    'bitcoin',
+                    'bitcoin', // seems that there can be duplicated values
+                    'ethereum',
+                    'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                    'base--0x0000000000000000000000000000000000000000',
+                    'ethereum--0xWithoutObjectInCoinsInfo', // there are values not presented in info.coins map
+                ] as CryptoId[],
+                providerInfos: {},
+                supportedFiatCurrencies: ['usd', 'eur', 'czk'],
+            },
+        }) as TradingBuyState;
+
+    const getState = () =>
+        ({
+            wallet: {
+                tradingNew: {
+                    ...initialState,
+                    buy: getBuyState(),
+                    info: {
+                        paymentMethods: [
+                            {
+                                value: 'creditCard',
+                                label: 'Credit Card label',
+                            },
+                        ] as TradingPaymentMethodListProps[],
+                        coins: coins as Coins,
+                        platforms: platforms as Platforms,
+                    },
+                    trades: [{ tradeType: 'buy' }],
+                },
+            },
+            suite: {
+                settings: {
+                    addressDisplayType: 'original',
+                    debug: { invityServerEnvironment: undefined },
+                },
+            },
+        }) as TradingRootState;
+
+    beforeEach(() => {
+        state = getState();
+    });
 
     it('selectTradingInfoLegacy should select legacy info', () => {
         const legacyState = { wallet: { trading: { info: {} } } };
@@ -61,7 +98,22 @@ describe('tradingSelectors', () => {
 
     describe('selectTradingBuy', () => {
         it('should return correct data', () => {
-            expect(selectTradingBuy(state)).toEqual(state.wallet.tradingNew.buy);
+            const expectedState = getBuyState() as Record<string, any>;
+            expectedState.buyInfo.buyInfo.defaultAmountsOfFiatCurrencies = new Map([
+                ['usd', '150'],
+                ['eur', '100'],
+            ]);
+            expectedState.buyInfo.supportedCryptoCurrencies = new Set([
+                'eos',
+                'bitcoin',
+                'ethereum',
+                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                'base--0x0000000000000000000000000000000000000000',
+                'ethereum--0xWithoutObjectInCoinsInfo',
+            ]);
+            expectedState.buyInfo.supportedFiatCurrencies = new Set(['usd', 'eur', 'czk']);
+
+            expect(selectTradingBuy(state)).toEqual(expectedState);
         });
 
         it('should be stable', () => {
@@ -175,6 +227,42 @@ describe('tradingSelectors', () => {
             expect(
                 selectTradingSymbolAndContractAddressByCryptoId(state, 'bitcoin' as CryptoId),
             ).toBe(selectTradingSymbolAndContractAddressByCryptoId(state, 'bitcoin' as CryptoId));
+        });
+    });
+
+    describe('selectTradingBuySupportedCryptoIds', () => {
+        it('should select only coins presented in buyInfo and info', () => {
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([
+                'bitcoin',
+                'ethereum',
+                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                'base--0x0000000000000000000000000000000000000000',
+            ]);
+        });
+
+        it('should be stable', () => {
+            const first = selectTradingBuySupportedCryptoIds(state);
+            const second = selectTradingBuySupportedCryptoIds(state);
+
+            expect(first).toBe(second);
+        });
+
+        it('should be empty array when platforms are not set', () => {
+            state.wallet.tradingNew.info.platforms = undefined;
+
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
+        });
+
+        it('should be empty array when coins are not set', () => {
+            state.wallet.tradingNew.info.coins = undefined;
+
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
+        });
+
+        it('should be empty array when supportedCryptoCurrencies are not set', () => {
+            state.wallet.tradingNew.buy.buyInfo = undefined;
+
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
         });
     });
 });

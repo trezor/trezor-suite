@@ -19,7 +19,7 @@ import {
 
 import { AccountsList } from '../components/general/AccountSheet/AccountsList';
 import { ReceiveAccountsListMode } from '../hooks/useReceiveAccountsListData';
-import { selectBuySelectedReceiveAccount } from '../tradingSlice';
+import { selectBuySelectedReceiveAccount } from '../selectors/buySelectors';
 
 export const ReceiveAccountsPickerScreen = () => {
     const {

@@ -10,8 +10,7 @@ import {
     prepareTradingReducer,
 } from '@suite-common/trading';
 
-import { ReceiveAccount, TradeableAsset } from './types';
-import { coinInfoToTradeableAsset } from './utils';
+import { ReceiveAccount } from './types';
 
 export interface TradingBuyState extends CommonTradingBuyState {
     selectedReceiveAccount: ReceiveAccount | undefined;
@@ -74,39 +73,3 @@ export const {
 } = tradingSlice.actions;
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
-
-export const selectTradingBuy = (state: TradingRootState) => state.wallet.tradingNew.buy;
-
-export const selectTradingFavouriteAssets = (state: TradingRootState) =>
-    state.wallet.tradingNew.favouriteAssets;
-
-export const selectTradingFavouriteAssetsArray = createMemoizedSelector(
-    [selectTradingFavouriteAssets],
-    assets => Object.keys(assets),
-);
-
-export const selectIsTradingFavouriteAsset = createMemoizedSelector(
-    [selectTradingFavouriteAssets, (_state, asset: TradeableAsset) => asset],
-    (assets, asset) => !!assets[asset.cryptoId],
-);
-
-export const selectBuySelectedReceiveAccount = (state: TradingRootState) =>
-    selectTradingBuy(state).selectedReceiveAccount;
-
-export const selectTradingEnvironment = (state: TradingRootState) =>
-    state.wallet.tradingNew.tradingEnvironment;
-
-export const selectTradingBuyCoins = createMemoizedSelector(
-    [state => state.wallet.tradingNew.info.coins],
-    coins => {
-        if (!coins) {
-            return [];
-        }
-
-        return Object.entries(coins)
-            .filter(([_, { services }]) => services.buy)
-            .map(([cryptoId, coinInfo]) =>
-                coinInfoToTradeableAsset(cryptoId as CryptoId, coinInfo),
-            );
-    },
-);

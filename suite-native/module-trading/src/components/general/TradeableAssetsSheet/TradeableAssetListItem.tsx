@@ -8,6 +8,7 @@ import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { selectIsTradingFavouriteAsset } from '../../../selectors/favouritesSelectors';
 import { NetworkBadge } from '../NetworkBadge';
 import { NetworkSymbolExtendedFormatter } from '../NetworkSymbolExtendedFormatter';
 import { FavouriteIcon } from './FavouriteIcon';
@@ -15,7 +16,6 @@ import {
     TradingRootState,
     addTradeableAssetToFavourites,
     removeTradeableAssetFromFavourites,
-    selectIsTradingFavouriteAsset,
 } from '../../../tradingSlice';
 import { TradeableAsset } from '../../../types';
 
