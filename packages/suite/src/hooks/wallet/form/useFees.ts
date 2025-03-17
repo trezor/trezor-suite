@@ -7,6 +7,7 @@ import {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
+import { isEip1559 } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 
 import { setLastUsedFeeLevel } from 'src/actions/settings/walletSettingsActions';
@@ -41,6 +42,8 @@ export const useFees = <TFieldValues extends FormState>({
     const selectedFeeRef = useRef(defaultValue);
     const feePerUnitRef = useRef<string | undefined>('');
     const feeLimitRef = useRef<string | undefined>('');
+    const maxPriorityFeePerGasRef = useRef<string | undefined>('');
+    const maxFeePerGasRef = useRef<string | undefined>('');
     const estimatedFeeLimitRef = useRef<string | undefined>('');
     const saveLastUsedFeeRef = useRef(saveLastUsedFee);
 
@@ -59,15 +62,20 @@ export const useFees = <TFieldValues extends FormState>({
     useEffect(() => {
         if (selectedFeeRef.current === selectedFee) return;
         selectedFeeRef.current = selectedFee;
-        const { feePerUnit, feeLimit } = getValues();
+        const { feePerUnit, feeLimit, maxPriorityFeePerGas, maxFeePerGas } = getValues();
         feePerUnitRef.current = feePerUnit;
         feeLimitRef.current = feeLimit;
+        maxPriorityFeePerGasRef.current = maxPriorityFeePerGas;
+        maxFeePerGasRef.current = maxFeePerGas;
     }, [selectedFee, getValues]);
 
     // watch custom feePerUnit/feeLimit inputs change
     const feePerUnit = watch('feePerUnit');
     const feeLimit = watch('feeLimit');
     const baseFee = watch('baseFee');
+    const maxPriorityFeePerGas = watch('maxPriorityFeePerGas');
+    const maxFeePerGas = watch('maxFeePerGas');
+
     useEffect(() => {
         if (selectedFeeRef.current !== 'custom') return;
 
@@ -82,7 +90,17 @@ export const useFees = <TFieldValues extends FormState>({
             updateField = 'feeLimit';
         }
 
-        // compose
+        if (maxPriorityFeePerGasRef.current !== maxPriorityFeePerGas) {
+            maxPriorityFeePerGasRef.current = maxPriorityFeePerGas;
+            updateField = 'maxPriorityFeePerGas';
+        }
+
+        if (maxFeePerGasRef.current !== maxFeePerGas) {
+            maxFeePerGasRef.current = maxFeePerGas;
+            updateField = 'maxFeePerGas';
+        }
+
+        //compose
         if (updateField) {
             if (composeRequest) {
                 composeRequest(updateField);
@@ -95,11 +113,28 @@ export const useFees = <TFieldValues extends FormState>({
                 !errors.feeLimit
             ) {
                 dispatch(
-                    setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 }),
+                    setLastUsedFeeLevel({
+                        label: 'custom',
+                        feePerUnit,
+                        feeLimit,
+                        blocks: -1,
+                        maxPriorityFeePerGas,
+                        maxFeePerGas,
+                    }),
                 );
             }
         }
-    }, [dispatch, feePerUnit, feeLimit, errors.feePerUnit, errors.feeLimit, composeRequest]);
+    }, [
+        dispatch,
+        feePerUnit,
+        feeLimit,
+        maxPriorityFeePerGas,
+        maxFeePerGas,
+        errors.feePerUnit,
+        errors.feeLimit,
+        composeRequest,
+        setValue,
+    ]);
 
     // watch estimatedFee change
     const estimatedFeeLimit = watch('estimatedFeeLimit');
@@ -121,6 +156,8 @@ export const useFees = <TFieldValues extends FormState>({
 
         let feePerUnit;
         let feeLimit;
+        let maxPriorityFeePerGas;
+        let maxFeePerGas;
         if (level === 'custom') {
             // switching to custom FeeLevel for the first time
             const currentLevel = feeInfo.levels.find(
@@ -129,27 +166,49 @@ export const useFees = <TFieldValues extends FormState>({
             // set custom values from a previously selected composed transaction
             // or from previously selected FeeLevel
             const transactionInfo = composedLevels && composedLevels[currentLevel.label];
-            feePerUnit =
-                !baseFee && transactionInfo && transactionInfo.type !== 'error'
-                    ? transactionInfo.feePerByte
-                    : currentLevel.feePerUnit;
+
+            const hasNoError = !baseFee && transactionInfo && transactionInfo.type !== 'error';
+
+            feePerUnit = hasNoError ? transactionInfo.feePerByte : currentLevel.feePerUnit;
             feeLimit = getValues('estimatedFeeLimit') || currentLevel.feeLimit || '';
+
+            maxPriorityFeePerGas =
+                hasNoError && 'maxPriorityFeePerGas' in transactionInfo
+                    ? transactionInfo.maxPriorityFeePerGas
+                    : currentLevel.maxPriorityFeePerGas;
+            maxFeePerGas =
+                hasNoError && isEip1559(transactionInfo)
+                    ? transactionInfo.maxFeePerGas
+                    : currentLevel.maxFeePerGas;
         } else if (selectedFeeRef.current === 'custom' && (errors.feePerUnit || errors.feeLimit)) {
             // switching from custom FeeLevel which has an error
             // error should be cleared and levels should be precomposed again
             feePerUnit = '';
             feeLimit = '';
-            clearErrors(['feePerUnit', 'feeLimit']);
+            clearErrors(['feePerUnit', 'feeLimit', 'maxPriorityFeePerGas', 'maxFeePerGas']);
             composeRequest();
         }
 
         setValue('selectedFee', level);
         // update local references
-        if (typeof feePerUnit === 'string' && typeof feeLimit === 'string') {
+        if (typeof feePerUnit === 'string') {
             feePerUnitRef.current = feePerUnit;
             setValue('feePerUnit', feePerUnit);
+        }
+
+        if (typeof feeLimit === 'string') {
             feeLimitRef.current = feeLimit;
             setValue('feeLimit', feeLimit);
+        }
+
+        if (typeof maxPriorityFeePerGas === 'string') {
+            maxPriorityFeePerGasRef.current = maxPriorityFeePerGas;
+            setValue('maxPriorityFeePerGas', maxPriorityFeePerGas);
+        }
+
+        if (typeof maxFeePerGas === 'string') {
+            maxFeePerGasRef.current = maxFeePerGas;
+            setValue('maxFeePerGas', maxFeePerGas);
         }
 
         // on change callback

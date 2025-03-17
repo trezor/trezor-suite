@@ -262,9 +262,11 @@ export const useSendFormCompose = ({
                 setValue('selectedFee', nearest);
                 if (nearest === 'custom') {
                     // @ts-expect-error: type = error already filtered above
-                    const { feePerByte, feeLimit } = composed;
+                    const { feePerByte, feeLimit, maxPriorityFeePerGas, maxFeePerGas } = composed;
                     setValue('feePerUnit', feePerByte);
                     setValue('feeLimit', feeLimit || '');
+                    setValue('maxPriorityFeePerGas', maxPriorityFeePerGas);
+                    setValue('maxFeePerGas', maxFeePerGas);
                 }
                 setDraftSaveRequest(true);
             }

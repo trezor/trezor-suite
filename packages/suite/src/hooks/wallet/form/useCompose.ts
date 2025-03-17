@@ -204,9 +204,12 @@ export const useCompose = <TFieldValues extends FormState>({
                     setValue('selectedFee', nearest);
                     if (nearest === 'custom') {
                         // @ts-expect-error: type = error already filtered above
-                        const { feePerByte, feeLimit } = composed;
+                        const { feePerByte, feeLimit, maxFeePerGas, maxPriorityFeePerGas } =
+                            composed;
                         setValue('feePerUnit', feePerByte);
                         setValue('feeLimit', feeLimit || '');
+                        setValue('maxFeePerGas', maxFeePerGas);
+                        setValue('maxPriorityFeePerGas', maxPriorityFeePerGas);
                     }
                 }
                 // or do nothing, use default composed tx

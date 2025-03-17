@@ -126,6 +126,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                     if (lastUsedFee.label === 'custom') {
                         feeEnhancement.feePerUnit = lastUsedFee.feePerUnit;
                         feeEnhancement.feeLimit = lastUsedFee.feeLimit;
+                        feeEnhancement.maxFeePerGas = lastUsedFee.maxFeePerGas;
+                        feeEnhancement.maxPriorityFeePerGas = lastUsedFee.maxPriorityFeePerGas;
                     }
                 }
             }
