@@ -1,12 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
-    AccountsState,
     DeviceRootState,
     SendState,
-    SerializedTx,
     StakeState,
     selectAccounts,
     selectPrecomposedSendForm,
@@ -14,16 +11,9 @@ import {
     selectSendFormReviewButtonRequestsCount,
     selectStakePrecomposedForm,
 } from '@suite-common/wallet-core';
-import {
-    FormState,
-    RbfTransactionType,
-    ReviewOutput,
-    StakeFormState,
-    StakeType,
-} from '@suite-common/wallet-types';
+import { FormState, RbfTransactionType, StakeFormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,
-    findAccountsByAddress,
     getTxStakeNameByDataHex,
     isRbfBumpFeeTransaction,
     isRbfCancelTransaction,
@@ -40,6 +30,7 @@ import { Deferred } from '@trezor/utils';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useTxValidityTimer } from 'src/hooks/wallet/transaction-review/useTxValidityTimer';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
@@ -51,42 +42,6 @@ import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
 import { ExpiredTxValidity } from '../UserContextModal/TxDetailModal/ExpiredTxValidity';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
-
-const getTxValidityTimeoutInMs = (networkType?: NetworkType) => {
-    if (networkType === 'solana') {
-        // Blockhash required in Solana tx is valid for 1 minute. Leave 15 seconds for tx confirmation.
-        return 45 * 1000;
-    }
-
-    return 0;
-};
-
-const hasTxValidityExpired = (deadline: number) => deadline <= Date.now();
-
-const shouldShowTxValidityTimer = (
-    deadline: number,
-    outputs: ReviewOutput[],
-    symbol: NetworkSymbol,
-    accounts: AccountsState,
-    buttonRequestsCount: number,
-    serializedTx: SerializedTx | undefined,
-    stakeType: StakeType | null,
-    shouldCheckTxTimeValidity: boolean,
-) => {
-    if (!shouldCheckTxTimeValidity || hasTxValidityExpired(deadline)) {
-        return false;
-    }
-
-    const firstOutput = outputs[0];
-    const isInternalTransfer =
-        firstOutput?.type === 'address' &&
-        findAccountsByAddress(symbol, firstOutput.value, accounts).length > 0;
-
-    const isFirstStep = buttonRequestsCount <= 1;
-    const isStaking = stakeType && !serializedTx;
-
-    return isInternalTransfer || !isFirstStep || serializedTx || isStaking;
-};
 
 const isStakeState = (state: SendState | StakeState): state is StakeState => 'data' in state;
 
@@ -132,33 +87,13 @@ export const TransactionReviewModalContent = ({
             : selectPrecomposedSendForm(state),
     );
 
-    const shouldCheckTxTimeValidity =
-        account?.networkType === 'solana' && !precomposedForm?.isTrading;
-
-    const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp || 0;
-    const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
-
-    // check if transaction is still valid
-    useEffect(() => {
-        if (!shouldCheckTxTimeValidity) {
-            return;
-        }
-
-        const now = Date.now();
-        const timeLeft = Math.max(deadline - now, 0);
-        let mounted = true;
-
-        const timeoutId = setTimeout(() => {
-            if (mounted && !isSending) {
-                TrezorConnect.cancel('tx-timeout');
-            }
-        }, timeLeft);
-
-        return () => {
-            mounted = false;
-            clearTimeout(timeoutId);
-        };
-    }, [deadline, isSending, shouldCheckTxTimeValidity]);
+    const { isTxExpired, shouldShowTxValidityTimer, shouldCheckTxTimeValidity, deadline } =
+        useTxValidityTimer({
+            txInfoState,
+            precomposedForm,
+            account,
+            isSending,
+        });
 
     const isBumpFeeRbfAction =
         precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);
@@ -209,8 +144,6 @@ export const TransactionReviewModalContent = ({
     };
 
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);
-
-    const isTxExpired = hasTxValidityExpired(deadline);
 
     const showTxValidityTimer = shouldShowTxValidityTimer(
         deadline,
