@@ -24,6 +24,9 @@ inputs:
   currents-record-key:
     description: "Currents record key for reporting"
     required: true
+  currents-tags:
+    description: "Additional tags for Currents reporting"
+    required: false
   e2e-passphrase:
     description: "Passphrase for E2E tests"
     required: true
@@ -80,6 +83,7 @@ runs:
         CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
         CURRENTS_RECORD_KEY: ${{ inputs.currents-record-key }}
         CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
+        CURRENTS_TAG: ${{ inputs.currents-tags }}
         GH_BRANCH: ${{ env.branch }} # Used by Currents reporter
         PASSPHRASE: ${{ inputs.e2e-passphrase }}
       run: |

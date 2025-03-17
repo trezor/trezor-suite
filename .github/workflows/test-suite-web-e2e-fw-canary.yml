@@ -77,4 +77,5 @@ jobs:
           additional-grep: "(?!.*@specificFirmware)"
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+          currents-tags: "fw-canary"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

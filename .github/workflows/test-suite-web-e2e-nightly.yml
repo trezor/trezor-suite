@@ -76,4 +76,5 @@ jobs:
           test-group: ${{ matrix.TEST_GROUP }}
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+          currents-tags: "nightly"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
