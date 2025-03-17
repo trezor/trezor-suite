@@ -1,7 +1,7 @@
 ### 🚀 New features
 
--   Users can now cancel outgoing Bitcoin transactions using Replace-By-Fee (RBF), providing more flexibility and control over their transactions.
--   Stake Solana (SOL) directly from Trezor Suite. Easily receive rewards by delegating your SOL through the new “Stake” feature in the assets and trade table.
+-   Users can now [cancel outgoing Bitcoin transactions](https://trezor.io/support/a/can-i-cancel-or-reverse-a-transaction) using Replace-By-Fee (RBF), providing more flexibility and control over their transactions.
+-   [Stake Solana (SOL)](https://trezor.io/learn/a/staking-solana-in-trezor-suite) directly from Trezor Suite. Easily receive rewards by delegating your SOL through the new “Stake” feature in the assets and trade table.
 -   A new Over-the-Counter (OTC) trade flow is now available for high-value Buy and Sell transactions that cannot be fulfilled through standard trading options.
 
 ### 🎨 Improvements
