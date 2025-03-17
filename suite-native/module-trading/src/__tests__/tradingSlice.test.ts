@@ -102,16 +102,16 @@ describe('tradingSlice', () => {
         describe('favouriteAssets', () => {
             it('addTradeableAssetToFavourites should add asset to favourites', () => {
                 const actions = [
-                    addTradeableAssetToFavourites(btcAsset),
-                    addTradeableAssetToFavourites(usdcAsset),
-                    addTradeableAssetToFavourites(adaAsset),
+                    addTradeableAssetToFavourites(btcAsset.cryptoId),
+                    addTradeableAssetToFavourites(usdcAsset.cryptoId),
+                    addTradeableAssetToFavourites(adaAsset.cryptoId),
                 ];
                 const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
                 expect(selectTradingFavouriteAssets({ wallet: { tradingNew: state } })).toEqual({
-                    bitcoin: btcAsset,
-                    cardano: adaAsset,
-                    'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': usdcAsset,
+                    bitcoin: true,
+                    cardano: true,
+                    'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': true,
                 });
             });
 
@@ -119,18 +119,21 @@ describe('tradingSlice', () => {
                 let prevState: TradingState;
 
                 beforeEach(() => {
-                    prevState = tradingReducer(undefined, addTradeableAssetToFavourites(btcAsset));
+                    prevState = tradingReducer(
+                        undefined,
+                        addTradeableAssetToFavourites(btcAsset.cryptoId),
+                    );
                 });
 
                 it('addTradeableAssetToFavourites should not add same asset twice', () => {
                     const state = tradingReducer(
                         prevState,
-                        addTradeableAssetToFavourites(btcAsset),
+                        addTradeableAssetToFavourites(btcAsset.cryptoId),
                     );
 
                     expect(selectTradingFavouriteAssets({ wallet: { tradingNew: state } })).toEqual(
                         {
-                            bitcoin: expect.objectContaining({ coingeckoId: 'bitcoin' }),
+                            bitcoin: true,
                         },
                     );
                 });
@@ -138,7 +141,7 @@ describe('tradingSlice', () => {
                 it('removeTradeableAssetFromFavourites should remove asset from favourites', () => {
                     const state = tradingReducer(
                         prevState,
-                        removeTradeableAssetFromFavourites(btcAsset),
+                        removeTradeableAssetFromFavourites(btcAsset.cryptoId),
                     );
 
                     expect(selectTradingFavouriteAssets({ wallet: { tradingNew: state } })).toEqual(
@@ -149,14 +152,14 @@ describe('tradingSlice', () => {
                 it('selectTradingFavouriteAssetsArray should return memoized array', () => {
                     const state = tradingReducer(
                         prevState,
-                        addTradeableAssetToFavourites(btcAsset),
+                        addTradeableAssetToFavourites(btcAsset.cryptoId),
                     );
 
                     const favouritesArray = selectTradingFavouriteAssetsArray({
                         wallet: { tradingNew: state },
                     });
 
-                    expect(favouritesArray).toEqual([btcAsset]);
+                    expect(favouritesArray).toEqual(['bitcoin']);
                     expect(
                         selectTradingFavouriteAssetsArray({ wallet: { tradingNew: state } }),
                     ).toBe(favouritesArray);

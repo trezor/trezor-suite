@@ -13,13 +13,13 @@ import { useTradingFavouriteAssetsSectionList } from '../useTradingFavouriteAsse
 
 describe('useTradingFavouriteAssetsSectionList', () => {
     const defaultFavouriteAssets = {
-        bitcoin: btcAsset,
-        'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': usdcAsset,
+        bitcoin: true,
+        'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': true,
     };
 
     const renderHookUseTradingFavouriteAssetsSectionList = async (
         initialAssets: TradeableAsset[],
-        favouriteAssets: Record<CryptoId, TradeableAsset>,
+        favouriteAssets: Record<CryptoId, true>,
     ) => {
         const preloadedState: Partial<PreloadedState> = {
             wallet: {

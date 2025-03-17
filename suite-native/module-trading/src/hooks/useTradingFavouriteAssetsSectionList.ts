@@ -24,8 +24,7 @@ const getInitialSectionData = (): SectionData => ({
 });
 
 const getFavouriteSectionDataReducer =
-    (favourites: Record<CryptoId, TradeableAsset>) =>
-    (sectionData: SectionData, coin: TradeableAsset) => {
+    (favourites: Record<CryptoId, true>) => (sectionData: SectionData, coin: TradeableAsset) => {
         if (favourites[coin.cryptoId]) {
             sectionData.favouriteData.push(coin);
         } else {

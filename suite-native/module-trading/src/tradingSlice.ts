@@ -19,7 +19,7 @@ export interface TradingBuyState extends CommonTradingBuyState {
 
 export interface TradingState extends CommonTradingState {
     buy: TradingBuyState;
-    favouriteAssets: Record<CryptoId, TradeableAsset>;
+    favouriteAssets: Record<CryptoId, true>;
     tradingEnvironment: InvityServerEnvironment;
 }
 
@@ -46,11 +46,11 @@ export const tradingSlice = createSliceWithExtraDeps({
         ) => {
             state.buy.selectedReceiveAccount = payload.selectedReceiveAccount;
         },
-        addTradeableAssetToFavourites: (state, { payload }: PayloadAction<TradeableAsset>) => {
-            state.favouriteAssets[payload.cryptoId] = payload;
+        addTradeableAssetToFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
+            state.favouriteAssets[payload] = true;
         },
-        removeTradeableAssetFromFavourites: (state, { payload }: PayloadAction<TradeableAsset>) => {
-            delete state.favouriteAssets[payload.cryptoId];
+        removeTradeableAssetFromFavourites: (state, { payload }: PayloadAction<CryptoId>) => {
+            delete state.favouriteAssets[payload];
         },
         setTradingEnvironment: (state, { payload }: PayloadAction<InvityServerEnvironment>) => {
             state.tradingEnvironment = payload;
@@ -82,7 +82,7 @@ export const selectTradingFavouriteAssets = (state: TradingRootState) =>
 
 export const selectTradingFavouriteAssetsArray = createMemoizedSelector(
     [selectTradingFavouriteAssets],
-    assets => Object.values(assets),
+    assets => Object.keys(assets),
 );
 
 export const selectIsTradingFavouriteAsset = createMemoizedSelector(

@@ -49,9 +49,9 @@ export const TradeableAssetListItem = ({ asset, onPress }: TradeableAssetListIte
 
     const onFavouritePress = () => {
         if (isFavourite) {
-            dispatch(removeTradeableAssetFromFavourites(asset));
+            dispatch(removeTradeableAssetFromFavourites(asset.cryptoId));
         } else {
-            dispatch(addTradeableAssetToFavourites(asset));
+            dispatch(addTradeableAssetToFavourites(asset.cryptoId));
         }
     };
 
