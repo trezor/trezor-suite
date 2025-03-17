@@ -34,7 +34,7 @@ const pairingDeviceStateC: BluetoothDeviceCommon = {
 };
 
 describe('bluetoothSelectors', () => {
-    it('selects knownDevices and nearbyDevices in one list fot the UI, all known devices are', () => {
+    it('selects knownDevices and nearbyDevices in one list fot the UI, all known devices are first', () => {
         const selectAllDevices = prepareSelectAllDevices<BluetoothDeviceCommon>();
 
         const state: WithBluetoothState<BluetoothDeviceCommon> = {

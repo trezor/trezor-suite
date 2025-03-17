@@ -34,6 +34,14 @@ const disconnectedDeviceB: BluetoothDeviceCommon = {
     connectionStatus: { type: 'disconnected' },
 };
 
+const pairingErrorDevice: BluetoothDeviceCommon = {
+    id: 'pairing-error',
+    data: [],
+    name: 'Trezor Pairing Error',
+    lastUpdatedTimestamp: 1,
+    connectionStatus: { type: 'pairing-error', error: "Can't pair this device" },
+};
+
 describe('bluetoothReducer', () => {
     it('sets the bluetooth adapter as enabled/disabled when powered/unpowered', () => {
         const store = configureMockStore({
@@ -135,5 +143,18 @@ describe('bluetoothReducer', () => {
             }),
         );
         expect(store.getState().bluetooth.knownDevices).toEqual([nearbyDevice]);
+    });
+
+    it('filters the error device from nearbyDevices, odds the other', () => {
+        const store = configureMockStore({
+            extra: {},
+            reducer: combineReducers({ bluetooth: bluetoothReducer }),
+            preloadedState: { bluetooth: initialState },
+        });
+
+        const nearbyDevices: BluetoothDeviceCommon[] = [pairingErrorDevice, pairingDeviceA];
+
+        store.dispatch(bluetoothActions.nearbyDevicesUpdateAction({ nearbyDevices }));
+        expect(store.getState().bluetooth.nearbyDevices).toEqual([pairingDeviceA]);
     });
 });
