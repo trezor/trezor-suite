@@ -72,6 +72,8 @@ Steps:
 
 1. **To increase test timeouts** when your local run exceed 1m limit, you can specify test timeout override in `packages/suite-desktop-core/.env`. (UI runner --ui needs to be restarted to reflect the change in `.env`)
 
+1. **To run with x-main firmware** instead of x-latest you can use CANARY_FIRMWARE env variable like this: `CANARY_FIRMWARE=true yarn workspace @trezor/suite-desktop-core test:e2e`
+
 ## Contribution
 
 Please follow our general [Playwright contribution guide](e2e-playwright-contribution-guide.md)
