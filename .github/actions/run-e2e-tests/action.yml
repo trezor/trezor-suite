@@ -4,6 +4,10 @@ inputs:
   project:
     description: "Playwright project name. (web|desktop)"
     required: true
+  base-url:
+    description: "Base URL for E2E tests. Default: https://dev.suite.sldev.cz/suite-web/BRANCH_NAME/web/"
+    default: ""
+    required: false
   containers:
     description: "Docker containers to pull"
     required: true
@@ -11,7 +15,7 @@ inputs:
     description: "Test group to run"
     required: true
   additional-grep:
-    description: "Additional grep for PW tests. Use regexp groups with positive lookahead. Example: (?=.*@webOnly)"
+    description: "Additional grep for PW tests. Use regexp groups with positive or negative lookahead. Example: (?=.*@webOnly)"
     default: ""
     required: false
   currents-project-id:
@@ -72,7 +76,6 @@ runs:
       shell: bash
       env:
         COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
-        BASE_URL: https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/
         GITHUB_ACTION: true
         CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
         CURRENTS_RECORD_KEY: ${{ inputs.currents-record-key }}
@@ -80,6 +83,14 @@ runs:
         GH_BRANCH: ${{ env.branch }} # Used by Currents reporter
         PASSPHRASE: ${{ inputs.e2e-passphrase }}
       run: |
+        if [[ -z "${{ inputs.base-url }}" ]]; then
+          BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"
+        else
+          BASE_URL="${{ inputs.base-url }}"
+        fi
+        export BASE_URL
+        echo "Using BASE_URL: $BASE_URL"
+
         docker compose up -d ${{ inputs.containers }}
         echo "Starting Playwright project ${{ inputs.project }} for test group ${{ inputs.test-group }}"
         yarn workspace @trezor/suite-desktop-core test:e2e:${{ inputs.project }} --forbid-only --grep="(?=.*${{ inputs.test-group }})${{ inputs.additional-grep }}" 
