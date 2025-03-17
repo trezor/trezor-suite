@@ -37,6 +37,11 @@ export class UsbApi extends AbstractApi {
     private debugLink?: boolean;
     private synchronizeCreateDevices = getSynchronize();
     private synchronizeGetDevices = getSynchronize();
+    /**
+     * calling device.reset over other calls often leads to segfault
+     */
+    private synchronizeResetDevice = getSynchronize();
+    private deviceResetMap: Record<string, boolean> = {};
 
     constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
         super({ logger });
@@ -207,7 +212,7 @@ export class UsbApi extends AbstractApi {
                         this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
                         this.chunkSize,
                     ),
-                { signal, onAbort: () => device?.reset() },
+                { signal, onAbort: () => this.resetDevice(path) },
             );
             this.logger?.debug(
                 `usb: device.transferIn done. status: ${res.status}, byteLength: ${res.data?.byteLength}.`,
@@ -237,7 +242,7 @@ export class UsbApi extends AbstractApi {
 
         const timeout = setTimeout(() => {
             this.logger?.debug('usb: device.transfer out take suspiciously long. timing out.');
-            device?.reset().catch(() => {});
+            this.resetDevice(path).catch(() => {});
         }, 1000);
 
         try {
@@ -250,7 +255,7 @@ export class UsbApi extends AbstractApi {
                         this.debugLink ? DEBUGLINK_ENDPOINT_ID : ENDPOINT_ID,
                         newArray,
                     ),
-                { signal, onAbort: () => device?.reset() },
+                { signal, onAbort: () => this.resetDevice(path) },
             );
             this.logger?.debug(`usb: device.transferOut done.`);
             if (result.status !== 'ok') {
@@ -326,7 +331,7 @@ export class UsbApi extends AbstractApi {
             try {
                 // reset fails on ChromeOS and windows
                 this.logger?.debug('usb: device.reset');
-                await this.abortableMethod(() => device?.reset(), { signal });
+                await this.resetDevice(path);
                 this.logger?.debug(`usb: device.reset done.`);
             } catch (err) {
                 this.logger?.error(
@@ -368,7 +373,7 @@ export class UsbApi extends AbstractApi {
             if (!this.debugLink) {
                 try {
                     // NOTE: `device.reset()` interrupts transfers for all interfaces (debugLink and normal)
-                    await device.reset();
+                    await this.resetDevice(path);
                 } catch (err) {
                     this.logger?.error(
                         `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
@@ -383,7 +388,7 @@ export class UsbApi extends AbstractApi {
             try {
                 this.logger?.debug(`usb: device.releaseInterface: ${interfaceId}`);
 
-                await device.releaseInterface(interfaceId);
+                await this.synchronizeResetDevice(() => device?.releaseInterface(interfaceId));
                 this.logger?.debug(`usb: device.releaseInterface done: ${interfaceId}.`);
             } catch (err) {
                 this.logger?.error(`usb: releaseInterface error ${err}.`);
@@ -394,7 +399,7 @@ export class UsbApi extends AbstractApi {
         if (device?.opened) {
             try {
                 this.logger?.debug(`usb: device.close`);
-                await device.close();
+                await this.synchronizeResetDevice(() => device.close());
                 this.logger?.debug(`usb: device.close done.`);
             } catch (err) {
                 this.logger?.debug(`usb: device.close error ${err}.`);
@@ -491,6 +496,34 @@ export class UsbApi extends AbstractApi {
         } catch (err) {
             this.logger?.error(`usb: loadSerialNumber error: ${err.message}`);
             throw err;
+        }
+    }
+
+    private async resetDevice(path: string) {
+        const device = this.findDevice(path);
+
+        if (!device) {
+            this.logger?.debug(`usb: resetDevice: device not found`);
+
+            return;
+        }
+
+        if (this.deviceResetMap[path]) {
+            // if this gets printed, it is an indication of some code smell. there shouldn't be need for calling device reset multiple times
+            this.logger?.debug(`usb: resetDevice: device reset already running`);
+
+            return;
+        }
+
+        this.deviceResetMap[path] = true;
+        try {
+            this.logger?.debug(`usb: resetDevice: device.reset`);
+            await this.synchronizeResetDevice(() => device.reset());
+            this.logger?.debug(`usb: resetDevice: device.reset done`);
+        } catch (err) {
+            this.logger?.error(`usb: resetDevice: device.reset error: ${err.message}`);
+        } finally {
+            delete this.deviceResetMap[path];
         }
     }
 
