@@ -1,4 +1,4 @@
-name: "[Test] Nightly Suite Web e2e tests"
+name: "[Test] Firmware canary  Suite Web e2e tests"
 # Nightly scheduled check on develop branch
 # Builds/deploys the web app to dev.suite.sldev.cz/suite-web/develop/web
 # Runs full e2e test suite for Suite Web
