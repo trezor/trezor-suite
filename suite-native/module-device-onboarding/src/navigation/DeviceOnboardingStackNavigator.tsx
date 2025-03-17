@@ -7,6 +7,7 @@ import {
 } from '@suite-native/navigation';
 
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
+import { ConnectAndUnlockDeviceScreen } from '../screens/ConnectAndUnlockDeviceScreen';
 import { DeviceTutorialScreen } from '../screens/DeviceTutorialScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
@@ -20,6 +21,14 @@ export const DeviceOnboardingStackNavigator = () => (
         initialRouteName={DeviceOnboardingStackRoutes.UninitializedDeviceLanding}
         screenOptions={stackNavigationOptionsConfig}
     >
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.ConnectAndUnlockDevice}
+            component={ConnectAndUnlockDeviceScreen}
+            options={{
+                gestureEnabled: false,
+                animation: 'slide_from_bottom',
+            }}
+        />
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.UninitializedDeviceLanding}
             component={UninitializedDeviceLandingScreen}

@@ -121,6 +121,7 @@ export type OnboardingStackParamList = {
 };
 
 export type DeviceOnboardingStackParamList = {
+    [DeviceOnboardingStackRoutes.ConnectAndUnlockDevice]: undefined;
     [DeviceOnboardingStackRoutes.UninitializedDeviceLanding]: undefined;
     [DeviceOnboardingStackRoutes.SuspiciousDevice]: {
         suspicionCause: DeviceSuspicionCause;

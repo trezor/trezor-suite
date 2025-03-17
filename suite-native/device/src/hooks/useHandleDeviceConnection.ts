@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useNavigationState } from '@react-navigation/native';
+import { useAtomValue } from 'jotai';
 
 import {
     authorizeDeviceThunk,
@@ -31,11 +32,11 @@ import {
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 
+import { isOnboardingDeviceDisconnectedAlertDisplayedAtom } from '../deviceAtoms';
 import {
     selectHasFirmwareAuthenticityCheckHardFailed,
     selectIsDeviceSetupSupported,
 } from '../selectors';
-import { useHandleOnboardingDeviceDisconnection } from './useHandleOnboardingDeviceDisconnection';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList | RootStackParamList,
@@ -63,8 +64,9 @@ export const useHandleDeviceConnection = () => {
     );
 
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
-    const { handleOnboardingDeviceDisconnection, isOnboardingDeviceDisconnectedAlertDisplayed } =
-        useHandleOnboardingDeviceDisconnection();
+    const isOnboardingDeviceDisconnectedAlertDisplayed = useAtomValue(
+        isOnboardingDeviceDisconnectedAlertDisplayedAtom,
+    );
 
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
@@ -74,6 +76,10 @@ export const useHandleDeviceConnection = () => {
     // If the device is connected again, he still should stay on that screen.
     const isSuspiciousDeviceScreenFocused = useNavigationRouteMatch(
         DeviceOnboardingStackRoutes.SuspiciousDevice,
+    );
+
+    const isDeviceOnboardingConnectAndUnlockScreenFocused = useNavigationRouteMatch(
+        DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
     );
 
     const lastRoute = useNavigationState(state => state?.routes.at(-1)?.name);
@@ -97,9 +103,9 @@ export const useHandleDeviceConnection = () => {
             !isDeviceInitialized &&
             !isPortfolioTrackerDevice &&
             !isBiometricsOverlayVisible &&
-            !isDeviceOnboardingStackFocused &&
             !isOnboardingDeviceDisconnectedAlertDisplayed &&
-            !isFirmwareInstallationRunning
+            !isFirmwareInstallationRunning &&
+            (!isDeviceOnboardingStackFocused || isDeviceOnboardingConnectAndUnlockScreenFocused)
         ) {
             navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
                 screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
@@ -117,6 +123,7 @@ export const useHandleDeviceConnection = () => {
         isDeviceOnboardingStackFocused,
         isFirmwareInstallationRunning,
         isOnboardingDeviceDisconnectedAlertDisplayed,
+        isDeviceOnboardingConnectAndUnlockScreenFocused,
     ]);
 
     // At the moment when unauthorized physical device is selected,
@@ -167,8 +174,7 @@ export const useHandleDeviceConnection = () => {
     // In case that the physical device is disconnected, redirect to the home screen and
     // set connecting screen to be displayed again on the next device connection.
     useEffect(() => {
-        if ((isFirmwareInstallationRunning && !isOnboardingStackFocused) || !isOnboardingFinished)
-            return;
+        if (isFirmwareInstallationRunning || !isOnboardingFinished) return;
 
         if (isNoPhysicalDeviceConnected) {
             if (shouldBlockSendReviewRedirect) {
@@ -183,7 +189,9 @@ export const useHandleDeviceConnection = () => {
             }
 
             if (isDeviceOnboardingStackFocused) {
-                handleOnboardingDeviceDisconnection();
+                navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
+                    screen: DeviceOnboardingStackRoutes.ConnectAndUnlockDevice,
+                });
 
                 return;
             }
@@ -204,7 +212,6 @@ export const useHandleDeviceConnection = () => {
         isDeviceCompromisedModalFocused,
         isSuspiciousDeviceScreenFocused,
         isOnboardingStackFocused,
-        handleOnboardingDeviceDisconnection,
         isDeviceOnboardingStackFocused,
     ]);
 
