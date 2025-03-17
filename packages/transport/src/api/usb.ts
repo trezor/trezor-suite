@@ -327,11 +327,42 @@ export class UsbApi extends AbstractApi {
             }
         }
 
+        // todo: maybe we should do reset and the preventive read also in cases we think device was not acquired previously
         if (reset) {
             try {
-                // reset fails on ChromeOS and windows
-                this.logger?.debug('usb: device.reset');
-                await this.resetDevice(path);
+                this.logger?.debug('usb: performing preventive read from usb');
+                let continueReading = true;
+                do {
+                    const localAbortController = new AbortController();
+                    const onAbortFromAbove = () => {
+                        this.logger?.debug('usb: preventive read: aborted from above');
+                        localAbortController.abort();
+                        continueReading = false;
+                    };
+
+                    signal?.addEventListener('abort', onAbortFromAbove);
+
+                    const timeout = setTimeout(() => {
+                        this.logger?.debug(
+                            'usb: preventive read: no response received in limit, stop preventive reading. device.reset() will be called.',
+                        );
+
+                        localAbortController.abort();
+                        signal?.removeEventListener('abort', onAbortFromAbove);
+                        continueReading = false;
+                        // todo: isn't 100 too much? what is enough?
+                    }, 100);
+
+                    const readRes = await this.read(path, localAbortController.signal);
+
+                    clearTimeout(timeout);
+                    signal?.removeEventListener('abort', onAbortFromAbove);
+
+                    if (!readRes.success) {
+                        continueReading = false;
+                    }
+                } while (continueReading);
+
                 this.logger?.debug(`usb: device.reset done.`);
             } catch (err) {
                 this.logger?.error(
@@ -357,7 +388,6 @@ export class UsbApi extends AbstractApi {
                 });
             }
         }
-
         return this.success(undefined);
     }
 
