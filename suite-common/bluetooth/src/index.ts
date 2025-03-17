@@ -8,4 +8,5 @@ export {
     selectKnownDevices,
     selectAdapterStatus,
     selectScanStatus,
+    selectNearbyDevices,
 } from './bluetoothSelectors';
