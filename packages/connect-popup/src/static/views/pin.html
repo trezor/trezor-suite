@@ -1,0 +1,60 @@
+<div class="pin">
+    <div class="wrapper">
+        <h3>Enter PIN for <span class="device-name"></span></h3>
+        <p>The PIN layout is displayed on your Trezor.</p>
+
+        <div class="pin-input-row">
+            <input class="pin-input" type="password" autocomplete="off" max-length="9" disabled />
+            <button type="button" class="pin-backspace transparent"></button>
+        </div>
+
+        <div class="pin-row">
+            <button type="button" data-value="7">&#8226;</button
+            ><button type="button" data-value="8">&#8226;</button
+            ><button type="button" data-value="9">&#8226;</button>
+        </div>
+        <div class="pin-row">
+            <button type="button" data-value="4">&#8226;</button
+            ><button type="button" data-value="5">&#8226;</button
+            ><button type="button" data-value="6">&#8226;</button>
+        </div>
+        <div class="pin-row">
+            <button type="button" data-value="1">&#8226;</button
+            ><button type="button" data-value="2">&#8226;</button
+            ><button type="button" data-value="3">&#8226;</button>
+        </div>
+    </div>
+
+    <button class="confirm submit" type="button" disabled>Confirm</button>
+</div>
+<!-- Pin: END -->
+
+<!-- Pin invalid -->
+<div class="invalid-pin">
+    <h3>Incorrect PIN</h3>
+    <div class="loader">
+        <p>Retrying...</p>
+        <svg class="circular" viewBox="25 25 50 50" preserveAspectRatio="xMidYMid">
+            <circle
+                class="route"
+                cx="50"
+                cy="50"
+                r="20"
+                fill="none"
+                stroke=""
+                stroke-width="1"
+                stroke-miterlimit="10"
+            />
+            <circle
+                class="path"
+                cx="50"
+                cy="50"
+                r="20"
+                fill="none"
+                stroke-width="1"
+                stroke-miterlimit="10"
+            />
+        </svg>
+    </div>
+</div>
+<!-- Pin invalid: END -->

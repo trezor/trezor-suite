@@ -1,0 +1,22 @@
+<div class="no-backup">
+    <div class="wrapper">
+        <h3>Your Trezor is not backed up!</h3>
+        <p>
+            If your device is ever lost or damaged, your funds will be lost. Backup your device
+            first, to protect your coins against such events.
+        </p>
+    </div>
+    <div class="buttons">
+        <a
+            class="button cancel"
+            href="<%= htmlWebpackPlugin.options.urls.SUITE_BACKUP_URL %>"
+            target="_blank"
+            rel="noreferrer noopener"
+        >
+            <span class="text">Create a backup in 3 minutes.</span>
+            <span class="exit"></span>
+        </a>
+        <button class="confirm">Proceed, I will take the risk</button>
+    </div>
+</div>
+<!-- No backup confirmation: END -->

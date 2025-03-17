@@ -18,7 +18,7 @@ export const getAccountLabelFixtures: TestFixtures<typeof getAccountLabel> = [
     {
         description: 'Legacy',
         input: [[44], getBitcoinNetwork('btc')!],
-        output: 'legacy <span>account #1</span>',
+        output: 'legacy account #1',
     },
 ];
 

@@ -36,7 +36,7 @@ export const clearLegacyView = () => {
     // clear and hide legacy views
     const container2 = document.getElementById('container');
     if (container2) {
-        container2.innerHTML = '';
+        container2.innerText = '';
         container2.style.display = 'none';
     }
 };
@@ -48,13 +48,13 @@ const renderLegacyView = (className: string) => {
     if (view) {
         const viewItem = view.item(0);
         if (viewItem) {
-            container.innerHTML = viewItem.outerHTML;
+            container.replaceChildren(viewItem.cloneNode(true));
         }
     } else {
         const unknown = views.getElementsByClassName('unknown-view');
         const unknownItem = unknown.item(0);
         if (unknownItem) {
-            container.innerHTML = unknownItem.outerHTML;
+            container.replaceChildren(unknownItem.cloneNode(true));
         }
     }
 

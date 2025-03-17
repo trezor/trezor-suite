@@ -136,7 +136,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 details.values.forEach(acc => {
                     // if (i === 0) str += this.params.length > 1 ? ': ' : ' ';
                     // if (i > 0) str += ', ';
-                    str.push('<span>');
                     str.push(k);
                     str.push(' ');
                     if (typeof acc === 'string') {
@@ -144,7 +143,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     } else {
                         str.push(getAccountLabel(acc, details.coinInfo));
                     }
-                    str.push('</span>');
                 });
             });
 

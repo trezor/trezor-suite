@@ -28,7 +28,7 @@ export const initConfirmationView = (data: UiRequestConfirmation['payload']) => 
     }
 
     if (label) {
-        h3.innerHTML = label;
+        h3.innerText = label;
     }
 
     confirmButton.onclick = () => {

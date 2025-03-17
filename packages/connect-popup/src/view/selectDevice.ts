@@ -25,7 +25,12 @@ const initWebUsbButton = (showLoader: boolean) => {
     if (core) usb = window.navigator.usb;
     if (iframe) usb = iframe.navigator.usb;
 
-    button.innerHTML = '<span class="plus"></span><span class="text">Pair devices</span>';
+    const plusSpan = document.createElement('span');
+    plusSpan.classList.add('plus');
+    const textSpan = document.createElement('span');
+    textSpan.classList.add('text');
+    textSpan.textContent = 'Pair devices';
+    button.replaceChildren(plusSpan, textSpan);
 
     const onClick = async () => {
         try {
@@ -115,7 +120,6 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
 
     // Populate device list
     const deviceList = container.getElementsByClassName('select-device-list')[0];
-    // deviceList.innerHTML = '';
     const rememberCheckbox = container.getElementsByClassName(
         'remember-device',
     )[0] as HTMLInputElement;
@@ -198,14 +202,19 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
                 }
                 deviceButton.disabled = true;
                 deviceName.textContent = 'Unrecognized device';
-                explanation.innerHTML = `${device.error}<br />${explanationContent}`;
+
+                const errorDiv = document.createElement('div');
+                errorDiv.textContent = device.error;
+                const explanationDiv = document.createElement('div');
+                explanationDiv.innerHTML = explanationContent;
+                explanation.replaceChildren(errorDiv, explanationDiv);
             }
 
             if (device.type === 'unacquired' || device.status === 'occupied') {
                 deviceName.textContent = 'Inactive device';
                 deviceButton.classList.add('unacquired');
                 explanation.classList.add('unacquired');
-                explanation.innerHTML =
+                explanation.textContent =
                     'Click to activate. This device is used by another application.';
 
                 if (device.type === 'acquired') {

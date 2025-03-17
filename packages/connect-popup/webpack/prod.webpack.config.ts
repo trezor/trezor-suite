@@ -66,6 +66,10 @@ const config: webpack.Configuration = {
                 test: /\.(gif|jpe?g|png|svg)$/,
                 type: 'asset/resource',
             },
+            {
+                test: /views\/.*\.html$/,
+                type: 'asset/source',
+            },
         ],
     },
     resolve: {

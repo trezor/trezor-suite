@@ -36,15 +36,18 @@ export const updateCustomFee = (payload: UpdateCustomFee['payload']) => {
     const customFee = fees.find(f => f.name === 'custom');
     if (customFee) {
         if (customFee.fee === '0') {
-            customFeeLabel.innerHTML = 'Insufficient funds';
+            customFeeLabel.textContent = 'Insufficient funds';
         } else {
-            customFeeLabel.innerHTML = `
-                <span class="fee-amount">${formatAmount(customFee.fee, payload.coinInfo)}</span>
-                <span class="fee-time">${
-                    // @ts-expect-error unrecognized union member.
-                    formatTime(customFee.minutes)
-                }</span>
-            `;
+            const feeAmount = document.createElement('span');
+            feeAmount.className = 'fee-amount';
+            feeAmount.textContent = formatAmount(customFee.fee, payload.coinInfo);
+
+            const feeTime = document.createElement('span');
+            feeTime.className = 'fee-time';
+            // @ts-expect-error unrecognized union member.
+            feeTime.textContent = formatTime(customFee.minutes);
+
+            customFeeLabel.replaceChildren(feeAmount, feeTime);
         }
     }
 
@@ -56,7 +59,7 @@ const validation = (coinInfo: BitcoinNetworkInfo) => {
     const sendButton = container.getElementsByClassName('send-button')[0] as HTMLButtonElement;
     if (!selectedFee) {
         sendButton.setAttribute('disabled', 'disabled');
-        sendButton.innerHTML = 'Send';
+        sendButton.textContent = 'Send';
 
         return;
     }
@@ -66,10 +69,10 @@ const validation = (coinInfo: BitcoinNetworkInfo) => {
     if (selectedValue && selectedValue.fee !== '0') {
         sendButton.removeAttribute('disabled');
         // @ts-expect-error unrecognized union member.
-        sendButton.innerHTML = `Send ${formatAmount(selectedValue.total, coinInfo)}`;
+        sendButton.textContent = `Send ${formatAmount(selectedValue.total, coinInfo)}`;
     } else {
         sendButton.setAttribute('disabled', 'disabled');
-        sendButton.innerHTML = 'Send';
+        sendButton.textContent = 'Send';
     }
 };
 
@@ -87,46 +90,69 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
     // add new fees from message
     fees.push(...data.feeLevels);
 
-    // build innerHTML string with fee buttons
-    const feesComponents: string[] = [];
-    fees.forEach(level => {
-        // ignore custom
-        if (level.name === 'custom') return;
-
-        let feeName: string = level.name;
-        if (level.name === 'normal' && level.fee !== '0') {
-            feeName = `<span>${level.name}</span>
-                <span class="fee-subtitle">recommended</span>`;
-        }
-
-        if (level.fee !== '0') {
-            feesComponents.push(`
-                <button data-fee="${level.name}" class="list">
-                    <span class="fee-title">${feeName}</span>
-                    <span class="fee-info">
-                        <span class="fee-amount">${formatAmount(level.fee, data.coinInfo)}</span>
-                        <span class="fee-time">${
-                            // @ts-expect-error unrecognized union member.
-                            formatTime(level.minutes)
-                        }</span>
-                    </span>
-                </button>
-            `);
-        } else {
-            feesComponents.push(`
-                <button disabled class="list">
-                    <span class="fee-title">${feeName}</span>
-                    <span class="fee-info">Insufficient funds</span>
-                </button>
-            `);
-        }
-    });
-
     const feeList = container.getElementsByClassName('select-fee-list')[0];
+    const customFeeElement = feeList.cloneNode(true);
+
+    const feeButtons = fees
+        // ignore custom
+        .filter(level => level.name !== 'custom')
+        .map(level => {
+            const button = document.createElement('button');
+            button.classList.add('list');
+
+            if (level.fee !== '0') {
+                button.dataset.fee = level.name;
+
+                const feeTitle = document.createElement('span');
+                feeTitle.classList.add('fee-title');
+
+                if (level.name === 'normal') {
+                    const nameSpan = document.createElement('span');
+                    nameSpan.textContent = level.name;
+                    feeTitle.appendChild(nameSpan);
+
+                    const subtitleSpan = document.createElement('span');
+                    subtitleSpan.classList.add('fee-subtitle');
+                    subtitleSpan.textContent = 'recommended';
+                    feeTitle.appendChild(subtitleSpan);
+                } else {
+                    feeTitle.textContent = level.name;
+                }
+
+                const feeInfo = document.createElement('span');
+                feeInfo.classList.add('fee-info');
+
+                const feeAmount = document.createElement('span');
+                feeAmount.classList.add('fee-amount');
+                feeAmount.textContent = formatAmount(level.fee, data.coinInfo);
+                feeInfo.appendChild(feeAmount);
+
+                const feeTime = document.createElement('span');
+                feeTime.classList.add('fee-time');
+                if ('minutes' in level) feeTime.textContent = formatTime(level.minutes);
+                feeInfo.appendChild(feeTime);
+
+                button.appendChild(feeTitle);
+                button.appendChild(feeInfo);
+            } else {
+                // For disabled button (insufficient funds)
+                button.disabled = true;
+
+                const feeTitle = document.createElement('span');
+                feeTitle.classList.add('fee-title');
+                feeTitle.textContent = level.name;
+                button.appendChild(feeTitle);
+
+                const feeInfo = document.createElement('span');
+                feeInfo.classList.add('fee-info');
+                feeInfo.textContent = 'Insufficient funds';
+                button.appendChild(feeInfo);
+            }
+
+            return button;
+        });
     // append custom fee button
-    feesComponents.push(feeList.innerHTML);
-    // render all buttons
-    feeList.innerHTML = feesComponents.join('');
+    feeList.replaceChildren(...feeButtons, customFeeElement);
 
     // references to html elements
     const sendButton = container.getElementsByClassName('send-button')[0] as HTMLButtonElement;
@@ -146,9 +172,8 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
     };
 
     // find all buttons which has composed transaction and add click event listener to it
-    const feeButtons = feeList.querySelectorAll('[data-fee]');
     for (let i = 0; i < feeButtons.length; i++) {
-        feeButtons.item(i).addEventListener('click', onFeeSelect);
+        feeButtons[i]?.addEventListener('click', onFeeSelect);
     }
 
     // custom fee button logic
@@ -211,16 +236,16 @@ export const selectFee = (data: UiRequestSelectFee['payload']) => {
 
         if (Number.isNaN(valueNum)) {
             if (value.length > 0) {
-                customFeeLabel.innerHTML = 'Incorrect fee';
+                customFeeLabel.textContent = 'Incorrect fee';
             } else {
-                customFeeLabel.innerHTML = 'Missing fee';
+                customFeeLabel.textContent = 'Missing fee';
             }
         } else if (valueNum < minFee) {
-            customFeeLabel.innerHTML = 'Fee is too low';
+            customFeeLabel.textContent = 'Fee is too low';
         } else if (valueNum > maxFee) {
-            customFeeLabel.innerHTML = 'Fee is too big';
+            customFeeLabel.textContent = 'Fee is too big';
         } else {
-            customFeeLabel.innerHTML = 'Composing...';
+            customFeeLabel.textContent = 'Composing...';
 
             const composeCustomFeeTimeoutHandler = () => {
                 postMessage(

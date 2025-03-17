@@ -19,5 +19,5 @@ export const firmwareNotSupported = (device: UiRequestUnexpectedDeviceMode['payl
     // universal message "Coin is not supported" is replaced by
     const h3 = view.getElementsByTagName('h3')[0];
 
-    h3.innerHTML = `${device.name} is not supported`;
+    h3.innerText = `${device.name} is not supported`;
 };

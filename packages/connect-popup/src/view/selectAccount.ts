@@ -13,9 +13,9 @@ import { container, postMessage, showView } from './common';
 const setHeader = (payload: UiRequestSelectAccount['payload']) => {
     const h3 = container.getElementsByTagName('h3')[0];
     if (payload.type === 'end') {
-        h3.innerHTML = `Select ${payload.coinInfo.label} account`;
+        h3.innerText = `Select ${payload.coinInfo.label} account`;
     } else {
-        h3.innerHTML = `Loading ${payload.coinInfo.label} accounts...`;
+        h3.innerText = `Loading ${payload.coinInfo.label} accounts...`;
     }
 };
 
@@ -33,12 +33,12 @@ export const selectAccount = (payload: UiRequestSelectAccount['payload']) => {
         const selectAccountContainer = container.getElementsByClassName('select-account')[0];
 
         if (accountTypes.length > 1) {
-            const tabs = container.getElementsByClassName('tabs')[0] as HTMLButtonElement;
+            const tabs = container.getElementsByClassName('tabs')[0] as HTMLElement;
             tabs.style.display = 'flex';
             const buttons = tabs.getElementsByClassName(
                 'tab-selection',
             ) as HTMLCollectionOf<HTMLButtonElement>;
-            const firstGroupHeader = tabs.children[0].innerHTML; // store default label (Accounts)
+            const firstGroupHeader = tabs.children[0].textContent; // store default label (Accounts)
             const selectedType =
                 defaultAccountType || (accountTypes.includes('p2sh') ? 'p2sh' : 'p2wpkh');
             selectAccountContainer.className = `select-account ${selectedType}`;
@@ -54,7 +54,7 @@ export const selectAccount = (payload: UiRequestSelectAccount['payload']) => {
                     i--;
                 }
             }
-            tabs.children[0].innerHTML = firstGroupHeader; // switch first label to default
+            tabs.children[0].textContent = firstGroupHeader; // switch first label to default
         } else if (accountTypes.length === 1) {
             selectAccountContainer.className = `select-account ${accountTypes[0]}`;
         } else {
@@ -88,20 +88,18 @@ export const selectAccount = (payload: UiRequestSelectAccount['payload']) => {
     };
 
     const updateButtonValue = (button: Element, account: DiscoveryAccount) => {
-        if (button.innerHTML.length < 1) {
-            button.innerHTML = `
-                <span class="account-title"></span>
-                <span class="account-status"></span>`;
-        }
-        const title = button.getElementsByClassName('account-title')[0];
-        const status = button.getElementsByClassName('account-status')[0];
-        title.innerHTML = account.label;
+        const title = document.createElement('span');
+        title.classList.add('account-title');
+        const status = document.createElement('span');
+        status.classList.add('account-status');
+        title.textContent = account.label;
+        button.replaceChildren(title, status);
 
         if (typeof account.balance !== 'string') {
-            status.innerHTML = 'Loading...';
+            status.innerText = 'Loading...';
             button.setAttribute('disabled', 'disabled');
         } else {
-            status.innerHTML = account.empty ? 'New account' : account.balance;
+            status.innerText = account.empty ? 'New account' : account.balance;
             const buttonDisabled = payload.preventEmpty && account.empty;
             if (buttonDisabled) {
                 button.setAttribute('disabled', 'disabled');

@@ -17,14 +17,14 @@ export const firmwareNotCompatible = (device: UiRequestUnexpectedDeviceMode['pay
 
     if (!device.features) return;
 
-    const fwVersion = view.getElementsByClassName('fw-version')[0];
+    const fwVersion = view.getElementsByClassName('fw-version')[0] as HTMLElement;
     const identity = view.getElementsByClassName('fw-identity') as HTMLCollectionOf<HTMLElement>;
     const { settings } = getState();
     const developer = settings?.hostLabel ?? settings?.origin ?? 'this application';
     const confirmButton = view.getElementsByClassName('confirm')[0] as HTMLButtonElement;
     const cancelButton = view.getElementsByClassName('cancel')[0] as HTMLButtonElement;
 
-    fwVersion.innerHTML = getFirmwareVersion(device);
+    fwVersion.innerText = getFirmwareVersion(device);
     for (let i = 0; i < identity.length; i++) {
         identity[i].innerText = developer;
     }

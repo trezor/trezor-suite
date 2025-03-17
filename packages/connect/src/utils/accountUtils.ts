@@ -58,7 +58,7 @@ export const getAccountLabel = (path: number[], coinInfo: CoinInfo) => {
             prefix = 'legacy';
         }
 
-        return `${prefix} <span>account #${account + 1}</span>`;
+        return `${prefix} account #${account + 1}`;
     }
     const account = fromHardened(path[4]);
 
@@ -103,7 +103,7 @@ export const getPublicKeyLabel = (path: number[], coinInfo?: BitcoinNetworkInfo)
     }
 
     if (realAccountId > 0) {
-        return `${prefix} of ${accountType} <span>account #${realAccountId}</span>`;
+        return `${prefix} of ${accountType} account #${realAccountId}`;
     }
 
     return prefix;

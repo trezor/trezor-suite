@@ -83,7 +83,6 @@ export default class GetAccountDescriptor extends AbstractMethod<
         Object.keys(keys).forEach((k, _i, _a) => {
             const details = keys[k];
             details.values.forEach(acc => {
-                str.push('<span>');
                 str.push(k);
                 str.push(' ');
                 if (typeof acc === 'string') {
@@ -91,7 +90,6 @@ export default class GetAccountDescriptor extends AbstractMethod<
                 } else {
                     str.push(getAccountLabel(acc, details.coinInfo));
                 }
-                str.push('</span>');
             });
         });
 
