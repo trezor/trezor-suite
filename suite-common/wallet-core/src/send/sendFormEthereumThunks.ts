@@ -18,9 +18,9 @@ import {
 } from '@suite-common/wallet-types';
 import {
     amountToSmallestUnit,
-    calculateEthFee,
     calculateMax,
     calculateTotal,
+    calculateTotalGasCost,
     formatAmount,
     getAccountIdentity,
     getEthereumEstimateFeeParams,
@@ -31,7 +31,7 @@ import {
     prepareEthereumTransaction,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
@@ -42,7 +42,7 @@ import {
 } from './sendFormTypes';
 import { selectTransactions } from '../transactions/transactionsReducer';
 
-const calculate = (
+export const calculate = (
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -50,20 +50,25 @@ const calculate = (
 ): PrecomposedTransaction => {
     let amount: string;
     let max: string | undefined;
-    const feeInGwei = calculateEthFee(toWei(feeLevel.feePerUnit, 'gwei'), feeLevel.feeLimit || '0');
+
+    const totalGasCostInWei = calculateTotalGasCost(
+        toWei(feeLevel.maxFeePerGas || feeLevel.feePerUnit, 'gwei'),
+        feeLevel.feeLimit,
+    );
 
     const availableTokenBalance = token
         ? amountToSmallestUnit(token.balance!, token.decimals)
         : undefined;
+
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = availableTokenBalance || calculateMax(availableBalance, feeInGwei);
+        max = availableTokenBalance || calculateMax(availableBalance, totalGasCostInWei);
         amount = max;
     } else {
         amount = output.amount;
     }
 
     // total ETH spent (amount + fee), in ERC20 only fee
-    const totalSpent = new BigNumber(calculateTotal(token ? '0' : amount, feeInGwei));
+    const totalSpent = new BigNumber(calculateTotal(token ? '0' : amount, totalGasCostInWei));
 
     if (totalSpent.isGreaterThan(availableBalance)) {
         if (token) {
@@ -73,7 +78,7 @@ const calculate = (
                 errorMessage: {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
                     values: {
-                        feeAmount: fromWei(feeInGwei, 'ether').toString(),
+                        feeAmount: fromWei(totalGasCostInWei, 'ether').toString(),
                     },
                 },
             } as const;
@@ -102,7 +107,9 @@ const calculate = (
         type: 'nonfinal' as const,
         totalSpent: token ? amount : totalSpent.toString(),
         max,
-        fee: feeInGwei,
+        fee: totalGasCostInWei,
+        maxFeePerGas: feeLevel.maxFeePerGas,
+        maxPriorityFeePerGas: feeLevel.maxPriorityFeePerGas,
         feePerByte: feeLevel.feePerUnit,
         feeLimit: feeLevel.feeLimit,
         token,
@@ -212,10 +219,14 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         }
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
         if (formState.selectedFee === 'custom') {
+            const { maxPriorityFeePerGas, maxFeePerGas, feePerUnit, feeLimit } = formState;
+
             predefinedLevels.push({
                 label: 'custom',
-                feePerUnit: formState.feePerUnit,
-                feeLimit: formState.feeLimit,
+                feePerUnit,
+                feeLimit,
+                maxPriorityFeePerGas,
+                maxFeePerGas,
                 blocks: -1,
             });
         }
@@ -331,6 +342,8 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             amount: formState.outputs[0].amount,
             data: formState.ethereumDataHex,
             gasLimit: precomposedTransaction.feeLimit || '',
+            maxFeePerGas: precomposedTransaction.maxFeePerGas,
+            maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
             gasPrice: precomposedTransaction.feePerByte,
             nonce,
         });

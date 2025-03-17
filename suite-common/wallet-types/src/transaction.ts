@@ -77,7 +77,9 @@ export type EthTransactionData = {
     amount: string;
     data?: string;
     gasLimit: string;
-    gasPrice: string;
+    gasPrice?: string;
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
     nonce: string;
 };
 
@@ -110,6 +112,8 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     token?: TokenInfo;
     isTokenKnown?: boolean;
     createdTimestamp?: number;
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
 };
 
 // base of PrecomposedTransactionFinal
