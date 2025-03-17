@@ -9,7 +9,7 @@ const dev = {
     watch: true,
     devtool: 'eval-source-map',
     output: {
-        filename: '[name].js',
+        filename: 'js/[name].js',
     },
     plugins: [
         new WebpackPluginServe({

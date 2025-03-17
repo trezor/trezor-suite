@@ -3,7 +3,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/popup.js/
 import type { Core } from '@trezor/connect/src/core';
 import { config } from '@trezor/connect/src/data/config';
-import { DEFAULT_DOMAIN } from '@trezor/connect/src/data/version';
 import {
     CoreEventMessage,
     DEVICE_EVENT,
@@ -455,10 +454,9 @@ const initCoreInPopup = async (
     // dynamically load core module
     reactEventBus.dispatch({ type: 'loading', message: 'loading core' });
 
-    const connectSrc = payload.settings.connectSrc ?? DEFAULT_DOMAIN;
-    // core is built in a separate build step.
     const { initCoreState, initTransport } = await import(
-        /* webpackIgnore: true */ `${connectSrc}js/core.js`
+        // @ts-expect-error - core is built in a separate build step.
+        /* webpackIgnore: true */ `./core.js`
     ).catch(_err => {
         fail({
             type: 'error',
