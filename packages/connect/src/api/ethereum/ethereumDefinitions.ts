@@ -104,6 +104,9 @@ export const decodeEthereumDefinition = (
         token: undefined,
     };
 
+    const messages = DataManager.getProtobufMessages();
+    const proto = parseConfigure(messages);
+
     (['encoded_token', 'encoded_network'] as const).forEach(key => {
         const encodedPayload = encodedDefinition[key];
 
@@ -113,10 +116,6 @@ export const decodeEthereumDefinition = (
         }
 
         const { definitionType, protobufPayload } = trzd.decode(encodedPayload);
-
-        const messages = DataManager.getProtobufMessages();
-
-        const proto = parseConfigure(messages);
         const { message: decodedDefinition } = decodeMessage(
             proto,
             definitionType === 0 ? 'EthereumNetworkInfo' : 'EthereumTokenInfo',
