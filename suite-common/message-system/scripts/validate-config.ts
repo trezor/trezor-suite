@@ -1,26 +1,18 @@
 /* eslint-disable no-console */
-import Ajv from 'ajv';
-import * as fs from 'fs';
+import fs from 'fs';
+
+import { validateJsonSchema } from '@trezor/node-utils';
 
 import { CONFIG_PATH, SCHEMA_PATH } from './constants';
 
-// checks that a config meets the criteria specified by the schema
-const validateConfigStructure = () => {
-    console.log('Validating config against schema...');
-
-    const ajv = new Ajv();
-
+console.log('Validating config against schema...');
+try {
     const config = fs.readFileSync(CONFIG_PATH, 'utf-8');
     const schema = fs.readFileSync(SCHEMA_PATH, 'utf-8');
 
-    const validate = ajv.compile(JSON.parse(schema));
-    const isValid = validate(JSON.parse(config));
-
-    if (!isValid) {
-        throw Error(`Config is invalid: ${JSON.stringify(validate.errors)}`);
-    }
-
+    validateJsonSchema(config, schema);
     console.log('Config is valid!');
-};
-
-validateConfigStructure();
+} catch (error) {
+    console.error(error.message);
+    throw error;
+}
