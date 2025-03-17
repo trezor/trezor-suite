@@ -139,10 +139,7 @@ export const Fees = <TFieldValues extends FormState>({
     const errors = props.errors as unknown as FieldErrors<FormState>;
 
     const error = errors.selectedFee;
-    // TODO: remove saving fee in draft or resolve this as it does not find level when eip-1559 and next time legacy
-    const selectedLevel =
-        feeInfo.levels.find(level => level.label === selectedOption) ||
-        feeInfo.levels.find(level => level.label === 'normal')!;
+    const selectedLevel = feeInfo.levels.find(level => level.label === selectedOption);
     const transactionInfo = composedLevels?.[selectedOption];
 
     const feeOptions = buildFeeOptions(feeInfo.levels, networkType, symbol, composedLevels);
@@ -194,7 +191,7 @@ export const Fees = <TFieldValues extends FormState>({
                 )}
             </Row>
 
-            {!isCustomFee && (
+            {!isCustomFee && selectedLevel && (
                 <StandardFee
                     networkType={networkType}
                     feeInfo={feeInfo}

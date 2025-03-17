@@ -10,7 +10,6 @@ import {
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 
-import { setLastUsedFeeLevel } from 'src/actions/settings/walletSettingsActions';
 import { useDispatch } from 'src/hooks/suite';
 
 import { SendContextValues } from '../../../types/wallet/sendForm';
@@ -18,7 +17,6 @@ import { SendContextValues } from '../../../types/wallet/sendForm';
 interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
     defaultValue?: FeeLevel['label'];
     feeInfo?: FeeInfo;
-    saveLastUsedFee?: boolean;
     onChange?: (prev?: FeeLevel['label'], current?: FeeLevel['label']) => void;
     composeRequest: SendContextValues['composeTransaction'];
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
@@ -29,7 +27,6 @@ interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValu
 export const useFees = <TFieldValues extends FormState>({
     defaultValue,
     feeInfo,
-    saveLastUsedFee,
     onChange,
     composeRequest,
     composedLevels,
@@ -45,7 +42,6 @@ export const useFees = <TFieldValues extends FormState>({
     const maxPriorityFeePerGasRef = useRef<string | undefined>('');
     const maxFeePerGasRef = useRef<string | undefined>('');
     const estimatedFeeLimitRef = useRef<string | undefined>('');
-    const saveLastUsedFeeRef = useRef(saveLastUsedFee);
 
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { clearErrors, getValues, register, setValue, watch } =
@@ -101,28 +97,8 @@ export const useFees = <TFieldValues extends FormState>({
         }
 
         //compose
-        if (updateField) {
-            if (composeRequest) {
-                composeRequest(updateField);
-            }
-            // save last used fee
-            if (
-                saveLastUsedFeeRef.current &&
-                feePerUnit &&
-                !errors.feePerUnit &&
-                !errors.feeLimit
-            ) {
-                dispatch(
-                    setLastUsedFeeLevel({
-                        label: 'custom',
-                        feePerUnit,
-                        feeLimit,
-                        blocks: -1,
-                        maxPriorityFeePerGas,
-                        maxFeePerGas,
-                    }),
-                );
-            }
+        if (updateField && composeRequest) {
+            composeRequest(updateField);
         }
     }, [
         dispatch,
@@ -213,12 +189,6 @@ export const useFees = <TFieldValues extends FormState>({
 
         // on change callback
         if (onChange) onChange(selectedFeeRef.current, level);
-
-        // save last used fee
-        if (level !== 'custom' && saveLastUsedFeeRef.current) {
-            const nextLevel = feeInfo.levels.find(l => l.label === (level || 'normal'))!;
-            dispatch(setLastUsedFeeLevel(nextLevel));
-        }
 
         selectedFeeRef.current = selectedFee;
     };

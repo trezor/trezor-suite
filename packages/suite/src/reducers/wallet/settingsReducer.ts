@@ -17,7 +17,6 @@ export const initialState: State = {
     enabledNetworks: ['btc'],
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
-    lastUsedFeeLevel: {},
 };
 
 const settingsReducer = (state: State = initialState, action: Action): State =>
@@ -46,13 +45,6 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
                 break;
             }
 
-            case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
-                if (action.feeLevel) {
-                    draft.lastUsedFeeLevel[action.symbol] = action.feeLevel;
-                } else {
-                    delete draft.lastUsedFeeLevel[action.symbol];
-                }
-                break;
             case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 draft.bitcoinAmountUnit = action.payload;
                 break;

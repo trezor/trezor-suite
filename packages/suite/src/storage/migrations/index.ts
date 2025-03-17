@@ -834,8 +834,11 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         });
 
         await updateAll(transaction, 'walletSettings', walletSettings => {
+            // @ts-expect-error
             Object.keys(walletSettings.lastUsedFeeLevel).forEach(coin => {
+                // @ts-expect-error
                 if (walletSettings.lastUsedFeeLevel[coin].label === 'low') {
+                    // @ts-expect-error
                     delete walletSettings.lastUsedFeeLevel[coin];
                 }
             });
@@ -1006,12 +1009,17 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         }
 
         await updateAll(transaction, 'walletSettings', walletSettings => {
+            // @ts-expect-error
             if (walletSettings.lastUsedFeeLevel['matic']) {
+                // @ts-expect-error
                 walletSettings.lastUsedFeeLevel = {
+                    // @ts-expect-error
                     ...walletSettings.lastUsedFeeLevel,
+                    // @ts-expect-error
                     pol: { ...walletSettings.lastUsedFeeLevel['matic'] },
                 };
 
+                // @ts-expect-error
                 delete walletSettings.lastUsedFeeLevel['matic'];
             }
 
@@ -1249,6 +1257,15 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
                 return account;
             }
+        });
+    }
+
+    if (oldVersion < 53) {
+        await updateAll(transaction, 'walletSettings', walletSettings => {
+            // @ts-expect-error
+            delete walletSettings.lastUsedFeeLevel;
+
+            return walletSettings;
         });
     }
 

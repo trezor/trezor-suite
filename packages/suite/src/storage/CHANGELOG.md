@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 53
+
+-   remove `walletSettings.lastUsedFeeLevel` - we don't remember last selected fee in send form anymore
+
 ## 52
 
 -   Deprecated Vertcoin (VTC), Bitcoin Gold (BTG), Namecoin (NMC), DigiByte (DGB), and Dash (DASH) networks. Removed related transactions, accounts, and settings.

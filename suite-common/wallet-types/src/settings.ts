@@ -1,6 +1,6 @@
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FeeLevel, PROTO } from '@trezor/connect';
+import { PROTO } from '@trezor/connect';
 
 export const AddressDisplayOptions = {
     ORIGINAL: 'original',
@@ -23,7 +23,4 @@ export interface WalletSettings {
     enabledNetworks: NetworkSymbol[];
     hideSuspiciousTransactions: boolean;
     bitcoinAmountUnit: PROTO.AmountUnit;
-    lastUsedFeeLevel: {
-        [key: string]: Omit<FeeLevel, 'blocks'>; // Key: Network['symbol']
-    };
 }

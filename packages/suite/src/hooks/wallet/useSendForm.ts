@@ -13,10 +13,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
 
-import {
-    getLastUsedFeeLevel,
-    setLastUsedFeeLevel,
-} from 'src/actions/settings/walletSettingsActions';
 import { fillSendForm } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';
 import {
@@ -114,31 +110,13 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         name: 'outputs',
     });
 
-    // enhance DEFAULT_VALUES with last remembered FeeLevel and localCurrencyOption
     // used in "loadDraft" useEffect and "importTransaction" callback
     const getLoadedValues = useCallback(
-        (loadedState?: Partial<FormState>) => {
-            const feeEnhancement: Partial<FormState> = {};
-            if (!loadedState || !loadedState.selectedFee) {
-                const lastUsedFee = dispatch(getLastUsedFeeLevel());
-                if (lastUsedFee) {
-                    feeEnhancement.selectedFee = lastUsedFee.label;
-                    if (lastUsedFee.label === 'custom') {
-                        feeEnhancement.feePerUnit = lastUsedFee.feePerUnit;
-                        feeEnhancement.feeLimit = lastUsedFee.feeLimit;
-                        feeEnhancement.maxFeePerGas = lastUsedFee.maxFeePerGas;
-                        feeEnhancement.maxPriorityFeePerGas = lastUsedFee.maxPriorityFeePerGas;
-                    }
-                }
-            }
-
-            return {
-                ...getDefaultValues(localCurrencyOption),
-                ...loadedState,
-                ...feeEnhancement,
-            };
-        },
-        [dispatch, localCurrencyOption],
+        (loadedState?: Partial<FormState>) => ({
+            ...getDefaultValues(localCurrencyOption),
+            ...loadedState,
+        }),
+        [localCurrencyOption],
     );
 
     // update custom values
@@ -203,7 +181,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const { changeFeeLevel } = useFees({
         defaultValue: undefined,
         feeInfo: state.feeInfo,
-        saveLastUsedFee: true,
         onChange: onFeeLevelChange,
         composedLevels,
         composeRequest,
@@ -224,7 +201,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const resetContext = useCallback(() => {
         setComposedLevels(undefined);
         dispatch(removeSendFormDraftThunk()); // reset draft;
-        dispatch(setLastUsedFeeLevel()); // reset last known FeeLevel
         setState(getStateFromProps(props)); // resetting state will trigger "loadDraft" useEffect block, which will reset FormState to default
     }, [dispatch, props, setComposedLevels]);
 
@@ -364,7 +340,9 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     useEffect(() => {
         if (!draftSaveRequest) return;
         if (Object.keys(formState.errors).length === 0) {
-            dispatch(saveSendFormDraftThunk({ formState: getValues() }));
+            dispatch(
+                saveSendFormDraftThunk({ formState: { ...getValues(), selectedFee: undefined } }),
+            );
         }
         setDraftSaveRequest(false);
     }, [dispatch, draftSaveRequest, setDraftSaveRequest, getValues, formState.errors]);

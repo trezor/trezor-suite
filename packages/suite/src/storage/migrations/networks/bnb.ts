@@ -106,12 +106,17 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     await updateAll(transaction, 'walletSettings', walletSettings => {
+        // @ts-expect-error
         if (walletSettings.lastUsedFeeLevel['bnb']) {
+            // @ts-expect-error
             walletSettings.lastUsedFeeLevel = {
+                // @ts-expect-error
                 ...walletSettings.lastUsedFeeLevel,
+                // @ts-expect-error
                 bsc: { ...walletSettings.lastUsedFeeLevel['bnb'] },
             };
 
+            // @ts-expect-error
             delete walletSettings.lastUsedFeeLevel['bnb'];
         }
 

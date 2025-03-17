@@ -3,7 +3,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FeeLevel, PROTO } from '@trezor/connect';
+import { PROTO } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import * as suiteActions from 'src/actions/suite/suiteActions';
@@ -32,11 +32,6 @@ export type WalletSettingsAction =
     | ReturnType<typeof setLocalCurrency>
     | { type: typeof WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS }
     | { type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE; toggled: boolean }
-    | {
-          type: typeof WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL;
-          symbol: NetworkSymbol;
-          feeLevel?: FeeLevel;
-      }
     | {
           type: typeof WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS;
           payload: PROTO.AmountUnit;
@@ -79,24 +74,6 @@ export const changeCoinVisibility =
             },
         });
     };
-
-export const setLastUsedFeeLevel =
-    (feeLevel?: FeeLevel) => (dispatch: Dispatch, getState: GetState) => {
-        const { selectedAccount } = getState().wallet;
-        if (selectedAccount.status !== 'loaded') return;
-        dispatch({
-            type: WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL,
-            symbol: selectedAccount.account.symbol,
-            feeLevel,
-        });
-    };
-
-export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
-    const { selectedAccount, settings } = getState().wallet;
-    if (selectedAccount.status !== 'loaded') return;
-
-    return settings.lastUsedFeeLevel[selectedAccount.account.symbol];
-};
 
 export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): WalletSettingsAction => {
     analytics.report({
