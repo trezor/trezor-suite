@@ -20,8 +20,8 @@ export class WalletPage {
     readonly walletStakingButton: Locator;
     readonly stakeAddress: Locator;
     readonly walletExtraDropDown: Locator;
-    readonly openBuyTradingButton: Locator;
-    readonly openSwapTradingButton: Locator;
+    readonly openTradingGlobalButton: Locator;
+    readonly openSwapGlobalButton: Locator;
     readonly tradingDropdownBuyButton: Locator;
     readonly balanceOfAccount = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@wallet/coin-balance/value-${symbol}`);
@@ -41,6 +41,8 @@ export class WalletPage {
     readonly transactionItem: Locator;
     readonly transactionAddress: Locator;
     readonly fiatAmount: Locator;
+    readonly walletFilter = (symbol: NetworkSymbol) =>
+        this.page.getByTestId(`@account-menu/filter/${symbol}`);
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
@@ -49,8 +51,8 @@ export class WalletPage {
         this.walletStakingButton = this.page.getByTestId('@wallet/menu/staking');
         this.stakeAddress = this.page.getByTestId('@cardano/staking/address');
         this.walletExtraDropDown = this.page.getByTestId('@wallet/menu/extra-dropdown');
-        this.openBuyTradingButton = this.page.getByTestId('@wallet/menu/wallet-trading-buy');
-        this.openSwapTradingButton = this.page.getByTestId('@wallet/menu/wallet-trading-exchange');
+        this.openTradingGlobalButton = this.page.getByTestId('@wallet/menu/wallet-trading-buy');
+        this.openSwapGlobalButton = this.page.getByTestId('@wallet/menu/wallet-trading-exchange');
         this.tradingDropdownBuyButton = this.page
             .getByRole('list')
             .getByTestId('@wallet/menu/wallet-trading-buy');
@@ -135,7 +137,14 @@ export class WalletPage {
     @step()
     async openTrading(params: WalletParams = {}) {
         await this.openAccount(params);
-        await this.openBuyTradingButton.click();
+        await this.openTradingGlobalButton.click();
+    }
+
+    @step()
+    async openBuyTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
+        await this.openAccount({ symbol, tokens: true });
+        await this.page.getByRole('row', { name: tokenName }).getByRole('button').first().click();
+        await this.page.getByTestId('@trading/tokens/buy-button').click();
     }
 
     @step()
@@ -146,9 +155,15 @@ export class WalletPage {
     }
 
     @step()
+    async openSwapTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
+        await this.openAccount({ symbol, tokens: true });
+        await this.page.getByRole('row', { name: tokenName }).getByRole('button').nth(1).click();
+    }
+
+    @step()
     async openSwapTrading(params: WalletParams = {}) {
         await this.openAccount(params);
-        await this.openSwapTradingButton.click();
+        await this.openSwapGlobalButton.click();
     }
 
     @step()

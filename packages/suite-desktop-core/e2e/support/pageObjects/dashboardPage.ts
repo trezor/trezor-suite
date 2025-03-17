@@ -7,7 +7,7 @@ export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
 
 export class DashboardPage {
     readonly dashboardMenuButton: Locator;
-    readonly discoveryHeader: Locator;
+    readonly dashboardHeader: Locator;
     readonly discoveryBar: Locator;
     readonly graph: Locator;
     readonly graphRangeSelector = (range: graphRangeOptions) =>
@@ -44,7 +44,7 @@ export class DashboardPage {
         private readonly devicePrompt: DevicePrompt,
     ) {
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
-        this.discoveryHeader = this.page.getByRole('heading', { name: 'Dashboard' });
+        this.dashboardHeader = this.page.getByRole('heading', { name: 'Dashboard' });
         this.discoveryBar = this.page.getByTestId('@wallet/discovery-progress-bar');
         this.graph = this.page.getByTestId('@dashboard/graph');
         this.deviceSwitchingOpenButton = this.page.getByTestId('@menu/switch-device');
@@ -79,7 +79,7 @@ export class DashboardPage {
     @step()
     async navigateTo() {
         await this.dashboardMenuButton.click();
-        await expect(this.discoveryHeader).toBeVisible();
+        await expect(this.dashboardHeader).toBeVisible();
     }
 
     @step()

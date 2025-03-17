@@ -52,7 +52,7 @@ Steps:
 
 1. **To run both Web and Desktop at same time** you can do: `yarn workspace @trezor/suite-desktop-core test:e2e`
 
-1. **To run tests headed (showing UI)** you can add: `--headed --ignore-snapshots`. Some snapshots differ between headless and headed mode, ergo we need to ignore them when running in headed mode.
+1. **To run tests headed (showing UI)** you can add: `--headed`.
 
 1. **To run just one test file** you can do: `yarn workspace @trezor/suite-desktop-core test:e2e general/wallet-discovery.test.ts`
 
@@ -60,11 +60,11 @@ Steps:
 
 1. **To run one group** you can add: `--grep @group=wallet`
 
-1. **To open advance debug ui** you can add: `--ui`
+1. **To open advance playwright runner/debugger ui** you can add: `--ui`
 
 1. **To check for flakiness** you can specify test/suite and how many time it should run: `--repeat-each=10`
 
-1. **To debug test** add `await window.pause();` to place where you want test to stop. Debugger window will open. This works only in `--headed` run.
+1. **To debug test** add `await page.pause();` to place where you want test to stop. Debugger window will open. This works only in `--headed` run.
 
 1. **To enable Debug Tools in the browser** press `Ctrl+Shift+I`
 

@@ -32,7 +32,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
         trezorUserEnvLink,
     }) => {
         await test.step('Request to buy Ethereum', async () => {
-            await walletPage.openBuyTradingButton.click();
+            await walletPage.openTradingGlobalButton.click();
             await tradingPage.selectAccount('Ethereum', 'eth');
             await tradingPage.fillBuyForm(fiatAmount, 'ethereum');
             await expect(tradingPage.bestOfferAmount).toHaveText(formattedCryptoAmount);
