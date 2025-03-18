@@ -17,37 +17,43 @@ const accounts = {
 
 test.describe('Use regtest to test pending transactions', { tag: ['@group=wallet'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage, trezorUserEnvLink }) => {
-        await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
+    test.beforeEach(
+        async ({ onboardingPage, dashboardPage, settingsPage, trezorUserEnvLink, walletPage }) => {
+            const payments = [
+                { address: accounts.account1.address, amount: 10 },
+                { address: accounts.account2.address, amount: 10 },
+            ];
 
-        await settingsPage.navigateTo('coins');
-        await settingsPage.coins.disableNetwork('btc');
-        await settingsPage.coins.enableNetwork('regtest');
+            for (const payment of payments) {
+                await trezorUserEnvLink.sendToAddressAndMineBlock({
+                    address: payment.address,
+                    btc_amount: payment.amount,
+                });
+            }
+            // Mining needs to happen in time before discovery
+            await trezorUserEnvLink.mineBlocks({ block_amount: 1 });
 
-        const payments = [
-            { address: accounts.account1.address, amount: 10 },
-            { address: accounts.account2.address, amount: 10 },
-        ];
-
-        for (const payment of payments) {
-            await trezorUserEnvLink.sendToAddressAndMineBlock({
-                address: payment.address,
-                btc_amount: payment.amount,
-            });
-        }
-        await trezorUserEnvLink.mineBlocks({ block_amount: 1 });
-    });
+            await onboardingPage.completeOnboarding();
+            await dashboardPage.discoveryShouldFinish();
+            await settingsPage.navigateTo('coins');
+            await settingsPage.coins.disableNetwork('btc');
+            await settingsPage.coins.enableNetwork('regtest');
+            await dashboardPage.dashboardMenuButton.click();
+            await dashboardPage.discoveryShouldFinish();
+            expect(
+                await walletPage.getAccountsCount('regtest'),
+                'expected 3 Regtest accounts to be discovered. They might not have been mined yet',
+            ).toBe(3);
+        },
+    );
 
     test('Send couple of pending txs and check that they are pending until mined', async ({
         page,
         walletPage,
-        dashboardPage,
         devicePrompt,
         tradingPage,
         trezorUserEnvLink,
     }) => {
-        await dashboardPage.dashboardMenuButton.click();
         await walletPage.accountLabel({ symbol: 'regtest', type: 'normal', atIndex: 0 }).click();
 
         // create 2 transactions (one self, one fund another account of mine)
