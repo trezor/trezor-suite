@@ -45,6 +45,7 @@ export const AddressDisplay = () => {
                     selectedOption={selectedAddressDisplay}
                     options={options}
                     onChange={onChange}
+                    size="small"
                 />
             </ActionColumn>
         </SettingsSectionItem>

@@ -80,6 +80,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                         data-testid="@settings/device/rotation-button"
                         selectedOption={currentRotation ?? undefined}
                         options={DISPLAY_ROTATIONS}
+                        size="small"
                         onChange={(value: DisplayRotationType) => {
                             dispatch(applySettings({ display_rotation: value }));
                             analytics.report({
