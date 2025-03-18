@@ -137,7 +137,6 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
         const openDeviceResult = await api.openDevice(
             acquireIntentResult.payload.path,
-            acquireInput.previous !== 'null',
             acquireInput.signal,
         );
         logger?.debug(`core: openDevice: result: ${JSON.stringify(openDeviceResult)}`);

@@ -73,7 +73,6 @@ type RunOptions = {
     skipLanguageChecks?: boolean;
 };
 
-export const CANCEL_TIMEOUT = 1_000;
 export const GET_FEATURES_TIMEOUT = 3_000;
 // Due to performance issues in suite-native during app start, original timeout is not sufficient.
 export const GET_FEATURES_TIMEOUT_REACT_NATIVE = 20_000;
@@ -546,33 +545,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     const getFeaturesTimeout = isNative
                         ? GET_FEATURES_TIMEOUT_REACT_NATIVE
                         : GET_FEATURES_TIMEOUT;
-                    const cancelTimeout = isNative
-                        ? GET_FEATURES_TIMEOUT_REACT_NATIVE
-                        : CANCEL_TIMEOUT;
-
-                    // note 1: clear communication with the device using Cancel message. This causes any remaining messages in its transport stack to get flushed.
-                    //         this case may happen when communication with the device was abruptly interrupted by unloading connect unexpectedly (example window reload)
-                    // note 2: this problem should not occur for the upcoming trezor host protocol, so we limit this to v1 and bridge protocols
-                    // note 3: in 99% of cases we send this message unnecessarily. as @Szymon pointed out, it might be better to catch this call and repeat it.
-                    // note 4: this case can happen also in the 'if' branch. 1] reload app, 2], browser doesn't fire release in time, 3] you get unacquired device, 4] you click
-                    //         the 'use device here' button and here you go. Yet I didn't want to burden every TrezorConnect method call with this but we may reconsider this.
-                    // note 5: ad note 4. it is not so problematic anymore since cleanup on dispose has been improved in https://github.com/trezor/trezor-suite/pull/16930
-                    // note 6: T1 with older bootloader (1.8.0) doesn't respond to Cancel message, so we better ignore those
-                    if (
-                        ['v1', 'bridge'].includes(this.protocol.name) &&
-                        ![0, 2].includes(this.transportDescriptorType) // ignore model 1 hid or webusb bootloader mode
-                    ) {
-                        _log.debug(
-                            'sending a preventive cancel on the first encounter with the device',
-                        );
-
-                        await Promise.race([
-                            this.getCommands()
-                                .typedCall('Cancel', 'Failure', {})
-                                .catch(() => {}),
-                            new Promise((_, reject) => setTimeout(reject, cancelTimeout)),
-                        ]).catch(() => this.acquire());
-                    }
 
                     let getFeaturesTimeoutId: ReturnType<typeof setTimeout> | undefined;
 

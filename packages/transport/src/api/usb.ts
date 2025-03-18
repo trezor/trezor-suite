@@ -271,7 +271,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    public async openDevice(path: string, reset: boolean, signal?: AbortSignal) {
+    public async openDevice(path: string, signal?: AbortSignal) {
         // note: multiple retries to open device. reason:  when another window acquires device, changed session
         // is broadcasted to other clients. they are responsible for releasing interface, which takes some time.
         // if there is only one client working with device, this will succeed using only one attempt.
@@ -280,7 +280,7 @@ export class UsbApi extends AbstractApi {
         // I would need to throw artificially which is not nice.
         for (let i = 0; i < 5; i++) {
             this.logger?.debug(`usb: openDevice attempt ${i}`);
-            const res = await this.openInternal(path, reset, signal);
+            const res = await this.openInternal(path, signal);
             if (res.success || signal?.aborted) {
                 return res;
             }
@@ -288,10 +288,10 @@ export class UsbApi extends AbstractApi {
             await resolveAfter(100 * i);
         }
 
-        return this.openInternal(path, reset, signal);
+        return this.openInternal(path, signal);
     }
 
-    private async openInternal(path: string, reset: boolean, signal?: AbortSignal) {
+    private async openInternal(path: string, signal?: AbortSignal) {
         const device = this.findDevice(path);
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
@@ -327,49 +327,46 @@ export class UsbApi extends AbstractApi {
             }
         }
 
-        // todo: maybe we should do reset and the preventive read also in cases we think device was not acquired previously
-        if (reset) {
-            try {
-                this.logger?.debug('usb: performing preventive read from usb');
-                let continueReading = true;
-                do {
-                    const localAbortController = new AbortController();
-                    const onAbortFromAbove = () => {
-                        this.logger?.debug('usb: preventive read: aborted from above');
-                        localAbortController.abort();
-                        continueReading = false;
-                    };
+        try {
+            this.logger?.debug('usb: performing preventive read from usb');
+            let continueReading = true;
+            do {
+                const localAbortController = new AbortController();
+                const onAbortFromAbove = () => {
+                    this.logger?.debug('usb: preventive read: aborted from above');
+                    localAbortController.abort();
+                    continueReading = false;
+                };
 
-                    signal?.addEventListener('abort', onAbortFromAbove);
+                signal?.addEventListener('abort', onAbortFromAbove);
 
-                    const timeout = setTimeout(() => {
-                        this.logger?.debug(
-                            'usb: preventive read: no response received in limit, stop preventive reading. device.reset() will be called.',
-                        );
+                const timeout = setTimeout(() => {
+                    this.logger?.debug(
+                        'usb: preventive read: no response received in limit, stop preventive reading. device.reset() will be called.',
+                    );
 
-                        localAbortController.abort();
-                        signal?.removeEventListener('abort', onAbortFromAbove);
-                        continueReading = false;
-                        // todo: isn't 100 too much? what is enough?
-                    }, 100);
-
-                    const readRes = await this.read(path, localAbortController.signal);
-
-                    clearTimeout(timeout);
+                    localAbortController.abort();
                     signal?.removeEventListener('abort', onAbortFromAbove);
+                    continueReading = false;
+                    // todo: isn't 100 too much? what is enough?
+                }, 100);
 
-                    if (!readRes.success) {
-                        continueReading = false;
-                    }
-                } while (continueReading);
+                const readRes = await this.read(path, localAbortController.signal);
 
-                this.logger?.debug(`usb: device.reset done.`);
-            } catch (err) {
-                this.logger?.error(
-                    `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
-                );
-                // empty
-            }
+                clearTimeout(timeout);
+                signal?.removeEventListener('abort', onAbortFromAbove);
+
+                if (!readRes.success) {
+                    continueReading = false;
+                }
+            } while (continueReading);
+
+            this.logger?.debug(`usb: device.reset done.`);
+        } catch (err) {
+            this.logger?.error(
+                `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
+            );
+            // empty
         }
 
         const interfaceId = this.debugLink ? DEBUGLINK_INTERFACE_ID : INTERFACE_ID;
@@ -388,6 +385,7 @@ export class UsbApi extends AbstractApi {
                 });
             }
         }
+
         return this.success(undefined);
     }
 

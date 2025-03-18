@@ -104,7 +104,6 @@ export abstract class AbstractApi extends TypedEmitter<{
      */
     abstract openDevice(
         path: PathInternal,
-        reset: boolean,
         signal?: AbortSignal,
     ): AsyncResultWithTypedError<
         undefined,

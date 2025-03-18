@@ -114,10 +114,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return this.error({ error: acquireIntentResponse.error });
                 }
 
-                const reset = !!input.previous;
                 const openDeviceResult = await this.api.openDevice(
                     acquireIntentResponse.payload.path,
-                    reset,
                     signal,
                 );
 
