@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 
-export function spawnAndCollectStdout(command: string): Promise<string> {
+function spawnAndCollectStdout(command: string): Promise<string> {
     return new Promise((resolve, reject) => {
         const child = spawn(command, { shell: true });
         let stdout = '';
