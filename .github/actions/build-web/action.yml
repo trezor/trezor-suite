@@ -1,5 +1,10 @@
 name: "Build and Upload Suite Web app"
 description: "Builds the Trezor Suite Web app and uploads it to S3 for e2e testing."
+inputs:
+  deployment-branch-override:
+    description: "Override the branch name to use for the deployment path."
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -14,7 +19,11 @@ runs:
       id: extract_branch
       shell: bash
       run: |
-        echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
+        if [[ -z "${{ inputs.deployment-branch-override }}" ]]; then
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
+        else
+          echo "branch=${{ inputs.deployment-branch-override }}" >> $GITHUB_ENV
+        fi
 
     - name: Setup Node.js
       uses: actions/setup-node@v4

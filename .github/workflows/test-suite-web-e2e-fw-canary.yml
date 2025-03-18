@@ -31,6 +31,8 @@ jobs:
 
       - name: Build and Upload Suite Web
         uses: ./.github/actions/build-web
+        with:
+          deployment-branch-override: "fw-canary-788b960e2c6b5112230ded6129d69538"
 
   load-e2e-matrix:
     if: github.repository == 'trezor/trezor-suite'
