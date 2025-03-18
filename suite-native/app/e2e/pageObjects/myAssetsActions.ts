@@ -8,7 +8,6 @@ class MyAssetsActions {
     }
 
     async addAccount() {
-        await element(by.id('@screen/mainScrollView')).scrollTo('top');
         await element(by.id('@myAssets/addAccountButton')).tap();
 
         await detoxExpect(element(by.id('@screen/SelectNetwork'))).toBeVisible();

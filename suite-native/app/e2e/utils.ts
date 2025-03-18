@@ -83,10 +83,14 @@ export const scrollUntilVisible = async (matcher: Detox.NativeMatcher) => {
         // Try to confirm that the element is visible without scrolling.
         await detoxExpect(element(matcher)).toBeVisible();
     } catch {
+        const mainScrollViewId = by.id('@screen/mainScrollView');
+
+        await element(mainScrollViewId).tap();
+
         // If the element is not visible, then use the scroll to find it.
         await waitFor(element(matcher))
             .toBeVisible()
-            .whileElement(by.id('@screen/mainScrollView'))
+            .whileElement(mainScrollViewId)
             .scroll(250, 'down');
     }
 };
