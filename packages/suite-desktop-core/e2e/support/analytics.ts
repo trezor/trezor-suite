@@ -45,7 +45,12 @@ export class AnalyticsFixture {
     @step()
     async waitForAnalyticsRequests(expectedNewRequests = 1) {
         await expect
-            .poll(() => this.requests.length)
+            .poll(
+                () => this.requests.length,
+                `expected ${expectedNewRequests} new analytics requests.
+Last request count was ${this.lastRequestCount} so we should have total of ${this.lastRequestCount + expectedNewRequests}.
+Currently intercepted: \n${JSON.stringify(this.requests, null, 2)}`,
+            )
             .toBeGreaterThanOrEqual(this.lastRequestCount + expectedNewRequests);
         this.lastRequestCount = this.requests.length;
     }
