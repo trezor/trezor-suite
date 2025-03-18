@@ -159,7 +159,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
                         type={type}
                         hideLabel={hideLabel}
                         hasBalance={groupHasBalance}
-                        keepOpen={keepOpen(type)}
+                        keepOpen={hideLabel || keepOpen(type)}
                     >
                         <Accounts {...accountProps} />
                     </AccountGroup>
