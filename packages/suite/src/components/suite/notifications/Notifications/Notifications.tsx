@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import styled from 'styled-components';
+
 import { Divider, IconButton, Row, Tabs } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -8,6 +10,11 @@ import { SETTINGS } from 'src/config/suite';
 import { useSelector } from 'src/hooks/suite';
 
 import { NotificationGroup } from './NotificationGroup/NotificationGroup';
+
+const NotificationsWrapper = styled.div`
+    max-height: calc(100vh - 230px);
+    overflow-y: auto;
+`;
 
 interface NotificationsProps {
     onCancel?: () => void;
@@ -44,9 +51,14 @@ export const Notifications = (props: NotificationsProps) => {
                 )}
             </Row>
             <Divider margin={{ top: 0, bottom: spacings.md }} />
-            <NotificationGroup
-                notifications={selectedTab === 'important' ? importantNotifications : notifications}
-            />
+
+            <NotificationsWrapper>
+                <NotificationGroup
+                    notifications={
+                        selectedTab === 'important' ? importantNotifications : notifications
+                    }
+                />
+            </NotificationsWrapper>
         </>
     );
 };
