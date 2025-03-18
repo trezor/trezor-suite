@@ -1,13 +1,6 @@
 import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 
-export type AmountLimitProps = {
-    currency: string;
-    minCrypto?: string;
-    maxCrypto?: string;
-
-    minFiat?: string;
-    maxFiat?: string;
-};
+import { TradingAmountLimitProps } from '../../types';
 
 type GetAmountLimitsProps = {
     request: BuyTradeQuoteRequest;
@@ -20,7 +13,7 @@ const getAmountLimits = ({
     request,
     quotes,
     currency,
-}: GetAmountLimitsProps): AmountLimitProps | undefined => {
+}: GetAmountLimitsProps): TradingAmountLimitProps | undefined => {
     let minAmount: number | undefined;
     let maxAmount: number | undefined;
 

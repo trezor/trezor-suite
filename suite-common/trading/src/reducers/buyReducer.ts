@@ -8,7 +8,7 @@ import type {
 } from 'invity-api';
 
 import { TRADING_BUY_PREFIX } from '../constants';
-import { AmountLimitProps } from '../utils/buy/buyUtils';
+import { TradingAmountLimitProps } from '../types';
 
 export interface BuyInfo {
     buyInfo: BuyListResponse;
@@ -25,7 +25,7 @@ export interface TradingBuyState {
     selectedQuote: BuyTrade | undefined;
     addressVerified: string | undefined;
     isLoading: boolean;
-    amountLimits: AmountLimitProps | undefined;
+    amountLimits: TradingAmountLimitProps | undefined;
 
     transactionId?: string;
 }
@@ -42,7 +42,7 @@ export const buyInitialState: TradingBuyState = {
     amountLimits: undefined,
 };
 
-export const tradingBuySlice = createSlice({
+const tradingBuySlice = createSlice({
     name: TRADING_BUY_PREFIX,
     initialState: buyInitialState,
     reducers: {
@@ -76,7 +76,7 @@ export const tradingBuySlice = createSlice({
         setIsLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
         },
-        setAmountLimits(state, action: PayloadAction<AmountLimitProps | undefined>) {
+        setAmountLimits(state, action: PayloadAction<TradingAmountLimitProps | undefined>) {
             state.amountLimits = action.payload;
         },
     },

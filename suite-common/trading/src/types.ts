@@ -167,3 +167,17 @@ export type TradingOTC = {
 };
 
 export type TradingProviderInfo = BuyProviderInfo | ExchangeProviderInfo | SellProviderInfo;
+
+export type TradingAmountLimitProps = {
+    currency: string;
+    minCrypto?: string;
+    maxCrypto?: string;
+
+    minFiat?: string;
+    maxFiat?: string;
+};
+
+export type TradingExchangeAmountLimitProps = Pick<
+    TradingAmountLimitProps,
+    'currency' | 'minCrypto' | 'maxCrypto'
+>;
