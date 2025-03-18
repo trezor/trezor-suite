@@ -611,6 +611,7 @@ const fail = (error: ErrorViewProps) => {
     });
 
     disposed = true;
+    clearTimeout(handshakeTimeout);
 };
 
 addWindowEventListener('load', onLoad, false);
