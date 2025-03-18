@@ -12228,7 +12228,7 @@ __metadata:
     stream-browserify: "npm:^3.0.0"
     style-loader: "npm:^3.3.4"
     terser-webpack-plugin: "npm:^5.3.14"
-    vite: "npm:^6.2.1"
+    vite: "npm:^6.2.2"
     vite-plugin-wasm: "npm:^3.4.1"
     vm-browserify: "npm:^1.1.2"
     webpack: "npm:^5.97.1"
@@ -41900,9 +41900,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.2.1":
-  version: 6.2.1
-  resolution: "vite@npm:6.2.1"
+"vite@npm:^6.2.2":
+  version: 6.2.2
+  resolution: "vite@npm:6.2.2"
   dependencies:
     esbuild: "npm:^0.25.0"
     fsevents: "npm:~2.3.3"
@@ -41948,7 +41948,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10/a37cbc33a3d9746434e8e96614dd6d8d45d821e61e9d266f389808da290b3128ac93ba0059ab09a098cdeab8b790d6d3ae7cdd5e1ce7d55c31b8bece650b3790
+  checksum: 10/30896cbdbc082131cca3a343461ada8c2e8c30eed640dfaca39fd44b2f2fa4a1a312fe298e037063106af09f3026239be822a6b2f49e3d8239b8a64e86e83193
   languageName: node
   linkType: hard
 
