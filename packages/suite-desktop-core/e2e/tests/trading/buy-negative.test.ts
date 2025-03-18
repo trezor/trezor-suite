@@ -15,6 +15,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@group=other', '@webO
         await walletPage.openTradingGlobalButton.click();
         // waits for trading form to load
         await expect(tradingPage.youPayFiatInput).not.toHaveValue('');
+        await tradingPage.selectFiatCurrency('eur');
 
         await test.step('Input amount above maximum', async () => {
             await page.route(invityEndpoint.buyQuotes, async route => {
