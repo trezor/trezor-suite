@@ -83,14 +83,13 @@ export const scrollUntilVisible = async (matcher: Detox.NativeMatcher) => {
         // Try to confirm that the element is visible without scrolling.
         await detoxExpect(element(matcher)).toBeVisible();
     } catch {
-        const mainScrollViewId = by.id('@screen/mainScrollView');
-
-        await element(mainScrollViewId).tap();
+        // Hide keyboard in case it is open. (iOS scrolling is broken when keyboard is visible)
+        await device.tap({ x: 0, y: 0 });
 
         // If the element is not visible, then use the scroll to find it.
         await waitFor(element(matcher))
             .toBeVisible()
-            .whileElement(mainScrollViewId)
+            .whileElement(by.id('@screen/mainScrollView'))
             .scroll(250, 'down');
     }
 };
