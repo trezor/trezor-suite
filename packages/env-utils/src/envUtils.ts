@@ -1,4 +1,4 @@
-import UAParser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 
 import { publicKey } from './jws';
 import { EnvUtils, Environment } from './types';
@@ -43,7 +43,7 @@ const getOsVersion = () => getUserAgentParser().getOS().version || '';
 const getSuiteVersion = () => process.env.VERSION || '';
 
 const getBrowserName = () => {
-    const browserName = getUserAgentParser().getBrowser().name;
+    const browserName = getUserAgentParser().getBrowser().name?.replace(' ', '');
 
     return browserName?.toLowerCase() || '';
 };
@@ -73,14 +73,14 @@ const isMacOs = () => {
     if (getProcessPlatform() === 'darwin') return true;
     if (typeof window === 'undefined') return;
 
-    return getPlatform().startsWith('Mac');
+    return getPlatform().toLowerCase().startsWith('mac');
 };
 
 const isWindows = () => {
     if (getProcessPlatform() === 'win32') return true;
     if (typeof window === 'undefined') return;
 
-    return getPlatform().startsWith('Win');
+    return getPlatform().toLowerCase().startsWith('win');
 };
 
 const isIOs = () => ['iPhone', 'iPad', 'iPod'].includes(getPlatform());
@@ -92,7 +92,7 @@ const isLinux = () => {
     // exclude Android and Chrome OS as window.navigator.platform of those OS is Linux
     if (isAndroid() || isChromeOs()) return false;
 
-    return getPlatform().startsWith('Linux');
+    return getPlatform().toLowerCase().startsWith('linux');
 };
 
 const isCodesignBuild = () => process.env.IS_CODESIGN_BUILD === 'true';
@@ -108,15 +108,15 @@ const getOsName = () => {
     return '';
 };
 
-const getOsNameWeb = () => getUserAgentParser().getOS().name;
+const getOsNameWeb = () => getUserAgentParser().getOS().name?.replaceAll(' ', '');
 
 const getOsFamily = () => {
-    const osName = getUserAgentParser().getOS().name;
+    const osName = getUserAgentParser().getOS().name?.toLowerCase().replaceAll(' ', '');
 
-    if (osName === 'Windows') {
+    if (osName === 'windows') {
         return 'Windows';
     }
-    if (osName === 'Mac OS') {
+    if (osName === 'macos') {
         return 'MacOS';
     }
 

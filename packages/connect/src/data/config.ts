@@ -72,6 +72,11 @@ export const config = {
             download: 'https://www.google.com/chrome/',
             update: 'https://support.google.com/chrome/answer/95414',
         },
+        mobilechrome: {
+            version: 59,
+            download: 'https://www.google.com/chrome/',
+            update: 'https://support.google.com/chrome/answer/95414',
+        },
         chromium: {
             version: 59,
             download: 'https://www.chromium.org/',
@@ -83,6 +88,11 @@ export const config = {
             update: 'https://www.electronjs.org/',
         },
         firefox: {
+            version: 54,
+            download: 'https://www.mozilla.org/en-US/firefox/new/',
+            update: 'https://support.mozilla.org/en-US/kb/update-firefox-latest-version',
+        },
+        mobilefirefox: {
             version: 54,
             download: 'https://www.mozilla.org/en-US/firefox/new/',
             update: 'https://support.mozilla.org/en-US/kb/update-firefox-latest-version',
