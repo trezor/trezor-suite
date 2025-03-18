@@ -236,6 +236,10 @@ const TipsContainer = styled.div`
     width: 500px;
     margin-top: 40px;
     margin-bottom: 20px;
+
+    > * {
+        margin-bottom: 20px;
+    }
 `;
 
 const IconWrapper = styled.div`
