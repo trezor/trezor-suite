@@ -90,7 +90,8 @@ export const WalletInstance = ({
                   const nextAccount = nextDeviceAccounts.find(
                       account =>
                           account.symbol === selectedAccount.params?.symbol &&
-                          account.index === selectedAccount.params?.accountIndex,
+                          account.index === selectedAccount.params?.accountIndex &&
+                          account.accountType === selectedAccount.params?.accountType,
                   );
 
                   dispatch(selectDeviceThunk({ device: instance }));
