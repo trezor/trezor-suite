@@ -17,7 +17,7 @@ const dev = {
         'trezor-connect': path.resolve(__dirname, '../src/index.ts'),
     },
     output: {
-        filename: '[name].js',
+        filename: 'js/[name].js',
         path: path.resolve(__dirname, '../build'),
         publicPath: './',
         library: 'TrezorConnect',
