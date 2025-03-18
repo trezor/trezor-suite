@@ -1,0 +1,68 @@
+[
+    {
+        "error": "Amount too low, minimum is CZK 96.61.",
+        "exchange": "anycoin",
+        "fiatCurrency": "CZK",
+        "receiveCurrency": "bitcoin",
+        "rate": 0,
+        "wantCrypto": false,
+        "exp": "t+vWC5JpkRwVcd4SrCj7LQ==",
+        "country": "CZ",
+        "paymentMethodName": "Bank Transfer",
+        "fiatStringAmount": "0.01",
+        "receiveStringAmount": "-0.00001",
+        "minFiat": 96.61,
+        "maxFiat": 5000000,
+        "minCrypto": 0.00005,
+        "maxCrypto": 2.58763612,
+        "paymentMethod": "bankTransfer",
+        "quoteId": "ad938333-1aa3-4e9b-bbe3-235cc62d5ef7",
+        "validUntil": "2025-03-18T11:17:36.412Z"
+    },
+    {
+        "error": "Amount too low, minimum is CZK 1503.02.",
+        "exchange": "coinify",
+        "fiatCurrency": "CZK",
+        "receiveCurrency": "bitcoin",
+        "rate": 0,
+        "wantCrypto": false,
+        "exp": "t+vWC5JpkRwVcd4SrCj7LQ==",
+        "country": "CZ",
+        "paymentMethodName": "Credit Card",
+        "fiatStringAmount": "0.01",
+        "receiveStringAmount": "-0.00007049",
+        "minFiat": 1503.02,
+        "maxFiat": 125275.9,
+        "minCrypto": 0.00079206,
+        "maxCrypto": 0.06601818,
+        "paymentMethod": "creditCard",
+        "quoteId": "f45f9fb4-25c6-4133-ab4f-96c3c6606d61"
+    },
+    {
+        "error": "Error from exchange: Amount off limits.",
+        "exchange": "mercuryo"
+    },
+    {
+        "error": "The chosen amount of CZK 0.01 is lower than the accepted minimum of CZK 500.",
+        "exchange": "moonpay"
+    },
+    {
+        "error": "Error from exchange: Minimum amount is 114.56 CZK",
+        "exchange": "paybis"
+    },
+    {
+        "error": "Sorry, the fees for this transaction exceed the purchase amount. Please enter a larger purchase amount.",
+        "exchange": "simplex",
+        "fiatCurrency": "CZK",
+        "receiveCurrency": "bitcoin",
+        "rate": 0,
+        "paymentMethodName": "Credit Card",
+        "fiatStringAmount": "0.01",
+        "receiveStringAmount": "0",
+        "minFiat": 1147,
+        "maxFiat": 458628,
+        "minCrypto": 0.00055947,
+        "maxCrypto": 0.22378604,
+        "paymentMethod": "creditCard"
+    }
+]

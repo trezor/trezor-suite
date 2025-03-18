@@ -1,6 +1,8 @@
 import buyList from './buy/list.json';
 import buyQuotesBTCUpdate from './buy/quotes-bitcoin-update.json';
 import buyQuotesBTC from './buy/quotes-bitcoin.json';
+import buyQuotesNegativeMax from './buy/quotes-buy-above-max.json';
+import buyQuotesNegativeMin from './buy/quotes-buy-below-min.json';
 import buyQuotesEthereum from './buy/quotes-ethereum.json';
 import buyQuotesSolanaToken from './buy/quotes-solana-token.json';
 import buyTradeBTCPayload from './buy/requests/trade-request-bitcoin.json';
@@ -89,6 +91,8 @@ export {
     buyQuotesBTC,
     buyQuotesBTCUpdate,
     buyQuotesEthereum,
+    buyQuotesNegativeMax,
+    buyQuotesNegativeMin,
     buyQuotesSolanaToken,
     buyTradeBTC,
     buyTradeEthereum,
