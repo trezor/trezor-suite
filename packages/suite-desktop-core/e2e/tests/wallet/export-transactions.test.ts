@@ -11,9 +11,8 @@ test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () 
             mnemonic: 'town grace cat forest dress dust trick practice hair survey pupil regular',
         },
     });
-    test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage }) => {
+    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
-        await walletPage.openAccount();
         await dashboardPage.discoveryShouldFinish();
     });
 
