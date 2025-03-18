@@ -127,7 +127,7 @@ export const Switch = ({
     onChange,
     isDisabled = false,
     isAlert,
-    isSmall,
+    isSmall, // TODO use size instead of isSmall
     label,
     'data-testid': dataTest,
     isChecked,

@@ -1,11 +1,10 @@
 import { ReactNode } from 'react';
 
-import styled from 'styled-components';
+import { useTheme } from 'styled-components';
 
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
 import { DataAnalytics } from '@trezor/components';
 import { analytics } from '@trezor/suite-analytics';
-import { typography } from '@trezor/theme';
 import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
 
 import { rerun } from 'src/actions/recovery/recoveryActions';
@@ -15,17 +14,13 @@ import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 import { SecurityCheck } from '../onboarding/steps/SecurityCheck/SecurityCheck';
 
-const StyledTrezorLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    ${typography.hint}
-`;
-
 export const StartContent = () => {
     const confirmed = useSelector(selectIsAnalyticsConfirmed);
     const recovery = useSelector(state => state.recovery);
     const prerequisite = useSelector(selectPrerequisite);
 
     const dispatch = useDispatch();
+    const theme = useTheme();
 
     const onConfirm = (trackingEnabled: boolean) => {
         if (trackingEnabled) {
@@ -44,14 +39,24 @@ export const StartContent = () => {
             <DataAnalytics
                 onConfirm={onConfirm}
                 analyticsLink={(chunks: ReactNode[]) => (
-                    <StyledTrezorLink variant="underline" href={DOCS_ANALYTICS_URL}>
+                    <TrezorLink
+                        color={theme.textSubdued}
+                        typographyStyle="label"
+                        variant="underline"
+                        href={DOCS_ANALYTICS_URL}
+                    >
                         {chunks}
-                    </StyledTrezorLink>
+                    </TrezorLink>
                 )}
                 tosLink={(chunks: ReactNode[]) => (
-                    <StyledTrezorLink variant="underline" href={DATA_TOS_URL}>
+                    <TrezorLink
+                        color={theme.textSubdued}
+                        typographyStyle="label"
+                        variant="underline"
+                        href={DATA_TOS_URL}
+                    >
                         {chunks}
-                    </StyledTrezorLink>
+                    </TrezorLink>
                 )}
             />
         );

@@ -1,100 +1,14 @@
-import { Fragment, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { spacingsPx, typography } from '@trezor/theme';
+import { Center, Column, Icon, Row, Text } from '@trezor/components';
+import { borders, spacings } from '@trezor/theme';
 
 import { Card } from './Card/Card';
-import { CollapsibleBox } from './CollapsibleBox/CollapsibleBox';
 import { Button } from './buttons/Button/Button';
 import { Switch } from './form/Switch/Switch';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xl};
-`;
-
-const SwitchWrapper = styled.div`
-    display: flex;
-`;
-
-const ContentWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.sm};
-`;
-
-const ButtonWrapper = styled.div`
-    display: flex;
-    align-self: center;
-`;
-
-const Label = styled.span`
-    margin-left: ${spacingsPx.lg};
-    ${typography.hint};
-    color: ${({ theme }) => theme.textDefault};
-    align-items: center;
-    display: flex;
-`;
-
-const Heading = styled.h2`
-    ${typography.callout};
-    color: ${({ theme }) => theme.textDefault};
-    text-align: left;
-`;
-
-const Description = styled.span`
-    ${typography.hint};
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
-const Category = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 4fr;
-    grid-gap: ${spacingsPx.lg};
-    width: 100%;
-`;
-const CategoryItems = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const CategoryName = styled(Description)`
-    margin-bottom: 0;
-    width: 120px;
-`;
-
-const collectedData = [
-    {
-        name: <FormattedMessage id="TR_DATA_ANALYTICS_CATEGORY_1" defaultMessage="Platform" />,
-        item: (
-            <FormattedMessage
-                id="TR_DATA_ANALYTICS_CATEGORY_1_ITEM_1"
-                defaultMessage="OS, Trezor model, version etc."
-            />
-        ),
-    },
-    {
-        name: <FormattedMessage id="TR_DATA_ANALYTICS_CATEGORY_2" defaultMessage="Usage" />,
-        item: (
-            <FormattedMessage
-                id="TR_DATA_ANALYTICS_CATEGORY_2_ITEM_1"
-                defaultMessage="How you use app"
-            />
-        ),
-    },
-    {
-        name: <FormattedMessage id="TR_DATA_ANALYTICS_CATEGORY_3" defaultMessage="Audience" />,
-        item: (
-            <FormattedMessage
-                id="TR_DATA_ANALYTICS_CATEGORY_3_ITEM_1"
-                defaultMessage="Language, user count, etc."
-            />
-        ),
-    },
-];
 
 interface DataAnalyticsProps {
     onConfirm: (trackingEnabled: boolean) => void;
@@ -103,6 +17,16 @@ interface DataAnalyticsProps {
     className?: string;
     isInitialTrackingEnabled?: boolean;
 }
+
+const IconWrapper = styled.div`
+    border-radius: ${borders.radii.sm};
+    border: solid 1px ${({ theme }) => theme.borderElevation1};
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
 
 // This component is used in connect-ui, therefore it's located in this library,
 // although in the future it should be moved elsewhere.
@@ -122,15 +46,15 @@ export const DataAnalytics = ({
             paddingType="large"
             maxWidth={550}
         >
-            <Wrapper>
-                <ContentWrapper>
-                    <Heading data-testid="@analytics/consent/heading">
+            <Column gap={spacings.md}>
+                <Column gap={spacings.md}>
+                    <Text typographyStyle="callout" data-testid="@analytics/consent/heading">
                         <FormattedMessage
                             id="TR_ONBOARDING_DATA_COLLECTION_HEADING"
                             defaultMessage="Anonymous data collection"
                         />
-                    </Heading>
-                    <Description>
+                    </Text>
+                    <Text typographyStyle="label" variant="tertiary">
                         <FormattedMessage
                             id="TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION"
                             values={{
@@ -139,44 +63,70 @@ export const DataAnalytics = ({
                             }}
                             defaultMessage="All data is anonymous and is used only for product development purposes. Read more in our <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>."
                         />
-                    </Description>
+                    </Text>
 
-                    <CollapsibleBox
-                        heading={
-                            <FormattedMessage
-                                id="TR_WHAT_DATA_WE_COLLECT"
-                                defaultMessage="What data do we collect"
-                            />
-                        }
-                    >
-                        <Category>
-                            {collectedData.map((category, i) => (
-                                <Fragment key={i}>
-                                    <CategoryName>{category.name}</CategoryName>
-                                    <CategoryItems>
-                                        <Label>{category.item}</Label>
-                                    </CategoryItems>
-                                </Fragment>
-                            ))}
-                        </Category>
-                    </CollapsibleBox>
+                    <Card>
+                        <Column gap={spacings.lg}>
+                            <Row gap={spacings.md}>
+                                <IconWrapper>
+                                    <Icon size="medium" name="eyeSlash" />
+                                </IconWrapper>
+                                <Column gap={spacings.xxxs} flex="1">
+                                    <Text typographyStyle="callout">
+                                        <FormattedMessage
+                                            id="TR_ALLOW_ANALYTICS_PRIVACY_TITLE"
+                                            defaultMessage="You data is private"
+                                        />
+                                    </Text>
+                                    <Text typographyStyle="label" variant="tertiary">
+                                        <FormattedMessage
+                                            id="TR_ALLOW_ANALYTICS_PRIVACY_DESCRIPTION"
+                                            defaultMessage="We don't gather sensitive personal data like balances, transactions, or profile details."
+                                        />
+                                    </Text>
+                                </Column>
+                            </Row>
 
-                    <SwitchWrapper>
-                        <Switch
-                            isChecked={trackingEnabled}
-                            onChange={() => setTrackingEnabled(!trackingEnabled)}
-                            data-testid="@analytics/toggle-switch"
-                        />
-                        <Label>
-                            <FormattedMessage
-                                id="TR_ONBOARDING_ALLOW_ANALYTICS"
-                                defaultMessage="Allow anonymous data collection"
-                            />
-                        </Label>
-                    </SwitchWrapper>
-                </ContentWrapper>
+                            <Row gap={spacings.md}>
+                                <IconWrapper>
+                                    <Icon size="medium" name="bug" />
+                                </IconWrapper>
+                                <Column gap={spacings.xxxs} flex="1">
+                                    <Text typographyStyle="callout">
+                                        <FormattedMessage
+                                            id="TR_WHAT_DATA_WE_COLLECT"
+                                            defaultMessage="What data do we collect"
+                                        />
+                                    </Text>
+                                    <Text typographyStyle="label" variant="tertiary">
+                                        <FormattedMessage
+                                            id="TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_DESCRIPTION"
+                                            defaultMessage="We collect data on app performance, user interaction, and potential technical issues to enhance the user experience."
+                                        />
+                                    </Text>
+                                </Column>
+                            </Row>
+                            <Card paddingType="small">
+                                <Row justifyContent="space-between">
+                                    <Text typographyStyle="callout">
+                                        <FormattedMessage
+                                            id="TR_ONBOARDING_ALLOW_ANALYTICS"
+                                            defaultMessage="Help us anonymously"
+                                        />
+                                    </Text>
+                                    <Switch
+                                        isChecked={trackingEnabled}
+                                        onChange={() => setTrackingEnabled(!trackingEnabled)}
+                                        data-testid="@analytics/toggle-switch"
+                                        isSmall
+                                    />
+                                </Row>
+                            </Card>
+                        </Column>
+                    </Card>
+                </Column>
 
-                <ButtonWrapper>
+                <Center>
                     <Button
                         data-testid="@analytics/continue-button"
                         onClick={() => onConfirm(trackingEnabled)}
@@ -184,8 +134,8 @@ export const DataAnalytics = ({
                     >
                         <FormattedMessage id="TR_CONFIRM" defaultMessage="Confirm" />
                     </Button>
-                </ButtonWrapper>
-            </Wrapper>
+                </Center>
+            </Column>
         </Card>
     );
 };

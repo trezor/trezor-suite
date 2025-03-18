@@ -1575,17 +1575,34 @@ export default defineMessages({
         id: 'TR_ALL',
     },
     TR_ONBOARDING_ALLOW_ANALYTICS: {
-        defaultMessage: 'Allow anonymous data collection',
+        defaultMessage: 'Help us anonymously',
         id: 'TR_ONBOARDING_ALLOW_ANALYTICS',
     },
     TR_ALLOW_ANALYTICS: {
-        defaultMessage: 'Anonymous data collection',
+        defaultMessage: 'Better―with you',
         id: 'TR_ALLOW_ANALYTICS',
     },
     TR_ALLOW_ANALYTICS_DESCRIPTION: {
         defaultMessage:
             'Help us improve your experience! We never collect sensitive data like balances or transactions. All data is completely anonymous and used solely to enhance the Trezor ecosystem.',
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
+    },
+    TR_ALLOW_ANALYTICS_PRIVACY_TITLE: {
+        defaultMessage: 'You data is private',
+        id: 'TR_ALLOW_ANALYTICS_PRIVACY_TITLE',
+    },
+    TR_ALLOW_ANALYTICS_PRIVACY_DESCRIPTION: {
+        defaultMessage: `We don't gather sensitive personal data like balances, transactions, or profile details.`,
+        id: 'TR_ALLOW_ANALYTICS_PRIVACY_DESCRIPTION',
+    },
+    TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_TITLE: {
+        defaultMessage: 'What we collect',
+        id: 'TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_TITLE',
+    },
+    TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_DESCRIPTION: {
+        defaultMessage:
+            'We collect data on app performance, user interaction, and potential technical issues to enhance the user experience.',
+        id: 'TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_DESCRIPTION',
     },
     TR_ALLOW_AUTOMATIC_SUITE_UPDATES: {
         defaultMessage: 'Automatic Trezor Suite updates',
@@ -7224,7 +7241,7 @@ export default defineMessages({
     },
     TR_WHAT_DATA_WE_COLLECT: {
         id: 'TR_WHAT_DATA_WE_COLLECT',
-        defaultMessage: 'What data do we collect?',
+        defaultMessage: 'What data do we collect',
     },
     TR_ONBOARDING_TROUBLESHOOTING_FAILED: {
         id: 'TR_ONBOARDING_TROUBLESHOOTING_FAILED',
@@ -7239,30 +7256,6 @@ export default defineMessages({
     TR_ONBOARDING_ADVANCED: {
         id: 'TR_ONBOARDING_ADVANCED',
         defaultMessage: 'Advanced',
-    },
-    TR_DATA_ANALYTICS_CATEGORY_1: {
-        id: 'TR_DATA_ANALYTICS_CATEGORY_1',
-        defaultMessage: 'Platform',
-    },
-    TR_DATA_ANALYTICS_CATEGORY_1_ITEM_1: {
-        id: 'TR_DATA_ANALYTICS_CATEGORY_1_ITEM_1',
-        defaultMessage: 'OS, Trezor model, version etc.',
-    },
-    TR_DATA_ANALYTICS_CATEGORY_2: {
-        id: 'TR_DATA_ANALYTICS_CATEGORY_2',
-        defaultMessage: 'Usage',
-    },
-    TR_DATA_ANALYTICS_CATEGORY_2_ITEM_1: {
-        id: 'TR_DATA_ANALYTICS_CATEGORY_2_ITEM_1',
-        defaultMessage: 'How you use Suite',
-    },
-    TR_DATA_ANALYTICS_CATEGORY_3: {
-        id: 'TR_DATA_ANALYTICS_CATEGORY_3',
-        defaultMessage: 'Audience',
-    },
-    TR_DATA_ANALYTICS_CATEGORY_3_ITEM_1: {
-        id: 'TR_DATA_ANALYTICS_CATEGORY_3_ITEM_1',
-        defaultMessage: 'Language, user count, etc.',
     },
     TR_TROUBLESHOOTING_DEVICE_NOT_DETECTED: {
         defaultMessage: 'Try these steps to solve this issue.',
