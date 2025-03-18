@@ -12,7 +12,6 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
     test('reports transport-type, suite-ready and device-connect/device-disconnect events when analytics is initialized and enabled', async ({
         page,
         analytics,
-        devicePrompt,
         onboardingPage,
         settingsPage,
         trezorUserEnvLink,
@@ -27,16 +26,11 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
             passphrase_protection: true,
         });
 
-        await trezorUserEnvLink.startBridge();
-
         // reload to activate bridge and start testing app with enabled analytics
-        await devicePrompt.connectDevicePromptIsShown();
         await page.reload();
+        await trezorUserEnvLink.startBridge();
         await analytics.interceptAnalytics();
         await onboardingPage.optionallyDismissFwHashCheckError();
-        if (await devicePrompt.connectDevicePrompt.isVisible()) {
-            await devicePrompt.acquireDeviceButton.click();
-        }
         await page.getByTestId('@onboarding/exit-app-button').click();
 
         // 1 SuiteReady, 2 DeviceConnect, 3 TransportType
