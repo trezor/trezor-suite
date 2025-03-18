@@ -99,7 +99,7 @@ export class OnboardingPage {
 
     @step()
     async completeOnboarding({ enableViewOnly = false } = {}) {
-        await this.disableFirmwareHashCheck();
+        await this.disableNecessaryFirmwareChecks();
         await this.optionallyDismissFwHashCheckError();
         await this.analyticsSection.continueButton.click();
         await this.onboardingContinueButton.click();
@@ -158,6 +158,30 @@ export class OnboardingPage {
                 payload: { showDebugMenu: true },
             });
         }, SuiteActions);
+    }
+
+    @step()
+    async disableFirmwareRevisionCheck() {
+        // Desktop starts with already disabled firmware revision check. Web needs to disable it.
+        if (!isWebProject(this.testInfo)) {
+            return;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        await this.page.evaluate(SuiteActions => {
+            window.store.dispatch({
+                type: SuiteActions.TOGGLE_FIRMWARE_REVISION_CHECK,
+                payload: false,
+            });
+        }, SuiteActions);
+    }
+
+    @step()
+    async disableNecessaryFirmwareChecks(options?: { skipSuiteLoadedCheck?: boolean }) {
+        await this.disableFirmwareHashCheck(options);
+        if (process.env.CANARY_FIRMWARE) {
+            await this.disableFirmwareRevisionCheck();
+        }
     }
 
     @step()

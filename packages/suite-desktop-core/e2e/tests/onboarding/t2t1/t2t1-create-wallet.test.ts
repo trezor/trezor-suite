@@ -8,7 +8,7 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
     });
 
     test.beforeEach(async ({ onboardingPage }) => {
-        await onboardingPage.disableFirmwareHashCheck();
+        await onboardingPage.disableNecessaryFirmwareChecks();
     });
 
     test('Success (Shamir backup)', async ({

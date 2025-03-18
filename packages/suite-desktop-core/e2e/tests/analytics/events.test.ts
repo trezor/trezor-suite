@@ -6,7 +6,7 @@ import { ExtractByEventType } from '../../support/types';
 test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
     test.use({ startEmulator: false });
     test.beforeEach(async ({ onboardingPage }) => {
-        await onboardingPage.disableFirmwareHashCheck();
+        await onboardingPage.disableNecessaryFirmwareChecks();
     });
 
     //TODO: Fix instable test

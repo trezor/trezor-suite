@@ -46,7 +46,7 @@ test.describe('Guide with device', { tag: ['@group=suite'] }, () => {
         onboardingPage,
         guidePanel,
     }) => {
-        await onboardingPage.disableFirmwareHashCheck();
+        await onboardingPage.disableNecessaryFirmwareChecks();
         await onboardingPage.optionallyDismissFwHashCheckError();
         await analyticsSection.continueButton.click();
 

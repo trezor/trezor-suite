@@ -5,7 +5,7 @@ import { expect, test } from '../../support/fixtures';
 test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other'] }, () => {
     test.beforeEach(async ({ analytics, onboardingPage }) => {
         await analytics.interceptAnalytics();
-        await onboardingPage.disableFirmwareHashCheck();
+        await onboardingPage.disableNecessaryFirmwareChecks();
     });
 
     test('should respect disabled analytics in onboarding with following enabling in settings', async ({

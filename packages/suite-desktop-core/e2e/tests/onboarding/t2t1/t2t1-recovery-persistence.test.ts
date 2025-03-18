@@ -53,7 +53,7 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
     });
 
     test.beforeEach(async ({ page, onboardingPage, analyticsSection }) => {
-        await onboardingPage.disableFirmwareHashCheck();
+        await onboardingPage.disableNecessaryFirmwareChecks();
 
         await analyticsSection.passThroughAnalytics();
 
@@ -88,7 +88,7 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-manag
 
         // Restart emulator and disable firmware hash check
         await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });
-        await onboardingPage.disableFirmwareHashCheck();
+        await onboardingPage.disableNecessaryFirmwareChecks();
 
         // Go through analytics opt-out again
         await analyticsSection.passThroughAnalytics();

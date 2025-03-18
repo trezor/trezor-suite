@@ -7,7 +7,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
     });
 
     test.beforeEach(async ({ onboardingPage }) => {
-        await onboardingPage.disableFirmwareHashCheck();
+        await onboardingPage.disableNecessaryFirmwareChecks();
     });
 
     test('Incomplete run of advanced recovery', async ({

@@ -5,7 +5,7 @@ test.describe(
     { tag: ['@group=device-management', '@webOnly'] },
     () => {
         test.beforeEach(async ({ onboardingPage }) => {
-            await onboardingPage.disableFirmwareHashCheck();
+            await onboardingPage.disableNecessaryFirmwareChecks();
         });
 
         test('analytics consent appears on any route that is visited initially. this time /accounts', async ({

@@ -111,7 +111,7 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
 
         await test.step('Reconnect Emulator', async () => {
             await trezorUserEnvLink.startEmu();
-            await onboardingPage.disableFirmwareHashCheck({ skipSuiteLoadedCheck: true });
+            await onboardingPage.disableNecessaryFirmwareChecks({ skipSuiteLoadedCheck: true });
             await dashboardPage.openDeviceSwitcher();
             await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible();
             await dashboardPage.deviceSwitchingCloseButton.click();

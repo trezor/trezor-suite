@@ -6,7 +6,7 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
         setupEmulator: false,
     });
     test.beforeEach(async ({ analyticsSection, onboardingPage }) => {
-        await onboardingPage.disableFirmwareHashCheck();
+        await onboardingPage.disableNecessaryFirmwareChecks();
 
         analyticsSection.passThroughAnalytics();
     });

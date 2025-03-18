@@ -8,6 +8,8 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 export const LEGACY_BRIDGE_VERSION = '2.0.33';
 const disableHashCheckStatePatch =
     '--state.suite.settings.enabledSecurityChecks.firmwareHash=false';
+const disableRevisionCheckStatePatch =
+    '--state.suite.settings.enabledSecurityChecks.firmwareRevision=false';
 const showDebugMenuStatePatch = `--state.suite.settings.debug.showDebugMenu=true`;
 
 type LaunchSuiteParams = {
@@ -63,6 +65,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
             ...(options.bridgeDaemon ? ['--bridge-daemon', '--skip-new-bridge-rollout'] : []),
             ...(options.rmUserData ? ['--remove-user-data-on-start'] : []),
             disableHashCheckStatePatch,
+            process.env.CANARY_FIRMWARE ? disableRevisionCheckStatePatch : '',
             showDebugMenuStatePatch,
         ],
         colorScheme: params.colorScheme,
