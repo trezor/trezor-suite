@@ -85,7 +85,7 @@ export default defineMessages({
         id: 'TR_ACCOUNT_IMPORTED_ANNOUNCEMENT',
     },
     TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP: {
-        defaultMessage: 'Want a cleaner view? Try hiding suspicious transactions.',
+        defaultMessage: 'Simplify your view—hide suspicious transactions.',
         id: 'TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP',
     },
     TR_SHOW_SUSPICIOUS_TRANSACTIONS: {
@@ -97,7 +97,7 @@ export default defineMessages({
         id: 'TR_HIDE_SUSPICIOUS_TRANSACTIONS',
     },
     TR_HIDE_SUSPICIOUS_TRANSACTIONS_DESCRIPTION: {
-        defaultMessage: 'Crypto moves fast. Our filters might not be always perfect.',
+        defaultMessage: 'Crypto moves fast. Our filters may not always be 100% accurate.',
         id: 'TR_HIDE_SUSPICIOUS_TRANSACTIONS_DESCRIPTION',
     },
     TR_ACCOUNT_IS_EMPTY_TITLE: {
@@ -106,7 +106,7 @@ export default defineMessages({
     },
     TR_NO_VISIBLE_TRANSACTIONS: {
         defaultMessage:
-            'No visible transactions. Looking for something? Try showing suspicious transactions—use the filter menu above on the right. Stay cautious, some may be risky.',
+            'No transactions found. Still looking? Show suspicious transactions using the filter menu above. Stay cautious—some may be risky.',
         id: 'TR_NO_VISIBLE_TRANSACTIONS',
     },
     TR_ACCOUNT_PASSPHRASE_DISABLED: {
@@ -269,7 +269,7 @@ export default defineMessages({
     },
     TR_TRADING_SWAP_MODAL_TERMS_4: {
         defaultMessage:
-            "I understand that Invity doesn't provide this service. It's governed by {provider}’s Terms and Conditions.",
+            "You understand that Invity doesn't provide this service. It's governed by {provider}’s Terms & Conditions.",
         id: 'TR_TRADING_SWAP_MODAL_TERMS_4',
         dynamic: true,
     },
@@ -307,7 +307,7 @@ export default defineMessages({
     },
     TR_TRADING_SWAP_DEX_MODAL_TERMS_1: {
         defaultMessage:
-            "I want to swap cryptocurrencies using DEX (decentralized exchange) by using {provider}'s contract.",
+            "You're here to swap cryptocurrencies with a DEX (decentralized exchange) by using {provider}'s contract.",
         id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_1',
         dynamic: true,
     },
@@ -1529,11 +1529,11 @@ export default defineMessages({
         id: 'TR_IMPORT_CSV_MODAL_DELIMITER',
     },
     TR_IMPORT_CSV_MODAL_DELIMITER_DEFAULT: {
-        defaultMessage: 'Auto',
+        defaultMessage: 'Auto detect delimiter',
         id: 'TR_IMPORT_CSV_MODAL_DELIMITER_DEFAULT',
     },
     TR_IMPORT_CSV_MODAL_DELIMITER_CUSTOM: {
-        defaultMessage: 'Custom',
+        defaultMessage: 'Custom delimiter',
         id: 'TR_IMPORT_CSV_MODAL_DELIMITER_CUSTOM',
     },
     TR_IMPORT_CSV_FROM_FILE: {
@@ -1647,7 +1647,8 @@ export default defineMessages({
         id: 'TR_DISCONNECT',
     },
     TR_BACKEND_DISCONNECTED: {
-        defaultMessage: 'Backend is disconnected',
+        defaultMessage:
+            'There was an issue establishing a connection. Wait a moment and try again.',
         id: 'TR_BACKEND_DISCONNECTED',
     },
     TR_BACKEND_RECONNECTING: {
@@ -2284,7 +2285,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_CHANGE_PIN_DESC: {
         defaultMessage:
-            'If your PIN has been compromised or if you wish to change it for any reason, you can do so here.',
+            'Update your PIN if it has been compromised or if you wish to change it for any reason.',
         id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_DESC',
     },
     TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE: {
@@ -3372,7 +3373,7 @@ export default defineMessages({
         id: 'TR_VERIFY_MESSAGE',
     },
     TR_RESTARTING_TREZOR: {
-        defaultMessage: 'Restarting Trezor.',
+        defaultMessage: 'Restarting Trezor',
         description: 'Info what is happening with users device.',
         id: 'TR_RESTARTING_TREZOR',
     },
@@ -4690,7 +4691,7 @@ export default defineMessages({
     },
     TR_GO_TO_ONBOARDING: {
         id: 'TR_GO_TO_ONBOARDING',
-        defaultMessage: 'Begin setup',
+        defaultMessage: 'Set up device',
     },
     TR_GO_TO_SETTINGS: {
         id: 'TR_GO_TO_SETTINGS',
@@ -4702,7 +4703,7 @@ export default defineMessages({
     },
     TR_NO_FIRMWARE_EXPLAINED: {
         id: 'TR_NO_FIRMWARE_EXPLAINED',
-        defaultMessage: 'You need to install firmware before using your device.',
+        defaultMessage: 'Install firmware before using this device.',
     },
     TR_UNKNOWN_DEVICE: {
         id: 'TR_UNKNOWN_DEVICE',
@@ -5041,7 +5042,7 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_DISABLE: {
         id: 'TR_EARLY_ACCESS_DISABLE',
-        defaultMessage: 'Leave',
+        defaultMessage: 'Opt out',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM',
@@ -5059,7 +5060,7 @@ export default defineMessages({
     TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK',
         defaultMessage:
-            'I understand this allows me to test pre-release software, which may contain errors that affect the normal operation of Trezor Suite.',
+            'You understand this allows you to test pre-release software, which may contain errors that affect the normal operation of Trezor Suite.',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP',
@@ -5463,13 +5464,12 @@ export default defineMessages({
     },
     OP_RETURN_TOOLTIP: {
         id: 'OP_RETURN_TOOLTIP',
-        defaultMessage:
-            'OP_RETURN can be used for digital asset proof-of-ownership, and has at times been used to convey additional information needed to send transactions.',
+        defaultMessage: 'OP_RETURN can be used to attach custom data to a transaction.',
     },
     OP_RETURN_ADD: {
         id: 'OP_RETURN_ADD',
         description: 'item in dropdown menu',
-        defaultMessage: 'Add OP Return',
+        defaultMessage: 'Add OP_RETURN',
     },
     RBF: {
         id: 'RBF',
@@ -6105,7 +6105,7 @@ export default defineMessages({
     },
     TR_ENABLE_MORE_COINS: {
         id: 'TR_ENABLE_MORE_COINS',
-        defaultMessage: 'Enable more coins',
+        defaultMessage: 'Activate more assets',
     },
     TR_BACKUP_RECOVERY_SEED_FAILED_TITLE: {
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_TITLE',
@@ -8814,7 +8814,7 @@ export default defineMessages({
     },
     TR_STAKE_ETH_SEE_MONEY_DANCE: {
         id: 'TR_STAKE_ETH_SEE_MONEY_DANCE',
-        defaultMessage: 'Watch your money dance',
+        defaultMessage: 'Grow your assets',
     },
     TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC: {
         id: 'TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC',
@@ -9628,11 +9628,11 @@ export default defineMessages({
     },
     TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED: {
         id: 'TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED',
-        defaultMessage: 'Your Trezor Bridge version will soon be deprecated.',
+        defaultMessage: 'Trezor Bridge will soon no longer be supported.',
     },
     TR_BRIDGE_UNINSTALL_INSTRUCTIONS: {
         id: 'TR_BRIDGE_UNINSTALL_INSTRUCTIONS',
         defaultMessage:
-            'You are running a very old and soon to be deprecated Trezor Bridge version. Please uninstall it from your system. <a>Learn more</a>',
+            'Trezor Bridge will soon no longer be supported. We recommend uninstalling it from your system. <a>Learn more</a>',
     },
 });
