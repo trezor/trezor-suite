@@ -1,35 +1,24 @@
-import styled from 'styled-components';
+import { H3, NewModal, Paragraph } from '@trezor/components';
 
-import { Image } from '@trezor/components';
+import { Translation } from 'src/components/suite';
 
-import { Modal, Translation } from 'src/components/suite';
-
-const ImageWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    margin: 20px;
-`;
-
-const StyledModal = styled(Modal)`
-    width: 600px;
-`;
-
-interface DatabaseUpgradeModalProps {
+type DatabaseUpgradeModalProps = {
     variant: 'blocking' | 'blocked';
-}
-
-export const DatabaseUpgradeModal = ({ variant }: DatabaseUpgradeModalProps) => {
-    const heading =
-        variant === 'blocked' ? 'TR_DATABASE_UPGRADE_BLOCKED' : 'TR_THIS_INSTANCE_IS_BLOCKING';
-
-    return (
-        <StyledModal
-            heading={<Translation id={heading} />}
-            description={<Translation id="TR_RUNNING_MULTIPLE_INSTANCES" />}
-        >
-            <ImageWrapper>
-                <Image image="DEVICE_ANOTHER_SESSION" width="250" />
-            </ImageWrapper>
-        </StyledModal>
-    );
 };
+
+export const DatabaseUpgradeModal = ({ variant }: DatabaseUpgradeModalProps) => (
+    <NewModal iconName="database" variant="warning">
+        <H3>
+            <Translation
+                id={
+                    variant === 'blocked'
+                        ? 'TR_DATABASE_UPGRADE_BLOCKED'
+                        : 'TR_THIS_INSTANCE_IS_BLOCKING'
+                }
+            />
+        </H3>
+        <Paragraph variant="tertiary">
+            <Translation id="TR_RUNNING_MULTIPLE_INSTANCES" />
+        </Paragraph>
+    </NewModal>
+);
