@@ -17,6 +17,7 @@ import { MessageSystemDebugInfo } from './MessageSystemDebugInfo';
 import { Metadata } from './Metadata';
 import { OAuthApi } from './OAuthApi';
 import { PreField } from './PreField';
+import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
 import { ThrowTestingError } from './ThrowTestingError';
 import { Tor } from './Tor';
 import { TranslationMode } from './TranslationMode';
@@ -90,6 +91,7 @@ export const SettingsDebug = () => {
             {isDesktop() && (
                 <SettingsSection title={<Translation id="TR_BLUETOOTH" />}>
                     <Bluetooth />
+                    <ShowBluetoothDebugInfo />
                 </SettingsSection>
             )}
             <SettingsSection title="TrezorConnect">
