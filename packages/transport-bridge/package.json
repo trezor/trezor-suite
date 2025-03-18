@@ -37,7 +37,7 @@
         "json-stable-stringify": "^1.2.1",
         "react": "18.2.0",
         "react-dom": "18.2.0",
-        "react-intl": "^6.6.8",
+        "react-intl": "^7.1.6",
         "styled-components": "^6.1.8",
         "usb": "^2.14.0"
     }
