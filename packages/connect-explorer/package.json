@@ -36,7 +36,7 @@
         "react-dom": "^18.2.0",
         "react-inspector": "^6.0.2",
         "react-markdown": "^10.1.0",
-        "react-medium-image-zoom": "5.2.13",
+        "react-medium-image-zoom": "^5.2.14",
         "react-redux": "9.2.0",
         "redux": "^5.0.1",
         "redux-logger": "^3.0.6",
