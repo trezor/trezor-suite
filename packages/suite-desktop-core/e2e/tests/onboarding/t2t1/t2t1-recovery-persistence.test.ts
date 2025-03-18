@@ -46,7 +46,7 @@ const shareTwoOfThree = [
     'disease',
 ];
 
-test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-management'] }, () => {
+test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@group=device-management', '@webOnly'] }, () => {
     test.use({
         emulatorStartConf: { wipe: true, model: 'T2T1' },
         setupEmulator: false,
