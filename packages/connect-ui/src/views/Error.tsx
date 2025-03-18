@@ -22,10 +22,12 @@ export interface ErrorViewProps {
         | 'handshake-timeout' // communication was not established in a set time period
         | 'iframe-failure' // another (legacy) error, this is sent from popupManager (host) to popup. it means basically the same like handshake-timeout but we might be notified earlier
         | 'core-missing' // core was loaded correctly but became unavailable later
-        | 'core-failed-to-load'; // dynamic import of core failed
+        | 'core-failed-to-load' // dynamic import of core failed
+        | 'connect-outdated'; // deprecated NPM version
     // future errors when using connect-ui in different contexts
     code?: string;
     message?: string;
+    hostLabel?: string;
 }
 
 const StepsList = styled.ul`
@@ -177,6 +179,22 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
             title: 'Tried to access connect core which is not loaded yet',
             detail: {
                 steps: [<Step>Try again or contact developers</Step>],
+            },
+        });
+    }
+
+    if (props.detail === 'connect-outdated') {
+        tips.push({
+            icon: 'question',
+            title: 'Deprecated version of Trezor Connect',
+            detail: {
+                steps: [
+                    <Step>
+                        {props.hostLabel} is using an outdated version of Trezor Connect. Please ask
+                        developers of {props.hostLabel} app to update to a newer version of Trezor
+                        Connect NPM package to ensure smooth functionality.
+                    </Step>,
+                ],
             },
         });
     }

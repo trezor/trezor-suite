@@ -25,9 +25,9 @@ import { DataManager } from '@trezor/connect/src/data/DataManager';
 import { config } from '@trezor/connect/src/data/config';
 import { LogWriter, initLog } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
+import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
 import { EventType, analytics } from '@trezor/connect-analytics';
 import { getSystemInfo, storage } from '@trezor/connect-common';
-import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 import { isOriginWhitelisted, parseConnectSettings } from './connectSettings';
 import { initLogWriterWithWorker } from './sharedLoggerUtils';
@@ -291,14 +291,7 @@ const filterDeviceEvent = (message: DeviceEvent) => {
 
 const init = async (payload: IFrameInit['payload'], origin: string) => {
     if (DataManager.getSettings('origin')) return; // already initialized
-    if (
-        payload.settings.env === 'web' &&
-        (!payload.settings.version || !isNewerOrEqual(payload.settings.version, '9.5.0'))
-    ) {
-        console.warn(
-            'you are using a soon to be deprecated version of @trezor/connect-web npm package. Please update',
-        );
-    }
+
     const parsedSettings = parseConnectSettings(
         {
             ...payload.settings,
@@ -310,6 +303,11 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
     // 'version' field received from npm package would be otherwise overwritten by iframe which is always latest
     // unless version pinning is used
     parsedSettings.npmVersion = payload.settings.version;
+    if (isConnectOutdated(parsedSettings)) {
+        console.warn(
+            'You are using a soon to be deprecated version of @trezor/connect-web npm package. Please update',
+        );
+    }
 
     if (parsedSettings.popup && typeof BroadcastChannel !== 'undefined') {
         // && parsedSettings.env !== 'web'

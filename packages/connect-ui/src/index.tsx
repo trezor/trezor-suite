@@ -3,8 +3,8 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { CoreRequestMessage, POPUP, UI, UI_REQUEST } from '@trezor/connect';
+import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
 import { OriginBoundState, storage } from '@trezor/connect-common';
-import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 // views
 
@@ -166,10 +166,7 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                             hostLabel={state?.settings?.hostLabel}
                             topSlot={Object.values(Notifications)}
                             showNpmPackageOutdated={
-                                state?.settings?.env === 'web' &&
-                                // npmVersion missing - pinned iframe version or core-in-popup. we might extend this warning in the future for other cases
-                                !!state?.settings?.npmVersion &&
-                                !isNewerOrEqual(state.settings.npmVersion, '9.4.0')
+                                isConnectOutdated(state?.settings) === 'warning'
                             }
                         />
 

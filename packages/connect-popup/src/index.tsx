@@ -22,6 +22,7 @@ import {
     parseMessage,
 } from '@trezor/connect/src/exports';
 import { LogWriter, initLog, setLogWriter } from '@trezor/connect/src/utils/debug';
+import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
 import { EventType, analytics } from '@trezor/connect-analytics';
 import { getSystemInfo } from '@trezor/connect-common';
 import { parseConnectSettings } from '@trezor/connect-iframe/src/connectSettings';
@@ -424,6 +425,19 @@ const init = async (payload: PopupInit['payload']) => {
         if (payload.settings.sharedLogger !== false) {
             logWriterFactory = initLogWriterWithSrcPath('./workers/shared-logger-worker.js');
             setLogWriter(logWriterFactory);
+        }
+
+        if (isConnectOutdated(payload.settings) === 'error') {
+            fail({
+                type: 'error',
+                detail: 'connect-outdated',
+                hostLabel:
+                    payload.settings.hostLabel ||
+                    payload.settings.origin ||
+                    payload.settings.manifest?.appUrl,
+            });
+
+            return;
         }
 
         if (payload.useCore) {

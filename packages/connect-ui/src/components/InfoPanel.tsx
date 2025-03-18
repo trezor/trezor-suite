@@ -114,7 +114,7 @@ export const InfoPanel = ({
                         <span style={{ color: '#eb8a00' }}>Deprecation warning: </span>
                         {hostLabel || origin} is using an outdated version of Trezor Connect. Please
                         ask developers of {hostLabel || origin} app to update to a newer version of
-                        Trezor Connect npm package to ensure smooth functionality.
+                        Trezor Connect NPM package to ensure smooth functionality.
                     </div>
                 )}
             </MainSlot>
