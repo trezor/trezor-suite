@@ -83,7 +83,11 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                     <Right
                         bannerSlot={
                             bannerMessage && (
-                                <MessageSystemBanner message={bannerMessage} margin={spacings.xs} />
+                                <MessageSystemBanner
+                                    message={bannerMessage}
+                                    margin={spacings.xs}
+                                    width="100%"
+                                />
                             )
                         }
                     >

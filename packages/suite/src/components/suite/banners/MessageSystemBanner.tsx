@@ -12,9 +12,10 @@ import { getTorUrlIfAvailable } from 'src/utils/suite/tor';
 type MessageSystemBannerProps = {
     message: Message;
     margin?: BannerProps['margin'];
+    width?: BannerProps['width'];
 };
 
-export const MessageSystemBanner = ({ message, margin }: MessageSystemBannerProps) => {
+export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBannerProps) => {
     const { cta, variant, id, content, dismissible } = message;
 
     const { isTorEnabled } = useSelector(selectTorState);
@@ -81,6 +82,7 @@ export const MessageSystemBanner = ({ message, margin }: MessageSystemBannerProp
                 </Row>
             }
             margin={margin}
+            width={width}
         >
             {content[language] || content.en}
         </Banner>
