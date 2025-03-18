@@ -1,10 +1,10 @@
-import { act, fireEvent, render } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { LegalSheet, LegalSheetProps } from '../LegalSheet';
 
 describe('LegalSheet', () => {
     const renderLegalSheet = (props?: Partial<LegalSheetProps>) =>
-        render(
+        renderWithBasicProvider(
             <LegalSheet
                 isVisible
                 onClose={() => {}}

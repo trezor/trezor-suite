@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 
-import { render } from '@suite-native/test-utils';
+import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { Card, CardProps } from '../Card';
 
@@ -11,7 +11,7 @@ describe('Card', () => {
             ...props,
         } as CardProps;
 
-        return render(<Card {...cardProps} />);
+        return renderWithBasicProvider(<Card {...cardProps} />);
     };
 
     it('should render children prop', () => {

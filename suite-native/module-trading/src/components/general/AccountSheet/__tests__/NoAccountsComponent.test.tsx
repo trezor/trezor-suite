@@ -1,10 +1,10 @@
-import { renderWithStore, waitFor } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { NoAccountsComponent } from '../NoAccountsComponent';
 
 describe('NoAccountsComponent', () => {
-    const renderNoAccountsComponent = async ({ isConnected }: { isConnected: boolean }) => {
-        const result = renderWithStore(<NoAccountsComponent isBottomRounded />, {
+    const renderNoAccountsComponent = ({ isConnected }: { isConnected: boolean }) =>
+        renderWithStoreProviderAsync(<NoAccountsComponent isBottomRounded />, {
             preloadedState: {
                 device: {
                     selectedDevice: {
@@ -14,10 +14,6 @@ describe('NoAccountsComponent', () => {
                 },
             },
         });
-        await waitFor(() => expect(result.getByText('No account found')).toBeDefined());
-
-        return result;
-    };
 
     it('should render for not connected device', async () => {
         const { queryByText } = await renderNoAccountsComponent({ isConnected: false });

@@ -1,4 +1,4 @@
-import { render } from '@suite-native/test-utils';
+import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import {
     RECEIVE_ACCOUNT_BALANCE_TEST_ID,
@@ -7,7 +7,7 @@ import {
 
 describe('ReceiveAccountBalance', () => {
     it('should display empty box when symbol is not specified', () => {
-        const { getByTestId } = render(
+        const { getByTestId } = renderWithBasicProvider(
             <ReceiveAccountCryptoBalance symbol={undefined} balance="10000" />,
         );
 
@@ -15,7 +15,7 @@ describe('ReceiveAccountBalance', () => {
     });
 
     it('should display empty box when balance is not specified', () => {
-        const { getByTestId } = render(
+        const { getByTestId } = renderWithBasicProvider(
             <ReceiveAccountCryptoBalance symbol="btc" balance={undefined} />,
         );
 
@@ -23,7 +23,7 @@ describe('ReceiveAccountBalance', () => {
     });
 
     it('should display balance when symbol and balance is specified', () => {
-        const { getByTestId } = render(
+        const { getByTestId } = renderWithBasicProvider(
             <ReceiveAccountCryptoBalance symbol="btc" balance="1000000" />,
         );
 

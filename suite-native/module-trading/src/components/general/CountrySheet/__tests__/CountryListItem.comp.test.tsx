@@ -1,10 +1,10 @@
-import { act, fireEvent, render } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { CountryListItem, CountryListItemProps } from '../CountryListItem';
 
 describe('CountryListItem', () => {
     const renderCountryListItem = (props: Partial<CountryListItemProps>) =>
-        render(
+        renderWithBasicProvider(
             <CountryListItem
                 value="US"
                 isSelected={false}

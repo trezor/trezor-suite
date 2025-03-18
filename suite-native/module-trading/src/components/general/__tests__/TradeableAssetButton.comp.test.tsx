@@ -1,11 +1,11 @@
-import { fireEvent, render } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { TradeableAssetButton } from '../TradeableAssetButton';
 
 describe('TradeableAssetButton', () => {
     it('should render display name of given symbol', () => {
-        const { getByText } = render(
+        const { getByText } = renderWithBasicProvider(
             <TradeableAssetButton
                 asset={btcAsset}
                 onPress={jest.fn()}
@@ -18,7 +18,7 @@ describe('TradeableAssetButton', () => {
 
     it('should call onPress callback', () => {
         const pressSpy = jest.fn();
-        const { getByText } = render(
+        const { getByText } = renderWithBasicProvider(
             <TradeableAssetButton
                 asset={btcAsset}
                 onPress={pressSpy}

@@ -1,6 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { BasicProviderForTests, renderHook } from '@suite-native/test-utils';
+import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { useNativeStyles } from '@trezor/styles';
 import { CoinsColors, Colors } from '@trezor/theme';
 
@@ -14,7 +14,7 @@ describe('useTradeableAssetDominantColor', () => {
         givenSymbol: NetworkSymbol,
         givenContractAddress?: TokenAddress,
     ) =>
-        renderHook(
+        renderHookWithBasicProvider(
             ({
                 symbol,
                 contractAddress,
@@ -24,12 +24,11 @@ describe('useTradeableAssetDominantColor', () => {
             }) => useTradeableAssetDominantColor(symbol, contractAddress),
             {
                 initialProps: { symbol: givenSymbol, contractAddress: givenContractAddress },
-                wrapper: BasicProviderForTests,
             },
         );
 
     beforeAll(() => {
-        const { result } = renderHook(useNativeStyles, { wrapper: BasicProviderForTests });
+        const { result } = renderHookWithBasicProvider(useNativeStyles);
         ({ coinsColors, colors } = result.current.utils);
     });
 

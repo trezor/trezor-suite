@@ -1,15 +1,11 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { PreloadedState, fireEvent, renderWithStore, waitFor } from '@suite-native/test-utils';
+import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { AppTabNavigator } from '../AppTabNavigator';
 
 describe('AppTabNavigator', () => {
-    const renderTabs = async (preloadedState?: PreloadedState) => {
-        const result = renderWithStore(<AppTabNavigator />, { preloadedState });
-        await waitFor(() => expect(result.getByText('Home')).toBeDefined());
-
-        return result;
-    };
+    const renderTabs = (preloadedState?: PreloadedState) =>
+        renderWithStoreProviderAsync(<AppTabNavigator />, { preloadedState });
 
     it('should render 3 buttons', async () => {
         const { getByText } = await renderTabs();
@@ -31,7 +27,7 @@ describe('AppTabNavigator', () => {
     });
 
     it('should render Trade tab when IsTradingEnabled is true', async () => {
-        const { getByText } = await renderTabs({
+        const { getByText, getAllByText } = await renderTabs({
             featureFlags: {
                 ...featureFlagsInitialState,
                 [FeatureFlag.IsTradingEnabled]: true,
@@ -41,6 +37,6 @@ describe('AppTabNavigator', () => {
         const tradeTab = getByText('Trade');
         fireEvent.press(tradeTab);
 
-        expect(getByText('Trading placeholder')).toBeDefined();
+        expect(getAllByText('Buy').length).toBe(2);
     });
 });

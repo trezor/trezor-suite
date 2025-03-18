@@ -1,10 +1,10 @@
-import { render } from '@suite-native/test-utils';
+import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { TradingEmptyComponent } from '../TradingEmptyComponent';
 
 describe('TradingEmptyComponent', () => {
     it('should render given title and description', () => {
-        const { getByText } = render(
+        const { getByText } = renderWithBasicProvider(
             <TradingEmptyComponent title="TITLE" description="DESCRIPTION" />,
         );
 

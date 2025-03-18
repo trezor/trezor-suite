@@ -1,4 +1,4 @@
-import { fireEvent, renderWithStore, waitFor } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { adaAsset, btcAsset, usdcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { TradeableAsset } from '../../../../types';
@@ -7,8 +7,8 @@ import { TradeableAssetsSheet, TradeableAssetsSheetProps } from '../TradeableAss
 describe('TradeableAssetsSheet', () => {
     const defaultAssets: TradeableAsset[] = [btcAsset, usdcAsset, adaAsset];
 
-    const renderTradeableAssetsSheet = async (props: Partial<TradeableAssetsSheetProps>) => {
-        const ret = renderWithStore(
+    const renderTradeableAssetsSheet = (props: Partial<TradeableAssetsSheetProps>) =>
+        renderWithStoreProviderAsync(
             <TradeableAssetsSheet
                 assets={defaultAssets}
                 onAssetSelect={jest.fn}
@@ -17,11 +17,6 @@ describe('TradeableAssetsSheet', () => {
                 {...props}
             />,
         );
-
-        await waitFor(() => expect(ret.toJSON()).toBeTruthy());
-
-        return ret;
-    };
 
     it('should call both onAssetSelect and onClose when an item is pressed', async () => {
         const closeMock = jest.fn();

@@ -1,4 +1,4 @@
-import { BasicProviderForTests, renderHook } from '@suite-native/test-utils';
+import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { SECTION_HEADER_HEIGHT, SectionListData, useSectionList } from '../useSectionList';
 
@@ -7,18 +7,14 @@ const renderUseSectionListHook = (
     estimatedItemSize: number,
     noSingletonSectionHeader: boolean = false,
 ) =>
-    renderHook(
-        () =>
-            useSectionList({
-                data,
-                estimatedItemSize,
-                renderItem: jest.fn(),
-                keyExtractor: jest.fn(),
-                noSingletonSectionHeader,
-            }),
-        {
-            wrapper: BasicProviderForTests,
-        },
+    renderHookWithBasicProvider(() =>
+        useSectionList({
+            data,
+            estimatedItemSize,
+            renderItem: jest.fn(),
+            keyExtractor: jest.fn(),
+            noSingletonSectionHeader,
+        }),
     );
 
 describe('useSectionList', () => {

@@ -1,9 +1,9 @@
-import { fireEvent, render } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { PaymentMethodPicker } from '../PaymentMethodPicker';
 
 describe('PaymentMethodPicker', () => {
-    const renderPaymentMethodPicker = () => render(<PaymentMethodPicker />);
+    const renderPaymentMethodPicker = () => renderWithBasicProvider(<PaymentMethodPicker />);
 
     it('should display "Not selected" when in default state', () => {
         const { getByLabelText } = renderPaymentMethodPicker();

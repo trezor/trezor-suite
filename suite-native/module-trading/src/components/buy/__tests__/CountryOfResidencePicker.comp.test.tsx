@@ -1,9 +1,9 @@
-import { fireEvent, render } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { CountryOfResidencePicker } from '../CountryOfResidencePicker';
 
 describe('CountryOfResidencePicker', () => {
-    const renderReceiveAccountPicker = () => render(<CountryOfResidencePicker />);
+    const renderReceiveAccountPicker = () => renderWithBasicProvider(<CountryOfResidencePicker />);
 
     it('should display "Not selected" when in default state', () => {
         const { getByLabelText } = renderReceiveAccountPicker();

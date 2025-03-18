@@ -1,10 +1,10 @@
-import { act, fireEvent, render } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { PaymentMethodListItem, PaymentMethodListItemProps } from '../PaymentMethodListItem';
 
 describe('PaymentMethodListItem', () => {
     const renderPaymentMethodListItem = (props: Partial<PaymentMethodListItemProps>) =>
-        render(
+        renderWithBasicProvider(
             <PaymentMethodListItem
                 method={{ label: 'Credit card', value: 'creditCard' }}
                 isSelected={false}

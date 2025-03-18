@@ -1,19 +1,14 @@
-import { fireEvent, renderWithStore } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { btcAsset, usdcAsset } from '../../../../__fixtures__/tradeableAssets';
 import { TradeableAssetListItem, TradeableAssetListItemProps } from '../TradeableAssetListItem';
 
 describe('TradeableAssetListItem', () => {
-    const renderComponent = async ({
+    const renderComponent = ({
         onPress = jest.fn(),
         asset = btcAsset,
-    }: Partial<TradeableAssetListItemProps>) => {
-        const result = renderWithStore(<TradeableAssetListItem asset={asset} onPress={onPress} />);
-
-        await result.findByAccessibilityHint('Add to favourites');
-
-        return result;
-    };
+    }: Partial<TradeableAssetListItemProps>) =>
+        renderWithStoreProviderAsync(<TradeableAssetListItem asset={asset} onPress={onPress} />);
 
     it('should render with correct labels', async () => {
         const { getByLabelText } = await renderComponent({ asset: usdcAsset });

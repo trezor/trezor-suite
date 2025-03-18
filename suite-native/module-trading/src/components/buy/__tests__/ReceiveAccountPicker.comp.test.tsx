@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import { PreloadedState, fireEvent, renderWithStore, waitFor } from '@suite-native/test-utils';
+import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { Address } from '@trezor/blockchain-link-types';
 
 import { ReceiveAccount } from '../../../types';
@@ -55,20 +55,16 @@ describe('ReceiveAccountPicker', () => {
         jest.resetAllMocks();
     });
 
-    const renderPicker = async ({
+    const renderPicker = ({
         selectedSymbol,
         preloadedState,
     }: {
         selectedSymbol: NetworkSymbol | undefined;
         preloadedState?: PreloadedState;
-    }) => {
-        const result = renderWithStore(<ReceiveAccountPicker selectedSymbol={selectedSymbol} />, {
+    }) =>
+        renderWithStoreProviderAsync(<ReceiveAccountPicker selectedSymbol={selectedSymbol} />, {
             preloadedState,
         });
-        await waitFor(() => expect(result.getByText('Receive account')).toBeDefined());
-
-        return result;
-    };
 
     it('should display "Select coin first" when selectedSymbol is not specified', async () => {
         const { getByText } = await renderPicker({ selectedSymbol: undefined });

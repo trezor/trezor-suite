@@ -1,10 +1,10 @@
-import { fireEvent, render } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { SearchInputWithCancel, SearchInputWithCancelProps } from '../SearchInputWithCancel';
 
 describe('SearchInputWithCancel', () => {
     const renderSearchInputWithCancel = (props: Partial<SearchInputWithCancelProps>) =>
-        render(<SearchInputWithCancel onChange={jest.fn()} {...props} />);
+        renderWithBasicProvider(<SearchInputWithCancel onChange={jest.fn()} {...props} />);
 
     it('should render without "Cancel" button by default', () => {
         const { queryByText } = renderSearchInputWithCancel({});

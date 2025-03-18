@@ -1,10 +1,12 @@
-import { render } from '@suite-native/test-utils';
+import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { NetworkSymbolExtendedFormatter } from '../NetworkSymbolExtendedFormatter';
 
 describe('NetworkSymbolExtendedFormatter', () => {
     it('should render symbol uppercase', () => {
-        const { getByText } = render(<NetworkSymbolExtendedFormatter symbol="btc" />);
+        const { getByText } = renderWithBasicProvider(
+            <NetworkSymbolExtendedFormatter symbol="btc" />,
+        );
 
         expect(getByText('BTC')).toBeDefined();
     });

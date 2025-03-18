@@ -1,9 +1,9 @@
 import { Account } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStore, waitFor } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { Address } from '@trezor/blockchain-link-types';
 
 import { ReceiveAccount } from '../../../../types';
-import { AccountListItem, AccountListItemProps } from '../AccountListItem';
+import { AccountListItem } from '../AccountListItem';
 
 jest.mock('@suite-common/wallet-core', () => {
     const fiatRate = { rate: 1e8 };
@@ -17,18 +17,10 @@ jest.mock('@suite-common/wallet-core', () => {
 describe('AccountListItem', () => {
     const onPressMock = jest.fn();
 
-    const renderAccountListItem = async (receiveAccount: ReceiveAccount) => {
-        const props: AccountListItemProps = {
-            symbol: 'btc',
-            receiveAccount,
-            onPress: onPressMock,
-        };
-        const result = renderWithStore(<AccountListItem {...props} />);
-
-        await waitFor(() => expect(result.getByAccessibilityHint('Crypto Icon')).toBeDefined());
-
-        return result;
-    };
+    const renderAccountListItem = (receiveAccount: ReceiveAccount) =>
+        renderWithStoreProviderAsync(
+            <AccountListItem symbol="btc" onPress={onPressMock} receiveAccount={receiveAccount} />,
+        );
 
     beforeEach(() => {
         jest.resetAllMocks();

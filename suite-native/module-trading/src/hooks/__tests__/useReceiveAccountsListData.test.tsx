@@ -1,11 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import {
-    PreloadedState,
-    StoreProviderForTests,
-    renderHook,
-    waitFor,
-} from '@suite-native/test-utils';
+import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { StaticSessionId } from '@trezor/connect';
 
 import { ReceiveAccountsListMode, useReceiveAccountsListData } from '../useReceiveAccountsListData';
@@ -57,21 +52,17 @@ describe('useReceiveAccountsListData', () => {
         },
     };
 
-    const renderUseReceiveAccountsListDataHook = async (
+    const renderUseReceiveAccountsListDataHook = (
         initialSymbol: NetworkSymbol,
         initialSelectedAccount: undefined | Account,
         initialMode: ReceiveAccountsListMode,
         preloadedState: PreloadedState = defaultPreloadedState,
-    ) => {
-        const ret = renderHook(
+    ) =>
+        renderHookWithStoreProviderAsync(
             ({ symbol, selectedAccount, mode }) =>
                 useReceiveAccountsListData({ symbol, selectedAccount, mode }),
             {
-                wrapper: ({ children }) => (
-                    <StoreProviderForTests preloadedState={preloadedState}>
-                        {children}
-                    </StoreProviderForTests>
-                ),
+                preloadedState,
                 initialProps: {
                     symbol: initialSymbol,
                     selectedAccount: initialSelectedAccount,
@@ -79,13 +70,6 @@ describe('useReceiveAccountsListData', () => {
                 },
             },
         );
-
-        await waitFor(() => {
-            expect(ret.result.current).toBeTruthy();
-        });
-
-        return ret;
-    };
 
     describe('without account selected', () => {
         it('should display all accounts for given symbol', async () => {

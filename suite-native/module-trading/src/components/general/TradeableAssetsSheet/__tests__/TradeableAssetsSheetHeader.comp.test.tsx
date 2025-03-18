@@ -1,10 +1,10 @@
-import { fireEvent, render } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { TradeableAssetsSheetHeader } from '../TradeableAssetsSheetHeader';
 
 describe('TradeableAssetsSheetHeader', () => {
     const renderComponent = (onClose = jest.fn()) =>
-        render(<TradeableAssetsSheetHeader onClose={onClose} />);
+        renderWithBasicProvider(<TradeableAssetsSheetHeader onClose={onClose} />);
 
     it('should display "Coins" and do not display tabs by default', () => {
         const { getByText, queryByText } = renderComponent();

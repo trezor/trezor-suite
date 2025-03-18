@@ -9,6 +9,7 @@
         "ios": "expo run:ios",
         "start": "expo start --dev-client",
         "type-check": "yarn g:tsc -b",
+        "test:unit": "yarn g:jest src",
         "pods": "npx pod-install",
         "prebuild": "expo prebuild",
         "build:adhoc": "npx eas-cli build --profile adhoc",

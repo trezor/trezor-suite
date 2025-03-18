@@ -1,21 +1,7 @@
-import { BasicProviderForTests } from './BasicProviderForTests';
-import { StoreProviderForTests } from './StoreProviderForTests';
-import { createRender } from './createRender';
+export * from '@testing-library/react-native';
 
 export type { PreloadedState } from '@suite-native/state';
 
-export {
-    act,
-    cleanup,
-    fireEvent,
-    renderHook,
-    screen,
-    waitFor,
-    waitForElementToBeRemoved,
-} from '@testing-library/react-native';
-
-export const render = createRender(BasicProviderForTests);
-
-export const renderWithStore = createRender(StoreProviderForTests);
-
-export { BasicProviderForTests, StoreProviderForTests };
+export * from './BasicProviderForTests';
+export * from './StoreProviderForTests';
+export * from './render';
