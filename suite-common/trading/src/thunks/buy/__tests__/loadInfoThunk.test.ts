@@ -5,8 +5,7 @@ import { configureMockStore } from '@suite-common/test-utils';
 
 import { buyThunks } from '../../';
 import { invityAPI } from '../../../invityAPI';
-import { buyInitialState } from '../../../reducers/__fixtures__/buyTradingReducer';
-import { tradingBuyReducer } from '../../../reducers/buyReducer';
+import { buyInitialState, tradingBuyReducer } from '../../../reducers/buyReducer';
 import { regional } from '../../../regional';
 
 describe('loadInfoThunk', () => {

@@ -1,19 +1,7 @@
 import { BuyTrade, BuyTradeQuoteRequest, CryptoId, FiatCurrenciesProps } from 'invity-api';
 
-import { AmountLimitProps } from '../../utils/buy/buyUtils';
-import { BuyInfo, TradingBuyState, tradingBuyActions } from '../buyReducer';
-
-export const buyInitialState: TradingBuyState = {
-    transactionId: undefined,
-    isFromRedirect: false,
-    buyInfo: undefined,
-    quotesRequest: undefined,
-    selectedQuote: undefined,
-    quotes: [],
-    addressVerified: undefined,
-    isLoading: false,
-    amountLimits: undefined,
-};
+import { TradingAmountLimitProps } from '../../types';
+import { BuyInfo, buyInitialState, tradingBuyActions } from '../buyReducer';
 
 const buyInfo: BuyInfo = {
     buyInfo: {
@@ -24,7 +12,7 @@ const buyInfo: BuyInfo = {
         } as FiatCurrenciesProps,
     },
     providerInfos: {},
-    supportedCryptoCurrencies: ['BTC', 'ETH'] as CryptoId[],
+    supportedCryptoCurrencies: ['bitcoin', 'ethereum'] as CryptoId[],
     supportedFiatCurrencies: ['usd'],
 };
 
@@ -67,7 +55,7 @@ const buyQuotes: BuyTrade[] = [
     },
 ];
 
-const amountLimits: AmountLimitProps = {
+const amountLimits: TradingAmountLimitProps = {
     currency: 'bitcoin',
     minCrypto: '0.002',
     maxCrypto: '0.002',

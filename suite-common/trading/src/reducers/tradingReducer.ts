@@ -9,6 +9,11 @@ import { TradingPaymentMethodListProps, TradingTransaction, TradingType } from '
 import { TradingBuyState, buyInitialState, tradingBuyReducer } from './buyReducer';
 import { TRADING_PREFIX } from '../constants';
 import { buyThunks } from '../thunks';
+import {
+    TradingExchangeState,
+    exchangeInitialState,
+    tradingExchangeReducer,
+} from './exchangeReducer';
 
 export interface TradingComposedTransactionInfo {
     composed?: Pick<
@@ -27,7 +32,7 @@ export interface TradingInfo {
 export interface TradingState {
     info: TradingInfo;
     buy: TradingBuyState;
-    // exchange: TradingExchangeState;
+    exchange: TradingExchangeState;
     // sell: TradingSellState;
     composedTransactionInfo: TradingComposedTransactionInfo;
     trades: TradingTransaction[];
@@ -46,27 +51,8 @@ export const initialState: TradingState = {
         paymentMethods: [],
     },
     buy: buyInitialState,
-    /*
-    exchange: {
-        exchangeInfo: undefined,
-        transactionId: undefined,
-        quotesRequest: undefined,
-        quotes: [],
-        addressVerified: undefined,
-        tradingAccountKey: undefined,
-        selectedQuote: undefined,
-        isFromRedirect: false,
-    },
-    sell: {
-        sellInfo: undefined,
-        quotesRequest: undefined,
-        quotes: [],
-        selectedQuote: undefined,
-        transactionId: undefined,
-        isFromRedirect: false,
-        tradingAccountKey: undefined,
-    },
-    */
+    exchange: exchangeInitialState,
+    // sell: sellInitialState,
     composedTransactionInfo: {},
     trades: [],
     isLoading: false,
@@ -141,7 +127,7 @@ export const tradingSlice = createSliceWithExtraDeps({
             .addDefaultCase((state, action) => {
                 tradingBuyReducer(state.buy, action);
                 // TODO: prepareSellReducer(extra)(state.sell, action);
-                // TODO: prepareExchangeReducer(extra)(state.exchange, action);
+                tradingExchangeReducer(state.exchange, action);
             });
     },
 });
