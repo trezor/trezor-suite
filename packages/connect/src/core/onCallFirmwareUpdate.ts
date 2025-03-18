@@ -493,6 +493,10 @@ export const onCallFirmwareUpdate = async ({
     // check if installed version matches requested release version
     const assertReleaseVersion = releaseVersion ? isEqual(installedVersion, releaseVersion) : true; // binary
 
+    await reconnectedDevice.release();
+
+    log.info('onCallFirmwareUpdate', `firmware updated to version ${installedVersion}`);
+
     return {
         versionCheck: assertBinaryVersion && assertReleaseVersion,
         bootloaderVersion,
