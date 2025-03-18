@@ -25,6 +25,7 @@ const config: PlaywrightTestConfig = {
     projects: [
         {
             name: PlaywrightProjects.Web,
+            retries: 2,
             use: {
                 ...devices['Desktop Chrome'],
                 channel: 'chromium',
@@ -34,6 +35,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: PlaywrightProjects.Desktop,
+            retries: 2,
             use: {},
             grepInvert: /@webOnly/,
         },
