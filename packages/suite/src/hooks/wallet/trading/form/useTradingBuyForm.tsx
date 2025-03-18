@@ -5,7 +5,7 @@ import type { BuyTrade, BuyTradeResponse, CryptoId } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import {
-    AmountLimitProps,
+    TradingAmountLimitProps,
     TradingBuyFormProps,
     type TradingBuyType,
     buyThunks,
@@ -399,7 +399,7 @@ export const useTradingBuyForm = ({
         goToOffers,
         verifyAddress,
         removeDraft,
-        setAmountLimits: (limits: AmountLimitProps | undefined) => {
+        setAmountLimits: (limits: TradingAmountLimitProps | undefined) => {
             dispatch(tradingBuyActions.setAmountLimits(limits));
         },
     };

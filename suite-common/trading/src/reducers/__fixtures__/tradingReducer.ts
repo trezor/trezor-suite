@@ -2,34 +2,14 @@ import { CryptoId, InfoResponse } from 'invity-api';
 
 import { extraDependenciesMock } from '@suite-common/test-utils';
 
-import { TradingComposedTransactionInfo, TradingState, tradingActions } from '../tradingReducer';
+import { TradingComposedTransactionInfo, initialState, tradingActions } from '../tradingReducer';
 import { accounts } from './account';
-import { buyInitialState } from './buyTradingReducer';
 import { buyThunks } from '../../thunks';
 import {
     TradingPaymentMethodListProps,
     TradingTransactionBuy,
     TradingTransactionExchange,
 } from '../../types';
-
-const initialState: TradingState = {
-    info: {
-        platforms: undefined,
-        coins: undefined,
-        paymentMethods: [],
-    },
-    buy: buyInitialState,
-    // TODO: sell:
-    // TODO: exchange:
-    composedTransactionInfo: {},
-    trades: [],
-    isLoading: false,
-    modalAccountKey: undefined,
-    modalCryptoId: undefined,
-    lastLoadedTimestamp: 0,
-    activeSection: 'buy',
-    prefilledFromCryptoId: undefined,
-};
 
 const tradeBuy: TradingTransactionBuy = {
     date: 'ddd',
