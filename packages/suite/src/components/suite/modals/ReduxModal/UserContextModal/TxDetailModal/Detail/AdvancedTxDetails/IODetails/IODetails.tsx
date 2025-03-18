@@ -125,7 +125,7 @@ const IOGroup = ({
             <IconWrapper>
                 <Icon name="arrowRight" size="medium" variant="tertiary" />
             </IconWrapper>
-            <Grid columns={2} gap={spacings.xxxxl}>
+            <Grid columns={2} gap={spacings.xxxxl} forceEqualColumns>
                 {hasInputs && (
                     <Column gap={spacings.xs} margin={{ right: spacings.xl }}>
                         {hasHeadings && (

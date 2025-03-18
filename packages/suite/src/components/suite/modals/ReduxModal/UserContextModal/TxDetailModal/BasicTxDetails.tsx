@@ -114,7 +114,7 @@ export const BasicTxDetails = ({
 
             <Divider />
 
-            <Grid columns={2} gap={spacings.sm}>
+            <Grid columns={2} gap={spacings.sm} forceEqualColumns>
                 {/* MINED TIME */}
                 <Item
                     label={

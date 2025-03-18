@@ -39,6 +39,7 @@ const args: Partial<GridProps> = {
 
     gap: 8,
     columns: 3,
+    forceEqualColumns: false,
     ...getFramePropsStory(allowedGridFrameProps).args,
 };
 const argTypes: Partial<ArgTypes<GridProps>> = {
@@ -51,6 +52,11 @@ const argTypes: Partial<ArgTypes<GridProps>> = {
         options: Object.values(spacings),
         control: {
             type: 'select',
+        },
+    },
+    forceEqualColumns: {
+        control: {
+            type: 'boolean',
         },
     },
     ...getFramePropsStory(allowedGridFrameProps).argTypes,

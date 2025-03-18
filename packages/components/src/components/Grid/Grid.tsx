@@ -17,26 +17,40 @@ const Container = styled.div<
     TransientProps<AllowedFrameProps> & {
         $columns: number;
         $gap: SpacingValues;
+        $forceEqualColumns: boolean;
     }
 >`
     display: grid;
     gap: ${({ $gap }) => $gap}px;
-    grid-template-columns: repeat(${({ $columns }) => $columns}, minmax(min-content, 1fr));
-
-    ${withFrameProps}
+    grid-template-columns:
+        ${({ $columns, $forceEqualColumns }) =>
+            `repeat(${$columns}, minmax(${$forceEqualColumns ? '0' : 'min-content'}, 1fr));`}
+        ${withFrameProps};
 `;
 
 export type GridProps = AllowedFrameProps & {
     gap?: SpacingValues;
     columns: number;
     children: React.ReactNode;
+    forceEqualColumns?: boolean;
 };
 
-export const Grid = ({ columns, gap = 0, children, ...rest }: GridProps) => {
+export const Grid = ({
+    columns,
+    gap = 0,
+    children,
+    forceEqualColumns = false,
+    ...rest
+}: GridProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedGridFrameProps);
 
     return (
-        <Container $columns={columns} $gap={gap} {...frameProps}>
+        <Container
+            $columns={columns}
+            $gap={gap}
+            $forceEqualColumns={forceEqualColumns}
+            {...frameProps}
+        >
             {children}
         </Container>
     );
