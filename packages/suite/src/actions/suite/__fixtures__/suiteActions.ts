@@ -216,6 +216,7 @@ const initialRun = [
                 showUnhideTokenModal: true,
                 enableAutoupdateOnNextRun: false,
                 isBluetoothEnabled: false,
+                showBluetoothDebugInfo: false,
             },
         },
     },
