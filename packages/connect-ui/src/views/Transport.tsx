@@ -26,20 +26,36 @@ export const Transport = () => {
             window.open(SUITE_URL);
         }, 500);
     };
+    // @ts-expect-error usb is not included in types here
+    const wouldSupportWebUSB = window.navigator.usb?.getDevices !== undefined;
 
     return (
         <View
             title={
-                <FormattedMessage
-                    id="TR_NO_TRANSPORT"
-                    defaultMessage="Browser can't communicate with device"
-                />
+                wouldSupportWebUSB ? (
+                    <FormattedMessage
+                        id="TR_NO_TRANSPORT_SUPPORTED_BROWSER"
+                        defaultMessage="Open Trezor Suite to enable communication"
+                    />
+                ) : (
+                    <FormattedMessage
+                        id="TR_NO_TRANSPORT"
+                        defaultMessage="Browser can't communicate with device"
+                    />
+                )
             }
             description={
-                <FormattedMessage
-                    id="TR_BRIDGE_NEEDED_DESCRIPTION"
-                    defaultMessage="Your browser is not supported. For the best experience, download and run the Trezor Suite desktop app in the background, or use a supported Chromium-based browser that is compatible with WebUSB."
-                />
+                wouldSupportWebUSB ? (
+                    <FormattedMessage
+                        id="TR_BRIDGE_NEEDED_DESCRIPTION_SUPPORTED_BROWSER"
+                        defaultMessage="This version of Connect requires Trezor Suite to be installed and running on your computer. Suite will facilitate communication between your device and the browser."
+                    />
+                ) : (
+                    <FormattedMessage
+                        id="TR_BRIDGE_NEEDED_DESCRIPTION"
+                        defaultMessage="Your browser is not supported. For the best experience, download and run the Trezor Suite desktop app in the background, or use a supported Chromium-based browser that is compatible with WebUSB."
+                    />
+                )
             }
             image={<Image imageSrc={imageSrc} />}
             buttons={
