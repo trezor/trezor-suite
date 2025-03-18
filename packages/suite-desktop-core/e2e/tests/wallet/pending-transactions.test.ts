@@ -18,7 +18,14 @@ const accounts = {
 test.describe('Use regtest to test pending transactions', { tag: ['@group=wallet'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(
-        async ({ onboardingPage, dashboardPage, settingsPage, trezorUserEnvLink, walletPage }) => {
+        async ({
+            page,
+            onboardingPage,
+            dashboardPage,
+            settingsPage,
+            trezorUserEnvLink,
+            walletPage,
+        }) => {
             const payments = [
                 { address: accounts.account1.address, amount: 10 },
                 { address: accounts.account2.address, amount: 10 },
@@ -32,6 +39,7 @@ test.describe('Use regtest to test pending transactions', { tag: ['@group=wallet
             }
             // Mining needs to happen in time before discovery
             await trezorUserEnvLink.mineBlocks({ block_amount: 1 });
+            await page.waitForTimeout(5_000);
 
             await onboardingPage.completeOnboarding();
             await dashboardPage.discoveryShouldFinish();
