@@ -27,15 +27,34 @@ export type DeviceBluetoothConnectionStatus =
 export type BluetoothDeviceCommon = {
     id: string;
     name: string;
-    data: number[]; // Todo: consider typed data-structure for this
+
+    /**
+     * Manufacturer Specific Data:
+     *
+     * Bytes:
+     *      [0]: fist byte is advertising type.
+     *             0 - advertising with whitelist,
+     *             1 - without whitelist (pairing mode),
+     *             2 - also pairing mode but bond memory is full, cannot bond another dive
+     *      [1]: second is device color (interpreted same way as from Device Fetures)
+     *      [2-6]: four remaining bytes represent internal device name, i.e. T3W1
+     */
+    data: number[];
     lastUpdatedTimestamp: number;
     connectionStatus: DeviceBluetoothConnectionStatus;
 };
 
 export type DeviceBluetoothConnectionStatusType = DeviceBluetoothConnectionStatus['type'];
 
+export type BluetoothAdapterStatus =
+    | 'unknown'
+    | 'enabled'
+    | 'disabled'
+    | 'permission-denied'
+    | 'not-compatible';
+
 export type BluetoothState<T extends BluetoothDeviceCommon> = {
-    adapterStatus: 'unknown' | 'enabled' | 'disabled';
+    adapterStatus: BluetoothAdapterStatus;
     scanStatus: BluetoothScanStatus;
     nearbyDevices: T[]; // Must be sorted, newest last
 
@@ -54,9 +73,9 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
 
     return createReducerWithExtraDeps<BluetoothState<T>>(initialState, (builder, extra) =>
         builder
-            .addCase(bluetoothActions.adapterEventAction, (state, { payload: { isPowered } }) => {
-                state.adapterStatus = isPowered ? 'enabled' : 'disabled';
-                if (!isPowered) {
+            .addCase(bluetoothActions.adapterEventAction, (state, { payload: { status } }) => {
+                state.adapterStatus = status;
+                if (status !== 'enabled') {
                     state.nearbyDevices = [];
                     state.scanStatus = 'idle';
                 }

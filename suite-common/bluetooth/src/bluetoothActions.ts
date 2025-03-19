@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import {
+    BluetoothAdapterStatus,
     BluetoothDeviceCommon,
     BluetoothScanStatus,
     DeviceBluetoothConnectionStatus,
@@ -10,7 +11,7 @@ export const BLUETOOTH_PREFIX = '@suite/bluetooth';
 
 const adapterEventAction = createAction(
     `${BLUETOOTH_PREFIX}/adapter-event`,
-    ({ isPowered }: { isPowered: boolean }) => ({ payload: { isPowered } }),
+    ({ status }: { status: BluetoothAdapterStatus }) => ({ payload: { status } }),
 );
 
 type BluetoothNearbyDevicesUpdateActionPayload = {

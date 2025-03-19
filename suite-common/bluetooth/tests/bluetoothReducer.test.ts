@@ -51,9 +51,9 @@ describe('bluetoothReducer', () => {
         });
 
         expect(store.getState().bluetooth.adapterStatus).toEqual('unknown');
-        store.dispatch(bluetoothActions.adapterEventAction({ isPowered: true }));
+        store.dispatch(bluetoothActions.adapterEventAction({ status: 'enabled' }));
         expect(store.getState().bluetooth.adapterStatus).toEqual('enabled');
-        store.dispatch(bluetoothActions.adapterEventAction({ isPowered: false }));
+        store.dispatch(bluetoothActions.adapterEventAction({ status: 'disabled' }));
         expect(store.getState().bluetooth.adapterStatus).toEqual('disabled');
     });
 

@@ -34,7 +34,6 @@ export const prepareSelectAllDevices = <T extends BluetoothDeviceCommon>() =>
             knownDevices.forEach(knownDevice => map.set(knownDevice.id, knownDevice));
 
             const nearbyDevicesCopy = [...nearbyDevices];
-            nearbyDevicesCopy.reverse(); // We want to have the newest devices first in the UI
 
             nearbyDevicesCopy.forEach(nearbyDevice => {
                 map.delete(nearbyDevice.id); // Delete and re-add to change the order, replace would keep original order

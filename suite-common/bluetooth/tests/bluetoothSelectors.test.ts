@@ -55,8 +55,8 @@ describe('bluetoothSelectors', () => {
 
         expect(devices).toEqual([
             { ...disconenctedDeviceB, connectionStatus: { type: 'disconnected' } }, // from knownDevices only, first in the list
-            pairingDeviceStateC, // from nearbyDevices only
             { ...pairingDeviceStateA, connectionStatus: { type: 'connected' } }, // override by nearbyDevices
+            pairingDeviceStateC, // from nearbyDevices only
         ]);
 
         const devicesSecondTime = selectAllDevices(state);
