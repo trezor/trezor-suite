@@ -1,3 +1,8 @@
+# 1.3.2
+
+-   npm-prerelease: @trezor/schema-utils 1.3.2-beta.1 (ba0d60c261)
+-   fix(protobuf): improve message type and schema generating (c3f1750def)
+
 # 1.3.1
 
 -   npm-prerelease: @trezor/schema-utils 1.3.1-beta.1 (4bb2472d7a)
