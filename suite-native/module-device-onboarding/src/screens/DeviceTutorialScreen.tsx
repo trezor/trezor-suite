@@ -13,11 +13,14 @@ export const DeviceTutorialScreen = () => {
     const { showToast } = useToast();
     useEffect(() => {
         const showTutorial = async () => {
-            await TrezorConnect.showDeviceTutorial({ device });
-            showToast({
-                message: 'TUTORIAL COMPLETED. TODO: navigate to auth. check screen.',
-                variant: 'success',
-            });
+            const { success } = await TrezorConnect.showDeviceTutorial({ device });
+
+            if (success) {
+                showToast({
+                    message: 'TUTORIAL COMPLETED. TODO: navigate to auth. check screen.',
+                    variant: 'success',
+                });
+            }
         };
         showTutorial();
 
