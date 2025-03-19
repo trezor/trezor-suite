@@ -72,7 +72,7 @@ const fixtures = [
         setup: handleSimulatedCrossOrigin,
         expect: () =>
             expect(
-                popup.getByRole('heading', { name: "Browser can't communicate with device" }),
+                popup.getByRole('heading', { name: 'Open Trezor Suite to enable communication' }),
             ).toBeVisible(),
     },
     {
