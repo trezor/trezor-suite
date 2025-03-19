@@ -1,3 +1,7 @@
+# 1.0.2
+
+-   npm-prerelease: @trezor/device-utils 1.0.2-beta.1 (608436928d)
+
 # 1.0.1
 
 -   fix(device-utils): add tsx as dev dependency (75e2cf82af)
