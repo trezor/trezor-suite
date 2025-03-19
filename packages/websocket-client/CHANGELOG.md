@@ -1,3 +1,7 @@
+# 1.1.3
+
+-   npm-prerelease: @trezor/websocket-client 1.1.3-beta.1 (d00ffd0eb1)
+
 # 1.1.2
 
 -   npm-prerelease: @trezor/websocket-client 1.1.2-beta.1 (12e0970720)
