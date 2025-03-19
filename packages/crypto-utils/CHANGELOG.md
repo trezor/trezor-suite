@@ -1,3 +1,7 @@
+# 1.1.2
+
+-   npm-prerelease: @trezor/crypto-utils 1.1.2-beta.1 (009f05e6b3)
+
 # 1.1.1
 
 -   npm-prerelease: @trezor/crypto-utils 1.1.1-beta.1 (9c426b4ffa)

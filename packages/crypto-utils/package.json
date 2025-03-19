@@ -1,6 +1,6 @@
 {
     "name": "@trezor/crypto-utils",
-    "version": "1.1.2-beta.1",
+    "version": "1.1.2",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/crypto-utils",
     "keywords": [
