@@ -42,6 +42,7 @@ jobs:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-24.04
     needs:
+      - build-app
       - load-e2e-matrix
     strategy:
       fail-fast: false
