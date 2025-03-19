@@ -48,6 +48,29 @@ jobs:
         with:
           project: "desktop"
 
+  post-currents-link:
+    if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    needs:
+      - build-desktop
+    steps:
+      - name: Post Currents link
+        uses: actions/github-script@v7
+        env:
+          CURRENTS_PROJECT_ID: "4ytF0E"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const projectId = process.env.CURRENTS_PROJECT_ID;
+            const branch = context.payload.pull_request.head.ref;
+            const currentsUrl = `https://app.currents.dev/projects/${projectId}/runs?branch=${branch}&lookback=7`;
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: `🔍🖥️ Suite Desktop test results: [View in Currents](${currentsUrl})`
+            });
+
   run-e2e-suite-desktop-tests:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-24.04
