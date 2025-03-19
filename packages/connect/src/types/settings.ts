@@ -65,15 +65,21 @@ export interface ConnectSettingsWeb {
 export interface ConnectSettingsWebextension {
     /** _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
     _extendWebextensionLifetime?: boolean;
+    coreMode?: 'auto' | 'popup' | 'suite-desktop';
 }
 export interface ConnectSettingsMobile {
     deeplinkUrl: string;
     deeplinkOpen?: (url: string) => void;
     deeplinkCallbackUrl?: string;
+    coreMode?: 'deeplink';
 }
 
 export type ConnectSettings = ConnectSettingsPublic &
     ConnectSettingsInternal &
-    ConnectSettingsWeb &
-    ConnectSettingsWebextension &
-    ConnectSettingsMobile;
+    // coreMode is a common parameter between these, so it is explicitly handled here for correct handling
+    Omit<ConnectSettingsWeb & ConnectSettingsWebextension & ConnectSettingsMobile, 'coreMode'> & {
+        coreMode?:
+            | ConnectSettingsWeb['coreMode']
+            | ConnectSettingsWebextension['coreMode']
+            | ConnectSettingsMobile['coreMode'];
+    };

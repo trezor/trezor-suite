@@ -1,66 +1,76 @@
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
 import {
     ConnectSettings,
+    ConnectSettingsPublic,
     ConnectSettingsWebextension,
     Manifest,
     POPUP,
 } from '@trezor/connect/src/exports';
-import { factory } from '@trezor/connect/src/factory';
-import { InitFullSettings } from '@trezor/connect/src/types/api/init';
-import { initLog } from '@trezor/connect/src/utils/debug';
+import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
+import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-web/src/channels/serviceworker-window';
-import { CoreInPopup } from '@trezor/connect-web/src/impl/core-in-popup';
 
 import { parseConnectSettings } from './connectSettings';
+import { CoreInPopupWebextension, CoreInSuiteDesktopWebextension } from './impl';
 
 const _settings = parseConnectSettings();
 
-const extendLifetime = () => {
-    // Subscribing to runtime makes the Service Worker stay alive for 5 minutes instead of the default 30 seconds.
-    // We could make it to be continuously alive but it is probably overkilling.
-    // https://developer.chrome.com/blog/longer-esw-lifetimes
-    // https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers#keep-sw-alive
-    // https://stackoverflow.com/questions/66618136/persistent-service-worker-in-chrome-extension
-    chrome.runtime.onMessage.addListener(() => false);
-};
+const impl = new TrezorConnectDynamic<
+    'core-in-popup' | 'core-in-suite-desktop',
+    ConnectSettingsWebextension,
+    ConnectFactoryDependencies<ConnectSettingsWebextension>
+>({
+    implementations: [
+        {
+            type: 'core-in-popup',
+            impl: new CoreInPopupWebextension(),
+        },
+        {
+            type: 'core-in-suite-desktop',
+            impl: new CoreInSuiteDesktopWebextension(),
+        },
+    ],
+    getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWebextension>) => {
+        if (settings.coreMode === 'suite-desktop') {
+            return 'core-in-suite-desktop';
+        } else {
+            return 'core-in-popup';
+        }
+    },
+    handleBeforeCall: async () => {
+        // Always try if desktop is available again
+        const isCoreModeDesktop = impl.lastSettings?.coreMode === 'suite-desktop';
+        if (isCoreModeDesktop) {
+            await impl.switchTarget('core-in-suite-desktop');
+        }
+    },
+    handleErrorFallback: async errorCode => {
+        // Handle desktop errors
+        if (
+            impl.getTargetType() === 'core-in-suite-desktop' &&
+            errorCode === 'Desktop_ConnectionMissing'
+        ) {
+            await impl.switchTarget('core-in-popup');
 
-class CoreInPopupWebextension extends CoreInPopup {
-    public constructor() {
-        super();
-        this._settings = parseConnectSettings();
-
-        /**
-         * setup logger.
-         * service worker cant communicate directly with sharedworker logger so the communication is as follows:
-         * - service worker -> content script -> popup -> sharedworker
-         * todo: this could be simplified by injecting additional content script into log.html
-         */
-        this.logger = initLog('@trezor/connect-webextension');
-        this.popupManagerLogger = initLog('@trezor/connect-webextension/popupManager');
-    }
-
-    public init(settings: InitFullSettings<ConnectSettingsWebextension>): Promise<void> {
-        if (settings._extendWebextensionLifetime) {
-            extendLifetime();
+            return true;
         }
 
-        return super.init(settings);
-    }
-}
+        return false;
+    },
+});
 
-const methods = new CoreInPopupWebextension();
 // Bind all methods due to shadowing `this`
 const TrezorConnect = factory({
-    eventEmitter: methods.eventEmitter,
-    init: methods.init.bind(methods),
-    call: methods.call.bind(methods),
-    setTransports: methods.setTransports.bind(methods),
-    manifest: methods.manifest.bind(methods),
-    requestLogin: methods.requestLogin.bind(methods),
-    uiResponse: methods.uiResponse.bind(methods),
-    cancel: methods.cancel.bind(methods),
-    dispose: methods.dispose.bind(methods),
+    eventEmitter: impl.eventEmitter,
+    init: impl.init.bind(impl),
+    call: impl.call.bind(impl),
+    setTransports: impl.setTransports.bind(impl),
+    manifest: impl.manifest.bind(impl),
+    requestLogin: impl.requestLogin.bind(impl),
+    uiResponse: impl.uiResponse.bind(impl),
+    cancel: impl.cancel.bind(impl),
+    dispose: impl.dispose.bind(impl),
 });
 
 const initProxyChannel = () => {
@@ -93,16 +103,18 @@ const initProxyChannel = () => {
         }
 
         // Core is loaded in popup and initialized every time, so we send the settings from here.
-        TrezorConnect.init(proxySettings as { manifest: Manifest } & Partial<ConnectSettings>).then(
-            () => {
-                (TrezorConnect as any)[method](payload).then((response: any) => {
-                    channel.postMessage({
-                        ...response,
-                        id,
-                    });
+        TrezorConnect.init(
+            proxySettings as { manifest: Manifest } & Partial<
+                ConnectSettingsPublic & ConnectSettingsWebextension
+            >,
+        ).then(() => {
+            (TrezorConnect as any)[method](payload).then((response: any) => {
+                channel.postMessage({
+                    ...response,
+                    id,
                 });
-            },
-        );
+            });
+        });
     });
 };
 
