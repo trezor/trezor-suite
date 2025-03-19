@@ -88,7 +88,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
             xpubs,
         });
         if (res.error) {
-            await cmd.cancelCall();
+            await this.device.getCurrentSession().cancelCall();
             throw new Error(res.error);
         }
 

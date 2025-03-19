@@ -132,16 +132,16 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             await cmd.unlockPath(unlockPath);
         }
 
-        return cmd.getAddress(
-            {
-                address_n,
-                show_display,
-                multisig,
-                script_type,
-                chunkify,
-            },
+        const response = await cmd.getAddress(
+            { address_n, show_display, multisig, script_type, chunkify },
             coinInfo,
         );
+
+        return {
+            path: address_n,
+            serializedPath: getSerializedPath(address_n),
+            address: response.address,
+        };
     }
 
     async run() {

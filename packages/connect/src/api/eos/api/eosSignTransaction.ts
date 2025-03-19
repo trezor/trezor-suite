@@ -47,7 +47,7 @@ export default class EosSignTransaction extends AbstractMethod<'eosSignTransacti
 
     async run() {
         const response = await helper.signTx(
-            this.device.getCommands().typedCall.bind(this.device.getCommands()),
+            this.device.getCommands().typedCall,
             this.params.path,
             this.params.chain_id,
             this.params.header,

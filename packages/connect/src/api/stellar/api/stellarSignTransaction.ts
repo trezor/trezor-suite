@@ -90,7 +90,7 @@ export default class StellarSignTransaction extends AbstractMethod<
         this._ensureFirmwareSupportsParams();
 
         const response = await helper.stellarSignTx(
-            this.device.getCommands().typedCall.bind(this.device.getCommands()),
+            this.device.getCommands().typedCall,
             this.params.path,
             this.params.networkPassphrase,
             this.params.transaction,

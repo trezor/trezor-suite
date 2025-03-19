@@ -3,7 +3,7 @@
 import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { ERRORS, PROTO } from '../constants';
+import { ERRORS } from '../constants';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE, MethodReturnType } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
@@ -194,7 +194,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         const responses: MethodReturnType<typeof this.name> = [];
 
         const sendProgress = (progress: number, response: AccountInfo | null, error?: string) => {
-            if (!this.hasBundle || (this.device && this.device.getCommands().disposed)) return;
+            if (!this.hasBundle || this.device?.getCurrentSession().isDisposed()) return;
             // send progress to UI
             this.postMessage(
                 createUiMessage(UI.BUNDLE_PROGRESS, {
@@ -220,13 +220,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 try {
                     const accountDescriptor = await this.device
                         .getCommands()
-                        .getAccountDescriptor(
-                            request.coinInfo,
-                            address_n,
-                            typeof request.derivationType !== 'undefined'
-                                ? request.derivationType
-                                : PROTO.CardanoDerivationType.ICARUS_TREZOR,
-                        );
+                        .getAccountDescriptor(request.coinInfo, address_n, request.derivationType);
                     if (accountDescriptor) {
                         descriptor = accountDescriptor.descriptor;
                         legacyXpub = accountDescriptor.legacyXpub;
@@ -317,18 +311,16 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     }
 
     async discover(request: Request) {
-        const { coinInfo, identity, defaultAccountType } = request;
+        const { coinInfo, identity, defaultAccountType, derivationType } = request;
         const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
         const dfd = this.createUiPromise(UI.RECEIVE_ACCOUNT);
 
         const discovery = new Discovery({
             blockchain,
-            commands: this.device.getCommands(),
-            derivationType:
-                typeof request.derivationType !== 'undefined'
-                    ? request.derivationType
-                    : PROTO.CardanoDerivationType.ICARUS_TREZOR,
+            getDescriptor: path =>
+                this.device.getCommands().getAccountDescriptor(coinInfo, path, derivationType),
         });
+
         discovery.on('progress', accounts => {
             this.postMessage(
                 createUiMessage(UI.SELECT_ACCOUNT, {

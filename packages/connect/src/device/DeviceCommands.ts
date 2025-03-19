@@ -1,91 +1,33 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
 import { MessagesSchema as Messages } from '@trezor/protobuf';
-import { Assert } from '@trezor/schema-utils';
-import { Session, TRANSPORT_ERROR, Transport } from '@trezor/transport';
-import { createDeferred, resolveAfter, versionUtils } from '@trezor/utils';
 
-import { ERRORS } from '../constants';
-import { Device } from './Device';
-import { resolveDescriptorForTaproot } from './resolveDescriptorForTaproot';
+import { ERRORS, PROTO } from '../constants';
 import { getBech32Network, getSegwitNetwork } from '../data/coinInfo';
-import { DEVICE } from '../events';
+import type { TypedCallProvider } from '../device/DeviceCurrentSession';
+import { resolveDescriptorForTaproot } from '../device/resolveDescriptorForTaproot';
 import type { BitcoinNetworkInfo, CoinInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
 import { getAccountAddressN } from '../utils/accountUtils';
-import { initLog } from '../utils/debug';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
-import { getScriptType, getSerializedPath, isTaprootPath, toHardened } from '../utils/pathUtils';
+import { getScriptType, getSerializedPath, isTaprootPath } from '../utils/pathUtils';
 
 type TypedCall = Messages.TypedCall;
 
 export type { TypedCall };
 
-const logger = initLog('DeviceCommands');
+export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
+    const typedCall = deviceTypedCall.typedCall.bind(deviceTypedCall);
 
-const filterForLog = (type: string, msg: any) => {
-    const blacklist: { [key: string]: Record<string, string> | string } = {
-        PassphraseAck: {
-            passphrase: '(redacted...)',
-        },
-        CipheredKeyValue: {
-            value: '(redacted...)',
-        },
-        GetPublicKey: {
-            address_n: '(redacted...)',
-        },
-        PublicKey: {
-            node: '(redacted...)',
-            xpub: '(redacted...)',
-        },
-        DecryptedMessage: {
-            message: '(redacted...)',
-            address: '(redacted...)',
-        },
-        Features: '(redacted...)',
-    };
+    const unlockPath = (params?: Messages.UnlockPath) =>
+        typedCall('UnlockPath', 'UnlockedPathRequest', params);
 
-    if (type in blacklist) {
-        if (typeof blacklist[type] === 'string') {
-            return blacklist[type];
+    const getPublicKey = async (params: Messages.GetPublicKey, unlock?: Messages.UnlockPath) => {
+        if (unlock) {
+            await unlockPath(unlock);
         }
 
-        return { ...msg, ...blacklist[type] };
-    }
-
-    return msg;
-};
-
-export class DeviceCommands {
-    readonly device: Device;
-    readonly transport: Transport;
-    readonly transportSession: Session;
-
-    disposed: boolean;
-
-    callPromise?: ReturnType<Transport['call']>;
-
-    constructor(device: Device, transport: Transport, transportSession: Session) {
-        this.device = device;
-        this.transport = transport;
-        this.transportSession = transportSession;
-        this.disposed = false;
-    }
-
-    isDisposed() {
-        return this.disposed;
-    }
-
-    unlockPath(params?: Messages.UnlockPath) {
-        return this.typedCall('UnlockPath', 'UnlockedPathRequest', params);
-    }
-
-    async getPublicKey(params: Messages.GetPublicKey, unlockPath?: Messages.UnlockPath) {
-        if (unlockPath) {
-            await this.unlockPath(unlockPath);
-        }
-
-        const response = await this.typedCall('GetPublicKey', 'PublicKey', {
+        const response = await typedCall('GetPublicKey', 'PublicKey', {
             address_n: params.address_n,
             coin_name: params.coin_name || 'Bitcoin',
             script_type: params.script_type,
@@ -95,19 +37,19 @@ export class DeviceCommands {
         });
 
         return response.message;
-    }
+    };
 
     // Validation of xpub
-    async getHDNode(
+    const getHDNode = async (
         params: Messages.GetPublicKey,
         options: {
             coinInfo: BitcoinNetworkInfo;
             validation?: boolean;
             unlockPath?: Messages.UnlockPath;
         },
-    ) {
+    ) => {
         const path = params.address_n;
-        const { coinInfo, unlockPath } = options;
+        const { coinInfo, unlockPath: unlock } = options;
         const validation = typeof options.validation === 'boolean' ? options.validation : true;
 
         let network: Network | null = null;
@@ -133,15 +75,12 @@ export class DeviceCommands {
 
         let publicKey: Messages.PublicKey;
         if (params.show_display || !validation) {
-            publicKey = await this.getPublicKey(params, unlockPath);
+            publicKey = await getPublicKey(params, unlock);
         } else {
             const suffix = 0;
             const childPath = path.concat([suffix]);
-            const resKey = await this.getPublicKey(params, unlockPath);
-            const childKey = await this.getPublicKey(
-                { ...params, address_n: childPath },
-                unlockPath,
-            );
+            const resKey = await getPublicKey(params, unlock);
+            const childKey = await getPublicKey({ ...params, address_n: childPath }, unlock);
             publicKey = hdnodeUtils.xpubDerive(resKey, childKey, suffix, network, coinInfo.network);
         }
 
@@ -171,12 +110,12 @@ export class DeviceCommands {
         }
 
         return response;
-    }
+    };
 
-    async getAddress(
+    const getAddress = async (
         { address_n, show_display, multisig, script_type, chunkify }: Messages.GetAddress,
         coinInfo: BitcoinNetworkInfo,
-    ) {
+    ) => {
         if (!script_type) {
             script_type = getScriptType(address_n);
             if (script_type === 'SPENDMULTISIG' && !multisig) {
@@ -191,7 +130,7 @@ export class DeviceCommands {
                 }
             });
         }
-        const response = await this.typedCall('GetAddress', 'Address', {
+        const response = await typedCall('GetAddress', 'Address', {
             address_n,
             coin_name: coinInfo.name,
             show_display,
@@ -200,64 +139,36 @@ export class DeviceCommands {
             chunkify,
         });
 
-        return {
-            path: address_n,
-            serializedPath: getSerializedPath(address_n),
-            address: response.message.address,
-        };
-    }
+        return response.message;
+    };
 
-    async ethereumGetAddress({
+    const ethereumGetAddress = async (params: Messages.EthereumGetAddress) => {
+        const response = await typedCall('EthereumGetAddress', 'EthereumAddress', params);
+
+        return response.message;
+    };
+
+    const ethereumGetPublicKey = async ({
         address_n,
         show_display,
-        encoded_network,
-        chunkify,
-    }: Messages.EthereumGetAddress) {
-        const response = await this.typedCall('EthereumGetAddress', 'EthereumAddress', {
-            address_n,
-            show_display,
-            encoded_network,
-            chunkify,
-        });
-
-        return {
-            path: address_n,
-            serializedPath: getSerializedPath(address_n),
-            address: response.message.address,
-        };
-    }
-
-    async ethereumGetPublicKey({
-        address_n,
-        show_display,
-    }: Messages.EthereumGetPublicKey): Promise<HDNodeResponse> {
+    }: Messages.EthereumGetPublicKey) => {
         const suffix = 0;
         const childPath = address_n.concat([suffix]);
-        const resKey = await this.typedCall('EthereumGetPublicKey', 'EthereumPublicKey', {
+        const resKey = await typedCall('EthereumGetPublicKey', 'EthereumPublicKey', {
             address_n,
             show_display,
         });
-        const childKey = await this.typedCall('EthereumGetPublicKey', 'EthereumPublicKey', {
+        const childKey = await typedCall('EthereumGetPublicKey', 'EthereumPublicKey', {
             address_n: childPath,
             show_display: false,
         });
-        const publicKey = hdnodeUtils.xpubDerive(resKey.message, childKey.message, suffix);
 
-        return {
-            path: address_n,
-            serializedPath: getSerializedPath(address_n),
-            childNum: publicKey.node.child_num,
-            xpub: publicKey.xpub,
-            chainCode: publicKey.node.chain_code,
-            publicKey: publicKey.node.public_key,
-            fingerprint: publicKey.node.fingerprint,
-            depth: publicKey.node.depth,
-        };
-    }
+        return hdnodeUtils.xpubDerive(resKey.message, childKey.message, suffix);
+    };
 
-    async preauthorize(throwError: boolean) {
+    const preauthorize = async (throwError: boolean) => {
         try {
-            await this.typedCall('DoPreauthorized', 'PreauthorizedRequest', {});
+            await typedCall('DoPreauthorized', 'PreauthorizedRequest', {});
 
             return true;
         } catch (error) {
@@ -265,274 +176,24 @@ export class DeviceCommands {
 
             return false;
         }
-    }
+    };
 
-    getDeviceState() {
-        return this._getAddress();
-    }
-
-    typedCall<T extends Messages.MessageKey, R extends Messages.MessageKey[]>(
-        type: T,
-        resType: R,
-        msg?: Messages.MessagePayload<T>,
-    ): Promise<Messages.MessageResponse<R[number]>>;
-    typedCall<T extends Messages.MessageKey, R extends Messages.MessageKey>(
-        type: T,
-        resType: R,
-        msg?: Messages.MessagePayload<T>,
-    ): Promise<Messages.MessageResponse<R>>;
-    async typedCall(
-        type: Messages.MessageKey,
-        resType: Messages.MessageKey | Messages.MessageKey[],
-        msg: Messages.MessagePayload = {},
-    ) {
-        // Assert message type
-        // msg is allowed to be undefined for some calls, in that case the schema is an empty object
-        Assert(Messages.MessageType.properties[type], msg);
-        const response = await this.callLoop(type, msg);
-
-        try {
-            const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
-            if (!splitResTypes.includes(response.type)) {
-                throw ERRORS.TypedError(
-                    'Runtime',
-                    `assertType: Response of unexpected type: ${response.type}. Should be ${resType}`,
-                );
-            }
-        } catch (error) {
-            // handle possible race condition
-            // Bridge may have some unread message in buffer, read it
-            const abortController = new AbortController();
-            const timeout = setTimeout(() => {
-                abortController.abort();
-            }, 500);
-
-            await this.transport
-                .receive({
-                    session: this.transportSession,
-                    protocol: this.device.protocol,
-                    signal: abortController.signal,
-                })
-                .finally(() => {
-                    clearTimeout(timeout);
-                });
-            // throw error anyway, next call should be resolved properly
-            throw error;
-        }
-
-        return response;
-    }
-
-    private async callLoop<T extends Messages.MessageKey>(
-        type: T,
-        msg: Messages.MessagePayload<T>,
-    ): Promise<Messages.MessageResponse> {
-        let [name, data] = [type, msg];
-        let pinUnlocked = false;
-        const session = this.transportSession;
-        const { protocol } = this.device;
-
-        while (true) {
-            if (this.disposed) {
-                throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
-            }
-
-            logger.debug('Sending', name, filterForLog(name, data));
-
-            this.callPromise = this.transport
-                .call({ session, name, data, protocol })
-                .finally(() => {
-                    this.callPromise = undefined;
-                });
-
-            const response = await this.callPromise;
-
-            if (!response.success) {
-                // res.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
-                logger.warn('Received transport error', response.error, response.message);
-                throw new Error(response.error, { cause: 'transport-error' });
-            }
-
-            const res = response.payload;
-
-            logger.debug('Received', res.type, filterForLog(res.type, res.message));
-
-            this.clearCancel();
-
-            switch (res.type) {
-                case 'Failure': {
-                    const { code, message } = res.message;
-
-                    // pass code and message from firmware error
-                    return Promise.reject(
-                        new ERRORS.TrezorError(
-                            (code as any) || 'Failure_UnknownCode',
-                            message ||
-                                // T1B1 does not send any message in firmware update
-                                // https://github.com/trezor/trezor-firmware/issues/1334
-                                (code === Messages.FailureType.Failure_FirmwareError &&
-                                    'Firmware installation failed') ||
-                                // Failure_ActionCancelled message could be also missing
-                                // https://github.com/trezor/connect/issues/865
-                                (code === Messages.FailureType.Failure_ActionCancelled &&
-                                    'Action cancelled by user') ||
-                                'Failure_UnknownMessage',
-                        ),
-                    );
-                }
-                case 'ButtonRequest': {
-                    this.awaitCancel().then(async ({ resolve }) => {
-                        /**
-                         * Bridge version =< 2.0.28 throws "other call in progress" error.
-                         * as workaround takeover transportSession (acquire) before sending Cancel, this will resolve previous pending call.
-                         */
-                        if (
-                            this.transport.name === 'BridgeTransport' &&
-                            !versionUtils.isNewer(this.transport.version, '2.0.28')
-                        ) {
-                            // UI_EVENT is send right before ButtonAck, make sure that ButtonAck is sent
-                            await resolveAfter(1);
-                            await this.device.acquire().catch(() => {});
-                        }
-
-                        await this.cancelCall(false);
-                        resolve();
-                    });
-
-                    if (res.message.code === 'ButtonRequest_PassphraseEntry') {
-                        this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
-                    } else {
-                        this.device.emit(DEVICE.BUTTON, {
-                            device: this.device,
-                            payload: res.message,
-                        });
-                    }
-
-                    [name, data] = ['ButtonAck', {}];
-                    break;
-                }
-                case 'PinMatrixRequest': {
-                    const promptRes = await Promise.race([
-                        this.device.prompt(DEVICE.PIN, { type: res.message.type }),
-                        this.awaitCancel().then(resp => ({ success: false as const, ...resp })),
-                    ]);
-                    this.clearCancel();
-
-                    if (!promptRes.success) {
-                        const cancelRes = await this.cancelCall();
-
-                        if ('resolve' in promptRes) promptRes.resolve();
-
-                        return Promise.reject(
-                            cancelRes.success ? promptRes.error : cancelRes.error,
-                        );
-                    }
-
-                    pinUnlocked = true;
-                    [name, data] = ['PinMatrixAck', { pin: promptRes.payload }];
-                    break;
-                }
-                case 'PassphraseRequest': {
-                    const promptRes = await Promise.race([
-                        this.device.prompt(DEVICE.PASSPHRASE, {}),
-                        this.awaitCancel().then(resp => ({ success: false as const, ...resp })),
-                    ]);
-                    this.clearCancel();
-
-                    if (!promptRes.success) {
-                        const cancelRes = await this.cancelCall();
-
-                        if ('resolve' in promptRes) promptRes.resolve();
-
-                        return Promise.reject(
-                            cancelRes.success ? promptRes.error : cancelRes.error,
-                        );
-                    }
-
-                    [name, data] = [
-                        'PassphraseAck',
-                        promptRes.payload.passphraseOnDevice
-                            ? { on_device: true }
-                            : { passphrase: promptRes.payload.value.normalize('NFKD') },
-                    ];
-                    break;
-                }
-                case 'WordRequest': {
-                    const promptRes = await Promise.race([
-                        this.device.prompt(DEVICE.WORD, { type: res.message.type }),
-                        this.awaitCancel().then(resp => ({ success: false as const, ...resp })),
-                    ]);
-                    this.clearCancel();
-
-                    if (!promptRes.success) {
-                        const cancelRes = await this.cancelCall();
-
-                        if ('resolve' in promptRes) promptRes.resolve();
-
-                        return Promise.reject(
-                            cancelRes.success ? promptRes.error : cancelRes.error,
-                        );
-                    }
-
-                    [name, data] = ['WordAck', { word: promptRes.payload }];
-                    break;
-                }
-                default: {
-                    // reload features after successful PIN; TODO improve
-                    if (pinUnlocked && !this.device.features.unlocked) {
-                        await this.device.getFeatures();
-                    }
-
-                    return res;
-                }
-            }
-        }
-    }
-
-    cancelCall(expectResponse = true) {
-        if (this.disposed) {
-            return Promise.resolve({
-                success: false as const,
-                error: TRANSPORT_ERROR.SESSION_NOT_FOUND,
-            });
-        }
-
-        const cancelArgs = {
-            session: this.transportSession,
-            name: 'Cancel',
-            data: {},
-            protocol: this.device.protocol,
-        };
-
-        return expectResponse ? this.transport.call(cancelArgs) : this.transport.send(cancelArgs);
-    }
-
-    private async _getAddress() {
-        const { message } = await this.typedCall('GetAddress', 'Address', {
-            address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
-            coin_name: 'Testnet',
-            script_type: 'SPENDADDRESS',
-        });
-
-        return message.address;
-    }
-
-    async getAccountDescriptor(
+    const getAccountDescriptor = async (
         coinInfo: CoinInfo,
         indexOrPath: number | number[],
-        derivationType?: Messages.CardanoDerivationType,
+        derivationType: Messages.CardanoDerivationType = PROTO.CardanoDerivationType.ICARUS_TREZOR,
     ): Promise<{
         descriptor: string;
         legacyXpub?: string;
         address_n: number[];
         descriptorChecksum?: string;
-    }> {
+    }> => {
         const address_n = Array.isArray(indexOrPath)
             ? indexOrPath
             : getAccountAddressN(coinInfo, indexOrPath);
 
         if (coinInfo.type === 'bitcoin') {
-            const resp = await this.getHDNode({ address_n }, { coinInfo, validation: false });
+            const resp = await getHDNode({ address_n }, { coinInfo, validation: false });
 
             return {
                 descriptor: resp.xpubSegwit || resp.xpub,
@@ -542,18 +203,17 @@ export class DeviceCommands {
             };
         }
         if (coinInfo.type === 'ethereum') {
-            const resp = await this.ethereumGetAddress({ address_n });
+            const { message } = await typedCall('EthereumGetAddress', 'EthereumAddress', {
+                address_n,
+            });
 
             return {
-                descriptor: resp.address,
+                descriptor: message.address,
                 address_n,
             };
         }
         if (coinInfo.shortcut === 'ADA' || coinInfo.shortcut === 'tADA') {
-            if (typeof derivationType === 'undefined')
-                throw new Error('Derivation type is not specified');
-
-            const { message } = await this.typedCall('CardanoGetPublicKey', 'CardanoPublicKey', {
+            const { message } = await typedCall('CardanoGetPublicKey', 'CardanoPublicKey', {
                 address_n,
                 derivation_type: derivationType,
             });
@@ -564,7 +224,7 @@ export class DeviceCommands {
             };
         }
         if (coinInfo.shortcut === 'XRP' || coinInfo.shortcut === 'tXRP') {
-            const { message } = await this.typedCall('RippleGetAddress', 'RippleAddress', {
+            const { message } = await typedCall('RippleGetAddress', 'RippleAddress', {
                 address_n,
             });
 
@@ -575,7 +235,7 @@ export class DeviceCommands {
         }
 
         if (coinInfo.shortcut === 'SOL' || coinInfo.shortcut === 'DSOL') {
-            const { message } = await this.typedCall('SolanaGetAddress', 'SolanaAddress', {
+            const { message } = await typedCall('SolanaGetAddress', 'SolanaAddress', {
                 address_n,
             });
 
@@ -589,34 +249,17 @@ export class DeviceCommands {
             'Runtime',
             'DeviceCommands.getAccountDescriptor: unsupported coinInfo.type',
         );
-    }
+    };
 
-    private cancelFn?: (err: string) => Promise<void>;
-
-    private awaitCancel() {
-        const dfd = createDeferred<{ error: string; resolve: () => void }>();
-        this.cancelFn = error => {
-            const { promise, resolve } = createDeferred();
-            dfd.resolve({ resolve, error });
-
-            return promise;
-        };
-
-        return dfd.promise;
-    }
-
-    private clearCancel() {
-        this.cancelFn = undefined;
-    }
-
-    async cancel(reason: string) {
-        await this.cancelFn?.(reason);
-    }
-
-    async dispose() {
-        if (!this.disposed) {
-            this.disposed = true;
-            await this.callPromise?.catch(() => {});
-        }
-    }
-}
+    return {
+        unlockPath,
+        getPublicKey,
+        getAddress,
+        ethereumGetPublicKey,
+        ethereumGetAddress,
+        getHDNode,
+        preauthorize,
+        getAccountDescriptor,
+        typedCall,
+    };
+};

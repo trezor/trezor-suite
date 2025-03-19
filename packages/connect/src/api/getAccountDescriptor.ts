@@ -1,6 +1,6 @@
 import { Assert } from '@trezor/schema-utils';
 
-import { ERRORS, PROTO } from '../constants';
+import { ERRORS } from '../constants';
 import { getFirmwareRange } from './common/paramsValidator';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE, MethodReturnType } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
@@ -161,9 +161,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
                     .getAccountDescriptor(
                         request.coinInfo,
                         request.address_n,
-                        typeof request.derivationType !== 'undefined'
-                            ? request.derivationType
-                            : PROTO.CardanoDerivationType.ICARUS_TREZOR,
+                        request.derivationType,
                     );
                 const response = {
                     descriptor,

@@ -4,7 +4,7 @@ import EventEmitter from 'events';
 
 import { Blockchain } from '../../backend/BlockchainLink';
 import { ERRORS, PROTO } from '../../constants';
-import { DeviceCommands } from '../../device/DeviceCommands';
+import type { DeviceCommands } from '../../device/DeviceCommands';
 import type { CoinInfo, DiscoveryAccount, DiscoveryAccountType } from '../../types';
 import type { GetAccountInfo } from '../../types/api/getAccountInfo';
 import { getAccountAddressN } from '../../utils/accountUtils';
@@ -15,11 +15,14 @@ type DiscoveryType = {
     getPath: (index: number) => number[];
 };
 
+type GetDescriptor = (
+    path: number[],
+) => ReturnType<ReturnType<typeof DeviceCommands>['getAccountDescriptor']>;
+
 type DiscoveryOptions = {
     blockchain: Blockchain;
-    commands: DeviceCommands;
+    getDescriptor: GetDescriptor;
     limit?: number;
-    derivationType?: PROTO.CardanoDerivationType;
 };
 
 export class Discovery extends EventEmitter {
@@ -33,7 +36,7 @@ export class Discovery extends EventEmitter {
 
     blockchain: Blockchain;
 
-    commands: DeviceCommands;
+    getDescriptor: GetDescriptor;
 
     index: number;
 
@@ -52,9 +55,8 @@ export class Discovery extends EventEmitter {
         this.interrupted = false;
         this.completed = false;
         this.blockchain = options.blockchain;
-        this.commands = options.commands;
         this.coinInfo = options.blockchain.coinInfo;
-        this.derivationType = options.derivationType;
+        this.getDescriptor = options.getDescriptor;
         const { coinInfo } = this;
 
         // set discovery types
@@ -108,11 +110,7 @@ export class Discovery extends EventEmitter {
 
             // get descriptor from device
             const path = accountType.getPath(this.index);
-            const descriptor = await this.commands.getAccountDescriptor(
-                this.coinInfo,
-                path,
-                this.derivationType,
-            );
+            const descriptor = await this.getDescriptor(path);
 
             if (!descriptor) {
                 throw ERRORS.TypedError('Runtime', 'Discovery: descriptor not found');

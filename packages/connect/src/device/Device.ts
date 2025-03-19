@@ -17,6 +17,7 @@ import {
 
 import { DeviceCommands } from './DeviceCommands';
 import { ERRORS, FIRMWARE, PROTO } from '../constants';
+import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
 import { IStateStorage } from './StateStorage';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
@@ -57,6 +58,8 @@ import {
     parseCapabilities,
     parseRevision,
 } from '../utils/deviceFeaturesUtils';
+import { toHardened } from '../utils/pathUtils';
+
 // custom log
 const _log = initLog('Device');
 
@@ -163,7 +166,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private runPromise?: Deferred<void>;
 
     private keepTransportSession = false;
-    public commands?: DeviceCommands;
+    private currentSession?: DeviceCurrentSession;
 
     private loaded = false;
 
@@ -273,8 +276,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     this.session = result.payload;
                     this.lastAcquiredHere = true;
 
-                    this.commands?.dispose();
-                    this.commands = new DeviceCommands(this, this.transport, this.session);
+                    this.currentSession?.dispose();
+                    this.currentSession = new DeviceCurrentSession(
+                        this,
+                        this.transport,
+                        this.protocol,
+                        this.session,
+                    );
 
                     return result;
                 } else {
@@ -298,7 +306,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             return;
         }
 
-        await this.commands?.dispose();
+        await this.currentSession?.dispose();
 
         const sessionPromise = this.getSessionChangePromise();
 
@@ -406,7 +414,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // Session changed to null
         // -> released
         if (!descriptor.session) {
-            const methodStillRunning = !this.commands?.isDisposed();
+            const methodStillRunning = !this.currentSession?.isDisposed();
             if (methodStillRunning) {
                 this.releaseTransportSession();
             }
@@ -458,8 +466,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async interruptionFromUser(error: Error) {
         _log.debug('interruptionFromUser');
 
-        await this.commands?.cancel(error.toString());
-        await this.commands?.dispose();
+        await this.currentSession?.cancel(error.toString());
+        await this.currentSession?.dispose();
 
         if (this.runPromise) {
             // reject inner defer
@@ -478,7 +486,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         _log.debug('interruptionFromOutside');
 
-        this.commands?.dispose();
+        this.currentSession?.dispose();
 
         if (this.runPromise) {
             this.runPromise.reject(ERRORS.TypedError('Device_UsedElsewhere'));
@@ -504,7 +512,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             await this.releasePromise;
         }
 
-        const acquireNeeded = !this.isUsedHere() || this.commands?.disposed;
+        const acquireNeeded = !this.isUsedHere() || this.currentSession?.isDisposed();
         if (acquireNeeded) {
             // acquire session
             await this.acquire();
@@ -542,7 +550,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         );
 
                         await Promise.race([
-                            this.getCommands().cancelCall(),
+                            this.getCurrentSession().cancelCall(),
                             new Promise((_, reject) => setTimeout(reject, cancelTimeout)),
                         ]).catch(() => this.acquire());
                     }
@@ -561,7 +569,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
                         new Promise((_resolve, reject) => {
                             getFeaturesTimeoutId = setTimeout(async () => {
-                                await this.getCommands().cancelCall(false);
+                                await this.getCurrentSession().cancelCall(false);
                                 reject(new Error('GetFeatures timeout'));
                             }, getFeaturesTimeout);
                         }),
@@ -655,12 +663,16 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    getCommands() {
-        if (!this.commands) {
+    getCurrentSession(): TypedCallProvider {
+        if (!this.currentSession) {
             throw ERRORS.TypedError('Runtime', `Device: commands not defined`);
         }
 
-        return this.commands;
+        return this.currentSession;
+    }
+
+    getCommands() {
+        return DeviceCommands(this.getCurrentSession());
     }
 
     setInstance(instance = 0) {
@@ -712,8 +724,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         const expectedState = this.getState()?.staticSessionId;
-        const state = await this.getCommands().getDeviceState();
-        const uniqueState: StaticSessionId = `${state}@${this.features.device_id}:${this.instance}`;
+
+        const { message } = await this.getCurrentSession().typedCall('GetAddress', 'Address', {
+            address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
+            coin_name: 'Testnet',
+            script_type: 'SPENDADDRESS',
+        });
+
+        const uniqueState: StaticSessionId = `${message.address}@${this.features.device_id}:${this.instance}`;
         if (this.features.session_id) {
             this.setState({ sessionId: this.features.session_id });
         }
@@ -739,7 +757,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
             }
         }
 
-        const { message } = await this.getCommands().typedCall('Initialize', 'Features', payload);
+        const { message } = await this.getCurrentSession().typedCall(
+            'Initialize',
+            'Features',
+            payload,
+        );
         this._updateFeatures(message);
         this.setState({ deriveCardano: payload?.derive_cardano });
     }
@@ -751,7 +773,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     async getFeatures() {
         // Please keep the method simple - don't add any async logic
-        const { message } = await this.getCommands().typedCall('GetFeatures', 'Features', {});
+        const { message } = await this.getCurrentSession().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
     }
 
@@ -833,7 +855,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // handle rejection of call by a counterfeit device. If unhandled, it crashes device initialization,
         // so device can't be used, but it's preferable to display proper message about counterfeit device
         try {
-            const deviceResponse = await this.getCommands().typedCall(
+            const deviceResponse = await this.getCurrentSession().typedCall(
                 'GetFirmwareHash',
                 'FirmwareHash',
                 { challenge },
@@ -921,12 +943,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     private async _uploadTranslationData(payload: ArrayBuffer | null) {
-        if (!this.commands) {
-            throw ERRORS.TypedError('Runtime', 'uploadTranslationData: device.commands is not set');
-        }
-
         if (payload === null) {
-            const response = await this.commands.typedCall(
+            const response = await this.getCurrentSession().typedCall(
                 'ChangeLanguage',
                 ['Success'],
                 { data_length: 0 }, // For en-US where we just send `ChangeLanguage(size=0)`
@@ -937,7 +955,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         const length = payload.byteLength;
 
-        let response = await this.commands.typedCall(
+        let response = await this.getCurrentSession().typedCall(
             'ChangeLanguage',
             ['TranslationDataRequest', 'Success'],
             { data_length: length },
@@ -948,7 +966,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             const end = response.message.data_offset! + response.message.data_length!;
             const chunk = payload.slice(start, end);
 
-            response = await this.commands.typedCall(
+            response = await this.getCurrentSession().typedCall(
                 'TranslationDataAck',
                 ['TranslationDataRequest', 'Success'],
                 {

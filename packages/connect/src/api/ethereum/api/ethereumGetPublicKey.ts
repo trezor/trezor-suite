@@ -9,7 +9,7 @@ import { UI, createUiMessage } from '../../../events';
 import type { EthereumNetworkInfo } from '../../../types';
 import { Bundle, GetPublicKey as GetPublicKeySchema } from '../../../types';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
-import { validatePath } from '../../../utils/pathUtils';
+import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 
 type Params = PROTO.EthereumGetPublicKey & {
@@ -69,12 +69,23 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
     async run() {
         const responses: MethodReturnType<typeof this.name> = [];
         const cmd = this.device.getCommands();
+
         for (let i = 0; i < this.params.length; i++) {
-            const batch = this.params[i];
-            const response = await cmd.ethereumGetPublicKey({
-                address_n: batch.address_n,
-                show_display: batch.show_display,
-            });
+            const { address_n, show_display } = this.params[i];
+
+            const publicKey = await cmd.ethereumGetPublicKey({ address_n, show_display });
+
+            const response = {
+                path: address_n,
+                serializedPath: getSerializedPath(address_n),
+                childNum: publicKey.node.child_num,
+                xpub: publicKey.xpub,
+                chainCode: publicKey.node.chain_code,
+                publicKey: publicKey.node.public_key,
+                fingerprint: publicKey.node.fingerprint,
+                depth: publicKey.node.depth,
+            };
+
             responses.push(response);
 
             if (this.hasBundle) {

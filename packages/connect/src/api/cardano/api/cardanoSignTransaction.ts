@@ -269,7 +269,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
     }
 
     async _sign_tx(): Promise<CardanoSignedTxData> {
-        const typedCall = this.device.getCommands().typedCall.bind(this.device.getCommands());
+        const { typedCall } = this.device.getCommands();
 
         const hasAuxiliaryData = !!this.params.auxiliaryData;
 

@@ -431,7 +431,7 @@ export const onCallFirmwareUpdate = async ({
     let stripped = stripFwHeaders(binary);
 
     await uploadFirmware(
-        reconnectedDevice.getCommands().typedCall.bind(reconnectedDevice.getCommands()),
+        reconnectedDevice.getCommands().typedCall,
         postMessage,
         reconnectedDevice,
         { payload: !intermediary && shouldStripFwHeaders(device.features) ? stripped : binary },
@@ -453,7 +453,7 @@ export const onCallFirmwareUpdate = async ({
         await reconnectedDevice.initialize(false);
 
         await uploadFirmware(
-            reconnectedDevice.getCommands().typedCall.bind(reconnectedDevice.getCommands()),
+            reconnectedDevice.getCommands().typedCall,
             postMessage,
             reconnectedDevice,
             { payload: stripped },

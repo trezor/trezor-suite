@@ -248,7 +248,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         const response = await signTxMethod({
             ...params,
             refTxs,
-            typedCall: device.getCommands().typedCall.bind(device.getCommands()),
+            typedCall: device.getCommands().typedCall,
         });
 
         // return only signatures, using option `serialize: false`
@@ -259,7 +259,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         let bitcoinTx: Awaited<ReturnType<typeof verifyTx>> | undefined;
         if (params.options.decred_staking_ticket) {
             await verifyTicketTx(
-                device.getCommands().getHDNode.bind(device.getCommands()),
+                device.getCommands().getHDNode,
                 params.inputs,
                 params.outputs,
                 response.serializedTx,
@@ -267,7 +267,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             );
         } else {
             bitcoinTx = await verifyTx(
-                device.getCommands().getHDNode.bind(device.getCommands()),
+                device.getCommands().getHDNode,
                 params.inputs,
                 params.outputs,
                 response.serializedTx,

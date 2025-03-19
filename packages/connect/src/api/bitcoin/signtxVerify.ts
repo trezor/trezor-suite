@@ -11,11 +11,11 @@ import { ERRORS, PROTO } from '../../constants';
 import type { DeviceCommands } from '../../device/DeviceCommands';
 import type { BitcoinNetworkInfo } from '../../types';
 
-type GetHDNode = DeviceCommands['getHDNode'];
+type GetHDNode = ReturnType<typeof DeviceCommands>['getHDNode'];
 
 const derivePubKeyHash = async (
-    address_n: number[],
     getHDNode: GetHDNode,
+    address_n: number[],
     coinInfo: BitcoinNetworkInfo,
     unlockPath?: PROTO.UnlockPath,
 ) => {
@@ -61,7 +61,7 @@ const deriveOutputScript = async (
         );
     }
 
-    const node = await derivePubKeyHash(output.address_n, getHDNode, coinInfo, unlockPath);
+    const node = await derivePubKeyHash(getHDNode, output.address_n, coinInfo, unlockPath);
     const payment = { hash: node.identifier, network: coinInfo.network };
 
     if (output.script_type === 'PAYTOADDRESS') {
@@ -203,7 +203,7 @@ export const verifyTicketTx = async (
                 );
             }
 
-            const node = await derivePubKeyHash(output.address_n, getHDNode, coinInfo);
+            const node = await derivePubKeyHash(getHDNode, output.address_n, coinInfo);
             scriptA = BitcoinJsPayments.sstxcommitment({
                 hash: node.identifier,
                 amount: output.amount.toString(),

@@ -116,15 +116,14 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         };
     }
 
-    _call({ address_n, show_display, encoded_network, chunkify }: Params) {
-        const cmd = this.device.getCommands();
+    private async _call(params: Params) {
+        const response = await this.device.getCommands().ethereumGetAddress(params);
 
-        return cmd.ethereumGetAddress({
-            address_n,
-            show_display,
-            encoded_network,
-            chunkify,
-        });
+        return {
+            path: params.address_n,
+            serializedPath: getSerializedPath(params.address_n),
+            address: response.address,
+        };
     }
 
     async run() {

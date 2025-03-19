@@ -256,7 +256,8 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             this.discovery ||
             new Discovery({
                 blockchain,
-                commands: this.device.getCommands(),
+                getDescriptor: path =>
+                    this.device.getCommands().getAccountDescriptor(this.params.coinInfo, path),
             });
         this.discovery = discovery;
 
@@ -404,8 +405,10 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const signTxMethod = !this.device.unavailableCapabilities.replaceTransaction
             ? signTx
             : signTxLegacy;
+
+        const cmd = this.device.getCommands();
         const response = await signTxMethod({
-            typedCall: this.device.getCommands().typedCall.bind(this.device.getCommands()),
+            typedCall: cmd.typedCall,
             inputs,
             outputs,
             refTxs,
@@ -413,13 +416,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             coinInfo,
         });
 
-        await verifyTx(
-            this.device.getCommands().getHDNode.bind(this.device.getCommands()),
-            inputs,
-            outputs,
-            response.serializedTx,
-            coinInfo,
-        );
+        await verifyTx(cmd.getHDNode, inputs, outputs, response.serializedTx, coinInfo);
 
         if (this.params.push) {
             const blockchain = await this.getBlockchain();
