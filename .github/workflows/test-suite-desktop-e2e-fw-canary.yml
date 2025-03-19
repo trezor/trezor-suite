@@ -14,6 +14,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build-app:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build and Upload Suite Desktop
+        uses: ./.github/actions/build-desktop
+
   load-e2e-matrix:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
@@ -49,8 +58,13 @@ jobs:
           node-version-file: ".nvmrc"
           cache: yarn
 
-      - name: Build desktop app
-        uses: ./.github/actions/build-desktop
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: desktop-app-build-e2e
+
+      - name: Extract build artifact
+        run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
 
       - name: Run Playwright E2E Tests
         uses: ./.github/actions/run-e2e-tests
@@ -59,6 +73,7 @@ jobs:
         with:
           project: "desktop"
           containers: ${{ matrix.CONTAINERS }}
+          workspace-dependencies: "@trezor/suite-desktop"
           test-group: ${{ matrix.TEST_GROUP }}
           additional-grep: "(?!.*@specificFirmware)"
           currents-project-id: "4ytF0E"
