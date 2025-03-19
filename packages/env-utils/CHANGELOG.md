@@ -1,3 +1,7 @@
+# 1.3.2
+
+-   npm-prerelease: @trezor/env-utils 1.3.2-beta.1 (d3b393f591)
+
 # 1.3.1
 
 -   npm-prerelease: @trezor/env-utils 1.3.1-beta.1 (c4c43edca8)
