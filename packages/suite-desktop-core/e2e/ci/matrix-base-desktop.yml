@@ -1,3 +1,6 @@
+- TEST_GROUP: "@group=smoke"
+  CONTAINERS: "trezor-user-env-unix"
+  SMOKE: true
 - TEST_GROUP: "@group=suite"
   CONTAINERS: "trezor-user-env-unix"
 - TEST_GROUP: "@group=device-management"

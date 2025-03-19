@@ -78,8 +78,9 @@ jobs:
     needs:
       - build-web
       - load-e2e-matrix
+    continue-on-error: ${{ !matrix.smoke }}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix: ${{ fromJson(needs.load-e2e-matrix.outputs.matrix) }}
     steps:
       - name: Checkout
@@ -107,7 +108,7 @@ jobs:
           project: "web"
           containers: ${{ matrix.CONTAINERS }}
           test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep: "(?=.*@webOnly)"
+          additional-grep: ${{ matrix.SMOKE == true && "" || "(?=.*@webOnly)" }}
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

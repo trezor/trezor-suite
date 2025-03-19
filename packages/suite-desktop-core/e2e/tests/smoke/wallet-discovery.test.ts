@@ -5,7 +5,7 @@ test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
     await onboardingPage.completeOnboarding();
     await dashboardPage.discoveryShouldFinish();
 });
-test.describe('Wallet discover tests', { tag: ['@group=wallet'] }, () => {
+test.describe('Wallet discover tests', { tag: ['@group=smoke'] }, () => {
     /**
      * Test case:
      * 1. Discover a standard wallet

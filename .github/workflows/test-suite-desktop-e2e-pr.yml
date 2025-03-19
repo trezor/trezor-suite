@@ -54,8 +54,9 @@ jobs:
     needs:
       - build-app
       - load-e2e-matrix
+    continue-on-error: ${{ !matrix.smoke }}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix: ${{ fromJson(needs.load-e2e-matrix.outputs.matrix) }}
     steps:
       - name: Checkout
@@ -96,7 +97,7 @@ jobs:
         with:
           project: "desktop"
           containers: ${{ matrix.CONTAINERS }}
-          additional-workspaces: "@trezor/suite-desktop"
+          workspace-dependencies: "@trezor/suite-desktop"
           test-group: ${{ matrix.TEST_GROUP }}
           currents-project-id: "4ytF0E"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
