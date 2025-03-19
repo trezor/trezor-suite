@@ -135,7 +135,8 @@ const config: webpack.Configuration = {
             },
             // This worker loader is used for suite-desktop
             {
-                test: /\/workers\/[^/]+\/index\.ts$/,
+                // during compilation, it matches the worker file name both with Unix and Windows paths
+                test: /[/\\]workers[/\\][^/\\]+[/\\]index\.ts$/,
                 use: [
                     {
                         loader: 'worker-loader',
