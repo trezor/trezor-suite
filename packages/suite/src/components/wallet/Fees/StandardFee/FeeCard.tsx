@@ -6,7 +6,7 @@ type FeeCardProps = {
     isSelected: boolean;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     topLeftChild: React.ReactNode;
-    topRightChild: React.ReactNode;
+    topRightChild?: React.ReactNode;
     bottomLeftChild: React.ReactNode;
     bottomRightChild: React.ReactNode;
 };

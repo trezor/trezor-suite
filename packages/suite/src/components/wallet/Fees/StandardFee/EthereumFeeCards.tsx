@@ -10,7 +10,6 @@ import { FeeCard } from './FeeCard';
 import { StandardFeeProps } from './StandardFee';
 
 export const EthereumFeeCards = ({
-    showFee,
     feeOptions,
     selectedLevel,
     changeFeeLevel,
@@ -19,7 +18,7 @@ export const EthereumFeeCards = ({
 }: StandardFeeProps) => {
     const locale = useLocales();
 
-    if (!showFee || !feeOptions.length) {
+    if (!feeOptions.length) {
         return null;
     }
 

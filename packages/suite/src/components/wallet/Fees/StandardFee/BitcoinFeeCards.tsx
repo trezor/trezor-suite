@@ -7,23 +7,30 @@ import { useLocales } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
 import { StandardFeeProps } from './StandardFee';
-import { getFeeLevelTranslationId } from '../Fees';
+import { FeeOptionType, getFeeLevelTranslationId } from '../Fees';
 
 export const BitcoinFeeCards = ({
     networkType,
     feeInfo,
     transactionInfo,
     feeOptions,
-    showFee,
     selectedLevel,
     changeFeeLevel,
     symbol,
 }: StandardFeeProps) => {
     const locale = useLocales();
 
-    if (!showFee || !feeOptions.length) {
+    if (!feeOptions.length) {
         return null;
     }
+
+    const getTimeEstimate = (fee: FeeOptionType) => {
+        if (fee.blocks) {
+            return `~${formatDurationStrict(feeInfo.blockTime * fee.blocks * 60, locale)}`;
+        }
+
+        return undefined;
+    };
 
     const hasInfo = transactionInfo && transactionInfo.type !== 'error';
 
@@ -38,9 +45,7 @@ export const BitcoinFeeCards = ({
                     <Translation id={getFeeLevelTranslationId(fee.value)} />
                 </span>
             }
-            topRightChild={
-                <>~{formatDurationStrict(feeInfo.blockTime * (fee?.blocks ?? 0) * 60, locale)}</>
-            }
+            topRightChild={getTimeEstimate(fee)}
             bottomLeftChild={
                 <FiatValue
                     disableHiddenPlaceholder

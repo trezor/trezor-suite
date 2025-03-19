@@ -27,11 +27,9 @@ export type StandardFeeProps = {
     feeInfo: FeeInfo;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
-
-    showFee: boolean;
 };
 
-export const FeeCardsWrapper = styled.div<{ $columns: number }>`
+const FeeCardsWrapper = styled.div<{ $columns: number }>`
     width: 100%;
     display: grid;
     grid-template-columns: repeat(${({ $columns }) => $columns}, 1fr);
@@ -44,7 +42,7 @@ type ResizeObserverType = (
     setColumns: (columns: number) => void,
 ) => ResizeObserver;
 
-export const resizeObserver: ResizeObserverType = (feeOptions, setColumns) =>
+const resizeObserver: ResizeObserverType = (feeOptions, setColumns) =>
     new ResizeObserver(entries => {
         const borderBoxSize = entries[0].borderBoxSize?.[0];
         if (!borderBoxSize) {

@@ -200,7 +200,6 @@ export const Fees = <TFieldValues extends FormState>({
                     feeInfo={feeInfo}
                     selectedLevel={selectedLevel}
                     transactionInfo={transactionInfo}
-                    showFee={true}
                     feeOptions={feeOptions}
                     symbol={symbol}
                     changeFeeLevel={changeFeeLevel}

@@ -10,12 +10,11 @@ import { getFeeLevelTranslationId } from '../Fees';
 // Solana, Ripple, Cardano and other networks with only one option
 export const MiscFeeCards = ({
     networkType,
-    showFee,
     feeOptions,
     symbol,
     changeFeeLevel,
 }: StandardFeeProps) => {
-    if (!feeOptions?.length || !showFee) return null;
+    if (!feeOptions.length) return null;
 
     const isSolanaNetwork = networkType === 'solana';
 
@@ -33,7 +32,6 @@ export const MiscFeeCards = ({
                     <Translation id={getFeeLevelTranslationId(fee.value)} />
                 </span>
             }
-            topRightChild=""
             bottomLeftChild={
                 <FiatValue
                     disableHiddenPlaceholder
