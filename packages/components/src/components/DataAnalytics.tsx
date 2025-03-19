@@ -1,10 +1,8 @@
 import { ReactNode, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import styled from 'styled-components';
-
 import { Center, Column, Icon, List, Row, Text } from '@trezor/components';
-import { borders, spacings } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { Card } from './Card/Card';
 import { Button } from './buttons/Button/Button';
@@ -17,16 +15,6 @@ interface DataAnalyticsProps {
     className?: string;
     isInitialTrackingEnabled?: boolean;
 }
-
-const IconWrapper = styled.div`
-    border-radius: ${borders.radii.sm};
-    border: solid 1px ${({ theme }) => theme.borderElevation2};
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
 
 // This component is used in connect-ui, therefore it's located in this library,
 // although in the future it should be moved elsewhere.
@@ -68,13 +56,7 @@ export const DataAnalytics = ({
                     <Card>
                         <Column gap={spacings.lg}>
                             <List gap={spacings.md}>
-                                <List.Item
-                                    bulletComponent={
-                                        <IconWrapper>
-                                            <Icon size="medium" name="eyeSlash" />
-                                        </IconWrapper>
-                                    }
-                                >
+                                <List.Item bulletComponent={<Icon size="medium" name="eyeSlash" />}>
                                     <Column gap={spacings.xxxs} flex="1">
                                         <Text typographyStyle="callout">
                                             <FormattedMessage
@@ -90,13 +72,7 @@ export const DataAnalytics = ({
                                         </Text>
                                     </Column>
                                 </List.Item>
-                                <List.Item
-                                    bulletComponent={
-                                        <IconWrapper>
-                                            <Icon size="medium" name="bug" />
-                                        </IconWrapper>
-                                    }
-                                >
+                                <List.Item bulletComponent={<Icon size="medium" name="bug" />}>
                                     <Column gap={spacings.xxxs} flex="1">
                                         <Text typographyStyle="callout">
                                             <FormattedMessage

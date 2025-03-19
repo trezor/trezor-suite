@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Card, Image, Note, Paragraph, Row, Switch } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { Card, Column, Image, Note, Paragraph, Row, Switch } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
@@ -10,14 +10,7 @@ const StyledImage = styled(Image)`
     align-self: flex-start;
 `;
 
-const Middle = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xxs};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledSwitch = styled(Switch)`
+const SwitchWrapper = styled.div`
     margin-left: auto;
 `;
 
@@ -30,7 +23,7 @@ export const RememberWallet = ({ isChecked, onChange }: RememberWalletProps) => 
     <Card>
         <Row gap={spacings.xxl} alignItems="center">
             <StyledImage image="FOLDER" width={50} />
-            <Middle>
+            <Column gap={spacings.xxs}>
                 <Paragraph typographyStyle="titleSmall">
                     <Translation id="TR_REMEMBER_WALLET_TITLE" />
                 </Paragraph>
@@ -40,8 +33,10 @@ export const RememberWallet = ({ isChecked, onChange }: RememberWalletProps) => 
                 <Paragraph>
                     <Translation id="TR_REMEMBER_WALLET_DESCRIPTION" />
                 </Paragraph>
-            </Middle>
-            <StyledSwitch isChecked={isChecked} onChange={onChange} />
+            </Column>
+            <SwitchWrapper>
+                <Switch isChecked={isChecked} onChange={onChange} />
+            </SwitchWrapper>
         </Row>
     </Card>
 );

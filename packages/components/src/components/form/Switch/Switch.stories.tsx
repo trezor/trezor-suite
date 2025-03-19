@@ -1,7 +1,13 @@
 import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Switch as SwitchComponent, SwitchProps, switchSizes } from './Switch';
+import {
+    Switch as SwitchComponent,
+    SwitchProps,
+    allowedSwitchFrameProps,
+    switchSizes,
+} from './Switch';
+import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta = {
     title: 'Form',
@@ -9,22 +15,12 @@ const meta: Meta = {
 export default meta;
 
 export const Switch: StoryObj<SwitchProps> = {
-    render: ({ ...args }) => {
+    render: () => {
         // eslint-disable-next-line
-        const [{ isChecked, size }, updateArgs] = useArgs();
+        const [{ isChecked, ...rest }, updateArgs] = useArgs();
         const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 
-        return (
-            <SwitchComponent
-                onChange={handleIsChecked}
-                isChecked={isChecked}
-                size={size}
-                isDisabled={args.isDisabled}
-                label={args.label}
-                labelPosition={args.labelPosition}
-                isAlert={args.isAlert}
-            />
-        );
+        return <SwitchComponent onChange={handleIsChecked} isChecked={isChecked} {...rest} />;
     },
     args: {
         isAlert: false,
@@ -33,6 +29,7 @@ export const Switch: StoryObj<SwitchProps> = {
         size: 'medium',
         label: 'Headline',
         labelPosition: 'right',
+        ...getFramePropsStory(allowedSwitchFrameProps).args,
     },
     argTypes: {
         isAlert: {
@@ -69,5 +66,6 @@ export const Switch: StoryObj<SwitchProps> = {
                 type: 'radio',
             },
         },
+        ...getFramePropsStory(allowedSwitchFrameProps).argTypes,
     },
 };

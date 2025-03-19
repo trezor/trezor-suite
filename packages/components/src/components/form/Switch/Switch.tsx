@@ -13,23 +13,49 @@ import {
 } from './switchUtils';
 import { UIHorizontalAlignment, type UISize } from '../../../config/types';
 import {
+    FrameProps,
+    FramePropsKeys,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '../../../utils/frameProps';
+import { TransientProps } from '../../../utils/transientProps';
+import {
     focusStyleTransition,
     getFocusShadowStyle,
     getInputColor,
     getLabelColor,
 } from '../../../utils/utils';
 
+export const allowedSwitchFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+type AllowedFrameProps = Pick<FrameProps, (typeof allowedSwitchFrameProps)[number]>;
+
+export type SwitchProps = AllowedFrameProps & {
+    isChecked: boolean;
+    label?: ReactNode;
+    onChange: (isChecked: boolean) => void;
+    isDisabled?: boolean;
+    isAlert?: boolean;
+    size?: SwitchSize;
+    className?: string;
+    'data-testid'?: string;
+    labelPosition?: Extract<UIHorizontalAlignment, 'left' | 'right'>;
+};
+
 export const switchSizes = ['medium', 'small'] as const;
 export type SwitchSize = Extract<UISize, (typeof switchSizes)[number]>;
 
-const Wrapper = styled.div<{
-    $labelPosition?: Extract<UIHorizontalAlignment, 'left' | 'right'>;
-    $size: SwitchSize;
-}>`
+const Wrapper = styled.div<
+    {
+        $labelPosition?: Extract<UIHorizontalAlignment, 'left' | 'right'>;
+        $size: SwitchSize;
+    } & TransientProps<AllowedFrameProps>
+>`
     display: flex;
     align-items: center;
     gap: ${mapSizeToLabelContainerGap};
     flex-direction: ${({ $labelPosition }) => ($labelPosition === 'left' ? 'row-reverse' : 'row')};
+
+    ${withFrameProps}
 `;
 
 const Container = styled.div<{
@@ -121,18 +147,6 @@ const Label = styled.label<{
     ${mapSizeToLabelTypography}
 `;
 
-export interface SwitchProps {
-    isChecked: boolean;
-    label?: ReactNode;
-    onChange: (isChecked: boolean) => void;
-    isDisabled?: boolean;
-    isAlert?: boolean;
-    size?: SwitchSize;
-    className?: string;
-    'data-testid'?: string;
-    labelPosition?: Extract<UIHorizontalAlignment, 'left' | 'right'>;
-}
-
 export const Switch = ({
     onChange,
     isDisabled = false,
@@ -143,8 +157,10 @@ export const Switch = ({
     isChecked,
     className,
     labelPosition = 'right',
+    ...rest
 }: SwitchProps) => {
     const id = useId();
+    const frameProps = pickAndPrepareFrameProps(rest, allowedSwitchFrameProps);
 
     const handleChange = () => {
         if (isDisabled) return;
@@ -161,7 +177,7 @@ export const Switch = ({
     };
 
     return (
-        <Wrapper $labelPosition={labelPosition} $size={size} className={className}>
+        <Wrapper $labelPosition={labelPosition} $size={size} {...frameProps}>
             <Container
                 // @ts-expect-error - needed for cypress retry-ability
                 disabled={isDisabled}

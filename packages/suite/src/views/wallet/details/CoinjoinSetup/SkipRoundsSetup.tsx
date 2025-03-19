@@ -2,7 +2,8 @@ import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
-import { Switch, variables } from '@trezor/components';
+import { H3, Paragraph, Switch, Text } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { coinjoinAccountToggleSkipRounds } from 'src/actions/wallet/coinjoinAccountActions';
 import { Translation } from 'src/components/suite';
@@ -14,28 +15,6 @@ const Row = styled.div`
     gap: 12px;
     justify-content: space-between;
     margin-top: 16px;
-`;
-
-const Heading = styled.div`
-    font-size: ${variables.FONT_SIZE.H3};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const Subheading = styled.div`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin-bottom: 3px;
-`;
-
-const Text = styled.p`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledSwitch = styled(Switch)`
-    margin-top: 10px;
 `;
 
 interface SkipRoundsSetupProps {
@@ -52,22 +31,23 @@ export const SkipRoundsSetup = ({ accountKey, skipRounds }: SkipRoundsSetupProps
 
     return (
         <div>
-            <Heading>
+            <H3>
                 <Translation id="TR_SKIP_ROUNDS" />
-            </Heading>
+            </H3>
             <Row>
-                <StyledSwitch
+                <Switch
                     isChecked={skipRounds}
                     isDisabled={!!session}
                     onChange={toggleSkipRounds}
+                    margin={{ top: spacings.sm }}
                 />
                 <div>
-                    <Subheading>
+                    <Text as="div" typographyStyle="body" margin={{ bottom: spacings.xxs }}>
                         <Translation id="TR_SKIP_ROUNDS_HEADING" />
-                    </Subheading>
-                    <Text>
-                        <Translation id="TR_SKIP_ROUNDS_DESCRIPTION" />
                     </Text>
+                    <Paragraph variant="tertiary" typographyStyle="hint">
+                        <Translation id="TR_SKIP_ROUNDS_DESCRIPTION" />
+                    </Paragraph>
                 </div>
             </Row>
         </div>
