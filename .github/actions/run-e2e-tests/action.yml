@@ -11,6 +11,10 @@ inputs:
   containers:
     description: "Docker containers to pull"
     required: true
+  workspace-dependencies:
+    description: "Additional workspaces to install"
+    required: false
+    default: ""
   test-group:
     description: "Test group to run"
     required: true
@@ -55,15 +59,16 @@ runs:
         cache: yarn
 
     - name: Install PW Dependencies
-      if: ${{ inputs.project == 'web' }}
       shell: bash
       run: |
         echo "::group::Install PW Dependencies"
         echo "Silently installing Playwright dependencies"
         echo -e "\nenableScripts: false" >> .yarnrc.yml
         echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-        yarn workspaces focus @trezor/suite-desktop-core > /dev/null
-        npx playwright install --with-deps > /dev/null
+        yarn workspaces focus @trezor/suite-desktop-core ${{ inputs.workspace-dependencies }} > /dev/null
+        if [[ "${{ inputs.project }}" == "web" ]]; then
+          npx playwright install --with-deps > /dev/null
+        fi
         echo "::endgroup::"
 
     - name: Pull Docker Images

@@ -23,3 +23,14 @@ runs:
       run: |
         yarn workspace @trezor/suite-desktop build:app
         yarn workspace @trezor/suite-desktop build:ui
+
+    - name: Compress build artifacts
+      shell: bash
+      run: tar -czf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop build dist
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: desktop-app-build-e2e
+        path: app-build.tar.gz
+        retention-days: 7
