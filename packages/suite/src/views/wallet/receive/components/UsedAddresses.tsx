@@ -200,7 +200,7 @@ export const UsedAddresses = ({
                 </Table>
 
                 {actionButtonsVisible && (
-                    <Row justifyContent="center" gap={spacings.md}>
+                    <Row justifyContent="center" gap={spacings.md} margin={{ bottom: spacings.md }}>
                         {actionShowVisible && (
                             <Button
                                 variant="tertiary"
