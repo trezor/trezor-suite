@@ -1,3 +1,7 @@
+# 1.3.3
+
+-   npm-prerelease: @trezor/protobuf 1.3.3-beta.1 (3f079b57d3)
+
 # 1.3.2
 
 -   npm-prerelease: @trezor/protobuf 1.3.2-beta.2 (68749e6701)
