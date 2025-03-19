@@ -2,13 +2,12 @@ import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { CenteredTitleHeader, IconButton, ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
+import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import { resetError, selectPassphraseError } from '@suite-native/device-authorization';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
-
-import { ConfirmOnTrezorAnimation } from '../../components/passphrase/ConfirmOnTrezorAnimation';
 
 export const PassphraseEnableOnDeviceScreen = () => {
     const passphraseError = useSelector(selectPassphraseError);

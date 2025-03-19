@@ -130,6 +130,8 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.FirmwareInstallation]: undefined;
     [DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceOnboardingStackRoutes.DeviceTutorial]: undefined;
+    [DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads]: undefined;
+    [DeviceOnboardingStackRoutes.CreateWalletLoading]: undefined;
 };
 
 export type AccountsImportStackParamList = {
@@ -238,7 +240,7 @@ export type RootStackParamList = {
     [RootStackRoutes.WalletConnectSessionPopup]: undefined;
     [RootStackRoutes.WalletConnectPair]: undefined;
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
-    [RootStackRoutes.DeviceCompromisedModalScreen]: undefined;
+    [RootStackRoutes.DeviceCompromisedModal]: undefined;
 };
 
 export type TradingStackParamList = {

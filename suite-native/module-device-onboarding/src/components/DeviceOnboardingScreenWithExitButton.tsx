@@ -1,23 +1,40 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 import { useSetAtom } from 'jotai';
 
-import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { wasDeviceDisconnectedByUserActionAtom } from '@suite-native/device';
+import { Box } from '@suite-native/atoms';
+import { wasDeviceOnboardingCancelledAtom } from '@suite-native/device';
 import { useFirmware } from '@suite-native/firmware';
 import { useTranslate } from '@suite-native/intl';
-import { Screen, ScreenHeader, ScreenProps } from '@suite-native/navigation';
+import {
+    AppTabsRoutes,
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
+    HomeStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    ScreenHeader,
+    ScreenProps,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+
+type NavigationProps = StackToStackCompositeNavigationProps<
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
+    RootStackParamList
+>;
 
 const DeviceOnboardingExitButtonScreenHeader = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
-    const dispatch = useDispatch();
     const selectedDevice = useSelector(selectSelectedDevice);
-    const setWasDeviceDisconnectedByUserAction = useSetAtom(wasDeviceDisconnectedByUserActionAtom);
+    const setWasDeviceOnboardingCancelled = useSetAtom(wasDeviceOnboardingCancelledAtom);
     const { setIsFirmwareInstallationRunning } = useFirmware();
 
     const handleExitButtonPress = useCallback(() => {
@@ -33,18 +50,24 @@ const DeviceOnboardingExitButtonScreenHeader = () => {
             onPressPrimaryButton: () => {
                 if (selectedDevice) {
                     setIsFirmwareInstallationRunning(false);
-                    setWasDeviceDisconnectedByUserAction(true);
-                    dispatch(deviceActions.deviceDisconnect(selectedDevice));
+                    setWasDeviceOnboardingCancelled(true);
+
+                    navigation.navigate(RootStackRoutes.AppTabs, {
+                        screen: AppTabsRoutes.HomeStack,
+                        params: {
+                            screen: HomeStackRoutes.Home,
+                        },
+                    });
                 }
             },
         });
     }, [
-        dispatch,
         selectedDevice,
-        setWasDeviceDisconnectedByUserAction,
+        setWasDeviceOnboardingCancelled,
         setIsFirmwareInstallationRunning,
         translate,
         showAlert,
+        navigation,
     ]);
 
     useEffect(() => {
@@ -64,6 +87,8 @@ const DeviceOnboardingExitButtonScreenHeader = () => {
 
 export const DeviceOnboardingScreenWithExitButton = ({ children, ...screenProps }: ScreenProps) => (
     <Screen header={<DeviceOnboardingExitButtonScreenHeader />} {...screenProps}>
-        {children}
+        <Box flex={1} marginVertical="sp16">
+            {children}
+        </Box>
     </Screen>
 );

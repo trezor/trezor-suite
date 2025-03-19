@@ -12,7 +12,7 @@ import {
 } from '@suite-native/navigation';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 
-import { DeviceOnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
+import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { SecurityCheckStepCard } from '../components/SecurityCheckStepCard';
 import { SecuritySealDescription } from '../components/SecuritySealDescription';
 

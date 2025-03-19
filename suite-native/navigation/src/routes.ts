@@ -19,7 +19,7 @@ export enum RootStackRoutes {
     WalletConnectSessionPopup = 'WalletConnectSessionPopup',
     WalletConnectPair = 'WalletConnectPair',
     SettingsScreenStack = 'SettingsScreenStack',
-    DeviceCompromisedModalScreen = 'DeviceCompromisedModalScreen',
+    DeviceCompromisedModal = 'DeviceCompromisedModal',
 }
 
 export enum AppTabsRoutes {
@@ -43,6 +43,8 @@ export enum DeviceOnboardingStackRoutes {
     FirmwareInstallation = 'FirmwareInstallation',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     DeviceTutorial = 'DeviceTutorial',
+    CreateOrRecoverCrossroads = 'CreateOrRecoverCrossroads',
+    CreateWalletLoading = 'CreateWalletLoading',
 }
 
 export enum AccountsImportStackRoutes {

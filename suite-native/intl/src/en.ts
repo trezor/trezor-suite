@@ -60,10 +60,15 @@ export const en = {
             sol: 'Solana is not included in the graph.',
         },
         emptyState: {
-            device: {
+            emptyDevice: {
                 title: 'Your wallet is empty',
                 subtitle: 'Start by receiving some assets.',
                 button: 'Receive assets',
+            },
+            uninitializedDevice: {
+                title: 'Your Trezor is ready for setup',
+                subtitle: 'You can do this anytime.',
+                button: 'Start setup',
             },
             portfolioTracker: {
                 title: 'Get started',
@@ -853,6 +858,22 @@ export const en = {
         },
         deviceTutorialScreen: {
             title: 'Continue with short tutorial on Trezor',
+        },
+        createOrRecoverCrossroadsScreen: {
+            create: {
+                title: 'Create a new wallet',
+                subtitle: 'Open a new wallet and secure your assets with a unique wallet backup.',
+                button: 'Get started',
+            },
+            recover: {
+                title: 'Recover access to assets',
+                subtitle:
+                    'Use a new Trezor to recover access to your assets if your previous hardware wallet was lost, stolen, or damaged.',
+                button: 'Recover',
+            },
+        },
+        createWalletLoadingScreen: {
+            title: 'Let’s protect your assets with a wallet backup',
         },
         deviceDisconnectedAlert: {
             title: 'Your Trezor has been disconnected',

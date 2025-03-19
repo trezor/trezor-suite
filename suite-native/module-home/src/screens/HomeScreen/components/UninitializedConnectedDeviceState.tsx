@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { Button, Card, CenteredTitleHeader, VStack } from '@suite-native/atoms';
+import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackRoutes,
@@ -9,8 +10,6 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { InitializeTrezorSvg } from '../../../assets/InitializeTrezorSvg';
 
 const cardStyle = prepareNativeStyle(utils => ({
     flex: 1,
@@ -44,7 +43,7 @@ export const UninitializedConnectedDeviceState = () => {
     return (
         <Card style={applyStyle(cardStyle)}>
             <VStack spacing="sp24" style={applyStyle(contentStyle)}>
-                <InitializeTrezorSvg />
+                <ConfirmOnTrezorAnimation />
                 <CenteredTitleHeader
                     title={<Translation id="moduleHome.emptyState.uninitializedDevice.title" />}
                     subtitle={

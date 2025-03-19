@@ -13,8 +13,8 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { HeaderUnderlineSvg } from '../components/HeaderUnderlineSvg';
-import { DeviceOnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
 
 const trezorImageStyle = prepareNativeStyle<{ hasDeviceFirmwareInstalled: boolean }>(
     (_, { hasDeviceFirmwareInstalled }) => ({

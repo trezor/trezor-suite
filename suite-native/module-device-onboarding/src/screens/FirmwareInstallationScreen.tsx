@@ -5,7 +5,7 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 
-import { DeviceOnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
+import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 
 export const FirmwareInstallationScreen = ({
     navigation,

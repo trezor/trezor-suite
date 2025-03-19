@@ -7,7 +7,7 @@ import { HStack } from './Stack';
 import { Text } from './Text';
 
 type TextDividerProps = {
-    title: TxKeyPath;
+    title?: TxKeyPath;
     horizontalMargin?: number;
     lineColor?: Color;
     textColor?: Color;
@@ -29,7 +29,7 @@ const separatorTitleStyle = prepareNativeStyle(utils => ({
 }));
 
 export const TextDivider = ({
-    title,
+    title = 'generic.orSeparator',
     horizontalMargin = 0,
     lineColor = 'borderElevation1',
     textColor = 'textDefault',

@@ -3,23 +3,25 @@ import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
-import { useToast } from '@suite-native/toasts';
+import {
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
+    StackProps,
+} from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
-import { DeviceOnboardingScreenWithExitButton } from '../components/OnboardingScreenWithExitButton';
+import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 
-export const DeviceTutorialScreen = () => {
+export const DeviceTutorialScreen = ({
+    navigation,
+}: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.DeviceTutorial>) => {
     const device = useSelector(selectSelectedDevice);
-    const { showToast } = useToast();
     useEffect(() => {
         const showTutorial = async () => {
             const { success } = await TrezorConnect.showDeviceTutorial({ device });
 
             if (success) {
-                showToast({
-                    message: 'TUTORIAL COMPLETED. TODO: navigate to auth. check screen.',
-                    variant: 'success',
-                });
+                navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
             }
         };
         showTutorial();

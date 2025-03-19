@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { selectHasDeviceDiscovery } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
+import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     selectIsCreatingNewPassphraseWallet,
@@ -22,7 +23,6 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { ConfirmOnTrezorAnimation } from '../../components/passphrase/ConfirmOnTrezorAnimation';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
 import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
 

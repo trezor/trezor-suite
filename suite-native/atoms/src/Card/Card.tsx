@@ -20,7 +20,13 @@ export type CardProps = {
     'alertVariant' | 'alertTitle'
 >;
 
-const cardContainerStyle = prepareNativeStyle<{
+const cardOuterContainerStyle = prepareNativeStyle<{
+    flex?: number;
+}>((_, { flex }) => ({
+    flex,
+}));
+
+const cardInnerContainerStyle = prepareNativeStyle<{
     isAlertDisplayed: boolean;
     noPadding: boolean;
     borderColor?: Color;
@@ -66,7 +72,7 @@ export const Card = React.forwardRef<View, CardProps>(
         const isAlertDisplayed = !!alertVariant;
 
         return (
-            <View>
+            <View style={applyStyle(cardOuterContainerStyle, { flex: style?.flex })}>
                 {isAlertDisplayed && (
                     <View style={applyStyle(alertBoxWrapperStyle)}>
                         <AlertBox variant={alertVariant} title={alertTitle} borderRadius={12} />
@@ -75,7 +81,7 @@ export const Card = React.forwardRef<View, CardProps>(
                 {/* CAUTION: in case that alert is displayed, it is not possible to change styles of the top borders by the `style` prop. */}
                 <View
                     style={[
-                        applyStyle(cardContainerStyle, {
+                        applyStyle(cardInnerContainerStyle, {
                             isAlertDisplayed,
                             noPadding,
                             borderColor,

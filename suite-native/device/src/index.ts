@@ -17,3 +17,5 @@ export * from './deviceThunks';
 export * from './config/firmware';
 export * from './types';
 export * from './deviceAtoms';
+export * from './components/EmptyWalletSvg';
+export * from './components/ConfirmOnTrezorAnimation';

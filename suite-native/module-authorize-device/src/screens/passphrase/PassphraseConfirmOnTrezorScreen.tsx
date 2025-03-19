@@ -10,6 +10,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
+import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import { useHandlePassphraseMismatch } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
@@ -20,7 +21,6 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
-import { ConfirmOnTrezorAnimation } from '../../components/passphrase/ConfirmOnTrezorAnimation';
 import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
 import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
 

@@ -8,6 +8,8 @@ import {
 
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
 import { ConnectAndUnlockDeviceScreen } from '../screens/ConnectAndUnlockDeviceScreen';
+import { CreateOrRecoverCrossroadsScreen } from '../screens/CreateOrRecoverCrossroadsScreen';
+import { CreateWalletLoadingScreen } from '../screens/CreateWalletLoadingScreen';
 import { DeviceTutorialScreen } from '../screens/DeviceTutorialScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
@@ -52,6 +54,14 @@ export const DeviceOnboardingStackNavigator = () => (
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.DeviceTutorial}
             component={DeviceTutorialScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads}
+            component={CreateOrRecoverCrossroadsScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.CreateWalletLoading}
+            component={CreateWalletLoadingScreen}
         />
     </DeviceOnboardingStack.Navigator>
 );

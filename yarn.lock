@@ -10222,6 +10222,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.76.1"
     react-native-reanimated: "npm:^3.16.7"
+    react-native-svg: "npm:^15.9.0"
     react-redux: "npm:9.2.0"
     semver: "npm:^7.6.3"
   languageName: unknown
@@ -10677,6 +10678,7 @@ __metadata:
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:2.6.0"
+    "@shopify/react-native-skia": "npm:^1.11.6"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/icons": "workspace:*"

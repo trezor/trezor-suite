@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Card, Text, TextDivider, VStack } from '@suite-native/atoms';
+import { EmptyWalletSvg } from '@suite-native/device';
 import { retryPassphraseAuthenticationThunk } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
@@ -16,7 +17,6 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { EmptyWalletSvg } from '../../assets/passphrase/EmptyWalletSvg';
 import { EmptyWalletInfoSheet } from '../../components/passphrase/EmptyWalletInfoSheet';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
 
