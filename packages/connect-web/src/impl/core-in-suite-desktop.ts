@@ -120,15 +120,10 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     }
 
     public setTransports() {
-        // TODO: implement
-        throw new Error('Unsupported right now');
+        // not supported, transports are controlled by suite-desktop.
+        throw new Error('Unsupported');
     }
 
-    /**
-     * 1. opens popup
-     * 2. sends request to popup where the request is handled by core
-     * 3. returns response
-     */
     public async call(params: CallMethodPayload): Promise<CallMethodAnyResponse> {
         try {
             if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
@@ -156,6 +151,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
             };
         }
     }
+
     // this shouldn't be needed, ui response should be handled in suite-desktop
     uiResponse(_response: UiResponseEvent) {
         throw ERRORS.TypedError('Method_InvalidPackage');
@@ -166,17 +162,17 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         throw ERRORS.TypedError('Method_InvalidPackage');
     }
 
-    // todo: not needed, only because of types
+    // not needed, only because of types
     disableWebUSB() {
         throw ERRORS.TypedError('Method_InvalidPackage');
     }
 
-    // todo: not needed, only because of types
+    // not needed, only because of types
     requestWebUSBDevice() {
         throw ERRORS.TypedError('Method_InvalidPackage');
     }
 
-    // todo: not needed, only because of types
+    // not needed, only because of types
     renderWebUSBButton() {}
 }
 
