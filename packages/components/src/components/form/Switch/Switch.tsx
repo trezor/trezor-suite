@@ -2,9 +2,16 @@ import { ReactNode, useId } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { borders, spacingsPx, typography } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
-import { UIHorizontalAlignment } from '../../../config/types';
+import {
+    mapSizeToContainerHeight,
+    mapSizeToContainerWidth,
+    mapSizeToHandleSize,
+    mapSizeToLabelContainerGap,
+    mapSizeToLabelTypography,
+} from './switchUtils';
+import { UIHorizontalAlignment, type UISize } from '../../../config/types';
 import {
     focusStyleTransition,
     getFocusShadowStyle,
@@ -12,13 +19,16 @@ import {
     getLabelColor,
 } from '../../../utils/utils';
 
+export const switchSizes = ['medium', 'small'] as const;
+export type SwitchSize = Extract<UISize, (typeof switchSizes)[number]>;
+
 const Wrapper = styled.div<{
-    $isSmall?: boolean; // TODO: legacy prop
     $labelPosition?: Extract<UIHorizontalAlignment, 'left' | 'right'>;
+    $size: SwitchSize;
 }>`
     display: flex;
     align-items: center;
-    gap: ${({ $isSmall }) => ($isSmall ? spacingsPx.sm : spacingsPx.md)};
+    gap: ${mapSizeToLabelContainerGap};
     flex-direction: ${({ $labelPosition }) => ($labelPosition === 'left' ? 'row-reverse' : 'row')};
 `;
 
@@ -26,12 +36,12 @@ const Container = styled.div<{
     $isChecked: boolean;
     $isDisabled?: boolean;
     $isAlert?: boolean;
-    $isSmall?: boolean; // TODO: legacy prop
+    $size: SwitchSize;
 }>`
     display: flex;
     align-items: center;
-    height: ${({ $isSmall }) => ($isSmall ? '18px' : '24px')};
-    width: ${({ $isSmall }) => ($isSmall ? '32px' : '44px')};
+    width: ${mapSizeToContainerWidth};
+    height: ${mapSizeToContainerHeight};
     flex-shrink: 0;
     margin: 0;
     padding: 3px;
@@ -74,18 +84,18 @@ const Container = styled.div<{
 const Handle = styled.button<{
     $isDisabled?: boolean;
     $isChecked: boolean;
-    $isSmall?: boolean; // TODO: legacy prop
+    $size: SwitchSize;
 }>`
     position: absolute;
     display: inline-block;
-    height: ${({ $isSmall }) => ($isSmall ? '14px' : '20px')};
-    width: ${({ $isSmall }) => ($isSmall ? '14px' : '20px')};
+    height: ${mapSizeToHandleSize};
+    width: ${mapSizeToHandleSize};
     border: none;
     left: 1px;
     border-radius: ${borders.radii.full};
     background: ${({ theme }) => theme.baseContentReversePrimary};
-    transform: ${({ $isChecked, $isSmall }) =>
-        $isChecked && `translateX(${$isSmall ? '14px' : '20px'})`};
+    transform: ${({ $isChecked, $size }) =>
+        $isChecked && `translateX(${mapSizeToHandleSize({ $size })})`};
     transition: transform 0.25s ease 0s;
     cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'pointer')};
 `;
@@ -104,11 +114,11 @@ const CheckboxInput = styled.input`
 const Label = styled.label<{
     $isDisabled?: boolean;
     $isAlert?: boolean;
-    $isSmall?: boolean; // TODO: legacy prop
+    $size: SwitchSize;
 }>`
     color: ${({ $isAlert, $isDisabled, theme }) =>
         getLabelColor(theme, { alert: $isAlert, disabled: $isDisabled })};
-    ${({ $isSmall }) => ($isSmall ? typography.label : typography.body)}
+    ${mapSizeToLabelTypography}
 `;
 
 export interface SwitchProps {
@@ -117,7 +127,7 @@ export interface SwitchProps {
     onChange: (isChecked: boolean) => void;
     isDisabled?: boolean;
     isAlert?: boolean;
-    isSmall?: boolean; // TODO: legacy prop
+    size?: SwitchSize;
     className?: string;
     'data-testid'?: string;
     labelPosition?: Extract<UIHorizontalAlignment, 'left' | 'right'>;
@@ -127,7 +137,7 @@ export const Switch = ({
     onChange,
     isDisabled = false,
     isAlert,
-    isSmall, // TODO use size instead of isSmall
+    size = 'medium',
     label,
     'data-testid': dataTest,
     isChecked,
@@ -151,7 +161,7 @@ export const Switch = ({
     };
 
     return (
-        <Wrapper $labelPosition={labelPosition} className={className}>
+        <Wrapper $labelPosition={labelPosition} $size={size} className={className}>
             <Container
                 // @ts-expect-error - needed for cypress retry-ability
                 disabled={isDisabled}
@@ -160,14 +170,14 @@ export const Switch = ({
                 $isAlert={isAlert}
                 onClick={handleContainerClick}
                 data-testid={dataTest}
-                $isSmall={isSmall}
+                $size={size}
             >
                 <Handle
                     tabIndex={-1}
                     $isChecked={isChecked}
                     $isDisabled={isDisabled}
                     type="button"
-                    $isSmall={isSmall}
+                    $size={size}
                 />
                 <CheckboxInput
                     id={id}
@@ -181,7 +191,7 @@ export const Switch = ({
             </Container>
 
             {label && (
-                <Label $isDisabled={isDisabled} $isAlert={isAlert} $isSmall={isSmall} htmlFor={id}>
+                <Label $isDisabled={isDisabled} $isAlert={isAlert} $size={size} htmlFor={id}>
                     {label}
                 </Label>
             )}

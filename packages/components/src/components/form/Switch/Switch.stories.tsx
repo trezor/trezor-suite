@@ -1,7 +1,7 @@
 import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Switch as SwitchComponent, SwitchProps } from './Switch';
+import { Switch as SwitchComponent, SwitchProps, switchSizes } from './Switch';
 
 const meta: Meta = {
     title: 'Form',
@@ -11,14 +11,14 @@ export default meta;
 export const Switch: StoryObj<SwitchProps> = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
-        const [{ isChecked }, updateArgs] = useArgs();
+        const [{ isChecked, size }, updateArgs] = useArgs();
         const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 
         return (
             <SwitchComponent
                 onChange={handleIsChecked}
                 isChecked={isChecked}
-                isSmall={args.isSmall}
+                size={size}
                 isDisabled={args.isDisabled}
                 label={args.label}
                 labelPosition={args.labelPosition}
@@ -30,7 +30,7 @@ export const Switch: StoryObj<SwitchProps> = {
         isAlert: false,
         isChecked: false,
         isDisabled: false,
-        isSmall: false,
+        size: 'medium',
         label: 'Headline',
         labelPosition: 'right',
     },
@@ -50,10 +50,11 @@ export const Switch: StoryObj<SwitchProps> = {
                 type: 'boolean',
             },
         },
-        isSmall: {
+        size: {
             control: {
-                type: 'boolean',
+                type: 'radio',
             },
+            options: switchSizes,
         },
         label: {
             table: {

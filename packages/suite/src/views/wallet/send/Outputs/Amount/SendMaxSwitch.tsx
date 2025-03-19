@@ -17,7 +17,7 @@ export const SendMaxSwitch = ({
         labelPosition="left"
         isChecked={isSetMaxActive}
         data-testid={dataTest}
-        isSmall
+        size="small"
         onChange={onChange}
         label={<Translation id="AMOUNT_SEND_MAX" />}
     />

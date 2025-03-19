@@ -126,7 +126,7 @@ export const DataAnalytics = ({
                                         isChecked={trackingEnabled}
                                         onChange={() => setTrackingEnabled(!trackingEnabled)}
                                         data-testid="@analytics/toggle-switch"
-                                        isSmall
+                                        size="small"
                                     />
                                 </Row>
                             </Card>
