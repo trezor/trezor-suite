@@ -1,14 +1,16 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
+import { Button, Card, CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    AddCoinAccountStackRoutes,
+    DeviceOnboardingStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { InitializeTrezorSvg } from '../../../assets/InitializeTrezorSvg';
 
 const cardStyle = prepareNativeStyle(utils => ({
     flex: 1,
@@ -21,32 +23,36 @@ const cardStyle = prepareNativeStyle(utils => ({
 
 const contentStyle = prepareNativeStyle(_ => ({
     width: '100%',
+    alignItems: 'center',
 }));
 
-export const EmptyConnectedDeviceState = () => {
+const buttonStyle = prepareNativeStyle(_ => ({
+    width: '100%',
+}));
+
+export const UninitializedConnectedDeviceState = () => {
     const { applyStyle } = useNativeStyles();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
 
     const handleAddAccount = () => {
-        navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
-            screen: AddCoinAccountStackRoutes.AddCoinAccount,
-            params: {
-                flowType: 'home',
-            },
+        navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
+            screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
         });
     };
 
     return (
         <Card style={applyStyle(cardStyle)}>
             <VStack spacing="sp24" style={applyStyle(contentStyle)}>
-                <PictogramTitleHeader
-                    variant="info"
-                    title={<Translation id="moduleHome.emptyState.emptyDevice.title" />}
-                    subtitle={<Translation id="moduleHome.emptyState.emptyDevice.subtitle" />}
+                <InitializeTrezorSvg />
+                <CenteredTitleHeader
+                    title={<Translation id="moduleHome.emptyState.uninitializedDevice.title" />}
+                    subtitle={
+                        <Translation id="moduleHome.emptyState.uninitializedDevice.subtitle" />
+                    }
                 />
-                <Button size="large" onPress={handleAddAccount}>
-                    <Translation id="moduleHome.emptyState.emptyDevice.button" />
+                <Button size="large" onPress={handleAddAccount} style={applyStyle(buttonStyle)}>
+                    <Translation id="moduleHome.emptyState.uninitializedDevice.button" />
                 </Button>
             </VStack>
         </Card>

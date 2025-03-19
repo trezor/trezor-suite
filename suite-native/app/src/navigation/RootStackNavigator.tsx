@@ -98,7 +98,7 @@ export const RootStackNavigator = () => {
                 component={SettingsStackNavigator}
             />
             <RootStack.Screen
-                name={RootStackRoutes.DeviceCompromisedModalScreen}
+                name={RootStackRoutes.DeviceCompromisedModal}
                 component={DeviceCompromisedModalScreen}
             />
             {/* Navigation flows that start by push from bottom animation on the first screen of its stack. */}

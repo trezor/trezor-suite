@@ -17,7 +17,7 @@ import {
 import { deviceCompromisedBannerAtom } from './DeviceCompromisedBannerAtoms';
 
 export const useRenderDeviceCompromisedBanner = () => {
-    const isRouteExcluded = useNavigationRouteMatch(RootStackRoutes.DeviceCompromisedModalScreen);
+    const isRouteExcluded = useNavigationRouteMatch(RootStackRoutes.DeviceCompromisedModal);
     // need to match both; see note in hook definition
     const isExtendedBanner = useNavigationRouteMatch([
         AppTabsRoutes.HomeStack,

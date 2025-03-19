@@ -7,7 +7,7 @@ import { useAlert } from '@suite-native/alerts';
 import {
     ConnectAndUnlockDeviceScreenContent,
     isOnboardingDeviceDisconnectedAlertDisplayedAtom,
-    wasDeviceDisconnectedByUserActionAtom,
+    wasDeviceOnboardingCancelledAtom,
 } from '@suite-native/device';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -38,8 +38,8 @@ export const ConnectAndUnlockDeviceScreen = () => {
     const hideDeviceDisconnectedAlert = () =>
         setIsOnboardingDeviceDisconnectedAlertDisplayed(false);
 
-    const [wasDeviceDisconnectedByUserAction, setWasDeviceDisconnectedByUserAction] = useAtom(
-        wasDeviceDisconnectedByUserActionAtom,
+    const [wasDeviceOnboardingCancelled, setWasDeviceOnboardingCancelled] = useAtom(
+        wasDeviceOnboardingCancelledAtom,
     );
 
     const navigateToHome = () =>
@@ -53,7 +53,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
     useEffect(() => {
         // This alert should be shown only if the device was physically disconnected from the phone.
         // In case that user "disconnects" device by cancelling the onboarding flow via the app UI, the alert is not shown!
-        if (!wasDeviceDisconnectedByUserAction) {
+        if (!wasDeviceOnboardingCancelled) {
             setIsOnboardingDeviceDisconnectedAlertDisplayed(true);
             showAlert({
                 title: translate('moduleDeviceOnboarding.deviceDisconnectedAlert.title'),
@@ -76,7 +76,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
 
             return;
         }
-        setWasDeviceDisconnectedByUserAction(false);
+        setWasDeviceOnboardingCancelled(false);
 
         // This effect should be called only once during the first render.
         // eslint-disable-next-line react-hooks/exhaustive-deps
