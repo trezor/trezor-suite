@@ -72,7 +72,7 @@
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
-        "@everstake/wallet-sdk-solana": "2.0.9",
+        "@everstake/wallet-sdk-solana": "2.1.1",
         "@solana-program/token": "^0.5.1",
         "@solana-program/token-2022": "^0.4.0",
         "@solana/kit": "^2.0.0",
