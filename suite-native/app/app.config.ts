@@ -1,5 +1,6 @@
 /* eslint-disable import/no-default-export */
 /* eslint-disable import/no-anonymous-default-export */
+import { createHash } from 'crypto';
 import { ConfigContext, ExpoConfig } from 'expo/config';
 
 import { suiteNativeVersion } from './package.json';
@@ -66,6 +67,16 @@ const projectIds = {
 } as const satisfies Record<BuildType, string>;
 
 const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
+
+// Generate a hash of active EXPO_PUBLIC env variables
+const getExpoPublicEnvHash = () => {
+    const envString = Object.entries(process.env)
+        .filter(([key]) => key.startsWith('EXPO_PUBLIC_'))
+        .map(([key, value]) => `${key}=${value}`)
+        .join(',');
+
+    return createHash('sha256').update(envString).digest('hex');
+};
 
 const getPlugins = (): ExpoPlugins => {
     const plugins = [
@@ -254,6 +265,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         plugins: getPlugins(),
         extra: {
             commitHash: process.env.EAS_BUILD_GIT_COMMIT_HASH || process.env.COMMIT_HASH || '',
+            expoPublicEnvHash: getExpoPublicEnvHash(), // Only to change fingerprint of the build on environment variables change
             eas: {
                 projectId,
             },
