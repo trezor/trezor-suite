@@ -10,13 +10,11 @@ Welcome to the Trezor Suite repository! This repository contains the source code
 
 # Development
 
-Development is not possible on Windows. This can be circumvented by tools such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install), see our [guide](https://docs.trezor.io/trezor-suite/misc/development-on-windows.html).
-
 ### Prerequisities
 
--   [NVM](https://github.com/nvm-sh/nvm)
--   [Yarn](https://yarnpkg.com/lang/en/docs/install/)
--   [Git LFS](https://git-lfs.github.com/) (For Linux/Ubuntu, [after adding the repository](https://packagecloud.io/github/git-lfs/install) do `sudo apt-get install git-lfs`, more info [here](https://github.com/git-lfs/git-lfs/blob/main/INSTALLING.md))
+-   Install [NVM](https://github.com/nvm-sh/nvm)
+-   Enable [Yarn](https://yarnpkg.com/getting-started/install) through npm
+-   Install [Git LFS](https://git-lfs.github.com/) (For Linux/Ubuntu, [after adding the repository](https://packagecloud.io/github/git-lfs/install) do `sudo apt-get install git-lfs`, more info [here](https://github.com/git-lfs/git-lfs/blob/main/INSTALLING.md))
 
 ### Getting started
 
@@ -40,6 +38,9 @@ This repository is used for development of version 9 of @trezor/connect. For det
 Historically, Trezor Connect had its [own repository](https://github.com/trezor/connect). This repository is now archived.
 
 ## **Trezor Suite** @trezor/suite
+
+Dev environment is primarily supported on **macOS or Linux**,
+though development on Windows is possible by following [this guide](https://docs.trezor.io/trezor-suite/misc/development-on-windows.html).
 
 Run a dev build:
 
