@@ -39,7 +39,7 @@ export abstract class WebsocketClient<Events extends Record<string, any>> extend
     private pingTimeout?: ReturnType<typeof setTimeout>;
     private connectPromise?: Promise<void>;
 
-    protected abstract createWebsocket(): WebSocket;
+    protected createWebsocket?(): WebSocket;
     protected abstract ping(): Promise<unknown>;
 
     constructor(options: Options) {
@@ -161,7 +161,7 @@ export abstract class WebsocketClient<Events extends Record<string, any>> extend
         const dfd = createDeferred();
         this.connectPromise = dfd.promise;
 
-        const ws = this.createWebsocket();
+        const ws = this.createWebsocket ? this.createWebsocket() : this.initWebsocket(this.options);
 
         // set connection timeout before WebSocket initialization
         const connectionTimeout = setTimeout(

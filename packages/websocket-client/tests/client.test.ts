@@ -3,9 +3,6 @@ import { ServerOptions, WebSocket } from 'ws';
 import { WebsocketClient } from '../src/client';
 
 class Client extends WebsocketClient<{ 'foo-event': 'bar-event' }> {
-    createWebsocket() {
-        return this.initWebsocket(this.options);
-    }
     ping() {
         return this.sendMessage({ method: 'ping' });
     }
