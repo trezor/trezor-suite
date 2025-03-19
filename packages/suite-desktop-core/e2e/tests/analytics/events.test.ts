@@ -1,5 +1,6 @@
 import { EventType } from '@trezor/suite-analytics';
 
+import { findLatestVersionForModel } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { ExtractByEventType } from '../../support/types';
 
@@ -21,7 +22,8 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         await settingsPage.analyticsSwitch.click();
         await settingsPage.closeSettings();
 
-        await trezorUserEnvLink.startEmu({ wipe: true, model: 'T3T1', version: '2.8.9' });
+        const firmwareVersion = findLatestVersionForModel('T3T1');
+        await trezorUserEnvLink.startEmu({ wipe: true, model: 'T3T1', version: firmwareVersion });
         await trezorUserEnvLink.setupEmu({
             passphrase_protection: true,
         });
@@ -67,7 +69,7 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         >(EventType.DeviceConnect);
         expect(deviceConnectEvent).toContainSubObject({
             mode: 'normal',
-            firmware: '2.8.9',
+            firmware: firmwareVersion,
             bootloaderHash: '',
             backup_type: 'Bip39',
             pin_protection: 'false',

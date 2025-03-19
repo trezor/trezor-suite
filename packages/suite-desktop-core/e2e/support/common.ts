@@ -6,6 +6,7 @@ import path from 'node:path';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { splitStringEveryNCharacters } from '@trezor/utils';
 
+import releases from '../../../../submodules/trezor-common/releases.json';
 import { PlaywrightProjects } from '../playwright.config';
 
 export const isDesktopProject = (testInfo: TestInfo) =>
@@ -75,4 +76,23 @@ export const getVideoPath = (videoFolder: string) => {
     }
 
     return path.join(videoFolder, videoFilenames[0]);
+};
+
+export const findLatestVersionForModel = (
+    model: 'T2T1' | 'T2B1' | 'T2T1' | 'T3B1' | 'T3T1',
+): string => {
+    const firmwareVersions = releases.firmware;
+    const versions = Object.keys(firmwareVersions);
+
+    // Sort versions in descending order
+    versions.sort((a, b) => (a > b ? -1 : 1));
+
+    // Find the latest version supporting our model
+    for (const version of versions) {
+        if (firmwareVersions[version as keyof typeof firmwareVersions].includes(model)) {
+            return version;
+        }
+    }
+
+    throw new Error(`No firmware version found for model ${model}`);
 };
