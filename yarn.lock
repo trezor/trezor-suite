@@ -12208,6 +12208,7 @@ __metadata:
     "@sentry/webpack-plugin": "npm:^2.22.7"
     "@suite-common/suite-config": "workspace:*"
     "@trezor/bundler-security": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@types/copy-webpack-plugin": "npm:^10.1.0"
