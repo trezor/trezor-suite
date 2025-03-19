@@ -37,7 +37,7 @@ export abstract class BaseWebsocket<T extends Record<string, any>> extends Webso
         });
     }
 
-    protected sendMessage(message: WebsocketRequest) {
+    sendMessage(message: WebsocketRequest) {
         return super.sendMessage(message).catch(error => {
             throw new CustomError(error.message);
         });

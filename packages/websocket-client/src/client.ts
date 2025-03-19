@@ -94,10 +94,10 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         this.onClose();
     }
 
-    protected sendMessage(message: WebsocketRequest) {
+    sendMessage(message: WebsocketRequest, { timeout }: { timeout?: number } = {}) {
         const { ws } = this;
         if (!ws || !this.isConnected()) throw new Error('websocket_not_initialized');
-        const { promiseId, promise } = this.messages.create();
+        const { promiseId, promise } = this.messages.create(timeout);
 
         const req = { id: promiseId.toString(), ...message };
 
