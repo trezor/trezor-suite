@@ -2433,10 +2433,25 @@ export default defineMessages({
         description: 'Text for Header and Button when submitting PIN',
         id: 'TR_ENTER_PIN',
     },
+    TR_ENTER_NEW_PIN: {
+        defaultMessage: 'Enter new PIN',
+        description: 'Text for Header and Button when entering new PIN',
+        id: 'TR_ENTER_NEW_PIN',
+    },
+    TR_RE_ENTER_NEW_PIN: {
+        defaultMessage: 'Re-enter new PIN',
+        description: 'Text for Header and Button when re-entering PIN',
+        id: 'TR_RE_ENTER_NEW_PIN',
+    },
     TR_ENTER_WIPECODE: {
-        defaultMessage: 'Enter Wipe Code',
+        defaultMessage: 'Enter wipe code',
         description: 'Text for Header and Button when submitting wipe code',
         id: 'TR_ENTER_WIPECODE',
+    },
+    TR_RE_ENTER_WIPECODE: {
+        defaultMessage: 'Re-enter wipe code',
+        description: 'Text for Header and Button when re-entering wipe code',
+        id: 'TR_RE_ENTER_WIPECODE',
     },
     TR_ENTER_SEED_WORDS_INSTRUCTION: {
         defaultMessage:

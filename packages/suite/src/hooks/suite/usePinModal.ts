@@ -18,13 +18,11 @@ export const usePinWithoutSelector = (buttonRequests: Pick<ButtonRequest, 'code'
     const isRequestingNewPinCode =
         pinRequestType?.code && NEW_PIN_REQUEST_TYPES.includes(pinRequestType.code);
     const isPinInvalid = invalidCounter > 0;
-    const isModalExtended = isRequestingNewPinCode || isPinInvalid;
 
     return {
         isWipeCode,
         isRequestingNewPinCode,
         isPinInvalid,
-        isModalExtended,
     };
 };
 

@@ -25,7 +25,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
 
         // Select advanced recovery
         await recoveryModal.selectWordCount(24);
-        await page.getByTestId('@recover/select-type/advanced').click();
+        await page.getByTestId('@recovery/select-type/advanced').click();
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
 
@@ -45,7 +45,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         // Retry recovery with basic type
         await onboardingPage.retryRecoveryButton.click();
         await recoveryModal.selectWordCount(12);
-        await page.getByTestId('@recover/select-type/basic').click();
+        await page.getByTestId('@recovery/select-type/standard').click();
 
         // Confirm on device
         await devicePrompt.confirmOnDevicePromptIsShown();

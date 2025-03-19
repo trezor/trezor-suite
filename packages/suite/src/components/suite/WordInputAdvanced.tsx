@@ -1,45 +1,30 @@
 import { useCallback, useEffect } from 'react';
 
-import styled from 'styled-components';
-
-import { Button, KEYBOARD_CODE, PinButton } from '@trezor/components';
+import {
+    Banner,
+    Button,
+    Card,
+    Column,
+    Grid,
+    KEYBOARD_CODE,
+    Paragraph,
+    PinButton,
+} from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { resolveAfter } from '@trezor/utils';
 
-import { DeviceMatrixExplanation, Translation, TrezorLink } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
+import { useExternalLink } from 'src/hooks/suite';
 
-const Wrapper = styled.div`
-    display: flex;
-    height: 100%;
-    justify-content: center;
-`;
-
-const MatrixWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 270px;
-    height: 100%;
-`;
-
-const Row = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: space-evenly;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Backspace = styled(Button)`
-    margin: 8px;
-`;
-
-interface WordInputAdvancedProps {
+type WordInputAdvancedProps = {
     count: 6 | 9;
-}
+};
 
 export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
+    const learnMoreUrl = useExternalLink(HELP_CENTER_ADVANCED_RECOVERY_URL);
+
     const onSubmit = useCallback(async (value: string) => {
         await resolveAfter(600);
         TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: value });
@@ -51,6 +36,10 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
 
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
+            if (count === 6) {
+                return;
+            }
+
             event.preventDefault();
 
             if (event.code === KEYBOARD_CODE.BACK_SPACE) {
@@ -107,77 +96,64 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
     }, [backspace, count, onSubmit]);
 
     return (
-        <Wrapper>
-            <DeviceMatrixExplanation
-                items={[
-                    {
-                        key: '1',
-                        title: <Translation id="TR_RECOVERY_MATRIX_DISPLAYED_ON_TREZOR" />,
-                        deviceModelInternal: DeviceModelInternal.T1B1,
-                    },
-                    {
-                        key: '2',
-                        title: (
-                            <TrezorLink
-                                variant="underline"
-                                href={HELP_CENTER_ADVANCED_RECOVERY_URL}
-                            >
-                                <Translation id="TR_LEARN_ADVANCED_RECOVERY" />
-                            </TrezorLink>
-                        ),
-                        icon: 'info',
-                    },
-                ]}
-            />
-            <MatrixWrapper>
-                {count === 9 && (
-                    <>
-                        <Row>
-                            <PinButton data-value="7" onClick={() => onSubmit('7')} />
-                            <PinButton data-value="8" onClick={() => onSubmit('8')} />
-                            <PinButton data-value="9" onClick={() => onSubmit('9')} />
-                        </Row>
-                        <Row>
-                            <PinButton data-value="4" onClick={() => onSubmit('4')} />
-                            <PinButton data-value="5" onClick={() => onSubmit('5')} />
-                            <PinButton data-value="6" onClick={() => onSubmit('6')} />
-                        </Row>
-                        <Row>
-                            <PinButton
-                                data-value="1"
-                                onClick={() => onSubmit('1')}
-                                data-testid="@recovery/word-input-advanced/1"
-                            />
-                            <PinButton data-value="2" onClick={() => onSubmit('2')} />
-                            <PinButton data-value="3" onClick={() => onSubmit('3')} />
-                        </Row>
-                    </>
-                )}
-
-                {count === 6 && (
-                    <>
-                        <Row>
-                            <PinButton data-value="8" onClick={() => onSubmit('7')} />
-                            <PinButton data-value="9" onClick={() => onSubmit('9')} />
-                        </Row>
-                        <Row>
-                            <PinButton data-value="5" onClick={() => onSubmit('4')} />
-                            <PinButton data-value="6" onClick={() => onSubmit('6')} />
-                        </Row>
-                        <Row>
-                            <PinButton
-                                data-value="2"
-                                onClick={() => onSubmit('1')}
-                                data-testid="@recovery/word-input-advanced/1"
-                            />
-                            <PinButton data-value="3" onClick={() => onSubmit('3')} />
-                        </Row>
-                    </>
-                )}
-                <Backspace variant="tertiary" onClick={backspace} icon="caretLeft">
-                    <Translation id="TR_BACKSPACE" />
-                </Backspace>
-            </MatrixWrapper>
-        </Wrapper>
+        <Column gap={spacings.md}>
+            <Banner
+                variant="info"
+                icon="question"
+                rightContent={
+                    <Banner.Button
+                        href={learnMoreUrl}
+                        icon="arrowUpRight"
+                        iconAlignment="end"
+                        size="tiny"
+                    >
+                        <Translation id="TR_LEARN_MORE" />
+                    </Banner.Button>
+                }
+            >
+                <Paragraph typographyStyle="label">
+                    <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />
+                </Paragraph>
+            </Banner>
+            <Card paddingType="none">
+                <Column gap={spacings.xl} padding={spacings.xxl} alignItems="flex-end">
+                    <Grid columns={count === 9 ? 3 : 2} gap={spacings.lg} width="100%">
+                        {count === 9 &&
+                            // prettier-ignore
+                            // Order follows standard numeric keypad layout
+                            [7, 8, 9,
+                             4, 5, 6,
+                             1, 2, 3].map(num => (
+                                <PinButton
+                                    key={num}
+                                    data-value={String(num)}
+                                    onClick={() => onSubmit(String(num))}
+                                    data-testid={
+                                        num === 1 ? '@recovery/word-input-advanced/1' : undefined
+                                    }
+                                />
+                            ))}
+                        {count === 6 && (
+                            // TODO: Do we need the data-value mess here? Can it be removed?
+                            <>
+                                <PinButton data-value="8" onClick={() => onSubmit('7')} />
+                                <PinButton data-value="9" onClick={() => onSubmit('9')} />
+                                <PinButton data-value="5" onClick={() => onSubmit('4')} />
+                                <PinButton data-value="6" onClick={() => onSubmit('6')} />
+                                <PinButton
+                                    data-value="2"
+                                    onClick={() => onSubmit('1')}
+                                    data-testid="@recovery/word-input-advanced/1"
+                                />
+                                <PinButton data-value="3" onClick={() => onSubmit('3')} />
+                            </>
+                        )}
+                    </Grid>
+                    <Button variant="tertiary" onClick={backspace} size="small" icon="caretLeft">
+                        <Translation id="TR_BACKSPACE" />
+                    </Button>
+                </Column>
+            </Card>
+        </Column>
     );
 };

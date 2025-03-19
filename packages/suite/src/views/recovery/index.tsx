@@ -1,69 +1,60 @@
 import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import {
-    getCheckBackupUrl,
-    isDeviceAcquired,
-    isDeviceWithButtons,
-} from '@suite-common/suite-utils';
-import { BulletList, Card, H2, H3, Image, NewModal, Paragraph } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
-import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { Box, H2, Image, NewModal, Paragraph } from '@trezor/components';
+import TrezorConnect, { UI } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
+import { ConfirmOnDevice } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import {
+    SeedInputStatus,
     checkSeed,
     setAdvancedRecovery,
     setStatus,
     setWordsCount,
 } from 'src/actions/recovery/recoveryActions';
 import { MODAL } from 'src/actions/suite/constants';
-import { SelectRecoveryType, SelectWordCount } from 'src/components/recovery';
-import { CheckItem, Loading, Translation } from 'src/components/suite';
-import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { onPinSubmit } from 'src/actions/suite/modalActions';
+import { Loading, PinMatrix, Translation, WordInputAdvanced } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
-import type { WordCount } from 'src/types/recovery';
+import type { RecoveryType, WordCount } from 'src/types/recovery';
 import type { ForegroundAppProps } from 'src/types/suite';
-import { pickByDeviceModel } from 'src/utils/device/modelUtils';
 
 import { EnterOnDeviceStep } from './steps/EnterOnDeviceStep';
-import { T1B1InputStep } from './steps/T1B1InputStep';
+import { InitialStep } from './steps/InitialStep';
+import { RequestConfirmationStep } from './steps/RequestConfirmationStep';
+import { SelectRecoveryTypeStep } from './steps/SelectRecoveryTypeStep';
+import { SelectWordCountStep } from './steps/SelectWordCountStep';
+import { WordInputStep } from './steps/WordInputStep';
 
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const recovery = useSelector(state => state.recovery);
     const modal = useSelector(state => state.modal);
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const [understood, setUnderstood] = useState(false);
-
+    const [isUnderstood, setIsUnderstood] = useState(false);
+    const [wordCount, setWordCount] = useState<WordCount | undefined>();
+    const [recoveryType, setRecoveryType] = useState<RecoveryType | undefined>();
+    const [pin, setPin] = useState('');
     const intl = useIntl();
 
-    const onSetWordsCount = (count: WordCount) => {
-        dispatch(setWordsCount(count));
-        dispatch(setStatus('select-recovery-type'));
-    };
-
-    const onSetRecoveryType = (type: 'standard' | 'advanced') => {
-        dispatch(setAdvancedRecovery(type === 'advanced'));
-        dispatch(checkSeed());
-    };
-
     const deviceModelInternal = device?.features?.internal_model;
-    const learnMoreUrl = getCheckBackupUrl(device);
-    const statesInProgressBar =
-        deviceModelInternal === DeviceModelInternal.T1B1
-            ? [
-                  'initial',
-                  'select-word-count',
-                  'select-recovery-type',
-                  'waiting-for-confirmation',
-                  'in-progress',
-                  'finished',
-              ]
-            : ['initial', 'in-progress', 'finished'];
+    const isT1B1 = deviceModelInternal === DeviceModelInternal.T1B1;
+    const statesInProgressBar: SeedInputStatus[] = isT1B1
+        ? [
+              'initial',
+              'select-word-count',
+              'select-recovery-type',
+              'waiting-for-confirmation',
+              'in-progress',
+          ]
+        : ['initial', 'in-progress'];
     const hasFinished = recovery.status === 'finished';
     const hasError = recovery.error !== undefined;
+    const hasBackClick = ['select-word-count', 'select-recovery-type'].includes(recovery.status);
 
     const handleClose = () => {
         if (['in-progress', 'waiting-for-confirmation'].includes(recovery.status)) {
@@ -71,6 +62,15 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         } else {
             onCancel();
         }
+    };
+
+    const handlePinSubmit = () => {
+        dispatch(onPinSubmit(pin));
+        setPin('');
+    };
+
+    const handleBackClick = () => {
+        dispatch(setStatus(statesInProgressBar[statesInProgressBar.indexOf(recovery.status) - 1]));
     };
 
     if (!isDeviceAcquired(device) || !deviceModelInternal) {
@@ -87,116 +87,57 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     }
 
     const getStep = () => {
-        const isShamirBackupAvailable =
-            device?.features?.capabilities?.includes('Capability_Shamir');
-
         switch (recovery.status) {
-            case 'initial': {
-                const descriptionSuffix = isDeviceWithButtons(deviceModelInternal)
-                    ? getNarrowedDeviceModelInternal(deviceModelInternal)
-                    : 'TOUCHSCREEN';
-
+            case 'initial':
                 return (
-                    <>
-                        <BulletList
-                            gap={spacings.xl}
-                            titleGap={spacings.xxxs}
-                            bulletGap={spacings.lg}
-                        >
-                            <BulletList.Item
-                                title={
-                                    <Paragraph typographyStyle="hint" textWrap="pretty">
-                                        <Translation
-                                            id={`TR_CHECK_RECOVERY_SEED_DESC_${descriptionSuffix}`}
-                                        />
-                                    </Paragraph>
-                                }
-                            >
-                                <Paragraph
-                                    typographyStyle="label"
-                                    variant="tertiary"
-                                    margin={{ top: spacings.xxs }}
-                                >
-                                    <Translation
-                                        id={
-                                            isShamirBackupAvailable
-                                                ? 'TR_SEED_BACKUP_LENGTH_INCLUDING_SHAMIR'
-                                                : 'TR_SEED_BACKUP_LENGTH'
-                                        }
-                                    />
-                                </Paragraph>
-                            </BulletList.Item>
-                            <BulletList.Item
-                                title={
-                                    <Paragraph typographyStyle="hint" textWrap="pretty">
-                                        <Translation
-                                            id={pickByDeviceModel(deviceModelInternal, {
-                                                default: 'TR_SEED_WORDS_ENTER_TOUCHSCREEN',
-                                                [DeviceModelInternal.T1B1]:
-                                                    'TR_SEED_WORDS_ENTER_COMPUTER',
-                                                [DeviceModelInternal.T2B1]:
-                                                    'TR_SEED_WORDS_ENTER_BUTTONS',
-                                                [DeviceModelInternal.T3B1]:
-                                                    'TR_SEED_WORDS_ENTER_BUTTONS',
-                                            })}
-                                        />
-                                    </Paragraph>
-                                }
-                            >
-                                <Paragraph
-                                    typographyStyle="label"
-                                    variant="tertiary"
-                                    margin={{ top: spacings.xxs }}
-                                >
-                                    <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
-                                </Paragraph>
-                            </BulletList.Item>
-                        </BulletList>
-                        <Card margin={{ top: spacings.xxl }}>
-                            <CheckItem
-                                data-testid="@recovery/user-understands-checkbox"
-                                title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}
-                                description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
-                                isChecked={understood}
-                                link={learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
-                                onClick={() => setUnderstood(!understood)}
-                            />
-                        </Card>
-                    </>
+                    <InitialStep isUnderstood={isUnderstood} setIsUnderstood={setIsUnderstood} />
                 );
-            }
             case 'select-word-count':
-                return (
-                    <>
-                        <H3 margin={{ bottom: spacings.md }}>
-                            <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
-                        </H3>
-                        <SelectWordCount onSelect={onSetWordsCount} />
-                    </>
-                );
+                return <SelectWordCountStep setWordCount={setWordCount} wordCount={wordCount} />;
             case 'select-recovery-type':
                 return (
-                    <>
-                        <H3 margin={{ bottom: spacings.md }}>
-                            <Translation id="TR_CHOOSE_RECOVERY_TYPE" />
-                        </H3>
-                        <SelectRecoveryType onSelect={onSetRecoveryType} />
-                    </>
+                    <SelectRecoveryTypeStep
+                        setRecoveryType={setRecoveryType}
+                        recoveryType={recoveryType}
+                    />
                 );
-            case 'in-progress':
             case 'waiting-for-confirmation':
+            case 'in-progress':
+                // When T1B1 requests PIN confirmation, the status is still 'waiting-for-confirmation'
+                // so we need to check the modal context to know if we should show the loading indicator
                 if (modal.context !== MODAL.CONTEXT_DEVICE) {
-                    return <Loading />;
+                    return (
+                        <Box padding={spacings.xxl}>
+                            <Loading />
+                        </Box>
+                    );
                 }
 
                 // Do not rely on Capability_PassphraseEntry feature. For ancient firmwares it's not there,
                 // and we want to allow devices that have unsupported FW to be able to check the seed.
-                if (device.features.internal_model === DeviceModelInternal.T1B1) {
-                    return <T1B1InputStep />;
+                if (isT1B1) {
+                    switch (modal.windowType) {
+                        case UI.REQUEST_PIN:
+                            return (
+                                <PinMatrix
+                                    pin={pin}
+                                    setPin={setPin}
+                                    onSubmit={handlePinSubmit}
+                                    showLabel
+                                />
+                            );
+                        case 'ButtonRequest_Other':
+                            return <RequestConfirmationStep />;
+                        case 'WordRequestType_Plain':
+                            return <WordInputStep />;
+                        case 'WordRequestType_Matrix6':
+                            return <WordInputAdvanced count={6} />;
+                        case 'WordRequestType_Matrix9':
+                            return <WordInputAdvanced count={9} />;
+                    }
                 }
 
-                return <EnterOnDeviceStep />;
-
+                return <EnterOnDeviceStep deviceModelInternal={deviceModelInternal} />;
             case 'finished':
                 return !hasError ? (
                     <>
@@ -231,47 +172,136 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         }
     };
 
-    return (
-        <NewModal
-            heading={<Translation id="TR_CHECK_RECOVERY_SEED" />}
-            description={
-                <Translation
-                    id="TR_STEP_OF_TOTAL"
-                    values={{
-                        index: statesInProgressBar.indexOf(recovery.status) + 1,
-                        total: statesInProgressBar.length,
-                    }}
-                />
-            }
-            bottomContent={
-                <>
-                    {recovery.status === 'initial' && (
-                        <NewModal.Button
-                            onClick={() =>
-                                deviceModelInternal === DeviceModelInternal.T1B1
-                                    ? dispatch(setStatus('select-word-count'))
-                                    : dispatch(checkSeed())
-                            }
-                            isDisabled={!understood || isLocked()}
-                            data-testid="@recovery/start-button"
-                        >
-                            <Translation id="TR_START" />
-                        </NewModal.Button>
-                    )}
+    const getBottomContentPrimaryButton = () => {
+        switch (recovery.status) {
+            case 'initial':
+                return (
                     <NewModal.Button
-                        variant={hasFinished ? undefined : 'tertiary'}
-                        onClick={handleClose}
+                        onClick={() =>
+                            isT1B1
+                                ? dispatch(setStatus('select-word-count'))
+                                : dispatch(checkSeed())
+                        }
+                        isDisabled={!isUnderstood || isLocked()}
+                        data-testid="@recovery/start-button"
                     >
-                        <Translation id="TR_CLOSE" />
+                        <Translation id="TR_START" />
                     </NewModal.Button>
-                </>
-            }
-            onCancel={handleClose}
-            variant={hasFinished && hasError ? 'warning' : 'primary'}
-            // eslint-disable-next-line no-nested-ternary
-            iconName={hasFinished ? (hasError ? 'warning' : 'check') : undefined}
-        >
-            {getStep()}
-        </NewModal>
+                );
+            case 'select-word-count':
+                return (
+                    <NewModal.Button
+                        isDisabled={!wordCount}
+                        onClick={() => {
+                            if (!wordCount) return;
+
+                            dispatch(setWordsCount(wordCount));
+                            dispatch(setStatus('select-recovery-type'));
+                        }}
+                        data-testid="@recovery/continue-button"
+                    >
+                        <Translation id="TR_CONTINUE" />
+                    </NewModal.Button>
+                );
+            case 'select-recovery-type':
+                return (
+                    <NewModal.Button
+                        isDisabled={!recoveryType}
+                        onClick={() => {
+                            dispatch(setAdvancedRecovery(recoveryType === 'advanced'));
+                            dispatch(checkSeed());
+                        }}
+                        data-testid="@recovery/continue-button"
+                    >
+                        <Translation id="TR_CONTINUE" />
+                    </NewModal.Button>
+                );
+            case 'waiting-for-confirmation':
+                if (
+                    isT1B1 &&
+                    modal.context === MODAL.CONTEXT_DEVICE &&
+                    modal.windowType === UI.REQUEST_PIN
+                ) {
+                    return (
+                        <NewModal.Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
+                            <Translation id="TR_CONFIRM" />
+                        </NewModal.Button>
+                    );
+                }
+        }
+    };
+
+    const getIconName = () => {
+        if (recovery.status === 'finished') {
+            return hasError ? 'warning' : 'check';
+        }
+
+        return undefined;
+    };
+
+    const getVariant = () => {
+        if (recovery.status === 'in-progress') {
+            return 'info';
+        }
+
+        return hasError ? 'warning' : 'primary';
+    };
+
+    const getSize = () => {
+        switch (recovery.status) {
+            case 'initial':
+                return 'medium';
+            case 'waiting-for-confirmation':
+                return 'tiny';
+            case 'in-progress':
+                return isT1B1 ? 'tiny' : 'small';
+            default:
+                return 'small';
+        }
+    };
+
+    return (
+        <NewModal.Backdrop>
+            {['in-progress', 'waiting-for-confirmation'].includes(recovery.status) && (
+                <ConfirmOnDevice
+                    title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                    deviceModelInternal={device.features.internal_model}
+                    deviceUnitColor={device.features.unit_color}
+                    onCancel={handleClose}
+                />
+            )}
+            <NewModal.ModalBase
+                heading={hasError ? undefined : <Translation id="TR_CHECK_RECOVERY_SEED" />}
+                description={
+                    statesInProgressBar.includes(recovery.status) ? (
+                        <Translation
+                            id="TR_STEP_OF_TOTAL"
+                            values={{
+                                index: statesInProgressBar.indexOf(recovery.status) + 1,
+                                total: statesInProgressBar.length,
+                            }}
+                        />
+                    ) : undefined
+                }
+                bottomContent={
+                    <>
+                        {getBottomContentPrimaryButton()}
+                        <NewModal.Button
+                            variant={hasFinished ? undefined : 'tertiary'}
+                            onClick={handleClose}
+                        >
+                            <Translation id={hasFinished ? 'TR_CLOSE' : 'TR_CANCEL'} />
+                        </NewModal.Button>
+                    </>
+                }
+                onBackClick={hasBackClick ? handleBackClick : undefined}
+                onCancel={handleClose}
+                variant={getVariant()}
+                iconName={getIconName()}
+                size={getSize()}
+            >
+                {getStep()}
+            </NewModal.ModalBase>
+        </NewModal.Backdrop>
     );
 };

@@ -1,7 +1,6 @@
 import { Locator, Page, test } from '@playwright/test';
 
 import { TrezorUserEnvLinkProxy, step } from '../common';
-import { expect } from '../testExtends/customMatchers';
 
 export class TrezorInput {
     readonly wordSelectInput: Locator;
@@ -23,7 +22,6 @@ export class TrezorInput {
     async inputMnemonicT1B1(mnemonic: string) {
         const arrayMnemonic = mnemonic.split(' ');
         for (let i = 0; i < 24; i++) {
-            await expect(this.wordSelectInput).toHaveText("Check your Trezor's screen");
             const state = await TrezorUserEnvLinkProxy.getDebugState();
             const position = state.recovery_word_pos - 1;
             const isGivenFakeWord = position === -1;

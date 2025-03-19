@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Button, Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
+import { onPinSubmit } from 'src/actions/suite/modalActions';
 import {
     OnboardingButtonCta,
     OnboardingButtonSkip,
@@ -18,6 +21,7 @@ const SetPinStep = () => {
     const [status, setStatus] = useState<'initial' | 'enter-pin' | 'repeat-pin' | 'success'>(
         'initial',
     );
+    const [pin, setPin] = useState('');
     const device = useSelector(selectSelectedDevice);
     const modal = useSelector(state => state.modal);
     const isActionAbortable = useSelector(selectIsActionAbortable);
@@ -30,13 +34,18 @@ const SetPinStep = () => {
         setStatus('initial');
         setPinAndSkipSuccessToast();
     };
-    const setPin = () => {
+    const createPin = () => {
         setPinAndSkipSuccessToast();
         updateAnalytics({ pin: 'create' });
     };
     const skipPin = () => {
         setShowSkipConfirmation(true);
         updateAnalytics({ pin: 'skip' });
+    };
+
+    const handlePinSubmit = () => {
+        dispatch(onPinSubmit(pin));
+        setPin('');
     };
 
     useEffect(() => {
@@ -137,7 +146,7 @@ const SetPinStep = () => {
                     !showConfirmationPrompt ? (
                         <OnboardingButtonCta
                             data-testid="@onboarding/set-pin-button"
-                            onClick={setPin}
+                            onClick={createPin}
                         >
                             <Translation id="TR_SET_PIN" />
                         </OnboardingButtonCta>
@@ -159,7 +168,14 @@ const SetPinStep = () => {
                 isActionAbortable={status === 'initial' ? isActionAbortable : true}
             >
                 {/* // device requested showing a pin matrix, show the matrix also on "repeat-pin" status until we get fail or success response from the device */}
-                {(showPinMatrix || status === 'repeat-pin') && <PinMatrix device={device} />}
+                {(showPinMatrix || status === 'repeat-pin') && (
+                    <Column gap={spacings.md}>
+                        <PinMatrix pin={pin} setPin={setPin} onSubmit={handlePinSubmit} />
+                        <Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
+                            <Translation id="TR_CONFIRM" />
+                        </Button>
+                    </Column>
+                )}
             </OnboardingStepBox>
         </>
     );

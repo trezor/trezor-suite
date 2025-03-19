@@ -1,13 +1,16 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { Button, Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
+import { onPinSubmit } from 'src/actions/suite/modalActions';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { PinMatrix, PrerequisitesGuide, Translation } from 'src/components/suite';
 import steps from 'src/config/onboarding/steps';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
 import IsSameDevice from './components/IsSameDevice';
@@ -24,6 +27,8 @@ interface UnexpectedStateProps {
  * This component handles unexpected device states across various steps in the onboarding.
  */
 const UnexpectedState = ({ children }: UnexpectedStateProps) => {
+    const [pin, setPin] = useState('');
+    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
 
@@ -60,33 +65,35 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
         }
     }, [activeStep, prerequisite, isNotSameDevice]);
 
-    const getPinComponent = () => {
-        // After the PIN is set it may happen that it takes too long for an user to finish the onboarding process.
-        // Then the device will get auto locked and requests to show a PIN matrix next before changing its setting.
-        // (which could happen on Final step where we set device name and homescreen)
-        if (!device?.features) return null;
-        if (activeStepId === 'set-pin') return null; // Step for setting up a PIN handles all by itself
-        if (showPinMatrix) {
-            return <PinMatrix device={device} />;
-        }
+    const handlePinSubmit = () => {
+        dispatch(onPinSubmit(pin));
+        setPin('');
     };
 
     if (!activeStep) {
         return null;
     }
 
-    const pinComponent = getPinComponent();
-    if (pinComponent) {
+    // After the PIN is set it may happen that it takes too long for an user to finish the onboarding process.
+    // Then the device will get auto locked and requests to show a PIN matrix next before changing its setting.
+    // (which could happen on Final step where we set device name and homescreen)
+    if (device?.features && activeStepId !== 'set-pin' && showPinMatrix) {
         return (
             <OnboardingStepBox
                 heading={<Translation id="TR_ENTER_PIN" />}
                 device={device}
                 isActionAbortable={false}
             >
-                {pinComponent}
+                <Column gap={spacings.md}>
+                    <PinMatrix pin={pin} setPin={setPin} onSubmit={handlePinSubmit} />
+                    <Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
+                        <Translation id="TR_CONFIRM" />
+                    </Button>
+                </Column>
             </OnboardingStepBox>
         );
     }
+
     if (UnexpectedStateComponent) {
         return <UnexpectedContainer>{UnexpectedStateComponent}</UnexpectedContainer>;
     }

@@ -1,116 +1,167 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 
-import styled, { useTheme } from 'styled-components';
-
-import { variables } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { formInputsMaxLength } from '@suite-common/validators';
+import {
+    Banner,
+    Button,
+    Card,
+    Column,
+    Grid,
+    Input,
+    KEYBOARD_CODE,
+    Paragraph,
+    PinButton,
+    Row,
+} from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
 
-import { onPinSubmit } from 'src/actions/suite/modalActions';
-import { DeviceMatrixExplanation, Translation, TrezorLink } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
-import { TrezorDevice } from 'src/types/suite';
+import { Translation } from 'src/components/suite';
+import { useExternalLink } from 'src/hooks/suite';
 
-import { PinInput } from './PinInput/PinInput';
+type PinMatrixProps = {
+    pin: string;
+    setPin: (pin: string) => void;
+    onSubmit: () => void;
+    showExplanation?: boolean;
+    showLabel?: boolean;
+};
 
-export const PIN_MATRIX_MAX_WIDTH = '316px';
+export const PinMatrix = ({
+    showExplanation,
+    showLabel,
+    pin,
+    setPin,
+    onSubmit,
+}: PinMatrixProps) => {
+    const learnMoreUrl = useExternalLink(HELP_CENTER_PIN_URL);
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    flex: 1;
+    const onPinBackspace = useCallback(() => {
+        setPin(pin.substring(0, pin.length - 1));
+    }, [pin, setPin]);
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        flex-direction: column;
-    }
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        width: 100%;
-    }
-`;
-
-const Col = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 5px;
-    width: 100%;
-    max-width: ${PIN_MATRIX_MAX_WIDTH};
-`;
-interface PinMatrixProps {
-    device: TrezorDevice;
-    hideExplanation?: boolean;
-    invalid?: boolean;
-}
-
-export const PinMatrix = ({ device, hideExplanation, invalid }: PinMatrixProps) => {
-    const theme = useTheme();
-    const [submitted, setSubmitted] = useState(false);
-    const dispatch = useDispatch();
-
-    const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
+    const onPinAdd = useCallback(
+        (input: string) => {
+            if (pin.length < formInputsMaxLength.pin) {
+                setPin(pin + input);
+            }
+        },
+        [pin, setPin],
+    );
 
     useEffect(() => {
-        if (
-            pinRequestType?.code &&
-            [
-                'PinMatrixRequestType_Current',
-                'PinMatrixRequestType_NewFirst',
-                'PinMatrixRequestType_NewSecond',
-                'PinMatrixRequestType_WipeCodeFirst',
-                'PinMatrixRequestType_WipeCodeSecond',
-            ].includes(pinRequestType.code)
-        ) {
-            setSubmitted(false);
-        }
-    }, [pinRequestType]);
+        const keyboardHandler = (event: KeyboardEvent) => {
+            switch (event.code) {
+                case KEYBOARD_CODE.ENTER:
+                case KEYBOARD_CODE.NUMPAD_ENTER:
+                    onSubmit();
+                    break;
+                case KEYBOARD_CODE.BACK_SPACE:
+                    onPinBackspace();
+                    break;
 
-    if (!device.features) return null;
+                // numeric and numpad
+                case KEYBOARD_CODE.DIGIT_ONE:
+                case KEYBOARD_CODE.NUMPAD_ONE:
+                    onPinAdd('1');
+                    break;
+                case KEYBOARD_CODE.DIGIT_TWO:
+                case KEYBOARD_CODE.NUMPAD_TWO:
+                    onPinAdd('2');
+                    break;
+                case KEYBOARD_CODE.DIGIT_THREE:
+                case KEYBOARD_CODE.NUMPAD_THREE:
+                    onPinAdd('3');
+                    break;
+                case KEYBOARD_CODE.DIGIT_FOUR:
+                case KEYBOARD_CODE.NUMPAD_FOUR:
+                    onPinAdd('4');
+                    break;
+                case KEYBOARD_CODE.DIGIT_FIVE:
+                case KEYBOARD_CODE.NUMPAD_FIVE:
+                    onPinAdd('5');
+                    break;
+                case KEYBOARD_CODE.DIGIT_SIX:
+                case KEYBOARD_CODE.NUMPAD_SIX:
+                    onPinAdd('6');
+                    break;
+                case KEYBOARD_CODE.DIGIT_SEVEN:
+                case KEYBOARD_CODE.NUMPAD_SEVEN:
+                    onPinAdd('7');
+                    break;
+                case KEYBOARD_CODE.DIGIT_EIGHT:
+                case KEYBOARD_CODE.NUMPAD_EIGHT:
+                    onPinAdd('8');
+                    break;
+                case KEYBOARD_CODE.DIGIT_NINE:
+                case KEYBOARD_CODE.NUMPAD_NINE:
+                    onPinAdd('9');
+                    break;
+                default:
+                    break;
+            }
+        };
 
-    const submit = (pin: string) => {
-        dispatch(onPinSubmit(pin));
-        setSubmitted(true);
-    };
+        window.addEventListener('keydown', keyboardHandler, false);
+
+        return () => {
+            window.removeEventListener('keydown', keyboardHandler, false);
+        };
+    }, [onPinAdd, onPinBackspace, onSubmit]);
 
     return (
-        <Wrapper>
-            {!hideExplanation && (
-                <DeviceMatrixExplanation
-                    items={[
-                        invalid
-                            ? {
-                                  key: 'invalid',
-                                  title: <Translation id="TR_WRONG_PIN_ENTERED" />,
-                                  icon: 'warningTriangleLight',
-                                  iconSize: 40,
-                                  iconColor: theme.legacy.TYPE_RED,
-                              }
-                            : {
-                                  key: 'matrix',
-                                  title: <Translation id="TR_PIN_MATRIX_DISPLAYED_ON_TREZOR" />,
-                                  deviceModelInternal: DeviceModelInternal.T1B1,
-                              },
-                        {
-                            key: 'maxlength',
-                            title: <Translation id="TR_MAXIMUM_PIN_LENGTH" />,
-                            icon: 'asterisk',
-                            iconSize: 20,
-                        },
-                        {
-                            key: 'pin',
-                            title: (
-                                <TrezorLink variant="underline" href={HELP_CENTER_PIN_URL}>
-                                    <Translation id="TR_HOW_PIN_WORKS" />
-                                </TrezorLink>
-                            ),
-                            icon: 'pin',
-                        },
-                    ]}
-                />
+        <Column gap={spacings.md}>
+            {showExplanation && (
+                <Banner
+                    variant="info"
+                    icon="password"
+                    rightContent={
+                        <Banner.Button
+                            href={learnMoreUrl}
+                            icon="arrowUpRight"
+                            iconAlignment="end"
+                            size="tiny"
+                        >
+                            <Translation id="TR_LEARN_MORE" />
+                        </Banner.Button>
+                    }
+                >
+                    <Paragraph typographyStyle="hint">
+                        <Translation id="TR_MAXIMUM_PIN_LENGTH" />
+                    </Paragraph>
+                </Banner>
             )}
-            <Col>
-                <PinInput isSubmitting={submitted} onPinSubmit={submit} />
-            </Col>
-        </Wrapper>
+            <Card label={showLabel ? <Translation id="TR_ENTER_PIN" /> : undefined}>
+                <Column gap={spacings.xl} padding={spacings.md} data-testid="@pin">
+                    <Grid columns={3} gap={spacings.lg} width="100%">
+                        {
+                            // prettier-ignore
+                            // Order follows standard numeric keypad layout
+                            ['7', '8', '9',
+                             '4', '5', '6',
+                             '1', '2', '3'].map(value => (
+                                <PinButton
+                                    key={value}
+                                    data-value={value}
+                                    onClick={() => onPinAdd(value)}
+                                    data-testid={`@pin/input/${value}`}
+                                />
+                            ))
+                        }
+                    </Grid>
+                    <Row gap={spacings.md}>
+                        <Input readOnly value={pin.replace(/[0-9]/g, '●')} size="small" />
+                        <Button
+                            variant="tertiary"
+                            onClick={onPinBackspace}
+                            size="small"
+                            icon="caretLeft"
+                        >
+                            <Translation id="TR_BACKSPACE" />
+                        </Button>
+                    </Row>
+                </Column>
+            </Card>
+        </Column>
     );
 };

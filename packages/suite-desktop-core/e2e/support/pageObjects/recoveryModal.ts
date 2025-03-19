@@ -11,7 +11,7 @@ export class RecoveryModal {
     readonly prompt: Locator;
 
     constructor(private page: Page) {
-        this.selectBasicRecoveryButton = page.getByTestId('@recover/select-type/basic');
+        this.selectBasicRecoveryButton = page.getByTestId('@recovery/select-type/standard');
         this.userUnderstandsCheckbox = page.getByTestId('@recovery/user-understands-checkbox');
         this.startButton = page.getByTestId('@recovery/start-button');
         this.successTitle = page.getByTestId('@recovery/success-title');
@@ -21,15 +21,17 @@ export class RecoveryModal {
 
     @step()
     async selectWordCount(number: 12 | 18 | 24) {
-        await this.page.getByTestId(`@recover/select-count/${number}`).click();
+        await this.page.getByTestId(`@recovery/select-count/${number}`).click();
     }
 
     @step()
-    async initDryCheck(type: 'basic' | 'advanced', numberOfWords: 12 | 18 | 24) {
+    async initDryCheck(type: 'standard' | 'advanced', numberOfWords: 12 | 18 | 24) {
         await this.userUnderstandsCheckbox.click();
         await this.startButton.click();
         await this.selectWordCount(numberOfWords);
-        await this.page.getByTestId(`@recover/select-type/${type}`).click();
+        await this.page.getByTestId('@recovery/continue-button').click();
+        await this.page.getByTestId(`@recovery/select-type/${type}`).click();
+        await this.page.getByTestId('@recovery/continue-button').click();
     }
 
     @step()

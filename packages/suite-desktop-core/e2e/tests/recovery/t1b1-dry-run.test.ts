@@ -23,7 +23,7 @@ test.describe('Recovery T1B1 - dry run', { tag: ['@group=device-management'] }, 
         devicePrompt,
     }) => {
         await settingsPage.checkSeedButton.click();
-        await recoveryModal.initDryCheck('basic', 24);
+        await recoveryModal.initDryCheck('standard', 24);
         await trezorInput.enterPinOnBlindMatrix(pin);
         await trezorInput.inputMnemonicT1B1(mnemonic);
         await expect(devicePrompt.modal).toContainText(

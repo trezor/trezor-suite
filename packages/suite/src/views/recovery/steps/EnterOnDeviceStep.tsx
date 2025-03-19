@@ -1,9 +1,24 @@
-import { Paragraph } from '@trezor/components';
+import { Banner, Paragraph } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/device-utils';
+import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 
-export const EnterOnDeviceStep = () => (
-    <Paragraph>
-        <Translation id="TR_ENTER_SEED_WORDS_ON_DEVICE" />
-    </Paragraph>
+export const EnterOnDeviceStep = ({
+    deviceModelInternal,
+}: {
+    deviceModelInternal: DeviceModelInternal;
+}) => (
+    <Banner
+        variant="info"
+        icon={
+            deviceModelInternal === 'UNKNOWN' ? undefined : `trezor${deviceModelInternal}` // TODO: update to non-deprecated icons
+        }
+        iconSize="extraLarge"
+        margin={{ top: spacings.xs }}
+    >
+        <Paragraph>
+            <Translation id="TR_ENTER_SEED_WORDS_ON_DEVICE" />
+        </Paragraph>
+    </Banner>
 );

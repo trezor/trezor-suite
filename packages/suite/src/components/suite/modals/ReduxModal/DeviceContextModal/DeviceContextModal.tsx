@@ -14,8 +14,6 @@ import {
     PinInvalidModal,
     PinModal,
     TransactionReviewModal,
-    WordAdvancedModal,
-    WordModal,
 } from 'src/components/suite/modals';
 import { useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
@@ -38,21 +36,13 @@ export const DeviceContextModal = ({
     switch (windowType) {
         // T1B1 firmware
         case UI.REQUEST_PIN:
-            return <PinModal device={device} renderer={renderer} />;
+            return <PinModal device={device} />;
         // T1B1 firmware
         case UI.INVALID_PIN:
             return <PinInvalidModal device={device} renderer={renderer} />;
-
         // Passphrase on host
         case UI.REQUEST_PASSPHRASE:
             return <PassphraseModal device={device} />;
-
-        case 'WordRequestType_Plain':
-            return <WordModal renderer={renderer} />;
-        case 'WordRequestType_Matrix6':
-            return <WordAdvancedModal count={6} renderer={renderer} />;
-        case 'WordRequestType_Matrix9':
-            return <WordAdvancedModal count={9} renderer={renderer} />;
         // T2T1 firmware
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':

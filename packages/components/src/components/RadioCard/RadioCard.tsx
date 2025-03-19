@@ -26,6 +26,7 @@ export type RadioCardProps = {
     isActive: boolean;
     children: ReactNode;
     onClick?: () => void;
+    dataTestId?: string;
 } & AllowedFrameProps;
 
 const Wrapper = styled.div<
@@ -60,13 +61,19 @@ const IconBackground = styled.div`
     background: ${({ theme }) => theme.baseFillSurfacePage};
 `;
 
-export const RadioCard = ({ isActive, onClick, children, ...rest }: RadioCardProps) => {
+export const RadioCard = ({ isActive, onClick, children, dataTestId, ...rest }: RadioCardProps) => {
     const { elevation } = useElevation();
     const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(rest, allowedRadioCardFrameProps);
 
     return (
-        <Wrapper $isActive={isActive} onClick={onClick} $elevation={elevation} {...frameProps}>
+        <Wrapper
+            $isActive={isActive}
+            onClick={onClick}
+            $elevation={elevation}
+            {...frameProps}
+            data-testid={dataTestId}
+        >
             {isActive && (
                 <Box position={{ type: 'absolute', top: '-6px', right: '-6px' }}>
                     <IconBackground>

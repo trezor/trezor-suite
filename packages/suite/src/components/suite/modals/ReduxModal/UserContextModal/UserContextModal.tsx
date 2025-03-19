@@ -55,10 +55,7 @@ import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 
 /** Modals opened as a result of user action */
-export const UserContextModal = ({
-    payload,
-    renderer,
-}: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
+export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
     const dispatch = useDispatch();
 
     const onCancel = () => dispatch(onCancelAction());
@@ -159,7 +156,7 @@ export const UserContextModal = ({
         case 'import-transaction':
             return <ImportTransactionModal {...payload} onCancel={onCancel} />;
         case 'pin-mismatch':
-            return <PinMismatchModal renderer={renderer} />;
+            return <PinMismatchModal />;
         case 'application-log':
             return <ApplicationLogModal onCancel={onCancel} />;
         case 'metadata-provider':

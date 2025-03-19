@@ -24,7 +24,6 @@
 @types/react-router
 @types/react-router-dom
 @types/react-test-renderer
-@types/react-window
 @types/redux-logger
 @types/redux-mock-store
 @types/tar
@@ -73,7 +72,6 @@ react-router-dom
 react-test-renderer
 react-toastify
 react-use
-react-window
 redux
 redux-devtools-extension
 redux-logger

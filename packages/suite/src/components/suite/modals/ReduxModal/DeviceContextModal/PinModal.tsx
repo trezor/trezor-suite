@@ -1,58 +1,82 @@
-import styled from 'styled-components';
+import { useState } from 'react';
 
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
+import { NewModal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+import { ConfirmOnDevice } from '@trezor/product-components';
 
-import { Modal, ModalProps, PinMatrix, Translation } from 'src/components/suite';
-import { PIN_MATRIX_MAX_WIDTH } from 'src/components/suite/PinMatrix/PinMatrix';
-import { useSelector } from 'src/hooks/suite';
+import { onPinSubmit } from 'src/actions/suite/modalActions';
+import { PinMatrix, Translation } from 'src/components/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { usePin } from 'src/hooks/suite/usePinModal';
 import { TrezorDevice } from 'src/types/suite';
 
-const StyledModal = styled(Modal)<{ $isExtended: boolean }>`
-    width: unset;
-
-    ${Modal.Description} {
-        max-width: ${({ $isExtended }) =>
-            $isExtended
-                ? 'fit-content'
-                : PIN_MATRIX_MAX_WIDTH}; /* limit width to prevent extending the modal past the width of the pin matrix */
-    }
-`;
-
-interface PinModalProps extends ModalProps {
+type PinModalProps = {
     device: TrezorDevice;
-}
+};
 
-export const PinModal = ({ device, ...rest }: PinModalProps) => {
-    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const { isRequestingNewPinCode, isWipeCode, isPinInvalid, isModalExtended } = usePin();
+export const PinModal = ({ device }: PinModalProps) => {
+    const dispatch = useDispatch();
+    const { isRequestingNewPinCode, isWipeCode } = usePin();
+    const [pin, setPin] = useState('');
 
     if (!device.features) return null;
+
+    const getHeading = () => {
+        const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
+
+        switch (pinRequestType?.code) {
+            case 'PinMatrixRequestType_NewFirst':
+                return 'TR_ENTER_NEW_PIN';
+            case 'PinMatrixRequestType_NewSecond':
+                return 'TR_RE_ENTER_NEW_PIN';
+            case 'PinMatrixRequestType_WipeCodeFirst':
+                return 'TR_ENTER_WIPECODE';
+            case 'PinMatrixRequestType_WipeCodeSecond':
+                return 'TR_RE_ENTER_WIPECODE';
+            default:
+                return 'TR_ENTER_PIN';
+        }
+    };
 
     const onCancel = () =>
         isWipeCode ? TrezorConnect.cancel('wipe-cancelled') : TrezorConnect.cancel('pin-cancelled');
 
+    const handlePinSubmit = () => {
+        dispatch(onPinSubmit(pin));
+        setPin('');
+    };
+
     return (
-        <StyledModal
-            heading={<Translation id={isWipeCode ? 'TR_ENTER_WIPECODE' : 'TR_ENTER_PIN'} />}
-            description={
-                <Translation
-                    id="TR_THE_PIN_LAYOUT_IS_DISPLAYED"
-                    values={{ deviceLabel, b: text => <b>{text}</b> }}
-                />
-            }
-            onCancel={onCancel}
-            isCancelable
-            data-testid="@modal/pin"
-            $isExtended={isModalExtended}
-            {...rest}
-        >
-            <PinMatrix
-                device={device}
-                hideExplanation={!isRequestingNewPinCode}
-                invalid={isPinInvalid}
+        <NewModal.Backdrop>
+            <ConfirmOnDevice
+                title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                deviceModelInternal={device.features?.internal_model}
+                deviceUnitColor={device?.features?.unit_color}
+                onCancel={onCancel}
             />
-        </StyledModal>
+            <NewModal.ModalBase
+                heading={<Translation id={getHeading()} />}
+                onCancel={onCancel}
+                data-testid="@modal/pin"
+                size="tiny"
+                bottomContent={
+                    <>
+                        <NewModal.Button onClick={handlePinSubmit} data-testid="@pin/submit-button">
+                            <Translation id="TR_CONFIRM" />
+                        </NewModal.Button>
+                        <NewModal.Button onClick={onCancel} variant="tertiary">
+                            <Translation id="TR_CANCEL" />
+                        </NewModal.Button>
+                    </>
+                }
+            >
+                <PinMatrix
+                    pin={pin}
+                    setPin={setPin}
+                    onSubmit={handlePinSubmit}
+                    showExplanation={isRequestingNewPinCode || isWipeCode}
+                />
+            </NewModal.ModalBase>
+        </NewModal.Backdrop>
     );
 };
