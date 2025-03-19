@@ -48,7 +48,7 @@ export const typographyStylesBase: Record<TypographyStyle, TypographyStyleDefini
         fontSize: 34,
         lineHeight: 37,
         fontWeight: fontWeights.medium,
-        letterSpacing: 0.4,
+        letterSpacing: -1.4,
     },
     titleSmall: {
         fontSize: 22,
