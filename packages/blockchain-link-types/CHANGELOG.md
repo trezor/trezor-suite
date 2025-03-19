@@ -1,3 +1,7 @@
+# 1.3.3
+
+-   npm-prerelease: @trezor/blockchain-link-types 1.3.3-beta.1 (577577afd4)
+
 # 1.3.2
 
 -   npm-prerelease: @trezor/blockchain-link-types 1.3.2-beta.2 (4234d28ca6)
