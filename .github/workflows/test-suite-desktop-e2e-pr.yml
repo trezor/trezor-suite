@@ -84,11 +84,13 @@ jobs:
           cache: yarn
 
       - name: Download build artifact
+        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: actions/download-artifact@v4
         with:
           name: desktop-app-build-e2e
 
       - name: Extract build artifact
+        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
 
       - name: Run Playwright E2E Tests
