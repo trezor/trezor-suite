@@ -7,7 +7,6 @@ import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
-import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import { onHome } from '../pageObjects/homeActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import {
@@ -90,7 +89,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.
 
         await appIsFullyLoaded();
 
-        await onConnectingDevice.waitForScreen();
         await onHome.waitForScreen();
     });
 

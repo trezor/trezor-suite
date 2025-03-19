@@ -6,7 +6,6 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
-import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import {
@@ -81,7 +80,9 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
         await onAlertSheet.skipViewOnlyMode();
     });
 
-    afterAll(disconnectTrezorUserEnv);
+    afterAll(() => {
+        disconnectTrezorUserEnv();
+    });
 
     // TODO #16495 - currently not working
     describe.skip('with passphrase not allowed on Trezor', () => {
@@ -89,8 +90,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
             await prepareTrezorEmulator();
             await restartApp();
             await appIsFullyLoaded();
-
-            await onConnectingDevice.waitForScreen();
         });
 
         it('Open empty passphrase wallet', async () => {
@@ -136,8 +135,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow', () =>
             await prepareTrezorEmulator(undefined, true);
             await restartApp();
             await appIsFullyLoaded();
-
-            await onConnectingDevice.waitForScreen();
         });
 
         it('Open empty passphrase wallet', async () => {

@@ -4,7 +4,6 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAlertSheet } from '../pageObjects/alertSheetActions';
 import { onCoinEnablingInit } from '../pageObjects/coinEnablingActions';
-import { onConnectingDevice } from '../pageObjects/connectingDevice';
 import { onHome } from '../pageObjects/homeActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
@@ -89,7 +88,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Send transaction flow.'
 
         await appIsFullyLoaded();
 
-        await onConnectingDevice.waitForScreen();
         await onHome.waitForScreen();
         await onTabBar.navigateToMyAssets();
 
