@@ -38,10 +38,6 @@ interface WebsocketResponse {
 }
 
 export class WebsocketClient extends WebsocketClientBase<WebsocketClientEvents> {
-    protected ping() {
-        return this.send({ type: 'ping' });
-    }
-
     constructor(options: any = {}) {
         super({
             ...options,

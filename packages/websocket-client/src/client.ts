@@ -27,7 +27,7 @@ type WebsocketClientEvents = {
 export type WebsocketRequest = Record<string, any>;
 export type WebsocketResponse = WebSocket.Data;
 
-export abstract class WebsocketClient<Events extends Record<string, any>> extends TypedEmitter<
+export class WebsocketClient<Events extends Record<string, any>> extends TypedEmitter<
     Events & WebsocketClientEvents
 > {
     readonly options: Options;
@@ -40,7 +40,9 @@ export abstract class WebsocketClient<Events extends Record<string, any>> extend
     private connectPromise?: Promise<void>;
 
     protected createWebsocket?(): WebSocket;
-    protected abstract ping(): Promise<unknown>;
+    protected ping() {
+        return this.sendMessage({ type: 'ping' });
+    }
 
     constructor(options: Options) {
         super();
