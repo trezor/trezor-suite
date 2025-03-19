@@ -6,7 +6,7 @@ import { Deferred, createDeferred } from '@trezor/utils';
 
 import { createHttpReceiver } from './http-receiver';
 import { Dependencies } from '../modules';
-import { findProcessFromIncomingPort } from './find-process-from-port';
+import { ProcessInfo, findProcessFromIncomingPort } from './find-process-from-port';
 
 const LOG_PREFIX = 'connect-ws';
 
@@ -31,7 +31,7 @@ export const exposeConnectWs = ({
         logger.info(LOG_PREFIX, 'Websocket server is listening');
     });
 
-    wss.on('connection', async (ws, req) => {
+    wss.on('connection', (ws, req) => {
         const ip = req.socket.remoteAddress;
         const port = req.socket.remotePort;
         if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
@@ -41,7 +41,8 @@ export const exposeConnectWs = ({
             return;
         }
         logger.info(LOG_PREFIX, `new connection from ${ip}:${port}`);
-        const processOnPort = await findProcessFromIncomingPort(port);
+
+        let processOnPort: ProcessInfo | undefined;
         const { origin } = req.headers;
         logger.info(LOG_PREFIX, `origin: ${origin}`);
 
@@ -71,10 +72,16 @@ export const exposeConnectWs = ({
             }
 
             if (message.type === POPUP.HANDSHAKE) {
+                processOnPort = await findProcessFromIncomingPort(port);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === IFRAME.CALL) {
                 if (!message.payload || !message.payload.method) {
                     logger.error(LOG_PREFIX, 'invalid message payload');
+
+                    return;
+                }
+                if (!processOnPort) {
+                    logger.error(LOG_PREFIX, 'processOnPort result not found');
 
                     return;
                 }

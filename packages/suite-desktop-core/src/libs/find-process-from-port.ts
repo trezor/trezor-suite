@@ -21,6 +21,12 @@ export function spawnAndCollectStdout(command: string): Promise<string> {
     });
 }
 
+export type ProcessInfo = {
+    name: string;
+    pid: string;
+    user: string;
+};
+
 export async function findProcessFromIncomingPort(port: number) {
     switch (process.platform) {
         case 'darwin':
