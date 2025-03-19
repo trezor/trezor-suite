@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import { WebSocketServer } from 'ws';
 
 import { IFRAME, POPUP } from '@trezor/connect';
+import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
 import { Deferred, createDeferred } from '@trezor/utils';
 
 import { createHttpReceiver } from './http-receiver';
@@ -20,7 +21,7 @@ export const exposeConnectWs = ({
     httpReceiver: ReturnType<typeof createHttpReceiver>;
 }) => {
     const { logger } = global;
-    const messages: Record<number, Deferred<any, number>> = {};
+    const messages: Record<string, Deferred<any, number>> = {};
     let appInit: Deferred<void> | undefined;
 
     const wss = new WebSocketServer({
@@ -61,16 +62,17 @@ export const exposeConnectWs = ({
                 return;
             }
 
-            if (
-                typeof message !== 'object' ||
-                typeof message.id !== 'number' ||
-                typeof message.type !== 'string'
-            ) {
+            if (typeof message !== 'object' || typeof message.type !== 'string') {
                 logger.error(LOG_PREFIX, 'message is missing required fields (id, type)');
 
                 return;
             }
 
+            if (message.type === 'ping') {
+                ws.send(JSON.stringify({ id: message.id, type: 'pong' }));
+
+                return;
+            }
             if (message.type === POPUP.HANDSHAKE) {
                 processOnPort = await findProcessFromIncomingPort(port);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
@@ -133,9 +135,9 @@ export const exposeConnectWs = ({
         }
     });
 
-    ipcMain.handle('connect-popup/response', (_, response) => {
+    ipcMain.handle('connect-popup/response', (_, response: ConnectPopupResponse) => {
         logger.info(LOG_PREFIX, 'received response from popup ' + JSON.stringify(response));
-        if (!response || typeof response.id !== 'number') {
+        if (!response || typeof response.id !== 'string') {
             logger.error(LOG_PREFIX, 'invalid response from popup');
 
             return;

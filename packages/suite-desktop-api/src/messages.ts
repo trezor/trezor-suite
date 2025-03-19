@@ -129,7 +129,7 @@ export type InvokeResult<Payload = undefined> =
         : { success: true; payload: Payload } | { success: false; error: string; code?: string };
 
 export type ConnectPopupCall = {
-    id: number;
+    id: string;
     method: string;
     payload: any;
     processName?: string;
@@ -137,7 +137,7 @@ export type ConnectPopupCall = {
 };
 
 export type ConnectPopupResponse = {
-    id: number;
+    id: string;
     success: boolean;
     payload: any;
 };

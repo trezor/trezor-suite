@@ -7,6 +7,7 @@ export const ERROR_CODES = {
         'Manifest not set. Read more at https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md', // manifest is not set
 
     Popup_ConnectionMissing: 'Unable to establish connection with iframe', // thrown by popup
+    Desktop_ConnectionMissing: 'Unable to establish connection with Suite', // thrown by suite-desktop
 
     Transport_Missing: 'Transport is missing', // no transport available
     Transport_InvalidProtobuf: '', // generic error from transport layer (trezor-link)
