@@ -1,3 +1,12 @@
+# 1.4.3
+
+-   npm-prerelease: @trezor/transport 1.4.3-beta.1 (78542f7870)
+-   chore(transport): usb: rework implementation of device.reset (e75c5b00ea)
+-   chore(transport): usb: move selectConfiguration outside of reset block (de8bbf162e)
+-   chore(transport): usb rename 'first' param to 'reset' (afb24c461c)
+-   fix(transport): usb: select configuration only if not already selected (8244a4ce91)
+-   chore(transport): do not claim interface that is already claimed (d93655f57e)
+
 # 1.4.2
 
 -   npm-prerelease: @trezor/transport 1.4.2-beta.2 (8bac92fdc8)
