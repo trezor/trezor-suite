@@ -1,3 +1,7 @@
+# 9.3.3
+
+-   npm-prerelease: @trezor/utils 9.3.3-beta.1 (d3cf2f59a9)
+
 # 9.3.2
 
 -   npm-prerelease: @trezor/utils 9.3.2-beta.2 (f3abb09122)
