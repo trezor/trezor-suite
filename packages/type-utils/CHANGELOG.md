@@ -1,3 +1,9 @@
+# 1.1.5
+
+-   npm-prerelease: @trezor/type-utils 1.1.5-beta.1 (a8b9793a64)
+-   chore: improve Typescript magic of (credit to @Lemonexe) (fbe8426fb8)
+-   fix: Add some exclusion to types to better handle remmaped DeviceEvent type to Redux Actions (d9615e6c17)
+
 # 1.1.4
 
 -   npm-prerelease: @trezor/type-utils 1.1.4-beta.1 (3c010626c3)
