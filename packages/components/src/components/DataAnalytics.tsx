@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { Center, Column, Icon, Row, Text } from '@trezor/components';
+import { Center, Column, Icon, List, Row, Text } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 
 import { Card } from './Card/Card';
@@ -20,7 +20,7 @@ interface DataAnalyticsProps {
 
 const IconWrapper = styled.div`
     border-radius: ${borders.radii.sm};
-    border: solid 1px ${({ theme }) => theme.borderElevation1};
+    border: solid 1px ${({ theme }) => theme.borderElevation2};
     width: 32px;
     height: 32px;
     display: flex;
@@ -67,45 +67,53 @@ export const DataAnalytics = ({
 
                     <Card>
                         <Column gap={spacings.lg}>
-                            <Row gap={spacings.md}>
-                                <IconWrapper>
-                                    <Icon size="medium" name="eyeSlash" />
-                                </IconWrapper>
-                                <Column gap={spacings.xxxs} flex="1">
-                                    <Text typographyStyle="callout">
-                                        <FormattedMessage
-                                            id="TR_ALLOW_ANALYTICS_PRIVACY_TITLE"
-                                            defaultMessage="You data is private"
-                                        />
-                                    </Text>
-                                    <Text typographyStyle="label" variant="tertiary">
-                                        <FormattedMessage
-                                            id="TR_ALLOW_ANALYTICS_PRIVACY_DESCRIPTION"
-                                            defaultMessage="We don't gather sensitive personal data like balances, transactions, or profile details."
-                                        />
-                                    </Text>
-                                </Column>
-                            </Row>
+                            <List gap={spacings.md}>
+                                <List.Item
+                                    bulletComponent={
+                                        <IconWrapper>
+                                            <Icon size="medium" name="eyeSlash" />
+                                        </IconWrapper>
+                                    }
+                                >
+                                    <Column gap={spacings.xxxs} flex="1">
+                                        <Text typographyStyle="callout">
+                                            <FormattedMessage
+                                                id="TR_ALLOW_ANALYTICS_PRIVACY_TITLE"
+                                                defaultMessage="You data is private"
+                                            />
+                                        </Text>
+                                        <Text typographyStyle="label" variant="tertiary">
+                                            <FormattedMessage
+                                                id="TR_ALLOW_ANALYTICS_PRIVACY_DESCRIPTION"
+                                                defaultMessage="We don't gather sensitive personal data like balances, transactions, or profile details."
+                                            />
+                                        </Text>
+                                    </Column>
+                                </List.Item>
+                                <List.Item
+                                    bulletComponent={
+                                        <IconWrapper>
+                                            <Icon size="medium" name="bug" />
+                                        </IconWrapper>
+                                    }
+                                >
+                                    <Column gap={spacings.xxxs} flex="1">
+                                        <Text typographyStyle="callout">
+                                            <FormattedMessage
+                                                id="TR_WHAT_DATA_WE_COLLECT"
+                                                defaultMessage="What data do we collect"
+                                            />
+                                        </Text>
+                                        <Text typographyStyle="label" variant="tertiary">
+                                            <FormattedMessage
+                                                id="TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_DESCRIPTION"
+                                                defaultMessage="We collect data on app performance, user interaction, and potential technical issues to enhance the user experience."
+                                            />
+                                        </Text>
+                                    </Column>
+                                </List.Item>
+                            </List>
 
-                            <Row gap={spacings.md}>
-                                <IconWrapper>
-                                    <Icon size="medium" name="bug" />
-                                </IconWrapper>
-                                <Column gap={spacings.xxxs} flex="1">
-                                    <Text typographyStyle="callout">
-                                        <FormattedMessage
-                                            id="TR_WHAT_DATA_WE_COLLECT"
-                                            defaultMessage="What data do we collect"
-                                        />
-                                    </Text>
-                                    <Text typographyStyle="label" variant="tertiary">
-                                        <FormattedMessage
-                                            id="TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_DESCRIPTION"
-                                            defaultMessage="We collect data on app performance, user interaction, and potential technical issues to enhance the user experience."
-                                        />
-                                    </Text>
-                                </Column>
-                            </Row>
                             <Card paddingType="small">
                                 <Row justifyContent="space-between">
                                     <Text typographyStyle="callout">
