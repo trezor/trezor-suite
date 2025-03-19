@@ -27,8 +27,10 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
         });
 
         // reload to activate bridge and start testing app with enabled analytics
-        await page.reload();
         await trezorUserEnvLink.startBridge();
+        await page.waitForTimeout(2_000);
+        await page.reload();
+
         await analytics.interceptAnalytics();
         await onboardingPage.optionallyDismissFwHashCheckError();
         await page.getByTestId('@onboarding/exit-app-button').click();
