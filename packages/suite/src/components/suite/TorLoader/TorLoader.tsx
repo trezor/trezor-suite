@@ -7,6 +7,7 @@ import { Button, ModalProps } from '@trezor/components';
 import { toggleTor, updateTorStatus } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { TorStatus } from 'src/types/suite';
 
@@ -29,6 +30,7 @@ export const TorLoader = ({ callback, ModalWrapper }: TorLoadingScreenProps) => 
     // and we want to show user the fake loading feedback.
     const [isDisabling, setIsDisabling] = useState<boolean>(false);
     const { torBootstrap, isTorError } = useSelector(selectTorState);
+    const modalType = useSelector(selectModalType);
 
     const dispatch = useDispatch();
 
@@ -56,7 +58,7 @@ export const TorLoader = ({ callback, ModalWrapper }: TorLoadingScreenProps) => 
         dispatch(updateTorStatus(TorStatus.Enabling));
 
         try {
-            await dispatch(toggleTor(true));
+            await dispatch(toggleTor(true, modalType));
         } catch {
             dispatch(updateTorStatus(TorStatus.Error));
         }
@@ -66,7 +68,7 @@ export const TorLoader = ({ callback, ModalWrapper }: TorLoadingScreenProps) => 
         setIsDisabling(true);
         let fakeProgress = 0;
         // We do not wait until toggleTor is done since we want to display fake progress.
-        dispatch(toggleTor(false));
+        dispatch(toggleTor(false, modalType));
 
         // This is a total fake progress, otherwise it would be too fast for user.
         await new Promise(resolve => {

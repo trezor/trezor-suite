@@ -13,6 +13,7 @@ import { toggleTor } from 'src/actions/suite/suiteActions';
 import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { Account } from 'src/types/wallet';
 
@@ -56,6 +57,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
     const { isTorEnabled } = useSelector(selectTorState);
     const device = useSelector(selectSelectedDevice);
     const accounts = useSelector(state => state.wallet.accounts);
+    const modalType = useSelector(selectModalType);
     const dispatch = useDispatch();
 
     if (!device) {
@@ -106,7 +108,7 @@ export const AddCoinjoinAccountButton = ({ network, selectedAccount }: AddCoinjo
             }
 
             // Triggering Tor process and displaying Tor loading to give user feedback of Tor progress.
-            dispatch(toggleTor(true));
+            dispatch(toggleTor(true, modalType));
             const isTorLoaded = await dispatch(openDeferredModal({ type: 'tor-loading' }));
             // When Tor was not loaded it means there was an error or user canceled it, stop the coinjoin account activation.
             if (!isTorLoaded) return;

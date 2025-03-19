@@ -417,6 +417,8 @@ export type SuiteAnalyticsEvent =
           type: EventType.SettingsTor;
           payload: {
               value: boolean;
+              location: string;
+              modal?: string;
           };
       }
     | {

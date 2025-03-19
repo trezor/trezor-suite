@@ -172,7 +172,8 @@ export const updateTorStatus = (payload: TorStatus): SuiteAction => ({
 });
 
 export const toggleTor =
-    (shouldEnable: boolean) => async (dispatch: Dispatch, getState: GetState) => {
+    (shouldEnable: boolean, modal: string | undefined) =>
+    async (dispatch: Dispatch, getState: GetState) => {
         const { torBootstrap } = selectTorState(getState());
 
         const backends = getCustomBackends(getState().wallet.blockchain);
@@ -207,6 +208,8 @@ export const toggleTor =
                 type: EventType.SettingsTor,
                 payload: {
                     value: shouldEnable,
+                    location: getState().router.url,
+                    modal,
                 },
             });
         }

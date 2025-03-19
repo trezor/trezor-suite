@@ -1,8 +1,10 @@
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectModalType } from 'src/reducers/suite/modalReducer';
 
 export const Tor = () => {
+    const modalType = useSelector(selectModalType);
     const dispatch = useDispatch();
 
     return (
@@ -16,7 +18,7 @@ export const Tor = () => {
                     <ActionButton
                         variant="destructive"
                         onClick={() => {
-                            dispatch(toggleTor(false));
+                            dispatch(toggleTor(false, modalType));
                         }}
                     >
                         Stop Tor

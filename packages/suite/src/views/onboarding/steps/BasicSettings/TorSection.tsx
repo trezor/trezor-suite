@@ -4,7 +4,8 @@ import { Switch, variables } from '@trezor/components';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { TorStatus } from 'src/types/suite';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
@@ -34,13 +35,14 @@ interface TorSectionProps {
 }
 
 export const TorSection = ({ torStatus }: TorSectionProps) => {
+    const modalType = useSelector(selectModalType);
     const dispatch = useDispatch();
 
     const isTorEnabled = getIsTorEnabled(torStatus);
     const isTorLoading = getIsTorLoading(torStatus);
     const isChecked = isTorEnabled || torStatus === TorStatus.Enabling;
 
-    const handleChange = () => dispatch(toggleTor(!isTorEnabled));
+    const handleChange = () => dispatch(toggleTor(!isTorEnabled, modalType));
 
     return (
         <TorWrapper>

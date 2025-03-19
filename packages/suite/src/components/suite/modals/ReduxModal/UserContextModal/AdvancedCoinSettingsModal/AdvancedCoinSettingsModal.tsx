@@ -19,6 +19,7 @@ import { toggleTor } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useBackendsForm, useDefaultUrls } from 'src/hooks/settings/backends';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';
@@ -34,6 +35,7 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
     const network = getNetwork(symbol);
     const { isTorEnabled } = useSelector(selectTorState);
     const blockchain = useSelector(state => state.wallet.blockchain);
+    const modalType = useSelector(selectModalType);
     const dispatch = useDispatch();
     const [torModalOpen, setTorModalOpen] = useState(false);
 
@@ -60,7 +62,7 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
     const onTorResult = async (result: TorResult) => {
         switch (result) {
             case 'enable-tor':
-                await dispatch(toggleTor(true));
+                await dispatch(toggleTor(true, modalType));
 
                 setTorModalOpen(false);
                 save();

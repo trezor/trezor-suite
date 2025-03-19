@@ -3,17 +3,19 @@ import { Banner } from '@trezor/components';
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 export const TorDisconnected = () => {
     const account = useSelector(selectSelectedAccount);
     const { isTorEnabled, isTorLoading } = useSelector(selectTorState);
+    const modalType = useSelector(selectModalType);
     const dispatch = useDispatch();
 
     if (account?.accountType !== 'coinjoin' || isTorEnabled) return null;
 
-    const handleButtonClick = () => dispatch(toggleTor(true));
+    const handleButtonClick = () => dispatch(toggleTor(true, modalType));
 
     return (
         <Banner

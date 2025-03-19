@@ -23,6 +23,10 @@ type ModalState =
           payload: UserContextPayload;
       };
 
+type ModalRootState = {
+    modal: ModalState;
+};
+
 const initialState: State = {
     context: MODAL.CONTEXT_NONE,
 };
@@ -95,6 +99,14 @@ const modalReducer = (state: State = initialState, action: Action): State => {
         default:
             return state;
     }
+};
+
+export const selectModalType = (state: ModalRootState) => {
+    if ('payload' in state.modal) {
+        return state.modal.payload.type;
+    }
+
+    return undefined;
 };
 
 export default modalReducer;

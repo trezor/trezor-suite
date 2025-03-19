@@ -9,6 +9,7 @@ import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectCoinjoinAccounts } from 'src/reducers/wallet/coinjoinReducer';
 import { TorStatus } from 'src/types/suite';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
@@ -18,6 +19,7 @@ export const Tor = () => {
     const coinjoinAccounts = useSelector((state: any) => selectCoinjoinAccounts(state));
     const isCoinjoinAccount = coinjoinAccounts.length > 0;
     const torStatus = useSelector(state => state.suite.torStatus);
+    const modalType = useSelector(selectModalType);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -46,7 +48,7 @@ export const Tor = () => {
             }
         }
         try {
-            await dispatch(toggleTor(!isTorEnabled));
+            await dispatch(toggleTor(!isTorEnabled, modalType));
         } catch {
             setHasTorError(true);
         }
