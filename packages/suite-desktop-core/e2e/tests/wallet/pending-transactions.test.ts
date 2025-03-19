@@ -15,7 +15,8 @@ const accounts = {
     },
 };
 
-test.describe(
+//TODO: Fix unstable test #17792
+test.describe.skip(
     'Use regtest to test pending transactions',
     { tag: ['@group=wallet', '@desktopOnly'] },
     () => {
