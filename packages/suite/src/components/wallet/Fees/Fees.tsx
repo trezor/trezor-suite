@@ -47,6 +47,8 @@ export type FeeOptionType = {
     // EIP-1559
     maxWaitTimeEstimate?: number;
     maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
+    baseFeePerGas?: string;
 };
 
 export interface FeesProps<TFieldValues extends FormState> {

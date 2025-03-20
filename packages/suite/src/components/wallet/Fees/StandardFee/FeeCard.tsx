@@ -1,4 +1,14 @@
-import { Box, Column, RadioCard, Row, Text } from '@trezor/components';
+import React from 'react';
+
+import {
+    Box,
+    Column,
+    RadioCard,
+    Row,
+    TOOLTIP_DELAY_NORMAL,
+    Text,
+    Tooltip,
+} from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 
 type FeeCardProps = {
@@ -9,6 +19,7 @@ type FeeCardProps = {
     topRightChild?: React.ReactNode;
     bottomLeftChild: React.ReactNode;
     bottomRightChild: React.ReactNode;
+    tooltipContent?: React.ReactNode;
 };
 
 export const FEE_CARD_MIN_WIDTH = 220;
@@ -21,23 +32,26 @@ export const FeeCard = ({
     topRightChild,
     bottomLeftChild,
     bottomRightChild,
+    tooltipContent,
 }: FeeCardProps) => (
     <Box minWidth={FEE_CARD_MIN_WIDTH}>
-        <RadioCard onClick={() => changeFeeLevel(value)} isActive={isSelected}>
-            <Column>
-                <Row justifyContent="space-between">
-                    <Text typographyStyle="highlight">{topLeftChild}</Text>
-                    <Text variant="tertiary" typographyStyle="hint">
-                        {topRightChild}
-                    </Text>
-                </Row>
-                <Row justifyContent="space-between" height={24}>
-                    <Text>{bottomLeftChild}</Text>
-                    <Text variant="tertiary" typographyStyle="hint">
-                        {bottomRightChild}
-                    </Text>
-                </Row>
-            </Column>
-        </RadioCard>
+        <Tooltip content={tooltipContent} delayShow={TOOLTIP_DELAY_NORMAL}>
+            <RadioCard onClick={() => changeFeeLevel(value)} isActive={isSelected}>
+                <Column>
+                    <Row justifyContent="space-between">
+                        <Text typographyStyle="highlight">{topLeftChild}</Text>
+                        <Text variant="tertiary" typographyStyle="hint">
+                            {topRightChild}
+                        </Text>
+                    </Row>
+                    <Row justifyContent="space-between" height={24}>
+                        <Text>{bottomLeftChild}</Text>
+                        <Text variant="tertiary" typographyStyle="hint">
+                            {bottomRightChild}
+                        </Text>
+                    </Row>
+                </Column>
+            </RadioCard>
+        </Tooltip>
     </Box>
 );

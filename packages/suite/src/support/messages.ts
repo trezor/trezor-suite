@@ -3541,6 +3541,10 @@ export default defineMessages({
         id: 'TR_DEBUG_SETTINGS',
         defaultMessage: 'Debug',
     },
+    TR_DEBUG_ONLY: {
+        id: 'TR_DEBUG_ONLY',
+        defaultMessage: 'Debug only',
+    },
     TR_CONNECTED_APPS: {
         id: 'TR_CONNECTED_APPS',
         defaultMessage: 'Connected apps',
@@ -5705,6 +5709,10 @@ export default defineMessages({
     TR_MAX_FEE_PER_GAS: {
         defaultMessage: 'Max fee per gas',
         id: 'TR_MAX_FEE_PER_GAS',
+    },
+    TR_BASE_FEE: {
+        defaultMessage: 'Base fee',
+        id: 'TR_BASE_FEE',
     },
     CUSTOM_FEE_IS_NOT_SET: {
         defaultMessage:
