@@ -52,7 +52,7 @@ jobs:
     if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' && github.event.action == 'opened'
     runs-on: ubuntu-latest
     needs:
-      - build-desktop
+      - build-app
     steps:
       - name: Post Currents link
         uses: actions/github-script@v7

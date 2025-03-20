@@ -13,7 +13,7 @@ runs:
     - name: Install dependencies, build libs
       shell: bash
       run: |
-        yarn install --immutable
+        yarn workspaces focus @trezor/suite-build @trezor/suite-desktop @trezor/suite-data @trezor/transport-bridge
         yarn message-system-sign-config
         yarn workspace @trezor/suite-data build:lib
         yarn workspace @trezor/transport-bridge build:lib

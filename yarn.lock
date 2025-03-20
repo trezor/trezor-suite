@@ -12398,6 +12398,7 @@ __metadata:
     electron-updater: "npm:6.5.0"
     glob: "npm:^10.3.10"
     openpgp: "npm:^6.1.0"
+    rimraf: "npm:^6.0.1"
     usb: "npm:^2.14.0"
   languageName: unknown
   linkType: soft
