@@ -3,6 +3,7 @@ export * from './invityAPI';
 export * from './regional';
 export * from './utils';
 export * from './utils/buy/buyUtils';
+export * from './utils/exchange/exchangeUtils';
 export * from './constants';
 export * from './reducers/tradingReducer';
 export * from './reducers/buyReducer';
