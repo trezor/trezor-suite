@@ -248,7 +248,7 @@ export default defineMessages({
     },
     TR_TRADING_SWAP_MODAL_TERMS_4: {
         defaultMessage:
-            "I understand that Invity doesn't provide this service. It's governed by {provider}’s Terms and Conditions.",
+            "You understand that Invity doesn't provide this service. It's governed by {provider}’s Terms & Conditions.",
         id: 'TR_TRADING_SWAP_MODAL_TERMS_4',
         dynamic: true,
     },
@@ -286,7 +286,7 @@ export default defineMessages({
     },
     TR_TRADING_SWAP_DEX_MODAL_TERMS_1: {
         defaultMessage:
-            "I want to swap cryptocurrencies using DEX (decentralized exchange) by using {provider}'s contract.",
+            "You're here to swap cryptocurrencies with a DEX (decentralized exchange) by using {provider}'s contract.",
         id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_1',
         dynamic: true,
     },
@@ -1622,7 +1622,8 @@ export default defineMessages({
         id: 'TR_DISCONNECT',
     },
     TR_BACKEND_DISCONNECTED: {
-        defaultMessage: 'Backend is disconnected',
+        defaultMessage:
+            'There was an issue establishing a connection. Wait a moment and try again.',
         id: 'TR_BACKEND_DISCONNECTED',
     },
     TR_BACKEND_RECONNECTING: {
@@ -2259,7 +2260,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_CHANGE_PIN_DESC: {
         defaultMessage:
-            'If your PIN has been compromised or if you wish to change it for any reason, you can do so here.',
+            'Update your PIN if it has been compromised or if you wish to change it for any reason.',
         id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_DESC',
     },
     TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE: {
@@ -3409,7 +3410,8 @@ export default defineMessages({
         id: 'TR_XRP_RESERVE_INFO',
     },
     TR_YOU_WERE_DISCONNECTED_DOT: {
-        defaultMessage: 'You were disconnected.',
+        defaultMessage:
+            'No internet connection. Some features may be unavailable until you’re back online.',
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
     },
     TR_YOUR_FIRMWARE_VERSION: {
@@ -4656,7 +4658,7 @@ export default defineMessages({
     },
     TR_GO_TO_ONBOARDING: {
         id: 'TR_GO_TO_ONBOARDING',
-        defaultMessage: 'Begin setup',
+        defaultMessage: 'Set up device',
     },
     TR_GO_TO_SETTINGS: {
         id: 'TR_GO_TO_SETTINGS',
@@ -4668,7 +4670,7 @@ export default defineMessages({
     },
     TR_NO_FIRMWARE_EXPLAINED: {
         id: 'TR_NO_FIRMWARE_EXPLAINED',
-        defaultMessage: 'You need to install firmware before using your device.',
+        defaultMessage: 'Install firmware before using this device.',
     },
     TR_UNKNOWN_DEVICE: {
         id: 'TR_UNKNOWN_DEVICE',
@@ -5007,7 +5009,7 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_DISABLE: {
         id: 'TR_EARLY_ACCESS_DISABLE',
-        defaultMessage: 'Leave',
+        defaultMessage: 'Opt out',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM',
@@ -5025,7 +5027,7 @@ export default defineMessages({
     TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_CHECK',
         defaultMessage:
-            'I understand this allows me to test pre-release software, which may contain errors that affect the normal operation of Trezor Suite.',
+            'You understand this allows you to test pre-release software, which may contain errors that affect the normal operation of Trezor Suite.',
     },
     TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP: {
         id: 'TR_EARLY_ACCESS_ENABLE_CONFIRM_TOOLTIP',
@@ -5429,13 +5431,12 @@ export default defineMessages({
     },
     OP_RETURN_TOOLTIP: {
         id: 'OP_RETURN_TOOLTIP',
-        defaultMessage:
-            'OP_RETURN can be used for digital asset proof-of-ownership, and has at times been used to convey additional information needed to send transactions.',
+        defaultMessage: 'OP_RETURN can be used to attach custom data to a transaction.',
     },
     OP_RETURN_ADD: {
         id: 'OP_RETURN_ADD',
         description: 'item in dropdown menu',
-        defaultMessage: 'Add OP Return',
+        defaultMessage: 'Add OP_RETURN',
     },
     RBF: {
         id: 'RBF',
@@ -6071,7 +6072,7 @@ export default defineMessages({
     },
     TR_ENABLE_MORE_COINS: {
         id: 'TR_ENABLE_MORE_COINS',
-        defaultMessage: 'Enable more coins',
+        defaultMessage: 'Activate more assets',
     },
     TR_BACKUP_RECOVERY_SEED_FAILED_TITLE: {
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_TITLE',
@@ -8785,7 +8786,7 @@ export default defineMessages({
     },
     TR_STAKE_ETH_SEE_MONEY_DANCE: {
         id: 'TR_STAKE_ETH_SEE_MONEY_DANCE',
-        defaultMessage: 'Watch your money dance',
+        defaultMessage: 'Grow your assets',
     },
     TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC: {
         id: 'TR_STAKE_NETWORK_SEE_MONEY_DANCE_DESC',
@@ -8793,7 +8794,7 @@ export default defineMessages({
     },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
-        defaultMessage: '*Annual Percentage Yield',
+        defaultMessage: '*Annual percentage yield',
     },
     TR_STAKE_ETH_LOCK_FUNDS: {
         id: 'TR_STAKE_ETH_LOCK_FUNDS',
@@ -8871,7 +8872,7 @@ export default defineMessages({
     },
     TR_STAKE_WAIT_FOR_ACTIVATION: {
         id: 'TR_STAKE_WAIT_FOR_ACTIVATION',
-        defaultMessage: 'Time it takes to stake your SOL.',
+        defaultMessage: 'Time it takes to stake your SOL',
     },
     TR_STAKE_WARM_UP_PERIOD: {
         id: 'TR_STAKE_WARM_UP_PERIOD',
@@ -8887,7 +8888,7 @@ export default defineMessages({
     },
     TR_STAKE_WAIT_FOR_DEACTIVATION: {
         id: 'TR_STAKE_WAIT_FOR_DEACTIVATION',
-        defaultMessage: 'Time it takes to unstake your SOL.',
+        defaultMessage: 'Time it takes to unstake your SOL',
     },
     TR_STAKE_EARN_REWARDS_WEEKLY: {
         id: 'TR_STAKE_EARN_REWARDS_WEEKLY',
@@ -8936,7 +8937,7 @@ export default defineMessages({
     TR_SOL_FEE_DESC: {
         id: 'TR_SOL_FEE_DESC',
         defaultMessage:
-            'Network fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account’s storage.',
+            'Network fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. {br}Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account’s storage.',
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
@@ -8986,7 +8987,7 @@ export default defineMessages({
     },
     TR_STAKE_STAKE: {
         id: 'TR_STAKE_STAKE',
-        defaultMessage: 'Staked',
+        defaultMessage: 'Stake',
     },
     TR_STAKE_UNSTAKE: {
         id: 'TR_STAKE_UNSTAKE',
@@ -9002,7 +9003,7 @@ export default defineMessages({
     },
     TR_STAKE_APY: {
         id: 'TR_STAKE_APY',
-        defaultMessage: 'Annual Percentage Yield',
+        defaultMessage: 'Annual percentage yield',
     },
     TR_STAKE_APY_ABBR: {
         id: 'TR_STAKE_APY_ABBR',
