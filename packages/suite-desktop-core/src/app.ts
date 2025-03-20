@@ -128,9 +128,13 @@ const init = async () => {
     app.on('web-contents-created', (_, contents) => {
         contents.on('will-navigate', (event, navigationUrl) => {
             // See: https://www.electronjs.org/docs/latest/tutorial/security#13-disable-or-limit-navigation
-            // There is no situation where we do this type of redirect so we can disable it.
-            logger.error('electron', `Prevented unexpected redirect to: ${navigationUrl}`);
-            event.preventDefault();
+
+            const parsedUrl = new URL(navigationUrl);
+
+            if (parsedUrl.origin !== 'https://trezor.io') {
+                logger.error('electron', `Prevented unexpected redirect to: ${navigationUrl}`);
+                event.preventDefault();
+            }
         });
     });
 
