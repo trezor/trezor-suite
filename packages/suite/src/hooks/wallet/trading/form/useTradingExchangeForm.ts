@@ -11,9 +11,11 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    TradingExchangeAmountLimitProps,
     type TradingExchangeType,
     type TradingTransactionExchange,
     addIdsToQuotes,
+    exchangeUtils,
     getUnusedAddressFromAccount,
     invityAPI,
     tradingGetSuccessQuotes,
@@ -57,10 +59,8 @@ import {
     TradingExchangeFormProps,
     TradingExchangeStepType,
 } from 'src/types/trading/tradingForm';
-import type { CryptoAmountLimitProps } from 'src/utils/suite/validation';
 import {
     createQuoteLink,
-    getAmountLimits,
     getSuccessQuotesOrdered,
     tradingGetExchangeReceiveCryptoId,
 } from 'src/utils/wallet/trading/exchangeUtils';
@@ -105,7 +105,9 @@ export const useTradingExchangeForm = ({
         recomposeAndSign,
     } = useTradingRecomposeAndSign();
 
-    const [amountLimits, setAmountLimits] = useState<CryptoAmountLimitProps | undefined>(undefined);
+    const [amountLimits, setAmountLimits] = useState<TradingExchangeAmountLimitProps | undefined>(
+        undefined,
+    );
 
     const [innerQuotes, setInnerQuotes] = useState<ExchangeTrade[] | undefined>(
         tradingGetSuccessQuotes<TradingExchangeType>(quotes),
@@ -281,7 +283,7 @@ export const useTradingExchangeForm = ({
 
             if (Array.isArray(allQuotes)) {
                 const currency = cryptoIdToCoinSymbol(quotesRequest.send) ?? quotesRequest.send;
-                const limits = getAmountLimits({ quotes: allQuotes, currency });
+                const limits = exchangeUtils.getAmountLimits({ quotes: allQuotes, currency });
 
                 const successQuotes = addIdsToQuotes<TradingExchangeType>(
                     getSuccessQuotesOrdered(allQuotes),
