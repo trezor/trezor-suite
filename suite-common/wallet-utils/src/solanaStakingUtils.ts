@@ -1,5 +1,3 @@
-import { Network, Solana, StakeState } from '@everstake/wallet-sdk-solana';
-
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import {
@@ -7,9 +5,7 @@ import {
     SupportedSolanaNetworkSymbols,
     supportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
-import { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
-import { getSuiteVersion } from '@trezor/env-utils';
-import { PartialRecord } from '@trezor/type-utils';
+import { SolanaStakingAccount, StakeState } from '@trezor/blockchain-link-types/src/solana';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { formatNetworkAmount } from './accountUtils';
@@ -31,28 +27,6 @@ export const getSolanaStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
 
         return acc;
     }, [] as SupportedSolanaNetworkSymbols[]);
-
-interface SolNetworkConfig {
-    network: Network;
-}
-
-export const getSolNetworkForWalletSdk = (symbol: NetworkSymbol): SolNetworkConfig => {
-    const solNetworks: PartialRecord<NetworkSymbol, SolNetworkConfig> = {
-        dsol: { network: Network.Devnet },
-        sol: { network: Network.Mainnet },
-    };
-
-    return solNetworks[symbol] || solNetworks.sol!;
-};
-
-export const selectSolanaWalletSdkNetwork = (symbol: NetworkSymbol, url?: string) => {
-    const { network } = getSolNetworkForWalletSdk(symbol);
-
-    return new Solana(network, {
-        rpc: url,
-        userAgent: `Trezor Suite ${getSuiteVersion()}`,
-    });
-};
 
 export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAccount[]) => {
     if (!stakingAccounts?.length) return null;

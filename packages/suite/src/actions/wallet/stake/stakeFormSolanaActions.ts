@@ -16,6 +16,7 @@ import {
     ExternalOutput,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
+    PrepareStakeSolTxResponse,
     SelectedAccountStatus,
     StakeFormState,
 } from '@suite-common/wallet-types';
@@ -27,7 +28,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
-    PrepareStakeSolTxResponse,
     prepareClaimSolTx,
     prepareStakeSolTx,
     prepareUnstakeSolTx,
