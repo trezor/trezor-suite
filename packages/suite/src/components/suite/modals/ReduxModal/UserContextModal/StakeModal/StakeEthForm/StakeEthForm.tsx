@@ -15,7 +15,7 @@ export const StakeEthForm = () => {
         closeConfirmModal,
         signTx,
         isLoading,
-        formState: { errors },
+        formState: { errors, isDirty },
         register,
         control,
         setValue,
@@ -45,6 +45,7 @@ export const StakeEthForm = () => {
                 <Fees
                     control={control}
                     errors={errors}
+                    isDirty={isDirty}
                     register={register}
                     feeInfo={feeInfo}
                     setValue={setValue}

@@ -8,7 +8,6 @@ import {
     PrecomposedTransaction,
     PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
-import { Row } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -22,14 +21,16 @@ export type StandardFeeProps = {
     networkType: NetworkType;
     symbol: NetworkSymbol;
     selectedLevel: FeeLevel;
-    // fields below are validated as false-positives, eslint claims that they are not used...
     feeOptions: FeeOptionType[];
     feeInfo: FeeInfo;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
+    columns?: number;
+    ref?: React.RefObject<HTMLDivElement>;
+    isDirty: boolean;
 };
 
-const FeeCardsWrapper = styled.div<{ $columns: number }>`
+export const FeeCardsWrapper = styled.div<{ $columns: number }>`
     width: 100%;
     display: grid;
     grid-template-columns: repeat(${({ $columns }) => $columns}, 1fr);
@@ -74,18 +75,19 @@ export const StandardFee = (props: StandardFeeProps) => {
         return () => observer.disconnect();
     }, [feeOptions, setColumns]);
 
-    const feeCardsComponentMap: Partial<Record<NetworkType, React.FC<StandardFeeProps>>> = {
+    const feeCardsComponentMap: Partial<
+        Record<
+            NetworkType,
+            React.ForwardRefExoticComponent<
+                Omit<StandardFeeProps, 'ref'> & React.RefAttributes<HTMLDivElement>
+            >
+        >
+    > = {
         bitcoin: BitcoinFeeCards,
         ethereum: EthereumFeeCards,
     };
 
     const FeeCardsComponent = feeCardsComponentMap[networkType] ?? MiscFeeCards;
 
-    return (
-        <Row gap={spacings.md} justifyContent="space-evenly" data-testid="@wallet/fee-details">
-            <FeeCardsWrapper $columns={columns} ref={ref}>
-                <FeeCardsComponent {...props} />
-            </FeeCardsWrapper>
-        </Row>
-    );
+    return <FeeCardsComponent columns={columns} ref={ref} {...props} />;
 };

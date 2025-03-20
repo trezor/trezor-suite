@@ -28,7 +28,7 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
 
     const {
         account,
-        formState: { errors, isSubmitting },
+        formState: { errors, isSubmitting, isDirty },
         register,
         control,
         setValue,
@@ -116,6 +116,7 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
                     <Fees
                         control={control}
                         errors={errors}
+                        isDirty={isDirty}
                         register={register}
                         feeInfo={feeInfo}
                         setValue={setValue}

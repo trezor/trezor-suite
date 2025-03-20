@@ -21,7 +21,7 @@ export const UnstakeEthForm = () => {
 
     const {
         account,
-        formState: { errors },
+        formState: { errors, isDirty },
         handleSubmit,
         signTx,
         approximatedInstantEthAmount,
@@ -77,6 +77,7 @@ export const UnstakeEthForm = () => {
                 <Fees
                     control={control}
                     errors={errors}
+                    isDirty={isDirty}
                     register={register}
                     feeInfo={feeInfo}
                     setValue={setValue}

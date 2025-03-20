@@ -72,7 +72,7 @@ export const TradingFormInputs = () => {
             feeInfo,
             account,
             composedLevels,
-            formState: { errors },
+            formState: { errors, isDirty },
             form: { helpers },
             shouldSendInSats,
             register,
@@ -130,6 +130,7 @@ export const TradingFormInputs = () => {
                     account={account}
                     composedLevels={composedLevels}
                     errors={errors}
+                    isDirty={isDirty}
                     register={register}
                     setValue={setValue}
                     getValues={getValues}
@@ -147,7 +148,7 @@ export const TradingFormInputs = () => {
             feeInfo,
             account,
             composedLevels,
-            formState: { errors },
+            formState: { errors, isDirty },
             form: { helpers },
             exchangeInfo,
             register,
@@ -214,6 +215,7 @@ export const TradingFormInputs = () => {
                     account={account}
                     composedLevels={composedLevels}
                     errors={errors}
+                    isDirty={isDirty}
                     register={register}
                     setValue={setValue}
                     getValues={getValues}

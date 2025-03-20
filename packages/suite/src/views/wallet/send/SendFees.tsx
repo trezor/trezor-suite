@@ -5,7 +5,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 
 export const SendFees = () => {
     const {
-        formState: { errors },
+        formState: { errors, isDirty },
         register,
         control,
         setValue,
@@ -21,6 +21,7 @@ export const SendFees = () => {
             <Fees
                 control={control}
                 errors={errors}
+                isDirty={isDirty}
                 register={register}
                 feeInfo={feeInfo}
                 setValue={setValue}
