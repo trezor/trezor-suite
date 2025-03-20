@@ -59,10 +59,7 @@ import {
     TradingExchangeFormProps,
     TradingExchangeStepType,
 } from 'src/types/trading/tradingForm';
-import {
-    createQuoteLink,
-    tradingGetExchangeReceiveCryptoId,
-} from 'src/utils/wallet/trading/exchangeUtils';
+import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
@@ -145,7 +142,7 @@ export const useTradingExchangeForm = ({
         if (!draft) return null;
         if (isPreviousRouteFromTradeSection) return draft;
 
-        const defaultReceiveCryptoSelect = tradingGetExchangeReceiveCryptoId(
+        const defaultReceiveCryptoSelect = exchangeUtils.tradingGetExchangeReceiveCryptoId(
             defaultValues.sendCryptoSelect?.value,
             draft.receiveCryptoSelect?.value,
         );

@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 import { exchangeUtilsFixtures } from '../__fixtures__/exchangeUtils';
 import { exchangeUtils } from '../exchangeUtils';
 
@@ -139,5 +141,41 @@ describe('exchangeUtils', () => {
                 ]),
             ).toStrictEqual(exchangeUtilsFixtures.EXCHANGE_SUCCESS_ORDERED_QUOTES);
         });
+    });
+
+    describe('getStatusMessage', () => {
+        it.each([
+            ['CONVERTING' as const, 'TR_EXCHANGE_STATUS_CONVERTING'],
+            ['CONFIRMING' as const, 'TR_EXCHANGE_STATUS_CONFIRMING'],
+            ['KYC' as const, 'TR_EXCHANGE_STATUS_KYC'],
+            ['ERROR' as const, 'TR_EXCHANGE_STATUS_ERROR'],
+            ['SUCCESS' as const, 'TR_EXCHANGE_STATUS_SUCCESS'],
+        ])('should return correct translation when status is %s', (status, result) => {
+            expect(exchangeUtils.getStatusMessage(status)).toBe(result);
+        });
+    });
+
+    describe('tradingGetExchangeReceiveCryptoId', () => {
+        it.each([
+            ['bitcoin', undefined, 'ethereum'],
+            ['litecoin', undefined, 'bitcoin'],
+            ['ethereum--0x0000000000085d4780b73119b644ae5ecd22b376', undefined, 'bitcoin'],
+            ['bitcoin', 'bitcoin', 'ethereum'],
+            [
+                'bitcoin',
+                'ethereum--0x0000000000085d4780b73119b644ae5ecd22b376',
+                'ethereum--0x0000000000085d4780b73119b644ae5ecd22b376',
+            ],
+        ])(
+            'should select different receive currency than send currency %#',
+            (sendCryptoId, receiveCryptoId, result) => {
+                expect(
+                    exchangeUtils.tradingGetExchangeReceiveCryptoId(
+                        sendCryptoId as CryptoId,
+                        receiveCryptoId as CryptoId | undefined,
+                    ),
+                ).toBe(result);
+            },
+        );
     });
 });

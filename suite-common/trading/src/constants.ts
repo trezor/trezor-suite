@@ -1,3 +1,5 @@
+import { CryptoId } from 'invity-api';
+
 export const TRADING_PREFIX = '@trading';
 export const TRADING_BUY_PREFIX = `${TRADING_PREFIX}-buy`;
 export const TRADING_EXCHANGE_PREFIX = `${TRADING_PREFIX}-exchange`;
@@ -8,6 +10,8 @@ export const TRADING_EXCHANGE_THUNK_PREFIX = `${TRADING_EXCHANGE_PREFIX}/thunk`;
 
 export const TRADING_EXCHANGE_RATE_FIXED = 'fixed';
 export const TRADING_EXCHANGE_RATE_FLOATING = 'floating';
+export const TRADING_DEFAULT_CRYPTO_CURRENCY = 'bitcoin' as CryptoId;
+export const TRADING_DEFAULT_CRYPTO_SECONDARY_CURRENCY = 'ethereum' as CryptoId;
 
 export const INVITY_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
 export const INVITY_API_RELOAD_QUOTES_AFTER_SECONDS = 30;
