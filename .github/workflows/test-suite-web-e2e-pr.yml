@@ -130,7 +130,7 @@ jobs:
           project: "web"
           containers: ${{ matrix.CONTAINERS }}
           test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep: ${{ !matrix.SMOKE && '(?=.*@webOnly)' }}
+          additional-grep: ${{ matrix.SMOKE && '(?=.*)' || '(?=.*@webOnly)' }}
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
