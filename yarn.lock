@@ -3360,18 +3360,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@everstake/wallet-sdk-solana@npm:2.1.1":
-  version: 2.1.1
-  resolution: "@everstake/wallet-sdk-solana@npm:2.1.1"
-  dependencies:
-    "@solana-program/compute-budget": "npm:^0.7.0"
-    "@solana-program/stake": "npm:^0.2.0"
-    "@solana-program/system": "npm:^0.7.0"
-    "@solana/kit": "npm:^2.1.0"
-  checksum: 10/b1474aa950c1852f7adc90735e2bdece78f294a743309b51548e436a3662805ee7da780cd3796169a32e278fc31adb8e05ef573a94ce4cedfaca70ac55947a1a
-  languageName: node
-  linkType: hard
-
 "@everstake/wallet-sdk@npm:1.0.10":
   version: 1.0.10
   resolution: "@everstake/wallet-sdk@npm:1.0.10"
@@ -8264,7 +8252,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/kit@npm:^2.0.0, @solana/kit@npm:^2.1.0":
+"@solana/kit@npm:^2.0.0":
   version: 2.1.0
   resolution: "@solana/kit@npm:2.1.0"
   dependencies:
@@ -11483,7 +11471,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@everstake/wallet-sdk-solana": "npm:2.1.1"
+    "@solana-program/stake": "npm:^0.2.0"
     "@solana-program/token": "npm:^0.5.1"
     "@solana-program/token-2022": "npm:^0.4.0"
     "@solana/kit": "npm:^2.0.0"
