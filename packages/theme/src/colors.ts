@@ -5,7 +5,7 @@ import { Elevation } from './elevation';
 import { paletteV1 } from './paletteV1';
 import { CSSColor } from './types';
 
-type StyledComponentElevationProps = {
+export type StyledComponentElevationProps = {
     theme: Colors; // this package does not depend on styled-components
     $elevation: Elevation;
 };

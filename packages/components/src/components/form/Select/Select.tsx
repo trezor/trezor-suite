@@ -60,6 +60,7 @@ const createSelectStyle = (
         minWidth: 140,
         borderRadius: borders.radii.md,
         background: theme.backgroundSurfaceElevation1,
+        outline: `1px solid ${theme.baseBorderSurfaceAction}`,
         boxShadow: theme.boxShadowElevated,
         animation: `${DROPDOWN_MENU.getName()} 0.15s ease-in-out`,
         listStyleType: 'none',
@@ -149,7 +150,7 @@ const SelectWrapper = styled.div<WrapperProps>`
         border-style: ${({ $isClean }) => ($isClean ? 'none' : 'solid')};
         box-shadow: none;
         cursor: pointer;
-        ${baseInputStyle}
+        ${baseInputStyle};
         background-color: ${({ $isClean }) => $isClean && 'transparent !important'};
 
         &:hover:not(:focus-within) {

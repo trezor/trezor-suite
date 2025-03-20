@@ -14,7 +14,6 @@ type FillTypeMapArgs = {
     $fillType: FillType;
     $elevation: Elevation;
     $isClickable: boolean;
-    $hasLabel: boolean;
     theme: DefaultTheme;
 };
 
@@ -52,14 +51,12 @@ export const mapFillTypeToCSS = ({
     $fillType,
     $elevation,
     $isClickable,
-    $hasLabel,
     theme,
 }: FillTypeMapArgs): RuleSet<object> => {
     const cssMap: Record<FillType, RuleSet<object>> = {
         default: css`
             background: ${mapElevationToBackground({ $elevation, theme })};
-            box-shadow: ${$elevation === 1 && !$hasLabel && theme.boxShadowBase};
-            outline: 1px solid transparent;
+            outline: 1px solid ${theme.baseBorderSurfaceAction};
 
             ${$isClickable &&
             css`

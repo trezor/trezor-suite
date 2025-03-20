@@ -64,7 +64,6 @@ type CardContainerProps = {
     $fillType: FillType;
     $isClickable: boolean;
     $variant?: CardVariant;
-    $hasLabel: boolean;
     $overflow: TransientAllowedFrameProps['$overflow'];
 };
 
@@ -169,7 +168,6 @@ export const Card = ({
             )}
             <CardContainer
                 $elevation={elevation}
-                $hasLabel={!!label}
                 $fillType={fillType}
                 $isClickable={Boolean(onClick)}
                 $variant={variant}
