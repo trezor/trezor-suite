@@ -4,7 +4,7 @@ import { useDebounce } from 'react-use';
 
 import { FiatCurrencyCode } from 'invity-api';
 
-import { cryptoIdToSymbol, useTradingInfo } from '@suite-common/trading';
+import { cryptoIdToSymbol, exchangeUtils, useTradingInfo } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     amountToSmallestUnit,
@@ -35,7 +35,6 @@ import {
     TradingUseFormActionsProps,
     TradingUseFormActionsReturnProps,
 } from 'src/types/trading/tradingForm';
-import { tradingGetExchangeReceiveCryptoId } from 'src/utils/wallet/trading/exchangeUtils';
 import {
     getAddressAndTokenFromAccountOptionsGroupProps,
     getTradingNetworkDecimals,
@@ -145,7 +144,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         const valuesTyped = values as TradingExchangeFormProps;
 
         if (selected.value === valuesTyped?.receiveCryptoSelect?.value) {
-            const receiveCryptoSelect = tradingGetExchangeReceiveCryptoId(
+            const receiveCryptoSelect = exchangeUtils.tradingGetExchangeReceiveCryptoId(
                 selected.value,
                 valuesTyped?.receiveCryptoSelect?.value,
             );

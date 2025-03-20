@@ -1,6 +1,10 @@
-import { ExchangeTrade } from 'invity-api';
+import { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
-import { TRADING_EXCHANGE_RATE_FIXED } from '../../constants';
+import {
+    TRADING_DEFAULT_CRYPTO_CURRENCY,
+    TRADING_DEFAULT_CRYPTO_SECONDARY_CURRENCY,
+    TRADING_EXCHANGE_RATE_FIXED,
+} from '../../constants';
 import { ExchangeInfo } from '../../reducers/exchangeReducer';
 import { TradingExchangeAmountLimitProps, TradingExchangeRateType } from '../../types';
 
@@ -88,6 +92,38 @@ const getCexQuotesByRateType = (
 const getSuccessQuotesOrdered = (quotes: ExchangeTrade[]): ExchangeTrade[] =>
     quotes.filter(q => !isQuoteError(q));
 
+export const getStatusMessage = (status: ExchangeTradeStatus) => {
+    switch (status) {
+        case 'ERROR':
+            return 'TR_EXCHANGE_STATUS_ERROR';
+        case 'SUCCESS':
+            return 'TR_EXCHANGE_STATUS_SUCCESS';
+        case 'KYC':
+            return 'TR_EXCHANGE_STATUS_KYC';
+        case 'CONVERTING':
+            return 'TR_EXCHANGE_STATUS_CONVERTING';
+        default:
+            return 'TR_EXCHANGE_STATUS_CONFIRMING';
+    }
+};
+
+export const tradingGetExchangeReceiveCryptoId = (
+    sendCryptoId: CryptoId | undefined,
+    receiveCryptoId?: CryptoId | undefined,
+): CryptoId => {
+    const getReceivedDefaultCryptoId = (cryptoId: CryptoId | undefined) => {
+        if (cryptoId === TRADING_DEFAULT_CRYPTO_CURRENCY)
+            return TRADING_DEFAULT_CRYPTO_SECONDARY_CURRENCY;
+
+        return TRADING_DEFAULT_CRYPTO_CURRENCY;
+    };
+
+    if (sendCryptoId === receiveCryptoId) return getReceivedDefaultCryptoId(receiveCryptoId);
+    if (receiveCryptoId) return receiveCryptoId;
+
+    return getReceivedDefaultCryptoId(sendCryptoId);
+};
+
 export const exchangeUtils = {
     getAmountLimits,
     isQuoteError,
@@ -95,4 +131,6 @@ export const exchangeUtils = {
     floatRateCexQuotes,
     getCexQuotesByRateType,
     getSuccessQuotesOrdered,
+    getStatusMessage,
+    tradingGetExchangeReceiveCryptoId,
 };

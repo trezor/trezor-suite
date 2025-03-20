@@ -1,12 +1,11 @@
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 import { DefaultTheme, useTheme } from 'styled-components';
 
-import type { TradingTransaction } from '@suite-common/trading';
+import { type TradingTransaction, exchangeUtils } from '@suite-common/trading';
 import { Icon, Row, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/trading/buyUtils';
-import { getStatusMessage as getExchangeStatusMessage } from 'src/utils/wallet/trading/exchangeUtils';
 import { getStatusMessage as getSellStatusMessage } from 'src/utils/wallet/trading/sellUtils';
 
 const getBuyTradeData = (status: BuyTradeStatus, theme: DefaultTheme) => {
@@ -69,7 +68,7 @@ const getSellTradeData = (status: SellTradeStatus, theme: DefaultTheme) => {
 };
 
 const getExchangeTradeData = (status: ExchangeTradeStatus, theme: DefaultTheme) => {
-    const message = getExchangeStatusMessage(status);
+    const message = exchangeUtils.getStatusMessage(status);
 
     switch (message) {
         case 'TR_EXCHANGE_STATUS_CONFIRMING':

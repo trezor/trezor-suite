@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { cryptoIdToSymbol, useTradingInfo } from '@suite-common/trading';
+import { cryptoIdToSymbol, exchangeUtils, useTradingInfo } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { FormState, Output } from '@suite-common/wallet-types';
 
@@ -25,7 +25,6 @@ import {
     TradingExchangeFormDefaultValuesProps,
 } from 'src/types/trading/tradingForm';
 import { Account } from 'src/types/wallet';
-import { tradingGetExchangeReceiveCryptoId } from 'src/utils/wallet/trading/exchangeUtils';
 import {
     buildFiatOption,
     getAddressAndTokenFromAccountOptionsGroupProps,
@@ -60,7 +59,7 @@ export const useTradingExchangeFormDefaultValues = (
     const defaultReceiveCryptoSelect = useMemo(
         () =>
             buildDefaultCryptoOption(
-                tradingGetExchangeReceiveCryptoId(defaultSendCryptoSelect?.value),
+                exchangeUtils.tradingGetExchangeReceiveCryptoId(defaultSendCryptoSelect?.value),
             ),
         [buildDefaultCryptoOption, defaultSendCryptoSelect?.value],
     );
