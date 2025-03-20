@@ -15,11 +15,13 @@ export const ConnectPopupModal = () => {
     const popupCall = useSelector(selectConnectPopupCall);
     if (!popupCall || popupCall?.state !== 'request') return null;
 
-    const { methodTitle, confirmLabel, processName, origin, permissionTypes } = popupCall;
+    const { methodTitle, confirmLabel, processName, origin, permissionTypes, manifest } = popupCall;
     const onConfirm = () => {
         if (isRemembered && processName && origin)
             dispatch(
                 connectPopupActions.rememberAppPermissions({
+                    appName: manifest?.appName,
+                    appIcon: manifest?.appIcon,
                     processName,
                     origin,
                     types: permissionTypes,
@@ -61,6 +63,12 @@ export const ConnectPopupModal = () => {
                         <Paragraph>
                             <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" />{' '}
                             <strong>{origin}</strong>
+                        </Paragraph>
+                    )}
+                    {manifest?.appName && (
+                        <Paragraph>
+                            <Translation id="TR_CONNECT_MODAL_APP_NAME" />{' '}
+                            <strong>{manifest.appName}</strong>
                         </Paragraph>
                     )}
                 </Column>

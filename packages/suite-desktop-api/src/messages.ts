@@ -134,6 +134,10 @@ export type ConnectPopupCall = {
     payload: any;
     processName?: string;
     origin?: string;
+    manifest?: {
+        appName?: string;
+        appIcon?: string;
+    };
 };
 
 export type ConnectPopupResponse = {

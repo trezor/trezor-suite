@@ -34,7 +34,14 @@ export const ConnectPermissions = () => {
 
                         <Column flex="1">
                             <Row gap={spacings.sm}>
-                                <Text>{app.origin}</Text>
+                                {app.appName ? (
+                                    <>
+                                        <Text>{app.appName}</Text>
+                                        <Text variant="tertiary">{app.origin}</Text>
+                                    </>
+                                ) : (
+                                    <Text>{app.origin}</Text>
+                                )}
                                 <Badge variant="tertiary">{app.processName}</Badge>
                             </Row>
                             <Text variant="tertiary">Permissions: {app.types.join(', ')}</Text>

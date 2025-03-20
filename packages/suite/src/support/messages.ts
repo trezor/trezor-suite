@@ -9698,6 +9698,10 @@ export default defineMessages({
         id: 'TR_CONNECT_MODAL_WEB_ORIGIN',
         defaultMessage: 'Web origin:',
     },
+    TR_CONNECT_MODAL_APP_NAME: {
+        id: 'TR_CONNECT_MODAL_APP_NAME',
+        defaultMessage: 'App name:',
+    },
     TR_WALLETCONNECT_SERVICE_VERIFIED: {
         id: 'TR_WALLETCONNECT_SERVICE_VERIFIED',
         defaultMessage: 'Verified service',

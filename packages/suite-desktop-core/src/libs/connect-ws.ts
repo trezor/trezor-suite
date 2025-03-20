@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { WebSocketServer } from 'ws';
 
-import { IFRAME, POPUP } from '@trezor/connect';
+import { ConnectSettings, IFRAME, POPUP, parseConnectSettings } from '@trezor/connect';
 import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
 import { Deferred, createDeferred } from '@trezor/utils';
 
@@ -45,6 +45,7 @@ export const exposeConnectWs = ({
 
         let processOnPort: ProcessInfo | undefined;
         const { origin } = req.headers;
+        let settings: ConnectSettings;
         logger.info(LOG_PREFIX, `origin: ${origin}`);
 
         ws.on('error', err => {
@@ -75,6 +76,7 @@ export const exposeConnectWs = ({
             }
             if (message.type === POPUP.HANDSHAKE) {
                 processOnPort = await findProcessFromIncomingPort(port);
+                settings = parseConnectSettings(message.payload);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === IFRAME.CALL) {
                 if (!message.payload || !message.payload.method) {
@@ -110,6 +112,7 @@ export const exposeConnectWs = ({
                     payload: rest,
                     origin,
                     processName: processOnPort?.name,
+                    manifest: settings?.manifest,
                 });
 
                 // wait for response

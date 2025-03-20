@@ -21,6 +21,10 @@ type ConnectPopupCallThunkResponse<M extends keyof typeof TrezorConnect> = Promi
 type ConnectPopupCallThunkParams<M extends keyof typeof TrezorConnect> = {
     processName?: string;
     origin?: string;
+    manifest?: {
+        appName?: string;
+        appIcon?: string;
+    };
     method: M;
     payload: Omit<CallMethodParams<M>, 'method'>;
 };
@@ -30,7 +34,7 @@ export const connectPopupCallThunkInner = createThunk<
     ConnectPopupCallThunkParams<keyof typeof TrezorConnect>
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
-    async ({ method, payload, processName, origin }, { dispatch, getState, extra }) => {
+    async ({ method, payload, processName, origin, manifest }, { dispatch, getState, extra }) => {
         try {
             // @ts-expect-error: method is dynamic
             const methodInfo = await TrezorConnect[method]({
@@ -84,6 +88,7 @@ export const connectPopupCallThunkInner = createThunk<
                         processName,
                         origin,
                         confirmation,
+                        manifest,
                         permissionTypes: methodInfo.payload.requiredPermissions,
                     }),
                 );

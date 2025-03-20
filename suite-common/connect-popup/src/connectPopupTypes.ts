@@ -11,6 +11,10 @@ export type ConnectPopupCall =
           processName?: string;
           origin?: string;
           permissionTypes: MethodPermission[];
+          manifest?: {
+              appName?: string;
+              appIcon?: string;
+          };
           confirmation: Deferred<void>;
       }
     | {
@@ -27,6 +31,8 @@ export type ConnectPopupCall =
 
 export type AppRememberedPermission = {
     origin: string;
+    appName?: string;
+    appIcon?: string;
     processName: string;
     types: MethodPermission[];
 };
