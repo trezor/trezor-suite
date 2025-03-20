@@ -1,6 +1,8 @@
+import { ReactNode } from 'react';
+
 import styled, { css } from 'styled-components';
 
-import { Color, Elevation, mapElevationToBorder, spacings } from '@trezor/theme';
+import { Color, Elevation, SpacingValues, mapElevationToBorder, spacings } from '@trezor/theme';
 
 import {
     FrameProps,
@@ -10,6 +12,7 @@ import {
 } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
+import { Column, Row } from '../Flex/Flex';
 
 export const allowedDividerFrameProps = [
     'margin',
@@ -23,6 +26,9 @@ export type DividerProps = AllowedFrameProps & {
     orientation?: DividerOrientation;
     strokeWidth?: number;
     color?: Color;
+    children?: ReactNode;
+    contentPosition?: 'start' | 'center' | 'end'; // TODO: unify with uiAlignments in the future"
+    gap?: SpacingValues;
 };
 
 const Line = styled.div<
@@ -52,26 +58,90 @@ const Line = styled.div<
     ${withFrameProps}
 `;
 
+type DividerContentProps = {
+    line: ReactNode;
+    children?: ReactNode;
+    contentPosition?: 'start' | 'center' | 'end'; // TODO: unify with uiAlignments in the future"
+};
+
+const DividerContent = ({ line, children, contentPosition }: DividerContentProps) => {
+    if (contentPosition === 'start') {
+        return (
+            <>
+                {children} {line}
+            </>
+        );
+    }
+
+    if (contentPosition === 'center') {
+        return (
+            <>
+                {line}
+                {children}
+                {line}
+            </>
+        );
+    }
+
+    return (
+        <>
+            {line}
+            {children}
+        </>
+    );
+};
+
 export const Divider = ({
     strokeWidth = 1,
     color,
     orientation = 'horizontal',
+    children,
+    contentPosition = 'center',
+    gap = spacings.xxl,
     ...rest
 }: DividerProps) => {
     const { elevation } = useElevation();
 
-    const frameProps = pickAndPrepareFrameProps(
-        { ...rest, margin: rest.margin ?? { top: spacings.md, bottom: spacings.md } },
-        allowedDividerFrameProps,
-    );
+    const frameProps: AllowedFrameProps = {
+        ...rest,
+        margin: rest.margin ?? { top: spacings.md, bottom: spacings.md },
+    };
 
-    return (
+    const framePropsTransient = pickAndPrepareFrameProps(frameProps, allowedDividerFrameProps);
+
+    const line = (
         <Line
             $elevation={elevation}
             $color={color}
             $strokeWidth={strokeWidth}
             $orientation={orientation}
-            {...frameProps}
+            {...(children === undefined ? framePropsTransient : {})}
         />
+    );
+
+    if (children === undefined) {
+        return line;
+    }
+
+    const content = (
+        <DividerContent line={line} contentPosition={contentPosition}>
+            {children}
+        </DividerContent>
+    );
+
+    return orientation === 'horizontal' ? (
+        <Row gap={gap} width="100%" alignItems="center" {...frameProps}>
+            {content}
+        </Row>
+    ) : (
+        <Column
+            gap={gap}
+            height="100%"
+            alignItems="center"
+            justifyContent="space-evenly"
+            {...frameProps}
+        >
+            {content}
+        </Column>
     );
 };

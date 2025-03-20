@@ -4,7 +4,7 @@
  *             own abstraction.
  *
  *             For example: `deviceType` shall not be passed into Styled Component
- *             to check if device is Trezor One to make border bigger. Instead the
+ *             to check if device is Trezor One to make border bigger. Instead, the
  *             Styled Component shall have prop `biggerBorder`.
  **/
 export type TransientProps<T extends Record<string, any>> = {
