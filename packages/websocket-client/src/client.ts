@@ -32,7 +32,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
 > {
     readonly options: Options;
 
-    public readonly messages;
+    protected readonly messages;
     private readonly emitter: TypedEmitter<WebsocketClientEvents> = this;
 
     private ws?: WebSocket;
