@@ -1,10 +1,10 @@
 import { Translation } from '@suite-native/intl';
-import { TypographyStyle } from '@trezor/theme';
+import { NativeTypographyStyle } from '@trezor/theme';
 
 import { Text } from './Text';
 
 type TrezorSuiteLiteHeaderProps = {
-    textVariant?: TypographyStyle;
+    textVariant?: NativeTypographyStyle;
 };
 
 export const TrezorSuiteLiteHeader = ({

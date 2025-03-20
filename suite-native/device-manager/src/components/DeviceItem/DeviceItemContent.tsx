@@ -13,7 +13,7 @@ import {
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Box, HStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TypographyStyle } from '@trezor/theme';
+import { NativeTypographyStyle } from '@trezor/theme';
 
 import { DeviceItemIcon } from './DeviceItemIcon';
 import { SimpleDeviceItemContent } from './SimpleDeviceItemContent';
@@ -25,7 +25,7 @@ export type DeviceItemContentMode = 'compact' | 'header';
 
 export type DeviceItemContentProps = {
     deviceState: TrezorDevice['state'] | undefined;
-    headerTextVariant?: TypographyStyle;
+    headerTextVariant?: NativeTypographyStyle;
     variant?: DeviceItemContentVariant;
     isCompact?: boolean;
     isSubHeaderForceHidden?: boolean;

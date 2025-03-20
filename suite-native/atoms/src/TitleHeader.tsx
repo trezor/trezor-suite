@@ -1,14 +1,14 @@
 import { ReactNode } from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TypographyStyle } from '@trezor/theme';
+import { NativeTypographyStyle } from '@trezor/theme';
 
 import { VStack } from './Stack';
 import { Text } from './Text';
 
 type TitleHeaderProps = {
     title?: ReactNode;
-    titleVariant?: TypographyStyle;
+    titleVariant?: NativeTypographyStyle;
     subtitle?: ReactNode;
     textAlign?: 'left' | 'center';
 };

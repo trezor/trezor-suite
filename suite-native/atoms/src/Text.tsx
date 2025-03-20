@@ -12,7 +12,7 @@ import Animated from 'react-native-reanimated';
 import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, TypographyStyle } from '@trezor/theme';
+import { Color, NativeTypographyStyle } from '@trezor/theme';
 
 import { TestProps } from './types';
 
@@ -32,7 +32,7 @@ type UnsupportedNativeTextProps =
     | 'onPressOut';
 
 export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProps {
-    variant?: TypographyStyle;
+    variant?: NativeTypographyStyle;
     color?: Color;
     textAlign?: TextStyle['textAlign'];
     style?: NativeStyleObject;
@@ -41,7 +41,7 @@ export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProp
 export type TextProps = Omit<PressableTextProps, UnsupportedNativeTextProps>;
 
 type TextStyleProps = {
-    variant: TypographyStyle;
+    variant: NativeTypographyStyle;
     color: Color;
     textAlign: TextStyle['textAlign'];
 };
@@ -73,7 +73,7 @@ const variantToMaxFontSizeMultiplier = {
     callout: TEXT_MAX_FONT_MULTIPLIER,
     hint: TEXT_MAX_FONT_MULTIPLIER,
     label: TEXT_MAX_FONT_MULTIPLIER,
-} as const satisfies Record<TypographyStyle, number>;
+} as const satisfies Record<NativeTypographyStyle, number>;
 
 const textStyle = prepareNativeStyle<TextStyleProps>((utils, { variant, color, textAlign }) => ({
     ...utils.typography[variant],

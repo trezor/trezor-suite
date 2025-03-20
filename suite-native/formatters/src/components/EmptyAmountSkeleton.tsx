@@ -1,12 +1,12 @@
 import { BoxSkeleton, HStack } from '@suite-native/atoms';
 import { getWindowWidth } from '@trezor/env-utils';
 import { useNativeStyles } from '@trezor/styles';
-import { TypographyStyle } from '@trezor/theme';
+import { NativeTypographyStyle } from '@trezor/theme';
 
 import { EmptyAmountText } from './EmptyAmountText';
 
 type EmptyAmountSkeletonProps = {
-    variant?: TypographyStyle;
+    variant?: NativeTypographyStyle;
 };
 
 const SKELETON_WIDTH = 0.2 * getWindowWidth();

@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { FlexAlignType } from 'react-native';
 
 import { IconName, IconSize } from '@suite-native/icons';
-import { Color, TypographyStyle } from '@trezor/theme';
+import { Color, NativeTypographyStyle } from '@trezor/theme';
 
 import { Box } from './Box';
 import { OrderedListIcon } from './OrderedListIcon';
@@ -43,7 +43,7 @@ type IconListItemProps = {
 };
 
 type IconListTextItemProps = IconListItemProps & {
-    textVariant?: TypographyStyle;
+    textVariant?: NativeTypographyStyle;
 };
 
 export const IconListItem = ({

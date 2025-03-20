@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
 
 import { Box, Text } from '@suite-native/atoms';
-import { Color, TypographyStyle } from '@trezor/theme';
+import { Color, NativeTypographyStyle } from '@trezor/theme';
 
 type OrderedListItemProps = {
     children: ReactNode;
     order: number;
-    variant?: TypographyStyle;
+    variant?: NativeTypographyStyle;
     color?: Color;
 };
 

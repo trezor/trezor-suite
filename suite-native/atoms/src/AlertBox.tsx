@@ -3,7 +3,7 @@ import { ActivityIndicator } from 'react-native';
 
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, NativeRadius, TypographyStyle } from '@trezor/theme';
+import { Color, NativeRadius, NativeTypographyStyle } from '@trezor/theme';
 
 import { Box } from './Box';
 import { Text } from './Text';
@@ -84,7 +84,7 @@ export type AlertBoxProps = {
     borderRadius?: NativeRadius | number;
     contentColor?: Color;
     rightButton?: ReactNode;
-    textVariant?: TypographyStyle;
+    textVariant?: NativeTypographyStyle;
 };
 
 const AlertSpinner = ({ color }: { color: Color }) => {

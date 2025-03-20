@@ -6,13 +6,13 @@ import { DeviceRootState, selectDeviceByState } from '@suite-common/wallet-core'
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TypographyStyle } from '@trezor/theme';
+import { NativeTypographyStyle } from '@trezor/theme';
 
 import { ConnectionDot } from './ConnectionDot';
 
 export type WalletDetailDeviceItemContentProps = {
     deviceState: TrezorDevice['state'] | undefined;
-    headerTextVariant?: TypographyStyle;
+    headerTextVariant?: NativeTypographyStyle;
     header: ReactNode;
     subHeader?: ReactNode;
     isPortfolioTrackerDevice: boolean;

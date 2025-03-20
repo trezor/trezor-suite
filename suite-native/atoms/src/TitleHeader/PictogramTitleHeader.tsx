@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 import { IconName } from '@suite-native/icons';
-import { TypographyStyle } from '@trezor/theme';
+import { NativeTypographyStyle } from '@trezor/theme';
 
 import { Pictogram, PictogramVariant } from '../Pictogram/Pictogram';
 import { VStack } from '../Stack';
@@ -11,7 +11,7 @@ type PictogramTitleHeaderProps = {
     variant: PictogramVariant;
     icon?: IconName;
     title?: ReactNode;
-    titleVariant?: TypographyStyle;
+    titleVariant?: NativeTypographyStyle;
     subtitle?: ReactNode;
 };
 

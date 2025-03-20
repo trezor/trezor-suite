@@ -1,8 +1,8 @@
 import { Text } from '@suite-native/atoms';
-import { TypographyStyle } from '@trezor/theme';
+import { NativeTypographyStyle } from '@trezor/theme';
 
 type EmptyAmountTextProps = {
-    variant?: TypographyStyle;
+    variant?: NativeTypographyStyle;
 };
 
 // The text has to contain a zero width space to have zero width and keep the desired line height.

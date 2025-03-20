@@ -28,6 +28,7 @@ export const mapTypographyStyleToIconSize = (
         callout: 'medium',
         hint: 'medium',
         label: 'medium',
+        inherit: 'medium',
     };
 
     return iconSizeMap[typographyStyle];
@@ -43,6 +44,7 @@ export const mapTypographyStyleToIconGap = (typographyStyle: TypographyStyle): S
         callout: spacings.xs,
         hint: spacings.xs,
         label: spacings.xxs,
+        inherit: spacings.xxs,
     };
 
     return gapMap[typographyStyle];
@@ -58,6 +60,7 @@ export const mapTypographyStyleToLabelGap = (typographyStyle: TypographyStyle): 
         callout: spacings.xxs,
         hint: spacings.xxxs,
         label: spacings.xxxs,
+        inherit: spacings.xxs,
     };
 
     return gapMap[typographyStyle];

@@ -32,14 +32,14 @@ import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Link } from '@suite-native/link';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TypographyStyle } from '@trezor/theme';
+import { NativeTypographyStyle } from '@trezor/theme';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.r16,
     padding: utils.spacings.sp8,
 }));
 
-const textVariants: TypographyStyle[] = [
+const textVariants: NativeTypographyStyle[] = [
     'titleLarge',
     'titleMedium',
     'titleSmall',
