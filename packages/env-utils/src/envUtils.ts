@@ -71,14 +71,14 @@ const getProcessPlatform = () => (typeof process !== 'undefined' ? process.platf
 
 const isMacOs = () => {
     if (getProcessPlatform() === 'darwin') return true;
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return false;
 
     return getPlatform().toLowerCase().startsWith('mac');
 };
 
 const isWindows = () => {
     if (getProcessPlatform() === 'win32') return true;
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return false;
 
     return getPlatform().toLowerCase().startsWith('win');
 };
@@ -87,7 +87,7 @@ const isIOs = () => ['iPhone', 'iPad', 'iPod'].includes(getPlatform());
 
 const isLinux = () => {
     if (getProcessPlatform() === 'linux') return true;
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return false;
 
     // exclude Android and Chrome OS as window.navigator.platform of those OS is Linux
     if (isAndroid() || isChromeOs()) return false;

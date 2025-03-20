@@ -24,10 +24,10 @@ export interface EnvUtils {
     getLocationOrigin: () => string;
     getLocationHostname: () => string;
     getProcessPlatform: () => string;
-    isMacOs: () => boolean | undefined;
-    isWindows: () => boolean | undefined;
+    isMacOs: () => boolean;
+    isWindows: () => boolean;
     isIOs: () => boolean;
-    isLinux: () => boolean | undefined;
+    isLinux: () => boolean;
     isCodesignBuild: () => boolean;
     getOsName: () => '' | 'android' | 'linux' | 'windows' | 'macos' | 'chromeos' | 'ios';
     getOsNameWeb: () => string | undefined;
