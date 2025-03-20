@@ -1,6 +1,7 @@
 import { MouseEvent } from 'react';
 
-import styled, { keyframes } from 'styled-components';
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
 
 import { Column, ElevationContext, Icon, Row, Text } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
@@ -17,27 +18,6 @@ import { Translation, TranslationKey } from '../../../../../Translation';
 
 type ContainerProps = { $elevation: Elevation };
 
-const heartbeat = keyframes`
-  0% {
-    transform: scale(1);
-  }
-  5% {
-    transform: scale(1.05);
-  }
-  10% {
-    transform: scale(1);
-  }
-  15% {
-    transform: scale(1.05);
-  }
-  20% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1);
-  }
-`;
-
 const Container = styled.div<ContainerProps>`
     margin: ${spacingsPx.md};
     display: flex;
@@ -47,8 +27,6 @@ const Container = styled.div<ContainerProps>`
     border-radius: ${borders.radii.sm};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
     cursor: ${({ onClick }) => (onClick !== undefined ? 'pointer' : undefined)};
-    animation: ${heartbeat} 10s infinite;
-    animation-delay: 10s;
 `;
 
 const CloseIconBackground = styled.div`
@@ -136,27 +114,58 @@ export const UpdateNotificationBanner = ({
         onClose();
     };
 
+    const variants = {
+        initial: { y: 32, opacity: 0 },
+        exit: { y: 32, opacity: 0 },
+        drop: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                type: 'spring',
+                mass: 1,
+                stiffness: 266.7,
+                damping: 10,
+            },
+        },
+        shake: {
+            rotate: [0, -1, 1, 0],
+            x: [0, -4, 4, 0],
+            transition: {
+                duration: 1.2,
+                ease: 'easeInOut',
+                delay: 10,
+            },
+        },
+    };
+
     return (
         <ElevationContext baseElevation={1}>
-            <Container
-                $elevation={1}
-                onClick={handleOnClick}
-                data-testid="@notification/update-notification-banner"
+            <motion.div
+                variants={variants}
+                initial="initial"
+                exit="exit"
+                animate={['drop', 'shake']}
             >
-                <Row justifyContent="stretch">
-                    <Column flex="1" alignItems="start">
-                        <Text>
-                            <Translation id={translationHeader} />
-                        </Text>
-                        <Text variant="primary">
-                            <Translation id={translationCallToAction} />
-                        </Text>
-                    </Column>
-                    <CloseIconBackground onClick={handleOnClose}>
-                        <Icon name="x" size="medium" />
-                    </CloseIconBackground>
-                </Row>
-            </Container>
+                <Container
+                    $elevation={1}
+                    onClick={handleOnClick}
+                    data-testid="@notification/update-notification-banner"
+                >
+                    <Row justifyContent="stretch">
+                        <Column flex="1" alignItems="start">
+                            <Text>
+                                <Translation id={translationHeader} />
+                            </Text>
+                            <Text variant="primary">
+                                <Translation id={translationCallToAction} />
+                            </Text>
+                        </Column>
+                        <CloseIconBackground onClick={handleOnClose}>
+                            <Icon name="x" size="medium" />
+                        </CloseIconBackground>
+                    </Row>
+                </Container>
+            </motion.div>
         </ElevationContext>
     );
 };
