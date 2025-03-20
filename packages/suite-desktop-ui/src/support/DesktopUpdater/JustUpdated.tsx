@@ -40,11 +40,7 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
                 </>
             }
         >
-            <Card
-                maxHeight={400}
-                overflow="auto"
-                label={<Translation id="TR_UPDATE_MODAL_WHATS_NEW" />}
-            >
+            <Card overflow="auto" label={<Translation id="TR_UPDATE_MODAL_WHATS_NEW" />}>
                 {changelog !== null ? (
                     <Markdown
                         components={{
@@ -57,7 +53,7 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
                                 // All links in release notes are external, so we use TrezorLink
                                 // which handles opening links in external browser
                                 return (
-                                    <TrezorLink variant="default" href={href}>
+                                    <TrezorLink variant="underline" href={href}>
                                         {children}
                                     </TrezorLink>
                                 );

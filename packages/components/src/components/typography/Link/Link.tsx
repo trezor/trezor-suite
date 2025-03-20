@@ -83,7 +83,7 @@ const Link = ({
     color,
     className,
     variant,
-    typographyStyle = 'body',
+    typographyStyle = 'inherit',
     ...rest
 }: LinkProps) => {
     const textProps = pickAndPrepareTextProps({ ...rest, typographyStyle }, allowedTextTextProps);

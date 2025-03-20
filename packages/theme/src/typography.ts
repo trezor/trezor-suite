@@ -12,6 +12,7 @@ export const typographyStyles = [
     'callout',
     'hint',
     'label',
+    'inherit',
 ] as const;
 
 export type TypographyStyle = (typeof typographyStyles)[number];
@@ -19,11 +20,11 @@ export type TypographyStyle = (typeof typographyStyles)[number];
 export type TypographyStyles = Record<TypographyStyle, string>;
 
 type TypographyStyleDefinition = {
-    fontSize: number;
-    lineHeight: number;
-    fontWeight: FontWeightValue;
-    letterSpacing: number;
-    fontFamily?: string;
+    fontSize: number | 'inherit';
+    lineHeight: number | 'inherit';
+    fontWeight: FontWeightValue | 'inherit';
+    letterSpacing: number | 'inherit';
+    fontFamily?: string | 'inherit';
 };
 
 export type NativeTypographyStyleDefinition = {
@@ -86,6 +87,12 @@ export const typographyStylesBase: Record<TypographyStyle, TypographyStyleDefini
         fontWeight: fontWeights.medium,
         letterSpacing: -0.1,
     },
+    inherit: {
+        fontSize: 'inherit',
+        lineHeight: 'inherit',
+        fontWeight: 'inherit',
+        letterSpacing: 'inherit',
+    },
 };
 
 const nativeFontFamilyStyle = {
@@ -97,7 +104,8 @@ const nativeFontFamilyStyle = {
     callout: 'TTSatoshi-DemiBold',
     hint: 'TTSatoshi-Medium',
     label: 'TTSatoshi-Medium',
-} as const satisfies Record<TypographyStyle, NativeFont>;
+    inherit: 'inherit',
+} as const satisfies Record<TypographyStyle, NativeFont | 'inherit'>;
 
 const prepareTypography = (): TypographyStyles =>
     Object.fromEntries(
