@@ -1,4 +1,3 @@
-import { STAKE_ACCOUNT_V2_SIZE } from '@everstake/wallet-sdk-solana';
 import {
     AccountInfoBase,
     ClusterUrl,
@@ -65,7 +64,7 @@ import { IntervalId } from '@trezor/type-utils';
 import { BigNumber, createDeferred, createLazy } from '@trezor/utils';
 
 import { getBaseFee, getPriorityFee } from './fee';
-import { getSolanaStakingData } from './stakingAccounts';
+import { STAKE_ACCOUNT_V2_SIZE, getSolanaStakingData } from './stakingAccounts';
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 
 export type SolanaAPI = Readonly<{
@@ -221,10 +220,7 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     }
 };
 
-const getAccountInfo = async (
-    request: Request<MessageTypes.GetAccountInfo>,
-    isTestnet: boolean,
-) => {
+const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
     const { details = 'basic' } = payload;
     const api = await request.connect();
@@ -388,10 +384,9 @@ const getAccountInfo = async (
             const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
             const solEpoch = await getEpoch();
             const solStakingAccounts = await getSolanaStakingData(
+                api?.rpc,
                 payload.descriptor,
-                isTestnet,
                 solEpoch,
-                api.clusterUrl,
             );
             misc = {
                 owner: accountInfo?.owner,
@@ -754,7 +749,7 @@ const unsubscribe = (request: Request<MessageTypes.Unsubscribe>) => {
 const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) => {
     switch (request.type) {
         case MESSAGES.GET_ACCOUNT_INFO:
-            return getAccountInfo(request, isTestnet);
+            return getAccountInfo(request);
         case MESSAGES.GET_INFO:
             return getInfo(request, isTestnet);
         case MESSAGES.PUSH_TRANSACTION:
