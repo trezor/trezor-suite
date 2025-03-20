@@ -18,50 +18,41 @@ export const config = {
         {
             origin: 'imloifkgjagghnncjkhggdhalmcnfklk',
             label: 'Trezor Password Manager (Develop)',
-            icon: '',
         },
-        { origin: 'niebkpllfhmpfbffbfifagfgoamhpflf', label: 'Trezor Password Manager', icon: '' },
+        { origin: 'niebkpllfhmpfbffbfifagfgoamhpflf', label: 'Trezor Password Manager' },
         {
             origin: 'mnpfhpndmjholfdlhpkjfmjkgppmodaf',
             label: 'MetaMask',
-            icon: '',
         },
         {
             origin: 'webextension@metamask.io',
             label: 'MetaMask',
-            icon: '',
         },
         {
             origin: 'nkbihfbeogaeaoehlefnkodbefgpgknn',
             label: 'MetaMask',
-            icon: '',
         },
         {
             origin: 'bpcdaglidgnlggelgbjfagekoapjmccp',
             label: 'Rainbow DEV',
-            icon: '',
         },
         {
             origin: 'opfgelmcmbiajamepnmloijbpoleiama',
             label: 'Rainbow',
-            icon: '',
         },
         {
             origin: 'acmacodkjbdgmoleebolmdjonilkdbch',
             label: 'Rabby',
-            icon: '',
         },
         {
             origin: 'ehnpnhnhcickeknioaiodjmielfaoajd',
             label: 'Ambire DEV',
-            icon: '',
         },
         {
             origin: 'ehgjhhccekdedpbkifaojjaefeohnoea',
             label: 'Ambire',
-            icon: '',
         },
-        { origin: 'file://', label: ' ', icon: '' },
+        { origin: 'file://', label: ' ' },
     ],
     onionDomains: {
         'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',

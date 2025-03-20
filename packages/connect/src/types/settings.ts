@@ -61,7 +61,6 @@ export interface ConnectSettingsInternal {
 
 export interface ConnectSettingsWeb {
     hostLabel?: string;
-    hostIcon?: string;
     coreMode?: 'auto' | 'popup' | 'iframe' | 'deeplink' | 'suite-desktop';
 }
 export interface ConnectSettingsWebextension {
