@@ -1662,7 +1662,7 @@
   "TR_SOLANA_DEVNET_SHORTCUT_WARNING": "DSOL will display SOL on your Trezor due to network limitations. Check the provided blockhash on Devnet explorer if you want to verify the transaction network.",
   "TR_SOLANA_TX_CONFIRMATION_TIMER_DESCRIPTION": "Due to Solana network limits, you have less than a minute to confirm and send your transaction before it expires.",
   "TR_SOLVE_ISSUE": "Refresh",
-  "TR_SOL_FEE_DESC": "Network fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account’s storage.",
+  "TR_SOL_FEE_DESC": "Network fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. {br}Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account’s storage.",
   "TR_SOUTH": "South",
   "TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD": "I acknowledge the entry period.",
   "TR_STAKE_ACTIVATION_COULD_TAKE": "It takes up to 3 days to stake your SOL.",

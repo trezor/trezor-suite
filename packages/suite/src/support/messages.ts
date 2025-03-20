@@ -8991,7 +8991,7 @@ export default defineMessages({
     TR_SOL_FEE_DESC: {
         id: 'TR_SOL_FEE_DESC',
         defaultMessage:
-            'Network fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account’s storage.',
+            'Network fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. {br}Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account’s storage.',
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',

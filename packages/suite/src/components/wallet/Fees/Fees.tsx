@@ -171,7 +171,11 @@ export const Fees = <TFieldValues extends FormState>({
     return (
         <Column gap={spacings.md}>
             <Row flexWrap="wrap" justifyContent="space-between" gap={spacings.sm}>
-                <Tooltip hasIcon maxWidth={328} content={<Translation id={feeTooltipTextId} />}>
+                <Tooltip
+                    hasIcon
+                    maxWidth={328}
+                    content={<Translation id={feeTooltipTextId} values={{ br: <br /> }} />}
+                >
                     <Translation id={label ?? feeLabelId} />
                 </Tooltip>
                 {supportsCustomFee && (
