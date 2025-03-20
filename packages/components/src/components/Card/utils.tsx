@@ -28,6 +28,7 @@ export const mapPaddingTypeToPadding = ({
 }: PaddingMapArgs): Padding | undefined => {
     const paddingMap: Record<PaddingType, Padding | undefined> = {
         none: undefined,
+        tiny: hasHeading ? { vertical: spacings.xxs, horizontal: spacings.xxs } : spacings.xxs,
         small: hasHeading ? { vertical: spacings.sm, horizontal: spacings.md } : spacings.sm,
         normal: hasHeading ? { vertical: spacings.md, horizontal: spacings.lg } : spacings.lg,
         large: hasHeading ? { vertical: spacings.lg, horizontal: spacings.xl } : spacings.xl,
@@ -39,6 +40,7 @@ export const mapPaddingTypeToPadding = ({
 export const mapPaddingTypeToLabelPadding = ({ paddingType }: PaddingMapArgs): Padding => {
     const paddingMap: Record<PaddingType, Padding> = {
         none: { vertical: spacings.xxs },
+        tiny: { vertical: spacings.xxs },
         small: { vertical: spacings.xxs, horizontal: spacings.sm },
         normal: { vertical: spacings.xs, horizontal: spacings.lg },
         large: { vertical: spacings.sm, horizontal: spacings.xl },

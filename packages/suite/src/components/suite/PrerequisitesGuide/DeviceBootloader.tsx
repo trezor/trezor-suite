@@ -1,16 +1,10 @@
-import styled from 'styled-components';
-
 import { isDeviceWithButtons } from '@suite-common/suite-utils';
-import { IconButton } from '@trezor/components';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 
-const WhiteSpace = styled.div`
-    min-width: 60px;
-`;
+import { TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
+import { UpdateGoToSettingsDescription } from '../troubleshooting/tips/UpdateGoToSettingsDescription';
 
 interface DeviceBootloaderProps {
     device?: TrezorDevice;
@@ -18,13 +12,9 @@ interface DeviceBootloaderProps {
 
 /* User connected the device in bootloader mode, but in order to continue it needs to be in normal mode */
 export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
-    const dispatch = useDispatch();
-
     const deviceModelInternal = device?.features?.internal_model;
 
-    const gotToDeviceSettings = () => dispatch(goto('settings-device'));
-
-    const tips = [
+    const tips: TroubleshootingTipsItem[] = [
         {
             key: 'device-bootloader',
             heading: <Translation id="TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT" />,
@@ -38,14 +28,12 @@ export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
                 />
             ),
             noBullet: true,
-            action: <WhiteSpace />, // To make the layout bit nicer - prevent floating above button on the next row.
         },
         {
             key: 'wipe-or-update',
             heading: <Translation id="TR_WIPE_OR_UPDATE" />,
-            description: <Translation id="TR_WIPE_OR_UPDATE_DESCRIPTION" />,
+            description: <UpdateGoToSettingsDescription />,
             noBullet: true,
-            action: <IconButton onClick={gotToDeviceSettings} icon="settings" iconSize={20} />,
         },
     ];
 

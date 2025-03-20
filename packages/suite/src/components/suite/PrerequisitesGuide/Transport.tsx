@@ -6,20 +6,20 @@ import {
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,
-    TipItem,
 } from 'src/components/suite/troubleshooting/tips';
 
 import { useSelector } from '../../../hooks/suite';
 import { useBridgeDesktopApi } from '../../../hooks/suite/useBridgeDesktopApi';
 import { selectIsDebugModeActive } from '../../../reducers/suite/suiteReducer';
+import { TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTips';
 
-const tipItems: TipItem[] = [
+const tipItems: TroubleshootingTipsItem[] = [
     TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,
 ] as const;
 
-const Tips = ({ items }: { items: TipItem[] }) => (
+const Tips = ({ items }: { items: TroubleshootingTipsItem[] }) => (
     // No transport layer (bridge/webUSB) is available
     // On web it makes sense to
     // - offer downloading Trezor Suite desktop, or
@@ -32,7 +32,7 @@ const Tips = ({ items }: { items: TipItem[] }) => (
     />
 );
 
-const TransportDesktop = ({ items }: { items: TipItem[] }) => {
+const TransportDesktop = ({ items }: { items: TroubleshootingTipsItem[] }) => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { bridgeProcess } = useBridgeDesktopApi();
 

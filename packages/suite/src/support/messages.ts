@@ -4707,12 +4707,6 @@ export default defineMessages({
         id: 'TR_HEX_FORMAT',
         defaultMessage: 'Hex format',
     },
-    TR_DISABLE_WEBUSB_TRY_BRIDGE: {
-        id: 'TR_DISABLE_WEBUSB_TRY_BRIDGE',
-        defaultMessage: 'Disable WebUSB and use Bridge',
-        description:
-            'Bridge is a communication deamon that some users will need to download and install. So word bridge should not be translated.',
-    },
     TR_YOUR_DEVICE_IS_SEEDLESS: {
         id: 'TR_YOUR_DEVICE_IS_SEEDLESS',
         defaultMessage: "Your device is in seedless mode and can't be used with this wallet.",
@@ -6998,7 +6992,7 @@ export default defineMessages({
     },
     TR_WIPE_OR_UPDATE_DESCRIPTION: {
         id: 'TR_WIPE_OR_UPDATE_DESCRIPTION',
-        defaultMessage: 'Go to device settings.',
+        defaultMessage: 'Go to <a>device settings</a>.',
     },
     TR_YOU_HAVE_CONNECTED: {
         id: 'TR_YOU_HAVE_CONNECTED',
@@ -7310,6 +7304,10 @@ export default defineMessages({
     TR_STILL_DONT_SEE_YOUR_TREZOR: {
         id: 'TR_STILL_DONT_SEE_YOUR_TREZOR',
         defaultMessage: 'Don’t see your Trezor?',
+    },
+    TR_TROUBLE_SHOOTING_TIPS: {
+        id: 'TR_TROUBLE_SHOOTING_TIPS',
+        defaultMessage: 'Troubleshooting tips',
     },
     TR_ONBOARDING_ADVANCED: {
         id: 'TR_ONBOARDING_ADVANCED',
@@ -9686,9 +9684,49 @@ export default defineMessages({
         id: 'TR_BLUETOOTH',
         defaultMessage: 'Bluetooth',
     },
-    TR_CONNECT_BLUETOOTH_BUTTON: {
-        id: 'TR_CONNECT_BLUETOOTH_BUTTON',
-        defaultMessage: 'Connect Trezor Safe 7 via Bluetooth',
+    TR_CABLE: {
+        id: 'TR_CABLE',
+        defaultMessage: 'Cable',
+    },
+    TR_OR: {
+        id: 'TR_OR',
+        defaultMessage: 'OR',
+    },
+    TR_PAIR_NEW_BLUETOOTH_DEVICE: {
+        id: 'TR_PAIR_NEW_BLUETOOTH_DEVICE',
+        defaultMessage: 'Pair over Bluetooth',
+    },
+    TR_BLUETOOTH_TIP1_HEADER: {
+        id: 'TR_BLUETOOTH_TIP1_HEADER',
+        defaultMessage: 'Bring Trezor Safe 7 closer to this computer',
+    },
+    TR_BLUETOOTH_TIP1_TEXT: {
+        id: 'TR_BLUETOOTH_TIP1_TEXT',
+        defaultMessage: 'The maximum range for Bluetooth is 10 meters',
+    },
+    TR_BLUETOOTH_TIP2_HEADER: {
+        id: 'TR_BLUETOOTH_TIP2_HEADER',
+        defaultMessage: 'Put Trezor Safe 7 into pairing mode',
+    },
+    TR_BLUETOOTH_TIP2_TEXT: {
+        id: 'TR_BLUETOOTH_TIP2_TEXT',
+        defaultMessage: 'Hold your Trezor’s power button for 3 seconds',
+    },
+    TR_BLUETOOTH_TIP3_HEADER: {
+        id: 'TR_BLUETOOTH_TIP3_HEADER',
+        defaultMessage: 'If nothing helps, connect Trezor Safe 7 with cable',
+    },
+    TR_BLUETOOTH_TIP3_TEXT: {
+        id: 'TR_BLUETOOTH_TIP3_TEXT',
+        defaultMessage: 'Try to pair Bluetooth from device settings',
+    },
+    TR_CONNECTION_TYPE: {
+        id: 'TR_CONNECTION_TYPE',
+        defaultMessage: 'Connection type',
+    },
+    TR_TREZOR_SAFE_7: {
+        id: 'TR_TREZOR_SAFE_7',
+        defaultMessage: 'Trezor Safe 7',
     },
     TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED: {
         id: 'TR_YOUR_BRIDGE_VERSION_WILL_SOON_BE_DEPRECATED',

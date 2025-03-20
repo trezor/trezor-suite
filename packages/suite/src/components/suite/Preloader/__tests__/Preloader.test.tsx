@@ -1,3 +1,5 @@
+import { screen } from '@testing-library/react';
+
 import * as envUtils from '@trezor/env-utils';
 import { DeepPartial } from '@trezor/type-utils';
 
@@ -274,7 +276,7 @@ describe('Preloader component', () => {
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        expect(findByTestId('TR_ACQUIRE_DEVICE_TITLE')).not.toBeNull();
+        expect(screen.getAllByText('TR_ACQUIRE_DEVICE_TITLE').length).toBe(2);
 
         unmount();
     });

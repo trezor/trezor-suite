@@ -1,6 +1,6 @@
 import { UIVariant } from '../../config/types';
 
-export const paddingTypes = ['small', 'none', 'normal', 'large'] as const;
+export const paddingTypes = ['tiny', 'small', 'none', 'normal', 'large'] as const;
 export type PaddingType = (typeof paddingTypes)[number];
 
 export const fillTypes = ['flat', 'default'] as const;

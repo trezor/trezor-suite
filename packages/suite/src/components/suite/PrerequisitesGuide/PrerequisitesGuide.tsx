@@ -9,7 +9,15 @@ import {
     shouldDisplayInitialWarningIcon,
 } from '@suite-common/suite-utils';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, ElevationContext, ElevationDown, Flex, motionEasing } from '@trezor/components';
+import {
+    Button,
+    Column,
+    ElevationContext,
+    ElevationDown,
+    Flex,
+    motionEasing,
+} from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { ConnectDevicePrompt, Translation } from 'src/components/suite';
@@ -38,7 +46,7 @@ const Wrapper = styled.div`
     justify-content: center;
 `;
 
-const TipsContainer = styled(motion.div)`
+const BottomAnimatedContainer = styled(motion.div)`
     display: flex;
     margin-top: 60px;
 `;
@@ -76,9 +84,7 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
                 case 'device-disconnect-required':
                     return <DeviceDisconnectRequired />;
                 case 'device-disconnected':
-                    return (
-                        <DeviceConnect onBluetoothClick={() => setIsBluetoothConnectOpen(true)} />
-                    );
+                    return <DeviceConnect setIsBluetoothConnectOpen={setIsBluetoothConnectOpen} />;
                 case 'device-unacquired':
                     return <DeviceAcquire />;
                 case 'device-used-elsewhere':
@@ -115,7 +121,7 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
     const deviceStatus = (device && getStatus(device)) ?? null;
 
     return (
-        <>
+        <Column alignItems="center">
             <ConnectDevicePrompt
                 connected={!!device}
                 deviceStatus={deviceStatus}
@@ -135,14 +141,16 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
                 </ButtonWrapper>
             )}
 
-            <TipsContainer
+            <BottomAnimatedContainer
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6, duration: 0.5, ease: motionEasing.enter }}
             >
-                <TipComponent />
-            </TipsContainer>
-        </>
+                <Column alignItems="center" justifyContent="center" gap={spacings.xxxxl}>
+                    <TipComponent />
+                </Column>
+            </BottomAnimatedContainer>
+        </Column>
     );
 };
 

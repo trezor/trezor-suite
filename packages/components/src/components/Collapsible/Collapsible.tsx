@@ -27,9 +27,15 @@ export type CollapsibleProps = {
     children: ReactNode;
     isOpen?: boolean;
     defaultIsOpen?: boolean;
+    'data-testid'?: string;
 };
 
-export const Collapsible = ({ children, isOpen, defaultIsOpen = false }: CollapsibleProps) => {
+export const Collapsible = ({
+    children,
+    isOpen,
+    defaultIsOpen = false,
+    'data-testid': dataTest,
+}: CollapsibleProps) => {
     const [uncontrolledIsOpen, setUncontrolledIsOpen] = useState(defaultIsOpen);
     const contentId = useId();
 
@@ -41,7 +47,7 @@ export const Collapsible = ({ children, isOpen, defaultIsOpen = false }: Collaps
                 toggle: setUncontrolledIsOpen,
             }}
         >
-            <Container>{children}</Container>
+            <Container data-testid={dataTest}>{children}</Container>
         </CollapsibleContext.Provider>
     );
 };

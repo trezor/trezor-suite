@@ -1,160 +1,144 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useState } from 'react';
 
-import styled from 'styled-components';
+import {
+    Card,
+    Collapsible,
+    Column,
+    ElevationContext,
+    ElevationDown,
+    ElevationUp,
+    IconName,
+    Row,
+    SelectBar,
+    Text,
+} from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { Button, CollapsibleBox, useElevation, variables } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
-import type TrezorConnectWeb from '@trezor/connect-web';
-import { isAndroid } from '@trezor/env-utils';
-import { Elevation, mapElevationToBorder } from '@trezor/theme';
-import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
+import { TroubleshootingTipsFooter } from './TroubleshootingTipsFooter';
+import { TroubleshootingTipsListCard } from './TroubleshootingTipsListCard';
+import { TroubleshootingTipsToggle } from './TroubleshootingTipsToggle';
 
-import { Translation, TrezorLink } from 'src/components/suite';
-
-const ItemLabel = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const ItemDescription = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin-top: 2px;
-`;
-
-const Bullet = styled.span`
-    margin-right: 8px;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-`;
-
-const Items = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-`;
-
-const Item = styled.div`
-    display: flex;
-
-    & + & {
-        margin-top: 16px;
-    }
-`;
-
-const ItemContent = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-`;
-
-const ItemAction = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-    padding-left: 24px;
-`;
-
-const ContactSupport = styled.div<{ $elevation: Elevation }>`
-    display: flex;
-    justify-content: space-between;
-    margin: 24px -16px 0;
-    padding: 20px 20px 0;
-    border-top: 1px solid ${mapElevationToBorder};
-    align-items: center;
-`;
-
-const FooterText = styled.span`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    margin: 0 20px 20px;
-`;
-
-interface Item {
+export type TroubleshootingTipsItem = {
     key: string;
     heading?: ReactNode;
     description?: ReactNode;
     hide?: boolean;
     noBullet?: boolean;
-    action?: ReactNode;
-}
+    icon?: IconName;
+};
 
-interface TroubleshootingTipsProps {
+type SectionDefinition = { label: ReactNode; items: TroubleshootingTipsItem[] };
+
+type TroubleshootingTipsWithSectionsProps<K extends string, T extends K> = {
     label: ReactNode;
     cta?: ReactNode;
-    items: Item[];
-    offerWebUsb?: boolean;
     opened?: boolean;
     'data-testid'?: string;
-}
+    items: Record<K, SectionDefinition>;
+    sectionLabel?: ReactNode;
+    defaultSection: T;
+    toggleText?: ReactNode;
+};
 
-export const TroubleshootingTips = ({
+export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
     label,
     items,
     cta,
-    offerWebUsb,
     opened,
+    sectionLabel,
+    defaultSection,
+    toggleText,
     'data-testid': dataTest,
-}: TroubleshootingTipsProps) => {
-    const { elevation } = useElevation();
+}: TroubleshootingTipsWithSectionsProps<K, T>) => {
+    const [isOpened, setIsOpened] = useState(opened === true);
+    const [selectedSection, setSelectedSection] = useState<K>(defaultSection);
 
-    const memoizedItems = useMemo(
-        () =>
-            items
-                .filter(item => !item.hide)
-                .map(item => (
-                    <Item key={item.key}>
-                        {!item.noBullet && <Bullet>&bull;</Bullet>}
+    const hasMultipleSections = Object.keys(items).length > 1;
 
-                        <ItemContent>
-                            <ItemLabel>{item.heading}</ItemLabel>
-                            <ItemDescription>{item.description}</ItemDescription>
-                        </ItemContent>
+    const headingRow = (
+        <Row
+            justifyContent="space-between"
+            alignItems="center"
+            margin={{ horizontal: spacings.sm }}
+        >
+            <Text typographyStyle="body">{hasMultipleSections ? sectionLabel : label}</Text>
 
-                        {item.action && <ItemAction>{item.action}</ItemAction>}
-                    </Item>
-                )),
-        [items],
+            {hasMultipleSections ? (
+                <Row>
+                    <SelectBar<K>
+                        onChange={setSelectedSection}
+                        options={Object.entries(items).map(([k, v]) => ({
+                            label: (v as SectionDefinition).label,
+                            value: k as K,
+                        }))}
+                        selectedOption={selectedSection}
+                        size="small"
+                    />
+                </Row>
+            ) : undefined}
+        </Row>
     );
 
     return (
-        <CollapsibleBox
-            paddingType="large"
-            heading={cta}
-            toggleLabel={label}
-            defaultIsOpen={opened}
-            data-testid={dataTest || '@onboarding/expand-troubleshooting-tips'}
-        >
-            {items.length > 0 && <Items>{memoizedItems}</Items>}
-
-            {offerWebUsb && !isAndroid() && (
-                <StyledButton
-                    variant="tertiary"
-                    data-testid="@onboarding/try-bridge-button"
-                    onClick={() => (TrezorConnect as typeof TrezorConnectWeb).disableWebUSB()}
-                >
-                    <Translation id="TR_DISABLE_WEBUSB_TRY_BRIDGE" />
-                </StyledButton>
+        <Column gap={spacings.xxxxl} alignItems="center">
+            {cta && (
+                <Card width="auto">
+                    <Row gap={spacings.md}>
+                        {label}
+                        {cta}
+                    </Row>
+                </Card>
             )}
 
-            <ContactSupport $elevation={elevation}>
-                <FooterText>
-                    <Translation id="TR_ONBOARDING_TROUBLESHOOTING_FAILED" />
-                </FooterText>
-
-                <TrezorLink variant="nostyle" href={TREZOR_SUPPORT_DEVICE_URL}>
-                    <Button variant="tertiary" size="small">
-                        <Translation id="TR_CONTACT_SUPPORT" />
-                    </Button>
-                </TrezorLink>
-            </ContactSupport>
-        </CollapsibleBox>
+            <Collapsible
+                isOpen={isOpened}
+                data-testid={dataTest || '@onboarding/expand-troubleshooting-tips'}
+            >
+                <Column gap={spacings.md}>
+                    <Collapsible.Toggle onClick={() => setIsOpened(!isOpened)}>
+                        <Row justifyContent="center" flex="1" margin={{ bottom: spacings.xs }}>
+                            <TroubleshootingTipsToggle isOpen={isOpened === true}>
+                                {toggleText}
+                            </TroubleshootingTipsToggle>
+                        </Row>
+                    </Collapsible.Toggle>
+                    <Collapsible.Content>
+                        <ElevationContext baseElevation={-1}>
+                            <ElevationDown>
+                                <Card paddingType="tiny" width="656px">
+                                    <Column gap={spacings.sm} padding={{ vertical: spacings.sm }}>
+                                        {headingRow}
+                                        {/* Custom design, where upper card is -1, and this card is 1 */}
+                                        <ElevationUp>
+                                            <TroubleshootingTipsListCard
+                                                items={items[selectedSection].items}
+                                            />
+                                        </ElevationUp>
+                                        <TroubleshootingTipsFooter />
+                                    </Column>
+                                </Card>
+                            </ElevationDown>
+                        </ElevationContext>
+                    </Collapsible.Content>
+                </Column>
+            </Collapsible>
+        </Column>
     );
 };
+
+type TroubleshootingTipsProps = {
+    label: ReactNode;
+    cta?: ReactNode;
+    opened?: boolean;
+    'data-testid'?: string;
+    items: TroubleshootingTipsItem[];
+    toggleText?: ReactNode;
+};
+
+export const TroubleshootingTips = ({ items, ...props }: TroubleshootingTipsProps) => (
+    <TroubleshootingTipsWithSections
+        {...props}
+        items={{ '': { items, label: '' } }}
+        defaultSection=""
+    />
+);
