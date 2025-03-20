@@ -51,6 +51,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          submodules: true
           ref: ${{ github.sha }}
 
       - name: Setup node
