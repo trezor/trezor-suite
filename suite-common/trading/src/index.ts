@@ -5,6 +5,7 @@ export * from './utils';
 export * from './utils/buy/buyUtils';
 export { toCryptoOption } from './utils/infoUtils';
 export * from './utils/tradingUtils';
+export * from './utils/exchange/exchangeUtils';
 export * from './constants';
 export * from './reducers/tradingReducer';
 export * from './reducers/buyReducer';
