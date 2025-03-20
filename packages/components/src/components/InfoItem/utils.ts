@@ -8,9 +8,9 @@ export const mapVerticalAlignmentToAlignItems = (
     verticalAlignment: InfoItemVerticalAlignment,
 ): FlexAlignItems => {
     const alignItemsMap: Record<InfoItemVerticalAlignment, FlexAlignItems> = {
-        top: 'flex-start',
+        start: 'flex-start',
         center: 'center',
-        bottom: 'flex-end',
+        end: 'flex-end',
     };
 
     return alignItemsMap[verticalAlignment];

@@ -21,7 +21,7 @@ export const SearchAsset = ({
         onClear={() => setSearch('')}
         showClearButton="always"
         innerAddon={<Icon name="search" variant="tertiary" size="medium" />}
-        innerAddonAlign="left"
+        innerAddonAlign="start"
         // eslint-disable-next-line jsx-a11y/no-autofocus
         autoFocus
     />

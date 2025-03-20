@@ -34,7 +34,7 @@ export const AccountSearchBox = () => {
                 setSearchString(e.target.value);
             }}
             innerAddon={<Icon name="search" size={16} color={theme.iconDefault} />}
-            innerAddonAlign="left"
+            innerAddonAlign="start"
             size="small"
             placeholder={translationString('TR_SEARCH')}
             showClearButton="always"

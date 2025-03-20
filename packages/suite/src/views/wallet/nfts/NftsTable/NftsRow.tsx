@@ -71,7 +71,7 @@ const NftsRow = ({
                         shouldDisplayIcon={!isEmptyCollection}
                     />
                 </Table.Cell>
-                <Table.Cell colSpan={1} align="right">
+                <Table.Cell colSpan={1} align="end">
                     <Row gap={spacings.xs}>
                         <Dropdown
                             placement={{ position: 'bottom', alignment: 'start' }}

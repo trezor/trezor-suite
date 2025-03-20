@@ -61,7 +61,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
             bottomContent={
                 <>
                     <TrezorLink variant="nostyle" href={SUITE_URL}>
-                        <NewModal.Button icon="arrowUpRight" iconAlignment="right">
+                        <NewModal.Button icon="arrowUpRight" iconAlignment="end">
                             <Translation id="TR_EARLY_ACCESS_REINSTALL" />
                         </NewModal.Button>
                     </TrezorLink>

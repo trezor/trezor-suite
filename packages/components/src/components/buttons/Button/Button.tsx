@@ -52,7 +52,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'right' && 'row-reverse'};
+    flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'end' && 'row-reverse'};
     gap: ${({ $hasIcon }) => $hasIcon && spacingsPx.xs};
     padding: ${({ $size, $hasLabel }) => getPadding($size, $hasLabel)};
     width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'fit-content')};
@@ -152,7 +152,7 @@ export const Button = ({
     className,
     href,
     icon,
-    iconAlignment = 'left',
+    iconAlignment = 'start',
     iconSize,
     isDisabled = false,
     isFullWidth = false,

@@ -3,7 +3,12 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Button as ButtonComponent, ButtonProps, allowedButtonFrameProps } from './Button';
 import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { buttonSizes, buttonVariants, subtleButtonVariants } from '../buttonStyleUtils';
+import {
+    buttonSizes,
+    buttonVariants,
+    iconAlignments,
+    subtleButtonVariants,
+} from '../buttonStyleUtils';
 
 const meta: Meta<ButtonProps> = {
     title: 'Buttons',
@@ -24,7 +29,7 @@ export const Button: StoryObj<ButtonProps> = {
         isLoading: false,
         isFullWidth: false,
         isSubtle: false,
-        iconAlignment: 'left',
+        iconAlignment: 'start',
         title: 'Button title',
         ...getFramePropsStory(allowedButtonFrameProps).args,
     },
@@ -94,7 +99,7 @@ export const Button: StoryObj<ButtonProps> = {
             control: {
                 type: 'radio',
             },
-            options: ['left', 'right'],
+            options: iconAlignments,
         },
         title: {
             control: { type: 'text' },

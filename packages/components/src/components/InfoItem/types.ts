@@ -1,8 +1,8 @@
-import { UIVariant, UIVerticalAlignment } from '../../config/types';
+import { UIAlignment, UIVariant } from '../../config/types';
 
-export const infoItemVerticalAlignments = ['top', 'center', 'bottom'] as const;
+export const infoItemVerticalAlignments = ['start', 'center', 'end'] as const;
 export type InfoItemVerticalAlignment = Extract<
-    UIVerticalAlignment,
+    UIAlignment,
     (typeof infoItemVerticalAlignments)[number]
 >;
 

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { SpacingValues, spacings } from '@trezor/theme';
 
 import { ListItem } from './ListItem';
-import { uiVerticalAlignments } from '../../config/types';
+import { uiAlignments } from '../../config/types';
 import {
     FrameProps,
     FramePropsKeys,
@@ -37,8 +37,8 @@ type AllowedTextProps = Pick<TextProps, (typeof allowedListTextProps)[number]>;
 export const listVariants = textVariants;
 export type ListVariant = (typeof listVariants)[number];
 
-export const bulletVerticalAlignments = uiVerticalAlignments;
-export type BulletVerticalAlignment = (typeof uiVerticalAlignments)[number];
+export const bulletVerticalAlignments = uiAlignments;
+export type BulletVerticalAlignment = (typeof bulletVerticalAlignments)[number];
 
 type ContainerProps = TransientProps<AllowedFrameProps & AllowedTextProps> & {
     $gap: SpacingValues;

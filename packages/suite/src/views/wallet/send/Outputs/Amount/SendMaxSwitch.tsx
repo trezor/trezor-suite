@@ -14,7 +14,7 @@ export const SendMaxSwitch = ({
     onChange,
 }: SendMaxSwitchProps) => (
     <Switch
-        labelPosition="left"
+        labelPosition="start"
         isChecked={isSetMaxActive}
         data-testid={dataTest}
         size="small"

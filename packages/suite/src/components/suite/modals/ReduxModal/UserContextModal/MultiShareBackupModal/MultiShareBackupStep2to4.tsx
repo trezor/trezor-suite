@@ -34,7 +34,7 @@ const InstructionItem = ({ direction = 'row', icon, children }: InstructionItemP
             <Paragraph
                 typographyStyle="hint"
                 variant="tertiary"
-                align={direction === 'column' ? 'center' : 'left'}
+                align={direction === 'column' ? 'center' : 'start'}
             >
                 {children}
             </Paragraph>

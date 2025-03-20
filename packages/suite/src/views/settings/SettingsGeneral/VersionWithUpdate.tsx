@@ -43,7 +43,7 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                                 variant="tertiary"
                                 size="tiny"
                                 icon="arrowUpRight"
-                                iconAlignment="right"
+                                iconAlignment="end"
                             >
                                 {appVersion}
                                 {isDevEnv && '-dev'}
@@ -70,7 +70,7 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                                             variant="destructive"
                                             size="tiny"
                                             icon="arrowUpRight"
-                                            iconAlignment="right"
+                                            iconAlignment="end"
                                         >
                                             {desktopUpdateState.latest.version}
                                         </Button>

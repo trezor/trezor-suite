@@ -39,7 +39,7 @@ export const AssetTable = ({
                 <Table.Cell>
                     <Translation id="TR_VALUES" />
                 </Table.Cell>
-                <Table.Cell align="right">
+                <Table.Cell align="end">
                     <Translation id="TR_EXCHANGE_RATE" />
                 </Table.Cell>
                 <Table.Cell colSpan={3}>

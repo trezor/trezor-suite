@@ -85,7 +85,7 @@ export const Pagination = ({
                     <Button
                         onClick={() => onPageSelected(currentPage - 1)}
                         icon="caretLeft"
-                        iconAlignment="left"
+                        iconAlignment="start"
                         variant="tertiary"
                     >
                         <Translation id="TR_PAGINATION_NEWER" />
@@ -95,7 +95,7 @@ export const Pagination = ({
                     <Button
                         onClick={() => onPageSelected(currentPage + 1)}
                         icon="caretRight"
-                        iconAlignment="right"
+                        iconAlignment="end"
                         variant="tertiary"
                     >
                         <Translation id="TR_PAGINATION_OLDER" />

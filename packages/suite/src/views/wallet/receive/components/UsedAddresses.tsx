@@ -80,7 +80,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
                     />
                 </Text>
             </Table.Cell>
-            <Table.Cell align="right">
+            <Table.Cell align="end">
                 <AddressActions $isVisible={isHovered}>
                     <Tooltip content={tooltipContent}>
                         <Button
@@ -97,7 +97,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
                 </AddressActions>
             </Table.Cell>
 
-            <Table.Cell align="right">
+            <Table.Cell align="end">
                 <Text typographyStyle="hint">
                     {fresh ? (
                         <Text variant="tertiary">
@@ -174,7 +174,7 @@ export const UsedAddresses = ({
                                 <Translation id="RECEIVE_TABLE_ADDRESS" />
                             </Table.Cell>
                             <Table.Cell />
-                            <Table.Cell align="right">
+                            <Table.Cell align="end">
                                 <Translation id="RECEIVE_TABLE_RECEIVED" />
                             </Table.Cell>
                         </Table.Row>
@@ -205,7 +205,7 @@ export const UsedAddresses = ({
                             <Button
                                 variant="tertiary"
                                 icon="chevronDown"
-                                iconAlignment="right"
+                                iconAlignment="end"
                                 onClick={() => setLimit(limit + 20)}
                                 data-testid="@wallet/receive/used-address/show-more"
                             >

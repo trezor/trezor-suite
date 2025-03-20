@@ -179,7 +179,7 @@ export const TokenRow = ({
             </Table.Cell>
             {!hideRates && (
                 <>
-                    <Table.Cell align="right">
+                    <Table.Cell align="end">
                         <PriceTicker
                             symbol={network.symbol}
                             contractAddress={token.contract as TokenAddress}
@@ -195,7 +195,7 @@ export const TokenRow = ({
                     </Table.Cell>
                 </>
             )}
-            <Table.Cell align="right">
+            <Table.Cell align="end">
                 <Row gap={spacings.xs}>
                     <Dropdown
                         placement={{ position: 'bottom', alignment: 'start' }}

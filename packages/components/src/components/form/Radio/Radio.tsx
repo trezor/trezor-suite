@@ -120,8 +120,8 @@ export type RadioProps = AllowedCheckboxFrameProps & {
 export const Radio = ({
     variant = 'primary',
     isChecked,
-    labelAlignment = 'right',
-    verticalAlignment = 'top',
+    labelAlignment = 'end',
+    verticalAlignment = 'start',
     isDisabled = false,
     onClick,
     'data-testid': dataTest,

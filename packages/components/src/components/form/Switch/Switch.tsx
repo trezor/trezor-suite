@@ -11,7 +11,7 @@ import {
     mapSizeToLabelContainerGap,
     mapSizeToLabelTypography,
 } from './switchUtils';
-import { UIHorizontalAlignment, type UISize } from '../../../config/types';
+import { UIAlignment, type UISize } from '../../../config/types';
 import {
     FrameProps,
     FramePropsKeys,
@@ -29,6 +29,9 @@ import {
 export const allowedSwitchFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSwitchFrameProps)[number]>;
 
+export const labelPositions = ['start', 'end'] as const;
+export type LabelPosition = Extract<UIAlignment, (typeof labelPositions)[number]>;
+
 export type SwitchProps = AllowedFrameProps & {
     isChecked: boolean;
     label?: ReactNode;
@@ -38,7 +41,7 @@ export type SwitchProps = AllowedFrameProps & {
     size?: SwitchSize;
     className?: string;
     'data-testid'?: string;
-    labelPosition?: Extract<UIHorizontalAlignment, 'left' | 'right'>;
+    labelPosition?: LabelPosition;
 };
 
 export const switchSizes = ['medium', 'small'] as const;
@@ -46,14 +49,14 @@ export type SwitchSize = Extract<UISize, (typeof switchSizes)[number]>;
 
 const Wrapper = styled.div<
     {
-        $labelPosition?: Extract<UIHorizontalAlignment, 'left' | 'right'>;
+        $labelPosition?: Extract<UIAlignment, 'start' | 'end'>;
         $size: SwitchSize;
     } & TransientProps<AllowedFrameProps>
 >`
     display: flex;
     align-items: center;
     gap: ${mapSizeToLabelContainerGap};
-    flex-direction: ${({ $labelPosition }) => ($labelPosition === 'left' ? 'row-reverse' : 'row')};
+    flex-direction: ${({ $labelPosition }) => ($labelPosition === 'start' ? 'row-reverse' : 'row')};
 
     ${withFrameProps}
 `;
@@ -156,7 +159,7 @@ export const Switch = ({
     'data-testid': dataTest,
     isChecked,
     className,
-    labelPosition = 'right',
+    labelPosition = 'end',
     ...rest
 }: SwitchProps) => {
     const id = useId();

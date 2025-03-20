@@ -1,5 +1,5 @@
 import { NewModalAlignment, NewModalSize } from './types';
-import { UIHorizontalAlignment, UIVerticalAlignment } from '../../config/types';
+import { UIAlignment } from '../../config/types';
 import { FlexAlignItems, FlexJustifyContent } from '../Flex/Flex';
 
 export const mapModalSizeToWidth = (size: NewModalSize) => {
@@ -15,20 +15,20 @@ export const mapModalSizeToWidth = (size: NewModalSize) => {
 };
 
 export const mapAlignmentToJustifyContent = (alignment: NewModalAlignment): FlexJustifyContent => {
-    const alignmentMap: Record<UIVerticalAlignment, FlexJustifyContent> = {
+    const alignmentMap: Record<UIAlignment, FlexJustifyContent> = {
         center: 'center',
-        top: 'flex-start',
-        bottom: 'flex-end',
+        start: 'flex-start',
+        end: 'flex-end',
     };
 
     return alignmentMap[alignment.y];
 };
 
 export const mapAlignmentToAlignItems = (alignment: NewModalAlignment): FlexAlignItems => {
-    const alignmentMap: Record<UIHorizontalAlignment, FlexAlignItems> = {
+    const alignmentMap: Record<UIAlignment, FlexAlignItems> = {
         center: 'center',
-        left: 'flex-start',
-        right: 'flex-end',
+        start: 'flex-start',
+        end: 'flex-end',
     };
 
     return alignmentMap[alignment.x];

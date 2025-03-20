@@ -11,9 +11,9 @@ type MapArgs = {
 
 const mapAlignmentToAlignItems = ({ $bulletAlignment }: MapArgs): FlexAlignItems => {
     const alignItemsMap: Record<BulletVerticalAlignment, FlexAlignItems> = {
-        top: 'flex-start',
+        start: 'flex-start',
         center: 'center',
-        bottom: 'flex-end',
+        end: 'flex-end',
     };
 
     return alignItemsMap[$bulletAlignment];

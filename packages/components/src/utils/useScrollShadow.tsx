@@ -5,9 +5,8 @@ import styled, { CSSObject, DefaultTheme } from 'styled-components';
 import { Color, Elevation, mapElevationToBackground } from '@trezor/theme';
 
 import { useElevation } from '../components/ElevationContext/ElevationContext';
-import { UIHorizontalAlignment, UIVerticalAlignment } from '../config/types';
 
-type GradientDirection = Exclude<UIHorizontalAlignment | UIVerticalAlignment, 'center'>;
+type GradientDirection = 'bottom' | 'top' | 'right' | 'left';
 
 interface GradientProps {
     $isVisible: boolean;

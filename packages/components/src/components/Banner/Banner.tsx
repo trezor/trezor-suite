@@ -16,7 +16,7 @@ import {
     mapVariantToTextColor,
 } from './utils';
 import { variables } from '../../config';
-import { uiVerticalAlignments } from '../../config/types';
+import { uiAlignments } from '../../config/types';
 import { SCREEN_SIZE } from '../../config/variables';
 import {
     FrameProps,
@@ -34,7 +34,7 @@ import { Spinner } from '../loaders/Spinner/Spinner';
 export const allowedBannerFrameProps = ['margin', 'width'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
 
-export const iconVerticalAlignments = uiVerticalAlignments;
+export const iconVerticalAlignments = uiAlignments;
 export type IconVerticalAlignment = (typeof iconVerticalAlignments)[number];
 
 export type BannerProps = AllowedFrameProps & {
@@ -63,9 +63,9 @@ export const mapVerticalAlignmentToAlignItems = (
     verticalAlignment: IconVerticalAlignment,
 ): FlexAlignItems => {
     const alignItemsMap: Record<IconVerticalAlignment, FlexAlignItems> = {
-        top: 'flex-start',
+        start: 'flex-start',
         center: 'center',
-        bottom: 'flex-end',
+        end: 'flex-end',
     };
 
     return alignItemsMap[verticalAlignment];

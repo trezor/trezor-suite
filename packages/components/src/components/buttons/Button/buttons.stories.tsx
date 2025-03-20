@@ -34,7 +34,7 @@ export const AllButtons: StoryFn = () => (
                     <Button {...commonProps} icon="palette">
                         {capitalizeFirstLetter(variant)} icon
                     </Button>
-                    <Button {...commonProps} iconAlignment="right" icon="plus">
+                    <Button {...commonProps} iconAlignment="end" icon="plus">
                         {capitalizeFirstLetter(variant)} icon right
                     </Button>
                     <Button {...commonProps} isLoading>

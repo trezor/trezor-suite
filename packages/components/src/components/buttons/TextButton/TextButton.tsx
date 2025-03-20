@@ -15,7 +15,7 @@ const TextButtonContainer = styled.button<{
 }>`
     display: flex;
     align-items: center;
-    flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'right' && 'row-reverse'};
+    flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'end' && 'row-reverse'};
     gap: ${spacingsPx.xs};
     height: ${({ $size: size }) => (size === 'small' ? 22 : 26)}px;
     padding: ${spacingsPx.xxs};
@@ -62,7 +62,7 @@ export interface TextButtonProps extends Omit<ButtonProps, 'isFullWidth' | 'icon
 
 export const TextButton = ({
     icon,
-    iconAlignment = 'left',
+    iconAlignment = 'start',
     size = 'large',
     isDisabled = false,
     isLoading = false,

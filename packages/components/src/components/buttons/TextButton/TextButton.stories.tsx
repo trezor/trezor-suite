@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { TextButton as TextButtonComponent, TextButtonProps } from './TextButton';
 import { variables } from '../../../config';
-import { buttonSizes } from '../buttonStyleUtils';
+import { buttonSizes, iconAlignments } from '../buttonStyleUtils';
 
 const meta: Meta = {
     title: 'Buttons',
@@ -13,7 +13,7 @@ export default meta;
 export const TextButton: StoryObj<TextButtonProps> = {
     args: {
         children: 'Button label',
-        iconAlignment: 'left',
+        iconAlignment: 'start',
         size: 'large',
         isDisabled: false,
         isLoading: false,
@@ -40,7 +40,7 @@ export const TextButton: StoryObj<TextButtonProps> = {
             control: {
                 type: 'radio',
             },
-            options: ['left', 'right'],
+            options: iconAlignments,
         },
         size: {
             control: {

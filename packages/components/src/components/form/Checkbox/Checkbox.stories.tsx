@@ -6,6 +6,8 @@ import {
     CheckboxProps,
     allowedCheckboxFrameProps,
     checkboxVariants,
+    labelAlignments,
+    verticalAlignments,
 } from './Checkbox';
 import { getFramePropsStory } from '../../../utils/frameProps';
 
@@ -37,8 +39,8 @@ export const Checkbox: StoryObj<CheckboxProps> = {
         variant: 'primary',
         isChecked: false,
         isDisabled: false,
-        labelAlignment: 'right',
-        verticalAlignment: 'top',
+        labelAlignment: 'end',
+        verticalAlignment: 'start',
         ...getFramePropsStory(allowedCheckboxFrameProps).args,
     },
 
@@ -53,13 +55,13 @@ export const Checkbox: StoryObj<CheckboxProps> = {
             control: {
                 type: 'radio',
             },
-            options: ['left', 'right'],
+            options: labelAlignments,
         },
         verticalAlignment: {
             control: {
                 type: 'radio',
             },
-            options: ['top', 'center'],
+            options: verticalAlignments,
         },
         ...getFramePropsStory(allowedCheckboxFrameProps).argTypes,
     },

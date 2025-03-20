@@ -1,4 +1,4 @@
-import { UIHorizontalAlignment, UISize, UIVariant, UIVerticalAlignment } from '../../config/types';
+import { UIAlignment, UISize, UIVariant } from '../../config/types';
 
 export const newModalVariants = ['primary', 'warning', 'destructive', 'info'] as const;
 export type NewModalVariant = Extract<UIVariant, (typeof newModalVariants)[number]>;
@@ -6,4 +6,4 @@ export type NewModalVariant = Extract<UIVariant, (typeof newModalVariants)[numbe
 export const newModalSizes = ['huge', 'large', 'medium', 'small', 'tiny'] as const;
 export type NewModalSize = Extract<UISize, (typeof newModalSizes)[number]>;
 
-export type NewModalAlignment = { x: UIHorizontalAlignment; y: UIVerticalAlignment };
+export type NewModalAlignment = { x: UIAlignment; y: UIAlignment };

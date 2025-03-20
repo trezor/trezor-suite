@@ -159,7 +159,7 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
                                 size="small"
                                 variant="tertiary"
                                 icon="arrowRight"
-                                iconAlignment="right"
+                                iconAlignment="end"
                                 margin={{ top: spacings.md }}
                             >
                                 Learn more

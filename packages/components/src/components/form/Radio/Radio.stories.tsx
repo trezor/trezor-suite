@@ -5,7 +5,11 @@ import styled from 'styled-components';
 import { Radio as RadioComponent, RadioProps, radioVariants } from './Radio';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { H2 } from '../../typography/Heading/Heading';
-import { allowedCheckboxFrameProps } from '../Checkbox/Checkbox';
+import {
+    allowedCheckboxFrameProps,
+    labelAlignments,
+    verticalAlignments,
+} from '../Checkbox/Checkbox';
 
 const Wrapper = styled.div`
     display: flex;
@@ -39,8 +43,8 @@ export const RadioButton: StoryObj<RadioProps> = {
         variant: 'primary',
         isChecked: false,
         isDisabled: false,
-        labelAlignment: 'right',
-        verticalAlignment: 'top',
+        labelAlignment: 'end',
+        verticalAlignment: 'start',
         ...getFramePropsStory(allowedCheckboxFrameProps).args,
     },
     argTypes: {
@@ -54,13 +58,13 @@ export const RadioButton: StoryObj<RadioProps> = {
             control: {
                 type: 'radio',
             },
-            options: ['left', 'right'],
+            options: labelAlignments,
         },
         verticalAlignment: {
             control: {
                 type: 'radio',
             },
-            options: ['top', 'center'],
+            options: verticalAlignments,
         },
         ...getFramePropsStory(allowedCheckboxFrameProps).argTypes,
     },

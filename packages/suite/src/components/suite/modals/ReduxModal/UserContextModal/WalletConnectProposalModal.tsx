@@ -126,7 +126,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                         <BannerButton
                             onClick={() => dispatch(goto('settings-coins'))}
                             icon="arrowRight"
-                            iconAlignment="right"
+                            iconAlignment="end"
                         >
                             Coin settings
                         </BannerButton>

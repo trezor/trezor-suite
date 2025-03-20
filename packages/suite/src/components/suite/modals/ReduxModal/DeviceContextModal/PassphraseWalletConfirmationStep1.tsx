@@ -51,7 +51,7 @@ export const PassphraseWalletConfirmationStep1 = ({
                         <Button
                             size="tiny"
                             variant="info"
-                            iconAlignment="right"
+                            iconAlignment="end"
                             icon="arrowUpRight"
                             data-testid={dataTest}
                             href={HELP_CENTER_PASSPHRASE_URL}

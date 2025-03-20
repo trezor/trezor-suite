@@ -58,7 +58,11 @@ export const TradingFormOffersSwitcherItem = ({
     return (
         <Offer $isSelected={isSelected} $elevation={elevation}>
             {isSelectable ? (
-                <Radio labelAlignment="left" isChecked={isSelected} onClick={() => onSelect(quote)}>
+                <Radio
+                    labelAlignment="start"
+                    isChecked={isSelected}
+                    onClick={() => onSelect(quote)}
+                >
                     {content}
                 </Radio>
             ) : (

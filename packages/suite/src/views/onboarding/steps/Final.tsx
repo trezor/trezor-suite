@@ -221,7 +221,7 @@ export const FinalStep = () => {
                             });
                         }}
                         icon="arrowRightLong"
-                        iconAlignment="right"
+                        iconAlignment="end"
                         isDisabled={isWaitingForConfirm}
                         size="large"
                     >

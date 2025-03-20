@@ -27,7 +27,7 @@ export const LearnMoreButton = ({
         variant="tertiary"
         size={size}
         icon="arrowUpRight"
-        iconAlignment="right"
+        iconAlignment="end"
         className={className}
         {...buttonProps}
     >

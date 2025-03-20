@@ -74,7 +74,7 @@ export const EstimatedGains = () => {
                         <Text variant="primary">
                             <FormattedCryptoAmount value={value} symbol={account.symbol} />
                         </Text>
-                        <Paragraph align="right">
+                        <Paragraph align="end">
                             <FiatValue amount={value} symbol={account.symbol} />
                         </Paragraph>
                     </Grid>

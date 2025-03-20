@@ -149,14 +149,14 @@ export const AssetRow = memo(
                             </Text>
                         )}
                     </Table.Cell>
-                    <Table.Cell align="right" data-testid="@dashboard/asset/exchange-rate">
+                    <Table.Cell align="end" data-testid="@dashboard/asset/exchange-rate">
                         {!isTestnet(symbol) && <PriceTicker symbol={symbol} />}
                     </Table.Cell>
 
                     <Table.Cell data-testid="@dashboard/asset/week-change">
                         {!isTestnet(symbol) && <TrendTicker symbol={symbol} />}
                     </Table.Cell>
-                    <Table.Cell align="right" colSpan={2}>
+                    <Table.Cell align="end" colSpan={2}>
                         <Row gap={spacings.md}>
                             {isStakeNetwork && (
                                 <TradingButton symbol={symbol} routeName="wallet-staking">

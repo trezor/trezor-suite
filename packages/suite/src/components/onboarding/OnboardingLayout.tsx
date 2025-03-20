@@ -161,7 +161,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                                         <Button
                                             variant="tertiary"
                                             icon="arrowUpRight"
-                                            iconAlignment="right"
+                                            iconAlignment="end"
                                             size="small"
                                             href={TREZOR_SUPPORT_URL}
                                         >

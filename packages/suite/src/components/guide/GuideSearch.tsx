@@ -79,7 +79,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                 placeholder={translationString('TR_SEARCH')}
                 value={query}
                 onChange={e => setQuery(e.currentTarget.value)}
-                innerAddonAlign="left"
+                innerAddonAlign="start"
                 showClearButton="always"
                 onClear={() => setQuery('')}
                 innerAddon={loading ? <Spinner size={24} /> : <Icon name="search" size={24} />}

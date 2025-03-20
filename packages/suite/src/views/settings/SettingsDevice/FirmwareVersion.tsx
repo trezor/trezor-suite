@@ -82,7 +82,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
             variant="tertiary"
             size="tiny"
             icon={githubButtonIcon}
-            iconAlignment="right"
+            iconAlignment="end"
             isDisabled={!revision}
         >
             {currentFwVersion}

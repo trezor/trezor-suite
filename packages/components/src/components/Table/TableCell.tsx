@@ -6,7 +6,7 @@ import { Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
 
 import { useTable } from './Table';
 import { useTableHeader } from './TableHeader';
-import { UIHorizontalAlignment } from '../../config/types';
+import { UIAlignment } from '../../config/types';
 import { FrameProps, FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
@@ -19,11 +19,11 @@ export const allowedTableCellFrameProps = [
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTableCellFrameProps)[number]>;
 
-const mapAlignmentToJustifyContent = (align: UIHorizontalAlignment): FlexJustifyContent => {
-    const map: Record<UIHorizontalAlignment, FlexJustifyContent> = {
-        left: 'flex-start',
+const mapAlignmentToJustifyContent = (align: UIAlignment): FlexJustifyContent => {
+    const map: Record<UIAlignment, FlexJustifyContent> = {
+        start: 'flex-start',
         center: 'center',
-        right: 'flex-end',
+        end: 'flex-end',
     };
 
     return map[align];
@@ -54,7 +54,7 @@ const Cell = styled.td<CellProps>`
     }
 `;
 
-const Content = styled.div<{ $align: UIHorizontalAlignment }>`
+const Content = styled.div<{ $align: UIAlignment }>`
     display: flex;
     justify-content: ${({ $align }) => mapAlignmentToJustifyContent($align)};
 `;
@@ -62,14 +62,14 @@ const Content = styled.div<{ $align: UIHorizontalAlignment }>`
 export type TableCellProps = AllowedFrameProps & {
     children?: ReactNode;
     colSpan?: number;
-    align?: UIHorizontalAlignment;
+    align?: UIAlignment;
     'data-testid'?: string;
 };
 
 export const TableCell = ({
     children,
     colSpan = 1,
-    align = 'left',
+    align = 'start',
     padding,
     maxWidth = 300,
     'data-testid': dataTestId,

@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { Color, borders, spacingsPx, typography } from '@trezor/theme';
 
-import { UIHorizontalAlignment, UIVariant, UIVerticalAlignment } from '../../../config/types';
+import { UIAlignment, UIVariant } from '../../../config/types';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import {
     FrameProps,
@@ -83,9 +83,9 @@ type ContainerProps = TransientProps<AllowedCheckboxFrameProps> & {
 export const Container = styled.div<ContainerProps>`
     display: flex;
     align-items: ${({ $verticalAlignment }) =>
-        $verticalAlignment === 'top' ? 'flex-start' : 'center'};
+        $verticalAlignment === 'start' ? 'flex-start' : 'center'};
     gap: ${spacingsPx.sm};
-    flex-direction: ${({ $labelAlignment }) => $labelAlignment === 'left' && 'row-reverse'};
+    flex-direction: ${({ $labelAlignment }) => $labelAlignment === 'start' && 'row-reverse'};
     pointer-events: ${({ $isDisabled }) => $isDisabled && 'none'};
     cursor: ${({ $isDisabled }) => ($isDisabled ? 'default' : 'pointer')};
     ${withFrameProps}
@@ -166,8 +166,14 @@ export const HiddenInput = styled.input`
 export const checkboxVariants = ['primary', 'destructive', 'warning'] as const;
 export type CheckboxVariant = Extract<UIVariant, (typeof checkboxVariants)[number]>;
 
-export type LabelAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
-export type VerticalAlignment = Extract<UIVerticalAlignment, 'top' | 'center'>;
+export const labelAlignments = ['start', 'end'] as const;
+export type LabelAlignment = Extract<UIAlignment, (typeof labelAlignments)[number]>;
+
+export const verticalAlignments = ['start', 'center'] as const;
+export type VerticalAlignment = Extract<UIAlignment, (typeof verticalAlignments)[number]>;
+
+// export type LabelAlignment = Alignment;
+// export type VerticalAlignment = Alignment;
 
 export type CheckboxProps = AllowedCheckboxFrameProps & {
     variant?: CheckboxVariant;
@@ -185,8 +191,8 @@ export const Checkbox = ({
     variant = 'primary',
     isChecked,
     isDisabled = false,
-    labelAlignment = 'right',
-    verticalAlignment = 'top',
+    labelAlignment = 'end',
+    verticalAlignment = 'start',
     onClick,
     'data-testid': dataTest,
     className,

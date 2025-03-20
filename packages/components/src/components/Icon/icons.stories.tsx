@@ -111,7 +111,7 @@ const Render = (props: IconProps) => {
                 <Checkbox
                     isChecked={isDeprecatedVisible}
                     onClick={() => setIsDeprecatedVisible(!isDeprecatedVisible)}
-                    labelAlignment="right"
+                    labelAlignment="end"
                 >
                     Show deprecated
                 </Checkbox>

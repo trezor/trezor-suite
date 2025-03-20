@@ -27,7 +27,7 @@ export const Table: StoryObj = {
                 <TableComponent.Row>
                     <TableComponent.Cell>Token</TableComponent.Cell>
                     <TableComponent.Cell>Balance</TableComponent.Cell>
-                    <TableComponent.Cell align="right">Price</TableComponent.Cell>
+                    <TableComponent.Cell align="end">Price</TableComponent.Cell>
                 </TableComponent.Row>
             </TableComponent.Header>
             <TableComponent.Body>
@@ -38,7 +38,7 @@ export const Table: StoryObj = {
                     >
                         <TableComponent.Cell>{token.name}</TableComponent.Cell>
                         <TableComponent.Cell>{token.balance}</TableComponent.Cell>
-                        <TableComponent.Cell align="right">{token.price}</TableComponent.Cell>
+                        <TableComponent.Cell align="end">{token.price}</TableComponent.Cell>
                     </TableComponent.Row>
                 ))}
             </TableComponent.Body>

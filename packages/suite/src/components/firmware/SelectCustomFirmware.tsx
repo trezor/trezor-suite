@@ -40,12 +40,7 @@ export const SelectCustomFirmware = ({ setFirmwareBinary }: SelectCustomFirmware
             <BulletList.Item title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD" />}>
                 <Translation id="TR_CUSTOM_FIRMWARE_GITHUB" />{' '}
                 <TrezorLink variant="nostyle" href={githubUrl}>
-                    <Button
-                        size="tiny"
-                        variant="tertiary"
-                        icon="arrowUpRight"
-                        iconAlignment="right"
-                    >
+                    <Button size="tiny" variant="tertiary" icon="arrowUpRight" iconAlignment="end">
                         github.com
                     </Button>
                 </TrezorLink>

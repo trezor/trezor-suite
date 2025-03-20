@@ -71,7 +71,7 @@ export const TokensTable = ({
                             </Table.Cell>
                             {!hideRates && (
                                 <>
-                                    <Table.Cell align="right">
+                                    <Table.Cell align="end">
                                         <Translation id="TR_EXCHANGE_RATE" />
                                     </Table.Cell>
                                     <Table.Cell colSpan={2}>

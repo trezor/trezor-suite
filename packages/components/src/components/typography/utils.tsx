@@ -2,7 +2,7 @@ import { css } from 'styled-components';
 
 import { TypographyStyle, typography, typographyStyles } from '@trezor/theme';
 
-import { UIHorizontalAlignment, uiHorizontalAlignments } from '../../config/types';
+import { UIAlignment, uiAlignments } from '../../config/types';
 import { TransientProps, makePropsTransient } from '../../utils/transientProps';
 
 export const textWraps = ['balance', 'break-word', 'pretty', 'nowrap'];
@@ -14,7 +14,7 @@ export type TextCase = (typeof textCase)[number];
 export type TextProps = {
     typographyStyle?: TypographyStyle;
     textWrap?: TextWrap;
-    align?: UIHorizontalAlignment;
+    align?: UIAlignment;
     ellipsisLineCount?: number;
     case?: TextCase;
 };
@@ -95,7 +95,7 @@ const getStorybookType = (key: TextPropsKeys) => {
             };
         case 'align':
             return {
-                options: [undefined, ...uiHorizontalAlignments],
+                options: [undefined, ...uiAlignments],
                 control: {
                     type: 'select',
                 },

@@ -63,7 +63,7 @@ export const Transport = () => {
                     <Button
                         variant="primary"
                         icon="arrowUpRight"
-                        iconAlignment="right"
+                        iconAlignment="end"
                         onClick={handleOpenSuite}
                     >
                         <FormattedMessage

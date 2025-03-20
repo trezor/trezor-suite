@@ -22,7 +22,7 @@ const DataRow = ({ translationId, content }: DataRowProps) => (
         label={<Translation id={translationId} />}
         direction="row"
         labelWidth={100}
-        verticalAlignment="top"
+        verticalAlignment="start"
     >
         <ParagraphWrapper>
             <Paragraph typographyStyle="label">{content}</Paragraph>

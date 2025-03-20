@@ -123,7 +123,7 @@ export const SearchAction = ({
                 onBlur={onBlur}
                 onKeyDown={onKeyDown}
                 value={searchQuery}
-                innerAddonAlign="left"
+                innerAddonAlign="start"
                 maxLength={512}
                 showClearButton="always"
                 onClear={() => setSearch('')}

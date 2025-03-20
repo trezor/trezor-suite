@@ -5,6 +5,7 @@ import {
     Switch as SwitchComponent,
     SwitchProps,
     allowedSwitchFrameProps,
+    labelPositions,
     switchSizes,
 } from './Switch';
 import { getFramePropsStory } from '../../../utils/frameProps';
@@ -28,7 +29,7 @@ export const Switch: StoryObj<SwitchProps> = {
         isDisabled: false,
         size: 'medium',
         label: 'Headline',
-        labelPosition: 'right',
+        labelPosition: 'end',
         ...getFramePropsStory(allowedSwitchFrameProps).args,
     },
     argTypes: {
@@ -61,7 +62,7 @@ export const Switch: StoryObj<SwitchProps> = {
             },
         },
         labelPosition: {
-            options: ['left', 'right'],
+            options: labelPositions,
             control: {
                 type: 'radio',
             },

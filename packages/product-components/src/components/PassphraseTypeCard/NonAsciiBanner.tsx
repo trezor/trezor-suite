@@ -72,7 +72,7 @@ export const NonAsciiBanner = ({ variant }: NonAsciiBannerProps) => (
                         variant="tertiary"
                         size="tiny"
                         icon="arrowUpRight"
-                        iconAlignment="right"
+                        iconAlignment="end"
                     >
                         <FormattedMessage id="TR_LEARN_MORE" defaultMessage="Learn" />
                     </Button>

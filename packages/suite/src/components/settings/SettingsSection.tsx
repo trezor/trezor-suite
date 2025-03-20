@@ -51,7 +51,7 @@ export const SettingsSection = ({ title, icon, children, tooltipText }: Settings
             }
             variant="default"
             typographyStyle="titleSmall"
-            verticalAlignment="top"
+            verticalAlignment="start"
         >
             <Card>
                 <Column gap={spacings.xxl} hasDivider>

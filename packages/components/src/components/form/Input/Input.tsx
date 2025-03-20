@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { UIHorizontalAlignment } from '../../../config/types';
+import { UIAlignment } from '../../../config/types';
 import { FrameProps } from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
 import { useElevation } from '../../ElevationContext/ElevationContext';
@@ -73,8 +73,8 @@ const getInputAddonPadding = (size: InputSize) =>
 
 const InputAddon = styled.div<{ $align: InnerAddonAlignment; $size: InputSize }>`
     position: absolute;
-    inset: 0 ${({ $align, $size }) => ($align === 'right' ? getInputAddonPadding($size) : 'auto')} 0
-        ${({ $align, $size }) => ($align === 'left' ? getInputAddonPadding($size) : 'auto')};
+    inset: 0 ${({ $align, $size }) => ($align === 'end' ? getInputAddonPadding($size) : 'auto')} 0
+        ${({ $align, $size }) => ($align === 'start' ? getInputAddonPadding($size) : 'auto')};
     display: flex;
     align-items: center;
 `;
@@ -88,7 +88,7 @@ const InputLabel = styled(Label)`
     }
 `;
 
-type InnerAddonAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
+type InnerAddonAlignment = Extract<UIAlignment, 'start' | 'end'>;
 
 type InputHTMLProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>;
 
@@ -115,7 +115,7 @@ const Input = ({
     innerRef,
     label,
     innerAddon,
-    innerAddonAlign = 'right',
+    innerAddonAlign = 'end',
     size = 'large',
     'data-testid': dataTest,
     showClearButton,
@@ -150,10 +150,10 @@ const Input = ({
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                {innerAddon && innerAddonAlign === 'left' && (
+                {innerAddon && innerAddonAlign === 'start' && (
                     <InputAddon
                         data-testid={`${dataTest}/input-addon`}
-                        $align="left"
+                        $align="start"
                         ref={measureLeftAddon}
                         $size={size}
                     >
@@ -161,10 +161,10 @@ const Input = ({
                     </InputAddon>
                 )}
 
-                {((innerAddon && innerAddonAlign === 'right') || hasShowClearButton) && (
+                {((innerAddon && innerAddonAlign === 'end') || hasShowClearButton) && (
                     <InputAddon
                         data-testid={`${dataTest}/input-addon`}
-                        $align="right"
+                        $align="end"
                         ref={measureRightAddon}
                         $size={size}
                     >
