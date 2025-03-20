@@ -383,6 +383,7 @@ const getAccountInfo = async (
             const accountDataLength = BigInt(accountDataBytes.byteLength);
             const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
             const solEpoch = await getEpoch();
+            console.log('loading staking data');
             const solStakingAccounts = await getSolanaStakingData(
                 payload.descriptor,
                 isTestnet,

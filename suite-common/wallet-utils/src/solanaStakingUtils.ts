@@ -131,6 +131,12 @@ export const getSolStakingAccountTotalBalanceByStatus = (account: Account, statu
 
     const selectedStakingAccounts = getSolanaStakingAccountsByStatus(account, status);
     const stakingBalance = calculateTotalSolStakingBalance(selectedStakingAccounts) ?? '0';
+    console.log(
+        'getSolStakingAccountTotalBalanceByStatus',
+        status,
+        selectedStakingAccounts,
+        stakingBalance,
+    );
 
     return formatNetworkAmount(stakingBalance, account.symbol);
 };

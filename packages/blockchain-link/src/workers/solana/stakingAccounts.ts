@@ -14,6 +14,7 @@ export const getSolanaStakingData = async (
     epoch: number,
     serverUrl: string,
 ): Promise<SolanaStakingAccount[]> => {
+    console.log('getSolanaStakingData', descriptor, isTestnet, epoch, serverUrl);
     const network = isTestnet ? Network.Devnet : Network.Mainnet;
 
     const solanaClient = new Solana(network, {
@@ -26,6 +27,7 @@ export const getSolanaStakingData = async (
         throw new Error('Failed to fetch delegations');
     }
     const { result: stakingAccounts } = delegations;
+    console.log('stakingAccounts', stakingAccounts);
 
     return stakingAccounts
         .map(account => {
@@ -33,6 +35,7 @@ export const getSolanaStakingData = async (
             if (!stakeAccount) return;
 
             const stakeState = stakeAccountState(stakeAccount, BigInt(epoch));
+            console.log('stakeState', stakeAccount, stakeState);
 
             const { state } = account?.data ?? {};
             if (!isStake(state)) return;
@@ -41,6 +44,7 @@ export const getSolanaStakingData = async (
                 const { fields } = state;
 
                 const voterPubkey = fields[1]?.delegation?.voterPubkey;
+                console.log('voterPubkey', voterPubkey);
                 if (!EVERSTAKE_VOTER_PUBKEYS.includes(voterPubkey)) return; // filter out non-everstake accounts
 
                 return {
@@ -48,6 +52,8 @@ export const getSolanaStakingData = async (
                     stake: fields[1]?.delegation?.stake.toString(),
                     status: stakeState,
                 };
+            } else {
+                console.log('problem');
             }
         })
         .filter(account => account !== undefined);
