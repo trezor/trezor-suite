@@ -83,7 +83,7 @@ export class ThreadProxy<_Target extends object> {
             return true;
         } catch (e) {
             // No need to unset `this.utility` because kill will trigger `onExit()`
-            this.utility.kill();
+            utility.kill();
             throw e;
         }
     }
