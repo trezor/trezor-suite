@@ -140,6 +140,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
             payload: {
                 version: settings?.version,
                 origin: settings?.origin,
+                referrerAppName: settings?.manifest?.appName,
                 referrerApp: settings?.manifest?.appUrl,
                 referrerEmail: settings?.manifest?.email,
                 method: method?.name,

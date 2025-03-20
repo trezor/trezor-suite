@@ -41,7 +41,7 @@ describe('TrezorConnect.init', () => {
 
     it('calling .init() multiple times', async () => {
         await TrezorConnect.init({
-            manifest: { appUrl: 'a', email: 'b' },
+            manifest: { appName: 'a', appUrl: 'a', email: 'b' },
         });
 
         try {

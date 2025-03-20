@@ -68,6 +68,7 @@ export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDepende
             popup: false,
             manifest: {
                 email: 'info@trezor.io',
+                appName: 'Trezor Suite Lite',
                 appUrl: '@trezor/suite',
             },
         },

@@ -3,6 +3,8 @@ import type { Transport } from '@trezor/transport';
 
 export type { SystemInfo } from '@trezor/connect-common';
 export interface Manifest {
+    appName?: string;
+    appIcon?: string;
     appUrl: string;
     email: string;
 }

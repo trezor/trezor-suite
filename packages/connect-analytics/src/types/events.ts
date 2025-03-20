@@ -24,6 +24,7 @@ export type ConnectAnalyticsEvent =
           payload: {
               version?: string;
               origin?: string;
+              referrerAppName?: string;
               referrerApp?: string;
               referrerEmail?: string;
               method?: string;

@@ -62,7 +62,8 @@ const onOptionChange = <T>(state: ConnectState, field: Field<T>, value: T): Conn
         newState.options = {
             manifest: {
                 email: 'info@trezor.io',
-                appUrl: '@trezor/suite',
+                appUrl: '@trezor/connect-explorer',
+                appName: 'Trezor Connect Explorer',
             },
         };
     }

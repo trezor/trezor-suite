@@ -40,6 +40,8 @@ const parseManifest = (manifest?: Manifest) => {
     return {
         email: manifest.email,
         appUrl: manifest.appUrl,
+        appName: manifest.appName,
+        appIcon: manifest.appIcon,
     };
 };
 

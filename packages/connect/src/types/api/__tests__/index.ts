@@ -6,7 +6,7 @@ import {
 } from '../../..';
 
 export const init = async (api: TrezorConnect) => {
-    const manifest = { appUrl: '', email: '' };
+    const manifest = { appName: '', appUrl: '', email: '' };
     api.init({ manifest });
     // @ts-expect-error
     api.init();

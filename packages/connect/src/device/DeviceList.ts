@@ -184,7 +184,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             messages,
             logger: transportLogger,
             sessionsBackgroundUrl: _sessionsBackgroundUrl,
-            id: manifest?.appUrl || 'unknown app',
+            id: manifest?.appName || manifest?.appUrl || 'unknown app',
         });
     }
 
