@@ -1575,11 +1575,11 @@ export default defineMessages({
         id: 'TR_ALL',
     },
     TR_ONBOARDING_ALLOW_ANALYTICS: {
-        defaultMessage: 'Help us anonymously',
+        defaultMessage: 'Allow anonymous data collection',
         id: 'TR_ONBOARDING_ALLOW_ANALYTICS',
     },
     TR_ALLOW_ANALYTICS: {
-        defaultMessage: 'Better―with you',
+        defaultMessage: 'Anonymous data collection',
         id: 'TR_ALLOW_ANALYTICS',
     },
     TR_ALLOW_ANALYTICS_DESCRIPTION: {
@@ -1592,7 +1592,8 @@ export default defineMessages({
         id: 'TR_ALLOW_ANALYTICS_PRIVACY_TITLE',
     },
     TR_ALLOW_ANALYTICS_PRIVACY_DESCRIPTION: {
-        defaultMessage: `We don't gather sensitive personal data like balances, transactions, or profile details.`,
+        defaultMessage:
+            "We don't gather sensitive personal data like balances, transactions, or profile details.",
         id: 'TR_ALLOW_ANALYTICS_PRIVACY_DESCRIPTION',
     },
     TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_TITLE: {
@@ -3457,7 +3458,8 @@ export default defineMessages({
         id: 'TR_XRP_RESERVE_INFO',
     },
     TR_YOU_WERE_DISCONNECTED_DOT: {
-        defaultMessage: 'You were disconnected.',
+        defaultMessage:
+            'No internet connection. Some features may be unavailable until you’re back online.',
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
     },
     TR_YOUR_FIRMWARE_VERSION: {
@@ -7274,7 +7276,7 @@ export default defineMessages({
     },
     TR_WHAT_DATA_WE_COLLECT: {
         id: 'TR_WHAT_DATA_WE_COLLECT',
-        defaultMessage: 'What data do we collect',
+        defaultMessage: 'What data do we collect?',
     },
     TR_ONBOARDING_TROUBLESHOOTING_FAILED: {
         id: 'TR_ONBOARDING_TROUBLESHOOTING_FAILED',
@@ -8991,7 +8993,7 @@ export default defineMessages({
     TR_SOL_FEE_DESC: {
         id: 'TR_SOL_FEE_DESC',
         defaultMessage:
-            'Network fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account’s storage.',
+            'Network fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. {br}Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account’s storage.',
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
