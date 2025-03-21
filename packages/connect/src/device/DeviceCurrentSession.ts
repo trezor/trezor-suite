@@ -4,7 +4,7 @@ import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { TransportProtocol } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
 import { Session, Transport } from '@trezor/transport';
-import { resolveAfter, versionUtils } from '@trezor/utils';
+import { resolveAfter, scheduleAction, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
 import { Device } from './Device';
@@ -101,20 +101,16 @@ export class DeviceCurrentSession implements TypedCallProvider {
         } catch (error) {
             // handle possible race condition
             // Bridge may have some unread message in buffer, read it
-            const abortController = new AbortController();
-            const timeout = setTimeout(() => {
-                abortController.abort();
-            }, 500);
+            await scheduleAction(
+                abort =>
+                    this.transport.receive({
+                        session: this.session,
+                        protocol: this.protocol,
+                        signal: abort,
+                    }),
+                { timeout: 500 },
+            ).catch(() => {});
 
-            await this.transport
-                .receive({
-                    session: this.session,
-                    protocol: this.protocol,
-                    signal: abortController.signal,
-                })
-                .finally(() => {
-                    clearTimeout(timeout);
-                });
             // throw error anyway, next call should be resolved properly
             throw error;
         }
