@@ -16,7 +16,6 @@ export class AnalyticsFixture {
         this.page = page;
     }
 
-    //TODO: #15811 To be refactored
     findAnalyticsEventByType<T extends SuiteAnalyticsEvent>(eventType: T['type']) {
         const event = this.requests.find(req => req.c_type === eventType) as EventPayload<T>;
 
@@ -31,7 +30,6 @@ export class AnalyticsFixture {
         return [...this.requests].reverse().find(req => req.c_type === eventType);
     }
 
-    //TODO: #15811 To be refactored
     @step()
     async interceptAnalytics() {
         await this.page.route('**://data.trezor.io/suite/log/**', route => {

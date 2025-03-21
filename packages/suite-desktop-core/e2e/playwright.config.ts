@@ -25,7 +25,6 @@ const config: PlaywrightTestConfig = {
     projects: [
         {
             name: PlaywrightProjects.Web,
-            retries: 2,
             use: {
                 ...devices['Desktop Chrome'],
                 channel: 'chromium',
@@ -35,13 +34,13 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: PlaywrightProjects.Desktop,
-            retries: 2,
             use: {},
             grepInvert: /@webOnly/,
         },
     ],
     testDir: 'tests',
     workers: 1, // to disable parallelism between test files
+    retries: process.env.GITHUB_ACTION ? 2 : 0,
     use: {
         viewport: { width: 1280, height: 720 },
         trace: 'on',

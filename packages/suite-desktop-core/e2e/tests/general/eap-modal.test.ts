@@ -8,16 +8,10 @@ import { expect, test } from '../../support/fixtures';
  * 4. Confrim the EAP modal
  * 5. Check if there is a button with `Leave` on it
  */
-// TODO: #15561 FIX settings cleanup: eap setting is remembered even after cache cleanup at the beginning of the test. This shouldn't affect gha run but breaks the local one.
-test.skip(!process.env.GITHUB_ACTION, 'Test is working only in CI. Skipping local run.');
 test.use({ startEmulator: false });
-test.beforeAll(async ({ onboardingPage }) => {
-    await onboardingPage.completeOnboarding();
-});
 
 test('Join early access button', { tag: '@settings' }, async ({ settingsPage }) => {
-    const buttonText = 'Leave';
     await settingsPage.navigateTo('application');
     await settingsPage.joinEarlyAccessProgram();
-    expect(await settingsPage.earlyAccessJoinButton.textContent()).toContain(buttonText);
+    await expect(settingsPage.earlyAccessJoinButton).toHaveText('Opt out');
 });

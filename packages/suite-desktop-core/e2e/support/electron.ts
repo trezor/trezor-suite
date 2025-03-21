@@ -6,11 +6,15 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 // specific version of legacy bridge is requested & expected
 export const LEGACY_BRIDGE_VERSION = '2.0.33';
+
 const disableHashCheckStatePatch =
     '--state.suite.settings.enabledSecurityChecks.firmwareHash=false';
 const disableRevisionCheckStatePatch =
     '--state.suite.settings.enabledSecurityChecks.firmwareRevision=false';
-const showDebugMenuStatePatch = `--state.suite.settings.debug.showDebugMenu=true`;
+const showDebugMenuStatePatch = '--state.suite.settings.debug.showDebugMenu=true';
+// #15670 Bug in desktop app that loglevel is ignored
+const logLevelArgument = `--log-level=${process.env.LOGLEVEL ?? 'debug'}`;
+const disableHWAccelerationArgument = '--disable-gpu'; // to fix chromium error GetVSyncParametersIfAvailable()
 
 type LaunchSuiteParams = {
     rmUserData?: boolean;
@@ -37,6 +41,37 @@ const formatErrorLogMessage = (data: string) => {
     return `${timestamp} - ${bold}${red}ERROR${unbold}: ${data}${reset}`;
 };
 
+const buildArgs = (appDir: string, options: LaunchSuiteParams) => {
+    const args = [
+        path.join(appDir, './dist/app.js'),
+        `--width=${options.viewport.width}`,
+        `--height=${options.viewport.height}`,
+        logLevelArgument,
+        disableHWAccelerationArgument,
+        disableHashCheckStatePatch,
+        disableRevisionCheckStatePatch,
+        showDebugMenuStatePatch,
+    ];
+
+    if (options.bridgeLegacyTest) {
+        args.push('--bridge-legacy', '--bridge-test');
+    }
+
+    if (options.bridgeDaemon) {
+        args.push('--bridge-daemon', '--skip-new-bridge-rollout');
+    }
+
+    if (options.rmUserData) {
+        args.push('--remove-user-data-on-start');
+    }
+
+    if (process.env.CANARY_FIRMWARE) {
+        args.push('--state.suite.settings.enabledSecurityChecks.firmwareRevision=false');
+    }
+
+    return args;
+};
+
 export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     const defaultParams = {
         rmUserData: true,
@@ -46,28 +81,16 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     const options = Object.assign(defaultParams, params);
 
     const appDir = path.join(__dirname, '../../../suite-desktop');
-    // #15670 Bug in desktop app that loglevel is ignored
-    const logLevelArgument = `--log-level=${process.env.LOGLEVEL ?? 'debug'}`;
-    const viewportArgument = `--width=${options.viewport.width} --height=${options.viewport.height}`;
-    const disableHWAccelerationArgument = '--disable-gpu'; // to fix chromium error GetVSyncParametersIfAvailable()
+    const args = buildArgs(appDir, options);
+
     if (!options.bridgeDaemon) {
         // TODO: #15646 Find out why currently pw fails to see node-bridge so we default to legacy bridge.
         await TrezorUserEnvLink.startBridge(LEGACY_BRIDGE_VERSION);
     }
+
     const electronApp = await electron.launch({
         cwd: appDir,
-        args: [
-            path.join(appDir, './dist/app.js'),
-            viewportArgument,
-            logLevelArgument,
-            disableHWAccelerationArgument,
-            ...(options.bridgeLegacyTest ? ['--bridge-legacy', '--bridge-test'] : []),
-            ...(options.bridgeDaemon ? ['--bridge-daemon', '--skip-new-bridge-rollout'] : []),
-            ...(options.rmUserData ? ['--remove-user-data-on-start'] : []),
-            disableHashCheckStatePatch,
-            process.env.CANARY_FIRMWARE ? disableRevisionCheckStatePatch : '',
-            showDebugMenuStatePatch,
-        ],
+        args,
         colorScheme: params.colorScheme,
         locale: params.locale,
         recordVideo: { dir: options.artefactFolder, size: options.viewport },
