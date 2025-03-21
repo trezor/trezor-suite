@@ -85,7 +85,7 @@ const parseRunOptions = (options?: RunOptions): RunOptions => {
     return options;
 };
 
-type Result<T> = { success: true; payload: T } | { success: false; error: string };
+type Result<T> = { success: true; payload: T } | { success: false; error: Error };
 
 export interface DeviceEvents {
     [DEVICE.PIN]: {
@@ -466,7 +466,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async interruptionFromUser(error: Error) {
         _log.debug('interruptionFromUser');
 
-        await this.currentSession?.cancel(error.toString());
+        await this.currentSession?.abort(error);
         await this.currentSession?.dispose();
 
         if (this.runPromise) {
@@ -1068,7 +1068,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             if (!this.listenerCount(type)) {
                 const payload = {
                     success: false,
-                    error: `${type} callback not configured`,
+                    error: new Error(`${type} callback not configured`),
                 } as const;
                 callback(payload);
             } else {

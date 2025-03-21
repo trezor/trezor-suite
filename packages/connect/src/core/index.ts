@@ -816,7 +816,7 @@ const onDevicePinHandler =
         try {
             const uiResp = await uiPromise.promise;
             if (uiResp.payload == null) {
-                callback({ success: false, error: `${UI.RECEIVE_PIN} missing payload` });
+                callback({ success: false, error: new Error(`${UI.RECEIVE_PIN} missing payload`) });
             } else {
                 callback({ success: true, payload: uiResp.payload });
             }
@@ -840,7 +840,10 @@ const onDeviceWordHandler =
         try {
             const uiResp = await uiPromise.promise;
             if (uiResp.payload == null) {
-                callback({ success: false, error: `${UI.RECEIVE_WORD} missing payload` });
+                callback({
+                    success: false,
+                    error: new Error(`${UI.RECEIVE_WORD} missing payload`),
+                });
             } else {
                 callback({ success: true, payload: uiResp.payload });
             }
@@ -865,7 +868,10 @@ const onDevicePassphraseHandler =
         try {
             const uiResp = await uiPromise.promise;
             if (uiResp.payload == null) {
-                callback({ success: false, error: `${UI.RECEIVE_PASSPHRASE} missing payload` });
+                callback({
+                    success: false,
+                    error: new Error(`${UI.RECEIVE_PASSPHRASE} missing payload`),
+                });
             } else {
                 callback({ success: true, payload: uiResp.payload });
             }

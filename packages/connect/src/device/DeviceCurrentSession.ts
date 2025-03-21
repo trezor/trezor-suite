@@ -3,8 +3,8 @@
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { TransportProtocol } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
-import { Session, TRANSPORT_ERROR, Transport } from '@trezor/transport';
-import { createDeferred, resolveAfter, versionUtils } from '@trezor/utils';
+import { Session, Transport } from '@trezor/transport';
+import { resolveAfter, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
 import { Device } from './Device';
@@ -27,6 +27,12 @@ const filterForLog = (type: string, msg: any) =>
 
 const logger = initLog('DeviceCommands');
 
+const success = <T>(payload: T) => ({ success: true as const, payload });
+const error = (error: Error) => ({ success: false as const, error });
+const fail = (msg: string, cause?: string) => error(new Error(msg, cause ? { cause } : undefined));
+const disposed = () =>
+    error(ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed'));
+
 export interface TypedCallProvider {
     typedCall: Messages.TypedCall;
     cancelCall: DeviceCurrentSession['cancelCall'];
@@ -41,6 +47,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
     private disposed: boolean;
     private callPromise?: Promise<unknown>;
+    private abortController?: AbortController;
 
     constructor(
         device: Device,
@@ -67,14 +74,28 @@ export class DeviceCurrentSession implements TypedCallProvider {
         // Assert message type
         // msg is allowed to be undefined for some calls, in that case the schema is an empty object
         Assert(Messages.MessageType.properties[type], msg);
-        const response = await this.callLoop(type, msg);
+
+        this.abortController = new AbortController();
+        const { signal } = this.abortController;
+        const abortPromise = new Promise<ReturnType<typeof fail>>(resolve =>
+            signal.addEventListener('abort', () => resolve(error(signal.reason))),
+        );
+        const callPromise = this.callLoop(type, msg, abortPromise);
+        this.callPromise = callPromise;
+        const response = await callPromise;
+        this.callPromise = undefined;
+        this.abortController = undefined;
+
+        if (!response.success) throw response.error;
+
+        const { payload } = response;
 
         try {
             const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
-            if (!splitResTypes.includes(response.type)) {
+            if (!splitResTypes.includes(payload.type)) {
                 throw ERRORS.TypedError(
                     'Runtime',
-                    `assertType: Response of unexpected type: ${response.type}. Should be ${resType}`,
+                    `assertType: Response of unexpected type: ${payload.type}. Should be ${resType}`,
                 );
             }
         } catch (error) {
@@ -98,89 +119,84 @@ export class DeviceCurrentSession implements TypedCallProvider {
             throw error;
         }
 
-        return response;
+        return payload;
+    }
+
+    /**
+     * Bridge version =< 2.0.28 throws "other call in progress" error.
+     * as workaround takeover transportSession (acquire) before sending Cancel, this will resolve previous pending call.
+     */
+    private needCancelWorkaround() {
+        return (
+            this.transport.name === 'BridgeTransport' &&
+            !versionUtils.isNewer(this.transport.version, '2.0.28')
+        );
     }
 
     private async callLoop<T extends Messages.MessageKey>(
         type: T,
         msg: Messages.MessagePayload<T>,
-    ): Promise<Messages.MessageResponse> {
+        abortPromise: Promise<ReturnType<typeof fail>>,
+    ): Promise<ReturnType<typeof success<Messages.MessageResponse>> | ReturnType<typeof fail>> {
         let [name, data] = [type, msg];
-        let pinUnlocked = false;
         const { protocol, session } = this;
+        let pinUnlocked = false;
 
         while (true) {
-            if (this.disposed) {
-                throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
+            if (this.disposed) return disposed();
+
+            const callPromise = this.call({ session, name, data, protocol });
+
+            const abortedDuringCall = await Promise.race([
+                callPromise.then(() => false),
+                abortPromise.then(() => true),
+            ]);
+
+            if (name === 'ButtonAck' && abortedDuringCall && !this.disposed) {
+                if (this.needCancelWorkaround()) {
+                    try {
+                        // UI_EVENT is send right before ButtonAck, make sure that ButtonAck is sent
+                        await resolveAfter(1);
+                        await this.device.acquire();
+                        await this.device.getCurrentSession().cancelCall(false);
+                        await this.device.release();
+                    } catch {
+                        // ignore whatever happens
+                    }
+                } else {
+                    await this.cancelCall(false);
+                }
             }
 
-            logger.debug('Sending', name, filterForLog(name, data));
+            const response = await callPromise;
 
-            const promise = this.transport.call({ session, name, data, protocol });
+            if (this.disposed) return disposed();
 
-            this.callPromise = promise;
-            const response = await promise;
-            this.callPromise = undefined;
-
-            if (!response.success) {
-                // res.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
-                logger.warn('Received transport error', response.error, response.message);
-                throw new Error(response.error, { cause: 'transport-error' });
-            }
+            if (!response.success) return response;
 
             const res = response.payload;
-
-            logger.debug('Received', res.type, filterForLog(res.type, res.message));
-
-            this.clearCancel();
 
             switch (res.type) {
                 case 'Failure': {
                     const { code, message } = res.message;
+                    const err =
+                        message ||
+                        // T1B1 does not send any message in firmware update
+                        // https://github.com/trezor/trezor-firmware/issues/1334
+                        (code === Messages.FailureType.Failure_FirmwareError &&
+                            'Firmware installation failed') ||
+                        // Failure_ActionCancelled message could be also missing
+                        // https://github.com/trezor/connect/issues/865
+                        (code === Messages.FailureType.Failure_ActionCancelled &&
+                            'Action cancelled by user') ||
+                        'Failure_UnknownMessage';
 
                     // pass code and message from firmware error
-                    return Promise.reject(
-                        new ERRORS.TrezorError(
-                            (code as any) || 'Failure_UnknownCode',
-                            message ||
-                                // T1B1 does not send any message in firmware update
-                                // https://github.com/trezor/trezor-firmware/issues/1334
-                                (code === Messages.FailureType.Failure_FirmwareError &&
-                                    'Firmware installation failed') ||
-                                // Failure_ActionCancelled message could be also missing
-                                // https://github.com/trezor/connect/issues/865
-                                (code === Messages.FailureType.Failure_ActionCancelled &&
-                                    'Action cancelled by user') ||
-                                'Failure_UnknownMessage',
-                        ),
+                    return error(
+                        new ERRORS.TrezorError((code as any) || 'Failure_UnknownCode', err),
                     );
                 }
                 case 'ButtonRequest': {
-                    this.awaitCancel().then(async ({ resolve }) => {
-                        /**
-                         * Bridge version =< 2.0.28 throws "other call in progress" error.
-                         * as workaround takeover transportSession (acquire) before sending Cancel, this will resolve previous pending call.
-                         */
-                        if (
-                            this.transport.name === 'BridgeTransport' &&
-                            !versionUtils.isNewer(this.transport.version, '2.0.28')
-                        ) {
-                            try {
-                                // UI_EVENT is send right before ButtonAck, make sure that ButtonAck is sent
-                                await resolveAfter(1);
-                                await this.device.acquire();
-                                await this.device.getCurrentSession().cancelCall(false);
-                                await this.device.release();
-                            } catch {
-                                // ignore whatever happens
-                            }
-                        } else {
-                            await this.cancelCall(false);
-                        }
-
-                        resolve();
-                    });
-
                     if (res.message.code === 'ButtonRequest_PassphraseEntry') {
                         this.device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
                     } else {
@@ -196,18 +212,13 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 case 'PinMatrixRequest': {
                     const promptRes = await Promise.race([
                         this.device.prompt(DEVICE.PIN, { type: res.message.type }),
-                        this.awaitCancel().then(resp => ({ success: false as const, ...resp })),
+                        abortPromise,
                     ]);
-                    this.clearCancel();
 
                     if (!promptRes.success) {
                         const cancelRes = await this.cancelCall();
 
-                        if ('resolve' in promptRes) promptRes.resolve();
-
-                        return Promise.reject(
-                            cancelRes.success ? promptRes.error : cancelRes.error,
-                        );
+                        return cancelRes.success ? promptRes : cancelRes;
                     }
 
                     pinUnlocked = true;
@@ -217,43 +228,32 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 case 'PassphraseRequest': {
                     const promptRes = await Promise.race([
                         this.device.prompt(DEVICE.PASSPHRASE, {}),
-                        this.awaitCancel().then(resp => ({ success: false as const, ...resp })),
+                        abortPromise,
                     ]);
-                    this.clearCancel();
 
                     if (!promptRes.success) {
                         const cancelRes = await this.cancelCall();
 
-                        if ('resolve' in promptRes) promptRes.resolve();
-
-                        return Promise.reject(
-                            cancelRes.success ? promptRes.error : cancelRes.error,
-                        );
+                        return cancelRes.success ? promptRes : cancelRes;
                     }
 
-                    [name, data] = [
-                        'PassphraseAck',
-                        promptRes.payload.passphraseOnDevice
-                            ? { on_device: true }
-                            : { passphrase: promptRes.payload.value.normalize('NFKD') },
-                    ];
+                    const payload = promptRes.payload.passphraseOnDevice
+                        ? { on_device: true }
+                        : { passphrase: promptRes.payload.value.normalize('NFKD') };
+
+                    [name, data] = ['PassphraseAck', payload];
                     break;
                 }
                 case 'WordRequest': {
                     const promptRes = await Promise.race([
                         this.device.prompt(DEVICE.WORD, { type: res.message.type }),
-                        this.awaitCancel().then(resp => ({ success: false as const, ...resp })),
+                        abortPromise,
                     ]);
-                    this.clearCancel();
 
                     if (!promptRes.success) {
                         const cancelRes = await this.cancelCall();
 
-                        if ('resolve' in promptRes) promptRes.resolve();
-
-                        return Promise.reject(
-                            cancelRes.success ? promptRes.error : cancelRes.error,
-                        );
+                        return cancelRes.success ? promptRes : cancelRes;
                     }
 
                     [name, data] = ['WordAck', { word: promptRes.payload }];
@@ -261,56 +261,56 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 }
                 default: {
                     // reload features after successful PIN; TODO improve
-                    if (pinUnlocked && !this.device.features.unlocked) {
+                    if (!this.disposed && pinUnlocked && !this.device.features.unlocked) {
                         await this.device.getFeatures();
                     }
 
-                    return res;
+                    return success(res);
                 }
             }
         }
     }
 
-    cancelCall(expectResponse = true) {
-        if (this.disposed) {
-            return Promise.resolve({
-                success: false as const,
-                error: TRANSPORT_ERROR.SESSION_NOT_FOUND,
-            });
+    private async call(params: Parameters<Transport['call']>[0]) {
+        logger.debug('Sending', params.name, filterForLog(params.name, params.data));
+
+        const result = await this.transport.call(params);
+
+        if (result.success) {
+            const { type, message } = result.payload;
+            logger.debug('Received', type, filterForLog(type, message));
+        } else {
+            // res.message is not propagated to higher levels, only logged here. webusb/node-bridge may return message with additional information
+            logger.warn('Received transport error', result.error, result.message);
         }
+
+        return result.success ? success(result.payload) : fail(result.error, 'transport-error');
+    }
+
+    async cancelCall(expectResponse = true) {
+        if (this.disposed) return Promise.resolve(disposed());
 
         const { protocol, session } = this;
         const cancelArgs = { session, name: 'Cancel', data: {}, protocol };
 
-        return expectResponse ? this.transport.call(cancelArgs) : this.transport.send(cancelArgs);
+        const response = expectResponse
+            ? await this.transport.call(cancelArgs)
+            : await this.transport.send(cancelArgs);
+
+        return response.success ? success(response.payload) : fail(response.error);
     }
 
-    private cancelFn?: (err: string) => Promise<void>;
-
-    private awaitCancel() {
-        const dfd = createDeferred<{ error: string; resolve: () => void }>();
-        this.cancelFn = error => {
-            const { promise, resolve } = createDeferred();
-            dfd.resolve({ resolve, error });
-
-            return promise;
-        };
-
-        return dfd.promise;
-    }
-
-    private clearCancel() {
-        this.cancelFn = undefined;
-    }
-
-    async cancel(reason: string) {
-        await this.cancelFn?.(reason);
+    async abort(reason: Error) {
+        this.abortController?.abort(reason);
+        await this.callPromise;
     }
 
     async dispose() {
         if (!this.disposed) {
             this.disposed = true;
-            await this.callPromise;
+            await this.abort(
+                ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed'),
+            );
         }
     }
 }
