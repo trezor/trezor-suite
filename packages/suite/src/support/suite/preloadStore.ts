@@ -24,26 +24,48 @@ export const preloadStore = async () => {
         } as const;
     }
 
-    // load state from database
-    const suiteSettings = await db.getItemByPK('suiteSettings', 'suite');
-    const devices = await db.getItemsExtended('devices');
-    const accounts = await db.getItemsExtended('accounts');
-    const discovery = await db.getItemsExtended('discovery');
-    const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
-    const tradingTrades = await db.getItemsExtended('tradingTrades');
-    const historicRates = await db.getItemsWithKeys('historicRates');
-    const graph = await db.getItemsExtended('graph');
-    const analytics = await db.getItemByPK('analytics', 'suite');
-    const metadata = await db.getItemByPK('metadata', 'state');
-    const txs = await db.getItemsExtended('txs', 'order');
-    const messageSystem = await db.getItemByPK('messageSystem', 'suite');
-    const backendSettings = await db.getItemsWithKeys('backendSettings');
-    const sendFormDrafts = await db.getItemsWithKeys('sendFormDrafts');
-    const formDrafts = await db.getItemsWithKeys('formDrafts');
-    const coinjoinAccounts = await db.getItemsExtended('coinjoinAccounts');
-    const coinjoinDebugSettings = await db.getItemByPK('coinjoinDebugSettings', 'debug');
-    const tokenManagement = await db.getItemsWithKeys('tokenManagement');
-    const security = await db.getItemByPK('security', 'security');
+    // Load state from database in parallel using Promise.all
+    const [
+        suiteSettings,
+        devices,
+        accounts,
+        discovery,
+        walletSettings,
+        tradingTrades,
+        historicRates,
+        graph,
+        analytics,
+        metadata,
+        txs,
+        messageSystem,
+        backendSettings,
+        sendFormDrafts,
+        formDrafts,
+        coinjoinAccounts,
+        coinjoinDebugSettings,
+        tokenManagement,
+        security,
+    ] = await Promise.all([
+        db.getItemByPK('suiteSettings', 'suite'),
+        db.getItemsExtended('devices'),
+        db.getItemsExtended('accounts'),
+        db.getItemsExtended('discovery'),
+        db.getItemByPK('walletSettings', 'wallet'),
+        db.getItemsExtended('tradingTrades'),
+        db.getItemsWithKeys('historicRates'),
+        db.getItemsExtended('graph'),
+        db.getItemByPK('analytics', 'suite'),
+        db.getItemByPK('metadata', 'state'),
+        db.getItemsExtended('txs', 'order'),
+        db.getItemByPK('messageSystem', 'suite'),
+        db.getItemsWithKeys('backendSettings'),
+        db.getItemsWithKeys('sendFormDrafts'),
+        db.getItemsWithKeys('formDrafts'),
+        db.getItemsExtended('coinjoinAccounts'),
+        db.getItemByPK('coinjoinDebugSettings', 'debug'),
+        db.getItemsWithKeys('tokenManagement'),
+        db.getItemByPK('security', 'security'),
+    ]);
 
     return {
         type: STORAGE.LOAD,
