@@ -18,6 +18,7 @@ import {
 } from '@trezor/components';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet, Translation } from 'src/components/suite';
 import { IOAddress } from 'src/components/suite/copy/IOAddress';
@@ -44,7 +45,7 @@ const Item = ({ label, iconName, children }: Partial<InfoItemProps>) => (
     <InfoItem
         label={label}
         iconName={iconName}
-        labelWidth={100}
+        labelWidth={120}
         typographyStyle="label"
         direction="row"
     >
@@ -159,29 +160,101 @@ export const BasicTxDetails = ({
                 {/* Ethereum */}
                 {tx.ethereumSpecific && (
                     <>
-                        <Item label={<Translation id="TR_GAS_LIMIT" />} iconName="receipt">
-                            {tx.ethereumSpecific.gasLimit}
-                        </Item>
-
-                        <Item label={<Translation id="TR_GAS_USED" />} iconName="receipt">
-                            {tx.ethereumSpecific.gasUsed ? (
-                                tx.ethereumSpecific.gasUsed
-                            ) : (
-                                <Translation id="TR_BUY_STATUS_PENDING" />
-                            )}
-                        </Item>
-
-                        <Item label={<Translation id="TR_GAS_PRICE" />} iconName="receipt">
-                            <FeeRate
-                                feeRate={fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei')}
-                                networkType="ethereum"
-                                symbol={network.symbol}
-                            />
-                        </Item>
-
                         <Item label={<Translation id="TR_NONCE" />} iconName="receipt">
                             {tx.ethereumSpecific?.nonce}
                         </Item>
+
+                        <Item
+                            label={
+                                <Translation
+                                    id={
+                                        tx.ethereumSpecific.gasUsed
+                                            ? 'TR_GAS_LIMIT_AND_USAGE'
+                                            : 'TR_GAS_LIMIT'
+                                    }
+                                />
+                            }
+                            iconName="gasPump"
+                        >
+                            {tx.ethereumSpecific.gasLimit}
+                            {tx.ethereumSpecific.gasUsed && (
+                                <>
+                                    {' / '}
+                                    {tx.ethereumSpecific.gasUsed} (
+                                    {new BigNumber(tx.ethereumSpecific.gasUsed)
+                                        .div(tx.ethereumSpecific.gasLimit)
+                                        .multipliedBy(100)
+                                        .toFixed(2)}
+                                    %)
+                                </>
+                            )}
+                        </Item>
+
+                        <Item label={<Translation id="TR_GAS_PRICE" />} iconName="gasPump">
+                            {isConfirmed ? (
+                                <FeeRate
+                                    feeRate={fromWei(tx.ethereumSpecific?.gasPrice || 0, 'gwei')}
+                                    networkType="ethereum"
+                                    symbol={network.symbol}
+                                    preserveDecimals
+                                />
+                            ) : (
+                                <Translation id="TR_UNCONFIRMED_TX" />
+                            )}
+                        </Item>
+
+                        {tx.ethereumSpecific.maxFeePerGas && (
+                            <>
+                                <Item
+                                    label={<Translation id="TR_MAX_FEE_PER_GAS" />}
+                                    iconName="gasPump"
+                                >
+                                    <FeeRate
+                                        feeRate={fromWei(
+                                            tx.ethereumSpecific?.maxFeePerGas ?? '0',
+                                            'gwei',
+                                        )}
+                                        networkType="ethereum"
+                                        symbol={network.symbol}
+                                        preserveDecimals
+                                    />
+                                </Item>
+
+                                <Item
+                                    label={<Translation id="TR_BLOCK_BASE_FEE" />}
+                                    iconName="gasPump"
+                                >
+                                    {isConfirmed ? (
+                                        <FeeRate
+                                            feeRate={fromWei(
+                                                tx.ethereumSpecific.baseFeePerGas || '0',
+                                                'gwei',
+                                            )}
+                                            networkType="ethereum"
+                                            symbol={network.symbol}
+                                            preserveDecimals
+                                        />
+                                    ) : (
+                                        <Translation id="TR_UNCONFIRMED_TX" />
+                                    )}
+                                </Item>
+
+                                <Item
+                                    label={<Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />}
+                                    iconName="gasPump"
+                                >
+                                    <FeeRate
+                                        feeRate={fromWei(
+                                            tx.ethereumSpecific?.maxPriorityFeePerGas ?? '0',
+                                            'gwei',
+                                        )}
+                                        networkType="ethereum"
+                                        symbol={network.symbol}
+                                        preserveDecimals
+                                    />
+                                </Item>
+                            </>
+                        )}
                     </>
                 )}
 

@@ -3530,6 +3530,10 @@ export default defineMessages({
         id: 'TR_GAS_USED',
         defaultMessage: 'Gas used',
     },
+    TR_GAS_LIMIT_AND_USAGE: {
+        id: 'TR_GAS_LIMIT_AND_USAGE',
+        defaultMessage: 'Gas limit & usage',
+    },
     TR_NONCE: {
         id: 'TR_NONCE',
         defaultMessage: 'Nonce',
@@ -5710,6 +5714,10 @@ export default defineMessages({
     TR_MAX_FEE_PER_GAS: {
         defaultMessage: 'Max fee per gas',
         id: 'TR_MAX_FEE_PER_GAS',
+    },
+    TR_BLOCK_BASE_FEE: {
+        defaultMessage: 'Block base fee',
+        id: 'TR_BLOCK_BASE_FEE',
     },
     TR_BASE_FEE: {
         defaultMessage: 'Base fee',

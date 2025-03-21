@@ -6,9 +6,10 @@ type FeeRateProps = {
     feeRate?: string | BigNumber;
     networkType: NetworkType;
     symbol: NetworkSymbol;
+    preserveDecimals?: boolean;
 };
 
-export const FeeRate = ({ feeRate, networkType, symbol }: FeeRateProps) => {
+export const FeeRate = ({ feeRate, networkType, symbol, preserveDecimals }: FeeRateProps) => {
     if (!feeRate) return null;
 
     const fee = (() => {
@@ -18,7 +19,7 @@ export const FeeRate = ({ feeRate, networkType, symbol }: FeeRateProps) => {
                 const multiplier = Math.pow(10, decimals);
                 const value = Math.ceil(Number(feeRate) * multiplier) / multiplier;
 
-                return value.toFixed(decimals);
+                return preserveDecimals ? feeRate.toString() : value.toFixed(decimals);
             }
             case 'bitcoin': {
                 const feeBn = typeof feeRate === 'string' ? new BigNumber(feeRate) : feeRate;
