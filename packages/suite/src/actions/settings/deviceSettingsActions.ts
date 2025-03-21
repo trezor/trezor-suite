@@ -1,3 +1,4 @@
+import { bluetoothActions } from '@suite-common/bluetooth';
 import { FIRMWARE_MODULE_PREFIX } from '@suite-common/firmware';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
@@ -7,6 +8,7 @@ import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-commo
 import TrezorConnect, { ERRORS } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -115,6 +117,20 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     });
 
     if (result.success) {
+        if (device.bluetoothProps !== undefined) {
+            dispatch(bluetoothActions.removeKnownDeviceAction({ id: device.bluetoothProps.id }));
+            const resultForget = await bluetoothIpc.forgetDevice(device.bluetoothProps.id);
+            if (!resultForget.success) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        // Todo: better UX
+                        error: 'Removing the Bluetooth Device from the Operating System was not possible. Do it manually before pairing the new device.',
+                    }),
+                );
+            }
+        }
+
         // Wiping a device triggers device.id change and this change is propagated to device reducer via @trezor/connect DEVICE.CHANGE event.
         // Accounts data are related to the old device.id in order to properly clear reducers and indexed db
         // we need to retrieve device objects BEFORE and AFTER the wipe process.
