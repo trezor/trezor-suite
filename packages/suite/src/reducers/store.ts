@@ -19,6 +19,7 @@ import { prepareBluetoothReducerCreator } from '@suite-common/bluetooth';
 import { accountsActions } from '@suite-common/wallet-core';
 
 import suiteMiddlewares from 'src/middlewares/suite';
+import { Services } from './services';
 import walletMiddlewares from 'src/middlewares/wallet';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import backupMiddlewares from 'src/middlewares/backup';
@@ -37,6 +38,7 @@ import { desktopReducer } from './desktop';
 import { extraDependencies } from '../support/extraDependencies';
 import { BluetoothDevice } from '@trezor/transport-bluetooth';
 import { OPEN_USER_CONTEXT } from 'src/actions/suite/constants/modalConstants';
+import type { Store } from 'src/types/suite';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
@@ -105,26 +107,29 @@ type RootReducerShape = typeof rootReducer;
 type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
-export const initStore = (
-    preloadStoreAction?: PreloadStoreAction,
-    statePatch?: Record<string, any>,
-) => {
+export const initStore = <
+    T extends Record<string, (deps: Store & typeof extraDependencies & Services) => any>[],
+>(options: {
+    preloadStoreAction?: PreloadStoreAction;
+    statePatch?: Record<string, any>;
+    serviceFactories?: T;
+}) => {
     // get initial state by calling STORAGE.LOAD action with optional payload
     // payload will be processed in each reducer explicitly
-    const preloadedState = preloadStoreAction
-        ? rootReducer(undefined, preloadStoreAction)
+    const preloadedState = options.preloadStoreAction
+        ? rootReducer(undefined, options.preloadStoreAction)
         : undefined;
 
     const patchedState =
-        preloadedState && statePatch && patchConfirm(statePatch)
+        preloadedState && options.statePatch && patchConfirm(options.statePatch)
             ? mergeDeepObject.withOptions(
                   { dotNotation: true },
                   preloadedState,
-                  statePatch as Partial<AppState>,
+                  options.statePatch as Partial<AppState>,
               )
             : preloadedState;
 
-    return configureStore({
+    const store = configureStore({
         reducer: rootReducer as Reducer<AppState, InferredAction, PreloadedState>,
         preloadedState: patchedState,
         middleware: getDefaultMiddleware =>
@@ -141,4 +146,22 @@ export const initStore = (
             }).concat(getCustomMiddleware()),
         devTools,
     } as const);
+
+    // NOTE: creates object { getState, dispatch, ...services[number][key] }
+    const services = (options.serviceFactories ?? []).reduce<{
+        [K in keyof T[number]]: ReturnType<T[number][K]>;
+    }>(
+        (acc, factories) => {
+            Object.entries(factories).forEach(([key, factory]) => {
+                // Create the service and add it to the accumulator
+                // @ts-expect-error: you can't really write this properly
+                acc[key as keyof T[number]] = factory({ ...extraDependencies, ...acc });
+            });
+
+            return acc;
+        },
+        { ...store } as { [K in keyof T[number]]: ReturnType<T[number][K]> },
+    ) as Services;
+
+    return { store, services };
 };

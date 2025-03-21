@@ -37,6 +37,8 @@ import { DesktopUpdater } from './support/DesktopUpdater';
 import { AppRouter } from './support/Router';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
+import { passphraseFlowManager } from 'src/actions/wallet/passphraseFlowManager';
+import { ServiceContext } from 'src/reducers/services';
 
 const MainDesktop = () => {
     useTor();
@@ -86,7 +88,15 @@ export const init = async (container: HTMLElement) => {
 
     const preloadAction = await preloadStore();
     const { statePatch } = await desktopApi.handshake();
-    const store = initStore(preloadAction, statePatch);
+    const { store, services } = initStore({
+        preloadStoreAction: preloadAction,
+        statePatch,
+        serviceFactories: [
+            {
+                passphraseFlowManager,
+            },
+        ],
+    });
 
     // start logging to file if Debug menu is active
     if (
@@ -143,7 +153,9 @@ export const init = async (container: HTMLElement) => {
     // finally render whole app
     root.render(
         <ReduxProvider store={store}>
-            <MainDesktop />
+            <ServiceContext.Provider value={services}>
+                <MainDesktop />
+            </ServiceContext.Provider>
         </ReduxProvider>,
     );
 };
