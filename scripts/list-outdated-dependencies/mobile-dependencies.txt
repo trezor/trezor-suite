@@ -61,6 +61,7 @@ react-native-safe-area-context
 react-native-screens
 react-native-svg
 react-native-edge-to-edge
+react-native-webview
 react-qr-code
 redux-devtools-expo-dev-plugin
 redux-persist

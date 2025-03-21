@@ -20,6 +20,7 @@ export enum RootStackRoutes {
     WalletConnectPair = 'WalletConnectPair',
     SettingsScreenStack = 'SettingsScreenStack',
     DeviceCompromisedModal = 'DeviceCompromisedModal',
+    TradingWebView = 'TradingWebView',
 }
 
 export enum AppTabsRoutes {

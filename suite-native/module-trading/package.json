@@ -27,6 +27,7 @@
         "react-native": "0.76.1",
         "react-native-reanimated": "^3.16.7",
         "react-native-safe-area-context": "^4.14.0",
+        "react-native-webview": "13.12.5",
         "react-redux": "9.2.0"
     }
 }

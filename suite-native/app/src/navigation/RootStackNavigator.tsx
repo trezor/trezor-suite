@@ -23,6 +23,7 @@ import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { SendStackNavigator } from '@suite-native/module-send';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { StakingDetailScreen } from '@suite-native/module-staking-management';
+import { TradingWebViewScreen } from '@suite-native/module-trading';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -134,6 +135,11 @@ export const RootStackNavigator = () => {
                     options={{
                         gestureEnabled: false,
                     }}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingWebView }}
+                    name={RootStackRoutes.TradingWebView}
+                    component={TradingWebViewScreen}
                 />
             </RootStack.Group>
         </RootStack.Navigator>
