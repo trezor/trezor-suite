@@ -40257,6 +40257,7 @@ __metadata:
     jest-expo: "npm:^52.0.1"
     metro-react-native-babel-preset: "npm:0.77.0"
     node-fetch: "npm:^2.6.4"
+    node-gyp: "npm:10.2.0"
     nx: "npm:^18.0.3"
     patch-package: "npm:8.0.0"
     prettier: "npm:^3.3.2"
