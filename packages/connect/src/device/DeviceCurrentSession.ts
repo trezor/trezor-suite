@@ -90,15 +90,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
         const { payload } = response;
 
-        try {
-            const splitResTypes = Array.isArray(resType) ? resType : resType.split('|');
-            if (!splitResTypes.includes(payload.type)) {
-                throw ERRORS.TypedError(
-                    'Runtime',
-                    `assertType: Response of unexpected type: ${payload.type}. Should be ${resType}`,
-                );
-            }
-        } catch (error) {
+        if (!(Array.isArray(resType) ? resType : resType.split('|')).includes(payload.type)) {
             // handle possible race condition
             // Bridge may have some unread message in buffer, read it
             await scheduleAction(
@@ -111,8 +103,10 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 { timeout: 500 },
             ).catch(() => {});
 
-            // throw error anyway, next call should be resolved properly
-            throw error;
+            throw ERRORS.TypedError(
+                'Runtime',
+                `assertType: Response of unexpected type: ${payload.type}. Should be ${resType}`,
+            );
         }
 
         return payload;
