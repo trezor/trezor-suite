@@ -40,7 +40,7 @@
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "test:unit": "jest -c ../../jest.config.base.js",
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
