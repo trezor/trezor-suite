@@ -1,3 +1,6 @@
+import { colorVariants } from '@trezor/theme';
+import { hexToRgba } from '@trezor/utils';
+
 import { expect, test } from '../../support/fixtures';
 
 const migrateFromVersion = 'release/22.5/web';
@@ -82,7 +85,7 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
         await test.step(`Navigate to new version ${migrateToVersion} and check wallet status`, async () => {
             await page.goto(`${suiteDevInstance}/${migrateToVersion}`);
             await expect(dashboardPage.graph).toBeVisible({ timeout: 30_000 });
-            await page.getByTestId('@account-menu/normal').click();
+            await page.getByTestId('@account-menu/btc/normal/0').click();
             await walletPage.openAccount({ symbol: 'btc' });
             await dashboardPage.openDeviceSwitcher();
             await expect(
@@ -127,7 +130,10 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
         });
 
         await test.step('Verify theme is still dark', async () => {
-            await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(23, 23, 23)');
+            await expect(page.locator('body')).toHaveCSS(
+                'background-color',
+                hexToRgba(colorVariants.dark.backgroundSurfaceElevation0),
+            );
         });
     });
 });
