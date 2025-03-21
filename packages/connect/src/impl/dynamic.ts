@@ -70,6 +70,10 @@ export class TrezorConnectDynamic<
         return this.implementations.find(impl => impl.type === this.currentTarget)!.impl;
     }
 
+    public getTargetType() {
+        return this.currentTarget;
+    }
+
     public async switchTarget(target: ImplType) {
         if (this.currentTarget === target) {
             return;

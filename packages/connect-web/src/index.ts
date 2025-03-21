@@ -56,6 +56,17 @@ const impl = new TrezorConnectDynamic<
         const isCoreModeAuto =
             impl.lastSettings?.coreMode === 'auto' || impl.lastSettings?.coreMode === undefined;
 
+        // Handle desktop errors
+        if (
+            !isCoreModeDisabled &&
+            impl.getTargetType() === 'core-in-suite-desktop' &&
+            errorCode === 'Desktop_ConnectionMissing'
+        ) {
+            await impl.switchTarget('core-in-popup');
+
+            return true;
+        }
+
         // Handle iframe errors by switching to core-in-popup
         if (!isCoreModeDisabled && isCoreModeAuto && IFRAME_ERRORS.includes(errorCode)) {
             // Check if WebUSB is available and enabled

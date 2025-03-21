@@ -19,6 +19,7 @@ import type {
 } from '@trezor/connect/src/types';
 import { Login } from '@trezor/connect/src/types/api/requestLogin';
 import { WebsocketClient } from '@trezor/websocket-client';
+import { WebsocketError } from '@trezor/websocket-client/src/client';
 
 import { parseConnectSettings } from '../connectSettings';
 
@@ -63,15 +64,12 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
             );
 
             if (!response) {
-                return {
-                    success: false,
-                    payload: { error: 'No response', code: 'Desktop_ConnectionMissing' },
-                };
+                throw ERRORS.TypedError('Desktop_ConnectionMissing', 'No response');
             }
 
             return response;
         } catch (err) {
-            throw new Error('Handshake timed out ' + err.message);
+            throw ERRORS.TypedError('Desktop_ConnectionMissing', err.message);
         }
     }
 
@@ -87,11 +85,17 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         }
         this._settings = newSettings;
 
-        this.ws = new WebsocketClient({ url: 'ws://localhost:21335/connect-ws' });
+        try {
+            this.ws = new WebsocketClient({ url: 'ws://localhost:21335/connect-ws' });
 
-        await this.ws.connect();
+            await this.ws.connect();
 
-        return await this.handshake();
+            return await this.handshake();
+        } catch (err) {
+            throw err instanceof WebsocketError
+                ? ERRORS.TypedError('Desktop_ConnectionMissing', err.message)
+                : err;
+        }
     }
 
     public setTransports() {
@@ -103,8 +107,9 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         try {
             if (!this.ws) {
                 await this.init();
+            } else {
+                await this.handshake();
             }
-            await this.handshake();
 
             const response = await this.ws?.sendMessage(
                 {
@@ -117,19 +122,18 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
             );
 
             if (!response) {
-                return {
-                    success: false,
-                    payload: { error: 'No response', code: 'Desktop_ConnectionMissing' },
-                };
+                throw ERRORS.TypedError('Desktop_ConnectionMissing', 'No response');
             }
 
             return response;
         } catch (err) {
             return {
                 success: false,
-                payload: {
-                    error: err.message,
-                },
+                payload: ERRORS.serializeError(
+                    err instanceof WebsocketError
+                        ? ERRORS.TypedError('Desktop_ConnectionMissing', err.message)
+                        : err,
+                ),
             };
         }
     }

@@ -88,8 +88,14 @@ export const serializeError = (payload: any) => {
     if (payload instanceof TrezorError) {
         return { error: payload.message, code: payload.code };
     }
+    if (payload instanceof Error) {
+        return {
+            error: payload.message,
+            code: 'code' in payload ? payload.code : 'Failure_UnknownCode',
+        };
+    }
 
-    return payload;
+    return { ...payload };
 };
 
 // trezord error prefix.
