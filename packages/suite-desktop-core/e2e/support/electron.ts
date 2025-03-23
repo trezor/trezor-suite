@@ -91,6 +91,10 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
     const electronApp = await electron.launch({
         cwd: appDir,
         args,
+        env: {
+            ...process.env,
+            PLAYWRIGHT: 'true',
+        },
         colorScheme: params.colorScheme,
         locale: params.locale,
         recordVideo: { dir: options.artefactFolder, size: options.viewport },

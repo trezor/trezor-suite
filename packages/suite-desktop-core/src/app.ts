@@ -28,7 +28,7 @@ import { ipcMain } from './typed-electron';
 process.traceProcessWarnings = true;
 
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
-if (isDevEnv) app.setVersion(process.env.VERSION);
+if (isDevEnv || process.env.PLAYWRIGHT) app.setVersion(process.env.VERSION);
 
 global.resourcesPath = isDevEnv
     ? path.join(__dirname, '..', 'build', 'static')
