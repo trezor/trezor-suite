@@ -33,6 +33,9 @@ export interface EthereumSpecific {
     gasLimit: number;
     gasUsed?: number;
     gasPrice?: string;
+    maxPriorityFeePerGas?: string;
+    maxFeePerGas?: string;
+    baseFeePerGas?: string;
     l1Fee?: number;
     l1FeeScalar?: string;
     l1GasPrice?: string;
@@ -46,6 +49,7 @@ export interface MultiTokenValue {
     value?: string;
 }
 export interface TokenTransfer {
+    /** @deprecated: Use standard instead. */
     type: '' | 'XPUBAddress' | 'ERC20' | 'ERC721' | 'ERC1155' | 'BEP20' | 'BEP721' | 'BEP1155';
     standard: '' | 'XPUBAddress' | 'ERC20' | 'ERC721' | 'ERC1155' | 'BEP20' | 'BEP721' | 'BEP1155';
     from: string;
