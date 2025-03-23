@@ -18,7 +18,6 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
     test('App in daemon mode spawns node-bridge', async ({ request }, testInfo) => {
         const daemonApp = await launchSuiteElectronApp({
             bridgeDaemon: true,
-            bridgeLegacyTest: false,
             artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         });
