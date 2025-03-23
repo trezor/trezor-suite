@@ -5,13 +5,6 @@ test.describe.skip(
     { tag: ['@group=device-management', '@webOnly'] },
     () => {
         test.use({ startEmulator: false });
-
-        test.beforeEach(async ({ trezorUserEnvLink }) => {
-            await trezorUserEnvLink.stopBridge();
-            await trezorUserEnvLink.stopEmu();
-            await trezorUserEnvLink.startBridge();
-        });
-
         test('Offer webusb as primary choice on web', async ({ page, analyticsSection }) => {
             await analyticsSection.continueButton.click();
             await expect(page.getByTestId('@webusb-button')).toBeVisible({ timeout: 30000 });
@@ -20,10 +13,6 @@ test.describe.skip(
                 'aria-expanded',
                 'true',
             );
-        });
-
-        test.afterEach(async ({ trezorUserEnvLink }) => {
-            await trezorUserEnvLink.stopBridge();
         });
     },
 );

@@ -21,31 +21,80 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@group=device-management'] }, 
         trezorUserEnvLink,
         trezorInput,
     }) => {
-        await settingsPage.checkSeedButton.click();
-        await recoveryModal.userUnderstandsCheckbox.click();
-        await recoveryModal.startButton.click();
-        await expect(settingsPage.modal).toBeVisible();
-        await expect(settingsPage.modal).toContainText(
-            'Enter the words directly on your Trezor device in the correct order.',
-        );
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.inputEmu('1');
-        await trezorUserEnvLink.selectNumOfWordsEmu(12);
-        await trezorUserEnvLink.pressYes();
-        await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
+        await test.step('Initiate recovery dry run in settings', async () => {
+            await settingsPage.checkSeedButton.click();
+            await recoveryModal.userUnderstandsCheckbox.click();
+            await recoveryModal.startButton.click();
+            await recoveryModal.verifyDryCheckPrompt();
+        });
 
-        await trezorUserEnvLink.pressYes();
-        await expect(recoveryModal.successTitle).toHaveText('Wallet backup checked successfully');
+        await test.step('Do the recover dry run on emulator', async () => {
+            await trezorUserEnvLink.pressYes();
+            await trezorUserEnvLink.inputEmu('1');
+            await trezorUserEnvLink.selectNumOfWordsEmu(12);
+            await trezorUserEnvLink.pressYes();
+            await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
+        });
+
+        await test.step('Verify success in suite', async () => {
+            await trezorUserEnvLink.pressYes();
+            await expect(recoveryModal.successTitle).toHaveText(
+                'Wallet backup checked successfully',
+            );
+        });
     });
 
-    //TODO: #14987 Fix Recovery - dry run test for T2T1
-    test.skip('Recovery with device reconnection', async () => {
-        // Start dry recovery check process
-        // First interrupt: Disconnect device and check that recovery process is paused
-        // Reinitialize process on device reconnect
-        // Now check that reconnecting device works and seed check procedure does reinitialize correctly
-        // Another interrupt: Reload page
-        // On app reload, recovery process should auto start if app detects initialized device in recovery mode
-        // Communication established, now finish the seed check process
+    test('Recovery with device reconnection', async ({
+        page,
+        settingsPage,
+        recoveryModal,
+        trezorUserEnvLink,
+        trezorInput,
+    }) => {
+        await test.step('Initiate recovery dry run in settings', async () => {
+            await settingsPage.checkSeedButton.click();
+            await recoveryModal.userUnderstandsCheckbox.click();
+            await recoveryModal.startButton.click();
+            await recoveryModal.verifyDryCheckPrompt();
+        });
+
+        await test.step('Partially complete the dry run on emulator', async () => {
+            await trezorUserEnvLink.pressYes();
+            await trezorUserEnvLink.inputEmu('1');
+            await trezorUserEnvLink.selectNumOfWordsEmu(12);
+            await trezorUserEnvLink.pressYes();
+            await trezorUserEnvLink.inputEmu('all');
+        });
+
+        await test.step('Simulate disconnect', async () => {
+            await trezorUserEnvLink.stopBridge();
+            await expect(page.getByText('Reconnect your Trezor')).toBeVisible({ timeout: 30_000 });
+        });
+
+        await test.step('Simulate reconnect and check recovery dry run is reinitialized', async () => {
+            await trezorUserEnvLink.startBridge();
+            await recoveryModal.verifyDryCheckPrompt();
+        });
+
+        await test.step('Partially complete the dry run on emulator', async () => {
+            await trezorUserEnvLink.selectNumOfWordsEmu(12);
+            await trezorUserEnvLink.pressYes();
+            await trezorUserEnvLink.inputEmu('all');
+        });
+
+        await test.step('Reload suite and check recovery dry run is reinitialized', async () => {
+            await page.reload();
+            await recoveryModal.verifyDryCheckPrompt();
+        });
+
+        await test.step('Complete the dry run on emulator', async () => {
+            await trezorUserEnvLink.selectNumOfWordsEmu(12);
+            await trezorUserEnvLink.pressYes();
+            await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
+            await trezorUserEnvLink.pressYes();
+            await expect(recoveryModal.successTitle).toHaveText(
+                'Wallet backup checked successfully',
+            );
+        });
     });
 });
