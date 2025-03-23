@@ -62,6 +62,7 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, (
         ).toContainText('Bitcoin #1');
     });
 
+    //TODO: #17855 Fix unstable test
     test.skip('Success after retrying GET request', async ({
         onboardingPage,
         dashboardPage,

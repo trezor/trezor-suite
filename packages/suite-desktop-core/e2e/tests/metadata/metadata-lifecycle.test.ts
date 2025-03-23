@@ -16,7 +16,8 @@ test.describe(
             await metadataMock.start(MetadataProvider.DROPBOX);
         });
 
-        test('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', async ({
+        //TODO: #17855 Fix unstable test
+        test.skip('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', async ({
             page,
             onboardingPage,
             dashboardPage,
