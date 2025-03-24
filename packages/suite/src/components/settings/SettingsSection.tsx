@@ -23,12 +23,13 @@ type SettingsSectionProps = {
 
 export const SettingsSection = ({ title, icon, children, tooltipText }: SettingsSectionProps) => {
     const isBelowLaptop = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.LG})`);
+    const width = isBelowLaptop ? '100%' : 250;
 
     return (
         <InfoItem
             ellipsisLineCount={0}
             direction={isBelowLaptop ? 'column' : 'row'}
-            labelWidth={250}
+            labelWidth={width}
             iconName={icon}
             label={
                 <>
