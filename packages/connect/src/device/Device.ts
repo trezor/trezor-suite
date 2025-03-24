@@ -79,12 +79,6 @@ export const GET_FEATURES_TIMEOUT = 3_000;
 // Due to performance issues in suite-native during app start, original timeout is not sufficient.
 export const GET_FEATURES_TIMEOUT_REACT_NATIVE = 20_000;
 
-const parseRunOptions = (options?: RunOptions): RunOptions => {
-    if (!options) options = {};
-
-    return options;
-};
-
 type Result<T> = { success: true; payload: T } | { success: false; error: Error };
 
 export interface DeviceEvents {
@@ -426,13 +420,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     // TODO empty fn variant can be split/removed
-    run(fn?: () => Promise<void>, options?: RunOptions) {
+    run(fn?: () => Promise<void>, options: RunOptions = {}) {
         if (this.runPromise) {
             _log.warn('Previous call is still running');
             throw ERRORS.TypedError('Device_CallInProgress');
         }
-
-        options = parseRunOptions(options);
 
         const wasUnacquired = this.isUnacquired();
         const runPromise = createDeferred();
