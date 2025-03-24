@@ -8,8 +8,8 @@ import {
     onBlockchainConnectThunk,
     onBlockchainDisconnectThunk,
     onBlockchainNotificationThunk,
-    updateFeeInfoThunk,
 } from './blockchainThunks';
+import { updateFeeInfoThunk } from '../fees/feesThunks';
 
 export const prepareBlockchainMiddleware = createMiddlewareWithExtraDeps(
     (action: BlockchainEvent, { dispatch, next, extra }) => {

@@ -14,15 +14,17 @@ import { Account } from 'src/types/wallet';
 
 const getEstimatedTime = (
     networkType: NetworkType,
-    symbolFees: FeeInfo,
+    feeInfo: FeeInfo | undefined,
     tx: GeneralPrecomposedTransactionFinal,
 ): number | undefined => {
-    const matchedFeeLevel = symbolFees.levels.find(item => item.feePerUnit === tx.feePerByte);
+    if (!feeInfo) return;
+
+    const matchedFeeLevel = feeInfo.levels.find(item => item.feePerUnit === tx.feePerByte);
 
     // TODO: estimated EVM time, blocks logic in connect
     if (networkType !== 'bitcoin' || !matchedFeeLevel) return;
 
-    return matchedFeeLevel.blocks * symbolFees.blockTime * 60;
+    return matchedFeeLevel.blocks * feeInfo.blockTime * 60;
 };
 
 type TransactionReviewSummaryProps = {

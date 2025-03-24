@@ -2,15 +2,15 @@ import { createReducer } from '@reduxjs/toolkit';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { formatDuration } from '@suite-common/suite-utils';
-import { NetworkSymbol, getNetworkType, networksCollection } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { FeeInfo, FeeLevelLabel } from '@suite-common/wallet-types';
 import { getFeeInfo } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
 
-import { blockchainActions } from '../blockchain/blockchainActions';
+import { feesActions } from './feesActions';
 
 export type FeesState = {
-    [key in NetworkSymbol]: FeeInfo;
+    [key in NetworkSymbol]?: FeeInfo;
 };
 
 export type FeesRootState = {
@@ -19,36 +19,38 @@ export type FeesRootState = {
     };
 };
 
-// fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
-const initialState = networksCollection.reduce((state, network) => {
-    state[network.symbol] = {
-        blockHeight: 0,
-        blockTime: 10,
-        minFee: 1,
-        maxFee: 100,
-        levels: [{ label: 'normal', feePerUnit: '1', blocks: 0 }],
-    };
+export const DEFAULT_FEE_INFO: FeeInfo = {
+    blockHeight: 0,
+    blockTime: 10,
+    minFee: 1,
+    maxFee: 100,
+    levels: [{ label: 'normal', feePerUnit: '1', blocks: 0 }],
+};
 
-    return state;
-}, {} as FeesState);
-
-export const feesReducer = createReducer(initialState, builder => {
-    builder.addCase(blockchainActions.updateFee, (state, { payload }) => ({
+export const feesReducer = createReducer<FeesState>({}, builder => {
+    builder.addCase(feesActions.updateFee, (state, { payload }) => ({
         ...state,
         ...payload,
     }));
+    builder.addCase(feesActions.removeFee, (state, { payload }) => {
+        const newState = { ...state };
+
+        delete newState[payload.network];
+
+        return newState;
+    });
 });
 
 // Create app selector with WeakMap memoization since we'll be using parameters
 const createMemoizedSelector = createWeakMapSelector.withTypes<FeesRootState>();
 
 // Base selector for fees state
-const selectFees = (state: FeesRootState) => state.wallet.fees;
+export const selectFees = (state: FeesRootState) => state.wallet.fees;
 
 export const selectNetworkFeeInfo = createMemoizedSelector(
     [selectFees, (_state: FeesRootState, symbol?: NetworkSymbol) => symbol],
     (fees, symbol): FeeInfo | null => {
-        if (!symbol) return null;
+        if (!symbol || !fees[symbol]) return null;
 
         const networkType = getNetworkType(symbol);
         const feeInfo = getFeeInfo({

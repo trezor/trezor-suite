@@ -5,6 +5,7 @@ import {
     blockchainActions,
     deviceActions,
     discoveryActions,
+    feesActions,
     selectDeviceDiscovery,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
@@ -172,7 +173,6 @@ const actions = [
     blockchainActions.setBackend.type,
     blockchainActions.synced.type,
     blockchainActions.connected.type,
-    blockchainActions.updateFee.type,
     discoveryActions.stopDiscovery.type,
     discoveryActions.interruptDiscovery.type,
     discoveryActions.createDiscovery.type,
@@ -180,6 +180,8 @@ const actions = [
     discoveryActions.updateDiscovery.type,
     discoveryActions.removeDiscovery.type,
     discoveryActions.completeDiscovery.type,
+    feesActions.updateFee.type,
+    feesActions.removeFee.type,
 ];
 
 /*

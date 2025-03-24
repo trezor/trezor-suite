@@ -194,11 +194,13 @@ export const prepareEthereumTransaction = (
 };
 
 interface GetFeeInfoProps {
-    feeInfo: FeeInfo;
+    feeInfo?: FeeInfo;
     networkType: NetworkType;
 }
 
 const getFeeLevels = ({ feeInfo, networkType }: GetFeeInfoProps) => {
+    if (!feeInfo) return [];
+
     const levels = feeInfo.levels.concat({
         label: 'custom',
         feePerUnit: '0',
@@ -230,8 +232,13 @@ const getFeeLevels = ({ feeInfo, networkType }: GetFeeInfoProps) => {
 };
 
 export const getFeeInfo = ({ networkType, feeInfo }: GetFeeInfoProps): FeeInfo => ({
-    ...feeInfo,
     levels: getFeeLevels({ networkType, feeInfo }),
+    blockHeight: feeInfo?.blockHeight ?? 0,
+    blockTime: feeInfo?.blockTime ?? 0,
+    minFee: feeInfo?.minFee ?? 0,
+    maxFee: feeInfo?.maxFee ?? 0,
+    dustLimit: feeInfo?.dustLimit ?? 0,
+    feeLimit: feeInfo?.feeLimit ?? 0,
 });
 
 export const getInputState = (

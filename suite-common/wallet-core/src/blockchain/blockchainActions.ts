@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import type { CustomBackend, NetworksFees } from '@suite-common/wallet-types';
+import type { CustomBackend } from '@suite-common/wallet-types';
 import type { TimerId } from '@trezor/type-utils';
 
 export const BLOCKCHAIN_MODULE_PREFIX = '@common/wallet-core/blockchain';
@@ -9,13 +9,6 @@ export const BLOCKCHAIN_MODULE_PREFIX = '@common/wallet-core/blockchain';
 const connected = createAction(
     `${BLOCKCHAIN_MODULE_PREFIX}/connected`,
     (payload: NetworkSymbol) => ({
-        payload,
-    }),
-);
-
-const updateFee = createAction(
-    `${BLOCKCHAIN_MODULE_PREFIX}/updateFee`,
-    (payload: Partial<NetworksFees>) => ({
         payload,
     }),
 );
@@ -40,6 +33,5 @@ const setBackend = createAction(
 export const blockchainActions = {
     setBackend,
     connected,
-    updateFee,
     synced,
 };

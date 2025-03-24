@@ -8,6 +8,7 @@ import {
     createDiscoveryThunk,
     deviceActions,
     disableAccountsThunk,
+    removeFeeInfoThunk,
     selectDeviceDiscovery,
     selectSelectedDevice,
     startDiscoveryThunk,
@@ -77,6 +78,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             dispatch(updateNetworkSettingsThunk());
             // remove accounts which are no longer part of Discovery
             dispatch(disableAccountsThunk());
+            // remove fees which are no longer part of Discovery
+            dispatch(removeFeeInfoThunk({ networks: action.payload }));
         }
 
         const nextState = getState();

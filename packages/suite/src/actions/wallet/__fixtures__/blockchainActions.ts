@@ -1,5 +1,10 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { accountsActions, blockchainActions, transactionsActions } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    blockchainActions,
+    feesActions,
+    transactionsActions,
+} from '@suite-common/wallet-core';
 import { analyzeTransactions } from '@suite-common/wallet-utils/src/__fixtures__/transactionUtils';
 
 const DEFAULT_ACCOUNT = {
@@ -354,7 +359,7 @@ export const init = [
         initialState: {
             blockchain: seedBackends([]),
         },
-        actions: [{ type: blockchainActions.updateFee.type }],
+        actions: [{ type: feesActions.updateFee.type }],
         blockchainSetCustomBackend: 0,
     },
     {
@@ -363,7 +368,7 @@ export const init = [
             accounts: [{ symbol: 'btc' }],
             blockchain: seedBackends(['btc']),
         },
-        actions: [{ type: blockchainActions.updateFee.type }],
+        actions: [{ type: feesActions.updateFee.type }],
         blockchainSetCustomBackend: 1,
     },
     {
@@ -378,7 +383,7 @@ export const init = [
             ],
             blockchain: seedBackends(['btc', 'ltc', 'eth']),
         },
-        actions: [{ type: blockchainActions.updateFee.type }],
+        actions: [{ type: feesActions.updateFee.type }],
         blockchainSetCustomBackend: 3,
     },
 ];
@@ -395,7 +400,7 @@ export const onConnect = [
         description: 'successful, no accounts, no subscriptions',
         symbol: 'btc',
         actions: [
-            { type: blockchainActions.updateFee.type },
+            { type: feesActions.updateFee.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
@@ -409,7 +414,7 @@ export const onConnect = [
         },
         symbol: 'btc',
         actions: [
-            { type: blockchainActions.updateFee.type },
+            { type: feesActions.updateFee.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
@@ -428,7 +433,7 @@ export const onConnect = [
         },
         symbol: 'btc',
         actions: [
-            { type: blockchainActions.updateFee.type },
+            { type: feesActions.updateFee.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
@@ -446,7 +451,7 @@ export const onConnect = [
         ],
         symbol: 'btc',
         actions: [
-            { type: blockchainActions.updateFee.type },
+            { type: feesActions.updateFee.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
