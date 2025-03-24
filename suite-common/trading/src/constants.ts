@@ -8,10 +8,31 @@ export const TRADING_THUNK_PREFIX = `${TRADING_PREFIX}/thunk`;
 export const TRADING_BUY_THUNK_PREFIX = `${TRADING_BUY_PREFIX}/thunk`;
 export const TRADING_EXCHANGE_THUNK_PREFIX = `${TRADING_EXCHANGE_PREFIX}/thunk`;
 
-export const TRADING_EXCHANGE_RATE_FIXED = 'fixed';
-export const TRADING_EXCHANGE_RATE_FLOATING = 'floating';
 export const TRADING_DEFAULT_CRYPTO_CURRENCY = 'bitcoin' as CryptoId;
 export const TRADING_DEFAULT_CRYPTO_SECONDARY_CURRENCY = 'ethereum' as CryptoId;
+
+export const TRADING_EXCHANGE_RATE = 'rateType';
+export const TRADING_EXCHANGE_RATE_FIXED = 'fixed';
+export const TRADING_EXCHANGE_RATE_FLOATING = 'floating';
+
+export const TRADING_EXCHANGE_FORM = 'exchangeType';
+export const TRADING_EXCHANGE_FORM_CEX = 'CEX';
+export const TRADING_EXCHANGE_FORM_DEX = 'DEX';
+
+export const TRADING_FORM_AMOUNT_IN_CRYPTO = 'amountInCrypto';
+
+export const TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT = 'sendCryptoSelect';
+export const TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT = 'receiveCryptoSelect';
+
+export const TRADING_EXCHANGE_COMPARATOR_RATE_FILTER = 'exchangeComparatorRateFilter';
+export const TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_ALL = 'all';
+export const TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX = 'fixedCex';
+export const TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX = 'floatingCex';
+export const TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_DEX = 'dex';
+
+export const TRADING_EXCHANGE_COMPARATOR_KYC_FILTER = 'exchangeComparatorKycFilter';
+export const TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL = 'all';
+export const TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_NO_KYC = 'noKyc';
 
 export const INVITY_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
 export const INVITY_API_RELOAD_QUOTES_AFTER_SECONDS = 30;

@@ -4,7 +4,12 @@ import { useDebounce } from 'react-use';
 
 import { FiatCurrencyCode } from 'invity-api';
 
-import { cryptoIdToSymbol, exchangeUtils, useTradingInfo } from '@suite-common/trading';
+import {
+    TradingExchangeFormProps,
+    cryptoIdToSymbol,
+    exchangeUtils,
+    useTradingInfo,
+} from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     amountToSmallestUnit,
@@ -29,7 +34,6 @@ import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTr
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 import {
-    TradingExchangeFormProps,
     TradingSellExchangeFormProps,
     TradingSellFormProps,
     TradingUseFormActionsProps,

@@ -7,6 +7,7 @@ import {
     CRYPTO_PLATFORM_SEPARATOR,
     TradingBuyFormProps,
     TradingCryptoSelectItemProps,
+    TradingExchangeFormProps,
     cryptoIdToNetwork,
     isCryptoIdForNativeToken,
     parseCryptoId,
@@ -36,10 +37,7 @@ import {
     TradingAccountOptionsGroupOptionProps,
     TradingTradeBuyExchangeType,
 } from 'src/types/trading/trading';
-import {
-    TradingExchangeFormProps,
-    TradingFormInputCryptoSelectProps,
-} from 'src/types/trading/tradingForm';
+import { TradingFormInputCryptoSelectProps } from 'src/types/trading/tradingForm';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 import { TradingCoinLogo } from '../../TradingCoinLogo';
