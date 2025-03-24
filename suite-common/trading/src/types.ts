@@ -20,9 +20,9 @@ import type {
 } from 'invity-api';
 
 import { AccountType, NetworkSymbolExtended } from '@suite-common/wallet-config';
-import type { Account } from '@suite-common/wallet-types';
+import type { Account, FormState } from '@suite-common/wallet-types';
 
-import { TRADING_EXCHANGE_RATE_FIXED, TRADING_EXCHANGE_RATE_FLOATING } from './constants';
+import * as constants from './constants';
 
 export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
 export type InvityServers = Record<InvityServerEnvironment, string>;
@@ -185,5 +185,31 @@ export type TradingExchangeAmountLimitProps = Pick<
 >;
 
 export type TradingExchangeRateType =
-    | typeof TRADING_EXCHANGE_RATE_FIXED
-    | typeof TRADING_EXCHANGE_RATE_FLOATING;
+    | typeof constants.TRADING_EXCHANGE_RATE_FIXED
+    | typeof constants.TRADING_EXCHANGE_RATE_FLOATING;
+
+export type TradingExchangeFormType =
+    | typeof constants.TRADING_EXCHANGE_FORM_CEX
+    | typeof constants.TRADING_EXCHANGE_FORM_DEX;
+
+export type TradingExchangeKycFilter =
+    | typeof constants.TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL
+    | typeof constants.TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_NO_KYC;
+
+export type TradingExchangeRateFilter =
+    | typeof constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_ALL
+    | typeof constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FIXED_CEX
+    | typeof constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX
+    | typeof constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_DEX;
+
+export interface TradingExchangeFormProps extends FormState {
+    [constants.TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT]: TradingCryptoSelectItemProps | null;
+    [constants.TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]:
+        | TradingAccountOptionsGroupOptionProps
+        | undefined;
+    [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
+    [constants.TRADING_EXCHANGE_RATE]: TradingExchangeRateType;
+    [constants.TRADING_EXCHANGE_FORM]: TradingExchangeFormType;
+    [constants.TRADING_EXCHANGE_COMPARATOR_KYC_FILTER]: TradingExchangeKycFilter;
+    [constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER]: TradingExchangeRateFilter;
+}

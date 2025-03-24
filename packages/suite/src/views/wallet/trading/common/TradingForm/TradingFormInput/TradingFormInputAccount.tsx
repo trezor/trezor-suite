@@ -3,6 +3,7 @@ import { createFilter } from 'react-select';
 
 import { FiatCurrencyCode } from 'invity-api';
 
+import { TradingExchangeFormProps } from '@suite-common/trading';
 import { Row, Select, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -16,11 +17,7 @@ import {
     TradingCryptoListProps,
     TradingTradeSellExchangeType,
 } from 'src/types/trading/trading';
-import {
-    TradingExchangeFormProps,
-    TradingFormInputAccountProps,
-    TradingSellFormProps,
-} from 'src/types/trading/tradingForm';
+import { TradingFormInputAccountProps, TradingSellFormProps } from 'src/types/trading/tradingForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputAccountOption } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAccountOption';
 

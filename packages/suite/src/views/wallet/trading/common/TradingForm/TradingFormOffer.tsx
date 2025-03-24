@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { CryptoId } from 'invity-api';
 
 import {
+    TRADING_EXCHANGE_FORM,
+    TRADING_EXCHANGE_FORM_DEX,
     type TradingTradeType,
     type TradingType,
     getBestRatedQuote,
@@ -13,7 +15,6 @@ import { Button, Column, Paragraph, Row, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { FORM_EXCHANGE_DEX, FORM_EXCHANGE_TYPE } from 'src/constants/wallet/trading/form';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingFormContextValues } from 'src/types/trading/tradingForm';
@@ -40,7 +41,7 @@ const getSelectedQuote = (
     bestScoredQuote: TradingTradeType | undefined,
 ) => {
     if (isTradingExchangeContext(context)) {
-        return context.getValues(FORM_EXCHANGE_TYPE) === FORM_EXCHANGE_DEX
+        return context.getValues(TRADING_EXCHANGE_FORM) === TRADING_EXCHANGE_FORM_DEX
             ? context.dexQuotes?.[0]
             : context.cexQuotes?.[0];
     } else {
