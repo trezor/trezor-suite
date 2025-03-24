@@ -18,6 +18,7 @@ type TrezorConnectDynamicParams<
         impl: ImplInterface;
     }[];
     getInitTarget: (settings: InitFullSettings<SettingsType>) => ImplType;
+    handleBeforeCall: () => Promise<void>;
     handleErrorFallback: (errorCode: string) => Promise<boolean>;
 };
 
@@ -44,6 +45,11 @@ export class TrezorConnectDynamic<
         SettingsType,
         ImplInterface
     >['getInitTarget'];
+    private handleBeforeCall: TrezorConnectDynamicParams<
+        ImplType,
+        SettingsType,
+        ImplInterface
+    >['handleBeforeCall'];
     private handleErrorFallback: TrezorConnectDynamicParams<
         ImplType,
         SettingsType,
@@ -55,11 +61,13 @@ export class TrezorConnectDynamic<
     public constructor({
         implementations,
         getInitTarget,
+        handleBeforeCall,
         handleErrorFallback,
     }: TrezorConnectDynamicParams<ImplType, SettingsType, ImplInterface>) {
         this.implementations = implementations;
         this.currentTarget = this.implementations[0].type;
         this.getInitTarget = getInitTarget;
+        this.handleBeforeCall = handleBeforeCall;
         this.handleErrorFallback = handleErrorFallback;
         this.eventEmitter = new ProxyEventEmitter(
             this.implementations.map(impl => impl.impl.eventEmitter),
@@ -82,9 +90,17 @@ export class TrezorConnectDynamic<
         if (!this.lastSettings) {
             throw ERRORS.TypedError('Init_NotInitialized');
         }
-        await this.getTarget().dispose();
-        this.currentTarget = target;
-        await this.getTarget().init(this.lastSettings);
+
+        // Go back to the old target if the new target fails to initialize
+        const oldTargetType = this.getTargetType();
+        const oldTarget = this.getTarget();
+        try {
+            this.currentTarget = target;
+            await this.getTarget().init(this.lastSettings);
+            await oldTarget.dispose();
+        } catch {
+            this.currentTarget = oldTargetType;
+        }
     }
 
     public manifest(manifest: Manifest) {
@@ -121,6 +137,7 @@ export class TrezorConnectDynamic<
     }
 
     public async call(params: CallMethodPayload) {
+        await this.handleBeforeCall();
         const response = await this.getTarget().call(params);
         if (!response.success) {
             if (await this.handleErrorFallback(response.payload.code)) {

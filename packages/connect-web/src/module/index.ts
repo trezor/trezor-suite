@@ -42,6 +42,7 @@ const impl = new TrezorConnectDynamic<
         },
     ],
     getInitTarget: () => 'core-in-module',
+    handleBeforeCall: () => new Promise(resolve => resolve()),
     handleErrorFallback: () => new Promise(resolve => resolve(false)),
 });
 

@@ -49,6 +49,13 @@ const impl = new TrezorConnectDynamic<
             return 'iframe';
         }
     },
+    handleBeforeCall: async () => {
+        // Always try if desktop is available again
+        const isCoreModeDesktop = impl.lastSettings?.coreMode === 'suite-desktop';
+        if (isCoreModeDesktop) {
+            await impl.switchTarget('core-in-suite-desktop');
+        }
+    },
     handleErrorFallback: async (errorCode: string) => {
         const env = getEnv();
 
