@@ -10,3 +10,5 @@ export {
     selectScanStatus,
     selectNearbyDevices,
 } from './bluetoothSelectors';
+
+export { parseModelEnumFromBytes } from './parseModelEnumFromBytes';

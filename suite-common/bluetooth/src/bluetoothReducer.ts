@@ -35,8 +35,8 @@ export type BluetoothDeviceCommon = {
      *      [0]: fist byte is advertising type.
      *             0 - advertising with whitelist,
      *             1 - without whitelist (pairing mode),
-     *             2 - also pairing mode but bond memory is full, cannot bond another dive
-     *      [1]: second is device color (interpreted same way as from Device Fetures)
+     *             2 - also pairing mode, but bond memory is full, and therefore it cannot bond another device
+     *      [1]: second is device color (interpreted same way as from Device Features)
      *      [2-6]: four remaining bytes represent internal device name, i.e. T3W1
      */
     data: number[];
