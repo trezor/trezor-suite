@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-03-23T00:00:00+00:00",
-    "sequence": 84,
+    "timestamp": "2025-03-24T00:00:00+00:00",
+    "sequence": 85,
     "actions": [
         {
             "conditions": [
@@ -1533,39 +1533,36 @@
                 {
                     "settings": [
                         {
-                            "bsc": true
-                        },
-                        {
-                            "bnb": true
+                            "INPUT HERE": true
                         }
                     ],
                     "environment": {
-                        "desktop": "*",
-                        "mobile": "*",
-                        "web": "*"
+                        "desktop": "!",
+                        "mobile": "!",
+                        "web": "!"
                     }
                 }
             ],
             "message": {
-                "id": "abcdef05-fbc5-4bda-b456-5da9792efc18",
+                "id": "c5b85f25-7d59-428a-9742-78df00a53577",
                 "priority": 92,
                 "dismissible": true,
                 "variant": "info",
                 "category": ["banner"],
                 "content": {
-                    "en-GB": "We are experiencing syncing issues with the BNB Smart Chain network. This may temporarily result in errors or slow response times on BNB Smart Chain. This issue does not affect the safety of your BNB Smart Chain funds in any way. We apologize for the inconvenience.",
-                    "en": "We are experiencing syncing issues with the BNB Smart Chain network. This may temporarily result in errors or slow response times on BNB Smart Chain. This issue does not affect the safety of your BNB Smart Chain funds in any way. We apologize for the inconvenience.",
-                    "es": "Estamos experimentando problemas de sincronización con la red de BNB Smart Chain. Esto puede resultar temporalmente en errores o tiempos de respuesta lentos en BNB Smart Chain. Este problema no afecta en absoluto la seguridad de sus fondos de BNB Smart Chain. Pedimos disculpas por las molestias.",
-                    "cs": "Potýkáme se s dočasnými potížemi se synchronizací sítě BNB Smart Chain, které mohou vést k chybám nebo pomalejší odezvě. Bezpečnost vašich prostředků na BNB Smart Chain síti tím však není nijak ohrožena. Omlouváme se za nepříjemnosti a děkujeme za pochopení.",
-                    "ru": "У нас возникли проблемы с синхронизацией сети BNB Smart Chain. Это может временно привести к ошибкам или медленным временам ответа на BNB Smart Chain. Эта проблема никоим образом не влияет на безопасность ваших средств BNB Smart Chain. Приносим извинения за неудобства.",
-                    "ja": "BNB Smart Chainネットワークの同期に問題が発生しています。これにより、BNB Smart Chainで一時的にエラーや応答時間が遅くなる場合があります。この問題は、BNB Smart Chainの資金の安全性にまったく影響しません。ご不便をおかけして申し訳ありません。",
-                    "hu": "Problémák merültek fel a BNB Smart Chain hálózat szinkronizálásával. Ez ideiglenesen hibákat vagy lassú válaszidőket eredményezhet a BNB Smart Chain. Ez a probléma semmilyen módon nem érinti a BNB Smart Chain pénzügyeinek biztonságát. Elnézést kérünk a kellemetlenségért.",
-                    "it": "Stiamo riscontrando problemi di sincronizzazione con la rete BNB Smart Chain. Ciò potrebbe comportare temporaneamente errori o tempi di risposta lenti su BNB Smart Chain. Questo problema non influisce in alcun modo sulla sicurezza dei tuoi fondi BNB Smart Chain. Ci scusiamo per l'inconveniente.",
-                    "fr": "Nous rencontrons des problèmes de synchronisation avec le réseau BNB Smart Chain. Cela peut entraîner temporairement des erreurs ou des temps de réponse lents sur BNB Smart Chain. Ce problème n'affecte en aucun cas la sécurité de vos fonds BNB Smart Chain. Nous nous excusons pour la gêne occasionnée.",
-                    "de": "Wir haben Probleme mit der Synchronisierung des BNB Smart Chain-Netzwerks. Dies kann vorübergehend zu Fehlern oder langsamen Antwortzeiten auf BNB Smart Chain führen. Dieses Problem beeinträchtigt die Sicherheit Ihrer BNB Smart Chain-Fonds in keiner Weise. Wir entschuldigen uns für die Unannehmlichkeiten.",
-                    "tr": "BNB Smart Chain ağı ile senkronizasyon sorunları yaşıyoruz. Bu, geçici olarak BNB Smart Chain'da hatalara veya yavaş yanıt sürelerine neden olabilir. Bu sorun, BNB Smart Chain fonlarınızın güvenliğini hiçbir şekilde etkilemez. Rahatsızlık için özür dileriz.",
-                    "pt": "Estamos enfrentando problemas de sincronização com a rede BNB Smart Chain. Isso pode resultar temporariamente em erros ou tempos de resposta lentos na BNB Smart Chain. Este problema não afeta de forma alguma a segurança dos seus fundos BNB Smart Chain. Pedimos desculpas pelo inconveniente.",
-                    "uk": "У нас виникли проблеми з синхронізацією мережі BNB Smart Chain. Це може тимчасово призвести до помилок або повільних часів відповіді на BNB Smart Chain. Ця проблема ніяк не впливає на безпеку ваших коштів BNB Smart Chain. Приносимо вибачення за незручності."
+                    "en-GB": "We are experiencing syncing issues with the INPUT HERE network. This may temporarily result in errors or slow response times on INPUT HERE. This issue does not affect the safety of your INPUT HERE funds in any way. We apologize for the inconvenience.",
+                    "en": "We are experiencing syncing issues with the INPUT HERE network. This may temporarily result in errors or slow response times on INPUT HERE. This issue does not affect the safety of your INPUT HERE funds in any way. We apologize for the inconvenience.",
+                    "es": "Estamos experimentando problemas de sincronización con la red de INPUT HERE. Esto puede resultar temporalmente en errores o tiempos de respuesta lentos en INPUT HERE. Este problema no afecta en absoluto la seguridad de sus fondos de INPUT HERE. Pedimos disculpas por las molestias.",
+                    "cs": "Potýkáme se s dočasnými potížemi se synchronizací sítě INPUT HERE, které mohou vést k chybám nebo pomalejší odezvě. Bezpečnost vašich prostředků na síti INPUT HERE tím však není nijak ohrožena. Omlouváme se za nepříjemnosti a děkujeme za pochopení.",
+                    "ru": "У нас возникли проблемы с синхронизацией сети INPUT HERE. Это может временно привести к ошибкам или медленным временам ответа на INPUT HERE. Эта проблема никоим образом не влияет на безопасность ваших средств INPUT HERE. Приносим извинения за неудобства.",
+                    "ja": "INPUT HEREネットワークの同期に問題が発生しています。これにより、INPUT HEREで一時的にエラーや応答時間が遅くなる場合があります。この問題は、INPUT HEREの資金の安全性にまったく影響しません。ご不便をおかけして申し訳ありません。",
+                    "hu": "Problémák merültek fel az INPUT HERE hálózat szinkronizálásával. Ez ideiglenesen hibákat vagy lassú válaszidőket eredményezhet az INPUT HERE-en. Ez a probléma semmilyen módon nem érinti az INPUT HERE pénzügyeinek biztonságát. Elnézést kérünk a kellemetlenségért.",
+                    "it": "Stiamo riscontrando problemi di sincronizzazione con la rete INPUT HERE. Ciò potrebbe comportare temporaneamente errori o tempi di risposta lenti su INPUT HERE. Questo problema non influisce in alcun modo sulla sicurezza dei tuoi fondi INPUT HERE. Ci scusiamo per l'inconveniente.",
+                    "fr": "Nous rencontrons des problèmes de synchronisation avec le réseau INPUT HERE. Cela peut entraîner temporairement des erreurs ou des temps de réponse lents sur INPUT HERE. Ce problème n'affecte en aucun cas la sécurité de vos fonds INPUT HERE. Nous nous excusons pour la gêne occasionnée.",
+                    "de": "Wir haben Probleme mit der Synchronisierung des INPUT HERE-Netzwerks. Dies kann vorübergehend zu Fehlern oder langsamen Antwortzeiten auf INPUT HERE führen. Dieses Problem beeinträchtigt die Sicherheit Ihrer INPUT HERE-Fonds in keiner Weise. Wir entschuldigen uns für die Unannehmlichkeiten.",
+                    "tr": "INPUT HERE ağı ile senkronizasyon sorunları yaşıyoruz. Bu, geçici olarak INPUT HERE'da hatalara veya yavaş yanıt sürelerine neden olabilir. Bu sorun, INPUT HERE fonlarınızın güvenliğini hiçbir şekilde etkilemez. Rahatsızlık için özür dileriz.",
+                    "pt": "Estamos enfrentando problemas de sincronização com a rede INPUT HERE. Isso pode resultar temporariamente em erros ou tempos de resposta lentos na INPUT HERE. Este problema não afeta de forma alguma a segurança dos seus fundos INPUT HERE. Pedimos desculpas pelo inconveniente.",
+                    "uk": "У нас виникли проблеми з синхронізацією мережі INPUT HERE. Це може тимчасово призвести до помилок або повільних часів відповіді на INPUT HERE. Ця проблема ніяк не впливає на безпеку ваших коштів INPUT HERE. Приносимо вибачення за незручності."
                 }
             }
         }
