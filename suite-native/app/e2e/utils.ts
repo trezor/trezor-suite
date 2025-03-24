@@ -90,7 +90,7 @@ export const scrollUntilVisible = async (
         await waitFor(element)
             .toBeVisible()
             .whileElement(by.id(scrollViewTestId))
-            .scroll(250, 'down');
+            .scroll(300, 'down');
     }
 };
 

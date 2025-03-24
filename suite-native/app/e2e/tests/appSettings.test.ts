@@ -40,8 +40,8 @@ describe('App Settings - without device interactions', () => {
         await onTabBar.navigateToSettings();
         await onSettings.tapLocalization();
         await onSettings.changeLocalizationCurrency('czk');
-        await device.pressBack();
-        await device.pressBack();
+        await onTabBar.tapBackButton();
+        await onTabBar.navigateToHome();
 
         await waitFor(
             element(by.id('@home/portfolio/fiat-balance-header').withDescendant(by.text('CZK'))),
@@ -58,8 +58,8 @@ describe('App Settings - without device interactions', () => {
         await onTabBar.navigateToSettings();
         await onSettings.tapLocalization();
         await onSettings.changeBitcoinUnits(PROTO.AmountUnit.SATOSHI);
-        await device.pressBack();
-        await device.pressBack();
+        await onTabBar.tapBackButton();
+        await onTabBar.navigateToHome();
 
         await waitFor(element(by.text('0 sat')))
             .toBeVisible()
@@ -69,15 +69,17 @@ describe('App Settings - without device interactions', () => {
     it('Privacy & Security - Discreet Mode', async () => {
         await onHome.assertIsDiscreetModeDisabled();
 
-        await element(by.id('@home/portfolio/fiat-balance-header')).tap();
+        const portfolioHeader = element(by.id('@home/portfolio/fiat-balance-header'));
+        await waitFor(portfolioHeader).toBeVisible().withTimeout(30000);
+        await portfolioHeader.tap();
 
         await onHome.assertIsDiscreetModeEnabled();
 
         await onTabBar.navigateToSettings();
         await onSettings.tapPrivacyAndSecurity();
         await onSettings.toggleDiscreetMode();
-        await device.pressBack();
-        await device.pressBack();
+        await onTabBar.tapBackButton();
+        await onTabBar.navigateToHome();
 
         await onHome.assertIsDiscreetModeDisabled();
     });
