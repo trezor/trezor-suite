@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Banner, Button, Column, IconButton, Row, Text } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
@@ -18,6 +19,7 @@ import { bannerAnimationConfig } from './banner-animations';
 
 const Container = styled(motion.div)`
     width: 100%;
+    margin-bottom: ${spacingsPx.xxxxl};
 `;
 
 export const DashboardPassphraseBanner = () => {

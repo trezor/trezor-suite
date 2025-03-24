@@ -16,8 +16,10 @@ export const Dashboard = () => {
 
     return (
         <Column gap={spacings.xxxxl} data-testid="@dashboard/index">
-            <DashboardPassphraseBanner />
-            <PortfolioCard />
+            <div>
+                <DashboardPassphraseBanner />
+                <PortfolioCard />
+            </div>
             {/*<T3T1PromoBanner />*/}
             <AssetsView />
             <StakeEthCard />

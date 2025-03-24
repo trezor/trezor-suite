@@ -1,20 +1,12 @@
 import { useState } from 'react';
 
-import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import {
-    Box,
-    Button,
-    H2,
-    Icon,
-    IconButton,
-    Image,
-    Paragraph,
-    motionEasing,
-} from '@trezor/components';
+import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
@@ -22,16 +14,14 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 
 import { useExternalLink } from '../../../hooks/suite';
+import { bannerAnimationConfig } from '../../dashboard/banner-animations';
 
 const Container = styled(motion.div)`
     position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 12px 20px;
     border-radius: 12px;
     background: ${({ theme }) => theme.baseFillSurfaceBrandDark};
     overflow: hidden;
+    margin-bottom: ${spacingsPx.xxxxl};
 `;
 
 const ImageContainer = styled.div`
@@ -73,23 +63,6 @@ export const DesktopSuiteBanner = () => {
         setIsVisible(false);
     };
 
-    const animationConfig: HTMLMotionProps<'div'> = {
-        initial: { opacity: 1, transform: 'scale(1)', height: 'auto' },
-        exit: { opacity: 0, transform: 'scale(0.7)', marginBottom: -60, height: 60 },
-        transition: {
-            duration: 0.33,
-            ease: motionEasing.transition,
-            height: {
-                duration: 0.23,
-                ease: motionEasing.transition,
-            },
-            opacity: {
-                duration: 0.23,
-                ease: motionEasing.transition,
-            },
-        },
-    };
-
     return (
         <AnimatePresence>
             {isVisible && (
@@ -98,50 +71,56 @@ export const DesktopSuiteBanner = () => {
                     onAnimationComplete={() =>
                         dispatch(dispatch(setFlag('showSettingsDesktopAppPromoBanner', false)))
                     }
-                    {...animationConfig}
+                    {...bannerAnimationConfig}
                 >
-                    <Box position={{ type: 'absolute', top: 16, right: 16 }} cursor="pointer">
-                        <IconButton
-                            icon="close"
-                            onClick={handleClose}
-                            data-testid="@banner/install-desktop-suite/close-button"
-                            size="small"
-                            variant="tertiary"
-                        />
-                    </Box>
+                    <Row
+                        alignItems="center"
+                        width="100%"
+                        margin={{ vertical: spacings.sm, horizontal: spacings.lg }}
+                    >
+                        <Box position={{ type: 'absolute', top: 16, right: 16 }} cursor="pointer">
+                            <IconButton
+                                icon="close"
+                                onClick={handleClose}
+                                data-testid="@banner/install-desktop-suite/close-button"
+                                size="small"
+                                variant="tertiary"
+                            />
+                        </Box>
 
-                    <ImageContainer>
-                        <Image image="TREZOR_PATTERN" width={140} />
-                    </ImageContainer>
+                        <ImageContainer>
+                            <Image image="TREZOR_PATTERN" width={140} />
+                        </ImageContainer>
 
-                    <Content>
-                        <TextContainer>
-                            <H2>
-                                <Translation id="TR_DESKTOP_APP_PROMO_HEADING" />
-                            </H2>
-                            <Paragraph>
-                                <Translation id="TR_DESKTOP_APP_PROMO_TEXT" />
-                            </Paragraph>
-                        </TextContainer>
+                        <Content>
+                            <TextContainer>
+                                <H2>
+                                    <Translation id="TR_DESKTOP_APP_PROMO_HEADING" />
+                                </H2>
+                                <Paragraph>
+                                    <Translation id="TR_DESKTOP_APP_PROMO_TEXT" />
+                                </Paragraph>
+                            </TextContainer>
 
-                        <Button
-                            variant="primary"
-                            href={href}
-                            onClick={() =>
-                                analytics.report({
-                                    type: EventType.GetDesktopApp,
-                                })
-                            }
-                        >
-                            <Translation id="TR_DESKTOP_APP_PROMO_GET" />
-                        </Button>
+                            <Button
+                                variant="primary"
+                                href={href}
+                                onClick={() =>
+                                    analytics.report({
+                                        type: EventType.GetDesktopApp,
+                                    })
+                                }
+                            >
+                                <Translation id="TR_DESKTOP_APP_PROMO_GET" />
+                            </Button>
 
-                        <OSIcons>
-                            <Icon name="osMac" variant="primary" />
-                            <Icon name="osLinux" variant="primary" />
-                            <Icon name="osWindows" variant="primary" size={20} />
-                        </OSIcons>
-                    </Content>
+                            <OSIcons>
+                                <Icon name="osMac" variant="primary" />
+                                <Icon name="osLinux" variant="primary" />
+                                <Icon name="osWindows" variant="primary" size={20} />
+                            </OSIcons>
+                        </Content>
+                    </Row>
                 </Container>
             )}
         </AnimatePresence>

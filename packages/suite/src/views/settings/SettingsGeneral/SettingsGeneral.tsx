@@ -62,15 +62,17 @@ export const SettingsGeneral = () => {
 
     return (
         <SettingsLayout data-testid="@settings/index">
-            {isWeb() && !isMobileLayout && shouldShowSettingsDesktopAppPromoBanner && (
-                <DesktopSuiteBanner />
-            )}
+            <div>
+                {isWeb() && !isMobileLayout && shouldShowSettingsDesktopAppPromoBanner && (
+                    <DesktopSuiteBanner />
+                )}
 
-            <SettingsSection title={<Translation id="TR_LOCALIZATION" />} icon="flag">
-                <Language />
-                <Fiat />
-                {hasBitcoinNetworks && <BitcoinAmountUnit />}
-            </SettingsSection>
+                <SettingsSection title={<Translation id="TR_LOCALIZATION" />} icon="flag">
+                    <Language />
+                    <Fiat />
+                    {hasBitcoinNetworks && <BitcoinAmountUnit />}
+                </SettingsSection>
+            </div>
 
             <SettingsSection title={<Translation id="TR_LABELING" />} icon="tag">
                 <Labeling />
