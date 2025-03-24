@@ -3,7 +3,7 @@ import { ReactNode, useRef, useState } from 'react';
 import { ElevationContext, ElevationDown, ElevationUp, NewModal } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
-import { useLayoutSize } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
 import { useResetScrollOnUrl } from 'src/hooks/suite/useResetScrollOnUrl';
 import { LayoutContext, LayoutContextPayload } from 'src/support/suite/LayoutContext';
@@ -11,6 +11,7 @@ import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import { Metadata } from '../Metadata';
 import { LoggedOutSidebar } from './LoggedOutSidebar';
+import { DebugLegend } from './SuiteLayout/DebugLegend';
 import {
     AppWrapper,
     Body,
@@ -28,6 +29,7 @@ interface LoggedOutLayout {
 export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
     const [{ title, layoutHeader }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
+    const theme = useSelector(state => state.suite.settings.theme);
     const { scrollRef } = useResetScrollOnUrl();
     const { isMobileLayout } = useLayoutSize();
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -69,6 +71,7 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
                 </PageWrapper>
                 <GuideRouter />
             </Wrapper>
+            {theme.variant === 'debug' && <DebugLegend />}
         </ElevationContext>
     );
 };

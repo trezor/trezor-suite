@@ -18,6 +18,7 @@ import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import { TrafficLightOffset } from '../suite/TrafficLightOffset';
+import { DebugLegend } from '../suite/layouts/SuiteLayout/DebugLegend';
 
 const Wrapper = styled.div`
     display: flex;
@@ -139,6 +140,8 @@ interface OnboardingLayoutProps {
 
 export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
     const bannerMessage = useSelector(selectBannerMessage);
+    const theme = useSelector(state => state.suite.settings.theme);
+
     const { activeStepId } = useOnboarding();
 
     const activeStep = useMemo(() => steps.find(step => step.id === activeStepId)!, [activeStepId]);
@@ -186,6 +189,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                     <GuideRouter />
                 </Body>
             </Wrapper>
+            {theme.variant === 'debug' && <DebugLegend />}
         </TrafficLightOffset>
     );
 };

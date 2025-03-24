@@ -20,6 +20,7 @@ import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 
 import { LoggedOutSidebar } from '../LoggedOutSidebar';
+import { DebugLegend } from '../SuiteLayout/DebugLegend';
 
 const Content = styled.div<{ $elevation: Elevation }>`
     display: flex;
@@ -66,6 +67,7 @@ const Right = ({ bannerSlot, children }: { bannerSlot?: ReactNode; children: Rea
 // used in Preloader and Onboarding
 export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
     const bannerMessage = useSelector(selectBannerMessage);
+    const theme = useSelector(state => state.suite.settings.theme);
 
     return (
         <ElevationDown>
@@ -98,6 +100,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                     <GuideRouter />
                 </Row>
             </Column>
+            {theme.variant === 'debug' && <DebugLegend />}
         </ElevationDown>
     );
 };
