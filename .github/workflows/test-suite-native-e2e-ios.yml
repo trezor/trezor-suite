@@ -2,10 +2,7 @@ name: "[Test] suite-native iOS E2E"
 
 on:
   schedule:
-    # Runs at midnight (00:00) on every Monday
-    # So far the iOS do not support Trezor device connection, so it is not necessary to run tests every day.
-    # Will be probably changed in the future.
-    - cron: "0 0 * * 1"
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 concurrency:
