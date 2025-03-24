@@ -11,7 +11,7 @@ import {
 import { PreloadedState } from '@suite-native/state';
 
 import { BasicProviderForTests } from './BasicProviderForTests';
-import { STORE_WARMING_UP_MSG, StoreProviderForTests } from './StoreProviderForTests';
+import { STORE_WARMING_UP_MSG, StoreProviderForTests, TestStore } from './StoreProviderForTests';
 
 export const renderWithBasicProvider = <Props,>(
     element: ReactElement<Props>,
@@ -22,14 +22,16 @@ export const renderWithStoreProviderAsync = async <Props,>(
     element: ReactElement<Props>,
     {
         preloadedState,
+        store,
         ...options
     }: Omit<RenderOptions, 'wrapper'> & {
         preloadedState?: PreloadedState;
+        store?: TestStore;
     } = {},
 ) => {
     const ret = render(element, {
         wrapper: ({ children }) => (
-            <StoreProviderForTests preloadedState={preloadedState}>
+            <StoreProviderForTests preloadedState={preloadedState} injectedStore={store}>
                 {children}
             </StoreProviderForTests>
         ),
@@ -50,14 +52,16 @@ export const renderHookWithStoreProviderAsync = async <Result, Props>(
     callback: (props: Props) => Result,
     {
         preloadedState,
+        store,
         ...options
     }: Omit<RenderHookOptions<Props>, 'wrapper'> & {
         preloadedState?: PreloadedState;
+        store?: TestStore;
     } = {},
 ) => {
     const ret = renderHook(callback, {
         wrapper: ({ children }) => (
-            <StoreProviderForTests preloadedState={preloadedState}>
+            <StoreProviderForTests preloadedState={preloadedState} injectedStore={store}>
                 {children}
             </StoreProviderForTests>
         ),
