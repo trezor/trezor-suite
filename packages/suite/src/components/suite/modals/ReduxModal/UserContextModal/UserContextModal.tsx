@@ -50,6 +50,7 @@ import type { ReduxModalProps } from '../ReduxModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
 import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
+import { TradingDCAModal } from './TradingDCAModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 
@@ -71,7 +72,7 @@ export const UserContextModal = ({
                     noRedirect={payload.noRedirect}
                     isCoinjoinDisabled={payload.isCoinjoinDisabled}
                     isBackClickDisabled={payload.isBackClickDisabled}
-                    onCancel={onCancel}
+                    onCancel={payload.onCancel ?? onCancel}
                 />
             );
         case 'unverified-address':
@@ -217,6 +218,8 @@ export const UserContextModal = ({
             return <ConnectPopupModal />;
         case 'walletconnect-proposal':
             return <WalletConnectProposalModal eventId={payload.eventId} />;
+        case 'trading-dca':
+            return <TradingDCAModal device={payload.device} onCancel={onCancel} />;
         default:
             return null;
     }

@@ -44,6 +44,7 @@ export type UserContextPayload =
           noRedirect?: boolean;
           isCoinjoinDisabled?: boolean;
           isBackClickDisabled?: boolean;
+          onCancel?: () => void;
       }
     | {
           type: 'device-background-gallery';
@@ -198,4 +199,8 @@ export type UserContextPayload =
     | {
           type: 'walletconnect-proposal';
           eventId: number;
+      }
+    | {
+          type: 'trading-dca';
+          device: TrezorDevice;
       };
