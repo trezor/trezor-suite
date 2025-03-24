@@ -17,7 +17,6 @@ export type SuiteSwitch =
     | 'log-file'
     | 'log-path'
     | 'log-no-print'
-    | 'log-connect'
     | 'remove-user-data-on-start'
     | 'expose-connect-ws'
     | 'state'; // very special handling, see `./app-utils.ts`

@@ -22,6 +22,7 @@ import { Tor } from './Tor';
 import { TranslationMode } from './TranslationMode';
 import { Transport } from './Transport';
 import { TransportBackends } from './TransportBackends';
+import { TrezorConnect } from './TrezorConnect';
 import { TriggerHighlight } from './TriggerHighlight';
 import { ViewOnlySettings } from './ViewOnlySettings';
 import { WipeData } from './WipeData';
@@ -91,6 +92,9 @@ export const SettingsDebug = () => {
                     <Bluetooth />
                 </SettingsSection>
             )}
+            <SettingsSection title="TrezorConnect">
+                <TrezorConnect />
+            </SettingsSection>
         </SettingsLayout>
     );
 };

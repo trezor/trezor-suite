@@ -4,8 +4,6 @@ import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { parseElectrumUrl } from '@trezor/utils';
 
-import { getSwitchValue } from '../libs/process-switches';
-
 import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './index';
 
 export const SERVICE_NAME = '@trezor/connect';
@@ -60,9 +58,6 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                 if (method === 'init') {
                     const response = await TrezorConnect.init({
                         ...params[0],
-                        // poor mans solution to enable debug logs in trezor-connect.
-                        // todo: ideally connect should accept logger as a param
-                        debug: getSwitchValue('log-connect') === 'true',
                     });
                     await setProxy();
 

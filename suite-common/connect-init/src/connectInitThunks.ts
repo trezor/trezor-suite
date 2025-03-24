@@ -151,14 +151,15 @@ export const connectInitThunk = createThunk(
             ? extra.selectors.selectDesktopBinDir(getState())
             : DATA_URL;
 
+        const { transports, showConnectLogs } = selectDebugSettings(getState());
         try {
             await TrezorConnect.init({
                 ...connectInitSettings,
                 binFilesBaseUrl,
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
-                transports: selectDebugSettings(getState()).transports,
+                transports,
                 _sessionsBackgroundUrl,
-                // debug: true, // Enable debug logs in TrezorConnect
+                debug: showConnectLogs,
             });
         } catch (error) {
             let formattedError: string;

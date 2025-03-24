@@ -113,7 +113,6 @@ Available flags:
 | `--log-file=FILENAME`         | Name of the output file (defaults to `trezor-suite-log-%tt.txt`)                                                                                                                       |
 | `--log-path=PATHNAME`         | Path for the output file (defaults to `/logs` subfolder of Suite data directory or current working directory)                                                                          |
 | `--log-no-print`              | Suppress console logs                                                                                                                                                                  |
-| `--log-connect`               | Enable logs also from Connect                                                                                                                                                          |
 | `--remove-user-data-on-start` | Removes user data directory on start (used for E2E testing)                                                                                                                            |
 | `--expose-connect-ws`         | Expose Connect websocket even on production build                                                                                                                                      |
 
