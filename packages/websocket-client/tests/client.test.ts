@@ -2,14 +2,7 @@ import { ServerOptions, WebSocket } from 'ws';
 
 import { WebsocketClient } from '../src/client';
 
-class Client extends WebsocketClient<{ 'foo-event': 'bar-event' }> {
-    ping() {
-        return this.sendMessage({ method: 'ping' });
-    }
-    sendMessage(message: Record<string, any>) {
-        return super.sendMessage(message);
-    }
-}
+class Client extends WebsocketClient<{ 'foo-event': 'bar-event' }> {}
 
 class Server extends WebSocket.Server {
     private _url: string;
@@ -95,6 +88,7 @@ describe('WebsocketClient', () => {
         jest.useFakeTimers();
 
         const cli = new Client({ url: server.getUrl(), pingTimeout: 5000 });
+        // @ts-expect-error ping is protected
         const pingSpy = jest.spyOn(cli, 'ping');
         await cli.connect();
 
@@ -112,7 +106,7 @@ describe('WebsocketClient', () => {
     });
 
     it('reconnect with sync disconnect()', async () => {
-        const cli = new Client({ url: server.getUrl() });
+        const cli = new WebsocketClient({ url: server.getUrl() });
         await cli.connect();
         cli.disconnect(); // NOTE: intentionally not awaited
         await cli.connect();
