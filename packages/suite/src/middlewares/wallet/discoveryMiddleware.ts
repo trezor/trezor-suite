@@ -66,10 +66,11 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         // discovery interruption ends after DISCOVERY.STOP action
         // action which triggers this interruption will be propagated AFTER stop
         if (interruptionIntent && discoveryIsRunning) {
-            await dispatch(stopDiscoveryThunk());
+            dispatch(stopDiscoveryThunk());
         }
 
-        // pass action
+        // pass action to next middleware; code below will run only after the action has been fully processed in redux.
+        // Even though next(action) generally isn't async as per TS, the action may return anything. Sometimes it's a Promise → needs to be awaited
         await next(action);
 
         if (walletSettingsActions.changeNetworks.match(action)) {

@@ -2,7 +2,6 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
-import { createDeferred } from '@trezor/utils';
 
 import { discoveryActions } from './discoveryActions';
 import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';
@@ -17,18 +16,13 @@ export type DiscoveryRootState = {
 
 const initialState: DiscoveryState = [];
 
-const update = (draft: DiscoveryState, payload: PartialDiscovery, resolve?: boolean) => {
+const update = (draft: DiscoveryState, payload: PartialDiscovery) => {
     const index = draft.findIndex(f => f.deviceState === payload.deviceState);
     if (index >= 0) {
-        const dfd = draft[index].running;
         draft[index] = {
             ...draft[index],
             ...payload,
         };
-        if (resolve && dfd) {
-            dfd.resolve();
-            delete draft[index].running;
-        }
         if (!payload.error) {
             delete draft[index].error;
         }
@@ -46,14 +40,7 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(discoveryActions.startDiscovery, (state, { payload }) => {
-                const index = state.findIndex(f => f.deviceState === payload.deviceState);
-                if (index >= 0) {
-                    state[index] = {
-                        ...state[index],
-                        ...payload,
-                        running: createDeferred(),
-                    };
-                }
+                update(state, payload);
             })
             .addCase(discoveryActions.removeDiscovery, (state, { payload }) => {
                 const index = state.findIndex(f => f.deviceState === payload);
@@ -66,10 +53,10 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
                 update(state, payload);
             })
             .addCase(discoveryActions.completeDiscovery, (state, { payload }) => {
-                update(state, payload, true);
+                update(state, payload);
             })
             .addCase(discoveryActions.stopDiscovery, (state, { payload }) => {
-                update(state, payload, true);
+                update(state, payload);
             })
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,

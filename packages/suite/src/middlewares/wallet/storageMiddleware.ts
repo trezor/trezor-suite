@@ -35,7 +35,6 @@ import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import { db } from 'src/storage';
 import type { AppState, Dispatch, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
-import { serializeDiscovery } from 'src/utils/suite/storage';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -142,7 +141,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 if (isDeviceRemembered(device)) {
                     const discovery = selectDiscoveryByDeviceState(api.getState(), deviceState);
                     if (discovery) {
-                        storageActions.saveDiscovery([serializeDiscovery(discovery)]);
+                        storageActions.saveDiscovery([discovery]);
                     }
                 }
             }

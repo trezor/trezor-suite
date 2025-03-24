@@ -234,7 +234,7 @@ export const stopDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/stop`,
     (_, { dispatch, getState }) => {
         const discovery = selectDeviceDiscovery(getState());
-        if (discovery && discovery.running) {
+        if (discovery) {
             dispatch(
                 interruptDiscovery({
                     deviceState: discovery.deviceState,
@@ -242,8 +242,6 @@ export const stopDiscoveryThunk = createThunk(
                 }),
             );
             TrezorConnect.cancel('discovery_interrupted');
-
-            return discovery.running.promise;
         }
     },
 );
