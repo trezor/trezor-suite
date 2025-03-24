@@ -20,6 +20,7 @@ import cardanoStakingReducer from './cardanoStakingReducer';
 import { coinjoinReducer } from './coinjoinReducer';
 import formDraftReducer from './formDraftReducer';
 import graphReducer from './graphReducer';
+import passphraseFlowReducer from './passphraseFlowReducer';
 import receiveReducer from './receiveReducer';
 import selectedAccountReducer from './selectedAccountReducer';
 import settingsReducer from './settingsReducer';
@@ -48,6 +49,7 @@ const WalletReducers = combineReducers({
     blockchain: blockchainReducer,
     explorer: explorerReducer,
     trading: tradingReducer,
+    passphraseFlow: passphraseFlowReducer,
     tradingNew: tradingNewReducer, // TODO: trading - tradingNew is temporary
     send: sendFormReducer,
     accountSearch: accountSearchReducer,
