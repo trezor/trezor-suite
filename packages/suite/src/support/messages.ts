@@ -97,7 +97,7 @@ export default defineMessages({
         id: 'TR_HIDE_SUSPICIOUS_TRANSACTIONS',
     },
     TR_HIDE_SUSPICIOUS_TRANSACTIONS_DESCRIPTION: {
-        defaultMessage: 'Crypto moves fast. Our filters may not always be 100% accurate.',
+        defaultMessage: 'Crypto moves fast. Our filters may not always be 100% up-to-date.',
         id: 'TR_HIDE_SUSPICIOUS_TRANSACTIONS_DESCRIPTION',
     },
     TR_ACCOUNT_IS_EMPTY_TITLE: {
@@ -1575,11 +1575,11 @@ export default defineMessages({
         id: 'TR_ALL',
     },
     TR_ONBOARDING_ALLOW_ANALYTICS: {
-        defaultMessage: 'Help us anonymously',
+        defaultMessage: 'Allow anonymous data collection',
         id: 'TR_ONBOARDING_ALLOW_ANALYTICS',
     },
     TR_ALLOW_ANALYTICS: {
-        defaultMessage: 'Better―with you',
+        defaultMessage: 'Anonymous data collection',
         id: 'TR_ALLOW_ANALYTICS',
     },
     TR_ALLOW_ANALYTICS_DESCRIPTION: {
@@ -1588,11 +1588,12 @@ export default defineMessages({
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
     },
     TR_ALLOW_ANALYTICS_PRIVACY_TITLE: {
-        defaultMessage: 'You data is private',
+        defaultMessage: 'Your data is private',
         id: 'TR_ALLOW_ANALYTICS_PRIVACY_TITLE',
     },
     TR_ALLOW_ANALYTICS_PRIVACY_DESCRIPTION: {
-        defaultMessage: `We don't gather sensitive personal data like balances, transactions, or profile details.`,
+        defaultMessage:
+            'We respect your privacy by never collecting sensitive personal information such as balances, transactions, or profile details.',
         id: 'TR_ALLOW_ANALYTICS_PRIVACY_DESCRIPTION',
     },
     TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_TITLE: {
@@ -1601,7 +1602,7 @@ export default defineMessages({
     },
     TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_DESCRIPTION: {
         defaultMessage:
-            'We collect data on app performance, user interaction, and potential technical issues to enhance the user experience.',
+            'We gather data on app performance, user interactions, and technical issues to continuously improve your experience.',
         id: 'TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_DESCRIPTION',
     },
     TR_ALLOW_AUTOMATIC_SUITE_UPDATES: {
@@ -1664,8 +1665,7 @@ export default defineMessages({
         id: 'TR_DISCONNECT',
     },
     TR_BACKEND_DISCONNECTED: {
-        defaultMessage:
-            'There was an issue establishing a connection. Wait a moment and try again.',
+        defaultMessage: 'Unable to connect. Wait a moment and try again.',
         id: 'TR_BACKEND_DISCONNECTED',
     },
     TR_BACKEND_RECONNECTING: {
@@ -3457,7 +3457,8 @@ export default defineMessages({
         id: 'TR_XRP_RESERVE_INFO',
     },
     TR_YOU_WERE_DISCONNECTED_DOT: {
-        defaultMessage: 'You were disconnected.',
+        defaultMessage:
+            "You're offline. Some features will be available again once you're back online.",
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
     },
     TR_YOUR_FIRMWARE_VERSION: {
@@ -5493,7 +5494,7 @@ export default defineMessages({
     },
     OP_RETURN_TOOLTIP: {
         id: 'OP_RETURN_TOOLTIP',
-        defaultMessage: 'OP_RETURN can be used to attach custom data to a transaction.',
+        defaultMessage: 'Use OP_RETURN to embed custom data directly into a transaction.',
     },
     OP_RETURN_ADD: {
         id: 'OP_RETURN_ADD',
@@ -5728,7 +5729,7 @@ export default defineMessages({
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
     },
     TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT: {
-        defaultMessage: 'Custom base fee can not be below current network base fee.',
+        defaultMessage: "The custom base fee can't be set lower than the current network base fee.",
         id: 'TR_CUSTOM_FEE_BASE_FEE_BELOW_CURRENT',
         description: 'TODO',
     },
@@ -6948,7 +6949,7 @@ export default defineMessages({
     },
     TR_DEVICE_CONNECTED_INITIAL_DEVICE_STATE: {
         id: 'TR_DEVICE_CONNECTED_INITIAL_DEVICE_STATE',
-        defaultMessage: 'Not fully set up device connected.',
+        defaultMessage: 'Device connected, but setup is incomplete.',
     },
     TR_DEVICE_CONNECTED_BOOTLOADER: {
         id: 'TR_DEVICE_CONNECTED_BOOTLOADER',
@@ -7282,7 +7283,7 @@ export default defineMessages({
     },
     TR_WHAT_DATA_WE_COLLECT: {
         id: 'TR_WHAT_DATA_WE_COLLECT',
-        defaultMessage: 'What data do we collect',
+        defaultMessage: 'What data do we collect?',
     },
     TR_ONBOARDING_TROUBLESHOOTING_FAILED: {
         id: 'TR_ONBOARDING_TROUBLESHOOTING_FAILED',
@@ -8999,7 +9000,7 @@ export default defineMessages({
     TR_SOL_FEE_DESC: {
         id: 'TR_SOL_FEE_DESC',
         defaultMessage:
-            'Network fees are paid to network validators for processing transactions. A higher fee may result in faster confirmation times. {br}Rent is a fee that accounts pay for storing data on the blockchain. Rent is calculated based on the size of the account’s storage.',
+            'Network fees are payments made to validators for processing transactions. Paying a higher fee can speed up confirmation times. {br}Rent is a charge for storing data on the blockchain. The cost is based on the size of the account’s storage.',
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',
@@ -9655,7 +9656,7 @@ export default defineMessages({
     TR_WALLETCONNECT_ADD_CONNECTION_DESC: {
         id: 'TR_WALLETCONNECT_ADD_CONNECTION_DESC',
         defaultMessage:
-            'You can manually add connection here with a string provided by WalletConnect.',
+            'Manually add a connection by entering the string provided by WalletConnect.',
     },
     TR_WALLETCONNECT_ADD_CONNECTION_PLACEHOLDER: {
         id: 'TR_WALLETCONNECT_ADD_CONNECTION_PLACEHOLDER',
