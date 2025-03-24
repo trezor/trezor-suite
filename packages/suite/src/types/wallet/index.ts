@@ -15,6 +15,7 @@ import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
 import { FormDraftAction } from 'src/actions/wallet/formDraftActions';
 import { GraphAction } from 'src/actions/wallet/graphActions';
+import { PassphraseFlowAction } from 'src/actions/wallet/passphraseFlowActions';
 import { ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
 import { TradingCommonAction } from 'src/actions/wallet/trading/tradingCommonActions';
@@ -91,4 +92,5 @@ export type WalletAction =
     | CoinjoinClientAction
     | AccountsAction
     | StakeAction
-    | ConnectPopupAction;
+    | ConnectPopupAction
+    | PassphraseFlowAction;
