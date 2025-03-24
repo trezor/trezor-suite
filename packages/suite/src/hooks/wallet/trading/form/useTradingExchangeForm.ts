@@ -12,6 +12,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     TradingExchangeAmountLimitProps,
+    TradingExchangeFormProps,
     type TradingExchangeType,
     type TradingTransactionExchange,
     addIdsToQuotes,
@@ -56,7 +57,6 @@ import { selectTradingExchangeInfo } from 'src/reducers/wallet/tradingReducer';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import {
     TradingExchangeFormContextProps,
-    TradingExchangeFormProps,
     TradingExchangeStepType,
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';

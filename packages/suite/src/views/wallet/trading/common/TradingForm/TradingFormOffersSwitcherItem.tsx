@@ -1,13 +1,16 @@
 import { ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import { type TradingUtilsProvidersProps } from '@suite-common/trading';
+import {
+    TRADING_EXCHANGE_FORM_CEX,
+    TRADING_EXCHANGE_FORM_DEX,
+    TradingExchangeFormType,
+    type TradingUtilsProvidersProps,
+} from '@suite-common/trading';
 import { Badge, Radio, Row, Text, Tooltip, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { FORM_EXCHANGE_CEX, FORM_EXCHANGE_DEX } from 'src/constants/wallet/trading/form';
-import { ExchangeType } from 'src/types/trading/tradingForm';
 import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';
 
 const Offer = styled.div<{ $isSelected: boolean; $elevation: Elevation }>`
@@ -22,7 +25,7 @@ interface TradingFormOffersSwitcherItemProps {
     isSelectable: boolean;
     onSelect: (_quote: ExchangeTrade) => void;
     quote: ExchangeTrade;
-    selectedExchangeType: ExchangeType;
+    selectedExchangeType: TradingExchangeFormType;
     providers: TradingUtilsProvidersProps | undefined;
     isBestRate?: boolean;
 }
@@ -35,7 +38,7 @@ export const TradingFormOffersSwitcherItem = ({
     isBestRate,
     isSelectable,
 }: TradingFormOffersSwitcherItemProps) => {
-    const exchangeType = quote.isDex ? FORM_EXCHANGE_DEX : FORM_EXCHANGE_CEX;
+    const exchangeType = quote.isDex ? TRADING_EXCHANGE_FORM_DEX : TRADING_EXCHANGE_FORM_CEX;
     const isSelected = Boolean(selectedExchangeType === exchangeType);
     const { elevation } = useElevation();
 

@@ -1,15 +1,16 @@
-import type { TradingTradeType, TradingUtilsProvidersProps } from '@suite-common/trading';
+import {
+    TRADING_EXCHANGE_FORM,
+    TRADING_EXCHANGE_FORM_CEX,
+    TRADING_EXCHANGE_FORM_DEX,
+    TRADING_EXCHANGE_RATE,
+    TRADING_EXCHANGE_RATE_FLOATING,
+    type TradingTradeType,
+    type TradingUtilsProvidersProps,
+} from '@suite-common/trading';
 import { Card, Column, Paragraph, Row, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import {
-    FORM_EXCHANGE_CEX,
-    FORM_EXCHANGE_DEX,
-    FORM_EXCHANGE_TYPE,
-    FORM_RATE_FLOATING,
-    FORM_RATE_TYPE,
-} from 'src/constants/wallet/trading/form';
 import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 import { TradingFormOffersSwitcherItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcherItem';
 
@@ -79,7 +80,7 @@ export const TradingFormOffersSwitcher = ({
                     <TradingFormOffersSwitcherItem
                         selectedExchangeType={exchangeType}
                         isSelectable={!hasSingleOption}
-                        onSelect={() => setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_CEX)}
+                        onSelect={() => setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX)}
                         providers={providers}
                         quote={cexQuote}
                         isBestRate={bestRatedQuote?.orderId === cexQuote?.orderId}
@@ -99,8 +100,8 @@ export const TradingFormOffersSwitcher = ({
                         selectedExchangeType={exchangeType}
                         isSelectable={!hasSingleOption}
                         onSelect={() => {
-                            setValue(FORM_EXCHANGE_TYPE, FORM_EXCHANGE_DEX);
-                            setValue(FORM_RATE_TYPE, FORM_RATE_FLOATING);
+                            setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_DEX);
+                            setValue(TRADING_EXCHANGE_RATE, TRADING_EXCHANGE_RATE_FLOATING);
                         }}
                         providers={providers}
                         quote={dexQuote}

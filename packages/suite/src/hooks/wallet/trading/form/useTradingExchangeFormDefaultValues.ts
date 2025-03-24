@@ -1,29 +1,29 @@
 import { useMemo } from 'react';
 
-import { cryptoIdToSymbol, exchangeUtils, useTradingInfo } from '@suite-common/trading';
+import {
+    TRADING_EXCHANGE_COMPARATOR_KYC_FILTER,
+    TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
+    TRADING_EXCHANGE_COMPARATOR_RATE_FILTER,
+    TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_ALL,
+    TRADING_EXCHANGE_FORM,
+    TRADING_EXCHANGE_FORM_CEX,
+    TRADING_EXCHANGE_RATE,
+    TRADING_EXCHANGE_RATE_FIXED,
+    TradingExchangeFormType,
+    TradingExchangeKycFilter,
+    TradingExchangeRateFilter,
+    TradingExchangeRateType,
+    cryptoIdToSymbol,
+    exchangeUtils,
+    useTradingInfo,
+} from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { FormState, Output } from '@suite-common/wallet-types';
 
-import {
-    EXCHANGE_COMPARATOR_KYC_FILTER,
-    EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
-    EXCHANGE_COMPARATOR_RATE_FILTER,
-    EXCHANGE_COMPARATOR_RATE_FILTER_ALL,
-    FORM_EXCHANGE_CEX,
-    FORM_EXCHANGE_TYPE,
-    FORM_RATE_FIXED,
-    FORM_RATE_TYPE,
-} from 'src/constants/wallet/trading/form';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import {
-    ExchangeType,
-    KycFilter,
-    RateType,
-    RateTypeFilter,
-    TradingExchangeFormDefaultValuesProps,
-} from 'src/types/trading/tradingForm';
+import { TradingExchangeFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { Account } from 'src/types/wallet';
 import {
     buildFiatOption,
@@ -88,11 +88,12 @@ export const useTradingExchangeFormDefaultValues = (
             amountInCrypto: true,
             sendCryptoSelect: defaultSendCryptoSelect,
             receiveCryptoSelect: defaultReceiveCryptoSelect,
-            [FORM_RATE_TYPE]: FORM_RATE_FIXED as RateType,
-            [FORM_EXCHANGE_TYPE]: FORM_EXCHANGE_CEX as ExchangeType,
-            [EXCHANGE_COMPARATOR_RATE_FILTER]:
-                EXCHANGE_COMPARATOR_RATE_FILTER_ALL as RateTypeFilter,
-            [EXCHANGE_COMPARATOR_KYC_FILTER]: EXCHANGE_COMPARATOR_KYC_FILTER_ALL as KycFilter,
+            [TRADING_EXCHANGE_RATE]: TRADING_EXCHANGE_RATE_FIXED as TradingExchangeRateType,
+            [TRADING_EXCHANGE_FORM]: TRADING_EXCHANGE_FORM_CEX as TradingExchangeFormType,
+            [TRADING_EXCHANGE_COMPARATOR_KYC_FILTER]:
+                TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL as TradingExchangeKycFilter,
+            [TRADING_EXCHANGE_COMPARATOR_RATE_FILTER]:
+                TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_ALL as TradingExchangeRateFilter,
         }),
         [defaultFormState, defaultSendCryptoSelect, defaultReceiveCryptoSelect],
     );
