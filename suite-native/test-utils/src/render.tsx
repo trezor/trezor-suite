@@ -11,7 +11,7 @@ import {
 import { PreloadedState } from '@suite-native/state';
 
 import { BasicProviderForTests } from './BasicProviderForTests';
-import { StoreProviderForTests } from './StoreProviderForTests';
+import { STORE_WARMING_UP_MSG, StoreProviderForTests } from './StoreProviderForTests';
 
 export const renderWithBasicProvider = <Props,>(
     element: ReactElement<Props>,
@@ -36,7 +36,7 @@ export const renderWithStoreProviderAsync = async <Props,>(
         ...options,
     });
 
-    await waitFor(() => expect(ret.toJSON()).not.toBeNull());
+    await waitFor(() => expect(ret.queryByLabelText(STORE_WARMING_UP_MSG)).toBeNull());
 
     return ret;
 };

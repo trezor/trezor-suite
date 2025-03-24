@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
+import { View } from 'react-native';
 import { Provider } from 'react-redux';
 
 import { EnhancedStore } from '@reduxjs/toolkit';
@@ -12,8 +13,10 @@ type ReduxProviderProps = {
     preloadedState: Partial<PreloadedState>;
 };
 
+export const STORE_WARMING_UP_MSG = 'Store is warming up...';
+
 /*
-This is file is a copy of `StoreProvider.tsx` from `suite-native/state` but with ability to pass `preloadedState` as a prop
+This file is a copy of `StoreProvider.tsx` from `suite-native/state` but with ability to pass `preloadedState` as a prop
 and without the `Persistor` and  `Sentry` logic.
  */
 export const StoreProviderForTests = ({ children, preloadedState }: ReduxProviderProps) => {
@@ -28,7 +31,9 @@ export const StoreProviderForTests = ({ children, preloadedState }: ReduxProvide
         initStoreAsync();
     }, [preloadedState]);
 
-    if (store === null) return null;
+    if (store === null) {
+        return <View accessibilityLabel={STORE_WARMING_UP_MSG} />;
+    }
 
     return (
         <Provider store={store}>
