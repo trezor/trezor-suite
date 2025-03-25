@@ -4,7 +4,7 @@ import { extraDependenciesMock } from '@suite-common/test-utils';
 
 import { TradingComposedTransactionInfo, initialState, tradingActions } from '../tradingReducer';
 import { accounts } from './account';
-import { buyThunks } from '../../thunks';
+import { buyThunks, exchangeThunks } from '../../thunks';
 import {
     TradingPaymentMethodListProps,
     TradingTransactionBuy,
@@ -331,6 +331,39 @@ export const tradingFixtures = [
             ...initialState,
             buy: {
                 ...initialState.buy,
+                isLoading: false,
+            },
+        },
+    },
+    {
+        description: 'should set loading for exchange section, when confirmTradeThunk is triggered',
+        initialState,
+        actions: [
+            {
+                type: exchangeThunks.confirmTradeThunk.pending.type,
+            },
+        ],
+        result: {
+            ...initialState,
+            exchange: {
+                ...initialState.exchange,
+                isLoading: true,
+            },
+        },
+    },
+    {
+        description:
+            'should set off loading for exchange section, when confirmTradeThunk is completed',
+        initialState,
+        actions: [
+            {
+                type: exchangeThunks.confirmTradeThunk.fulfilled.type,
+            },
+        ],
+        result: {
+            ...initialState,
+            exchange: {
+                ...initialState.exchange,
                 isLoading: false,
             },
         },

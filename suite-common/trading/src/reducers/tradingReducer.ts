@@ -130,6 +130,12 @@ export const tradingSlice = createSliceWithExtraDeps({
             .addCase(exchangeThunks.handleRequestThunk.fulfilled, state => {
                 state.exchange.isLoading = false;
             })
+            .addCase(exchangeThunks.confirmTradeThunk.pending, state => {
+                state.exchange.isLoading = true;
+            })
+            .addCase(exchangeThunks.confirmTradeThunk.fulfilled, state => {
+                state.exchange.isLoading = false;
+            })
             .addDefaultCase((state, action) => {
                 tradingBuyReducer(state.buy, action);
                 // TODO: prepareSellReducer(extra)(state.sell, action);

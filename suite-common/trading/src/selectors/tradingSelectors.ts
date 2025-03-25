@@ -254,3 +254,6 @@ export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
             });
     },
 );
+
+export const selectTradingExchangeFormStep = (state: TradingRootState) =>
+    state.wallet.tradingNew.exchange.formStep;

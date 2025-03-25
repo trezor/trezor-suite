@@ -17,6 +17,7 @@ import {
     selectTradingCoinInfoByCryptoId,
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchange,
+    selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
     selectTradingExchangeProviders,
     selectTradingExchangeQuotesRequest,
@@ -397,5 +398,9 @@ describe('tradingSelectors', () => {
 
             expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
         });
+    });
+
+    it('selectTradingExchangeFormStep should return formStep', () => {
+        expect(selectTradingExchangeFormStep(state)).toBe('RECEIVING_ADDRESS');
     });
 });
