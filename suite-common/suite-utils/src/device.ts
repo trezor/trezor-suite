@@ -259,11 +259,14 @@ export const findInstanceIndex = (draft: TrezorDevice[], device: AcquiredDevice)
  * @returns {TrezorDevice | undefined }
  */
 export const getSelectedDevice = (
-    device: TrezorDevice,
+    device: Pick<TrezorDevice, 'state' | 'path' | 'instance' | 'features' | 'id'> | null,
     devices: TrezorDevice[],
 ): TrezorDevice | undefined => {
+    if (device?.state?.staticSessionId) {
+        return devices.find(d => d.state?.staticSessionId === device.state?.staticSessionId);
+    }
     // selected device is not acquired
-    if (!device.features) return devices.find(d => d.path === device.path);
+    if (!device?.features) return devices.find(d => d.path === device?.path);
     const { path, instance } = device;
 
     return devices.find(d => {

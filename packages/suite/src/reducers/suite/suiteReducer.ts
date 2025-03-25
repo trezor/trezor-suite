@@ -485,7 +485,7 @@ export const selectIsCopyAddressModalShown = (state: SuiteRootState) =>
 export const selectIsInitialRun = (state: SuiteRootState) => state.suite.flags.initialRun;
 
 export const selectIsLoggedOut = (state: SuiteRootState & DeviceRootState) =>
-    selectIsInitialRun(state) || state.device?.selectedDevice?.mode !== 'normal';
+    selectIsInitialRun(state) || selectSelectedDevice(state)?.mode !== 'normal';
 
 export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
 

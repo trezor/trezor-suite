@@ -35,7 +35,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>(
 
 export type DeviceReducerState = {
     devices: TrezorDevice[];
-    selectedDevice?: TrezorDevice;
+    selectedDevice: Pick<TrezorDevice, 'state' | 'path' | 'instance'> | null; // Renamed from selectedDevice
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
     devicesWithFailedEntropyCheck?: (string | null)[]; // protobuf allows null values and we want to store this even if a fake device has id set to null
     dismissedSecurityChecks?: {
@@ -43,7 +43,7 @@ export type DeviceReducerState = {
     };
 };
 
-const initialState: DeviceReducerState = { devices: [], selectedDevice: undefined };
+const initialState: DeviceReducerState = { devices: [], selectedDevice: null };
 
 export type DeviceRootState = {
     device: DeviceReducerState;
@@ -410,7 +410,7 @@ const authFailed = (draft: DeviceReducerState, device: TrezorDevice) => {
  * @returns
  */
 const resetAuthFailed = (draft: DeviceReducerState) => {
-    const device = draft.selectedDevice;
+    const device = deviceUtils.getSelectedDevice(draft.selectedDevice, draft.devices);
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
@@ -647,16 +647,28 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             removeButtonRequests(state, payload.device, payload.buttonRequestCode);
         })
         .addCase(deviceActions.requestDeviceReconnect, state => {
-            if (state.selectedDevice) {
-                state.selectedDevice.reconnectRequested = true;
+            const selectedDevice = deviceUtils.getSelectedDevice(
+                state.selectedDevice,
+                state.devices,
+            );
+
+            if (selectedDevice) {
+                selectedDevice.reconnectRequested = true;
             }
         })
         .addCase(deviceActions.selectDevice, (state, { payload }) => {
             updateTimestamp(state, payload);
-            state.selectedDevice = payload;
-        })
-        .addCase(deviceActions.updateSelectedDevice, (state, { payload }) => {
-            state.selectedDevice = payload;
+            state.selectedDevice = payload
+                ? {
+                      state: payload.state?.staticSessionId
+                          ? {
+                                staticSessionId: payload.state?.staticSessionId,
+                            }
+                          : undefined,
+                      path: payload.path,
+                      instance: payload.instance,
+                  }
+                : null;
         })
         .addCase(deviceAuthenticityActions.result, (state, { payload }) => {
             setDeviceAuthenticity(state, payload.device, payload.result);
@@ -699,7 +711,16 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
 // Basic state selectors (no need to wrap in createMemoizedSelector)
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
 export const selectDevicesCount = (state: DeviceRootState) => state.device?.devices?.length;
-export const selectSelectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
+export const selectselectedDevice = (state: DeviceRootState) => state.device.selectedDevice;
+// Get the actual device from the devices array based on the selector
+export const selectSelectedDevice = createMemoizedSelector(
+    [state => state.device.devices, state => state.device.selectedDevice],
+    (devices, selector) => {
+        if (!selector) return undefined;
+
+        return deviceUtils.getSelectedDevice(selector, devices);
+    },
+);
 
 // Derived selectors
 export const selectIsPendingTransportEvent = createMemoizedSelector(

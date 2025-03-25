@@ -1,18 +1,13 @@
-import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
-import { AnyAction } from '@suite-common/redux-utils';
-import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     authConfirm,
-    authorizeDeviceThunk,
     createDeviceInstanceThunk,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceConnect,
     handleDeviceDisconnect,
-    observeSelectedDevice,
     restartDiscoveryThunk,
     selectDeviceThunk,
     updateFeeInfoThunk,
@@ -20,35 +15,11 @@ import {
 import { DEVICE } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
+import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { appChanged, setFlag } from 'src/actions/suite/suiteActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
-const isActionDeviceRelated = (action: AnyAction): boolean => {
-    if (
-        isAnyOf(
-            authorizeDeviceThunk.fulfilled,
-            authorizeDeviceThunk.rejected,
-            deviceActions.selectDevice,
-            deviceActions.receiveAuthConfirm,
-            deviceActions.updatePassphraseMode,
-            deviceActions.addButtonRequest,
-            deviceActions.removeButtonRequests,
-            deviceActions.rememberDevice,
-            deviceActions.forgetDevice,
-        )(action)
-    ) {
-        return true;
-    }
-
-    if (action.type === METADATA.SET_DEVICE_METADATA) return true;
-    if (action.type === METADATA.SET_DEVICE_METADATA_PASSWORDS) return true;
-
-    if (isAnyDeviceEventAction(action)) return true;
-
-    return false;
-};
 const suite =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
@@ -128,11 +99,6 @@ const suite =
 
             default:
                 break;
-        }
-
-        if (isActionDeviceRelated(action)) {
-            // keep suite reducer synchronized with other reducers (selected device)
-            api.dispatch(observeSelectedDevice());
         }
 
         return action;

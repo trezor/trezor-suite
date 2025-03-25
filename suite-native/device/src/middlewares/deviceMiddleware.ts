@@ -1,16 +1,13 @@
-import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
     accountsActions,
-    authorizeDeviceThunk,
     createDeviceInstanceThunk,
     createImportedDeviceThunk,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
-    observeSelectedDevice,
     selectAccountsByDeviceState,
     selectDeviceThunk,
     selectIsDeviceForceRemembered,
@@ -20,26 +17,6 @@ import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-f
 import { DEVICE } from '@trezor/connect';
 
 import { isDeviceEventAction } from '../utils';
-
-const isActionDeviceRelated = (action: AnyAction): boolean => {
-    if (
-        isAnyOf(
-            authorizeDeviceThunk.fulfilled,
-            authorizeDeviceThunk.rejected,
-            deviceActions.selectDevice,
-            deviceActions.receiveAuthConfirm,
-            deviceActions.updatePassphraseMode,
-            deviceActions.addButtonRequest,
-            deviceActions.removeButtonRequests,
-            deviceActions.rememberDevice,
-            deviceActions.forgetDevice,
-        )(action)
-    ) {
-        return true;
-    }
-
-    return isAnyDeviceEventAction(action);
-};
 
 export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
@@ -92,10 +69,6 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                 break;
             default:
                 break;
-        }
-
-        if (isActionDeviceRelated(action)) {
-            dispatch(observeSelectedDevice());
         }
 
         return action;

@@ -29,7 +29,6 @@ import TrezorConnect, {
     UI,
 } from '@trezor/connect';
 import { getEnvironment } from '@trezor/env-utils';
-import { isChanged } from '@trezor/utils';
 
 import { DEVICE_MODULE_PREFIX, DeviceConnectActionPayload, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
@@ -164,11 +163,11 @@ export const handleDeviceDisconnect = createThunk(
             selectors: { selectRouterApp },
         } = extra;
 
-        const selectedDevice = selectSelectedDevice(getState());
+        const devicePresent = selectSelectedDevice(getState());
         const routerApp = selectRouterApp(getState());
         const devices = selectDevices(getState());
-        if (!selectedDevice) return;
-        if (selectedDevice.path !== device.path) return;
+        if (!devicePresent) return;
+        if (devicePresent.path !== device.path) return;
 
         /**
          * Under normal circumstances, after device is disconnected we want suite to select another existing device (either remembered or physically connected)
@@ -182,8 +181,7 @@ export const handleDeviceDisconnect = createThunk(
 
         // selected device is disconnected, decide what to do next
         // device is still present in reducer (remembered or candidate to remember)
-        const devicePresent = getSelectedDevice(selectedDevice, devices);
-        const deviceInstances = getDeviceInstances(selectedDevice, devices);
+        const deviceInstances = getDeviceInstances(devicePresent, devices);
         if (deviceInstances.length > 0) {
             // if selected device is gone from reducer, switch to first instance
             if (!devicePresent) {
@@ -218,28 +216,6 @@ export const forgetDisconnectedDevices = createThunk(
         });
     },
 );
-
-/**
- * Called from `suiteMiddleware`
- * Keep `suite` reducer synchronized with `devices` reducer
- * @param {Action} action
- */
-export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
-    const devices = selectDevices(getState());
-    const selectedDevice = selectSelectedDevice(getState());
-
-    if (!selectedDevice) return false;
-
-    const deviceFromReducer = getSelectedDevice(selectedDevice, devices);
-    if (!deviceFromReducer) return true;
-
-    const changed = isChanged(selectedDevice, deviceFromReducer);
-    if (changed) {
-        dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
-    }
-
-    return changed;
-};
 
 /**
  * Called from <AcquireDevice /> component
@@ -336,7 +312,7 @@ export const authorizeDeviceThunk = createThunk<
                     d.instance !== device.instance,
             );
             // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
-            const freshDeviceData = getSelectedDevice(device, devices);
+            const freshDeviceData = selectSelectedDevice(getState());
 
             if (duplicate) {
                 const isStandardWallet = freshDeviceData!.useEmptyPassphrase;
