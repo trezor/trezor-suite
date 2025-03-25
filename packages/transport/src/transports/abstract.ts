@@ -342,6 +342,10 @@ export abstract class AbstractTransport extends TransportEmitter {
         return !!this.messages.get(message);
     }
 
+    public getMessages() {
+        return this.messages;
+    }
+
     public updateMessages(messages: Record<string, any>) {
         this.messages = parseConfigure(messages);
     }
