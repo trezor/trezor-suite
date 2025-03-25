@@ -24,43 +24,43 @@ export const applicationInit = createThunk(
             return;
         }
 
+        dispatch(initAnalyticsThunk());
+
+        dispatch(initMessageSystemThunk());
+
+        // Select latest remembered device or Portfolio Tracker device.
+        dispatch(initDevices());
+
         try {
-            dispatch(initAnalyticsThunk());
-
-            dispatch(initMessageSystemThunk());
-
-            // Select latest remembered device or Portfolio Tracker device.
-            dispatch(initDevices());
-
-            await dispatch(connectInitThunk());
-
-            dispatch(setIsConnectInitialized(true));
-
-            dispatch(initBlockchainThunk());
-
-            dispatch(periodicCheckTokenDefinitionsThunk());
-
-            dispatch(initStakeDataThunk());
-
-            dispatch(
-                periodicFetchFiatRatesThunk({
-                    rateType: 'current',
-                    localCurrency: selectFiatCurrencyCode(getState()),
-                }),
-            );
-
-            // Create Portfolio Tracker device if it doesn't exist
-            dispatch(createImportedDeviceThunk());
-
-            if (selectIsFeatureFlagEnabled(getState(), FeatureFlag.IsWalletConnectEnabled)) {
-                dispatch(walletConnectInitThunk());
-            }
+            await dispatch(connectInitThunk()).unwrap();
         } catch (error) {
-            console.error(error);
-        } finally {
-            // Tell the application to render
-            dispatch(setIsAppReady(true));
-            isAlreadyInitialized = true;
+            console.error(`Connect init error: ${JSON.stringify(error)}`);
         }
+
+        dispatch(setIsConnectInitialized(true));
+
+        dispatch(initBlockchainThunk());
+
+        dispatch(periodicCheckTokenDefinitionsThunk());
+
+        dispatch(initStakeDataThunk());
+
+        dispatch(
+            periodicFetchFiatRatesThunk({
+                rateType: 'current',
+                localCurrency: selectFiatCurrencyCode(getState()),
+            }),
+        );
+
+        // Create Portfolio Tracker device if it doesn't exist
+        dispatch(createImportedDeviceThunk());
+
+        if (selectIsFeatureFlagEnabled(getState(), FeatureFlag.IsWalletConnectEnabled)) {
+            dispatch(walletConnectInitThunk());
+        }
+
+        // Tell the application to render
+        dispatch(setIsAppReady(true));
+        isAlreadyInitialized = true;
     },
 );
