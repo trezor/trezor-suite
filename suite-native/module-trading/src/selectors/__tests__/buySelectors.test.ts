@@ -8,6 +8,8 @@ import { TradingState, tradingSlice } from '../../tradingSlice';
 import {
     selectBuyFormDefaultValues,
     selectBuySelectedReceiveAccount,
+    selectBuySupportedFiatCurrencies,
+    selectBuySupportedFiatCurrenciesList,
     selectBuyTradeableAssetsSorted,
     selectTradingBuy,
 } from '../buySelectors';
@@ -21,21 +23,17 @@ describe('buySelectors', () => {
         prevState = getInitializedTradingState();
     });
 
-    describe('selectTradingBuy', () => {
-        it('should select trading buy state', () => {
-            expect(selectTradingBuy({ wallet: { tradingNew: prevState } })).toEqual(prevState.buy);
-        });
+    it('selectTradingBuy should select trading buy state', () => {
+        expect(selectTradingBuy({ wallet: { tradingNew: prevState } })).toEqual(prevState.buy);
     });
 
-    describe('selectBuySelectedReceiveAccount', () => {
-        it('should select receiveAccount', () => {
-            const receiveAccount = { account: getBtcAccount(), address: undefined };
-            prevState.buy.selectedReceiveAccount = receiveAccount;
+    it('selectBuySelectedReceiveAccount should select receiveAccount', () => {
+        const receiveAccount = { account: getBtcAccount(), address: undefined };
+        prevState.buy.selectedReceiveAccount = receiveAccount;
 
-            expect(selectBuySelectedReceiveAccount({ wallet: { tradingNew: prevState } })).toEqual(
-                receiveAccount,
-            );
-        });
+        expect(selectBuySelectedReceiveAccount({ wallet: { tradingNew: prevState } })).toEqual(
+            receiveAccount,
+        );
     });
 
     describe('selectBuyTradeableAssetsSorted', () => {
@@ -134,6 +132,80 @@ describe('buySelectors', () => {
                     country: undefined,
                 }),
             );
+        });
+    });
+
+    describe('selectBuySupportedFiatCurrencies', () => {
+        it('should select supportedFiatCurrencies', () => {
+            expect(selectBuySupportedFiatCurrencies({ wallet: { tradingNew: prevState } })).toEqual(
+                ['usd', 'eur', 'czk'],
+            );
+        });
+
+        it('should return stable empty array when supportedFiatCurrencies are not set', () => {
+            prevState.buy.buyInfo = undefined;
+
+            const result = selectBuySupportedFiatCurrencies({ wallet: { tradingNew: prevState } });
+            expect(result).toEqual([]);
+            expect(selectBuySupportedFiatCurrencies({ wallet: { tradingNew: prevState } })).toEqual(
+                result,
+            );
+        });
+    });
+
+    describe('selectBuySupportedFiatCurrenciesList', () => {
+        it('should return supportedFiatCurrencies', () => {
+            expect(
+                selectBuySupportedFiatCurrenciesList({ wallet: { tradingNew: prevState } }),
+            ).toEqual([
+                {
+                    displayValue: 'USD',
+                    label: 'United States Dollar',
+                    value: 'usd',
+                },
+                {
+                    displayValue: 'EUR',
+                    label: 'Euro',
+                    value: 'eur',
+                },
+                {
+                    displayValue: 'CZK',
+                    label: 'Czech koruna',
+                    value: 'czk',
+                },
+            ]);
+        });
+
+        it('should be stable', () => {
+            expect(
+                selectBuySupportedFiatCurrenciesList({ wallet: { tradingNew: prevState } }),
+            ).toBe(selectBuySupportedFiatCurrenciesList({ wallet: { tradingNew: prevState } }));
+        });
+
+        it('should deduplicate values', () => {
+            prevState.buy.buyInfo!.supportedFiatCurrencies = ['usd', 'usd', 'eur', 'czk', 'eur'];
+
+            expect(
+                selectBuySupportedFiatCurrenciesList({ wallet: { tradingNew: prevState } }),
+            ).toEqual([
+                expect.objectContaining({ value: 'usd' }),
+                expect.objectContaining({ value: 'eur' }),
+                expect.objectContaining({ value: 'czk' }),
+            ]);
+        });
+
+        it('should support values not presented in fiatCurrencies', () => {
+            prevState.buy.buyInfo!.supportedFiatCurrencies = ['uyu'];
+
+            expect(
+                selectBuySupportedFiatCurrenciesList({ wallet: { tradingNew: prevState } }),
+            ).toEqual([
+                {
+                    displayValue: 'UYU',
+                    label: 'UYU',
+                    value: 'uyu',
+                },
+            ]);
         });
     });
 });

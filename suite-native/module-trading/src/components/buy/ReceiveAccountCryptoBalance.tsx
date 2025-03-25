@@ -14,7 +14,7 @@ export const ReceiveAccountCryptoBalance = ({ symbol, balance }: ReceiveAccountB
     const shouldDisplayBalance = symbol && balance;
 
     return (
-        <Box testID={RECEIVE_ACCOUNT_BALANCE_TEST_ID}>
+        <Box testID={RECEIVE_ACCOUNT_BALANCE_TEST_ID} paddingVertical="sp12">
             {shouldDisplayBalance && (
                 <DiscreetTextTrigger>
                     <CryptoAmountFormatter

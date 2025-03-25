@@ -1337,8 +1337,19 @@ export const en = {
                 learnMore: 'Learn more',
             },
         },
+        selectFiat: {
+            title: 'Fund',
+            buttonTitle: 'Select fiat currency',
+        },
         selectCoin: {
+            title: 'Buy',
             buttonTitle: 'Select coin',
+        },
+        fiatCurrencySheet: {
+            title: 'Currency',
+            emptyTitle: 'No currency found',
+            emptyDescription:
+                'We couldn’t find a currency matching your search. Try checking the spelling or exploring the list for the right option.',
         },
         tradeableAssetsSheet: {
             title: 'Coins',

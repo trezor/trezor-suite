@@ -32,3 +32,9 @@ export type TradingBuyFormValues = {
 };
 
 export type TradingBuyForm = UseFormReturn<TradingBuyFormValues>;
+
+export type FiatCurrencyItem = {
+    value: FiatCurrencyCode;
+    displayValue: string;
+    label: string;
+};

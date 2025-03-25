@@ -46,6 +46,7 @@ const usedIcons = [
     'circleDashed',
     'clockClockwise',
     'code',
+    'coin',
     'coins',
     'coinVerticalCheck',
     'copy',

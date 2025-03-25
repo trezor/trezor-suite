@@ -4,17 +4,19 @@ import Animated, { LinearTransition } from 'react-native-reanimated';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { FOCUS_ANIMATION_DURATION, SearchableSheetHeader } from '../SearchableSheetHeader';
+import {
+    FOCUS_ANIMATION_DURATION,
+    SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT,
+    SearchableSheetHeader,
+} from '../SearchableSheetHeader';
 import { TradeableAssetsFilterTabs } from './TradeableAssetsFilterTabs';
 
 type TradeableAssetsSheetHeaderProps = {
     onClose: () => void;
 };
 
-export const HEADER_HEIGHT = 160;
-
 const wrapperStyle = prepareNativeStyle(() => ({
-    height: HEADER_HEIGHT,
+    height: SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT,
 }));
 
 export const TradeableAssetsSheetHeader = ({ onClose }: TradeableAssetsSheetHeaderProps) => {

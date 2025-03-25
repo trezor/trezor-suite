@@ -1,5 +1,7 @@
 import { BuyProviderInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
 
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { fiatCurrencies } from '@suite-common/suite-config';
 import {
     regional,
     selectTradingBuyInfo,
@@ -7,7 +9,7 @@ import {
 } from '@suite-common/trading';
 
 import { TradingRootState, createMemoizedSelector } from '../tradingSlice';
-import { Country, TradingBuyFormValues } from '../types';
+import { Country, FiatCurrencyItem, TradingBuyFormValues } from '../types';
 import {
     coinInfoToTradeableAsset,
     tradeableAssetSortingComparator,
@@ -19,6 +21,9 @@ export const selectTradingBuy = (state: TradingRootState) => state.wallet.tradin
 
 export const selectBuySelectedReceiveAccount = (state: TradingRootState) =>
     selectTradingBuy(state).selectedReceiveAccount;
+
+export const selectBuySupportedFiatCurrencies = (state: TradingRootState) =>
+    returnStableArrayIfEmpty(selectTradingBuy(state).buyInfo?.supportedFiatCurrencies);
 
 export const selectBuyTradeableAssetsSorted = createMemoizedSelector(
     [
@@ -85,4 +90,25 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
             provider: suggestedProvider.name,
         } as Partial<TradingBuyFormValues>;
     },
+);
+
+export const selectBuySupportedFiatCurrenciesList = createMemoizedSelector(
+    [selectBuySupportedFiatCurrencies],
+    currencies =>
+        [...new Set(currencies).values()]
+            .map(
+                currency =>
+                    fiatCurrencies[currency as FiatCurrencyCode] ?? {
+                        code: currency,
+                        label: currency.toUpperCase(),
+                    },
+            )
+            .map(
+                ({ code, label }) =>
+                    ({
+                        value: code as FiatCurrencyCode,
+                        displayValue: code.toUpperCase(),
+                        label,
+                    }) as FiatCurrencyItem,
+            ),
 );
