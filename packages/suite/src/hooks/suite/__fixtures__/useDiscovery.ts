@@ -13,7 +13,7 @@ export const actions = [
         },
         renders: 1,
         result: {
-            running: undefined,
+            running: false,
             status: { type: 'waiting-for-device' },
         },
     },
@@ -24,7 +24,7 @@ export const actions = [
         },
         renders: 2,
         result: {
-            running: undefined,
+            running: false,
             status: { type: 'auth' },
         },
     },
@@ -35,7 +35,7 @@ export const actions = [
         },
         renders: 2, // update of exact same device shouldn't cause render
         result: {
-            running: undefined,
+            running: false,
             status: { type: 'auth' },
         },
     },
@@ -46,7 +46,7 @@ export const actions = [
         },
         renders: 3,
         result: {
-            running: undefined,
+            running: false,
             status: undefined, // normally discoveryActions.createDiscovery is called before deviceActions.updateSelectedDevice.type, this is here only for coverage
         },
     },
@@ -118,7 +118,7 @@ export const actions = [
         },
         renders: 8,
         result: {
-            running: undefined,
+            running: false,
             status: { type: 'auth-failed' },
         },
     },
@@ -129,7 +129,7 @@ export const actions = [
         },
         renders: 9,
         result: {
-            running: undefined,
+            running: false,
             status: { type: 'auth-confirm-failed' },
         },
     },

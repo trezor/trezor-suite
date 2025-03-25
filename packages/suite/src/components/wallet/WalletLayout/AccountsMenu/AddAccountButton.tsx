@@ -1,4 +1,3 @@
-import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { Button, ButtonProps, IconButton, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -31,20 +30,18 @@ export const AddAccountButton = ({
     isFullWidth,
     ...rest
 }: AddAccountButtonProps) => {
-    const { discovery } = useDiscovery();
+    const { isDiscoveryRunning } = useDiscovery();
     const dispatch = useDispatch();
-
-    const discoveryIsRunning = discovery ? discovery.status <= DiscoveryStatus.STOPPING : false;
 
     // TODO: add more cases when adding account is not possible
     const addAccountDisabled =
-        discoveryIsRunning ||
+        isDiscoveryRunning ||
         !device ||
         !device.connected ||
         device.authConfirm ||
         device.authFailed;
 
-    const tooltipMessage = getExplanationMessage(device, discoveryIsRunning);
+    const tooltipMessage = getExplanationMessage(device, isDiscoveryRunning);
 
     const handleOnClick = () => {
         if (!device) {

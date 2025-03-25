@@ -26,7 +26,7 @@ export const useDiscovery = () => {
     return {
         device,
         discovery,
-        isDiscoveryRunning: discovery && discovery.status < DiscoveryStatus.STOPPING,
+        isDiscoveryRunning: discovery ? discovery.status < DiscoveryStatus.STOPPING : false,
         getDiscoveryStatus: getStatus,
         calculateProgress,
     };

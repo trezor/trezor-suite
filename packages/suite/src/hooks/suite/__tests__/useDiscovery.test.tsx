@@ -40,7 +40,7 @@ const initStore = (state: State) => {
 };
 
 type Result = {
-    running?: boolean;
+    running: boolean;
     status?: { type: string };
     progress: number;
 };
