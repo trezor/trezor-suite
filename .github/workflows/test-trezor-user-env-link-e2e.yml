@@ -1,6 +1,9 @@
 name: "[Test] trezor-user-env-link e2e"
 
 on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
   pull_request:
     branches:
       - develop
