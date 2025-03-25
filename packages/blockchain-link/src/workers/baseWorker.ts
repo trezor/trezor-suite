@@ -96,13 +96,16 @@ export abstract class BaseWorker<API> {
             }
 
             const endpoints = prioritizeEndpoints(urls);
-            this.connectPromise = this.connectRecursive(endpoints).then(api => {
-                this.debug('Connected');
-                this.api = api;
-                this.connectPromise = undefined;
+            this.connectPromise = this.connectRecursive(endpoints)
+                .then(api => {
+                    this.debug('Connected');
+                    this.api = api;
 
-                return api;
-            });
+                    return api;
+                })
+                .finally(() => {
+                    this.connectPromise = undefined;
+                });
         }
 
         return this.connectPromise;
