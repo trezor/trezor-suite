@@ -2,7 +2,7 @@ import { MouseEvent, ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { nativeTypographyStylesBase, spacingsPx } from '@trezor/theme';
+import { spacingsPx, typographyStylesBase } from '@trezor/theme';
 
 import { TransientProps } from '../../../utils/transientProps';
 import { Icon, IconName } from '../../Icon/Icon';
@@ -88,8 +88,7 @@ const Link = ({
 }: LinkProps) => {
     const textProps = pickAndPrepareTextProps({ ...rest, typographyStyle }, allowedTextTextProps);
     const iconSize =
-        nativeTypographyStylesBase[typographyStyle !== 'inherit' ? typographyStyle : 'body']
-            .fontSize;
+        typographyStylesBase[typographyStyle !== 'inherit' ? typographyStyle : 'body'].fontSize;
 
     return (
         <A

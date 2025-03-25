@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 
 import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { nativeTypographyStylesBase } from '@trezor/theme';
+import { nativeTypography } from '@trezor/theme';
 
 import { Box } from '../Box';
 import { Text, TextProps } from '../Text';
@@ -38,7 +38,7 @@ export const DiscreetText = ({
         setHeight(nativeEvent.layout.height);
     };
 
-    const { fontSize } = nativeTypographyStylesBase[variant];
+    const { fontSize } = nativeTypography[variant];
     if (!children) return null;
     const showAsDiscreet = isDiscreetMode || !!isForcedDiscreetMode;
 

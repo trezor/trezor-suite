@@ -29,14 +29,6 @@ type TypographyStyleDefinition = {
     fontFamily?: string;
 };
 
-type TypographyStyleDefinitionWithInherit = {
-    fontSize: number | 'inherit';
-    lineHeight: number | 'inherit';
-    fontWeight: FontWeightValue | 'inherit';
-    letterSpacing: number | 'inherit';
-    fontFamily?: string | 'inherit';
-};
-
 export type NativeTypographyStyleDefinition = {
     fontSize: number;
     lineHeight: number;
@@ -48,66 +40,54 @@ export type NativeTypographyStyles = Record<TypographyStyle, NativeTypographySty
 
 // we need unit-less typography base because RN is unit-less, we can easily add units later
 // for web we need string instead of object because styled-components syntax
-export const nativeTypographyStylesBase: Record<NativeTypographyStyle, TypographyStyleDefinition> =
-    {
-        titleLarge: {
-            fontSize: 48,
-            lineHeight: 53,
-            fontWeight: fontWeights.medium,
-            letterSpacing: 0.4,
-        },
-        titleMedium: {
-            fontSize: 34,
-            lineHeight: 37,
-            fontWeight: fontWeights.medium,
-            letterSpacing: -1.4,
-        },
-        titleSmall: {
-            fontSize: 22,
-            lineHeight: 32,
-            fontWeight: fontWeights.medium,
-            letterSpacing: -0.3,
-        },
-        highlight: {
-            fontSize: 16,
-            lineHeight: 24,
-            fontWeight: fontWeights.semiBold,
-            letterSpacing: -0.4,
-        },
-        body: {
-            fontSize: 16,
-            lineHeight: 24,
-            fontWeight: fontWeights.medium,
-            letterSpacing: -0.4,
-        },
-        callout: {
-            fontSize: 14,
-            lineHeight: 20,
-            fontWeight: fontWeights.semiBold,
-            letterSpacing: -0.3,
-        },
-        hint: {
-            fontSize: 14,
-            lineHeight: 20,
-            fontWeight: fontWeights.medium,
-            letterSpacing: -0.3,
-        },
-        label: {
-            fontSize: 12,
-            lineHeight: 18,
-            fontWeight: fontWeights.medium,
-            letterSpacing: -0.1,
-        },
-    };
-// we need unit-less typography base because RN is unit-less, we can easily add units later
-// for web we need string instead of object because styled-components syntax
-export const typographyStylesBase: Record<TypographyStyle, TypographyStyleDefinitionWithInherit> = {
-    ...nativeTypographyStylesBase,
-    inherit: {
-        fontSize: 'inherit',
-        lineHeight: 'inherit',
-        fontWeight: 'inherit',
-        letterSpacing: 'inherit',
+export const typographyStylesBase: Record<NativeTypographyStyle, TypographyStyleDefinition> = {
+    titleLarge: {
+        fontSize: 48,
+        lineHeight: 53,
+        fontWeight: fontWeights.medium,
+        letterSpacing: 0.4,
+    },
+    titleMedium: {
+        fontSize: 34,
+        lineHeight: 37,
+        fontWeight: fontWeights.medium,
+        letterSpacing: -1.4,
+    },
+    titleSmall: {
+        fontSize: 22,
+        lineHeight: 32,
+        fontWeight: fontWeights.medium,
+        letterSpacing: -0.3,
+    },
+    highlight: {
+        fontSize: 16,
+        lineHeight: 24,
+        fontWeight: fontWeights.semiBold,
+        letterSpacing: -0.4,
+    },
+    body: {
+        fontSize: 16,
+        lineHeight: 24,
+        fontWeight: fontWeights.medium,
+        letterSpacing: -0.4,
+    },
+    callout: {
+        fontSize: 14,
+        lineHeight: 20,
+        fontWeight: fontWeights.semiBold,
+        letterSpacing: -0.3,
+    },
+    hint: {
+        fontSize: 14,
+        lineHeight: 20,
+        fontWeight: fontWeights.medium,
+        letterSpacing: -0.3,
+    },
+    label: {
+        fontSize: 12,
+        lineHeight: 18,
+        fontWeight: fontWeights.medium,
+        letterSpacing: -0.1,
     },
 };
 
@@ -123,18 +103,25 @@ const nativeFontFamilyStyle = {
 } as const satisfies Record<NativeTypographyStyle, NativeFont>;
 
 const prepareTypography = (): TypographyStyles =>
-    Object.fromEntries(
-        Object.entries(typographyStylesBase).map(([styleName, value]) => [
-            styleName,
-            // @TODO !!!
-            `
+    ({
+        ...Object.fromEntries(
+            Object.entries(typographyStylesBase).map(([styleName, value]) => [
+                styleName,
+                `
             font-size: ${value.fontSize}px;
             line-height: ${value.lineHeight}px;
             font-weight: ${value.fontWeight};
             letter-spacing: ${value.letterSpacing}px;
             `,
-        ]),
-    ) as TypographyStyles;
+            ]),
+        ),
+        inherit: `
+            font-size: inherit;
+            line-height: inherit;
+            font-weight: inherit;
+            letter-spacing: inherit;
+        `,
+    }) as TypographyStyles;
 
 const prepareNativeTypography = (): NativeTypographyStyles =>
     Object.fromEntries(

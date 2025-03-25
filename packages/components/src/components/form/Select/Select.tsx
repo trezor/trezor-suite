@@ -228,7 +228,7 @@ const SelectWrapper = styled.div<WrapperProps>`
     }
 
     .${reactSelectClassNamePrefix}__menu {
-        ${menuStyle}
+        ${menuStyle};
         border: none;
         z-index: ${zIndices.base};
     }
