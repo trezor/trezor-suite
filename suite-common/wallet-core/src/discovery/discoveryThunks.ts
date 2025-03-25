@@ -234,14 +234,13 @@ const handleProgressThunk = createThunk(
 /**
  * Note that the code looks like a sync thunk, but it actually behaves as async thunk!
  * It does three things:
- * 1. send TrezorConnect.cancel, which is not awaitable
+ * 1. send TrezorConnect.cancel (not awaitable)
  * 2. dispatch action to update state in redux accordingly
- * 3. and get the deferred promise (DFD) from the singleton object that holds it, representing state of the discovery
+ * 3. and get the deferred promise (dfd) from the singleton object that holds it, representing state of the discovery
  *
- * Because TrezorConnect.cancel is not awaitable, instead a DFD is stored in the singleton object and
+ * Because TrezorConnect.cancel is not awaitable, instead a dfd is stored in the singleton object and
  * it gets resolved at a different part of code (see `stopDiscovery` action called from `startDiscoveryThunk`).
- * The DFD could be accessed from anywhere, it is not necessary to return it from here, but it
- * simulates async behavior of the thunk that would be desirable.
+ * FYI that may take even several seconds.
  */
 export const stopDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/stop`,
@@ -257,7 +256,8 @@ export const stopDiscoveryThunk = createThunk(
             );
             TrezorConnect.cancel('discovery_interrupted');
 
-            // this is not perfect
+            // return a Promise. The record with dfds could be accessed anywhere; it isn't necessary to return it from
+            // here, but it simulates async behavior of the thunk, as if the cancel was awaitable.
             return dfd;
         }
     },
@@ -692,6 +692,8 @@ export const startDiscoveryThunk = createThunk(
                 });
             }
 
+            // 'discovery_interrupted' means that Connect cleared the discovery following a TrezorConnect.cancel call.
+            // cancel is not awaitable; instead, this is when Suite confirms that Connect has "finished cancelling the discovery".
             const error =
                 result.payload.error !== 'discovery_interrupted' ? result.payload.error : undefined;
             dispatch(

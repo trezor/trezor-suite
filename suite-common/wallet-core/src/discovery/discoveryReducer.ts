@@ -47,12 +47,9 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(discoveryActions.startDiscovery, (state, { payload }) => {
+                update(state, payload);
                 const index = state.findIndex(f => f.deviceState === payload.deviceState);
                 if (index >= 0) {
-                    state[index] = {
-                        ...state[index],
-                        ...payload,
-                    };
                     discoveryRunningStateLocks[state[index].deviceState] = createDeferred();
                 }
             })

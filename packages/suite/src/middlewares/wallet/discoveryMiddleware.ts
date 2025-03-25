@@ -26,10 +26,10 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }) => {
         const prevState = getState();
         const prevDiscovery = selectDeviceDiscovery(prevState);
-        const discoveryIsRunning =
+        const discoveryIsRunningAndNotCanceled =
             prevDiscovery &&
-            prevDiscovery.status > DiscoveryStatus.IDLE &&
-            prevDiscovery.status < DiscoveryStatus.STOPPING;
+            // condition excludes STOPPING state, so that `stopDiscoveryThunk` isn't called more than once
+            prevDiscovery.status === DiscoveryStatus.RUNNING;
 
         if (
             deviceActions.forgetDevice.match(action) &&
@@ -39,7 +39,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         }
 
         // do not close user context modals during discovery
-        if (action.type === UI.CLOSE_UI_WINDOW && discoveryIsRunning) {
+        if (action.type === UI.CLOSE_UI_WINDOW && discoveryIsRunningAndNotCanceled) {
             const { modal } = prevState;
             if (modal.context === MODAL.CONTEXT_USER) {
                 return action;
@@ -63,13 +63,21 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             interruptionIntent = true;
         }
 
-        // discovery interruption ends after DISCOVERY.STOP action
-        // action which triggers this interruption will be propagated AFTER stop
-        if (interruptionIntent && discoveryIsRunning) {
+        /*
+         Some of the redux actions passing through here can:
+         - interrupt discovery if RUNNING, and not already STOPPING
+         - start a new discovery - must be neither RUNNING nor STOPPING
+         Most difficult case is when an action does both (e.g. change device/passphrase):
+         We need to interrupt discovery and delay this action until Connect cofirms it is cleared.
+         Only then we may finish processing the action in redux and start a new discovery.
+         Note: TrezorConnect.cancel is not awaitable; see `stopDiscoveryThunk` how it is circumvented
+        */
+        if (interruptionIntent && discoveryIsRunningAndNotCanceled) {
             await dispatch(stopDiscoveryThunk());
         }
 
-        // pass action
+        // Pass action to next middleware, meaning that the code below runs *only after* the action has been completely processed in Redux.
+        // Note: TS says next(action) generally isn't async, but the action may return anything; sometimes it's a Promise → needs to be awaited
         await next(action);
 
         if (walletSettingsActions.changeNetworks.match(action)) {
