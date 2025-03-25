@@ -55,17 +55,6 @@ const TextOverflowContainer = styled.div<{ $shouldAllowCopy?: boolean }>`
         `}
 `;
 
-const SpanTextStart = styled.span`
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-`;
-
-const SpanTextEnd = styled.span`
-    display: inline-block;
-`;
-
 interface IOAddressProps {
     explorerUrl?: string;
     txAddress?: string;
@@ -106,14 +95,9 @@ export const IOAddress = ({
                     id={txAddress}
                     $shouldAllowCopy={shouldAllowCopy}
                 >
-                    {txAddress.length <= 5 ? (
-                        <SpanTextEnd onClick={copy}>{txAddress}</SpanTextEnd>
-                    ) : (
-                        <>
-                            <SpanTextStart onClick={copy}>{txAddress.slice(0, -4)}</SpanTextStart>
-                            <SpanTextEnd onClick={copy}>{txAddress.slice(-4)}</SpanTextEnd>
-                        </>
-                    )}
+                    <Text wordBreak="break-all" onClick={copy}>
+                        {txAddress}
+                    </Text>
                     {shouldAllowCopy ? (
                         <IconWrapper onClick={copy}>
                             <Icon

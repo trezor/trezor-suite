@@ -4,6 +4,7 @@ import { fromWei } from 'web3-utils';
 import { Network } from '@suite-common/wallet-config';
 import { getFeeRate, getTxIcon, isPending } from '@suite-common/wallet-utils';
 import {
+    Box,
     Card,
     Divider,
     Grid,
@@ -48,10 +49,13 @@ const Item = ({ label, iconName, children }: Partial<InfoItemProps>) => (
         labelWidth={120}
         typographyStyle="label"
         direction="row"
+        verticalAlignment="start"
     >
-        <Text as="div" typographyStyle="label" ellipsisLineCount={1}>
-            {children}
-        </Text>
+        <Box padding={{ top: spacings.xxxs }}>
+            <Text as="div" typographyStyle="label">
+                {children}
+            </Text>
+        </Box>
     </InfoItem>
 );
 

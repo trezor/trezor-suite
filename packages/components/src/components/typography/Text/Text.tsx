@@ -25,6 +25,7 @@ export const allowedTextTextProps = [
     'align',
     'ellipsisLineCount',
     'case',
+    'wordBreak',
 ] as const satisfies TextPropsKeys[];
 type AllowedTextTextProps = Pick<TextPropsCommon, (typeof allowedTextTextProps)[number]>;
 
