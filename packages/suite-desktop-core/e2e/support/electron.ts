@@ -98,7 +98,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
         args: buildArgs(params),
         env: {
             ...process.env,
-            PLAYWRIGHT: 'true',
+            PLAYWRIGHT_RUN: 'true',
         },
         colorScheme: params.colorScheme,
         locale: params.locale,

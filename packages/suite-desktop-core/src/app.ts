@@ -27,8 +27,9 @@ import { ipcMain } from './typed-electron';
 
 process.traceProcessWarnings = true;
 
+// Without PLAYWRIGHT_RUN env variable, the version is set to 0.0 during e2e tests, and auto-updater fails to load
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
-if (isDevEnv || process.env.PLAYWRIGHT) app.setVersion(process.env.VERSION);
+if (isDevEnv || process.env.PLAYWRIGHT_RUN) app.setVersion(process.env.VERSION);
 
 global.resourcesPath = isDevEnv
     ? path.join(__dirname, '..', 'build', 'static')
