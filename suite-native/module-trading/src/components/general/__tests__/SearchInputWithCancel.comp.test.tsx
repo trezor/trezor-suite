@@ -32,4 +32,27 @@ describe('SearchInputWithCancel', () => {
         expect(getByText('Cancel')).toBeDefined();
         expect(focusMock).toHaveBeenCalledTimes(1);
     });
+
+    it('should call onChange with empty value on unmount', () => {
+        const onChangeMock = jest.fn();
+        const { unmount } = renderSearchInputWithCancel({
+            onChange: onChangeMock,
+        });
+
+        unmount();
+
+        expect(onChangeMock).toHaveBeenCalledWith('');
+    });
+
+    it('should call onChange with empty value when Cancel is pressed', () => {
+        const onChangeMock = jest.fn();
+        const { getByPlaceholderText, getByText } = renderSearchInputWithCancel({
+            onChange: onChangeMock,
+        });
+
+        fireEvent(getByPlaceholderText('Search'), 'focus');
+        fireEvent.press(getByText('Cancel'));
+
+        expect(onChangeMock).toHaveBeenCalledWith('');
+    });
 });

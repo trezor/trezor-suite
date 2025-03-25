@@ -17,6 +17,8 @@ export type SearchableSheetHeaderProps = {
     onFilterFocusChange?: (isFilterActive: boolean) => void;
     children?: ReactNode;
     style?: NativeStyleObject;
+    onFilterChange?: (value: string) => void;
+    filterValue?: string;
 };
 
 export const FOCUS_ANIMATION_DURATION = 300 as const;
@@ -36,12 +38,13 @@ export const SearchableSheetHeader = ({
     style,
     leftButtonIcon = 'x',
     leftButtonA11yLabel,
+    onFilterChange = noOp,
+    filterValue,
 }: SearchableSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
     const [isFilterActive, setIsFilterActive] = useState(false);
-    const [filterValue, setFilterValue] = useState('');
 
     const changeFilterFocus = useCallback(
         (newValue: boolean) => {
@@ -74,7 +77,7 @@ export const SearchableSheetHeader = ({
             </Animated.View>
             <Animated.View layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}>
                 <SearchInputWithCancel
-                    onChange={setFilterValue}
+                    onChange={onFilterChange}
                     onFocus={() => changeFilterFocus(true)}
                     onBlur={() => changeFilterFocus(false)}
                     value={filterValue}

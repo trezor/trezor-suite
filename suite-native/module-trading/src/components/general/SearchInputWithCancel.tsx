@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TextInput } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
@@ -21,6 +21,7 @@ const buttonWrapperStyle = prepareNativeStyle(({ spacings }) => ({
 export const SearchInputWithCancel = ({
     onFocus = noOp,
     onBlur = noOp,
+    onChange,
     ...props
 }: SearchInputWithCancelProps) => {
     const { applyStyle } = useNativeStyles();
@@ -28,7 +29,10 @@ export const SearchInputWithCancel = ({
     const [isInputActive, setIsInputActive] = useState(false);
     const inputRef = useRef<TextInput>(null);
 
+    useEffect(() => () => onChange(''), [onChange]);
+
     const handleCancel = () => {
+        onChange('');
         inputRef.current?.clear();
         inputRef.current?.blur();
     };
@@ -47,6 +51,7 @@ export const SearchInputWithCancel = ({
                         setIsInputActive(false);
                         onBlur();
                     }}
+                    onChange={onChange}
                     {...props}
                 />
             </Animated.View>
