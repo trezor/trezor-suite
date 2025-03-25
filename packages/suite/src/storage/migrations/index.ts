@@ -1249,9 +1249,9 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                 return account;
             }
         });
+
+        await migrationCoinmarketToTrading(db, oldVersion, newVersion, transaction);
+
+        db.createObjectStore('security');
     }
-
-    await migrationCoinmarketToTrading(db, oldVersion, newVersion, transaction);
-
-    db.createObjectStore('security');
 };
