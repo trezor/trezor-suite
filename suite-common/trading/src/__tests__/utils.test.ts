@@ -33,7 +33,7 @@ describe('getUnusedAddressFromAccount', () => {
         });
 
         expect(getUnusedAddressFromAccount(accountEth as Account)).toStrictEqual({
-            address: '0x2e0DC981d301cdd443C3987cf19Eb9671CB99ddC',
+            address: 'eth-descriptor',
             path: "m/44'/60'/0'/0/1",
         });
     });
