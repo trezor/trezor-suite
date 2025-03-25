@@ -29,6 +29,7 @@ in
       docker         # for e2e tests running on localhost
       docker-compose # for e2e tests running on localhost
       nodejs
+      vips
       (yarn.override {
         nodejs = null; # use input nodejs
       })
