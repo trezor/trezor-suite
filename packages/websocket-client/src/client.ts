@@ -170,9 +170,9 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         // set connection timeout before WebSocket initialization
         const connectionTimeout = setTimeout(
             () => {
-                ws.emit('error', new WebsocketError('websocket_timeout'));
+                this.onClose();
+                dfd.reject(new WebsocketError('websocket_timeout'));
                 try {
-                    ws.once('error', () => {}); // hack; ws throws uncaughtably when there's no error listener
                     ws.close();
                 } catch {
                     // empty
@@ -237,6 +237,9 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         clearTimeout(this.pingTimeout);
 
         this.ws?.removeAllListeners();
+        this.ws?.on('error', () => {
+            // Suppress errors after close
+        });
         this.messages.rejectAll(new WebsocketError('Websocket closed unexpectedly'));
     }
 
