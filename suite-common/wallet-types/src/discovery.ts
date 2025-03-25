@@ -2,7 +2,6 @@ import { AccountType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-conf
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { StaticSessionId } from '@trezor/connect';
 import { ObjectValues } from '@trezor/type-utils';
-import { Deferred } from '@trezor/utils';
 
 import { Account, AccountBackendSpecific } from './account';
 
@@ -23,7 +22,6 @@ export interface Discovery {
         fwException?: string;
     }[];
     networks: NetworkSymbol[];
-    running?: Deferred<void>;
     error?: string;
     errorCode?: string | number;
     // Array of account types which should be discovered for given device.

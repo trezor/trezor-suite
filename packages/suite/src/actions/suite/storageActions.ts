@@ -19,11 +19,7 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 import { GraphData } from 'src/types/wallet/graph';
-import {
-    serializeCoinjoinAccount,
-    serializeDevice,
-    serializeDiscovery,
-} from 'src/utils/suite/storage';
+import { serializeCoinjoinAccount, serializeDevice } from 'src/utils/suite/storage';
 import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 
 import { STORAGE } from './constants';
@@ -270,9 +266,9 @@ export const rememberDevice =
         const graphData = wallet.graph.data.filter(d =>
             deviceGraphDataFilterFn(d, device.state?.staticSessionId),
         );
-        const discovery = wallet.discovery
-            .filter(d => d.deviceState === device.state?.staticSessionId)
-            .map(serializeDiscovery);
+        const discovery = wallet.discovery.filter(
+            d => d.deviceState === device.state?.staticSessionId,
+        );
         const historicRates = wallet.fiat.historic;
 
         const accountPromises = accounts.reduce(

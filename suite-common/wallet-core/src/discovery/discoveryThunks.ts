@@ -36,6 +36,7 @@ import {
     selectDiscovery,
     selectDiscoveryByDeviceState,
 } from './discoveryReducer';
+import { discoveryRunningStateLocks } from './discoveryRunningStateLocks';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccounts } from '../accounts/accountsReducer';
 import { selectDeviceByStaticSessionId } from '../device/deviceReducer';
@@ -230,11 +231,24 @@ const handleProgressThunk = createThunk(
     },
 );
 
+/**
+ * Note that the code looks like a sync thunk, but it actually behaves as async thunk!
+ * It does three things:
+ * 1. send TrezorConnect.cancel, which is not awaitable
+ * 2. dispatch action to update state in redux accordingly
+ * 3. and get the deferred promise (DFD) from the singleton object that holds it, representing state of the discovery
+ *
+ * Because TrezorConnect.cancel is not awaitable, instead a DFD is stored in the singleton object and
+ * it gets resolved at a different part of code (see `stopDiscovery` action called from `startDiscoveryThunk`).
+ * The DFD could be accessed from anywhere, it is not necessary to return it from here, but it
+ * simulates async behavior of the thunk that would be desirable.
+ */
 export const stopDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/stop`,
     (_, { dispatch, getState }) => {
         const discovery = selectDeviceDiscovery(getState());
-        if (discovery && discovery.running) {
+        const dfd = discovery && discoveryRunningStateLocks[discovery.deviceState];
+        if (discovery && dfd) {
             dispatch(
                 interruptDiscovery({
                     deviceState: discovery.deviceState,
@@ -243,7 +257,8 @@ export const stopDiscoveryThunk = createThunk(
             );
             TrezorConnect.cancel('discovery_interrupted');
 
-            return discovery.running.promise;
+            // this is not perfect
+            return dfd;
         }
     },
 );

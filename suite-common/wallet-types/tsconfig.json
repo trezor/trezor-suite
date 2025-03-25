@@ -11,7 +11,6 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/type-utils" }
     ]
 }

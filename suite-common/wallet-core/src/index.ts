@@ -15,6 +15,7 @@ export * from './device/deviceThunks';
 export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoveryThunks';
+export * from './discovery/discoveryRunningStateLocks';
 export * from './fees/feesReducer';
 export * from './fiat-rates/fiatRatesMiddleware';
 export * from './fiat-rates/fiatRatesReducer';

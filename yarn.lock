@@ -9727,7 +9727,6 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
     react: "npm:18.2.0"
   languageName: unknown
   linkType: soft

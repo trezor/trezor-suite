@@ -5,6 +5,7 @@ import { DeviceState, StaticSessionId } from '@trezor/connect';
 import { createDeferred } from '@trezor/utils';
 
 import { discoveryActions } from './discoveryActions';
+import { discoveryRunningStateLocks } from './discoveryRunningStateLocks';
 import { DeviceRootState, selectSelectedDevice } from '../device/deviceReducer';
 
 export type DiscoveryState = Discovery[];
@@ -20,14 +21,14 @@ const initialState: DiscoveryState = [];
 const update = (draft: DiscoveryState, payload: PartialDiscovery, resolve?: boolean) => {
     const index = draft.findIndex(f => f.deviceState === payload.deviceState);
     if (index >= 0) {
-        const dfd = draft[index].running;
+        const dfd = discoveryRunningStateLocks[draft[index].deviceState];
         draft[index] = {
             ...draft[index],
             ...payload,
         };
         if (resolve && dfd) {
             dfd.resolve();
-            delete draft[index].running;
+            delete discoveryRunningStateLocks[draft[index].deviceState];
         }
         if (!payload.error) {
             delete draft[index].error;
@@ -51,8 +52,8 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
                     state[index] = {
                         ...state[index],
                         ...payload,
-                        running: createDeferred(),
                     };
+                    discoveryRunningStateLocks[state[index].deviceState] = createDeferred();
                 }
             })
             .addCase(discoveryActions.removeDiscovery, (state, { payload }) => {
