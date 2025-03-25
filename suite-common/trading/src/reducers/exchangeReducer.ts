@@ -10,7 +10,7 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_PREFIX } from '../constants';
-import { TradingExchangeAmountLimitProps } from '../types';
+import { TradingExchangeAmountLimitProps, TradingExchangeStepType } from '../types';
 
 export interface ExchangeInfo {
     exchangeList?: ExchangeListResponse; // TODO: trading - is this needed?
@@ -30,6 +30,7 @@ export type TradingExchangeState = {
     isFromRedirect: boolean;
     isLoading: boolean;
     amountLimits: TradingExchangeAmountLimitProps | undefined;
+    formStep: TradingExchangeStepType;
 
     transactionId?: string;
 };
@@ -45,6 +46,7 @@ export const exchangeInitialState: TradingExchangeState = {
     isFromRedirect: false,
     isLoading: false,
     amountLimits: undefined,
+    formStep: 'RECEIVING_ADDRESS',
 };
 
 const tradingExchangeSlice = createSlice({
@@ -86,6 +88,9 @@ const tradingExchangeSlice = createSlice({
         },
         setAmountLimits(state, action: PayloadAction<TradingExchangeAmountLimitProps | undefined>) {
             state.amountLimits = action.payload;
+        },
+        setFormStep(state, action: PayloadAction<TradingExchangeStepType>) {
+            state.formStep = action.payload;
         },
     },
 });

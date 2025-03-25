@@ -240,4 +240,18 @@ export const exchangeTradingFixtures = [
             amountLimits,
         },
     },
+    {
+        description: 'should set form step',
+        initialState: exchangeInitialState,
+        actions: [
+            {
+                type: tradingExchangeActions.setFormStep.type,
+                payload: 'SEND_TRANSACTION',
+            },
+        ],
+        result: {
+            ...exchangeInitialState,
+            formStep: 'SEND_TRANSACTION',
+        },
+    },
 ];

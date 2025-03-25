@@ -111,7 +111,7 @@ describe('selectQuoteThunk', () => {
         };
     };
 
-    it('should successful select quote', async () => {
+    it('should successfully select quote', async () => {
         const { quote, state } = getDataMocks();
         const { store, mockTimer, mockNextStep, mockTimerStop, mockUserConsent } = getMocks(state);
 
