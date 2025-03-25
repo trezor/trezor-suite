@@ -20,7 +20,7 @@ export const accountEth = {
     accountType: 'normal',
     networkType: 'ethereum',
     symbol: 'eth',
-    descriptor: '0x2e0DC981d301cdd443C3987cf19Eb9671CB99ddC',
+    descriptor: 'eth-descriptor',
     path: "m/44'/60'/0'/0/1",
     tokens: [
         {
