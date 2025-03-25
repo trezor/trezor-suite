@@ -18,9 +18,9 @@ export const DeviceTutorialScreen = ({
     const device = useSelector(selectSelectedDevice);
     useEffect(() => {
         const showTutorial = async () => {
-            const { success } = await TrezorConnect.showDeviceTutorial({ device });
+            const { success, payload } = await TrezorConnect.showDeviceTutorial({ device });
 
-            if (success) {
+            if (success || payload.code === 'Failure_ActionCancelled') {
                 navigation.navigate(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
             }
         };
