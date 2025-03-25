@@ -1,6 +1,8 @@
 import { exec } from 'child_process';
+import { log } from 'detox';
 import http from 'http';
 
+import { conditionalDescribe } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect-mobile';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
@@ -15,6 +17,7 @@ import {
     openApp,
     prepareTrezorEmulator,
     restartApp,
+    sleep,
 } from '../utils';
 
 const SERVER_PORT = 8080;
@@ -22,8 +25,10 @@ const SERVER_URL = `http://localhost:${SERVER_PORT}`;
 
 let server: http.Server | undefined;
 
-const openUriScheme = (url: string, platformToOpen: 'android') => {
-    const command = `npx uri-scheme open '${url.replace(/'/g, '%27')}' --${platformToOpen} --raw`;
+const openUriScheme = (url: string, _platformToOpen: 'android') => {
+    //const command = `npx uri-scheme open '${url.replace(/'/g, '%27')}' --${platformToOpen} --raw`;
+    const command = `adb shell am start -a android.intent.action.VIEW -d '${url.replace(/'/g, '%27')}'`;
+    log.info(command);
 
     exec(command, (err, stdout, stderr) => {
         if (err) {
@@ -37,9 +42,7 @@ const openUriScheme = (url: string, platformToOpen: 'android') => {
     });
 };
 
-// FIXME: Test started failing recently, disabling it for now so it doesn't block all the PRs.
-// Issue demanding fix: https://github.com/trezor/trezor-suite/issues/17883
-describe.skip('Deeplink connect popup.', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Deeplink connect popup.', () => {
     beforeAll(async () => {
         await new Promise(resolve => {
             server = http.createServer((req, res) => {
@@ -75,11 +78,13 @@ describe.skip('Deeplink connect popup.', () => {
                 email: 'developer@xyz.com',
                 appUrl: 'http://your.application.com',
             },
-            deeplinkOpen: url => {
-                openUriScheme(url, 'android');
+            deeplinkOpen: async url => {
+                await device.sendToHome();
+                await sleep(1000);
+                await openUriScheme(url, 'android');
             },
             deeplinkCallbackUrl: `${SERVER_URL}/connect/`,
-            connectSrc: 'https://dev.suite.sldev.cz/connect/develop/',
+            connectSrc: 'trezorsuitelite://connect',
         });
     });
 
@@ -113,6 +118,7 @@ describe.skip('Deeplink connect popup.', () => {
             coin: 'btc',
         });
 
+        await sleep(3000);
         await element(by.id('@popup/deeplink-info'));
 
         await waitFor(element(by.id('@popup/call-device')))
