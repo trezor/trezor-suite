@@ -13,6 +13,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
+    type TradingExchangeStepType,
     type TradingExchangeType,
     type TradingTransactionExchange,
     addIdsToQuotes,
@@ -55,10 +56,7 @@ import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { useTradingRecomposeAndSign } from 'src/hooks/wallet/useTradingRecomposeAndSign';
 import { selectTradingExchangeInfo } from 'src/reducers/wallet/tradingReducer';
 import { UseTradingFormProps } from 'src/types/trading/trading';
-import {
-    TradingExchangeFormContextProps,
-    TradingExchangeStepType,
-} from 'src/types/trading/tradingForm';
+import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 

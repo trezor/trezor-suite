@@ -213,3 +213,9 @@ export interface TradingExchangeFormProps extends FormState {
     [constants.TRADING_EXCHANGE_COMPARATOR_KYC_FILTER]: TradingExchangeKycFilter;
     [constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER]: TradingExchangeRateFilter;
 }
+
+export type TradingExchangeStepType =
+    | 'RECEIVING_ADDRESS'
+    | 'SEND_TRANSACTION'
+    | 'SEND_APPROVAL_TRANSACTION'
+    | 'SIGN_DATA';
