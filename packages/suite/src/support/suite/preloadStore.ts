@@ -45,6 +45,7 @@ export const preloadStore = async () => {
         coinjoinDebugSettings,
         tokenManagement,
         security,
+        connect,
     ] = await Promise.all([
         db.getItemByPK('suiteSettings', 'suite'),
         db.getItemsExtended('devices'),
@@ -65,6 +66,7 @@ export const preloadStore = async () => {
         db.getItemByPK('coinjoinDebugSettings', 'debug'),
         db.getItemsWithKeys('tokenManagement'),
         db.getItemByPK('security', 'security'),
+        db.getItemByPK('connect', 'connect'),
     ]);
 
     return {
@@ -89,6 +91,7 @@ export const preloadStore = async () => {
             coinjoinDebugSettings,
             tokenManagement,
             security,
+            connect,
         },
     } as const;
 };

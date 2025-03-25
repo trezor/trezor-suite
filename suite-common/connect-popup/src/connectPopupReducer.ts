@@ -1,3 +1,5 @@
+import { PayloadAction } from '@reduxjs/toolkit';
+
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';
@@ -12,6 +14,12 @@ type ConnectPopupStateRootState = {
     wallet: { connectPopup: ConnectPopupState };
 };
 
+type StorageActionPayload = {
+    connect: {
+        permissions: AppRememberedPermission[];
+    };
+};
+
 const connectPopupInitialState: ConnectPopupState = {
     activeCall: undefined,
     permissions: [],
@@ -19,8 +27,14 @@ const connectPopupInitialState: ConnectPopupState = {
 
 export const prepareConnectPopupReducer = createReducerWithExtraDeps(
     connectPopupInitialState,
-    (builder, _extra) => {
+    (builder, extra) => {
         builder
+            .addCase(
+                extra.actionTypes.storageLoad,
+                (state, { payload }: PayloadAction<StorageActionPayload>) => {
+                    if (payload.connect) state.permissions = payload.connect.permissions;
+                },
+            )
             .addCase(connectPopupActions.initiateCall, (state, { payload }) => {
                 state.activeCall = payload;
             })

@@ -223,7 +223,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     connectPopupActions.forgetAppPermissions,
                 )(action)
             ) {
-                storageActions.saveConnectSettings();
+                api.dispatch(storageActions.saveConnectSettings());
             }
 
             switch (action.type) {

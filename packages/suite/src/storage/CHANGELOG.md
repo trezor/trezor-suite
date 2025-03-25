@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 54
+
+-   create `connect` object for Connect Popup related data
+
 ## 53
 
 -   remove `walletSettings.lastUsedFeeLevel` - we don't remember last selected fee in send form anymore
