@@ -27,6 +27,8 @@ type WebsocketClientEvents = {
 export type WebsocketRequest = Record<string, any>;
 export type WebsocketResponse = WebSocket.Data;
 
+export class WebsocketError extends Error {}
+
 export class WebsocketClient<Events extends Record<string, any>> extends TypedEmitter<
     Events & WebsocketClientEvents
 > {
@@ -56,7 +58,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
     protected initWebsocket({ url, timeout, headers, agent }: WebsocketOptions) {
         // url validation
         if (typeof url !== 'string') {
-            throw new Error('websocket_no_url');
+            throw new WebsocketError('websocket_no_url');
         }
         if (url.startsWith('http')) {
             url = url.replace('http', 'ws');
@@ -86,7 +88,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
     private onTimeout() {
         const { ws } = this;
         if (!ws) return;
-        this.messages.rejectAll(new Error('websocket_timeout'));
+        this.messages.rejectAll(new WebsocketError('websocket_timeout'));
         ws.close();
     }
 
@@ -96,7 +98,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
 
     sendMessage(message: WebsocketRequest, { timeout }: { timeout?: number } = {}) {
         const { ws } = this;
-        if (!ws || !this.isConnected()) throw new Error('websocket_not_initialized');
+        if (!ws || !this.isConnected()) throw new WebsocketError('websocket_not_initialized');
         const { promiseId, promise } = this.messages.create(timeout);
 
         const req = { id: promiseId.toString(), ...message };
@@ -112,7 +114,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
 
     protected sendRawMessage(message: WebSocket.Data) {
         const { ws } = this;
-        if (!ws || !this.isConnected()) throw new Error('websocket_not_initialized');
+        if (!ws || !this.isConnected()) throw new WebsocketError('websocket_not_initialized');
 
         ws.send(message, {
             binary: typeof message !== 'string',
@@ -168,7 +170,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         // set connection timeout before WebSocket initialization
         const connectionTimeout = setTimeout(
             () => {
-                ws.emit('error', new Error('websocket_timeout'));
+                ws.emit('error', new WebsocketError('websocket_timeout'));
                 try {
                     ws.once('error', () => {}); // hack; ws throws uncaughtably when there's no error listener
                     ws.close();
@@ -182,7 +184,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         ws.once('error', error => {
             clearTimeout(connectionTimeout);
             this.onClose();
-            dfd.reject(new Error(error.message));
+            dfd.reject(new WebsocketError(error.message));
         });
         ws.on('open', () => {
             clearTimeout(connectionTimeout);
@@ -235,7 +237,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         clearTimeout(this.pingTimeout);
 
         this.ws?.removeAllListeners();
-        this.messages.rejectAll(new Error('Websocket closed unexpectedly'));
+        this.messages.rejectAll(new WebsocketError('Websocket closed unexpectedly'));
     }
 
     dispose() {

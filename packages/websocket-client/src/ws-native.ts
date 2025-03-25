@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
 
+import { WebsocketError } from './client';
+
 /**
  * Provides `EventEmitter` interface for React Native `WebSocket`,
  * same, as `ws` package provides.
@@ -37,7 +39,10 @@ class WSWrapper extends EventEmitter {
         // fire an event named error at the WebSocket object.
         // https://stackoverflow.com/a/31003057
         this._ws.onerror = _event => {
-            this.emit('error', new Error(`WsWrapper error. Ready state: ${this.readyState}`));
+            this.emit(
+                'error',
+                new WebsocketError(`WsWrapper error. Ready state: ${this.readyState}`),
+            );
         };
 
         this._ws.onmessage = message => {
@@ -53,7 +58,7 @@ class WSWrapper extends EventEmitter {
 
     send(message: any) {
         if (this.readyState !== WSWrapper.OPEN) {
-            throw new Error(`Connection is not open. state: ${this.readyState}`);
+            throw new WebsocketError(`Connection is not open. state: ${this.readyState}`);
         }
         this._ws.send(message);
     }
