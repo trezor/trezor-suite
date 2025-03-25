@@ -49,6 +49,8 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     const localCurrency = useSelector(selectLocalCurrency);
     const symbolFees = useSelector(state => state.wallet.fees[symbol]);
 
+    const [currency, setCurrency] = useState<'crypto' | 'fiat' | undefined>(undefined);
+
     const currentRate = useSelector(state =>
         selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
     );
@@ -410,6 +412,8 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         signTx,
         currentRate,
         isLoading,
+        currency,
+        setCurrency,
     };
 };
 

@@ -43,6 +43,7 @@ export const Inputs = () => {
         currentRate,
         setRatioAmount,
         setMax,
+        setCurrency,
     } = useStakeEthFormContext();
 
     const { MIN_FOR_WITHDRAWALS, MAX_AMOUNT_FOR_STAKING, MIN_AMOUNT_FOR_STAKING } =
@@ -115,6 +116,7 @@ export const Inputs = () => {
     return (
         <Column gap={spacings.sm} alignItems="center">
             <InputWithOptions<StakeFormState>
+                onCurrencyChange={setCurrency}
                 cryptoInputProps={{
                     name: CRYPTO_INPUT,
                     locale,

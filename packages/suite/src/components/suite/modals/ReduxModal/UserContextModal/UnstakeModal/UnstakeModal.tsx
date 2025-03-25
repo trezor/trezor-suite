@@ -8,6 +8,7 @@ import {
     useMediaQuery,
     variables,
 } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -33,13 +34,26 @@ export const UnstakeModal = ({ onCancel }: UnstakeModalModalProps) => {
     // it shouldn't be possible to open this modal without having selected account
     if (!account || status !== 'loaded') return null;
 
+    const onCancelClick = () => {
+        onCancel?.();
+
+        analytics.report({
+            type: EventType.StakingUnstake,
+            payload: {
+                action: 'cancel',
+                step: 'unstake-form-modal',
+                networkSymbol: selectedAccount.account.symbol,
+            },
+        });
+    };
+
     return (
         <UnstakeEthFormContext.Provider value={unstakeEthContextValues}>
             <NewModal
                 size="huge"
                 heading={<Translation id="TR_STAKE_UNSTAKE" />}
                 description={<Translation id="TR_STAKE_CLAIM_AFTER_UNSTAKING" />}
-                onCancel={onCancel}
+                onCancel={onCancelClick}
                 bottomContent={<UnstakeButton />}
             >
                 <Grid columns={isBelowTablet ? 1 : 2} gap={spacings.xxl}>

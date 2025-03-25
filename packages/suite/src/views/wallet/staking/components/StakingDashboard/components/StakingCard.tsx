@@ -22,6 +22,7 @@ import {
     useMediaQuery,
     variables,
 } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -129,14 +130,34 @@ export const StakingCard = ({
     });
 
     const dispatch = useDispatch();
+
     const openStakeModal = () => {
         if (!isStakingDisabled) {
             dispatch(openModal({ type: 'stake' }));
+
+            analytics.report({
+                type: EventType.StakingStake,
+                payload: {
+                    action: 'continue',
+                    step: 'staking-dashboard',
+                    networkSymbol: selectedAccount?.symbol,
+                },
+            });
         }
     };
+
     const openUnstakeModal = () => {
         if (!isUnstakingDisabled) {
             dispatch(openModal({ type: 'unstake' }));
+
+            analytics.report({
+                type: EventType.StakingUnstake,
+                payload: {
+                    action: 'continue',
+                    step: 'staking-dashboard',
+                    networkSymbol: selectedAccount?.symbol,
+                },
+            });
         }
     };
 

@@ -37,6 +37,7 @@ export const Inputs = () => {
         localCurrency,
         currentRate,
         setRatioAmount,
+        setCurrency,
     } = useUnstakeEthFormContext();
 
     const {
@@ -88,6 +89,7 @@ export const Inputs = () => {
     return (
         <Column gap={spacings.sm} alignItems="center">
             <InputWithOptions<UnstakeFormState>
+                onCurrencyChange={setCurrency}
                 cryptoInputProps={{
                     name: OUTPUT_AMOUNT,
                     locale,

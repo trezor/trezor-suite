@@ -42,6 +42,7 @@ import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
+import { redactRouterUrl } from 'src/utils/suite/analytics';
 import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
 
 import { TransactionReviewDetails } from './TransactionReviewDetails';
@@ -93,6 +94,13 @@ const isStakeState = (state: SendState | StakeState): state is StakeState => 'da
 const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState =>
     'stakeType' in form;
 
+const getTxType = (txInfoState: SendState | StakeState, precomposedForm: FormState) => {
+    const stakeType = isStakeState(txInfoState) ? 'stake' : undefined;
+    const tradeType = precomposedForm.isTrading ? 'trade' : undefined;
+
+    return stakeType ?? tradeType;
+};
+
 const mapRbfTypeToReporting: Record<
     RbfTransactionType,
     TransactionCreatedEvent['payload']['action']
@@ -125,6 +133,8 @@ export const TransactionReviewModalContent = ({
     const [areDetailsVisible, setAreDetailsVisible] = useState(false);
     const deviceModelInternal = device?.features?.internal_model;
     const { precomposedTx, serializedTx } = txInfoState;
+
+    const router = useSelector(state => state.router);
 
     const precomposedForm = useSelector(state =>
         isStakeState(txInfoState)
@@ -181,6 +191,8 @@ export const TransactionReviewModalContent = ({
     const { symbol, networkType } = account;
     const { options, selectedFee } = precomposedForm;
 
+    const txType = getTxType(txInfoState, precomposedForm);
+
     const outputs = constructTransactionReviewOutputs({
         account,
         decreaseOutputId,
@@ -206,6 +218,14 @@ export const TransactionReviewModalContent = ({
             cancelSignTx();
             decision?.resolve(false);
         }
+
+        analytics.report({
+            type: EventType.TransactionCancel,
+            payload: {
+                txType,
+                networkSymbol: symbol,
+            },
+        });
     };
 
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);
@@ -246,11 +266,12 @@ export const TransactionReviewModalContent = ({
                 broadcast: isBroadcastEnabled,
                 bitcoinLockTime: !!options.includes('bitcoinLockTime'),
                 ethereumData: !!options.includes('ethereumData'),
-                rippleDestinationTag: !!options.includes('rippleDestinationTag'),
                 ethereumNonce: !!options.includes('ethereumNonce'),
+                rippleDestinationTag: !!options.includes('rippleDestinationTag'),
                 selectedFee: selectedFee || 'normal',
                 isCoinControlEnabled: precomposedForm.isCoinControlEnabled,
                 hasCoinControlBeenOpened: precomposedForm.hasCoinControlBeenOpened,
+                txType,
             },
         });
 
@@ -258,6 +279,7 @@ export const TransactionReviewModalContent = ({
         if (networkType === 'solana') {
             setIsSending(true);
         }
+
         if (decision) {
             decision.resolve(true);
             reportTransactionCreatedEvent(
@@ -265,6 +287,16 @@ export const TransactionReviewModalContent = ({
                     ? mapRbfTypeToReporting[precomposedTx.rbfType]
                     : 'sent',
             );
+
+            if (stakeType) {
+                return analytics.report({
+                    type: EventType.StakingConfirm,
+                    payload: {
+                        action: stakeType,
+                        networkSymbol: symbol,
+                    },
+                });
+            }
         }
     };
 
@@ -293,6 +325,11 @@ export const TransactionReviewModalContent = ({
         }
 
         tryAgainSignTx();
+
+        analytics.report({
+            type: EventType.TransactionRetry,
+            payload: { url: redactRouterUrl(router.url) },
+        });
     };
 
     const BottomContent = () => {

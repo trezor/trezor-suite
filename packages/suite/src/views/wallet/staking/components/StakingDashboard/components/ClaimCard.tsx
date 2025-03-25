@@ -4,6 +4,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -52,6 +53,15 @@ export const ClaimCard = () => {
     const openClaimModal = () => {
         if (!isClaimingDisabled) {
             dispatch(openModal({ type: 'claim' }));
+
+            analytics.report({
+                type: EventType.StakingClaim,
+                payload: {
+                    action: 'continue',
+                    step: 'staking-dashboard',
+                    networkSymbol: selectedAccount?.symbol,
+                },
+            });
         }
     };
 

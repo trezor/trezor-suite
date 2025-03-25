@@ -103,6 +103,17 @@ export const AssetRow = memo(
             currentFiatRates,
         );
 
+        const onStakeButtonClick = () => {
+            analytics.report({
+                type: EventType.StakingNavigate,
+                payload: {
+                    action: 'navigate',
+                    from: 'dashboard/assets',
+                    networkSymbol: symbol,
+                },
+            });
+        };
+
         return (
             <>
                 <Table.Row onClick={handleRowClick} data-testid={`@dashboard/asset-item/${symbol}`}>
@@ -165,7 +176,11 @@ export const AssetRow = memo(
                     <Table.Cell align="end" colSpan={2}>
                         <Row gap={spacings.md}>
                             {isStakeNetwork && (
-                                <TradingButton symbol={symbol} routeName="wallet-staking">
+                                <TradingButton
+                                    symbol={symbol}
+                                    onClick={onStakeButtonClick}
+                                    routeName="wallet-staking"
+                                >
                                     <Translation id="TR_STAKE_STAKE" />
                                 </TradingButton>
                             )}

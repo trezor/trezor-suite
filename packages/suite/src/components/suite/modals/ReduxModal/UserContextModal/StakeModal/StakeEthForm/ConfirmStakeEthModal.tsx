@@ -4,6 +4,7 @@ import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { Banner, Card, Checkbox, Column, NewModal } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ETH_STAKING, HELP_CENTER_SOL_STAKING } from '@trezor/urls';
 
@@ -43,10 +44,28 @@ export const ConfirmStakeEthModal = ({
     const handleOnCancel = () => {
         onCancel();
         dispatch(openModal({ type: 'stake' }));
+
+        analytics.report({
+            type: EventType.StakingStake,
+            payload: {
+                action: 'cancel',
+                step: 'entry-period-stake-modal',
+                networkSymbol: account?.symbol,
+            },
+        });
     };
 
     const onClick = () => {
         onConfirm();
+
+        analytics.report({
+            type: EventType.StakingStake,
+            payload: {
+                action: 'continue',
+                step: 'entry-period-stake-modal',
+                networkSymbol: account?.symbol,
+            },
+        });
     };
 
     const learnMoreLink = useMemo(() => {

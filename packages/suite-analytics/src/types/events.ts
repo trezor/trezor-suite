@@ -51,6 +51,7 @@ export type TransactionCreatedEvent = {
         selectedFee: string;
         isCoinControlEnabled: boolean;
         hasCoinControlBeenOpened: boolean;
+        txType?: 'trade' | 'stake';
     };
 };
 
@@ -194,6 +195,70 @@ export type SuiteAnalyticsEvent =
           type: EventType.TradingConfirmTrade;
           payload: {
               type: 'buy' | 'sell' | 'exchange';
+          };
+      }
+    | {
+          type: EventType.StakingNavigate;
+          payload: {
+              action: 'navigate' | 'cancel';
+              from:
+                  | 'sidebar'
+                  | 'account/navigation'
+                  | 'account/banner'
+                  | 'dashboard/banner'
+                  | 'dashboard/assets';
+              networkSymbol?: string;
+          };
+      }
+    | {
+          type: EventType.StakingStake;
+          payload: {
+              action: 'continue' | 'cancel';
+              step:
+                  | 'staking-dashboard'
+                  | 'stake-in-a-nutshell-modal'
+                  | 'funds-maintained-modal'
+                  | 'stake-form-modal'
+                  | 'entry-period-stake-modal';
+              networkSymbol?: string;
+              currency?: 'crypto' | 'fiat';
+          };
+      }
+    | {
+          type: EventType.StakingUnstake;
+          payload: {
+              action: 'continue' | 'cancel';
+              step: 'staking-dashboard' | 'unstake-form-modal';
+              networkSymbol?: string;
+              currency?: 'crypto' | 'fiat';
+          };
+      }
+    | {
+          type: EventType.StakingClaim;
+          payload: {
+              action: 'continue' | 'cancel';
+              step: 'staking-dashboard' | 'claim-form-modal';
+              networkSymbol?: string;
+          };
+      }
+    | {
+          type: EventType.StakingConfirm;
+          payload: {
+              action: 'stake' | 'unstake' | 'claim';
+              networkSymbol?: string;
+          };
+      }
+    | {
+          type: EventType.TransactionRetry;
+          payload: {
+              url: string;
+          };
+      }
+    | {
+          type: EventType.TransactionCancel;
+          payload: {
+              txType?: 'trade' | 'stake';
+              networkSymbol: string;
           };
       }
     | {

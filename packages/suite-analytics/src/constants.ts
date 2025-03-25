@@ -39,12 +39,21 @@ export enum EventType {
     AccountsTransactionsExport = 'accounts/transactions-export',
     AccountsDashboardBuy = 'accounts/dashboard/buy',
     AccountsTradeboxButton = 'accounts/tradebox/button',
+
     TransactionCreated = 'transaction-created',
+    TransactionRetry = 'transaction/timeout-retry',
+    TransactionCancel = 'transaction/cancel',
     SendRawTransaction = 'send-raw-transaction',
 
     CoinjoinAnonymityGain = 'coinjoin/anonymity-gain',
 
     TradingConfirmTrade = 'trade/confirm-trade',
+
+    StakingNavigate = 'staking/navigate',
+    StakingStake = 'staking/stake',
+    StakingUnstake = 'staking/unstake',
+    StakingClaim = 'staking/claim',
+    StakingConfirm = 'staking/confirm',
 
     MenuGuide = 'menu/guide',
     MenuNotificationsToggle = 'menu/notifications/toggle',

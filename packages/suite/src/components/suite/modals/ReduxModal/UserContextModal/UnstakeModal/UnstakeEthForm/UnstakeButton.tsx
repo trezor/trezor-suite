@@ -1,5 +1,6 @@
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Button, Tooltip } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
@@ -22,6 +23,7 @@ export const UnstakeButton = () => {
         handleSubmit,
         watch,
         signTx,
+        currency,
     } = useUnstakeEthFormContext();
 
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
@@ -31,13 +33,27 @@ export const UnstakeButton = () => {
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 
+    const onUnstakeClick = () => {
+        handleSubmit(signTx)();
+
+        analytics.report({
+            type: EventType.StakingUnstake,
+            payload: {
+                action: 'continue',
+                step: 'unstake-form-modal',
+                currency,
+                networkSymbol: selectedAccount.account.symbol,
+            },
+        });
+    };
+
     return (
         <Tooltip content={unstakingMessageContent}>
             <Button
                 type="submit"
                 isDisabled={isDisabled || isUnstakingDisabled}
                 isLoading={isComposing || isSubmitting}
-                onClick={handleSubmit(signTx)}
+                onClick={onUnstakeClick}
                 icon={isUnstakingDisabled ? 'info' : undefined}
             >
                 <Translation id="TR_STAKE_UNSTAKE" />

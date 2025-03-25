@@ -2,10 +2,10 @@ import { getNetworkOptional } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
+import { useSelector } from 'src/hooks/suite';
 import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { WalletParams } from 'src/types/wallet';
@@ -13,20 +13,10 @@ import { WalletParams } from 'src/types/wallet';
 export const AccountNavigation = () => {
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(state => state.router.params) as WalletParams;
-    const dispatch = useDispatch();
     const enabledNftSection = useSelector(selectHasExperimentalFeature('nft-section'));
     const network = getNetworkOptional(routerParams?.symbol);
     const networkType = account?.networkType || network?.networkType || '';
-
-    const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
-        if (account?.symbol) {
-            analytics.report({
-                type: EventType.AccountsActions,
-                payload: { symbol: account.symbol, action: routeName },
-            });
-        }
-        dispatch(goto(routeName, options));
-    };
+    const goToWithAnalytics = useGoToWithAnalytics(account);
 
     const accountTabs: NavigationItem[] = [
         {
@@ -61,6 +51,15 @@ export const AccountNavigation = () => {
             id: 'wallet-staking',
             callback: () => {
                 goToWithAnalytics('wallet-staking', { preserveParams: true });
+
+                analytics.report({
+                    type: EventType.StakingNavigate,
+                    payload: {
+                        action: 'navigate',
+                        from: 'account/navigation',
+                        networkSymbol: network?.symbol,
+                    },
+                });
             },
             title: <Translation id="TR_NAV_STAKING" />,
             isHidden: !hasNetworkFeatures(account, 'staking'),

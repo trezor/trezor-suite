@@ -142,6 +142,17 @@ export const AssetCard = ({
             currentFiatRates,
         );
 
+    const onStakeButtonClick = () => {
+        analytics.report({
+            type: EventType.StakingNavigate,
+            payload: {
+                action: 'navigate',
+                from: 'dashboard/assets',
+                networkSymbol: symbol,
+            },
+        });
+    };
+
     return (
         <Card
             paddingType="small"
@@ -215,7 +226,11 @@ export const AssetCard = ({
 
                             <Row gap={spacings.xs}>
                                 {isStakeNetwork && (
-                                    <TradingButton symbol={symbol} routeName="wallet-staking">
+                                    <TradingButton
+                                        symbol={symbol}
+                                        onClick={onStakeButtonClick}
+                                        routeName="wallet-staking"
+                                    >
                                         <Translation id="TR_STAKE_STAKE" />
                                     </TradingButton>
                                 )}

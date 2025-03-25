@@ -17,6 +17,7 @@ import {
     Row,
     Text,
 } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -73,6 +74,28 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
     const proceedToEverstakeModal = () => {
         onCancel();
         dispatch(openModal({ type: 'everstake' }));
+
+        analytics.report({
+            type: EventType.StakingStake,
+            payload: {
+                action: 'continue',
+                step: 'stake-in-a-nutshell-modal',
+                networkSymbol: account?.symbol,
+            },
+        });
+    };
+
+    const onCancelClick = () => {
+        onCancel();
+
+        analytics.report({
+            type: EventType.StakingStake,
+            payload: {
+                action: 'cancel',
+                step: 'stake-in-a-nutshell-modal',
+                networkSymbol: account?.symbol,
+            },
+        });
     };
 
     const processes = [
@@ -99,7 +122,7 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
         <NewModal
             heading={<Translation id="TR_STAKE_STAKING_IN_A_NUTSHELL" />}
             size="tiny"
-            onCancel={onCancel}
+            onCancel={onCancelClick}
             bottomContent={
                 <NewModal.Button onClick={proceedToEverstakeModal}>
                     <Translation id="TR_CONTINUE" />

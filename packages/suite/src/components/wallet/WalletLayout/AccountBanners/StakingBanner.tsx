@@ -12,6 +12,7 @@ import {
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, IconButton, Row, Text } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -40,10 +41,28 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 dispatch(setFlag('stakeSolBannerClosed', true));
                 break;
         }
+
+        analytics.report({
+            type: EventType.StakingNavigate,
+            payload: {
+                action: 'cancel',
+                from: 'account/banner',
+                networkSymbol: account.symbol,
+            },
+        });
     };
 
     const goToStakingTab = () => {
         dispatch(goto('wallet-staking', { preserveParams: true }));
+
+        analytics.report({
+            type: EventType.StakingNavigate,
+            payload: {
+                action: 'navigate',
+                from: 'account/banner',
+                networkSymbol: account.symbol,
+            },
+        });
     };
 
     const getNetworkDetails = (networkType: NetworkType) => {

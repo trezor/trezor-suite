@@ -4,6 +4,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Column, InfoItem, NewModal, Paragraph, Tooltip } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -55,6 +56,32 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
         onClaimChange(claimableAmount);
     }, [onClaimChange, claimableAmount]);
 
+    const onClaimClick = () => {
+        handleSubmit(signTx)();
+
+        analytics.report({
+            type: EventType.StakingClaim,
+            payload: {
+                action: 'continue',
+                step: 'claim-form-modal',
+                networkSymbol: selectedAccount.account.symbol,
+            },
+        });
+    };
+
+    const onCancelClick = () => {
+        onCancel?.();
+
+        analytics.report({
+            type: EventType.StakingClaim,
+            payload: {
+                action: 'cancel',
+                step: 'claim-form-modal',
+                networkSymbol: selectedAccount.account.symbol,
+            },
+        });
+    };
+
     // it shouldn't be possible to open this modal without having selected account
     if (!selectedAccount?.account || selectedAccount?.status !== 'loaded') return null;
 
@@ -68,7 +95,7 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
                 />
             }
             size="small"
-            onCancel={onCancel}
+            onCancel={onCancelClick}
             bottomContent={
                 <>
                     <Tooltip content={claimingMessageContent}>
@@ -76,19 +103,19 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
                             type="submit"
                             isDisabled={isDisabled || isClaimingDisabled}
                             isLoading={isComposing || isSubmitting}
-                            onClick={handleSubmit(signTx)}
+                            onClick={onClaimClick}
                             icon={isClaimingDisabled ? 'info' : undefined}
                         >
                             <Translation id="TR_STAKE_CLAIM" />
                         </NewModal.Button>
                     </Tooltip>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    <NewModal.Button variant="tertiary" onClick={onCancelClick}>
                         <Translation id="TR_CANCEL" />
                     </NewModal.Button>
                 </>
             }
         >
-            <form onSubmit={handleSubmit(signTx)}>
+            <form onSubmit={onClaimClick}>
                 <Column gap={spacings.lg}>
                     <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
                         <Paragraph typographyStyle="titleSmall">

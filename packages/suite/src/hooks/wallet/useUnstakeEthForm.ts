@@ -42,6 +42,8 @@ type UnstakeContextValues = UnstakeContextValuesBase & {
     amountLimits: AmountLimitProps;
     approximatedInstantEthAmount?: string | null;
     setRatioAmount: (divisor: number) => void;
+    currency?: 'crypto' | 'fiat';
+    setCurrency: (currency: 'crypto' | 'fiat') => void;
 };
 
 export const UnstakeEthFormContext = createContext<UnstakeContextValues | null>(null);
@@ -60,6 +62,8 @@ export const useUnstakeEthForm = ({
 
     const localCurrency = useSelector(selectLocalCurrency);
     const symbolFees = useSelector(state => state.wallet.fees[symbol]);
+
+    const [currency, setCurrency] = useState<'crypto' | 'fiat' | undefined>(undefined);
 
     const currentRate = useSelector(state =>
         selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
@@ -295,6 +299,8 @@ export const useUnstakeEthForm = ({
         feeInfo,
         changeFeeLevel,
         approximatedInstantEthAmount,
+        currency,
+        setCurrency,
     };
 };
 

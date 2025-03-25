@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Card, Checkbox, Column, IconName, NewModal } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -21,6 +22,28 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
     const proceedToStaking = () => {
         onCancel();
         dispatch(openModal({ type: 'stake' }));
+
+        analytics.report({
+            type: EventType.StakingStake,
+            payload: {
+                action: 'continue',
+                step: 'funds-maintained-modal',
+                networkSymbol: account?.symbol,
+            },
+        });
+    };
+
+    const onCancelClick = () => {
+        onCancel();
+
+        analytics.report({
+            type: EventType.StakingStake,
+            payload: {
+                action: 'cancel',
+                step: 'funds-maintained-modal',
+                networkSymbol: account?.symbol,
+            },
+        });
     };
 
     if (!account) return null;
@@ -68,14 +91,14 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
         <NewModal
             heading={<Translation id="TR_STAKE_NETWORK" values={{ symbol: displaySymbol }} />}
             description={<Translation id="TR_STAKE_YOUR_FUNDS_MAINTAINED" />}
-            onCancel={onCancel}
+            onCancel={onCancelClick}
             size="small"
             bottomContent={
                 <>
                     <NewModal.Button isDisabled={!hasAgreed} onClick={proceedToStaking}>
                         <Translation id="TR_CONFIRM" />
                     </NewModal.Button>
-                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                    <NewModal.Button variant="tertiary" onClick={onCancelClick}>
                         <Translation id="TR_CANCEL" />
                     </NewModal.Button>
                 </>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import styled from 'styled-components';
@@ -21,6 +21,7 @@ export type InputWithOptionsProps<TFieldValues extends FieldValues> = {
         fiat: React.ReactNode;
         crypto: React.ReactNode;
     };
+    onCurrencyChange?: (currency: 'crypto' | 'fiat') => void;
 };
 
 export const InputWithOptions = <TFieldValues extends FieldValues>({
@@ -29,8 +30,14 @@ export const InputWithOptions = <TFieldValues extends FieldValues>({
     fiatValue,
     options,
     switchTranslation,
+    onCurrencyChange,
 }: InputWithOptionsProps<TFieldValues>) => {
     const [amountInCrypto, setAmountInCrypto] = React.useState(true);
+
+    useEffect(() => {
+        const currency = amountInCrypto ? 'crypto' : 'fiat';
+        onCurrencyChange?.(currency);
+    }, [amountInCrypto, onCurrencyChange]);
 
     const canSwitchInputs = fiatInputProps != null;
 

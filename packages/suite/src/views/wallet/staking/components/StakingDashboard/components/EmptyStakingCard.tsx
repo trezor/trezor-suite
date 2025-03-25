@@ -15,6 +15,7 @@ import {
     useMediaQuery,
     variables,
 } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -33,9 +34,19 @@ export const EmptyStakingCard = () => {
     const apy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
 
     const dispatch = useDispatch();
+
     const openStakeInANutshellModal = () => {
         if (!isStakingDisabled) {
             dispatch(openModal({ type: 'stake-in-a-nutshell' }));
+
+            analytics.report({
+                type: EventType.StakingStake,
+                payload: {
+                    action: 'continue',
+                    step: 'staking-dashboard',
+                    networkSymbol: account?.symbol,
+                },
+            });
         }
     };
 

@@ -3,10 +3,10 @@ import { Ref, forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { goto } from 'src/actions/suite/routerActions';
+import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
-import { useDispatch } from 'src/hooks/suite';
 import { Account, AccountItemType } from 'src/types/wallet';
 
 import { AccountItemLeft } from './AccountItemLeft';
@@ -64,9 +64,9 @@ export const AccountItem = forwardRef(
         }: AccountItemProps,
         ref: Ref<HTMLDivElement>,
     ) => {
-        const dispatch = useDispatch();
-
         const { accountType, index, symbol } = account;
+
+        const goToWithAnalytics = useGoToWithAnalytics(account);
 
         const accountRouteParams = {
             symbol,
@@ -87,7 +87,18 @@ export const AccountItem = forwardRef(
 
         const handleHeaderClick = () => {
             onClick?.();
-            dispatch(goto(getRoute(), { params: accountRouteParams }));
+            goToWithAnalytics(getRoute(), { params: accountRouteParams });
+
+            if (type === 'staking') {
+                analytics.report({
+                    type: EventType.StakingNavigate,
+                    payload: {
+                        action: 'navigate',
+                        from: 'sidebar',
+                        networkSymbol: symbol,
+                    },
+                });
+            }
         };
 
         const content = (

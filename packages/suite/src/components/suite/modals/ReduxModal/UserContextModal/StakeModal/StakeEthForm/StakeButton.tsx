@@ -1,5 +1,6 @@
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { NewModal, Tooltip } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
@@ -18,6 +19,7 @@ export const StakeButton = () => {
         formState: { errors, isSubmitting },
         isComposing,
         watch,
+        currency,
     } = useStakeEthFormContext();
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
@@ -29,12 +31,26 @@ export const StakeButton = () => {
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 
+    const onStakeClick = () => {
+        handleSubmit(onSubmit)();
+
+        analytics.report({
+            type: EventType.StakingStake,
+            payload: {
+                action: 'continue',
+                step: 'stake-form-modal',
+                currency,
+                networkSymbol: selectedAccount.account.symbol,
+            },
+        });
+    };
+
     return (
         <Tooltip content={stakingMessageContent}>
             <NewModal.Button
                 isDisabled={isDisabled || isStakingDisabled}
                 isLoading={isComposing || isSubmitting}
-                onClick={handleSubmit(onSubmit)}
+                onClick={onStakeClick}
                 icon={isStakingDisabled ? 'info' : undefined}
             >
                 <Translation id="TR_CONTINUE" />
