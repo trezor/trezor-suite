@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-03-24T00:00:00+00:00",
-    "sequence": 85,
+    "timestamp": "2025-03-25T00:00:00+00:00",
+    "sequence": 86,
     "actions": [
         {
             "conditions": [
@@ -194,7 +194,7 @@
                 }
             ],
             "message": {
-                "id": "49483efd-9adb-4b14-add9-155d509cf120",
+                "id": "fd9a36f3-2f89-4156-8531-70c2d72d2233",
                 "priority": 92,
                 "dismissible": true,
                 "variant": "info",
@@ -217,7 +217,7 @@
                 "cta": {
                     "action": "internal-link",
                     "link": "settings-index",
-                    "anchor": "@general-settings/early-access",
+                    "anchor": "@general-settings/version-with-update",
                     "label": {
                         "en-GB": "Update Suite",
                         "en": "Update Suite",
