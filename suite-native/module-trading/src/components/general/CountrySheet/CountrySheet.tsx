@@ -2,7 +2,10 @@ import { regional } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { SearchableSheetHeader } from '../SearchableSheetHeader';
+import {
+    SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT,
+    SearchableSheetHeader,
+} from '../SearchableSheetHeader';
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
 import { COUNTRY_LIST_ITEM_HEIGHT, CountryListItem } from './CountryListItem';
 import { Country } from '../../../types';
@@ -15,7 +18,8 @@ export type CountrySheetProps = {
 };
 
 const keyExtractor = (item: Country) => item.value;
-const getEstimatedListHeight = (itemsCount: number) => itemsCount * COUNTRY_LIST_ITEM_HEIGHT;
+const getEstimatedListHeight = (itemsCount: number) =>
+    SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT + itemsCount * COUNTRY_LIST_ITEM_HEIGHT;
 
 export const CountrySheet = ({
     isVisible,
