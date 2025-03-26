@@ -202,7 +202,7 @@ export const Inputs = () => {
                 ]}
             />
             {shouldShowAmountForWithdrawalWarning && (
-                <Banner variant="info" width='100%'>
+                <Banner variant="info" width="100%">
                     <Translation
                         id={
                             isLessAmountForWithdrawalWarningShown
@@ -217,7 +217,7 @@ export const Inputs = () => {
                 </Banner>
             )}
             {isAdviceForWithdrawalWarningShown && (
-                <Banner variant="info" width='100%'>
+                <Banner variant="info" width="100%">
                     <Translation
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{
