@@ -1,12 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
-import { TextInput } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
-import { HStack, SearchInput, SearchInputProps, TextButton } from '@suite-native/atoms';
+import {
+    BottomSheetSearchInput,
+    BottomSheetSearchInputProps,
+    BottomSheetSearchInputRef,
+    HStack,
+    TextButton,
+} from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-export type SearchInputWithCancelProps = Omit<SearchInputProps, 'placeholder' | 'elevation'>;
+export type SearchInputWithCancelProps = Omit<
+    BottomSheetSearchInputProps,
+    'placeholder' | 'elevation'
+>;
 
 const noOp = () => {};
 
@@ -27,7 +35,7 @@ export const SearchInputWithCancel = ({
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const [isInputActive, setIsInputActive] = useState(false);
-    const inputRef = useRef<TextInput>(null);
+    const inputRef = useRef<BottomSheetSearchInputRef>(null);
 
     useEffect(() => () => onChange(''), [onChange]);
 
@@ -40,7 +48,7 @@ export const SearchInputWithCancel = ({
     return (
         <HStack alignItems="center">
             <Animated.View layout={LinearTransition} style={applyStyle(inputWrapperStyle)}>
-                <SearchInput
+                <BottomSheetSearchInput
                     ref={inputRef}
                     placeholder={translate('moduleTrading.defaultSearchLabel')}
                     onFocus={() => {

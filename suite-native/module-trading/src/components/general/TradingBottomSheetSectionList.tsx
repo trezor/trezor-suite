@@ -57,7 +57,6 @@ export const TradingBottomSheetSectionList = <T, U = undefined>({
             estimatedItemSize={estimatedItemSize}
             estimatedListHeight={listHeight}
             data={internalData}
-            keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
             {...rest}
         />
