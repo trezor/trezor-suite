@@ -1,7 +1,7 @@
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 
-const metadataEl = '@metadata/addressLabel/bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m';
+const metadataAddress = 'bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m';
 
 test.describe('Metadata - address labeling', { tag: ['@group=metadata1', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
@@ -22,13 +22,12 @@ test.describe('Metadata - address labeling', { tag: ['@group=metadata1', '@webOn
         // Finish discovery process
         // Discovery process completed
         await dashboardPage.discoveryShouldFinish();
-        await expect(page.getByTestId('@account-menu/btc/normal/0')).toBeVisible();
 
         // Interact with accounts and metadata
         await walletPage.openAccount();
-        await page.getByTestId('@wallet/menu/wallet-receive').click();
-        await page.getByTestId('@wallet/receive/used-address/show-more').click();
-        await page.getByTestId(`${metadataEl}/add-label-button`).click();
+        await walletPage.receiveButton.click();
+        await walletPage.showMoreButton.click();
+        await metadataPage.address.clickAddLabel(metadataAddress);
 
         // Initialize metadata flow
         // Metadata provider: google
@@ -36,13 +35,12 @@ test.describe('Metadata - address labeling', { tag: ['@group=metadata1', '@webOn
 
         await metadataPage.address.metadataInput.fill('meow address');
         await page.keyboard.press('Enter');
-        await expect(page.getByTestId(metadataEl)).toHaveText('meow address');
+        await expect(metadataPage.address.label(metadataAddress)).toHaveText('meow address');
 
         // Edit metadata label
-        await page.getByTestId(metadataEl).hover();
-        await page.getByTestId(`${metadataEl}/edit-label-button`).click();
+        await metadataPage.address.clickEditLabel(metadataAddress);
         await metadataPage.address.metadataInput.fill('meow meow');
         await page.keyboard.press('Enter');
-        await expect(page.getByTestId(metadataEl)).toHaveText('meow meow');
+        await expect(metadataPage.address.label(metadataAddress)).toHaveText('meow meow');
     });
 });
