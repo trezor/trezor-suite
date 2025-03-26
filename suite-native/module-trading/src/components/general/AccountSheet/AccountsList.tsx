@@ -98,7 +98,6 @@ export const AccountsList = ({
         itemsCount,
     } = useSectionList({
         data,
-        estimatedItemSize: ACCOUNT_LIST_ITEM_HEIGHT,
         keyExtractor,
         renderItem,
         noSingletonSectionHeader: true,

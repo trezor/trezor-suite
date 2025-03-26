@@ -1,16 +1,14 @@
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
-import { SECTION_HEADER_HEIGHT, SectionListData, useSectionList } from '../useSectionList';
+import { SectionListData, useSectionList } from '../useSectionList';
 
 const renderUseSectionListHook = (
     data: SectionListData<any, any>,
-    estimatedItemSize: number,
     noSingletonSectionHeader: boolean = false,
 ) =>
     renderHookWithBasicProvider(() =>
         useSectionList({
             data,
-            estimatedItemSize,
             renderItem: jest.fn(),
             keyExtractor: jest.fn(),
             noSingletonSectionHeader,
@@ -34,11 +32,9 @@ describe('useSectionList', () => {
 
     const mockData = [section1, section2];
 
-    const ITEM_SIZE_50 = 50;
-
     describe('data transformation', () => {
         it('should correctly transform data with section headers', () => {
-            const { result } = renderUseSectionListHook(mockData, ITEM_SIZE_50);
+            const { result } = renderUseSectionListHook(mockData);
 
             const expectedTransformedData = [
                 ['sectionHeader', 'Section 1', 'section1'],
@@ -54,7 +50,7 @@ describe('useSectionList', () => {
         });
 
         it('should handle single section with noSingletonSectionHeader=true', () => {
-            const { result } = renderUseSectionListHook([section1], ITEM_SIZE_50, true);
+            const { result } = renderUseSectionListHook([section1], true);
 
             const expectedTransformedData = [
                 ['item', 'item1', { isFirst: true, isLast: false, sectionData: { id: 's1' } }],
@@ -65,16 +61,12 @@ describe('useSectionList', () => {
         });
 
         it('should handle empty data', () => {
-            const { result } = renderUseSectionListHook([], ITEM_SIZE_50, true);
+            const { result } = renderUseSectionListHook([], true);
 
             expect(result.current.data).toEqual([]);
         });
         it('should handle empty sections', () => {
-            const { result } = renderUseSectionListHook(
-                [{ ...section1, data: [] }],
-                ITEM_SIZE_50,
-                true,
-            );
+            const { result } = renderUseSectionListHook([{ ...section1, data: [] }], true);
 
             expect(result.current.data).toEqual([]);
         });
@@ -82,31 +74,15 @@ describe('useSectionList', () => {
 
     describe('sections and items count', () => {
         it('should correctly calculate sectionsCount', () => {
-            const { result } = renderUseSectionListHook(mockData, ITEM_SIZE_50);
+            const { result } = renderUseSectionListHook(mockData);
 
             expect(result.current.sectionsCount).toBe(2);
         });
 
         it('should correctly calculate itemsCount', () => {
-            const { result } = renderUseSectionListHook(mockData, ITEM_SIZE_50);
+            const { result } = renderUseSectionListHook(mockData);
 
             expect(result.current.itemsCount).toBe(5);
-        });
-    });
-
-    describe('estimatedListSize', () => {
-        it('should calculate size with section headers', () => {
-            const { result } = renderUseSectionListHook(mockData, ITEM_SIZE_50);
-
-            expect(result.current.estimatedListSize).toBe(
-                5 * ITEM_SIZE_50 + 2 * SECTION_HEADER_HEIGHT,
-            );
-        });
-
-        it('should calculate size without section header for singleton', () => {
-            const { result } = renderUseSectionListHook([section2], ITEM_SIZE_50, true);
-
-            expect(result.current.estimatedListSize).toBe(section2.data.length * ITEM_SIZE_50);
         });
     });
 });

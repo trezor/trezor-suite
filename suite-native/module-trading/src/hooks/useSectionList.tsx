@@ -26,14 +26,11 @@ export type ListInternalItemShape<T, U> =
 
 type UseSectionListProps<T, U> = {
     data: SectionListData<T, U>;
-    estimatedItemSize: number;
     renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement;
     keyExtractor: (item: T, sectionData: U) => string;
     noSingletonSectionHeader: boolean | undefined;
     isLastItemRounded?: boolean;
 };
-
-export const SECTION_HEADER_HEIGHT = 48 as const;
 
 const itemStyle = prepareNativeStyle<ItemRenderConfig<unknown>>(
     ({ colors, spacings, borders }, { isFirst, isLast }) => ({
@@ -137,7 +134,6 @@ const renderInternalItem = <T, U>(
 
 export const useSectionList = <T, U = undefined>({
     data,
-    estimatedItemSize,
     renderItem,
     keyExtractor,
     noSingletonSectionHeader,
@@ -156,15 +152,6 @@ export const useSectionList = <T, U = undefined>({
         [data],
     );
 
-    const estimatedListSize = useMemo(
-        () =>
-            itemsCount * estimatedItemSize +
-            (sectionsCount === 1 && noSingletonSectionHeader
-                ? 0
-                : SECTION_HEADER_HEIGHT * sectionsCount),
-        [itemsCount, estimatedItemSize, sectionsCount, noSingletonSectionHeader],
-    );
-
     const internalData = useMemo(
         () =>
             transformToInternalFlatListData<T, U>(
@@ -179,7 +166,6 @@ export const useSectionList = <T, U = undefined>({
         data: internalData,
         sectionsCount,
         itemsCount,
-        estimatedListSize,
         keyExtractor: (item: ListInternalItemShape<T, U>) =>
             internalKeyExtractor(item, keyExtractor),
         renderItem: ({ item }: { item: ListInternalItemShape<T, U> }) =>

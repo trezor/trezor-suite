@@ -5,7 +5,7 @@ import {
 import { TradingBottomSheetSectionList } from '../TradingBottomSheetSectionList';
 import { TradeAssetsListEmptyComponent } from './TradeAssetsListEmptyComponent';
 import { ASSET_ITEM_HEIGHT, TradeableAssetListItem } from './TradeableAssetListItem';
-import { HEADER_HEIGHT, TradeableAssetsSheetHeader } from './TradeableAssetsSheetHeader';
+import { TradeableAssetsSheetHeader } from './TradeableAssetsSheetHeader';
 import { ItemRenderConfig } from '../../../hooks/useSectionList';
 import { TradeableAsset } from '../../../types';
 
@@ -47,7 +47,6 @@ export const TradeableAssetsSheet = ({
             data={listData}
             keyExtractor={keyExtractor}
             estimatedItemSize={ASSET_ITEM_HEIGHT}
-            estimatedHeaderHeight={HEADER_HEIGHT}
             renderItem={(item, config) => renderItem(item, config, onAssetSelectCallback)}
             noSingletonSectionHeader
         />

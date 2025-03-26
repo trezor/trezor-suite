@@ -1,4 +1,5 @@
 import { ReactElement } from 'react';
+import { Dimensions } from 'react-native';
 
 import { BottomSheetFlashList, BottomSheetFlashListProps } from '@suite-native/atoms';
 
@@ -25,42 +26,36 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
     renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement;
     keyExtractor: (item: T, sectionData: U) => string;
     estimatedItemSize: number;
-    estimatedHeaderHeight: number;
     noSingletonSectionHeader?: boolean;
 };
-
-const CONTENT_BOTTOM_OFFSET = 20;
 
 export const TradingBottomSheetSectionList = <T, U = undefined>({
     keyExtractor,
     renderItem,
     estimatedItemSize,
-    estimatedHeaderHeight,
     data,
     noSingletonSectionHeader,
     ...rest
 }: TradingBottomSheetSectionListProps<T, U>) => {
     const {
         data: internalData,
-        estimatedListSize,
         keyExtractor: internalKeyExtractor,
         renderItem: internalRenderItem,
     } = useSectionList({
         data,
-        estimatedItemSize,
         keyExtractor,
         renderItem,
         noSingletonSectionHeader,
     });
 
-    const estimatedListHeight = estimatedListSize + estimatedHeaderHeight + CONTENT_BOTTOM_OFFSET;
+    const listHeight = Dimensions.get('window').height * 0.9;
 
     return (
         <BottomSheetFlashList<ListInternalItemShape<T, U>>
             keyExtractor={internalKeyExtractor}
             renderItem={internalRenderItem}
             estimatedItemSize={estimatedItemSize}
-            estimatedListHeight={estimatedListHeight}
+            estimatedListHeight={listHeight}
             data={internalData}
             {...rest}
         />
