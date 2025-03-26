@@ -4,6 +4,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
+import { validateModelOneMessageSize } from '../../../device/validateMessageSize';
 import { EthereumVerifyMessage as EthereumVerifyMessageSchema } from '../../../types';
 import { messageToHex, stripHexPrefix } from '../../../utils/formatUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
@@ -37,6 +38,10 @@ export default class EthereumVerifyMessage extends AbstractMethod<
     }
 
     async run() {
+        if (this.device.features.major_version === 1) {
+            validateModelOneMessageSize(this.params.message);
+        }
+
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('EthereumVerifyMessage', 'Success', this.params);
 
