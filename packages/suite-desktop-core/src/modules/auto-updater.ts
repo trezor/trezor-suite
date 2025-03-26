@@ -297,13 +297,9 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         // if there is savedCurrentVersion in store (it doesn't have to be there as it was added in later versions)
         // and if it does not match current application version it means that application got updated and the new version
         // is run for the first time.
-        logger.debug(SERVICE_NAME, 'onLoad ----------------------');
         const settings = store.getUpdateSettings();
         const { savedCurrentVersion } = settings;
-        logger.debug(SERVICE_NAME, 'onLoad ----------------------2');
         const currentVersion = app.getVersion();
-        logger.debug(SERVICE_NAME, 'onLoad ----------------------3');
-        logger.debug(SERVICE_NAME, `current version ${currentVersion}`);
         logger.debug(
             SERVICE_NAME,
             `Version of application before this launch: ${savedCurrentVersion}, current app version: ${currentVersion}`,
