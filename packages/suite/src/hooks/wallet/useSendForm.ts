@@ -258,6 +258,19 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         }
     }, [getValues, composedLevels, dispatch, resetContext, props.selectedAccount.account]);
 
+    // replace default feeInfo with data loaded from the server
+    useEffect(() => {
+        const feeInfo = getFeeInfo({
+            networkType: state.account.networkType,
+            feeInfo: props.fees[state.account.symbol],
+        });
+
+        if (feeInfo.blockHeight - state.feeInfo.blockHeight > 0) {
+            setState(prev => ({ ...prev, feeInfo }));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.fees]);
+
     // reset on account change
     useEffect(() => {
         if (state.account.key !== props.selectedAccount.account.key) {
