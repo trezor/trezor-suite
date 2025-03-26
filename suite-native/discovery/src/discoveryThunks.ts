@@ -289,10 +289,10 @@ const discoverAccountsByDescriptorThunk = createThunk(
         },
         { dispatch, getState },
     ) => {
-        let isFinalRound = false;
+        let isFinished = false;
 
         if (A.isEmpty(descriptorsBundle)) {
-            isFinalRound = true;
+            isFinished = true;
         }
 
         const device = selectSelectedDevice(getState());
@@ -315,7 +315,7 @@ const discoverAccountsByDescriptorThunk = createThunk(
 
             if (success && !isAccountAlreadyDiscovered) {
                 if (accountInfo.empty) {
-                    isFinalRound = true;
+                    isFinished = true;
                 }
 
                 const isVisible =
@@ -333,9 +333,11 @@ const discoverAccountsByDescriptorThunk = createThunk(
                     }),
                 );
             }
+
+            if ('error' in accountInfo) return { isFinished: false, error: accountInfo.error };
         }
 
-        return isFinalRound;
+        return { isFinished };
     },
 );
 
@@ -511,7 +513,7 @@ const discoverNetworkBatchThunk = createThunk(
             networkType: network.networkType,
         });
 
-        const isFinished = await dispatch(
+        const { isFinished, error } = await dispatch(
             discoverAccountsByDescriptorThunk({
                 descriptorsBundle: deviceAccessResponse.payload,
                 deviceState,
@@ -525,9 +527,11 @@ const discoverNetworkBatchThunk = createThunk(
                     deviceState,
                     network,
                     accountType,
-                    round: round + 1,
+                    // Retry current round if discoverAccountsByDescriptorThunk fails
+                    round: error ? round : round + 1,
                 }),
             );
+            console.warn(error);
         } else {
             dispatch(finishNetworkTypeDiscoveryThunk());
         }
