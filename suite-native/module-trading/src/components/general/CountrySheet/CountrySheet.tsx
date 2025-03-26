@@ -1,11 +1,11 @@
+import { useCallback, useMemo, useState } from 'react';
+import { Dimensions } from 'react-native';
+
 import { regional } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import {
-    SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT,
-    SearchableSheetHeader,
-} from '../SearchableSheetHeader';
+import { SearchableSheetHeader } from '../SearchableSheetHeader';
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
 import { COUNTRY_LIST_ITEM_HEIGHT, CountryListItem } from './CountryListItem';
 import { Country } from '../../../types';
@@ -18,8 +18,6 @@ export type CountrySheetProps = {
 };
 
 const keyExtractor = (item: Country) => item.value;
-const getEstimatedListHeight = (itemsCount: number) =>
-    SEARCHABLE_SHEET_HEADER_DEFAULT_HEIGHT + itemsCount * COUNTRY_LIST_ITEM_HEIGHT;
 
 export const CountrySheet = ({
     isVisible,
@@ -32,17 +30,41 @@ export const CountrySheet = ({
         onClose();
     };
 
+    const [filterValue, setFilterValue] = useState('');
+
+    const filteredData = useMemo(() => {
+        let data = regional.countriesOptions;
+        if (filterValue?.length > 0) {
+            data = data.filter(
+                ({ label, value }) =>
+                    label.toLowerCase().includes(filterValue.toLowerCase()) ||
+                    value.toLowerCase().includes(filterValue.toLowerCase()),
+            );
+        }
+
+        return data;
+    }, [filterValue]);
+
+    // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
+    const renderHandle = useCallback(
+        () => (
+            <SearchableSheetHeader
+                onClose={onClose}
+                title={<Translation id="moduleTrading.countrySheet.title" />}
+                onFilterChange={setFilterValue}
+            />
+        ),
+        [onClose],
+    );
+
+    const listHeight = Dimensions.get('window').height * 0.9;
+
     return (
         <BottomSheetFlashList<Country>
             isVisible={isVisible}
             onClose={onClose}
             ListEmptyComponent={<CountryListEmptyComponent />}
-            handleComponent={() => (
-                <SearchableSheetHeader
-                    onClose={onClose}
-                    title={<Translation id="moduleTrading.countrySheet.title" />}
-                />
-            )}
+            handleComponent={renderHandle}
             renderItem={({ item }) => (
                 <CountryListItem
                     {...item}
@@ -50,8 +72,8 @@ export const CountrySheet = ({
                     isSelected={item.value === selectedCountryId}
                 />
             )}
-            data={regional.countriesOptions}
-            estimatedListHeight={getEstimatedListHeight(regional.countriesOptions.length)}
+            data={filteredData}
+            estimatedListHeight={listHeight}
             estimatedItemSize={COUNTRY_LIST_ITEM_HEIGHT}
             keyExtractor={keyExtractor}
         />
