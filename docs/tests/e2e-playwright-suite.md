@@ -9,11 +9,12 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
 ### Common
 
 -   [Docker](https://docs.docker.com/desktop/mac/install/)
--   [XQuartz](https://www.xquartz.org/) (to share your screen with Docker)
+-   macOS only: [XQuartz](https://www.xquartz.org/) (to share your screen with Docker)
 -   [Trezor user env](https://github.com/trezor/trezor-user-env)
 -   No other instance of `Suite` or `trezord` service is running
 
-Steps:
+**Full steps:**<br />
+_(in case of Linux with X11 support, skip to step 6.)_
 
 1. Run XQuartz. Wait till it is launched. Leave it running in the background.
 1. In XQuartz settings go to Preferences -> Security and enable "Allow connections from network clients".
@@ -36,15 +37,15 @@ Steps:
 
 1. `yarn workspace @trezor/suite-desktop build:ui`
 
-    Produces `suite-desktop/build` directory with javascript bundles in production mode.
+    Produces `suite-desktop/build` directory with javascript bundles & assets in production mode for the electron-renderer process.
 
-    _Note: This step needs to be repeated on each change in suite-desktop-ui package._
+    _Note: This step needs to be repeated on each change in `suite` or `suite-desktop-ui` package._
 
 1. `yarn workspace @trezor/suite-desktop build:app`
 
-    Produces `suite-desktop/dist` directory with javascript bundles in production mode and application assets.
+    Produces `suite-desktop/dist` directory with javascript bundles & assets in production mode for the electron-main process.
 
-    _Note: This step needs to be repeated on each change in suite-desktop-core package._
+    _Note: This step needs to be repeated on each change in `connect` or `suite-desktop-core` package._
 
 1. `yarn workspace @trezor/suite-desktop-core test:e2e:desktop`
 
