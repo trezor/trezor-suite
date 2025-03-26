@@ -10,7 +10,6 @@ export const ERROR_CODES = {
     Desktop_ConnectionMissing: 'Unable to establish connection with Suite', // thrown by suite-desktop
 
     Transport_Missing: 'Transport is missing', // no transport available
-    Transport_InvalidProtobuf: '', // generic error from transport layer (trezor-link)
 
     Method_InvalidPackage:
         'This package is not suitable to work with browser. Use @trezor/connect-web package instead', // thrown by node and react-native env while using regular 'web' package
@@ -21,7 +20,6 @@ export const ERROR_CODES = {
     Method_Interrupted: 'Popup closed', // interruption: popup closed
     Method_UnknownCoin: 'Coin not found', // coin definition not found
     Method_AddressNotMatch: 'Addresses do not match', // thrown by all getAddress methods with custom UI validation
-    Method_FirmwareUpdate_DownloadFailed: 'Failed to download firmware binary', // thrown by FirmwareUpdate method
     Method_Discovery_BundleException: '', // thrown by getAccountInfo method
     Method_Override: 'override', // inner "error", it's more like a interruption
     Method_NoResponse: 'Call resolved without response', // thrown by npm index(es), call to Core resolved without response, should not happen
