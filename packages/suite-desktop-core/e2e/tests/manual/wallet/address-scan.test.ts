@@ -12,12 +12,12 @@ test.describe.skip('Address scan', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can scan a QR code to autofill the recipient address when sending BTC.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
-                        'Connected Trezor Suite'
-                    ]), 
+                        'Connected Trezor Suite',
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

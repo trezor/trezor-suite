@@ -12,12 +12,12 @@ test.describe.skip('Custom firmware', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can install custom firmware on a Trezor device.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Custom firmware downloaded',
                         'Trezor device in bootloader mode',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

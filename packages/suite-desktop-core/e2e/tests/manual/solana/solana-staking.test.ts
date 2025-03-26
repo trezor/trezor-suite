@@ -9,16 +9,15 @@ test.describe.skip('Solana staking', { tag: ['@group=manual'] }, () => {
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
-                    description:
-                        'Verifies that a user can stake Solana on mainnet.',
+                    description: 'Verifies that a user can stake Solana on mainnet.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Trezor Suite app with a funded wallet connected',
-                        'Funded Solana account'
-                    ]), 
+                        'Funded Solana account',
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

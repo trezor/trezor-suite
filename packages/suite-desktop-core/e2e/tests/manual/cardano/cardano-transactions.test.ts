@@ -12,12 +12,12 @@ test.describe.skip('Cardano transactions', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can view transaction history, transaction details, receive funds, and send funds on the Cardano network.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
-                        'Trezor Suite app with a funded wallet connected'
-                    ]), 
+                        'Trezor Suite app with a funded wallet connected',
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

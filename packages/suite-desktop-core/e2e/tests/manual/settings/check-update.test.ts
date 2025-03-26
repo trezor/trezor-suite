@@ -9,15 +9,14 @@ test.describe.skip('Check for update', { tag: ['@group=manual'] }, () => {
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
-                    description:
-                        'Verifies that a user can check for updates in the Trezor Suite.',
+                    description: 'Verifies that a user can check for updates in the Trezor Suite.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'BTC only firmware on Trezor device',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

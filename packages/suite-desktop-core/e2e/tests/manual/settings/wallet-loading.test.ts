@@ -12,12 +12,12 @@ test.describe.skip('Wallet loading', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can change the default wallet loading behavior in the Suite.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed"',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

@@ -12,12 +12,9 @@ test.describe.skip('Factory reset', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can perform a full factory reset on a Trezor device.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
-                    description: formatTestSteps([
-                        'Trezor device',
-                        'Connected Trezor Suite',
-                    ]), 
+                {
+                    type: TestAnnotation.Prerequisites,
+                    description: formatTestSteps(['Trezor device', 'Connected Trezor Suite']),
                 },
                 {
                     type: TestAnnotation.Steps,

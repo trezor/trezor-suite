@@ -4,20 +4,20 @@ import { formatTestSteps } from '../../../support/stepsFormat';
 
 test.describe.skip('Old browsers', { tag: ['@group=manual'] }, () => {
     test(
-        "Check oldest supported browsers",
+        'Check oldest supported browsers',
         {
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
                     description:
-                        "Verifies that Suite is rendered properly in the oldest supported browsers.",
+                        'Verifies that Suite is rendered properly in the oldest supported browsers.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

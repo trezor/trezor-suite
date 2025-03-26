@@ -4,20 +4,20 @@ import { formatTestSteps } from '../../../support/stepsFormat';
 
 test.describe.skip('Pagination', { tag: ['@group=manual'] }, () => {
     test(
-        "Pagination on accounts",
+        'Pagination on accounts',
         {
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
                     description:
-                        "Verifies that a user can navigate through the pages of transactions on an account.",
+                        'Verifies that a user can navigate through the pages of transactions on an account.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

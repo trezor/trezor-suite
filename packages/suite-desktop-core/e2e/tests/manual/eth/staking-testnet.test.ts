@@ -9,16 +9,15 @@ test.describe.skip('Ethereum staking on testnet', { tag: ['@group=manual'] }, ()
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
-                    description:
-                        'Verifies that a user can stake Ethereum on the Holesky testnet.',
+                    description: 'Verifies that a user can stake Ethereum on the Holesky testnet.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed"',
                         'Connected Trezor Suite',
                         'Funded Holesky Testnet account',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,
@@ -55,13 +54,13 @@ test.describe.skip('Ethereum staking on testnet', { tag: ['@group=manual'] }, ()
                     description:
                         'Verifies that a user can unstake Ethereum on the Holesky testnet.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed"',
                         'Connected Trezor Suite',
                         'Funded Holesky Testnet account',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

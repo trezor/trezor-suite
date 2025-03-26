@@ -12,12 +12,12 @@ test.describe.skip('Wallet remembering', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can remember a wallet and load it on another device.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Two seeded and connected Trezor devices',
                         'Trezor Suite with standard wallet connected for each Trezor',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

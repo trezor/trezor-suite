@@ -9,16 +9,15 @@ test.describe.skip('Ethereum staking account', { tag: ['@group=manual'] }, () =>
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
-                    description:
-                        'Verifies that a user can access the Ethereum staking account.',
+                    description: 'Verifies that a user can access the Ethereum staking account.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed"',
                         'Connected Trezor Suite',
                         'Funded Ethereum account',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

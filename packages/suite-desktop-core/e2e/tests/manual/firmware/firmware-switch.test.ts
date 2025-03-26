@@ -12,12 +12,12 @@ test.describe.skip('Firmware switch', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can switch to Bitcoin-only firmware on a Trezor device.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Trezor device with Universal firmware',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

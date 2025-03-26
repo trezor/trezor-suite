@@ -4,22 +4,22 @@ import { formatTestSteps } from '../../../support/stepsFormat';
 
 test.describe.skip('Web usb transport', { tag: ['@group=manual'] }, () => {
     test(
-        "Suite web version webUSB transport",
+        'Suite web version webUSB transport',
         {
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
                     description:
-                        "Verifies that a user can connect and unlock a device via webUSB transport.",
+                        'Verifies that a user can connect and unlock a device via webUSB transport.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Connected Trezor Suite',
                         'Access to Staging version of Trezor Suite',
                         'Trezor Bridge or Trezor Suite desktop app not running',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

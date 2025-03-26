@@ -12,14 +12,14 @@ test.describe.skip('Bootloader', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can update the bootloader on the Trezor One device.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Trezor one with BL 1.5.X and older',
                         'Trezor one with BL >1.8.X<1.10.X',
                         'Trezor one with BL >1.10.X',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,
@@ -42,20 +42,19 @@ test.describe.skip('Bootloader', { tag: ['@group=manual'] }, () => {
     );
 
     test(
-        'Bootloader update Model One',
+        'Bootloader update',
         {
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
-                    description:
-                        'Verifies that a user can update the bootloader.',
+                    description: 'Verifies that a user can update the bootloader.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Trezor  device with at least a year old BL/FW (older then the latest)',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

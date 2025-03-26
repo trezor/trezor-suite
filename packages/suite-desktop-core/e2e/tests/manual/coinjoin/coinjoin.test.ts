@@ -12,13 +12,13 @@ test.describe.skip('Coinjoin', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can add an existing Coinjoin account to the Suite.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed)',
                         'Connected Trezor Suite',
                         '"btc" network enabled',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,
@@ -29,7 +29,7 @@ test.describe.skip('Coinjoin', { tag: ['@group=manual'] }, () => {
                         'select "Bitcoin" from coin selection',
                         'select "Coinjoin" account type from account selection',
                         'click on "Add account"',
-                        'discovery of the new account finishes correctly'
+                        'discovery of the new account finishes correctly',
                     ]),
                 },
             ],
@@ -46,14 +46,14 @@ test.describe.skip('Coinjoin', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can adjust the privacy level of a Coinjoin account.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed)',
                         'Connected Trezor Suite',
                         '"btc" network enabled',
                         'a CJ account added',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

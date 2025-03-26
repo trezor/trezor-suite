@@ -12,12 +12,12 @@ test.describe.skip('Tor discovery', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can enable Tor and check that discovery works correctly.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'BTC only firmware on Trezor device',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

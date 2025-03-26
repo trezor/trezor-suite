@@ -9,15 +9,14 @@ test.describe.skip('Btc transactions', { tag: ['@group=manual'] }, () => {
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
-                    description:
-                        'Verifies that a user can send a BTC transaction with a fee bump.',
+                    description: 'Verifies that a user can send a BTC transaction with a fee bump.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed)',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

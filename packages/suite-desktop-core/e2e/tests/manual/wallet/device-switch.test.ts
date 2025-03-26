@@ -12,12 +12,12 @@ test.describe.skip('Device switch', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can switch between wallets on different Trezor devices.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Two seeded and connected Trezor devices',
                         'Trezor Suite with standard wallet connected for each Trezor',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

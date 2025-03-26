@@ -12,12 +12,12 @@ test.describe.skip('Cardano staking', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can delegate funds or withdraw staking rewards on the Cardano network.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
-                        'Trezor Suite app with a funded wallet connected'
-                    ]), 
+                        'Trezor Suite app with a funded wallet connected',
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,
@@ -27,7 +27,7 @@ test.describe.skip('Cardano staking', { tag: ['@group=manual'] }, () => {
                         'Select account with funds present',
                         'Navigate to "Staking" tab',
                         'Delegate funds or withdraw staking rewards',
-                        'Success notification is rendered in Trezor Suite'
+                        'Success notification is rendered in Trezor Suite',
                     ]),
                 },
             ],

@@ -12,12 +12,12 @@ test.describe.skip('BTC only firmware', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can update the firmware on a Trezor device with BTC only firmware.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'BTC only firmware on Trezor device',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

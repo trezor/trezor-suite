@@ -25,12 +25,12 @@ test.describe.skip('Eth transactions', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can perform Ethereum transactions in the Suite.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Trezor Suite with a funded wallet connected',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

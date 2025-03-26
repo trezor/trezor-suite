@@ -4,20 +4,19 @@ import { formatTestSteps } from '../../../support/stepsFormat';
 
 test.describe.skip('Portfolio', { tag: ['@group=manual'] }, () => {
     test(
-        "Check portfolio",
+        'Check portfolio',
         {
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
-                    description:
-                        "Verifies that the portfolio graph is rendered correctly.",
+                    description: 'Verifies that the portfolio graph is rendered correctly.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

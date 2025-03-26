@@ -9,15 +9,14 @@ test.describe.skip('Device language', { tag: ['@group=manual'] }, () => {
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
-                    description:
-                        'Verifies that a user can change the language on a Trezor device.',
+                    description: 'Verifies that a user can change the language on a Trezor device.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed)',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,
@@ -40,12 +39,12 @@ test.describe.skip('Device language', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can change the language on a Trezor device during a firmware upgrade.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed)',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

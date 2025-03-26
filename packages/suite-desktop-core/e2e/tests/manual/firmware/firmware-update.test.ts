@@ -9,16 +9,15 @@ test.describe.skip('Firmware update', { tag: ['@group=manual'] }, () => {
             annotation: [
                 {
                     type: TestAnnotation.TestCase,
-                    description:
-                        'Verifies that a user can update the firmware on a Trezor device.',
+                    description: 'Verifies that a user can update the firmware on a Trezor device.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed"',
                         'Connected Trezor Suite',
                         'Previous version of firmware - i.e. not 2.8.9 to 2.8.9 update',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,

@@ -12,12 +12,12 @@ test.describe.skip('Application log', { tag: ['@group=manual'] }, () => {
                     description:
                         'Verifies that a user can open the application log modal in the Suite settings.',
                 },
-                { 
-                    type: TestAnnotation.Prerequisites, 
+                {
+                    type: TestAnnotation.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Connected Trezor Suite',
-                    ]), 
+                    ]),
                 },
                 {
                     type: TestAnnotation.Steps,
