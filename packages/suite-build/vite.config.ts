@@ -51,14 +51,18 @@ const workerPlugin = (): Plugin => ({
     transform(_code, id) {
         if (/\/workers\/[^/]+\/index\.ts$/.test(id)) {
             // Return a virtual module that creates a web worker
+
             return {
                 code: `
                     const worker = () => new Worker(new URL('${id}', import.meta.url), { type: 'module' });
                     export default worker;
                 `,
-                map: null,
+                // Use an empty source map to preserve the original file's mapping
+                map: { mappings: '' },
             };
         }
+
+        return null;
     },
 });
 
@@ -107,12 +111,14 @@ const createWorkspaceAliases = () => {
 
 const commitId = execSync('git rev-parse HEAD').toString().trim();
 
-// Plugin to inject Buffer polyfill code at the beginning of every module
-const injectBufferPolyfillPlugin = (): Plugin => {
-    const bufferPolyfillCode = `
+// Plugin to provide Buffer polyfill via a virtual module
+const bufferPolyfillPlugin = (): Plugin => {
+    const virtualModuleId = 'virtual:buffer-polyfill';
+    const resolvedVirtualModuleId = '\0' + virtualModuleId;
+
+    const polyfillCode = `
 // Ensure Buffer is available globally
 import { Buffer as ImportedBuffer } from 'buffer';
-
 
 // Define Buffer in all possible global scopes
 if (typeof window !== 'undefined') {
@@ -136,21 +142,34 @@ if (typeof window !== 'undefined' && typeof global === 'undefined') {
 if (typeof window !== 'undefined' && typeof globalThis === 'undefined') {
     window.globalThis = window;
 };
+
+// Export nothing - this module is only for side effects
+export {};
 `;
 
     return {
-        name: 'inject-buffer-polyfill',
-        transform(code, id) {
-            // Skip node_modules and non-JS/TS files
-            if (!id.endsWith('.js') && !id.endsWith('.ts') && !id.endsWith('.tsx')) {
-                return null;
+        name: 'buffer-polyfill',
+        resolveId(id) {
+            if (id === virtualModuleId) {
+                return resolvedVirtualModuleId;
             }
-
-            // Inject the Buffer polyfill code at the beginning of the file
-            return {
-                code: bufferPolyfillCode + code,
-                map: null,
-            };
+        },
+        load(id) {
+            if (id === resolvedVirtualModuleId) {
+                return polyfillCode;
+            }
+        },
+        // Add import to the virtual module at the entry points
+        transform(code, id) {
+            // Only process entry points or index files
+            if (id.includes('vite-index.ts') || id.includes('index.ts') || id.includes('main.ts')) {
+                // Add import at the top of the file
+                return {
+                    code: `import '${virtualModuleId}';
+${code}`,
+                    map: { mappings: '' }, // Let Vite handle the source map
+                };
+            }
         },
     };
 };
@@ -163,7 +182,7 @@ export default defineConfig({
     publicDir: resolve(__dirname, '../suite-data/files'),
     plugins: [
         htmlTemplatePlugin(),
-        injectBufferPolyfillPlugin(),
+        bufferPolyfillPlugin(),
         staticAliasPlugin(),
         serveCorePlugin(),
         viteCommonjs(),
