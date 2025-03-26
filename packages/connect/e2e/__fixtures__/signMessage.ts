@@ -244,5 +244,21 @@ export default {
             },
             legacyResults,
         },
+        {
+            description: 'Message over maximum limit allowed by T1B1',
+            skip: ['2'],
+            params: {
+                coin: 'Bitcoin',
+                path: "m/84'/0'/0'/0/0",
+                message: 'a'.repeat(1024 + 1),
+            },
+
+            legacyResults: [
+                {
+                    rules: ['1'],
+                    success: false,
+                },
+            ],
+        },
     ],
 } satisfies TestCase;
