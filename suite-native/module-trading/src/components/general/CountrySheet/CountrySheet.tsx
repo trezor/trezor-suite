@@ -76,6 +76,8 @@ export const CountrySheet = ({
             estimatedListHeight={listHeight}
             estimatedItemSize={COUNTRY_LIST_ITEM_HEIGHT}
             keyExtractor={keyExtractor}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
         />
     );
 };
