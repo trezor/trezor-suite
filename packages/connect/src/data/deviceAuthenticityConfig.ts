@@ -7,7 +7,7 @@ import { DeviceAuthenticityConfig } from './deviceAuthenticityConfigTypes';
  */
 export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
     version: 1,
-    timestamp: '2025-03-05T12:00:00.000Z',
+    timestamp: '2025-03-26T12:00:00.000Z',
     T2B1: {
         rootPubKeys: [
             '04ca97480ac0d7b1e6efafe518cd433cec2bf8ab9822d76eafd34363b55d63e60380bff20acc75cde03cffcb50ab6f8ce70c878e37ebc58ff7cca0a83b16b15fa5',
@@ -88,6 +88,9 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             '04221f144939e3201538d02b61a4b419b12678dc27ccd3813bfda29f181ba7160807e7a3c6f3938b12e6a9e7e76314fd13757a39454b93e3d1a28c633cbf475c0f',
             '0471515c2c4b94274ec0b3b1d799378730010fb6b5b738d9ef2087e930d0f75d53b1e5284ed51335f45b7b30973af848a40ad86dbe34962dfee6a019d32f5b21dd',
             '04f9f46d57a7bb9d2ac2e9121eb85f6e9a2a7e2b395ec6e7f93660e5caac2f64483dae074bd5b7e7d8057b2732b3dff5d861eefc5ab86059483d3374d527c877f1',
+            '040abd7641975f6dab835e9189ba2e2f5e19feeef3eb43d3e940f903be7ddb6317450c6c0f40094584dfe8aea75f086e850b2b362982fdca684fbd07720e1482d9',
+            '049e189082b8a35e4f46577d62fe15b76a713e9ef54f80c1aee33db05890048af5886518d643715a439ce3eead5dac6cbe1fbde26bf09ea083eccc7e8c1098c3dc',
+            '04be948fcc006a7d719d89019a446a8f9ff298410d203db096cbd76383b3807f3d4927ef5db437b99696edbed37829b03235f49f25603bed32d7eee2c49ede403b',
         ],
         debug: {
             rootPubKeys: [],
