@@ -108,6 +108,8 @@ export const BottomSheetFlashList = <TItem,>({
             // @ts-expect-error wrong type, doesn't expect children
             containerComponent={WindowOverlay}
             handleComponent={handleComponent}
+            keyboardBlurBehavior="restore"
+            keyboardBehavior="fillParent"
         >
             <FlashList
                 {...flashListProps}
