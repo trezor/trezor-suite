@@ -16,6 +16,7 @@ export type SearchInputProps = {
     onFocus?: () => void;
     onBlur?: () => void;
     value?: string;
+    autoCorrect?: boolean;
 };
 
 const inputStyle = prepareNativeStyle(utils => ({
@@ -74,6 +75,7 @@ export const SearchInput = forwardRef<TextInput, SearchInputProps>(
             onFocus = noOp,
             onBlur = noOp,
             value,
+            autoCorrect,
         },
         ref,
     ) => {
@@ -120,6 +122,7 @@ export const SearchInput = forwardRef<TextInput, SearchInputProps>(
                         style={applyStyle(inputStyle)}
                         maxLength={maxLength}
                         value={value}
+                        autoCorrect={autoCorrect}
                     />
                     {isClearButtonVisible && (
                         <TouchableOpacity onPress={handleClear}>

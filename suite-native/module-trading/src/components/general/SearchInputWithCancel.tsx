@@ -52,6 +52,7 @@ export const SearchInputWithCancel = ({
                         onBlur();
                     }}
                     onChange={onChange}
+                    autoCorrect={false}
                     {...props}
                 />
             </Animated.View>
