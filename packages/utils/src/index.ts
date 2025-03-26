@@ -10,6 +10,7 @@ export * from './arrayToDictionary';
 export * from './asciiUtils';
 export * from './bigNumber';
 export * from './bytesToHumanReadable';
+export * from './byteSize';
 export * from './cache';
 export * from './capitalizeFirstLetter';
 export * from './cloneObject';
