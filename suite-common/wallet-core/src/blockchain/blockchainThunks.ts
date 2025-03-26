@@ -34,7 +34,7 @@ import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
 import { selectAccounts } from '../accounts/accountsReducer';
 import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
-import { preloadFeeInfoThunk, updateFeeInfoThunk } from '../fees/feesThunks';
+import { preloadFeeInfoThunk } from '../fees/feesThunks';
 
 export const DEFAULT_ACCOUNT_SYNC_INTERVAL = 60 * 1000; // 1 minute
 
@@ -268,7 +268,6 @@ export const onBlockchainConnectThunk = createThunk(
         await dispatch(
             subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true, onConnect: true }),
         );
-        await dispatch(updateFeeInfoThunk({ networkSymbol: network.symbol }));
         // update accounts for connected network
         await dispatch(syncAccountsWithBlockchainThunk(network.symbol));
         dispatch(blockchainActions.connected(network.symbol));

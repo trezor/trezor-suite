@@ -400,11 +400,10 @@ export const onConnect = [
         description: 'successful, no accounts, no subscriptions',
         symbol: 'btc',
         actions: [
-            { type: feesActions.updateFee.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 1,
+        blockchainEstimateFee: 0,
         blockchainSubscribe: 0,
     },
     {
@@ -414,11 +413,10 @@ export const onConnect = [
         },
         symbol: 'btc',
         actions: [
-            { type: feesActions.updateFee.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 1,
+        blockchainEstimateFee: 0,
         blockchainSubscribe: 0,
     },
     {
@@ -433,11 +431,10 @@ export const onConnect = [
         },
         symbol: 'btc',
         actions: [
-            { type: feesActions.updateFee.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 1,
+        blockchainEstimateFee: 0,
         blockchainSubscribe: 1,
     },
     {
@@ -451,11 +448,10 @@ export const onConnect = [
         ],
         symbol: 'btc',
         actions: [
-            { type: feesActions.updateFee.type },
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 1,
+        blockchainEstimateFee: 0,
         blockchainSubscribe: 1,
     },
     {
@@ -470,7 +466,7 @@ export const onConnect = [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 1,
+        blockchainEstimateFee: 0,
         blockchainSubscribe: 1,
     },
     {
@@ -485,7 +481,7 @@ export const onConnect = [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
-        blockchainEstimateFee: 1,
+        blockchainEstimateFee: 0,
         blockchainSubscribe: 2,
     },
 ];

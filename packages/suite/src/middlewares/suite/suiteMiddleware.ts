@@ -15,7 +15,6 @@ import {
     observeSelectedDevice,
     restartDiscoveryThunk,
     selectDeviceThunk,
-    updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -116,15 +115,6 @@ const suite =
                     api.dispatch(restartDiscoveryThunk());
                 }
                 break;
-            // TODO: remove when EIP-1559 complete
-            case SUITE.SET_DEBUG_MODE: {
-                const { enabledNetworks } = api.getState().wallet.settings;
-
-                enabledNetworks.forEach(networkSymbol =>
-                    api.dispatch(updateFeeInfoThunk({ networkSymbol, forceUpdate: true })),
-                );
-                break;
-            }
 
             default:
                 break;

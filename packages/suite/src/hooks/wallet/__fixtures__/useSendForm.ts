@@ -844,6 +844,7 @@ export const setMax = [
             },
         },
         connect: [
+            undefined, // updateFeeInfoThunk
             {
                 success: true,
                 payload: [
@@ -874,6 +875,7 @@ export const setMax = [
     {
         description: 'setMax sequence: compose not final (without address) then add address',
         connect: [
+            undefined, // updateFeeInfoThunk
             {
                 success: true,
                 payload: [
@@ -945,6 +947,7 @@ export const setMax = [
         description:
             'setMax sequence: compose final with address, disable setMax, add second output',
         connect: [
+            undefined, // updateFeeInfoThunk
             {
                 success: true,
                 payload: [
@@ -1169,7 +1172,7 @@ export const setMax = [
             selectedAccount: ETH_ACCOUNT,
         },
         finalResult: {
-            estimateFeeCalls: 1,
+            estimateFeeCalls: 2,
             composedLevels: {
                 normal: {
                     type: 'final',
@@ -1201,7 +1204,7 @@ export const setMax = [
             selectedAccount: ETH_ACCOUNT,
         },
         finalResult: {
-            estimateFeeCalls: 1,
+            estimateFeeCalls: 2,
             composedLevels: {
                 normal: {
                     type: 'final',
@@ -1269,6 +1272,7 @@ export const setMax = [
             selectedAccount: SOL_ACCOUNT,
         },
         connect: [
+            undefined, // updateFeeInfoThunk
             undefined,
             {
                 success: true,
@@ -1282,7 +1286,7 @@ export const setMax = [
         ],
         finalResult: {
             solanaComposeTransactionCalls: 1,
-            estimateFeeCalls: 1,
+            estimateFeeCalls: 2,
             composedLevels: {
                 normal: {
                     type: 'final',
@@ -1367,6 +1371,7 @@ export const signAndPush = [
             selectedAccount: ETH_ACCOUNT,
         },
         connect: [
+            undefined, // updateFeeInfoThunk
             undefined, // estimateFee
             {
                 success: true,
@@ -1424,6 +1429,7 @@ export const signAndPush = [
             selectedAccount: XRP_ACCOUNT,
         },
         connect: [
+            undefined, // updateFeeInfoThunk
             undefined, // getAccountInfo address check
             {
                 success: true,
@@ -1491,6 +1497,7 @@ export const signAndPush = [
             },
         },
         connect: [
+            undefined, // updateFeeInfoThunk
             getComposeResponse({
                 payload: [
                     {
@@ -1610,6 +1617,7 @@ export const signAndPush = [
             },
         },
         connect: [
+            undefined, // updateFeeInfoThunk
             getComposeResponse(),
             {
                 success: false,
@@ -1638,6 +1646,7 @@ export const signAndPush = [
             },
         },
         connect: [
+            undefined, // updateFeeInfoThunk
             getComposeResponse(),
             {
                 success: false,
@@ -1661,6 +1670,7 @@ export const signAndPush = [
             },
         },
         connect: [
+            undefined, // updateFeeInfoThunk
             getComposeResponse(),
             {
                 success: true,
@@ -2058,6 +2068,7 @@ export const feeChange = [
         },
         // getAccountInfo responses
         connect: [
+            undefined,
             {
                 success: true,
                 payload: {
@@ -2165,6 +2176,7 @@ export const amountUnitChange = [
     {
         description: 'setMax with satoshi AmountUnit',
         connect: [
+            undefined,
             {
                 success: true,
                 payload: [

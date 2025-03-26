@@ -9,7 +9,6 @@ import {
     onBlockchainNotificationThunk,
     preloadFeeInfoThunk,
     setCustomBackendThunk,
-    updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 
@@ -24,6 +23,7 @@ type AccountsState = ReturnType<typeof accountsReducer>;
 type TransactionsState = ReturnType<typeof transactionsReducer>;
 type FeesState = ReturnType<typeof feesReducer>;
 type BlockchainState = ReturnType<typeof blockchainReducer>;
+
 interface Args {
     accounts?: AccountsState;
     blockchain?: Partial<BlockchainState>;
@@ -215,11 +215,6 @@ describe('Blockchain Actions', () => {
                 },
             }),
         );
-        // try invalid coin
-        await store.dispatch(updateFeeInfoThunk({ networkSymbol: 'btc-invalid' }));
-        // will not trigger update because of blockHeight's
-        await store.dispatch(updateFeeInfoThunk({ networkSymbol: 'btc' }));
-        expect(TrezorConnect.blockchainEstimateFee).toHaveBeenCalledTimes(0);
 
         // preload fee info failed in connect
         testMocks.setTrezorConnectFixtures({ success: false });

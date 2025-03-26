@@ -265,6 +265,8 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             feeInfo: props.fees[state.account.symbol],
         });
 
+        // update fee info only if the block height has increased.
+        // note: This approach may not be ideal for Bitcoin, as fees can change within the same block
         if (feeInfo.blockHeight - state.feeInfo.blockHeight > 0) {
             setState(prev => ({ ...prev, feeInfo }));
         }
