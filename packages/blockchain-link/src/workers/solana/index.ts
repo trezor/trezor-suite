@@ -259,8 +259,26 @@ const getAccountInfo = async (
         return allTxIds;
     };
 
+    const getEpoch = async (): Promise<number> => {
+        const cachedEpoch = await request.state.cache.get('epoch');
+
+        if (cachedEpoch) {
+            return cachedEpoch;
+        }
+
+        // for parallel requests we store the promise in the cache immediately
+        const deferred = createDeferred<number>();
+        request.state.cache.set('epoch', deferred.promise, 3_600_000);
+
+        const { epoch } = await api.rpc.getEpochInfo().send();
+        deferred.resolve(Number(epoch));
+
+        return deferred.promise;
+    };
+
     if (details === 'txids') {
         const txids = await getAllTxIds(request.payload.tokenAccountsPubKeys || []);
+        const solEpoch = await getEpoch();
 
         const account: AccountInfo = {
             descriptor: payload.descriptor,
@@ -272,6 +290,7 @@ const getAccountInfo = async (
                 unconfirmed: 0,
                 txids,
             },
+            misc: { solEpoch },
         };
 
         return {
@@ -314,23 +333,6 @@ const getAccountInfo = async (
                 },
             )
             .send();
-
-    const getEpoch = async (): Promise<number> => {
-        const cachedEpoch = await request.state.cache.get('epoch');
-
-        if (cachedEpoch) {
-            return cachedEpoch;
-        }
-
-        // for parallel requests we store the promise in the cache immediately
-        const deferred = createDeferred<number>();
-        request.state.cache.set('epoch', deferred.promise, 3_600_000);
-
-        const { epoch } = await api.rpc.getEpochInfo().send();
-        deferred.resolve(Number(epoch));
-
-        return deferred.promise;
-    };
 
     const tokenAccounts = (
         await Promise.all(

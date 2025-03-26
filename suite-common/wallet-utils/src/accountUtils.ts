@@ -761,8 +761,12 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId
             );
         case 'solana':
-            // compare last transaction signature since the total number of txs may not be fetched fully
-            return freshInfo.history.txids?.[0] !== account.history.txids?.[0];
+            return (
+                // compare last transaction signature since the total number of txs may not be fetched fully
+                freshInfo.history.txids?.[0] !== account.history.txids?.[0] ||
+                // compare last epoch
+                freshInfo.misc?.solEpoch !== account.misc?.solEpoch
+            );
         default:
             return false;
     }
