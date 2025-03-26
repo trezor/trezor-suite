@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Set source branch
+        run: echo "SOURCE_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
       - name: Run crowdin sync
         run: |
           git config --global user.name "trezor-ci"
@@ -48,7 +51,7 @@ jobs:
           yarn workspace @trezor/suite translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
           git add . && git commit -m "chore: crowdin translation update" && git push origin ${{ env.BRANCH_NAME }} -f
           gh config set prompt disabled
-          gh pr create --repo trezor/trezor-suite --title "Crowdin translations update" --body "Automatically generated PR for updating crowdin translations." --base develop --label translations
+          gh pr create --repo trezor/trezor-suite --title "Crowdin translations update" --body "Automatically generated PR for updating crowdin translations from ${{ env.SOURCE_BRANCH }} branch." --base ${{ env.SOURCE_BRANCH }} --label translations
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
           BRANCH_NAME: trezor-ci/crowdin-sync-${{ env.NOW }}
