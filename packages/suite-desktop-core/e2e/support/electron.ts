@@ -9,8 +9,6 @@ export const LEGACY_BRIDGE_VERSION = '2.0.33';
 
 const appDir = path.join(__dirname, '../../../suite-desktop');
 const disableHashChecksPatch = '--state.suite.settings.enabledSecurityChecks.firmwareHash=false';
-const disableRevisionChecksPatch =
-    '--state.suite.settings.enabledSecurityChecks.firmwareRevision=false';
 const disableFirmwareRevisionChecksPatch =
     '--state.suite.settings.enabledSecurityChecks.firmwareRevision=false';
 const showDebugMenuStatePatch = '--state.suite.settings.debug.showDebugMenu=true';
@@ -51,7 +49,6 @@ const buildArgs = (params: LaunchSuiteParams) => {
         logLevelArgument,
         disableHWAccelerationArgument,
         disableHashChecksPatch,
-        disableRevisionChecksPatch,
         showDebugMenuStatePatch,
     ];
 
