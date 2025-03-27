@@ -22,7 +22,7 @@ export class BridgeProcess extends BaseProcess {
                 if (data?.version) {
                     return {
                         service: true,
-                        process: true,
+                        process: Boolean(this.process),
                     };
                 }
             }
