@@ -1,8 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import styled from 'styled-components';
 
-import { Banner, Button, Checkbox, Switch } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
@@ -12,16 +11,6 @@ import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/componen
 import { EXPERIMENTAL_FEATURES, ExperimentalFeature } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-
-const FeatureLineWrapper = styled.div`
-    display: flex;
-
-    & + & {
-        padding-top: ${spacingsPx.md};
-        margin-top: ${spacingsPx.md};
-        border-top: 1px solid ${({ theme }) => theme.borderElevation2};
-    }
-`;
 
 type FeatureLineProps = {
     feature: ExperimentalFeature;
@@ -57,7 +46,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     };
 
     return (
-        <FeatureLineWrapper>
+        <Row gap={spacings.sm}>
             <TextColumn
                 title={titleId ? <Translation id={titleId} /> : feature}
                 description={descId && <Translation id={descId} />}
@@ -73,7 +62,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
                     <Checkbox isChecked={checked} onClick={onChangeFeature} />
                 )}
             </ActionColumn>
-        </FeatureLineWrapper>
+        </Row>
     );
 };
 
@@ -136,13 +125,15 @@ export const Experimental = () => {
             <AnimatePresence>
                 {enabledFeatures && experimentalFeatures.length > 0 && (
                     <motion.div {...motionDivProps}>
-                        {experimentalFeatures.map(feature => (
-                            <FeatureLine
-                                key={feature}
-                                feature={feature as ExperimentalFeature}
-                                enabledFeatures={enabledFeatures}
-                            />
-                        ))}
+                        <Column gap={spacings.xxl} hasDivider>
+                            {experimentalFeatures.map(feature => (
+                                <FeatureLine
+                                    key={feature}
+                                    feature={feature as ExperimentalFeature}
+                                    enabledFeatures={enabledFeatures}
+                                />
+                            ))}
+                        </Column>
                     </motion.div>
                 )}
             </AnimatePresence>
