@@ -52,10 +52,10 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build-web
-      - load-e2e-matrix
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.load-e2e-matrix.outputs.matrix) }}
+      matrix:
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
 
     steps:
       - name: Checkout
@@ -71,6 +71,7 @@ jobs:
           project: "web"
           containers: ${{ matrix.CONTAINERS }}
           test-group: ${{ matrix.TEST_GROUP }}
+          fail-fast: false
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
