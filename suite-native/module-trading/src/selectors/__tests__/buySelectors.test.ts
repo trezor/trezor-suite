@@ -170,7 +170,7 @@ describe('buySelectors', () => {
                 },
                 {
                     displayValue: 'CZK',
-                    label: 'Czech koruna',
+                    label: 'Czech Koruna',
                     value: 'czk',
                 },
             ]);
@@ -195,15 +195,15 @@ describe('buySelectors', () => {
         });
 
         it('should support values not presented in fiatCurrencies', () => {
-            prevState.buy.buyInfo!.supportedFiatCurrencies = ['uyu'];
+            prevState.buy.buyInfo!.supportedFiatCurrencies = ['xxx'];
 
             expect(
                 selectBuySupportedFiatCurrenciesList({ wallet: { tradingNew: prevState } }),
             ).toEqual([
                 {
-                    displayValue: 'UYU',
-                    label: 'UYU',
-                    value: 'uyu',
+                    displayValue: 'XXX',
+                    label: 'XXX',
+                    value: 'xxx',
                 },
             ]);
         });

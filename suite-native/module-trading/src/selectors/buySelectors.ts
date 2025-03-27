@@ -1,7 +1,6 @@
 import { BuyProviderInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { fiatCurrencies } from '@suite-common/suite-config';
 import {
     regional,
     selectTradingBuyInfo,
@@ -10,6 +9,7 @@ import {
 
 import { TradingRootState, createMemoizedSelector } from '../tradingSlice';
 import { Country, FiatCurrencyItem, TradingBuyFormValues } from '../types';
+import { supportedFiatCurrenciesMap } from '../utils/supportedFiatCurrencies';
 import {
     coinInfoToTradeableAsset,
     tradeableAssetSortingComparator,
@@ -98,7 +98,7 @@ export const selectBuySupportedFiatCurrenciesList = createMemoizedSelector(
         [...new Set(currencies).values()]
             .map(
                 currency =>
-                    fiatCurrencies[currency as FiatCurrencyCode] ?? {
+                    supportedFiatCurrenciesMap.get(currency) ?? {
                         code: currency,
                         label: currency.toUpperCase(),
                     },
