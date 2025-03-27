@@ -1,0 +1,69 @@
+import { TextInput, TextInputProps } from 'react-native';
+
+import { useField } from '@suite-native/forms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
+
+export type TradingAmountInputProps = {
+    name: 'fiatValue' | 'cryptoValue';
+    inputTransformer: (value: string) => string;
+} & Omit<TextInputProps, 'value' | 'onChangeText' | 'placeholder' | 'style' | 'onBlur'>;
+
+const inputStyle = prepareNativeStyle(({ colors, typography }) => ({
+    ...typography.body,
+    color: colors.textDefault,
+    flex: 0,
+    padding: 0,
+    margin: 0,
+    textAlign: 'right',
+    fontSize: 34,
+    lineHeight: 42,
+    borderWidth: 0,
+    backgroundColor: colors.backgroundSurfaceElevation1,
+    overflow: 'hidden',
+}));
+
+export const TradingAmountInput = ({
+    name,
+    inputTransformer,
+    maxLength,
+    ...inputProps
+}: TradingAmountInputProps) => {
+    const { applyStyle, utils } = useNativeStyles();
+    const form = useTradingBuyFormContext();
+    const { value, onChange, onBlur } = useField({ name });
+
+    const setFocusedValue = () => {
+        form.setValue('focusedValue', name);
+    };
+
+    const clearFocusedValue = () => {
+        form.setValue('focusedValue', undefined);
+    };
+
+    const handleTextChange = (text: string) => {
+        const transformedText = inputTransformer(text);
+
+        return onChange(transformedText.slice(0, maxLength));
+    };
+
+    return (
+        <TextInput
+            style={applyStyle(inputStyle)}
+            placeholder="0.0"
+            keyboardType="decimal-pad"
+            inputMode="decimal"
+            value={value}
+            onChangeText={handleTextChange}
+            onFocus={setFocusedValue}
+            onBlur={() => {
+                onBlur();
+                clearFocusedValue();
+            }}
+            maxLength={maxLength}
+            placeholderTextColor={utils.colors.textDisabled}
+            {...inputProps}
+        />
+    );
+};

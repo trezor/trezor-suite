@@ -1,4 +1,6 @@
-import { Button } from '@suite-native/atoms';
+import { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+
+import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { LegalSheet } from './LegalSheet';
@@ -9,7 +11,7 @@ export const Confirmation = () => {
         useTradeConfirmationControls();
 
     return (
-        <>
+        <AnimatedBox entering={FadeInDown} exiting={FadeOutDown}>
             <Button onPress={showSheet} disabled={!isConfirmationEnabled}>
                 <Translation id="moduleTrading.tradingScreen.continueButton" />
             </Button>
@@ -18,6 +20,6 @@ export const Confirmation = () => {
                 isVisible={isSheetVisible}
                 tradeProviderName={tradeProviderName}
             />
-        </>
+        </AnimatedBox>
     );
 };

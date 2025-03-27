@@ -99,9 +99,7 @@ describe('buySelectors', () => {
 
         it('should return object with computed default values', () => {
             expect(selectBuyFormDefaultValues({ wallet: { tradingNew: prevState } })).toEqual({
-                asset: expect.objectContaining({ cryptoId: 'bitcoin' }),
                 fiatCurrency: 'czk',
-                fiatValue: '2500',
                 paymentMethod: {
                     value: 'creditCard',
                     label: 'Credit Card',

@@ -1332,6 +1332,7 @@ export const en = {
             selectedCountryOfResidence: 'Selected country of residence',
             provider: 'Provider',
             continueButton: 'Continue',
+            amountEditingDoneButton: 'Done',
             footer: {
                 poweredBy: 'Powered by',
                 learnMore: 'Learn more',
@@ -1340,10 +1341,12 @@ export const en = {
         selectFiat: {
             title: 'Fund',
             buttonTitle: 'Select fiat currency',
+            amountLabel: 'You pay',
         },
         selectCoin: {
             title: 'Buy',
             buttonTitle: 'Select coin',
+            amountLabel: 'You get',
         },
         fiatCurrencySheet: {
             title: 'Currency',

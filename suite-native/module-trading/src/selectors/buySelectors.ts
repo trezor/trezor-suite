@@ -1,4 +1,4 @@
-import { BuyProviderInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
+import { BuyProviderInfo, FiatCurrencyCode } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
@@ -55,17 +55,13 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
             return {} as Partial<TradingBuyFormValues>;
         }
 
-        const { country, defaultAmountsOfFiatCurrencies, suggestedFiatCurrency, providers } =
-            buyInfo.buyInfo;
+        const { country, suggestedFiatCurrency, providers } = buyInfo.buyInfo;
 
-        const defaultCryptoId = 'bitcoin' as CryptoId;
         const paymentMethod = {
             value: 'creditCard',
             label: 'Credit Card',
         };
-        const asset = coinInfoToTradeableAsset(defaultCryptoId, coins[defaultCryptoId]);
         const fiatCurrency = suggestedFiatCurrency || DEFAULT_FIAT_CURRENCY_FALLBACK;
-        const fiatCode = fiatCurrency.toLowerCase() as FiatCurrencyCode;
         const countryDefaultValue = regional.countriesMap.has(country)
             ? ({
                   value: country,
@@ -75,16 +71,13 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
 
         const suggestedProvider =
             providers.find(
-                ({ supportedCountries, tradedCoins, tradedFiatCurrencies }) =>
+                ({ supportedCountries, tradedFiatCurrencies }) =>
                     supportedCountries.includes(country) &&
-                    tradedCoins.includes(defaultCryptoId) &&
                     tradedFiatCurrencies.includes(fiatCurrency),
             ) ?? ({} as BuyProviderInfo);
 
         return {
-            asset,
             fiatCurrency: fiatCurrency.toLowerCase(),
-            fiatValue: defaultAmountsOfFiatCurrencies.get(fiatCode),
             paymentMethod,
             country: countryDefaultValue,
             provider: suggestedProvider.name,

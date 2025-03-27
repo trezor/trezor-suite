@@ -8,9 +8,11 @@ describe('BuyForm', () => {
         renderWithStoreProviderAsync(<BuyForm />, { preloadedState });
 
     it('should render when buy data are not preloaded', async () => {
-        const { queryByText, getAllByText, getByLabelText } = await renderBuyForm({});
+        const { queryByText, queryAllByText, getAllByText, getByLabelText } = await renderBuyForm(
+            {},
+        );
 
-        expect(queryByText('Buy')).toBeDefined();
+        expect(queryAllByText('Buy').length).toBe(2);
         expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
         expect(queryByText('Receive account')).toBeDefined();
         expect(queryByText('Payment method')).toBeDefined();
@@ -24,12 +26,13 @@ describe('BuyForm', () => {
     });
 
     it('should render with default values', async () => {
-        const { queryByText, getByLabelText } = await renderBuyForm({
+        const { queryByText, queryAllByText, getByLabelText } = await renderBuyForm({
             wallet: { tradingNew: getInitializedTradingState() },
         });
-        expect(queryByText('Buy')).toBeDefined();
+        expect(queryAllByText('Buy').length).toBe(2);
 
-        expect(getByLabelText('Select coin')).toHaveTextContent(/BTC/);
+        expect(getByLabelText('Select fiat currency')).toHaveTextContent(/CZK/);
+        expect(getByLabelText('Select coin')).toHaveTextContent(/Select coin/);
 
         expect(queryByText('Receive account')).toBeDefined();
         expect(queryByText('Not selected')).toBeDefined();

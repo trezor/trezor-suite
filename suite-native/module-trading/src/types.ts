@@ -24,8 +24,9 @@ export type TradingBuyFormValues = {
     asset: TradeableAsset;
     receiveAccount: ReceiveAccount | undefined;
     fiatCurrency: FiatCurrencyCode;
-    fiatValue: string;
-    cryptoValue: string;
+    fiatValue: string | undefined;
+    cryptoValue: string | undefined;
+    focusedValue: 'fiatValue' | 'cryptoValue' | undefined;
     paymentMethod: TradingPaymentMethodListProps;
     country: Country;
     provider: string;
