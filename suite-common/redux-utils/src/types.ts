@@ -1,5 +1,8 @@
 import { Action, AsyncThunk, ThunkAction } from '@reduxjs/toolkit';
 
+import { TrezorDevice } from '@suite-common/suite-types';
+import { Discovery } from '@suite-common/wallet-types';
+
 export interface AnyAction extends Action {
     [extraProps: string]: any;
 }
@@ -38,3 +41,23 @@ export type ActionsFromAsyncThunk<T extends AnyAsyncThunk> =
     | ActionFromMatcher<T['pending']>
     | ActionFromMatcher<T['fulfilled']>
     | ActionFromMatcher<T['rejected']>;
+
+export type DiscoveryHook = {
+    registerDiscoveryCompleteHook: (deviceToSelect: TrezorDevice) => Promise<{
+        state: Discovery['deviceState'];
+        device: TrezorDevice;
+    }>;
+    registerDiscoveryAuthHook: (device: TrezorDevice) => Promise<{
+        state: Discovery['deviceState'];
+        device: TrezorDevice;
+    }>;
+    triggerDiscoveryCompletedHooks: (
+        deviceState: Discovery['deviceState'],
+        device: TrezorDevice,
+    ) => void;
+    triggerDiscoveryAuthHooks: (
+        deviceState: Discovery['deviceState'],
+        device: TrezorDevice,
+    ) => void;
+    deregisterAuthHook: (device: TrezorDevice) => void;
+};

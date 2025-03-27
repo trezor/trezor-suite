@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
-import { Route } from '@suite-common/suite-types';
+import { Route, TrezorDevice } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
@@ -57,7 +57,34 @@ export const mockReducer = (name: string) => (state: any, action: any) => {
     return state;
 };
 
+export const createMockDiscoveryHook = () => ({
+    registerDiscoveryCompleteHook: () =>
+        Promise.resolve({
+            state: 'state@device-id:1' as const,
+            device: {
+                id: 'device-id',
+                instance: 1,
+                state: {},
+            } as unknown as TrezorDevice,
+        }),
+    registerDiscoveryAuthHook: () =>
+        Promise.resolve({
+            state: 'state@device-id:1' as const,
+            device: {
+                id: 'device-id',
+                instance: 1,
+                state: {},
+            } as unknown as TrezorDevice,
+        }),
+    triggerDiscoveryCompletedHooks: () => {},
+    triggerDiscoveryAuthHooks: () => {},
+    deregisterAuthHook: () => {},
+});
+
 export const extraDependenciesMock: ExtraDependencies = {
+    services: {
+        discoveryHook: createMockDiscoveryHook(),
+    },
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
         cardanoFetchTrezorData: mockThunk('fetchTrezorData'),

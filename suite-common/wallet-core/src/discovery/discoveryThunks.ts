@@ -555,6 +555,10 @@ export const startDiscoveryThunk = createThunk(
                 }),
             );
 
+            extra.services.discoveryHook.triggerDiscoveryCompletedHooks(deviceState, device);
+            // NOTE: when the discovery is completed, make sure tha the auth hooks are laso cleared
+            extra.services.discoveryHook.triggerDiscoveryAuthHooks(deviceState, device);
+
             return;
         }
 
@@ -615,6 +619,10 @@ export const startDiscoveryThunk = createThunk(
                 // try to generate device metadata master key
                 await dispatch(initMetadata(false));
             }
+
+            // NOTE: here we know what's the status of the wallet auth confirmed or not.
+            extra.services.discoveryHook.triggerDiscoveryAuthHooks(deviceState, device);
+
             if (currentDiscovery.status === DiscoveryStatus.RUNNING) {
                 await dispatch(startDiscoveryThunk()); // try next index
             } else if (currentDiscovery.status === DiscoveryStatus.STOPPING) {
