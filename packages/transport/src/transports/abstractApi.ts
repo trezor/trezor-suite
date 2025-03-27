@@ -40,6 +40,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     public init({ signal }: AbstractTransportMethodParams<'init'> = {}) {
         return this.scheduleAction(
             async () => {
+                this.sessionsClient.setBackground(this.sessionsBackground);
                 const handshakeRes = await this.sessionsClient.handshake();
                 this.stopped = !handshakeRes.success;
 
@@ -329,7 +330,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         this.api.on('transport-interface-change', () => {
             this.logger?.debug('device connected after transport stopped');
         });
-        this.sessionsBackground.dispose();
+        this.sessionsClient.dispose();
         this.api.dispose();
     }
 }
