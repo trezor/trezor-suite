@@ -1,26 +1,33 @@
 import { useEffect, useRef } from 'react';
 
+import { SCROLL_WRAPPER_ID } from 'src/components/suite/layouts/SuiteLayout/SuiteLayout';
+import { HEADER_HEIGHT_NUMERIC, SUBPAGE_NAV_HEIGHT_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
+
+const OFFSET = 30;
 
 export const useAnchor = (anchorId: string) => {
     const anchorRef = useRef<HTMLDivElement>(null);
-
     const anchor = useSelector(state => state.router.anchor);
 
     useEffect(() => {
         if (anchorId === anchor && anchorRef.current) {
-            // scroll to anchor, has to be delayed to allow proper render of components
-            // note: we cannot easily remove highlight on manual scroll because scroll listener is also activated by "scrollIntoView"
-            const scrollTimeout = setTimeout(
-                () =>
-                    anchorRef?.current?.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start',
-                    }),
-                0,
-            );
+            const scrollContainer = document.getElementById(SCROLL_WRAPPER_ID);
+            if (!scrollContainer) return;
 
-            return () => clearTimeout(scrollTimeout);
+            const headerHeight = HEADER_HEIGHT_NUMERIC + SUBPAGE_NAV_HEIGHT_NUMERIC + OFFSET;
+
+            const element = anchorRef.current;
+            const containerRect = scrollContainer.getBoundingClientRect();
+            const elementRect = element.getBoundingClientRect();
+            const relativeTop = elementRect.top - containerRect.top + scrollContainer.scrollTop;
+
+            const offsetPosition = relativeTop - headerHeight;
+
+            scrollContainer.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth',
+            });
         }
     }, [anchor, anchorId]);
 
