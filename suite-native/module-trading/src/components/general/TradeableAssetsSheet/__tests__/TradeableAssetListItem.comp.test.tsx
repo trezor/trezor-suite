@@ -14,7 +14,7 @@ describe('TradeableAssetListItem', () => {
         const { getByLabelText } = await renderComponent({ asset: usdcAsset });
 
         expect(getByLabelText('Coin name')).toHaveTextContent('USDC');
-        expect(getByLabelText('Coin symbol')).toHaveTextContent('ETH');
+        expect(getByLabelText('Coin symbol')).toHaveTextContent('USDC');
         expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
     });
 

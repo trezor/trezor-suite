@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
+import { NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@trezor/utils';
@@ -24,7 +25,7 @@ const GRADIENT_START = { x: 0, y: 0.5 } as const;
 const GRADIENT_END = { x: 1, y: 0.5 } as const;
 
 const buttonStyle = prepareNativeStyle(({ spacings }) => ({
-    padding: spacings.sp8,
+    padding: 6,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -54,6 +55,12 @@ export const TradeableAssetButton = ({
         [dominantAssetColor],
     );
 
+    // when there is no contract address, we want to use display symbol instead
+    // this way we can present ETH icon for EVMs instead of network icon
+    const adjustedSymbol = contractAddress
+        ? networkSymbol
+        : (getDisplaySymbol(networkSymbol) as NetworkDisplaySymbol);
+
     return (
         <LinearGradient
             colors={gradientColors}
@@ -68,7 +75,11 @@ export const TradeableAssetButton = ({
                 accessibilityRole="button"
                 accessibilityLabel={accessibilityLabel}
             >
-                <CryptoIcon symbol={networkSymbol} contractAddress={contractAddress} size="small" />
+                <CryptoIcon
+                    symbol={adjustedSymbol}
+                    contractAddress={contractAddress}
+                    size="extraSmall"
+                />
                 <NetworkSymbolExtendedFormatter symbol={symbol} variant="callout" />
                 {caret && <Icon name="caretDown" color="textSubdued" size="medium" />}
             </Pressable>

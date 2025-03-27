@@ -21,7 +21,7 @@ export const ethAsset: TradeableAsset = {
 };
 
 export const usdcAsset: TradeableAsset = {
-    symbol: 'eth',
+    symbol: 'usdc',
     name: 'USDC',
     coingeckoId: 'usd-coin',
     cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,

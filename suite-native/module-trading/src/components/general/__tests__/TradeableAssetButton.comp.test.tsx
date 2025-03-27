@@ -1,6 +1,6 @@
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { btcAsset } from '../../../__fixtures__/tradeableAssets';
+import { btcAsset, ethOnBaseAsset, usdcAsset } from '../../../__fixtures__/tradeableAssets';
 import { TradeableAssetButton } from '../TradeableAssetButton';
 
 describe('TradeableAssetButton', () => {
@@ -14,6 +14,30 @@ describe('TradeableAssetButton', () => {
         );
 
         expect(getByText('BTC')).toBeDefined();
+    });
+
+    it('should render display ETH as display symbol for L2 EVMs', () => {
+        const { getByText } = renderWithBasicProvider(
+            <TradeableAssetButton
+                asset={ethOnBaseAsset}
+                onPress={jest.fn()}
+                accessibilityLabel="a11yLabel"
+            />,
+        );
+
+        expect(getByText('ETH')).toBeDefined();
+    });
+
+    it('should render display token name when token is present', () => {
+        const { getByText } = renderWithBasicProvider(
+            <TradeableAssetButton
+                asset={usdcAsset}
+                onPress={jest.fn()}
+                accessibilityLabel="a11yLabel"
+            />,
+        );
+
+        expect(getByText('USDC')).toBeDefined();
     });
 
     it('should call onPress callback', () => {
