@@ -90,7 +90,7 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
 
             if (request.feeLevels === 'smart') {
                 const backend = await initBlockchain(coinInfo, this.postMessage, identity);
-                await fees.load(backend);
+                await fees.load(backend, request);
             }
 
             feeInfo.levels = fees.levels;

@@ -15,9 +15,9 @@ export class EthereumFeeLevels extends MiscFeeLevels {
         this.levels = coinInfo.defaultFees;
     }
 
-    async load(blockchain: Blockchain) {
+    async load(blockchain: Blockchain, request: Parameters<typeof blockchain.estimateFee>[0]) {
         try {
-            const [response] = await blockchain.estimateFee({ blocks: [1] });
+            const [response] = await blockchain.estimateFee(request);
 
             const { eip1559 } = response;
 
