@@ -38,21 +38,6 @@ jobs:
       - name: Build and Upload Suite Desktop
         uses: ./.github/actions/build-desktop
 
-  load-e2e-matrix:
-    if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.load-matrix.outputs.matrix }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Load e2e Matrix
-        id: load-matrix
-        uses: ./.github/actions/load-e2e-matrix
-        with:
-          project: "desktop"
-
   post-currents-link:
     if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' && github.event.action == 'opened'
     runs-on: ubuntu-latest
@@ -81,11 +66,10 @@ jobs:
     runs-on: ubuntu-24.04
     needs:
       - build-app
-      - load-e2e-matrix
-    continue-on-error: ${{ !matrix.smoke }}
     strategy:
-      fail-fast: true
-      matrix: ${{ fromJson(needs.load-e2e-matrix.outputs.matrix) }}
+      fail-fast: false
+      matrix: 
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -127,9 +111,10 @@ jobs:
         uses: ./.github/actions/run-e2e-tests
         with:
           project: "desktop"
-          containers: ${{ matrix.CONTAINERS }}
+          containers: "trezor-user-env-unix bitcoin-regtest"
           workspace-dependencies: "@trezor/suite-desktop"
           test-group: ${{ matrix.TEST_GROUP }}
+          fail-fast: 3
           currents-project-id: "4ytF0E"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

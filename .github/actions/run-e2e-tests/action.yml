@@ -16,8 +16,12 @@ inputs:
     required: false
     default: ""
   test-group:
-    description: "Test group to run"
+    description: "Test group for orchestration"
     required: true
+  fail-fast:
+    description: "Cancel test run if number of tests fail (number | false)"
+    default: "false"
+    required: false
   additional-grep:
     description: "Additional grep for PW tests. Use regexp groups with positive or negative lookahead. Example: (?=.*@webOnly)"
     default: ""
@@ -100,7 +104,7 @@ runs:
 
         docker compose up -d ${{ inputs.containers }}
         echo "Starting Playwright project ${{ inputs.project }} for test group ${{ inputs.test-group }}"
-        yarn workspace @trezor/suite-desktop-core test:e2e:${{ inputs.project }} --forbid-only --grep="(?=.*${{ inputs.test-group }})${{ inputs.additional-grep }}" 
+        yarn workspace @trezor/suite-desktop-core test:orchestrated:e2e:${{ inputs.project }} --pwc-cancel-after-failures ${{ inputs.fail-fast}} --forbid-only --grep="${{ inputs.additional-grep }}" 
 
     - name: Extract and Upload Logs
       if: ${{ !cancelled() }}
