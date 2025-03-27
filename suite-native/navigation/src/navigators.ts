@@ -132,6 +132,7 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.DeviceTutorial]: undefined;
     [DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads]: undefined;
     [DeviceOnboardingStackRoutes.CreateWalletLoading]: undefined;
+    [DeviceOnboardingStackRoutes.WalletBackupTutorial]: undefined;
 };
 
 export type AccountsImportStackParamList = {

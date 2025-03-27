@@ -1,0 +1,1 @@
+export const WALLET_BACKUP_TUTORIAL_STEPS_COUNT = 5;

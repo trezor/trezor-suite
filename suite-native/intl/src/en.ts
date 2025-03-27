@@ -872,6 +872,44 @@ export const en = {
                 button: 'Recover',
             },
         },
+
+        walletBackupTutorialScreen: {
+            step1: {
+                callout: 'What’s a wallet backup?',
+                title: 'A wallet backup is a list of words that recovers access to your assets',
+                description: "You'll be prompted to write it down shortly.",
+            },
+            step2: {
+                callout: 'When do you need your wallet backup?',
+                title: 'You’ll need it if your Trezor gets...',
+            },
+            step3: {
+                callout: 'How do your wallet backup and Trezor differ?',
+                title: 'Each has their own role',
+                section1: {
+                    title: 'Trezor',
+                    description: 'Confirms transactions',
+                    bullet1: 'Manage assets with the Trezor Suite app.',
+                    bullet2: 'Stores & protects access to your assets.',
+                },
+                section2: {
+                    title: 'Wallet backup',
+                    description: 'Recovers access to assets',
+                    bullet1:
+                        'The only way to access your funds again if something happens to your Trezor.',
+                },
+            },
+            step4: {
+                callout: 'Your wallet backup is absolutely essential',
+                title: 'Always protect your wallet backup',
+                description: 'No one can restore it—not even Trezor Support.',
+            },
+            step5: {
+                callout: 'Select how to recover access to your assets',
+                title: 'Wallet backup type',
+            },
+        },
+
         createWalletLoadingScreen: {
             title: 'Let’s protect your assets with a wallet backup',
         },

@@ -1,9 +1,14 @@
 import { useEffect } from 'react';
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Screen } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
+import {
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
+    Screen,
+} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { CreateWalletLoader, LOADER_DURATION } from '../components/CreateWalletLoader';
@@ -13,24 +18,23 @@ const titleStyle = prepareNativeStyle(_ => ({
     letterSpacing: -1.4,
 }));
 
-export const CreateWalletLoadingScreen = () => {
-    const { showToast } = useToast();
+export const CreateWalletLoadingScreen = ({
+    navigation,
+}: {
+    navigation: NativeStackNavigationProp<DeviceOnboardingStackParamList>;
+}) => {
     const { applyStyle } = useNativeStyles();
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
-            showToast({
-                message: 'Loading finished, TODO: redirect to next screen',
-                variant: 'warning',
-            });
-            // delaying the redirect a bit feels more natural than redirecting right after the animation ends.
-        }, LOADER_DURATION + 300);
+            navigation.navigate(DeviceOnboardingStackRoutes.WalletBackupTutorial);
+        }, LOADER_DURATION);
 
         return () => clearTimeout(timeoutId);
-    }, [showToast]);
+    }, [navigation]);
 
     return (
-        <Screen>
+        <Screen isScrollable={false}>
             <Box justifyContent="center" alignItems="center" flex={1}>
                 <VStack spacing="sp20">
                     <CreateWalletLoader />

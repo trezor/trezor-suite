@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { FlexAlignType } from 'react-native';
 
 import { IconName, IconSize } from '@suite-native/icons';
-import { Color, NativeTypographyStyle } from '@trezor/theme';
+import { Color, NativeSpacing, NativeTypographyStyle } from '@trezor/theme';
 
 import { Box } from './Box';
 import { OrderedListIcon } from './OrderedListIcon';
@@ -40,6 +40,7 @@ type IconListItemProps = {
     iconSize?: IconSize;
     variant?: Variant;
     verticalAlign?: FlexAlignType;
+    spacing?: NativeSpacing | number;
 };
 
 type IconListTextItemProps = IconListItemProps & {
@@ -52,11 +53,12 @@ export const IconListItem = ({
     iconSize = 'medium',
     variant = 'default',
     verticalAlign = 'center',
+    spacing = 'sp12',
 }: IconListItemProps) => {
     const iconColors = iconColorsMap[variant];
 
     return (
-        <HStack spacing="sp12" alignItems={verticalAlign}>
+        <HStack spacing={spacing} alignItems={verticalAlign}>
             <OrderedListIcon iconName={icon} iconSize={iconSize} {...iconColors} />
             <Box flexShrink={1}>{children}</Box>
         </HStack>
