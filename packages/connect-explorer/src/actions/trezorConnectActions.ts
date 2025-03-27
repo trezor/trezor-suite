@@ -139,8 +139,8 @@ export const init =
         }
 
         // Get default coreMode from URL params (?core-mode=auto)
-        const urlParams = new URLSearchParams(window.location.search);
-        const coreMode = (urlParams.get('core-mode') as ConnectOptions['coreMode']) || 'auto';
+        // const urlParams = new URLSearchParams(window.location.search);
+        // const coreMode = (urlParams.get('core-mode') as ConnectOptions['coreMode']) || 'auto';
 
         // localhost + dev server
         let _sessionsBackgroundUrl = process.env.CONNECT_EXPLORER_FULL_URL
@@ -153,8 +153,8 @@ export const init =
                 'https://connect.trezor.io/9/workers/sessions-background-sharedworker.js';
         }
 
-        const connectOptions = {
-            coreMode,
+        const connectOptions: ConnectOptions = {
+            coreMode: 'suite-desktop',
             transportReconnect: true,
             popup: true,
             debug: true,
