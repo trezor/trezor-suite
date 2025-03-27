@@ -190,12 +190,13 @@ export const TransactionReviewOutputElement = ({
                                         }
                                         direction="row"
                                     >
-                                        <Column
-                                            alignItems="flex-end"
+                                        <Text
+                                            as="div"
+                                            align="end"
                                             data-testid="@modal/output-value"
                                         >
                                             {value}
-                                        </Column>
+                                        </Text>
                                     </InfoItem>
                                 ) : (
                                     <Text data-testid="@modal/output-value">{value}</Text>
