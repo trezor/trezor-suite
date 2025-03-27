@@ -25,7 +25,7 @@ import {
     StaticSessionId,
 } from '@trezor/connect';
 
-import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
+import { ActionType, DiscoveryHook, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -36,6 +36,9 @@ type ConnectInitSettings = {
 } & Partial<ConnectSettings>;
 
 export type ExtraDependencies = {
+    services: {
+        discoveryHook: DiscoveryHook;
+    };
     thunks: {
         cardanoValidatePendingTxOnBlock: SuiteCompatibleThunk<{
             block: BlockchainBlock;
