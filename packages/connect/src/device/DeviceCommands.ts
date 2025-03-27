@@ -93,6 +93,7 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             publicKey: publicKey.node.public_key,
             fingerprint: publicKey.node.fingerprint,
             depth: publicKey.node.depth,
+            descriptor: publicKey.descriptor,
         };
 
         if (network !== coinInfo.network) {

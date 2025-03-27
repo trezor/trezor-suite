@@ -87,11 +87,12 @@ Result with only one public key
         serializedPath: string, // serialized path
         xpub: string,        // xpub in legacy format
         xpubSegwit?: string, // optional for segwit accounts: xpub in segwit format
-        chainCode: string,   // BIP32 serialization format
-        childNum: number,    // BIP32 serialization format
-        publicKey: string,   // BIP32 serialization format
-        fingerprint: number, // BIP32 serialization format
-        depth: number,       // BIP32 serialization format
+        chainCode: string,   // BIP-32 serialization format
+        childNum: number,    // BIP-32 serialization format
+        publicKey: string,   // BIP-32 serialization format
+        fingerprint: number, // BIP-32 serialization format
+        depth: number,       // BIP-32 serialization format
+        descriptor?: string, // BIP-380 descriptor. Not available for model One
     }
 }
 ```
@@ -104,9 +105,9 @@ Result with bundle of public keys
 {
     success: true,
     payload: [
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth }, // account 1
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth }, // account 2
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth }  // account 3
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor }, // account 1
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor }, // account 2
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor }  // account 3
     ]
 }
 ```

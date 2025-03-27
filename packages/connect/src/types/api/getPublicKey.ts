@@ -40,6 +40,7 @@ export const HDNodeResponse = Type.Intersect([
         chainCode: Type.String(),
         fingerprint: Type.Number(),
         depth: Type.Number(),
+        descriptor: Type.Optional(Type.String()),
     }),
 ]);
 
