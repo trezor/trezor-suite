@@ -46,36 +46,21 @@ env:
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 
 jobs:
-  build-web:
-    if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # build-web:
+  #   if: github.repository == 'trezor/trezor-suite'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Build and Upload Suite Web
-        uses: ./.github/actions/build-web
-
-  load-e2e-matrix:
-    if: github.repository == 'trezor/trezor-suite'
-    outputs:
-      matrix: ${{ steps.load-matrix.outputs.matrix }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Load e2e Matrix
-        id: load-matrix
-        uses: ./.github/actions/load-e2e-matrix
-        with:
-          project: "web"
+  #     - name: Build and Upload Suite Web
+  #       uses: ./.github/actions/build-web
 
   post-currents-link:
     if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' && github.event.action == 'opened'
     runs-on: ubuntu-latest
-    needs:
-      - build-web
+    # needs:
+    #   - build-web
     steps:
       - name: Post Currents link
         uses: actions/github-script@v7
@@ -97,13 +82,13 @@ jobs:
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
-    needs:
-      - build-web
-      - load-e2e-matrix
-    continue-on-error: ${{ !matrix.smoke }}
+    # needs:
+    #   - build-web
     strategy:
-      fail-fast: true
-      matrix: ${{ fromJson(needs.load-e2e-matrix.outputs.matrix) }}
+      fail-fast: false
+      matrix: 
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -125,13 +110,14 @@ jobs:
           job_name: "${{ github.job }} (${{ join(matrix.*, ', ') }})"
 
       - name: Run Playwright E2E Tests
-        if: steps.check-previous-runs.outputs.skip_tests != 'true'
+        # if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: ./.github/actions/run-e2e-tests
         with:
           project: "web"
-          containers: ${{ matrix.CONTAINERS }}
+          containers: "trezor-user-env-unix bitcoin-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep: ${{ matrix.SMOKE && '(?=.*)' || '(?=.*@webOnly)' }}
+          additional-grep: ${{ matrix.SMOKE && '(?=.*@group=smoke)' || '(?=.*@webOnly)' }}
+          fail-fast: 3
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
