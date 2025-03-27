@@ -56,7 +56,7 @@ export const DeviceContextModal = ({
             return <ConfirmActionModal device={device} />;
         }
         case 'ButtonRequest_FirmwareCheck':
-            return <ConfirmFingerprintModal device={device} renderer={renderer} />;
+            return <ConfirmFingerprintModal device={device} />;
         // Generic Button requests
         // todo: consider fallback (if windowType.contains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
         case 'ButtonRequest_Warning':

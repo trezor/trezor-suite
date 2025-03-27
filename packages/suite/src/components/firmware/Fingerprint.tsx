@@ -1,18 +1,7 @@
-import styled from 'styled-components';
+import { Text } from '@trezor/components';
 
 import { TrezorDevice } from 'src/types/suite';
 import { getFormattedFingerprint } from 'src/utils/firmware';
-
-const Wrapper = styled.pre`
-    padding: 8px;
-    width: 100%;
-    overflow: hidden;
-    background-color: ${({ theme }) => theme.legacy.BG_GREY};
-    color: ${({ theme }) => theme.legacy.TYPE_DARK_GREY};
-    text-align: center;
-    word-break: break-all;
-    font-family: monospace;
-`;
 
 type FingerprintProps = {
     device: TrezorDevice;
@@ -30,5 +19,9 @@ export const Fingerprint = ({ device }: FingerprintProps) => {
 
     const formattedFingerprint = getFormattedFingerprint(fingerprint);
 
-    return <Wrapper>{formattedFingerprint}</Wrapper>;
+    return (
+        <Text isMonospaced as="pre" align="center">
+            {formattedFingerprint}
+        </Text>
+    );
 };

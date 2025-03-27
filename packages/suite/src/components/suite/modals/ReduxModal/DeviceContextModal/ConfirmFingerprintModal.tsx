@@ -1,32 +1,29 @@
-import styled from 'styled-components';
-
+import { Card, NewModal } from '@trezor/components';
 import { ConfirmOnDevice } from '@trezor/product-components';
 
 import { Fingerprint } from 'src/components/firmware';
-import { Modal, ModalProps, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 
-const StyledModal = styled(Modal)`
-    width: 360px;
-`;
-
-interface ConfirmFingerprintProps extends ModalProps {
+type ConfirmFingerprintProps = {
     device: TrezorDevice;
-}
+};
 
-export const ConfirmFingerprintModal = ({ device, ...rest }: ConfirmFingerprintProps) => (
-    <StyledModal
-        modalPrompt={
-            <ConfirmOnDevice
-                title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                deviceModelInternal={device.features?.internal_model}
-                deviceUnitColor={device?.features?.unit_color}
-            />
-        }
-        heading={<Translation id="TR_CHECK_FINGERPRINT" />}
-        data-testid="@suite/modal/confirm-fingerprint-on-device"
-        {...rest}
-    >
-        <Fingerprint device={device} />
-    </StyledModal>
+export const ConfirmFingerprintModal = ({ device }: ConfirmFingerprintProps) => (
+    <NewModal.Backdrop>
+        <ConfirmOnDevice
+            title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+            deviceModelInternal={device.features?.internal_model}
+            deviceUnitColor={device?.features?.unit_color}
+        />
+        <NewModal.ModalBase
+            heading={<Translation id="TR_CHECK_FINGERPRINT" />}
+            data-testid="@suite/modal/confirm-fingerprint-on-device"
+            size="tiny"
+        >
+            <Card>
+                <Fingerprint device={device} />
+            </Card>
+        </NewModal.ModalBase>
+    </NewModal.Backdrop>
 );
