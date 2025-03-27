@@ -1,7 +1,13 @@
 import { Static, Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../constants';
-import { BundledParams, GetPublicKey as GetPublicKeyShared, Params, Response } from '../params';
+import {
+    BundledParams,
+    GetPublicKey as GetPublicKeyShared,
+    Params,
+    PublicKey,
+    Response,
+} from '../params';
 
 export type GetPublicKey = Static<typeof GetPublicKey>;
 export const GetPublicKey = Type.Intersect([
@@ -24,18 +30,18 @@ export const GetPublicKey = Type.Intersect([
 
 // PROTO.HDNodeType with camelcase fields + path
 export type HDNodeResponse = Static<typeof HDNodeResponse>;
-export const HDNodeResponse = Type.Object({
-    path: Type.Array(Type.Number()),
-    serializedPath: Type.String(),
-    childNum: Type.Number(),
-    xpub: Type.String(),
-    xpubSegwit: Type.Optional(Type.String()),
-    descriptorChecksum: Type.Optional(Type.String()),
-    chainCode: Type.String(),
-    publicKey: Type.String(),
-    fingerprint: Type.Number(),
-    depth: Type.Number(),
-});
+export const HDNodeResponse = Type.Intersect([
+    PublicKey,
+    Type.Object({
+        childNum: Type.Number(),
+        xpub: Type.String(),
+        xpubSegwit: Type.Optional(Type.String()),
+        descriptorChecksum: Type.Optional(Type.String()),
+        chainCode: Type.String(),
+        fingerprint: Type.Number(),
+        depth: Type.Number(),
+    }),
+]);
 
 export declare function getPublicKey(params: Params<GetPublicKey>): Response<HDNodeResponse>;
 export declare function getPublicKey(
