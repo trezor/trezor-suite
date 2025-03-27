@@ -34,30 +34,15 @@ jobs:
         with:
           deployment-branch-override: "fw-canary-788b960e2c6b5112230ded6129d69538"
 
-  load-e2e-matrix:
-    if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.load-matrix.outputs.matrix }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Load e2e Matrix
-        id: load-matrix
-        uses: ./.github/actions/load-e2e-matrix
-        with:
-          project: "web"
-
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     needs:
       - build-web
-      - load-e2e-matrix
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.load-e2e-matrix.outputs.matrix) }}
+      matrix:
+        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -75,6 +60,7 @@ jobs:
           base-url: "https://dev.suite.sldev.cz/suite-web/fw-canary-788b960e2c6b5112230ded6129d69538/web/"
           containers: ${{ matrix.CONTAINERS }}
           test-group: ${{ matrix.TEST_GROUP }}
+          fail-fast: false
           additional-grep: "(?!.*@specificFirmware)"
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
