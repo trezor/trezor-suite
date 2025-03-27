@@ -157,7 +157,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
     // variables used in one workflow: acquire -> transportSession -> commands -> run -> keepTransportSession -> release
     private acquirePromise?: ReturnType<Transport['acquire']>;
     private releasePromise?: ReturnType<Transport['release']>;
-    private runPromise?: Deferred<void>;
+
+    private runAbort?: AbortController;
 
     private keepTransportSession = false;
     private currentSession?: DeviceCurrentSession;
@@ -280,11 +281,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     return result;
                 } else {
-                    if (this.runPromise) {
-                        this.runPromise.reject(new Error(result.error));
-                        delete this.runPromise;
-                    }
-                    throw result.error;
+                    throw new Error(result.error);
                 }
             })
             .finally(() => {
@@ -323,17 +320,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     releaseTransportSession() {
         this.keepTransportSession = false;
-    }
-
-    async cleanup(release = true) {
-        // remove all listeners
-        this.eventNames().forEach(e => this.removeAllListeners(e as keyof DeviceEvents));
-
-        // make sure that Device_CallInProgress will not be thrown
-        delete this.runPromise;
-        if (release) {
-            await this.release();
-        }
     }
 
     // call only once, right after device creation
@@ -420,26 +406,35 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     // TODO empty fn variant can be split/removed
     run(fn?: () => Promise<void>, options: RunOptions = {}) {
-        if (this.runPromise) {
+        if (this.runAbort) {
             _log.warn('Previous call is still running');
             throw ERRORS.TypedError('Device_CallInProgress');
         }
 
         const wasUnacquired = this.isUnacquired();
-        const runPromise = createDeferred();
-        this.runPromise = runPromise;
 
-        this._runInner(fn, options)
+        this.runAbort = new AbortController();
+        const { signal } = this.runAbort;
+
+        return Promise.race([
+            this._runInner(fn, options),
+            new Promise<never>((_, reject) => {
+                signal.addEventListener('abort', () => reject(signal.reason));
+            }),
+        ])
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
                     this.emitLifecycle(DEVICE.CONNECT);
                 }
+                this.runAbort = undefined;
             })
-            .catch(err => {
-                runPromise.reject(err);
+            .catch(async err => {
+                if (!signal.aborted) {
+                    await this.release();
+                }
+                this.runAbort = undefined;
+                throw err;
             });
-
-        return runPromise.promise;
     }
 
     async override(error: Error) {
@@ -447,7 +442,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             await this.acquirePromise;
         }
 
-        if (this.runPromise) {
+        if (this.runAbort) {
             await this.interruptionFromUser(error);
         }
         if (this.releasePromise) {
@@ -461,11 +456,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
         await this.currentSession?.abort(error);
         await this.currentSession?.dispose();
 
-        if (this.runPromise) {
-            // reject inner defer
-            this.runPromise.reject(error);
-            delete this.runPromise;
-        }
+        // reject inner defer
+        this.runAbort?.abort(error);
+        this.runAbort = undefined;
     }
 
     public usedElsewhere() {
@@ -480,10 +473,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         this.currentSession?.dispose();
 
-        if (this.runPromise) {
-            this.runPromise.reject(ERRORS.TypedError('Device_UsedElsewhere'));
-            delete this.runPromise;
-        }
+        this.runAbort?.abort(ERRORS.TypedError('Device_UsedElsewhere'));
 
         // session was acquired by another instance. but another might not have power to release interface
         // so it only notified about its session acquiral and the interrupted instance should cooperate
@@ -586,7 +576,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 }
 
                 this.inconsistent = true;
-                delete this.runPromise;
 
                 return Promise.reject(
                     ERRORS.TypedError(
@@ -642,12 +631,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             this.keepTransportSession = false;
             await this.release();
         }
-
-        if (this.runPromise) {
-            this.runPromise.resolve();
-        }
-
-        delete this.runPromise;
 
         if (!this.loaded) {
             this.loaded = true;
@@ -1139,7 +1122,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     isRunning() {
-        return !!this.runPromise;
+        return !!this.runAbort;
     }
 
     isLoaded() {

@@ -21,7 +21,7 @@ describe('sessions', () => {
         expect(acquireIntent).toEqual({
             success: false,
             id: 1,
-            error: 'descriptor not found',
+            error: 'device not found',
         });
     });
 

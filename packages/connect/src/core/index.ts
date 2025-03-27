@@ -708,13 +708,9 @@ const onCallDevice = async (
         const response = messageResponse;
 
         if (response) {
-            const shouldReleaseSession =
-                response.success ||
-                (!response.success &&
-                    // @ts-expect-error
-                    response?.payload?.error !== 'device disconnected during action');
+            // remove all listeners
+            device.eventNames().forEach(e => device.removeAllListeners(e as keyof DeviceEvents));
 
-            await device.cleanup(shouldReleaseSession);
             if (useCoreInPopup) {
                 // We need to send response before closing popup
                 sendCoreMessage(response);

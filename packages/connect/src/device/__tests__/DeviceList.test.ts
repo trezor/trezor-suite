@@ -170,7 +170,12 @@ describe('DeviceList', () => {
         await list.pendingConnection();
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
-        expect(events).toEqual(['device-changed', 'device-connect_unacquired', 'transport-start']);
+        expect(events).toEqual([
+            'device-changed',
+            'device-changed',
+            'device-connect_unacquired',
+            'transport-start',
+        ]);
     });
 
     it('.init() with pendingTransportEvent (multiple acquired devices)', async () => {
