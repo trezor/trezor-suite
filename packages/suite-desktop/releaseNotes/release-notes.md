@@ -14,4 +14,5 @@
 
 ### 🔧 Bug fixes
 
+-   Fixed a bug in Solana Staking that prevented the staking page from updating correctly after the 'warm-up' period.
 -   Fixed minor bugs, improved usability, and optimized performance for a smoother experience.
