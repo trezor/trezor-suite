@@ -10,12 +10,11 @@ import { expect, test } from '../../support/fixtures';
  */
 // TODO: #15561 FIX settings cleanup: eap setting is remembered even after cache cleanup at the beginning of the test. This shouldn't affect gha run but breaks the local one.
 test.skip(!process.env.GITHUB_ACTION, 'Test is working only in CI. Skipping local run.');
-test.use({ startEmulator: false });
 test.beforeAll(async ({ onboardingPage }) => {
     await onboardingPage.completeOnboarding();
 });
 
-test('Join early access button', { tag: '@settings' }, async ({ settingsPage }) => {
+test('Join early access button', { tag: '@group=settings' }, async ({ settingsPage }) => {
     const buttonText = 'Leave';
     await settingsPage.navigateTo('application');
     await settingsPage.joinEarlyAccessProgram();
