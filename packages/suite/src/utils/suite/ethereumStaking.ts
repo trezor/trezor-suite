@@ -7,7 +7,6 @@ import {
     MIN_ETH_AMOUNT_FOR_STAKING,
     STAKE_GAS_LIMIT_RESERVE,
     UNSTAKE_INTERCHANGES,
-    UNSTAKING_ETH_PERIOD,
     WALLET_SDK_SOURCE,
 } from '@suite-common/wallet-constants';
 import { ValidatorsQueue } from '@suite-common/wallet-core';
@@ -22,6 +21,7 @@ import {
     isPending,
     isSupportedEthStakingNetworkSymbol,
     sanitizeHex,
+    secondsToDays,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     EthereumTransaction,
@@ -32,8 +32,6 @@ import TrezorConnect, {
 import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
 import { PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-
-const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 
 type EthNetwork = 'holesky' | 'mainnet';
 
@@ -558,21 +556,6 @@ export const getStakeTxGasLimit = async ({
             },
         };
     }
-};
-
-export const getUnstakingPeriodInDays = (
-    validatorWithdrawTimeInSeconds?: number,
-    validatorExitTime?: number,
-) => {
-    if (validatorWithdrawTimeInSeconds === undefined || validatorExitTime === undefined) {
-        return UNSTAKING_ETH_PERIOD;
-    }
-
-    const unstakingPeriodInSeconds = new BigNumber(validatorWithdrawTimeInSeconds)
-        .plus(validatorExitTime)
-        .toNumber();
-
-    return secondsToDays(unstakingPeriodInSeconds);
 };
 
 export const getDaysToAddToPool = (

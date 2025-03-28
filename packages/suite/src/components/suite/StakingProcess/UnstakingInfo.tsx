@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { StakeRootState, selectValidatorsQueue } from '@suite-common/wallet-core';
+import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
-import { getUnstakingPeriodInDays } from 'src/utils/suite/ethereumStaking';
 
 import { InfoRow } from './InfoRow';
 
@@ -63,10 +63,11 @@ export const UnstakingInfo = ({ isExpanded }: UnstakingInfoProps) => {
 
     if (!account) return null;
 
-    const daysToUnstake = getUnstakingPeriodInDays(
-        data?.validatorWithdrawTime,
-        data?.validatorExitTime,
-    );
+    const daysToUnstake = getUnstakingPeriodInDays({
+        networkType: account.networkType,
+        validatorWithdrawTime: data?.validatorWithdrawTime,
+        validatorExitTime: data?.validatorExitTime,
+    });
 
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
     const infoRowsData = getInfoRowsData(account.networkType, account.symbol, daysToUnstake);

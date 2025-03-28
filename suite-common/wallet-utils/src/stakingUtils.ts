@@ -1,4 +1,4 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
     MAX_ETH_AMOUNT_FOR_STAKING,
     MAX_SOL_AMOUNT_FOR_STAKING,
@@ -8,8 +8,11 @@ import {
     MIN_SOL_AMOUNT_FOR_STAKING,
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
+    SOLANA_EPOCH_DAYS,
+    UNSTAKING_ETH_PERIOD,
 } from '@suite-common/wallet-constants';
 import { Account, StakingPoolExtended } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
 
 import {
     getAccountEverstakeStakingPool,
@@ -21,6 +24,8 @@ import {
     getSolStakingAccountsInfo,
     isSupportedSolStakingNetworkSymbol,
 } from './solanaStakingUtils';
+
+export const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 
 export const getAccountTotalStakingBalance = (account: Account) => {
     if (!account) return null;
@@ -91,4 +96,30 @@ export const getStakingDataForNetwork = (
         default:
             return;
     }
+};
+
+interface GetUnstakingPeriodInDays {
+    networkType?: NetworkType;
+    validatorWithdrawTime?: number; // in seconds
+    validatorExitTime?: number; // in seconds
+}
+
+export const getUnstakingPeriodInDays = ({
+    networkType,
+    validatorWithdrawTime,
+    validatorExitTime,
+}: GetUnstakingPeriodInDays) => {
+    if (networkType === 'solana') {
+        return SOLANA_EPOCH_DAYS;
+    }
+
+    if (validatorWithdrawTime === undefined || validatorExitTime === undefined) {
+        return UNSTAKING_ETH_PERIOD;
+    }
+
+    const unstakingPeriodInSeconds = new BigNumber(validatorWithdrawTime)
+        .plus(validatorExitTime)
+        .toNumber();
+
+    return secondsToDays(unstakingPeriodInSeconds);
 };

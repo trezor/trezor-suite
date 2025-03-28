@@ -524,25 +524,6 @@ export const getStakeTxGasLimitFixture = [
     },
 ];
 
-export const getUnstakingPeriodInDaysFixture = [
-    {
-        description: 'should return correct unstaking period in days',
-        args: {
-            validatorWithdrawTimeInSeconds: 604800, // 7 days
-            validatorExitTimeInSeconds: 259200, // 3 days
-        },
-        result: 10, // 7 + 3
-    },
-    {
-        description:
-            'should return default unstaking period in days when validatorWithdrawTimeInSeconds is not valid',
-        args: {
-            validatorWithdrawTimeInSeconds: undefined, // invalid
-        },
-        result: 3, // default
-    },
-];
-
 export const getDaysToAddToPoolFixture = [
     {
         description:

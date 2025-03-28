@@ -3,6 +3,7 @@ import React from 'react';
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import {
     Badge,
     CollapsibleBox,
@@ -24,7 +25,6 @@ import { StakingInfo } from 'src/components/suite/StakingProcess/StakingInfo';
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { getUnstakingPeriodInDays } from 'src/utils/suite/ethereumStaking';
 
 interface StakingDetails {
     id: number;
@@ -64,7 +64,11 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
         selectValidatorsQueueData(state, account?.symbol),
     );
 
-    const unstakingPeriod = getUnstakingPeriodInDays(validatorWithdrawTime, validatorExitTime);
+    const unstakingPeriod = getUnstakingPeriodInDays({
+        networkType: account?.networkType,
+        validatorWithdrawTime,
+        validatorExitTime,
+    });
 
     const proceedToEverstakeModal = () => {
         onCancel();

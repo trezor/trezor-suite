@@ -24,7 +24,6 @@ import {
     getInstantStakeTypeFixture,
     getStakeFormsDefaultValuesFixture,
     getStakeTxGasLimitFixture,
-    getUnstakingPeriodInDaysFixture,
     simulateUnstakeFixture,
     stakeFailedFixture,
     stakeFixture,
@@ -46,7 +45,6 @@ import {
     getInstantStakeType,
     getStakeFormsDefaultValues,
     getStakeTxGasLimit,
-    getUnstakingPeriodInDays,
     simulateUnstake,
     stake,
     transformTx,
@@ -172,18 +170,6 @@ describe('getStakeTxGasLimit', () => {
         it(test.description, async () => {
             mockTrezorConnect(test);
             const result = await getStakeTxGasLimit(test.args as GetStakeTxGasLimitParams);
-            expect(result).toEqual(test.result);
-        });
-    });
-});
-
-describe('getUnstakingPeriodInDays', () => {
-    getUnstakingPeriodInDaysFixture.forEach(test => {
-        it(test.description, async () => {
-            const result = await getUnstakingPeriodInDays(
-                test.args.validatorWithdrawTimeInSeconds,
-                test.args.validatorExitTimeInSeconds,
-            );
             expect(result).toEqual(test.result);
         });
     });
