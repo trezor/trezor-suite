@@ -5,11 +5,11 @@ import { useSelector } from 'react-redux';
 import { Input } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
+import { useAmountInputTransformers } from '@suite-native/helpers';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { useNativeStyles } from '@trezor/styles';
 
 import { SendAmountCurrencyLabelWrapper, sendAmountInputWrapperStyle } from './CryptoAmountInput';
-import { useSendAmountTransformers } from '../hooks/useSendAmountTransformers';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { SendAmountInputProps } from '../types';
 import { getOutputFieldName } from '../utils';
@@ -28,7 +28,7 @@ export const FiatAmountInput = ({
     const { applyStyle } = useNativeStyles();
     const { setValue } = useFormContext<SendOutputsFormValues>();
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
-    const { fiatAmountTransformer } = useSendAmountTransformers(symbol);
+    const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');

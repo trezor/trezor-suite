@@ -4,13 +4,13 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { AlertBox, AnimatedVStack, HStack, Switch, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
+import { integerTransformer } from '@suite-native/helpers';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { integerTransformer } from '../hooks/useSendAmountTransformers';
 import { SendFieldName, SendOutputsFormValues } from '../sendOutputsFormSchema';
 
 const titleTextStyle = prepareNativeStyle(utils => ({

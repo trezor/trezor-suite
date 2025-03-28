@@ -7,12 +7,12 @@ import { useFormatters } from '@suite-common/formatters';
 import { Input, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
+import { useAmountInputTransformers } from '@suite-native/helpers';
 import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { useSendAmountTransformers } from '../hooks/useSendAmountTransformers';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { SendAmountInputProps } from '../types';
 import { getOutputFieldName } from '../utils';
@@ -52,7 +52,7 @@ export const CryptoAmountInput = ({
 }: SendAmountInputProps) => {
     const { applyStyle } = useNativeStyles();
     const { setValue, trigger } = useFormContext<SendOutputsFormValues>();
-    const { cryptoAmountTransformer } = useSendAmountTransformers(symbol);
+    const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
     const { DisplaySymbolFormatter: formatter } = useFormatters();
     const debounce = useDebounce();
 

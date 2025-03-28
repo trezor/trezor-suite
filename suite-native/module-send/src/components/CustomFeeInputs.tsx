@@ -7,10 +7,10 @@ import { FeesRootState, selectNetworkFeeInfo } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Hint, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
+import { integerTransformer, useAmountInputTransformers } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 
-import { integerTransformer, useSendAmountTransformers } from '../hooks/useSendAmountTransformers';
 import { SendFeesFormValues } from '../sendFeesFormSchema';
 
 type CustomFeeInputsProps = {
@@ -20,7 +20,7 @@ type CustomFeeInputsProps = {
 export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
     const { translate } = useTranslate();
     const feeInfo = useSelector((state: FeesRootState) => selectNetworkFeeInfo(state, 'btc'));
-    const { cryptoAmountTransformer } = useSendAmountTransformers(symbol);
+    const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
     const debounce = useDebounce();
     const {
         formState: { errors },
