@@ -47,10 +47,12 @@ type SymbolInputProps = {
     onChange: (value: Symbol) => void;
     onClick: () => void;
     onPaste: (e: ClipboardEvent<HTMLInputElement>) => void;
+    disabled?: boolean;
+    autoFocus?: boolean;
 };
 
 const SymbolInput = forwardRef<HTMLInputElement, SymbolInputProps>(
-    ({ symbol, onKeyDown, onChange, onClick, onPaste }, ref) => {
+    ({ symbol, onKeyDown, onChange, onClick, onPaste, disabled, autoFocus }, ref) => {
         const { elevation } = useElevation();
 
         const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -78,6 +80,9 @@ const SymbolInput = forwardRef<HTMLInputElement, SymbolInputProps>(
                 onClick={onClick}
                 $elevation={elevation}
                 onPaste={onPaste}
+                disabled={disabled}
+                // eslint-disable-next-line jsx-a11y/no-autofocus
+                autoFocus={autoFocus}
             />
         );
     },
@@ -86,15 +91,17 @@ const SymbolInput = forwardRef<HTMLInputElement, SymbolInputProps>(
 export type PinInputProps = {
     length: number;
     onComplete: (value: string) => void;
-    onChange: (value: string) => void;
+    onChange?: (value: string) => void;
+    disabled?: boolean;
+    autoFocus?: boolean;
 };
 
-export const PinInput = ({ length, onChange, onComplete }: PinInputProps) => {
+export const PinInput = ({ length, onChange, onComplete, disabled, autoFocus }: PinInputProps) => {
     const [symbols, setSymbols] = useState<Symbol[]>(new Array(length).fill(''));
     const refs = useRef<HTMLInputElement[]>([]);
 
     useEffect(() => {
-        onChange(symbols.join(''));
+        onChange?.(symbols.join(''));
 
         if (symbols.filter(symbol => symbol !== EMPTY_SYMBOL).length === length) {
             onComplete(symbols.join(''));
@@ -168,6 +175,8 @@ export const PinInput = ({ length, onChange, onComplete }: PinInputProps) => {
         <Row gap={spacings.xs}>
             {symbols.map((symbol, index) => (
                 <SymbolInput
+                    // eslint-disable-next-line jsx-a11y/no-autofocus
+                    autoFocus={autoFocus === true && index === 0}
                     symbol={symbol}
                     key={index}
                     onKeyDown={e => handleKeyDown(e, index)}
@@ -179,6 +188,7 @@ export const PinInput = ({ length, onChange, onComplete }: PinInputProps) => {
                     onChange={value => handleCodeChange(value, index)}
                     onClick={() => refs.current[index].focus()}
                     onPaste={e => handleOnPaste(e, index)}
+                    disabled={disabled}
                 />
             ))}
         </Row>

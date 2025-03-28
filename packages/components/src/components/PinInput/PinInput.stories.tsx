@@ -10,14 +10,14 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-const Component = ({ length }: { length: number }) => {
+const Component = ({ ...props }: Omit<PinInputProps, 'onChange' | 'onComplete'>) => {
     const [code, setCode] = useState('');
     const [isComplete, setIsComplete] = useState(false);
 
     return (
         <div>
             <PinInputComponent
-                length={length}
+                {...props}
                 onChange={value => {
                     setCode(value);
                     setIsComplete(false);
@@ -33,14 +33,26 @@ const Component = ({ length }: { length: number }) => {
 };
 
 export const PinInput: StoryObj<PinInputProps> = {
-    render: ({ length }) => <Component length={length} />,
+    render: Component,
     args: {
         length: 6,
+        disabled: false,
+        autoFocus: true,
     },
     argTypes: {
         length: {
             control: {
                 type: 'number',
+            },
+        },
+        disabled: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        autoFocus: {
+            control: {
+                type: 'boolean',
             },
         },
     },
