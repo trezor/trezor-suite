@@ -51,6 +51,7 @@
     },
     "devDependencies": {
         "@currents/playwright": "^1.11.3",
+        "@currents/cmd": "1.6.9",
         "@electron/fuses": "^1.8.0",
         "@electron/notarize": "2.5.0",
         "@playwright/browser-chromium": "^1.51.0",
