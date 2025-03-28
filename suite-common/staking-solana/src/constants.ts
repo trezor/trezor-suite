@@ -1,0 +1,13 @@
+import { address } from '@solana/kit';
+
+export const MAINNET_VALIDATOR_ADDRESS = address('9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF');
+export const DEVNET_VALIDATOR_ADDRESS = address('GkqYQysEGmuL6V2AJoNnWZUz2ZBGWhzQXsJiXm2CLKAN');
+
+export const STAKE_HISTORY_ACCOUNT = address('SysvarStakeHistory1111111111111111111111111');
+export const STAKE_CONFIG_ACCOUNT = address('StakeConfig11111111111111111111111111111111');
+export const ADDRESS_DEFAULT = address('11111111111111111111111111111111');
+
+export const MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT = 16;
+export const MAX_DEACTIVATE_ACCOUNTS = 22;
+export const MAX_CLAIM_ACCOUNTS = 16;
+export const MIN_AMOUNT = 10000000; // 0.01 SOL
