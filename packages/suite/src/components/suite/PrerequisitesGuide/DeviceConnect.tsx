@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 
 import { Button } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
 
 import { Translation, TroubleshootingTips, WebUsbButton } from 'src/components/suite';
 import {
@@ -21,10 +22,6 @@ import {
     TroubleshootingTipsItem,
     TroubleshootingTipsWithSections,
 } from '../troubleshooting/TroubleshootingTips';
-
-type CallToActionButtonProps = {
-    setIsBluetoothConnectOpen: (value: true) => void;
-};
 
 type DeviceConnectProps = {
     setIsBluetoothConnectOpen: (value: true) => void;
@@ -49,14 +46,14 @@ export const DeviceConnect = ({ setIsBluetoothConnectOpen }: DeviceConnectProps)
               TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
           ];
 
-    const getCallToActionButton = ({
-        setIsBluetoothConnectOpen,
-    }: CallToActionButtonProps): ReactNode => {
+    const getCallToActionButton = (): ReactNode => {
         if (isWebUsbTransport) {
-            return <WebUsbButton data-testid="@webusb-button" />;
+            return (
+                <WebUsbButton data-testid="@webusb-button" translationId="TR_CHECK_FOR_DEVICES" />
+            );
         }
 
-        if (isBluetoothEnabled) {
+        if (isBluetoothEnabled && isDesktop()) {
             return (
                 <Button
                     onClick={() => setIsBluetoothConnectOpen(true)}
@@ -72,7 +69,7 @@ export const DeviceConnect = ({ setIsBluetoothConnectOpen }: DeviceConnectProps)
         return null;
     };
 
-    if (isBluetoothEnabled) {
+    if (isBluetoothEnabled && isDesktop()) {
         const bluetoothItems: TroubleshootingTipsItem[] = [
             TROUBLESHOOTING_TIP_BLUETOOTH_1,
             TROUBLESHOOTING_TIP_BLUETOOTH_2,
@@ -88,7 +85,7 @@ export const DeviceConnect = ({ setIsBluetoothConnectOpen }: DeviceConnectProps)
                     bluetooth: { items: bluetoothItems, label: <Translation id="TR_BLUETOOTH" /> },
                 }}
                 defaultSection="cable"
-                cta={getCallToActionButton({ setIsBluetoothConnectOpen })}
+                cta={getCallToActionButton()}
                 data-testid="@connect-device-prompt/no-device-detected"
                 toggleText={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
             />
@@ -97,9 +94,9 @@ export const DeviceConnect = ({ setIsBluetoothConnectOpen }: DeviceConnectProps)
 
     return (
         <TroubleshootingTips
-            label={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
+            cta={getCallToActionButton()}
+            ctaLabel={<Translation id="TR_TREZOR_NOT_DETECTED" />}
             items={cableItem}
-            cta={getCallToActionButton({ setIsBluetoothConnectOpen })}
             data-testid="@connect-device-prompt/no-device-detected"
             toggleText={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
         />

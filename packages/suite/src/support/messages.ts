@@ -1961,6 +1961,10 @@ export default defineMessages({
         defaultMessage: 'Check',
         id: 'TR_CHECK_SEED',
     },
+    TR_TREZOR_NOT_DETECTED: {
+        defaultMessage: 'Trezor not detected?',
+        id: 'TR_TREZOR_NOT_DETECTED',
+    },
     TR_CHECK_YOUR_DEVICE: {
         defaultMessage: "Check your Trezor's screen",
         description: 'Placeholder in seed input asking user to pay attention to his device',

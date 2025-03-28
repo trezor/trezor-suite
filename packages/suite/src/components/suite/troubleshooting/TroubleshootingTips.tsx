@@ -30,7 +30,7 @@ export type TroubleshootingTipsItem = {
 type SectionDefinition = { label: ReactNode; items: TroubleshootingTipsItem[] };
 
 type TroubleshootingTipsWithSectionsProps<K extends string, T extends K> = {
-    label: ReactNode;
+    label?: ReactNode;
     cta?: ReactNode;
     ctaLabel?: ReactNode;
     initiallyIsOpen?: boolean;
@@ -56,29 +56,30 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
 
     const hasMultipleSections = Object.keys(items).length > 1;
 
-    const headingRow = (
-        <Row
-            justifyContent="space-between"
-            alignItems="center"
-            margin={{ horizontal: spacings.sm }}
-        >
-            <Text typographyStyle="body">{label}</Text>
+    const labelRow =
+        label !== undefined || hasMultipleSections ? (
+            <Row
+                justifyContent="space-between"
+                alignItems="center"
+                margin={{ horizontal: spacings.sm }}
+            >
+                <Text typographyStyle="body">{label}</Text>
 
-            {hasMultipleSections ? (
-                <Row>
-                    <SelectBar<K>
-                        onChange={setSelectedSection}
-                        options={Object.entries(items).map(([k, v]) => ({
-                            label: (v as SectionDefinition).label,
-                            value: k as K,
-                        }))}
-                        selectedOption={selectedSection}
-                        size="small"
-                    />
-                </Row>
-            ) : undefined}
-        </Row>
-    );
+                {hasMultipleSections ? (
+                    <Row>
+                        <SelectBar<K>
+                            onChange={setSelectedSection}
+                            options={Object.entries(items).map(([k, v]) => ({
+                                label: (v as SectionDefinition).label,
+                                value: k as K,
+                            }))}
+                            selectedOption={selectedSection}
+                            size="small"
+                        />
+                    </Row>
+                ) : undefined}
+            </Row>
+        ) : null;
 
     return (
         <Column gap={spacings.xxxxl} alignItems="center">
@@ -107,8 +108,15 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
                         <ElevationContext baseElevation={-1}>
                             <ElevationDown>
                                 <Card paddingType="tiny" width="656px">
-                                    <Column gap={spacings.sm} padding={{ vertical: spacings.sm }}>
-                                        {headingRow}
+                                    <Column
+                                        gap={spacings.sm}
+                                        padding={
+                                            labelRow !== null
+                                                ? { vertical: spacings.sm }
+                                                : undefined
+                                        }
+                                    >
+                                        {labelRow}
                                         {/* Custom design, where upper card is -1, and this card is 1 */}
                                         <ElevationUp>
                                             <TroubleshootingTipsListCard
@@ -128,7 +136,8 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
 };
 
 type TroubleshootingTipsProps = {
-    label: ReactNode;
+    label?: ReactNode;
+    ctaLabel?: ReactNode;
     cta?: ReactNode;
     initiallyIsOpen?: boolean;
     'data-testid'?: string;
