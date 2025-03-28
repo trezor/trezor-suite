@@ -1,19 +1,22 @@
+import { HStack } from '@suite-native/atoms';
+
 import { BuyTradeableAssetsSheet } from './BuyTradeableAssetsSheet';
+import { CryptoAmountInput } from './CryptoAmountInput';
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
-import { TradingBuyForm } from '../../types';
+import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
 
-type TradeableAssetPickerProps = {
-    form: TradingBuyForm;
-};
-
-export const TradeableAssetPicker = ({ form }: TradeableAssetPickerProps) => {
+export const TradeableAssetPicker = () => {
+    const form = useTradingBuyFormContext();
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useTradeSheetControls(form, 'asset');
 
     return (
         <>
-            <SelectTradeableAssetButton onPress={showSheet} selectedAsset={selectedValue} />
+            <HStack justifyContent="space-between" alignItems="center">
+                <SelectTradeableAssetButton onPress={showSheet} selectedAsset={selectedValue} />
+                <CryptoAmountInput showAssetsSheet={showSheet} />
+            </HStack>
             <BuyTradeableAssetsSheet
                 isVisible={isSheetVisible}
                 onClose={hideSheet}

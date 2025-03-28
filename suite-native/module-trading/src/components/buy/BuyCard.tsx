@@ -1,11 +1,17 @@
-import { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import {
+    FadeIn,
+    FadeOut,
+    LinearTransition,
+    interpolateColor,
+    useAnimatedStyle,
+    useDerivedValue,
+    withTiming,
+} from 'react-native-reanimated';
 
-import { AnimatedBox, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { AnimatedBox, AnimatedCard, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { CryptoAmountInput } from './CryptoAmountInput';
-import { FiatAmountInput } from './FiatAmountInput';
 import { FiatCurrencyPicker } from './FiatCurrencyPicker';
 import { ReceiveAccountCryptoBalance } from './ReceiveAccountCryptoBalance';
 import { ReceiveAccountPicker } from './ReceiveAccountPicker';
@@ -15,6 +21,7 @@ import { getSelectedSymbolFromBuyForm } from '../../utils/tradeableAssetUtils';
 
 type BuyCardProps = {
     form: TradingBuyForm;
+    isAmountInputActive: boolean;
 };
 
 const buySectionStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
@@ -26,32 +33,41 @@ const buySectionStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
     gap: spacings.sp8,
 }));
 
-export const BuyCard = ({ form }: BuyCardProps) => {
+const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
+    const { utils } = useNativeStyles();
+    const progress = useDerivedValue(() => withTiming(isAmountInputActive ? 1 : 0));
+
+    return useAnimatedStyle(() => ({
+        borderColor: interpolateColor(
+            progress.value,
+            [0, 1],
+            [utils.colors.backgroundSurfaceElevation1, utils.colors.borderInputDefault],
+        ) as `rgba(${number}, ${number}, ${number}, ${number})`,
+        borderWidth: utils.borders.widths.large,
+    }));
+};
+
+export const BuyCard = ({ form, isAmountInputActive }: BuyCardProps) => {
     const { applyStyle } = useNativeStyles();
+    const animatedStyle = useAnimatedBorderStyle(isAmountInputActive);
 
     const [selectedReceiveAccount] = form.watch(['receiveAccount']);
     const selectedNetworkSymbol = getSelectedSymbolFromBuyForm(form);
 
     return (
         <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
-            <Card noPadding>
+            <AnimatedCard style={animatedStyle} noPadding>
                 <VStack style={applyStyle(buySectionStyle)}>
                     <Text variant="body" color="textDefault">
                         <Translation id="moduleTrading.selectFiat.title" />
                     </Text>
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <FiatCurrencyPicker form={form} />
-                        <FiatAmountInput />
-                    </HStack>
+                    <FiatCurrencyPicker />
                 </VStack>
                 <VStack style={applyStyle(buySectionStyle)}>
                     <Text variant="body" color="textDefault">
                         <Translation id="moduleTrading.selectCoin.title" />
                     </Text>
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <TradeableAssetPicker form={form} />
-                        <CryptoAmountInput />
-                    </HStack>
+                    <TradeableAssetPicker />
                     <HStack justifyContent="space-between" alignItems="center">
                         <ReceiveAccountCryptoBalance
                             symbol={selectedReceiveAccount?.account?.symbol}
@@ -60,7 +76,7 @@ export const BuyCard = ({ form }: BuyCardProps) => {
                     </HStack>
                 </VStack>
                 <ReceiveAccountPicker selectedSymbol={selectedNetworkSymbol} />
-            </Card>
+            </AnimatedCard>
         </AnimatedBox>
     );
 };

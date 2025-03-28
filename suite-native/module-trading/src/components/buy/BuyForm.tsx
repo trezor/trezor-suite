@@ -1,11 +1,9 @@
-import { FadeInUp, FadeOutUp } from 'react-native-reanimated';
-
-import { AnimatedBox, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { VStack } from '@suite-native/atoms';
 import { useDebouncedValue } from '@trezor/react-utils';
 
 import { AmountEditingDoneButton } from './AmountEditingDoneButton';
 import { BuyCard } from './BuyCard';
+import { BuyHeader } from './BuyHeader';
 import { Confirmation } from './Confirmation';
 import { PaymentCard } from './PaymentCard';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
@@ -18,18 +16,17 @@ export const BuyForm = () => {
 
     return (
         <VStack spacing="sp16">
-            {!isAmountInputActiveDebounced && (
-                <AnimatedBox entering={FadeInUp} exiting={FadeOutUp}>
-                    <Text variant="titleSmall" color="textDefault">
-                        <Translation id="moduleTrading.tradingScreen.buyTitle" />
-                    </Text>
-                </AnimatedBox>
+            {!isAmountInputActiveDebounced && <BuyHeader />}
+            <BuyCard form={buyForm} isAmountInputActive={isAmountInputActiveDebounced} />
+            {isAmountInputActiveDebounced ? (
+                <AmountEditingDoneButton />
+            ) : (
+                <>
+                    <PaymentCard form={buyForm} />
+                    <Confirmation />
+                    <TradingFooter />
+                </>
             )}
-            <BuyCard form={buyForm} />
-            {isAmountInputActiveDebounced && <AmountEditingDoneButton />}
-            {!isAmountInputActiveDebounced && <PaymentCard form={buyForm} />}
-            {!isAmountInputActiveDebounced && <Confirmation />}
-            {!isAmountInputActiveDebounced && <TradingFooter />}
         </VStack>
     );
 };

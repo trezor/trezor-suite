@@ -11,13 +11,17 @@ import { PROTO } from '@trezor/connect';
 import { btcAsset } from '../../../__fixtures__/tradeableAssets';
 import { useTradingBuyForm } from '../../../hooks/useTradingBuyForm';
 import { TradingBuyForm } from '../../../types';
-import { CryptoAmountInput } from '../CryptoAmountInput';
+import { CryptoAmountInput, CryptoAmountInputProps } from '../CryptoAmountInput';
 
 describe('CryptoAmountInput', () => {
-    const renderCryptoAmountInput = (form: TradingBuyForm, preloadedState: PreloadedState = {}) =>
+    const renderCryptoAmountInput = (
+        props: Partial<CryptoAmountInputProps>,
+        form: TradingBuyForm,
+        preloadedState: PreloadedState = {},
+    ) =>
         renderWithStoreProviderAsync(
             <Form form={form}>
-                <CryptoAmountInput />
+                <CryptoAmountInput showAssetsSheet={jest.fn()} {...props} />
             </Form>,
             { preloadedState },
         );
@@ -27,7 +31,7 @@ describe('CryptoAmountInput', () => {
         act(() => {
             result.current.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput(result.current);
+        const { getByLabelText } = await renderCryptoAmountInput({}, result.current);
 
         await userEvent.type(getByLabelText('You get'), '100');
 
@@ -36,9 +40,38 @@ describe('CryptoAmountInput', () => {
 
     it('should be disabled when asset is not selected', async () => {
         const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
-        const { getByLabelText } = await renderCryptoAmountInput(result.current);
+        const { getByLabelText } = await renderCryptoAmountInput({}, result.current);
 
         expect(getByLabelText('You get')).toBeDisabled();
+    });
+
+    it('should call showAssetsSheet when disabled and pressed', async () => {
+        const showAssetsSheet = jest.fn();
+        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
+        const { getByLabelText } = await renderCryptoAmountInput(
+            { showAssetsSheet },
+            result.current,
+        );
+
+        await userEvent.press(getByLabelText('You get'));
+
+        expect(showAssetsSheet).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not call showAssetsSheet when enabled and pressed', async () => {
+        const showAssetsSheet = jest.fn();
+        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
+        act(() => {
+            result.current.setValue('asset', btcAsset);
+        });
+        const { getByLabelText } = await renderCryptoAmountInput(
+            { showAssetsSheet },
+            result.current,
+        );
+
+        await userEvent.press(getByLabelText('You get'));
+
+        expect(showAssetsSheet).not.toHaveBeenCalled();
     });
 
     it('should format input value to be decimal by default', async () => {
@@ -46,7 +79,7 @@ describe('CryptoAmountInput', () => {
         act(() => {
             result.current.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput(result.current);
+        const { getByLabelText } = await renderCryptoAmountInput({}, result.current);
 
         await userEvent.type(getByLabelText('You get'), 'asd1.123');
 
@@ -61,7 +94,11 @@ describe('CryptoAmountInput', () => {
         act(() => {
             result.current.setValue('asset', btcAsset);
         });
-        const { getByLabelText } = await renderCryptoAmountInput(result.current, preloadedState);
+        const { getByLabelText } = await renderCryptoAmountInput(
+            {},
+            result.current,
+            preloadedState,
+        );
 
         await userEvent.type(getByLabelText('You get'), 'asd1.123');
 

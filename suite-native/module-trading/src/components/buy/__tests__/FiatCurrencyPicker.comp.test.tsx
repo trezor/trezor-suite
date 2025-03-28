@@ -1,3 +1,4 @@
+import { Form } from '@suite-native/forms';
 import {
     fireEvent,
     renderHookWithStoreProviderAsync,
@@ -30,9 +31,14 @@ describe('FiatCurrencyPicker', () => {
             preloadedState,
         });
 
-        return renderWithStoreProviderAsync(<FiatCurrencyPicker form={result.current} />, {
-            preloadedState,
-        });
+        return renderWithStoreProviderAsync(
+            <Form form={result.current}>
+                <FiatCurrencyPicker />
+            </Form>,
+            {
+                preloadedState,
+            },
+        );
     };
 
     it('should display selected currency', async () => {

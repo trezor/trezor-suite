@@ -13,12 +13,12 @@ export type TradingAmountInputProps = {
 const inputStyle = prepareNativeStyle(({ colors, typography }) => ({
     ...typography.body,
     color: colors.textDefault,
-    flex: 0,
     padding: 0,
     margin: 0,
     textAlign: 'right',
     fontSize: 34,
     lineHeight: 42,
+    minWidth: 60,
     borderWidth: 0,
     backgroundColor: colors.backgroundSurfaceElevation1,
     overflow: 'hidden',
