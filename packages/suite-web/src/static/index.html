@@ -3,8 +3,42 @@
     <head>
         <title>Trezor Suite</title>
         <meta name="google" content="notranslate" />
+
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta charset="utf-8" />
+        <!-- todo: some of the connect-src values are dev-only -->
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="
+              style-src 'unsafe-inline';
+              connect-src
+                'self'
+                http://127.0.0.1:21325/
+                *.trezor.io/
+                http://localhost:8000
+                ws://localhost:8000
+                sldev.cz
+                invity.io
+                api.github.com
+                api.dropboxapi.com
+                content.dropboxapi.com
+                notify.dropboxapi.com
+                o117836.ingest.sentry.io
+                oauth2.googleapis.com
+                googleapis.com
+                onionDomain
+                trezor-cardano-mainnet.blockfrost.io
+                trezor-cardano-preview.blockfrost.io
+                blockfrost.dev
+                eth-api-b2c-stage.everstake.one
+                eth-api-b2c.everstake.one
+                dashboard-api.everstake.one
+                stake-sync-api.everstake.one
+                pulse.walletconnect.org
+                *.walletconnect.org
+            "
+        />
+
         <link media="all" rel="stylesheet" href="<%= assetPrefix %>/static/fonts/fonts.css" />
         <link rel="icon" href="<%= assetPrefix %>/static/images/favicons/favicon.png" />
         <link rel="apple-touch-icon" href="<%= assetPrefix %>/static/images/favicons/favicon.png" />

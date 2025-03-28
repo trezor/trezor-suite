@@ -62,6 +62,7 @@ const config: webpack.Configuration = {
                     templateParameters: {
                         assetPrefix,
                         isOnionLocation: FLAGS.ONION_LOCATION_META,
+                        isDev,
                     },
                     inject: 'body' as const,
                     scriptLoading: 'blocking' as const,
