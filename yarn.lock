@@ -9392,13 +9392,13 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/fs-extra": "npm:^11.0.4"
-    "@types/semver": "npm:^7.5.6"
+    "@types/semver": "npm:^7.7.0"
     fs-extra: "npm:^11.2.0"
     json-schema-to-typescript: "npm:^15.0.4"
     jws: "npm:^4.0.0"
     react: "npm:18.2.0"
     react-redux: "npm:9.2.0"
-    semver: "npm:^7.6.3"
+    semver: "npm:^7.7.1"
     tsx: "npm:^4.19.3"
   languageName: unknown
   linkType: soft
@@ -10127,7 +10127,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/semver": "npm:^7.5.6"
+    "@types/semver": "npm:^7.7.0"
     jotai: "npm:1.9.1"
     lottie-react-native: "npm:^7.1.0"
     react: "npm:18.2.0"
@@ -10135,7 +10135,7 @@ __metadata:
     react-native-reanimated: "npm:^3.16.7"
     react-native-svg: "npm:^15.9.0"
     react-redux: "npm:9.2.0"
-    semver: "npm:^7.6.3"
+    semver: "npm:^7.7.1"
   languageName: unknown
   linkType: soft
 
@@ -12179,7 +12179,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@trezor/eslint": "workspace:*"
     "@types/prettier": "npm:^3.0.0"
-    "@types/semver": "npm:^7.5.8"
+    "@types/semver": "npm:^7.7.0"
     "@types/tar": "npm:^6.1.11"
     chalk: "npm:^4.1.2"
     dotenv: "npm:^16.4.1"
@@ -12187,7 +12187,7 @@ __metadata:
     minimatch: "npm:^9.0.3"
     octokit: "npm:3.1.2"
     prettier: "npm:^3.3.2"
-    semver: "npm:^7.6.3"
+    semver: "npm:^7.7.1"
     sort-package-json: "npm:^1.57.0"
     tar: "npm:^7.0.1"
     tsx: "npm:^4.19.3"
@@ -12558,7 +12558,7 @@ __metadata:
     "@types/react-window": "npm:^1.8.8"
     "@types/redux-logger": "npm:^3.0.13"
     "@types/redux-mock-store": "npm:^1.5.0"
-    "@types/semver": "npm:^7.5.8"
+    "@types/semver": "npm:^7.7.0"
     "@types/ua-parser-js": "npm:^0.7.39"
     "@types/zxcvbn": "npm:4.4.5"
     bs58check: "npm:^4.0.0"
@@ -12597,7 +12597,7 @@ __metadata:
     redux-logger: "npm:^3.0.6"
     redux-mock-store: "npm:^1.5.4"
     redux-thunk: "npm:^3.1.0"
-    semver: "npm:^7.6.3"
+    semver: "npm:^7.7.1"
     styled-components: "npm:^6.1.8"
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^36.0.0"
@@ -14044,7 +14044,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.3.4, @types/semver@npm:^7.5.6, @types/semver@npm:^7.5.8":
+"@types/semver@npm:^7.3.4, @types/semver@npm:^7.7.0":
   version: 7.7.0
   resolution: "@types/semver@npm:7.7.0"
   checksum: 10/ee4514c6c852b1c38f951239db02f9edeea39f5310fad9396a00b51efa2a2d96b3dfca1ae84c88181ea5b7157c57d32d7ef94edacee36fbf975546396b85ba5b
