@@ -51,7 +51,6 @@ html-webpack-plugin
 immer
 jest
 jest-canvas-mock
-jest-environment-jsdom
 jest-watch-typeahead
 jsdom
 minimatch
@@ -85,12 +84,10 @@ sort-package-json
 tar
 ts-mixer
 ts-node
-tsconfig-paths
 tslib
 tsx
 typeforce
 typescript
-version-bump-prompt
 webpack
 webpack-bundle-analyzer
 webpack-cli

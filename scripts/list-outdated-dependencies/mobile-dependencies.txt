@@ -70,7 +70,6 @@ ts-jest
 react-native-reanimated
 yup
 metro
-metro-react-native-babel-preset
 jest-expo
 intl-pluralrules
 @gorhom/bottom-sheet
