@@ -46,21 +46,44 @@ env:
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 
 jobs:
-  # build-web:
-  #   if: github.repository == 'trezor/trezor-suite'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  check-previous-runs:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      skip_tests: ${{ steps.check-previous-runs.outputs.skip_tests }}
+      previous_run_id: ${{ steps.check-previous-runs.outputs.previous_run_id }}
+      previous_run_attempt: ${{ steps.check-previous-runs.outputs.previous_run_attempt }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check previous runs
+        id: check-previous-runs
+        uses: "./.github/actions/check-previous-test-runs"
+        with:
+          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          pr_branch: ${{ github.head_ref }}
+          pr_created: ${{ github.event.pull_request.created_at }}
+          repo: ${{ github.repository }}
+          workflow_name: ${{ github.workflow }}
+          run_attempt: ${{ github.run_attempt }}
 
-  #     - name: Build and Upload Suite Web
-  #       uses: ./.github/actions/build-web
+  build-web:
+    needs:
+      - check-previous-runs
+    if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Build and Upload Suite Web
+        uses: ./.github/actions/build-web
 
   post-currents-link:
     if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' && github.event.action == 'opened'
     runs-on: ubuntu-latest
-    # needs:
-    #   - build-web
+    needs:
+      - build-web
     steps:
       - name: Post Currents link
         uses: actions/github-script@v7
@@ -82,8 +105,9 @@ jobs:
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
-    # needs:
-    #   - build-web
+    needs:
+      - build-web
+      - check-previous-runs
     strategy:
       fail-fast: false
       matrix: 
@@ -97,27 +121,17 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 2
 
-      - name: Check previous runs
-        id: check-previous-runs
-        if: github.event_name == 'pull_request' && github.run_attempt == 1
-        uses: "./.github/actions/check-previous-test-runs"
-        with:
-          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
-          pr_branch: ${{ github.head_ref }}
-          pr_created: ${{ github.event.pull_request.created_at }}
-          repo: ${{ github.repository }}
-          workflow_name: ${{ github.workflow }}
-          job_name: "${{ github.job }} (${{ join(matrix.*, ', ') }})"
-
       - name: Run Playwright E2E Tests
-        # if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: ./.github/actions/run-e2e-tests
         with:
           project: "web"
           containers: "trezor-user-env-unix bitcoin-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep: ${{ matrix.SMOKE && '(?=.*@group=smoke)' || '(?=.*@webOnly)' }}
+          additional-grep: "(?=.*@webOnly)"
           fail-fast: 3
+          previous-run-id: ${{ needs.check-previous-runs.outputs.previous_run_id }}
+          previous-run-attempt: ${{ needs.check-previous-runs.outputs.previous_run_attempt }}
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+          currents-api-key: ${{ secrets.CURRENTS_API_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

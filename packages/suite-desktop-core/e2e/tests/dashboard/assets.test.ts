@@ -18,6 +18,8 @@ test.describe('Assets', { tag: ['@group=suite'] }, () => {
         assetsSection,
         tradingPage,
     }) => {
+        expect(false).toBeTruthy();
+
         await assetsSection.gridIcon.click();
         await assetsSection.buyAssetButton('btc').click();
         await expect(tradingPage.section).toBeVisible();

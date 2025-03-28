@@ -24,12 +24,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-app:
+  check-previous-runs:
     if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      skip_tests: ${{ steps.check-previous-runs.outputs.skip_tests }}
+      previous_run_id: ${{ steps.check-previous-runs.outputs.previous_run_id }}
+      previous_run_attempt: ${{ steps.check-previous-runs.outputs.previous_run_attempt }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check previous runs
+        id: check-previous-runs
+        uses: "./.github/actions/check-previous-test-runs"
+        with:
+          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          pr_branch: ${{ github.head_ref }}
+          pr_created: ${{ github.event.pull_request.created_at }}
+          repo: ${{ github.repository }}
+          workflow_name: ${{ github.workflow }}
+          run_attempt: ${{ github.run_attempt }}
+
+  build-app:
+    needs:
+      - check-previous-runs
+    if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests != 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Build and Upload Suite Desktop
         uses: ./.github/actions/build-desktop
 
@@ -61,6 +85,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs:
       - build-app
+      - check-previous-runs
     strategy:
       fail-fast: false
       matrix: 
@@ -72,37 +97,21 @@ jobs:
           submodules: true
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Check previous runs
-        id: check-previous-runs
-        if: github.event_name == 'pull_request' && github.run_attempt == 1
-        uses: "./.github/actions/check-previous-test-runs"
-        with:
-          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
-          pr_branch: ${{ github.head_ref }}
-          pr_created: ${{ github.event.pull_request.created_at }}
-          repo: ${{ github.repository }}
-          workflow_name: ${{ github.workflow }}
-          job_name: "${{ github.job }} (${{ join(matrix.*, ', ') }})"
-
       - name: Setup node
-        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Download build artifact
-        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: actions/download-artifact@v4
         with:
           name: desktop-app-build-e2e
 
       - name: Extract build artifact
-        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
 
       - name: Run Playwright E2E Tests
-        if: steps.check-previous-runs.outputs.skip_tests != 'true'
         uses: ./.github/actions/run-e2e-tests
         with:
           project: "desktop"
@@ -110,6 +119,9 @@ jobs:
           workspace-dependencies: "@trezor/suite-desktop"
           test-group: ${{ matrix.TEST_GROUP }}
           fail-fast: 3
+          previous-run-id: ${{ needs.check-previous-runs.outputs.previous_run_id }}
+          previous-run-attempt: ${{ needs.check-previous-runs.outputs.previous_run_attempt }}
           currents-project-id: "4ytF0E"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+          currents-api-key: ${{ secrets.CURRENTS_API_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
