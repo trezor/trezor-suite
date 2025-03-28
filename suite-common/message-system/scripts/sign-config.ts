@@ -27,10 +27,7 @@ const getPrivateKey = () => {
 
     console.log('Signing config using production private key!');
 
-    const keyEnv = process.env.JWS_PRIVATE_KEY_ENV; // available on GitHub
-    const keyFile = process.env.JWS_PRIVATE_KEY_FILE; // available on GitLab
-
-    const privateKey = keyEnv || (keyFile && fs.readFileSync(keyFile, 'utf-8'));
+    const privateKey = process.env.JWS_PRIVATE_KEY_ENV; // available on GitHub
 
     if (!privateKey) {
         throw Error('Missing private key!');
