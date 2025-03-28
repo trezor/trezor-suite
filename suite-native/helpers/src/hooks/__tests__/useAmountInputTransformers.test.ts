@@ -57,7 +57,6 @@ describe('useAmountInputTransformers', () => {
 
         it('should return integerTransformer for crypto amount when isAmountInSats is true', () => {
             mockState = {
-                settings: { isAmountInSats: true },
                 appSettings: { bitcoinUnits: PROTO.AmountUnit.SATOSHI },
             };
 
@@ -68,7 +67,6 @@ describe('useAmountInputTransformers', () => {
 
         it('should return decimalTransformer for fiat amount when isAmountInSats is true and network is eth', () => {
             mockState = {
-                settings: { isAmountInSats: true },
                 appSettings: { bitcoinUnits: PROTO.AmountUnit.BITCOIN },
             };
 
@@ -80,7 +78,6 @@ describe('useAmountInputTransformers', () => {
 
     it('should always return decimalTransformer as fiatAmountTransformer', () => {
         mockState = {
-            settings: { isAmountInSats: true },
             appSettings: { bitcoinUnits: PROTO.AmountUnit.SATOSHI },
         };
 
