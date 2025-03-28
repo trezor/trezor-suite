@@ -20,7 +20,7 @@ export const FiatCurrencyListItem = ({
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label}>
         <HStack alignItems="center" spacing="sp12" paddingVertical="sp12" justifyContent="center">
             <Box justifyContent="center">
-                <FiatCurrencyIcon />
+                <FiatCurrencyIcon size="medium" />
             </Box>
             <VStack flex={1} spacing={0}>
                 <Text variant="body" color="textDefault">

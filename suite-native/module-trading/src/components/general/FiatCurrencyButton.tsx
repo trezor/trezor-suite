@@ -60,7 +60,7 @@ export const FiatCurrencyButton = ({ currency, onPress }: FiatCurrencyButtonProp
                 accessibilityRole="button"
                 accessibilityLabel={translate('moduleTrading.selectFiat.buttonTitle')}
             >
-                <FiatCurrencyIcon />
+                <FiatCurrencyIcon size="small" />
                 <Text variant="callout" color="textSubdued">
                     {displayCurrency}
                 </Text>
