@@ -9,4 +9,4 @@ export const SOL_STAKING_OPERATION_FEE = new BigNumber(70_000); // 0.00007 SOL
 export const SOL_COMPUTE_UNIT_PRICE = 100000;
 export const SOL_COMPUTE_UNIT_LIMIT = 200000;
 
-export const SOLANA_EPOCH_DAYS = 3;
+export const SOLANA_EPOCH_DAYS = 2;
