@@ -1,5 +1,5 @@
 import { ReactElement, ReactNode, useMemo } from 'react';
-import { FadeInUp, FadeOutUp } from 'react-native-reanimated';
+import { FadeInLeft, FadeInUp, FadeOutRight, FadeOutUp } from 'react-native-reanimated';
 
 import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { AnimatedBox, Text } from '@suite-native/atoms';
@@ -119,8 +119,8 @@ const renderInternalItem = <T, U>(
         case 'item':
             return (
                 <AnimatedBox
-                    entering={FadeInUp}
-                    exiting={FadeOutUp}
+                    entering={FadeInLeft}
+                    exiting={FadeOutRight}
                     style={applyStyle(itemStyle, item[2])}
                 >
                     {renderItem(item[1], item[2])}
