@@ -30,7 +30,7 @@ export const SelectTradeableAssetButton = ({ onPress, selectedAsset }: SelectAss
             onPress={onPress}
             viewRight={<Icon name="caretDown" color={iconColor} size="medium" />}
             accessibilityLabel={translate('moduleTrading.selectCoin.buttonTitle')}
-            size="medium"
+            size="small"
         >
             <Translation id="moduleTrading.selectCoin.buttonTitle" />
         </Button>
