@@ -25,7 +25,6 @@
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0",

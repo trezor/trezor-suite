@@ -1,7 +1,6 @@
 @ethereumjs/common
 @ethereumjs/tx
 @everstake/wallet-sdk
-@everstake/wallet-sdk-solana
 @fivebinaries/coin-selection
 @solana/buffer-layout
 @solana/kit
@@ -13,6 +12,7 @@
 @solana/keys
 @solana/rpc-api
 @solana/rpc-types
+@solana-program/stake
 web3-utils
 jws
 @metamask/eth-sig-util
