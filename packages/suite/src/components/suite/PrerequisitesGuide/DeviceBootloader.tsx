@@ -41,7 +41,7 @@ export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
         <TroubleshootingTips
             label={<Translation id="TR_DEVICE_IN_BOOTLOADER" />}
             items={tips}
-            opened
+            initiallyIsOpen
         />
     );
 };

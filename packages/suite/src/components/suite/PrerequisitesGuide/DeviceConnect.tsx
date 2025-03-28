@@ -81,7 +81,8 @@ export const DeviceConnect = ({ setIsBluetoothConnectOpen }: DeviceConnectProps)
 
         return (
             <TroubleshootingTipsWithSections
-                label={<Translation id="TR_TREZOR_SAFE_7" />}
+                label={<Translation id="TR_CONNECTION_TYPE" />}
+                ctaLabel={<Translation id="TR_TREZOR_SAFE_7" />}
                 items={{
                     cable: { items: cableItem, label: <Translation id="TR_CABLE" /> },
                     bluetooth: { items: bluetoothItems, label: <Translation id="TR_BLUETOOTH" /> },
@@ -89,7 +90,6 @@ export const DeviceConnect = ({ setIsBluetoothConnectOpen }: DeviceConnectProps)
                 defaultSection="cable"
                 cta={getCallToActionButton({ setIsBluetoothConnectOpen })}
                 data-testid="@connect-device-prompt/no-device-detected"
-                sectionLabel={<Translation id="TR_CONNECTION_TYPE" />}
                 toggleText={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
             />
         );

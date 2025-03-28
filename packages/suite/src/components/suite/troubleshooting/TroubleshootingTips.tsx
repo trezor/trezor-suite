@@ -32,11 +32,11 @@ type SectionDefinition = { label: ReactNode; items: TroubleshootingTipsItem[] };
 type TroubleshootingTipsWithSectionsProps<K extends string, T extends K> = {
     label: ReactNode;
     cta?: ReactNode;
-    opened?: boolean;
+    ctaLabel?: ReactNode;
+    initiallyIsOpen?: boolean;
     'data-testid'?: string;
     items: Record<K, SectionDefinition>;
-    sectionLabel?: ReactNode;
-    defaultSection: T;
+    defaultSection?: T;
     toggleText?: ReactNode;
 };
 
@@ -44,14 +44,15 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
     label,
     items,
     cta,
-    opened,
-    sectionLabel,
+    ctaLabel,
+    initiallyIsOpen,
     defaultSection,
     toggleText,
     'data-testid': dataTest,
 }: TroubleshootingTipsWithSectionsProps<K, T>) => {
-    const [isOpened, setIsOpened] = useState(opened === true);
-    const [selectedSection, setSelectedSection] = useState<K>(defaultSection);
+    const [isOpened, setIsOpened] = useState(initiallyIsOpen === true);
+    const firstSectionKey = Object.keys(items)[0] as K;
+    const [selectedSection, setSelectedSection] = useState<K>(defaultSection ?? firstSectionKey);
 
     const hasMultipleSections = Object.keys(items).length > 1;
 
@@ -61,7 +62,7 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
             alignItems="center"
             margin={{ horizontal: spacings.sm }}
         >
-            <Text typographyStyle="body">{hasMultipleSections ? sectionLabel : label}</Text>
+            <Text typographyStyle="body">{label}</Text>
 
             {hasMultipleSections ? (
                 <Row>
@@ -84,7 +85,7 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
             {cta && (
                 <Card width="auto">
                     <Row gap={spacings.md}>
-                        {label}
+                        {ctaLabel ?? label}
                         {cta}
                     </Row>
                 </Card>
@@ -97,7 +98,7 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
                 <Column gap={spacings.md}>
                     <Collapsible.Toggle onClick={() => setIsOpened(!isOpened)}>
                         <Row justifyContent="center" flex="1" margin={{ bottom: spacings.xs }}>
-                            <TroubleshootingTipsToggle isOpen={isOpened === true}>
+                            <TroubleshootingTipsToggle isOpen={isOpened}>
                                 {toggleText}
                             </TroubleshootingTipsToggle>
                         </Row>
@@ -129,7 +130,7 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
 type TroubleshootingTipsProps = {
     label: ReactNode;
     cta?: ReactNode;
-    opened?: boolean;
+    initiallyIsOpen?: boolean;
     'data-testid'?: string;
     items: TroubleshootingTipsItem[];
     toggleText?: ReactNode;
@@ -138,7 +139,7 @@ type TroubleshootingTipsProps = {
 export const TroubleshootingTips = ({ items, ...props }: TroubleshootingTipsProps) => (
     <TroubleshootingTipsWithSections
         {...props}
-        items={{ '': { items, label: '' } }}
-        defaultSection=""
+        // key is arbitrary, label won't be displayed with only one section
+        items={{ default: { items, label: '' } }}
     />
 );
