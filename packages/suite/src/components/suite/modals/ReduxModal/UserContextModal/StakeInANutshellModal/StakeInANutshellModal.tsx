@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import {
     Badge,
@@ -32,21 +32,24 @@ interface StakingDetails {
     translationId: TranslationKey;
 }
 
-const STAKING_DETAILS: StakingDetails[] = [
+const getStakingDetails = (networkType: NetworkType): StakingDetails[] => [
     {
         id: 0,
         icon: 'lockSimple',
-        translationId: 'TR_STAKE_STAKED_ETH_AMOUNT_LOCKED',
+        translationId: 'TR_STAKE_STAKED_AMOUNT_LOCKED',
     },
     {
         id: 1,
         icon: 'handCoins',
-        translationId: 'TR_STAKE_ETH_REWARDS_EARN',
+        translationId: 'TR_STAKE_REWARDS_EARN',
     },
     {
         id: 2,
         icon: 'arrowBendDoubleUpLeft',
-        translationId: 'TR_STAKE_UNSTAKING_TAKES',
+        translationId:
+            networkType === 'ethereum'
+                ? 'TR_STAKE_ETH_UNSTAKING_TAKES'
+                : 'TR_STAKE_SOL_UNSTAKING_TAKES',
     },
 ];
 
@@ -105,7 +108,7 @@ export const StakeInANutshellModal = ({ onCancel }: StakeInANutshellModalProps) 
                 typographyStyle="hint"
                 margin={{ top: spacings.xs }}
             >
-                {STAKING_DETAILS.map(({ id, icon, translationId }) => (
+                {getStakingDetails(account.networkType).map(({ id, icon, translationId }) => (
                     <List.Item key={id} bulletComponent={<Icon name={icon} variant="primary" />}>
                         <Paragraph variant="tertiary">
                             <Translation

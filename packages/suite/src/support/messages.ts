@@ -8987,18 +8987,24 @@ export default defineMessages({
         id: 'TR_STAKE_IN_ACCOUNT',
         defaultMessage: '{networkDisplaySymbol} in account',
     },
-    TR_STAKE_STAKED_ETH_AMOUNT_LOCKED: {
-        id: 'TR_STAKE_STAKED_ETH_AMOUNT_LOCKED',
+    TR_STAKE_STAKED_AMOUNT_LOCKED: {
+        id: 'TR_STAKE_STAKED_AMOUNT_LOCKED',
         defaultMessage:
             'The staked amount of {networkDisplaySymbol} is locked and can’t be traded or sent.',
     },
-    TR_STAKE_UNSTAKING_TAKES: {
-        id: 'TR_STAKE_UNSTAKING_TAKES',
+    TR_STAKE_ETH_UNSTAKING_TAKES: {
+        id: 'TR_STAKE_ETH_UNSTAKING_TAKES',
         defaultMessage:
             'Unstaking currently takes up to {count, plural, one {# day} other {# days}}. Once completed, you can swap or send your funds.',
     },
-    TR_STAKE_ETH_REWARDS_EARN: {
-        id: 'TR_STAKE_ETH_REWARDS_EARN',
+    TR_STAKE_SOL_UNSTAKING_TAKES: {
+        id: 'TR_STAKE_SOL_UNSTAKING_TAKES',
+        defaultMessage:
+            'Unstaking takes up to {count, plural, one {# day} other {# days}}. Once completed, you can swap or send your funds.',
+        description: 'In comparison with ETH, it always takes 1 epoch',
+    },
+    TR_STAKE_REWARDS_EARN: {
+        id: 'TR_STAKE_REWARDS_EARN',
         defaultMessage:
             'Keep your rewards staked and watch your {networkDisplaySymbol} grow even faster.',
     },
