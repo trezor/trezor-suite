@@ -4,8 +4,8 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    ERC20_BACKUP_GAS_LIMIT,
-    ETH_BACKUP_GAS_LIMIT,
+    ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+    ETH_TRANSFER_BACKUP_GAS_LIMIT,
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
 import {
@@ -190,7 +190,9 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
             customFeeLimit = new BigNumber(estimatedFee.payload.levels[0].feeLimit || '');
         } else {
             customFeeLimit = new BigNumber(
-                tokenInfo ? ERC20_BACKUP_GAS_LIMIT : ETH_BACKUP_GAS_LIMIT,
+                tokenInfo || ethereumDataHex
+                    ? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
+                    : ETH_TRANSFER_BACKUP_GAS_LIMIT,
             );
             dispatch(
                 notificationsActions.addToast({
