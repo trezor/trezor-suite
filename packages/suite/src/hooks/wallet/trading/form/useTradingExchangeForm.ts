@@ -500,7 +500,7 @@ export const useTradingExchangeForm = ({
                 destinationTag: selectedQuote.partnerPaymentExtraId,
                 ethereumDataHex: selectedQuote.dexTx.data,
                 recalcCustomLimit: true,
-                ethereumAdjustGasLimit: selectedQuote.status === 'CONFIRM' ? '1.25' : undefined,
+                ethereumAdjustGasLimit: '1.25',
                 setMaxOutputId: values.setMaxOutputId,
             });
 
