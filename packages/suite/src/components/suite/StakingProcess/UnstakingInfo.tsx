@@ -44,7 +44,12 @@ const getInfoRowsData = (
                     <Translation id="TR_UP_TO_DAYS" values={{ count: SOLANA_EPOCH_DAYS }} />
                 ),
                 deactivatePeriodHeading: <Translation id="TR_STAKE_COOL_DOWN_PERIOD" />,
-                deactivatePeriodSubheading: <Translation id="TR_STAKE_WAIT_FOR_DEACTIVATION" />,
+                deactivatePeriodSubheading: (
+                    <Translation
+                        id="TR_STAKE_WAIT_FOR_DEACTIVATION"
+                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(accountSymbol) }}
+                    />
+                ),
             };
         default:
             return null;

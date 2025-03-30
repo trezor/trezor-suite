@@ -56,7 +56,12 @@ const getInfoRowsData = (
                     <Translation id="TR_UP_TO_DAYS" values={{ count: SOLANA_EPOCH_DAYS }} />
                 ),
                 rewardsPeriodHeading: <Translation id="TR_STAKE_WARM_UP_PERIOD" />,
-                rewardsPeriodSubheading: <Translation id="TR_STAKE_WAIT_FOR_ACTIVATION" />,
+                rewardsPeriodSubheading: (
+                    <Translation
+                        id="TR_STAKE_WAIT_FOR_ACTIVATION"
+                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(accountSymbol) }}
+                    />
+                ),
                 rewardsEarningHeading: (
                     <Translation
                         id="TR_STAKE_EARN_REWARDS_EVERY"

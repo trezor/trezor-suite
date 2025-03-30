@@ -8949,7 +8949,7 @@ export default defineMessages({
     },
     TR_STAKE_WAIT_FOR_ACTIVATION: {
         id: 'TR_STAKE_WAIT_FOR_ACTIVATION',
-        defaultMessage: 'Time it takes to stake your SOL',
+        defaultMessage: 'Time it takes to stake your {networkDisplaySymbol}',
     },
     TR_STAKE_WARM_UP_PERIOD: {
         id: 'TR_STAKE_WARM_UP_PERIOD',
@@ -8965,7 +8965,7 @@ export default defineMessages({
     },
     TR_STAKE_WAIT_FOR_DEACTIVATION: {
         id: 'TR_STAKE_WAIT_FOR_DEACTIVATION',
-        defaultMessage: 'Time it takes to unstake your SOL',
+        defaultMessage: 'Time it takes to unstake your {networkDisplaySymbol}',
     },
     TR_STAKE_EARN_REWARDS_WEEKLY: {
         id: 'TR_STAKE_EARN_REWARDS_WEEKLY',
@@ -9058,7 +9058,7 @@ export default defineMessages({
     TR_STAKE_ACTIVATION_COULD_TAKE: {
         id: 'TR_STAKE_ACTIVATION_COULD_TAKE',
         defaultMessage:
-            'It takes up to {count, plural, one {# day} other {# days}} to stake your SOL.',
+            'It takes up to {count, plural, one {# day} other {# days}} to stake your {networkDisplaySymbol}.',
     },
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',

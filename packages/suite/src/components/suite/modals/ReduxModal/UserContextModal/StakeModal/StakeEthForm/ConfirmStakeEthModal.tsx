@@ -103,6 +103,7 @@ export const ConfirmStakeEthModal = ({
                     <Translation
                         id={getStakeEnteringMessage(account?.networkType)}
                         values={{
+                            networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
                             count:
                                 account?.networkType === 'ethereum'
                                     ? daysToAddToPool
