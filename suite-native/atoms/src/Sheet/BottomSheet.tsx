@@ -19,13 +19,14 @@ export type BottomSheetProps = {
     title?: ReactNode;
     subtitle?: ReactNode;
     isScrollable?: boolean;
+    footer?: ReactNode;
 } & BoxProps;
 
 type WrapperStyleProps = {
     insetBottom: number;
 };
 
-const DEFAULT_INSET_BOTTOM = Platform.OS === 'android' ? 48 : 0;
+export const DEFAULT_INSET_BOTTOM = Platform.OS === 'android' ? 48 : 0;
 
 const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
@@ -48,6 +49,7 @@ export const BottomSheet = ({
     subtitle,
     children,
     isScrollable = true,
+    footer = undefined,
     ...boxProps
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
@@ -133,6 +135,7 @@ export const BottomSheet = ({
                                     {children}
                                 </Box>
                             )}
+                            {footer}
                         </Animated.View>
                     </PanGestureHandler>
                 </Pressable>

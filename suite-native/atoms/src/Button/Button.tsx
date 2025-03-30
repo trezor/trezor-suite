@@ -193,7 +193,7 @@ export const buttonSchemeToColorsMap = {
     },
 } as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
 
-const sizeToDimensionsMap = {
+export const sizeToDimensionsMap = {
     extraSmall: {
         minHeight: 36,
         paddingVertical: nativeSpacings.sp8,
