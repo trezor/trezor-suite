@@ -9057,7 +9057,8 @@ export default defineMessages({
     },
     TR_STAKE_ACTIVATION_COULD_TAKE: {
         id: 'TR_STAKE_ACTIVATION_COULD_TAKE',
-        defaultMessage: 'It takes up to 3 days to stake your SOL.',
+        defaultMessage:
+            'It takes up to {count, plural, one {# day} other {# days}} to stake your SOL.',
     },
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
@@ -9139,7 +9140,7 @@ export default defineMessages({
     },
     TR_STAKE_EXPECTED_REWARDS: {
         id: 'TR_STAKE_EXPECTED_REWARDS',
-        defaultMessage: 'Next estimated reward in ~3 days',
+        defaultMessage: 'Next estimated reward in ~{count, plural, one {# day} other {# days}}',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',
