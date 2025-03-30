@@ -1287,12 +1287,12 @@ export const setMax = [
                 normal: {
                     type: 'final',
                     fee: '10000',
-                    totalSpent: '10000000000',
+                    totalSpent: '9999999990',
                 },
                 custom: undefined,
             },
             formValues: {
-                outputs: [{ amount: '9.99999' }],
+                outputs: [{ amount: '9.99998999' }],
             },
         },
     },

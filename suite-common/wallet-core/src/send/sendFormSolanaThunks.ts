@@ -45,7 +45,8 @@ const calculate = (
         ? amountToSmallestUnit(token.balance!, token.decimals)
         : undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = availableTokenBalance || calculateMax(availableBalance, feeInLamports);
+        const feePlusRentInLamports = BigNumber(feeInLamports).plus(rent).toString();
+        max = availableTokenBalance || calculateMax(availableBalance, feePlusRentInLamports);
         amount = max;
     } else {
         amount = output.amount;
