@@ -805,6 +805,54 @@ export const en = {
         },
     },
     moduleDeviceOnboarding: {
+        walletBackupSheet: {
+            title: 'Wallet backup type',
+            timeLabel: 'Time',
+            formatLabel: 'Format',
+            storageLabel: 'Storage',
+            legacyOptionsLabel: 'Legacy options',
+            options: {
+                'shamir-single': {
+                    title: 'Single-share Backup',
+                    description: 'Recommended for your Trezor',
+                    time: '~10 minutes <bold>total</bold>',
+                    format: '1 share (20 words)',
+                    storage:
+                        'Store your wallet backup in a secure, private place. Never share it with anyone or store it anywhere digital.',
+                    callout: 'Upgradable to Multi-share Backup',
+                    submitButton: 'Continue with single-share',
+                },
+                'shamir-advanced': {
+                    title: 'Multi-share Backup',
+                    description: 'Designed for experienced users',
+                    time: '~10 minutes <bold>per share</bold>',
+                    format: '2-16 shares (20 words per share) Select the minimum number of shares required to recover your assets.',
+                    storage:
+                        'Store your shares separately in secure, private locations, or distribute them to trusted individuals. Never keep all shares together or store them digitally.',
+                    callout: 'Requires increased attention',
+                    submitButton: 'Continue with multi-share',
+                    alertButtonLabel: 'Learn more',
+                },
+                '12-words': {
+                    title: '12-word backup',
+                    description: 'Legacy backup type',
+                    format: 'Generates a <bold>single set of 12 words</bold> to recover access to your funds. ',
+                    storage:
+                        'Store your wallet backup in a secure, private place. Never share it with anyone or store it anywhere digital.',
+                    callout: 'Not easily upgradeable to\nMulti-share Backup',
+                    submitButton: 'Continue with 12 word backup',
+                },
+                '24-words': {
+                    title: '24-word backup',
+                    description: 'Legacy backup type',
+                    format: 'Generates a <bold>single set of 24 words</bold> to recover access to your funds. ',
+                    storage:
+                        'Store your wallet backup in a secure, private place. Never share it with anyone or store it anywhere digital.',
+                    callout: 'Not easily upgradeable to\nMulti-share Backup',
+                    submitButton: 'Continue with 24 word backup',
+                },
+            },
+        },
         uninitializedDeviceLandingScreen: {
             noFirmware: {
                 title: 'Now it’s just you\nand your crypto',

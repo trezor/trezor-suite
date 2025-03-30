@@ -26,6 +26,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "expo-haptics": "^14.0.0",
         "expo-linear-gradient": "^14.0.1",
         "jotai": "1.9.1",
         "lottie-react-native": "^7.1.0",

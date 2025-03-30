@@ -10137,6 +10137,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
+    expo-haptics: "npm:^14.0.0"
     expo-linear-gradient: "npm:^14.0.1"
     jotai: "npm:1.9.1"
     lottie-react-native: "npm:^7.1.0"

@@ -19,6 +19,7 @@ export type BottomSheetProps = {
     title?: ReactNode;
     subtitle?: ReactNode;
     isScrollable?: boolean;
+    footer?: ReactNode;
 } & BoxProps;
 
 type WrapperStyleProps = {
@@ -42,12 +43,13 @@ const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
 
 export const BottomSheet = ({
     isVisible,
-    isCloseDisplayed = true,
     onClose,
     title,
     subtitle,
     children,
+    footer,
     isScrollable = true,
+    isCloseDisplayed = true,
     ...boxProps
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
@@ -133,6 +135,7 @@ export const BottomSheet = ({
                                     {children}
                                 </Box>
                             )}
+                            {footer}
                         </Animated.View>
                     </PanGestureHandler>
                 </Pressable>
