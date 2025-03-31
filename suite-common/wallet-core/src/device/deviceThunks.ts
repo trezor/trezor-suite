@@ -7,6 +7,7 @@ import {
     getSelectedDevice,
     sortByTimestamp,
 } from '@suite-common/suite-utils';
+import { connectThpDeviceThunk, thpActions } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { AccountKey } from '@suite-common/wallet-types';
 import {
@@ -276,7 +277,7 @@ export const acquireDevice = createThunk(
 
         if (!response.success) {
             if (response.payload.code === 'Device_ThpPairingTagInvalid') {
-                dispatch(extra.actions.openModal({ type: 'thp-pairing-failed' }));
+                dispatch(thpActions.invalidCode());
             } else {
                 dispatch(
                     notificationsActions.addToast({
@@ -285,6 +286,7 @@ export const acquireDevice = createThunk(
                         error: response.payload.error,
                     }),
                 );
+                dispatch(thpActions.resetThpFlow());
             }
         }
 
@@ -503,6 +505,7 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
         switch (type) {
             case DEVICE.CONNECT:
                 dispatch(deviceActions.connectDevice({ device, settings }));
+                dispatch(connectThpDeviceThunk({ device }));
                 break;
             case DEVICE.CONNECT_UNACQUIRED:
                 dispatch(deviceActions.connectUnacquiredDevice({ device, settings }));
