@@ -16,8 +16,6 @@ test.describe('Metadata - address labeling', { tag: ['@group=metadata1', '@webOn
         dashboardPage,
         walletPage,
     }) => {
-        expect(false).toBeTruthy();
-
         // Pass through onboarding and device authentication
         await onboardingPage.completeOnboarding();
 
