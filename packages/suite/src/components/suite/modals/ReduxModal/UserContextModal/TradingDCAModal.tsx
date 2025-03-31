@@ -3,9 +3,10 @@ import { ReactElement, useState } from 'react';
 import { CryptoId } from 'invity-api';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import { cryptoIdToNetwork } from '@suite-common/trading/src/utils';
+import { cryptoIdToNetwork, getTradingNetworkDecimals } from '@suite-common/trading/src/utils';
 import { Network, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
+import { formatAmount } from '@suite-common/wallet-utils';
 import {
     Button,
     Column,
@@ -123,39 +124,55 @@ const AddressSelect = ({
     disabled,
     addressLabels,
     network,
-}: AddressSelectProps) => (
-    <Select
-        value={value}
-        labelLeft={
-            <Tooltip hasIcon content={<Translation id="TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP" />}>
-                <Translation id="TR_BUY_RECEIVING_ADDRESS" />
-            </Tooltip>
-        }
-        options={options}
-        minValueWidth="70px"
-        onChange={onChange}
-        isDisabled={disabled}
-        placeholder={
-            <Translation
-                id="TR_EXCHANGE_RECEIVING_ADDRESS"
-                values={{ symbol: network.displaySymbol }}
-            />
-        }
-        formatOptionLabel={(acountAddress: AccountAddress) => (
-            <Column>
-                <div>{addressLabels[acountAddress.address] || acountAddress.address}</div>
-                <InfoSegments typographyStyle="label" variant="tertiary">
-                    <TradingBalance
-                        balance={acountAddress.balance}
-                        displaySymbol={network.displaySymbol}
-                        symbol={network.symbol}
-                    />
-                    {acountAddress.path}
-                </InfoSegments>
-            </Column>
-        )}
-    />
-);
+}: AddressSelectProps) => {
+    const networkDecimals = getTradingNetworkDecimals({
+        sendCryptoSelect: undefined,
+        network,
+    });
+
+    return (
+        <Select
+            value={value}
+            labelLeft={
+                <Tooltip
+                    hasIcon
+                    content={<Translation id="TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP" />}
+                >
+                    <Translation id="TR_BUY_RECEIVING_ADDRESS" />
+                </Tooltip>
+            }
+            options={options}
+            minValueWidth="70px"
+            onChange={onChange}
+            isDisabled={disabled}
+            placeholder={
+                <Translation
+                    id="TR_EXCHANGE_RECEIVING_ADDRESS"
+                    values={{ symbol: network.displaySymbol }}
+                />
+            }
+            formatOptionLabel={(accountAddress: AccountAddress) => {
+                const balance = accountAddress.balance
+                    ? formatAmount(accountAddress.balance, networkDecimals)
+                    : accountAddress.balance;
+
+                return (
+                    <Column>
+                        <div>{addressLabels[accountAddress.address] || accountAddress.address}</div>
+                        <InfoSegments typographyStyle="label" variant="tertiary">
+                            <TradingBalance
+                                balance={balance}
+                                displaySymbol={network.displaySymbol}
+                                symbol={network.symbol}
+                            />
+                            {accountAddress.path}
+                        </InfoSegments>
+                    </Column>
+                );
+            }}
+        />
+    );
+};
 
 interface Options {
     label: ReactElement;
