@@ -24,9 +24,9 @@ import {
     getBrowserName,
     getBrowserVersion,
     getCommitHash,
+    getDeprecatedOsVersion,
     getEnvironment,
     getOsName,
-    getOsVersion,
     getSuiteVersion,
 } from '@trezor/env-utils';
 
@@ -209,7 +209,7 @@ export const validateConditions = (condition: Condition, options: Options) => {
     const { device, transports = [], settings } = options;
 
     const currentOsName = getOsName();
-    const currentOsVersion = transformVersionToSemverFormat(getOsVersion());
+    const currentOsVersion = transformVersionToSemverFormat(getDeprecatedOsVersion());
 
     const currentBrowserName = getBrowserName();
     const currentBrowserVersion = transformVersionToSemverFormat(getBrowserVersion());

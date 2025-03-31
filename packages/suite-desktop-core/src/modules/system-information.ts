@@ -14,7 +14,9 @@ export const init: ModuleInit = () => {
 
         try {
             const osVersion = os.release();
+            // Possible values are 'darwin', 'freebsd', 'linux', 'sunos', 'win32', and 'android'.
             const osName = os.platform();
+            // Possible values are 'arm', 'arm64', 'ia32', 'loong64', 'mips', 'mipsel', 'ppc', 'ppc64', 'riscv64', 's390', 's390x', and 'x64'.
             const osArchitecture = os.arch();
 
             return { success: true, payload: { osVersion, osName, osArchitecture } };

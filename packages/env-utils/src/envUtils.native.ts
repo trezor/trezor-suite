@@ -24,7 +24,9 @@ const getBrowserVersion = () => '';
 
 const getDeviceType = () => '';
 
-const getOsVersion = () => `${Platform.Version}`;
+// no need for async fn on native; only for the sake of consistency with Web/Desktop
+const getOsVersion = () => Promise.resolve(`${Platform.Version}`);
+const getDeprecatedOsVersion = () => `${Platform.Version}`;
 
 const getSuiteVersion = () => Constants.expoConfig?.version || '';
 
@@ -91,6 +93,7 @@ export const envUtils: EnvUtils = {
     getCommitHash,
     getDeviceType,
     getOsVersion,
+    getDeprecatedOsVersion,
     getSuiteVersion,
     isFirefox,
     getPlatform,

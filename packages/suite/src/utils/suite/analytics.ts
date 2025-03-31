@@ -7,8 +7,8 @@ import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
     getBrowserName,
     getBrowserVersion,
+    getDeprecatedOsVersion,
     getOsName,
-    getOsVersion,
     getPlatformLanguages,
     getScreenHeight,
     getScreenWidth,
@@ -82,7 +82,7 @@ export const getSuiteReadyPayload = async (
         browserVersion: getBrowserVersion(),
         osName: getOsName(),
         // version from UA parser, which includes only the most basic info as it runs in renderer process
-        osVersion: getOsVersion(),
+        osVersion: getDeprecatedOsVersion(),
         // detailed info obtained in main process, if available
         desktopOsVersion: systemInformation?.osVersion,
         desktopOsName: systemInformation?.osName,

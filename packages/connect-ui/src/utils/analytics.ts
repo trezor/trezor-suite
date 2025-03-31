@@ -3,8 +3,8 @@ import { storage } from '@trezor/connect-common';
 import {
     getBrowserName,
     getBrowserVersion,
+    getDeprecatedOsVersion,
     getOsName,
-    getOsVersion,
     getPlatformLanguages,
     getScreenHeight,
     getScreenWidth,
@@ -64,7 +64,7 @@ export const initAnalytics = () => {
             browserName: getBrowserName(),
             browserVersion: getBrowserVersion(),
             osName: getOsName(),
-            osVersion: getOsVersion(),
+            osVersion: getDeprecatedOsVersion(),
             screenWidth: getScreenWidth(),
             screenHeight: getScreenHeight(),
             windowWidth: getWindowWidth(),

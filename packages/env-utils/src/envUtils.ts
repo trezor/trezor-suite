@@ -37,8 +37,18 @@ const getBrowserVersion = () => getUserAgentParser().getBrowser().version || '';
 
 const getCommitHash = () => process.env.COMMITHASH || '';
 
-/* Not correct for Linux as there is many different distributions in different versions */
-const getOsVersion = () => getUserAgentParser().getOS().version || '';
+/**
+ * .getOS() without `.withClientHints()` is sync and uses only `userAgent`, which is insufficient
+ * to distinguish macOS >= 11 (Big Sur and above) and Windows 10 | 11, so we need the async `.withClientHints()`.
+ * FYI it uses `getHighEntropyValues` under the hood (works only on Chromium-based browsers).
+ */
+const getOsVersion = async () => {
+    const { version } = await getUserAgentParser().getOS().withClientHints();
+
+    return version ?? '';
+};
+/** @deprecated: Use the async getOsVersion instead. */
+const getDeprecatedOsVersion = () => getUserAgentParser().getOS().version || '';
 
 const getSuiteVersion = () => process.env.VERSION || '';
 
@@ -136,6 +146,7 @@ export const envUtils: EnvUtils = {
     isAndroid,
     isChromeOs,
     getOsVersion,
+    getDeprecatedOsVersion,
     getBrowserName,
     getBrowserVersion,
     getCommitHash,
