@@ -11,8 +11,8 @@
         "build:core": "yarn g:rimraf dist && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/core.webpack.config.ts",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
-        "test:orchestrated:e2e:web": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=web", 
-        "test:orchestrated:e2e:desktop": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=desktop", 
+        "test:orchestrated:e2e:web": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=web",
+        "test:orchestrated:e2e:desktop": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=desktop",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "test:e2e:web": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=web",
         "test:e2e:desktop": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=desktop",
@@ -50,8 +50,8 @@
         "ws": "^8.18.0"
     },
     "devDependencies": {
+        "@currents/cmd": "^1.6.9",
         "@currents/playwright": "^1.11.3",
-        "@currents/cmd": "1.6.9",
         "@electron/fuses": "^1.8.0",
         "@electron/notarize": "2.5.0",
         "@playwright/browser-chromium": "^1.51.0",
