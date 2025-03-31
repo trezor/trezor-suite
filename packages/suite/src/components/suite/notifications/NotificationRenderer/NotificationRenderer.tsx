@@ -119,6 +119,12 @@ export const NotificationRenderer = ({
             return success(render, notification, 'TOAST_VERIFY_MESSAGE_SUCCESS');
         case 'error':
             return error(render, notification, 'TOAST_GENERIC_ERROR');
+        case 'cannot-open-bluetooth-settings-error':
+            return error(
+                render,
+                notification,
+                'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE',
+            );
         case 'clear-storage':
             return success(render, notification, 'TR_STORAGE_CLEARED');
         case 'firmware-check-authenticity-success':

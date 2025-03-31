@@ -137,6 +137,9 @@ export type ToastPayload = (
     | StakedTransactionNotification
     | UnstakedTransactionNotification
     | ClaimedTransactionNotification
+    | {
+          type: 'cannot-open-bluetooth-settings-error';
+      }
 ) &
     NotificationOptions;
 

@@ -8,6 +8,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { BridgeStatus, BridgeToggle, SuiteDesktopTip, Wrapper } from './BridgeTip';
 import { UdevDescription } from './UdevDescription';
 import { TroubleshootingTipsItem } from '../TroubleshootingTips';
+import { BluetoothSettingsDescription } from './BluetoothSettingsDescription';
 
 export const TROUBLESHOOTING_TIP_BRIDGE_STATUS: TroubleshootingTipsItem = {
     key: 'bridge-status',
@@ -127,23 +128,30 @@ export const TROUBLESHOOTING_TIP_CLOSE_ALL_TABS: TroubleshootingTipsItem = {
     ),
 };
 
-export const TROUBLESHOOTING_TIP_BLUETOOTH_1: TroubleshootingTipsItem = {
-    key: 'bluetooth-1',
-    heading: <Translation id="TR_BLUETOOTH_TIP1_HEADER" />,
-    description: <Translation id="TR_BLUETOOTH_TIP1_TEXT" />,
+export const TROUBLESHOOTING_TIP_BLUETOOTH_PROXIMITY: TroubleshootingTipsItem = {
+    key: 'bluetooth-proximity',
+    heading: <Translation id="TR_BLUETOOTH_TIP_PROXIMITY_HEADER" />,
+    description: <Translation id="TR_BLUETOOTH_TIP_PROXIMITY_TEXT" />,
     icon: 'desktop',
 };
 
-export const TROUBLESHOOTING_TIP_BLUETOOTH_2: TroubleshootingTipsItem = {
-    key: 'bluetooth-2',
-    heading: <Translation id="TR_BLUETOOTH_TIP2_HEADER" />,
-    description: <Translation id="TR_BLUETOOTH_TIP2_TEXT" />,
+export const TROUBLESHOOTING_TIP_BLUETOOTH_PAIRING_MODE: TroubleshootingTipsItem = {
+    key: 'bluetooth-pairing-mode',
+    heading: <Translation id="TR_BLUETOOTH_TIP_PARING_MODE_HEADER" />,
+    description: <Translation id="TR_BLUETOOTH_TIP_PARING_MODE_TEXT" />,
     icon: 'bluetooth',
 };
 
-export const TROUBLESHOOTING_TIP_BLUETOOTH_3: TroubleshootingTipsItem = {
-    key: 'bluetooth-3',
-    heading: <Translation id="TR_BLUETOOTH_TIP3_HEADER" />,
-    description: <Translation id="TR_BLUETOOTH_TIP3_TEXT" />,
+export const TROUBLESHOOTING_TIP_BLUETOOTH_SETTINGS: TroubleshootingTipsItem = {
+    key: 'bluetooth-settings',
+    heading: <Translation id="TR_BLUETOOTH_TIP_SETTINGS_HEADER" />,
+    description: <BluetoothSettingsDescription />,
+    icon: 'gear',
+};
+
+export const TROUBLESHOOTING_TIP_BLUETOOTH_CABLE: TroubleshootingTipsItem = {
+    key: 'bluetooth-cable',
+    heading: <Translation id="TR_BLUETOOTH_TIP_CABLE_HEADER" />,
+    description: <Translation id="TR_BLUETOOTH_TIP_CABLE_TEXT" />,
     icon: 'usb',
 };
