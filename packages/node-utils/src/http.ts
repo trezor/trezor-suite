@@ -9,6 +9,7 @@ import { Log, TypedEmitter, arrayPartition } from '@trezor/utils';
 import { getFreePort } from './getFreePort';
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
+const isRequest = (request: http.IncomingMessage): request is Request => request.url !== undefined;
 type EventMap = { [event: string]: any };
 
 export type RequestWithParams<B = unknown, P = unknown> = Request & {
@@ -295,7 +296,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
      */
     private onRequest = (request: http.IncomingMessage, response: http.ServerResponse) => {
         // mostly ts stuff. request should always have url defined.
-        if (!request.url) {
+        if (!isRequest(request)) {
             this.logger.warn('Unexpected incoming message (no url)');
             this.emitter.emit('server/error', 'Unexpected incoming message');
 
@@ -310,14 +311,22 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
         if (query) {
             for (const key in query) {
-                if (Object.prototype.hasOwnProperty.call(query, key)) {
-                    const sanitized = sanitizeUrl(query[key] as string);
-                    if (sanitized !== query[key]) {
+                if (Object.prototype.hasOwnProperty.call(query, key) && query[key] !== undefined) {
+                    const allParamsOfSameKey = [query[key]].flat();
+                    let isParamInvalid = false;
+
+                    query[key] = allParamsOfSameKey.map(singleParam => {
+                        const sanitized = sanitizeUrl(singleParam);
+                        if (sanitized !== singleParam) isParamInvalid = true;
+
+                        return sanitized;
+                    });
+
+                    if (isParamInvalid) {
                         response.statusCode = 403;
 
                         return response.end();
                     }
-                    query[key] = sanitized;
                 }
             }
         }
@@ -359,23 +368,24 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             .split('/')
             .filter(segment => segment);
 
+        let isSegmentInvalid = false;
         const requestWithParams = request as RequestWithParams;
-        try {
-            requestWithParams.params = route.params.reduce(
-                (acc, param, index) => {
-                    if (!paramsSegments[index]) return acc;
-                    const sanitized = sanitizeUrl(paramsSegments[index]);
-                    if (sanitized !== paramsSegments[index]) {
-                        throw new Error('suspicious param segment');
-                    }
 
-                    acc[param.replace(':', '')] = sanitized;
+        requestWithParams.params = route.params.reduce<Record<string, string>>(
+            (acc, param, index) => {
+                if (!paramsSegments[index]) return acc;
+                const sanitized = sanitizeUrl(paramsSegments[index]);
+                if (sanitized !== paramsSegments[index]) {
+                    isSegmentInvalid = true;
+                }
 
-                    return acc;
-                },
-                {} as Record<string, string>,
-            );
-        } catch {
+                acc[param.replace(':', '')] = sanitized;
+
+                return acc;
+            },
+            {},
+        );
+        if (isSegmentInvalid) {
             response.statusCode = 403;
 
             return response.end();
