@@ -79,18 +79,21 @@ export const restartApp = async () => {
 };
 
 export const scrollUntilVisible = async (
-    element: Detox.IndexableNativeElement,
+    target: Detox.IndexableNativeElement,
     scrollViewTestId: string = '@screen/mainScrollView',
 ) => {
     try {
         // Try to confirm that the element is visible without scrolling.
-        await detoxExpect(element).toBeVisible();
+        await detoxExpect(target).toBeVisible();
     } catch {
         // If the element is not visible, then use the scroll to find it.
-        await waitFor(element)
+        await waitFor(target)
             .toBeVisible()
             .whileElement(by.id(scrollViewTestId))
             .scroll(300, 'down');
+
+        // add extra scroll in case that the element is still not fully visible.
+        await element(by.id(scrollViewTestId)).scroll(150, 'down');
     }
 };
 
