@@ -3,7 +3,6 @@ import {
     BridgeSettings,
     ConnectPopupCall,
     ConnectPopupResponse,
-    GetSystemInformationResponse,
     HandshakeClient,
     HandshakeElectron,
     HandshakeEvent,
@@ -108,7 +107,6 @@ export interface InvokeChannels {
     'connect-popup/enabled': () => boolean;
     'connect-popup/ready': () => void;
     'connect-popup/response': (response: ConnectPopupResponse) => void;
-    'system/get-system-information': () => InvokeResult<GetSystemInformationResponse>;
     'system/open-settings': (settings: 'bluetooth') => InvokeResult;
 }
 
@@ -175,6 +173,5 @@ export interface DesktopApi {
     connectPopupReady: DesktopApiInvoke<'connect-popup/ready'>;
     connectPopupResponse: DesktopApiInvoke<'connect-popup/response'>;
     //system
-    getSystemInformation: DesktopApiInvoke<'system/get-system-information'>;
     openSystemSettings: DesktopApiInvoke<'system/open-settings'>;
 }

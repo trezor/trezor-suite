@@ -287,13 +287,5 @@ describe('DesktopApi', () => {
             // @ts-expect-error param expected
             api.loadModules();
         });
-
-        it('DesktopApi.getSystemInformation', async () => {
-            const spy = jest
-                .spyOn(ipcRenderer, 'invoke')
-                .mockImplementation(() => Promise.resolve());
-            await api.getSystemInformation();
-            expect(spy).toHaveBeenCalledWith('system/get-system-information');
-        });
     });
 });
