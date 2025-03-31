@@ -17,7 +17,7 @@ export type MessageSystemRootState = {
     messageSystem: MessageSystemState;
 };
 
-// Note: do not rename the feature flag identifiers (otherwise, both old & new would have to be targetted by a message system release)
+// Note: do not rename the feature flag identifiers (otherwise, both old & new would have to be targeted by a message system release)
 export const Feature = {
     coinjoin: 'coinjoin',
     killswitch: 'killswitch',
@@ -41,6 +41,12 @@ export const Feature = {
     entropyCheck: 'security.entropyCheck',
     // FW update feature flag implemented only for mobile app
     firmwareUpdate: 'device.firmware.update',
+    // trading feature flags implemented for mobile app
+    trading: {
+        buy: 'trading.buy',
+        sell: 'trading.sell',
+        swap: 'trading.swap',
+    },
 } as const;
 
 type ExtractFeatureValues<T> =
@@ -56,6 +62,10 @@ export const Context = {
     coinjoin: 'accounts.coinjoin',
     ethStaking: 'accounts.eth.staking',
     solStaking: 'accounts.sol.staking',
+    // trading contexts are implemented for mobile app
+    tradingBuy: 'trading.buy',
+    tradingSell: 'trading.sell',
+    tradingSwap: 'trading.swap',
 } as const;
 
 export type ContextDomain = (typeof Context)[keyof typeof Context];
