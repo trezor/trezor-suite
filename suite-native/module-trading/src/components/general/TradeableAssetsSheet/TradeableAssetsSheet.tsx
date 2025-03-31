@@ -1,3 +1,7 @@
+import { useCallback } from 'react';
+
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import {
     ListItemExtraData,
     useTradingFavouriteAssetsSectionList,
@@ -14,6 +18,8 @@ export type TradeableAssetsSheetProps = {
     onClose: () => void;
     onAssetSelect: (symbol: TradeableAsset) => void;
     assets: TradeableAsset[];
+    onFilterChange: (value: string) => void;
+    onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
 };
 
 const keyExtractor = ({ cryptoId }: TradeableAsset, { isFavourite }: ListItemExtraData) =>
@@ -30,6 +36,8 @@ export const TradeableAssetsSheet = ({
     onClose,
     onAssetSelect,
     assets,
+    onFilterChange,
+    onSelectedNetworkFilter,
 }: TradeableAssetsSheetProps) => {
     const onAssetSelectCallback = (asset: TradeableAsset) => {
         onAssetSelect(asset);
@@ -38,12 +46,24 @@ export const TradeableAssetsSheet = ({
 
     const listData = useTradingFavouriteAssetsSectionList(assets);
 
+    // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
+    const renderHandle = useCallback(
+        () => (
+            <TradeableAssetsSheetHeader
+                onClose={onClose}
+                onFilterChange={onFilterChange}
+                onSelectedNetworkFilter={onSelectedNetworkFilter}
+            />
+        ),
+        [onClose, onFilterChange, onSelectedNetworkFilter],
+    );
+
     return (
         <TradingBottomSheetSectionList<TradeableAsset, ListItemExtraData>
             isVisible={isVisible}
             onClose={onClose}
             ListEmptyComponent={<TradeAssetsListEmptyComponent />}
-            handleComponent={() => <TradeableAssetsSheetHeader onClose={onClose} />}
+            handleComponent={renderHandle}
             data={listData}
             keyExtractor={keyExtractor}
             estimatedItemSize={ASSET_ITEM_HEIGHT}

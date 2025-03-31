@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Button } from '@suite-native/atoms';
+import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
 
 type FilterTabProps = {
     children: React.ReactNode;
@@ -12,20 +15,9 @@ type FilterTabProps = {
 type TradeableAssetsFilterTabsProps = {
     visible: boolean;
     animationDuration: number;
-};
 
-const mockTabNames = [
-    'All',
-    'Ethereum',
-    'Solana',
-    'Base',
-    'Ethereum 2',
-    'Solana 2',
-    'Base 2',
-    'Ethereum 3',
-    'Solana 3',
-    'Base 3',
-];
+    onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
+};
 
 const FilterTab = ({ active, onPress, children }: FilterTabProps) => {
     const colorScheme = active ? 'tertiaryElevation0' : 'backgroundSurfaceElevation0';
@@ -46,12 +38,30 @@ const FilterTab = ({ active, onPress, children }: FilterTabProps) => {
 export const TradeableAssetsFilterTabs = ({
     visible,
     animationDuration,
+    onSelectedNetworkFilter,
 }: TradeableAssetsFilterTabsProps) => {
-    const [activeTab, setActiveTab] = useState(mockTabNames[0]);
+    const networks = useSelector(selectDiscoverySupportedNetworks);
+    const [activeTab, setActiveTab] = useState<NetworkSymbol | undefined>(undefined);
+
+    //clear network filter on unmounting filter tabs
+    useEffect(() => () => onSelectedNetworkFilter(undefined), [onSelectedNetworkFilter]);
+
+    const filterItems = useMemo(
+        () => [
+            { label: 'All', symbol: undefined },
+            ...networks.map(n => ({ label: n.name, symbol: n.symbol })),
+        ],
+        [networks],
+    );
 
     if (!visible) {
         return null;
     }
+
+    const handleFilterTap = (symbol: NetworkSymbol | undefined) => {
+        setActiveTab(symbol);
+        onSelectedNetworkFilter(symbol);
+    };
 
     return (
         <Animated.FlatList
@@ -59,13 +69,16 @@ export const TradeableAssetsFilterTabs = ({
             exiting={FadeOut.duration(animationDuration)}
             horizontal
             showsHorizontalScrollIndicator={false}
-            data={mockTabNames}
-            keyExtractor={item => item}
+            data={filterItems}
+            keyExtractor={item => item.symbol ?? 'undefined'}
             accessible={true}
             accessibilityRole="tablist"
             renderItem={({ item }) => (
-                <FilterTab active={activeTab === item} onPress={() => setActiveTab(item)}>
-                    {item}
+                <FilterTab
+                    active={activeTab === item.symbol}
+                    onPress={() => handleFilterTap(item.symbol)}
+                >
+                    {item.label}
                 </FilterTab>
             )}
         />

@@ -1,15 +1,23 @@
-import { useSelector } from 'react-redux';
-
-import { selectBuyTradeableAssetsSorted } from '../../selectors/buySelectors';
+import { useBuyTradeableAssetsFilteredData } from '../../hooks/useBuyTradeableAssetsFilteredData';
 import {
     TradeableAssetsSheet,
     TradeableAssetsSheetProps,
 } from '../general/TradeableAssetsSheet/TradeableAssetsSheet';
 
-export type BuyTradeableAssetsSheetProps = Omit<TradeableAssetsSheetProps, 'assets'>;
+export type BuyTradeableAssetsSheetProps = Omit<
+    TradeableAssetsSheetProps,
+    'assets' | 'onFilterChange' | 'onSelectedNetworkFilter'
+>;
 
 export const BuyTradeableAssetsSheet = (props: BuyTradeableAssetsSheetProps) => {
-    const assets = useSelector(selectBuyTradeableAssetsSorted);
+    const { filteredData, setFilterValue, setFilterSymbol } = useBuyTradeableAssetsFilteredData();
 
-    return <TradeableAssetsSheet assets={assets} {...props} />;
+    return (
+        <TradeableAssetsSheet
+            assets={filteredData}
+            onFilterChange={setFilterValue}
+            {...props}
+            onSelectedNetworkFilter={setFilterSymbol}
+        />
+    );
 };

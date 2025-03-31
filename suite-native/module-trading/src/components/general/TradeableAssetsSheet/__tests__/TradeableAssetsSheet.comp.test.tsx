@@ -14,6 +14,8 @@ describe('TradeableAssetsSheet', () => {
                 onAssetSelect={jest.fn}
                 onClose={jest.fn}
                 isVisible={true}
+                onFilterChange={jest.fn}
+                onSelectedNetworkFilter={jest.fn}
                 {...props}
             />,
         );

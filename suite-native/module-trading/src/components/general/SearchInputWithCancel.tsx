@@ -9,6 +9,7 @@ import {
     TextButton,
 } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type SearchInputWithCancelProps = Omit<
@@ -36,6 +37,7 @@ export const SearchInputWithCancel = ({
     const { translate } = useTranslate();
     const [isInputActive, setIsInputActive] = useState(false);
     const inputRef = useRef<BottomSheetSearchInputRef>(null);
+    const debounce = useDebounce();
 
     useEffect(() => () => onChange(''), [onChange]);
 
@@ -43,6 +45,12 @@ export const SearchInputWithCancel = ({
         onChange('');
         inputRef.current?.clear();
         inputRef.current?.blur();
+    };
+
+    const handleOnChange = (value: string) => {
+        debounce(() => {
+            onChange(value);
+        });
     };
 
     return (
@@ -59,7 +67,7 @@ export const SearchInputWithCancel = ({
                         setIsInputActive(false);
                         onBlur();
                     }}
-                    onChange={onChange}
+                    onChange={handleOnChange}
                     autoCorrect={false}
                     {...props}
                 />
