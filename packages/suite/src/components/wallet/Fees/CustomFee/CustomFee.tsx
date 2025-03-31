@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
     Control,
     FieldErrors,
@@ -64,6 +65,13 @@ export const CustomFee = <TFieldValues extends FormState>({
     ...props
 }: CustomFeeProps<TFieldValues>) => {
     const { translationString } = useTranslation();
+    const [cachedNetworkAmount, setCachedNetworkAmount] = useState<string | undefined>(undefined);
+
+    useEffect(() => {
+        if (transactionInfo && transactionInfo.type !== 'error' && transactionInfo.fee) {
+            setCachedNetworkAmount(formatNetworkAmount(transactionInfo.fee, symbol));
+        }
+    }, [symbol, transactionInfo]);
 
     const sharedRules = {
         required: translationString('CUSTOM_FEE_IS_NOT_SET'),
@@ -74,11 +82,6 @@ export const CustomFee = <TFieldValues extends FormState>({
             }
         },
     };
-
-    const networkAmount =
-        transactionInfo && transactionInfo.type !== 'error'
-            ? formatNetworkAmount(transactionInfo.fee, symbol)
-            : null;
 
     const feeUnits = getFeeUnits(networkType);
 
@@ -113,32 +116,33 @@ export const CustomFee = <TFieldValues extends FormState>({
                     />
                 )}
             </CustomFeeWrapper>
-            <Column>
-                <Row gap={spacings.sm} alignItems="baseline" justifyContent="space-between">
-                    <Text variant="tertiary" typographyStyle="hint">
-                        <Translation id={networkType === 'ethereum' ? 'MAX_FEE' : 'FEE'} />:
-                    </Text>
-                    {networkAmount && (
+            {cachedNetworkAmount && (
+                <Column>
+                    <Row gap={spacings.sm} alignItems="baseline" justifyContent="space-between">
+                        <Text variant="tertiary" typographyStyle="hint">
+                            <Translation id={networkType === 'ethereum' ? 'MAX_FEE' : 'FEE'} />:
+                        </Text>
+
                         <Row gap={spacings.xxs}>
                             <Text variant="default" typographyStyle="hint">
                                 <FormattedCryptoAmount
                                     disableHiddenPlaceholder
-                                    value={networkAmount}
+                                    value={cachedNetworkAmount}
                                     symbol={symbol}
                                 />
                             </Text>
                             <Text variant="tertiary" typographyStyle="hint">
                                 <FiatValue
                                     disableHiddenPlaceholder
-                                    amount={networkAmount}
+                                    amount={cachedNetworkAmount}
                                     symbol={symbol}
                                     showApproximationIndicator
                                 />
                             </Text>
                         </Row>
-                    )}
-                </Row>
-            </Column>
+                    </Row>
+                </Column>
+            )}
         </>
     );
 };
