@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { ArgTypes, Meta, StoryObj } from '@storybook/react';
 
 import { Spinner as SpinnerComponent, SpinnerProps, allowedSpinnerFrameProps } from './Spinner';
 import { getFramePropsStory } from '../../../utils/frameProps';
@@ -9,45 +9,54 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-export const Default: StoryObj<SpinnerProps> = {
-    args: {
-        size: 50,
-        ...getFramePropsStory(allowedSpinnerFrameProps).args,
+const args: Partial<SpinnerProps> | undefined = {
+    size: 50,
+    bodyColor: undefined,
+    warningBackgroundColor: undefined,
+    warningForegroundColor: undefined,
+    isGrey: false,
+    ...getFramePropsStory(allowedSpinnerFrameProps).args,
+};
+const argTypes: Partial<ArgTypes<SpinnerProps>> | undefined = {
+    bodyColor: {
+        control: { type: 'color' },
     },
-    argTypes: {
-        className: {
-            control: false,
+    warningBackgroundColor: {
+        control: { type: 'color' },
+    },
+    warningForegroundColor: {
+        control: { type: 'color' },
+    },
+    className: {
+        control: false,
+    },
+    isGrey: {
+        control: {
+            type: 'boolean',
         },
-        ...getFramePropsStory(allowedSpinnerFrameProps).argTypes,
     },
+    ...getFramePropsStory(allowedSpinnerFrameProps).argTypes,
+};
+
+export const Default: StoryObj<SpinnerProps> = {
+    args,
+    argTypes,
 };
 
 export const Success: StoryObj<SpinnerProps> = {
     args: {
-        size: 50,
+        ...args,
         hasFinished: true,
         hasStartAnimation: true,
-        ...getFramePropsStory(allowedSpinnerFrameProps).args,
     },
-    argTypes: {
-        className: {
-            control: false,
-        },
-        ...getFramePropsStory(allowedSpinnerFrameProps).argTypes,
-    },
+    argTypes,
 };
 
 export const Error: StoryObj<SpinnerProps> = {
     args: {
-        size: 50,
+        ...args,
         hasError: true,
         hasStartAnimation: true,
-        ...getFramePropsStory(allowedSpinnerFrameProps).args,
     },
-    argTypes: {
-        className: {
-            control: false,
-        },
-        ...getFramePropsStory(allowedSpinnerFrameProps).argTypes,
-    },
+    argTypes,
 };
