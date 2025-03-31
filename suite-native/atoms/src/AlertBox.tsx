@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { AccessibilityProps, ActivityIndicator } from 'react-native';
 
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -78,7 +78,7 @@ const variantToIconName = {
     error: 'warningCircle',
 } as const satisfies Record<AlertBoxVariant, IconName>;
 
-export type AlertBoxProps = {
+export type AlertBoxProps = AccessibilityProps & {
     variant: AlertBoxVariant;
     title: ReactNode;
     borderRadius?: NativeRadius | number;
@@ -102,6 +102,7 @@ export const AlertBox = ({
     variant = 'info',
     borderRadius = 'r16',
     textVariant = 'label',
+    ...props
 }: AlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
     const {
@@ -119,6 +120,7 @@ export const AlertBox = ({
                 borderColor,
                 backgroundColor,
             })}
+            {...props}
         >
             {variant === 'loading' ? (
                 <AlertSpinner color={color} />
