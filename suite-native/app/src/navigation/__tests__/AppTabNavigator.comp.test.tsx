@@ -27,22 +27,24 @@ describe('AppTabNavigator', () => {
         expect(getByText('Settings')).toBeDefined();
     });
 
-    it('should not render Trade tab when IsTradingEnabled is false', async () => {
+    it('should not render Trade tab when all trading flags are disabled', async () => {
         const { queryByText } = await renderTabs({
             featureFlags: {
                 ...featureFlagsInitialState,
-                [FeatureFlag.IsTradingEnabled]: false,
+                [FeatureFlag.IsTradingBuyEnabled]: false,
+                [FeatureFlag.IsTradingSwapEnabled]: false,
+                [FeatureFlag.IsTradingSellEnabled]: false,
             },
         });
 
         expect(queryByText('Trade')).toBe(null);
     });
 
-    it('should render Trade tab when IsTradingEnabled is true', async () => {
+    it('should render Trade tab when at least one trading flag is enabled', async () => {
         const { getByText, getAllByText } = await renderTabs({
             featureFlags: {
                 ...featureFlagsInitialState,
-                [FeatureFlag.IsTradingEnabled]: true,
+                [FeatureFlag.IsTradingBuyEnabled]: true,
             },
         });
 

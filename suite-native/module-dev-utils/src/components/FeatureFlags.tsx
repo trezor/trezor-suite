@@ -12,8 +12,10 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
     [FeatureFlagEnum.IsConnectPopupEnabled]: 'Connect Popup',
     [FeatureFlagEnum.IsDeviceOnboardingEnabled]: 'Device onboarding',
-    [FeatureFlagEnum.IsTradingEnabled]: 'Trading',
     [FeatureFlagEnum.IsWalletConnectEnabled]: 'WalletConnect',
+    [FeatureFlagEnum.IsTradingBuyEnabled]: '💰 Trading Buy',
+    [FeatureFlagEnum.IsTradingSwapEnabled]: '💰 Trading Swap',
+    [FeatureFlagEnum.IsTradingSellEnabled]: '💰 Trading Sell',
 } as const satisfies Record<FeatureFlagEnum, string>;
 
 const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {

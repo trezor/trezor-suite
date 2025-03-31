@@ -20,9 +20,11 @@ describe('featureFlagsSlice', () => {
                 isCardanoSendEnabled: false,
                 isRegtestEnabled: false,
                 isConnectPopupEnabled: false,
-                isTradingEnabled: false,
                 isDeviceOnboardingEnabled: false,
                 isWalletConnectEnabled: false,
+                isTradingBuyEnabled: false,
+                isTradingSwapEnabled: false,
+                isTradingSellEnabled: false,
             });
         });
 
@@ -41,9 +43,11 @@ describe('featureFlagsSlice', () => {
                 isCardanoSendEnabled: false,
                 isRegtestEnabled: false,
                 isConnectPopupEnabled: false,
-                isTradingEnabled: false,
                 isDeviceOnboardingEnabled: false,
                 isWalletConnectEnabled: false,
+                isTradingBuyEnabled: false,
+                isTradingSwapEnabled: false,
+                isTradingSellEnabled: false,
             });
         });
     });

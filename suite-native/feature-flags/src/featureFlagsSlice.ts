@@ -8,8 +8,10 @@ export const FeatureFlag = {
     IsRegtestEnabled: 'isRegtestEnabled',
     IsConnectPopupEnabled: 'isConnectPopupEnabled',
     IsDeviceOnboardingEnabled: 'isDeviceOnboardingEnabled',
-    IsTradingEnabled: 'isTradingEnabled',
     IsWalletConnectEnabled: 'isWalletConnectEnabled',
+    IsTradingBuyEnabled: 'isTradingBuyEnabled',
+    IsTradingSwapEnabled: 'isTradingSwapEnabled',
+    IsTradingSellEnabled: 'isTradingSellEnabled',
 } as const;
 
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
@@ -31,9 +33,13 @@ export const featureFlagsInitialState: FeatureFlagsState = {
         process.env.EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED === 'true',
     [FeatureFlag.IsDeviceOnboardingEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_DEVICE_ONBOARDING_ENABLED === 'true',
-    [FeatureFlag.IsTradingEnabled]: process.env.EXPO_PUBLIC_FF_IS_TRADING_ENABLED === 'true',
     [FeatureFlag.IsWalletConnectEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_WALLET_CONNECT_ENABLED === 'true',
+    [FeatureFlag.IsTradingBuyEnabled]: process.env.EXPO_PUBLIC_FF_IS_TRADING_BUY_ENABLED === 'true',
+    [FeatureFlag.IsTradingSwapEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_TRADING_SWAP_ENABLED === 'true',
+    [FeatureFlag.IsTradingSellEnabled]:
+        process.env.EXPO_PUBLIC_FF_IS_TRADING_SELL_ENABLED === 'true',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -42,8 +48,10 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsRegtestEnabled,
     FeatureFlag.IsConnectPopupEnabled,
     FeatureFlag.IsDeviceOnboardingEnabled,
-    FeatureFlag.IsTradingEnabled,
     FeatureFlag.IsWalletConnectEnabled,
+    FeatureFlag.IsTradingBuyEnabled,
+    FeatureFlag.IsTradingSwapEnabled,
+    FeatureFlag.IsTradingSellEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({
