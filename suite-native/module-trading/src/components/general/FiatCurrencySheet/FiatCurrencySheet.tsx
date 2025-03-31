@@ -1,11 +1,10 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
 
 import { FiatCurrencyCode } from 'invity-api';
 
 import { Translation } from '@suite-native/intl';
 
-import { selectBuySupportedFiatCurrenciesList } from '../../../selectors/buySelectors';
+import { useFiatCurrencyFilteredData } from '../../../hooks/useFiatCurrencyFilteredData';
 import { FiatCurrencyItem } from '../../../types';
 import { SearchableSheetHeader } from '../SearchableSheetHeader';
 import { TradingBottomSheetSectionList } from '../TradingBottomSheetSectionList';
@@ -21,34 +20,7 @@ export type FiatCurrencySheetProps = {
 const keyExtractor = (item: FiatCurrencyItem) => item.value;
 
 export const FiatCurrencySheet = ({ isVisible, onClose, onFiatSelect }: FiatCurrencySheetProps) => {
-    const supportedCurrencies = useSelector(selectBuySupportedFiatCurrenciesList);
-
-    const onFiatSelectCallback = (currency: FiatCurrencyCode) => {
-        onFiatSelect(currency);
-        onClose();
-    };
-
-    const [filterValue, setFilterValue] = useState('');
-
-    const filteredData = useMemo(() => {
-        let data = supportedCurrencies;
-        if (filterValue?.length > 0) {
-            data = data.filter(
-                ({ label, value }) =>
-                    label.toLowerCase().includes(filterValue.toLowerCase()) ||
-                    value.toLowerCase().includes(filterValue.toLowerCase()),
-            );
-        }
-
-        return [
-            {
-                key: 'fiat_currency',
-                label: '' as ReactNode,
-                data,
-                sectionData: undefined,
-            },
-        ];
-    }, [filterValue, supportedCurrencies]);
+    const { filteredData, setFilterValue } = useFiatCurrencyFilteredData();
 
     // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
     const renderHandle = useCallback(
@@ -60,8 +32,13 @@ export const FiatCurrencySheet = ({ isVisible, onClose, onFiatSelect }: FiatCurr
                 onFilterChange={setFilterValue}
             />
         ),
-        [onClose],
+        [onClose, setFilterValue],
     );
+
+    const onFiatSelectCallback = (currency: FiatCurrencyCode) => {
+        onFiatSelect(currency);
+        onClose();
+    };
 
     return (
         <TradingBottomSheetSectionList<FiatCurrencyItem>

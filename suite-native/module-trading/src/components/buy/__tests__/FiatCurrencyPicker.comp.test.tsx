@@ -5,10 +5,25 @@ import {
 } from '@suite-native/test-utils';
 
 import { getInitializedTradingState } from '../../../__fixtures__/tradingState';
+import { useListDataFilter } from '../../../hooks/useListDataFilter';
 import { useTradingBuyForm } from '../../../hooks/useTradingBuyForm';
 import { FiatCurrencyPicker } from '../FiatCurrencyPicker';
 
+let mockUseListDataFilter: typeof useListDataFilter;
+
+jest.mock('../../../hooks/useListDataFilter', () => ({
+    ...jest.requireActual('../../../hooks/useListDataFilter'),
+    useListDataFilter: (rawData: unknown[], filterCallback: (i: unknown, f: string) => boolean) =>
+        mockUseListDataFilter(rawData, filterCallback),
+}));
+
 describe('FiatCurrencyPicker', () => {
+    beforeEach(() => {
+        mockUseListDataFilter = jest.requireActual(
+            '../../../hooks/useListDataFilter',
+        ).useListDataFilter;
+    });
+
     const renderFiatCurrencyPicker = async () => {
         const preloadedState = { wallet: { tradingNew: getInitializedTradingState() } };
         const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm(), {
@@ -33,5 +48,17 @@ describe('FiatCurrencyPicker', () => {
         fireEvent.press(getByText('USD'));
 
         expect(getByLabelText('Select fiat currency')).toHaveTextContent(/USD/);
+    });
+
+    it('should display empty component when filtered data is empty', async () => {
+        mockUseListDataFilter = () => ({
+            filteredData: [],
+            setFilterValue: jest.fn(),
+        });
+
+        const { getByText } = await renderFiatCurrencyPicker();
+
+        expect(getByText('No currency found')).toBeDefined();
+        expect(getByText(/ a currency matching your search/)).toBeDefined();
     });
 });

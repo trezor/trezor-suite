@@ -4,10 +4,25 @@ import {
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
 
+import { useListDataFilter } from '../../../hooks/useListDataFilter';
 import { useTradingBuyForm } from '../../../hooks/useTradingBuyForm';
 import { CountryOfResidencePicker } from '../CountryOfResidencePicker';
 
+let mockUseListDataFilter: typeof useListDataFilter;
+
+jest.mock('../../../hooks/useListDataFilter', () => ({
+    ...jest.requireActual('../../../hooks/useListDataFilter'),
+    useListDataFilter: (rawData: unknown[], filterCallback: (i: unknown, f: string) => boolean) =>
+        mockUseListDataFilter(rawData, filterCallback),
+}));
+
 describe('CountryOfResidencePicker', () => {
+    beforeEach(() => {
+        mockUseListDataFilter = jest.requireActual(
+            '../../../hooks/useListDataFilter',
+        ).useListDataFilter;
+    });
+
     const renderCountryOfResidencePicker = async () => {
         const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
 
@@ -30,5 +45,17 @@ describe('CountryOfResidencePicker', () => {
         fireEvent.press(getByText(/Algeria/));
 
         expect(getByLabelText('Selected country of residence')).toHaveTextContent('🇩🇿 Algeria');
+    });
+
+    it('should display empty component when filtered data is empty', async () => {
+        mockUseListDataFilter = () => ({
+            filteredData: [],
+            setFilterValue: jest.fn(),
+        });
+        const { getByText } = await renderCountryOfResidencePicker();
+        fireEvent.press(getByText('Country of residence'));
+
+        expect(getByText('No country found')).toBeDefined();
+        expect(getByText(/a country matching your search/)).toBeDefined();
     });
 });

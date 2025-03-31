@@ -1,14 +1,14 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback } from 'react';
 import { Dimensions } from 'react-native';
 
-import { regional } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
+import { useCountryFilteredData } from '../../../hooks/useCountryFilteredData';
+import { Country } from '../../../types';
 import { SearchableSheetHeader } from '../SearchableSheetHeader';
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
 import { COUNTRY_LIST_ITEM_HEIGHT, CountryListItem } from './CountryListItem';
-import { Country } from '../../../types';
 
 export type CountrySheetProps = {
     isVisible: boolean;
@@ -25,25 +25,7 @@ export const CountrySheet = ({
     onCountrySelect,
     selectedCountryId,
 }: CountrySheetProps) => {
-    const onCountrySelectCallback = (country: Country) => {
-        onCountrySelect(country);
-        onClose();
-    };
-
-    const [filterValue, setFilterValue] = useState('');
-
-    const filteredData = useMemo(() => {
-        let data = regional.countriesOptions;
-        if (filterValue?.length > 0) {
-            data = data.filter(
-                ({ label, value }) =>
-                    label.toLowerCase().includes(filterValue.toLowerCase()) ||
-                    value.toLowerCase().includes(filterValue.toLowerCase()),
-            );
-        }
-
-        return data;
-    }, [filterValue]);
+    const { filteredData, setFilterValue } = useCountryFilteredData();
 
     // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
     const renderHandle = useCallback(
@@ -54,8 +36,13 @@ export const CountrySheet = ({
                 onFilterChange={setFilterValue}
             />
         ),
-        [onClose],
+        [onClose, setFilterValue],
     );
+
+    const onCountrySelectCallback = (country: Country) => {
+        onCountrySelect(country);
+        onClose();
+    };
 
     const listHeight = Dimensions.get('window').height * 0.9;
 

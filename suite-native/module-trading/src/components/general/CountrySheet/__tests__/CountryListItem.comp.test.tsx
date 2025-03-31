@@ -13,7 +13,6 @@ describe('CountryListItem', () => {
                 {...props}
             />,
         );
-
     it('should render given name', () => {
         const { getByText } = renderCountryListItem({ label: '🇺🇸 United States of America' });
 
