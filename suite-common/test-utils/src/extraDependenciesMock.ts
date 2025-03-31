@@ -108,6 +108,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         }),
         selectIsWindowVisible: mockSelector('selectIsWindowVisible', true),
         selectTradingEnvironment: mockSelector('selectTradingEnvironment', 'localhost'),
+        selectThpCredentials: mockSelector('selectThpCredentials', []),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),

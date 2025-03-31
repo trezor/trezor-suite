@@ -69,6 +69,10 @@ export interface SuiteDBSchema extends DBSchema {
         key: string;
         value: DeviceWithEmptyPath;
     };
+    thpCredentials: {
+        key: string;
+        value: any[];
+    };
     accounts: {
         key: string[];
         value: Account;

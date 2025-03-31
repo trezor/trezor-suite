@@ -1276,4 +1276,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 54) {
         db.createObjectStore('connect');
     }
+
+    if (oldVersion < 55) {
+        db.createObjectStore('thpCredentials');
+    }
 };

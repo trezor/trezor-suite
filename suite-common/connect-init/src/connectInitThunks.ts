@@ -165,7 +165,7 @@ export const connectInitThunk = createThunk(
                     // TODO: do no provide, will be generated at first pairing
                     staticKey: '0007070707070707070707070707070707070707070707070707070707070747',
                     // TODO: move to toplevel known devices
-                    knownCredentials: [],
+                    knownCredentials: extra.selectors.selectThpCredentials(getState()),
                     // TODO: NoMethod in debug settings
                     pairingMethods: ['CodeEntry', 'QrCode'],
                     // pairingMethods: ['SkipPairing'],

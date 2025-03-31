@@ -14,7 +14,7 @@ import { AcquiredDevice, ButtonRequest, TrezorDevice } from '@suite-common/suite
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInstances, getFwUpdateVersion, getStatus } from '@suite-common/suite-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
-import { Device, DeviceState, Features, StaticSessionId, UI } from '@trezor/connect';
+import { Device, DeviceState, Features, StaticSessionId, ThpSettings, UI } from '@trezor/connect';
 import {
     getFirmwareVersion,
     getFirmwareVersionArray,
@@ -35,6 +35,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>(
 
 export type DeviceReducerState = {
     devices: TrezorDevice[];
+    thpCredentials?: ThpSettings['knownCredentials'];
     selectedDevice?: TrezorDevice;
     deviceAuthenticity?: Record<string, StoredAuthenticateDeviceResult>;
     devicesWithFailedEntropyCheck?: (string | null)[]; // protobuf allows null values and we want to store this even if a fake device has id set to null
@@ -43,7 +44,11 @@ export type DeviceReducerState = {
     };
 };
 
-const initialState: DeviceReducerState = { devices: [], selectedDevice: undefined };
+const initialState: DeviceReducerState = {
+    devices: [],
+    thpCredentials: [],
+    selectedDevice: undefined,
+};
 
 export type DeviceRootState = {
     device: DeviceReducerState;

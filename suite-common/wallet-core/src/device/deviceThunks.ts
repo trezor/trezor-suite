@@ -274,6 +274,30 @@ export const acquireDevice = createThunk(
     },
 );
 
+export const acquireThpDevice = createThunk(
+    `${DEVICE_MODULE_PREFIX}/acquireThpDevice`,
+    async (requestedDevice: TrezorDevice | undefined, { dispatch, getState }) => {
+        const device = requestedDevice || selectSelectedDevice(getState());
+
+        if (!device) return;
+
+        const response = await TrezorConnect.getFeatures({
+            device,
+            useEmptyPassphrase: true,
+        });
+
+        if (!response.success) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'acquire-error',
+                    device,
+                    error: response.payload.error,
+                }),
+            );
+        }
+    },
+);
+
 /**
  * Called from `discoveryMiddleware`
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE

@@ -72,6 +72,7 @@ export const extraDependencies: ExtraDependencies = {
         addWalletThunk,
     },
     selectors: {
+        selectThpCredentials: (state: AppState) => state.device.thpCredentials,
         selectDevices: (state: AppState) => state.device.devices,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
         selectAreSatsAmountUnit: (state: AppState) =>
@@ -193,6 +194,7 @@ export const extraDependencies: ExtraDependencies = {
         storageLoadDevices: (state, { payload }: StorageLoadAction) => {
             state.devices = payload.devices;
             state.devicesWithFailedEntropyCheck = payload.security?.devicesWithFailedEntropyCheck;
+            state.thpCredentials = payload.thpCredentials;
         },
         storageLoadFormDrafts: (state, { payload }: StorageLoadAction) => {
             payload.sendFormDrafts.forEach(d => {

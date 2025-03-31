@@ -235,6 +235,11 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     api.dispatch(storageActions.saveWalletSettings());
                     break;
 
+                case 'device-thp_credentials_changed': {
+                    api.dispatch(storageActions.saveThpCredentials(action.payload.credentials));
+                    break;
+                }
+
                 case SUITE.SET_LANGUAGE:
                 case SUITE.SET_FLAG:
                 case SUITE.SET_DEBUG_MODE:

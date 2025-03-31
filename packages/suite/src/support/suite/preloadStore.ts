@@ -28,6 +28,7 @@ export const preloadStore = async () => {
     const [
         suiteSettings,
         devices,
+        thpCredentials,
         accounts,
         discovery,
         walletSettings,
@@ -49,6 +50,7 @@ export const preloadStore = async () => {
     ] = await Promise.all([
         db.getItemByPK('suiteSettings', 'suite'),
         db.getItemsExtended('devices'),
+        db.getItemsExtended('thpCredentials'),
         db.getItemsExtended('accounts'),
         db.getItemsExtended('discovery'),
         db.getItemByPK('walletSettings', 'wallet'),
@@ -75,6 +77,7 @@ export const preloadStore = async () => {
             suiteSettings,
             walletSettings,
             devices,
+            thpCredentials,
             accounts,
             discovery,
             txs,
