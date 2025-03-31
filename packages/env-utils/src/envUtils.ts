@@ -50,6 +50,15 @@ const getOsVersion = async () => {
 /** @deprecated: Use the async getOsVersion instead. */
 const getDeprecatedOsVersion = () => getUserAgentParser().getOS().version || '';
 
+/**
+ * Similar to `getOsVersion`. Here, the sync fn works everywhere but macOS, hence we use async.
+ */
+const getCpuArch = async () => {
+    const { architecture } = await getUserAgentParser().getCPU().withClientHints();
+
+    return architecture ?? '';
+};
+
 const getSuiteVersion = () => process.env.VERSION || '';
 
 const getBrowserName = () => {
@@ -147,6 +156,7 @@ export const envUtils: EnvUtils = {
     isChromeOs,
     getOsVersion,
     getDeprecatedOsVersion,
+    getCpuArch,
     getBrowserName,
     getBrowserVersion,
     getCommitHash,

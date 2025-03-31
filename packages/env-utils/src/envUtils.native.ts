@@ -28,6 +28,8 @@ const getDeviceType = () => '';
 const getOsVersion = () => Promise.resolve(`${Platform.Version}`);
 const getDeprecatedOsVersion = () => `${Platform.Version}`;
 
+const getCpuArch = () => Promise.resolve('');
+
 const getSuiteVersion = () => Constants.expoConfig?.version || '';
 
 const getCommitHash = () => Constants.expoConfig?.extra?.commitHash;
@@ -94,6 +96,7 @@ export const envUtils: EnvUtils = {
     getDeviceType,
     getOsVersion,
     getDeprecatedOsVersion,
+    getCpuArch,
     getSuiteVersion,
     isFirefox,
     getPlatform,

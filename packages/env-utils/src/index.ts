@@ -16,6 +16,7 @@ export const {
     getDeviceType,
     getOsVersion,
     getDeprecatedOsVersion,
+    getCpuArch,
     getSuiteVersion,
     isFirefox,
     getPlatform,

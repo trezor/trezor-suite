@@ -14,6 +14,7 @@ export interface EnvUtils {
     getDeviceType: () => string | undefined;
     getOsVersion: () => Promise<string>;
     getDeprecatedOsVersion: () => string;
+    getCpuArch: () => Promise<string>;
     getSuiteVersion: () => string;
     isFirefox: () => boolean;
     getPlatform: () => string;
