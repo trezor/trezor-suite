@@ -8,6 +8,8 @@ import {
     UseFormSetValue,
 } from 'react-hook-form';
 
+import { useTheme } from 'styled-components';
+
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
@@ -17,9 +19,10 @@ import {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Banner, Column, Row, SelectBar, Tooltip } from '@trezor/components';
+import { Banner, Column, Icon, Link, Row, SelectBar, Tooltip } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
+import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
@@ -137,6 +140,7 @@ export const Fees = <TFieldValues extends FormState>({
 }: FeesProps<TFieldValues>) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
     const { getValues, register, setValue } = props as unknown as UseFormReturn<FormState>;
+    const theme = useTheme();
 
     const selectedOption = getValues('selectedFee') || 'normal';
     const isCustomFee = selectedOption === 'custom';
@@ -176,6 +180,14 @@ export const Fees = <TFieldValues extends FormState>({
         <Column gap={spacings.md}>
             <Row flexWrap="wrap" justifyContent="space-between" gap={spacings.sm}>
                 <Tooltip
+                    addon={
+                        networkType === 'ethereum' && (
+                            <Link href={HELP_CENTER_TRANSACTION_FEES_URL} target="_blank">
+                                <Icon size={12} color={theme.iconAlertYellow} name="lightbulb" />
+                                <Translation id="TR_LEARN" />
+                            </Link>
+                        )
+                    }
                     hasIcon
                     maxWidth={328}
                     content={<Translation id={feeTooltipTextId} values={{ br: <br /> }} />}
