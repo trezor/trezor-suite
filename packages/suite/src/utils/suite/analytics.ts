@@ -7,8 +7,9 @@ import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
     getBrowserName,
     getBrowserVersion,
-    getDeprecatedOsVersion,
+    getCpuArch,
     getOsName,
+    getOsVersion,
     getPlatformLanguages,
     getScreenHeight,
     getScreenWidth,
@@ -51,7 +52,11 @@ export const redactRouterUrl = (url: string) => url.replace(/coinjoin/g, 'taproo
 export const getSuiteReadyPayload = async (
     state: AppState,
 ): Promise<SuiteAnalyticsEventSuiteReady['payload']> => {
-    const systemInformation = await getOptionalSystemInformation();
+    const [systemInformation, osVersion, osCpuArch] = await Promise.all([
+        getOptionalSystemInformation(),
+        getOsVersion(),
+        getCpuArch(),
+    ]);
 
     return {
         language: state.suite.settings.language,
@@ -81,8 +86,8 @@ export const getSuiteReadyPayload = async (
         browserName: getBrowserName(),
         browserVersion: getBrowserVersion(),
         osName: getOsName(),
-        // version from UA parser, which includes only the most basic info as it runs in renderer process
-        osVersion: getDeprecatedOsVersion(),
+        osVersion,
+        osCpuArch,
         // detailed info obtained in main process, if available
         desktopOsVersion: systemInformation?.osVersion,
         desktopOsName: systemInformation?.osName,

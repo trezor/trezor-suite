@@ -24,6 +24,7 @@ export type SuiteAnalyticsEventSuiteReady = {
         browserVersion: string;
         osName: string;
         osVersion: string;
+        osCpuArch: string;
         windowWidth: number;
         windowHeight: number;
         platformLanguages: string;
