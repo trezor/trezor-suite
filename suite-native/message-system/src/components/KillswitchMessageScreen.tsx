@@ -55,9 +55,10 @@ export const KillswitchMessageScreen = () => {
 
     // TODO: We use only English locale in suite-native so far. When the localization to other
     // languages is implemented, the language selection logic has to be added here.
-    const messageTitle = headline?.en;
-    const messageContent = content.en;
-    const ctaLabel = cta?.label.en;
+    const language = 'en';
+    const messageTitle = headline?.[language];
+    const messageContent = content[language];
+    const ctaLabel = cta?.label[language];
     const ctaLink = cta?.link;
     const isExternalCta = cta?.action === 'external-link';
 

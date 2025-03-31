@@ -11,8 +11,8 @@ jest.mock('../../hooks/useTradingBuyData', () => ({
 
 describe('TradingStackNavigator', () => {
     it('should render', async () => {
-        const { getByText } = await renderWithStoreProviderAsync(<TradingStackNavigator />);
+        const { getByTestId } = await renderWithStoreProviderAsync(<TradingStackNavigator />);
 
-        expect(getByText('Buy')).toBeDefined();
+        expect(getByTestId('@screen/Trading')).toBeDefined();
     });
 });

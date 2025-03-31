@@ -3,12 +3,13 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch } from 'react-redux';
 
 import { messageSystemActions } from '@suite-common/message-system';
-import { CTA, Message, Variant } from '@suite-common/suite-types';
+import { Message, Variant } from '@suite-common/suite-types';
 import { Box, HStack, RoundedIcon, Text, VStack } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
-import { Link } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
+
+import { MessageLink } from './MessageLink';
 
 type MessageBannerProps = {
     message: Message;
@@ -64,28 +65,6 @@ const messageTextContainerStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
 }));
 
-const MessageLink = ({ messageCTA }: { messageCTA?: CTA }) => {
-    // TODO: We use only English locale in suite-native so far. When the localization to other
-    // languages is implemented, the language selection logic has to be added here.
-    const messageLinkLabel = messageCTA?.label.en;
-    const messageLink = messageCTA?.link;
-    const isExternalLink = messageCTA?.action === 'external-link';
-
-    const isLinkDisplayable = isExternalLink && messageLinkLabel && messageLink;
-
-    if (!isLinkDisplayable) return null;
-
-    return (
-        <Link
-            href={messageLink}
-            label={messageLinkLabel}
-            isUnderlined
-            textColor="textDefault"
-            textPressedColor="textSubdued"
-        />
-    );
-};
-
 const MessageCloseButton = ({
     backgroundColor,
     onClose,
@@ -109,7 +88,8 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
 
     // TODO: We use only English locale in suite-native so far. When the localization to other
     // languages is implemented, the language selection logic has to be added here.
-    const messageContent = message.content.en;
+    const language = 'en';
+    const messageContent = message.content[language];
 
     const isMessageDismissible = message.dismissible;
 
@@ -145,7 +125,13 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
                         {messageContent}
                     </Text>
 
-                    {message.cta && <MessageLink messageCTA={message.cta} />}
+                    {message.cta && (
+                        <MessageLink
+                            messageCTA={message.cta}
+                            language={language}
+                            textVariant="body"
+                        />
+                    )}
                 </VStack>
                 {isMessageDismissible && (
                     <MessageCloseButton
