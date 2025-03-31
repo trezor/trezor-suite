@@ -2444,7 +2444,7 @@ export default defineMessages({
         id: 'TR_RE_ENTER_NEW_PIN',
     },
     TR_ENTER_WIPECODE: {
-        defaultMessage: 'Enter wipe code',
+        defaultMessage: 'Enter Wipe Code',
         description: 'Text for Header and Button when submitting wipe code',
         id: 'TR_ENTER_WIPECODE',
     },
@@ -3181,7 +3181,7 @@ export default defineMessages({
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED',
     },
     TR_SETTINGS_DEVICE_VIEW_ONLY_DISABLED_TOOLTIP: {
-        defaultMessage: 'Not available while the device is setting up.',
+        defaultMessage: 'Unavailable until device setup is complete.',
         id: 'TR_SETTINGS_DEVICE_VIEW_ONLY_DISABLED_TOOLTIP',
     },
     TR_SETTINGS_COINS_REGULAR_FIRMWARE_SUGGESTION: {
@@ -6003,7 +6003,7 @@ export default defineMessages({
     },
     TR_DISABLED_SWITCH_NEW_DEVICE_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_NEW_DEVICE_TOOLTIP',
-        defaultMessage: 'Not available while the device is setting up.',
+        defaultMessage: 'Unavailable until device setup is complete.',
     },
     TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP: {
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_TOOLTIP',
@@ -7045,7 +7045,7 @@ export default defineMessages({
     },
     TR_WIPE_OR_UPDATE_DESCRIPTION: {
         id: 'TR_WIPE_OR_UPDATE_DESCRIPTION',
-        defaultMessage: 'Go to <a>device settings</a>.',
+        defaultMessage: 'Go to device settings.',
     },
     TR_YOU_HAVE_CONNECTED: {
         id: 'TR_YOU_HAVE_CONNECTED',
