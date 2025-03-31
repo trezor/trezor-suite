@@ -92,7 +92,7 @@ const sentryMiddleware =
 
         switch (action.type) {
             case SUITE.READY:
-                // done async because ipcMain is queried for system info, if available
+                // it is done async because some UAParser queries are async
                 getSuiteReadyPayload(state).then(payload =>
                     setSentryContext('suite-ready', payload),
                 );

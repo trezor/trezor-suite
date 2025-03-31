@@ -81,7 +81,7 @@ const analyticsMiddleware =
         switch (action.type) {
             case SUITE.READY:
                 // reporting can start when analytics is properly initialized and enabled
-                // it is done async because ipcMain is queried for system info, if available
+                // it is done async because some UAParser queries are async
                 getSuiteReadyPayload(state).then(payload => {
                     analytics.report({
                         type: EventType.SuiteReady,

@@ -15,27 +15,14 @@ import {
     getScreenWidth,
     getWindowHeight,
     getWindowWidth,
-    isDesktop,
 } from '@trezor/env-utils';
 import { AppUpdateEvent, SuiteAnalyticsEventSuiteReady } from '@trezor/suite-analytics';
-import { UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
-import { GetSystemInformationResponse } from '@trezor/suite-desktop-api/src/messages';
+import { UpdateInfo } from '@trezor/suite-desktop-api';
 
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { AppState } from 'src/types/suite';
 
 import { getIsTorEnabled } from './tor';
-
-const getOptionalSystemInformation = async (): Promise<GetSystemInformationResponse | null> => {
-    if (!isDesktop()) return null;
-    try {
-        const response = await desktopApi.getSystemInformation();
-
-        return response.success ? response.payload : null;
-    } catch {
-        return null;
-    }
-};
 
 // redact transaction id from account transaction anchor
 export const redactTransactionIdFromAnchor = (anchor?: string) => {
@@ -52,11 +39,7 @@ export const redactRouterUrl = (url: string) => url.replace(/coinjoin/g, 'taproo
 export const getSuiteReadyPayload = async (
     state: AppState,
 ): Promise<SuiteAnalyticsEventSuiteReady['payload']> => {
-    const [systemInformation, osVersion, osCpuArch] = await Promise.all([
-        getOptionalSystemInformation(),
-        getOsVersion(),
-        getCpuArch(),
-    ]);
+    const [osVersion, osCpuArch] = await Promise.all([getOsVersion(), getCpuArch()]);
 
     return {
         language: state.suite.settings.language,
@@ -88,10 +71,6 @@ export const getSuiteReadyPayload = async (
         osName: getOsName(),
         osVersion,
         osCpuArch,
-        // detailed info obtained in main process, if available
-        desktopOsVersion: systemInformation?.osVersion,
-        desktopOsName: systemInformation?.osName,
-        desktopOsArchitecture: systemInformation?.osArchitecture,
 
         windowWidth: getWindowWidth(),
         windowHeight: getWindowHeight(),
