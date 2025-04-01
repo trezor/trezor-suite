@@ -1,33 +1,21 @@
-import styled from 'styled-components';
-
-import { H2, Link, Paragraph } from '@trezor/components';
+import { Column, H3, InfoItem, Link, NewModal } from '@trezor/components';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
-
-import { Modal } from 'src/components/suite';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-
-const Line = styled.div`
-    padding: 20px;
-`;
+import { spacings } from '@trezor/theme';
 
 export const Version = () => (
-    <Modal data-testid="@modal/version">
-        <Wrapper>
-            <Paragraph typographyStyle="callout">APPLICATION VERSION</Paragraph>
-            <H2 data-testid="@version/number">{getSuiteVersion()}</H2>
-            <Line />
-            <Paragraph typographyStyle="callout">LAST COMMIT HASH</Paragraph>
-            <Link
-                href={`https://github.com/trezor/trezor-suite/commits/${getCommitHash()}`}
-                data-testid="@version/commit-hash-link"
-            >
-                <H2>{getCommitHash()}</H2>
-            </Link>
-        </Wrapper>
-    </Modal>
+    <NewModal data-testid="@modal/version" size="small">
+        <Column gap={spacings.lg}>
+            <InfoItem label="Application version">
+                <H3 data-testid="@version/number">{getSuiteVersion()}</H3>
+            </InfoItem>
+            <InfoItem label="Last commit hash">
+                <Link
+                    href={`https://github.com/trezor/trezor-suite/commits/${getCommitHash()}`}
+                    data-testid="@version/commit-hash-link"
+                >
+                    <H3>{getCommitHash()}</H3>
+                </Link>
+            </InfoItem>
+        </Column>
+    </NewModal>
 );
