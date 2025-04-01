@@ -169,16 +169,15 @@ export class DeviceCurrentSession implements TypedCallProvider {
             switch (res.type) {
                 case 'Failure': {
                     const { code, message } = res.message;
+
                     const err =
                         message ||
                         // T1B1 does not send any message in firmware update
                         // https://github.com/trezor/trezor-firmware/issues/1334
-                        (code === Messages.FailureType.Failure_FirmwareError &&
-                            'Firmware installation failed') ||
+                        (code === 'Failure_FirmwareError' && 'Firmware installation failed') ||
                         // Failure_ActionCancelled message could be also missing
                         // https://github.com/trezor/connect/issues/865
-                        (code === Messages.FailureType.Failure_ActionCancelled &&
-                            'Action cancelled by user') ||
+                        (code === 'Failure_ActionCancelled' && 'Action cancelled by user') ||
                         'Failure_UnknownMessage';
 
                     // pass code and message from firmware error
