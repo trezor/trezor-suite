@@ -169,6 +169,7 @@ export const useSendFormCompose = ({
     const updateComposedValues = useCallback(
         (composed: PrecomposedTransaction | PrecomposedTransactionCardano) => {
             const values = getValues();
+            if (!composed) return;
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
                 if (!errorMessage) {
@@ -246,6 +247,9 @@ export const useSendFormCompose = ({
         const { selectedFee, setMaxOutputId } = values;
         let composed = composedLevels[selectedFee || 'normal'];
 
+        // composed transaction does not exists (not going to happen?)
+        if (!composed) return;
+
         // selectedFee was not set yet (no interaction with Fees) and default (normal) fee tx is not valid
         // OR setMax option was used
         // try to switch to nearest possible composed transaction
@@ -271,11 +275,6 @@ export const useSendFormCompose = ({
                 setDraftSaveRequest(true);
             }
             // or do nothing, use default composed tx
-        }
-
-        // composed transaction does not exists (not going to happen?)
-        if (!composed) {
-            return;
         }
 
         updateComposedValues(composed);
