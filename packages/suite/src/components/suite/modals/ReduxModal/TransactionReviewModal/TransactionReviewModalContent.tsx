@@ -210,9 +210,7 @@ export const TransactionReviewModalContent = ({
               .find(type => type) || null;
 
     const onCancel = () => {
-        if (isRbfConfirmedError || shouldCheckTxTimeValidity) {
-            dispatch(modalActions.onCancel());
-        }
+        dispatch(modalActions.onCancel());
 
         if (isActionAbortable || serializedTx) {
             cancelSignTx();

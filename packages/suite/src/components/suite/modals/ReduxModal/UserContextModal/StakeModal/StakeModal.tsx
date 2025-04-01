@@ -13,18 +13,14 @@ import { StakingInfoCards } from './StakingInfoCards/StakingInfoCards';
 
 interface StakeModalModalProps {
     onCancel?: () => void;
+    selectedAccount: SelectedAccountLoaded;
 }
 
-export const StakeModal = ({ onCancel }: StakeModalModalProps) => {
-    const selectedAccount = useSelector(
-        state => state.wallet.selectedAccount,
-    ) as SelectedAccountLoaded;
+export const StakeModalLoaded = ({ onCancel, selectedAccount }: StakeModalModalProps) => {
+    const { account } = selectedAccount;
+
     const stakeEthContextValues = useStakeEthForm({ selectedAccount });
     const isBelowTablet = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
-
-    const { account, status } = selectedAccount;
-    // it shouldn't be possible to open this modal without having selected account
-    if (!account || status !== 'loaded') return null;
 
     const onCancelClick = () => {
         onCancel?.();
@@ -34,7 +30,7 @@ export const StakeModal = ({ onCancel }: StakeModalModalProps) => {
             payload: {
                 action: 'cancel',
                 step: 'stake-form-modal',
-                networkSymbol: selectedAccount.account.symbol,
+                networkSymbol: account.symbol,
             },
         });
     };
@@ -58,5 +54,22 @@ export const StakeModal = ({ onCancel }: StakeModalModalProps) => {
                 </Grid>
             </NewModal>
         </StakeEthFormContext.Provider>
+    );
+};
+
+export const StakeModal = ({ onCancel }: Omit<StakeModalModalProps, 'selectedAccount'>) => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+
+    if (selectedAccount.status !== 'loaded' || !selectedAccount.account) {
+        onCancel?.();
+
+        return null;
+    }
+
+    return (
+        <StakeModalLoaded
+            onCancel={onCancel}
+            selectedAccount={selectedAccount as SelectedAccountLoaded}
+        />
     );
 };

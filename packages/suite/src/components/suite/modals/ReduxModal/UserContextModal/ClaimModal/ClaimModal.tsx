@@ -16,13 +16,11 @@ import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 
 interface ClaimModalModalProps {
     onCancel?: () => void;
+    selectedAccount: SelectedAccountLoaded;
 }
 
-export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
+const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) => {
     const { device, isLocked } = useDevice();
-    const selectedAccount = useSelector(
-        state => state.wallet.selectedAccount,
-    ) as SelectedAccountLoaded;
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
     );
@@ -81,9 +79,6 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
             },
         });
     };
-
-    // it shouldn't be possible to open this modal without having selected account
-    if (!selectedAccount?.account || selectedAccount?.status !== 'loaded') return null;
 
     return (
         <NewModal
@@ -159,5 +154,22 @@ export const ClaimModal = ({ onCancel }: ClaimModalModalProps) => {
                 </Column>
             </form>
         </NewModal>
+    );
+};
+
+export const ClaimModal = ({ onCancel }: Omit<ClaimModalModalProps, 'selectedAccount'>) => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+
+    if (selectedAccount.status !== 'loaded' || !selectedAccount.account) {
+        onCancel?.();
+
+        return null;
+    }
+
+    return (
+        <ClaimModalLoaded
+            onCancel={onCancel}
+            selectedAccount={selectedAccount as SelectedAccountLoaded}
+        />
     );
 };

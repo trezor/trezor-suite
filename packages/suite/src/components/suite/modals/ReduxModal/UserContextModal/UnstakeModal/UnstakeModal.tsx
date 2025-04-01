@@ -21,18 +21,14 @@ import { UnstakeEthForm } from './UnstakeEthForm/UnstakeEthForm';
 
 interface UnstakeModalModalProps {
     onCancel?: () => void;
+    selectedAccount: SelectedAccountLoaded;
 }
 
-export const UnstakeModal = ({ onCancel }: UnstakeModalModalProps) => {
-    const selectedAccount = useSelector(
-        state => state.wallet.selectedAccount,
-    ) as SelectedAccountLoaded;
+export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalModalProps) => {
+    const { account } = selectedAccount;
+
     const unstakeEthContextValues = useUnstakeEthForm({ selectedAccount });
     const isBelowTablet = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
-
-    const { account, status } = selectedAccount;
-    // it shouldn't be possible to open this modal without having selected account
-    if (!account || status !== 'loaded') return null;
 
     const onCancelClick = () => {
         onCancel?.();
@@ -42,7 +38,7 @@ export const UnstakeModal = ({ onCancel }: UnstakeModalModalProps) => {
             payload: {
                 action: 'cancel',
                 step: 'unstake-form-modal',
-                networkSymbol: selectedAccount.account.symbol,
+                networkSymbol: account.symbol,
             },
         });
     };
@@ -74,5 +70,22 @@ export const UnstakeModal = ({ onCancel }: UnstakeModalModalProps) => {
                 </Grid>
             </NewModal>
         </UnstakeEthFormContext.Provider>
+    );
+};
+
+export const UnstakeModal = ({ onCancel }: Omit<UnstakeModalModalProps, 'selectedAccount'>) => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+
+    if (selectedAccount.status !== 'loaded' || !selectedAccount.account) {
+        onCancel?.();
+
+        return null;
+    }
+
+    return (
+        <UnstakeModalLoaded
+            onCancel={onCancel}
+            selectedAccount={selectedAccount as SelectedAccountLoaded}
+        />
     );
 };
