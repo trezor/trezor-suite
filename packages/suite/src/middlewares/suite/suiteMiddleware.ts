@@ -107,7 +107,9 @@ const suite =
                 api.dispatch(handleDeviceDisconnect(action.payload));
                 break;
             case SUITE.REQUEST_AUTH_CONFIRM:
-                api.dispatch(authConfirm());
+                if (!api.getState().wallet.passphraseFlow) {
+                    api.dispatch(authConfirm());
+                }
                 break;
             case SUITE.ONLINE_STATUS:
                 // Restart discovery to reconnect to backends when user goes offline -> online.
