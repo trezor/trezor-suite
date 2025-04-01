@@ -12357,7 +12357,7 @@ __metadata:
     electron: "npm:35.1.2"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
-    electron-updater: "npm:6.5.0"
+    electron-updater: "npm:6.6.2"
     fs-extra: "npm:^11.2.0"
     glob: "npm:^10.3.10"
     jest-diff: "npm:^29.7.0"
@@ -12413,7 +12413,7 @@ __metadata:
     electron-builder: "npm:26.0.12"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:8.2.0"
-    electron-updater: "npm:6.5.0"
+    electron-updater: "npm:6.6.2"
     glob: "npm:^10.3.10"
     openpgp: "npm:^6.1.0"
     usb: "npm:^2.15.0"
@@ -20897,9 +20897,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-updater@npm:6.5.0":
-  version: 6.5.0
-  resolution: "electron-updater@npm:6.5.0"
+"electron-updater@npm:6.6.2":
+  version: 6.6.2
+  resolution: "electron-updater@npm:6.6.2"
   dependencies:
     builder-util-runtime: "npm:9.3.1"
     fs-extra: "npm:^10.1.0"
@@ -20909,7 +20909,7 @@ __metadata:
     lodash.isequal: "npm:^4.5.0"
     semver: "npm:^7.6.3"
     tiny-typed-emitter: "npm:^2.1.0"
-  checksum: 10/161137dac327049650b58dbd996b9a8b4f25cd858ac17cce0374613976a0fac1778011cb1a8bb663bf52f826ab95d330746255bbebb8431bbc86a6d5fae0f8d0
+  checksum: 10/9524a9ee873a582310f23dc406863dbb1525895631b8c8bad708ad2f90e7c5ac11ff8f55b741c342188f7811a20a7c1c43411351c4ed3abe7379efdebc479c0b
   languageName: node
   linkType: hard
 
