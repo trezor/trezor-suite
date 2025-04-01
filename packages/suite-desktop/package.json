@@ -32,7 +32,7 @@
     "devDependencies": {
         "@electron/fuses": "^1.8.0",
         "@electron/notarize": "2.5.0",
-        "electron": "35.0.1",
+        "electron": "35.1.2",
         "electron-builder": "26.0.3",
         "glob": "^10.3.10"
     }

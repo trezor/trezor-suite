@@ -96,7 +96,7 @@
         "type-fest": "4.24.0",
         "bcrypto": "5.4.0",
         "react": "18.2.0",
-        "electron": "35.0.1",
+        "electron": "35.1.2",
         "@types/node": "22.13.10",
         "@types/react": "18.2.55",
         "bn.js": "5.2.1",
