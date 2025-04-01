@@ -23,7 +23,7 @@ import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sen
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-import { SendContextValues, UseSendFormState } from '../../../types/wallet/sendForm';
+import { SendContextValues } from '../../../types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
@@ -117,6 +117,8 @@ export const useCompose = <TFieldValues extends FormState>({
     // update fields AFTER composedLevels change or selectedFee change (below)
     const updateComposedValues = useCallback(
         (composed: PrecomposedTransaction | PrecomposedTransactionCardano) => {
+            if (!composed) return;
+
             const values = getValues();
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
@@ -185,16 +187,19 @@ export const useCompose = <TFieldValues extends FormState>({
     );
 
     const switchToNearestFee = useCallback(
-        (composedLevels: NonNullable<UseSendFormState['composedLevels']>) => {
+        (composedLevels: PrecomposedLevels | PrecomposedLevelsCardano) => {
             const { selectedFee, setMaxOutputId } = getValues();
             let composed = composedLevels[selectedFee || 'normal'];
+
+            // composed transaction does not exists (should never happen)
+            if (!composed) return;
 
             // selectedFee was not set yet (no interaction with Fees) and default (normal) fee tx is not valid
             // OR setMax option was used
             // try to switch to nearest possible composed transaction
             const shouldSwitch =
                 !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
-            if (shouldSwitch && composed?.type === 'error') {
+            if (shouldSwitch && composed.type === 'error') {
                 // find nearest possible tx
                 const nearest = Object.keys(composedLevels)
                     .reverse()
@@ -215,9 +220,6 @@ export const useCompose = <TFieldValues extends FormState>({
                 }
                 // or do nothing, use default composed tx
             }
-
-            // composed transaction does not exists (should never happen)
-            if (!composed) return;
 
             updateComposedValues(composed);
         },

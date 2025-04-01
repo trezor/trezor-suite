@@ -53,7 +53,7 @@ const ReducedAmount = ({ composedLevels, setMaxOutputId, account, selectedFee }:
 
     const precomposedTx = composedLevels[selectedFee || 'normal'];
 
-    if (precomposedTx.type !== 'final') {
+    if (precomposedTx?.type !== 'final') {
         return null;
     }
 

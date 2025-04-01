@@ -165,8 +165,8 @@ export type GeneralPrecomposedTransactionFinal = Extract<
     { type: 'final' }
 >;
 
-export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
-export type PrecomposedLevelsCardano = { [key: string]: PrecomposedTransactionCardano };
+export type PrecomposedLevels = Record<string, PrecomposedTransaction>;
+export type PrecomposedLevelsCardano = Record<string, PrecomposedTransactionCardano>;
 export type GeneralPrecomposedLevels = PrecomposedLevels | PrecomposedLevelsCardano;
 
 export interface RbfTransactionParamsBitcoin {
