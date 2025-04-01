@@ -2,7 +2,6 @@
  * Bridge runner
  */
 import { isDevEnv } from '@suite-common/suite-utils';
-import { isWindows } from '@trezor/env-utils';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
 import { InvokeResult } from '@trezor/suite-desktop-api';
 import { TrezordNode } from '@trezor/transport-bridge';
@@ -94,8 +93,6 @@ const shouldUseLegacyBridge = (store: Dependencies['store']) => {
     if (isDevEnv) return false;
 
     if (allowPrerelease) return false;
-
-    if (isWindows()) return true;
 
     // handle rollout for regular users
     if (skipNewBridgeRollout) return false;
