@@ -25,7 +25,7 @@ describe('BuyForm', () => {
 
     it('should render when buy data are not preloaded', async () => {
         const { result } = await renderFormHook({});
-        const { queryByText, queryAllByText, getAllByText, getByLabelText } = await renderBuyForm(
+        const { queryByText, queryAllByText, getByLabelText } = await renderBuyForm(
             {},
             result.current,
         );
@@ -37,8 +37,8 @@ describe('BuyForm', () => {
         expect(queryByText('Country of residence')).toBeDefined();
         expect(queryByText('Provider')).toBeDefined();
         expect(queryByText('Continue')).toBeDefined();
-        // payment method, country of residence and provider
-        expect(getAllByText('Not selected').length).toBe(3);
+        // country
+        expect(queryByText('Not selected')).toBeDefined();
         // receive account needs coin to be selected
         expect(queryByText('Select coin first')).toBeDefined();
     });

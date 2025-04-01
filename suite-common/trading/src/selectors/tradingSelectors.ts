@@ -206,3 +206,9 @@ export const selectTradingBuySupportedCryptoIds = createMemoizedSelector(
             });
     },
 );
+
+export const selectTradingBuyIsLoading = (state: TradingRootState) =>
+    state.wallet.tradingNew.buy.isLoading;
+
+export const selectTradingBuyQuotes = (state: TradingRootState) =>
+    state.wallet.tradingNew.buy.quotes;

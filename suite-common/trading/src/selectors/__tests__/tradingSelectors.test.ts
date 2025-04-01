@@ -9,7 +9,9 @@ import {
     TradingRootState,
     selectTrading,
     selectTradingBuy,
+    selectTradingBuyIsLoading,
     selectTradingBuyProviders,
+    selectTradingBuyQuotes,
     selectTradingBuyQuotesRequest,
     selectTradingBuySelectedQuote,
     selectTradingBuySupportedCryptoIds,
@@ -263,6 +265,24 @@ describe('tradingSelectors', () => {
             state.wallet.tradingNew.buy.buyInfo = undefined;
 
             expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
+        });
+    });
+
+    describe('selectTradingBuyIsLoading', () => {
+        it('should be false when trading is not loading', () => {
+            expect(selectTradingBuyIsLoading(state)).toBe(false);
+        });
+
+        it('should be true when trading is loading', () => {
+            state.wallet.tradingNew.buy.isLoading = true;
+
+            expect(selectTradingBuyIsLoading(state)).toBe(true);
+        });
+    });
+
+    describe('selectTradingBuyQuotes', () => {
+        it('should return quotes', () => {
+            expect(selectTradingBuyQuotes(state)).toBe(state.wallet.tradingNew.buy.quotes);
         });
     });
 });

@@ -6,6 +6,7 @@ import { TradingState, initialState } from '../tradingSlice';
 import coins from './coins.json';
 import invity from './invityProvider.json';
 import platforms from './platforms.json';
+import quotes from './quotes.json';
 
 export const getInitializedBuyState = () =>
     ({
@@ -59,3 +60,11 @@ export const getInitializedTradingState = () =>
         },
         trades: [{ tradeType: 'buy' }],
     }) as TradingState;
+
+export const getInitializedTradingStateWithQuotes = () => {
+    const state = getInitializedTradingState();
+
+    state.buy.quotes = quotes as TradingBuyState['quotes'];
+
+    return state;
+};

@@ -17,7 +17,7 @@ export const BuyFormSkeleton = () => (
                 <BoxSkeleton width={SKELETON_WIDTH} height={300} borderRadius="r16" />
             </Card>
             <Card noPadding>
-                <BoxSkeleton width={SKELETON_WIDTH} height={200} borderRadius="r16" />
+                <BoxSkeleton width={SKELETON_WIDTH} height={60} borderRadius="r16" />
             </Card>
             <BoxSkeleton width={SKELETON_WIDTH} height={50} borderRadius="r20" />
         </VStack>

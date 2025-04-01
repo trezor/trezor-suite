@@ -100,15 +100,11 @@ describe('buySelectors', () => {
         it('should return object with computed default values', () => {
             expect(selectBuyFormDefaultValues({ wallet: { tradingNew: prevState } })).toEqual({
                 fiatCurrency: 'czk',
-                paymentMethod: {
-                    value: 'creditCard',
-                    label: 'Credit Card',
-                },
                 country: {
                     label: '🇨🇿 Czech Republic',
                     value: 'CZ',
                 },
-                provider: 'invity',
+                amountInCrypto: false,
             });
         });
 

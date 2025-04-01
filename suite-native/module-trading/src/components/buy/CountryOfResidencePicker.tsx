@@ -2,16 +2,13 @@ import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { useTradeSheetControls } from '../../hooks/useTradeSheetControls';
-import { TradingBuyForm } from '../../types';
+import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { CountrySheet } from '../general/CountrySheet/CountrySheet';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 
-export type CountryOfResidencePickerProps = {
-    form: TradingBuyForm;
-};
-
-export const CountryOfResidencePicker = ({ form }: CountryOfResidencePickerProps) => {
+export const CountryOfResidencePicker = () => {
     const { translate } = useTranslate();
+    const form = useTradingBuyFormContext();
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useTradeSheetControls(form, 'country');
 

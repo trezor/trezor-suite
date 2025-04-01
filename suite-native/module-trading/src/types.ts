@@ -26,10 +26,11 @@ export type TradingBuyFormValues = {
     fiatCurrency: FiatCurrencyCode;
     fiatValue: string | undefined;
     cryptoValue: string | undefined;
+    amountInCrypto: boolean;
     focusedValue: 'fiatValue' | 'cryptoValue' | undefined;
-    paymentMethod: TradingPaymentMethodListProps;
+    paymentMethod: TradingPaymentMethodListProps | undefined;
     country: Country;
-    provider: string;
+    provider: string | undefined;
 };
 
 export type TradingBuyForm = UseFormReturn<TradingBuyFormValues>;

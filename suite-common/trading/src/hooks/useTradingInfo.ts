@@ -1,12 +1,8 @@
 import { useCallback, useMemo } from 'react';
 
-import { CoinInfo, CryptoId } from 'invity-api';
+import { CryptoId } from 'invity-api';
 
-import {
-    getDisplaySymbol,
-    getNetwork,
-    getNetworkByTradeCryptoId,
-} from '@suite-common/wallet-config';
+import { getNetwork, getNetworkByTradeCryptoId } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
 
 import { selectTradingInfo, selectTradingInfoLegacy } from '../selectors/tradingSelectors';
@@ -29,31 +25,12 @@ import {
     getTradingNativeCoinSymbolByCryptoId,
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
+    toCryptoOption,
 } from '../utils/infoUtils';
 
 const supportedAddressValidatorSymbols = new Set(
     addressValidator.getCurrencies().map(c => c.symbol),
 );
-
-const toCryptoOption = (cryptoId: CryptoId, coinInfo: CoinInfo): TradingCryptoSelectItemProps => {
-    const { networkId, contractAddress } = parseCryptoId(cryptoId);
-    const isNativeToken = isCryptoIdForNativeToken(cryptoId);
-    const coinInfoSymbol = coinInfo.symbol.toLowerCase();
-    const symbol = isNativeToken
-        ? cryptoIdToNetwork(cryptoId)?.symbol ?? coinInfoSymbol
-        : coinInfoSymbol;
-    const displaySymbol = getDisplaySymbol(coinInfoSymbol, contractAddress);
-
-    return {
-        type: 'currency',
-        value: cryptoId,
-        label: displaySymbol,
-        cryptoName: coinInfo.name,
-        coingeckoId: networkId,
-        contractAddress: contractAddress || null,
-        symbol,
-    };
-};
 
 const sortPopularCurrencies = (
     a: TradingCryptoSelectItemProps,

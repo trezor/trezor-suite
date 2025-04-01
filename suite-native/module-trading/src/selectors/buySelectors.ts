@@ -1,4 +1,4 @@
-import { BuyProviderInfo, FiatCurrencyCode } from 'invity-api';
+import { FiatCurrencyCode } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
@@ -55,12 +55,8 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
             return {} as Partial<TradingBuyFormValues>;
         }
 
-        const { country, suggestedFiatCurrency, providers } = buyInfo.buyInfo;
+        const { country, suggestedFiatCurrency } = buyInfo.buyInfo;
 
-        const paymentMethod = {
-            value: 'creditCard',
-            label: 'Credit Card',
-        };
         const fiatCurrency = suggestedFiatCurrency || DEFAULT_FIAT_CURRENCY_FALLBACK;
         const countryDefaultValue = regional.countriesMap.has(country)
             ? ({
@@ -69,18 +65,10 @@ export const selectBuyFormDefaultValues = createMemoizedSelector(
               } as Country)
             : undefined;
 
-        const suggestedProvider =
-            providers.find(
-                ({ supportedCountries, tradedFiatCurrencies }) =>
-                    supportedCountries.includes(country) &&
-                    tradedFiatCurrencies.includes(fiatCurrency),
-            ) ?? ({} as BuyProviderInfo);
-
         return {
             fiatCurrency: fiatCurrency.toLowerCase(),
-            paymentMethod,
             country: countryDefaultValue,
-            provider: suggestedProvider.name,
+            amountInCrypto: false,
         } as Partial<TradingBuyFormValues>;
     },
 );

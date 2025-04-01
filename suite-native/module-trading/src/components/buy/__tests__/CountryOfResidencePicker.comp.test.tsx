@@ -1,3 +1,4 @@
+import { Form } from '@suite-native/forms';
 import {
     fireEvent,
     renderHookWithStoreProviderAsync,
@@ -26,7 +27,11 @@ describe('CountryOfResidencePicker', () => {
     const renderCountryOfResidencePicker = async () => {
         const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
 
-        return renderWithBasicProvider(<CountryOfResidencePicker form={result.current} />);
+        return renderWithBasicProvider(
+            <Form form={result.current}>
+                <CountryOfResidencePicker />
+            </Form>,
+        );
     };
 
     it('should display "Not selected" when in default state', async () => {

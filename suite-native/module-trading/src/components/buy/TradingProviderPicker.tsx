@@ -1,50 +1,51 @@
 import { useSelector } from 'react-redux';
 
-import { selectTradingBuyProviders } from '@suite-common/trading';
+import { selectTradingBuyIsLoading, selectTradingBuyProviders } from '@suite-common/trading';
 import { Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
-import { TradingBuyForm } from '../../types';
+import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
+import { TradingOverviewValueSkeleton } from '../general/TradingOverviewValueSkeleton';
 
-export type TradingProviderPickerProps = {
-    form: TradingBuyForm;
-};
-
-const notImplementedCallback = () => {
-    // eslint-disable-next-line no-console
-    console.log('Not implemented');
-};
-
-export const TradingProviderPicker = ({ form }: TradingProviderPickerProps) => {
+export const TradingProviderPicker = () => {
     const { translate } = useTranslate();
+    const form = useTradingBuyFormContext();
     const providers = useSelector(selectTradingBuyProviders);
+    const isLoading = useSelector(selectTradingBuyIsLoading);
+    const providerKey = form.watch('provider');
 
-    const provider = providers?.[form.watch('provider')];
+    if (isLoading) {
+        return (
+            <TradingOverviewRow
+                title={translate('moduleTrading.tradingScreen.provider')}
+                noBottomBorder
+                noCaret
+            >
+                <TradingOverviewValueSkeleton />
+            </TradingOverviewRow>
+        );
+    }
+
+    if (!providerKey || !providers || providers[providerKey] === undefined) {
+        return null;
+    }
+
+    const { companyName } = providers[providerKey];
 
     return (
         <TradingOverviewRow
             title={translate('moduleTrading.tradingScreen.provider')}
-            onPress={notImplementedCallback}
             noBottomBorder
+            noCaret
         >
-            {provider ? (
-                <Text
-                    color="textSubdued"
-                    variant="body"
-                    accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
-                >
-                    {provider.companyName}
-                </Text>
-            ) : (
-                <Text
-                    color="textDisabled"
-                    variant="body"
-                    accessibilityLabel={translate('moduleTrading.tradingScreen.noProvider')}
-                >
-                    {translate('moduleTrading.notSelected')}
-                </Text>
-            )}
+            <Text
+                color="textSubdued"
+                variant="body"
+                accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
+            >
+                {companyName}
+            </Text>
         </TradingOverviewRow>
     );
 };

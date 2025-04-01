@@ -10,6 +10,7 @@ export type TradeOverviewOptionProps = {
     children: ReactNode;
     onPress?: () => void;
     noBottomBorder?: boolean;
+    noCaret?: boolean;
 };
 
 const pressableStyle = prepareNativeStyle<{ noBottomBorder: boolean }>(
@@ -31,6 +32,7 @@ export const TradingOverviewRow = ({
     children,
     onPress,
     noBottomBorder = false,
+    noCaret = false,
 }: TradeOverviewOptionProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -52,9 +54,11 @@ export const TradingOverviewRow = ({
                     <Box flex={1} justifyContent="flex-end" alignItems="flex-end">
                         {children}
                     </Box>
-                    <Box flex={0}>
-                        <Icon name="caretDown" size="medium" color="textSubdued" />
-                    </Box>
+                    {!noCaret && (
+                        <Box flex={0}>
+                            <Icon name="caretDown" size="medium" color="textSubdued" />
+                        </Box>
+                    )}
                 </HStack>
             </HStack>
         </Pressable>

@@ -6,11 +6,14 @@ import { BuyCard } from './BuyCard';
 import { BuyHeader } from './BuyHeader';
 import { Confirmation } from './Confirmation';
 import { PaymentCard } from './PaymentCard';
+import { useQuotes } from '../../hooks/useQuotes';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { TradingFooter } from '../general/TradingFooter';
 
 export const BuyForm = () => {
     const buyForm = useTradingBuyFormContext();
+    useQuotes(buyForm);
+
     const isAmountInputActive = !!buyForm.watch('focusedValue');
     const isAmountInputActiveDebounced = useDebouncedValue(isAmountInputActive);
 
@@ -22,7 +25,7 @@ export const BuyForm = () => {
                 <AmountEditingDoneButton />
             ) : (
                 <>
-                    <PaymentCard form={buyForm} />
+                    <PaymentCard />
                     <Confirmation />
                     <TradingFooter />
                 </>

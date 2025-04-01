@@ -11,8 +11,11 @@ export type PaymentMethodsSheetProps = {
     selectedMethod?: TradingPaymentMethodListProps;
 };
 
+const EXTRA_LIST_PADDING = 20;
+
 const keyExtractor = (item: TradingPaymentMethodListProps) => item.value;
-const getEstimatedListHeight = (itemsCount: number) => itemsCount * PAYMENT_METHOD_LIST_ITEM_HEIGHT;
+const getEstimatedListHeight = (itemsCount: number) =>
+    itemsCount * PAYMENT_METHOD_LIST_ITEM_HEIGHT + ESTIMATED_HEADER_HEIGHT + EXTRA_LIST_PADDING;
 
 export const PaymentMethodsSheet = ({
     methods,

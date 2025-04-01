@@ -1371,6 +1371,7 @@ export const en = {
             provider: 'Provider',
             continueButton: 'Continue',
             amountEditingDoneButton: 'Done',
+            quotesLoadingLabel: 'Fetching offers...',
             footer: {
                 poweredBy: 'Powered by',
                 learnMore: 'Learn more',

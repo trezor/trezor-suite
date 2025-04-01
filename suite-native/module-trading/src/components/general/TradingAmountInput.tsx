@@ -10,18 +10,17 @@ export type TradingAmountInputProps = {
     inputTransformer: (value: string) => string;
 } & Omit<TextInputProps, 'value' | 'onChangeText' | 'placeholder' | 'style' | 'onBlur'>;
 
+export const INPUT_MIN_WIDTH = 60;
+export const INPUT_HEIGHT = 42;
+
 const inputStyle = prepareNativeStyle(({ colors, typography }) => ({
     ...typography.body,
     color: colors.textDefault,
-    padding: 0,
-    margin: 0,
     textAlign: 'right',
     fontSize: 34,
-    lineHeight: 42,
-    minWidth: 60,
-    borderWidth: 0,
-    backgroundColor: colors.backgroundSurfaceElevation1,
-    overflow: 'hidden',
+    lineHeight: INPUT_HEIGHT,
+    minWidth: INPUT_MIN_WIDTH,
+    flex: 1,
 }));
 
 export const TradingAmountInput = ({
