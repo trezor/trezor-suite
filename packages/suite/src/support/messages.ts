@@ -9340,6 +9340,16 @@ export default defineMessages({
         defaultMessage:
             'You can already claim {amount} {symbol}. {br}Claim now or wait until your new unstake is processed.',
     },
+    TR_STAKE_CAN_UNSTAKE_FROM_ACCOUNTS: {
+        id: 'TR_STAKE_CAN_UNSTAKE_FROM_ACCOUNTS',
+        defaultMessage:
+            'Due to Solana transaction size restrictions, you can unstake from {limit} accounts at once. In the next transaction you can unstake up to {amount} {symbol}. To unstake more, please repeat the process.',
+    },
+    TR_STAKE_CAN_CLAIM_FROM_ACCOUNTS: {
+        id: 'TR_STAKE_CAN_CLAIM_FROM_ACCOUNTS',
+        defaultMessage:
+            'Due to Solana transaction size restrictions, you can claim from {limit} accounts at once. In the next transaction you can claim up to {amount} {symbol}. To claim more, please repeat the process.',
+    },
     TR_STAKE_CLAIM_IN_NEXT_BLOCK: {
         id: 'TR_STAKE_CLAIM_IN_NEXT_BLOCK',
         defaultMessage: 'in the next block',

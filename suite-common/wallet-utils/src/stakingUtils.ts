@@ -11,7 +11,7 @@ import {
     SOLANA_EPOCH_DAYS,
     UNSTAKING_ETH_PERIOD,
 } from '@suite-common/wallet-constants';
-import { Account, StakingPoolExtended } from '@suite-common/wallet-types';
+import { Account, PrecomposedLevels, StakingPoolExtended } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -122,4 +122,13 @@ export const getUnstakingPeriodInDays = ({
         .toNumber();
 
     return secondsToDays(unstakingPeriodInSeconds);
+};
+
+export const getOutputTxAmount = (composedLevels?: PrecomposedLevels) => {
+    if (!composedLevels) return null;
+
+    const precomposedTx = composedLevels['normal'];
+    if (precomposedTx?.type !== 'final') return null;
+
+    return precomposedTx.outputs[0].amount;
 };

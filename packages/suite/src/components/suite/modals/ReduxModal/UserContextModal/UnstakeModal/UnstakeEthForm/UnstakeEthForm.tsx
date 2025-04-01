@@ -1,3 +1,4 @@
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork, getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
 import { Banner, Column, InfoItem, Tooltip } from '@trezor/components';
@@ -13,6 +14,7 @@ import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/components/ApproximateInstantEthAmount';
 
 import { Inputs } from './Inputs';
+import { SolanaStakingLimitBanner } from '../../SolanaStakingLimitBanner';
 import { AvailableBalance } from '../../StakeModal/StakeEthForm/AvailableBalance';
 
 export const UnstakeEthForm = () => {
@@ -53,18 +55,26 @@ export const UnstakeEthForm = () => {
     return (
         <form onSubmit={handleSubmit(signTx)}>
             <Column gap={spacings.xxl} margin={{ bottom: spacings.lg }}>
-                {canClaim && (
-                    <Banner variant="info">
-                        <Translation
-                            id="TR_STAKE_CAN_CLAIM_WARNING"
-                            values={{
-                                amount: claimableAmount,
-                                symbol: symbol.toUpperCase(),
-                                br: <br />,
-                            }}
-                        />
-                    </Banner>
-                )}
+                <Column gap={spacings.md}>
+                    {canClaim && (
+                        <Banner variant="info">
+                            <Translation
+                                id="TR_STAKE_CAN_CLAIM_WARNING"
+                                values={{
+                                    amount: claimableAmount,
+                                    symbol: getDisplaySymbol(symbol),
+                                    br: <br />,
+                                }}
+                            />
+                        </Banner>
+                    )}
+
+                    <SolanaStakingLimitBanner
+                        account={account}
+                        composedLevels={composedLevels}
+                        type="unstake"
+                    />
+                </Column>
 
                 <AvailableBalance formattedBalance={autocompoundBalance} symbol={symbol} />
 

@@ -14,6 +14,8 @@ import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking
 import { useClaimEthForm } from 'src/hooks/wallet/useClaimEthForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 
+import { SolanaStakingLimitBanner } from '../SolanaStakingLimitBanner';
+
 interface ClaimModalModalProps {
     onCancel?: () => void;
     selectedAccount: SelectedAccountLoaded;
@@ -112,6 +114,12 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
         >
             <form onSubmit={onClaimClick}>
                 <Column gap={spacings.lg}>
+                    <SolanaStakingLimitBanner
+                        account={account}
+                        composedLevels={composedLevels}
+                        type="claim"
+                    />
+
                     <InfoItem direction="column" label={<Translation id="AMOUNT" />}>
                         <Paragraph typographyStyle="titleSmall">
                             <FormattedCryptoAmount
