@@ -11455,7 +11455,6 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     "@trezor/websocket-client": "workspace:*"
-    "@types/web": "npm:^0.0.197"
     events: "npm:^3.3.0"
     fs-extra: "npm:^11.2.0"
     html-webpack-plugin: "npm:^5.6.0"
@@ -14152,13 +14151,6 @@ __metadata:
   version: 1.0.10
   resolution: "@types/w3c-web-usb@npm:1.0.10"
   checksum: 10/6ac6786a0788f0846a48b103ab06ca5fde5eb95674217b522420a2f6157bee3e181a961c1b7011940f497c55f4f5cc46129657d881fdd8112b48764089679ad6
-  languageName: node
-  linkType: hard
-
-"@types/web@npm:^0.0.197":
-  version: 0.0.197
-  resolution: "@types/web@npm:0.0.197"
-  checksum: 10/8b6b13301d0ae63e4a8686bc942d7a3e782c41fedeca02bb0fe3e0f0f934e63d76df5119473ddc7f6dfce8a8185b1e65974172f39f306822f2774c95a0b7c2ff
   languageName: node
   linkType: hard
 
