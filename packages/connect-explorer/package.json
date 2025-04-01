@@ -44,7 +44,7 @@
         "remark-gemoji": "^8.0.0",
         "remark-gfm": "^4.0.1",
         "styled-components": "^6.1.8",
-        "swr": "^2.2.5"
+        "swr": "^2.3.3"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
