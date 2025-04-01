@@ -161,6 +161,7 @@ const bumpConnect = async () => {
                 const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
                 const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
 
+                // This uses dependency version-bump-prompt.
                 await exec('yarn', ['bump', semver, `./packages/${packageName}/package.json`]);
 
                 const rawPackageJSON = await readFile(PACKAGE_JSON_PATH, 'utf-8');
