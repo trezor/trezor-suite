@@ -205,7 +205,6 @@ export const FirmwareModal = ({
                 data-testid="@firmware-modal"
                 heading={status === 'error' ? undefined : heading}
                 bottomContent={getBottomContent()}
-                size="small"
                 iconName={status === 'error' ? 'warning' : undefined}
                 variant={status === 'error' ? 'destructive' : undefined}
             >
