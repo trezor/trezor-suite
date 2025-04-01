@@ -1,37 +1,14 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-
-import { Button, Card, Image, Text } from '@trezor/components';
+import { Card, Column, H3, NewModal, Paragraph, Text } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Metadata, Modal, Translation } from 'src/components/suite';
+import { Metadata, Translation } from 'src/components/suite';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
-
-const StyledModal = styled(Modal)`
-    ${Modal.BottomBar} {
-        > * {
-            flex: 1;
-            justify-content: space-between;
-        }
-    }
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
-    align-self: center;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    path {
-        fill: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    }
-`;
 
 /**
  * This component renders only in desktop version
@@ -53,67 +30,78 @@ export const BridgeRequested = () => {
 
     if (confirmGoToWallet) {
         return (
-            <StyledModal
+            <NewModal
+                variant="warning"
+                size="small"
                 heading={<Translation id="TR_BRIDGE" />}
-                description={<Translation id="TR_BRIDGE_GO_TO_WALLET_DESCRIPTION" />}
                 onBackClick={() => setConfirmGoToWallet(false)}
-                bottomBarComponents={
+                bottomContent={
                     <>
-                        <Button variant="primary" onClick={goToWallet}>
+                        <NewModal.Button onClick={goToWallet}>
                             <Translation id="TR_YES_CONTINUE" />
-                        </Button>
-                        <Button variant="tertiary" onClick={() => setConfirmGoToWallet(false)}>
+                        </NewModal.Button>
+                        <NewModal.Button
+                            variant="tertiary"
+                            onClick={() => setConfirmGoToWallet(false)}
+                        >
                             <Translation id="TR_CANCEL" />
-                        </Button>
+                        </NewModal.Button>
                     </>
                 }
             >
                 <Metadata title="Bridge | Trezor Suite" />
-            </StyledModal>
+                <Paragraph>
+                    <Translation id="TR_BRIDGE_GO_TO_WALLET_DESCRIPTION" />
+                </Paragraph>
+            </NewModal>
         );
     }
 
     return (
-        <StyledModal
-            heading={<Translation id="TR_BRIDGE" />}
-            description={<Translation id="TR_BRIDGE_REQUESTED_DESCRIPTION" />}
-            isHeadingCentered
-            bottomBarComponents={
+        <NewModal
+            iconName="appWindow"
+            variant="info"
+            size="small"
+            bottomContent={
                 <>
-                    <StyledButton
+                    <NewModal.Button
                         icon="caretLeft"
                         variant="tertiary"
                         onClick={() => setConfirmGoToWallet(true)}
                         data-testid="@bridge/goto/wallet-index"
                     >
                         <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
-                    </StyledButton>
+                    </NewModal.Button>
 
                     {desktopApi.available && (
-                        <StyledButton onClick={handleKeepInBackground}>
+                        <NewModal.Button onClick={handleKeepInBackground}>
                             <Translation id="TR_KEEP_RUNNING_IN_BACKGROUND" />
-                        </StyledButton>
+                        </NewModal.Button>
                     )}
                 </>
             }
         >
             <Metadata title="Bridge | Trezor Suite" />
-            <StyledImage image="CONNECT_DEVICE" width="360" />
-
-            {isDesktop() && (
-                <>
-                    <Text
-                        typographyStyle="hint"
-                        variant="tertiary"
-                        margin={{ bottom: spacings.md }}
-                    >
-                        <Translation id="TR_BRIDGE_TIP_AUTOSTART" />
-                    </Text>
-                    <Card>
-                        <AutoStart />
-                    </Card>
-                </>
+            <Column gap={spacings.xxs}>
+                <H3>
+                    <Translation id="TR_BRIDGE" />
+                </H3>
+                <Paragraph variant="tertiary">
+                    <Translation id="TR_BRIDGE_REQUESTED_DESCRIPTION" />
+                </Paragraph>
+            </Column>
+            {!isDesktop() && (
+                <Card
+                    label={
+                        <Text typographyStyle="label">
+                            <Translation id="TR_BRIDGE_TIP_AUTOSTART" />
+                        </Text>
+                    }
+                    margin={{ top: spacings.xxl }}
+                >
+                    <AutoStart />
+                </Card>
             )}
-        </StyledModal>
+        </NewModal>
     );
 };
