@@ -50,7 +50,6 @@ import { DeviceAuthenticationExplainer } from './DeviceAuthenticationExplainer';
 import { Preloader } from './Preloader/Preloader';
 import { TrafficLightDraggableWindowHeader } from './TrafficLightOffset';
 import { PinMatrix } from './PinMatrix/PinMatrix';
-import { UdevDownload } from './UdevDownload';
 import { StakingFeature } from './StakingFeature';
 import { StakeAmountWrapper } from './StakeAmountWrapper';
 
@@ -104,7 +103,6 @@ export {
     Preloader,
     TrafficLightDraggableWindowHeader,
     PinMatrix,
-    UdevDownload,
     StakingFeature,
     StakeAmountWrapper,
 };
