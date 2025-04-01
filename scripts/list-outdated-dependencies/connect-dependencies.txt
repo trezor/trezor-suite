@@ -80,7 +80,6 @@ stream-browserify
 events
 @types/web
 jssha
-wait-on
 @jest/types
 @jest/globals
 jest-extended
