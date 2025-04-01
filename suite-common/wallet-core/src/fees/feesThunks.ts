@@ -8,6 +8,7 @@ import {
 import type { NetworksFees } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import { isNative } from '@trezor/env-utils';
 
 import { FEES_MODULE_PREFIX, feesActions } from './feesActions';
 import { selectNetworkBlockchainInfo } from '../blockchain/blockchainReducer';
@@ -80,8 +81,6 @@ export const updateFeeInfoThunk = createThunk(
         const blockchainInfo = selectNetworkBlockchainInfo(getState(), network.symbol);
 
         const device = extra.selectors.selectDevice(getState());
-        // TODO: remove when EIP-1559 complete
-        const isDebugModeActive = extra.selectors.selectDebugSettings(getState()).showDebugMenu;
 
         let newFeeInfo;
 
@@ -102,8 +101,8 @@ export const updateFeeInfoThunk = createThunk(
                 const isEip1559ActivatedAndAvailable =
                     getNetwork(network.symbol).features.includes('eip1559') &&
                     isEip1559(feeLevelBase) &&
-                    isDebugModeActive &&
-                    !device?.unavailableCapabilities?.['eip1559'];
+                    !device?.unavailableCapabilities?.['eip1559'] &&
+                    !isNative(); // suite-native does not have eip1559 implementation yet #16372
 
                 if (isEip1559ActivatedAndAvailable) {
                     newFeeInfo = result.payload;
