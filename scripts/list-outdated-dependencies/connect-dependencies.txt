@@ -62,7 +62,6 @@ remark-gfm
 socks-proxy-agent
 selfsigned
 swr
-pkg
 long
 json5
 groestl-hash-js
