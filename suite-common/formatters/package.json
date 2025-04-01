@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@formatjs/intl": "3.1.4",
+        "@formatjs/intl": "3.1.6",
         "@mobily/ts-belt": "^3.13.1",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
@@ -22,6 +22,6 @@
         "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0",
         "react": "18.2.0",
-        "react-intl": "^7.1.6"
+        "react-intl": "^7.1.10"
     }
 }

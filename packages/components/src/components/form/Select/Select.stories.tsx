@@ -1,7 +1,7 @@
 import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
 
-import { Select as SelectComponent, SelectProps } from './Select';
+import { Option, Select as SelectComponent, SelectProps } from './Select';
 
 const values: any = {
     'None (default)': null,
@@ -25,8 +25,7 @@ export const Select: StoryObj<SelectProps> = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ option }, updateArgs] = useArgs();
-        const setOption = (option2: { label: string; value: 'string' }) =>
-            updateArgs({ option: option2 });
+        const setOption = (option2: Option) => updateArgs({ option: option2 });
 
         return <SelectComponent {...args} value={option} onChange={setOption} options={options} />;
     },

@@ -14,6 +14,6 @@
     "dependencies": {
         "intl-pluralrules": "^2.0.1",
         "react": "18.2.0",
-        "react-intl": "^7.1.6"
+        "react-intl": "^7.1.10"
     }
 }

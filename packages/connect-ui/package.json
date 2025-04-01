@@ -24,14 +24,14 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "framer-motion": "^11.0.3",
-        "react-intl": "^7.1.6"
+        "react-intl": "^7.1.10"
     },
     "devDependencies": {
         "@types/react": "18.2.79"
     },
     "peerDependencies": {
         "react": "18.2.0",
-        "styled-components": "^6.1.8",
+        "styled-components": "^6.1.16",
         "stylelint": "^16.2.1",
         "stylelint-config-standard": "^36.0.0"
     }

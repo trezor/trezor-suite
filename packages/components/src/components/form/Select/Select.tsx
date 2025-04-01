@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useMemo, useRef } from 'react';
 import ReactSelect, { Props as ReactSelectProps, SelectInstance, StylesConfig } from 'react-select';
 
-import styled, { DefaultTheme, css, useTheme } from 'styled-components';
+import styled, { CSSObject, DefaultTheme, css, useTheme } from 'styled-components';
 
 import {
     Elevation,
@@ -46,12 +46,12 @@ const createSelectStyle = (
     isRenderedInModal: boolean,
 ): StylesConfig<Option, boolean> => ({
     menuPortal: base => ({
-        ...base,
+        ...(base as Record<string, CSSObject>),
         zIndex: isRenderedInModal ? zIndices.modal : zIndices.selectMenu,
     }),
     // menu styles are here because of the portal
     menu: base => ({
-        ...base,
+        ...(base as Record<string, CSSObject>),
         // should be the same as menuStyle !!!
         display: 'flex',
         flexDirection: 'column',
@@ -70,7 +70,7 @@ const createSelectStyle = (
         border: 'none',
     }),
     groupHeading: base => ({
-        ...base,
+        ...(base as Record<string, CSSObject>),
         margin: 0,
         padding: spacings.xs,
         ...{
@@ -80,7 +80,7 @@ const createSelectStyle = (
         textTransform: 'initial',
     }),
     group: base => ({
-        ...base,
+        ...(base as Record<string, CSSObject>),
         padding: 0,
 
         '& + &': {
@@ -89,7 +89,7 @@ const createSelectStyle = (
         },
     }),
     option: (base, { isFocused }) => ({
-        ...base,
+        ...(base as Record<string, CSSObject>),
         padding: `${spacingsPx.xs} ${spacingsPx.sm}`,
         borderRadius: borders.radii.xxs,
         background: isFocused ? theme.backgroundSurfaceElevation2 : 'transparent',
@@ -310,7 +310,7 @@ export const Select = ({
     const handleOnChange = useCallback<Required<ReactSelectProps>['onChange']>(
         (value, { action }) => {
             if (value) {
-                onChange?.(value, selectRef.current);
+                onChange?.(value as Option, selectRef.current);
 
                 if (!isMenuOpen && action === 'select-option') {
                     selectRef.current?.blur();

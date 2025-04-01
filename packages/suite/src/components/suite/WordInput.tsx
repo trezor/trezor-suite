@@ -1,6 +1,8 @@
 import { memo } from 'react';
 import { SelectInstance, StylesConfig, createFilter } from 'react-select';
 
+import { CSSObject } from 'styled-components';
+
 import { Select } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { bip39 } from '@trezor/crypto-utils';
@@ -14,7 +16,7 @@ type Option = { label: string; value: string };
 
 const styles: StylesConfig<Option, boolean> = {
     menuList: base => ({
-        ...base,
+        ...(base as Record<string, CSSObject>),
         maxHeight: '180px',
     }),
 };
