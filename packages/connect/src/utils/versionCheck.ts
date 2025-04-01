@@ -9,7 +9,7 @@ export const isConnectOutdated = (settings?: ConnectSettings) => {
     // npmVersion missing - pinned iframe version or core-in-popup.
     // we expect that if the version is pinned, the NPM version is equal to iframe version
     const version = settings.npmVersion || settings.version;
-    if (!isNewerOrEqual(version, '9.1.3')) return 'error';
+    if (!isNewerOrEqual(version, '9.1.5')) return 'error';
     if (!isNewerOrEqual(version, '9.5.0')) return 'warning';
 
     return false;
