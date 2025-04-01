@@ -94,3 +94,4 @@ scroll-into-view-if-needed
 @walletconnect/utils
 @walletconnect/react-native-compat
 html-inline-script-webpack-plugin
+version-bump-prompt
