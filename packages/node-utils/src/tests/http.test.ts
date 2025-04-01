@@ -356,6 +356,23 @@ describe('HttpServer', () => {
         expect(await res.text()).toEqual('foo');
     });
 
+    test('query string as array', async () => {
+        const handler = jest.fn((request, response) => {
+            const { search } = url.parse(request.url, true);
+            response.end(search);
+        });
+        server.post('/foo', [parseBodyText, handler]);
+        await server.start();
+        const address = server.getServerAddress();
+        expect(address).toBeDefined();
+        const res = await fetch(`http://${address.address}:${address.port}/foo?a=1&a=2&b=3`, {
+            method: 'POST',
+            body: 'foo',
+        });
+        expect(res.status).toEqual(200);
+        expect(await res.text()).toEqual('?a=1&a=2&b=3');
+    });
+
     test('query string sanitization', async () => {
         const handler = jest.fn((request, response) => {
             const { search } = url.parse(request.url, true);
