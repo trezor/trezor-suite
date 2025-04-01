@@ -218,14 +218,6 @@ export const TransactionReviewModalContent = ({
             cancelSignTx();
             decision?.resolve(false);
         }
-
-        analytics.report({
-            type: EventType.TransactionCancel,
-            payload: {
-                txType,
-                networkSymbol: symbol,
-            },
-        });
     };
 
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);

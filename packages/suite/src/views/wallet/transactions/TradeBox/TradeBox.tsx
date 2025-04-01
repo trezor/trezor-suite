@@ -52,20 +52,34 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
             type === 'stake' ? 'wallet-staking' : `wallet-trading-${type}`;
         const dataTestId = type === 'stake' ? undefined : `@trading/menu/wallet-trading-${type}`;
 
+        const onButtonClick = () => {
+            dispatch(goto(gotoRouteName, { preserveParams: true }));
+
+            analytics.report({
+                type: EventType.AccountsTradeboxButton,
+                payload: {
+                    symbol: account.symbol,
+                    type,
+                },
+            });
+
+            if (type === 'stake') {
+                analytics.report({
+                    type: EventType.StakingNavigate,
+                    payload: {
+                        action: 'navigate',
+                        from: 'account/tradebox',
+                        networkSymbol: account.symbol,
+                    },
+                });
+            }
+        };
+
         return (
             <Button
                 variant="tertiary"
                 size="small"
-                onClick={() => {
-                    analytics.report({
-                        type: EventType.AccountsTradeboxButton,
-                        payload: {
-                            symbol: account.symbol,
-                            type,
-                        },
-                    });
-                    dispatch(goto(gotoRouteName, { preserveParams: true }));
-                }}
+                onClick={onButtonClick}
                 data-testid={dataTestId}
                 isDisabled={isDisabled}
             >

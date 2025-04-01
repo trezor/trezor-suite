@@ -205,6 +205,7 @@ export type SuiteAnalyticsEvent =
                   | 'sidebar'
                   | 'account/navigation'
                   | 'account/banner'
+                  | 'account/tradebox'
                   | 'dashboard/banner'
                   | 'dashboard/assets';
               networkSymbol?: string;
