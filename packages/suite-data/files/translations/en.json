@@ -1457,7 +1457,7 @@
   "TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING": "Before confirming on device",
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION": "Copy from Trezor Suite or scan the QR code on your Trezor device.",
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING": "Copy or scan the address",
-  "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION": "Enter it on an exchange, in another wallet, or share it with someone to receive funds.",
+  "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION": "Paste it into an exchange, wallet, or message to someone who will send you funds.",
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING": "Use the address where needed",
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION": "Always check the pasted address matches the one displayed on your Trezor's screen.",
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING": "Verify it on your Trezor",

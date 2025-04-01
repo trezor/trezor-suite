@@ -8781,7 +8781,7 @@ export default defineMessages({
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION',
         defaultMessage:
-            'Enter it on an exchange, in another wallet, or share it with someone to receive funds.',
+            'Paste it into an exchange, wallet, or message to someone who will send you funds.',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING',
