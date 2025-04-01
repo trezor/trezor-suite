@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import Lottie from 'lottie-react';
 import styled, { useTheme } from 'styled-components';
@@ -78,55 +78,81 @@ export const Spinner = ({
         setHasFinishedRotation(true);
     };
 
-    // base/content/reverse-primary
-    const colorsReplace = [
-        { from: ORIGIN_COLORS_IN_ANIMATION.BODY, to: bodyColor ?? defaultBodyColor },
-        {
-            from: ORIGIN_COLORS_IN_ANIMATION.WARNING_BACKGROUND,
-            to: warningBackgroundColor ?? defaultWarningColor,
-        },
-        {
-            from: ORIGIN_COLORS_IN_ANIMATION.WARNING_FOREGROUND,
-            to: warningForegroundColor ?? defaultWarningForegroundColor,
-        },
-    ];
+    const colorsReplace = useMemo(
+        () => [
+            { from: ORIGIN_COLORS_IN_ANIMATION.BODY, to: bodyColor ?? defaultBodyColor },
+            {
+                from: ORIGIN_COLORS_IN_ANIMATION.WARNING_BACKGROUND,
+                to: warningBackgroundColor ?? defaultWarningColor,
+            },
+            {
+                from: ORIGIN_COLORS_IN_ANIMATION.WARNING_FOREGROUND,
+                to: warningForegroundColor ?? defaultWarningForegroundColor,
+            },
+        ],
+        [
+            bodyColor,
+            warningBackgroundColor,
+            warningForegroundColor,
+            defaultBodyColor,
+            defaultWarningColor,
+            defaultWarningForegroundColor,
+        ],
+    );
 
-    const getProps = () => {
+    const memoizedAnimations = useMemo(
+        () => ({
+            start: recolorLottieAnimation(animationStart, colorsReplace),
+            middle: recolorLottieAnimation(animationMiddle, colorsReplace),
+            end: recolorLottieAnimation(animationEnd, colorsReplace),
+            warn: recolorLottieAnimation(animationWarn, colorsReplace),
+        }),
+        [colorsReplace],
+    );
+
+    const lottieProps = useMemo(() => {
         if (hasFinished && hasFinishedRotation) {
             return {
-                animationData: recolorLottieAnimation(animationEnd, colorsReplace),
+                animationData: memoizedAnimations.end,
                 loop: false,
             };
         }
 
         if (hasError && hasFinishedRotation) {
             return {
-                animationData: recolorLottieAnimation(animationWarn, colorsReplace),
+                animationData: memoizedAnimations.warn,
                 loop: false,
             };
         }
 
         if (hasStarted || !hasStartAnimation) {
             return {
-                animationData: recolorLottieAnimation(animationMiddle, colorsReplace),
+                animationData: memoizedAnimations.middle,
                 onLoopComplete,
             };
         }
 
         return {
-            animationData: recolorLottieAnimation(animationStart, colorsReplace),
+            animationData: memoizedAnimations.start,
             onComplete: () => setHasStarted(true),
             loop: false,
         };
-    };
+    }, [
+        hasStarted,
+        hasStartAnimation,
+        hasFinished,
+        hasError,
+        hasFinishedRotation,
+        memoizedAnimations,
+    ]);
 
     return (
         <StyledLottie
             size={size}
             $isGrey={isGrey}
             className={className}
-            {...getProps()}
-            data-testid={dataTest ? dataTest : `@spinner`}
+            data-testid={dataTest ?? '@spinner'}
+            {...lottieProps}
             {...frameProps}
         />
     );
