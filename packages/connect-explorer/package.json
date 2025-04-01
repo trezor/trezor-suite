@@ -42,7 +42,7 @@
         "redux-logger": "^3.0.6",
         "redux-thunk": "^3.1.0",
         "remark-gemoji": "^8.0.0",
-        "remark-gfm": "^4.0.0",
+        "remark-gfm": "^4.0.1",
         "styled-components": "^6.1.8",
         "swr": "^2.2.5"
     },
