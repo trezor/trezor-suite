@@ -9,7 +9,7 @@ const babelConfig = {
             },
         ],
     ],
-    plugins: [['@babel/plugin-proposal-decorators', { version: '2023-05' }]],
+    plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
 };
 
 module.exports = {
