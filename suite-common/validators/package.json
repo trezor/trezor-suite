@@ -16,6 +16,6 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "yup": "^1.4.0"
+        "yup": "^1.6.1"
     }
 }

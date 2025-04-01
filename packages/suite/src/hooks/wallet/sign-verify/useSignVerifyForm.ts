@@ -17,7 +17,17 @@ type SignVerifyContext = {
     symbol: NetworkSymbol;
 };
 
-const signVerifySchema = yup.object({
+// yup doesn't type properly conditionally required fields → need to declare type rather than infer it
+export type SignVerifyFields = {
+    message: string;
+    address: string;
+    hex: boolean;
+    path?: string;
+    signature?: string;
+    isElectrum?: boolean;
+};
+
+const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
     message: yup
         .string()
         .max(MAX_LENGTH_MESSAGE, 'TR_TOO_LONG')
@@ -47,8 +57,6 @@ const signVerifySchema = yup.object({
     hex: yup.boolean().required(),
     isElectrum: yup.boolean(),
 });
-
-export type SignVerifyFields = yup.InferType<typeof signVerifySchema>;
 
 const DEFAULT_VALUES: SignVerifyFields = {
     message: '',
