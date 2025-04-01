@@ -3,6 +3,10 @@ name: "[Test] Release Suite Desktop e2e tests"
 # Builds the desktop app
 # Runs full e2e test suite for Suite Desktop
 
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
 on:
   push:
     branches:

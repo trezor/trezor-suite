@@ -4,6 +4,10 @@ name: "[Test] Firmware canary Suite Desktop e2e tests"
 # Runs full e2e test suite for Suite Desktop
 # Uses firmware built nightly from main branch
 
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+  
 on:
   schedule:
     - cron: "0 0 * * *"

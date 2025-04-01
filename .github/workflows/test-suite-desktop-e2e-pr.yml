@@ -3,6 +3,11 @@ name: "[Test] PR Suite Desktop e2e tests"
 # Builds the desktop app
 # Runs full e2e test suite for Suite Desktop
 
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+  pull-requests: write # for posting comments
+
 on:
   pull_request:
     branches:
