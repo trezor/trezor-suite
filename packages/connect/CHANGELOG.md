@@ -11,6 +11,40 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
+# 9.5.4-beta.1
+
+If you are using @trezor/connect-web you must be using at least 9.1.5 starting from this release.
+
+## Features
+
+-   add descriptor to getPublicKey response (cbfec9b)
+-   implement EVM EIP-1559 fees for ethereum in blockchainEstimateFee method (0475047)
+-   improvements in @trezor/connect-web package regarding support of calling @trezor/connect inside suite-desktop application. always attempt reconnection for core in desktop (21da232); implement @trezor/websocket client in core-in-suite-desktop (9744c5b); error fallback for core in desktop (64cbd47)
+
+## Fixes
+
+-   fixing session releasing on page unload (6d01d78)
+-   fixing missing session owner in device object (e2116c1)
+-   turn off language update during fw update for T3T1 since it does not fit device memory (283d829)
+
+## Chores
+
+-   migrate ripple-lib to xrpl.js (422c175)
+-   reuse PublicKey type in HDNodeResponse type definition (6c841d9)
+-   update device authenticity config (bf82b92)
+-   connect core refactoring (1d62c9b 19b6e5e 0dd2933 f9998f3 7dc1290 b685518 fb14734)
+-   pass full request object parameter in blockchainEstimateFee method down to @trezor/blockchain-link to allow more fine-grained backend calls (19c5952)
+-   refactoring in visual components (00e7df5, b3a4791)
+
+## Deps
+
+-   update next-seo from 6.0.0 to 6.6.0 (b5a818e)
+-   update swr from 2.2.5 to 2.3.3 (6d98da6)
+-   update remark-gfm from 4.0.0 to 4.0.1 (21a8f89)
+-   update zod from 3.23.8 to 3.24.2 (afc3d9b)
+-   update ua-parser-js@2.0.3 (840d5c6)
+-   upgrade next js for connect explorer theme (951e047)
+
 # 9.5.3
 
 ## Fixes
