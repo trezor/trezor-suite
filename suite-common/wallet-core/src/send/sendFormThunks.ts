@@ -553,7 +553,11 @@ export const enhancePrecomposedTransactionThunk = createThunk<
                     rbfType: 'bump-fee',
                     prevTxid: formValues.rbfParams.txid,
                     feeDifference: new BigNumber(precomposedTransaction.fee)
-                        .minus(formValues.rbfParams.baseFee)
+                        .minus(
+                            formValues.rbfParams.type === 'bitcoin'
+                                ? formValues.rbfParams.baseFee
+                                : 0,
+                        )
                         .toFixed(),
                     useNativeRbf: !!useNativeRbf,
                     useDecreaseOutput: !!hasDecreasedOutput,

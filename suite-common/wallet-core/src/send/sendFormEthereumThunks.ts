@@ -297,7 +297,7 @@ export const ethereumGetCurrentNonceThunk = createThunk<
                 ? pendingNonceBig.toString()
                 : accountNonce;
 
-        if (rbfParams && typeof rbfParams.ethereumNonce === 'number') {
+        if (rbfParams?.type === 'ethereum' && typeof rbfParams.ethereumNonce === 'number') {
             nonce = rbfParams.ethereumNonce.toString();
         }
 

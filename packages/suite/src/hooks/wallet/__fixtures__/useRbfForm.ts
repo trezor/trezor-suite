@@ -108,6 +108,7 @@ const txDummyData = {
 //
 type HackedTxType = WalletAccountTransactionWithRequiredRbfParams & {
     rbfParams: WalletAccountTransactionWithRequiredRbfParams['rbfParams'] & {
+        type: 'bitcoin';
         utxo: Array<AccountUtxo & { required?: boolean }>;
     };
 };
@@ -152,6 +153,7 @@ const PREPARE_TX = (params: Partial<HackedTxType['rbfParams']> = {}): HackedTxTy
         },
         feeRate: '3.79',
         baseFee: 175,
+        type: 'bitcoin',
         ...params,
     },
     ...txDummyData,

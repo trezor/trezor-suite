@@ -29,7 +29,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     } = useRbfContext();
 
     const feeRate =
-        networkType === 'bitcoin' && tx.rbfParams?.feeRate !== undefined ? (
+        tx.rbfParams?.type === 'bitcoin' && tx.rbfParams?.feeRate !== undefined ? (
             <FeeRate feeRate={tx.rbfParams.feeRate} networkType={networkType} symbol={tx.symbol} />
         ) : null;
 

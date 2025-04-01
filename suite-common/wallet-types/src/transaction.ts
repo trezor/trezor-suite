@@ -169,7 +169,8 @@ export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
 export type PrecomposedLevelsCardano = { [key: string]: PrecomposedTransactionCardano };
 export type GeneralPrecomposedLevels = PrecomposedLevels | PrecomposedLevelsCardano;
 
-export interface RbfTransactionParams {
+export interface RbfTransactionParamsBitcoin {
+    type: 'bitcoin';
     txid: string;
     utxo: AccountUtxo[]; // original utxo used by this transaction
     outputs: Array<
@@ -178,7 +179,7 @@ export interface RbfTransactionParams {
               address: string;
               amount: string;
               formattedAmount: string;
-              token?: string;
+              token?: undefined;
           }
         | {
               type: 'opreturn';
@@ -190,9 +191,26 @@ export interface RbfTransactionParams {
     feeRate: string; // original fee rate
     baseFee: number; // original fee
     locktime?: number;
-    ethereumNonce?: number;
-    ethereumData?: string;
 }
+
+export interface RbfTransactionParamsEthereum {
+    type: 'ethereum';
+    txid: string;
+    outputs: Array<{
+        type: 'payment';
+        address: string;
+        amount: string;
+        formattedAmount: string;
+        token?: string;
+    }>;
+    ethereumNonce: number;
+    ethereumData: string;
+    gasPrice: string;
+    maxFeePerGas: string;
+    maxPriorityFeePerGas: string;
+}
+
+export type RbfTransactionParams = RbfTransactionParamsBitcoin | RbfTransactionParamsEthereum;
 
 export interface WalletAccountTransaction extends AccountTransaction {
     deviceState: StaticSessionId;

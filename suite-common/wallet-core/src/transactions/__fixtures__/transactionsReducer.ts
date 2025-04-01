@@ -110,7 +110,14 @@ export const addTransaction: {
             transactions: [
                 testMocks.getWalletTransaction({
                     blockHeight: undefined,
-                    rbfParams: { txid: '00', utxo: [], outputs: [], feeRate: '1', baseFee: 1 },
+                    rbfParams: {
+                        type: 'bitcoin',
+                        txid: '00',
+                        utxo: [],
+                        outputs: [],
+                        feeRate: '1',
+                        baseFee: 1,
+                    },
                 }),
             ],
         },
@@ -118,7 +125,14 @@ export const addTransaction: {
             [ACCOUNT.key]: [
                 testMocks.getWalletTransaction({
                     blockHeight: undefined,
-                    rbfParams: { txid: '00', utxo: [], outputs: [], feeRate: '1', baseFee: 1 },
+                    rbfParams: {
+                        type: 'bitcoin',
+                        txid: '00',
+                        utxo: [],
+                        outputs: [],
+                        feeRate: '1',
+                        baseFee: 1,
+                    },
                 }),
             ],
         },
@@ -135,7 +149,14 @@ export const addTransaction: {
             transactions: [
                 testMocks.getWalletTransaction({
                     blockHeight: 0,
-                    rbfParams: { txid: '00', utxo: [], outputs: [], feeRate: '1', baseFee: 1 },
+                    rbfParams: {
+                        type: 'bitcoin',
+                        txid: '00',
+                        utxo: [],
+                        outputs: [],
+                        feeRate: '1',
+                        baseFee: 1,
+                    },
                 }),
             ],
         },

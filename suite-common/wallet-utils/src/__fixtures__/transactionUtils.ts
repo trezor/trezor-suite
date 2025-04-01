@@ -1098,6 +1098,7 @@ export const getRbfParams = [
             },
         },
         result: {
+            type: 'bitcoin',
             txid: '1A2b',
             baseFee: 166,
             feeRate: '2',
@@ -1159,6 +1160,7 @@ export const getRbfParams = [
             },
         },
         result: {
+            type: 'bitcoin',
             txid: '1A2b',
             baseFee: 366,
             feeRate: '4',
@@ -1231,6 +1233,7 @@ export const getRbfParams = [
             },
         },
         result: {
+            type: 'bitcoin',
             txid: '1A2b',
             baseFee: 366,
             feeRate: '4',

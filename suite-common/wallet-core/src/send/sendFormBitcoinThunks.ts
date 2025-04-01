@@ -265,14 +265,14 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         if (formState.bitcoinLockTime) {
             signEnhancement.locktime = new BigNumber(formState.bitcoinLockTime).toNumber();
         }
-        if (formState.rbfParams?.locktime) {
+        if (formState.rbfParams?.type === 'bitcoin' && formState.rbfParams?.locktime) {
             signEnhancement.locktime = formState.rbfParams.locktime;
         }
 
         let refTxs;
 
         if (
-            formState.rbfParams &&
+            formState.rbfParams?.type === 'bitcoin' &&
             isRbfBumpFeeTransaction(precomposedTransaction) &&
             precomposedTransaction.useNativeRbf
         ) {

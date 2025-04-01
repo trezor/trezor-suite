@@ -64,6 +64,7 @@ export const chainedTxsFixture: ChainedTransactions = {
                 totalOutput: '8999997180',
             },
             rbfParams: {
+                type: 'bitcoin',
                 txid: 'f915b58d18616519eff1da0662c9629dcbddd0165c87227f9a8c4d7b3fa95d83',
                 utxo: [
                     {

@@ -13,7 +13,8 @@ import {
     PrecomposedTransactionFinalBumpFeeRbf,
     PrecomposedTransactionFinalCancelRbf,
     RatesByTimestamps,
-    RbfTransactionParams,
+    RbfTransactionParamsBitcoin,
+    RbfTransactionParamsEthereum,
     Timestamp,
     TokenAddress,
     WalletAccountTransaction,
@@ -582,7 +583,7 @@ export const replaceEthereumSpecific = (
 const getEthereumRbfParams = (
     tx: AccountTransaction,
     account: Account,
-): RbfTransactionParams | undefined => {
+): RbfTransactionParamsEthereum | undefined => {
     if (
         account.networkType !== 'ethereum' ||
         tx.type === 'recv' ||
@@ -613,8 +614,8 @@ const getEthereumRbfParams = (
         tx.ethereumSpecific.data?.indexOf('0x') === 0 ? tx.ethereumSpecific.data.substring(2) : '';
 
     return {
+        type: 'ethereum',
         txid: tx.txid,
-        utxo: [], // irrelevant
         outputs: [
             {
                 type: 'payment',
@@ -623,15 +624,16 @@ const getEthereumRbfParams = (
         ],
         ethereumNonce: tx.ethereumSpecific.nonce,
         ethereumData,
-        feeRate: fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei'),
-        baseFee: 0, // irrelevant
+        gasPrice: fromWei(tx.ethereumSpecific?.gasPrice ?? '0', 'gwei'),
+        maxFeePerGas: fromWei(tx.ethereumSpecific?.maxFeePerGas ?? '0', 'gwei'),
+        maxPriorityFeePerGas: fromWei(tx.ethereumSpecific?.maxPriorityFeePerGas ?? '0', 'gwei'),
     };
 };
 
 const getBitcoinRbfParams = (
     tx: AccountTransaction,
     account: Account,
-): RbfTransactionParams | undefined => {
+): RbfTransactionParamsBitcoin | undefined => {
     if (account.networkType !== 'bitcoin') return;
     if (tx.type === 'recv' || !tx.details || !isPending(tx)) return; // ignore mined transactions
     const { vout } = tx.details;
@@ -642,7 +644,7 @@ const getBitcoinRbfParams = (
 
     // find change address and output
     let changeAddress: AccountAddress | undefined;
-    const outputs: RbfTransactionParams['outputs'] = [];
+    const outputs: RbfTransactionParamsBitcoin['outputs'] = [];
     vout.forEach(output => {
         if (!output.isAddress) {
             // TODO: this should be done in @trezor/connect, blockchain-link or even blockbook
@@ -673,6 +675,7 @@ const getBitcoinRbfParams = (
     if (!utxo.length || !outputs.length || outputs.length !== vout.length) return;
 
     return {
+        type: 'bitcoin',
         txid: tx.txid,
         utxo,
         outputs,
