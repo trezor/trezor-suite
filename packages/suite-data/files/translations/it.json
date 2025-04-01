@@ -1430,7 +1430,7 @@
   "TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING": "Prima di confermare sul dispositivo",
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION": "Copia da Trezor Suite o scansiona il codice QR sul tuo dispositivo Trezor.",
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING": "Copia o scansiona l'indirizzo",
-  "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION": "Inseriscilo in uno scambio, in un altro portafoglio o condividilo con qualcuno per ricevere fondi.",
+  "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION": "Inseriscilo in uno scambio, in un altro wallet o condividilo con qualcuno per ricevere fondi.",
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING": "Usa l'indirizzo dove necessario",
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION": "Verifica sempre che l'indirizzo incollato corrisponda a quello visualizzato sulla schermata del tuo Trezor.",
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING": "Verificalo sul tuo Trezor",
