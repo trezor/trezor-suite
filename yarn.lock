@@ -11600,7 +11600,7 @@ __metadata:
     jsdom: "npm:^23.0.0"
     match-sorter: "npm:^6.3.1"
     next: "npm:^15.2.4"
-    next-seo: "npm:^6.0.0"
+    next-seo: "npm:^6.6.0"
     next-themes: "npm:^0.3.0"
     nextra: "npm:^2.13.4"
     postcss: "npm:^8.4.41"
@@ -31765,6 +31765,17 @@ __metadata:
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
   checksum: 10/e86e9056305379a03aeb9b4368db79870ed91dbb0e2463574f34ec2557e8257c614c006d83c5a5f19c7f91916ed6da91700de06ba491ff86ae647ab8988b354e
+  languageName: node
+  linkType: hard
+
+"next-seo@npm:^6.6.0":
+  version: 6.6.0
+  resolution: "next-seo@npm:6.6.0"
+  peerDependencies:
+    next: ^8.1.1-canary.54 || >=9.0.0
+    react: ">=16.0.0"
+    react-dom: ">=16.0.0"
+  checksum: 10/c1998d90bcf11375c7c3d3c6877ce8b72f6a0252e41466c12b10f449ed60a5ebe2545bd423c5b0b1d7c11cb9b3a76b0435640510214149cad268296f52a8735c
   languageName: node
   linkType: hard
 
