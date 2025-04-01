@@ -11,7 +11,7 @@ import { getFeeLevelTranslationId } from '../Fees';
 
 // Solana, Ripple, Cardano and other networks with only one option
 export const MiscFeeCards = forwardRef<HTMLDivElement, StandardFeeProps>(
-    ({ networkType, feeOptions, symbol, changeFeeLevel, columns }, ref) => {
+    ({ networkType, feeOptions, symbol, changeFeeLevel }, ref) => {
         if (!feeOptions.length) return null;
 
         const isSolanaNetwork = networkType === 'solana';
@@ -21,7 +21,7 @@ export const MiscFeeCards = forwardRef<HTMLDivElement, StandardFeeProps>(
         const feeAmount = isSolanaNetwork ? fee.feePerTx : fee.feePerUnit;
 
         return (
-            <FeeCardsWrapper $columns={columns ?? 1} ref={ref} data-testid="@wallet/fee-details">
+            <FeeCardsWrapper ref={ref} data-testid="@wallet/fee-details">
                 <FeeCard
                     value={fee.value}
                     isSelected={true}

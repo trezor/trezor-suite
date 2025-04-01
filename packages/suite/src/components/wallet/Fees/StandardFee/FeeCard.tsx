@@ -11,6 +11,8 @@ import {
 } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 
+export const FEE_CARD_MIN_WIDTH = 170;
+
 type FeeCardProps = {
     value: FeeLevel['label'];
     isSelected: boolean;
@@ -21,8 +23,6 @@ type FeeCardProps = {
     bottomRightChild: React.ReactNode;
     tooltipContent?: React.ReactNode;
 };
-
-export const FEE_CARD_MIN_WIDTH = 220;
 
 export const FeeCard = ({
     value,
