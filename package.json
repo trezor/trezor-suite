@@ -147,5 +147,8 @@
             "built": true
         }
     },
-    "packageManager": "yarn@4.5.3"
+    "packageManager": "yarn@4.5.3",
+    "dependencies": {
+        "version-bump-prompt": "^6.1.0"
+    }
 }
