@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SHARP_IGNORE_GLOBAL_LIBVIPS: 1 # Solves build issue of sharp lib (https://github.com/lovell/sharp/issues/4253)
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
