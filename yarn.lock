@@ -11874,7 +11874,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/chrome": "npm:^0.0.299"
+    "@types/chrome": "npm:^0.0.313"
     "@types/w3c-web-usb": "npm:^1.0.10"
     babel-loader: "npm:^9.1.3"
     html-webpack-plugin: "npm:^5.6.0"
@@ -11901,7 +11901,14 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-web": "workspace:*"
     "@trezor/eslint": "workspace:*"
+<<<<<<< HEAD
     "@types/chrome": "npm:^0.0.299"
+=======
+    "@trezor/node-utils": "workspace:*"
+    "@trezor/trezor-user-env-link": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    "@types/chrome": "npm:^0.0.313"
+>>>>>>> 2e25ac9878 (chore(deps): update @types/chrome from 0.0.299 to 0.0.313)
     babel-loader: "npm:^9.1.3"
     copy-webpack-plugin: "npm:^12.0.2"
     rimraf: "npm:^6.0.1"
@@ -12996,13 +13003,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chrome@npm:^0.0.299":
-  version: 0.0.299
-  resolution: "@types/chrome@npm:0.0.299"
+"@types/chrome@npm:^0.0.313":
+  version: 0.0.313
+  resolution: "@types/chrome@npm:0.0.313"
   dependencies:
     "@types/filesystem": "npm:*"
     "@types/har-format": "npm:*"
-  checksum: 10/2acfcfa29f76af89d28182703a0d213ae1f2874d7f4c57438f7f2db0491e4a37d84d55567036d7edc6b77ffb15e7330dfec05552892419ba9eee12d239a0d415
+  checksum: 10/2ce13e799a02c591ac2565ad7a006bcda27f02ce33969cfb602713fab33a644e96502a2b02ed197e055436117d0a1393debf7701f22aec8fa288e99c4509e3fe
   languageName: node
   linkType: hard
 
