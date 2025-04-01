@@ -102,6 +102,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             isDeviceAcquired(device) &&
             !device.state?.staticSessionId &&
             !isDeviceLocked &&
+            !getState().wallet.passphraseFlow &&
             (deviceActions.selectDevice.match(action) || action.type === SUITE.APP_CHANGED)
         ) {
             authorizationIntent = true;
@@ -113,6 +114,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             const prevDevice = prevState.device.selectedDevice;
             const becomesAcquired = !!(
                 prevDevice &&
+                !getState().wallet.passphraseFlow &&
                 !prevDevice.features &&
                 device &&
                 device.features
