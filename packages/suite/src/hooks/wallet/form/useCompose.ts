@@ -193,7 +193,7 @@ export const useCompose = <TFieldValues extends FormState>({
             // try to switch to nearest possible composed transaction
             const shouldSwitch =
                 !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
-            if (shouldSwitch && composed.type === 'error') {
+            if (shouldSwitch && composed?.type === 'error') {
                 // find nearest possible tx
                 const nearest = Object.keys(composedLevels)
                     .reverse()

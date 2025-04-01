@@ -13,7 +13,11 @@ import {
     RbfTransactionParamsEthereum,
     SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
-import { calculateChainedTransactionsFeeForRbf, getFeeInfo } from '@suite-common/wallet-utils';
+import {
+    calculateChainedTransactionsFeeForRbf,
+    getFeeInfo,
+    isEip1559,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { useSelector } from 'src/hooks/suite';
@@ -55,17 +59,36 @@ const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthere
         networkType: 'ethereum',
         feeInfo: info,
     });
-    const minFeeFromNetwork = new BigNumber(feeInfo.levels[0].feePerUnit);
+    if (isEip1559(rbfParams)) {
+        const currentMFPG = new BigNumber(rbfParams.maxFeePerGas);
 
-    const getFee = () => {
-        if (minFeeFromNetwork.lte(current.plus(feeInfo.minFee))) {
-            return current.plus(feeInfo.minFee);
+        if (currentMFPG.gt(feeInfo.levels[0].maxFeePerGas ?? 0)) {
+            // if old maxFeePerGas is higher than the current lowest fee level,
+            // set new maxFeePerGas = old maxFeePerGas + maxPriorityFeePerGas
+            const highLevel =
+                feeInfo.levels.find(level => level.label === 'high') || feeInfo.levels[0];
+
+            return {
+                ...feeInfo,
+                levels: [
+                    {
+                        ...highLevel,
+                        label: 'normal' as const,
+                        maxFeePerGas: currentMFPG
+                            .plus(highLevel.maxPriorityFeePerGas ?? 0)
+                            .toString(),
+                    },
+                ],
+            };
         }
 
-        return minFeeFromNetwork;
-    };
+        return {
+            ...feeInfo,
+        };
+    }
 
-    const fee = getFee();
+    const minFeeFromNetwork = new BigNumber(feeInfo.levels[0].feePerUnit);
+    const fee = BigNumber.maximum(minFeeFromNetwork, current.plus(feeInfo.minFee));
 
     // increase FeeLevel only if it's lower than predefined
     const levels = feeInfo.levels.map(level => ({
