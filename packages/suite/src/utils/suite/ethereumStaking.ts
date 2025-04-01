@@ -66,6 +66,7 @@ export type StakeTxBaseArgs = {
     from: string;
     symbol: NetworkSymbol;
     identity?: string;
+    feeLimit?: string;
 };
 
 export const stake = async ({
@@ -73,6 +74,7 @@ export const stake = async ({
     amount,
     symbol,
     identity,
+    feeLimit,
 }: StakeTxBaseArgs & {
     amount: string;
 }) => {
@@ -113,7 +115,7 @@ export const stake = async ({
             from,
             to: contractPoolAddress,
             value: amountWei,
-            gasLimit: getAdjustedGasLimitConsumption(estimatedFee),
+            gasLimit: feeLimit ?? getAdjustedGasLimitConsumption(estimatedFee),
             data,
         };
     } catch (e) {
@@ -127,6 +129,7 @@ export const unstake = async ({
     identity,
     interchanges,
     symbol,
+    feeLimit,
 }: StakeTxBaseArgs & {
     amount: string;
     interchanges: number;
@@ -189,7 +192,7 @@ export const unstake = async ({
             from,
             value: '0',
             to: contractPoolAddress,
-            gasLimit: getAdjustedGasLimitConsumption(estimatedFee),
+            gasLimit: feeLimit ?? getAdjustedGasLimitConsumption(estimatedFee),
             data,
         };
     } catch (error) {
@@ -197,7 +200,12 @@ export const unstake = async ({
     }
 };
 
-export const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBaseArgs) => {
+export const claimWithdrawRequest = async ({
+    from,
+    symbol,
+    identity,
+    feeLimit,
+}: StakeTxBaseArgs) => {
     try {
         const accountInfo = await TrezorConnect.getAccountInfo({
             coin: symbol,
@@ -255,7 +263,7 @@ export const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBa
             from,
             to: contractAccountingAddress,
             value: '0',
-            gasLimit: getAdjustedGasLimitConsumption(estimatedFee),
+            gasLimit: feeLimit ?? getAdjustedGasLimitConsumption(estimatedFee),
             data,
         };
     } catch (error) {
@@ -349,6 +357,7 @@ interface PrepareStakeEthTxParams {
     gasPrice: string | undefined;
     nonce: string;
     chainId: number;
+    feeLimit?: string;
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
 }
@@ -369,6 +378,7 @@ export const prepareStakeEthTx = async ({
     gasPrice,
     nonce,
     chainId,
+    feeLimit,
     maxFeePerGas,
     maxPriorityFeePerGas,
     identity,
@@ -379,6 +389,7 @@ export const prepareStakeEthTx = async ({
             amount,
             symbol,
             identity,
+            feeLimit,
         });
 
         const transformedTx = transformTx(
@@ -417,6 +428,7 @@ export const prepareUnstakeEthTx = async ({
     chainId,
     identity,
     interchanges = UNSTAKE_INTERCHANGES,
+    feeLimit,
     maxFeePerGas,
     maxPriorityFeePerGas,
 }: PrepareUnstakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
@@ -427,6 +439,7 @@ export const prepareUnstakeEthTx = async ({
             identity,
             interchanges,
             symbol,
+            feeLimit,
         });
 
         const transformedTx = transformTx(
@@ -461,11 +474,12 @@ export const prepareClaimEthTx = async ({
     gasPrice,
     nonce,
     chainId,
+    feeLimit,
     maxFeePerGas,
     maxPriorityFeePerGas,
 }: PrepareClaimEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
-        const tx = await claimWithdrawRequest({ from, symbol, identity });
+        const tx = await claimWithdrawRequest({ from, symbol, identity, feeLimit });
         const transformedTx = transformTx(
             tx,
             nonce,
