@@ -440,7 +440,6 @@
   "TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON": "Editare",
   "TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC": "Verificările de siguranță vă protejează împotriva efectuării de tranzacții non-standard. Acestea pot fi dezactivate temporar în cazul în care este necesară efectuarea unei astfel de tranzacții.",
   "TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE": "Verificări de siguranță",
-  "TR_DISABLE_WEBUSB_TRY_BRIDGE": "Dezactivați WebUSB și utilizați Bridge",
   "TR_DISABLING_TOR": "Se dezactivează Tor",
   "TR_DISCONNECT": "Deconectare",
   "TR_DISCONNECTED": "Deconectat",

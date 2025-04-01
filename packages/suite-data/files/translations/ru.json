@@ -668,7 +668,6 @@
   "TR_DISABLED_ANONYMITY_CHANGE_MESSAGE": "Редактирование отключено во время работы coinjoin",
   "TR_DISABLED_SWITCH_TOOLTIP": "Подключите и разблокируйте устройство для изменения настроек",
   "TR_DISABLE_AUTOSTOP_COINJOIN": "Не останавливать",
-  "TR_DISABLE_WEBUSB_TRY_BRIDGE": "Отключить WebUSB и использовать Bridge",
   "TR_DISABLING_TOR": "Отключение Tor",
   "TR_DISCONNECT": "Отключить",
   "TR_DISCONNECTED": "Отключён",

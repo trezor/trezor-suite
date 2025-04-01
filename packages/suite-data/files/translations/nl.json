@@ -535,7 +535,6 @@
   "TR_DEVICE_SETTINGS_WIPE_CODE_DESC": "De wiscode is een geavanceerde optie waarmee je een 'zelfvernietigingscode' maakt die je op een later moment kunt invoeren.",
   "TR_DEVICE_SETTINGS_WIPE_CODE_TITLE": "Stel wiscode in",
   "TR_DISABLE_AUTOSTOP_COINJOIN": "Niet stoppen",
-  "TR_DISABLE_WEBUSB_TRY_BRIDGE": "WebUSB uitschakelen en bridge gebruiken",
   "TR_DISABLING_TOR": "Tor uitschakelen",
   "TR_DISCONNECT": "Verbreek",
   "TR_DISCONNECTED": "Losgekoppeld",
