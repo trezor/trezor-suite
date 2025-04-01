@@ -113,7 +113,7 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
                                         padding={
                                             labelRow !== null
                                                 ? { vertical: spacings.sm }
-                                                : undefined
+                                                : { bottom: spacings.sm }
                                         }
                                     >
                                         {labelRow}
