@@ -24,6 +24,7 @@ import {
     Spinner,
     Text,
 } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabeling, Address, Translation } from 'src/components/suite';
@@ -132,6 +133,28 @@ export const TradingOfferExchangeSendApproval = () => {
             receiveAddress: selectedQuote.receiveAddress,
             extraField: undefined,
             trade: updatedSelectedQuote,
+        });
+
+        analytics.report({
+            type: EventType.TradingExchange,
+            payload: {
+                action: 'continue',
+                step: 'already-approved',
+                approvalType: selectedQuote.approvalType,
+            },
+        });
+    };
+
+    const confirmAndSend = async () => {
+        const result = await sendTransaction();
+
+        analytics.report({
+            type: EventType.TradingExchange,
+            payload: {
+                action: result ? 'continue' : 'cancel',
+                step: 'create-approval',
+                approvalType,
+            },
         });
     };
 
@@ -301,7 +324,7 @@ export const TradingOfferExchangeSendApproval = () => {
                     <Button
                         isLoading={callInProgress}
                         isDisabled={!device?.connected}
-                        onClick={sendTransaction}
+                        onClick={confirmAndSend}
                     >
                         <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
                     </Button>

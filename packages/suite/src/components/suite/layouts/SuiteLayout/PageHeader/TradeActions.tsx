@@ -43,6 +43,38 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
         dispatch(goto(routeName, options));
     };
 
+    const onBuyAndSellClick = () => {
+        goToWithAnalytics('wallet-trading-buy', {
+            preserveParams: true,
+        });
+
+        analytics.report({
+            type: EventType.TradingNavigate,
+            payload: {
+                action: 'navigate',
+                type: 'buy/sell',
+                from: account ? 'account/header' : 'dashboard/header',
+                networkSymbol: account?.symbol,
+            },
+        });
+    };
+
+    const onSwapClick = () => {
+        goToWithAnalytics('wallet-trading-exchange', {
+            preserveParams: true,
+        });
+
+        analytics.report({
+            type: EventType.TradingNavigate,
+            payload: {
+                action: 'navigate',
+                type: 'exchange',
+                from: account ? 'account/header' : 'dashboard/header',
+                networkSymbol: account?.symbol,
+            },
+        });
+    };
+
     const isAccountLoading = selectedAccount ? selectedAccount.status === 'loading' : false;
 
     return (
@@ -51,11 +83,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
                 <ConditionalRender container="content" minWidth={breakpointThresholds.lg}>
                     <HeaderActionButton
                         icon="currencyCircleDollar"
-                        onClick={() => {
-                            goToWithAnalytics('wallet-trading-buy', {
-                                preserveParams: true,
-                            });
-                        }}
+                        onClick={onBuyAndSellClick}
                         data-testid="@wallet/menu/wallet-trading-buy"
                         variant="tertiary"
                         size="small"
@@ -68,11 +96,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
                     <ConditionalRender container="content" minWidth={breakpointThresholds.md}>
                         <HeaderActionButton
                             icon="arrowsLeftRight"
-                            onClick={() => {
-                                goToWithAnalytics('wallet-trading-exchange', {
-                                    preserveParams: true,
-                                });
-                            }}
+                            onClick={onSwapClick}
                             data-testid="@wallet/menu/wallet-trading-exchange"
                             variant="tertiary"
                             size="small"

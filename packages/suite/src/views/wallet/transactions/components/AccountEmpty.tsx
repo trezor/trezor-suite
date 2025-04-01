@@ -36,9 +36,12 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
         dispatch(goto('wallet-trading-buy', { preserveParams: true }));
 
         analytics.report({
-            type: EventType.AccountsEmptyAccountBuy,
+            type: EventType.TradingNavigate,
             payload: {
-                symbol: account.symbol,
+                action: 'navigate',
+                type: 'buy',
+                from: 'account/empty',
+                networkSymbol: account.symbol,
             },
         });
     };

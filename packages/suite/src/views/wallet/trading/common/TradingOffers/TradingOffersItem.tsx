@@ -106,6 +106,10 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
+    const onSelectQuote = () => {
+        selectQuote(quote);
+    };
+
     if (!cryptoAmountProps) return null;
 
     return (
@@ -155,7 +159,7 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
                                     isFullWidth
                                     isLoading={callInProgress}
                                     isDisabled={!!quote.error || tradingDeviceDisconnected}
-                                    onClick={() => selectQuote(quote)}
+                                    onClick={onSelectQuote}
                                     data-testid="@trading/offers/get-this-deal-button"
                                 >
                                     <Translation

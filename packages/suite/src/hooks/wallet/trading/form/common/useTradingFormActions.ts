@@ -71,7 +71,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         accounts,
         deviceState: device?.state?.staticSessionId,
     });
-    const [isUsedFractionButton, setIsUsedFractionButton] = useState(false);
+    const [fractionButton, setFractionButton] = useState<number | undefined>(undefined);
     const { buildDefaultCryptoOption } = useTradingInfo(type);
 
     const { getValues, setValue, clearErrors, handleSubmit, control } =
@@ -94,7 +94,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
     // on manual change of crypto amount, set fiat amount
     const onFiatCurrencyChange = async (value: FiatCurrencyCode) => {
-        setIsUsedFractionButton(false);
+        setFractionButton(undefined);
 
         if (!tradingFiatValues) return;
 
@@ -209,7 +209,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         clearErrors([FORM_OUTPUT_FIAT, FORM_OUTPUT_AMOUNT]);
         setValue(FORM_OUTPUT_AMOUNT, cryptoInputValue, { shouldDirty: true });
         setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
-        setIsUsedFractionButton(true);
+        setFractionButton(divisor);
     };
 
     const setAllAmount = () => {
@@ -218,7 +218,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         setValue(FORM_OUTPUT_AMOUNT, '', { shouldDirty: true });
         clearErrors([FORM_OUTPUT_FIAT, FORM_OUTPUT_AMOUNT]);
 
-        setIsUsedFractionButton(true);
+        setFractionButton(1);
         composeRequest(FORM_OUTPUT_AMOUNT);
     };
 
@@ -235,7 +235,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
             // this will also update crypto amount
             // controlling setMaxOutputId prevents from double request
-            if (fiatChanged && !isUsedFractionButton) {
+            if (fiatChanged && fractionButton === undefined) {
                 calculateCryptoAmountFromFiat(fiatValue);
             }
 
@@ -244,7 +244,6 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
                 handleSubmit(() => {
                     handleChange();
                 })();
-                setIsUsedFractionButton(false);
 
                 previousValues.current = values;
             }
@@ -302,5 +301,8 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         onCryptoCurrencyChange,
         setRatioAmount,
         setAllAmount,
+
+        fractionButton,
+        setFractionButton,
     };
 };

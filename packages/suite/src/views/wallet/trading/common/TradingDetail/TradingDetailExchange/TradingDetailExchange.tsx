@@ -1,7 +1,12 @@
+import { useEffect } from 'react';
+import { usePrevious } from 'react-use';
+
+import { ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import { type TradingExchangeType, cryptoIdToNetwork } from '@suite-common/trading';
 import { Card, InfoItem } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
@@ -22,9 +27,62 @@ const Wrapper = styled.div`
     ${TradingWrapper}
 `;
 
+const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
+    switch (tradeStatus) {
+        case 'CONVERTING':
+            return 'status-converting';
+        case 'KYC':
+            return 'status-kyc';
+        case 'ERROR':
+            return 'status-error';
+        case 'SUCCESS':
+            return 'status-success';
+        default: {
+            if (!tradeFinalStatuses['exchange'].includes(tradeStatus)) {
+                return 'status-sending';
+            }
+
+            return undefined;
+        }
+    }
+};
+
 export const TradingDetailExchange = () => {
     const { account, trade, info } = useTradingDetailContext<TradingExchangeType>();
     const dispatch = useDispatch();
+
+    const tradeStatus = trade?.data?.status || 'CONFIRMING';
+    const previousTradeStatus = usePrevious(tradeStatus);
+    const tradeStatusStep = getTradeStatusStep(tradeStatus);
+
+    const exchange = trade?.data?.exchange;
+    const provider =
+        info && info.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
+    const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
+    const supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
+
+    const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
+        sendAmount: trade?.data?.sendStringAmount ?? '',
+        sendCurrency: trade?.data?.send,
+        receiveAmount: trade?.data?.receiveStringAmount ?? '',
+        receiveCurrency: trade?.data?.receive,
+    };
+
+    useEffect(() => {
+        // if tradeStatus hasn't changed, don't send the analytics event
+        // also safeguard the initial tradeStatus change from undefined to defined
+        if (!previousTradeStatus || previousTradeStatus === tradeStatus || !tradeStatusStep) {
+            return;
+        }
+
+        analytics.report({
+            type: EventType.TradingExchange,
+            payload: {
+                action: 'continue',
+                step: tradeStatusStep,
+            },
+        });
+    }, [tradeStatus, previousTradeStatus, tradeStatusStep]);
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades
@@ -45,24 +103,6 @@ export const TradingDetailExchange = () => {
     const { receiveTxHash, send } = trade.data;
     const network = send && cryptoIdToNetwork(send);
 
-    const tradeStatus = trade?.data?.status || 'CONFIRMING';
-    const exchangeTradeFinalStatuses = tradeFinalStatuses['exchange'];
-    const showSending =
-        !exchangeTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'CONVERTING';
-
-    const exchange = trade?.data?.exchange;
-    const provider =
-        info && info.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
-    const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
-    const supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
-
-    const quoteAmounts: TradingGetCryptoQuoteAmountProps = {
-        sendAmount: trade?.data?.sendStringAmount ?? '',
-        sendCurrency: trade?.data?.send,
-        receiveAmount: trade?.data?.receiveStringAmount ?? '',
-        receiveCurrency: trade?.data?.receive,
-    };
-
     return (
         <Wrapper>
             <Card>
@@ -76,27 +116,29 @@ export const TradingDetailExchange = () => {
                     </InfoItem>
                 )}
 
-                {tradeStatus === 'SUCCESS' && (
+                {tradeStatusStep === 'status-success' && (
                     <TradingDetailExchangePaymentSuccessful account={account} />
                 )}
-                {tradeStatus === 'KYC' && (
+                {tradeStatusStep === 'status-kyc' && (
                     <TradingDetailExchangePaymentKYC
                         account={account}
                         provider={provider}
                         supportUrl={supportUrl}
                     />
                 )}
-                {tradeStatus === 'ERROR' && (
+                {tradeStatusStep === 'status-error' && (
                     <TradingDetailExchangePaymentFailed
                         account={account}
                         transactionId={trade.key}
                         supportUrl={supportUrl}
                     />
                 )}
-                {tradeStatus === 'CONVERTING' && (
+                {tradeStatusStep === 'status-converting' && (
                     <TradingDetailExchangePaymentConverting supportUrl={supportUrl} />
                 )}
-                {showSending && <TradingDetailExchangePaymentSending supportUrl={supportUrl} />}
+                {tradeStatusStep === 'status-sending' && (
+                    <TradingDetailExchangePaymentSending supportUrl={supportUrl} />
+                )}
             </Card>
             <Card>
                 <TradingSelectedOfferInfo

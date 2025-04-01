@@ -47,6 +47,7 @@ import {
     TradingBuyFormContextProps,
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
+import { getTradingCryptoInfo } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
 
@@ -156,6 +157,25 @@ export const useTradingBuyForm = ({
         await handleChange();
 
         navigateToBuyOffers();
+
+        const {
+            label: cryptoLabel,
+            networkSymbol: cryptoNetworkSymbol,
+            contractAddress: cryptoContractAddress,
+        } = getTradingCryptoInfo(draftUpdated?.cryptoSelect);
+
+        analytics.report({
+            type: EventType.TradingBuy,
+            payload: {
+                action: 'continue',
+                step: 'buy-form',
+                cryptoLabel,
+                cryptoNetworkSymbol,
+                cryptoContractAddress,
+                paymentMethod: draftUpdated?.paymentMethod?.value,
+                countryOfResidence: draftUpdated?.countrySelect?.value,
+            },
+        });
     };
 
     const selectQuote = async (quote: BuyTrade) => {
@@ -167,6 +187,44 @@ export const useTradingBuyForm = ({
             { ...quotesRequest, paymentMethod: quote.paymentMethod },
             account,
         );
+
+        const {
+            label: cryptoLabel,
+            networkSymbol: cryptoNetworkSymbol,
+            contractAddress: cryptoContractAddress,
+        } = getTradingCryptoInfo(draftUpdated?.cryptoSelect);
+
+        switch (pageType) {
+            case 'form': {
+                analytics.report({
+                    type: EventType.TradingBuy,
+                    payload: {
+                        action: 'continue',
+                        step: 'buy-form',
+                        cryptoLabel,
+                        cryptoNetworkSymbol,
+                        cryptoContractAddress,
+                        exchangeName: quote?.exchange,
+                        paymentMethod: draftUpdated?.paymentMethod?.value,
+                        countryOfResidence: draftUpdated?.countrySelect?.value,
+                    },
+                });
+                break;
+            }
+            case 'offers': {
+                analytics.report({
+                    type: EventType.TradingBuy,
+                    payload: {
+                        action: 'continue',
+                        step: 'offers-form',
+                        exchangeName: quote?.exchange,
+                        paymentMethod: draftUpdated?.paymentMethod?.value,
+                        countryOfResidence: draftUpdated?.countrySelect?.value,
+                    },
+                });
+                break;
+            }
+        }
 
         const userConsent = async (provider: string, cryptoCurrency: string) =>
             Boolean(
@@ -190,6 +248,23 @@ export const useTradingBuyForm = ({
                 userConsent,
                 nextStep: () => {
                     navigateToBuyConfirm();
+
+                    analytics.report({
+                        type: EventType.TradingBuy,
+                        payload: {
+                            action: 'continue',
+                            step: 'buy-terms-modal',
+                        },
+                    });
+                },
+                onCancel: () => {
+                    analytics.report({
+                        type: EventType.TradingBuy,
+                        payload: {
+                            action: 'cancel',
+                            step: 'buy-terms-modal',
+                        },
+                    });
                 },
             }),
         );
@@ -219,9 +294,7 @@ export const useTradingBuyForm = ({
         const triggerAnalyticsTradeConfirmation = () => {
             analytics.report({
                 type: EventType.TradingConfirmTrade,
-                payload: {
-                    type: 'buy',
-                },
+                payload: { action: type },
             });
         };
 

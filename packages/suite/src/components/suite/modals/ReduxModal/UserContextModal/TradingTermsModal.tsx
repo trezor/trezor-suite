@@ -57,9 +57,19 @@ export const TradingTermsModal = ({
         return null;
     }
 
+    const onCancelClick = () => {
+        decision.resolve(false);
+        onCancel();
+    };
+
+    const onConfirmClick = () => {
+        decision.resolve(true);
+        onCancel();
+    };
+
     return (
         <Modal
-            onCancel={onCancel}
+            onCancel={onCancelClick}
             heading={
                 <Translation
                     id={`TR_${type}_MODAL_FOR_YOUR_SAFETY`}
@@ -80,10 +90,7 @@ export const TradingTermsModal = ({
             bottomContent={
                 <Modal.Button
                     data-testid="@trading/offers/trade-terms-confirm-button"
-                    onClick={() => {
-                        decision.resolve(true);
-                        onCancel();
-                    }}
+                    onClick={onConfirmClick}
                 >
                     <Translation id={`TR_${type}_MODAL_CONFIRM`} />
                 </Modal.Button>

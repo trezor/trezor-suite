@@ -181,7 +181,7 @@ export interface TradingSellFormContextProps
     setSellStep: (step: TradingSellStepType) => void;
     addBankAccount: () => void;
     confirmTrade: (bankAccount: BankAccount) => void;
-    sendTransaction: () => void;
+    sendTransaction: () => Promise<boolean>;
     needToRegisterOrVerifyBankAccount: (quote: SellFiatTrade) => boolean;
     selectQuote: (quote: SellFiatTrade) => void;
 }
@@ -229,7 +229,7 @@ export interface TradingExchangeFormContextProps
         extraField,
         trade,
     }: TradingExchangeConfirmTradeProps) => Promise<boolean>;
-    sendTransaction: () => Promise<void>;
+    sendTransaction: () => Promise<boolean>;
     signDataAndConfirm: () => Promise<void>;
     selectQuote: (quote: ExchangeTrade) => void;
     verifyAddress: TradingVerifyAccountProps;
@@ -317,6 +317,9 @@ export interface TradingUseFormActionsReturnProps {
     onFiatCurrencyChange: (value: FiatCurrencyCode) => void;
     setRatioAmount: (divisor: number) => void;
     setAllAmount: () => void;
+
+    fractionButton?: number;
+    setFractionButton: (value?: number) => void;
 }
 
 export interface TradingUseComposeTransactionProps<T extends TradingSellExchangeFormProps> {

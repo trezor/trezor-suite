@@ -1,5 +1,6 @@
 import { Route } from '@suite-common/suite-types';
 import { IconName, SubTabs } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
@@ -38,6 +39,36 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
 
     const goToRoute = (route: Route['name']) => () => {
         dispatch(goto(route, { preserveParams: true }));
+
+        switch (route) {
+            case 'wallet-trading-buy':
+                return analytics.report({
+                    type: EventType.TradingNavigate,
+                    payload: {
+                        action: 'navigate',
+                        type: 'buy',
+                        from: 'buy/sell/dca-form',
+                    },
+                });
+            case 'wallet-trading-sell':
+                return analytics.report({
+                    type: EventType.TradingNavigate,
+                    payload: {
+                        action: 'navigate',
+                        type: 'sell',
+                        from: 'buy/sell/dca-form',
+                    },
+                });
+            case 'wallet-trading-dca':
+                return analytics.report({
+                    type: EventType.TradingNavigate,
+                    payload: {
+                        action: 'navigate',
+                        type: 'dca',
+                        from: 'buy/sell/dca-form',
+                    },
+                });
+        }
     };
 
     return (

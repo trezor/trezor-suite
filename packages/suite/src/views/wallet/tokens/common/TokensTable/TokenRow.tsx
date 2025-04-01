@@ -7,7 +7,7 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { getUnusedAddressFromAccount, toTokenCryptoId } from '@suite-common/trading';
+import { TradingType, getUnusedAddressFromAccount, toTokenCryptoId } from '@suite-common/trading';
 import { Network, getCoingeckoId } from '@suite-common/wallet-config';
 import { selectSelectedDevice, sendFormActions } from '@suite-common/wallet-core';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
@@ -144,6 +144,29 @@ export const TokenRow = ({
         (!!tokenTradingOptions && tokenTradingOptions.exchange) || token.balance === '0';
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
 
+    const onTradeButtonClick = (type: TradingType, ...[routeName]: Parameters<typeof goto>) => {
+        dispatch(setTradingPrefilledFromCryptoId(tokenCryptoId));
+
+        goToWithAnalytics(routeName, {
+            params: {
+                symbol: account.symbol,
+                accountIndex: account.index,
+                accountType: account.accountType,
+            },
+        });
+
+        analytics.report({
+            type: EventType.TradingNavigate,
+            payload: {
+                action: 'navigate',
+                type,
+                from: 'account/tokens',
+                networkSymbol: account?.symbol,
+                tokenSymbol: token?.symbol,
+            },
+        });
+    };
+
     return (
         <Table.Row isCollapsed={isCollapsed}>
             <Table.Cell>
@@ -208,54 +231,27 @@ export const TokenRow = ({
                                             label: <Translation id="TR_BUY" />,
                                             'data-testid': '@trading/tokens/buy-button',
                                             icon: 'currencyCircleDollar',
-                                            onClick: () => {
-                                                dispatch(
-                                                    setTradingPrefilledFromCryptoId(tokenCryptoId),
-                                                );
-                                                goToWithAnalytics('wallet-trading-buy', {
-                                                    params: {
-                                                        symbol: account.symbol,
-                                                        accountIndex: account.index,
-                                                        accountType: account.accountType,
-                                                    },
-                                                });
-                                            },
+                                            onClick: () =>
+                                                onTradeButtonClick('buy', 'wallet-trading-buy'),
                                             isDisabled: !canBuyToken,
                                         },
                                         {
                                             label: <Translation id="TR_TRADING_SELL" />,
                                             'data-testid': '@trading/tokens/sell-button',
                                             icon: 'currencyCircleDollar',
-                                            onClick: () => {
-                                                dispatch(
-                                                    setTradingPrefilledFromCryptoId(tokenCryptoId),
-                                                );
-                                                goToWithAnalytics('wallet-trading-sell', {
-                                                    params: {
-                                                        symbol: account.symbol,
-                                                        accountIndex: account.index,
-                                                        accountType: account.accountType,
-                                                    },
-                                                });
-                                            },
+                                            onClick: () =>
+                                                onTradeButtonClick('sell', 'wallet-trading-sell'),
                                             isDisabled: token.balance === '0' || !canSellToken,
                                         },
                                         {
                                             label: <Translation id="TR_TRADING_SWAP" />,
                                             'data-testid': '@trading/tokens/swap-button',
                                             icon: 'arrowsLeftRight',
-                                            onClick: () => {
-                                                dispatch(
-                                                    setTradingPrefilledFromCryptoId(tokenCryptoId),
-                                                );
-                                                goToWithAnalytics('wallet-trading-exchange', {
-                                                    params: {
-                                                        symbol: account.symbol,
-                                                        accountIndex: account.index,
-                                                        accountType: account.accountType,
-                                                    },
-                                                });
-                                            },
+                                            onClick: () =>
+                                                onTradeButtonClick(
+                                                    'exchange',
+                                                    'wallet-trading-exchange',
+                                                ),
                                             isHidden: !isMobileLayout,
                                             isDisabled: !canSwapToken,
                                         },
@@ -435,16 +431,9 @@ export const TokenRow = ({
                             variant="tertiary"
                             icon="arrowsLeftRight"
                             size="small"
-                            onClick={() => {
-                                dispatch(setTradingPrefilledFromCryptoId(tokenCryptoId));
-                                goToWithAnalytics('wallet-trading-exchange', {
-                                    params: {
-                                        symbol: account.symbol,
-                                        accountIndex: account.index,
-                                        accountType: account.accountType,
-                                    },
-                                });
-                            }}
+                            onClick={() =>
+                                onTradeButtonClick('exchange', 'wallet-trading-exchange')
+                            }
                         />
                     )}
                     {!isMobileLayout &&

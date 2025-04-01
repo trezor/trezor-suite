@@ -55,7 +55,10 @@ import {
     TradingExchangeFormContextProps,
 } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
-import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
+import {
+    getTradingCryptoInfo,
+    getTradingNetworkDecimals,
+} from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
 
@@ -145,7 +148,7 @@ export const useTradingExchangeForm = ({
     });
     const { reset, register, getValues, setValue, formState, control } = methods;
     const values = useWatch<TradingExchangeFormProps>({ control });
-    const { rateType, exchangeType, sendCryptoSelect } = getValues();
+    const { rateType, exchangeType, sendCryptoSelect, receiveCryptoSelect } = getValues();
     const output = values.outputs?.[0];
     const fiatValues = useTradingFiatValues({
         sendCryptoSelect,
@@ -235,8 +238,57 @@ export const useTradingExchangeForm = ({
             isDex,
             send,
             receive,
-        }: TradingExchangeUserConsentProps) =>
-            Boolean(
+        }: TradingExchangeUserConsentProps) => {
+            const {
+                label: sendCryptoLabel,
+                networkSymbol: sendCryptoNetworkSymbol,
+                contractAddress: sendCryptoContractAddress,
+            } = getTradingCryptoInfo(sendCryptoSelect);
+
+            const {
+                label: receiveCryptoLabel,
+                networkSymbol: receiveCryptoNetworkSymbol,
+                contractAddress: receiveCryptoContractAddress,
+            } = getTradingCryptoInfo(receiveCryptoSelect);
+
+            switch (pageType) {
+                case 'form': {
+                    analytics.report({
+                        type: EventType.TradingExchange,
+                        payload: {
+                            action: 'continue',
+                            step: 'exchange-form',
+                            sendCryptoLabel,
+                            sendCryptoNetworkSymbol,
+                            sendCryptoContractAddress,
+                            receiveCryptoLabel,
+                            receiveCryptoNetworkSymbol,
+                            receiveCryptoContractAddress,
+                            exchangeType,
+                            exchangeName: provider,
+                            rateType,
+                            fractionButton: helpers.fractionButton
+                                ? `${(100 / helpers.fractionButton).toString()}%`
+                                : undefined,
+                        },
+                    });
+                    break;
+                }
+                case 'offers': {
+                    analytics.report({
+                        type: EventType.TradingExchange,
+                        payload: {
+                            action: 'continue',
+                            step: 'offers-form',
+                            exchangeType,
+                            exchangeName: provider,
+                        },
+                    });
+                    break;
+                }
+            }
+
+            return Boolean(
                 await dispatch(
                     openDeferredModal({
                         type: isDex ? 'trading-exchange-dex-terms' : 'trading-exchange-terms',
@@ -246,6 +298,7 @@ export const useTradingExchangeForm = ({
                     }),
                 ),
             );
+        };
 
         await dispatch(
             exchangeThunks.selectQuoteThunk({
@@ -255,6 +308,23 @@ export const useTradingExchangeForm = ({
                 userConsent,
                 nextStep: () => {
                     navigateToExchangeConfirm();
+
+                    analytics.report({
+                        type: EventType.TradingExchange,
+                        payload: {
+                            action: 'continue',
+                            step: 'exchange-terms-modal',
+                        },
+                    });
+                },
+                onCancel: () => {
+                    analytics.report({
+                        type: EventType.TradingExchange,
+                        payload: {
+                            action: 'cancel',
+                            step: 'exchange-terms-modal',
+                        },
+                    });
                 },
             }),
         );
@@ -275,9 +345,7 @@ export const useTradingExchangeForm = ({
         const triggerAnalyticsTradeConfirmation = () => {
             analytics.report({
                 type: EventType.TradingConfirmTrade,
-                payload: {
-                    type,
-                },
+                payload: { action: type },
             });
         };
 
@@ -326,7 +394,9 @@ export const useTradingExchangeForm = ({
     const sendTransaction = async () => {
         const commonFunctions = await getCommonFunctions(trade?.data);
 
-        if (!commonFunctions) return;
+        if (!commonFunctions) {
+            return false;
+        }
 
         const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
             commonFunctions;
@@ -359,6 +429,8 @@ export const useTradingExchangeForm = ({
                     signAndPushSendFormTransaction,
                 }),
             ).unwrap();
+
+            return true;
         } catch (e) {
             const errorTyped = e as TradingSendRejectedProps;
 
@@ -368,6 +440,8 @@ export const useTradingExchangeForm = ({
                     error: translationString(errorTyped.error.id, errorTyped.error.values),
                 }),
             );
+
+            return false;
         }
     };
 
@@ -395,6 +469,36 @@ export const useTradingExchangeForm = ({
         await handleChange();
 
         navigateToExchangeOffers();
+
+        const {
+            label: sendCryptoLabel,
+            networkSymbol: sendCryptoNetworkSymbol,
+            contractAddress: sendCryptoContractAddress,
+        } = getTradingCryptoInfo(sendCryptoSelect);
+
+        const {
+            label: receiveCryptoLabel,
+            networkSymbol: receiveCryptoNetworkSymbol,
+            contractAddress: receiveCryptoContractAddress,
+        } = getTradingCryptoInfo(receiveCryptoSelect);
+
+        analytics.report({
+            type: EventType.TradingExchange,
+            payload: {
+                action: 'continue',
+                step: 'exchange-form',
+                sendCryptoLabel,
+                sendCryptoNetworkSymbol,
+                sendCryptoContractAddress,
+                receiveCryptoLabel,
+                receiveCryptoNetworkSymbol,
+                receiveCryptoContractAddress,
+                rateType,
+                fractionButton: helpers.fractionButton
+                    ? `${(100 / helpers.fractionButton).toString()}%`
+                    : undefined,
+            },
+        });
     };
 
     const verifyAddress =

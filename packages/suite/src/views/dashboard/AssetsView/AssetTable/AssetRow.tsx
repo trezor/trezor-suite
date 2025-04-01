@@ -114,6 +114,18 @@ export const AssetRow = memo(
             });
         };
 
+        const onBuyButtonClick = () => {
+            analytics.report({
+                type: EventType.TradingNavigate,
+                payload: {
+                    action: 'navigate',
+                    type: 'buy',
+                    from: 'dashboard/assets',
+                    networkSymbol: symbol,
+                },
+            });
+        };
+
         return (
             <>
                 <Table.Row onClick={handleRowClick} data-testid={`@dashboard/asset-item/${symbol}`}>
@@ -186,12 +198,7 @@ export const AssetRow = memo(
                                     symbol={symbol}
                                     routeName="wallet-trading-buy"
                                     data-testid={`@dashboard/asset/${symbol}/buy-button`}
-                                    onClick={() => {
-                                        analytics.report({
-                                            type: EventType.AccountsDashboardBuy,
-                                            payload: { symbol },
-                                        });
-                                    }}
+                                    onClick={onBuyButtonClick}
                                 >
                                     <Translation id="TR_BUY_BUY" />
                                 </TradingButton>

@@ -22,12 +22,13 @@ export type SelectQuoteThunkProps = {
         receive,
     }: TradingExchangeUserConsentProps) => Promise<boolean>;
     nextStep: () => void;
+    onCancel?: () => void;
 };
 
 export const selectQuoteThunk = createThunk(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/selectQuote`,
     async (
-        { quote, timer, userConsent, nextStep }: SelectQuoteThunkProps,
+        { quote, timer, userConsent, nextStep, onCancel }: SelectQuoteThunkProps,
         { dispatch, getState },
     ) => {
         const exchangeInfo = selectTradingExchangeInfo(getState());
@@ -49,6 +50,8 @@ export const selectQuoteThunk = createThunk(
         });
 
         if (!result) {
+            onCancel?.();
+
             return;
         }
 

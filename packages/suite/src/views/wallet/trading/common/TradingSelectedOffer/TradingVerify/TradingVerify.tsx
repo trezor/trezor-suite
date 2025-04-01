@@ -12,6 +12,7 @@ import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import addressValidator from '@trezor/address-validator';
 import { Button, Column, Divider, Input, Paragraph, Tooltip } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -124,6 +125,25 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
 
         return callInProgress || isFormInvalid || isAddressInvalid || isExtraFieldInvalid;
     }, [selectedAccountOption, form, address, callInProgress, exchangeQuote, extraField]);
+
+    const onFinishTransactionClick = () => {
+        if (!address) {
+            return;
+        }
+
+        if (isTradingExchangeContext(context)) {
+            analytics.report({
+                type: EventType.TradingExchange,
+                payload: {
+                    action: 'continue',
+                    step: 'receive-address',
+                    accountType: selectedAccountOption?.type,
+                },
+            });
+        }
+
+        confirmTrade({ receiveAddress: address, extraField });
+    };
 
     return (
         <Column gap={spacings.xl}>
@@ -249,14 +269,7 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                         <Button
                             data-testid="@trading/offer/continue-transaction-button"
                             isLoading={callInProgress}
-                            onClick={() => {
-                                if (address) {
-                                    confirmTrade({
-                                        receiveAddress: address,
-                                        extraField,
-                                    });
-                                }
-                            }}
+                            onClick={onFinishTransactionClick}
                             isDisabled={isButtonDisabled}
                         >
                             <Translation id="TR_BUY_GO_TO_PAYMENT" />

@@ -198,12 +198,6 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.AccountsEmptyAccountBuy;
-          payload: {
-              symbol: string;
-          };
-      }
-    | {
           type: EventType.AccountsEmptyAccountReceive;
           payload: {
               symbol: string;
@@ -217,9 +211,109 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
+          type: EventType.TradingNavigate;
+          payload: {
+              action: 'navigate' | 'cancel';
+              type: 'exchange' | 'buy' | 'sell' | 'buy/sell' | 'dca';
+              from:
+                  | 'dashboard/header'
+                  | 'dashboard/assets'
+                  | 'account/header'
+                  | 'account/tokens'
+                  | 'account/tradebox'
+                  | 'account/empty'
+                  | 'buy/sell/dca-form';
+              networkSymbol?: string;
+              tokenSymbol?: string;
+          };
+      }
+    | {
+          type: EventType.TradingExchange;
+          payload: {
+              action: 'continue' | 'cancel';
+              step:
+                  | 'exchange-form'
+                  | 'offers-form'
+                  | 'exchange-terms-modal'
+                  | 'receive-address'
+                  | 'create-approval'
+                  | 'already-approved'
+                  | 'confirm-and-send'
+                  | 'status-converting'
+                  | 'status-sending'
+                  | 'status-success'
+                  | 'status-kyc'
+                  | 'status-error';
+
+              sendCryptoLabel?: string;
+              sendCryptoNetworkSymbol?: string;
+              sendCryptoContractAddress?: string;
+
+              receiveCryptoLabel?: string;
+              receiveCryptoNetworkSymbol?: string;
+              receiveCryptoContractAddress?: string;
+
+              exchangeName?: string;
+              exchangeType?: string;
+
+              fractionButton?: string;
+              accountType?: string;
+              approvalType?: string;
+              slippage?: string;
+              rateType?: string;
+          };
+      }
+    | {
+          type: EventType.TradingBuy;
+          payload: {
+              action: 'continue' | 'cancel';
+              step:
+                  | 'buy-form'
+                  | 'offers-form'
+                  | 'buy-terms-modal'
+                  | 'status-waiting'
+                  | 'status-processing'
+                  | 'status-success'
+                  | 'status-error';
+
+              cryptoLabel?: string;
+              cryptoNetworkSymbol?: string;
+              cryptoContractAddress?: string;
+
+              paymentMethod?: string;
+              countryOfResidence?: string;
+
+              exchangeName?: string;
+          };
+      }
+    | {
+          type: EventType.TradingSell;
+          payload: {
+              action: 'continue' | 'cancel';
+              step:
+                  | 'sell-form'
+                  | 'offers-form'
+                  | 'sell-terms-modal'
+                  | 'confirm-and-send-transaction'
+                  | 'status-pending'
+                  | 'status-success'
+                  | 'status-error';
+
+              cryptoLabel?: string;
+              cryptoNetworkSymbol?: string;
+              cryptoContractAddress?: string;
+
+              receiveMethod?: string;
+              countryOfResidence?: string;
+
+              exchangeName?: string;
+              fractionButton?: string;
+          };
+      }
+    | {
           type: EventType.TradingConfirmTrade;
           payload: {
-              type: 'buy' | 'sell' | 'exchange';
+              action: 'exchange' | 'buy' | 'sell';
           };
       }
     | {
@@ -292,19 +386,6 @@ export type SuiteAnalyticsEvent =
           payload: {
               symbol: string;
               format: 'pdf' | 'csv' | 'json';
-          };
-      }
-    | {
-          type: EventType.AccountsDashboardBuy;
-          payload: {
-              symbol: string;
-          };
-      }
-    | {
-          type: EventType.AccountsTradeboxButton;
-          payload: {
-              symbol: string;
-              type: 'stake' | 'exchange' | 'buy' | 'sell';
           };
       }
     | TransactionCreatedEvent

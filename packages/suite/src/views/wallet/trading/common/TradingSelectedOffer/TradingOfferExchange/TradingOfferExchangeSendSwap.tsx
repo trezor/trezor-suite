@@ -21,6 +21,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -194,6 +195,19 @@ export const TradingOfferExchangeSendSwap = () => {
         }
     };
 
+    const confirmAndSend = async () => {
+        const result = await sendTransaction();
+
+        analytics.report({
+            type: EventType.TradingExchange,
+            payload: {
+                action: result ? 'continue' : 'cancel',
+                step: 'confirm-and-send',
+                slippage: customSlippage,
+            },
+        });
+    };
+
     return (
         <Column gap={spacings.lg} flex="1">
             <InfoItem label={<Translation id="TR_EXCHANGE_SEND_FROM" />}>
@@ -293,7 +307,7 @@ export const TradingOfferExchangeSendSwap = () => {
                 <Button
                     isLoading={callInProgress}
                     isDisabled={!device?.connected}
-                    onClick={sendTransaction}
+                    onClick={confirmAndSend}
                 >
                     <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
                 </Button>

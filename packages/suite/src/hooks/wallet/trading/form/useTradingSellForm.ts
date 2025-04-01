@@ -60,7 +60,10 @@ import {
 } from 'src/types/trading/tradingForm';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 import { createQuoteLink, getAmountLimits } from 'src/utils/wallet/trading/sellUtils';
-import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
+import {
+    getTradingCryptoInfo,
+    getTradingNetworkDecimals,
+} from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
 
@@ -438,6 +441,28 @@ export const useTradingSellForm = ({
 
         dispatch(tradingSellActions.setTradingSellAccountKey(account.key)); // save account for offers page
         navigateToSellOffers();
+
+        const {
+            label: cryptoLabel,
+            networkSymbol: cryptoNetworkSymbol,
+            contractAddress: cryptoContractAddress,
+        } = getTradingCryptoInfo(draftUpdated?.sendCryptoSelect);
+
+        analytics.report({
+            type: EventType.TradingSell,
+            payload: {
+                action: 'continue',
+                step: 'sell-form',
+                cryptoLabel,
+                cryptoNetworkSymbol,
+                cryptoContractAddress,
+                receiveMethod: draftUpdated?.paymentMethod?.value,
+                countryOfResidence: draftUpdated?.countrySelect?.value,
+                fractionButton: helpers.fractionButton
+                    ? `${(100 / helpers.fractionButton).toString()}%`
+                    : undefined,
+            },
+        });
     };
 
     const selectQuote = async (quote: SellFiatTrade) => {
@@ -447,6 +472,47 @@ export const useTradingSellForm = ({
                 : null;
 
         if (quotesRequest) {
+            const {
+                label: cryptoLabel,
+                networkSymbol: cryptoNetworkSymbol,
+                contractAddress: cryptoContractAddress,
+            } = getTradingCryptoInfo(draftUpdated?.sendCryptoSelect);
+
+            switch (pageType) {
+                case 'form': {
+                    analytics.report({
+                        type: EventType.TradingSell,
+                        payload: {
+                            action: 'continue',
+                            step: 'sell-form',
+                            cryptoLabel,
+                            cryptoNetworkSymbol,
+                            cryptoContractAddress,
+                            exchangeName: quote?.exchange,
+                            receiveMethod: draftUpdated?.paymentMethod?.value,
+                            countryOfResidence: draftUpdated?.countrySelect?.value,
+                            fractionButton: helpers.fractionButton
+                                ? `${(100 / helpers.fractionButton).toString()}%`
+                                : undefined,
+                        },
+                    });
+                    break;
+                }
+                case 'offers': {
+                    analytics.report({
+                        type: EventType.TradingSell,
+                        payload: {
+                            action: 'continue',
+                            step: 'offers-form',
+                            exchangeName: quote?.exchange,
+                            receiveMethod: draftUpdated?.paymentMethod?.value,
+                            countryOfResidence: draftUpdated?.countrySelect?.value,
+                        },
+                    });
+                    break;
+                }
+            }
+
             const result = await dispatch(
                 tradingSellActions.openTradingSellConfirmModal(
                     provider?.companyName,
@@ -460,6 +526,14 @@ export const useTradingSellForm = ({
 
                 navigateToSellConfirm();
             }
+
+            analytics.report({
+                type: EventType.TradingSell,
+                payload: {
+                    action: result ? 'continue' : 'cancel',
+                    step: 'sell-terms-modal',
+                },
+            });
         }
     };
 
@@ -468,9 +542,7 @@ export const useTradingSellForm = ({
 
         analytics.report({
             type: EventType.TradingConfirmTrade,
-            payload: {
-                type,
-            },
+            payload: { action: type },
         });
 
         const quote = { ...selectedQuote, bankAccount };
@@ -493,75 +565,89 @@ export const useTradingSellForm = ({
         // destinationAddress may be set by useTradingWatchTrade hook to the trade object
         const destinationAddress =
             selectedTrade?.destinationAddress || trade?.data?.destinationAddress;
-        if (
-            selectedTrade &&
-            selectedTrade.orderId &&
-            destinationAddress &&
-            selectedTrade.cryptoStringAmount
-        ) {
-            const cryptoStringAmount = shouldSendInSats
-                ? amountToSmallestUnit(selectedTrade.cryptoStringAmount, decimals)
-                : selectedTrade.cryptoStringAmount;
-            const destinationPaymentExtraId =
-                selectedTrade.destinationPaymentExtraId || trade?.data?.destinationPaymentExtraId;
-            const result = await recomposeAndSign({
-                account,
-                address: destinationAddress,
-                amount: cryptoStringAmount,
-                destinationTag: destinationPaymentExtraId,
-            });
-            if (result?.success) {
-                // send txid to the server as confirmation
-                const { txid } = result.payload;
-                const quote: SellFiatTrade = {
-                    ...selectedTrade,
-                    txid,
-                    destinationAddress,
-                    destinationPaymentExtraId,
-                };
-                const response = await invityAPI.doSellConfirm(quote);
-                if (!response) {
-                    dispatch(
-                        notificationsActions.addToast({
-                            type: 'error',
-                            error: 'No response from the server',
-                        }),
-                    );
-                } else if (response.error || !response.status || !response.orderId) {
-                    dispatch(
-                        notificationsActions.addToast({
-                            type: 'error',
-                            error: response.error || 'Invalid response from the server',
-                        }),
-                    );
-                }
 
-                dispatch(
-                    tradingSellActions.saveTrade(
-                        response,
-                        selectedAccount.account,
-                        new Date().toISOString(),
-                    ),
-                );
-                dispatch(tradingSellActions.saveTransactionId(selectedTrade.orderId));
-                dispatch(
-                    routerActions.goto('wallet-trading-sell-detail', {
-                        params: {
-                            symbol: selectedAccount.account.symbol,
-                            accountIndex: selectedAccount.account.index,
-                            accountType: selectedAccount.account.accountType,
-                        },
-                    }),
-                );
-            }
-        } else {
+        if (
+            !selectedTrade ||
+            !selectedTrade.orderId ||
+            !destinationAddress ||
+            !selectedTrade.cryptoStringAmount
+        ) {
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
                     error: 'Cannot send transaction, missing data',
                 }),
             );
+
+            return false;
         }
+
+        const cryptoStringAmount = shouldSendInSats
+            ? amountToSmallestUnit(selectedTrade.cryptoStringAmount, decimals)
+            : selectedTrade.cryptoStringAmount;
+        const destinationPaymentExtraId =
+            selectedTrade.destinationPaymentExtraId || trade?.data?.destinationPaymentExtraId;
+        const result = await recomposeAndSign({
+            account,
+            address: destinationAddress,
+            amount: cryptoStringAmount,
+            destinationTag: destinationPaymentExtraId,
+        });
+
+        if (!result?.success) {
+            return false;
+        }
+
+        // send txid to the server as confirmation
+        const { txid } = result.payload;
+        const quote: SellFiatTrade = {
+            ...selectedTrade,
+            txid,
+            destinationAddress,
+            destinationPaymentExtraId,
+        };
+        const response = await invityAPI.doSellConfirm(quote);
+        let isSuccessful = true;
+
+        if (!response) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'No response from the server',
+                }),
+            );
+
+            isSuccessful = false;
+        } else if (response.error || !response.status || !response.orderId) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: response.error || 'Invalid response from the server',
+                }),
+            );
+
+            isSuccessful = false;
+        }
+
+        dispatch(
+            tradingSellActions.saveTrade(
+                response,
+                selectedAccount.account,
+                new Date().toISOString(),
+            ),
+        );
+        dispatch(tradingSellActions.saveTransactionId(selectedTrade.orderId));
+        dispatch(
+            routerActions.goto('wallet-trading-sell-detail', {
+                params: {
+                    symbol: selectedAccount.account.symbol,
+                    accountIndex: selectedAccount.account.index,
+                    accountType: selectedAccount.account.accountType,
+                },
+            }),
+        );
+
+        return isSuccessful;
     };
 
     useTradingLoadData();

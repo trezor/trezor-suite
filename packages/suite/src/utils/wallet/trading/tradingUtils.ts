@@ -1,7 +1,12 @@
 import { CryptoId } from 'invity-api';
 
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
-import { type TradingType, cryptoIdToSymbol, toTokenCryptoId } from '@suite-common/trading';
+import {
+    TradingCryptoSelectItemProps,
+    type TradingType,
+    cryptoIdToSymbol,
+    toTokenCryptoId,
+} from '@suite-common/trading';
 import {
     Network,
     getNetwork,
@@ -33,6 +38,20 @@ interface TradingGetDecimalsProps {
     sendCryptoSelect?: TradingAccountOptionsGroupOptionProps;
     network?: Network | null;
 }
+
+export const getTradingCryptoInfo = (
+    cryptoSelect:
+        | TradingAccountOptionsGroupOptionProps
+        | TradingCryptoSelectItemProps
+        | null
+        | undefined,
+) => {
+    const label = cryptoSelect?.label ?? undefined;
+    const networkSymbol = cryptoSelect ? cryptoIdToSymbol(cryptoSelect.value) : undefined;
+    const contractAddress = cryptoSelect?.contractAddress ?? undefined;
+
+    return { label, networkSymbol, contractAddress };
+};
 
 export const getTradingNetworkDecimals = ({
     sendCryptoSelect,

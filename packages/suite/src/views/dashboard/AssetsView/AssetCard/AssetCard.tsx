@@ -149,6 +149,18 @@ export const AssetCard = ({
         });
     };
 
+    const onBuyButtonClick = () => {
+        analytics.report({
+            type: EventType.TradingNavigate,
+            payload: {
+                action: 'navigate',
+                type: 'buy',
+                from: 'dashboard/assets',
+                networkSymbol: symbol,
+            },
+        });
+    };
+
     return (
         <Card
             paddingType="small"
@@ -231,12 +243,7 @@ export const AssetCard = ({
                                     symbol={symbol}
                                     routeName="wallet-trading-buy"
                                     data-testid={`@dashboard/asset/${symbol}/buy-button`}
-                                    onClick={() => {
-                                        analytics.report({
-                                            type: EventType.AccountsDashboardBuy,
-                                            payload: { symbol },
-                                        });
-                                    }}
+                                    onClick={onBuyButtonClick}
                                 >
                                     <Translation id="TR_BUY_BUY" />
                                 </TradingButton>

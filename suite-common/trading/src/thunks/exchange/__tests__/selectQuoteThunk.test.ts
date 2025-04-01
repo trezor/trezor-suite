@@ -99,14 +99,18 @@ describe('selectQuoteThunk', () => {
         } as unknown as SelectQuoteThunkProps['timer'];
 
         const mockNextStep = jest.fn();
+        const mockOnCancel = jest.fn();
         const mockUserConsent = jest.fn(() => Promise.resolve(true));
+        const mockUserConsentDenied = jest.fn(() => Promise.resolve(false));
 
         return {
             store,
             mockTimer,
             mockTimerStop,
             mockNextStep,
+            mockOnCancel,
             mockUserConsent,
+            mockUserConsentDenied,
         };
     };
 
@@ -129,6 +133,36 @@ describe('selectQuoteThunk', () => {
         expect(mockNextStep).toHaveBeenCalledTimes(1);
         expect(mockTimerStop).toHaveBeenCalledTimes(1);
         expect(store.getState().wallet.tradingNew.exchange.selectedQuote).toEqual(quote);
+    });
+
+    it('should call onCancel on cancelling the user consent', async () => {
+        const { quote, state } = getDataMocks();
+        const {
+            store,
+            mockTimer,
+            mockNextStep,
+            mockOnCancel,
+            mockTimerStop,
+            mockUserConsentDenied,
+        } = getMocks(state);
+
+        await store
+            .dispatch(
+                exchangeThunks.selectQuoteThunk({
+                    quote,
+                    timer: mockTimer,
+                    userConsent: mockUserConsentDenied,
+                    nextStep: mockNextStep,
+                    onCancel: mockOnCancel,
+                }),
+            )
+            .unwrap();
+
+        expect(mockUserConsentDenied).toHaveBeenCalledTimes(1);
+        expect(mockNextStep).toHaveBeenCalledTimes(0);
+        expect(mockOnCancel).toHaveBeenCalledTimes(1);
+        expect(mockTimerStop).toHaveBeenCalledTimes(0);
+        expect(store.getState().wallet.tradingNew.exchange.selectedQuote).not.toEqual(quote);
     });
 
     describe('should not be possible to save selected quote', () => {

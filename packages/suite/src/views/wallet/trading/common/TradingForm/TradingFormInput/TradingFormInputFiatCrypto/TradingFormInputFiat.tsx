@@ -17,7 +17,10 @@ import {
     TradingSellExchangeFormProps,
 } from 'src/types/trading/tradingForm';
 import { validateDecimals, validateMin } from 'src/utils/suite/validation';
-import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
+import {
+    isTradingExchangeContext,
+    isTradingSellContext,
+} from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 
 export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
@@ -105,6 +108,13 @@ export const TradingFormInputFiat = <TFieldValues extends TradingAllFormProps>({
             labelLeft={labelLeft}
             labelRight={labelRight}
             onChange={() => {
+                if (isTradingSellContext(context)) {
+                    context.form.helpers.setFractionButton(undefined);
+                }
+                if (isTradingExchangeContext(context)) {
+                    context.form.helpers.setFractionButton(undefined);
+                }
+
                 clearErrors(cryptoInputName);
             }}
             inputState={getInputState(fiatInputError ?? cryptoInputError)}

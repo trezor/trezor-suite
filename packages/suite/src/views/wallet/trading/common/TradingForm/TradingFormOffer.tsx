@@ -82,6 +82,19 @@ export const TradingFormOffer = () => {
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
+    const onSelectQuote = () => {
+        if (!quote) {
+            return;
+        }
+
+        selectQuote(quote);
+    };
+
+    const onCompareAllOffersClick = async () => {
+        setIsCompareLoading(true);
+        await goToOffers();
+    };
+
     return (
         <Column gap={spacings.lg}>
             <Column gap={spacings.xs} data-testid="@trading/best-offer">
@@ -117,10 +130,7 @@ export const TradingFormOffer = () => {
                 <Row justifyContent="space-between">
                     <Translation id="TR_TRADING_YOUR_BEST_OFFER" />
                     <TextButton
-                        onClick={async () => {
-                            setIsCompareLoading(true);
-                            await goToOffers();
-                        }}
+                        onClick={onCompareAllOffersClick}
                         size="small"
                         isDisabled={state.isLoadingOrInvalid}
                         isLoading={isCompareLoading}
@@ -149,11 +159,7 @@ export const TradingFormOffer = () => {
                 )}
             </Column>
             <Button
-                onClick={() => {
-                    if (quote) {
-                        selectQuote(quote);
-                    }
-                }}
+                onClick={onSelectQuote}
                 variant="primary"
                 margin={{
                     top: spacings.md,

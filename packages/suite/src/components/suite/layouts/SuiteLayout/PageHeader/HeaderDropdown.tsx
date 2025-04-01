@@ -1,6 +1,7 @@
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
 import { breakpointThresholds } from '@trezor/styles';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 import { useSelector } from '../../../../../hooks/suite';
@@ -53,6 +54,16 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             id: 'wallet-trading-buy',
             callback: () => {
                 goToWithAnalytics('wallet-trading-buy', { preserveParams: true });
+
+                analytics.report({
+                    type: EventType.TradingNavigate,
+                    payload: {
+                        action: 'navigate',
+                        type: 'buy/sell',
+                        from: account ? 'account/header' : 'dashboard/header',
+                        networkSymbol: account?.symbol,
+                    },
+                });
             },
             title: <Translation id="TR_TRADING_BUY_AND_SELL" />,
             icon: 'currencyCircleDollar',
@@ -63,6 +74,16 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             callback: () => {
                 goToWithAnalytics('wallet-trading-exchange', {
                     preserveParams: true,
+                });
+
+                analytics.report({
+                    type: EventType.TradingNavigate,
+                    payload: {
+                        action: 'navigate',
+                        type: 'exchange',
+                        from: account ? 'account/header' : 'dashboard/header',
+                        networkSymbol: account?.symbol,
+                    },
                 });
             },
             title: <Translation id="TR_TRADING_SWAP" />,

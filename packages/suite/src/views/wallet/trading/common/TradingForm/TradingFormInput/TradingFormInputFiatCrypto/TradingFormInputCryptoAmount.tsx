@@ -67,6 +67,7 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
         trigger,
         clearErrors,
     } = methods;
+
     const cryptoSelect = getValues(cryptoSelectName) as
         | TradingCryptoListProps
         | TradingAccountOptionsGroupOptionProps
@@ -125,9 +126,11 @@ export const TradingFormInputCryptoAmount = <TFieldValues extends TradingAllForm
             onChange={() => {
                 if (isTradingSellContext(context)) {
                     context.setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
+                    context.form.helpers.setFractionButton(undefined);
                 }
                 if (isTradingExchangeContext(context)) {
                     context.setValue(FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
+                    context.form.helpers.setFractionButton(undefined);
                 }
 
                 clearErrors(fiatInputName);

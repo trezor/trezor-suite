@@ -21,12 +21,21 @@ export type SelectQuoteThunkProps = {
     loginRequest: (form: FormResponse['form']) => void;
     userConsent: (provider: string, cryptoCurrency: string) => Promise<boolean>;
     nextStep: () => void;
+    onCancel?: () => void;
 };
 
 export const selectQuoteThunk = createThunk(
     `${TRADING_BUY_THUNK_PREFIX}/selectQuote`,
     async (
-        { quote, returnUrl, timer, loginRequest, userConsent, nextStep }: SelectQuoteThunkProps,
+        {
+            quote,
+            returnUrl,
+            timer,
+            loginRequest,
+            userConsent,
+            nextStep,
+            onCancel,
+        }: SelectQuoteThunkProps,
         { dispatch, getState },
     ) => {
         const buyInfo = selectTradingBuyInfo(getState());
@@ -42,7 +51,11 @@ export const selectQuoteThunk = createThunk(
             selectTradingCoinSymbolByCryptoId(getState(), quote.receiveCurrency) ?? 'unknown',
         );
 
-        if (!result) return;
+        if (!result) {
+            onCancel?.();
+
+            return;
+        }
 
         // empty quoteId means the partner requests login first, requestTrade to get login screen
         if (!quote.quoteId) {

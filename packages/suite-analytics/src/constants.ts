@@ -38,11 +38,8 @@ export enum EventType {
     AccountsNewAccount = 'accounts/new-account',
     AccountsActions = 'accounts/actions',
     AddToken = 'add-token',
-    AccountsEmptyAccountBuy = 'accounts/empty-account/buy',
     AccountsEmptyAccountReceive = 'accounts/empty-account/receive',
     AccountsTransactionsExport = 'accounts/transactions-export',
-    AccountsDashboardBuy = 'accounts/dashboard/buy',
-    AccountsTradeboxButton = 'accounts/tradebox/button',
 
     TransactionCreated = 'transaction-created',
     TransactionRetry = 'transaction/timeout-retry',
@@ -51,6 +48,10 @@ export enum EventType {
 
     CoinjoinAnonymityGain = 'coinjoin/anonymity-gain',
 
+    TradingNavigate = 'trade/navigate',
+    TradingExchange = 'trade/exchange',
+    TradingBuy = 'trade/buy',
+    TradingSell = 'trade/sell',
     TradingConfirmTrade = 'trade/confirm-trade',
 
     StakingNavigate = 'staking/navigate',

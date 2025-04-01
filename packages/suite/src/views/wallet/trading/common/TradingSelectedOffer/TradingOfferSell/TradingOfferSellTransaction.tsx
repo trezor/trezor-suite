@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import type { TradingSellType } from '@suite-common/trading';
 import { Button, Column, Spinner, Text } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { AccountLabeling, Translation } from 'src/components/suite';
@@ -59,6 +60,18 @@ export const TradingSelectedOfferSellTransaction = () => {
     } = sellTrade;
     const providerName = sellInfo?.providerInfos[exchange]?.companyName || exchange;
 
+    const onConfirmAndSendClick = async () => {
+        const result = await sendTransaction();
+
+        analytics.report({
+            type: EventType.TradingSell,
+            payload: {
+                action: result ? 'continue' : 'cancel',
+                step: 'confirm-and-send-transaction',
+            },
+        });
+    };
+
     return (
         <Wrapper>
             {status === 'SEND_CRYPTO' && destinationAddress ? (
@@ -105,7 +118,7 @@ export const TradingSelectedOfferSellTransaction = () => {
                             minWidth={200}
                             isLoading={callInProgress}
                             isDisabled={!device?.connected}
-                            onClick={sendTransaction}
+                            onClick={onConfirmAndSendClick}
                             data-testid="@trading/offer/confirm-on-trezor-and-send"
                         >
                             <Translation id="TR_SELL_CONFIRM_ON_TREZOR_SEND" />
