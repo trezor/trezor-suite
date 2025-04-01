@@ -39,7 +39,7 @@
         "scroll-into-view-if-needed": "^3.1.0",
         "styled-components": "^6.1.8",
         "tailwindcss": "^3.4.10",
-        "zod": "^3.23.8"
+        "zod": "^3.24.2"
     },
     "devDependencies": {
         "@tailwindcss/nesting": "^0.0.0-insiders.565cd3e",
