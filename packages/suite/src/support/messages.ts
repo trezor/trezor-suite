@@ -371,6 +371,10 @@ export default defineMessages({
         defaultMessage: 'Cannot create transaction',
         id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION',
     },
+    TR_TRADING_CANNOT_SEND_TRANSACTION: {
+        defaultMessage: 'Cannot send transaction, missing data',
+        id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
+    },
     TR_CONFIRM_ADDRESS: {
         defaultMessage: 'Confirm address',
         id: 'TR_CONFIRM_ADDRESS',
