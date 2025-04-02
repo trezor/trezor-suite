@@ -33,8 +33,10 @@ const processTemplate = (template: string): string =>
         .replace(/<%\s*if\([^%]*%>[\s\S]*?<%\s*}\s*%>/g, '')
         // Add the script tag for vite-index.ts
         .replace('</head>', '<script type="module" src="./vite-index.ts"></script></head>')
-        // Add the app div to the body
-        .replace('</body>', '<div id="app"></div></body>');
+        // Add the app div to the body, the browser detection does work in vite
+        .replace('</body>', '<div id="app"></div></body>')
+        // in case if the id="app" is added multiple times
+        .replace('<div id="app"></div><div id="app"></div>', '<div id="app"></div>');
 
 // Custom plugin to use the same template as webpack
 const htmlTemplatePlugin = (): Plugin => ({
