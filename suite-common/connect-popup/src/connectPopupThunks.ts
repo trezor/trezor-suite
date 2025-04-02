@@ -61,7 +61,7 @@ export const connectPopupCallThunkInner = createThunk<
                     }),
                 );
 
-                return;
+                throw TypedError('Method_NotAllowed');
             }
 
             // Check if permission remembered
