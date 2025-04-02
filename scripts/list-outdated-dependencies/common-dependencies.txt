@@ -38,7 +38,6 @@ concurrently
 copy-webpack-plugin
 cross-fetch
 depcheck
-dotenv
 escape-string-regexp
 fake-indexeddb
 file-saver
@@ -56,7 +55,6 @@ minimatch
 node-fetch
 node-gyp
 nx
-octokit
 patch-package
 prettier
 raw-loader

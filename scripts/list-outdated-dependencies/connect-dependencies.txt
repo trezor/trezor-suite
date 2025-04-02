@@ -30,6 +30,7 @@ karma-jasmine
 karma-jasmine-async
 karma-sourcemap-loader
 karma-webpack
+@types/lodash
 lodash
 @types/git-url-parse
 git-url-parse

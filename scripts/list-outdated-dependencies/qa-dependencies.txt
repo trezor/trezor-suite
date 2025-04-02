@@ -4,6 +4,6 @@
 @playwright/test
 @currents/playwright
 @currents/cmd
+dotenv
 jest-junit
-@types/lodash
 jest-diff
