@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Pressable } from 'react-native';
-import { FadeInLeft, FadeOutRight } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { AnimatedBox, Card, HStack, Radio, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -22,7 +22,7 @@ export const CountryListItem = ({ label, onPress, value, isSelected }: CountryLi
     const { applyStyle } = useNativeStyles();
 
     return (
-        <AnimatedBox entering={FadeInLeft} exiting={FadeOutRight}>
+        <AnimatedBox entering={FadeIn} exiting={FadeOut}>
             <Pressable onPress={onPress} style={applyStyle(wrapperStyle)}>
                 <Card>
                     <HStack alignItems="center" justifyContent="space-between">

@@ -22,8 +22,7 @@ export type TradeableAssetsSheetProps = {
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
 };
 
-const keyExtractor = ({ cryptoId }: TradeableAsset, { isFavourite }: ListItemExtraData) =>
-    `asset_${cryptoId}_${isFavourite ? 'favourite' : 'all'}`;
+const keyExtractor = ({ cryptoId }: TradeableAsset) => `asset_${cryptoId}`;
 
 const renderItem = (
     asset: TradeableAsset,
