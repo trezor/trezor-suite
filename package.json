@@ -59,7 +59,7 @@
         "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
         "generate-package": "yarn workspace @trezor/scripts generate-package",
         "deps": "rimraf **/node_modules && yarn",
-        "depcheck": "yarn nx affected --target=depcheck",
+        "depcheck": "depcheck && yarn nx affected --target=depcheck",
         "list-outdated": "./scripts/list-outdated-dependencies/list-outdated-dependencies.sh",
         "message-system-sign-config": "yarn workspace @suite-common/message-system sign-config",
         "format": "yarn nx format:write",
@@ -147,8 +147,5 @@
             "built": true
         }
     },
-    "packageManager": "yarn@4.5.3",
-    "dependencies": {
-        "version-bump-prompt": "^6.1.0"
-    }
+    "packageManager": "yarn@4.5.3"
 }

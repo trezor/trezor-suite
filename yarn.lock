@@ -12197,6 +12197,7 @@ __metadata:
     sort-package-json: "npm:^1.57.0"
     tar: "npm:^7.0.1"
     tsx: "npm:^4.19.3"
+    version-bump-prompt: "npm:^6.1.0"
     yargs: "npm:17.7.2"
   languageName: unknown
   linkType: soft
@@ -40110,7 +40111,6 @@ __metadata:
     tslib: "npm:^2.6.2"
     tsx: "npm:^4.19.3"
     typescript: "npm:5.8.2"
-    version-bump-prompt: "npm:^6.1.0"
   dependenciesMeta:
     core-js-pure:
       built: false
