@@ -1,6 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
 import { Assert } from '@trezor/schema-utils';
-import { ERRORS_WITHOUT_DEVICE_INTERACTION } from '@trezor/transport/src/errors-groups';
 import { getRandomInt } from '@trezor/utils';
 
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
@@ -10,11 +9,7 @@ import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath } from '../utils/pathUtils';
 
-type EntropyRequestData = PROTO.EntropyRequest & { host_entropy: string };
-
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
-    private isEntropyCheckSuccessful: boolean = false;
-
     init() {
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.useDeviceState = false;
@@ -51,95 +46,91 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         };
     }
 
-    // generate host_entropy and then call workflow:
-    // - ResetDevice > EntropyRequest > EntropyAck
-    // - EntropyCheckContinue > EntropyRequest > EntropyAck
-    private async getEntropyData(
-        type: 'ResetDevice' | 'EntropyCheckContinue',
-    ): Promise<EntropyRequestData> {
+    // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#simple-resetdevice-workflow
+    private async resetDeviceWorkflow() {
         const cmd = this.device.getCommands();
         const entropy = generateEntropy(32).toString('hex');
-        const params = type === 'ResetDevice' ? this.params : {};
-        const entropyRequest = await cmd.typedCall(type, 'EntropyRequest', params);
-        // EntropyAck > Success if this.params.entropy_check === false
-        await cmd.typedCall('EntropyAck', ['EntropyCheckReady', 'Success'], { entropy });
 
-        return {
-            ...entropyRequest.message,
-            host_entropy: entropy,
-        };
+        // ResetDevice > EntropyRequest > EntropyAck > Success (old fw)
+        await cmd.typedCall('ResetDevice', 'EntropyRequest', this.params);
+        await cmd.typedCall('EntropyAck', 'Success', { entropy });
     }
 
-    private async entropyCheck(prevData: EntropyRequestData): Promise<EntropyRequestData> {
+    // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#entropy-check-workflow
+    private async entropyCheckWorkflow() {
         const cmd = this.device.getCommands();
-        const paths = ["m/84'/0'/0'", "m/44'/60'/0'"];
-        const xpubs: Record<string, string> = {}; // <path, xpub>
-        for (let i = 0; i < paths.length; i++) {
-            const p = paths[i];
-            const pubKey = await cmd.getPublicKey({ address_n: validatePath(p) });
-            xpubs[p] = pubKey.xpub;
+        const paths = ["m/84'/0'/0'", "m/44'/60'/0'"] as const;
+
+        // error.message should be one of these https://github.com/trezor/trezor-suite/blob/develop/packages/transport/src/transports/abstract.ts#L59
+        const handleErr = (error: any) => {
+            throw error.cause === 'transport-error'
+                ? error
+                : ERRORS.TypedError('Failure_EntropyCheck', error.message);
+        };
+
+        // steps: 1 - 4
+        // ResetDevice > EntropyRequest > EntropyAck > EntropyCheckReady (new fw)
+        // note: these calls are intentionally excluded from the catch error handling because it is not in the 'critical' phase yet
+        let entropy = generateEntropy(32).toString('hex');
+        let commitment = await cmd
+            .typedCall('ResetDevice', 'EntropyRequest', this.params)
+            .then(response => response.message.entropy_commitment);
+
+        await cmd.typedCall('EntropyAck', 'EntropyCheckReady', { entropy });
+
+        const tries = getRandomInt(1, 5);
+        for (let i = 0; i < tries; i++) {
+            // steps: 5 - 6
+            // GetPublicKey > PublicKey > EntropyCheckContinue > EntropyRequest > EntropyAck > EntropyCheckReady
+
+            const xpubs: Record<string, string> = {}; // <path, xpub>
+            for (const path of paths) {
+                const pubKey = await cmd
+                    .getPublicKey({ address_n: validatePath(path) })
+                    .catch(handleErr);
+                xpubs[path] = pubKey.xpub;
+            }
+
+            const { prev_entropy, entropy_commitment } = await cmd
+                .typedCall('EntropyCheckContinue', 'EntropyRequest', {})
+                .then(response => response.message)
+                .catch(handleErr);
+
+            const res = await verifyEntropy({
+                type: this.params.backup_type,
+                strength: this.params.strength,
+                commitment,
+                hostEntropy: entropy,
+                trezorEntropy: prev_entropy,
+                xpubs,
+            });
+
+            if (res.error) {
+                await this.device.getCurrentSession().cancelCall();
+                throw ERRORS.TypedError('Failure_EntropyCheck', res.error);
+            }
+
+            entropy = generateEntropy(32).toString('hex');
+            commitment = entropy_commitment;
+
+            await cmd.typedCall('EntropyAck', 'EntropyCheckReady', { entropy }).catch(handleErr);
         }
 
-        const currentData = await this.getEntropyData('EntropyCheckContinue');
-        const res = await verifyEntropy({
-            type: this.params.backup_type,
-            strength: this.params.strength,
-            commitment: prevData.entropy_commitment,
-            hostEntropy: prevData.host_entropy,
-            trezorEntropy: currentData.prev_entropy,
-            xpubs,
-        });
-        if (res.error) {
-            await this.device.getCurrentSession().cancelCall();
-            throw new Error(res.error);
-        }
-
-        return currentData;
+        // step 7 EntropyCheckContinue > Success
+        // wallet backup flow may follow after successful entropy check, so don't consider errors thrown there as entropy check failure
+        await cmd.typedCall('EntropyCheckContinue', 'Success', { finish: true });
     }
 
     async run() {
-        const cmd = this.device.getCommands();
-
         if (this.params.entropy_check && this.device.unavailableCapabilities['entropyCheck']) {
             // entropy check requested but not supported by the firmware
             this.params.entropy_check = false;
         }
 
-        // Entropy check workflow:
-        // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#entropy-check-workflow
-        // steps: 1 - 4
-        // ResetDevice > EntropyRequest > EntropyAck > EntropyCheckReady (new fw) || Success (old fw)
-        let entropyData = await this.getEntropyData('ResetDevice'); // this call is intentionally excluded from the catch error handling below because it is not in the 'critical' phase yet
-
-        try {
-            if (this.params.entropy_check) {
-                const tries = getRandomInt(1, 5);
-                for (let i = 0; i < tries; i++) {
-                    // steps: 5 - 6
-                    // GetPublicKey > ResetDeviceContinue > EntropyRequest > EntropyAck > EntropyCheckReady
-                    entropyData = await this.entropyCheck(entropyData);
-                }
-
-                // if this.entropyCheck hasn't thrown up to now, we may consider it successful
-                this.isEntropyCheckSuccessful = true;
-
-                // step 7 EntropyCheckContinue > Success
-                await cmd.typedCall('EntropyCheckContinue', 'Success', { finish: true });
-            }
-        } catch (error) {
-            // permissible error.message during entropy check should be one of these: see ReadWriteError in packages/transport/src/transports/abstract.ts
-            if (
-                error.cause === 'transport-error' &&
-                ERRORS_WITHOUT_DEVICE_INTERACTION.includes(error.message)
-            ) {
-                throw error;
-            }
-
-            // wallet backup flow may follow after successful entropy check, so don't consider errors thrown there as entropy check failure
-            if (this.isEntropyCheckSuccessful === true) throw error;
-
-            // else consider it an entropy check failure
-            throw ERRORS.TypedError('Failure_EntropyCheck', error.message);
+        if (this.params.entropy_check) {
+            await this.entropyCheckWorkflow();
+        } else {
+            await this.resetDeviceWorkflow();
         }
 
         return { message: 'Success' };

@@ -4,6 +4,7 @@ import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { TransportProtocol } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
 import { Session, TRANSPORT_ERROR, Transport } from '@trezor/transport';
+import { isErrorWithoutDeviceInteraction } from '@trezor/transport/src/errors-groups';
 import { resolveAfter, scheduleAction, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
@@ -38,7 +39,13 @@ const isExpectedResponse = <Key extends Messages.MessageKey | Messages.MessageKe
 
 const success = <T>(payload: T) => ({ success: true as const, payload });
 const error = (error: Error) => ({ success: false as const, error });
-const fail = (msg: string) => error(new Error(msg, { cause: 'transport-error' }));
+const fail = (msg: string) =>
+    error(
+        new Error(
+            msg,
+            isErrorWithoutDeviceInteraction(msg) ? { cause: 'transport-error' } : undefined,
+        ),
+    );
 
 const getFeaturesTimeoutPromise = () =>
     resolveAfter(
