@@ -9,6 +9,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     overflow: hidden scroll;
+    -webkit-app-region: no-drag;
     min-width: ${variables.LAYOUT_SIZE.GUIDE_PANEL_CONTENT_WIDTH};
 `;
 
