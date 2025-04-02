@@ -3,21 +3,22 @@
         "exchange": "moonpay-sell",
         "fiatCurrency": "EUR",
         "cryptoCurrency": "bitcoin",
-        "rate": 85907.69230769231,
-        "amountInCrypto": true,
+        "rate": 71140.84507042254,
+        "amountInCrypto": false,
         "exp": "qtn7k13GIY/wauu7BvapWA==",
         "country": "CZ",
         "paymentMethodName": "Credit Card",
-        "fiatStringAmount": "55.84",
-        "cryptoStringAmount": "0.00065",
+        "tags": ["wantFiat"],
+        "fiatStringAmount": "50.51",
+        "cryptoStringAmount": "0.00071",
         "minFiat": 20,
         "maxFiat": 30000,
         "minCrypto": 0.00006,
         "maxCrypto": 30000,
         "paymentMethod": "creditCard",
-        "paymentId": "227c5679-53df-45a6-ae83-9f4ebf9ecce7",
-        "orderId": "4839ba2d-dd85-49b3-ae73-5ab1b526e66f",
-        "refundAddress": "bc1qw0r95wvsqxumq3km0q8kqyjdard2u8ahaw4y2n"
+        "paymentId": "bc0a3c32-21dd-4614-94e9-2aa41ed52082",
+        "orderId": "4d5c9ead-ad20-4567-90e8-1198d92d6d7b",
+        "refundAddress": "bc1qhnqs78qhvffm95mjdwet39wnhhydtenk7z5h82"
     },
-    "returnUrl": "http://localhost:8000/coinmarket-redirect#sell-offers/btc/normal/0/p-qc/CZ/EUR/0.00065/bitcoin/4839ba2d-dd85-49b3-ae73-5ab1b526e66f"
+    "returnUrl": "http://localhost:8000/coinmarket-redirect#sell-offers/btc/normal/0/p-qf/CZ/EUR/50.51/bitcoin/creditCard/4d5c9ead-ad20-4567-90e8-1198d92d6d7b"
 }
