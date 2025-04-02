@@ -2,7 +2,7 @@ import { AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
-import TrezorConnect, { CallMethodParams, CallMethodResponse, ERRORS } from '@trezor/connect';
+import TrezorConnect, { CallMethodParams, CallMethodResponse } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect/src/constants/errors';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
@@ -45,7 +45,7 @@ export const connectPopupCallThunkInner = createThunk<
                 dispatch(
                     connectPopupActions.initiateCall({
                         state: 'call-error',
-                        callError: ERRORS.TypedError(methodInfo.payload.code),
+                        callError: TypedError(methodInfo.payload.code),
                     }),
                 );
                 throw methodInfo;
@@ -57,7 +57,7 @@ export const connectPopupCallThunkInner = createThunk<
                 dispatch(
                     connectPopupActions.initiateCall({
                         state: 'call-error',
-                        callError: ERRORS.TypedError('Method_NotAllowed'),
+                        callError: TypedError('Method_NotAllowed'),
                     }),
                 );
 
@@ -97,7 +97,7 @@ export const connectPopupCallThunkInner = createThunk<
 
             const device = selectSelectedDevice(getState());
             if (!device) {
-                throw ERRORS.TypedError('Device_NotFound');
+                throw TypedError('Device_NotFound');
             }
 
             // @ts-expect-error: method is dynamic
