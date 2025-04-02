@@ -12,8 +12,8 @@
         "tslib",
         "protobufjs-cli",
         "buffer",
-        "version-bump-prompt",
-        "node-gyp"
+        "node-gyp",
+        "version-bump-prompt"
     ],
     "skip-missing": true
 }
