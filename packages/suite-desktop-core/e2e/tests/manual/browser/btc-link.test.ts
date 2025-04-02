@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 
@@ -8,12 +8,12 @@ test.describe.skip('Bitcoin link', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description:
                         'Verifies that a user can open a bitcoin link in a supported browser and autofill the recipient address when sending BTC.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'Bitcoin address (like bitcoin:bc1qf8cedqguh2ucc3fgsphmgt789q9szh35vtl38m)',
                         'Seeded Trezor device',
@@ -21,7 +21,7 @@ test.describe.skip('Bitcoin link', { tag: ['@group=manual'] }, () => {
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
                         'Put the BTC url in a supported browser',
                         'Click on "Open Trezor Suite"',
@@ -33,6 +33,18 @@ test.describe.skip('Bitcoin link', { tag: ['@group=manual'] }, () => {
                         'Click on the "Autofil" button',
                         'BTC address from test data should appear in the "Address" part of the send form',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.UriLinkHandler,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Medium,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Foundation,
                 },
             ],
         },

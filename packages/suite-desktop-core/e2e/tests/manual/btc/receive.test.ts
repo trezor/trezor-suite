@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 
@@ -8,18 +8,18 @@ test.describe.skip('Receive transaction', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description: 'Verifies that a user can receive a bitcoin transaction.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed)',
                         'Connected Trezor Suite',
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
                         'Click on "Accounts"',
                         'Select a BTC account if it’s not selected',
@@ -30,6 +30,18 @@ test.describe.skip('Receive transaction', { tag: ['@group=manual'] }, () => {
                         'Copied to clipboard notification is displayed',
                         'Close modal via clicking on x or outside of modal',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.BTC,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Critical,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
                 },
             ],
         },

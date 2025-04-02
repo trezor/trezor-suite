@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 
@@ -8,19 +8,19 @@ test.describe.skip('Custom firmware', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description:
                         'Verifies that a user can install custom firmware on a Trezor device.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'Custom firmware downloaded',
                         'Trezor device in bootloader mode',
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
                         'Navigate to "Settings/Device"',
                         'Click on "Install firmware"',
@@ -29,6 +29,18 @@ test.describe.skip('Custom firmware', { tag: ['@group=manual'] }, () => {
                         'Observe the initialization on the device',
                         'Complete the FW installation on the device',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Firmware,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Low,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Firmware,
                 },
             ],
         },

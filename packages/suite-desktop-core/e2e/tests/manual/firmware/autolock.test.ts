@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 
@@ -8,18 +8,18 @@ test.describe.skip('Autolock', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description: 'Verifies that a user can change the autolock time on the device.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Connected Trezor Suite',
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
                         'Navigate to "Settings/Device"',
                         'Find "Auto-lock time" in CUSTOMIZATION section',
@@ -34,6 +34,18 @@ test.describe.skip('Autolock', { tag: ['@group=manual'] }, () => {
                         'Unlock and confirm via Trezor',
                         'Settings changed successfully notification is displayed',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Firmware,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Low,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Firmware,
                 },
             ],
         },

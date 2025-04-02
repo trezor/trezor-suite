@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { test } from '../../support/fixtures';
 import { formatTestSteps } from '../../support/stepsFormat';
 
@@ -8,19 +8,19 @@ test.describe.skip('Tor discovery', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description:
                         'Verifies that a user can enable Tor and check that discovery works correctly.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'BTC only firmware on Trezor device',
                         'Connected Trezor Suite',
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
                         'Connect seeded device and let discovery run through',
                         'Click on the "Tor" button at the top right corner to enable "Tor"',
@@ -36,6 +36,18 @@ test.describe.skip('Tor discovery', { tag: ['@group=manual'] }, () => {
                         'Disable "Tor"',
                         'Return to Dashboard and observe that discovery finishes correctly',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Settings,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Critical,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Foundation,
                 },
             ],
         },

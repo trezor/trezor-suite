@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 
@@ -8,16 +8,16 @@ test.describe.skip('Factory reset', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description:
                         'Verifies that a user can perform a full factory reset on a Trezor device.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps(['Trezor device', 'Connected Trezor Suite']),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
                         'Connect Trezor in bootloader mode',
                         'Navigate to "Settings/Device"',
@@ -27,6 +27,18 @@ test.describe.skip('Factory reset', { tag: ['@group=manual'] }, () => {
                         'Device will reset',
                         'Suite should tell you to reconnect device and no "Unacquired device" should be present',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Settings,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Critical,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Foundation,
                 },
             ],
         },

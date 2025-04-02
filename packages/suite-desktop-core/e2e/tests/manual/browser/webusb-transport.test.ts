@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 
@@ -8,12 +8,12 @@ test.describe.skip('Web usb transport', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description:
                         'Verifies that a user can connect and unlock a device via webUSB transport.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Connected Trezor Suite',
@@ -22,7 +22,7 @@ test.describe.skip('Web usb transport', { tag: ['@group=manual'] }, () => {
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
                         'Start Google chrome browser',
                         'Clear USB permissions in settings',
@@ -33,6 +33,18 @@ test.describe.skip('Web usb transport', { tag: ['@group=manual'] }, () => {
                         'Connect device via webUSB dialogue',
                         'Perform discovery and generate receive address',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Wallets,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Critical,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
                 },
             ],
         },

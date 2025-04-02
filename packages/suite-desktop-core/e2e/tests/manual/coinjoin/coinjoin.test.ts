@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 
@@ -8,12 +8,12 @@ test.describe.skip('Coinjoin', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description:
                         'Verifies that a user can add an existing Coinjoin account to the Suite.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed)',
                         'Connected Trezor Suite',
@@ -21,7 +21,7 @@ test.describe.skip('Coinjoin', { tag: ['@group=manual'] }, () => {
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
                         'navigate to "Accounts"',
                         'in left sidebar, click on "+" sign next to "My accounts" header',
@@ -31,6 +31,18 @@ test.describe.skip('Coinjoin', { tag: ['@group=manual'] }, () => {
                         'click on "Add account"',
                         'discovery of the new account finishes correctly',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.CoinJoin,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Low,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Foundation,
                 },
             ],
         },
@@ -42,31 +54,43 @@ test.describe.skip('Coinjoin', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description:
                         'Verifies that a user can adjust the privacy level of a Coinjoin account.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed)',
                         'Connected Trezor Suite',
                         '"btc" network enabled',
-                        'a CJ account added',
+                        'A CJ account added',
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
-                        'navigate to "Accounts"',
-                        'click on "Details"',
-                        'click on "Custom" input option',
-                        'the default "privacy level" is set to "5"',
-                        'in the privacy input, change the number to "8"',
-                        'slider correctly adjusts',
-                        'adjust the slider to "4"',
-                        'input correctly adjusts',
+                        'Navigate to "Accounts"',
+                        'Click on "Details"',
+                        'Click on "Custom" input option',
+                        'The default "privacy level" is set to "5"',
+                        'In the privacy input, change the number to "8"',
+                        'Slider correctly adjusts',
+                        'Adjust the slider to "4"',
+                        'Input correctly adjusts',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.CoinJoin,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Low,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Foundation,
                 },
             ],
         },

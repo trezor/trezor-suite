@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 
@@ -8,24 +8,36 @@ test.describe.skip('Portfolio', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description: 'Verifies that the portfolio graph is rendered correctly.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Connected Trezor Suite',
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
                         'Check the "Portfolio" graph',
-                        'the graph is rendered correctly',
+                        'The graph is rendered correctly',
                         'Hover over any bottom part of the graph (eg "weekday" or a "month")',
-                        'a popup with detail values shows',
+                        'A popup with detail values shows',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Dashboard,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.High,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
                 },
             ],
         },

@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 
@@ -8,27 +8,39 @@ test.describe.skip('Pagination', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description:
                         'Verifies that a user can navigate through the pages of transactions on an account.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Connected Trezor Suite',
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
-                        'on "standard" wallet, navigate to the "Accounts"',
-                        'click on first account of "legacy" type',
-                        'go to the "5th" page of transactions via the "pagination component"',
-                        'verify that you’re indeed on "page 5"',
-                        'go to the "3rd" page of transactions via the "pagination component"',
-                        'verify, that you’re indeed on "page 3"',
+                        'On "standard" wallet, navigate to the "Accounts"',
+                        'Click on first account of "legacy" type',
+                        'Go to the "5th" page of transactions via the "pagination component"',
+                        'Verify that you’re indeed on "page 5"',
+                        'Go to the "3rd" page of transactions via the "pagination component"',
+                        'Verify, that you’re indeed on "page 3"',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Accounts,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Medium,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
                 },
             ],
         },

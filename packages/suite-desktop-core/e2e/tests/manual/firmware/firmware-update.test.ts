@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 
@@ -8,11 +8,11 @@ test.describe.skip('Firmware update', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description: 'Verifies that a user can update the firmware on a Trezor device.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device with transactions (eg. with "all" seed"',
                         'Connected Trezor Suite',
@@ -20,7 +20,7 @@ test.describe.skip('Firmware update', { tag: ['@group=manual'] }, () => {
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
                         'Navigate to "Settings"/"Device"',
                         'Click on "Update available" button',
@@ -30,6 +30,18 @@ test.describe.skip('Firmware update', { tag: ['@group=manual'] }, () => {
                         'Follow instructions on device and proceed with the firmware update',
                         'Go to "Accounts" or to "Dashboard" and see if the discovery finishes',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Firmware,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.High,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Firmware,
                 },
             ],
         },

@@ -1,4 +1,4 @@
-import { TestAnnotation } from '../../../support/enums/testAnnotation';
+import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 
@@ -8,21 +8,21 @@ test.describe.skip('Cardano transactions', { tag: ['@group=manual'] }, () => {
         {
             annotation: [
                 {
-                    type: TestAnnotation.TestCase,
+                    type: TestAnnotationType.TestCase,
                     description:
                         'Verifies that a user can view transaction history, transaction details, receive funds, and send funds on the Cardano network.',
                 },
                 {
-                    type: TestAnnotation.Prerequisites,
+                    type: TestAnnotationType.Prerequisites,
                     description: formatTestSteps([
                         'Seeded Trezor device',
                         'Trezor Suite app with a funded wallet connected',
                     ]),
                 },
                 {
-                    type: TestAnnotation.Steps,
+                    type: TestAnnotationType.Steps,
                     description: formatTestSteps([
-                        'navigate to the "Accounts"',
+                        'Navigate to the "Accounts"',
                         'Select or enable and then Select "Cardano"',
                         'Select a random user "account"',
                         'Transaction history is present',
@@ -42,6 +42,18 @@ test.describe.skip('Cardano transactions', { tag: ['@group=manual'] }, () => {
                         'Fill out Address field with copied address and amount field',
                         '"Review & Send transaction" via Suite and device button',
                     ]),
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.ADA,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.High,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Trends,
                 },
             ],
         },
