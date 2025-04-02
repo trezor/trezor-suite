@@ -498,8 +498,8 @@ export const networks = {
         features: ['rbf', 'sign-verify', 'tokens', 'staking', 'nfts', 'nft-definitions', 'eip1559'],
         backendTypes: ['blockbook'],
         accountTypes: {},
-        coingeckoId: undefined,
-        tradeCryptoId: undefined,
+        coingeckoId: 'holesky-test-ethereum', // fake, coingecko does not have testnets
+        tradeCryptoId: 'holesky-test-ethereum', // fake, coingecko does not have testnets
     },
     dsol: {
         symbol: 'dsol',
