@@ -94,7 +94,15 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             state.account.symbol === initState.account.symbol
         );
 
-        if (hasAccountChanged || (!outputAddress && account.symbol !== 'ada')) {
+        // update fee info only if the block height has increased.
+        // note: This approach may not be ideal for Bitcoin, as fees can change within the same block
+        const hasFeeInfoChanged = feeInfo.blockHeight - state.feeInfo.blockHeight > 0;
+
+        if (
+            hasAccountChanged ||
+            (!outputAddress && account.symbol !== 'ada') ||
+            hasFeeInfoChanged
+        ) {
             setStateAsync();
         }
         // call effect only when listed dependencies will change
@@ -109,6 +117,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         state.account.symbol,
         initState.account.descriptor,
         initState.account.symbol,
+        initState.feeInfo,
         outputAddress,
     ]);
 

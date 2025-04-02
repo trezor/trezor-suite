@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
@@ -57,11 +65,6 @@ export interface UseSendFormProps extends SendFormProps {
 // convert UseSendFormProps to UseSendFormState
 const getStateFromProps = (props: UseSendFormProps) => {
     const { account, network } = props.selectedAccount;
-    const { symbol, networkType } = account;
-    const feeInfo = getFeeInfo({
-        networkType,
-        feeInfo: props.fees[symbol],
-    });
     const currencyCode = props.localCurrency;
     const localCurrencyOption = {
         value: currencyCode,
@@ -71,7 +74,7 @@ const getStateFromProps = (props: UseSendFormProps) => {
     return {
         account,
         network,
-        feeInfo,
+
         localCurrencyOption,
         online: props.online,
         metadataEnabled: props.metadataEnabled,
@@ -94,6 +97,16 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const dispatch = useDispatch();
 
     const { localCurrencyOption } = state;
+
+    const { symbol, networkType } = state.account;
+    const feeInfo = useMemo(
+        () =>
+            getFeeInfo({
+                networkType,
+                feeInfo: props.fees[symbol],
+            }),
+        [networkType, props.fees, symbol],
+    );
 
     // register `react-hook-form`, defaultValues are set later in "loadDraft" useEffect block
     const useFormMethods = useForm<FormState>({
@@ -132,7 +145,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     const excludedUtxos = useExcludedUtxos({
         account: state.account,
-        dustLimit: state.feeInfo.dustLimit,
+        dustLimit: feeInfo.dustLimit,
         targetAnonymity: props.targetAnonymity,
     });
 
@@ -154,6 +167,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     } = useSendFormCompose({
         ...useFormMethods,
         state,
+        feeInfo,
         account: props.selectedAccount.account,
         prison: props.prison,
         excludedUtxos,
@@ -180,7 +194,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // sub-hook
     const { changeFeeLevel } = useFees({
         defaultValue: undefined,
-        feeInfo: state.feeInfo,
+        feeInfo,
         onChange: onFeeLevelChange,
         composedLevels,
         composeRequest,
@@ -257,21 +271,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             }
         }
     }, [getValues, composedLevels, dispatch, resetContext, props.selectedAccount.account]);
-
-    // replace default feeInfo with data loaded from the server
-    useEffect(() => {
-        const feeInfo = getFeeInfo({
-            networkType: state.account.networkType,
-            feeInfo: props.fees[state.account.symbol],
-        });
-
-        // update fee info only if the block height has increased.
-        // note: This approach may not be ideal for Bitcoin, as fees can change within the same block
-        if (feeInfo.blockHeight - state.feeInfo.blockHeight > 0) {
-            setState(prev => ({ ...prev, feeInfo }));
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.fees]);
 
     // reset on account change
     useEffect(() => {
@@ -381,6 +380,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     return {
         ...state,
         ...useFormMethods,
+        feeInfo,
         isLoading,
         register,
         outputs: outputsFieldArray.fields,
