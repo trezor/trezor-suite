@@ -1,8 +1,17 @@
-import { ComponentType, useEffect, useState } from 'react';
+import { ComponentType, ReactNode, useEffect, useState } from 'react';
 
-import styled from 'styled-components';
-
-import { Button, ModalProps } from '@trezor/components';
+import {
+    Banner,
+    Card,
+    Column,
+    H3,
+    NewModal,
+    Paragraph,
+    ProgressBar,
+    Row,
+    Text,
+} from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { toggleTor, updateTorStatus } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite';
@@ -11,19 +20,12 @@ import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { TorStatus } from 'src/types/suite';
 
-import { TorProgressBar } from './TorProgressBar';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledButton = styled(Button)`
-    width: 150px;
-`;
-
-interface TorLoadingScreenProps {
-    ModalWrapper: ComponentType<ModalProps>;
+type TorLoadingScreenProps = {
+    ModalWrapper?: ComponentType<{ children: ReactNode }>;
     callback: (value: boolean) => void;
-}
+};
 
-export const TorLoader = ({ callback, ModalWrapper }: TorLoadingScreenProps) => {
+export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
     const [progress, setProgress] = useState<number>(0);
     // We create a local `isDisabling` flag to make the fake disabling,
     // since if we use Tor state, the information is real about the Tor state
@@ -87,27 +89,68 @@ export const TorLoader = ({ callback, ModalWrapper }: TorLoadingScreenProps) => 
         callback(false);
     };
 
+    const getMessageId = () => {
+        if (isTorError) {
+            return 'TR_ENABLING_TOR_FAILED';
+        }
+        if (isDisabling) {
+            return 'TR_DISABLING_TOR';
+        }
+
+        return 'TR_ENABLING_TOR';
+    };
+
     return (
-        <ModalWrapper
-            bottomBarComponents={
-                isTorError && (
-                    <StyledButton
-                        data-testid="@tor-loading-screen/try-again-button"
-                        icon="refresh"
-                        onClick={tryAgain}
-                    >
-                        <Translation id="TR_TRY_AGAIN" />
-                    </StyledButton>
-                )
+        <NewModal
+            variant="info"
+            iconName="tor"
+            size="small"
+            bottomContent={
+                <>
+                    {!isDisabling && (
+                        <NewModal.Button
+                            data-testid="@tor-loading-screen/disable-button"
+                            variant="tertiary"
+                            onClick={disableTor}
+                        >
+                            <Translation id="TR_TOR_DISABLE" />
+                        </NewModal.Button>
+                    )}
+                    {isTorError && (
+                        <NewModal.Button
+                            data-testid="@tor-loading-screen/try-again-button"
+                            icon="refresh"
+                            onClick={tryAgain}
+                            variant="tertiary"
+                        >
+                            <Translation id="TR_TRY_AGAIN" />
+                        </NewModal.Button>
+                    )}
+                </>
             }
         >
-            <TorProgressBar
-                isTorError={isTorError}
-                isTorDisabling={isDisabling}
-                isTorBootstrapSlow={!!torBootstrap?.isSlow}
-                progress={progress}
-                disableTor={disableTor}
-            />
-        </ModalWrapper>
+            <Column gap={spacings.md}>
+                <H3>
+                    <Translation id={getMessageId()} />
+                </H3>
+                <Card fillType="flat">
+                    <Row gap={spacings.md}>
+                        <ProgressBar value={isTorError ? 100 : progress} />
+                        <Paragraph variant="tertiary" typographyStyle="body" textWrap="nowrap">
+                            {isTorError ? (
+                                <Translation id="TR_FAILED" />
+                            ) : (
+                                <Text>{progress} %</Text>
+                            )}
+                        </Paragraph>
+                    </Row>
+                </Card>
+                {!!torBootstrap?.isSlow && (
+                    <Banner variant="info" icon="clockClockwise">
+                        <Translation id="TR_TOR_IS_SLOW_MESSAGE" values={{ br: () => ' ' }} />
+                    </Banner>
+                )}
+            </Column>
+        </NewModal>
     );
 };

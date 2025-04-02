@@ -1,37 +1,19 @@
-import styled from 'styled-components';
-
-import { Modal } from '@trezor/components';
-
 import { TorLoader } from 'src/components/suite';
 import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 import { useTor } from 'src/support/suite/useTor';
 
-const Wrapper = styled.div`
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledModal = styled(Modal)`
-    max-width: 600px;
-`;
-
-interface TorLoadingScreenProps {
+type TorLoadingScreenProps = {
     callback: (value?: unknown) => void;
-}
+};
 
 export const TorLoadingScreen = ({ callback }: TorLoadingScreenProps) => {
     useTor();
 
     return (
         <ThemeProvider>
-            <Wrapper data-testid="@tor-loading-screen">
-                <TorLoader ModalWrapper={StyledModal} callback={callback} />
-            </Wrapper>
+            <div data-testid="@tor-loading-screen">
+                <TorLoader callback={callback} />
+            </div>
         </ThemeProvider>
     );
 };
