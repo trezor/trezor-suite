@@ -1,7 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { DEFAULT_OPRETURN, DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
+import {
+    DEFAULT_OPRETURN,
+    DEFAULT_PAYMENT,
+    DEFAULT_VALUES,
+    ETH_SPEED_UP_TX_MULTIPLIER,
+} from '@suite-common/wallet-constants';
 import { DEFAULT_FEE_INFO } from '@suite-common/wallet-core';
 import {
     ChainedTransactions,
@@ -54,41 +59,43 @@ const getBitcoinFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsBitcoin
 };
 
 const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthereum) => {
-    const current = new BigNumber(rbfParams.gasPrice);
+    // use maxFeePerGas as fallback in case backend does not return eip1559 fees
+    const currentGasPrice = new BigNumber(rbfParams.gasPrice || rbfParams.maxFeePerGas);
     const feeInfo = getFeeInfo({
         networkType: 'ethereum',
         feeInfo: info,
     });
-    if (isEip1559(rbfParams)) {
-        const currentMFPG = new BigNumber(rbfParams.maxFeePerGas);
 
-        if (currentMFPG.gt(feeInfo.levels[0].maxFeePerGas ?? 0)) {
-            // if old maxFeePerGas is higher than the current lowest fee level,
-            // set new maxFeePerGas = old maxFeePerGas + maxPriorityFeePerGas
-            const highLevel =
-                feeInfo.levels.find(level => level.label === 'high') || feeInfo.levels[0];
+    const feeLevel = feeInfo.levels[0];
+    if (isEip1559(rbfParams) && isEip1559(feeLevel)) {
+        // to bump fee, both maxFeePerGas and maxPriorityFeePerGas have to be higher
+        const currentMaxFee = new BigNumber(rbfParams.maxFeePerGas);
+        const currentMaxPriorityFee = new BigNumber(rbfParams.maxPriorityFeePerGas);
 
-            return {
-                ...feeInfo,
-                levels: [
-                    {
-                        ...highLevel,
-                        label: 'normal' as const,
-                        maxFeePerGas: currentMFPG
-                            .plus(highLevel.maxPriorityFeePerGas ?? 0)
-                            .toString(),
-                    },
-                ],
-            };
-        }
+        const highLevel = feeInfo.levels.find(level => level.label === 'high') || feeInfo.levels[0];
 
         return {
             ...feeInfo,
+            levels: [
+                {
+                    ...highLevel,
+                    label: 'normal' as const,
+                    maxFeePerGas: BigNumber.maximum(currentMaxFee, highLevel.maxFeePerGas ?? 0)
+                        .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+                        .toString(),
+                    maxPriorityFeePerGas: BigNumber.maximum(
+                        currentMaxPriorityFee,
+                        highLevel.maxPriorityFeePerGas ?? 0,
+                    )
+                        .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+                        .toString(),
+                },
+            ],
         };
     }
 
     const minFeeFromNetwork = new BigNumber(feeInfo.levels[0].feePerUnit);
-    const fee = BigNumber.maximum(minFeeFromNetwork, current.plus(feeInfo.minFee));
+    const fee = BigNumber.maximum(minFeeFromNetwork, currentGasPrice.plus(feeInfo.minFee));
 
     // increase FeeLevel only if it's lower than predefined
     const levels = feeInfo.levels.map(level => ({
@@ -99,7 +106,7 @@ const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthere
     return {
         ...feeInfo,
         levels,
-        minFee: current.plus(feeInfo.minFee).toNumber(), // increase required minFee rate
+        minFee: currentGasPrice.plus(feeInfo.minFee).toNumber(), // increase required minFee rate
     };
 };
 
