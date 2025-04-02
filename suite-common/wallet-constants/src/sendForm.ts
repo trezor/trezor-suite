@@ -12,6 +12,8 @@ export const BTC_LOCKTIME_SEQUENCE = 0xffffffff - 1;
 export const BTC_LOCKTIME_VALUE = 500000000; // if locktime is equal/greater than this then it's a timestamp
 export const XRP_FLAG = 0x80000000;
 export const U_INT_32 = 0xffffffff;
+
+export const ETH_SPEED_UP_TX_MULTIPLIER = '1.2'; // multiply max fee and max priority fee per gas when speeding up tx
 export const ETH_TRANSFER_BACKUP_GAS_LIMIT = '50000'; // sending ETH to contract needs more gas limit than 21000
 export const ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT = '250000';
 export const ERC20_TRANSFER = 'a9059cbb'; // 4 bytes function signature of solidity erc20 `transfer(address,uint256)`
