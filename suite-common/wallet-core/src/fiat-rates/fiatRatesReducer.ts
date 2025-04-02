@@ -71,7 +71,9 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                         state[rateType][fiatRateKey] = {
                             ...currentRate,
                             isLoading: false,
-                            error: result.reason || `Failed to update ${ticker.symbol} fiat rate.`,
+                            error:
+                                String(result.reason) ||
+                                `Failed to update ${ticker.symbol} fiat rate.`,
                         };
 
                         continue;

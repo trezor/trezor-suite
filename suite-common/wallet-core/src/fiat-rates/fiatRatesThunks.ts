@@ -89,11 +89,6 @@ export const updateTxsFiatRatesThunk = createThunk(
     },
 );
 
-const fetchFn: Record<RateTypeWithoutHistoric, typeof fetchCurrentFiatRates> = {
-    current: fetchCurrentFiatRates,
-    lastWeek: fetchLastWeekFiatRates,
-};
-
 type UpdateCurrentFiatRatesThunkPayload = {
     tickers: TickerId[];
     localCurrency: FiatCurrencyCode;
@@ -130,20 +125,43 @@ export const updateFiatRatesThunk = createThunk(
 
             const isElectrumBackend = selectIsElectrumBackendSelected(getState(), ticker.symbol);
 
-            const rate = await fetchFn[rateType]({
-                ticker,
-                localCurrency,
-                isElectrumBackend,
-            });
+            const rate = await (() => {
+                switch (rateType) {
+                    case 'current':
+                        return fetchCurrentFiatRates({
+                            ticker,
+                            localCurrency,
+                            isElectrumBackend,
+                        });
+                    case 'lastWeek':
+                        return fetchLastWeekFiatRates({
+                            ticker,
+                            localCurrency,
+                            isElectrumBackend,
+                        });
+                    default:
+                        ((_: never) => {})(rateType);
+                }
+            })();
 
             if (!rate) {
-                throw new Error('Failed to fetch fiat rates');
+                throw new Error(
+                    `Failed to fetch fiat rates ${ticker.symbol}, currency ${localCurrency}, token ${ticker.tokenAddress ?? '-'}, rateType ${rateType}`,
+                );
             }
 
             return rate;
         };
 
-        const rates = await Promise.allSettled(tickers.map(fetchRate));
+        const rates = await Promise.allSettled(
+            tickers.map(ticker =>
+                fetchRate(ticker).then(
+                    rate => rate,
+                    // NOTE: rejection of the promise without string as rejected promises causes warnings in the console
+                    error => Promise.reject(String(error)),
+                ),
+            ),
+        );
 
         return rates;
     },
