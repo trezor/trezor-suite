@@ -44,6 +44,7 @@ export const useCompose = <TFieldValues extends FormState>({
 }: Props<TFieldValues>) => {
     const [isLoading, setLoading] = useState(false);
     const composeRequestIDRef = useRef(0);
+    const prevFeeInfoRef = useRef(state?.feeInfo);
     const defaultFieldRef = useRef(defaultField || DEFAULT_FIELD);
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
@@ -229,6 +230,16 @@ export const useCompose = <TFieldValues extends FormState>({
             composeRequest();
         }
     }, [state, composeRequest]);
+
+    useEffect(() => {
+        const hasFeeInfoChanged =
+            state && state?.feeInfo.blockHeight !== prevFeeInfoRef.current?.blockHeight;
+
+        if (hasFeeInfoChanged) {
+            prevFeeInfoRef.current = state.feeInfo;
+            composeRequest();
+        }
+    }, [state, state?.feeInfo, composeRequest]);
 
     // handle composedLevels change
     useEffect(() => {

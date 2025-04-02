@@ -32,6 +32,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
 }: Props<TFieldValues>) => {
     const [isLoading, setLoading] = useState(false);
     const composeRequestIDRef = useRef(0);
+    const prevFeeInfoRef = useRef(state?.feeInfo);
     const defaultFieldRef = useRef(defaultField || DEFAULT_FIELD);
     const [composedLevels, setComposedLevels] =
         useState<StakeContextValues['composedLevels']>(undefined);
@@ -99,6 +100,8 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
     const updateComposedValues = useCallback(
         (composed: PrecomposedTransaction) => {
             const values = getValues();
+            if (!composed) return;
+
             if (composed.type === 'error') {
                 const { error, errorMessage } = composed;
                 if (!errorMessage) {
@@ -209,6 +212,16 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
             composeRequest();
         }
     }, [state, composeRequest]);
+
+    useEffect(() => {
+        const hasFeeInfoChanged =
+            state && state?.feeInfo.blockHeight !== prevFeeInfoRef.current?.blockHeight;
+
+        if (hasFeeInfoChanged) {
+            prevFeeInfoRef.current = state.feeInfo;
+            composeRequest();
+        }
+    }, [state, state?.feeInfo, composeRequest]);
 
     // handle composedLevels change
     useEffect(() => {

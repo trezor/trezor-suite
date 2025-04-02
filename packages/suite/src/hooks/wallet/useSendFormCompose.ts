@@ -8,6 +8,7 @@ import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
     ExcludedUtxos,
+    FeeInfo,
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
@@ -27,6 +28,7 @@ import { useSolanaSubscribeBlocks } from './form/useSolanaSubscribeBlocks';
 
 type Props = UseFormReturn<FormState> & {
     state: UseSendFormState;
+    feeInfo: FeeInfo;
     excludedUtxos: ExcludedUtxos;
     account: UseSendFormState['account']; // account from the component props !== state.account
     updateContext: SendContextValues['updateContext'];
@@ -44,6 +46,7 @@ export const useSendFormCompose = ({
     formState: { errors, isDirty },
     clearErrors,
     state,
+    feeInfo,
     account,
     excludedUtxos,
     updateContext,
@@ -76,7 +79,7 @@ export const useSendFormCompose = ({
                     composeContext: {
                         account,
                         network: state.network,
-                        feeInfo: state.feeInfo,
+                        feeInfo,
                         excludedUtxos,
                         prison,
                     },
@@ -90,7 +93,7 @@ export const useSendFormCompose = ({
                 setLoading(false);
             }
         },
-        [account, dispatch, prison, excludedUtxos, setLoading, state.network, state.feeInfo],
+        [account, dispatch, prison, excludedUtxos, setLoading, state.network, feeInfo],
     );
 
     // Create a compose request
@@ -127,7 +130,7 @@ export const useSendFormCompose = ({
                         composeContext: {
                             account,
                             network: state.network,
-                            feeInfo: state.feeInfo,
+                            feeInfo,
                             excludedUtxos,
                             prison,
                         },
@@ -159,7 +162,7 @@ export const useSendFormCompose = ({
             getValues,
             account,
             state.network,
-            state.feeInfo,
+            feeInfo,
             excludedUtxos,
             prison,
         ],
@@ -338,7 +341,7 @@ export const useSendFormCompose = ({
         updateContext({ account });
     }, [
         state.account,
-        state.feeInfo.dustLimit,
+        feeInfo.dustLimit,
         isDirty,
         account,
         clearErrors,
