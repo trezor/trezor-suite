@@ -34,7 +34,7 @@ import { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/RippleOptions/DestinationTag';
 
 export type ConfirmValueModalProps = Pick<NewModalProps, 'onCancel' | 'heading'> & {
-    account: Account;
+    account?: Account;
     'data-testid'?: string;
     isConfirmed?: boolean;
     areStepsVisible?: boolean;
@@ -64,7 +64,6 @@ export const ConfirmValueModal = ({
     const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
-    const { symbol, accountType, index } = account;
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
     const isCancelable = isActionAbortable || isConfirmed;
@@ -105,15 +104,17 @@ export const ConfirmValueModal = ({
             <NewModal.ModalBase
                 heading={heading}
                 description={
-                    <Row gap={spacings.xxs}>
-                        <CoinLogo size={14} symbol={symbol} />
-                        <AccountLabel
-                            accountLabel={accountLabel}
-                            accountType={accountType}
-                            symbol={symbol}
-                            index={index}
-                        />
-                    </Row>
+                    account && (
+                        <Row gap={spacings.xxs}>
+                            <CoinLogo size={14} symbol={account.symbol} />
+                            <AccountLabel
+                                accountLabel={accountLabel}
+                                accountType={account.accountType}
+                                symbol={account.symbol}
+                                index={account.index}
+                            />
+                        </Row>
+                    )
                 }
                 onCancel={isCancelable ? onCancel : undefined}
                 size="small"
@@ -132,7 +133,7 @@ export const ConfirmValueModal = ({
                             </Paragraph>
                         </Banner>
                     )}
-                    {account.networkType === 'ripple' && (
+                    {account?.networkType === 'ripple' && (
                         <Banner variant="info" icon="info">
                             <Translation
                                 id="DESTINATION_TAG_BANNER_RECEIVE"

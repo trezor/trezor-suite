@@ -11,8 +11,6 @@ import {
 import { useSelector } from 'src/hooks/suite';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 
-import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
-
 interface ConfirmAddressModalProps
     extends Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel' | 'value'> {
     addressPath: string;
@@ -32,8 +30,6 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
     );
 
     if (!device) return null;
-    // TODO: special case for Connect Popup
-    if (!account) return <ConfirmActionModal device={device} />;
 
     return (
         <ConfirmValueModal
