@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
 
+import { NetworkType } from '@suite-common/wallet-config';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, isEip1559 } from '@suite-common/wallet-utils';
 import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -21,17 +22,34 @@ interface ChangeFeeProps extends UseRbfProps {
     showChained: () => void;
 }
 
+const getFeeRate = (tx: WalletAccountTransaction, networkType: NetworkType) => {
+    const rbf = tx.rbfParams;
+
+    if (!rbf) return null;
+
+    if (rbf.type === 'bitcoin' && rbf.feeRate !== undefined) {
+        return <FeeRate feeRate={rbf.feeRate} networkType={networkType} symbol={tx.symbol} />;
+    }
+
+    if (rbf.type === 'ethereum') {
+        const { gasPrice, maxFeePerGas } = rbf;
+
+        return isEip1559(rbf) ? (
+            <FeeRate feeRate={maxFeePerGas} networkType={networkType} symbol={tx.symbol} />
+        ) : (
+            <FeeRate feeRate={gasPrice} networkType={networkType} symbol={tx.symbol} />
+        );
+    }
+
+    return null;
+};
+
 const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     const { tx, showChained, children } = props;
     const {
         account: { networkType },
         chainedTxs,
     } = useRbfContext();
-
-    const feeRate =
-        tx.rbfParams?.type === 'bitcoin' && tx.rbfParams?.feeRate !== undefined ? (
-            <FeeRate feeRate={tx.rbfParams.feeRate} networkType={networkType} symbol={tx.symbol} />
-        ) : null;
 
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
@@ -46,8 +64,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                     direction="row"
                     label={
                         <>
-                            <Translation id="TR_CURRENT_FEE" />
-                            {feeRate && <> ({feeRate})</>}
+                            <Translation id="TR_CURRENT_FEE" /> {getFeeRate(tx, networkType)}
                         </>
                     }
                     typographyStyle="body"
