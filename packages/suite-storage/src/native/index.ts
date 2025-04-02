@@ -8,8 +8,6 @@ import {
     StoreValue,
 } from 'idb';
 
-import { StorageMessageEvent } from './types';
-
 export type OnUpgradeFunc<TDBStructure> = (
     db: IDBPDatabase<TDBStructure>,
     oldVersion: number,
@@ -97,10 +95,6 @@ class CommonDB<TDBStructure> {
         // if the instance is blocking db upgrade, db connection will be closed
         return isSupported && !this.blocking && !this.blocked;
     };
-
-    notify = (_store: StoreNames<TDBStructure>, _keys: any[]) => {};
-
-    onChange = (_handler: (event: StorageMessageEvent<TDBStructure>) => any) => {};
 
     getDB = (): Promise<IDBPDatabase<TDBStructure>> =>
         // @ts-expect-error
@@ -205,4 +199,3 @@ class CommonDB<TDBStructure> {
 }
 
 export default CommonDB;
-export type { StorageUpdateMessage } from './types';

@@ -16,7 +16,6 @@ import type {
     RatesByTimestamps,
     WalletSettings,
 } from '@suite-common/wallet-types';
-import type { StorageUpdateMessage } from '@trezor/suite-storage';
 
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { MetadataState } from 'src/types/suite/metadata';
@@ -146,5 +145,3 @@ export interface SuiteDBSchema extends DBSchema {
         };
     };
 }
-
-export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;

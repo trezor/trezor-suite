@@ -1622,15 +1622,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:7.23.4":
-  version: 7.23.4
-  resolution: "@babel/runtime@npm:7.23.4"
-  dependencies:
-    regenerator-runtime: "npm:^0.14.0"
-  checksum: 10/6ef4f6dcc4ec4d74cb9f6c26a26e92d016b36debd167be48cae293fbd990b3157fb1d8d21c531285da15a5bda9ccb23e651b56234941e03d91c8af69d4c593a9
-  languageName: node
-  linkType: hard
-
 "@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.18.6, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.5, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.27.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.27.0
   resolution: "@babel/runtime@npm:7.27.0"
@@ -12143,7 +12134,6 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
-    broadcast-channel: "npm:^7.0.0"
     idb: "npm:^8.0.2"
   languageName: unknown
   linkType: soft
@@ -16457,18 +16447,6 @@ __metadata:
   dependencies:
     fill-range: "npm:^7.1.1"
   checksum: 10/fad11a0d4697a27162840b02b1fad249c1683cbc510cd5bf1a471f2f8085c046d41094308c577a50a03a579dd99d5a6b3724c4b5e8b14df2c4443844cfcda2c6
-  languageName: node
-  linkType: hard
-
-"broadcast-channel@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "broadcast-channel@npm:7.0.0"
-  dependencies:
-    "@babel/runtime": "npm:7.23.4"
-    oblivious-set: "npm:1.4.0"
-    p-queue: "npm:6.6.2"
-    unload: "npm:2.4.1"
-  checksum: 10/a7cafdd54df4cafc5c8627205001d0377e77afd7dfb8ae2969f779b1a0ae2085413d021db0ab53ec74c5a43c634687289aafa8f39d8dedfbf0b0324fc670ab18
   languageName: node
   linkType: hard
 
@@ -32448,13 +32426,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oblivious-set@npm:1.4.0":
-  version: 1.4.0
-  resolution: "oblivious-set@npm:1.4.0"
-  checksum: 10/4503772b19eda65d18afca528a35f73b68956833f88b64c528516159a190f61c5c0c5f7f33a7882aad267ecec67097c11729e497b0bbb34e093a3aa84679cc33
-  languageName: node
-  linkType: hard
-
 "obuf@npm:^1.0.0, obuf@npm:^1.1.2, obuf@npm:~1.1.2":
   version: 1.1.2
   resolution: "obuf@npm:1.1.2"
@@ -40732,13 +40703,6 @@ __metadata:
   version: 2.0.0
   resolution: "universalify@npm:2.0.0"
   checksum: 10/2406a4edf4a8830aa6813278bab1f953a8e40f2f63a37873ffa9a3bc8f9745d06cc8e88f3572cb899b7e509013f7f6fcc3e37e8a6d914167a5381d8440518c44
-  languageName: node
-  linkType: hard
-
-"unload@npm:2.4.1":
-  version: 2.4.1
-  resolution: "unload@npm:2.4.1"
-  checksum: 10/00b1181eac776c7e3bf9ea3ff93e183a926d83ad445ff616e5b5f06c0b4abab19522cf3376a4a4161e4e293f55ab4d58782c48d00a3784c878e13eb7c69d2679
   languageName: node
   linkType: hard
 

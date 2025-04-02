@@ -1,4 +1,3 @@
-import { BroadcastChannel } from 'broadcast-channel';
 import {
     IDBPDatabase,
     IDBPTransaction,
@@ -15,8 +14,6 @@ import {
 import { isFirefox } from '@trezor/env-utils';
 import { createLazy } from '@trezor/utils';
 
-import { StorageMessageEvent } from './types';
-
 export type OnUpgradeFunc<TDBStructure> = (
     db: IDBPDatabase<TDBStructure>,
     oldVersion: number,
@@ -28,7 +25,6 @@ class CommonDB<TDBStructure> {
     private static instance: CommonDB<any>;
     dbName!: string;
     version!: number;
-    broadcastChannel!: BroadcastChannel;
     supported: boolean | undefined;
     blocking = false;
     blocked = false;
@@ -66,9 +62,6 @@ class CommonDB<TDBStructure> {
         this.blocked = false;
 
         this.isSupported();
-
-        // create global instance of broadcast channel
-        this.broadcastChannel = new BroadcastChannel('storageChangeEvent');
 
         CommonDB.instance = this;
     }
@@ -114,17 +107,6 @@ class CommonDB<TDBStructure> {
 
         // if the instance is blocking db upgrade, db connection will be closed
         return isSupported && !this.blocking && !this.blocked;
-    };
-
-    notify = (store: StoreNames<TDBStructure>, keys: any[]) => {
-        // sends the message containing store, keys which were updated to other tabs/windows
-        const message = { store, keys };
-        this.broadcastChannel.postMessage(message);
-    };
-
-    onChange = (handler: (event: StorageMessageEvent<TDBStructure>) => any) => {
-        // listens to the channel. On receiving a message triggers the handler func
-        this.broadcastChannel.onmessage = handler;
     };
 
     closeAfterTimeout = (timeout = 1000) => {
@@ -206,7 +188,6 @@ class CommonDB<TDBStructure> {
                     reject(req.error);
                 };
                 req.onsuccess = _event => {
-                    this.notify(store, [req.result]);
                     resolve(req.result);
                 };
             } catch (error) {
@@ -231,7 +212,7 @@ class CommonDB<TDBStructure> {
         const tx = db.transaction(store, 'readwrite');
 
         const keys: StoreKey<TDBStructure, StoreNames<TDBStructure>>[] = [];
-        const promises = Promise.all(
+        const promisesOfItems: Promise<void[]> = Promise.all(
             items
                 .map(item => {
                     if (upsert) {
@@ -245,11 +226,10 @@ class CommonDB<TDBStructure> {
                     });
                 })
                 .concat(tx.done),
-        ).then(_ => {
-            this.notify(store, keys);
-        });
+        );
+        const aggregatedPromise: Promise<void> = promisesOfItems.then(() => {});
 
-        return promises;
+        return aggregatedPromise;
     };
 
     getItemByPK = async <
@@ -300,7 +280,6 @@ class CommonDB<TDBStructure> {
         const result = await index.get(key);
         if (result) {
             Object.assign(result, updateObject);
-            this.notify(store, [result]);
 
             return tx.store.put(result);
         }
@@ -339,7 +318,6 @@ class CommonDB<TDBStructure> {
         let cursor = await txIdIndex.openCursor(IDBKeyRange.only(key));
         while (cursor) {
             cursor.delete();
-            this.notify(store, cursor.value ? [cursor.value] : []);
 
             cursor = await cursor.continue();
         }
@@ -471,4 +449,3 @@ class CommonDB<TDBStructure> {
 }
 
 export default CommonDB;
-export type { StorageUpdateMessage } from './types';

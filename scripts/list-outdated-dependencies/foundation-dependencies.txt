@@ -46,7 +46,6 @@ express
 
 # STORAGE
 idb
-broadcast-channel
 
 # ESLINT
 @eslint/js
