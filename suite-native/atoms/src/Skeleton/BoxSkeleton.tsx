@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
+import { AccessibilityProps } from 'react-native';
 import {
     interpolate,
     useDerivedValue,
@@ -29,7 +30,7 @@ type BoxSkeletonProps = {
     width: number;
     elevation?: SurfaceElevation;
     borderRadius?: NativeRadius | number;
-};
+} & AccessibilityProps;
 
 const ANIMATION_DURATION = 1200;
 
@@ -51,6 +52,7 @@ export const BoxSkeleton = ({
     width,
     elevation = '1',
     borderRadius = 'r8',
+    ...accessibilityProps
 }: BoxSkeletonProps) => {
     const {
         utils: { colors },
@@ -83,7 +85,7 @@ export const BoxSkeleton = ({
     );
 
     return (
-        <Canvas style={{ width, height }}>
+        <Canvas style={{ width, height }} {...accessibilityProps}>
             <Group clip={rct}>
                 <Group transform={position}>
                     <RoundedRect rect={rct}>
