@@ -21,6 +21,7 @@ export type ButtonAccessory = IconName | ReactElement;
 export type ButtonSize = 'extraSmall' | 'small' | 'medium' | 'large';
 export type ButtonColorScheme =
     | 'primary'
+    | 'primaryElevation0'
     | 'secondary'
     | 'tertiaryElevation0'
     | 'tertiaryElevation1'
@@ -97,6 +98,13 @@ export const buttonSchemeToColorsMap = {
         backgroundColor: 'backgroundPrimaryDefault',
         onPressColor: 'backgroundPrimaryPressed',
         textColor: 'textOnPrimary',
+        iconColor: 'iconOnPrimary',
+        disabledColors: baseDisabledScheme,
+    },
+    primaryElevation0: {
+        backgroundColor: 'backgroundPrimarySubtleOnElevation0',
+        onPressColor: 'backgroundPrimarySubtleOnElevation1',
+        textColor: 'textPrimaryDefault',
         iconColor: 'iconOnPrimary',
         disabledColors: baseDisabledScheme,
     },
