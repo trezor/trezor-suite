@@ -30,11 +30,11 @@ export const allowedButtonFrameProps = [
     'minWidth',
     'maxWidth',
 ] as const satisfies FramePropsKeys[];
-type AllowedFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
+export type AllowedButtonFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
 
 export type IconOrComponent = IconName | JSX.Element;
 
-type ButtonContainerProps = TransientProps<AllowedFrameProps> & {
+type ButtonContainerProps = TransientProps<AllowedButtonFrameProps> & {
     $elevation: Elevation;
     $variant: ButtonVariant;
     $size: ButtonSize;
@@ -113,7 +113,7 @@ type ExclusiveAProps =
       };
 
 export type ButtonProps = SelectedHTMLButtonProps &
-    AllowedFrameProps &
+    AllowedButtonFrameProps &
     ExclusiveAProps & {
         variant?: ButtonVariant;
         isSubtle?: boolean;
@@ -167,7 +167,7 @@ export const Button = ({
     textWrap = true,
     title,
     type = 'button',
-    variant = 'primary',
+    variant = 'tertiary',
     ...rest
 }: ButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);

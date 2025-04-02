@@ -175,7 +175,7 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
         return (
             <Column gap={spacings.xs} margin={{ bottom: spacings.lg }}>
                 {buildGroup('coinjoin', coinjoinAccounts)}
-                {buildGroup('normal', normalAccounts, coinjoinAccounts.length === 0)}
+                {buildGroup('normal', normalAccounts, true)}
                 {buildGroup('taproot', taprootAccounts)}
                 {buildGroup('segwit', segwitAccounts)}
                 {buildGroup('legacy', legacyAccounts)}

@@ -19,6 +19,7 @@ test.describe('Trading - Navigation', { tag: ['@group=other'] }, () => {
         await test.step('Buy from dashboard asset card', async () => {
             await page.getByTestId('@dashboard/asset/btc/buy-button').click();
             await tradingPage.verifyBuyFormOpened('BTC');
+            await page.getByTestId(`@account-menu/filter-accounts`).click();
             await walletPage.walletFilter('btc').click();
         });
 

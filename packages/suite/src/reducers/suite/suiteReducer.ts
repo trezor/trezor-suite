@@ -118,6 +118,7 @@ export interface SuiteSettings {
     defaultWalletLoading: WalletType;
     experimental?: ExperimentalFeature[];
     sidebarWidth: number;
+    isCoinsFilterVisible: boolean;
 }
 
 export interface TransportState extends InstallerInfo {
@@ -204,6 +205,7 @@ const initialState: SuiteState = {
         addressDisplayType: AddressDisplayOptions.CHUNKED,
         defaultWalletLoading: WalletType.STANDARD,
         sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
+        isCoinsFilterVisible: false,
     },
 };
 
@@ -318,6 +320,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_SIDEBAR_WIDTH:
                 draft.settings.sidebarWidth = action.payload.width;
+                break;
+
+            case SUITE.SET_IS_COINS_FILTER_VISIBLE:
+                draft.settings.isCoinsFilterVisible = action.payload.isCoinsFilterVisible;
                 break;
 
             case TRANSPORT.START: {

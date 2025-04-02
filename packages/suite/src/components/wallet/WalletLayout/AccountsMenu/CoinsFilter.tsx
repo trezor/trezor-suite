@@ -6,23 +6,24 @@ import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components'
 import { CoinLogo } from '@trezor/product-components';
 import { borders, spacingsPx } from '@trezor/theme';
 
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useAccountSearch, useSelector } from 'src/hooks/suite';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+import { useAccountSearch } from 'src/hooks/suite';
+
+import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
-const StyledCoinLogo = styled(CoinLogo)<{ $isSelected?: boolean }>`
+const StyledCoinLogo = styled(CoinLogo)<{ $isSelected?: boolean; $coinFilter?: string }>`
     display: block;
     border-radius: ${borders.radii.xxs};
-    outline: 2px solid
-        ${({ $isSelected, theme }) =>
-            $isSelected ? theme.backgroundSecondaryPressed : 'transparent'};
+    opacity: ${({ $isSelected, $coinFilter }) =>
+        $coinFilter === undefined || $isSelected ? 1 : 0.5};
+
     transition: outline 0.2s;
     filter: ${({ $isSelected }) => !$isSelected && 'grayscale(100%)'};
     cursor: pointer;
 
     &:hover {
-        outline: 2px solid ${({ theme }) => theme.backgroundSecondaryDefault};
+        opacity: ${({ $isSelected, $coinFilter }) =>
+            $coinFilter !== undefined && !$isSelected ? 0.7 : 1};
     }
 `;
 
@@ -44,18 +45,7 @@ const Container = styled.div`
 
 export const CoinsFilter = () => {
     const { coinFilter, setCoinFilter } = useAccountSearch();
-    const enabledNetworks = useSelector(selectEnabledNetworks);
-    const { supportedMainnets, supportedTestnets } = useNetworkSupport();
-
-    const supportedNetworkSymbols = [...supportedMainnets, ...supportedTestnets].map(
-        network => network.symbol,
-    );
-
-    const availableNetworksSymbols = enabledNetworks.filter(networkSymbol =>
-        supportedNetworkSymbols.includes(networkSymbol),
-    );
-
-    const showCoinFilter = availableNetworksSymbols.length > 1;
+    const availableNetworksSymbols = useAvailableNetworkSymbols();
 
     const coinAnimcationConfig: MotionProps = {
         initial: {
@@ -74,10 +64,6 @@ export const CoinsFilter = () => {
             },
         },
     };
-
-    if (!showCoinFilter) {
-        return null;
-    }
 
     return (
         <Container
@@ -104,6 +90,7 @@ export const CoinsFilter = () => {
                                     size={16}
                                     data-test-activated={coinFilter === networkSymbol}
                                     $isSelected={isSelected}
+                                    $coinFilter={coinFilter}
                                     onClick={e => {
                                         e.stopPropagation();
                                         // select the coin or deactivate if it's already selected

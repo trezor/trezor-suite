@@ -145,6 +145,14 @@ export default defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
+    TR_SHOW_COINS_FILTER: {
+        defaultMessage: 'Show filter',
+        id: 'TR_SHOW_COINS_FILTER',
+    },
+    TR_HIDE_COINS_FILTER: {
+        defaultMessage: 'Hide filter',
+        id: 'TR_HIDE_COINS_FILTER',
+    },
     TR_ADD_NETWORK_ACCOUNT: {
         defaultMessage: 'Add {network} account',
         id: 'TR_ADD_NETWORK_ACCOUNT',

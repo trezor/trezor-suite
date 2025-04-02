@@ -1,9 +1,12 @@
-import { Button, ButtonProps, IconButton, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { Button, ButtonProps, TOOLTIP_DELAY_NORMAL, TextButton, Tooltip } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
+
+import { useIsSidebarCollapsed } from '../../../suite/layouts/SuiteLayout/Sidebar/utils';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
     let message;
@@ -32,7 +35,7 @@ export const AddAccountButton = ({
 }: AddAccountButtonProps) => {
     const { isDiscoveryRunning } = useDiscovery();
     const dispatch = useDispatch();
-
+    const isSidebarCollapsed = useIsSidebarCollapsed();
     // TODO: add more cases when adding account is not possible
     const addAccountDisabled =
         isDiscoveryRunning ||
@@ -67,18 +70,20 @@ export const AddAccountButton = ({
             isFullWidth
             {...rest}
         >
-            <Translation id="TR_SIDEBAR_ADD_COIN" />
+            <Translation id="TR_ADD_ACCOUNT" />
         </Button>
     ) : (
-        <IconButton
-            onClick={device ? handleOnClick : undefined}
-            icon="plus"
-            isDisabled={addAccountDisabled || isDisabled}
-            size="small"
-            variant="tertiary"
-            {...rest}
-            label={!tooltipMessage && <Translation id="TR_ADD_ACCOUNT" />}
-        />
+        <Tooltip isActive={!tooltipMessage} content={<Translation id="TR_ADD_ACCOUNT" />}>
+            <TextButton
+                onClick={device ? handleOnClick : undefined}
+                icon="plus"
+                isDisabled={addAccountDisabled || isDisabled}
+                size="small"
+                variant="tertiary"
+                margin={{ right: isSidebarCollapsed ? 0 : spacings.xs }}
+                {...rest}
+            />
+        </Tooltip>
     );
 
     if (tooltipMessage) {

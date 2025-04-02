@@ -125,6 +125,7 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
         await dashboardPage.discoveryShouldFinish();
 
         analytics.interceptAnalytics();
+        await page.getByTestId(`@account-menu/filter-accounts`).click();
         for (const coin of coins) {
             await test.step(`Add and verify ${coin.symbol} account`, async () => {
                 analytics.requests = [];

@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+
 import styled, { useTheme } from 'styled-components';
 
 import { Icon, Input } from '@trezor/components';
@@ -19,6 +21,7 @@ const StyledInput = styled(Input)`
 
 export const AccountSearchBox = () => {
     const theme = useTheme();
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const { translationString } = useTranslation();
     const { setCoinFilter, searchString, setSearchString } = useAccountSearch();
 
@@ -33,13 +36,24 @@ export const AccountSearchBox = () => {
             onChange={e => {
                 setSearchString(e.target.value);
             }}
-            innerAddon={<Icon name="search" size={16} color={theme.iconDefault} />}
+            innerAddon={
+                <Icon
+                    name="search"
+                    size={16}
+                    color={theme.iconDefault}
+                    onClick={() => {
+                        inputRef?.current?.select();
+                    }}
+                    cursor="pointer"
+                />
+            }
             innerAddonAlign="start"
             size="small"
-            placeholder={translationString('TR_SEARCH')}
+            placeholder={translationString('TR_WALLET')}
             showClearButton="always"
             onClear={onClear}
             data-testid="@account-menu/search-input"
+            innerRef={inputRef}
         />
     );
 };

@@ -1,18 +1,50 @@
 import React from 'react';
 
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { borders, spacingsPx, typography } from '@trezor/theme';
 
+import { pickAndPrepareFrameProps, withFrameProps } from '../../../utils/frameProps';
+import { TransientProps } from '../../../utils/transientProps';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { ButtonProps, getIcon } from '../Button/Button';
-import { ButtonSize, IconAlignment, getIconSize } from '../buttonStyleUtils';
+import {
+    AllowedButtonFrameProps,
+    ButtonProps,
+    allowedButtonFrameProps,
+    getIcon,
+} from '../Button/Button';
+import {
+    ButtonSize,
+    ButtonVariant,
+    IconAlignment,
+    getIconColor,
+    getIconSize,
+} from '../buttonStyleUtils';
 
-const TextButtonContainer = styled.button<{
-    $size: ButtonSize;
-    $iconAlignment: IconAlignment;
-}>`
+const mapVariantToColor: Record<ButtonVariant, string> = {
+    primary: 'textPrimaryDefault',
+    tertiary: 'textSubdued',
+    info: 'textAlertBlue',
+    warning: 'textAlertYellow',
+    destructive: 'textAlertRed',
+};
+
+const mapVariantToHoverColor: Record<ButtonVariant, string> = {
+    primary: 'textPrimaryPressed',
+    tertiary: 'textPrimaryPressed',
+    info: 'textPrimaryPressed',
+    warning: 'textPrimaryPressed',
+    destructive: 'textPrimaryPressed',
+};
+
+const TextButtonContainer = styled.button<
+    TransientProps<AllowedButtonFrameProps> & {
+        $size: ButtonSize;
+        $iconAlignment: IconAlignment;
+        $variant: ButtonVariant;
+    }
+>`
     display: flex;
     align-items: center;
     flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'end' && 'row-reverse'};
@@ -22,7 +54,8 @@ const TextButtonContainer = styled.button<{
     border: 1px solid transparent;
     border-radius: ${borders.radii.xxs};
     background: none;
-    color: ${({ theme }) => theme.textPrimaryDefault};
+    color: ${({ theme, $variant }) => theme[mapVariantToColor[$variant]]};
+
     ${({ $size }) => ($size === 'small' ? typography.hint : typography.body)};
     white-space: nowrap;
     transition:
@@ -32,17 +65,13 @@ const TextButtonContainer = styled.button<{
     cursor: pointer;
 
     ${getFocusShadowStyle()}
-
-    path {
-        fill: ${({ theme }) => theme.iconPrimaryDefault};
-        transition: fill 0.1s ease-out;
-    }
+    ${withFrameProps}
 
     &:hover {
-        color: ${({ theme }) => theme.textPrimaryPressed};
+        color: ${({ theme, $variant }) => theme[mapVariantToHoverColor[$variant]]};
 
         path {
-            fill: ${({ theme }) => theme.iconPrimaryPressed};
+            fill: ${({ theme, $variant }) => theme[mapVariantToHoverColor[$variant]]};
         }
     }
 
@@ -56,9 +85,9 @@ const TextButtonContainer = styled.button<{
     }
 `;
 
-export interface TextButtonProps extends Omit<ButtonProps, 'isFullWidth' | 'iconSize' | 'variant'> {
-    children: React.ReactNode;
-}
+export type TextButtonProps = Omit<ButtonProps, 'iconSize' | 'isSubtle' | 'children'> & {
+    children?: React.ReactNode;
+};
 
 export const TextButton = ({
     icon,
@@ -67,9 +96,17 @@ export const TextButton = ({
     isDisabled = false,
     isLoading = false,
     children,
+    variant = 'primary',
     ...rest
 }: TextButtonProps) => {
-    const IconComponent = getIcon({ icon, size: getIconSize(size) });
+    const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
+    const theme = useTheme();
+    const IconComponent = getIcon({
+        icon,
+        size: getIconSize(size),
+        color: getIconColor({ variant, isDisabled, theme, isSubtle: true }),
+    });
+
     const Loader = <Spinner size={getIconSize(size)} />;
 
     return (
@@ -77,6 +114,8 @@ export const TextButton = ({
             $size={size}
             $iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
+            $variant={variant}
+            {...frameProps}
             {...rest}
         >
             {!isLoading && icon && IconComponent}

@@ -93,7 +93,10 @@ export type SuiteAction =
               enabledFeatures: ExperimentalFeature[] | undefined; // undefined means the experimental features are off as a whole
           };
       }
-    | { type: typeof SUITE.SET_SIDEBAR_WIDTH; payload: { width: number } };
+    | {
+          type: typeof SUITE.SET_IS_COINS_FILTER_VISIBLE;
+          payload: { isCoinsFilterVisible: boolean };
+      };
 
 export const appChanged = createAction(SUITE.APP_CHANGED, (payload: AppState['router']['app']) => ({
     payload,
@@ -147,6 +150,12 @@ export const initialRunCompleted = () => (dispatch: Dispatch, getState: GetState
 export const setSidebarWidth = (payload: { width: number }): SuiteAction => ({
     type: SUITE.SET_SIDEBAR_WIDTH,
     payload: { width: payload.width },
+});
+export const setIsCoinsFilterVisible = (payload: {
+    isCoinsFilterVisible: boolean;
+}): SuiteAction => ({
+    type: SUITE.SET_IS_COINS_FILTER_VISIBLE,
+    payload: { isCoinsFilterVisible: payload.isCoinsFilterVisible },
 });
 
 /**
