@@ -81,12 +81,9 @@ export const EthereumFeeCards = ({
                         tooltipContent={
                             isDebug && isEip1559(fee) ? (
                                 <Grid columns={2} gap={spacings.xs}>
-                                    <Row>
-                                        <Badge variant="warning" size="small">
-                                            <Translation id="TR_DEBUG_ONLY" />
-                                        </Badge>
-                                    </Row>
-                                    <span />
+                                    <Badge variant="warning" size="small">
+                                        <Translation id="TR_DEBUG_ONLY" />
+                                    </Badge>
                                     <Translation id="TR_MAX_FEE_PER_GAS" />
                                     <span>
                                         {fee.maxFeePerGas} {getFeeUnits(networkType)}

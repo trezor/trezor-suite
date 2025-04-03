@@ -38,13 +38,12 @@ export const FeeCardsWrapper = styled.div`
 export const StandardFee = (props: StandardFeeProps) => {
     const { networkType } = props;
 
-    if (networkType === 'bitcoin') {
-        return <BitcoinFeeCards {...props} />;
+    switch (networkType) {
+        case 'bitcoin':
+            return <BitcoinFeeCards {...props} />;
+        case 'ethereum':
+            return <EthereumFeeCards {...props} />;
+        default:
+            return <MiscFeeCards {...props} />;
     }
-
-    if (networkType === 'ethereum') {
-        return <EthereumFeeCards {...props} />;
-    }
-
-    return <MiscFeeCards {...props} />;
 };
