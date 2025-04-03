@@ -61,7 +61,6 @@ import {
 } from 'src/types/trading/tradingForm';
 import {
     createQuoteLink,
-    getSuccessQuotesOrdered,
     tradingGetExchangeReceiveCryptoId,
 } from 'src/utils/wallet/trading/exchangeUtils';
 import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
@@ -286,7 +285,7 @@ export const useTradingExchangeForm = ({
                 const limits = exchangeUtils.getAmountLimits({ quotes: allQuotes, currency });
 
                 const successQuotes = addIdsToQuotes<TradingExchangeType>(
-                    getSuccessQuotesOrdered(allQuotes),
+                    exchangeUtils.getSuccessQuotesOrdered(allQuotes),
                     'exchange',
                 );
 

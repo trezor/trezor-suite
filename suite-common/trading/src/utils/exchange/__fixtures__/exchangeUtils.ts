@@ -1,7 +1,59 @@
 import { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { ExchangeInfo } from '../../../reducers/exchangeReducer';
+
 const litecoin = 'litecoin' as CryptoId;
 const bitcoin = 'bitcoin' as CryptoId;
+
+const tickers1 = [litecoin, bitcoin];
+
+export const EXCHANGE_INFO: ExchangeInfo = {
+    exchangeList: [],
+    providerInfos: {
+        changelly: {
+            name: 'changelly',
+            companyName: 'Changelly',
+            logo: 'changelly-icon.jpg',
+            isActive: true,
+            isFixedRate: false,
+            isDex: false,
+            buyTickers: tickers1,
+            sellTickers: tickers1,
+            addressFormats: {
+                BCH: 'cashaddr',
+                LTC: 'type3',
+            },
+            statusUrl: '',
+            kycUrl: 'https://changelly.com/aml-kyc',
+            supportUrl: 'https://support.changelly.com',
+            kycPolicy: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
+            kycPolicyType: 'KYC-norefund',
+            isRefundRequired: true,
+        },
+        changellyfr: {
+            name: 'changellyfr',
+            companyName: 'Changelly',
+            logo: 'changellyfr-icon.jpg',
+            isActive: true,
+            isFixedRate: true,
+            isDex: false,
+            buyTickers: tickers1,
+            sellTickers: tickers1,
+            addressFormats: {
+                BCH: 'cashaddr',
+                LTC: 'type3',
+            },
+            statusUrl: '',
+            kycUrl: 'https://changelly.com/aml-kyc',
+            supportUrl: 'https://support.changelly.com',
+            kycPolicy: 'KYC requested in exceptional cases. KYC required for refunds. 👈',
+            kycPolicyType: 'KYC-norefund',
+            isRefundRequired: true,
+        },
+    },
+    buyCryptoIds: [],
+    sellCryptoIds: [],
+};
 
 export const MIN_MAX_QUOTES_OK: ExchangeTrade[] = [
     {
@@ -14,6 +66,17 @@ export const MIN_MAX_QUOTES_OK: ExchangeTrade[] = [
         max: 'NONE',
         fee: 'UNKNOWN',
         exchange: 'changelly',
+    },
+    {
+        send: litecoin,
+        sendStringAmount: '12',
+        receive: bitcoin,
+        receiveStringAmount: '0.0609979',
+        rate: 0.005083158333333333,
+        min: 0.5688,
+        max: 'NONE',
+        fee: 'UNKNOWN',
+        exchange: 'changellyfr',
     },
     {
         send: litecoin,
@@ -108,6 +171,34 @@ const MIN_MAX_QUOTES_CANNOT_TRADE: ExchangeTrade[] = [
     { error: 'Cannot trade pair LTC-DATA.', exchange: 'changehero' },
 ];
 
+// dex and not filled exchange
+const OTHER_QUOTES: ExchangeTrade[] = [
+    {
+        send: litecoin,
+        sendStringAmount: '12',
+        receive: bitcoin,
+        receiveStringAmount: '0.06047229',
+        rate: 0.0050393575,
+        min: 1.68,
+        max: 130,
+        fee: 'INCLUDED',
+        exchange: '1inch',
+        quoteToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+        isDex: true,
+    },
+    {
+        send: litecoin,
+        sendStringAmount: '12',
+        receive: bitcoin,
+        receiveStringAmount: '0.06047229',
+        rate: 0.0050393575,
+        min: 1.68,
+        max: 130,
+        fee: 'INCLUDED',
+        quoteToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+    },
+];
+
 const EXCHANGE_SUCCESS_ORDERED_QUOTES = [
     {
         exchange: 'changelly',
@@ -119,6 +210,17 @@ const EXCHANGE_SUCCESS_ORDERED_QUOTES = [
         receiveStringAmount: '0.0609979',
         send: litecoin,
         sendStringAmount: '12',
+    },
+    {
+        send: litecoin,
+        sendStringAmount: '12',
+        receive: bitcoin,
+        receiveStringAmount: '0.0609979',
+        rate: 0.005083158333333333,
+        min: 0.5688,
+        max: 'NONE',
+        fee: 'UNKNOWN',
+        exchange: 'changellyfr',
     },
     {
         exchange: 'foxexchange',
@@ -147,9 +249,11 @@ const EXCHANGE_SUCCESS_ORDERED_QUOTES = [
 ];
 
 export const exchangeUtilsFixtures = {
+    EXCHANGE_INFO,
     MIN_MAX_QUOTES_OK,
     MIN_MAX_QUOTES_LOW,
     MIN_MAX_QUOTES_HIGH,
     MIN_MAX_QUOTES_CANNOT_TRADE,
     EXCHANGE_SUCCESS_ORDERED_QUOTES,
+    OTHER_QUOTES,
 };

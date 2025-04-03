@@ -10,6 +10,7 @@ import {
     getNetworkByTradeCryptoId,
 } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
 
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, CRYPTO_PLATFORM_SEPARATOR } from './constants';
 import { regional } from './regional';
@@ -21,6 +22,7 @@ import {
     TradingTradeBuySellMapProps,
     TradingTradeBuySellType,
     TradingTradeMapProps,
+    TradingTradeType,
     TradingType,
 } from './types';
 
@@ -211,4 +213,23 @@ export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellTyp
     return quotes.filter(
         quote => quote.paymentMethod === currentPaymentMethod && quote.error === undefined,
     );
+};
+
+export const getBestRatedQuote = (
+    quotes: TradingTradeType[] | undefined,
+    type: TradingType,
+): TradingTradeType | undefined => {
+    const quotesFiltered = quotes ? quotes.filter(item => item.rate && item.rate !== 0) : [];
+    const bestRatedQuotes = quotesFiltered.sort((a, b) => {
+        // ascending to rate for buy - lower rate more crypto client receives
+        if (type === 'buy') {
+            return new BigNumber(a.rate ?? 0).minus(new BigNumber(b.rate ?? 0)).toNumber();
+        }
+
+        // descending to rate for sell/exchange - higher rate more crypto/fiat client receives
+        return new BigNumber(b.rate ?? 0).minus(new BigNumber(a.rate ?? 0)).toNumber();
+    });
+    const bestRatedQuote = bestRatedQuotes?.[0];
+
+    return bestRatedQuote;
 };

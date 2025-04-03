@@ -1,22 +1,13 @@
-import {
-    CryptoId,
-    ExchangeTrade,
-    ExchangeTradeQuoteRequest,
-    ExchangeTradeStatus,
-} from 'invity-api';
+import { CryptoId, ExchangeTradeQuoteRequest, ExchangeTradeStatus } from 'invity-api';
 
 import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
 import {
     FORM_DEFAULT_CRYPTO_CURRENCY,
     FORM_DEFAULT_CRYPTO_SECONDARY_CURRENCY,
-    FORM_RATE_FIXED,
-    FORM_RATE_FLOATING,
 } from 'src/constants/wallet/trading/form';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
-import { RateType } from 'src/types/trading/tradingForm';
 import { Account } from 'src/types/wallet';
 
 export const createQuoteLink = async (
@@ -51,62 +42,6 @@ export const createQuoteLink = async (
 
     return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
 };
-
-export const isQuoteError = (quote: ExchangeTrade): boolean => {
-    if (
-        quote.error ||
-        !quote.receive ||
-        !quote.receiveStringAmount ||
-        !quote.sendStringAmount ||
-        !quote.send
-    ) {
-        return true;
-    }
-    if (quote.min && Number(quote.sendStringAmount) < quote.min) {
-        return true;
-    }
-    if (quote.max && quote.max !== 'NONE' && Number(quote.sendStringAmount) > quote.max) {
-        return true;
-    }
-
-    return false;
-};
-
-export const fixedRateCexQuotes = (
-    quotes: ExchangeTrade[],
-    exchangeInfo: ExchangeInfo | undefined,
-) =>
-    quotes.filter(
-        q =>
-            exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
-            !q.isDex &&
-            !isQuoteError(q),
-    );
-
-export const floatRateCexQuotes = (
-    quotes: ExchangeTrade[],
-    exchangeInfo: ExchangeInfo | undefined,
-) =>
-    quotes.filter(
-        q =>
-            !exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
-            !q.isDex &&
-            !isQuoteError(q),
-    );
-
-export const getCexQuotesByRateType = (
-    rateType: RateType,
-    quotes: ExchangeTrade[] | undefined,
-    exchangeInfo: ExchangeInfo | undefined,
-) => {
-    if (!quotes) return undefined;
-    if (rateType === FORM_RATE_FIXED) return fixedRateCexQuotes(quotes, exchangeInfo);
-    if (rateType === FORM_RATE_FLOATING) return floatRateCexQuotes(quotes, exchangeInfo);
-    else return quotes;
-};
-
-export const getSuccessQuotesOrdered = (quotes: ExchangeTrade[]): ExchangeTrade[] =>
-    quotes.filter(q => !isQuoteError(q));
 
 export const getStatusMessage = (status: ExchangeTradeStatus) => {
     switch (status) {

@@ -1,38 +1,35 @@
-import * as fixtures from 'src/utils/wallet/trading/__fixtures__/buyUtils';
+import { Account } from '@suite-common/wallet-types';
+
+import { buyUtilsFixtures } from 'src/utils/wallet/trading/__fixtures__/buyUtils';
 import { createQuoteLink, createTxLink, getStatusMessage } from 'src/utils/wallet/trading/buyUtils';
 
-const { QUOTE_REQUEST_FIAT, QUOTE_REQUEST_CRYPTO, MIN_MAX_QUOTES_OK } = fixtures;
+describe('buyUtils', () => {
+    const accountMock = {
+        index: 1,
+        accountType: 'normal',
+        symbol: 'btc',
+    } as Account;
 
-jest.mock('@suite-common/trading', () => ({
-    ...jest.requireActual('@suite-common/trading'),
-    useTradingInfo: jest.fn(),
-}));
+    describe('createQuoteLink', () => {
+        it('should create a quote link according to crypto request', async () => {
+            expect(
+                await createQuoteLink(buyUtilsFixtures.QUOTE_REQUEST_CRYPTO, accountMock),
+            ).toStrictEqual(
+                `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qc/CZ/EUR/0.001/bitcoin/creditCard`,
+            );
+        });
 
-describe('trading/buy utils', () => {
-    it('createQuoteLink', async () => {
-        const accountMock = {
-            index: 1,
-            accountType: 'normal',
-            symbol: 'btc',
-        };
-        // @ts-expect-error
-        expect(await createQuoteLink(QUOTE_REQUEST_FIAT, accountMock)).toStrictEqual(
-            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qf/CZ/EUR/10/bitcoin/creditCard`,
-        );
-        // @ts-expect-error
-        expect(await createQuoteLink(QUOTE_REQUEST_CRYPTO, accountMock)).toStrictEqual(
-            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qc/CZ/EUR/0.001/bitcoin/creditCard`,
-        );
+        it('should create a quote link according to fiat request', async () => {
+            expect(
+                await createQuoteLink(buyUtilsFixtures.QUOTE_REQUEST_FIAT, accountMock),
+            ).toStrictEqual(
+                `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qf/CZ/EUR/10/bitcoin/creditCard`,
+            );
+        });
     });
 
-    it('createTxLink', async () => {
-        const accountMock = {
-            index: 1,
-            accountType: 'normal',
-            symbol: 'btc',
-        };
-        // @ts-expect-error
-        expect(await createTxLink(MIN_MAX_QUOTES_OK[0], accountMock)).toStrictEqual(
+    it('createTxLink - should create transaction link', async () => {
+        expect(await createTxLink(buyUtilsFixtures.QUOTE, accountMock)).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#detail/btc/normal/1/e709df77-ee9e-4d12-98c2-84004a19c546`,
         );
     });
