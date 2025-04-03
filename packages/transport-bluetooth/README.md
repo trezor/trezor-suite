@@ -6,7 +6,7 @@
 
 use `bluetoothIpc` proxy
 
-```
+```typescript
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 await bluetoothIpc.init();
@@ -16,7 +16,7 @@ await bluetoothIpc.init();
 
 implement proxy handler and `BluetoothIpc`
 
-```
+```typescript
 import { BluetoothIpc } from '@trezor/transport-bluetooth';
 
 createIpcProxyHandler(ipcMain, 'Bluetooth', {
@@ -30,10 +30,48 @@ createIpcProxyHandler(ipcMain, 'Bluetooth', {
             onAddListener: (eventName, listener) => {
                 api.on(eventName, listener);
             },
-            onRemoveListener: (eventName) => {
-                api.removeAllListeners(eventName)
+            onRemoveListener: eventName => {
+                api.removeAllListeners(eventName);
             },
         };
     },
 });
+```
+
+### Server development
+
+Prerequisites: [RUST](https://www.rust-lang.org/tools/install)
+
+### Vscode:
+
+Vscode rust-analyzer extensions:
+
+- install `rust-analyzer` plugin
+- (NixOS only) install `nix-env-selector` plugin and [follow readme](https://marketplace.visualstudio.com/items?itemName=arrterian.nix-env-selector) to setup
+
+Vscode `.vscode/settings`:
+
+```json
+
+"rust-analyzer.cargo.sysroot": "discover",
+"rust-analyzer.diagnostics.disabled": ["unresolved-proc-macro"],
+"rust-analyzer.linkedProjects": ["./packages/transport-bluetooth/Cargo.toml"],
+"nixEnvSelector.nixFile": "${workspaceFolder}/packages/transport-bluetooth/shell.nix" // NixOS only
+
+```
+
+### NixOS:
+
+```
+
+nix-shell ./packages/transport-bluetooth/shell.nix
+
+```
+
+### Run server:
+
+```
+
+yarn workspace @trezor/transport-bluetooth dev:server
+
 ```
