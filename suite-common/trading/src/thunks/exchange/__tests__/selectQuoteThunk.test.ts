@@ -29,7 +29,6 @@ describe('selectQuoteThunk', () => {
         const receive = quote.receive as CryptoId;
 
         const exchangeInfo: ExchangeInfo = {
-            exchangeList: [],
             buyCryptoIds: [send],
             sellCryptoIds: [receive],
 

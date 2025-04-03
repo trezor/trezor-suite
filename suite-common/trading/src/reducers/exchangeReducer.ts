@@ -1,7 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import {
     CryptoId,
-    ExchangeListResponse,
     ExchangeProviderInfo,
     ExchangeTrade,
     ExchangeTradeQuoteRequest,
@@ -13,7 +12,6 @@ import { TRADING_EXCHANGE_PREFIX } from '../constants';
 import { TradingExchangeAmountLimitProps, TradingExchangeStepType } from '../types';
 
 export interface ExchangeInfo {
-    exchangeList?: ExchangeListResponse; // TODO: trading - is this needed?
     providerInfos: Record<string, ExchangeProviderInfo>;
     buyCryptoIds: CryptoId[];
     sellCryptoIds: CryptoId[];
