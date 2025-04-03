@@ -167,7 +167,7 @@ export const Button = ({
     textWrap = true,
     title,
     type = 'button',
-    variant = 'tertiary',
+    variant = 'primary',
     ...rest
 }: ButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
