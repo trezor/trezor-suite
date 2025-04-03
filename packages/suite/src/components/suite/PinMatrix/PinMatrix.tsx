@@ -150,7 +150,7 @@ export const PinMatrix = ({
                         }
                     </Grid>
                     <Row gap={spacings.md}>
-                        <Input readOnly value={pin.replace(/[0-9]/g, '●')} size="small" />
+                        <Input disabled value={pin.replace(/[0-9]/g, '●')} size="small" />
                         <Button
                             variant="tertiary"
                             onClick={onPinBackspace}
