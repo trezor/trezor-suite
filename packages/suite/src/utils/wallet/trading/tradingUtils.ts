@@ -1,12 +1,7 @@
 import { CryptoId } from 'invity-api';
 
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
-import {
-    type TradingTradeType,
-    type TradingType,
-    cryptoIdToSymbol,
-    toTokenCryptoId,
-} from '@suite-common/trading';
+import { type TradingType, cryptoIdToSymbol, toTokenCryptoId } from '@suite-common/trading';
 import {
     Network,
     getNetwork,
@@ -129,27 +124,6 @@ export const getComposeAddressPlaceholder = async (
             return account.descriptor;
         // no default
     }
-};
-
-export const getBestRatedQuote = (
-    quotes: TradingTradeType[] | undefined,
-    type: TradingType,
-): TradingTradeType | undefined => {
-    const quotesFiltered = quotes?.filter(item => item.rate && item.rate !== 0);
-    const bestRatedQuotes = quotesFiltered
-        ? [...quotesFiltered].sort((a, b) => {
-              // ascending to rate for buy - lower rate more crypto client receives
-              if (type === 'buy') {
-                  return new BigNumber(a.rate ?? 0).minus(new BigNumber(b.rate ?? 0)).toNumber();
-              }
-
-              // descending to rate for sell/exchange - higher rate more crypto/fiat client receives
-              return new BigNumber(b.rate ?? 0).minus(new BigNumber(a.rate ?? 0)).toNumber();
-          })
-        : null;
-    const bestRatedQuote = bestRatedQuotes?.[0];
-
-    return bestRatedQuote;
 };
 
 export const tradingGetSortedAccounts = ({

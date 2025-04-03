@@ -1,36 +1,11 @@
 import { CryptoId } from 'invity-api';
 
-import * as fixtures from 'src/utils/wallet/trading/__fixtures__/exchangeUtils';
 import {
     getStatusMessage,
-    getSuccessQuotesOrdered,
-    isQuoteError,
     tradingGetExchangeReceiveCryptoId,
 } from 'src/utils/wallet/trading/exchangeUtils';
 
-jest.mock('@suite-common/trading', () => ({
-    ...jest.requireActual('@suite-common/trading'),
-    useTradingInfo: jest.fn(),
-}));
-
-const { MIN_MAX_QUOTES_OK, MIN_MAX_QUOTES_LOW, MIN_MAX_QUOTES_CANNOT_TRADE } = fixtures;
-
 describe('trading/exchange utils', () => {
-    it('isQuoteError', () => {
-        expect(isQuoteError(MIN_MAX_QUOTES_OK[0])).toBe(false);
-        expect(isQuoteError(MIN_MAX_QUOTES_LOW[0])).toBe(true);
-        expect(isQuoteError(MIN_MAX_QUOTES_CANNOT_TRADE[0])).toBe(true);
-    });
-
-    it('getSuccessQuotesOrdered', () => {
-        expect(
-            getSuccessQuotesOrdered([
-                ...MIN_MAX_QUOTES_OK,
-                ...MIN_MAX_QUOTES_LOW,
-                ...MIN_MAX_QUOTES_CANNOT_TRADE,
-            ]),
-        ).toStrictEqual(fixtures.EXCHANGE_SUCCESS_ORDERED_QUOTES);
-    });
     it('getStatusMessage', () => {
         expect(getStatusMessage('CONVERTING')).toBe('TR_EXCHANGE_STATUS_CONVERTING');
         expect(getStatusMessage('CONFIRMING')).toBe('TR_EXCHANGE_STATUS_CONFIRMING');

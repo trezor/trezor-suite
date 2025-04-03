@@ -2,9 +2,6 @@ import { CryptoId } from 'invity-api';
 
 import { useDefaultAccountLabel } from 'src/hooks/suite/useDefaultAccountLabel';
 import { Account } from 'src/types/wallet';
-import * as BUY_FIXTURE from 'src/utils/wallet/trading/__fixtures__/buyUtils';
-import * as EXCHANGE_FIXTURE from 'src/utils/wallet/trading/__fixtures__/exchangeUtils';
-import * as SELL_FIXTURE from 'src/utils/wallet/trading/__fixtures__/sellUtils';
 import {
     FIXTURE_ACCOUNTS,
     FIXTURE_ACCOUNT_OPTIONS,
@@ -13,7 +10,6 @@ import {
 import {
     buildFiatOption,
     getAddressAndTokenFromAccountOptionsGroupProps,
-    getBestRatedQuote,
     getCountryLabelParts,
     getTradeTypeByRoute,
     tradingBuildAccountOptions,
@@ -41,24 +37,6 @@ describe('trading utils', () => {
         expect(getCountryLabelParts('aaa')).toStrictEqual({
             flag: '',
             text: 'aaa',
-        });
-    });
-
-    describe('getBestRatedQuote', () => {
-        it('buy trades (shuffled with error)', () => {
-            expect(getBestRatedQuote(BUY_FIXTURE.MIN_MAX_QUOTES_OK, 'buy')).toStrictEqual(
-                BUY_FIXTURE.MIN_MAX_QUOTES_OK[1],
-            );
-        });
-        it('sell trades', () => {
-            expect(getBestRatedQuote(SELL_FIXTURE.MIN_MAX_QUOTES_OK, 'sell')).toStrictEqual(
-                SELL_FIXTURE.MIN_MAX_QUOTES_OK[0],
-            );
-        });
-        it('exchange trades (shuffled)', () => {
-            expect(getBestRatedQuote(EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK, 'exchange')).toStrictEqual(
-                EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK[EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK.length - 1],
-            );
         });
     });
 

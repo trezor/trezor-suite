@@ -3,6 +3,8 @@ import type { UseFormSetValue } from 'react-hook-form';
 
 import { ExchangeTrade } from 'invity-api';
 
+import { exchangeUtils } from '@suite-common/trading';
+
 import {
     FORM_EXCHANGE_CEX,
     FORM_EXCHANGE_DEX,
@@ -13,7 +15,6 @@ import type {
     RateType,
     TradingExchangeFormProps,
 } from 'src/types/trading/tradingForm';
-import { getCexQuotesByRateType } from 'src/utils/wallet/trading/exchangeUtils';
 
 interface TradingExchangeQuotesFilterProps {
     quotes: ExchangeTrade[] | undefined;
@@ -32,7 +33,7 @@ export const useTradingExchangeQuotesFilter = ({
 }: TradingExchangeQuotesFilterProps) => {
     const dexQuotes = useMemo(() => quotes?.filter(quote => quote.isDex), [quotes]);
     const cexQuotes = useMemo(
-        () => getCexQuotesByRateType(rateType, quotes, exchangeInfo),
+        () => exchangeUtils.getCexQuotesByRateType(rateType, quotes, exchangeInfo),
         [rateType, quotes, exchangeInfo],
     );
 

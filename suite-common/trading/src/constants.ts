@@ -6,6 +6,9 @@ export const TRADING_THUNK_PREFIX = `${TRADING_PREFIX}/thunk`;
 export const TRADING_BUY_THUNK_PREFIX = `${TRADING_BUY_PREFIX}/thunk`;
 export const TRADING_EXCHANGE_THUNK_PREFIX = `${TRADING_EXCHANGE_PREFIX}/thunk`;
 
+export const TRADING_EXCHANGE_RATE_FIXED = 'fixed';
+export const TRADING_EXCHANGE_RATE_FLOATING = 'floating';
+
 export const INVITY_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
 export const INVITY_API_RELOAD_QUOTES_AFTER_SECONDS = 30;
 
