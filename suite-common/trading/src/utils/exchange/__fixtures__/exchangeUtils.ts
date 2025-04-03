@@ -8,7 +8,6 @@ const bitcoin = 'bitcoin' as CryptoId;
 const tickers1 = [litecoin, bitcoin];
 
 export const EXCHANGE_INFO: ExchangeInfo = {
-    exchangeList: [],
     providerInfos: {
         changelly: {
             name: 'changelly',

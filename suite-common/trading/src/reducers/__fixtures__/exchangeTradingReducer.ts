@@ -21,7 +21,6 @@ export const exchange: ExchangeProviderInfo = {
 };
 
 const exchangeInfo: ExchangeInfo = {
-    exchangeList: [exchange],
     providerInfos: {
         test: exchange,
     },

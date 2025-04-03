@@ -1,12 +1,13 @@
 import { confirmTradeThunk as confirmBuyTradeThunk } from './buy/confirmTradeThunk';
 import { handleRequestThunk as handleBuyRequestThunk } from './buy/handleRequestThunk';
-import { loadInfoThunk } from './buy/loadInfoThunk';
+import { loadInfoThunk as loadBuyInfoThunk } from './buy/loadInfoThunk';
 import { selectQuoteThunk as selectBuyQuoteThunk } from './buy/selectQuoteThunk';
 import { loadInitialDataThunk } from './common/loadInitialDataThunk';
 import { recomposeAndSignTxThunk } from './common/recomposeAndSignTxThunk';
 import { verifyAddressThunk } from './common/verifyAddressThunk';
 import { confirmTradeThunk as confirmExchangeTradeThunk } from './exchange/confirmTradeThunk';
 import { handleRequestThunk as handleExchangeRequestThunk } from './exchange/handleRequestThunk';
+import { loadInfoThunk as loadExchangeInfoThunk } from './exchange/loadInfoThunk';
 import { selectQuoteThunk as selectExchangeQuoteThunk } from './exchange/selectQuoteThunk';
 import { sendDexTransactionThunk } from './exchange/sendDexTransactionThunk';
 import { sendTransactionThunk } from './exchange/sendTransactionThunk';
@@ -21,13 +22,14 @@ export const tradingThunks = {
 };
 
 export const buyThunks = {
-    loadInfoThunk,
+    loadInfoThunk: loadBuyInfoThunk,
     handleRequestThunk: handleBuyRequestThunk,
     selectQuoteThunk: selectBuyQuoteThunk,
     confirmTradeThunk: confirmBuyTradeThunk,
 };
 
 export const exchangeThunks = {
+    loadInfoThunk: loadExchangeInfoThunk,
     handleRequestThunk: handleExchangeRequestThunk,
     selectQuoteThunk: selectExchangeQuoteThunk,
     confirmTradeThunk: confirmExchangeTradeThunk,
