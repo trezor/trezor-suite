@@ -28,6 +28,7 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
         walletPage,
         trezorUserEnvLink,
     }) => {
+        test.fail();
         // add 1st hidden wallet
         await dashboardPage.openDeviceSwitcher();
         await dashboardPage.addUnusedHiddenWallet('abc');

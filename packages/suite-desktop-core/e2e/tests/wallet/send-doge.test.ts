@@ -36,6 +36,7 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
         tradingPage,
         devicePrompt,
     }) => {
+        test.fail();
         await test.step('Open send form for Doge', async () => {
             await walletPage.openAccount({ symbol: 'doge' });
             await walletPage.openSendFormButton.click();

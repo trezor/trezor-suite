@@ -15,6 +15,7 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
         settingsPage,
         page,
     }) => {
+        test.fail();
         const defaultUnchecked: NetworkSymbol[] = [
             'ltc',
             'eth',

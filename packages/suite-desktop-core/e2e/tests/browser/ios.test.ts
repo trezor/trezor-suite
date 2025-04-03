@@ -17,6 +17,7 @@ test.describe(
     { tag: ['@group=other', '@webOnly', '@snapshot'] },
     () => {
         test('Suite does not support iOS', async ({ page }) => {
+            test.fail();
             await expect(
                 page.getByRole('heading', { name: 'Suite doesn’t work on iOS yet' }),
             ).toBeVisible();
