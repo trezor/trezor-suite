@@ -1,6 +1,8 @@
 import { TradingPaymentMethodListProps } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 
+import { ESTIMATED_HEADER_HEIGHT, SimpleSheetHeader } from '../SimpleSheetHeader';
 import { PAYMENT_METHOD_LIST_ITEM_HEIGHT, PaymentMethodListItem } from './PaymentMethodListItem';
 
 export type PaymentMethodsSheetProps = {
@@ -24,6 +26,7 @@ export const PaymentMethodsSheet = ({
     onMethodSelect,
     selectedMethod,
 }: PaymentMethodsSheetProps) => {
+    const { translate } = useTranslate();
     const onMethodSelectCallback = (method: TradingPaymentMethodListProps) => {
         onMethodSelect(method);
         onClose();
@@ -38,6 +41,12 @@ export const PaymentMethodsSheet = ({
                     method={item}
                     onPress={() => onMethodSelectCallback(item)}
                     isSelected={item.value === selectedMethod?.value}
+                />
+            )}
+            handleComponent={() => (
+                <SimpleSheetHeader
+                    onClose={onClose}
+                    title={translate('moduleTrading.tradingScreen.paymentMethod')}
                 />
             )}
             data={methods}

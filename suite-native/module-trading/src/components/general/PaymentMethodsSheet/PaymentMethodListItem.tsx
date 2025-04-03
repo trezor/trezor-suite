@@ -10,7 +10,7 @@ export type PaymentMethodListItemProps = {
     onPress: () => void;
 };
 
-export const PAYMENT_METHOD_LIST_ITEM_HEIGHT = 64 as const;
+export const PAYMENT_METHOD_LIST_ITEM_HEIGHT = 66 as const;
 
 const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
     marginVertical: spacings.sp4,
