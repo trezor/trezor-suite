@@ -24,9 +24,9 @@ import {
     getBrowserName,
     getBrowserVersion,
     getCommitHash,
-    getDeprecatedOsVersion,
     getEnvironment,
     getOsName,
+    getOsVersion,
     getSuiteVersion,
 } from '@trezor/env-utils';
 
@@ -205,18 +205,30 @@ export const validateEnvironmentCompatibility = (
     );
 };
 
-export const validateConditions = (condition: Condition, options: Options) => {
+type EnvData = {
+    osName: ReturnType<typeof getOsName>;
+    osVersion: ReturnType<typeof transformVersionToSemverFormat>;
+    browserName: ReturnType<typeof getBrowserName>;
+    browserVersion: ReturnType<typeof transformVersionToSemverFormat>;
+    environment: ReturnType<typeof getEnvironment>;
+    suiteVersion: ReturnType<typeof transformVersionToSemverFormat>;
+    commitHash: ReturnType<typeof getCommitHash>;
+};
+
+export const getEnvData = async (): Promise<EnvData> => ({
+    osName: getOsName(),
+    osVersion: transformVersionToSemverFormat(await getOsVersion()),
+
+    browserName: getBrowserName(),
+    browserVersion: transformVersionToSemverFormat(getBrowserVersion()),
+
+    environment: getEnvironment(),
+    suiteVersion: transformVersionToSemverFormat(getSuiteVersion()),
+    commitHash: getCommitHash(),
+});
+
+export const validateConditions = (condition: Condition, options: Options, envData: EnvData) => {
     const { device, transports = [], settings } = options;
-
-    const currentOsName = getOsName();
-    const currentOsVersion = transformVersionToSemverFormat(getDeprecatedOsVersion());
-
-    const currentBrowserName = getBrowserName();
-    const currentBrowserVersion = transformVersionToSemverFormat(getBrowserVersion());
-
-    const environment = getEnvironment();
-    const suiteVersion = transformVersionToSemverFormat(getSuiteVersion());
-    const commitHash = getCommitHash();
 
     const {
         duration: durationCondition,
@@ -236,9 +248,9 @@ export const validateConditions = (condition: Condition, options: Options) => {
         environmentCondition &&
         !validateEnvironmentCompatibility(
             environmentCondition,
-            environment,
-            suiteVersion,
-            commitHash,
+            envData.environment,
+            envData.suiteVersion,
+            envData.commitHash,
         )
     ) {
         return false;
@@ -246,15 +258,15 @@ export const validateConditions = (condition: Condition, options: Options) => {
 
     if (
         osCondition &&
-        !validateVersionCompatibility(osCondition, currentOsName, currentOsVersion)
+        !validateVersionCompatibility(osCondition, envData.osName, envData.osVersion)
     ) {
         return false;
     }
 
     if (
-        environment === 'web' &&
+        envData.environment === 'web' &&
         browserCondition &&
-        !validateVersionCompatibility(browserCondition, currentBrowserName, currentBrowserVersion)
+        !validateVersionCompatibility(browserCondition, envData.browserName, envData.browserVersion)
     ) {
         return false;
     }
@@ -274,30 +286,42 @@ export const validateConditions = (condition: Condition, options: Options) => {
     return true;
 };
 
-export const getValidMessages = (config: MessageSystem | null, options: Options): Message[] => {
+export const getValidMessages = async (
+    config: MessageSystem | null,
+    options: Options,
+): Promise<Message[]> => {
     if (!config) {
         return [];
     }
+    const envData = await getEnvData();
 
     return config.actions
         .filter(
             action =>
                 !action.conditions.length ||
-                action.conditions.some(condition => validateConditions(condition, options)),
+                action.conditions.some(condition =>
+                    validateConditions(condition, options, envData),
+                ),
         )
         .map(action => action.message);
 };
 
-export const getValidExperimentIds = (config: MessageSystem | null, options: Options): string[] => {
+export const getValidExperimentIds = async (
+    config: MessageSystem | null,
+    options: Options,
+): Promise<string[]> => {
     if (!config?.experiments) {
         return [];
     }
+    const envData = await getEnvData();
 
     return config.experiments
         .filter(
             experiment =>
                 !experiment.conditions.length ||
-                experiment.conditions.some(condition => validateConditions(condition, options)),
+                experiment.conditions.some(condition =>
+                    validateConditions(condition, options, envData),
+                ),
         )
         .map(experiment => experiment?.experiment?.id);
 };

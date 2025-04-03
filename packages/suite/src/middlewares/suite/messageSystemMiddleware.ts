@@ -1,18 +1,16 @@
-import { MiddlewareAPI } from 'redux';
-
 import {
     categorizeMessages,
     getValidExperimentIds,
     getValidMessages,
     messageSystemActions,
 } from '@suite-common/message-system';
+import { createMiddleware } from '@suite-common/redux-utils';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { SUITE } from 'src/actions/suite/constants';
 import { selectActiveTransports } from 'src/reducers/suite/suiteReducer';
-import type { Action, AppState, Dispatch } from 'src/types/suite';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 
 // actions which can affect message system messages
@@ -25,38 +23,36 @@ const actions = [
     DEVICE.CONNECT,
 ];
 
-const messageSystemMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: Dispatch) =>
-    (action: Action): Action => {
-        next(action);
+const messageSystemMiddleware = createMiddleware(async (action, { next, dispatch, getState }) => {
+    next(action);
 
-        if (actions.includes(action.type)) {
-            const { config } = api.getState().messageSystem;
-            const { torStatus } = api.getState().suite;
-            const transports = selectActiveTransports(api.getState());
-            const device = selectSelectedDevice(api.getState());
-            const { enabledNetworks } = api.getState().wallet.settings;
+    if (actions.includes(action.type)) {
+        const { config } = getState().messageSystem;
+        const { torStatus } = getState().suite;
+        const transports = selectActiveTransports(getState());
+        const device = selectSelectedDevice(getState());
+        const { enabledNetworks } = getState().wallet.settings;
 
-            const validationParams = {
-                device,
-                transports,
-                settings: {
-                    tor: getIsTorEnabled(torStatus),
-                    enabledNetworks,
-                },
-            };
+        const validationParams = {
+            device,
+            transports,
+            settings: {
+                tor: getIsTorEnabled(torStatus),
+                enabledNetworks,
+            },
+        };
 
-            const validMessages = getValidMessages(config, validationParams);
-            const categorizedValidMessages = categorizeMessages(validMessages);
+        const [validMessages, validExperimentIds] = await Promise.all([
+            getValidMessages(config, validationParams),
+            getValidExperimentIds(config, validationParams),
+        ]);
+        const categorizedValidMessages = categorizeMessages(validMessages);
 
-            const validExperimentIds = getValidExperimentIds(config, validationParams);
+        dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
+        dispatch(messageSystemActions.updateValidExperiments(validExperimentIds));
+    }
 
-            api.dispatch(messageSystemActions.updateValidMessages(categorizedValidMessages));
-            api.dispatch(messageSystemActions.updateValidExperiments(validExperimentIds));
-        }
-
-        return action;
-    };
+    return action;
+});
 
 export default messageSystemMiddleware;
