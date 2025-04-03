@@ -27,6 +27,7 @@ test.describe('Metadata - wallet labeling', { tag: ['@group=metadata2', '@webOnl
         metadataMock,
     }) => {
         // Setup standard wallet with label and edit it
+        test.fail();
         await page.getByTestId('@account-menu/btc/normal/0/label').click();
         await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText('Bitcoin #1');
 

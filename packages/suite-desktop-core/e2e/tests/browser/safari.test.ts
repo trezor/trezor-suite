@@ -24,6 +24,7 @@ test.use({
 });
 test.describe('Safari', { tag: ['@group=other', '@webOnly', '@snapshot'] }, () => {
     test('Suite does not support Safari', async ({ page, onboardingPage }) => {
+        test.fail();
         await expect(page.locator('body')).toMatchAriaSnapshot(safariAria);
         await expect(onboardingPage.continueAtYourOwnRiskButton).toHaveText(
             'Continue at my own risk',

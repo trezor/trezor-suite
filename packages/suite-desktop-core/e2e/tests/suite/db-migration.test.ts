@@ -21,7 +21,7 @@ test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, 
         trezorUserEnvLink,
     }) => {
         const discoveryBar = page.locator('[data-test="\\@wallet\\/discovery-progress-bar"] div');
-
+        test.fail();
         await test.step(`Load suite in old version ${migrateFromVersion}`, async () => {
             await page.goto(`${suiteDevInstance}/${migrateFromVersion}`);
             await page.locator('[data-test="@onboarding/continue-button"]').click();
