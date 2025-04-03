@@ -8,7 +8,7 @@ test.describe('safety_checks Warnings', { tag: ['@group=suite'] }, () => {
     });
 
     test('Dismissible warning appears when safety_checks to prompt', async ({ page }) => {
-        test.fail();
+        // test.fail();
         await expect(page.getByTestId('@banner/safety-checks/button')).toBeVisible();
         await expect(page.getByTestId('@banner/safety-checks/dismiss')).toBeVisible();
     });
