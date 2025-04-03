@@ -13,7 +13,7 @@ import { TRADING_EXCHANGE_PREFIX } from '../constants';
 import { TradingExchangeAmountLimitProps } from '../types';
 
 export interface ExchangeInfo {
-    exchangeList?: ExchangeListResponse;
+    exchangeList?: ExchangeListResponse; // TODO: trading - is this needed?
     providerInfos: Record<string, ExchangeProviderInfo>;
     buyCryptoIds: CryptoId[];
     sellCryptoIds: CryptoId[];
