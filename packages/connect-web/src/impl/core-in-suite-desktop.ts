@@ -30,6 +30,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     public eventEmitter = new EventEmitter();
     protected _settings: ConnectSettings;
     private ws?: WebsocketClient<{}>;
+    private secret?: string;
 
     public constructor() {
         this._settings = parseConnectSettings();
@@ -69,6 +70,14 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
             if (!response) {
                 throw ERRORS.TypedError('Desktop_ConnectionMissing', 'No response');
             }
+
+            if (!response.payload.secret) {
+                throw ERRORS.TypedError(
+                    'Desktop_ConnectionMissing',
+                    'No secret in handshake response from suite-desktop',
+                );
+            }
+            this.secret = response.payload.secret;
 
             return response;
         } catch (err) {
@@ -118,6 +127,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
                 {
                     type: IFRAME.CALL,
                     payload: params,
+                    secret: this.secret,
                 },
                 {
                     timeout: Number.MAX_SAFE_INTEGER,

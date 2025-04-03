@@ -15,6 +15,7 @@ import { Deferred, createDeferred } from '@trezor/utils';
 import { createHttpReceiver } from './http-receiver';
 import { Dependencies } from '../modules';
 import { ProcessInfo, findProcessFromIncomingPort } from './find-process-from-port';
+import { randomBytes } from 'crypto';
 
 const LOG_PREFIX = 'connect-ws';
 
@@ -22,7 +23,7 @@ const LOG_PREFIX = 'connect-ws';
  * allowed message from connect-in-suite-desktop implementation
  */
 type IncomingMessage =
-    | (IFrameCallMessage & { id: string })
+    | (IFrameCallMessage & { id: string; secret: string })
     | (PopupHandshake & { id: string })
     | { type: 'ping'; id: string };
 
@@ -64,6 +65,7 @@ export const exposeConnectWs = ({
     const { logger } = global;
     const messages: Record<string, Deferred<any, number>> = {};
     let appInit: Deferred<void> | undefined;
+    let secret: string | undefined = undefined;
 
     const wss = new WebSocketServer({
         noServer: true,
@@ -118,8 +120,24 @@ export const exposeConnectWs = ({
             if (message.type === POPUP.HANDSHAKE) {
                 processOnPort = await findProcessFromIncomingPort(port);
                 settings = parseConnectSettings(message.payload.settings);
-                ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
+                secret = randomBytes(32).toString('hex');
+                ws.send(
+                    JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: { secret } }),
+                );
             } else if (message.type === IFRAME.CALL) {
+                if (!secret || !message.secret) {
+                    logger.error(
+                        LOG_PREFIX,
+                        'missing secret in message or secret is not set locally',
+                    );
+                    return;
+                }
+
+                if (message.secret !== secret) {
+                    logger.error(LOG_PREFIX, 'invalid secret received');
+                    return;
+                }
+
                 if (!processOnPort) {
                     logger.error(LOG_PREFIX, 'processOnPort result not found');
 
