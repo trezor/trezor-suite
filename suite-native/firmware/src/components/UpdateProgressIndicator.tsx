@@ -191,7 +191,7 @@ export const UpdateProgressIndicator = ({
             <Group>
                 <Path
                     path={progressCirclePath}
-                    color={utils.colors.backgroundPrimarySubtleOnElevationNegative}
+                    color={utils.colors.backgroundTertiaryDefaultOnElevationNegative}
                     strokeCap="round"
                     strokeJoin="round"
                     strokeWidth={PROGRESS_STROKE_WIDTH}
