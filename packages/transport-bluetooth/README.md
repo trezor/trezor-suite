@@ -38,6 +38,10 @@ createIpcProxyHandler(ipcMain, 'Bluetooth', {
 });
 ```
 
+### Server build:
+
+`yarn workspace @trezor/transport-bluetooth build:server`
+
 ### Server development
 
 Prerequisites: [RUST](https://www.rust-lang.org/tools/install)

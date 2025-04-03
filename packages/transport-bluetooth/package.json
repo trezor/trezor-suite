@@ -20,7 +20,8 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "lint:rs": "cargo fmt --all -- --check",
-        "dev:server": "RUST_BACKTRACE=1 RUST_LOG=debug cargo run"
+        "dev:server": "RUST_BACKTRACE=1 RUST_LOG=debug cargo run",
+        "build:server": "./scripts/build.sh"
     },
     "dependencies": {
         "@trezor/ipc-proxy": "workspace:*",
