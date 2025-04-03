@@ -82,7 +82,7 @@ const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor => {
     return theme[colorMap[$variant]];
 };
 
-const mapVariantToPadding = ({ $size }: { $size: BadgeSize }): string => {
+const mapSizeToPadding = ({ $size }: { $size: BadgeSize }): string => {
     const colorMap: Record<BadgeSize, string> = {
         tiny: `0 ${spacings.xs - spacings.xxxs}px`,
         small: `0 ${spacingsPx.xs}`,
@@ -92,11 +92,21 @@ const mapVariantToPadding = ({ $size }: { $size: BadgeSize }): string => {
     return colorMap[$size];
 };
 
+const mapSizeToIconSize = ({ $size }: { $size: BadgeSize }): number => {
+    const sizes: Record<BadgeSize, number> = {
+        tiny: 12,
+        small: 16,
+        medium: 20,
+    };
+
+    return sizes[$size];
+};
+
 const Container = styled.div<BadgeContainerProps>`
     display: ${({ $inline }) => ($inline ? 'inline-flex' : 'flex')};
     align-items: center;
     gap: ${spacingsPx.xxs};
-    padding: ${mapVariantToPadding};
+    padding: ${mapSizeToPadding};
     border-radius: ${borders.radii.full};
     border: 1px solid transparent;
     background: ${mapVariantToBackgroundColor};
@@ -159,6 +169,7 @@ export const Badge = ({
                             ? theme.iconDisabled
                             : mapVariantToIconColor({ $variant: variant, theme })
                     }
+                    size={mapSizeToIconSize({ $size: size })}
                 />
             )}
 
