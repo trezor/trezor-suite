@@ -114,14 +114,11 @@ describe('Message system utils', () => {
         fixtures.getValidMessages.forEach(f => {
             it(f.description, async () => {
                 jest.spyOn(Date, 'now').mockImplementation(() => new Date(f.currentDate).getTime());
-                // @ts-expect-error (getOsName returns union of string literals)
                 jest.spyOn(envUtils, 'getOsName').mockImplementation(() => f.osName);
                 userAgentGetter.mockReturnValue(f.userAgent);
-                // @ts-expect-error
                 jest.spyOn(envUtils, 'getEnvironment').mockImplementation(() => f.environment);
                 process.env.VERSION = f.suiteVersion;
 
-                // @ts-expect-error
                 expect(await messageSystem.getValidMessages(f.config, f.options)).toEqual(f.result);
             });
         });
@@ -143,14 +140,11 @@ describe('Message system utils', () => {
         fixtures.getValidExperimentIds.forEach(f => {
             it(f.description, async () => {
                 jest.spyOn(Date, 'now').mockImplementation(() => new Date(f.currentDate).getTime());
-                // @ts-expect-error (getOsName returns union of string literals)
                 jest.spyOn(envUtils, 'getOsName').mockImplementation(() => f.osName);
                 userAgentGetter.mockReturnValue(f.userAgent);
-                // @ts-expect-error
                 jest.spyOn(envUtils, 'getEnvironment').mockImplementation(() => f.environment);
                 process.env.VERSION = f.suiteVersion;
 
-                // @ts-expect-error
                 expect(await messageSystem.getValidExperimentIds(f.config, f.options)).toEqual(
                     f.result,
                 );

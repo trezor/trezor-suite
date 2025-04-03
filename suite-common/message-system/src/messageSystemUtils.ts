@@ -60,7 +60,7 @@ type CurrentSettings = {
     enabledNetworks: NetworkSymbol[];
 };
 
-type Options = {
+export type Options = {
     settings: CurrentSettings;
     transports?: TransportInfo[];
     device?: TrezorDevice;

@@ -1,6 +1,6 @@
 import { envUtils } from './envUtils';
 
-export type { Environment } from './types';
+export type { Environment, EnvUtils } from './types';
 
 export const {
     isWeb,
