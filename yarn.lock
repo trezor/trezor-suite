@@ -12131,7 +12131,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-storage@workspace:packages/suite-storage"
   dependencies:
-    "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     idb: "npm:^8.0.2"

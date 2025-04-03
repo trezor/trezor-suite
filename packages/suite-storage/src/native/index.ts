@@ -59,41 +59,19 @@ class CommonDB<TDBStructure> {
         CommonDB.instance = this;
     }
 
-    static isDBAvailable = (): Promise<boolean> =>
-        // Firefox doesn't support indexedDB while in incognito mode, but still returns valid window.indexedDB object.
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=781982
-        // so we need to try accessing the IDB. try/catch around idb.open() does not catch the error (bug in idb?), that's why we use callbacks.
-        // this solution calls callback function from within onerror/onsuccess event handlers.
-        // For other browsers checking the window.indexedDB should be enough.
-        Promise.resolve(false);
-    // const isFirefox = navigator && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-    // return new Promise((resolve, _reject) => {
-    //     if (isFirefox) {
-    //         const r = indexedDB.open('test');
-    //         r.onerror = () => resolve(false);
-    //         r.onsuccess = () => resolve(true);
-    //     } else {
-    //         // @ts-ignore
-    //         const idbAvailable = !!indexedDB || !!window.indexedDB || !!global.indexedDB;
-    //         if (idbAvailable) {
-    //             resolve(true);
-    //         } else {
-    //             resolve(false);
-    //         }
-    //     }
-    // });
+    static isDBAvailable = () => false;
 
-    isSupported = (): Promise<boolean> => {
+    isSupported = () => {
         this.supported = false;
 
-        return Promise.resolve(false);
+        return false;
     };
 
-    isAccessible = async () => {
-        const isSupported = await this.isSupported();
+    isAccessible = (): Promise<boolean> => {
+        const isSupported = this.isSupported();
 
         // if the instance is blocking db upgrade, db connection will be closed
-        return isSupported && !this.blocking && !this.blocked;
+        return Promise.resolve(isSupported && !this.blocking && !this.blocked);
     };
 
     getDB = (): Promise<IDBPDatabase<TDBStructure>> =>

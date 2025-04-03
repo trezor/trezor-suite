@@ -11,7 +11,6 @@ import {
     unwrap,
 } from 'idb';
 
-import { isFirefox } from '@trezor/env-utils';
 import { createLazy } from '@trezor/utils';
 
 export type OnUpgradeFunc<TDBStructure> = (
@@ -66,33 +65,11 @@ class CommonDB<TDBStructure> {
         CommonDB.instance = this;
     }
 
-    static isDBAvailable = () =>
-        // Firefox doesn't support indexedDB while in incognito mode, but still returns valid window.indexedDB object.
-        // https://bugzilla.mozilla.org/show_bug.cgi?id=781982
-        // so we need to try accessing the IDB. try/catch around idb.open() does not catch the error (bug in idb?), that's why we use callbacks.
-        // this solution calls callback function from within onerror/onsuccess event handlers.
-        // For other browsers checking the window.indexedDB should be enough.
-        new Promise<boolean>(resolve => {
-            if (isFirefox()) {
-                const r = indexedDB.open('test');
-                r.onerror = () => resolve(false);
-                r.onsuccess = () => {
-                    indexedDB.deleteDatabase('test');
-                    resolve(true);
-                };
-            } else {
-                const idbAvailable = !!indexedDB || !!window.indexedDB || !!global.indexedDB;
-                if (idbAvailable) {
-                    resolve(true);
-                } else {
-                    resolve(false);
-                }
-            }
-        });
+    static isDBAvailable = () => !!indexedDB || !!window.indexedDB || !!global.indexedDB;
 
-    isSupported = async () => {
+    isSupported = () => {
         if (this.supported === undefined) {
-            const isAvailable = await CommonDB.isDBAvailable();
+            const isAvailable = CommonDB.isDBAvailable();
             this.supported = isAvailable;
             if (!isAvailable) {
                 console.warn("Couldn't get an access to IndexedDB.");
@@ -102,11 +79,11 @@ class CommonDB<TDBStructure> {
         return this.supported;
     };
 
-    isAccessible = async () => {
-        const isSupported = await this.isSupported();
+    isAccessible = (): Promise<boolean> => {
+        const isSupported = this.isSupported();
 
         // if the instance is blocking db upgrade, db connection will be closed
-        return isSupported && !this.blocking && !this.blocked;
+        return Promise.resolve(isSupported && !this.blocking && !this.blocked);
     };
 
     closeAfterTimeout = (timeout = 1000) => {

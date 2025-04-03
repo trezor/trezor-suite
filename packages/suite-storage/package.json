@@ -17,7 +17,6 @@
     "react-native": "./src/native/index.ts",
     "browser": "./src/web/index.ts",
     "dependencies": {
-        "@trezor/env-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/utils": "workspace:*",
         "idb": "^8.0.2"
