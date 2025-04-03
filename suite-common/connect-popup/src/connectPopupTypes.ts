@@ -27,6 +27,16 @@ export type ConnectPopupCall =
       }
     | {
           state: 'finished';
+      }
+    | {
+          state: 'address-confirmation';
+          method: string;
+          addresses: {
+              address: string;
+              loading: boolean;
+              validated: boolean;
+              validatePayload: any;
+          }[];
       };
 
 export type AppRememberedPermission = {

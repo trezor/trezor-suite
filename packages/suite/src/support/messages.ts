@@ -9831,4 +9831,25 @@ export default defineMessages({
         id: 'TR_FORGET',
         defaultMessage: 'Forget',
     },
+    TR_CONNECT_ADDRESS_CONFIRMATION_SUCCESS: {
+        id: 'TR_CONNECT_ADDRESS_CONFIRMATION_SUCCESS',
+        defaultMessage: 'Success',
+    },
+    TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION: {
+        id: 'TR_CONNECT_ADDRESS_CONFIRMATION_DESCRIPTION',
+        defaultMessage:
+            'Please check addresses on your device against the addresses shown in the app.',
+    },
+    TR_DONE: {
+        id: 'TR_DONE',
+        defaultMessage: 'Done',
+    },
+    TR_ADDRESSES: {
+        id: 'TR_ADDRESSES',
+        defaultMessage: 'Addresses',
+    },
+    TR_VERIFYING: {
+        id: 'TR_VERIFYING',
+        defaultMessage: 'Verifying',
+    },
 });

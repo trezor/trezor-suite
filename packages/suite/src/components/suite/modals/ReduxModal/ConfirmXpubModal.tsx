@@ -1,3 +1,4 @@
+import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { convertTaprootXpub } from '@trezor/utils';
 
@@ -8,13 +9,21 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 
 import { ConfirmValueModal, ConfirmValueModalProps } from './ConfirmValueModal/ConfirmValueModal';
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
+import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
 
 export const ConfirmXpubModal = (
-    props: Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel'>,
+    props: Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel'> & {
+        descriptor?: string;
+        descriptorChecksum?: string;
+    },
 ) => {
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectSelectedAccount);
+    const isConnectPopup = useSelector(
+        state => selectConnectPopupCall(state)?.state === 'address-confirmation',
+    );
 
+    if (isConnectPopup) return <ConnectAddressConfirmation />;
     if (!device) return null;
     // TODO: special case for Connect Popup
     if (!account) return <ConfirmActionModal device={device} />;

@@ -50,6 +50,7 @@ import type { ReduxModalProps } from '../ReduxModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
 import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
+import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { TradingDCAModal } from './TradingDCAModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
@@ -217,6 +218,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <WalletConnectProposalModal eventId={payload.eventId} />;
         case 'trading-dca':
             return <TradingDCAModal device={payload.device} onCancel={onCancel} />;
+        case 'connect-address-confirmation':
+            return <ConnectAddressConfirmation />;
         default:
             return null;
     }

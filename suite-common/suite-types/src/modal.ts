@@ -203,4 +203,7 @@ export type UserContextPayload =
     | {
           type: 'trading-dca';
           device: TrezorDevice;
+      }
+    | {
+          type: 'connect-address-confirmation';
       };

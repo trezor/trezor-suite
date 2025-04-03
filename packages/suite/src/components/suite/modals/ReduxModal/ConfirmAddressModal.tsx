@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
@@ -10,6 +11,8 @@ import {
 } from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
 import { useSelector } from 'src/hooks/suite';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
+
+import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
 
 interface ConfirmAddressModalProps
     extends Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel' | 'value'> {
@@ -23,12 +26,16 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
         state =>
             !!state.wallet.trading.modalAccountKey || !!state.wallet.tradingNew.modalAccountKey,
     );
+    const isConnectPopup = useSelector(
+        state => selectConnectPopupCall(state)?.state === 'address-confirmation',
+    );
 
     const validateAddress = useCallback(
         () => showAddress(addressPath, value),
         [addressPath, value],
     );
 
+    if (isConnectPopup) return <ConnectAddressConfirmation />;
     if (!device) return null;
 
     return (

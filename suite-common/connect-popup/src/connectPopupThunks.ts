@@ -9,7 +9,8 @@ import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
 import { createDeferred } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
-import { selectConnectAppPermissions } from './connectPopupReducer';
+import { selectConnectAppPermissions, selectConnectPopupCall } from './connectPopupReducer';
+import { postCallHooks, preCallHooks } from './methodHooks';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
@@ -100,6 +101,9 @@ export const connectPopupCallThunkInner = createThunk<
                 throw ERRORS.TypedError('Device_NotFound');
             }
 
+            const originalPayload = { ...payload };
+            await preCallHooks({ method, payload, dispatch, getState });
+
             // @ts-expect-error: method is dynamic
             const response = await TrezorConnect[method]({
                 device: {
@@ -116,6 +120,8 @@ export const connectPopupCallThunkInner = createThunk<
             dispatch(deviceActions.removeButtonRequests({ device }));
 
             dispatch(connectPopupActions.finishCall());
+
+            await postCallHooks({ method, payload, originalPayload, response, dispatch, getState });
 
             return response;
         } catch (error) {
@@ -220,5 +226,65 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
                 callbackUrl: callbackUrl.toString(),
             }),
         );
+    },
+);
+
+export const connectPopupVerifyAddressThunk = createThunk<void, { index: number }>(
+    `${CONNECT_POPUP_MODULE}/verifyAddressThunk`,
+    async ({ index }, { dispatch, getState, extra }) => {
+        // Unlock device access from previous call
+        dispatch(extra.actions.lockDevice(false));
+
+        const device = selectSelectedDevice(getState());
+        const call = selectConnectPopupCall(getState());
+        if (!device || !call || call.state !== 'address-confirmation') return;
+
+        // Update loading state of addresses
+        dispatch(
+            connectPopupActions.initiateCall({
+                ...call,
+                addresses: call.addresses.map((address, i) => ({
+                    ...address,
+                    loading: i === index,
+                })),
+            }),
+        );
+
+        try {
+            // @ts-expect-error: method is dynamic
+            const res = await TrezorConnect[call.method]({
+                device: {
+                    path: device.path,
+                    instance: device.instance,
+                    state: device.state,
+                },
+                useEmptyPassphrase: device.useEmptyPassphrase,
+                ...call.addresses[index].validatePayload,
+                showOnTrezor: true,
+                chunked: false,
+            });
+            dispatch(
+                connectPopupActions.initiateCall({
+                    ...call,
+                    addresses: call.addresses.map((address, i) => ({
+                        ...address,
+                        loading: false,
+                        validated: i === index ? res.success : address.validated,
+                    })),
+                }),
+            );
+        } catch (error) {
+            console.error('connectPopupVerifyAddressThunk', error);
+            dispatch(
+                connectPopupActions.initiateCall({
+                    ...call,
+                    addresses: call.addresses.map((address, i) => ({
+                        ...address,
+                        loading: false,
+                        validated: i === index ? false : address.validated,
+                    })),
+                }),
+            );
+        }
     },
 );
