@@ -2,6 +2,47 @@ import { CryptoId, SellFiatTrade } from 'invity-api';
 
 const bitcoin = 'bitcoin' as CryptoId;
 
+export const MIN_MAX_QUOTES_LOW: SellFiatTrade[] = [
+    {
+        fiatStringAmount: '10',
+        fiatCurrency: 'EUR',
+        rate: 20000,
+        quoteId: '4cee7ce4-4bc2-48b9-a335-e3017c0ca388',
+        error: 'Amount too low, minimum is EUR 25 or BTC 0.002.',
+        exchange: 'cexdirect',
+        minFiat: 25,
+        maxFiat: 1000,
+        minCrypto: 0.002,
+        maxCrypto: 0.10532,
+        paymentMethod: 'bankTransfer',
+        paymentId: 'b119e463-094e-4b28-a0a5-2ae95aa329e6',
+    },
+    {
+        fiatStringAmount: '10',
+        fiatCurrency: 'EUR',
+        rate: 9998.316675433,
+        quoteId: 'ff259797-6cbe-4fea-8330-5181353f64a0',
+        exchange: 'simplecoin',
+        minFiat: 20,
+        maxFiat: 1999.96,
+        minCrypto: 0.002,
+        maxCrypto: 0.20003,
+        paymentMethod: 'creditCard',
+    },
+    {
+        fiatStringAmount: '10',
+        fiatCurrency: 'EUR',
+        rate: 0,
+        error: 'Transaction amount too low. Please enter a value of 43 EUR or more.',
+        exchange: 'simplex',
+        minFiat: 43,
+        maxFiat: 17044,
+        minCrypto: 0.00415525,
+        maxCrypto: 1.66210137,
+        paymentMethod: 'creditCard',
+    },
+];
+
 export const MIN_MAX_QUOTES_HIGH: SellFiatTrade[] = [
     {
         fiatStringAmount: '100000',

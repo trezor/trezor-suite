@@ -34,10 +34,110 @@ describe('exchangeUtils', () => {
                 exchangeUtilsFixtures.MIN_MAX_QUOTES_CANNOT_TRADE,
                 undefined,
             ],
-        ])('testing getAmountLimits exchange function case %s', (_m, quotes, expectedResult) => {
+        ])('%s', (_m, quotes, expectedResult) => {
             const amountLimits = exchangeUtils.getAmountLimits({ quotes, currency });
 
             expect(amountLimits).toStrictEqual(expectedResult);
+        });
+    });
+
+    describe('isQuoteError', () => {
+        it.each([
+            [
+                'should return false when quote is correct',
+                exchangeUtilsFixtures.MIN_MAX_QUOTES_OK[0],
+                false,
+            ],
+            [
+                'should return true when quote amount is below minimum',
+                exchangeUtilsFixtures.MIN_MAX_QUOTES_LOW[0],
+                true,
+            ],
+            [
+                'should return true when quote amount is above maximum',
+                exchangeUtilsFixtures.MIN_MAX_QUOTES_HIGH[0],
+                true,
+            ],
+            [
+                'should return true when quote is with error',
+                exchangeUtilsFixtures.MIN_MAX_QUOTES_CANNOT_TRADE[0],
+                true,
+            ],
+        ])('%s', (_m, quote, result) => {
+            expect(exchangeUtils.isQuoteError(quote)).toBe(result);
+        });
+    });
+
+    describe('fixedRateCexQuotes', () => {
+        it('should return quotes with fixed rate', () => {
+            expect(
+                exchangeUtils.fixedRateCexQuotes(
+                    [
+                        ...exchangeUtilsFixtures.MIN_MAX_QUOTES_OK,
+                        ...exchangeUtilsFixtures.MIN_MAX_QUOTES_CANNOT_TRADE,
+                        ...exchangeUtilsFixtures.OTHER_QUOTES,
+                    ],
+                    exchangeUtilsFixtures.EXCHANGE_INFO,
+                ),
+            ).toStrictEqual([exchangeUtilsFixtures.MIN_MAX_QUOTES_OK[1]]);
+        });
+    });
+
+    describe('floatRateCexQuotes', () => {
+        it('should return quotes with float rate', () => {
+            expect(
+                exchangeUtils.floatRateCexQuotes(
+                    [
+                        ...exchangeUtilsFixtures.MIN_MAX_QUOTES_OK,
+                        ...exchangeUtilsFixtures.MIN_MAX_QUOTES_CANNOT_TRADE,
+                        ...exchangeUtilsFixtures.OTHER_QUOTES,
+                    ],
+                    exchangeUtilsFixtures.EXCHANGE_INFO,
+                ),
+            ).toStrictEqual([exchangeUtilsFixtures.MIN_MAX_QUOTES_OK[0]]);
+        });
+    });
+
+    describe('getCexQuotesByRateType', () => {
+        it.each([
+            [
+                'should return  undefined when quotes are undefined',
+                'fixed' as const,
+                undefined,
+                undefined,
+            ],
+            [
+                'should return fixed rate quotes',
+                'fixed' as const,
+                exchangeUtilsFixtures.MIN_MAX_QUOTES_OK,
+                [exchangeUtilsFixtures.MIN_MAX_QUOTES_OK[1]],
+            ],
+            [
+                'should return floating rate quotes',
+                'floating' as const,
+                exchangeUtilsFixtures.MIN_MAX_QUOTES_OK,
+                [exchangeUtilsFixtures.MIN_MAX_QUOTES_OK[0]],
+            ],
+        ])('%s', (_m, rateType, quotes, expectedResult) => {
+            expect(
+                exchangeUtils.getCexQuotesByRateType(
+                    rateType,
+                    quotes,
+                    exchangeUtilsFixtures.EXCHANGE_INFO,
+                ),
+            ).toStrictEqual(expectedResult);
+        });
+    });
+
+    describe('getSuccessQuotesOrdered', () => {
+        it('should return quotes ordered by rate', () => {
+            expect(
+                exchangeUtils.getSuccessQuotesOrdered([
+                    ...exchangeUtilsFixtures.MIN_MAX_QUOTES_OK,
+                    ...exchangeUtilsFixtures.MIN_MAX_QUOTES_LOW,
+                    ...exchangeUtilsFixtures.MIN_MAX_QUOTES_CANNOT_TRADE,
+                ]),
+            ).toStrictEqual(exchangeUtilsFixtures.EXCHANGE_SUCCESS_ORDERED_QUOTES);
         });
     });
 });

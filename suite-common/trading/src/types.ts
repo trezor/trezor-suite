@@ -22,6 +22,8 @@ import type {
 import { AccountType, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
+import { TRADING_EXCHANGE_RATE_FIXED, TRADING_EXCHANGE_RATE_FLOATING } from './constants';
+
 export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
 export type InvityServers = Record<InvityServerEnvironment, string>;
 
@@ -181,3 +183,7 @@ export type TradingExchangeAmountLimitProps = Pick<
     TradingAmountLimitProps,
     'currency' | 'minCrypto' | 'maxCrypto'
 >;
+
+export type TradingExchangeRateType =
+    | typeof TRADING_EXCHANGE_RATE_FIXED
+    | typeof TRADING_EXCHANGE_RATE_FLOATING;

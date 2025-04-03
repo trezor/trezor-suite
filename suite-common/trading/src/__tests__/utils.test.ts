@@ -12,6 +12,7 @@ import {
     addIdsToQuotes,
     cryptoIdToSymbol,
     filterQuotesAccordingTags,
+    getBestRatedQuote,
     getDefaultCountry,
     getTagAndInfoNote,
     getTradingNetworkDecimals,
@@ -261,5 +262,27 @@ describe('getDefaultCountry', () => {
 
     it('should return default country for non existing code', () => {
         expect(getDefaultCountry('XX')).toEqual({ label: '🌍 Worldwide', value: 'unknown' });
+    });
+});
+
+describe('getBestRatedQuote', () => {
+    it('should return undefined if quotes are undefined', () => {
+        expect(getBestRatedQuote(undefined, 'buy')).toStrictEqual(undefined);
+    });
+
+    it('should get buy best trade', () => {
+        expect(getBestRatedQuote(BUY_FIXTURE.MIN_MAX_QUOTES_OK, 'buy')).toStrictEqual(
+            BUY_FIXTURE.MIN_MAX_QUOTES_OK[1],
+        );
+    });
+    it('should get sell best trade', () => {
+        expect(getBestRatedQuote(SELL_FIXTURE.MIN_MAX_QUOTES_LOW, 'sell')).toStrictEqual(
+            SELL_FIXTURE.MIN_MAX_QUOTES_LOW[0],
+        );
+    });
+    it('should get exchange best trade', () => {
+        expect(getBestRatedQuote(EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK, 'exchange')).toStrictEqual(
+            EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK[EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK.length - 1],
+        );
     });
 });
