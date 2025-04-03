@@ -1,7 +1,14 @@
 import { ipcMain } from 'electron';
 import { WebSocketServer } from 'ws';
 
-import { ConnectSettings, IFRAME, POPUP, parseConnectSettings } from '@trezor/connect';
+import {
+    ConnectSettings,
+    IFRAME,
+    IFrameCallMessage,
+    POPUP,
+    PopupHandshake,
+    parseConnectSettings,
+} from '@trezor/connect';
 import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
 import { Deferred, createDeferred } from '@trezor/utils';
 
@@ -10,6 +17,40 @@ import { Dependencies } from '../modules';
 import { ProcessInfo, findProcessFromIncomingPort } from './find-process-from-port';
 
 const LOG_PREFIX = 'connect-ws';
+
+/**
+ * allowed message from connect-in-suite-desktop implementation
+ */
+type IncomingMessage =
+    | (IFrameCallMessage & { id: string })
+    | (PopupHandshake & { id: string })
+    | { type: 'ping'; id: string };
+
+const validateIncomingMessage = (message: any): message is IncomingMessage => {
+    if (typeof message !== 'object' || typeof message.type !== 'string') {
+        return false;
+    }
+
+    // message.id is a string parsable as int
+    if (typeof message.id !== 'string' || isNaN(Number(message.id))) {
+        return false;
+    }
+
+    if (message.type === 'ping') {
+        return true;
+    }
+
+    if (message.type === POPUP.HANDSHAKE && message.payload?.settings) {
+        return true;
+    }
+
+    // todo: this is incomplete validation
+    if (message.type === IFRAME.CALL && message.payload?.method) {
+        return true;
+    }
+
+    return false;
+};
 
 export const exposeConnectWs = ({
     mainThreadEmitter,
@@ -63,8 +104,8 @@ export const exposeConnectWs = ({
                 return;
             }
 
-            if (typeof message !== 'object' || typeof message.type !== 'string') {
-                logger.error(LOG_PREFIX, 'message is missing required fields (id, type)');
+            if (!validateIncomingMessage(message)) {
+                logger.error(LOG_PREFIX, 'incoming message in invalid format');
 
                 return;
             }
@@ -76,14 +117,9 @@ export const exposeConnectWs = ({
             }
             if (message.type === POPUP.HANDSHAKE) {
                 processOnPort = await findProcessFromIncomingPort(port);
-                settings = parseConnectSettings(message.payload);
+                settings = parseConnectSettings(message.payload.settings);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === IFRAME.CALL) {
-                if (!message.payload || !message.payload.method) {
-                    logger.error(LOG_PREFIX, 'invalid message payload');
-
-                    return;
-                }
                 if (!processOnPort) {
                     logger.error(LOG_PREFIX, 'processOnPort result not found');
 

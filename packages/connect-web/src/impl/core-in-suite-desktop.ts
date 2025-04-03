@@ -57,7 +57,9 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
             const response = await this.ws!.sendMessage(
                 {
                     type: POPUP.HANDSHAKE,
-                    payload: this._settings,
+                    payload: {
+                        settings: this._settings,
+                    },
                 },
                 {
                     timeout: 1000,
