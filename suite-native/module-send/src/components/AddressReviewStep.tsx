@@ -23,7 +23,7 @@ const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): Ordered
     stepNumber
         ? {
               iconNumber: stepNumber,
-              iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation0',
+              iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
               iconBorderColor: 'borderElevation0',
           }
         : {
@@ -40,8 +40,8 @@ const cardStyle = prepareNativeStyle<{ isFinalStep: boolean }>((utils, { isFinal
     extend: {
         condition: isFinalStep,
         style: {
-            backgroundColor: utils.colors.backgroundPrimarySubtleOnElevation0,
-            borderColor: utils.colors.backgroundPrimarySubtleOnElevationNegative,
+            backgroundColor: utils.colors.backgroundPrimarySubtleOnElevation1,
+            borderColor: utils.colors.backgroundPrimarySubtleOnElevation0,
             ...utils.boxShadows.none,
         },
     },

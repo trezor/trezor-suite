@@ -17,7 +17,7 @@ type SendOutputFieldsProps = {
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
-    borderColor: utils.colors.borderElevation1,
+    borderColor: utils.colors.borderElevation0,
     borderWidth: utils.borders.widths.small,
 }));
 

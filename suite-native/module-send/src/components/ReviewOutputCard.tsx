@@ -21,7 +21,7 @@ const cardStyle = prepareNativeStyle<{ isConfirmed: boolean }>((utils, { isConfi
     extend: {
         condition: isConfirmed,
         style: {
-            backgroundColor: utils.colors.backgroundSurfaceElevationNegative,
+            backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
             borderColor: utils.colors.borderElevation0,
         },
     },

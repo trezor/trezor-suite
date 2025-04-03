@@ -27,7 +27,7 @@ type FeesRecipientsProps = {
 
 const cardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderElevation0,
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
+    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
     borderWidth: utils.borders.widths.small,
     paddingVertical: utils.spacings.sp12,
     ...utils.boxShadows.none,

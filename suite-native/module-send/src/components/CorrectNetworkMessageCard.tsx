@@ -7,7 +7,7 @@ import { isCoinWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const cardStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation0,
+    backgroundColor: utils.colors.backgroundTertiaryDefaultOnElevation1,
     borderColor: utils.colors.borderElevation0,
     borderWidth: utils.borders.widths.small,
     paddingVertical: utils.spacings.sp12,

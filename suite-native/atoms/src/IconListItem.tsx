@@ -19,7 +19,7 @@ type IconColors = {
 const iconColorsMap = {
     default: {
         iconColor: 'iconDefault',
-        iconBorderColor: 'borderElevation1',
+        iconBorderColor: 'borderElevation0',
         iconBackgroundColor: 'backgroundTertiaryDefaultOnElevation1',
     },
     red: {

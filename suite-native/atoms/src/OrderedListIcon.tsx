@@ -40,7 +40,7 @@ export const OrderedListIcon = ({
     iconColor,
     iconSize = 'mediumLarge',
     iconBackgroundColor = 'backgroundTertiaryDefaultOnElevation1',
-    iconBorderColor = 'borderElevation1',
+    iconBorderColor = 'borderElevation0',
 }: OrderedListIconProps) => {
     const { applyStyle } = useNativeStyles();
 
