@@ -20,7 +20,15 @@ import { Action } from 'src/types/suite';
 
 // TODO: trading - refactor after/during moving to suite-common
 
-jest.mock('@suite-common/trading');
+jest.mock('@suite-common/trading', () => {
+    const originalModule = jest.requireActual('@suite-common/trading');
+
+    return {
+        __esModule: true,
+        ...originalModule,
+        invityAPI: {},
+    };
+});
 invityAPI.setInvityServersEnvironment = () => {};
 invityAPI.createInvityAPIKey = () => {};
 invityAPI.getInfo = () =>
