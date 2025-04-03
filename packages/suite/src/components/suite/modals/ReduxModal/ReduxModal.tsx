@@ -1,7 +1,6 @@
 import { MODAL } from 'src/actions/suite/constants';
 import type { AppState } from 'src/types/suite';
 
-import type { ModalProps } from '../Modal/Modal';
 import { DeviceConfirmationModal } from './DeviceConfirmationModal/DeviceConfirmationModal';
 import { DeviceContextModal } from './DeviceContextModal/DeviceContextModal';
 import { UserContextModal } from './UserContextModal/UserContextModal';
@@ -11,9 +10,7 @@ export type ReduxModalProps<
         AppState['modal']['context'],
         typeof MODAL.CONTEXT_NONE
     >,
-> = Extract<AppState['modal'], { context: T }> & {
-    renderer?: ModalProps['renderer'];
-};
+> = Extract<AppState['modal'], { context: T }>;
 
 /** Modals initiated by redux state.modal */
 export const ReduxModal = (modal: ReduxModalProps) => {
