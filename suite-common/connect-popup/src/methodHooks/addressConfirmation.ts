@@ -78,13 +78,15 @@ export function postCallHook<M extends keyof typeof TrezorConnect>({
             };
         });
         dispatch(
-            connectPopupActions.initiateCall({
-                state: 'address-confirmation',
-                method,
+            connectPopupActions.confirmAddresses({
                 addresses,
             }),
         );
+
+        return true;
     }
+
+    return false;
 }
 
 export const addressConfirmationModalHooks = {

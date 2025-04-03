@@ -36,19 +36,65 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 },
             )
             .addCase(connectPopupActions.initiateCall, (state, { payload }) => {
-                state.activeCall = payload;
+                state.activeCall = {
+                    ...payload,
+                    state: 'ongoing',
+                };
+            })
+            .addCase(connectPopupActions.requestPermissions, (state, { payload }) => {
+                if (state.activeCall?.state === 'ongoing')
+                    state.activeCall = {
+                        ...state.activeCall,
+                        state: 'permission-request',
+                        ...payload,
+                    };
+            })
+            .addCase(connectPopupActions.approvePermissions, state => {
+                if (state.activeCall?.state === 'permission-request') {
+                    state.activeCall.permissionDecision?.resolve();
+                    state.activeCall = {
+                        ...state.activeCall,
+                        state: 'ongoing',
+                    };
+                }
+            })
+            .addCase(connectPopupActions.rejectPermissions, (state, { payload }) => {
+                if (state.activeCall?.state === 'permission-request') {
+                    state.activeCall.permissionDecision?.reject(payload);
+                    state.activeCall = {
+                        ...state.activeCall,
+                        state: 'finished',
+                    };
+                }
+            })
+            .addCase(connectPopupActions.confirmAddresses, (state, { payload }) => {
+                if (
+                    state.activeCall?.state === 'ongoing' ||
+                    state.activeCall?.state === 'address-confirmation'
+                ) {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        state: 'address-confirmation',
+                        addresses: payload.addresses,
+                    };
+                }
             })
             .addCase(connectPopupActions.finishCall, state => {
-                state.activeCall = { state: 'finished' };
+                if (state.activeCall) state.activeCall.state = 'finished';
             })
-            .addCase(connectPopupActions.approveCall, state => {
-                if (state.activeCall?.state === 'request') state.activeCall.confirmation.resolve();
-                state.activeCall = undefined;
-            })
-            .addCase(connectPopupActions.rejectCall, (state, { payload }) => {
-                if (state.activeCall?.state === 'request')
-                    state.activeCall.confirmation.reject(payload);
-                state.activeCall = undefined;
+            .addCase(connectPopupActions.setError, (state, { payload }) => {
+                if (state.activeCall && state.activeCall.state !== 'error') {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        state: 'call-error',
+                        error: payload,
+                    };
+                } else {
+                    state.activeCall = {
+                        state: 'error',
+                        error: payload,
+                    };
+                }
             })
             .addCase(connectPopupActions.rememberAppPermissions, (state, { payload }) => {
                 state.permissions = state.permissions.filter(p => p.origin !== payload.origin);

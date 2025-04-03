@@ -43,27 +43,33 @@ export const connectPopupCallThunkInner = createThunk<
                 __info: true,
             });
             if (!methodInfo.success) {
-                dispatch(
-                    connectPopupActions.initiateCall({
-                        state: 'call-error',
-                        callError: TypedError(methodInfo.payload.code),
-                    }),
-                );
+                dispatch(connectPopupActions.setError(TypedError(methodInfo.payload.code)));
                 throw methodInfo;
             }
             if (
                 methodInfo.payload.requiredPermissions.includes('management') ||
                 methodInfo.payload.requiredPermissions.includes('push_tx')
             ) {
-                dispatch(
-                    connectPopupActions.initiateCall({
-                        state: 'call-error',
-                        callError: TypedError('Method_NotAllowed'),
-                    }),
-                );
+                dispatch(connectPopupActions.setError(TypedError('Method_NotAllowed')));
 
                 throw TypedError('Method_NotAllowed');
             }
+            dispatch(
+                connectPopupActions.initiateCall({
+                    method,
+                    methodInfo: {
+                        methodTitle:
+                            methodInfo.payload.confirmation?.label ?? methodInfo.payload.info,
+                        confirmLabel: methodInfo.payload.confirmation?.customConfirmButton?.label,
+                        permissionTypes: methodInfo.payload.requiredPermissions,
+                    },
+                    source: {
+                        processName,
+                        origin,
+                        manifest,
+                    },
+                }),
+            );
 
             // Check if permission remembered
             const rememberedApps = selectConnectAppPermissions(getState());
@@ -80,17 +86,8 @@ export const connectPopupCallThunkInner = createThunk<
                 const confirmation = createDeferred();
                 dispatch(extra.actions.lockDevice(true));
                 dispatch(
-                    connectPopupActions.initiateCall({
-                        state: 'request',
-                        method,
-                        methodTitle:
-                            methodInfo.payload.confirmation?.label ?? methodInfo.payload.info,
-                        confirmLabel: methodInfo.payload.confirmation?.customConfirmButton?.label,
-                        processName,
-                        origin,
-                        confirmation,
-                        manifest,
-                        permissionTypes: methodInfo.payload.requiredPermissions,
+                    connectPopupActions.requestPermissions({
+                        permissionDecision: confirmation,
                     }),
                 );
                 await confirmation.promise;
@@ -119,9 +116,17 @@ export const connectPopupCallThunkInner = createThunk<
             // Note: for mobile this needs to be called explicitly, on desktop it's automatically handled by middleware
             dispatch(deviceActions.removeButtonRequests({ device }));
 
-            dispatch(connectPopupActions.finishCall());
-
-            await postCallHooks({ method, payload, originalPayload, response, dispatch, getState });
+            const postCallOngoing = await postCallHooks({
+                method,
+                payload,
+                originalPayload,
+                response,
+                dispatch,
+                getState,
+            });
+            if (!postCallOngoing) {
+                dispatch(connectPopupActions.finishCall());
+            }
 
             return response;
         } catch (error) {
@@ -173,23 +178,13 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
             typeof queryParams?.callback !== 'string' ||
             !Object.prototype.hasOwnProperty.call(TrezorConnect, queryParams?.method)
         ) {
-            dispatch(
-                connectPopupActions.initiateCall({
-                    state: 'call-error',
-                    callError: TypedError('Method_InvalidParameter'),
-                }),
-            );
+            dispatch(connectPopupActions.setError(TypedError('Method_InvalidParameter')));
 
             return;
         }
 
         if (!version || parseInt(version) > DEEPLINK_VERSION) {
-            dispatch(
-                connectPopupActions.initiateCall({
-                    state: 'call-error',
-                    callError: TypedError('Deeplink_VersionMismatch'),
-                }),
-            );
+            dispatch(connectPopupActions.setError(TypedError('Deeplink_VersionMismatch')));
 
             return;
         }
@@ -200,12 +195,7 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
             payload = JSON.parse(queryParams.params);
             callbackUrl = new URL(callback);
         } catch {
-            dispatch(
-                connectPopupActions.initiateCall({
-                    state: 'call-error',
-                    callError: TypedError('Method_InvalidParameter'),
-                }),
-            );
+            dispatch(connectPopupActions.setError(TypedError('Method_InvalidParameter')));
 
             return;
         }
@@ -221,8 +211,7 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
         ).unwrap();
         callbackUrl.searchParams.set('response', JSON.stringify(response));
         dispatch(
-            connectPopupActions.initiateCall({
-                state: 'deeplink-callback',
+            connectPopupActions.deeplinkCallback({
                 callbackUrl: callbackUrl.toString(),
             }),
         );
@@ -241,9 +230,8 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
 
         // Update loading state of addresses
         dispatch(
-            connectPopupActions.initiateCall({
-                ...call,
-                addresses: call.addresses.map((address, i) => ({
+            connectPopupActions.confirmAddresses({
+                addresses: call.addresses?.map((address, i) => ({
                     ...address,
                     loading: i === index,
                 })),
@@ -264,8 +252,7 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
                 chunked: false,
             });
             dispatch(
-                connectPopupActions.initiateCall({
-                    ...call,
+                connectPopupActions.confirmAddresses({
                     addresses: call.addresses.map((address, i) => ({
                         ...address,
                         loading: false,
@@ -276,8 +263,7 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
         } catch (error) {
             console.error('connectPopupVerifyAddressThunk', error);
             dispatch(
-                connectPopupActions.initiateCall({
-                    ...call,
+                connectPopupActions.confirmAddresses({
                     addresses: call.addresses.map((address, i) => ({
                         ...address,
                         loading: false,

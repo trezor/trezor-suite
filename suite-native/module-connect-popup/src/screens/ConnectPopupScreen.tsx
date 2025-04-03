@@ -35,7 +35,7 @@ export const ConnectPopupScreen = () => {
     }, [popupCall, navigation]);
 
     const mainView = useMemo(() => {
-        const onConfirm = () => dispatch(connectPopupActions.approveCall());
+        const onConfirm = () => dispatch(connectPopupActions.approvePermissions());
 
         if (!popupCall) {
             return (
@@ -58,8 +58,8 @@ export const ConnectPopupScreen = () => {
         }
 
         if (validDevice) {
-            if (popupCall.state === 'request') {
-                if (!popupCall.origin) {
+            if (popupCall.state === 'permission-request') {
+                if (!popupCall.source.origin) {
                     return (
                         <ErrorMessage
                             errorMessage={
@@ -71,11 +71,11 @@ export const ConnectPopupScreen = () => {
 
                 return (
                     <VStack testID="@popup/deeplink-info" spacing="sp8" alignItems="center">
-                        <Text variant="titleSmall">{popupCall.methodTitle}</Text>
+                        <Text variant="titleSmall">{popupCall.methodInfo.methodTitle}</Text>
                         <Text>
                             <Translation id="moduleConnectPopup.callback" />
                             {': '}
-                            <Text color="textAlertBlue">{popupCall.origin}</Text>
+                            <Text color="textAlertBlue">{popupCall.source.origin}</Text>
                         </Text>
 
                         <Text
@@ -88,7 +88,7 @@ export const ConnectPopupScreen = () => {
                             <Translation id="moduleConnectPopup.areYouSureMessage" />
                         </Text>
                         <Button testID="@popup/call-device" onPress={onConfirm}>
-                            {popupCall.confirmLabel || (
+                            {popupCall.methodInfo.confirmLabel || (
                                 <Translation id="moduleConnectPopup.confirm" />
                             )}
                         </Button>
@@ -98,7 +98,7 @@ export const ConnectPopupScreen = () => {
 
             if (popupCall.state === 'call-error') {
                 const getTranslationId = () => {
-                    switch (popupCall.callError.code) {
+                    switch (popupCall.error.code) {
                         case 'Deeplink_VersionMismatch':
                             return 'moduleConnectPopup.errors.versionUnsupported';
                         case 'Method_NotAllowed':

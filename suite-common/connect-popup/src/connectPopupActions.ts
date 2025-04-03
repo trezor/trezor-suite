@@ -1,18 +1,50 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { TrezorError } from '@trezor/connect/src/constants/errors';
+
 import { AppRememberedPermission, ConnectPopupCall } from './connectPopupTypes';
 
 export const ACTION_PREFIX = '@suite-common/connect-popup';
 
-const initiateCall = createAction(`${ACTION_PREFIX}/initiateCall`, (payload: ConnectPopupCall) => ({
+const initiateCall = createAction(
+    `${ACTION_PREFIX}/initiateCall`,
+    (
+        payload: Pick<ConnectPopupCall & { state: 'ongoing' }, 'method' | 'methodInfo' | 'source'>,
+    ) => ({
+        payload,
+    }),
+);
+
+const requestPermissions = createAction(
+    `${ACTION_PREFIX}/requestPermissions`,
+    (payload: Pick<ConnectPopupCall & { state: 'permission-request' }, 'permissionDecision'>) => ({
+        payload,
+    }),
+);
+
+const approvePermissions = createAction(`${ACTION_PREFIX}/approvePermissions`);
+
+const rejectPermissions = createAction(`${ACTION_PREFIX}/rejectPermissions`, (payload: Error) => ({
     payload,
 }));
 
-const approveCall = createAction(`${ACTION_PREFIX}/approveCall`);
-
 const finishCall = createAction(`${ACTION_PREFIX}/finishCall`);
 
-const rejectCall = createAction(`${ACTION_PREFIX}/rejectCall`, (payload: Error) => ({
+const confirmAddresses = createAction(
+    `${ACTION_PREFIX}/confirmAddresses`,
+    (payload: Pick<ConnectPopupCall & { state: 'address-confirmation' }, 'addresses'>) => ({
+        payload,
+    }),
+);
+
+const deeplinkCallback = createAction(
+    `${ACTION_PREFIX}/deeplinkCallback`,
+    (payload: Pick<ConnectPopupCall & { state: 'deeplink-callback' }, 'callbackUrl'>) => ({
+        payload,
+    }),
+);
+
+const setError = createAction(`${ACTION_PREFIX}/setError`, (payload: TrezorError) => ({
     payload,
 }));
 
@@ -32,9 +64,13 @@ const forgetAppPermissions = createAction(
 
 export const connectPopupActions = {
     initiateCall,
-    approveCall,
+    requestPermissions,
+    approvePermissions,
+    rejectPermissions,
     finishCall,
-    rejectCall,
+    confirmAddresses,
+    deeplinkCallback,
+    setError,
     rememberAppPermissions,
     forgetAppPermissions,
 } as const;

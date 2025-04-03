@@ -13,9 +13,11 @@ export const ConnectPopupModal = () => {
 
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
-    if (!popupCall || popupCall?.state !== 'request') return null;
+    if (!popupCall || popupCall?.state !== 'permission-request') return null;
 
-    const { methodTitle, confirmLabel, processName, origin, permissionTypes, manifest } = popupCall;
+    const { methodInfo, source } = popupCall;
+    const { methodTitle, confirmLabel, permissionTypes } = methodInfo;
+    const { processName, origin, manifest } = source;
     const onConfirm = () => {
         if (isRemembered && processName && origin)
             dispatch(
@@ -27,10 +29,10 @@ export const ConnectPopupModal = () => {
                     types: permissionTypes,
                 }),
             );
-        dispatch(connectPopupActions.approveCall());
+        dispatch(connectPopupActions.approvePermissions());
     };
     const onCancel = () =>
-        dispatch(connectPopupActions.rejectCall(ERRORS.TypedError('Method_Cancel')));
+        dispatch(connectPopupActions.rejectPermissions(ERRORS.TypedError('Method_Cancel')));
 
     return (
         <NewModal
