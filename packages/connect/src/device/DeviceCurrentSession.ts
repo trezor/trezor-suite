@@ -27,6 +27,14 @@ const filterForLog = (type: string, msg: any) =>
 
 const logger = initLog('DeviceCommands');
 
+const isExpectedResponse = <Key extends Messages.MessageKey | Messages.MessageKey[]>(
+    response: Pick<Messages.MessageResponse, 'type'>,
+    expected: Key,
+): response is Extract<
+    Messages.MessageResponse,
+    { type: Key extends Array<any> ? Key[number] : Key }
+> => (Array.isArray(expected) ? expected : expected.split('|')).includes(response.type);
+
 const success = <T>(payload: T) => ({ success: true as const, payload });
 const error = (error: Error) => ({ success: false as const, error });
 const fail = (msg: string) => error(new Error(msg, { cause: 'transport-error' }));
@@ -65,7 +73,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
     async typedCall(
         type: Messages.MessageKey,
-        resType: Messages.MessageKey | Messages.MessageKey[],
+        expectedType: Messages.MessageKey | Messages.MessageKey[],
         msg: Messages.MessagePayload = {},
     ) {
         // Assert message type
@@ -86,10 +94,13 @@ export class DeviceCurrentSession implements TypedCallProvider {
         if (!response.success) throw response.error;
 
         const { payload } = response;
+        const receivedType = payload.type;
 
-        if (!(Array.isArray(resType) ? resType : resType.split('|')).includes(payload.type)) {
-            // handle possible race condition
-            // Bridge may have some unread message in buffer, read it
+        if (isExpectedResponse(payload, expectedType)) {
+            return payload;
+        } else {
+            // handle possible race condition - Bridge may have some unread message in buffer, read it
+            // TODO could be possible to remove
             await scheduleAction(
                 abort =>
                     this.transport.receive({
@@ -102,11 +113,9 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
             throw ERRORS.TypedError(
                 'Runtime',
-                `assertType: Response of unexpected type: ${payload.type}. Should be ${resType}`,
+                `assertType: Response of unexpected type: ${receivedType}. Should be ${expectedType}`,
             );
         }
-
-        return payload;
     }
 
     /**
