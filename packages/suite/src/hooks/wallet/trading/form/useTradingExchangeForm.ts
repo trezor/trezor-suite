@@ -11,8 +11,8 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    TradingExchangeAmountLimitProps,
-    TradingExchangeFormProps,
+    type TradingExchangeAmountLimitProps,
+    type TradingExchangeFormProps,
     type TradingExchangeType,
     type TradingTransactionExchange,
     addIdsToQuotes,
