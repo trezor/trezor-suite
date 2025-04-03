@@ -1325,6 +1325,9 @@ type GetValidMessagesFixture = {
     description: string;
     currentDate: string;
     userAgent: string;
+    // For some systems, userAgent may not be sufficient to determine osVersion (see envUtils.ts).
+    // To simulate those cases, instead of mocking userAgent, getOsVersion will be mocked directly
+    osVersion?: string;
     osName: ReturnType<EnvUtils['getOsName']>;
     environment: ReturnType<EnvUtils['getEnvironment']>;
     suiteVersion: string;
@@ -1840,6 +1843,40 @@ export const getValidMessages: GetValidMessagesFixture[] = [
                     patch_version: 4,
                 }),
             },
+        },
+        result: [getMessageSystemConfig().actions[1].message],
+    },
+    {
+        description: 'getValidMessages case 23',
+        currentDate: '2021-04-01T12:10:00.000Z',
+        userAgent:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '10.14',
+        osName: 'macos',
+        environment: 'web',
+        suiteVersion: '2.0.0',
+        config: getMessageSystemConfig(),
+        options: {
+            settings: { tor: true, enabledNetworks: ['btc'] },
+            transports: [{ ...defaultTransportsOption, version: '2.0.30' }],
+            device: getConnectAcquiredDevice(),
+        },
+        result: getMessageSystemConfig().actions.map(action => action.message),
+    },
+    {
+        description: 'getValidMessages case 24',
+        currentDate: '2021-04-01T12:10:00.000Z',
+        userAgent:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osVersion: '15.3.2',
+        osName: 'macos',
+        environment: 'web',
+        suiteVersion: '2.0.0',
+        config: getMessageSystemConfig(),
+        options: {
+            settings: { tor: true, enabledNetworks: ['btc'] },
+            transports: [{ ...defaultTransportsOption, version: '2.0.30' }],
+            device: getConnectAcquiredDevice(),
         },
         result: [getMessageSystemConfig().actions[1].message],
     },

@@ -119,6 +119,13 @@ describe('Message system utils', () => {
                 jest.spyOn(envUtils, 'getEnvironment').mockImplementation(() => f.environment);
                 process.env.VERSION = f.suiteVersion;
 
+                const { osVersion } = f;
+                if (osVersion) {
+                    jest.spyOn(envUtils, 'getOsVersion').mockImplementation(() =>
+                        Promise.resolve(osVersion),
+                    );
+                }
+
                 expect(await messageSystem.getValidMessages(f.config, f.options)).toEqual(f.result);
             });
         });
