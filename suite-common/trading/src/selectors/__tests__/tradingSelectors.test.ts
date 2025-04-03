@@ -19,6 +19,7 @@ import {
     selectTradingBuySupportedCryptoIds,
     selectTradingCoinInfoByCryptoId,
     selectTradingCoinSymbolByCryptoId,
+    selectTradingComposedTransactionInfo,
     selectTradingExchange,
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
@@ -115,6 +116,12 @@ describe('tradingSelectors', () => {
                         platforms: platforms as Platforms,
                     },
                     trades: [{ tradeType: 'buy' }],
+                    composedTransactionInfo: {
+                        composed: {
+                            feePerByte: '1',
+                        },
+                        selectedFee: 'normal',
+                    },
                 },
             },
             suite: {
@@ -473,5 +480,14 @@ describe('tradingSelectors', () => {
 
     it('selectTradingExchangeFormStep should return formStep', () => {
         expect(selectTradingExchangeFormStep(state)).toBe('RECEIVING_ADDRESS');
+    });
+
+    it('selectTradingComposedTransactionInfo should return composed and selectedFee information', () => {
+        expect(selectTradingComposedTransactionInfo(state)).toEqual({
+            composed: {
+                feePerByte: '1',
+            },
+            selectedFee: 'normal',
+        });
     });
 });

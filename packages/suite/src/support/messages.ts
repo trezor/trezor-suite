@@ -359,6 +359,18 @@ export default defineMessages({
         id: 'TR_TRADING_SWAP_DEX_MODAL_TERMS_6',
         dynamic: true,
     },
+    TR_TRADING_MISSING_COMPOSED_DATA: {
+        defaultMessage: 'Missing composed data',
+        id: 'TR_TRADING_MISSING_COMPOSED_DATA',
+    },
+    TR_TRADING_MISSING_FEE_LEVEL: {
+        defaultMessage: 'Missing fee level',
+        id: 'TR_TRADING_MISSING_FEE_LEVEL',
+    },
+    TR_TRADING_CANNOT_CREATE_TRANSACTION: {
+        defaultMessage: 'Cannot create transaction',
+        id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION',
+    },
     TR_CONFIRM_ADDRESS: {
         defaultMessage: 'Confirm address',
         id: 'TR_CONFIRM_ADDRESS',

@@ -3,6 +3,7 @@ import { handleRequestThunk as handleBuyRequestThunk } from './buy/handleRequest
 import { loadInfoThunk } from './buy/loadInfoThunk';
 import { selectQuoteThunk as selectBuyQuoteThunk } from './buy/selectQuoteThunk';
 import { loadInitialDataThunk } from './common/loadInitialDataThunk';
+import { recomposeAndSignTxThunk } from './common/recomposeAndSignTxThunk';
 import { verifyAddressThunk } from './common/verifyAddressThunk';
 import { confirmTradeThunk as confirmExchangeTradeThunk } from './exchange/confirmTradeThunk';
 import { handleRequestThunk as handleExchangeRequestThunk } from './exchange/handleRequestThunk';
@@ -14,6 +15,7 @@ export { type HandleRequestThunkProps } from './buy/handleRequestThunk';
 export const tradingThunks = {
     verifyAddressThunk,
     loadInitialDataThunk,
+    recomposeAndSignTxThunk,
 };
 
 export const buyThunks = {
