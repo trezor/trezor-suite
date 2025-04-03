@@ -38,6 +38,7 @@ export type ConfirmValueModalProps = Pick<NewModalProps, 'onCancel' | 'heading'>
     'data-testid'?: string;
     isConfirmed?: boolean;
     areStepsVisible?: boolean;
+    isValueChunked?: boolean;
     isCopyButtonVisible?: boolean;
     label?: ReactNode;
     validateOnDevice: () => ThunkAction;
@@ -50,6 +51,7 @@ export const ConfirmValueModal = ({
     heading,
     label,
     isConfirmed,
+    isValueChunked = true,
     isCopyButtonVisible,
     areStepsVisible,
     onCancel,
@@ -89,7 +91,9 @@ export const ConfirmValueModal = ({
         }
     }, [canConfirmOnDevice, dispatch, isConfirmed, modalContext, validateOnDevice]);
 
-    const outputValue = <Address value={value} data-testid="@modal/output-value" />;
+    const outputValue = (
+        <Address value={value} data-testid="@modal/output-value" isChunked={isValueChunked} />
+    );
 
     return (
         <NewModal.Backdrop onClick={isCancelable ? onCancel : undefined}>

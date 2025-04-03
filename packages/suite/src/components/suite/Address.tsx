@@ -9,6 +9,7 @@ const AddressWrapper = styled.p`
     text-wrap: balance;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0;
+    word-break: break-all;
 `;
 
 const addSpacing = (value: string) => value.match(/.{1,4}/g)?.join(' ') || value;
@@ -16,15 +17,22 @@ const addSpacing = (value: string) => value.match(/.{1,4}/g)?.join(' ') || value
 export type AddressProps = {
     value: string;
     isTruncated?: boolean;
+    isChunked?: boolean;
     'data-testid'?: string;
 };
 
-export const Address = ({ value, isTruncated, 'data-testid': dataTestId }: AddressProps) => {
-    const isChunked = useSelector(selectAddressDisplayType) === 'chunked';
-    const placeholder = isChunked ? TRUNCATION_PLACEHOLDER : TRUNCATION_PLACEHOLDER.trim();
+export const Address = ({
+    value,
+    isTruncated,
+    isChunked,
+    'data-testid': dataTestId,
+}: AddressProps) => {
+    const isChunkedSettings = useSelector(selectAddressDisplayType);
+    const isAddressChunked = isChunked ?? isChunkedSettings === 'chunked';
+    const placeholder = isAddressChunked ? TRUNCATION_PLACEHOLDER : TRUNCATION_PLACEHOLDER.trim();
 
     const [full, beginning, middle, end] = (value.match(/^(.{8})(.*)(.{8})$/) || []).map(part =>
-        isChunked ? addSpacing(part) : part,
+        isAddressChunked ? addSpacing(part) : part,
     );
 
     const formattedValue = isTruncated ? beginning + placeholder + end : full;
