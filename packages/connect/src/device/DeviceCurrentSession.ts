@@ -3,11 +3,12 @@
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { TransportProtocol } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
-import { Session, Transport } from '@trezor/transport';
+import { Session, TRANSPORT_ERROR, Transport } from '@trezor/transport';
 import { resolveAfter, scheduleAction, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
 import { Device } from './Device';
+import { DataManager } from '../data/DataManager';
 import { DEVICE } from '../events';
 import { initLog } from '../utils/debug';
 
@@ -38,6 +39,14 @@ const isExpectedResponse = <Key extends Messages.MessageKey | Messages.MessageKe
 const success = <T>(payload: T) => ({ success: true as const, payload });
 const error = (error: Error) => ({ success: false as const, error });
 const fail = (msg: string) => error(new Error(msg, { cause: 'transport-error' }));
+
+const getFeaturesTimeoutPromise = () =>
+    resolveAfter(
+        // Due to performance issues in suite-native during app start, original timeout is not sufficient.
+        DataManager.getSettings('env') === 'react-native' ? 20_000 : 3_000,
+        undefined,
+        fail(TRANSPORT_ERROR.ABORTED_BY_TIMEOUT),
+    );
 
 export interface TypedCallProvider {
     typedCall: Messages.TypedCall;
@@ -140,9 +149,19 @@ export class DeviceCurrentSession implements TypedCallProvider {
         while (true) {
             const callPromise = this.call(name, data);
 
-            const abortedDuringCall = await Promise.race([
-                callPromise.then(() => false),
-                abortPromise.then(() => true),
+            // note: tested on 24.7.2024 and whatever is written below this line is still valid
+            // We do not support T1B1 <1.9.0 but we still need Features even from not supported devices to determine your version
+            // and tell you that update is required.
+            // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to its
+            // transport response is pending endlessly, calling any other message will end up with "device call in progress"
+            // set the timeout for this call so whenever it happens "unacquired device" will be created instead
+            // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
+            const timeoutPromise = name === 'GetFeatures' ? getFeaturesTimeoutPromise() : undefined;
+
+            const [abortedDuringCall, response] = await Promise.race([
+                callPromise.then(res => [false, res] as const),
+                abortPromise.then(res => [true, res] as const),
+                ...(timeoutPromise ? [timeoutPromise.then(res => [false, res] as const)] : []),
             ]);
 
             if (name === 'ButtonAck' && abortedDuringCall && !this.disposed) {
@@ -161,7 +180,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 }
             }
 
-            const response = await callPromise;
+            await callPromise;
 
             if (this.disposed) return error(this.disposed);
 
@@ -172,6 +191,13 @@ export class DeviceCurrentSession implements TypedCallProvider {
             switch (res.type) {
                 case 'Failure': {
                     const { code, message } = res.message;
+
+                    // handling corner-case T1B1 + bootloader < 1.4.0 (above)
+                    // if GetFeatures fails try Initialize instead
+                    if (name === 'GetFeatures' && code === 'Failure_UnexpectedMessage') {
+                        [name, data] = ['Initialize', {}];
+                        break;
+                    }
 
                     const err =
                         message ||

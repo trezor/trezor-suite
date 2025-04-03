@@ -159,8 +159,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
     private keepTransportSession = false;
     private currentSession?: DeviceCurrentSession;
 
-    private inconsistent = false;
-
     private instance = 0;
 
     // DeviceState list [this.instance]: DeviceState | undefined
@@ -499,9 +497,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     await this.initialize(!!options.useCardanoDerivation);
                 } else {
                     const isNative = DataManager.getSettings('env') === 'react-native';
-                    const getFeaturesTimeout = isNative
-                        ? GET_FEATURES_TIMEOUT_REACT_NATIVE
-                        : GET_FEATURES_TIMEOUT;
                     const cancelTimeout = isNative
                         ? GET_FEATURES_TIMEOUT_REACT_NATIVE
                         : CANCEL_TIMEOUT;
@@ -528,45 +523,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         ]).catch(() => this.acquire());
                     }
 
-                    let getFeaturesTimeoutId: ReturnType<typeof setTimeout> | undefined;
-
-                    // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
-                    await Promise.race([
-                        this.getFeatures().finally(() => clearTimeout(getFeaturesTimeoutId)),
-                        // note: tested on 24.7.2024 and whatever is written below this line is still valid
-                        // We do not support T1B1 <1.9.0 but we still need Features even from not supported devices to determine your version
-                        // and tell you that update is required.
-                        // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to its
-                        // transport response is pending endlessly, calling any other message will end up with "device call in progress"
-                        // set the timeout for this call so whenever it happens "unacquired device" will be created instead
-                        // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
-                        new Promise((_resolve, reject) => {
-                            getFeaturesTimeoutId = setTimeout(async () => {
-                                await this.getCurrentSession().cancelCall(false);
-                                reject(new Error('GetFeatures timeout'));
-                            }, getFeaturesTimeout);
-                        }),
-                    ]);
+                    await this.getFeatures();
                 }
             } catch (error) {
                 _log.warn('Device._runInner error: ', error.message);
-                if (
-                    !this.inconsistent &&
-                    (error.message === 'GetFeatures timeout' || error.message === 'Unknown message')
-                ) {
-                    // handling corner-case T1B1 + bootloader < 1.4.0 (above)
-                    // if GetFeatures fails try again
-                    // this time add empty "fn" param to force Initialize message
-                    this.inconsistent = true;
-
-                    return this._runInner(() => Promise.resolve({}), options);
-                }
 
                 if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
                     this.unreadableError = 'Connection timeout';
                 }
-
-                this.inconsistent = true;
 
                 return Promise.reject(
                     ERRORS.TypedError(
@@ -733,7 +697,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async getFeatures() {
-        // Please keep the method simple - don't add any async logic
         const { message } = await this.getCurrentSession().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
     }
@@ -1077,10 +1040,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     isSeedless() {
         return this.features && !!this.features.no_backup;
-    }
-
-    isInconsistent() {
-        return this.inconsistent;
     }
 
     getVersion(): VersionArray | undefined {
