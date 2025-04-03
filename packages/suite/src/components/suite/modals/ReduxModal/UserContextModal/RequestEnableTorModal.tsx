@@ -1,28 +1,13 @@
 import { useEffect } from 'react';
 
-import styled from 'styled-components';
-
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { UserContextPayload } from '@suite-common/suite-types';
-import { Button, Paragraph } from '@trezor/components';
+import { Banner, NewModal } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { Modal, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
-
-const SmallModal = styled(Modal)`
-    width: 560px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Description = styled(Paragraph)`
-    text-align: left;
-    margin-bottom: 16px;
-`;
-
-const ItalicDescription = styled(Description)`
-    font-style: italic;
-`;
 
 type RequestEnableTorModalProps = {
     decision: Extract<UserContextPayload, { type: 'request-enable-tor' }>['decision'];
@@ -50,19 +35,14 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
     };
 
     return (
-        <SmallModal
-            isCancelable
+        <NewModal
             onCancel={onCancel}
             onBackClick={onBackClick}
-            isHeadingCentered
             heading={<Translation id="TR_TOR_ENABLE" />}
-            bottomBarComponents={
+            size="small"
+            bottomContent={
                 <>
-                    <Button variant="tertiary" onClick={onCancel}>
-                        <Translation id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE" />
-                    </Button>
-                    <Button
-                        variant="primary"
+                    <NewModal.Button
                         onClick={onEnableTor}
                         isLoading={isTorLoading}
                         isDisabled={isTorLoading}
@@ -72,23 +52,21 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
                         ) : (
                             <Translation id="TR_TOR_ENABLE" />
                         )}
-                    </Button>
+                    </NewModal.Button>
+                    <NewModal.Button variant="tertiary" onClick={onCancel}>
+                        <Translation id="TR_CANCEL" />
+                    </NewModal.Button>
                 </>
             }
         >
-            <>
-                <Description>
-                    <Translation
-                        id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE"
-                        values={{
-                            b: chunks => <b>{chunks}</b>,
-                        }}
-                    />
-                </Description>
-                <ItalicDescription>
-                    <Translation id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_SUBTITLE" />
-                </ItalicDescription>
-            </>
-        </SmallModal>
+            <Banner icon="tor" variant="primary" margin={{ top: spacings.md }}>
+                <Translation
+                    id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE"
+                    values={{
+                        b: chunks => <strong>{chunks}</strong>,
+                    }}
+                />
+            </Banner>
+        </NewModal>
     );
 };
