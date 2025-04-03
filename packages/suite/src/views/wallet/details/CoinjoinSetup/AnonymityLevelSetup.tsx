@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
+import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
 import { Banner, Icon, motionEasing } from '@trezor/components';
@@ -24,7 +24,7 @@ const RedText = styled.span`
     color: ${({ theme }) => theme.legacy.TYPE_RED};
 `;
 
-const expandAnimation: HTMLMotionProps<'div'> = {
+const expandAnimation: Partial<MotionProps> = {
     initial: { height: 0, marginTop: 0, opacity: 0 },
     animate: { height: 'auto', marginTop: 24, opacity: 1 },
     exit: { height: 0, marginTop: 0, opacity: 0 },

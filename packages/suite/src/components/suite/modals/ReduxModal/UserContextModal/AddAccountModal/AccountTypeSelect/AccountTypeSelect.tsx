@@ -78,6 +78,7 @@ export const AccountTypeSelect = ({
                 options={options}
                 formatOptionLabel={formatLabel}
                 onChange={(option: Option) => onSelectAccountType(option.value)}
+                openMenuOnFocus={false}
             />
             <Paragraph variant="tertiary" typographyStyle="hint">
                 <AccountTypeDescription
