@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Pressable } from 'react-native';
 
-import { Card, CardDivider, FullAlertBox } from '@suite-native/atoms';
+import { Card, CardDivider, FullAlertBox, VStack } from '@suite-native/atoms';
 import { FullAlertProps } from '@suite-native/atoms/src/FullAlertBox/types';
 import { useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -20,7 +20,6 @@ interface WalletTypeCardProps {
 }
 
 const containerStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isSelected }) => ({
-    marginTop: utils.spacings.sp16,
     borderColor: isSelected ? utils.colors.borderSecondary : 'transparent',
     borderWidth: utils.borders.widths.large,
 }));
@@ -51,27 +50,28 @@ export const WalletBackupCard = memo(
         return (
             <Pressable onPress={selectCard}>
                 <Card style={applyStyle(containerStyle, { isSelected })}>
-                    <CardHeader isSelected={isSelected} type={type} />
-                    <CardDivider horizontalPadding="sp24" />
-                    <CardContent type={type} />
-                    <FullAlertBox
-                        marginTop="sp16"
-                        variant={variantByWalletBackupType[type]}
-                        title={translate(
-                            `moduleDeviceOnboarding.walletBackupSheet.options.${type}.callout`,
-                        )}
-                        onPressPrimaryButton={handleLearnMorePress}
-                        primaryButtonLabel={
-                            type === 'shamir-advanced'
-                                ? translate(
-                                      'moduleDeviceOnboarding.walletBackupSheet.options.shamir-advanced.alertButtonLabel',
-                                  )
-                                : undefined
-                        }
-                        primaryButtonProps={{
-                            viewLeft: 'arrowSquareOut',
-                        }}
-                    />
+                    <VStack spacing="sp16">
+                        <CardHeader isSelected={isSelected} type={type} />
+                        <CardDivider horizontalPadding="sp24" />
+                        <CardContent type={type} />
+                        <FullAlertBox
+                            variant={variantByWalletBackupType[type]}
+                            title={translate(
+                                `moduleDeviceOnboarding.walletBackupSheet.options.${type}.callout`,
+                            )}
+                            onPressPrimaryButton={handleLearnMorePress}
+                            primaryButtonLabel={
+                                type === 'shamir-advanced'
+                                    ? translate(
+                                          'moduleDeviceOnboarding.walletBackupSheet.options.shamir-advanced.alertButtonLabel',
+                                      )
+                                    : undefined
+                            }
+                            primaryButtonProps={{
+                                viewLeft: 'arrowSquareOut',
+                            }}
+                        />
+                    </VStack>
                 </Card>
             </Pressable>
         );

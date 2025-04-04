@@ -20,14 +20,14 @@ export const CardHeader = ({ type, isSelected }: CardHeaderProps) => {
     const { translate } = useTranslate();
 
     return (
-        <HStack marginBottom="sp16">
+        <HStack>
             <VStack spacing={0} justifyContent="space-between" flex={1}>
                 <TitleHeader
                     title={translate(
                         `moduleDeviceOnboarding.walletBackupSheet.options.${type}.title`,
                     )}
                 />
-                <Text color={descriptionColor[type]}>
+                <Text color={descriptionColor[type]} variant="hint">
                     <Translation
                         id={`moduleDeviceOnboarding.walletBackupSheet.options.${type}.description`}
                     />

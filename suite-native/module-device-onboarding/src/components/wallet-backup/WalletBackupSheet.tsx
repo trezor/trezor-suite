@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import * as Haptics from 'expo-haptics';
 
-import { BottomSheet, Button, buttonSizeToDimensionsMap } from '@suite-native/atoms';
+import { BottomSheet, Button, VStack, buttonSizeToDimensionsMap } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -57,21 +57,23 @@ export const WalletBackupSheet = ({ closeModal, isDisplayed }: WalletBackupSheet
             footer={<CardFooter selectedType={selectedType} onSubmit={submitSelection} />}
             style={applyStyle(containerStyle)}
         >
-            {walletOptions.map(type => {
-                const isSelected = type === selectedType;
-                const isVisible =
-                    type === 'shamir-single' || type === 'shamir-advanced' || showLegacyOptions;
+            <VStack spacing="sp16">
+                {walletOptions.map(type => {
+                    const isSelected = type === selectedType;
+                    const isVisible =
+                        type === 'shamir-single' || type === 'shamir-advanced' || showLegacyOptions;
 
-                return (
-                    <WalletBackupCard
-                        key={type}
-                        type={type}
-                        isVisible={isVisible}
-                        isSelected={isSelected}
-                        setSelectedType={setSelectedType}
-                    />
-                );
-            })}
+                    return (
+                        <WalletBackupCard
+                            key={type}
+                            type={type}
+                            isVisible={isVisible}
+                            isSelected={isSelected}
+                            setSelectedType={setSelectedType}
+                        />
+                    );
+                })}
+            </VStack>
             {!showLegacyOptions && (
                 <Button
                     viewLeft={<Icon name="caretDown" size="medium" />}
