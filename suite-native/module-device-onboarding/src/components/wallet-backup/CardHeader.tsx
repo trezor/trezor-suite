@@ -2,7 +2,7 @@ import { HStack, Radio, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Color } from '@trezor/theme';
 
-import { WalletBackupType } from '../../../hooks/useWalletBackupPicker';
+import { WalletBackupType } from './WalletBackupSheet';
 
 interface CardHeaderProps {
     isSelected: boolean;
@@ -10,8 +10,8 @@ interface CardHeaderProps {
 }
 
 const descriptionColor: Record<WalletBackupType, Color> = {
-    'single-share': 'textSecondaryHighlight',
-    'multi-share': 'textAlertYellow',
+    'shamir-single': 'textSecondaryHighlight',
+    'shamir-advanced': 'textAlertYellow',
     '12-words': 'textAlertBlue',
     '24-words': 'textAlertBlue',
 };

@@ -812,7 +812,7 @@ export const en = {
             storageLabel: 'Storage',
             legacyOptionsLabel: 'Legacy options',
             options: {
-                'single-share': {
+                'shamir-single': {
                     title: 'Single-share Backup',
                     description: 'Recommended for your Trezor',
                     time: '~10 minutes <bold>total</bold>',
@@ -822,7 +822,7 @@ export const en = {
                     callout: 'Upgradable to Multi-share Backup',
                     submitButton: 'Continue with single-share',
                 },
-                'multi-share': {
+                'shamir-advanced': {
                     title: 'Multi-share Backup',
                     description: 'Designed for experienced users',
                     time: '~10 minutes <bold>per share</bold>',

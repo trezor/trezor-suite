@@ -2,18 +2,18 @@ import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-import { WalletBackupType } from '../../../hooks/useWalletBackupPicker';
+import { WalletBackupType } from './WalletBackupSheet';
 
-interface CardContentProps {
+type CardContentProps = {
     type: WalletBackupType;
-}
+};
 
 export const CardContent = ({ type }: CardContentProps) => {
-    const showTime = type === 'single-share' || type === 'multi-share';
+    const isTimeDisplayed = type === 'shamir-single' || type === 'shamir-advanced';
 
     return (
         <VStack spacing="sp16" marginTop="sp16">
-            {showTime && (
+            {isTimeDisplayed && (
                 <HStack>
                     <Icon name="timer" size="mediumLarge" />
                     <VStack spacing="sp4">

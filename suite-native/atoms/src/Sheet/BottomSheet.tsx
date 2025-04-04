@@ -49,7 +49,7 @@ export const BottomSheet = ({
     subtitle,
     children,
     isScrollable = true,
-    footer = undefined,
+    footer,
     ...boxProps
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();

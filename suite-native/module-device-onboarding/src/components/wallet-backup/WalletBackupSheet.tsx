@@ -2,18 +2,17 @@ import { useState } from 'react';
 
 import * as Haptics from 'expo-haptics';
 
-import { BottomSheet, Button, sizeToDimensionsMap } from '@suite-native/atoms';
+import { BottomSheet, Button, buttonSizeToDimensionsMap } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { CardFooter } from './CardFooter';
 import { WalletBackupCard } from './WalletBackupCard';
-import { useWalletBackupPicker, walletOptions } from '../../../hooks/useWalletBackupPicker';
 
 const containerStyle = prepareNativeStyle(utils => ({
     // Offset calculated based on the button's height + margin from the design
-    marginBottom: sizeToDimensionsMap.large.minHeight + utils.spacings.sp32,
+    marginBottom: buttonSizeToDimensionsMap.large.minHeight + utils.spacings.sp32,
 }));
 
 const legacyButtonStyle = prepareNativeStyle(utils => ({
@@ -22,12 +21,21 @@ const legacyButtonStyle = prepareNativeStyle(utils => ({
 }));
 
 interface WalletBackupSheetProps {
-    showModal: boolean;
+    isDisplayed: boolean;
     closeModal: () => void;
 }
 
-export const WalletBackupSheet = ({ closeModal, showModal }: WalletBackupSheetProps) => {
-    const { selectedType, setSelectedType } = useWalletBackupPicker();
+export type WalletBackupType = 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
+
+const walletOptions: WalletBackupType[] = [
+    'shamir-single',
+    'shamir-advanced',
+    '12-words',
+    '24-words',
+];
+
+export const WalletBackupSheet = ({ closeModal, isDisplayed }: WalletBackupSheetProps) => {
+    const [selectedType, setSelectedType] = useState<WalletBackupType>('shamir-single');
     const [showLegacyOptions, setShowLegacyOptions] = useState(false);
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
@@ -44,7 +52,7 @@ export const WalletBackupSheet = ({ closeModal, showModal }: WalletBackupSheetPr
     return (
         <BottomSheet
             title={translate('moduleDeviceOnboarding.walletBackupSheet.title')}
-            isVisible={showModal}
+            isVisible={isDisplayed}
             onClose={closeModal}
             footer={<CardFooter selectedType={selectedType} onSubmit={submitSelection} />}
             style={applyStyle(containerStyle)}
@@ -52,7 +60,7 @@ export const WalletBackupSheet = ({ closeModal, showModal }: WalletBackupSheetPr
             {walletOptions.map(type => {
                 const isSelected = type === selectedType;
                 const isVisible =
-                    type === 'single-share' || type === 'multi-share' || showLegacyOptions;
+                    type === 'shamir-single' || type === 'shamir-advanced' || showLegacyOptions;
 
                 return (
                     <WalletBackupCard

@@ -10,7 +10,7 @@ import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 import { CardContent } from './CardContent';
 import { CardHeader } from './CardHeader';
-import { WalletBackupType } from '../../../hooks/useWalletBackupPicker';
+import { WalletBackupType } from './WalletBackupSheet';
 
 interface WalletTypeCardProps {
     type: WalletBackupType;
@@ -26,8 +26,8 @@ const containerStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isS
 }));
 
 const variantByWalletBackupType: Record<WalletBackupType, FullAlertProps['variant']> = {
-    'single-share': 'success',
-    'multi-share': 'warning',
+    'shamir-single': 'success',
+    'shamir-advanced': 'warning',
     '12-words': 'neutral',
     '24-words': 'neutral',
 };
@@ -52,7 +52,7 @@ export const WalletBackupCard = memo(
             <Pressable onPress={selectCard}>
                 <Card style={applyStyle(containerStyle, { isSelected })}>
                     <CardHeader isSelected={isSelected} type={type} />
-                    <CardDivider horizontalPadding={isSelected ? 'sp16' : 'sp24'} />
+                    <CardDivider horizontalPadding="sp24" />
                     <CardContent type={type} />
                     <FullAlertBox
                         marginTop="sp16"
@@ -62,11 +62,11 @@ export const WalletBackupCard = memo(
                         )}
                         onPressPrimaryButton={handleLearnMorePress}
                         primaryButtonLabel={
-                            type === 'multi-share'
+                            type === 'shamir-advanced'
                                 ? translate(
-                                      'moduleDeviceOnboarding.walletBackupSheet.options.multi-share.alertButtonLabel',
+                                      'moduleDeviceOnboarding.walletBackupSheet.options.shamir-advanced.alertButtonLabel',
                                   )
-                                : ''
+                                : undefined
                         }
                         primaryButtonProps={{
                             viewLeft: 'arrowSquareOut',

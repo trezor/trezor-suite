@@ -201,7 +201,7 @@ export const buttonSchemeToColorsMap = {
     },
 } as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
 
-export const sizeToDimensionsMap = {
+export const buttonSizeToDimensionsMap = {
     extraSmall: {
         minHeight: 36,
         paddingVertical: nativeSpacings.sp8,
@@ -247,7 +247,7 @@ export const buttonToIconSizeMap = {
 
 export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
     (utils, { size, backgroundColor, isDisabled, flex }) => {
-        const sizeDimensions = sizeToDimensionsMap[size];
+        const sizeDimensions = buttonSizeToDimensionsMap[size];
 
         return {
             flex,
