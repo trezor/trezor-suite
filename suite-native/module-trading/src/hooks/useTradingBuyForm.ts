@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { TradingPaymentMethodListProps, selectTradingBuyQuotes } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
+import { getNetwork } from '@suite-common/wallet-config';
+import { amountToSmallestUnit } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
 
@@ -15,8 +17,6 @@ import { TradingBuyForm, TradingBuyFormValues } from '../types';
 import { getSelectedSymbolFromBuyForm } from '../utils/tradeableAssetUtils';
 
 const buyFormValidationSchema = yup.object({});
-
-const btcToSat = (btc: string) => Math.round(100000000 * parseFloat(btc)).toString();
 
 const useAssetChangeEffect = (form: TradingBuyForm) => {
     const dispatch = useDispatch();
@@ -125,12 +125,15 @@ const usePaymentMethodChangeEffect = (form: TradingBuyForm) => {
 
         if (!amountInCrypto && cryptoValue !== selectedQuote?.receiveStringAmount) {
             const value =
-                isAmountInSats && selectedQuote?.receiveStringAmount
-                    ? btcToSat(selectedQuote.receiveStringAmount)
+                isAmountInSats && selectedQuote?.receiveStringAmount && symbol
+                    ? amountToSmallestUnit(
+                          selectedQuote.receiveStringAmount,
+                          getNetwork(symbol).decimals,
+                      )
                     : selectedQuote?.receiveStringAmount;
             form.setValue('cryptoValue', value);
         }
-    }, [selectedQuote, isAmountInSats, form]);
+    }, [selectedQuote, isAmountInSats, symbol, form]);
 };
 
 export const useTradingBuyForm = (): TradingBuyForm => {
