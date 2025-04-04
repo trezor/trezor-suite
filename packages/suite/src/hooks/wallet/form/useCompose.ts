@@ -48,6 +48,7 @@ export const useCompose = <TFieldValues extends FormState>({
     const defaultFieldRef = useRef(defaultField || DEFAULT_FIELD);
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
+    const prevComposedLevelsRef = useRef<SendContextValues['composedLevels']>(undefined);
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const { translationString } = useTranslation();
     const selectedAccount = useSelector(selectSelectedAccount);
@@ -65,6 +66,13 @@ export const useCompose = <TFieldValues extends FormState>({
     const composeRequest = useCallback(
         async (field = defaultFieldRef.current) => {
             if (!state) return;
+
+            if (prevFeeInfoRef.current.blockHeight > state.feeInfo.blockHeight) {
+                setComposedLevels(prevComposedLevelsRef.current);
+
+                return;
+            }
+
             // reset precomposed transactions
             setComposedLevels(undefined);
             // set ref for later use in useEffect
@@ -104,6 +112,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 if (result) {
                     // set new composed transactions
                     setComposedLevels(result);
+                    prevComposedLevelsRef.current = result;
                 } else {
                     // result undefined: (FormState got errors or sendFormActions got errors)
                     // undefined result will not be processed by useEffect below, reset loader
