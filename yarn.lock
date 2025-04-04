@@ -3177,16 +3177,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@everstake/wallet-sdk@npm:1.0.10":
-  version: 1.0.10
-  resolution: "@everstake/wallet-sdk@npm:1.0.10"
+"@everstake/wallet-sdk@npm:1.0.13":
+  version: 1.0.13
+  resolution: "@everstake/wallet-sdk@npm:1.0.13"
   dependencies:
     "@solana/web3.js": "npm:1.95.8"
     bignumber.js: "npm:9.1.2"
     ethereum-multicall: "npm:^2.26.0"
     superstruct: "npm:2.0.2"
     web3: "npm:4.16.0"
-  checksum: 10/db8db4cf5d7c1a634c129d7fb132566bc4e19dae438e8bebe910e5829687a1328aba2675ce9cff77a90d60752ed0a2f089e09e3403c7a706845f257652edcabc
+  checksum: 10/41ee77d1107df7e3c008928edd1a321605ff5ea01ad5ec10f90dd5a7a8ea49d7259af3baf88a604c3681a3079f0c22483912d75552ed2d5a368d1e8290a6fe72
   languageName: node
   linkType: hard
 
@@ -8171,37 +8171,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/stellar-base@npm:^13.0.1":
-  version: 13.0.1
-  resolution: "@stellar/stellar-base@npm:13.0.1"
+"@stellar/stellar-base@npm:^13.1.0":
+  version: 13.1.0
+  resolution: "@stellar/stellar-base@npm:13.1.0"
   dependencies:
     "@stellar/js-xdr": "npm:^3.1.2"
     base32.js: "npm:^0.1.0"
     bignumber.js: "npm:^9.1.2"
     buffer: "npm:^6.0.3"
     sha.js: "npm:^2.3.6"
-    sodium-native: "npm:^4.3.0"
+    sodium-native: "npm:^4.3.3"
     tweetnacl: "npm:^1.0.3"
   dependenciesMeta:
     sodium-native:
       optional: true
-  checksum: 10/58cafe97521b8a87ac673a31abf8dccf7ca55cf06cc89821d30aece810919ac5949043d6b581c1cbf03da89d23724d8129c517e7ebf6721397c56bdca77ec5e5
+  checksum: 10/6e4f17483e3695d9635522dfac75da94b7c860765495c04c7688f19464ff55640f944172e6c74f27ef7777df12f57a9d7068dcd4b1c3cb747c7f4372bf8591ad
   languageName: node
   linkType: hard
 
 "@stellar/stellar-sdk@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "@stellar/stellar-sdk@npm:13.1.0"
+  version: 13.2.0
+  resolution: "@stellar/stellar-sdk@npm:13.2.0"
   dependencies:
-    "@stellar/stellar-base": "npm:^13.0.1"
-    axios: "npm:^1.7.9"
+    "@stellar/stellar-base": "npm:^13.1.0"
+    axios: "npm:^1.8.4"
     bignumber.js: "npm:^9.1.2"
     eventsource: "npm:^2.0.2"
     feaxios: "npm:^0.0.23"
     randombytes: "npm:^2.1.0"
     toml: "npm:^3.0.0"
     urijs: "npm:^1.19.1"
-  checksum: 10/c11c958506d49d14acee23fcb2a741df74d4910002f37ee0b8669b9f66e8f373de2f2c70df41ccefcd7a9fdc72acfee1375ac23a76b8eb5d177c0eed28d18581
+  checksum: 10/8ed8585ad81a8f330b0c82ecc6dab724565a72a2d9bf03bf5d40f11d6d1cb309f1e5e94d9fdb0c7391bfa6a92389851c149e4a765d6f0cc814b1161366ae79ae
   languageName: node
   linkType: hard
 
@@ -11995,7 +11995,7 @@ __metadata:
   resolution: "@trezor/suite@workspace:packages/suite"
   dependencies:
     "@crowdin/cli": "npm:4.6.0"
-    "@everstake/wallet-sdk": "npm:1.0.10"
+    "@everstake/wallet-sdk": "npm:1.0.13"
     "@floating-ui/react": "npm:^0.27.5"
     "@formatjs/cli": "npm:6.6.3"
     "@formatjs/intl": "npm:3.1.6"
@@ -15590,6 +15590,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.8.4":
+  version: 1.8.4
+  resolution: "axios@npm:1.8.4"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.0"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 10/a10f0dd836613924e48cf03dc2eff3fd21b14f764807aedaee4880a70c0f142aaebdb21da7ce27104d4c16ca00d0e452a20a20851f60e385a8d5bad1ae909d46
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:^4.1.0":
   version: 4.1.0
   resolution: "axobject-query@npm:4.1.0"
@@ -15857,10 +15868,71 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bare-addon-resolve@npm:^1.3.0":
+  version: 1.9.4
+  resolution: "bare-addon-resolve@npm:1.9.4"
+  dependencies:
+    bare-module-resolve: "npm:^1.10.0"
+    bare-semver: "npm:^1.0.0"
+  peerDependencies:
+    bare-url: "*"
+  peerDependenciesMeta:
+    bare-url:
+      optional: true
+  checksum: 10/4528f1566f9a48c44cd09f78639fce9c8f33b0898d4a4497d73c44489165c268d8eff16a9e16e0c181d77a717766581b9fa8208eed18acd254057c13be74538d
+  languageName: node
+  linkType: hard
+
 "bare-events@npm:^2.2.0":
   version: 2.3.1
   resolution: "bare-events@npm:2.3.1"
   checksum: 10/ffe968dbcb5ca7dd640b57ae31ad6deceecdd7119c08cfc11807c05b3fda46419c970b6971513b83ca94970609f7fd7ce809ead08d4c5c8eb541e1c9403209c6
+  languageName: node
+  linkType: hard
+
+"bare-module-resolve@npm:^1.10.0":
+  version: 1.10.2
+  resolution: "bare-module-resolve@npm:1.10.2"
+  dependencies:
+    bare-semver: "npm:^1.0.0"
+  peerDependencies:
+    bare-url: "*"
+  peerDependenciesMeta:
+    bare-url:
+      optional: true
+  checksum: 10/8862bac92bcfbd08f6f583ff431876ee13ab822904d1e014a07d38ce9b87677f5ef13c04f4e4827811617b580b451017123b00f4a045b0b4fa661e8c98dd2c82
+  languageName: node
+  linkType: hard
+
+"bare-os@npm:^3.0.1":
+  version: 3.6.1
+  resolution: "bare-os@npm:3.6.1"
+  checksum: 10/285d95c391250166128e64da2947f4a348ae127de680afffec1f6c82445856be0d1f259672b471afe06517e4cd3831183c373a1d63ef7799ed4aaa1321b86b67
+  languageName: node
+  linkType: hard
+
+"bare-path@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "bare-path@npm:3.0.0"
+  dependencies:
+    bare-os: "npm:^3.0.1"
+  checksum: 10/712d90e9cd8c3263cc11b0e0d386d1531a452706d7840c081ee586b34b00d72544e65df7a40013d47c1b177277495225deeede65cb2984db88a979cb65aaa2ff
+  languageName: node
+  linkType: hard
+
+"bare-semver@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "bare-semver@npm:1.0.1"
+  checksum: 10/b601629841a767b1b8ed3b475ce9208ae2fc6508672fd326b1c9667fe50437bc96905e1c4639ead8389b5b971731eb508e34b64d42db0dcca44ab25bff69a990
+  languageName: node
+  linkType: hard
+
+"bare-url@npm:^2.1.0":
+  version: 2.1.5
+  resolution: "bare-url@npm:2.1.5"
+  dependencies:
+    bare-path: "npm:^3.0.0"
+  checksum: 10/e5ce796c927dbe7ba1621c2d28e41627e195369d1c2ee6257123657a1e14f120c7bea48e7a512f059bd86d804be29ce6e53c662c724e510e477b8ab6fdcb3622
   languageName: node
   linkType: hard
 
@@ -31607,7 +31679,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp-build@npm:^4.2.2, node-gyp-build@npm:^4.3.0, node-gyp-build@npm:^4.5.0, node-gyp-build@npm:^4.8.0":
+"node-gyp-build@npm:^4.2.2, node-gyp-build@npm:^4.3.0, node-gyp-build@npm:^4.5.0":
   version: 4.8.1
   resolution: "node-gyp-build@npm:4.8.1"
   bin:
@@ -35916,6 +35988,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"require-addon@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "require-addon@npm:1.1.0"
+  dependencies:
+    bare-addon-resolve: "npm:^1.3.0"
+    bare-url: "npm:^2.1.0"
+  checksum: 10/c43fc8a8a92235d3f7daca68ec24f52cd1ab673a05516d94b2f1954c0a02b5a508f3bb2d2ee26d7e97e9575a05a6c1bac03095f2d34cf3cf6c71d759e2b51310
+  languageName: node
+  linkType: hard
+
 "require-directory@npm:^2.1.1":
   version: 2.1.1
   resolution: "require-directory@npm:2.1.1"
@@ -37473,12 +37555,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sodium-native@npm:^4.3.0":
-  version: 4.3.1
-  resolution: "sodium-native@npm:4.3.1"
+"sodium-native@npm:^4.3.3":
+  version: 4.3.3
+  resolution: "sodium-native@npm:4.3.3"
   dependencies:
-    node-gyp-build: "npm:^4.8.0"
-  checksum: 10/d08c7a68b458fa0dfd63a14dca1a114e855f4b857c3999e3e19e975434b3843335929d0539b03ca7f9796007f0560b629b33186e9b1fd6e7781199b32c48d23c
+    require-addon: "npm:^1.1.0"
+  checksum: 10/e1b9758489545a19e8b5547281edd0325fbd77447b5bdf53a398ad212b1c30e0889a1d7f0f45ec2cf3e2ce36c9f725e20ac9dd95842086baee90594b65200069
   languageName: node
   linkType: hard
 
