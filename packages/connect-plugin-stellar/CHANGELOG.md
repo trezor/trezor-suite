@@ -1,6 +1,6 @@
 # UNRELEASED
 
--   chore: update @stellar/stellar-sdk to ^13.1.0
+-   chore: update @stellar/stellar-sdk to ^13.2.0
 
 # 9.0.3
 
