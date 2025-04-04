@@ -3,8 +3,8 @@ import { storage } from '@trezor/connect-common';
 import {
     getBrowserName,
     getBrowserVersion,
-    getDeprecatedOsVersion,
     getOsName,
+    getOsVersion,
     getPlatformLanguages,
     getScreenHeight,
     getScreenWidth,
@@ -39,7 +39,7 @@ const onDisable = () => {
     );
 };
 
-export const initAnalytics = () => {
+export const initAnalytics = async () => {
     let trackingId = storage.load().tracking_id;
     if (!trackingId) {
         trackingId = getRandomId();
@@ -58,13 +58,15 @@ export const initAnalytics = () => {
         },
     });
 
+    const osVersion = await getOsVersion();
+
     analytics.report({
         type: EventType.AppInfo,
         payload: {
             browserName: getBrowserName(),
             browserVersion: getBrowserVersion(),
             osName: getOsName(),
-            osVersion: getDeprecatedOsVersion(),
+            osVersion,
             screenWidth: getScreenWidth(),
             screenHeight: getScreenHeight(),
             windowWidth: getWindowWidth(),
