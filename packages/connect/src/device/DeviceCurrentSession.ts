@@ -170,13 +170,14 @@ export class DeviceCurrentSession implements TypedCallProvider {
                         // UI_EVENT is send right before ButtonAck, make sure that ButtonAck is sent
                         await resolveAfter(1);
                         await this.device.acquire();
-                        await this.device.getCurrentSession().cancelCall(false);
+                        await this.device.getCurrentSession().cancelCall();
                         await this.device.release();
                     } catch {
                         // ignore whatever happens
                     }
                 } else {
-                    await this.cancelCall(false);
+                    const { session, protocol } = this;
+                    await this.transport.send({ name: 'Cancel', data: {}, session, protocol });
                 }
             }
 
@@ -234,7 +235,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                     ]);
 
                     if (!promptRes.success) {
-                        const cancelRes = await this.cancelCall();
+                        const cancelRes = await this.call('Cancel', {});
 
                         return cancelRes.success ? promptRes : cancelRes;
                     }
@@ -250,7 +251,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                     ]);
 
                     if (!promptRes.success) {
-                        const cancelRes = await this.cancelCall();
+                        const cancelRes = await this.call('Cancel', {});
 
                         return cancelRes.success ? promptRes : cancelRes;
                     }
@@ -269,7 +270,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                     ]);
 
                     if (!promptRes.success) {
-                        const cancelRes = await this.cancelCall();
+                        const cancelRes = await this.call('Cancel', {});
 
                         return cancelRes.success ? promptRes : cancelRes;
                     }
@@ -309,17 +310,8 @@ export class DeviceCurrentSession implements TypedCallProvider {
         return result.success ? success(result.payload) : fail(result.error);
     }
 
-    async cancelCall(expectResponse = true) {
-        if (this.disposed) return Promise.resolve(error(this.disposed));
-
-        const { protocol, session } = this;
-        const cancelArgs = { session, name: 'Cancel', data: {}, protocol };
-
-        const response = expectResponse
-            ? await this.transport.call(cancelArgs)
-            : await this.transport.send(cancelArgs);
-
-        return response.success ? success(response.payload) : fail(response.error);
+    cancelCall() {
+        return this.call('Cancel', {});
     }
 
     async abort(reason: Error, dispose = false) {
