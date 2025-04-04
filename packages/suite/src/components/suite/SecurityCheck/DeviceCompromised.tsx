@@ -56,7 +56,6 @@ const useSecurityCheckFailProps = (): SecurityCheckFailProps => {
             heading: 'TR_FAILED_VERIFY_DEVICE_HEADING',
             text: 'TR_FAILED_VERIFY_DEVICE_TEXT',
             checklistItems: softFailureChecklistItems,
-            supportButtonVariant: 'warning',
             goBack: goToSuite,
             supportUrl: TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
         };

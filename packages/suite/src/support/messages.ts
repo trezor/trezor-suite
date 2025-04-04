@@ -7115,7 +7115,7 @@ export default defineMessages({
     },
     TR_FAILED_VERIFY_DEVICE_HEADING: {
         id: 'TR_FAILED_VERIFY_DEVICE_HEADING',
-        defaultMessage: 'Failed to verify device',
+        defaultMessage: "Couldn't verify device",
     },
     TR_FAILED_VERIFY_DEVICE_TEXT: {
         id: 'TR_FAILED_VERIFY_DEVICE_TEXT',
@@ -7340,7 +7340,7 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
         defaultMessage:
-            "Failed to verify device. Reconnect your Trezor and try again. Don't send any funds until the issue is resolved. If the issue persists, contact Trezor Support.",
+            'Couldn’t verify device. Reconnect your Trezor to try resolving the issue. If the problem continues, contact Trezor Support.',
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
