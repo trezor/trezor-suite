@@ -1,12 +1,11 @@
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Box } from '../Box';
-import { Button } from '../Button/Button';
-import { HStack, VStack } from '../Stack';
+import { Box, BoxProps } from '../Box';
+import { Button, ButtonProps } from '../Button/Button';
+import { HStack } from '../Stack';
 import { Text } from '../Text';
-import { variantToColorMap, variantToIconName } from './presets';
-import { FullAlertProps, FullAlertStyles } from './types';
+import { AlertVariant, FullAlertStyles, variantToColorMap, variantToIconName } from './presets';
 
 const containerStyle = prepareNativeStyle<Pick<FullAlertStyles, 'backgroundColor' | 'borderColor'>>(
     (utils, { backgroundColor, borderColor }) => ({
@@ -18,8 +17,19 @@ const containerStyle = prepareNativeStyle<Pick<FullAlertStyles, 'backgroundColor
     }),
 );
 
+export type FullAlertBoxProps = {
+    title: string;
+    description?: string;
+    primaryButtonLabel?: string;
+    secondaryButtonLabel?: string;
+    onPressPrimaryButton?: () => void;
+    onPressSecondaryButton?: () => void;
+    primaryButtonProps?: Partial<ButtonProps>;
+    secondaryButtonProps?: Partial<ButtonProps>;
+    variant?: AlertVariant;
+} & BoxProps;
+
 export const FullAlertBox = ({
-    variant = 'neutral',
     title,
     description,
     primaryButtonLabel,
@@ -28,8 +38,9 @@ export const FullAlertBox = ({
     secondaryButtonLabel,
     primaryButtonProps,
     secondaryButtonProps,
+    variant = 'neutral',
     ...restProps
-}: FullAlertProps) => {
+}: FullAlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
     const { backgroundColor, borderColor, primaryButtonColorScheme, secondaryButtonColorScheme } =
         variantToColorMap[variant];
@@ -40,7 +51,7 @@ export const FullAlertBox = ({
                 <Box>
                     <Icon name={variantToIconName[variant]} size="large" />
                 </Box>
-                <VStack spacing={0} flex={1}>
+                <Box flex={1}>
                     <Text>{title}</Text>
                     {description && (
                         <Text color="textSubdued" variant="hint">
@@ -71,7 +82,7 @@ export const FullAlertBox = ({
                             </Button>
                         </HStack>
                     )}
-                </VStack>
+                </Box>
             </HStack>
         </Box>
     );
