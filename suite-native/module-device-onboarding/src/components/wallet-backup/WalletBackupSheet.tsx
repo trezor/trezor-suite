@@ -7,7 +7,7 @@ import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { WalletBackupCard } from './WalletBackupCard';
+import { WalletBackupCard } from './WalletBackupCard/WalletBackupCard';
 import { WalletBackupSheetFooter } from './WalletBackupSheetFooter';
 
 const containerStyle = prepareNativeStyle(utils => ({
