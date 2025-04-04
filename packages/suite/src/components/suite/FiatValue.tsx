@@ -68,6 +68,7 @@ export const FiatValue = ({
     showLoadingSkeleton,
     isLoading,
 }: FiatValueProps) => {
+    return null;
     const { shouldAnimate } = useLoadingSkeleton();
     const { localCurrency, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
         amount,
