@@ -63,12 +63,16 @@ export const CardWithDevice = ({
     const isUnknown = device.type !== 'acquired';
     const { elevation } = useElevation();
 
+    const handleCancel = () => {
+        onCancel?.();
+    };
+
     return (
         <Card paddingType="small">
             <DeviceWrapper>
                 <DeviceHeader
                     isFindTrezorVisible={isFindTrezorVisible}
-                    onCancel={onCancel}
+                    onCancel={handleCancel}
                     device={device}
                     isFullHeaderVisible={isFullHeaderVisible}
                     onBackButtonClick={onBackButtonClick}

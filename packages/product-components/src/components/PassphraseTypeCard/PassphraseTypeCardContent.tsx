@@ -51,6 +51,7 @@ type PassphraseTypeCardContentProps = {
     submitLabel: ReactNode;
     submitVariant?: ButtonVariant;
     type: WalletType;
+    deviceLoading?: boolean;
     singleColModal?: boolean;
     displayValue: string;
     isPassphraseTooLong: boolean;
@@ -71,6 +72,7 @@ export const PassphraseTypeCardContent = ({
     asciiBannerVariant = 'info',
     type,
     displayValue,
+    deviceLoading,
     isPassphraseTooLong,
     singleColModal,
     value,
@@ -202,7 +204,11 @@ export const PassphraseTypeCardContent = ({
                                         data-testid={`@passphrase/${
                                             type === 'hidden' ? 'hidden' : 'standard'
                                         }/submit-button`}
-                                        isDisabled={isPassphraseEmpty || isPassphraseTooLong}
+                                        isDisabled={
+                                            isPassphraseEmpty ||
+                                            isPassphraseTooLong ||
+                                            deviceLoading
+                                        }
                                         variant={submitVariant}
                                         onClick={() => submit(value)}
                                         isFullWidth
