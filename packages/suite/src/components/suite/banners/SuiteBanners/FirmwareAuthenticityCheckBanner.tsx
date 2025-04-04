@@ -2,10 +2,7 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { Banner, Row } from '@trezor/components';
 import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
-import {
-    HELP_CENTER_FIRMWARE_REVISION_CHECK,
-    TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
-} from '@trezor/urls';
+import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { SkippedHashCheckError } from 'src/constants/suite/firmware';
@@ -53,11 +50,6 @@ const BannerButtons = () => (
                 <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
             </Banner.Button>
         </TrezorLink>
-        <TrezorLink variant="nostyle" href={HELP_CENTER_FIRMWARE_REVISION_CHECK}>
-            <Banner.Button isSubtle>
-                <Translation id="TR_LEARN_MORE" />
-            </Banner.Button>
-        </TrezorLink>
     </Row>
 );
 
@@ -67,6 +59,7 @@ export const FirmwareAuthenticityCheckBanner = () => {
     const wasOffline = firmwareRevisionError === 'cannot-perform-check-offline';
     const isHashCheckOtherError =
         firmwareRevisionError === null && firmwareHashError === 'other-error';
+    const hideBannerButtons = wasOffline || isHashCheckOtherError;
 
     const message = useAuthenticityCheckMessage();
     if (message === null) return null;
@@ -75,7 +68,7 @@ export const FirmwareAuthenticityCheckBanner = () => {
         <Banner
             icon
             variant={isHashCheckOtherError ? 'warning' : 'destructive'}
-            rightContent={wasOffline ? null : <BannerButtons />}
+            rightContent={hideBannerButtons ? null : <BannerButtons />}
         >
             <Translation id={message} />
         </Banner>

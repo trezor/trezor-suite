@@ -1,5 +1,3 @@
-import { ComponentProps } from 'react';
-
 import styled from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
@@ -30,7 +28,6 @@ export type SecurityCheckFailProps = {
     text?: TranslationKey;
     supportUrl: Url;
     checklistItems?: SecurityChecklistItem[];
-    supportButtonVariant?: ComponentProps<typeof Button>[`variant`];
 };
 
 export const SecurityCheckFail = ({
@@ -39,7 +36,6 @@ export const SecurityCheckFail = ({
     text = 'TR_DEVICE_COMPROMISED_TEXT',
     supportUrl,
     checklistItems = hardFailureChecklistItems,
-    supportButtonVariant = 'primary',
 }: SecurityCheckFailProps) => {
     const chatUrl = `${supportUrl}#open-chat`;
 
@@ -72,7 +68,7 @@ export const SecurityCheckFail = ({
                         href={chatUrl}
                         isFullWidth
                         size="large"
-                        variant={supportButtonVariant}
+                        variant="primary"
                     >
                         <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
                     </Button>
