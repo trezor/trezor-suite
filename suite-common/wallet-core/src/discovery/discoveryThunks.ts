@@ -723,7 +723,15 @@ export const startDiscoveryThunk = createThunk(
 export const createDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/create`,
     (
-        { deviceState, device }: { deviceState: StaticSessionId; device: TrezorDevice },
+        {
+            deviceState,
+            device,
+            immediatlyStartDiscovery,
+        }: {
+            deviceState: StaticSessionId;
+            device: TrezorDevice;
+            immediatlyStartDiscovery?: boolean;
+        },
         { dispatch, getState, extra },
     ) => {
         const {
@@ -753,6 +761,10 @@ export const createDiscoveryThunk = createThunk(
                 networks: networksSymbols,
             }),
         );
+
+        if (immediatlyStartDiscovery) {
+            dispatch(startDiscoveryThunk());
+        }
     },
 );
 

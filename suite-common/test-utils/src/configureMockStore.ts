@@ -66,6 +66,18 @@ export function configureMockStore<S = any, A extends AnyAction = AnyAction>({
         return next(action);
     });
 
+    const dispatchListeners: ((action: AnyAction) => void)[] = [];
+
+    const onDispatch = (listener: (action: AnyAction) => void) => {
+        dispatchListeners.push(listener);
+    };
+
+    const triggerDispatchThunk = createMiddleware((action, { next }) => {
+        dispatchListeners.forEach(listener => listener(action));
+
+        return next(action);
+    });
+
     const store = configureStore({
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
@@ -75,7 +87,8 @@ export function configureMockStore<S = any, A extends AnyAction = AnyAction>({
                 serializableCheck,
             })
                 .concat([actionLoggerMiddleware])
-                .concat(middleware as RTKMiddleware[]),
+                .concat(middleware as RTKMiddleware[])
+                .concat([triggerDispatchThunk]),
         reducer,
         preloadedState,
     });
@@ -84,7 +97,7 @@ export function configureMockStore<S = any, A extends AnyAction = AnyAction>({
         ...store,
         dispatch: store.dispatch as ThunkDispatch<S, any, A>,
         getActions: () => actions as AnyAction[],
-
+        onDispatch,
         clearActions: () => {
             actions = [];
         },

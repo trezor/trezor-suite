@@ -2,7 +2,9 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
 import { WalletType } from '@suite-common/wallet-types';
-import { DEVICE, Device } from '@trezor/connect';
+import { DEVICE, Device, DeviceState } from '@trezor/connect';
+
+import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
@@ -32,6 +34,21 @@ const deviceDisconnect = createAction(DEVICE.DISCONNECT, (payload: TrezorDevice)
 const updatePassphraseMode = createAction(
     `${DEVICE_MODULE_PREFIX}/updatePassphraseMode`,
     (payload: { device: TrezorDevice; hidden: boolean; alwaysOnDevice?: boolean }) => ({ payload }),
+);
+
+const updateDeviceState = createAction(
+    `${DEVICE_MODULE_PREFIX}/updateDeviceState`,
+    (payload: { device: TrezorDevice; state: DeviceState }) => ({ payload }),
+);
+
+const deviceAuthorizationFailed = createAction(
+    `${DEVICE_MODULE_PREFIX}/deviceAuthorizationFailed`,
+    (payload: { device: TrezorDevice; error: string }) => ({ payload }),
+);
+
+const addDeviceInstance = createAction(
+    `${DEVICE_MODULE_PREFIX}/addDeviceInstance`,
+    (payload: { device: TrezorDevice }) => ({ payload }),
 );
 
 const receiveAuthConfirm = createAction(
@@ -97,6 +114,34 @@ const setEntropyCheckFail = createAction(
     (payload: string | null) => ({ payload }),
 );
 
+/**
+ * Action handler: SUITE.CREATE_DEVICE_INSTANCE
+ * @param {DeviceReducerState} draft
+ * @param {TrezorDevice} device
+ * @returns
+ */
+export const createInstance = (device: TrezorDevice): TrezorDevice => {
+    const isPortfolioTrackerDevice = device.id === PORTFOLIO_TRACKER_DEVICE_ID;
+
+    const currentTime = new Date().getTime();
+
+    return {
+        ...device,
+        passphraseOnDevice: false,
+        remember: isPortfolioTrackerDevice,
+        // In mobile app, we need to keep device state defined by the constant
+        // to be able to filter device accounts for portfolio tracker
+        state: isPortfolioTrackerDevice ? device.state : undefined,
+        walletNumber: undefined,
+        authConfirm: false,
+        firstConnectedTimestamp: device.firstConnectedTimestamp ?? currentTime,
+        ts: currentTime,
+        buttonRequests: [],
+        metadata: {},
+        passwords: {},
+    } as TrezorDevice;
+};
+
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
@@ -113,5 +158,8 @@ export const deviceActions = {
     selectDevice,
     updateSelectedDevice,
     removeButtonRequests,
+    deviceAuthorizationFailed,
+    updateDeviceState,
+    addDeviceInstance,
     setEntropyCheckFail,
 };

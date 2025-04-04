@@ -1351,6 +1351,206 @@ const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
     },
 ];
 
+// Tests for updateDeviceState action
+const updateDeviceState: Fixture<ReturnType<typeof deviceActions.updateDeviceState>>[] = [
+    {
+        description: 'Update device state',
+        initialState: { devices: [SUITE_DEVICE] },
+        actions: [
+            {
+                type: deviceActions.updateDeviceState.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    state: { staticSessionId: '1@device-id:0' },
+                },
+            },
+        ],
+        result: [
+            {
+                state: { staticSessionId: '1@device-id:0' },
+            },
+        ],
+    },
+    {
+        description: 'Update device state for specific device when multiple devices exist',
+        initialState: {
+            devices: [
+                getSuiteDevice(undefined, {
+                    device_id: 'ignored-device-id',
+                }),
+                SUITE_DEVICE,
+            ],
+        },
+        actions: [
+            {
+                type: deviceActions.updateDeviceState.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    state: { staticSessionId: '1@device-id:0' },
+                },
+            },
+        ],
+        result: [
+            {
+                state: undefined,
+                features: {
+                    device_id: 'ignored-device-id',
+                },
+            },
+            {
+                state: { staticSessionId: '1@device-id:0' },
+                features: {
+                    device_id: 'device-id',
+                },
+            },
+        ],
+    },
+    {
+        description: 'Update device state for specific instance when multiple instances exist',
+        initialState: {
+            devices: [
+                getSuiteDevice({
+                    instance: 1,
+                }),
+                getSuiteDevice({
+                    instance: 2,
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: deviceActions.updateDeviceState.type,
+                payload: {
+                    device: getSuiteDevice({
+                        instance: 2,
+                    }),
+                    state: { staticSessionId: '2@device-id:2' },
+                },
+            },
+        ],
+        result: [
+            {
+                instance: 1,
+                state: undefined,
+            },
+            {
+                instance: 2,
+                state: { staticSessionId: '2@device-id:2' },
+            },
+        ],
+    },
+];
+
+// Tests for deviceAuthorizationFailed action
+const deviceAuthorizationFailed: Fixture<
+    ReturnType<typeof deviceActions.deviceAuthorizationFailed>
+>[] = [
+    {
+        description: 'Set authFailed flag when authorization fails with "auth-failed" error',
+        initialState: { devices: [SUITE_DEVICE] },
+        actions: [
+            {
+                type: deviceActions.deviceAuthorizationFailed.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    error: 'auth-failed',
+                },
+            },
+        ],
+        result: [
+            {
+                authFailed: true,
+            },
+        ],
+    },
+    {
+        description: 'Do not set authFailed flag for errors other than "auth-failed"',
+        initialState: { devices: [SUITE_DEVICE] },
+        actions: [
+            {
+                type: deviceActions.deviceAuthorizationFailed.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    error: 'some-other-error',
+                },
+            },
+        ],
+        result: [
+            {
+                // No authFailed flag should be set
+            },
+        ],
+    },
+    {
+        description: 'Set authFailed flag for specific device when multiple devices exist',
+        initialState: {
+            devices: [
+                getSuiteDevice(undefined, {
+                    device_id: 'ignored-device-id',
+                }),
+                SUITE_DEVICE,
+            ],
+        },
+        actions: [
+            {
+                type: deviceActions.deviceAuthorizationFailed.type,
+                payload: {
+                    device: SUITE_DEVICE,
+                    error: 'auth-failed',
+                },
+            },
+        ],
+        result: [
+            {
+                features: {
+                    device_id: 'ignored-device-id',
+                },
+                // No authFailed flag should be set
+            },
+            {
+                features: {
+                    device_id: 'device-id',
+                },
+                authFailed: true,
+            },
+        ],
+    },
+    {
+        description: 'Set authFailed flag for specific instance when multiple instances exist',
+        initialState: {
+            devices: [
+                getSuiteDevice({
+                    instance: 1,
+                }),
+                getSuiteDevice({
+                    instance: 2,
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: deviceActions.deviceAuthorizationFailed.type,
+                payload: {
+                    device: getSuiteDevice({
+                        instance: 1,
+                    }),
+                    error: 'auth-failed',
+                },
+            },
+        ],
+        result: [
+            {
+                instance: 1,
+                authFailed: true,
+            },
+            {
+                instance: 2,
+                // No authFailed flag should be set
+            },
+        ],
+    },
+];
+
 export default {
     connect,
     disconnect,
@@ -1360,4 +1560,6 @@ export default {
     authDevice,
     forget,
     remember,
+    updateDeviceState,
+    deviceAuthorizationFailed,
 };
