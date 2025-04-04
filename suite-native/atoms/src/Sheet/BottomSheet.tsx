@@ -62,6 +62,7 @@ export const BottomSheet = ({
         openSheetAnimated,
         panGestureEvent,
         scrollEvent,
+        isScrolling,
     } = useBottomSheetAnimation({
         onClose,
         isVisible,
@@ -111,6 +112,7 @@ export const BottomSheet = ({
                                 subtitle={subtitle}
                                 isCloseDisplayed={isCloseDisplayed}
                                 onCloseSheet={closeSheetAnimated}
+                                isScrolling={isScrolling}
                             />
                             {isScrollable ? (
                                 <ScrollView
