@@ -17,6 +17,7 @@ export type SwipeableWalkthroughStepProps = {
     currentStepIndex: SharedValue<number>;
     onNextButtonPress: () => void;
     description?: ReactNode;
+    continueButton?: ReactNode;
 };
 
 const SCREEN_HEADER_HEIGHT = 80;
@@ -48,6 +49,7 @@ export const SwipeableWalkthroughStep = ({
     children,
     currentStepIndex,
     onNextButtonPress,
+    continueButton,
 }: SwipeableWalkthroughStepProps) => {
     const { top: topSafeAreaInset, bottom: bottomSafeAreaInset } = useSafeAreaInsets();
 
@@ -90,12 +92,14 @@ export const SwipeableWalkthroughStep = ({
                 />
                 <VStack spacing="sp24" alignItems="center" flex={1}>
                     {children}
-                    <IconButton
-                        iconName="arrowDown"
-                        colorScheme="tertiaryElevation0"
-                        size="large"
-                        onPress={onNextButtonPress}
-                    />
+                    {continueButton ?? (
+                        <IconButton
+                            iconName="arrowDown"
+                            colorScheme="tertiaryElevation0"
+                            size="large"
+                            onPress={onNextButtonPress}
+                        />
+                    )}
                 </VStack>
             </ScrollView>
         </AnimatedBox>

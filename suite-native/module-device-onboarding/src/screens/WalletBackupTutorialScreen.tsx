@@ -18,6 +18,7 @@ import { WalletBackupTutorialStep2 } from '../components/WalletBackupTutorial/Wa
 import { WalletBackupTutorialStep3 } from '../components/WalletBackupTutorial/WalletBackupTutorialStep3';
 import { WalletBackupTutorialStep4 } from '../components/WalletBackupTutorial/WalletBackupTutorialStep4';
 import { WalletBackupTutorialStep5 } from '../components/WalletBackupTutorial/WalletBackupTutorialStep5';
+import { WalletBackupTutorialStep6 } from '../components/WalletBackupTutorial/WalletBackupTutorialStep6';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,
@@ -61,6 +62,10 @@ export const WalletBackupTutorialScreen = () => {
                     currentStepIndex={currentStepIndex}
                     selectedType={selectedBackupType}
                     onSelectType={setSelectedBackupType}
+                />
+                <WalletBackupTutorialStep6
+                    currentStepIndex={currentStepIndex}
+                    selectedType={selectedBackupType}
                 />
             </SwipeableWalkthrough>
         </Screen>

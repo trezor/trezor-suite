@@ -16,6 +16,7 @@ import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
 import { SuspiciousDeviceScreen } from '../screens/SuspiciousDeviceScreen';
 import { UninitializedDeviceLandingScreen } from '../screens/UninitializedDeviceLandingScreen';
 import { WalletBackupTutorialScreen } from '../screens/WalletBackupTutorialScreen';
+import { WalletCreationScreen } from '../screens/WalletCreationScreen';
 
 export const DeviceOnboardingStack = createNativeStackNavigator<DeviceOnboardingStackParamList>();
 
@@ -67,6 +68,13 @@ export const DeviceOnboardingStackNavigator = () => (
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.WalletBackupTutorial}
             component={WalletBackupTutorialScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.WalletCreation}
+            component={WalletCreationScreen}
+            options={{
+                animation: 'fade',
+            }}
         />
     </DeviceOnboardingStack.Navigator>
 );

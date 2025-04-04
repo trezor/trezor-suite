@@ -921,6 +921,10 @@ export const en = {
             },
         },
 
+        createWalletLoadingScreen: {
+            title: 'Let’s protect your assets with a wallet backup',
+        },
+
         walletBackupTutorialScreen: {
             step1: {
                 callout: 'What’s a wallet backup?',
@@ -982,11 +986,25 @@ export const en = {
                     },
                 },
             },
+            step6: {
+                callout: 'Let’s start off right',
+                title: 'Get set before creating your wallet backup',
+                instruction1: 'Have a pen & your wallet backup card',
+                instruction2: {
+                    single: 'Give yourself about 10 minutes to complete',
+                    multiple: 'Give yourself about 10 minutes per share',
+                },
+                instruction3: 'Make sure you’re in a safe & private space',
+                holdToConfirmButton: 'Hold to start',
+            },
         },
 
-        createWalletLoadingScreen: {
-            title: 'Let’s protect your assets with a wallet backup',
+        walletCreationScreen: {
+            title: 'Continue on your Trezor',
+            backupWarning:
+                'Never store your wallet backup anywhere digital—no photos, clouds, USBs, or emails.',
         },
+
         deviceDisconnectedAlert: {
             title: 'Your Trezor has been disconnected',
             description: 'Connect your Trezor to start again.',
