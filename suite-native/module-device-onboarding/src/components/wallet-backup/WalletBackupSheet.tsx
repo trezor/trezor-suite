@@ -2,17 +2,16 @@ import { useState } from 'react';
 
 import * as Haptics from 'expo-haptics';
 
-import { BottomSheet, Button, VStack, buttonSizeToDimensionsMap } from '@suite-native/atoms';
+import { BottomSheet, Button, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { CardFooter } from './CardFooter';
 import { WalletBackupCard } from './WalletBackupCard';
+import { WalletBackupSheetFooter } from './WalletBackupSheetFooter';
 
 const containerStyle = prepareNativeStyle(utils => ({
-    // Offset calculated based on the button's height + margin from the design
-    marginBottom: buttonSizeToDimensionsMap.large.minHeight + utils.spacings.sp32,
+    marginBottom: utils.spacings.sp32,
 }));
 
 const legacyButtonStyle = prepareNativeStyle(utils => ({
@@ -54,7 +53,9 @@ export const WalletBackupSheet = ({ closeModal, isDisplayed }: WalletBackupSheet
             title={translate('moduleDeviceOnboarding.walletBackupSheet.title')}
             isVisible={isDisplayed}
             onClose={closeModal}
-            footer={<CardFooter selectedType={selectedType} onSubmit={submitSelection} />}
+            footer={
+                <WalletBackupSheetFooter selectedType={selectedType} onSubmit={submitSelection} />
+            }
             style={applyStyle(containerStyle)}
         >
             <VStack spacing="sp16">

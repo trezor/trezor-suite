@@ -1,5 +1,5 @@
 import { HStack, Radio, Text, TitleHeader, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { Color } from '@trezor/theme';
 
 import { WalletBackupType } from './WalletBackupSheet';
@@ -16,16 +16,15 @@ const descriptionColor: Record<WalletBackupType, Color> = {
     '24-words': 'textAlertBlue',
 };
 
-export const CardHeader = ({ type, isSelected }: CardHeaderProps) => {
-    const { translate } = useTranslate();
-
-    return (
+export const CardHeader = ({ type, isSelected }: CardHeaderProps) => (
         <HStack>
             <VStack spacing={0} justifyContent="space-between" flex={1}>
                 <TitleHeader
-                    title={translate(
-                        `moduleDeviceOnboarding.walletBackupSheet.options.${type}.title`,
-                    )}
+                    title={
+                        <Translation
+                            id={`moduleDeviceOnboarding.walletBackupSheet.options.${type}.title`}
+                        />
+                    }
                 />
                 <Text color={descriptionColor[type]} variant="hint">
                     <Translation
@@ -36,4 +35,3 @@ export const CardHeader = ({ type, isSelected }: CardHeaderProps) => {
             <Radio disabled isChecked={isSelected} value="single" onPress={() => undefined} />
         </HStack>
     );
-};
