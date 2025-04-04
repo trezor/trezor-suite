@@ -124,4 +124,38 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
             await expect(page).toHaveURL(/\/accounts\/coinmarket\/sell#\/sol\/0\/normal$/);
         });
     });
+
+    test('Sell Solana for compared offer', async ({ page, tradingPage }) => {
+        await test.step('Fill input amount and opens offer comparison', async () => {
+            await tradingPage.fillSellForm(cryptoAmount, 'solana');
+            await tradingPage.compareButton.click();
+        });
+
+        await test.step('Check compared offers', async () => {
+            await expect(tradingPage.youPayCryptoInput).toHaveValue(cryptoAmount);
+            await expect(tradingPage.refreshTime).toHaveText(/Offers refresh in(0:2[5-9]|0:30)/);
+            await expect(tradingPage.paymentMethodDropdown).toHaveText(paymentMethodName);
+            await tradingPage.validateSellQuotes(sellQuotesSolana);
+        });
+
+        await test.step('Change payment method to Bank Transfer', async () => {
+            await tradingPage.selectPaymentMethod('bankTransfer');
+            await tradingPage.validateSellQuotes(sellQuotesSolana);
+        });
+
+        await test.step('Select second offer and check correct values are sent in trade request', async () => {
+            await tradingPage.selectThisQuoteButton.nth(1).click();
+            const sellTradePromise = page.waitForRequest(invityEndpoint.sellTrade);
+            await tradingPage.termsConfirmButton.click();
+            await expect(sellTradePromise).toHavePayload(
+                {
+                    // the second chosen offer via Bank Transfer that matches input criteria has index 3
+                    trade: sellQuotesSolana[3],
+                },
+                {
+                    omit: ['returnUrl', 'trade.orderId', 'trade.paymentId', 'trade.refundAddress'],
+                },
+            );
+        });
+    });
 });

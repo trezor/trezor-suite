@@ -72,8 +72,13 @@ export const invityGeneralResponses = {
     [invityEndpoint.sellList]: sellList,
 };
 
-export const getCompanyNameFromList = (name: string, type: 'sellList' | 'swapList') => {
-    const providersArray = type === 'swapList' ? swapList : sellList.providers;
+export const getCompanyNameFromList = (name: string, type: 'buyList' | 'sellList' | 'swapList') => {
+    const listMap = {
+        buyList: buyList.providers,
+        sellList: sellList.providers,
+        swapList,
+    };
+    const providersArray = listMap[type];
     const filteredProviders = providersArray.filter(item => item.name === name);
 
     if (filteredProviders.length !== 1) {

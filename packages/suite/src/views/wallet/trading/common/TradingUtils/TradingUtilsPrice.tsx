@@ -55,7 +55,7 @@ export const TradingUtilsPrice = ({
                     }
                 />
             </PriceTitle>
-            <PriceValueWrap>
+            <PriceValueWrap data-testid="@trading/offers/quote/amount">
                 <PriceValue>
                     {amountInCrypto ? (
                         <TradingFiatAmount amount={sendAmount} currency={sendCurrency} />

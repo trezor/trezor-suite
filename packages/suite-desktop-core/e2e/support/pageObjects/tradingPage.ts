@@ -4,14 +4,13 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { regional } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { invityEndpoint } from '../../fixtures/invity';
+import { getCompanyNameFromList, invityEndpoint } from '../../fixtures/invity';
 import { TrezorUserEnvLinkProxy, formatAddress, step } from '../common';
 import { DevicePrompt } from './devicePrompt';
 import { solanaUrlPattern } from '../mocks/tradingMock';
 import { expect } from '../testExtends/customMatchers';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
-const quoteAmountLocator = '@trading/offers/quote/crypto-amount';
 const getCountryLabel = (country: string) => {
     const labelWithFlag = regional.countriesMap.get(country);
     if (!labelWithFlag) {
@@ -93,7 +92,6 @@ export class TradingPage {
     readonly quotes: Locator;
     readonly quoteOfProvider = (provider: string) =>
         this.page.getByTestId(`@trading/offers/quote-${provider}`);
-    readonly quoteAmount: Locator;
     readonly refreshTime: Locator;
     readonly selectThisQuoteButton: Locator;
     readonly backToAccountButton: Locator;
@@ -168,7 +166,6 @@ export class TradingPage {
         this.buyOffersPage = this.page.getByTestId('@trading/buy-offers');
         this.compareButton = this.page.getByTestId('@trading/form/compare-button');
         this.quotes = this.page.getByTestId('@trading/offers/quote');
-        this.quoteAmount = this.page.getByTestId(quoteAmountLocator);
         this.refreshTime = this.page.getByTestId('@trading/refresh-time-text');
         this.selectThisQuoteButton = this.page.getByTestId('@trading/offers/get-this-deal-button');
         this.backToAccountButton = this.page.getByRole('button', { name: 'Back to Account' });
@@ -425,7 +422,11 @@ export class TradingPage {
     }
 
     @step()
-    async validateBuyQuotes(quotesResponse: any[]) {
+    private async validateQuotes(
+        quotesResponse: any[],
+        listType: 'buyList' | 'sellList',
+        formatExpectedAmount: (quote: any) => string,
+    ) {
         const paymentMethod = await this.getSelectedPaymentMethod();
         const expectedQuotes = quotesResponse.filter(
             quote => quote.paymentMethod === paymentMethod && quote.error === undefined,
@@ -434,11 +435,36 @@ export class TradingPage {
 
         const displayedQuotes = await this.quotes.all();
         for (const [index, quote] of displayedQuotes.entries()) {
+            //validate provider of the quote row
             const provider = await quote.getByTestId(quoteProviderLocator).textContent();
-            const amount = await quote.getByTestId(quoteAmountLocator).textContent();
-            expect.soft(provider?.toLowerCase()).toBe(expectedQuotes[index].exchange);
-            expect.soft(amount).toBe(expectedQuotes[index].receiveStringAmount);
+            const expectedProvider = getCompanyNameFromList(
+                expectedQuotes[index].exchange,
+                listType,
+            );
+            expect.soft(provider).toBe(expectedProvider);
+            //validate amount of the quote row
+            const amount = await quote.getByTestId('@trading/offers/quote/amount').textContent();
+            const expectedAmount = formatExpectedAmount(expectedQuotes[index]);
+            expect.soft(amount).toBe(expectedAmount);
         }
+    }
+
+    @step()
+    async validateBuyQuotes(quotesResponse: any[]) {
+        await this.validateQuotes(
+            quotesResponse,
+            'buyList',
+            quote => `${quote.receiveStringAmount} BTC`,
+        );
+    }
+
+    @step()
+    async validateSellQuotes(quotesResponse: any[]) {
+        await this.validateQuotes(
+            quotesResponse,
+            'sellList',
+            quote => `€${parseFloat(quote.fiatStringAmount).toFixed(2)}`,
+        );
     }
 
     @step()
