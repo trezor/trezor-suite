@@ -114,15 +114,10 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
                 await this.handshake();
             }
 
-            const response = await this.ws?.sendMessage(
-                {
-                    type: IFRAME.CALL,
-                    payload: params,
-                },
-                {
-                    timeout: Number.MAX_SAFE_INTEGER,
-                },
-            );
+            const response = await this.ws?.sendMessage({
+                type: IFRAME.CALL,
+                payload: params,
+            });
 
             if (!response) {
                 throw ERRORS.TypedError('Desktop_ConnectionMissing', 'No response');
