@@ -23,10 +23,14 @@ import { useFormattersConfig } from './hooks/useFormattersConfig';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
 import { applicationInit } from './initActions';
 import { RootStackNavigator } from './navigation/RootStackNavigator';
+import { disableRTL } from './rtl';
 
 if (__DEV__) {
     require('./LogBox');
 }
+
+// Right-to-left language support is not supported yet.
+disableRTL();
 
 // Base time to measure app loading time.
 // The constant has to be placed at the beginning of this file to be initialized as soon as possible.
