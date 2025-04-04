@@ -55,7 +55,7 @@ _(in case of Linux with X11 support, skip to step 6.)_
 
 1. **To run tests headed (showing UI)** you can add: `--headed`.
 
-1. **To run just one test file** you can do: `yarn workspace @trezor/suite-desktop-core test:e2e general/wallet-discovery.test.ts`
+1. **To run just one test file** you can do: `yarn workspace @trezor/suite-desktop-core test:e2e smoke/wallet-discovery.test.ts`
 
 1. **To run just one test** you can add: `-g "Basic cardano walkthrough"`
 
