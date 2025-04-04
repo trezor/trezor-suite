@@ -60,14 +60,14 @@ export const ConnectPopupModal = () => {
             heading={<Translation id="TR_TREZOR_CONNECT" />}
         >
             <Column gap={spacings.xs}>
-                <H2>{methodTitle}</H2>
+                <H2 data-testid="@connect-popup-modal/header">{methodTitle}</H2>
 
                 <Column>
-                    <Paragraph>
+                    <Paragraph data-testid="@connect-popup-modal/paragraph-process">
                         <Translation id="TR_CONNECT_MODAL_PROCESS" />{' '}
                         <strong>{source.processName}</strong>
                     </Paragraph>
-                    <Paragraph>
+                    <Paragraph data-testid="@connect-popup-modal/paragraph-origin">
                         <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" /> <strong>{origin}</strong>
                     </Paragraph>
                     {!source.isWalletConnect && (
@@ -84,6 +84,7 @@ export const ConnectPopupModal = () => {
 
                 {!source.isWalletConnect && (
                     <Checkbox
+                        data-testid="@connect-popup-modal/remember-checkbox"
                         isChecked={isRemembered}
                         onClick={() => setIsRemembered(!isRemembered)}
                     >
