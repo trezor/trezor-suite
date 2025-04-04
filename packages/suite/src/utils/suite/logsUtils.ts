@@ -1,4 +1,6 @@
-import { LogEntry } from '@suite-common/logger';
+import { useEffect, useState } from 'react';
+
+import { LogEntry, selectLogs } from '@suite-common/logger';
 import { getPhysicalDeviceUniqueIds } from '@suite-common/suite-utils';
 import {
     accountsActions,
@@ -20,9 +22,9 @@ import {
     getBrowserName,
     getBrowserVersion,
     getCommitHash,
-    getDeprecatedOsVersion,
     getEnvironment,
     getOsName,
+    getOsVersion,
     getPlatformLanguages,
     getScreenHeight,
     getScreenWidth,
@@ -34,6 +36,7 @@ import {
 import { DeepPartial } from '@trezor/type-utils';
 
 import { METADATA_LABELING } from 'src/actions/suite/constants';
+import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { AppState, TrezorDevice } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
@@ -178,22 +181,26 @@ export const getApplicationLog = (log: LogEntry[], redactSensitiveData = false) 
         };
     });
 
-export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) => ({
+const getEnvironmentInfo = async () => ({
     environment: getEnvironment(),
     suiteVersion: getSuiteVersion(),
     commitHash: getCommitHash(),
-    startTime,
     isDev: !isCodesignBuild(),
-    debugMenu: state.suite.settings.debug.showDebugMenu,
-    online: state.suite.online,
     browserName: getBrowserName(),
     browserVersion: getBrowserVersion(),
     osName: getOsName(),
-    osVersion: getDeprecatedOsVersion(),
+    osVersion: await getOsVersion(),
     windowWidth: getWindowWidth(),
     windowHeight: getWindowHeight(),
     screenWidth: getScreenWidth(),
     screenHeight: getScreenHeight(),
+});
+type EnvInfo = Awaited<ReturnType<typeof getEnvironmentInfo>>;
+
+const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) => ({
+    startTime,
+    debugMenu: state.suite.settings.debug.showDebugMenu,
+    online: state.suite.online,
     earlyAccessProgram: state.desktopUpdate.allowPrerelease,
     language: state.suite.settings.language,
     autodetectLanguage: state.suite.settings.autodetect.language,
@@ -256,3 +263,21 @@ export const getApplicationInfo = (state: AppState, hideSensitiveInfo: boolean) 
         useEmptyPassphrase: hideSensitiveInfo ? REDACTED_REPLACEMENT : device.useEmptyPassphrase,
     })),
 });
+
+export const usePrintableLog = (hideSensitiveInfo: boolean) => {
+    const rawLogs = useSelector(selectLogs);
+    const actionLog = getApplicationLog(rawLogs, hideSensitiveInfo);
+
+    // redux warns that Selector is referentially unstable → should be memoized. We could use createMemoizedSelector,
+    // but it'd have state => state as input fn, so it'd rerender with every state change (we'd optimize nothing).
+    const appInfo = useSelector(state => getApplicationInfo(state, hideSensitiveInfo));
+
+    const [envInfo, setEnvInfo] = useState<EnvInfo | null>(null);
+    useEffect(() => {
+        (async () => setEnvInfo(await getEnvironmentInfo()))();
+    }, []);
+
+    if (envInfo === null) return null;
+
+    return prettifyLog([{ ...envInfo, ...appInfo }, actionLog]);
+};

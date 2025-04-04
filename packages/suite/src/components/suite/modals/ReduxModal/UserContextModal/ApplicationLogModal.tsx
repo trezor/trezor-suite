@@ -2,7 +2,6 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectLogs } from '@suite-common/logger';
 import {
     Card,
     Column,
@@ -18,8 +17,7 @@ import {
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { getApplicationInfo, getApplicationLog, prettifyLog } from 'src/utils/suite/logsUtils';
+import { usePrintableLog } from 'src/utils/suite/logsUtils';
 
 const ScrollContainer = styled.div`
     overflow: auto;
@@ -45,15 +43,13 @@ type ApplicationLogModalProps = { onCancel: () => void };
 
 export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
-    const logs = useSelector(selectLogs);
-    const applicationInfo = useSelector(state => getApplicationInfo(state, hideSensitiveInfo));
+    const log = usePrintableLog(hideSensitiveInfo);
+
     const { ShadowTop, ShadowBottom, ShadowContainer, onScroll, scrollElementRef } =
         useScrollShadow();
 
-    const actionLog = getApplicationLog(logs, hideSensitiveInfo);
-    const log = prettifyLog([applicationInfo, ...actionLog]);
-
     const download = () => {
+        if (log === null) return;
         const element = document.createElement('a');
         element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(log)}`);
         element.setAttribute('download', 'trezor-suite-log.txt');
@@ -65,6 +61,9 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
 
         document.body.removeChild(element);
     };
+
+    // usually takes less than 100 ms, so it's ok to delay display without a loader component
+    if (log === null) return null;
 
     return (
         <NewModal
