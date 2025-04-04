@@ -153,3 +153,33 @@ describe('SUITE.REMEMBER_DEVICE', () => {
         });
     });
 });
+
+describe('DEVICE.UPDATE_DEVICE_STATE', () => {
+    fixtures.updateDeviceState.forEach(f => {
+        it(f.description, () => {
+            let state: State = f.initialState;
+            f.actions.forEach(a => {
+                state = deviceReducer(state, a);
+            });
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
+                expect(device).toMatchObject(f.result[i]);
+            });
+        });
+    });
+});
+
+describe('DEVICE.AUTHORIZATION_FAILED', () => {
+    fixtures.deviceAuthorizationFailed.forEach(f => {
+        it(f.description, () => {
+            let state: State = f.initialState;
+            f.actions.forEach(a => {
+                state = deviceReducer(state, a);
+            });
+            expect(state.devices.length).toEqual(f.result.length);
+            state.devices.forEach((device, i) => {
+                expect(device).toMatchObject(f.result[i]);
+            });
+        });
+    });
+});

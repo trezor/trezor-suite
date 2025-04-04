@@ -29,7 +29,7 @@ import TrezorConnect, {
 import { getEnvironment } from '@trezor/env-utils';
 import { isChanged } from '@trezor/utils';
 
-import { DEVICE_MODULE_PREFIX, deviceActions } from './deviceActions';
+import { DEVICE_MODULE_PREFIX, createInstance, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
 import { selectDeviceById, selectDevices, selectSelectedDevice } from './deviceReducer';
 import { selectAccountByKey } from '../accounts/accountsReducer';
@@ -89,13 +89,15 @@ export const toggleRememberDevice = createThunk(
 );
 
 export type CreateDeviceInstanceError = {
-    error: 'passphrase-enabling-cancelled' | 'features-unavailable';
+    error: 'passphrase-enabling-cancelled' | 'features-unavailable' | 'device-is-not-acquired';
 };
 
 type CreateDeviceInstanceParams = { device: TrezorDevice; useEmptyPassphrase: boolean };
 
+type CreateDeviceInstanceSuccess = { device: TrezorDevice };
+
 export const createDeviceInstanceThunk = createThunk<
-    { device: TrezorDevice },
+    CreateDeviceInstanceSuccess,
     CreateDeviceInstanceParams,
     { rejectValue: CreateDeviceInstanceError }
 >(
@@ -124,12 +126,19 @@ export const createDeviceInstanceThunk = createThunk<
 
         const devices = selectDevices(getState());
 
+        // only acquired devices
+        if (!device || !device.features) {
+            console.error('createInstance: device is not acquired', device);
+
+            return rejectWithValue({ error: 'device-is-not-acquired' });
+        }
+
         return fulfillWithValue({
-            device: {
+            device: createInstance({
                 ...device,
                 useEmptyPassphrase,
                 instance: getNewInstanceNumber(devices, device),
-            },
+            }),
         });
     },
 );
@@ -299,7 +308,6 @@ export const authorizeDeviceThunk = createThunk<
         const device = selectSelectedDevice(getState());
 
         if (!device) return rejectWithValue({ error: 'no-device' });
-
         const isDeviceReady =
             device.connected &&
             isDeviceAcquired(device) &&
@@ -310,7 +318,6 @@ export const authorizeDeviceThunk = createThunk<
             device.firmware !== 'required';
 
         if (!isDeviceReady) return rejectWithValue({ error: 'device-not-ready', device });
-
         const deviceParams: Parameters<typeof TrezorConnect.getDeviceState>[0] = {
             device: {
                 path: device.path,
@@ -320,7 +327,6 @@ export const authorizeDeviceThunk = createThunk<
             keepSession: true,
             useEmptyPassphrase: device.useEmptyPassphrase,
         };
-
         const response = await TrezorConnect.getDeviceState(deviceParams);
 
         if (response.success) {

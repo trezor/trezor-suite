@@ -639,17 +639,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(authorizeDeviceThunk.pending, state => {
             resetAuthFailed(state);
         })
-        .addCase(authorizeDeviceThunk.fulfilled, (state, { payload }) => {
-            authDevice(state, payload.device, payload.state);
-        })
-        .addCase(authorizeDeviceThunk.rejected, (state, action) => {
-            if (action.payload && action.payload.error) {
-                const { error } = action.payload;
-                if (error === 'auth-failed' && action.payload.device) {
-                    authFailed(state, action.payload.device);
-                }
-            }
-        })
         .addCase(UI.REQUEST_PIN, state => {
             resetAuthFailed(state);
         })
@@ -708,7 +697,11 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             state.devicesWithFailedEntropyCheck.push(payload);
         })
         .addMatcher(
-            isAnyOf(createDeviceInstanceThunk.fulfilled, createImportedDeviceThunk.fulfilled),
+            isAnyOf(
+                createDeviceInstanceThunk.fulfilled,
+                deviceActions.addDeviceInstance,
+                createImportedDeviceThunk.fulfilled,
+            ),
             (state, { payload }) => {
                 createInstance(state, payload.device);
             },
@@ -717,6 +710,23 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
             (state, { payload: { device, settings } }) => {
                 connectDevice(state, device, settings);
+            },
+        )
+        .addMatcher(
+            isAnyOf(authorizeDeviceThunk.fulfilled, deviceActions.updateDeviceState),
+            (state, { payload }) => {
+                authDevice(state, payload.device, payload.state);
+            },
+        )
+        .addMatcher(
+            isAnyOf(authorizeDeviceThunk.rejected, deviceActions.deviceAuthorizationFailed),
+            (state, action) => {
+                if (action.payload && action.payload.error) {
+                    const { error } = action.payload;
+                    if (error === 'auth-failed' && action.payload.device) {
+                        authFailed(state, action.payload.device);
+                    }
+                }
             },
         );
 });
