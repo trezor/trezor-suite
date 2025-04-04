@@ -94,10 +94,11 @@ export const exposeConnectWs = ({
         });
 
         ws.on('message', async data => {
-            logger.debug(LOG_PREFIX, data.toString());
+            const dataString = data.toString();
+            logger.debug(LOG_PREFIX, dataString);
             let message;
             try {
-                message = JSON.parse(data.toString());
+                message = JSON.parse(dataString);
             } catch {
                 logger.error(LOG_PREFIX, 'message is not valid JSON');
 
