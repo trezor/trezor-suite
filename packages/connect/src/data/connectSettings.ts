@@ -36,6 +36,9 @@ const parseManifest = (manifest?: Manifest) => {
     if (!manifest) return;
     if (typeof manifest.email !== 'string') return;
     if (typeof manifest.appUrl !== 'string') return;
+    // todo [connect10]: appName should become required
+    if (typeof manifest.appName !== 'undefined' && typeof manifest.appName !== 'string') return;
+    if (typeof manifest.appIcon !== 'undefined' && typeof manifest.appIcon !== 'string') return;
 
     return {
         email: manifest.email,
