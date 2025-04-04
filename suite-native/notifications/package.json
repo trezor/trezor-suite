@@ -23,7 +23,7 @@
         "@suite-native/transactions": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.76.1",
+        "react-native": "0.76.9",
         "react-native-gesture-handler": "^2.21.0",
         "react-native-reanimated": "^3.16.7",
         "react-redux": "9.2.0"

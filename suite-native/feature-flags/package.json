@@ -13,7 +13,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.6.0",
         "@trezor/env-utils": "workspace:*",
-        "react-native": "0.76.1",
+        "react-native": "0.76.9",
         "react-redux": "9.2.0"
     }
 }

@@ -29,7 +29,7 @@
         "@suite-native/staking": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "react": "^18.2.0",
-        "react-native": "0.76.1",
+        "react-native": "0.76.9",
         "react-native-reanimated": "^3.16.7",
         "react-redux": "9.2.0"
     }

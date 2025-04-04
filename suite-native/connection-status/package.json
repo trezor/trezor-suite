@@ -18,7 +18,7 @@
         "@suite-native/settings": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.76.1",
+        "react-native": "0.76.9",
         "react-redux": "9.2.0"
     }
 }
