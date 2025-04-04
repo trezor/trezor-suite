@@ -1,21 +1,16 @@
-import { passwordMismatchResetThunk } from '@suite-common/wallet-core';
-import { WalletType } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import {
-    addWalletThunk,
-    redirectAfterWalletSelectedThunk,
-} from 'src/actions/wallet/addWalletThunk';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice } from 'src/hooks/suite';
+import { useServices } from 'src/reducers/services';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 import { Translation } from '../../../Translation';
 
-export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) => {
+export const PassphraseMismatchModal = () => {
     const { isLocked, device: selectDevice } = useDevice();
-    const dispatch = useDispatch();
+    const { passphraseFlowManager } = useServices();
 
     const isDeviceLocked = isLocked();
 
@@ -24,10 +19,7 @@ export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) 
     }
 
     const onStartOver = () => {
-        dispatch(passwordMismatchResetThunk({ device: selectDevice }));
-        dispatch(addWalletThunk({ walletType: WalletType.PASSPHRASE, device: selectDevice }));
-        dispatch(redirectAfterWalletSelectedThunk());
-        onCancel();
+        passphraseFlowManager.startOver(selectDevice);
     };
 
     return (

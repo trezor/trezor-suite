@@ -1,7 +1,9 @@
 import { Route } from '@suite-common/suite-types';
+import { UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { selectPassphraseFlow } from 'src/reducers/wallet/passphraseFlowSelectors';
 import type { ForegroundAppRoute } from 'src/types/suite';
 import { ModalAppParams } from 'src/utils/suite/router';
 
@@ -47,15 +49,32 @@ export const usePreferredModal = () => {
     const route = useSelector(state => state.router.route);
     const params = useSelector(state => state.router.params as Partial<ModalAppParams>);
     const modal = useSelector(state => state.modal);
+    const passphraseFlow = useSelector(selectPassphraseFlow);
 
     if (route && isForegroundApp(route) && hasPriority(route)) {
         return getForegroundAppAction(route, params);
     }
 
     if (modal.context !== MODAL.CONTEXT_NONE) {
+        // NOTE: in case when passphrase flow is active, we handle the device passphrase request
+        // within the passphrase flow
+        if ('windowType' in modal && modal.windowType === UI.REQUEST_PASSPHRASE) {
+            return {
+                type: !passphraseFlow ? 'device-request-passphrase' : 'passphrase-flow',
+                payload: modal,
+            } as const;
+        }
+
         return {
             type: 'redux-modal',
             payload: modal,
+        } as const;
+    }
+
+    if (passphraseFlow) {
+        return {
+            type: 'passphrase-flow',
+            payload: passphraseFlow,
         } as const;
     }
 

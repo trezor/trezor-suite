@@ -1,26 +1,30 @@
-import { authorizeDeviceThunk, switchDuplicatedDevice } from '@suite-common/wallet-core';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useDevice } from 'src/hooks/suite';
+import { useServices } from 'src/reducers/services';
 import { TrezorDevice } from 'src/types/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseDuplicateModalProps = {
     device: TrezorDevice;
-    duplicate: TrezorDevice;
 };
 
-export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplicateModalProps) => {
-    const dispatch = useDispatch();
+export const PassphraseDuplicateModal = ({ device }: PassphraseDuplicateModalProps) => {
     const { isLocked } = useDevice();
+    const { passphraseFlowManager } = useServices();
 
     const isDeviceLocked = isLocked();
 
-    const handleSwitchDevice = () => dispatch(switchDuplicatedDevice({ device, duplicate }));
-    const handleAuthorizeDevice = () => dispatch(authorizeDeviceThunk());
+    const handleSwitchDevice = () => {
+        passphraseFlowManager.finishFlow();
+    };
+
+    const onCancel = () => {
+        passphraseFlowManager.startOver(device);
+    };
 
     return (
         <SwitchDeviceModal>
@@ -56,7 +60,7 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
                         >
                             <Button
                                 variant="tertiary"
-                                onClick={handleAuthorizeDevice}
+                                onClick={onCancel}
                                 isDisabled={isDeviceLocked}
                                 isFullWidth
                             >
