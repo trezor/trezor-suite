@@ -64,7 +64,9 @@ export const useCompose = <TFieldValues extends FormState>({
     // update composeRequestID
     const composeRequest = useCallback(
         async (field = defaultFieldRef.current) => {
-            if (!state) return;
+            // skip compose for cached older fee (edge case for trading)
+            if (!state || prevFeeInfoRef.current.blockHeight > state.feeInfo.blockHeight) return;
+
             // reset precomposed transactions
             setComposedLevels(undefined);
             // set ref for later use in useEffect
