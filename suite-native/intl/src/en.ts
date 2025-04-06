@@ -955,6 +955,32 @@ export const en = {
             step5: {
                 callout: 'Select how to recover access to your assets',
                 title: 'Wallet backup type',
+                moreOptionsButton: 'More options',
+                backupOptions: {
+                    'shamir-single': {
+                        title: 'Single-share Backup',
+                        description:
+                            'Creates a single share of 20 words used to recover access to your assets.',
+                        callout: 'Recommended for your Trezor',
+                    },
+                    'shamir-advanced': {
+                        title: 'Multi-share Backup',
+                        description:
+                            'Creates multiple shares of 20 words used to recover access to your assets.',
+                        callout: 'For experienced users',
+                        calloutActionLabel: 'Learn',
+                    },
+                    '12-words': {
+                        title: '12-word backup',
+                        description:
+                            'Creates a single set of 12 words used to recover access to your assets.',
+                    },
+                    '24-words': {
+                        title: '24-word backup',
+                        description:
+                            'Creates a single set of 24 words used to recover access to your assets.',
+                    },
+                },
             },
         },
 

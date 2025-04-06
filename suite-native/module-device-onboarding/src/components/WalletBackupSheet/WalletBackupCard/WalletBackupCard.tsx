@@ -9,7 +9,7 @@ import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 import { CardContent } from './CardContent';
 import { CardHeader } from './CardHeader';
-import { WalletBackupType } from '../WalletBackupSheet';
+import { WalletBackupType } from '../../../screens/WalletBackupTutorialScreen';
 import { walletBackupSheetCopyByType } from '../presets';
 
 interface WalletTypeCardProps {

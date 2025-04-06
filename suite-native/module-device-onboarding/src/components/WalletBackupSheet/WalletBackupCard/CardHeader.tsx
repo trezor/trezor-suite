@@ -2,7 +2,7 @@ import { Box, HStack, Radio, Text, TitleHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Color } from '@trezor/theme';
 
-import { WalletBackupType } from '../WalletBackupSheet';
+import { WalletBackupType } from '../../../screens/WalletBackupTutorialScreen';
 import { walletBackupSheetCopyByType } from '../presets';
 
 interface CardHeaderProps {

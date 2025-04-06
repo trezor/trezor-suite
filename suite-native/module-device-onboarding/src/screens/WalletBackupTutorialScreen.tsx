@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/core';
@@ -24,9 +24,11 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackRoutes.WalletBackupTutorial,
     RootStackParamList
 >;
+export type WalletBackupType = 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
 
 export const WalletBackupTutorialScreen = () => {
     const currentStepIndex = useSharedValue(0);
+    const [selectedBackupType, setSelectedBackupType] = useState<WalletBackupType>('shamir-single');
 
     const navigation = useNavigation<NavigationProps>();
 
@@ -55,7 +57,11 @@ export const WalletBackupTutorialScreen = () => {
                 <WalletBackupTutorialStep2 currentStepIndex={currentStepIndex} />
                 <WalletBackupTutorialStep3 currentStepIndex={currentStepIndex} />
                 <WalletBackupTutorialStep4 currentStepIndex={currentStepIndex} />
-                <WalletBackupTutorialStep5 currentStepIndex={currentStepIndex} />
+                <WalletBackupTutorialStep5
+                    currentStepIndex={currentStepIndex}
+                    selectedType={selectedBackupType}
+                    onSelectType={setSelectedBackupType}
+                />
             </SwipeableWalkthrough>
         </Screen>
     );

@@ -1,6 +1,6 @@
 import { TxKeyPath } from '@suite-native/intl';
 
-import { WalletBackupType } from './WalletBackupSheet';
+import { WalletBackupType } from '../../screens/WalletBackupTutorialScreen';
 
 type TranslationKeys =
     | 'submitButton'

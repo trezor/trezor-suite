@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import * as Haptics from 'expo-haptics';
 
-import { BottomSheet, Button, VStack } from '@suite-native/atoms';
+import { BottomSheet, BottomSheetHandle, Button, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { WalletBackupCard } from './WalletBackupCard/WalletBackupCard';
 import { WalletBackupSheetFooter } from './WalletBackupSheetFooter';
+import { WalletBackupType } from '../../screens/WalletBackupTutorialScreen';
 
 const containerStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp32,
@@ -22,9 +23,9 @@ const legacyButtonStyle = prepareNativeStyle(utils => ({
 interface WalletBackupSheetProps {
     isDisplayed: boolean;
     onCloseModal: () => void;
+    selectedType: WalletBackupType;
+    onSelectType: (type: WalletBackupType) => void;
 }
-
-export type WalletBackupType = 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
 
 const walletOptions = [
     'shamir-single',
@@ -33,11 +34,16 @@ const walletOptions = [
     '24-words',
 ] as const satisfies WalletBackupType[];
 
-export const WalletBackupSheet = ({ onCloseModal, isDisplayed }: WalletBackupSheetProps) => {
-    const [selectedType, setSelectedType] = useState<WalletBackupType>('shamir-single');
+export const WalletBackupSheet = ({
+    onCloseModal,
+    isDisplayed,
+    onSelectType,
+    selectedType,
+}: WalletBackupSheetProps) => {
     const [showLegacyOptions, setShowLegacyOptions] = useState(false);
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
+    const bottomSheetRef = useRef<BottomSheetHandle>(null);
 
     const displayLegacyOptions = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -45,7 +51,7 @@ export const WalletBackupSheet = ({ onCloseModal, isDisplayed }: WalletBackupShe
     };
 
     const submitSelection = () => {
-        // TODO: Not implemented yet
+        bottomSheetRef.current?.closeWithAnimation();
     };
 
     return (
@@ -53,6 +59,7 @@ export const WalletBackupSheet = ({ onCloseModal, isDisplayed }: WalletBackupShe
             title={translate('moduleDeviceOnboarding.walletBackupSheet.title')}
             isVisible={isDisplayed}
             onClose={onCloseModal}
+            ref={bottomSheetRef}
             footer={
                 <WalletBackupSheetFooter selectedType={selectedType} onSubmit={submitSelection} />
             }
@@ -70,7 +77,7 @@ export const WalletBackupSheet = ({ onCloseModal, isDisplayed }: WalletBackupShe
                             type={type}
                             isVisible={isVisible}
                             isSelected={isSelected}
-                            setSelectedType={setSelectedType}
+                            setSelectedType={onSelectType}
                         />
                     );
                 })}

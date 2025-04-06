@@ -1,7 +1,7 @@
 import { VStack } from '@suite-native/atoms';
 
 import { CardContentRow } from './CardContentRow';
-import { WalletBackupType } from '../WalletBackupSheet';
+import { WalletBackupType } from '../../../screens/WalletBackupTutorialScreen';
 import { walletBackupSheetCopyByType } from '../presets';
 
 type CardContentProps = {
