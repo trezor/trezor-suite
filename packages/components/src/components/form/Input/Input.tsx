@@ -145,7 +145,7 @@ const Input = ({
     const [measureRightAddon, { width: rightAddonWidth }] = useMeasure<HTMLDivElement>();
 
     return (
-        <FormCell {...formCellProps}>
+        <FormCell {...formCellProps} data-testid={dataTest}>
             <InputWrapper
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}

@@ -59,6 +59,7 @@ export type FormCellProps = AllowedFrameProps & {
     isDisabled?: boolean;
     children: ReactNode;
     className?: string;
+    'data-testid'?: string;
 };
 
 export const FormCell = ({
@@ -72,6 +73,7 @@ export const FormCell = ({
     inputState,
     isDisabled,
     className,
+    'data-testid': dataTestId,
     ...rest
 }: FormCellProps) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -98,6 +100,7 @@ export const FormCell = ({
                         isDisabled={isDisabled}
                         iconComponent={bottomTextIconComponent}
                         iconName={bottomTextIconName}
+                        data-testid={dataTestId ? `${dataTestId}/bottom-text` : undefined}
                     >
                         {bottomText}
                     </BottomText>

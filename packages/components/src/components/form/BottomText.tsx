@@ -42,6 +42,7 @@ type BottomTextProps = {
     iconComponent?: ReactNode;
     iconName?: IconName;
     children: ReactNode;
+    'data-testid'?: string;
 };
 
 export const BottomText = ({
@@ -50,6 +51,7 @@ export const BottomText = ({
     iconComponent,
     iconName,
     children,
+    'data-testid': dataTestId,
 }: BottomTextProps) => {
     const variant = isDisabled ? 'disabled' : mapInputStateToUIVariant(inputState);
 
@@ -60,7 +62,13 @@ export const BottomText = ({
                     (iconName && (
                         <Icon name={iconName} size="medium" variant={variant as IconVariant} />
                     ))}
-                <Text variant={variant as TextVariant} typographyStyle="hint" as="div" flex="auto">
+                <Text
+                    data-testid={dataTestId}
+                    variant={variant as TextVariant}
+                    typographyStyle="hint"
+                    as="div"
+                    flex="auto"
+                >
                     {children}
                 </Text>
             </Row>

@@ -1,38 +1,23 @@
 import { Locator, Page, Response } from '@playwright/test';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { regional } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { getCompanyNameFromList, invityEndpoint } from '../../fixtures/invity';
-import { TrezorUserEnvLinkProxy, formatAddress, step } from '../common';
+import {
+    TrezorUserEnvLinkProxy,
+    calculatePercentageOfBalance,
+    formatAddress,
+    getCountryLabel,
+    paymentMethodToCamelCase,
+    step,
+} from '../common';
 import { DevicePrompt } from './devicePrompt';
 import { solanaUrlPattern } from '../mocks/tradingMock';
 import { expect } from '../testExtends/customMatchers';
+import { PaymentMethods, PercentageOfBalanceParams } from '../types';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
-const getCountryLabel = (country: string) => {
-    const labelWithFlag = regional.countriesMap.get(country);
-    if (!labelWithFlag) {
-        throw new Error(`Country ${country} not found in the countries map`);
-    }
-
-    return labelWithFlag.substring(labelWithFlag.indexOf(' ') + 1);
-};
-
-const paymentMethodToCamelCase = (text: string) =>
-    text
-        .split(' ')
-        .map((word, index) => (index === 0 ? word.toLowerCase() : word))
-        .join('') as PaymentMethods;
-
-type PaymentMethods =
-    | 'googlePay'
-    | 'applePay'
-    | 'creditCard'
-    | 'paypal'
-    | 'bankTransfer'
-    | 'revolutPay';
 
 const accountTabFilters = [
     'all-networks',
@@ -67,11 +52,14 @@ export class TradingPage {
         this.page.getByTestId(`@trading/form/fiat-currency-select/option/${currency}`);
     readonly youPayFiatCryptoSwitchButton: Locator;
     readonly youPayCryptoInput: Locator;
+    readonly cryptoInputBottomText: Locator;
     readonly youPayFractionButton = (amount: '10%' | '25%' | '50%' | 'Max') =>
         this.page.getByRole('button', { name: amount });
     readonly feeButton = (fee: 'economy' | 'normal' | 'high' | 'custom') =>
         this.page.getByTestId(`select-bar/${fee}`);
     readonly customFeeInput: Locator;
+    readonly customFeeAmount: Locator;
+    readonly miscFeeAmount: Locator;
     readonly countryOfResidenceDropdown: Locator;
     readonly countryOfResidenceOption = (countryCode: string) =>
         this.page.getByTestId(`@trading/form/country-select/option/${countryCode}`);
@@ -154,7 +142,12 @@ export class TradingPage {
             '@trading/form/switch-crypto-fiat',
         );
         this.youPayCryptoInput = this.page.getByTestId('@trading/form/crypto-input');
+        this.cryptoInputBottomText = this.page.getByTestId(
+            '@trading/form/crypto-input/bottom-text',
+        );
         this.customFeeInput = this.page.getByTestId('feePerUnit');
+        this.customFeeAmount = this.page.getByTestId('@trading/quote/custom-fee-amount');
+        this.miscFeeAmount = this.page.getByTestId('@wallet/misc-fee-amount');
         this.countryOfResidenceDropdown = this.page.getByTestId(
             '@trading/form/country-select/input',
         );
@@ -498,5 +491,27 @@ export class TradingPage {
     async verifySwapFormOpened(cryptoName: string) {
         await expect(this.swapFromAccountInput).toContainText(cryptoName);
         await expect(this.page.getByText('Swap amount')).toBeVisible();
+    }
+
+    @step()
+    async expectInputToBe(params: PercentageOfBalanceParams) {
+        const expectedValue = calculatePercentageOfBalance(params);
+        await expect.soft(this.youPayCryptoInput).toHaveValue(expectedValue);
+    }
+
+    @step()
+    async getSolanaFee() {
+        const lamportsToSolanaRatio = 1_000_000_000;
+        const feeWithSymbol = await this.miscFeeAmount.textContent();
+        if (!feeWithSymbol) {
+            throw new Error('Fee amount is undefined or null');
+        }
+
+        const feeParts = feeWithSymbol.split(' ');
+        if (feeParts.length === 0 || isNaN(parseFloat(feeParts[0]))) {
+            throw new Error('Fee amount is invalid');
+        }
+
+        return parseFloat(feeParts[0]) / lamportsToSolanaRatio;
     }
 }

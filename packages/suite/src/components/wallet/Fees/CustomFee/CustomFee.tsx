@@ -126,6 +126,7 @@ export const CustomFee = <TFieldValues extends FormState>({
                         <Row gap={spacings.xxs}>
                             <Text variant="default" typographyStyle="hint">
                                 <FormattedCryptoAmount
+                                    data-testid="@trading/quote/custom-fee-amount"
                                     disableHiddenPlaceholder
                                     value={cachedNetworkAmount}
                                     symbol={symbol}

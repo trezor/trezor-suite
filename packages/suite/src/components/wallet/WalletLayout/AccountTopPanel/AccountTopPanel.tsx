@@ -76,7 +76,11 @@ export const AccountTopPanel = forwardRef<HTMLDivElement>((_, ref) => {
                 <div>
                     <AmountUnitSwitchWrapper symbol={symbol}>
                         <AccountCryptoBalance>
-                            <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
+                            <FormattedCryptoAmount
+                                data-testid="@wallet/account-top-panel/crypto-balance"
+                                value={formattedBalance}
+                                symbol={symbol}
+                            />
                         </AccountCryptoBalance>
                     </AmountUnitSwitchWrapper>
 

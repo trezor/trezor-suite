@@ -44,6 +44,7 @@ export class WalletPage {
     readonly walletFilter = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@account-menu/filter/${symbol}`);
     readonly showMoreButton: Locator;
+    readonly topPanelBalance: Locator;
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
@@ -76,6 +77,7 @@ export class WalletPage {
         this.transactionAddress = this.page.getByTestId('@wallet/transaction/target-address');
         this.fiatAmount = this.page.getByTestId('@wallet/account-top-panel/fiat-amount');
         this.showMoreButton = this.page.getByTestId('@wallet/receive/used-address/show-more');
+        this.topPanelBalance = this.page.getByTestId('@wallet/account-top-panel/crypto-balance');
     }
 
     accountButton = ({

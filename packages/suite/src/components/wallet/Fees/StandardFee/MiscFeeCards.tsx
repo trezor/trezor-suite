@@ -43,7 +43,7 @@ export const MiscFeeCards = ({
                 }
                 bottomRightChild={
                     shouldShowCurrentFee && (
-                        <Text variant="tertiary">
+                        <Text data-testid="@wallet/misc-fee-amount" variant="tertiary">
                             {feeAmount} {getFeeUnits(networkType)}
                         </Text>
                     )

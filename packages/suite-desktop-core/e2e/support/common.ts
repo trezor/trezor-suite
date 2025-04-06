@@ -3,11 +3,14 @@ import { isEqual, omit } from 'lodash';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
 
+import { regional } from '@suite-common/trading';
+import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { splitStringEveryNCharacters } from '@trezor/utils';
 
 import releases from '../../../../submodules/trezor-common/releases.json';
 import { PlaywrightProjects } from '../playwright.config';
+import { PaymentMethods, PercentageOfBalanceParams } from './types';
 
 export const isDesktopProject = (testInfo: TestInfo) =>
     testInfo.project.name === PlaywrightProjects.Desktop;
@@ -31,8 +34,9 @@ export function step(stepName?: string) {
     return function decorator(target: Function, context: ClassMethodDecoratorContext) {
         return function replacementMethod(this: any, ...args: any) {
             const name = stepName || `${this.constructor.name + '.' + (context.name as string)}`;
+            const params = args.map((arg: any) => JSON.stringify(arg)).join(', '); // Serialize arguments
 
-            return test.step(name, async () => await target.call(this, ...args));
+            return test.step(`${name}(${params})`, async () => await target.call(this, ...args));
         };
     };
     /* eslint-enable @typescript-eslint/no-unsafe-function-type */
@@ -95,4 +99,29 @@ export const findLatestVersionForModel = (
     }
 
     throw new Error(`No firmware version found for model ${model}`);
+};
+
+export const getCountryLabel = (country: string) => {
+    const labelWithFlag = regional.countriesMap.get(country);
+    if (!labelWithFlag) {
+        throw new Error(`Country ${country} not found in the countries map`);
+    }
+
+    return labelWithFlag.substring(labelWithFlag.indexOf(' ') + 1);
+};
+
+export const paymentMethodToCamelCase = (text: string) =>
+    text
+        .split(' ')
+        .map((word, index) => (index === 0 ? word.toLowerCase() : word))
+        .join('') as PaymentMethods;
+
+export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {
+    if (params.balance === null) {
+        throw new Error('Account balance is null');
+    }
+    const fraction = (parseFloat(params.balance) * params.percentage) / 100;
+    const maxDecimals = getAccountDecimals(params.symbol);
+
+    return localizeNumber(fraction, 'en', 0, maxDecimals);
 };
