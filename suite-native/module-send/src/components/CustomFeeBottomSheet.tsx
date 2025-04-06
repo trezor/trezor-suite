@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRoute } from '@react-navigation/native';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AlertBox, BottomSheet, Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { BottomSheet, Button, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -102,10 +102,9 @@ export const CustomFeeBottomSheet = ({ isVisible, onClose }: CustomFeeBottomShee
                 </HStack>
                 {isErrorBoxVisible && (
                     <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
-                        <AlertBox
-                            variant="error"
+                        <InlineAlertBox
+                            variant="critical"
                             title={<Translation id="moduleSend.fees.error" />}
-                            contentColor="textDefault"
                         />
                     </Animated.View>
                 )}

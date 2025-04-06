@@ -6,7 +6,7 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { Box, Card } from '@suite-native/atoms';
+import { Box, Card, InlineAlertBoxProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { AddressQRCode } from '@suite-native/qr-code';
 
@@ -34,41 +34,41 @@ export const ReceiveAddressCard = ({
 
     const { networkType, name: networkName } = getNetwork(symbol);
 
-    const getCardAlertProps = () => {
+    const getCardAlertProps = (): InlineAlertBoxProps | undefined => {
         if (isReceiveApproved && !isPortfolioTrackerDevice && !isDeviceInViewOnlyMode) {
             return {
-                alertTitle: <Translation id="moduleReceive.receiveAddressCard.alert.success" />,
-                alertVariant: 'success',
-            } as const;
+                title: <Translation id="moduleReceive.receiveAddressCard.alert.success" />,
+                variant: 'success',
+            };
         }
         if (symbol === 'ada' && isUnverifiedAddressRevealed) {
             return {
-                alertTitle: (
+                title: (
                     <Translation id="moduleReceive.receiveAddressCard.alert.longCardanoAddress" />
                 ),
-                alertVariant: 'info',
-            } as const;
+                variant: 'info',
+            };
         }
         if (isTokenAddress) {
             return {
-                alertTitle: (
+                title: (
                     <Translation
                         id="moduleReceive.receiveAddressCard.alert.token"
                         values={{ networkName }}
                     />
                 ),
-                alertVariant: 'info',
-            } as const;
+                variant: 'info',
+            };
         }
 
-        return { alertTitle: undefined, alertVariant: undefined } as const;
+        return undefined;
     };
 
     const cardAlertProps = getCardAlertProps();
 
     return (
         <Animated.View layout={Layout}>
-            <Card {...cardAlertProps}>
+            <Card alertProps={cardAlertProps}>
                 <Box paddingVertical="sp8">
                     {isReceiveApproved ? (
                         <AddressQRCode address={address} />

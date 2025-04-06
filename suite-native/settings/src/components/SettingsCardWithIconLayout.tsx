@@ -1,6 +1,14 @@
 import { ReactNode } from 'react';
 
-import { AlertBox, AlertBoxProps, Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    Box,
+    Card,
+    HStack,
+    InlineAlertBox,
+    InlineAlertBoxProps,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -13,7 +21,7 @@ type DeviceSettingsCardProps = {
     icon: IconName;
     title: ReactNode;
     children: ReactNode;
-    alertBoxProps?: Omit<AlertBoxProps, 'borderRadius'>;
+    alertBoxProps?: Omit<InlineAlertBoxProps, 'borderRadius'>;
 };
 
 export const SettingsCardWithIconLayout = ({
@@ -37,7 +45,7 @@ export const SettingsCardWithIconLayout = ({
             </HStack>
             {alertBoxProps && (
                 <Box margin="sp4">
-                    <AlertBox {...alertBoxProps} borderRadius="r12" />
+                    <InlineAlertBox {...alertBoxProps} />
                 </Box>
             )}
         </Card>

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
-import { AlertBox, Box, HStack, Image, VStack } from '@suite-native/atoms';
+import { Box, HStack, Image, InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -46,10 +46,8 @@ export const SecuritySealImages = () => {
                     style={applyStyle(T3B1ImageStyle)}
                 />
             </HStack>
-            <AlertBox
+            <InlineAlertBox
                 variant="info"
-                textVariant="hint"
-                contentColor="textDefault"
                 title={
                     <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.modal.alertBox" />
                 }

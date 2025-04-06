@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { AlertBox, Box, ErrorMessage, VStack } from '@suite-native/atoms';
+import { Box, ErrorMessage, InlineAlertBox, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorImage,
     selectHasFirmwareAuthenticityCheckHardFailed,
@@ -91,9 +91,8 @@ export const ReceiveAddressScreen = ({
             <Box flex={1}>
                 <VStack marginTop="sp8" spacing="sp16">
                     {showXrpInfo && (
-                        <AlertBox
+                        <InlineAlertBox
                             variant="info"
-                            contentColor="textDefault"
                             title={
                                 <Translation
                                     id="moduleReceive.xrpDestinationTag"

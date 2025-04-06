@@ -21,7 +21,7 @@ describe('Card', () => {
     });
 
     it('should render children and alert, when alert props are specified', () => {
-        const { getByText } = renderComponent({ alertTitle: 'alert', alertVariant: 'info' });
+        const { getByText } = renderComponent({ alertProps: { title: 'alert', variant: 'info' } });
 
         expect(getByText('hello')).toBeDefined();
         expect(getByText('alert')).toBeDefined();

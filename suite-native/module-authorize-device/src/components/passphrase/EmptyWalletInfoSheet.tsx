@@ -1,12 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    AlertBox,
     BottomSheet,
     BottomSheetListItem,
     Box,
     Button,
-    Text,
+    InlineAlertBox,
     TitleHeader,
     VStack,
 } from '@suite-native/atoms';
@@ -92,12 +91,10 @@ export const EmptyWalletInfoSheet = ({ onClose, isVisible }: EmptyWalletInfoShee
                 />
             </VStack>
             <VStack style={applyStyle(bottomSheetBottomStyle)}>
-                <AlertBox
+                <InlineAlertBox
                     variant="warning"
                     title={
-                        <Text color="textDefault" variant="callout">
-                            <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.alertTitle" />
-                        </Text>
+                        <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.alertTitle" />
                     }
                 />
                 <Box style={applyStyle(buttonWrapperStyle)}>

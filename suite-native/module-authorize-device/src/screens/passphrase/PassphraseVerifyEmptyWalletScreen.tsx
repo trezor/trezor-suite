@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import { AlertBox, Text, TitleHeader, VStack } from '@suite-native/atoms';
+import { InlineAlertBox, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import {
     finishPassphraseFlow,
     verifyPassphraseOnEmptyWalletThunk,
@@ -46,17 +46,15 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                     }
                     titleVariant="titleMedium"
                 />
-                <AlertBox
+                <InlineAlertBox
                     variant="warning"
                     title={
-                        <Text variant="hint">
-                            <Translation
-                                id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.alertTitle"
-                                values={{
-                                    bold: chunks => <Text variant="callout">{chunks}</Text>,
-                                }}
-                            />
-                        </Text>
+                        <Translation
+                            id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.alertTitle"
+                            values={{
+                                bold: chunks => <Text variant="callout">{chunks}</Text>,
+                            }}
+                        />
                     }
                 />
                 <PassphraseForm

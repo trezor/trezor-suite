@@ -3,22 +3,19 @@ import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { G } from '@mobily/ts-belt';
-import { RequireAllOrNone } from 'type-fest';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { AlertBox, AlertBoxProps } from '../AlertBox';
+import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 
 export type CardProps = {
     children: ReactNode;
     style?: NativeStyleObject;
     noPadding?: boolean;
     borderColor?: Color;
-} & RequireAllOrNone<
-    { alertVariant: AlertBoxProps['variant']; alertTitle: AlertBoxProps['title'] },
-    'alertVariant' | 'alertTitle'
->;
+    alertProps?: InlineAlertBoxProps;
+};
 
 const cardOuterContainerStyle = prepareNativeStyle<{
     flex?: number;
@@ -63,19 +60,16 @@ const alertBoxWrapperStyle = prepareNativeStyle(utils => ({
 }));
 
 export const Card = React.forwardRef<View, CardProps>(
-    (
-        { children, style, alertVariant, alertTitle, borderColor, noPadding = false }: CardProps,
-        ref,
-    ) => {
+    ({ children, style, alertProps, borderColor, noPadding = false }: CardProps, ref) => {
         const { applyStyle } = useNativeStyles();
 
-        const isAlertDisplayed = !!alertVariant;
+        const isAlertDisplayed = !!alertProps;
 
         return (
             <View style={applyStyle(cardOuterContainerStyle, { flex: style?.flex })}>
                 {isAlertDisplayed && (
                     <View style={applyStyle(alertBoxWrapperStyle)}>
-                        <AlertBox variant={alertVariant} title={alertTitle} borderRadius={12} />
+                        <InlineAlertBox {...alertProps} />
                     </View>
                 )}
                 {/* CAUTION: in case that alert is displayed, it is not possible to change styles of the top borders by the `style` prop. */}

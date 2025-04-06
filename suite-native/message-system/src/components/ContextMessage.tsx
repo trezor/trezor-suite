@@ -6,43 +6,35 @@ import {
     MessageSystemRootState,
     selectContextMessage,
 } from '@suite-common/message-system';
-import { Message } from '@suite-common/suite-types';
-import { AlertBox, AlertBoxVariant } from '@suite-native/atoms';
+import { InlineAlertBox } from '@suite-native/atoms';
 
-import { MessageLink } from './MessageLink';
+import { useHandleMessageLink } from '../hooks/useHandleMessageLink';
 
 type ContextMessageProps = AccessibilityProps & {
     context: (typeof Context)[keyof typeof Context];
 };
 
-const getAlertBoxVariantForMessage = (message: Message): AlertBoxVariant => {
-    if (message.variant === 'critical') {
-        return 'error';
-    }
-
-    return message.variant;
-};
-
 export const ContextMessage = ({ context, ...rest }: ContextMessageProps) => {
     // TODO: We use only English locale in suite-native so far. When the localization to other
-    // languages is implemented, the language selection logic has to be added here.
     const language = 'en';
+    // languages is implemented, the language selection logic has to be added here.
     const message = useSelector((state: MessageSystemRootState) =>
         selectContextMessage(state, context),
     );
 
+    const { linkLabel, handleLinkPress } = useHandleMessageLink({
+        messageCTA: message?.cta,
+        language,
+    });
+
     if (!message) return null;
 
     return (
-        <AlertBox
-            variant={getAlertBoxVariantForMessage(message)}
-            textVariant="hint"
+        <InlineAlertBox
+            variant={message.variant}
             title={message.content[language]}
-            rightButton={
-                message.cta && (
-                    <MessageLink messageCTA={message.cta} language={language} textVariant="hint" />
-                )
-            }
+            buttonLabel={linkLabel}
+            onButtonPress={handleLinkPress}
             {...rest}
         />
     );

@@ -2,7 +2,6 @@ import { useRef, useState } from 'react';
 import { TextInput, View } from 'react-native';
 
 import {
-    AlertBox,
     Badge,
     BadgeVariant,
     Box,
@@ -14,6 +13,7 @@ import {
     HStack,
     Hint,
     IconButton,
+    InlineAlertBox,
     Input,
     InputWrapper,
     NumPadButton,
@@ -385,13 +385,13 @@ export const DemoScreen = () => {
                     <Box marginTop="sp16" marginBottom="sp16">
                         <Text>AlertBox:</Text>
                         <VStack spacing="sp16">
-                            <AlertBox variant="info" title="Info" />
-                            <AlertBox variant="success" title="Success" />
-                            <AlertBox variant="error" title="Error" />
+                            <InlineAlertBox variant="info" title="Info" />
+                            <InlineAlertBox variant="success" title="Success" />
+                            <InlineAlertBox variant="critical" title="Error" />
                             <Box>
-                                <AlertBox variant="warning" title="Warning" />
+                                <InlineAlertBox variant="warning" title="Warning" />
                             </Box>
-                            <AlertBox
+                            <InlineAlertBox
                                 variant="info"
                                 title={
                                     <>

@@ -101,6 +101,7 @@ const usedIcons = [
     'shieldCheck',
     'shieldWarning',
     'shuffle',
+    'spinnerGap',
     'stack',
     'star',
     'starFilled',

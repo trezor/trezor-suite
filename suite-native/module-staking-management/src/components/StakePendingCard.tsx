@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { Box, Card, Text } from '@suite-native/atoms';
+import { Box, Card, InlineAlertBoxProps, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -39,32 +39,29 @@ const getCardAlertProps = (
     symbol: NetworkSymbol | null,
     isStakeConfirming: boolean,
     isStakePending: boolean,
-) => {
-    if (!symbol) {
-        return { alertTitle: undefined, alertVariant: undefined } as const;
-    }
+): InlineAlertBoxProps | undefined => {
+    if (!symbol) return undefined;
 
     if (isStakeConfirming && !isStakePending) {
         return {
-            alertTitle: <Translation id="staking.stakePendingCard.transactionPending" />,
-            alertVariant: 'loading',
-        } as const;
+            title: <Translation id="staking.stakePendingCard.transactionPending" />,
+            variant: 'warning',
+            iconName: 'spinnerGap',
+        };
     }
     if (!isStakeConfirming && isStakePending) {
         return {
-            alertTitle: isSolana(symbol) ? (
+            title: isSolana(symbol) ? (
                 <Translation id="staking.stakePendingCard.activatingStake" />
             ) : (
                 <Translation id="staking.stakePendingCard.addingToStakingPool" />
             ),
-            alertVariant: 'loading',
-        } as const;
+            variant: 'warning',
+            iconName: 'spinnerGap',
+        };
     }
 
-    return {
-        alertTitle: undefined,
-        alertVariant: undefined,
-    } as const;
+    return undefined;
 };
 
 const getTitle = (symbol: NetworkSymbol) =>
@@ -100,13 +97,13 @@ export const StakePendingCard = ({
         [symbol, isStakeConfirming, isStakePending],
     );
 
-    if (!symbol || !cardAlertProps.alertVariant) return null;
+    if (!symbol || !cardAlertProps?.variant) return null;
 
     const title = getTitle(symbol);
 
     return (
         <TouchableOpacity onPress={() => handleToggleBottomSheet(true)}>
-            <Card {...cardAlertProps}>
+            <Card alertProps={cardAlertProps}>
                 <Box style={applyStyle(stakingItemStyle)}>
                     <Box flex={1} flexDirection="row" alignItems="center">
                         <Text>{title}</Text>

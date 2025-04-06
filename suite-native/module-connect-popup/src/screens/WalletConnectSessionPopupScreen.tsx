@@ -8,11 +8,11 @@ import {
     sessionProposalRejectThunk,
 } from '@suite-common/walletconnect';
 import {
-    AlertBox,
     Badge,
     Button,
     HStack,
     Image,
+    InlineAlertBox,
     Text,
     TitleHeader,
     VStack,
@@ -100,14 +100,14 @@ export const WalletConnectSessionPopupScreen = () => {
                 </Text>
 
                 {pendingProposal?.isScam && (
-                    <AlertBox
-                        variant="error"
+                    <InlineAlertBox
+                        variant="critical"
                         title={<Translation id="moduleConnectPopup.walletConnect.errors.isScam" />}
                     />
                 )}
                 {pendingProposal?.validation === 'INVALID' && (
-                    <AlertBox
-                        variant="error"
+                    <InlineAlertBox
+                        variant="critical"
                         title={
                             <Translation id="moduleConnectPopup.walletConnect.errors.unableToVerify" />
                         }
@@ -115,7 +115,7 @@ export const WalletConnectSessionPopupScreen = () => {
                 )}
 
                 {pendingProposal?.expired && (
-                    <AlertBox
+                    <InlineAlertBox
                         variant="warning"
                         title={
                             <Translation id="moduleConnectPopup.walletConnect.errors.requestExpired" />

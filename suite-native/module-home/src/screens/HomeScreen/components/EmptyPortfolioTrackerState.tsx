@@ -51,8 +51,10 @@ export const EmptyPortfolioTrackerState = () => {
     return (
         <VStack spacing="sp32">
             <Card
-                alertVariant="info"
-                alertTitle={<Translation id="moduleHome.emptyState.portfolioTracker.alert" />}
+                alertProps={{
+                    title: <Translation id="moduleHome.emptyState.portfolioTracker.alert" />,
+                    variant: 'info',
+                }}
                 style={applyStyle(cardStyle)}
             >
                 <VStack spacing="sp32" alignItems="center" justifyContent="center">

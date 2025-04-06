@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { TextInput } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { AlertBox, AnimatedVStack, HStack, Switch, Text, VStack } from '@suite-native/atoms';
+import { AnimatedVStack, HStack, InlineAlertBox, Switch, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { integerTransformer } from '@suite-native/helpers';
 import { Icon } from '@suite-native/icons';
@@ -102,7 +102,7 @@ export const DestinationTagInput = () => {
                 </AnimatedVStack>
             ) : (
                 <Animated.View entering={FadeIn} exiting={FadeOut}>
-                    <AlertBox
+                    <InlineAlertBox
                         variant="warning"
                         title={
                             <Translation id="moduleSend.outputs.recipients.destinationTag.warning" />
