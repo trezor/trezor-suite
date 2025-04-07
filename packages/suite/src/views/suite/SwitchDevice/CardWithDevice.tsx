@@ -4,16 +4,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { acquireDevice, selectDeviceThunk } from '@suite-common/wallet-core';
-import { Banner, Card, IconName, motionAnimation, useElevation } from '@trezor/components';
+import { Card, IconName, motionAnimation, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
-import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
-import { Translation } from 'src/components/suite';
-import { useDevice, useDispatch } from 'src/hooks/suite';
 import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 import { DeviceHeader } from './DeviceItem/DeviceHeader';
+import { NeedsAttentionBanner } from './NeedsAttentionBanner';
 
 const Content = styled.div<{ $elevation: Elevation }>`
     padding-top: ${spacingsPx.xs};
@@ -66,26 +63,6 @@ export const CardWithDevice = ({
     const isUnknown = device.type !== 'acquired';
     const { elevation } = useElevation();
 
-    const deviceResolveIssueCTAMessage = deviceUtils.getDeviceResolveStatusCTAMessage(deviceStatus);
-    const deviceStatusBannerVariant = deviceUtils.getDeviceStatusWarningVariant(deviceStatus);
-    const deviceStatusMessage = deviceUtils.getDeviceNeedsAttentionMessage(deviceStatus);
-    const isLocked = useDevice().isLocked(true);
-    const dispatch = useDispatch();
-
-    const onSolveIssueClick = () => {
-        const needsAcquire =
-            device.type === 'unacquired' ||
-            deviceStatus === 'used-in-other-window' ||
-            deviceStatus === 'was-used-in-other-window';
-        if (needsAcquire) {
-            dispatch(acquireDevice(device));
-        } else {
-            dispatch(selectDeviceThunk({ device }));
-            dispatch(redirectAfterWalletSelectedThunk());
-            onCancel?.(false);
-        }
-    };
-
     return (
         <Card paddingType="small">
             <DeviceWrapper>
@@ -100,20 +77,11 @@ export const CardWithDevice = ({
                 />
 
                 {needsAttention && (
-                    <Banner
-                        variant={deviceStatusBannerVariant}
-                        rightContent={
-                            <Banner.Button
-                                onClick={onSolveIssueClick}
-                                data-testid="@switch-device/solve-issue-button"
-                                isDisabled={isLocked}
-                            >
-                                <Translation id={deviceResolveIssueCTAMessage} />
-                            </Banner.Button>
-                        }
-                    >
-                        {deviceStatusMessage && <Translation id={deviceStatusMessage} />}
-                    </Banner>
+                    <NeedsAttentionBanner
+                        device={device}
+                        deviceStatus={deviceStatus}
+                        onCancel={onCancel}
+                    />
                 )}
 
                 {!needsAttention && (

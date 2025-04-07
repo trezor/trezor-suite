@@ -91,6 +91,7 @@ export * from './components/typography/Text/Text';
 export * from './components/typography/Code/Code';
 export * from './components/typography/TruncateWithTooltip/TruncateWithTooltip';
 export * from './components/Banner/Banner';
+export type { BannerVariant } from './components/Banner/types';
 export { Table, type TableProps } from './components/Table/Table';
 export { Tabs, type TabsProps } from './components/Tabs/Tabs';
 export { SubTabs, type SubTabsProps } from './components/SubTabs/SubTabs';

@@ -48,11 +48,6 @@ const Wrapper = styled.div`
 
 const BottomAnimatedContainer = styled(motion.div)`
     display: flex;
-    margin-top: 60px;
-`;
-
-const ButtonWrapper = styled.div`
-    margin-top: 30px;
 `;
 
 const Bluetooth = () => (
@@ -121,7 +116,13 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
     const deviceStatus = (device && getStatus(device)) ?? null;
 
     return (
-        <Column alignItems="center">
+        <Column alignItems="center" gap={spacings.xxxl}>
+            {allowSwitchDevice && connectedDevicesCount > 1 && (
+                <Button variant="tertiary" onClick={handleSwitchDeviceClick} icon="trezorDevices">
+                    <Translation id="TR_SWITCH_DEVICE" />
+                </Button>
+            )}
+
             <ConnectDevicePrompt
                 connected={!!device}
                 deviceStatus={deviceStatus}
@@ -132,14 +133,6 @@ const NonBluetooth = ({ allowSwitchDevice, setIsBluetoothConnectOpen }: NonBluet
                 showWarningIcon={shouldDisplayInitialWarningIcon(deviceStatus)}
                 prerequisite={prerequisite}
             />
-
-            {allowSwitchDevice && connectedDevicesCount > 1 && (
-                <ButtonWrapper>
-                    <Button variant="tertiary" onClick={handleSwitchDeviceClick}>
-                        <Translation id="TR_SWITCH_DEVICE" />
-                    </Button>
-                </ButtonWrapper>
-            )}
 
             <BottomAnimatedContainer
                 initial={{ opacity: 0 }}

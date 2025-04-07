@@ -3139,6 +3139,10 @@ export default defineMessages({
         defaultMessage: 'Select',
         id: 'TR_SELECT_DEVICE_SHORT',
     },
+    TR_CONTINUE_SETUP: {
+        defaultMessage: 'Continue Setup',
+        id: 'TR_CONTINUE_SETUP',
+    },
     TR_SELECT_PASSPHRASE_SOURCE: {
         defaultMessage: 'Select where to enter passphrase on {deviceLabel}',
         id: 'TR_SELECT_PASSPHRASE_SOURCE',

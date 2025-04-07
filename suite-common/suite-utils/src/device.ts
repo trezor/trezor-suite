@@ -85,8 +85,6 @@ export const isDevicePerceivedAsNew = (device: TrezorDevice | null | undefined) 
 
 export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus) => {
     switch (deviceStatus) {
-        // case 'firmware-recommended':
-        // case 'unavailable': // this case is already solved in Account view @wallet-components/AccountMode/DeviceUnavailable
         case 'bootloader': // note: this is also state when the device is completely new
         case 'initialize':
         case 'seedless':
@@ -96,8 +94,18 @@ export const deviceNeedsAttention = (deviceStatus: ConnectedDeviceStatus) => {
         case 'firmware-required':
         case 'unreadable':
             return true;
-        default:
+
+        case 'disconnected':
+        case 'unavailable': // this case is already solved in Account view @wallet-components/AccountMode/DeviceUnavailable
+        case 'firmware-recommended':
+        case 'connected':
+        case 'unknown':
             return false;
+
+        default: {
+            const _unhandledCase: never = deviceStatus;
+            throw new Error(`Unhandled type: ${_unhandledCase}`);
+        }
     }
 };
 
@@ -112,58 +120,6 @@ export const shouldDisplayInitialWarningIcon = (deviceStatus: ConnectedDeviceSta
             return false;
         default:
             return true;
-    }
-};
-
-export const getDeviceStatusWarningVariant = (
-    deviceStatus: ReturnType<typeof getStatus>,
-): 'warning' | 'info' => {
-    switch (deviceStatus) {
-        case 'bootloader':
-        case 'initialize':
-            return 'info';
-        default:
-            return 'warning';
-    }
-};
-
-export const getDeviceResolveStatusCTAMessage = (deviceStatus: ReturnType<typeof getStatus>) => {
-    switch (deviceStatus) {
-        case 'bootloader':
-        case 'initialize':
-            return 'TR_SELECT_DEVICE_SHORT';
-        default:
-            return 'TR_SOLVE_ISSUE';
-    }
-};
-
-export const getDeviceNeedsAttentionMessage = (deviceStatus: ReturnType<typeof getStatus>) => {
-    // bootloader:  bootloader
-    // wiped: initialize
-    // without FW: bootloader
-
-    switch (deviceStatus) {
-        // case 'firmware-recommended':
-        case 'bootloader':
-            return 'TR_NEEDS_ATTENTION_NEW_DEVICE';
-        case 'initialize':
-            return 'TR_NEEDS_ATTENTION_INITIALIZE';
-        case 'seedless':
-            return 'TR_NEEDS_ATTENTION_SEEDLESS';
-        case 'used-in-other-window':
-            return 'TR_NEEDS_ATTENTION_USED_IN_OTHER_WINDOW';
-        case 'was-used-in-other-window':
-            return 'TR_NEEDS_ATTENTION_WAS_USED_IN_OTHER_WINDOW';
-        case 'unacquired':
-            return 'TR_NEEDS_ATTENTION_UNACQUIRED';
-        case 'firmware-required':
-            return 'TR_NEEDS_ATTENTION_FIRMWARE_REQUIRED';
-        case 'unavailable':
-            return 'TR_NEEDS_ATTENTION_UNAVAILABLE';
-        case 'unreadable':
-            return 'TR_NEEDS_ATTENTION_UNREADABLE';
-        default:
-            return null;
     }
 };
 
