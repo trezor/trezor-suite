@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Card, Markdown, NewModal } from '@trezor/components';
+import { Card, NewModal } from '@trezor/components';
 
-import { Translation, TrezorLink } from 'src/components/suite';
+import { MarkdownWithComponents, Translation } from 'src/components/suite';
 
 interface AvailableProps {
     onCancel: () => void;
@@ -42,26 +42,7 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
         >
             <Card overflow="auto" label={<Translation id="TR_UPDATE_MODAL_WHATS_NEW" />}>
                 {changelog !== null ? (
-                    <Markdown
-                        components={{
-                            a: ({ children, href }) => {
-                                if (!href) {
-                                    return null;
-                                }
-
-                                // Support for both http(s) links and Tor (.onion) addresses
-                                // All links in release notes are external, so we use TrezorLink
-                                // which handles opening links in external browser
-                                return (
-                                    <TrezorLink variant="underline" href={href}>
-                                        {children}
-                                    </TrezorLink>
-                                );
-                            },
-                        }}
-                    >
-                        {changelog}
-                    </Markdown>
+                    <MarkdownWithComponents>{changelog}</MarkdownWithComponents>
                 ) : (
                     <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
                 )}

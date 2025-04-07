@@ -1,10 +1,10 @@
-import { Card, Checkbox, Column, H4, Markdown, NewModal, Paragraph } from '@trezor/components';
+import { Card, Checkbox, Column, H4, NewModal, Paragraph } from '@trezor/components';
 import { UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import { download } from 'src/actions/suite/desktopUpdateActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite';
+import { MarkdownWithComponents, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
@@ -66,7 +66,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                 </Paragraph>
                 <Card maxHeight={400} overflow="auto" margin={{ top: spacings.sm }}>
                     {latest?.changelog ? (
-                        <Markdown>{latest?.changelog}</Markdown>
+                        <MarkdownWithComponents>{latest?.changelog}</MarkdownWithComponents>
                     ) : (
                         <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
                     )}

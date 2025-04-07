@@ -4,12 +4,12 @@ import {
     getFwUpdateVersion,
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
-import { Column, H4, Icon, Markdown, Row, Text, Tooltip } from '@trezor/components';
+import { Column, H4, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
-import { Translation, TrezorLink } from 'src/components/suite';
+import { MarkdownWithComponents, Translation, TrezorLink } from 'src/components/suite';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
@@ -90,7 +90,9 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                     }
                     content={
                         parsedChangelog ? (
-                            <Markdown>{parsedChangelog.changelog}</Markdown>
+                            <MarkdownWithComponents>
+                                {parsedChangelog.changelog}
+                            </MarkdownWithComponents>
                         ) : undefined
                     }
                     isActive={!!parsedChangelog}

@@ -53,6 +53,7 @@ import { PinMatrix } from './PinMatrix/PinMatrix';
 import { UdevDownload } from './UdevDownload';
 import { StakingFeature } from './StakingFeature';
 import { StakeAmountWrapper } from './StakeAmountWrapper';
+import { MarkdownWithComponents } from './MarkdownWithComponents';
 
 export {
     Address,
@@ -107,6 +108,7 @@ export {
     UdevDownload,
     StakingFeature,
     StakeAmountWrapper,
+    MarkdownWithComponents,
 };
 export * from './graph';
 export * from './notifications';
