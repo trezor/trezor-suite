@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 export interface Timer {
-    timeSpend: {
+    timeSpent: {
         seconds: number;
     };
     resetCount: number;
@@ -13,7 +13,7 @@ export interface Timer {
 }
 
 export const useTimer = (): Timer => {
-    const [timeSpend, setTimeSpend] = useState(0);
+    const [timeSpent, setTimeSpent] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isStopped, setIsStopped] = useState(false);
     const [resetCount, setResetCount] = useState(0);
@@ -30,7 +30,7 @@ export const useTimer = (): Timer => {
         }
 
         intervalRef.current = setInterval(() => {
-            setTimeSpend(prevTime => prevTime + 1000);
+            setTimeSpent(prevTime => prevTime + 1);
         }, 1000);
 
         return () => {
@@ -43,7 +43,7 @@ export const useTimer = (): Timer => {
     const reset = () => {
         setIsLoading(false);
         setResetCount(prev => prev + 1);
-        setTimeSpend(0);
+        setTimeSpent(0);
         setIsStopped(false);
     };
 
@@ -52,15 +52,13 @@ export const useTimer = (): Timer => {
     };
 
     const loading = () => {
-        setTimeSpend(0);
+        setTimeSpent(0);
         setIsLoading(true);
         setIsStopped(false);
     };
 
     return {
-        timeSpend: {
-            seconds: timeSpend / 1000,
-        },
+        timeSpent: { seconds: timeSpent },
         resetCount,
         isStopped,
         isLoading,

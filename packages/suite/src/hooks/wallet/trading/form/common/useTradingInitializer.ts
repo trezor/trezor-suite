@@ -28,7 +28,7 @@ export const useTradingInitializer = ({
                 return;
             }
 
-            if (timer.timeSpend.seconds === INVITY_API_RELOAD_QUOTES_AFTER_SECONDS) {
+            if (timer.timeSpent.seconds === INVITY_API_RELOAD_QUOTES_AFTER_SECONDS) {
                 callback();
             }
         }

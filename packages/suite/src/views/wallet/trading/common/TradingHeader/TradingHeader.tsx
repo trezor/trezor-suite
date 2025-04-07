@@ -80,7 +80,7 @@ export const TradingHeader = ({ title, titleTimer }: TradingHeaderProps) => {
                     <TradingRefreshTime
                         isLoading={timer.isLoading}
                         refetchInterval={INVITY_API_RELOAD_QUOTES_AFTER_SECONDS}
-                        seconds={timer.timeSpend.seconds}
+                        seconds={timer.timeSpent.seconds}
                         label={<Translation id={titleTimer} />}
                     />
                 </HeaderTradingRefreshTime>
