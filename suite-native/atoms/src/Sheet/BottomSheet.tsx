@@ -1,9 +1,16 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { GestureResponderEvent, Platform, Pressable } from 'react-native';
+import {
+    GestureResponderEvent,
+    NativeScrollEvent,
+    NativeSyntheticEvent,
+    Platform,
+    Pressable,
+} from 'react-native';
 import { PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useScrollDivider } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box, BoxProps } from '../Box';
@@ -61,8 +68,7 @@ export const BottomSheet = ({
         closeSheetAnimated,
         openSheetAnimated,
         panGestureEvent,
-        scrollEvent,
-        isScrolling,
+        scrollEvent: handleBottomSheetScroll,
     } = useBottomSheetAnimation({
         onClose,
         isVisible,
@@ -85,6 +91,12 @@ export const BottomSheet = ({
     };
 
     const insetBottom = Math.max(insets.bottom, DEFAULT_INSET_BOTTOM);
+    const { scrollDivider, handleScroll: handleScrollDivider } = useScrollDivider();
+
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        handleScrollDivider(event);
+        handleBottomSheetScroll(event);
+    };
 
     return (
         <BottomSheetContainer isVisible={isVisible} onClose={closeSheetAnimated}>
@@ -112,26 +124,28 @@ export const BottomSheet = ({
                                 subtitle={subtitle}
                                 isCloseDisplayed={isCloseDisplayed}
                                 onCloseSheet={closeSheetAnimated}
-                                isScrolling={isScrolling}
                             />
                             {isScrollable ? (
-                                <ScrollView
-                                    ref={scrollViewRef.current}
-                                    waitFor={
-                                        isCloseScrollEnabled
-                                            ? panGestureRef.current
-                                            : scrollViewRef.current
-                                    }
-                                    onScroll={scrollEvent}
-                                    keyboardShouldPersistTaps="handled"
-                                    testID="@bottom-sheet/scroll-view"
-                                >
-                                    <Animated.View>
-                                        <Box paddingHorizontal="sp16" {...boxProps}>
-                                            {children}
-                                        </Box>
-                                    </Animated.View>
-                                </ScrollView>
+                                <>
+                                    {scrollDivider}
+                                    <ScrollView
+                                        ref={scrollViewRef.current}
+                                        waitFor={
+                                            isCloseScrollEnabled
+                                                ? panGestureRef.current
+                                                : scrollViewRef.current
+                                        }
+                                        onScroll={handleScroll}
+                                        keyboardShouldPersistTaps="handled"
+                                        testID="@bottom-sheet/scroll-view"
+                                    >
+                                        <Animated.View>
+                                            <Box paddingHorizontal="sp16" {...boxProps}>
+                                                {children}
+                                            </Box>
+                                        </Animated.View>
+                                    </ScrollView>
+                                </>
                             ) : (
                                 <Box {...boxProps} style={{ height: '100%' }}>
                                     {children}

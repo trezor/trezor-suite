@@ -37,7 +37,6 @@ export const useBottomSheetAnimation = ({
     const colorOverlay = utils.transparentize(0.3, utils.colors.backgroundNeutralBold);
     const translatePanY = useSharedValue(SCREEN_HEIGHT);
     const animatedTransparency = useSharedValue(transparency);
-    const isScrolling = useSharedValue(false);
 
     useEffect(() => {
         animatedTransparency.value = withTiming(transparency, {
@@ -99,7 +98,6 @@ export const useBottomSheetAnimation = ({
     }, [translatePanY]);
 
     const scrollEvent = ({ nativeEvent }: { nativeEvent: NativeScrollEvent }) => {
-        isScrolling.value = nativeEvent.contentOffset.y > 0;
         if (!setIsCloseScrollEnabled) return;
 
         if (nativeEvent.contentOffset.y <= 0 && !isCloseScrollEnabled) {
@@ -139,6 +137,5 @@ export const useBottomSheetAnimation = ({
         openSheetAnimated,
         panGestureEvent,
         scrollEvent,
-        isScrolling,
     };
 };

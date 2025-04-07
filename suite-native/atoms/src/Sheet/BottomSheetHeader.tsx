@@ -1,20 +1,18 @@
 import { ReactNode } from 'react';
 import { View } from 'react-native';
-import { SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { IconButton } from '../Button/IconButton';
 import { Text } from '../Text';
 import { BottomSheetGrabber } from './BottomSheetGrabber';
-import { AnimatedBox, Box } from '../Box';
+import { Box } from '../Box';
 
 type BottomSheetHeaderProps = {
     title: ReactNode;
     subtitle?: ReactNode;
     isCloseDisplayed: boolean;
     onCloseSheet: () => void;
-    isScrolling: SharedValue<boolean>;
 };
 type SheetHeaderWrapperStyleProps = { isHeaderDisplayed: boolean };
 
@@ -48,26 +46,15 @@ const titlesContainer = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
     }),
 );
 
-const scrollDividerStyle = prepareNativeStyle(({ borders, colors }) => ({
-    marginTop: -borders.widths.small,
-    borderTopWidth: borders.widths.small,
-    borderTopColor: colors.borderElevation0,
-}));
-
 export const BottomSheetHeader = ({
     title,
     subtitle,
     isCloseDisplayed,
     onCloseSheet,
-    isScrolling,
 }: BottomSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
     const isHeaderDisplayed = !!(title || subtitle || isCloseDisplayed);
-
-    const dividerAnimatedStyle = useAnimatedStyle(() => ({
-        opacity: withTiming(isScrolling.value ? 1 : 0, { duration: isScrolling.value ? 500 : 200 }),
-    }));
 
     return (
         <Box
@@ -97,7 +84,6 @@ export const BottomSheetHeader = ({
                     )}
                 </View>
             )}
-            <AnimatedBox style={[applyStyle(scrollDividerStyle), dividerAnimatedStyle]} />
         </Box>
     );
 };
