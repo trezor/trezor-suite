@@ -11,7 +11,7 @@ import {
 } from '@trezor/connect';
 import { ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
-import { Deferred, createDeferred } from '@trezor/utils';
+import { Deferred, createDeferred, resolveAfter } from '@trezor/utils';
 
 import { createHttpReceiver } from './http-receiver';
 import { Dependencies } from '../modules';
@@ -150,8 +150,10 @@ export const exposeConnectWs = ({
                 // check window exists, if not wait for it to be created
                 if (!mainWindowProxy.getInstance()) {
                     logger.info(LOG_PREFIX, 'waiting for window to start');
-                    appInit = createDeferred(10000);
-                    await appInit.promise;
+                    appInit = createDeferred();
+                    // todo: do we actually need to clean this timeout?
+                    const appInitTimeout = resolveAfter(10000);
+                    await Promise.race([appInit.promise, appInitTimeout]);
                     appInit = undefined;
                 }
 
