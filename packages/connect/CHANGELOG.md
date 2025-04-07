@@ -11,7 +11,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.5.4-beta.1
+# 9.5.4
 
 If you are using @trezor/connect-web you must be using at least 9.1.5 starting from this release.
 
