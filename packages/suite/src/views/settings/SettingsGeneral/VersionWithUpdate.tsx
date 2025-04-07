@@ -2,7 +2,11 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import { Button } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { installUpdate, setUpdateModalVisibility } from 'src/actions/suite/desktopUpdateActions';
+import {
+    installUpdate,
+    openJustUpdatedChangelog,
+    setUpdateModalVisibility,
+} from 'src/actions/suite/desktopUpdateActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import {
     ActionButton,
@@ -30,6 +34,8 @@ const getUpdateStateMessage = (state: UpdateState) => {
 
 const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdateState }) => {
     const appVersion = process.env.VERSION || '';
+    const dispatch = useDispatch();
+    const openChangelog = () => dispatch(openJustUpdatedChangelog());
 
     return (
         <div>
@@ -37,18 +43,17 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                 id="TR_YOUR_CURRENT_VERSION"
                 values={{
                     version: (
-                        <TrezorLink href={getReleaseUrl(appVersion)} variant="nostyle">
-                            <Button
-                                data-testid="@settings/suite-version"
-                                variant="tertiary"
-                                size="tiny"
-                                icon="arrowUpRight"
-                                iconAlignment="end"
-                            >
-                                {appVersion}
-                                {isDevEnv && '-dev'}
-                            </Button>
-                        </TrezorLink>
+                        <Button
+                            data-testid="@settings/suite-version"
+                            variant="tertiary"
+                            size="tiny"
+                            onClick={() => {
+                                openChangelog();
+                            }}
+                        >
+                            {appVersion}
+                            {isDevEnv && '-dev'}
+                        </Button>
                     ),
                 }}
             />
