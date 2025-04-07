@@ -16,6 +16,8 @@ export const allowedImageFrameProps = [
     'margin',
     'width',
     'height',
+    'maxWidth',
+    'maxHeight',
     'flex',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedImageFrameProps)[number]>;
