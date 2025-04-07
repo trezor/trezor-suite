@@ -1,14 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
-import styled from 'styled-components';
+
+import { borders } from '@trezor/theme';
 
 import { Box as BoxComponent, allowedBoxFrameProps } from './Box';
 import { getFramePropsStory } from '../../utils/frameProps';
-
-const Content = styled.div`
-    width: 100%;
-    height: 100%;
-    background: salmon;
-`;
 
 const meta: Meta = {
     title: 'Box',
@@ -19,7 +14,13 @@ export default meta;
 export const Box: StoryObj<typeof BoxComponent> = {
     render: props => (
         <BoxComponent {...props}>
-            <Content />
+            <p>
+                Quos delectus veritatis est doloribus dolor. Odit fugit omnis magni ipsam quia rem
+                aut. Et alias sint non. Consequuntur dignissimos veritatis debitis corporis esse.
+                Quaerat voluptatem unde aut. Iusto laborum omnis quis amet atque. Sint culpa
+                delectus non soluta temporibus saepe. Sequi saepe corrupti aliquam ut sit assumenda
+                aspernatur consequuntur. Ut est ullam iusto facilis voluptatibus. Sit est cum quos.
+            </p>
         </BoxComponent>
     ),
     args: {
@@ -28,6 +29,17 @@ export const Box: StoryObj<typeof BoxComponent> = {
         height: '300px',
     },
     argTypes: {
+        hasBackground: {
+            control: 'boolean',
+        },
+        borderRadius: {
+            control: 'select',
+            options: ['undefined', ...Object.values(borders.radii)],
+        },
+        borderWidth: {
+            control: 'select',
+            options: ['undefined', ...Object.values(borders.widths)],
+        },
         ...getFramePropsStory(allowedBoxFrameProps).argTypes,
     },
 };
