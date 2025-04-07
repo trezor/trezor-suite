@@ -29,6 +29,7 @@ export const allowedButtonFrameProps = [
     'margin',
     'minWidth',
     'maxWidth',
+    'flex',
 ] as const satisfies FramePropsKeys[];
 export type AllowedButtonFrameProps = Pick<FrameProps, (typeof allowedButtonFrameProps)[number]>;
 
