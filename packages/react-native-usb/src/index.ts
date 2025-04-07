@@ -1,3 +1,5 @@
+import { EventSubscription } from 'expo-modules-core';
+
 import { NativeDevice, OnConnectEvent, WebUSBDevice } from './ReactNativeUsb.types';
 import { ReactNativeUsbModule } from './ReactNativeUsbModule';
 
@@ -110,7 +112,7 @@ const blankEvent = {
     cancelable: false,
 } as Event;
 
-export function onDeviceConnected(listener: (event: OnConnectEvent) => void) {
+export function onDeviceConnected(listener: (event: OnConnectEvent) => void): EventSubscription {
     return ReactNativeUsbModule.addListener('onDeviceConnect', (device: NativeDevice | null) => {
         if (!device) {
             debugLog('JS: USB onDeviceConnect: device is null');
@@ -135,7 +137,7 @@ export function onDeviceConnected(listener: (event: OnConnectEvent) => void) {
     });
 }
 
-export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void) {
+export function onDeviceDisconnect(listener: (event: OnConnectEvent) => void): EventSubscription {
     return ReactNativeUsbModule.addListener('onDeviceDisconnect', (device: NativeDevice | null) => {
         if (!device) {
             debugLog('JS: USB onDeviceDisconnect: device is null');
