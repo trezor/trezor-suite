@@ -33,7 +33,7 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useAccountSearch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
@@ -108,7 +108,6 @@ export const AssetCard = ({
     const { symbol } = network;
     const dispatch = useDispatch();
     const theme = useTheme();
-    const { setCoinFilter, setSearchString } = useAccountSearch();
     const handleCardClick = () => {
         dispatch(
             goto('wallet-index', {
@@ -119,9 +118,6 @@ export const AssetCard = ({
                 },
             }),
         );
-        // activate coin filter and reset account search string
-        setCoinFilter(symbol);
-        setSearchString(undefined);
     };
 
     const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);

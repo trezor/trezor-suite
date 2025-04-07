@@ -146,11 +146,11 @@ export default defineMessages({
         id: 'TR_ADD_ACCOUNT',
     },
     TR_SHOW_COINS_FILTER: {
-        defaultMessage: 'Show filter',
+        defaultMessage: 'Show networks filter',
         id: 'TR_SHOW_COINS_FILTER',
     },
     TR_HIDE_COINS_FILTER: {
-        defaultMessage: 'Hide filter',
+        defaultMessage: 'Hide networks filter',
         id: 'TR_HIDE_COINS_FILTER',
     },
     TR_ADD_NETWORK_ACCOUNT: {
