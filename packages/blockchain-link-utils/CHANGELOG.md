@@ -1,3 +1,9 @@
+# 1.3.4
+
+-   npm-prerelease: @trezor/blockchain-link-utils 1.3.4-beta.1 (94c6c8d06c)
+-   feat(blockchain-link): migrate ripple-lib to xrpl.js (422c175f4f)
+-   chore(blockchain-link): move solana types (b3dfcb0de0)
+
 # 1.3.3
 
 -   npm-prerelease: @trezor/blockchain-link-utils 1.3.3-beta.1 (e84ac565b8)
