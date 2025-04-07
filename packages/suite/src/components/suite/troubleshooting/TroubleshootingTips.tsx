@@ -15,7 +15,7 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { TroubleshootingTipsFooter } from './TroubleshootingTipsFooter';
-import { TroubleshootingTipsListCard } from './TroubleshootingTipsListCard';
+import { TroubleshootingTipsList } from './TroubleshootingTipsList';
 import { TroubleshootingTipsToggle } from './TroubleshootingTipsToggle';
 
 export type TroubleshootingTipsItem = {
@@ -119,9 +119,11 @@ export const TroubleshootingTipsWithSections = <K extends string, T extends K>({
                                         {labelRow}
                                         {/* Custom design, where upper card is -1, and this card is 1 */}
                                         <ElevationUp>
-                                            <TroubleshootingTipsListCard
-                                                items={items[selectedSection].items}
-                                            />
+                                            <Card>
+                                                <TroubleshootingTipsList
+                                                    items={items[selectedSection].items}
+                                                />
+                                            </Card>
                                         </ElevationUp>
                                         <TroubleshootingTipsFooter />
                                     </Column>

@@ -9847,30 +9847,6 @@ export default defineMessages({
         id: 'TR_BLUETOOTH_SCAN_AGAIN',
         defaultMessage: 'Scan again',
     },
-    TR_BLUETOOTH_TIP1_HEADER: {
-        id: 'TR_BLUETOOTH_TIP1_HEADER',
-        defaultMessage: 'Your Trezor Safe 7 is within 7km from computer',
-    },
-    TR_BLUETOOTH_TIP1_TEXT: {
-        id: 'TR_BLUETOOTH_TIP1_TEXT',
-        defaultMessage: 'Because like... you know.',
-    },
-    TR_BLUETOOTH_TIP2_HEADER: {
-        id: 'TR_BLUETOOTH_TIP2_HEADER',
-        defaultMessage: 'Your Trezor Safe 7 is within 7km from computer',
-    },
-    TR_BLUETOOTH_TIP2_TEXT: {
-        id: 'TR_BLUETOOTH_TIP2_TEXT',
-        defaultMessage: 'Hold power button for 3s',
-    },
-    TR_BLUETOOTH_TIP3_HEADER: {
-        id: 'TR_BLUETOOTH_TIP3_HEADER',
-        defaultMessage: 'Your Trezor Safe 7 is in pairing mode',
-    },
-    TR_BLUETOOTH_TIP3_TEXT: {
-        id: 'TR_BLUETOOTH_TIP3_TEXT',
-        defaultMessage: 'Idk, need more info, this is just a template',
-    },
     TR_BLUETOOTH_NOT_TREZOR_YOU_ARE_LOOKING_FOR: {
         id: 'TR_BLUETOOTH_NOT_TREZOR_YOU_ARE_LOOKING_FOR',
         defaultMessage: 'Not the Trezor you’re looking for?',
