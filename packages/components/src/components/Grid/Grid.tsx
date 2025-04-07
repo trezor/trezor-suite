@@ -15,7 +15,7 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedGridFrameProps)[number]
 
 const Container = styled.div<
     TransientProps<AllowedFrameProps> & {
-        $columns: number;
+        $columns: number | string;
         $gap: SpacingValues;
         $forceEqualColumns: boolean;
     }
@@ -24,13 +24,15 @@ const Container = styled.div<
     gap: ${({ $gap }) => $gap}px;
     grid-template-columns:
         ${({ $columns, $forceEqualColumns }) =>
-            `repeat(${$columns}, minmax(${$forceEqualColumns ? '0' : 'min-content'}, 1fr));`}
+            typeof $columns === 'number'
+                ? `repeat(${$columns}, minmax(${$forceEqualColumns ? '0' : 'min-content'}, 1fr));`
+                : $columns}
         ${withFrameProps};
 `;
 
 export type GridProps = AllowedFrameProps & {
     gap?: SpacingValues;
-    columns: number;
+    columns: number | string;
     children: React.ReactNode;
     forceEqualColumns?: boolean;
 };
