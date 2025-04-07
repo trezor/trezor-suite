@@ -21,19 +21,19 @@ const legacyButtonStyle = prepareNativeStyle(utils => ({
 
 interface WalletBackupSheetProps {
     isDisplayed: boolean;
-    closeModal: () => void;
+    onCloseModal: () => void;
 }
 
 export type WalletBackupType = 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
 
-const walletOptions: WalletBackupType[] = [
+const walletOptions = [
     'shamir-single',
     'shamir-advanced',
     '12-words',
     '24-words',
-];
+] as const satisfies WalletBackupType[];
 
-export const WalletBackupSheet = ({ closeModal, isDisplayed }: WalletBackupSheetProps) => {
+export const WalletBackupSheet = ({ onCloseModal, isDisplayed }: WalletBackupSheetProps) => {
     const [selectedType, setSelectedType] = useState<WalletBackupType>('shamir-single');
     const [showLegacyOptions, setShowLegacyOptions] = useState(false);
     const { translate } = useTranslate();
@@ -52,7 +52,7 @@ export const WalletBackupSheet = ({ closeModal, isDisplayed }: WalletBackupSheet
         <BottomSheet
             title={translate('moduleDeviceOnboarding.walletBackupSheet.title')}
             isVisible={isDisplayed}
-            onClose={closeModal}
+            onClose={onCloseModal}
             footer={
                 <WalletBackupSheetFooter selectedType={selectedType} onSubmit={submitSelection} />
             }

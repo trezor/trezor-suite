@@ -26,7 +26,7 @@ type WrapperStyleProps = {
     insetBottom: number;
 };
 
-export const DEFAULT_INSET_BOTTOM = Platform.OS === 'android' ? 48 : 0;
+const DEFAULT_INSET_BOTTOM = Platform.OS === 'android' ? 48 : 0;
 
 const sheetWrapperStyle = prepareNativeStyle<WrapperStyleProps>((utils, { insetBottom }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
@@ -43,13 +43,13 @@ const sheetWithOverlayStyle = prepareNativeStyle(_ => ({
 
 export const BottomSheet = ({
     isVisible,
-    isCloseDisplayed = true,
     onClose,
     title,
     subtitle,
     children,
-    isScrollable = true,
     footer,
+    isScrollable = true,
+    isCloseDisplayed = true,
     ...boxProps
 }: BottomSheetProps) => {
     const { applyStyle } = useNativeStyles();

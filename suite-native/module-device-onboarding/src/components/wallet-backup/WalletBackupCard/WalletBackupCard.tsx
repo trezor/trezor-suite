@@ -51,7 +51,7 @@ export const WalletBackupCard = memo(
                 <Card style={applyStyle(containerStyle, { isSelected })}>
                     <VStack spacing="sp16">
                         <CardHeader isSelected={isSelected} type={type} />
-                        <CardDivider horizontalPadding="sp24" />
+                        <CardDivider horizontalPadding={isSelected ? 'sp16' : 'sp18'} />
                         <CardContent type={type} />
                         <FullAlertBox
                             variant={variantByWalletBackupType[type]}
