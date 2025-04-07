@@ -9,6 +9,7 @@ test.describe('Assets', { tag: ['@group=suite'] }, () => {
         assetsSection,
         tradingPage,
     }) => {
+        expect(true).toBe(false);
         await assetsSection.tableIcon.click();
         await assetsSection.buyAssetButton('btc').click();
         await expect(tradingPage.section).toBeVisible();
