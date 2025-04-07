@@ -34,8 +34,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       skip_tests: ${{ steps.check-previous-runs.outputs.skip_tests }}
-      previous_run_id: ${{ steps.check-previous-runs.outputs.previous_run_id }}
-      previous_run_attempt: ${{ steps.check-previous-runs.outputs.previous_run_attempt }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -124,8 +122,6 @@ jobs:
           workspace-dependencies: "@trezor/suite-desktop"
           test-group: ${{ matrix.TEST_GROUP }}
           fail-fast: 3
-          previous-run-id: ${{ needs.check-previous-runs.outputs.previous_run_id }}
-          previous-run-attempt: ${{ needs.check-previous-runs.outputs.previous_run_attempt }}
           currents-project-id: "4ytF0E"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           currents-api-key: ${{ secrets.CURRENTS_API_KEY }}

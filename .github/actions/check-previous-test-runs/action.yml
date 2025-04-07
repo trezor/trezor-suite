@@ -23,12 +23,6 @@ outputs:
   skip_tests:
     description: "Indicates whether tests should be skipped"
     value: ${{ steps.check-previous-runs.outputs.skip_tests }}
-  previous_run_id:
-    description: "The ID of the previous completed run"
-    value: ${{ steps.check-previous-runs.outputs.previous_run_id }}
-  previous_run_attempt:
-    description: "The attempt number of the previous run"
-    value: ${{ steps.check-previous-runs.outputs.previous_run_attempt }}
 runs:
   using: "composite"
   steps:
@@ -46,7 +40,7 @@ runs:
         RUN_ATTEMPT="${{ inputs.run_attempt }}"
 
         if [ "${RUN_ATTEMPT}" -gt 1 ]; then
-          echo "Manually triggered re-run. Running all tests as usual"
+          echo "Manually triggered re-run. Running only failed tests."
           echo "skip_tests=false" >> $GITHUB_OUTPUT
           exit 0
         fi
@@ -61,28 +55,11 @@ runs:
         # Fetch previous PR runs
         PREVIOUS_RUN_RESPONSE=$(curl -s -H "Authorization: Bearer ${GH_TOKEN}" \
           "https://api.github.com/repos/$REPO/actions/workflows/${WORKFLOW_ID}/runs?event=pull_request&branch=${PR_BRANCH}&created=%3E%3D${PR_CREATED_TIMESTAMP}&status=completed&per_page=1")
+        PREVIOUS_RUN_CONCLUSION=$(echo "$PREVIOUS_RUN_RESPONSE" | jq -r '.workflow_runs[0].conclusion // ""')  
 
-        PREVIOUS_RUN_ID=$(echo "$PREVIOUS_RUN_RESPONSE" | jq -r '.workflow_runs[0].id // ""')
-        PREVIOUS_RUN_ATTEMPT=$(echo "$PREVIOUS_RUN_RESPONSE" | jq -r '.workflow_runs[0].run_attempt // ""')
-        PREVIOUS_RUN_CONCLUSION=$(echo "$PREVIOUS_RUN_RESPONSE" | jq -r '.workflow_runs[0].conclusion')  
-
-        if [ -z "${PREVIOUS_RUN_ID}" ]; then
-          echo "No previous runs found. Running all tests as usual"
+        if [ -z "${PREVIOUS_RUN_CONCLUSION}" ] || [ "${PREVIOUS_RUN_CONCLUSION}" != "success" ]; then
+          echo "No previous runs found or previous run was not successful. Running all tests as usual"
           echo "skip_tests=false" >> $GITHUB_OUTPUT
-          exit 0
-        fi
-
-        # Check if the previous run was successful
-        if [ "${PREVIOUS_RUN_CONCLUSION}" != "success" ]; then
-          echo "Previous run was not successful. Rerunning only failed tests"
-          echo "skip_tests=false" >> $GITHUB_OUTPUT
-          echo "previous_run_id=${PREVIOUS_RUN_ID}" >> $GITHUB_OUTPUT
-          echo "previous_run_attempt=${PREVIOUS_RUN_ATTEMPT}" >> $GITHUB_OUTPUT
-
-          echo "${PREVIOUS_RUN_RESPONSE}"
-          echo "skip_tests=false"
-          echo "previous_run_id=${PREVIOUS_RUN_ID}"
-          echo "previous_run_attempt=${PREVIOUS_RUN_ATTEMPT}" 
           exit 0
         fi
 

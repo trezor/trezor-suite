@@ -26,14 +26,6 @@ inputs:
     description: "Additional grep for PW tests. Use regexp groups with positive or negative lookahead. Example: (?=.*@webOnly)"
     default: ""
     required: false
-  previous-run-id:
-    description: "ID of the previous run to fetch failed tests from"
-    default: ""
-    required: false
-  previous-run-attempt:
-    description: "Attempt number of the previous run"
-    default: ""
-    required: false
   currents-project-id:
     description: "Currents project ID for reporting"
     required: true
@@ -114,9 +106,8 @@ runs:
         export BASE_URL
         echo "Using BASE_URL: $BASE_URL"
 
-        if [[ -n "${{ inputs.previous-run-id }}" ]]; then
-          PREVIOUS_RUN_CI_BUILD_ID="pr-run-${{ inputs.previous-run-id }}-${{ inputs.previous-run-attempt }}"
-          npx currents api get-run --pw-last-run --ci-build-id ${PREVIOUS_RUN_CI_BUILD_ID} --output ${{ github.workspace }}/packages/suite-desktop-core/e2e/test-results/.last-run.json
+        if [ "${GITHUB_RUN_ATTEMPT}" -gt 1 ]; then
+          npx currents api get-run --pw-last-run --ci-build-id ${CURRENTS_CI_BUILD_ID} --output ${{ github.workspace }}/packages/suite-desktop-core/e2e/test-results/.last-run.json
           LAST_FAILED_FLAG="--last-failed"
         fi
       
