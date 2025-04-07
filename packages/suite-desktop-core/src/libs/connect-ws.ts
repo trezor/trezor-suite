@@ -122,7 +122,20 @@ export const exposeConnectWs = ({
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === IFRAME.CALL) {
                 if (!processOnPort) {
+                    // ts check, should be set
                     logger.error(LOG_PREFIX, 'processOnPort result not found');
+
+                    return;
+                }
+                if (!settings?.manifest?.appName) {
+                    // ts check, should be set - if not set, error should be returned client-side
+                    logger.error(LOG_PREFIX, 'settings.manifest.appName not found');
+
+                    return;
+                }
+                if (!origin) {
+                    // ts check, should be set
+                    logger.error(LOG_PREFIX, 'origin not found');
 
                     return;
                 }
@@ -149,7 +162,10 @@ export const exposeConnectWs = ({
                     payload: rest,
                     origin,
                     processName: processOnPort?.name,
-                    manifest: settings?.manifest,
+                    manifest: {
+                        appName: settings.manifest.appName,
+                        appIcon: settings.manifest.appIcon,
+                    },
                 });
 
                 // wait for response
