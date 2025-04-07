@@ -1,3 +1,15 @@
+# 1.1.4
+
+-   npm-prerelease: @trezor/websocket-client 1.1.4-beta.1 (9679ef8a27)
+-   fix(websocket-client): get rid of problematic timeout error emit (b8016dfb2e)
+-   feat(websocket-client): differentiable error type (4f1b2b73eb)
+-   test(websocket-client): use WebsocketClient class directly (9731de127c)
+-   fix(websocket-client): test:unit command using yarn g:jest (fb0052142d)
+-   chore(websocket-client): change messages field from public to protected (ec3c215b4a)
+-   feat(websocket-client): sendMessage is now public; support timeout param (b0740c419e)
+-   chore(websocket-client): class is no longer abstract (931c8d2985)
+-   chore(websocket-client): createWebsocket class member is not abstract anymore (fd93bf9f20)
+
 # 1.1.3
 
 -   npm-prerelease: @trezor/websocket-client 1.1.3-beta.1 (d00ffd0eb1)
