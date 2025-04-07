@@ -20,6 +20,7 @@ export const TextButton: StoryObj<TextButtonProps> = {
         size: 'large',
         isDisabled: false,
         isLoading: false,
+        isUnderlined: false,
         ...getFramePropsStory(allowedButtonFrameProps).args,
     },
     argTypes: {
@@ -64,6 +65,11 @@ export const TextButton: StoryObj<TextButtonProps> = {
             },
         },
         isLoading: {
+            control: {
+                type: 'boolean',
+            },
+        },
+        isUnderlined: {
             control: {
                 type: 'boolean',
             },

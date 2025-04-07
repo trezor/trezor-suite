@@ -43,6 +43,7 @@ const TextButtonContainer = styled.button<
         $size: ButtonSize;
         $iconAlignment: IconAlignment;
         $variant: ButtonVariant;
+        $isUnderlined: boolean;
     }
 >`
     display: flex;
@@ -63,6 +64,8 @@ const TextButtonContainer = styled.button<
         color 0.1s ease-out;
     outline: none;
     cursor: pointer;
+
+    ${({ $isUnderlined }) => $isUnderlined && 'text-decoration: underline;'}
 
     ${getFocusShadowStyle()}
     ${withFrameProps}
@@ -87,6 +90,7 @@ const TextButtonContainer = styled.button<
 
 export type TextButtonProps = Omit<ButtonProps, 'iconSize' | 'isSubtle' | 'children'> & {
     children?: React.ReactNode;
+    isUnderlined?: boolean;
 };
 
 export const TextButton = ({
@@ -94,6 +98,7 @@ export const TextButton = ({
     iconAlignment = 'start',
     size = 'large',
     isDisabled = false,
+    isUnderlined = false,
     isLoading = false,
     children,
     variant = 'primary',
@@ -115,6 +120,7 @@ export const TextButton = ({
             $iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
             $variant={variant}
+            $isUnderlined={isUnderlined}
             {...frameProps}
             {...rest}
         >
