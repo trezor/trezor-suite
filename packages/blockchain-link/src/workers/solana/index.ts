@@ -377,23 +377,23 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
         const { value: accountInfo } = await api.rpc
             .getAccountInfo(publicKey, { encoding: 'base64' })
             .send();
+
+        const solEpoch = await getEpoch();
+        const solStakingAccounts = await getSolanaStakingData(api?.rpc, publicKey, solEpoch);
+
+        misc = {
+            owner: accountInfo?.owner,
+            solStakingAccounts,
+            solEpoch,
+        };
+
         if (accountInfo) {
             const [accountDataEncoded] = accountInfo.data;
             const accountDataBytes = getBase64Encoder().encode(accountDataEncoded);
             const accountDataLength = BigInt(accountDataBytes.byteLength);
             const rent = await api.rpc.getMinimumBalanceForRentExemption(accountDataLength).send();
-            const solEpoch = await getEpoch();
-            const solStakingAccounts = await getSolanaStakingData(
-                api?.rpc,
-                payload.descriptor,
-                solEpoch,
-            );
-            misc = {
-                owner: accountInfo?.owner,
-                rent: Number(rent),
-                solStakingAccounts,
-                solEpoch,
-            };
+
+            misc.rent = Number(rent);
         }
     }
 
