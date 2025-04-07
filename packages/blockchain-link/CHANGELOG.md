@@ -1,3 +1,14 @@
+# 2.4.4
+
+-   npm-prerelease: @trezor/blockchain-link 2.4.4-beta.1 (a19dc530b6)
+-   feat(blockchain-link): migrate wallet-sdk-solana staking accounts (995ed63410)
+-   fix(blockchain-link): clean connectPromise (09488c9ab1)
+-   fix: staking epoch update (8083c2f349)
+-   feat(blockchain-link): migrate ripple-lib to xrpl.js (422c175f4f)
+-   feat(websocket-client): sendMessage is now public; support timeout param (b0740c419e)
+-   chore(blockchain-link): move solana types (b3dfcb0de0)
+-   chore: update @everstake/wallet-sdk-solana (e3e1f19e32)
+
 # 2.4.3
 
 -   npm-prerelease: @trezor/blockchain-link 2.4.3-beta.1 (7b9b8e1ebd)
