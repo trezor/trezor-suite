@@ -1,3 +1,11 @@
+# 1.3.3
+
+-   npm-prerelease: @trezor/env-utils 1.3.3-beta.1 (ffd8f0ab80)
+-   feat(env-utils): add getCpuArch (b3deeb546b)
+-   feat(env-utils): implement new getOsVersion, deprecate old one (1973c02f62)
+-   chore(env-utils): narrow down types of is platform functions (35c943abd9)
+-   chore(suite): ua-parser-js@2.0.3 (840d5c6202)
+
 # 1.3.2
 
 -   npm-prerelease: @trezor/env-utils 1.3.2-beta.1 (d3b393f591)
