@@ -2,6 +2,11 @@ import { TrezorError } from '@trezor/connect/src/constants/errors';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { Deferred } from '@trezor/utils';
 
+export type ManifestPartial = {
+    appName: string;
+    appIcon?: string;
+};
+
 export type ConnectPopupCallLoaded = {
     // Common properties that are always present
     method: string;
@@ -11,13 +16,19 @@ export type ConnectPopupCallLoaded = {
         permissionTypes: MethodPermission[];
     };
     source: {
-        origin?: string;
-        processName?: string;
-        manifest?: {
-            appName?: string;
-            appIcon?: string;
-        };
-    };
+        origin: string;
+    } & (
+        | {
+              isWalletConnect: false;
+              processName: string;
+              manifest: ManifestPartial;
+          }
+        | {
+              isWalletConnect: true;
+              processName: 'WalletConnect';
+              manifest: undefined;
+          }
+    );
 } & (
     | {
           state: 'ongoing';
@@ -56,8 +67,14 @@ export type ConnectPopupCall = ConnectPopupCallLoaded | ConnectPopupCallError;
 
 export type AppRememberedPermission = {
     origin: string;
-    appName?: string;
-    appIcon?: string;
-    processName: string;
     types: MethodPermission[];
-};
+} & (
+    | ({
+          isWalletConnect: false;
+          processName: string;
+      } & ManifestPartial)
+    | {
+          isWalletConnect: true;
+          processName: 'WalletConnect';
+      }
+);

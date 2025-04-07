@@ -10,6 +10,7 @@ import { createDeferred } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import { selectConnectAppPermissions, selectConnectPopupCall } from './connectPopupReducer';
+import { ManifestPartial } from './connectPopupTypes';
 import { postCallHooks, preCallHooks } from './methodHooks';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
@@ -19,23 +20,32 @@ type ConnectPopupCallThunkResponse<M extends keyof typeof TrezorConnect> = Promi
     payload: CallMethodResponse<M>;
 }>;
 
+export type ConnectPopupCallThunkWalletConnectParams = {
+    isWalletConnect: true;
+    processName: 'WalletConnect';
+    manifest: undefined;
+};
+
+export type ConnectPopupCallThunkConnectParams = {
+    isWalletConnect: false;
+    processName: string;
+    manifest: ManifestPartial;
+};
 type ConnectPopupCallThunkParams<M extends keyof typeof TrezorConnect> = {
-    processName?: string;
-    origin?: string;
-    manifest?: {
-        appName?: string;
-        appIcon?: string;
-    };
+    origin: string;
     method: M;
     payload: Omit<CallMethodParams<M>, 'method'>;
-};
+} & (ConnectPopupCallThunkWalletConnectParams | ConnectPopupCallThunkConnectParams);
 
 export const connectPopupCallThunkInner = createThunk<
     ConnectPopupCallThunkResponse<keyof typeof TrezorConnect>,
     ConnectPopupCallThunkParams<keyof typeof TrezorConnect>
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
-    async ({ method, payload, processName, origin, manifest }, { dispatch, getState, extra }) => {
+    async (
+        { method, payload, processName, origin, manifest, isWalletConnect },
+        { dispatch, getState, extra },
+    ) => {
         try {
             // @ts-expect-error: method is dynamic
             const methodInfo = await TrezorConnect[method]({
@@ -54,6 +64,10 @@ export const connectPopupCallThunkInner = createThunk<
 
                 throw TypedError('Method_NotAllowed');
             }
+
+            const source = isWalletConnect
+                ? { processName, origin, manifest: undefined, isWalletConnect }
+                : { processName, origin, manifest, isWalletConnect };
             dispatch(
                 connectPopupActions.initiateCall({
                     method,
@@ -63,11 +77,7 @@ export const connectPopupCallThunkInner = createThunk<
                         confirmLabel: methodInfo.payload.confirmation?.customConfirmButton?.label,
                         permissionTypes: methodInfo.payload.requiredPermissions,
                     },
-                    source: {
-                        processName,
-                        origin,
-                        manifest,
-                    },
+                    source,
                 }),
             );
 

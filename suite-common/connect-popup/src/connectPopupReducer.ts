@@ -110,4 +110,7 @@ export const selectConnectPopupCall = (state: ConnectPopupStateRootState) =>
     state.wallet.connectPopup.activeCall;
 
 export const selectConnectAppPermissions = (state: ConnectPopupStateRootState) =>
-    state.wallet.connectPopup.permissions;
+    state.wallet.connectPopup.permissions.filter(p => !p.isWalletConnect);
+
+export const selectWalletConnectAppPermissions = (state: ConnectPopupStateRootState) =>
+    state.wallet.connectPopup.permissions.filter(p => p.isWalletConnect);

@@ -12,7 +12,7 @@ export const connectPopupDesktopInitThunk = createThunk(
                 const response = await dispatch(
                     connectPopupCallThunk(
                         // @ts-expect-error: params in desktopApi are not fully typed
-                        params,
+                        { ...params, isWalletConnect: false as const },
                     ),
                 ).unwrap();
                 desktopApi.connectPopupResponse({ ...response, id: params.id });

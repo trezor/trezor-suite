@@ -17,18 +17,26 @@ export const ConnectPopupModal = () => {
 
     const { methodInfo, source } = popupCall;
     const { methodTitle, confirmLabel, permissionTypes } = methodInfo;
-    const { processName, origin, manifest } = source;
+
+    const rememberPayload = {
+        origin,
+        types: permissionTypes,
+        ...(source.isWalletConnect
+            ? {
+                  isWalletConnect: true as const,
+                  appName: undefined,
+                  appIcon: undefined,
+                  processName: source.processName,
+              }
+            : {
+                  isWalletConnect: false as const,
+                  appName: source.manifest.appName,
+                  appIcon: source.manifest.appIcon,
+                  processName: source.processName,
+              }),
+    };
     const onConfirm = () => {
-        if (isRemembered && processName && origin)
-            dispatch(
-                connectPopupActions.rememberAppPermissions({
-                    appName: manifest?.appName,
-                    appIcon: manifest?.appIcon,
-                    processName,
-                    origin,
-                    types: permissionTypes,
-                }),
-            );
+        if (isRemembered) dispatch(connectPopupActions.rememberAppPermissions(rememberPayload));
         dispatch(connectPopupActions.approvePermissions());
     };
     const onCancel = () =>
@@ -55,22 +63,17 @@ export const ConnectPopupModal = () => {
                 <H2>{methodTitle}</H2>
 
                 <Column>
-                    {processName && (
-                        <Paragraph>
-                            <Translation id="TR_CONNECT_MODAL_PROCESS" />{' '}
-                            <strong>{processName}</strong>
-                        </Paragraph>
-                    )}
-                    {origin && (
-                        <Paragraph>
-                            <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" />{' '}
-                            <strong>{origin}</strong>
-                        </Paragraph>
-                    )}
-                    {manifest?.appName && (
+                    <Paragraph>
+                        <Translation id="TR_CONNECT_MODAL_PROCESS" />{' '}
+                        <strong>{source.processName}</strong>
+                    </Paragraph>
+                    <Paragraph>
+                        <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" /> <strong>{origin}</strong>
+                    </Paragraph>
+                    {!source.isWalletConnect && (
                         <Paragraph>
                             <Translation id="TR_CONNECT_MODAL_APP_NAME" />{' '}
-                            <strong>{manifest.appName}</strong>
+                            <strong>{source.manifest.appName}</strong>
                         </Paragraph>
                     )}
                 </Column>
@@ -79,7 +82,7 @@ export const ConnectPopupModal = () => {
                     <Translation id="TR_CONNECT_MODAL_REQUEST_DESCRIPTION" />
                 </Paragraph>
 
-                {processName !== 'WalletConnect' && (
+                {!source.isWalletConnect && (
                     <Checkbox
                         isChecked={isRemembered}
                         onClick={() => setIsRemembered(!isRemembered)}

@@ -32,8 +32,10 @@ const ethereumRequestThunk = createThunk<
         return account;
     };
     const popupCallCommonParams = {
-        processName: 'WalletConnect',
+        isWalletConnect: true as const,
+        processName: 'WalletConnect' as const,
         origin: event.verifyContext.verified.origin,
+        manifest: undefined,
     };
 
     switch (event.params.request.method) {
