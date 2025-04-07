@@ -1,5 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
+import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
@@ -9,7 +10,26 @@ test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
         await analytics.interceptAnalytics();
     });
 
-    test('go to wallet settings page, check BTC, activate all coins, deactivate all coins, set custom backend', async ({
+    test('go to wallet settings page, check BTC, activate all coins, deactivate all coins, set custom backend', {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description: 'Verifies that a user can navigate to the wallet settings page, check BTC, activate all coins, deactivate all coins, and set a custom backend.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Settings,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Critical,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Foundation,
+                },
+            ]
+        }, async ({
         dashboardPage,
         settingsPage,
         page,

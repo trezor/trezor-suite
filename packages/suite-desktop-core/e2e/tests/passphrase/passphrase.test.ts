@@ -1,6 +1,7 @@
 import { EventType } from '@trezor/suite-analytics';
 
 import { formatAddress } from '../../support/common';
+import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { ExtractByEventType } from '../../support/types';
 
@@ -13,13 +14,26 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
         await onboardingPage.completeOnboarding();
     });
 
-    // add hidden wallet (abc)
-    // check 1st address
-    // switch to 2nd hidden wallet (def)
-    // check 1st address
-    // go back to 1st hidden wallet
-    // check confirm passphrase appears.
-    test('basic flow', async ({
+    test('basic flow', {
+        annotation: [
+            {
+                type: TestAnnotationType.TestCase,
+                description: 'Verify that a user can successfully add and switch between hidden wallets, and confirm passphrase.',
+            },
+            {
+                type: TestAnnotationType.Category,
+                description: TestCategory.Wallets,
+            },
+            {
+                type: TestAnnotationType.Priority,
+                description: TestPriority.High,
+            },
+            {
+                type: TestAnnotationType.Stream,
+                description: 'TODO',
+            },
+        ]
+    }, async ({
         page,
         analytics,
         devicePrompt,

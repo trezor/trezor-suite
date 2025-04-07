@@ -1,6 +1,7 @@
 import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
+import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 const migrateFromVersion = 'release/22.5/web';
@@ -13,7 +14,26 @@ const workaroundBtcAddressInputSelector = 'outputs.0.address';
 test.describe('Database migration', { tag: ['@group=migrations', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { passphrase_protection: true, mnemonic: 'mnemonic_all' } });
 
-    test(`Db migration between: ${migrateFromVersion} => ${migrateToVersion}`, async ({
+    test(`Db migration between: ${migrateFromVersion} => ${migrateToVersion}`, {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description: 'Verify that a user can successfully migrate from old version to new version.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.General,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Medium,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
+                },
+            ]
+        }, async ({
         page,
         onboardingPage,
         dashboardPage,

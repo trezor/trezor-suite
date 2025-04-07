@@ -1,4 +1,5 @@
 import { SeedType } from '../../../support/enums/seedType';
+import { TestAnnotationType, TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 
 test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] }, () => {
@@ -11,7 +12,26 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         await onboardingPage.disableNecessaryFirmwareChecks();
     });
 
-    test('Success (Shamir backup)', async ({
+    test('Success (Shamir backup)', {
+        annotation: [
+            {
+                type: TestAnnotationType.TestCase,
+                description: 'Verify that a user can successfully create a wallet during the onboarding process.',
+            },
+            {
+                type: TestAnnotationType.Category,
+                description: TestCategory.Onboarding,
+            },
+            {
+                type: TestAnnotationType.Priority,
+                description: TestPriority.Critical,
+            },
+            {
+                type: TestAnnotationType.Stream,
+                description: 'TODO',
+            },
+        ]
+    }, async ({
         page,
         onboardingPage,
         devicePrompt,

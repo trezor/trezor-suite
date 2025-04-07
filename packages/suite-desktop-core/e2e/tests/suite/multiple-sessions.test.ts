@@ -1,6 +1,7 @@
 import * as messages from '@trezor/protobuf/src/messages';
 import { BridgeTransport } from '@trezor/transport';
 
+import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
 import { DashboardPage } from '../../support/pageObjects/dashboardPage';
@@ -35,7 +36,26 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
     test.use({ emulatorSetupConf: { passphrase_protection: true } });
 
     for (const { testName, enableViewOnly } of testCases) {
-        test(testName, async ({ page, onboardingPage, dashboardPage, devicePrompt }) => {
+        test(testName, {
+                annotation: [
+                    {
+                        type: TestAnnotationType.TestCase,
+                        description: 'Verifies that a user can successfully take over a session.',
+                    },
+                    {
+                        type: TestAnnotationType.Category,
+                        description: TestCategory.Wallets,
+                    },
+                    {
+                        type: TestAnnotationType.Priority,
+                        description: TestPriority.Medium,
+                    },
+                    {
+                        type: TestAnnotationType.Stream,
+                        description: 'TODO',
+                    },
+                ]
+            }, async ({ page, onboardingPage, dashboardPage, devicePrompt }) => {
             await onboardingPage.completeOnboarding({ enableViewOnly });
             await test.step('Bridge session taken by another suite session', async () => {
                 await stealBridgeSession();
@@ -86,7 +106,27 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
 
     test(
         'Overtake session by opening suite new tab',
-        { tag: ['@webOnly'] },
+        { 
+            tag: ['@webOnly'],
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description: 'Verifies that a user can successfully take over a session by opening suite in new tab.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Wallets,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Medium,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
+                },
+            ]
+        },
         async ({ context, onboardingPage, dashboardPage }, testInfo) => {
             await onboardingPage.completeOnboarding();
 

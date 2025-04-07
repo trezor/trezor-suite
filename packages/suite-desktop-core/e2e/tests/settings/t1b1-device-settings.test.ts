@@ -1,3 +1,4 @@
+import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
@@ -7,7 +8,26 @@ test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
         await settingsPage.navigateTo('device');
     });
 
-    test('enable pin', async ({ page, devicePrompt, trezorUserEnvLink, trezorInput }) => {
+    test('enable pin', {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description: 'Verifies that a user can enable PIN on T1B1 device.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Settings,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.High,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Foundation,
+                },
+            ]
+        }, async ({ page, devicePrompt, trezorUserEnvLink, trezorInput }) => {
         await page.getByTestId('@settings/device/pin-switch').click();
         await devicePrompt.confirmOnDevicePromptIsShown();
         await trezorUserEnvLink.pressYes();
@@ -39,7 +59,26 @@ test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
         await trezorUserEnvLink.pressYes();
     });
 
-    test('Change homescreen', async ({ settingsPage }) => {
+    test('Change homescreen', {
+        annotation: [
+            {
+                type: TestAnnotationType.TestCase,
+                description: 'Verifies that a user can change homescreen background on T1B1 device.',
+            },
+            {
+                type: TestAnnotationType.Category,
+                description: TestCategory.Settings,
+            },
+            {
+                type: TestAnnotationType.Priority,
+                description: TestPriority.High,
+            },
+            {
+                type: TestAnnotationType.Stream,
+                description: 'TODO',
+            },
+        ]
+    }, async ({ settingsPage }) => {
         await settingsPage.changeDeviceBackground('nyancat');
     });
 

@@ -3,6 +3,7 @@
 // - implement these differences in suite in the first place. both suite and T2B1 will happily accept
 //   request to change display rotation but it has no effect. It should be at least hidden on client.
 // https://github.com/trezor/trezor-suite/issues/6567
+import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () => {
@@ -15,7 +16,26 @@ test.describe.serial('T2B1 - Device settings', { tag: ['@group=settings'] }, () 
         await settingsPage.navigateTo('device');
     });
 
-    test('change all possible device settings', async ({ settingsPage, page }) => {
+    test('change all possible device settings', {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description: 'Verifies that a user can change all possible device settings.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Settings,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Medium,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
+                },
+            ]
+        }, async ({ settingsPage, page }) => {
         await test.step('Verify firmware modal', async () => {
             await page.getByTestId('@settings/device/update-button').click();
             await page.getByTestId('@modal/close-button').click();

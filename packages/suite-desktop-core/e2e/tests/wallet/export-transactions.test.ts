@@ -2,6 +2,7 @@ import fs from 'fs';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
+import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { ExportType } from '../../support/pageObjects/walletPage';
 
@@ -15,16 +16,26 @@ test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () 
         await onboardingPage.completeOnboarding();
     });
 
-    /* Test case
-     * 1. Start in Coin section
-     * 2. Activate all tested coins
-     * 3. Pass discovery
-     * 4. Navigate to First accounts Wallet
-     * 5. Download transaction history in all 3 formats
-     * 6. Check that 3 files were downloaded successfully
-     * 7. Repeat for all tested coins
-     */
-    test('Go to account and try to export all possible variants (pdf, csv, json)', async ({
+    test('Go to account and try to export all possible variants (pdf, csv, json)', {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description: 'Verify that a user can successfully export transactions in all formats.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Wallets,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Medium,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
+                },
+            ]
+        }, async ({
         page,
         settingsPage,
         walletPage,

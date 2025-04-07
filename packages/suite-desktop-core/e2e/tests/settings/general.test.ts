@@ -1,5 +1,6 @@
 import { EventType } from '@trezor/suite-analytics';
 
+import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
 import { ExtractByEventType } from '../../support/types';
@@ -15,7 +16,26 @@ test.describe('General settings', { tag: ['@group=settings'] }, () => {
         await analytics.interceptAnalytics();
     });
 
-    test('Change settings on "general settings" page', async ({
+    test('Change settings on "general settings" page', {
+        annotation: [
+            {
+                type: TestAnnotationType.TestCase,
+                description: 'Verifies that a user can change settings on the "General Settings" page.',
+            },
+            {
+                type: TestAnnotationType.Category,
+                description: TestCategory.Settings,
+            },
+            {
+                type: TestAnnotationType.Priority,
+                description: TestPriority.Medium,
+            },
+            {
+                type: TestAnnotationType.Stream,
+                description: TestStream.Foundation,
+            },
+        ]
+    }, async ({
         analytics,
         settingsPage,
         dashboardPage,

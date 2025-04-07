@@ -1,6 +1,7 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EventType } from '@trezor/suite-analytics';
 
+import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { ExtractByEventType } from '../../support/types';
 
@@ -14,16 +15,26 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
         await onboardingPage.completeOnboarding();
     });
 
-    /**
-     * Test case
-     * 1. Go to Accounts
-     * 2. Unpack all account types
-     * 3. Get the number of accounts
-     * 4. Create new account for each account type
-     * 5. Get the number of accounts again
-     * 6. Verify that the current number is equal to previous number + 1
-     */
-    test('Add-account-types-btc-like', async ({
+    test('Add account types btc-like', {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description: 'Verifies that a user can add different account types for BTC-like coins.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Accounts
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Critical,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
+                },
+            ]
+        }, async ({
         page,
         dashboardPage,
         settingsPage,
@@ -90,18 +101,26 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
         }
     });
 
-    /**
-     * Test case
-     * 1. go to Settings
-     * 2. activate ADA and ETH
-     * 3. go to Accounts
-     * 4. for each coin:
-     * 5. Get the number of accounts
-     * 6. Create new account
-     * 7. Get the number of accounts again
-     * 8. Verify that the current number is equal to previous number + 1
-     */
-    test('Add-account-types-non-BTC-coins', async ({
+    test('Add-account-types-non-BTC-coins', {
+        annotation: [
+            {
+                type: TestAnnotationType.TestCase,
+                description: 'Verifies that a user can add different account types for non-BTC coins.',
+            },
+            {
+                type: TestAnnotationType.Category,
+                description: TestCategory.Accounts,
+            },
+            {
+                type: TestAnnotationType.Priority,
+                description: TestPriority.High,
+            },
+            {
+                type: TestAnnotationType.Stream,
+                description: 'TODO',
+            },
+        ]
+    }, async ({
         page,
         settingsPage,
         walletPage,

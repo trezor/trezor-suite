@@ -1,3 +1,4 @@
+import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
@@ -7,7 +8,26 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
         await settingsPage.navigateTo('device');
     });
 
-    test('change all possible device settings', async ({
+    test('change all possible device settings', {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description: 'Verifies that a user can change all possible device settings.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Settings,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Medium,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
+                },
+            ]
+        }, async ({
         page,
         settingsPage,
         devicePrompt,
@@ -41,7 +61,26 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
         //TODO: Any verification?
     });
 
-    test('Can change homescreen background in firmware >= 2.5.4', async ({ settingsPage }) => {
+    test('Can change homescreen background in firmware >= 2.5.4', {
+        annotation: [
+            {
+                type: TestAnnotationType.TestCase,
+                description: 'Verifies that a user can change homescreen background in firmware >= 2.5.4',
+            },
+            {
+                type: TestAnnotationType.Category,
+                description: TestCategory.Settings,
+            },
+            {
+                type: TestAnnotationType.Priority,
+                description: TestPriority.Low,
+            },
+            {
+                type: TestAnnotationType.Stream,
+                description: 'TODO',
+            },
+        ]
+    }, async ({ settingsPage }) => {
         await settingsPage.changeDeviceBackground('original_t2t1');
     });
 

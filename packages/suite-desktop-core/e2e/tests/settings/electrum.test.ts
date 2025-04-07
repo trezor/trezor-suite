@@ -1,3 +1,8 @@
+import {
+    TestAnnotationType,
+    TestCategory,
+    TestPriority,
+} from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
@@ -9,27 +14,45 @@ test.describe(
             await onboardingPage.completeOnboarding();
         });
 
-        test('Electrum completes discovery successfully', async ({
-            page,
-            dashboardPage,
-            settingsPage,
-            walletPage,
-        }) => {
-            test.info().annotations.push({
-                type: 'dependency',
-                description:
-                    'This test needs running RegTest docker. Read how to run this dependency in docs/tests/regtest.md',
-            });
-            const electrumUrl = '127.0.0.1:50001:t';
+        test(
+            'Electrum completes discovery successfully',
+            {
+                annotation: [
+                    {
+                        type: TestAnnotationType.TestCase,
+                        description: 'Verify that a user can successfully set up Electrum backend.',
+                    },
+                    {
+                        type: TestAnnotationType.Category,
+                        description: TestCategory.Dashboard,
+                    },
+                    {
+                        type: TestAnnotationType.Priority,
+                        description: TestPriority.High,
+                    },
+                    {
+                        type: TestAnnotationType.Stream,
+                        description: 'TODO',
+                    },
+                ],
+            },
+            async ({ page, dashboardPage, settingsPage, walletPage }) => {
+                test.info().annotations.push({
+                    type: 'dependency',
+                    description:
+                        'This test needs running RegTest docker. Read how to run this dependency in docs/tests/regtest.md',
+                });
+                const electrumUrl = '127.0.0.1:50001:t';
 
-            await settingsPage.navigateTo('coins');
-            await settingsPage.coins.openNetworkAdvanceSettings('regtest');
-            await settingsPage.coins.changeBackend('electrum', electrumUrl);
+                await settingsPage.navigateTo('coins');
+                await settingsPage.coins.openNetworkAdvanceSettings('regtest');
+                await settingsPage.coins.changeBackend('electrum', electrumUrl);
 
-            await dashboardPage.navigateTo();
-            await page.discoveryShouldFinish();
+                await dashboardPage.navigateTo();
+                await page.discoveryShouldFinish();
 
-            await expect(walletPage.balanceOfAccount('regtest').first()).toBeVisible();
-        });
+                await expect(walletPage.balanceOfAccount('regtest').first()).toBeVisible();
+            },
+        );
     },
 );

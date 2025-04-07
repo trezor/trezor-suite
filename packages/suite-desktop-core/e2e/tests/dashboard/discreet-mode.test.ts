@@ -2,6 +2,7 @@ import { Locator } from '@playwright/test';
 
 import { EventType } from '@trezor/suite-analytics';
 
+import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { ExtractByEventType } from '../../support/types';
 
@@ -27,7 +28,26 @@ test.describe('Discreet Mode', { tag: ['@group=suite'] }, () => {
         await onboardingPage.completeOnboarding();
     });
 
-    test('Balances are hidden when user enables discreet mode', async ({
+    test('Balances are hidden when user enables discreet mode', {
+        annotation: [
+            {
+                type: TestAnnotationType.TestCase,
+                description: 'Verify that enabling discreet mode hides balances across the dashboard and triggers the correct analytics event.',
+            },
+            {
+                type: TestAnnotationType.Category,
+                description: TestCategory.Settings,
+            },
+            {
+                type: TestAnnotationType.Priority,
+                description: TestPriority.High,
+            },
+            {
+                type: TestAnnotationType.Stream,
+                description: 'TODO',
+            },
+        ]
+    }, async ({
         analytics,
         assetsSection,
         dashboardPage,

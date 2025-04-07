@@ -1,3 +1,4 @@
+import { TestAnnotationType, TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { expect, test } from '../../../support/fixtures';
 
 const mnemonic =
@@ -13,7 +14,26 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
         await onboardingPage.disableNecessaryFirmwareChecks();
     });
 
-    test('Successfully recovers wallet from mnemonic', async ({
+    test('Successfully recovers wallet from mnemonic', {
+        annotation: [
+            {
+                type: TestAnnotationType.TestCase,
+                description: 'Verify that a user can successfully recover a wallet from a mnemonic during the onboarding process.',
+            },
+            {
+                type: TestAnnotationType.Category,
+                description: TestCategory.Onboarding,
+            },
+            {
+                type: TestAnnotationType.Priority,
+                description: TestPriority.High,
+            },
+            {
+                type: TestAnnotationType.Stream,
+                description: 'TODO',
+            },
+        ]
+    }, async ({
         page,
         onboardingPage,
         analyticsSection,

@@ -1,8 +1,28 @@
+import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Guide without device', { tag: ['@group=suite', '@webOnly'] }, () => {
     test.use({ startEmulator: false });
-    test('open / close guide', async ({ page, guidePanel, settingsPage }) => {
+    test('open / close guide', {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description: 'Verifies that a user can open and close the guide.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.SuiteGuide,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Low,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
+                },
+            ]
+        }, async ({ page, guidePanel, settingsPage }) => {
         // Open guide
         await guidePanel.openPanel();
         const firstNode = guidePanel.guideNodes.first().locator('> *').first();
@@ -40,7 +60,26 @@ test.describe('Guide without device', { tag: ['@group=suite', '@webOnly'] }, () 
 });
 
 test.describe('Guide with device', { tag: ['@group=suite'] }, () => {
-    test('onboarding with device', async ({
+    test('onboarding with device', {
+        annotation: [
+            {
+                type: TestAnnotationType.TestCase,
+                description: 'Verifies that a user can open and close the guide with device connected.',
+            },
+            {
+                type: TestAnnotationType.Category,
+                description: TestCategory.SuiteGuide,
+            },
+            {
+                type: TestAnnotationType.Priority,
+                description: TestPriority.Low,
+            },
+            {
+                type: TestAnnotationType.Stream,
+                description: 'TODO',
+            },
+        ]
+    }, async ({
         page,
         analyticsSection,
         onboardingPage,

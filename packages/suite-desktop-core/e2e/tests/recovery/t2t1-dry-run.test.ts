@@ -1,5 +1,6 @@
 import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
+import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 const pin = '1';
@@ -15,7 +16,26 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@group=device-management'] }, 
         await settingsPage.navigateTo('device');
     });
 
-    test('Standard recovery dry run', async ({
+    test('Standard recovery dry run', {
+        annotation: [
+            {
+                type: TestAnnotationType.TestCase,
+                description: 'Verify that a user can successfully perform a standard recovery dry run.',
+            },
+            {
+                type: TestAnnotationType.Category,
+                description: TestCategory.Settings,
+            },
+            {
+                type: TestAnnotationType.Priority,
+                description: TestPriority.High,
+            },
+            {
+                type: TestAnnotationType.Stream,
+                description: 'TODO',
+            },
+        ]
+    }, async ({
         settingsPage,
         recoveryModal,
         trezorUserEnvLink,
@@ -44,7 +64,26 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@group=device-management'] }, 
         });
     });
 
-    test('Recovery with device reconnection', async ({
+    test('Recovery with device reconnection', {
+        annotation: [
+            {
+                type: TestAnnotationType.TestCase,
+                description: 'Verify that a user can successfully perform a recovery dry run with device reconnection.',
+            },
+            {
+                type: TestAnnotationType.Category,
+                description: TestCategory.Settings,
+            },
+            {
+                type: TestAnnotationType.Priority,
+                description: TestPriority.Medium,
+            },
+            {
+                type: TestAnnotationType.Stream,
+                description: 'TODO',
+            },
+        ]
+    }, async ({
         page,
         settingsPage,
         recoveryModal,
