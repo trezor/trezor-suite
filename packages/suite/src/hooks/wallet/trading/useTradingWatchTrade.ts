@@ -17,6 +17,7 @@ import {
     type TradingType,
     invityAPI,
     tradingActions,
+    tradingThunks,
 } from '@suite-common/trading';
 
 import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/tradingExchangeActions';
@@ -33,6 +34,7 @@ export const tradeFinalStatuses: Record<TradingType, TradingTradeStatusType[]> =
 const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
     trade && trade.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
 
+// TODO: trading - delete after refactor
 const tradingWatchTrade = async <T extends TradingType>({
     trade,
     account,
@@ -40,6 +42,8 @@ const tradingWatchTrade = async <T extends TradingType>({
     dispatch,
     removeDraft,
 }: TradingWatchTradeProps<T>) => {
+    invityAPI.createInvityAPIKey(account.descriptor);
+
     const response = await invityAPI.watchTrade<T>(trade.data, trade.tradeType, refreshCount);
     const accountData = {
         descriptor: account.descriptor,
@@ -138,8 +142,18 @@ export const useTradingWatchTrade = <T extends TradingType>({
 
         if (shouldRefreshTrade(trade)) {
             cancelRefresh();
-            invityAPI.createInvityAPIKey(account.descriptor);
-            tradingWatchTrade<T>({ trade, account, refreshCount, dispatch, removeDraft });
+
+            if (trade.tradeType === 'buy') {
+                dispatch(
+                    tradingThunks.watchTradeThunk({
+                        account,
+                        trade,
+                        refreshCount,
+                    }),
+                );
+            } else {
+                tradingWatchTrade<T>({ trade, account, refreshCount, dispatch, removeDraft });
+            }
 
             resetRefresh();
         }

@@ -4,12 +4,14 @@ import { loadInfoThunk } from './buy/loadInfoThunk';
 import { selectQuoteThunk } from './buy/selectQuoteThunk';
 import { loadInitialDataThunk } from './common/loadInitialDataThunk';
 import { verifyAddressThunk } from './common/verifyAddressThunk';
+import { watchTradeThunk } from './common/watchTradeThunk';
 
 export { type HandleRequestThunkProps } from './buy/handleRequestThunk';
 
 export const tradingThunks = {
     verifyAddressThunk,
     loadInitialDataThunk,
+    watchTradeThunk,
 };
 
 export const buyThunks = {
