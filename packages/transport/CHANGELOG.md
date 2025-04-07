@@ -1,3 +1,11 @@
+# 1.4.4
+
+-   npm-prerelease: @trezor/transport 1.4.4-beta.1 (4088a73073)
+-   chore(deps): update usb dependency from 2.14.0 to 2.15.0 (7f3f70a55b)
+-   fix(transport): reinit sessions background when initing webusb transport (968234bee7)
+-   chore(transport): remove unused onClose param from release (64300a51aa)
+-   fix(transport): add synchronous release (f4d1eb6eb5)
+
 # 1.4.3
 
 -   npm-prerelease: @trezor/transport 1.4.3-beta.1 (78542f7870)
