@@ -53,8 +53,11 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     public cancel(_error?: string) {}
 
     private async handshake() {
+        if (!this.ws) {
+            throw ERRORS.TypedError('Desktop_ConnectionMissing', 'No websocket connection');
+        }
         try {
-            const response = await this.ws!.sendMessage(
+            const response = await this.ws.sendMessage(
                 {
                     type: POPUP.HANDSHAKE,
                     payload: {
@@ -89,11 +92,9 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         this._settings = newSettings;
 
         try {
-            this.ws = new WebsocketClient({ url: 'ws://localhost:21335/connect-ws' });
-
-            await this.ws.connect();
-
-            return await this.handshake();
+            const ws = new WebsocketClient({ url: 'ws://localhost:21335/connect-ws' });
+            await ws.connect();
+            this.ws = ws;
         } catch (err) {
             throw err instanceof WebsocketError
                 ? ERRORS.TypedError('Desktop_ConnectionMissing', err.message)
@@ -110,9 +111,8 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         try {
             if (!this.ws) {
                 await this.init();
-            } else {
-                await this.handshake();
             }
+            await this.handshake();
 
             const response = await this.ws?.sendMessage({
                 type: IFRAME.CALL,
