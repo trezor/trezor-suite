@@ -5,10 +5,7 @@ import { isDesktop } from '@trezor/env-utils';
 
 import { Translation, TroubleshootingTips, WebUsbButton } from 'src/components/suite';
 import {
-    TROUBLESHOOTING_TIP_BLUETOOTH_CABLE,
-    TROUBLESHOOTING_TIP_BLUETOOTH_PAIRING_MODE,
-    TROUBLESHOOTING_TIP_BLUETOOTH_PROXIMITY,
-    TROUBLESHOOTING_TIP_BLUETOOTH_SETTINGS,
+    TROUBLESHOOTING_ALL_BLUETOOTH_TIPS,
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
@@ -71,20 +68,16 @@ export const DeviceConnect = ({ setIsBluetoothConnectOpen }: DeviceConnectProps)
     };
 
     if (isBluetoothEnabled && isDesktop()) {
-        const bluetoothItems: TroubleshootingTipsItem[] = [
-            TROUBLESHOOTING_TIP_BLUETOOTH_PROXIMITY,
-            TROUBLESHOOTING_TIP_BLUETOOTH_PAIRING_MODE,
-            TROUBLESHOOTING_TIP_BLUETOOTH_SETTINGS,
-            TROUBLESHOOTING_TIP_BLUETOOTH_CABLE,
-        ];
-
         return (
             <TroubleshootingTipsWithSections
                 label={<Translation id="TR_CONNECTION_TYPE" />}
                 ctaLabel={<Translation id="TR_TREZOR_SAFE_7" />}
                 items={{
                     cable: { items: cableItem, label: <Translation id="TR_CABLE" /> },
-                    bluetooth: { items: bluetoothItems, label: <Translation id="TR_BLUETOOTH" /> },
+                    bluetooth: {
+                        items: TROUBLESHOOTING_ALL_BLUETOOTH_TIPS,
+                        label: <Translation id="TR_BLUETOOTH" />,
+                    },
                 }}
                 defaultSection="cable"
                 cta={getCallToActionButton()}
