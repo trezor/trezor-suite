@@ -1,3 +1,8 @@
+# 1.3.4
+
+-   npm-prerelease: @trezor/protobuf 1.3.4-beta.1 (4664dfed22)
+-   fix(connect): Failure code properly typed (fb14734ac4)
+
 # 1.3.3
 
 -   npm-prerelease: @trezor/protobuf 1.3.3-beta.1 (3f079b57d3)
