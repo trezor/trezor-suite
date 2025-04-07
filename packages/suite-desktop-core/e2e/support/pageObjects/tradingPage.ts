@@ -297,42 +297,25 @@ export class TradingPage {
     async fillSellForm(
         amount: string,
         cryptoCurrency: string = 'bitcoin',
-        amountInCrypto: boolean = true,
         fiatCurrencyCode: FiatCurrencyCode = 'eur',
         country: string = 'CZ',
     ) {
-        const inputField = amountInCrypto ? this.youPayCryptoInput : this.youPayFiatInput;
         await this.selectCountryOfResidence(country);
         const quoteRequestPromise = this.page.waitForRequest(invityEndpoint.sellQuotes);
-        await inputField.fill(amount);
+        await this.youPayCryptoInput.fill(amount);
         await expect(
             this.page.getByText('Not enough funds'),
             'Insufficient funds in the account to run sell flow test. Please contact the "tech_qa" Slack group immediately.',
         ).not.toBeVisible();
-
-        if (amountInCrypto) {
-            await expect(quoteRequestPromise).toHavePayload({
-                amountInCrypto,
-                cryptoCurrency,
-                fiatCurrency: fiatCurrencyCode.toUpperCase(),
-                country,
-                cryptoStringAmount: amount,
-                fiatStringAmount: '',
-                flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
-            });
-        } else {
-            await expect(quoteRequestPromise).toHavePayload(
-                {
-                    amountInCrypto,
-                    cryptoCurrency,
-                    fiatCurrency: fiatCurrencyCode.toUpperCase(),
-                    country,
-                    fiatStringAmount: amount,
-                    flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
-                },
-                { omit: ['cryptoStringAmount'] },
-            );
-        }
+        await expect(quoteRequestPromise).toHavePayload({
+            amountInCrypto: true,
+            cryptoCurrency,
+            fiatCurrency: fiatCurrencyCode.toUpperCase(),
+            country,
+            cryptoStringAmount: amount,
+            fiatStringAmount: '',
+            flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
+        });
         await this.waitForOffersSync();
     }
 

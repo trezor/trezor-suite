@@ -47,10 +47,9 @@ test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () =>
     //TODO: Enable once #18062 is fixed
     // Bug: Incorrect fee calculation in Sell form and Bump fee form
     test.skip('Sell Bitcoin for best offer', async ({ page, tradingPage, devicePrompt }) => {
-        await test.step('Fill in a sell request in Fiat', async () => {
-            await tradingPage.youPayFiatCryptoSwitchButton.click();
-            await tradingPage.fillSellForm(fiatAmount, 'bitcoin', false);
-            await expect(tradingPage.bestOfferAmount).toHaveText(formattedCryptoAmount);
+        await test.step('Fill in a sell request', async () => {
+            await tradingPage.fillSellForm(cryptoAmount);
+            await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
         });
 
