@@ -80,15 +80,20 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         throw err;
     }
 
-    // 7. init backends
+    // 7. init connect popup handler
+    if (isDesktop()) {
+        dispatch(connectPopupDesktopInitThunk());
+    }
+
+    // 8. init backends
     await dispatch(initBlockchainThunk())
         .unwrap()
         .catch(err => console.error(err));
 
-    // 8. fetch token definitions (has to be fetched before fiat rates)
+    // 9. fetch token definitions (has to be fetched before fiat rates)
     await dispatch(periodicCheckTokenDefinitionsThunk());
 
-    // 9. init periodic fetching of fiat rates
+    // 10. init periodic fetching of fiat rates
     await dispatch(
         periodicFetchFiatRatesThunk({
             rateType: 'current',
@@ -102,28 +107,25 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         }),
     );
 
-    // 10. fetch rates for transactions with missing rates
+    // 11. fetch rates for transactions with missing rates
     await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
 
-    // 11. dispatch initial location change
+    // 12. dispatch initial location change
     dispatch(routerActions.init());
 
-    // 12. fetch metadata. metadata is not saved together with other data in storage.
+    // 13. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
     // immediately after suite start.
     dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevices());
 
-    // 13. start fetching staking data if needed, does need to be waited
+    // 14. start fetching staking data if needed, does need to be waited
     dispatch(periodicCheckStakeDataThunk());
 
-    // 14. init connect popup handler
-    if (isDesktop()) {
-        dispatch(connectPopupDesktopInitThunk());
-    }
+    // 15. init wallet connect
     if (selectIsDebugModeActive(getState())) {
         dispatch(walletConnectActions.walletConnectInitThunk());
     }
 
-    // 15. backend connected, suite is ready to use
+    // 16. backend connected, suite is ready to use
     dispatch(onSuiteReady());
 };
