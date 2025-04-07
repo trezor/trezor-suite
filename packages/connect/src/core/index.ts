@@ -497,7 +497,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
     }
 
     if (method.payload.__info) {
-        const response = method.getMethodInfo();
+        const response = await method.getMethodInfo();
         sendCoreMessage(createResponseMessage(method.responseID, true, response));
 
         return Promise.resolve();

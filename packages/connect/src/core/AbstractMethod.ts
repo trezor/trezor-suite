@@ -16,7 +16,13 @@ import {
     UiRequestConfirmation,
     createDeviceMessage,
 } from '../events';
-import type { ConnectSettings, DeviceState, FirmwareRange, StaticSessionId } from '../types';
+import type {
+    ConnectSettings,
+    DeviceState,
+    FirmwareRange,
+    PrecomposeResultFinal,
+    StaticSessionId,
+} from '../types';
 import { getHost } from '../utils/urlUtils';
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
@@ -334,7 +340,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     abstract init(): void;
 
-    getMethodInfo() {
+    async getMethodInfo() {
         return {
             useDevice: this.useDevice,
             useDeviceState: this.useDeviceState,
@@ -342,8 +348,14 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             requiredPermissions: this.requiredPermissions,
             info: this.info,
             confirmation: this.confirmation,
+            precomposed: await this.payloadToPrecomposed(),
             // this could be used for more. it could tell clients what are min firmware versions (firmwareRange) and much more
         };
+    }
+
+    payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
+        // Suite uses precomposed result for transaction review modals
+        return Promise.resolve(undefined);
     }
 
     checkDeviceCapability() {
