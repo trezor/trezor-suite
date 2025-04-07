@@ -1,3 +1,11 @@
+# 1.3.4
+
+-   npm-prerelease: @trezor/blockchain-link-types 1.3.4-beta.1 (fa0a4d511d)
+-   feat(blockchain-link): migrate wallet-sdk-solana staking accounts (995ed63410)
+-   feat(blockchain-link): migrate ripple-lib to xrpl.js (422c175f4f)
+-   chore(blockchain-link): update blockbook-api types (5ca901a0e3)
+-   chore(blockchain-link): move solana types (b3dfcb0de0)
+
 # 1.3.3
 
 -   npm-prerelease: @trezor/blockchain-link-types 1.3.3-beta.1 (577577afd4)
