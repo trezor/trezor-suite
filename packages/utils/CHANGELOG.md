@@ -1,3 +1,8 @@
+# 9.3.4
+
+-   npm-prerelease: @trezor/utils 9.3.4-beta.1 (c81ed9b806)
+-   feat(ds): Replace lottie colors in Spinner (#18001) (8131c8d039)
+
 # 9.3.3
 
 -   npm-prerelease: @trezor/utils 9.3.3-beta.1 (d3cf2f59a9)
