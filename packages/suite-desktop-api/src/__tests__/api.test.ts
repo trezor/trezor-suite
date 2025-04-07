@@ -89,14 +89,10 @@ describe('DesktopApi', () => {
 
         it('DesktopApi.checkForUpdates', () => {
             const spy = jest.spyOn(ipcRenderer, 'send');
-            api.checkForUpdates();
-            expect(spy).toHaveBeenCalledWith('update/check', undefined);
-            api.checkForUpdates(true);
-            expect(spy).toHaveBeenCalledWith('update/check', true);
-
-            // @ts-expect-error invalid param
-            api.checkForUpdates('string');
-            expect(spy).toHaveBeenCalledTimes(2); // invalid param not processed
+            api.checkForUpdates({ isManual: false });
+            expect(spy).toHaveBeenCalledWith('update/check', { isManual: false });
+            api.checkForUpdates({ isManual: true });
+            expect(spy).toHaveBeenCalledWith('update/check', { isManual: true });
         });
 
         it('DesktopApi.downloadUpdate', () => {

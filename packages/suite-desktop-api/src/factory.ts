@@ -51,9 +51,9 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         getAppAutoStartIsEnabled: () => ipcRenderer.invoke('app/auto-start/is-enabled'),
 
         // Auto-updater
-        checkForUpdates: isManual => {
-            if (validation.isPrimitive(['boolean', true], isManual))
-                ipcRenderer.send('update/check', isManual);
+        checkForUpdates: ({ isManual }) => {
+            if (validation.isPrimitive('boolean', isManual))
+                ipcRenderer.send('update/check', { isManual });
         },
         downloadUpdate: () => ipcRenderer.send('update/download'),
         installUpdate: () => ipcRenderer.send('update/install'),

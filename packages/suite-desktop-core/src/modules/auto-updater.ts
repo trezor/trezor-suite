@@ -207,8 +207,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         );
     });
 
-    ipcMain.on('update/check', (_, isManual) => {
-        if (isManual) {
+    ipcMain.on('update/check', (_, { isManual }) => {
+        if (isManual === true) {
             isManualCheck = true;
         }
 

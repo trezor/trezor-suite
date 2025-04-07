@@ -35,7 +35,7 @@ export interface MainChannels {
     'update/set-automatic-update-enabled': boolean;
     'update/set-auto-install-on-app-quit': void;
     'update/cancel': void;
-    'update/check': boolean | undefined;
+    'update/check': { isManual: boolean };
     'update/download': void;
     'update/install': void;
     'logger/config': LoggerConfig;

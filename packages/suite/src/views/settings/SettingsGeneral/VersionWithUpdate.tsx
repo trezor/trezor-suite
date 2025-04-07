@@ -88,7 +88,7 @@ export const VersionWithUpdate = () => {
     const desktopUpdateState = useSelector(state => state.desktopUpdate);
     const dispatch = useDispatch();
 
-    const checkForUpdates = () => desktopApi.checkForUpdates(true);
+    const checkForUpdates = () => desktopApi.checkForUpdates({ isManual: true });
     const maximizeUpdateModal = () => dispatch(setUpdateModalVisibility('maximized'));
     const installAndRestart = () => dispatch(installUpdate({ installNow: true }));
 

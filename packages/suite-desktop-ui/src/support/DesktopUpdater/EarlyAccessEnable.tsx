@@ -26,7 +26,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
         setEnabled(true);
     }, []);
 
-    const checkForUpdates = useCallback(() => desktopApi.checkForUpdates(true), []);
+    const checkForUpdates = useCallback(() => desktopApi.checkForUpdates({ isManual: true }), []);
 
     return enabled ? (
         <NewModal

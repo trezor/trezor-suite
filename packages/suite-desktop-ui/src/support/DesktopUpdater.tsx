@@ -54,11 +54,11 @@ export const DesktopUpdater = ({ children }: DesktopUpdaterProps) => {
         desktopApi.on('update/error', params => dispatch(error(params)));
 
         // Initial check for updates
-        desktopApi.checkForUpdates();
+        desktopApi.checkForUpdates({ isManual: false });
         // Check for updates every hour
         const checkForUpdatesInterval = setInterval(
             () => {
-                desktopApi.checkForUpdates();
+                desktopApi.checkForUpdates({ isManual: false });
             },
             60 * 60 * 1000,
         );
