@@ -1,14 +1,23 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import styled, { useTheme } from 'styled-components';
-
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, Column, Divider, H2, Icon, Text, Tooltip } from '@trezor/components';
+import {
+    Button,
+    Card,
+    Column,
+    Divider,
+    H3,
+    Icon,
+    Paragraph,
+    Row,
+    Text,
+    Tooltip,
+} from '@trezor/components';
 import { models } from '@trezor/connect/src/data/models';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import {
     TREZOR_RESELLERS_URL,
     TREZOR_SUPPORT_FW_ALREADY_INSTALLED,
@@ -18,7 +27,6 @@ import {
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Hologram, OnboardingButtonSkip } from 'src/components/onboarding';
-import { CollapsibleOnboardingCard } from 'src/components/onboarding/CollapsibleOnboardingCard';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
@@ -29,66 +37,6 @@ import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { SecurityChecklist } from './SecurityChecklist';
 import { SecurityChecklistItem } from './types';
-
-const StyledCard = styled(CollapsibleOnboardingCard)`
-    max-width: 840px;
-    padding: ${spacingsPx.md};
-`;
-
-const DeviceNameSection = styled.div`
-    margin: ${spacingsPx.xs} 0 ${spacingsPx.xl};
-    width: 100%;
-`;
-
-const DeviceName = styled.div`
-    ${typography.titleMedium}
-    color: ${({ theme }) => theme.backgroundPrimaryDefault};
-    margin-top: ${spacingsPx.sm};
-`;
-
-const Underline = styled.span`
-    position: relative;
-    display: inline-block;
-
-    &::after {
-        content: '';
-        position: absolute;
-        bottom: ${spacingsPx.xxs};
-        left: 0;
-        right: 0;
-        border-bottom: 1px dashed ${({ theme }) => theme.textSubdued};
-        width: 100%;
-    }
-`;
-
-const Flex = styled.div`
-    flex: 1;
-`;
-
-const TimeEstimateWrapper = styled.div`
-    ${typography.label}
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: ${spacingsPx.xxxs};
-    opacity: 0.66;
-    margin-top: 1px;
-`;
-
-const Buttons = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: ${spacingsPx.xl};
-`;
-
-const StyledTrezorLink = styled(TrezorLink)`
-    color: inherit;
-`;
-
-const TooltipWrapper = styled.span`
-    display: inline-block;
-    position: relative;
-`;
 
 const firmwareInstalledChecklist = [
     {
@@ -106,14 +54,14 @@ const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
                     id="TR_ONBOARDING_DEVICE_CHECK_2"
                     values={{
                         reseller: link => (
-                            <StyledTrezorLink href={TREZOR_RESELLERS_URL} variant="underline">
+                            <TrezorLink href={TREZOR_RESELLERS_URL} variant="underline">
                                 {link}
-                            </StyledTrezorLink>
+                            </TrezorLink>
                         ),
                         shop: link => (
-                            <StyledTrezorLink href={TREZOR_URL} variant="underline">
+                            <TrezorLink href={TREZOR_URL} variant="underline">
                                 {link}
-                            </StyledTrezorLink>
+                            </TrezorLink>
                         ),
                     }}
                 />
@@ -126,15 +74,15 @@ const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
                     id="TR_ONBOARDING_DEVICE_CHECK_1"
                     values={{
                         strong: chunks => (
-                            <TooltipWrapper>
-                                <Tooltip
-                                    placement={isMobileLayout ? 'top' : 'left'}
-                                    title={<Translation id="TR_HOLOGRAM_STEP_HEADING" />}
-                                    content={<Hologram />}
-                                >
-                                    <Underline>{chunks}</Underline>
-                                </Tooltip>
-                            </TooltipWrapper>
+                            <Tooltip
+                                placement={isMobileLayout ? 'top' : 'left'}
+                                title={<Translation id="TR_HOLOGRAM_STEP_HEADING" />}
+                                content={<Hologram />}
+                                isInline
+                                hasIcon
+                            >
+                                {chunks}
+                            </Tooltip>
                         ),
                     }}
                 />
@@ -165,7 +113,6 @@ const SecurityCheckContent = ({
     const [isFailed, setIsFailed] = useState(false);
 
     const { goToNextStep, rerun, updateAnalytics } = useOnboarding();
-    const theme = useTheme();
     const dispatch = useDispatch();
 
     const deviceStatus = getConnectedDeviceStatus(device);
@@ -227,58 +174,67 @@ const SecurityCheckContent = ({
         />
     ) : (
         <SecurityCheckLayout imageMode="ROTATE">
-            <Column alignItems="flex-start">
-                <DeviceNameSection>
-                    <Text variant="tertiary">
-                        <Translation id="TR_YOU_HAVE_CONNECTED" />
-                    </Text>
-                    <DeviceName>
-                        {device?.name}
-                        {humanizedModelColor && <Text> {humanizedModelColor}</Text>}
-                    </DeviceName>
-
-                    <OnboardingButtonSkip onClick={toggleView}>
-                        <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
-                    </OnboardingButtonSkip>
-                </DeviceNameSection>
-                <Divider margin={{ top: spacings.zero, bottom: spacings.xl }} />
-                <H2 margin={{ top: spacings.md }}>
+            <Column gap={spacings.sm}>
+                <Paragraph variant="tertiary">
+                    <Translation id="TR_YOU_HAVE_CONNECTED" />
+                </Paragraph>
+                <Paragraph typographyStyle="titleMedium" variant="primary">
+                    {device?.name}
+                    {humanizedModelColor && <Text> {humanizedModelColor}</Text>}
+                </Paragraph>
+                <OnboardingButtonSkip onClick={toggleView}>
+                    <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
+                </OnboardingButtonSkip>
+            </Column>
+            <Divider margin={{ vertical: spacings.xxl }} />
+            <Column gap={spacings.md}>
+                <H3>
                     <Translation id={headingText} />
-                </H2>
+                </H3>
                 <SecurityChecklist items={checklistItems} />
             </Column>
-            <Buttons>
+            <Row
+                alignItems="stretch"
+                flexWrap="wrap"
+                gap={spacings.xl}
+                width="100%"
+                margin={{ top: spacings.xxxxl }}
+            >
                 <Button variant="tertiary" onClick={toggleView} size="large">
                     <Translation id={secondaryButtonText} />
                 </Button>
-                <Flex>
-                    {initialized ? (
-                        <Button
-                            data-testid="@onboarding/exit-app-button"
-                            onClick={handleContinueButtonClick}
-                            isFullWidth
-                            size="large"
-                        >
-                            <Translation id="TR_YES_CONTINUE" />
-                        </Button>
-                    ) : (
-                        <Button
-                            onClick={handleSetupButtonClick}
-                            data-testid="@analytics/continue-button"
-                            isFullWidth
-                            size="large"
-                        >
-                            <Column alignItems="center">
-                                <Translation id={primaryButtonTopText} />
-                                <TimeEstimateWrapper>
-                                    <Icon size={12} name="clock" color={theme.iconOnPrimary} />
+                {initialized ? (
+                    <Button
+                        data-testid="@onboarding/exit-app-button"
+                        onClick={handleContinueButtonClick}
+                        isFullWidth
+                        size="large"
+                        variant="primary"
+                        flex="1"
+                    >
+                        <Translation id="TR_YES_CONTINUE" />
+                    </Button>
+                ) : (
+                    <Button
+                        onClick={handleSetupButtonClick}
+                        data-testid="@analytics/continue-button"
+                        isFullWidth
+                        size="large"
+                        variant="primary"
+                        flex="1"
+                    >
+                        <Column alignItems="center">
+                            <Translation id={primaryButtonTopText} />
+                            <Text typographyStyle="label" as="div" opacity={0.65}>
+                                <Row gap={spacings.xxs}>
+                                    <Icon size={12} name="clock" />
                                     <Translation id="TR_TAKES_N_MINUTES" />
-                                </TimeEstimateWrapper>
-                            </Column>
-                        </Button>
-                    )}
-                </Flex>
-            </Buttons>
+                                </Row>
+                            </Text>
+                        </Column>
+                    </Button>
+                )}
+            </Row>
         </SecurityCheckLayout>
     );
 };
@@ -343,12 +299,12 @@ export const SecurityCheck = () => {
     const goToDeviceAuthentication = () => setIsAuthenticityCheckStep(true);
 
     return (
-        <StyledCard>
+        <Card maxWidth={840}>
             <SecurityCheckContent
                 goToDeviceAuthentication={goToDeviceAuthentication}
                 goToSuiteOrNextDevice={goToSuiteOrNextDevice}
                 shouldAuthenticateSelectedDevice={shouldAuthenticateSelectedDevice}
             />
-        </StyledCard>
+        </Card>
     );
 };

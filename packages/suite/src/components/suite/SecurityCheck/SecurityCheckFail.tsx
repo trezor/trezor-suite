@@ -1,8 +1,6 @@
-import styled from 'styled-components';
-
 import { TranslationKey } from '@suite-common/intl-types';
-import { Button, Divider, H2, Row, Text } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { Button, Column, Divider, H2, Paragraph, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 import { Url } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite';
@@ -11,16 +9,6 @@ import { SecurityChecklistItem } from 'src/views/onboarding/steps/SecurityCheck/
 
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 import { hardFailureChecklistItems } from './checklistItems';
-
-const TopSection = styled.div`
-    margin-top: ${spacingsPx.xs};
-    margin-bottom: ${spacingsPx.xl};
-    width: 100%;
-`;
-
-const Flex = styled.div`
-    flex: 1;
-`;
 
 export type SecurityCheckFailProps = {
     goBack?: () => void;
@@ -41,17 +29,17 @@ export const SecurityCheckFail = ({
 
     return (
         <SecurityCheckLayout isFailed>
-            <TopSection>
-                <H2 margin={{ bottom: spacings.sm }}>
+            <Column gap={spacings.sm} padding={{ top: spacings.xs }}>
+                <H2>
                     <Translation id={heading} />
                 </H2>
-                <Text variant="tertiary">
+                <Paragraph variant="tertiary">
                     <Translation id={text} />
-                </Text>
-            </TopSection>
-            <Divider margin={{ top: spacings.zero, bottom: spacings.xl }} />
+                </Paragraph>
+            </Column>
+            <Divider margin={{ vertical: spacings.xl }} />
             <SecurityChecklist items={checklistItems} />
-            <Row flexWrap="wrap" gap={spacings.xl} width="100%">
+            <Row flexWrap="wrap" gap={spacings.xl} width="100%" margin={{ top: spacings.xxxxl }}>
                 {goBack && (
                     <Button
                         variant="tertiary"
@@ -62,17 +50,9 @@ export const SecurityCheckFail = ({
                         <Translation id="TR_BACK" />
                     </Button>
                 )}
-                <Flex>
-                    <Button
-                        textWrap={false}
-                        href={chatUrl}
-                        isFullWidth
-                        size="large"
-                        variant="primary"
-                    >
-                        <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
-                    </Button>
-                </Flex>
+                <Button textWrap={false} href={chatUrl} isFullWidth size="large" flex="1">
+                    <Translation id="TR_CONTACT_TREZOR_SUPPORT" />
+                </Button>
             </Row>
         </SecurityCheckLayout>
     );

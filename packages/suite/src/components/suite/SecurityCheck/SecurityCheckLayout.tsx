@@ -1,54 +1,23 @@
-import styled from 'styled-components';
-
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { DeviceAnimation, Image } from '@trezor/components';
+import {
+    Box,
+    Column,
+    DeviceAnimation,
+    Grid,
+    Image,
+    useMediaQuery,
+    variables,
+} from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { breakpointMediaQueries } from '@trezor/styles';
+import { borders, spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
-const Wrapper = styled.div`
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: 24px;
-    width: 100%;
-
-    ${breakpointMediaQueries.below_md} {
-        grid-template-columns: 1fr;
-        flex-direction: column;
-    }
-`;
-
-const ImageWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    background: ${({ theme }) => theme.legacy.BG_GREY};
-    border-radius: 12px;
-    padding: 32px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledImage = styled(Image)`
-    max-height: 300px;
-
-    /* do not apply the darkening filter in dark mode on device images */
-    filter: none;
-`;
-
-const Content = styled.div`
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-`;
-
-interface SecurityCheckLayoutProps {
+type SecurityCheckLayoutProps = {
     isFailed?: boolean;
     children: React.ReactNode;
     imageMode?: 'ROTATE' | 'STATIC';
-}
+};
 
 export const SecurityCheckLayout = ({
     isFailed,
@@ -56,6 +25,7 @@ export const SecurityCheckLayout = ({
     imageMode,
 }: SecurityCheckLayoutProps) => {
     const device = useSelector(selectSelectedDevice);
+    const isBelowTablet = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
 
     const deviceModelInternal = device?.features?.internal_model;
     const imageVariant = isFailed ? 'GHOST' : 'LARGE';
@@ -71,23 +41,29 @@ export const SecurityCheckLayout = ({
         ].includes(deviceModelInternal);
 
     return (
-        <Wrapper>
+        <Grid columns={isBelowTablet ? '1fr' : '260px 1fr'} gap={spacings.xl} width="100%">
             {deviceModelInternal && (
-                <ImageWrapper>
-                    {isDeviceImageRotating ? (
-                        <DeviceAnimation
-                            type="ROTATE"
-                            deviceModelInternal={deviceModelInternal}
-                            deviceUnitColor={device.features?.unit_color}
-                            height="300px" // NOTE: fill out the fixed height, we know that the video is 2x
-                            sizeVariant="LARGE"
-                        />
-                    ) : (
-                        <StyledImage image={`TREZOR_${deviceModelInternal}_${imageVariant}`} />
-                    )}
-                </ImageWrapper>
+                <Box hasBackground borderRadius={borders.radii.sm} padding={spacings.xxl}>
+                    <Column height="100%" justifyContent="center" alignItems="center">
+                        {isDeviceImageRotating ? (
+                            <DeviceAnimation
+                                type="ROTATE"
+                                deviceModelInternal={deviceModelInternal}
+                                deviceUnitColor={device.features?.unit_color}
+                                height="300px" // NOTE: fill out the fixed height, we know that the video is 2x
+                                sizeVariant="LARGE"
+                            />
+                        ) : (
+                            <Image
+                                maxHeight={300}
+                                isFilterActive={false}
+                                image={`TREZOR_${deviceModelInternal}_${imageVariant}`}
+                            />
+                        )}
+                    </Column>
+                </Box>
             )}
-            <Content>{children}</Content>
-        </Wrapper>
+            <Column justifyContent="space-between">{children}</Column>
+        </Grid>
     );
 };

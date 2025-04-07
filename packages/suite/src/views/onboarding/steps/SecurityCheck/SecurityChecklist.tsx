@@ -1,4 +1,4 @@
-import { Box, Column, Paragraph, Row } from '@trezor/components';
+import { List, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { SecurityChecklistItem } from './types';
@@ -8,23 +8,16 @@ type SecurityChecklistProps = {
 };
 
 export const SecurityChecklist = ({ items }: SecurityChecklistProps) => (
-    <Column
-        alignItems="flex-start"
-        gap={spacings.xl}
-        margin={{ top: spacings.xl, bottom: spacings.xxxxl }}
-    >
+    <List gap={spacings.xl}>
         {items.map((item, index) => (
-            <Row key={index} gap={spacings.xl}>
-                {item.icon}
-                <Box>
-                    <Paragraph variant="tertiary">{item.content}</Paragraph>
-                    {item.subtitle ? (
-                        <Paragraph typographyStyle="hint" variant="tertiary">
-                            {item.subtitle}
-                        </Paragraph>
-                    ) : null}
-                </Box>
-            </Row>
+            <List.Item bulletComponent={item.icon} key={index}>
+                <Paragraph variant="tertiary">{item.content}</Paragraph>
+                {item.subtitle ? (
+                    <Paragraph typographyStyle="hint" variant="tertiary">
+                        {item.subtitle}
+                    </Paragraph>
+                ) : null}
+            </List.Item>
         ))}
-    </Column>
+    </List>
 );
