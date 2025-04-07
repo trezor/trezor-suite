@@ -85,8 +85,8 @@ export const getPriorityFee = async (
         .simulateTransaction(rawTx, { commitment: 'confirmed', encoding: 'base64' })
         .send();
     if (simulated.value.err != null || !simulated.value.unitsConsumed) {
-        console.error('Could not simulate transaction:', simulated.value.err);
-        throw new Error(`Could not simulate transaction: ${simulated.value.err}`);
+        console.error('Could not simulate transaction:', JSON.stringify(simulated.value.err));
+        throw new Error(`Could not simulate transaction: ${JSON.stringify(simulated.value.err)}`);
     }
     // Add 20% margin to the computed limit
     const computeUnitLimit = new BigNumber(simulated.value.unitsConsumed.toString())

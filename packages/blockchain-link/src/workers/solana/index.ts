@@ -161,7 +161,7 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     if (message.lifetimeConstraint === undefined) {
         const {
             value: { blockhash, lastValidBlockHeight },
-        } = await api.rpc.getLatestBlockhash({ commitment: 'finalized' }).send();
+        } = await api.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send();
         transactionWithBlockhashLifetime = {
             ...transactionWithBlockhashLifetime,
             lifetimeConstraint: { blockhash, lastValidBlockHeight },
@@ -518,7 +518,7 @@ const subscribeBlock = async ({ state, connect, post }: Context) => {
     const fetchBlock = async () => {
         const {
             value: { blockhash: blockHash, lastValidBlockHeight: blockHeight },
-        } = await api.rpc.getLatestBlockhash({ commitment: 'finalized' }).send();
+        } = await api.rpc.getLatestBlockhash({ commitment: 'confirmed' }).send();
         if (blockHeight) {
             post({
                 id: -1,
