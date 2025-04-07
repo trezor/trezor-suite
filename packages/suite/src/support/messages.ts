@@ -369,7 +369,7 @@ export default defineMessages({
         id: 'TR_ALL_NETWORKS_TOOLTIP',
     },
     TR_SELECT_TOKEN: {
-        defaultMessage: 'Select a token',
+        defaultMessage: 'Select an asset',
         id: 'TR_SELECT_TOKEN',
     },
     TR_SELECT_NAME_OR_ADDRESS: {
@@ -1405,7 +1405,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_DCA_FEATURE_2_SUBHEADING: {
-        defaultMessage: 'Secure & trusted – developed with Trezor',
+        defaultMessage: 'Secure & reliable—built in partnership with Trezor',
         id: 'TR_TRADING_DCA_FEATURE_2_SUBHEADING',
         dynamic: true,
     },
@@ -1422,7 +1422,7 @@ export default defineMessages({
     },
     TR_TRADING_DCA_FEATURE_3_DESCRIPTION: {
         defaultMessage:
-            'Smart Send withdraws your bitcoin to Trezor automatically with no extra fees, so your investments are always under your control.',
+            'Smart Send automatically moves your bitcoin to your Trezor at no extra cost, keeping your investments secure and always in your control.',
         id: 'TR_TRADING_DCA_FEATURE_3_DESCRIPTION',
         dynamic: true,
     },
@@ -1437,12 +1437,12 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_DCA_STEP_CARD_2_SUBHEADING: {
-        defaultMessage: 'Set up an automated plan',
+        defaultMessage: 'Set up a hassle-free automatic plan.',
         id: 'TR_TRADING_DCA_STEP_CARD_2_SUBHEADING',
         dynamic: true,
     },
     TR_TRADING_DCA_STEP_CARD_2_DESCRIPTION: {
-        defaultMessage: 'Weekly, biweekly, or monthly—whatever works best for you.',
+        defaultMessage: "It's up to you—weekly, every two weeks, or monthly.",
         id: 'TR_TRADING_DCA_STEP_CARD_2_DESCRIPTION',
         dynamic: true,
     },
@@ -1452,7 +1452,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_DCA_STEP_CARD_3_DESCRIPTION: {
-        defaultMessage: 'Set up Smart Send to move bitcoin directly to your Trezor.',
+        defaultMessage: 'Use Smart Send to automatically move your bitcoin to your Trezor.',
         id: 'TR_TRADING_DCA_STEP_CARD_3_DESCRIPTION',
         dynamic: true,
     },
@@ -1467,7 +1467,7 @@ export default defineMessages({
         dynamic: true,
     },
     TR_TRADING_DCA_AVAILABLE_ONLY_FOR_BITCOIN: {
-        defaultMessage: 'DCA is available only for Bitcoin',
+        defaultMessage: 'DCA is currently available only for Bitcoin',
         id: 'TR_TRADING_DCA_AVAILABLE_ONLY_FOR_BITCOIN',
         dynamic: true,
     },
@@ -6028,8 +6028,7 @@ export default defineMessages({
     },
     TR_LABELING_FEATURE_ALLOWS: {
         id: 'TR_LABELING_FEATURE_ALLOWS',
-        defaultMessage:
-            'Rename your wallets, accounts, and addresses. Labels are applied by syncing with Dropbox or Google Drive.',
+        defaultMessage: 'Rename your wallets, accounts, or label your transactions.',
     },
     TR_LABELING_ENABLED: {
         id: 'TR_LABELING_ENABLED',
@@ -7107,7 +7106,7 @@ export default defineMessages({
     },
     TR_FAILED_VERIFY_DEVICE_HEADING: {
         id: 'TR_FAILED_VERIFY_DEVICE_HEADING',
-        defaultMessage: "Couldn't verify device",
+        defaultMessage: 'Failed to verify device',
     },
     TR_FAILED_VERIFY_DEVICE_TEXT: {
         id: 'TR_FAILED_VERIFY_DEVICE_TEXT',
@@ -7332,7 +7331,7 @@ export default defineMessages({
     TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR: {
         id: 'TR_DEVICE_FIRMWARE_HASH_CHECK_OTHER_ERROR',
         defaultMessage:
-            'Couldn’t verify device. Reconnect your Trezor to try resolving the issue. If the problem continues, contact Trezor Support.',
+            "Failed to verify device. Reconnect your Trezor and try again. Don't send any funds until the issue is resolved. If the issue persists, contact Trezor Support.",
     },
     TR_ONBOARDING_COINS_STEP: {
         id: 'TR_ONBOARDING_COINS_STEP',
@@ -7364,7 +7363,7 @@ export default defineMessages({
     },
     TR_TROUBLE_SHOOTING_TIPS: {
         id: 'TR_TROUBLE_SHOOTING_TIPS',
-        defaultMessage: 'Troubleshooting tips',
+        defaultMessage: 'Troubleshooting Bluetooth',
     },
     TR_ONBOARDING_ADVANCED: {
         id: 'TR_ONBOARDING_ADVANCED',
@@ -8776,21 +8775,21 @@ export default defineMessages({
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING',
-        defaultMessage: 'Use the address where needed',
+        defaultMessage: 'Paste address for verification',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION',
         defaultMessage:
-            'Paste it into an exchange, wallet, or message to someone who will send you funds.',
+            'Paste it into the exchange, wallet, or platform where you’ll use it, but wait before submitting.',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING',
-        defaultMessage: 'Verify it on your Trezor',
+        defaultMessage: 'Verify address on your Trezor',
     },
     TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION: {
         id: 'TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION',
         defaultMessage:
-            "Always check the pasted address matches the one displayed on your Trezor's screen.",
+            'Check that the pasted address matches the one on your Trezor’s screen. Only then can you safely confirm and use it to receive funds.',
     },
     TR_DISCOVERY_NEW_COINS: {
         id: 'TR_DISCOVERY_NEW_COINS',
@@ -9047,7 +9046,7 @@ export default defineMessages({
     TR_STAKE_STAKED_AMOUNT_LOCKED: {
         id: 'TR_STAKE_STAKED_AMOUNT_LOCKED',
         defaultMessage:
-            'The staked amount of {networkDisplaySymbol} is locked and can’t be traded or sent.',
+            'The staked amount of {networkDisplaySymbol} is locked and can’t be swapped or sent.',
     },
     TR_STAKE_ETH_UNSTAKING_TAKES: {
         id: 'TR_STAKE_ETH_UNSTAKING_TAKES',
@@ -9758,31 +9757,31 @@ export default defineMessages({
     },
     TR_PAIR_NEW_BLUETOOTH_DEVICE: {
         id: 'TR_PAIR_NEW_BLUETOOTH_DEVICE',
-        defaultMessage: 'Pair over Bluetooth',
+        defaultMessage: 'Connect via Bluetooth',
     },
     TR_BLUETOOTH_TIP_PROXIMITY_HEADER: {
         id: 'TR_BLUETOOTH_TIP_PROXIMITY_HEADER',
-        defaultMessage: 'Bring Trezor Safe 7 closer to this computer',
+        defaultMessage: 'Move your Trezor Safe 7 closer to your computer',
     },
     TR_BLUETOOTH_TIP_PROXIMITY_TEXT: {
         id: 'TR_BLUETOOTH_TIP_PROXIMITY_TEXT',
-        defaultMessage: 'The maximum range for Bluetooth is 10 meters',
+        defaultMessage: 'The maximum range for Bluetooth is 10 meters.',
     },
     TR_BLUETOOTH_TIP_PARING_MODE_HEADER: {
         id: 'TR_BLUETOOTH_TIP_PARING_MODE_HEADER',
-        defaultMessage: 'Put Trezor Safe 7 into pairing mode',
+        defaultMessage: 'Turn on pairing mode for your Trezor Safe 7',
     },
     TR_BLUETOOTH_TIP_PARING_MODE_TEXT: {
         id: 'TR_BLUETOOTH_TIP_PARING_MODE_TEXT',
-        defaultMessage: 'Hold your Trezor’s power button for 3 seconds',
+        defaultMessage: 'Press & hold your Trezor’s power button for 3 seconds.',
     },
     TR_BLUETOOTH_TIP_CABLE_HEADER: {
         id: 'TR_BLUETOOTH_TIP_CABLE_HEADER',
-        defaultMessage: 'If nothing helps, connect Trezor Safe 7 with cable',
+        defaultMessage: 'Go to your device settings to connect via Bluetooth',
     },
     TR_BLUETOOTH_TIP_CABLE_TEXT: {
         id: 'TR_BLUETOOTH_TIP_CABLE_TEXT',
-        defaultMessage: 'Try to pair Bluetooth from device settings',
+        defaultMessage: 'If the issue persists, connect your Trezor Safe 7 using the USB-C cable',
     },
     TR_BLUETOOTH_TIP_SETTINGS_HEADER: {
         id: 'TR_BLUETOOTH_TIP_SETTINGS_HEADER',
@@ -9791,12 +9790,12 @@ export default defineMessages({
     TR_BLUETOOTH_TIP_SETTINGS_TEXT: {
         id: 'TR_BLUETOOTH_TIP_SETTINGS_TEXT',
         defaultMessage:
-            'If your Trezor is listed in <a>Bluetooth settings</a>, remove it and pair again.',
+            'If you see your Trezor in <a>Bluetooth settings</a>, remove it and pair again.',
     },
     TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE: {
         id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE',
         defaultMessage:
-            'Cannot open bluetooth settings. Go to settings manually, and if your Trezor is listed in Bluetooth settings, remove it and pair again.',
+            "Unable to open Bluetooth settings. Go to your device's settings manually. If your Trezor appears in the Bluetooth list, remove it and then pair it again.",
     },
     TR_CONNECTION_TYPE: {
         id: 'TR_CONNECTION_TYPE',
