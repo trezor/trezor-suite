@@ -76,6 +76,7 @@ export type FrameProps = {
     position?: Position;
     cursor?: Cursor;
     zIndex?: number;
+    opacity?: number;
     aspectRatio?: `${number}` | `${number} / ${number}`;
 };
 export type FramePropsKeys = keyof FrameProps;
@@ -118,6 +119,7 @@ export const withFrameProps = ({
     $cursor,
     $zIndex,
     $aspectRatio,
+    $opacity,
 }: TransientFrameProps) => css`
     ${$margin &&
     (typeof $margin === 'object'
@@ -199,6 +201,10 @@ export const withFrameProps = ({
     css`
         aspect-ratio: ${$aspectRatio};
     `};
+    ${typeof $opacity !== 'undefined' &&
+    css`
+        opacity: ${$opacity};
+    `};
 `;
 
 const getStorybookType = (key: FramePropsKeys) => {
@@ -244,6 +250,7 @@ const getStorybookType = (key: FramePropsKeys) => {
                 },
             };
         case 'zIndex':
+        case 'opacity':
             return {
                 control: {
                     type: 'number',
@@ -318,6 +325,7 @@ export const getFramePropsStory = (allowedFrameProps: Array<FramePropsKeys>) => 
             ...(allowedFrameProps.includes('pointerEvents') ? { pointerEvents: undefined } : {}),
             ...(allowedFrameProps.includes('cursor') ? { cursor: undefined } : {}),
             ...(allowedFrameProps.includes('zIndex') ? { zIndex: undefined } : {}),
+            ...(allowedFrameProps.includes('opacity') ? { opacity: undefined } : {}),
             ...(allowedFrameProps.includes('aspectRatio') ? { aspectRatio: undefined } : {}),
         },
         argTypes,
