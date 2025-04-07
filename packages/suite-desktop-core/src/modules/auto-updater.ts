@@ -63,6 +63,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
     // Prevent downloading an update unless user explicitly asks for it.
     autoUpdater.autoDownload = false;
+    // You may turn this on for dev purposes, see docs/releases/desktop_updates.md
+    autoUpdater.forceDevUpdateConfig = false;
 
     const updateSettings = store.getUpdateSettings();
     let allowPrerelease = preReleaseFlag || updateSettings.allowPrerelease;
