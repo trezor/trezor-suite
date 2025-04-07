@@ -371,6 +371,7 @@ export class TradingPage {
     @step()
     async initiateSendConfirmation(options?: { confirmAlsoToken: boolean }) {
         await this.confirmOnTrezorAndSend.click();
+        await expect(this.modal).toBeVisible({ timeout: 30_000 });
         await expect(this.devicePrompt.sendButton).toBeDisabled();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
