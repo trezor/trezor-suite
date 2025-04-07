@@ -1,12 +1,13 @@
 import { useSelector } from 'react-redux';
 
 import { selectTradingBuyIsLoading, selectTradingBuyProviders } from '@suite-common/trading';
-import { Text } from '@suite-native/atoms';
+import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 import { TradingOverviewValueSkeleton } from '../general/TradingOverviewValueSkeleton';
+import { TradingProviderLogo } from '../general/TradingProviderLogo';
 
 export const TradingProviderPicker = () => {
     const { translate } = useTranslate();
@@ -31,7 +32,7 @@ export const TradingProviderPicker = () => {
         return null;
     }
 
-    const { companyName } = providers[providerKey];
+    const { companyName, logo } = providers[providerKey];
 
     return (
         <TradingOverviewRow
@@ -39,13 +40,16 @@ export const TradingProviderPicker = () => {
             noBottomBorder
             noCaret
         >
-            <Text
-                color="textSubdued"
-                variant="body"
-                accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
-            >
-                {companyName}
-            </Text>
+            <HStack>
+                <TradingProviderLogo logo={logo} />
+                <Text
+                    color="textSubdued"
+                    variant="body"
+                    accessibilityLabel={translate('moduleTrading.tradingScreen.selectedProvider')}
+                >
+                    {companyName}
+                </Text>
+            </HStack>
         </TradingOverviewRow>
     );
 };

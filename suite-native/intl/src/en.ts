@@ -1531,6 +1531,7 @@ export const en = {
         networkName: 'Network name',
         coinName: 'Coin name',
         coinSymbol: 'Coin symbol',
+        providerLogo: 'Provider logo',
     },
     firmware: {
         title: 'Firmware',
