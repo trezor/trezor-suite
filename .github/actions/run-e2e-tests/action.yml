@@ -107,7 +107,8 @@ runs:
         echo "Using BASE_URL: $BASE_URL"
 
         if [ "${GITHUB_RUN_ATTEMPT}" -gt 1 ]; then
-          npx currents api get-run --pw-last-run --ci-build-id ${CURRENTS_CI_BUILD_ID} --output ${{ github.workspace }}/packages/suite-desktop-core/e2e/test-results/.last-run.json
+          PREVIOUS_CURRENTS_CI_BUILD_ID="pr-run-${{ github.run_id }}-$((GITHUB_RUN_ATTEMPT - 1))"
+          npx currents api get-run --pw-last-run --ci-build-id ${PREVIOUS_CURRENTS_CI_BUILD_ID} --output ${{ github.workspace }}/packages/suite-desktop-core/e2e/test-results/.last-run.json
           LAST_FAILED_FLAG="--last-failed"
         fi
       
