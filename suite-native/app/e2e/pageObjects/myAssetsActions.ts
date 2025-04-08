@@ -1,5 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
+import { scrollToEnd } from '../utils';
+
 class MyAssetsActions {
     async waitForScreen() {
         await waitFor(element(by.id('@screen/MyAssets')))
@@ -8,7 +10,7 @@ class MyAssetsActions {
     }
 
     async addAccount() {
-        await element(by.id('@screen/mainScrollView')).scrollTo('top');
+        await scrollToEnd('@screen/mainScrollView', 'top');
         await element(by.id('@myAssets/addAccountButton')).tap();
 
         await detoxExpect(element(by.id('@screen/SelectNetwork'))).toBeVisible();

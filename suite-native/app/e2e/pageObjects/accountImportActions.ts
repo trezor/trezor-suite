@@ -1,6 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
-import { scrollUntilVisible } from '../utils';
+import { scrollToEnd, scrollUntilVisible } from '../utils';
 import { onTabBar } from './tabBarActions';
 
 class AccountImportActions {
@@ -59,7 +59,7 @@ class AccountImportActions {
 
     async confirmAddAccount() {
         // confirm button is not visible for some coins e.g. eth
-        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
+        await scrollToEnd('@screen/mainScrollView', 'bottom');
         await element(by.id('@account-import/coin-synced/confirm-button')).tap();
 
         await detoxExpect(element(by.id('@screen/Home')));

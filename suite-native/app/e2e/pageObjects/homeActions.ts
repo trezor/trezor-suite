@@ -1,5 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
+import { scrollToEnd } from '../utils';
+
 const graphHeaderDiscreetTextElement = element(
     by.id('@home/portfolio/fiat-balance-header').withDescendant(by.id('discreet-text')),
 );
@@ -12,7 +14,7 @@ class HomeActions {
     }
 
     async tapSyncCoinsButton() {
-        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
+        await scrollToEnd('@screen/mainScrollView', 'bottom');
         await element(by.id('@home/portfolio/sync-coins-button')).tap();
 
         await detoxExpect(element(by.id('@screen/SelectNetwork'))).toBeVisible();

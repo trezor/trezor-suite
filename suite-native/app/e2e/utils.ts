@@ -1,4 +1,5 @@
 import { expect as detoxExpect } from 'detox';
+import { Direction } from 'detox/detox';
 import { resolveConfig } from 'detox/internals';
 
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
@@ -78,9 +79,28 @@ export const restartApp = async () => {
     }
 };
 
+export const hideKeyboard = async () => {
+    // Hide keyboard by tapping on the screen outside of any input field.
+    await device.tap({ x: 0, y: 0 });
+};
+
+export const scrollToEnd = async (
+    scrollViewId: string,
+    edge: Direction,
+    startPositionX?: number,
+    startPositionY?: number,
+) => {
+    // Hide keyboard in case it is open. (iOS scrolling is broken when keyboard is visible)
+    if (platform === 'ios') {
+        await hideKeyboard();
+    }
+    await element(by.id(scrollViewId)).scrollTo(edge, startPositionX, startPositionY);
+};
+
 export const scrollUntilVisible = async (
     target: Detox.IndexableNativeElement,
     scrollViewTestId: string = '@screen/mainScrollView',
+    scrollDirection: 'up' | 'down' = 'down',
 ) => {
     try {
         // Try to confirm that the element is visible without scrolling.
@@ -88,17 +108,17 @@ export const scrollUntilVisible = async (
     } catch {
         // Hide keyboard in case it is open. (iOS scrolling is broken when keyboard is visible)
         if (platform === 'ios') {
-            await device.tap({ x: 0, y: 0 });
+            await hideKeyboard();
         }
 
         // If the element is not visible, then use the scroll to find it.
         await waitFor(target)
             .toBeVisible()
             .whileElement(by.id(scrollViewTestId))
-            .scroll(300, 'down');
+            .scroll(300, scrollDirection);
 
         // add extra scroll in case that the element is still not fully visible.
-        await element(by.id(scrollViewTestId)).scroll(150, 'down');
+        await element(by.id(scrollViewTestId)).scroll(150, scrollDirection);
     }
 };
 

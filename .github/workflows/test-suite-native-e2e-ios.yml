@@ -3,6 +3,12 @@ name: "[Test] suite-native iOS E2E"
 on:
   schedule:
     - cron: "0 0 * * *"
+  pull_request:
+    paths:
+      - "suite-native/**"
+      - "suite-common/**"
+      - "packages/connect/**"
+      - ".github/workflows/test-suite-native-e2e-ios.yml"
   workflow_dispatch:
 
 concurrency:
