@@ -40,7 +40,7 @@ runs:
         RUN_ATTEMPT="${{ inputs.run_attempt }}"
 
         if [ "${RUN_ATTEMPT}" -gt 1 ]; then
-          echo "Manually triggered re-run. Running only failed tests."
+          echo "Manually triggered re-run."
           echo "skip_tests=false" >> $GITHUB_OUTPUT
           exit 0
         fi
