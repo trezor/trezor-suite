@@ -19,7 +19,7 @@ export const ConnectPopupModal = () => {
     const { methodTitle, confirmLabel, permissionTypes } = methodInfo;
 
     const rememberPayload = {
-        origin,
+        origin: source.origin,
         types: permissionTypes,
         ...(source.isWalletConnect
             ? {
@@ -68,7 +68,8 @@ export const ConnectPopupModal = () => {
                         <strong>{source.processName}</strong>
                     </Paragraph>
                     <Paragraph data-testid="@connect-popup-modal/paragraph-origin">
-                        <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" /> <strong>{origin}</strong>
+                        <Translation id="TR_CONNECT_MODAL_WEB_ORIGIN" />{' '}
+                        <strong>{source.origin}</strong>
                     </Paragraph>
                     {!source.isWalletConnect && (
                         <Paragraph>
