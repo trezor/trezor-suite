@@ -11960,6 +11960,7 @@ __metadata:
     "@trezor/coinjoin": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/connect-web": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"

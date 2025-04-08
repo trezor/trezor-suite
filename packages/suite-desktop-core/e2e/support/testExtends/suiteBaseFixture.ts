@@ -4,27 +4,36 @@ import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
 import { TrezorUserEnvLinkProxy, getUrl, getVideoPath, isDesktopProject } from '../common';
-import { Suite, launchSuite } from '../electron';
+import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
+
+type ElectronConf = Pick<LaunchSuiteParams, 'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs'>;
 
 type suiteBaseFixture = {
     startEmulator: boolean;
     setupEmulator: boolean;
     emulatorStartConf: StartEmuModelRequired;
     emulatorSetupConf: SetupEmu;
+    electronConf: ElectronConf;
     url: string;
     trezorUserEnvLink: TrezorUserEnvLinkClass;
     page: Page;
     exceptionLogger: void;
 };
 
-const electronSetup = async (testInfo: TestInfo, locale: string | undefined, colorScheme: any) => {
+const electronSetup = async (
+    testInfo: TestInfo,
+    locale: string | undefined,
+    colorScheme: any,
+    electronConf: ElectronConf,
+) => {
     const suite = await launchSuite({
         locale,
         colorScheme,
         artefactFolder: testInfo.outputDir,
         viewport: testInfo.project.use.viewport!,
+        ...electronConf,
     });
 
     await suite.window
@@ -108,6 +117,7 @@ const suiteBaseTest = base.extend<suiteBaseFixture>({
     setupEmulator: true,
     emulatorStartConf: { model: 'T3T1', wipe: true },
     emulatorSetupConf: {},
+    electronConf: {},
     /* eslint-disable-next-line no-empty-pattern */
     url: async ({}, use, testInfo) => {
         await use(getUrl(testInfo));
@@ -125,6 +135,7 @@ const suiteBaseTest = base.extend<suiteBaseFixture>({
             setupEmulator,
             emulatorStartConf,
             emulatorSetupConf,
+            electronConf,
         },
         use,
         testInfo,
@@ -139,7 +150,7 @@ const suiteBaseTest = base.extend<suiteBaseFixture>({
         );
 
         if (isDesktopProject(testInfo)) {
-            const suite = await electronSetup(testInfo, locale, colorScheme);
+            const suite = await electronSetup(testInfo, locale, colorScheme, electronConf);
             await use(suite.window);
             await electronTeardown(suite, testInfo);
         } else {

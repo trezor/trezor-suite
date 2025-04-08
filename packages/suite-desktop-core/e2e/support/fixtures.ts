@@ -8,6 +8,7 @@ import { MetadataMock } from './mocks/metadataMock';
 import { TradingMock } from './mocks/tradingMock';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
 import { AssetsSection } from './pageObjects/assetsSection';
+import { ConnectPopupModal } from './pageObjects/connectPopupModal';
 import { DashboardPage } from './pageObjects/dashboardPage';
 import { DevicePrompt } from './pageObjects/devicePrompt';
 import { GuidePanel } from './pageObjects/guidePanel';
@@ -39,6 +40,7 @@ type Fixtures = {
     metadataMock: MetadataMock;
     blockbookMock: BlockbookMock;
     tradingMock: TradingMock;
+    connectModal: ConnectPopupModal;
 };
 
 const suiteTest = suiteBaseTest.extend<Fixtures>({
@@ -109,6 +111,9 @@ const suiteTest = suiteBaseTest.extend<Fixtures>({
     },
     tradingMock: async ({ page }, use) => {
         await use(new TradingMock(page));
+    },
+    connectModal: async ({ page }, use) => {
+        await use(new ConnectPopupModal(page));
     },
 });
 

@@ -17,9 +17,10 @@ const logLevelArgument = `--log-level=${process.env.LOGLEVEL ?? 'debug'}`;
 const disableHWAccelerationArgument = '--disable-gpu'; // to fix chromium error GetVSyncParametersIfAvailable()
 const removeUserDataArgument = '--remove-user-data-on-start';
 
-type LaunchSuiteParams = {
+export type LaunchSuiteParams = {
     keepUserData?: boolean;
     bridgeDaemon?: boolean;
+    exposeConnectWs?: boolean;
     locale?: string;
     colorScheme?: 'light' | 'dark' | 'no-preference' | null | undefined;
     artefactFolder: string;
@@ -56,6 +57,10 @@ const buildArgs = (params: LaunchSuiteParams) => {
         args.push('--bridge-daemon', '--skip-new-bridge-rollout');
     } else {
         args.push('--bridge-legacy', '--bridge-test');
+    }
+
+    if (params.exposeConnectWs) {
+        args.push('--expose-connect-ws');
     }
 
     const deleteUserData = !params.keepUserData;
