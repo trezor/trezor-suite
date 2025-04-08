@@ -5,6 +5,7 @@ export { default as authorizeCoinjoin } from './authorizeCoinjoin';
 export { default as cancelCoinjoinAuthorization } from './cancelCoinjoinAuthorization';
 export { default as showDeviceTutorial } from './showDeviceTutorial';
 export { default as backupDevice } from './backupDevice';
+export { default as bleUnpair } from './bleUnpair';
 export { default as blockchainDisconnect } from './blockchainDisconnect';
 export { default as blockchainEstimateFee } from './blockchainEstimateFee';
 export { default as blockchainGetAccountBalanceHistory } from './blockchainGetAccountBalanceHistory';

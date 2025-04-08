@@ -6,6 +6,7 @@ import { backupDevice } from './backupDevice';
 import { binanceGetAddress } from './binanceGetAddress';
 import { binanceGetPublicKey } from './binanceGetPublicKey';
 import { binanceSignTransaction } from './binanceSignTransaction';
+import { bleUnpair } from './bleUnpair';
 import { blockchainDisconnect } from './blockchainDisconnect';
 import { blockchainEstimateFee } from './blockchainEstimateFee';
 import { blockchainEvmRpcCall } from './blockchainEvmRpcCall';
@@ -117,6 +118,9 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/binance/binanceSignTransaction/
     binanceSignTransaction: typeof binanceSignTransaction;
+
+    // https://connect.trezor.io/9/methods/device/bleUnpair/
+    bleUnpair: typeof bleUnpair;
 
     // todo: link docs
     blockchainDisconnect: typeof blockchainDisconnect;
