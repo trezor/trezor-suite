@@ -49,9 +49,15 @@ jobs:
           yarn workspace @trezor/suite translations:extract
           cat packages/suite-data/files/translations/master.json
           yarn workspace @trezor/suite translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-          git add . && git commit -m "chore: crowdin translation update" && git push origin ${{ env.BRANCH_NAME }} -f
-          gh config set prompt disabled
-          gh pr create --repo trezor/trezor-suite --title "Crowdin translations update" --body "Automatically generated PR for updating crowdin translations from ${{ env.SOURCE_BRANCH }} branch." --base ${{ env.SOURCE_BRANCH }} --label translations
+          if [ "${{ env.SOURCE_BRANCH }}" = "develop" ]; then
+            git add . && git commit -m "chore: crowdin translation update" && git push origin ${{ env.BRANCH_NAME }} -f
+            gh config set prompt disabled
+            gh pr create --repo trezor/trezor-suite --title "Crowdin translations update" --body "Automatically generated PR for updating crowdin translations from ${{ env.SOURCE_BRANCH }} branch." --base ${{ env.SOURCE_BRANCH }} --label translations
+          else
+            git add . && git commit -m "chore: crowdin translation update [RELEASE ONLY]" && git push origin ${{ env.BRANCH_NAME }} -f
+            gh config set prompt disabled
+            gh pr create --repo trezor/trezor-suite --title "Crowdin translations update [RELEASE ONLY]" --body "Automatically generated PR for updating crowdin translations from ${{ env.SOURCE_BRANCH }} branch." --base ${{ env.SOURCE_BRANCH }} --label translations
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
           BRANCH_NAME: trezor-ci/crowdin-sync-${{ env.NOW }}
