@@ -22,6 +22,7 @@
     },
     "dependencies": {
         "@trezor/ipc-proxy": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "@trezor/websocket-client": "workspace:*"
     }
 }

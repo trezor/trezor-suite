@@ -6,6 +6,7 @@
     },
     "references": [
         { "path": "../ipc-proxy" },
-        { "path": "../utils" }
+        { "path": "../utils" },
+        { "path": "../websocket-client" }
     ]
 }

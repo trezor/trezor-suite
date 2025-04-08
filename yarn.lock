@@ -12285,6 +12285,7 @@ __metadata:
   dependencies:
     "@trezor/ipc-proxy": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/websocket-client": "workspace:*"
   languageName: unknown
   linkType: soft
 
