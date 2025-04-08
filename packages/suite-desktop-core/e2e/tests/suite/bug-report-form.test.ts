@@ -1,10 +1,7 @@
 import { FeedbackCategory } from '@suite-common/suite-types';
 
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Bug report forms', { tag: ['@group=suite'] }, () => {
@@ -12,24 +9,11 @@ test.describe('Bug report forms', { tag: ['@group=suite'] }, () => {
     test(
         'Send a bug report',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description: 'Verifies that a user can send a bug report.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.SuiteGuide,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Medium,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that a user can send a bug report.',
+                category: TestCategory.SuiteGuide,
+                priority: TestPriority.Medium,
+            }),
         },
         async ({ page, guidePanel }) => {
             const testData = {

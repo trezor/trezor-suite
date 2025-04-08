@@ -1,11 +1,8 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EventType } from '@trezor/suite-analytics';
 
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { ExtractByEventType } from '../../support/types';
 
@@ -22,25 +19,12 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
     test(
         'Add account types btc-like',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verifies that a user can add different account types for BTC-like coins.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Accounts,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Critical,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verifies that a user can add different account types for BTC-like coins.',
+                category: TestCategory.Accounts,
+                priority: TestPriority.Critical,
+            }),
         },
         async ({ page, dashboardPage, settingsPage, walletPage }) => {
             const accountTypes = [
@@ -108,25 +92,11 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
     test(
         'Add-account-types-non-BTC-coins',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verifies that a user can add different account types for non-BTC coins.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Accounts,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.High,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that a user can add different account types for non-BTC coins.',
+                category: TestCategory.Accounts,
+                priority: TestPriority.High,
+            }),
         },
         async ({ page, dashboardPage, settingsPage, walletPage, analytics }) => {
             const coins = [

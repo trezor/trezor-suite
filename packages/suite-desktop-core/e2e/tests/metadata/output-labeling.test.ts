@@ -1,11 +1,8 @@
 import fs from 'fs';
 
+import { createTestAnnotation } from '../../support/annotations';
 import { OutputLabelId } from '../../support/enums/outputLabelId';
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 
@@ -18,25 +15,11 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata', '@webOnly
     test(
         'dropbox provider',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verify metadata output labeling functionality with Dropbox provider.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Settings,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.High,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verify metadata output labeling functionality with Dropbox provider.',
+                category: TestCategory.Settings,
+                priority: TestPriority.High,
+            }),
         },
         async ({ page, onboardingPage, metadataPage, walletPage }) => {
             await onboardingPage.completeOnboarding();

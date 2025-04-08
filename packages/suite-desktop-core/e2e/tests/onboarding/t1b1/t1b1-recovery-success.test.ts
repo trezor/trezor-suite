@@ -1,8 +1,5 @@
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../../support/annotations';
+import { TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { expect, test } from '../../../support/fixtures';
 
 const mnemonic =
@@ -21,25 +18,12 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@group=device-managem
     test(
         'Successfully recovers wallet from mnemonic',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verify that a user can successfully recover a wallet from a mnemonic during the onboarding process.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Onboarding,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.High,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verify that a user can successfully recover a wallet from a mnemonic during the onboarding process.',
+                category: TestCategory.Onboarding,
+                priority: TestPriority.High,
+            }),
         },
         async ({
             page,

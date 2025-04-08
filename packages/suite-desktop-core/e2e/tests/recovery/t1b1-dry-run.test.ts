@@ -1,8 +1,5 @@
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 const mnemonic =
@@ -23,25 +20,12 @@ test.describe('Recovery T1B1 - dry run', { tag: ['@group=device-management'] }, 
     test(
         'Standard recovery dry run',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verify that a user can successfully perform a standard recovery dry run.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Settings,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.High,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verify that a user can successfully perform a standard recovery dry run.',
+                category: TestCategory.Settings,
+                priority: TestPriority.High,
+            }),
         },
         async ({ settingsPage, recoveryModal, trezorInput, trezorUserEnvLink, devicePrompt }) => {
             await settingsPage.checkSeedButton.click();

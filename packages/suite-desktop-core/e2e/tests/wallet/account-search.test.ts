@@ -1,9 +1,5 @@
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-    TestStream,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Look up a BTC account', { tag: ['@group=wallet'] }, () => {
@@ -20,24 +16,12 @@ test.describe('Look up a BTC account', { tag: ['@group=wallet'] }, () => {
     test(
         'Search for bitcoin in accounts',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description: 'Verifies that a user can search for a BTC account.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.BTC,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Medium,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: TestStream.Foundation,
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that a user can search for a BTC account.',
+                category: TestCategory.BTC,
+                priority: TestPriority.Medium,
+                stream: TestStream.Foundation,
+            }),
         },
         async ({ dashboardPage, walletPage }) => {
             await dashboardPage.navigateTo();

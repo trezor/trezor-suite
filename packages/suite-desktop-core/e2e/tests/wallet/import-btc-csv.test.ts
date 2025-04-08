@@ -1,13 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 
+import { createTestAnnotation } from '../../support/annotations';
 import { csvToJson } from '../../support/csvToJson';
 import { AccountLabelId } from '../../support/enums/accountLabelId';
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 
@@ -20,24 +17,11 @@ test.describe('Import a BTC csv file', { tag: ['@group=wallet', '@webOnly'] }, (
     test(
         'Go to BTC send form and import a csv',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description: 'Verify that a user can successfully import a BTC csv file.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.UriLinkHandler,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Low,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verify that a user can successfully import a BTC csv file.',
+                category: TestCategory.UriLinkHandler,
+                priority: TestPriority.Low,
+            }),
         },
         async ({ page, dashboardPage, metadataPage, walletPage }) => {
             await walletPage.openAccount();

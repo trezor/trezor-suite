@@ -1,8 +1,5 @@
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../../support/annotations';
+import { TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { expect, test } from '../../../support/fixtures';
 
 test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] }, () => {
@@ -18,25 +15,12 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
     test(
         'Success (basic)',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verify that a user can successfully create a wallet during the onboarding process.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Onboarding,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Critical,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verify that a user can successfully create a wallet during the onboarding process.',
+                category: TestCategory.Onboarding,
+                priority: TestPriority.Critical,
+            }),
         },
         async ({ page, analyticsSection, onboardingPage, devicePrompt, trezorUserEnvLink }) => {
             // Pass through analytics and firmware steps

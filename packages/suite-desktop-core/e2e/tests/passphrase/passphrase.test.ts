@@ -1,11 +1,8 @@
 import { EventType } from '@trezor/suite-analytics';
 
+import { createTestAnnotation } from '../../support/annotations';
 import { formatAddress } from '../../support/common';
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { ExtractByEventType } from '../../support/types';
 
@@ -21,25 +18,12 @@ test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
     test(
         'basic flow',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verify that a user can successfully add and switch between hidden wallets, and confirm passphrase.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Wallets,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.High,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verify that a user can successfully add and switch between hidden wallets, and confirm passphrase.',
+                category: TestCategory.Wallets,
+                priority: TestPriority.High,
+            }),
         },
         async ({ page, analytics, devicePrompt, dashboardPage, walletPage, trezorUserEnvLink }) => {
             // add 1st hidden wallet

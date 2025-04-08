@@ -1,11 +1,7 @@
 import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-    TestStream,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { test } from '../../support/fixtures';
 
 test.describe('Create additional share', { tag: ['@group=device-management'] }, () => {
@@ -20,25 +16,13 @@ test.describe('Create additional share', { tag: ['@group=device-management'] }, 
     test(
         'Successfully added additional share',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verify that an additional share can be successfully created during the backup process.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Settings,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.High,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: TestStream.Foundation,
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verify that an additional share can be successfully created during the backup process.',
+                category: TestCategory.Settings,
+                priority: TestPriority.High,
+                stream: TestStream.Foundation,
+            }),
         },
         async ({ page, settingsPage, trezorUserEnvLink }) => {
             await settingsPage.navigateTo('device');

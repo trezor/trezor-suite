@@ -1,8 +1,5 @@
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
@@ -17,24 +14,11 @@ test.describe(
         test(
             'Electrum completes discovery successfully',
             {
-                annotation: [
-                    {
-                        type: TestAnnotationType.TestCase,
-                        description: 'Verify that a user can successfully set up Electrum backend.',
-                    },
-                    {
-                        type: TestAnnotationType.Category,
-                        description: TestCategory.Dashboard,
-                    },
-                    {
-                        type: TestAnnotationType.Priority,
-                        description: TestPriority.High,
-                    },
-                    {
-                        type: TestAnnotationType.Stream,
-                        description: 'TODO',
-                    },
-                ],
+                annotation: createTestAnnotation({
+                    testCase: 'Verify that a user can successfully set up Electrum backend.',
+                    category: TestCategory.Dashboard,
+                    priority: TestPriority.High,
+                }),
             },
             async ({ page, dashboardPage, settingsPage, walletPage }) => {
                 test.info().annotations.push({

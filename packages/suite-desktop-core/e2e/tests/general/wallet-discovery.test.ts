@@ -1,8 +1,5 @@
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
@@ -13,24 +10,11 @@ test.describe('Wallet discover tests', { tag: ['@group=wallet'] }, () => {
     test(
         'Discover a standard wallet',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description: 'Verify that a user can successfully discover a standard wallet.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Wallets,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Critical,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verify that a user can successfully discover a standard wallet.',
+                category: TestCategory.Wallets,
+                priority: TestPriority.Critical,
+            }),
         },
         async ({ dashboardPage, walletPage }) => {
             await dashboardPage.openDeviceSwitcher();

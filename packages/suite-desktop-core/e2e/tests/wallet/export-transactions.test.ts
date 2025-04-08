@@ -2,11 +2,8 @@ import fs from 'fs';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { ExportType } from '../../support/pageObjects/walletPage';
 
@@ -23,25 +20,11 @@ test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () 
     test(
         'Go to account and try to export all possible variants (pdf, csv, json)',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verify that a user can successfully export transactions in all formats.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Wallets,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Medium,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verify that a user can successfully export transactions in all formats.',
+                category: TestCategory.Wallets,
+                priority: TestPriority.Medium,
+            }),
         },
         async ({ page, settingsPage, walletPage, onboardingPage }) => {
             const symbols: NetworkSymbol[] = ['btc', 'ltc', 'eth', 'ada'];

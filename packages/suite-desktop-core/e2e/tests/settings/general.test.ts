@@ -1,11 +1,7 @@
 import { EventType } from '@trezor/suite-analytics';
 
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-    TestStream,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
 import { ExtractByEventType } from '../../support/types';
@@ -24,25 +20,13 @@ test.describe('General settings', { tag: ['@group=settings'] }, () => {
     test(
         'Change settings on "general settings" page',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verifies that a user can change settings on the "General Settings" page.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Settings,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Medium,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: TestStream.Foundation,
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verifies that a user can change settings on the "General Settings" page.',
+                category: TestCategory.Settings,
+                priority: TestPriority.Medium,
+                stream: TestStream.Foundation,
+            }),
         },
         async ({ analytics, settingsPage, dashboardPage, page }) => {
             await test.step('Check default currency is USD', async () => {

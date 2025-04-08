@@ -1,10 +1,7 @@
 import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 const pin = '1';
@@ -23,25 +20,12 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@group=device-management'] }, 
     test(
         'Standard recovery dry run',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verify that a user can successfully perform a standard recovery dry run.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Settings,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.High,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verify that a user can successfully perform a standard recovery dry run.',
+                category: TestCategory.Settings,
+                priority: TestPriority.High,
+            }),
         },
         async ({ settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
             await test.step('Initiate recovery dry run in settings', async () => {
@@ -71,25 +55,12 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@group=device-management'] }, 
     test(
         'Recovery with device reconnection',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verify that a user can successfully perform a recovery dry run with device reconnection.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Settings,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Medium,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verify that a user can successfully perform a recovery dry run with device reconnection.',
+                category: TestCategory.Settings,
+                priority: TestPriority.Medium,
+            }),
         },
         async ({ page, settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
             await test.step('Initiate recovery dry run in settings', async () => {

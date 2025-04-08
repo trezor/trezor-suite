@@ -1,11 +1,7 @@
 import { cardanoAccountDetails } from '../../snapshots/web/wallet/cardano.test.ts/cardano-aria';
+import { createTestAnnotation } from '../../support/annotations';
 import { formatAddress } from '../../support/common';
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-    TestStream,
-} from '../../support/enums/testAnnotations';
+import { TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 const receiveAddress =
@@ -23,25 +19,12 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
     test(
         'Basic cardano walkthrough',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verifies that a user can successfully discover a Cardano account.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.ADA,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Medium,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: TestStream.Trends,
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that a user can successfully discover a Cardano account.',
+                category: TestCategory.ADA,
+                priority: TestPriority.Medium,
+                stream: TestStream.Trends,
+            }),
         },
         async ({
             page,

@@ -1,8 +1,5 @@
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
@@ -15,24 +12,11 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
     test(
         'change all possible device settings',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description: 'Verifies that a user can change all possible device settings.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Settings,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Medium,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that a user can change all possible device settings.',
+                category: TestCategory.Settings,
+                priority: TestPriority.Medium,
+            }),
         },
         async ({ page, settingsPage, devicePrompt, trezorUserEnvLink }) => {
             await test.step('Verify firmware modal', async () => {
@@ -67,25 +51,12 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
     test(
         'Can change homescreen background in firmware >= 2.5.4',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verifies that a user can change homescreen background in firmware >= 2.5.4',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Settings,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Low,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verifies that a user can change homescreen background in firmware >= 2.5.4',
+                category: TestCategory.Settings,
+                priority: TestPriority.Low,
+            }),
         },
         async ({ settingsPage }) => {
             await settingsPage.changeDeviceBackground('original_t2t1');

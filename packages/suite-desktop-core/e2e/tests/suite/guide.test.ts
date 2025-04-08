@@ -1,8 +1,5 @@
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Guide without device', { tag: ['@group=suite', '@webOnly'] }, () => {
@@ -10,24 +7,11 @@ test.describe('Guide without device', { tag: ['@group=suite', '@webOnly'] }, () 
     test(
         'open / close guide',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description: 'Verifies that a user can open and close the guide.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.SuiteGuide,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Low,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that a user can open and close the guide.',
+                category: TestCategory.SuiteGuide,
+                priority: TestPriority.Low,
+            }),
         },
         async ({ page, guidePanel, settingsPage }) => {
             // Open guide
@@ -71,25 +55,12 @@ test.describe('Guide with device', { tag: ['@group=suite'] }, () => {
     test(
         'onboarding with device',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verifies that a user can open and close the guide with device connected.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.SuiteGuide,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Low,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verifies that a user can open and close the guide with device connected.',
+                category: TestCategory.SuiteGuide,
+                priority: TestPriority.Low,
+            }),
         },
         async ({ page, analyticsSection, onboardingPage, guidePanel }) => {
             await onboardingPage.disableNecessaryFirmwareChecks();

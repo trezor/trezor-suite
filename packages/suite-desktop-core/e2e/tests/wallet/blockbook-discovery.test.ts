@@ -1,8 +1,5 @@
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
@@ -14,24 +11,11 @@ test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
     test(
         'BTC blockbook discovery',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description: 'Verify that a user can successfully set up Blockbook backend.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Dashboard,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.High,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verify that a user can successfully set up Blockbook backend.',
+                category: TestCategory.Dashboard,
+                priority: TestPriority.High,
+            }),
         },
         async ({ settingsPage, dashboardPage }) => {
             const btcBlockbook = 'https://btc1.trezor.io';

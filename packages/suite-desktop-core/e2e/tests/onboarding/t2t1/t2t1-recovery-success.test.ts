@@ -1,8 +1,5 @@
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../../support/annotations';
+import { TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { expect, test } from '../../../support/fixtures';
 
 test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-management'] }, () => {
@@ -19,25 +16,12 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
     test(
         'Successfully recovers wallet from mnemonic',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description:
-                        'Verify that a user can successfully recover a wallet from a mnemonic during the onboarding process.',
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Onboarding,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Critical,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verify that a user can successfully recover a wallet from a mnemonic during the onboarding process.',
+                category: TestCategory.Onboarding,
+                priority: TestPriority.Critical,
+            }),
         },
         async ({ onboardingPage, devicePrompt, trezorUserEnvLink }) => {
             // Start wallet recovery process and confirm on device
