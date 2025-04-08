@@ -1,9 +1,12 @@
-import { Fragment, ReactNode } from 'react';
+import { Fragment } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
 import { Icon, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
+
+import { progressBarSteps } from '../../config/onboarding/steps';
+import { Translation } from '../suite';
 
 const ProgressBarWrapper = styled.div`
     display: flex;
@@ -88,36 +91,30 @@ const Divider = styled.div`
 `;
 
 interface OnboardingProgressBarProps {
-    steps: {
-        key: string;
-        label?: ReactNode;
-    }[];
     activeStep?: number;
     className?: string;
 }
 
-export const OnboardingProgressBar = ({
-    steps,
-    activeStep,
-    className,
-}: OnboardingProgressBarProps) => {
+export const OnboardingProgressBar = ({ activeStep, className }: OnboardingProgressBarProps) => {
     const theme = useTheme();
+
+    const lastStepNumber = progressBarSteps.length - 1;
 
     return (
         <ProgressBarWrapper className={className}>
-            {steps.map((step, index) => {
+            {progressBarSteps.map(({ key, labelTranslationId }, index) => {
                 const stepCompleted = (activeStep ?? 0) > index;
                 const stepActive = index === activeStep;
 
                 return (
-                    <Fragment key={step.key}>
+                    <Fragment key={key}>
                         <StepWrapper $active={stepActive}>
                             <IconWrapper $active={stepActive} $stepCompleted={stepCompleted}>
                                 {stepCompleted ? (
                                     <Icon name="check" color={theme.legacy.TYPE_GREEN} />
                                 ) : (
                                     <>
-                                        {index === steps.length - 1 ? (
+                                        {index === lastStepNumber ? (
                                             <Icon
                                                 name="confetti"
                                                 size={20}
@@ -131,9 +128,13 @@ export const OnboardingProgressBar = ({
                                     </>
                                 )}
                             </IconWrapper>
-                            <Label>{step.label}</Label>
+                            {labelTranslationId ? (
+                                <Label>
+                                    <Translation id={labelTranslationId} />
+                                </Label>
+                            ) : null}
                         </StepWrapper>
-                        {index < steps.length - 1 && <Divider />}
+                        {index < lastStepNumber && <Divider />}
                     </Fragment>
                 );
             })}

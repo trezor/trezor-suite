@@ -12,7 +12,7 @@ import { GuideButton, GuideRouter } from 'src/components/guide';
 import { OnboardingProgressBar } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import { MessageSystemBanner } from 'src/components/suite/banners';
-import steps from 'src/config/onboarding/steps';
+import { steps } from 'src/config/onboarding/steps';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
@@ -112,28 +112,6 @@ const Content = styled.div`
     padding: 0 ${spacingsPx.lg} ${spacingsPx.xxxxl} ${spacingsPx.lg};
 `;
 
-const progressBarSteps = [
-    {
-        key: 'device',
-        label: <Translation id="TR_DEVICE" />,
-    },
-    {
-        key: 'wallet',
-        label: <Translation id="TR_ONBOARDING_STEP_WALLET" />,
-    },
-    {
-        key: 'pin',
-        label: <Translation id="TR_PIN" />,
-    },
-    {
-        key: 'coins',
-        label: <Translation id="TR_COINS" />,
-    },
-    {
-        key: 'final',
-    },
-];
-
 interface OnboardingLayoutProps {
     children: ReactNode;
 }
@@ -173,10 +151,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                                     </LogoHeaderRow>
 
                                     <ProgressBarRow>
-                                        <OnboardingProgressBar
-                                            steps={progressBarSteps}
-                                            activeStep={activeStep.stepGroup}
-                                        />
+                                        <OnboardingProgressBar activeStep={activeStep.stepGroup} />
                                     </ProgressBarRow>
                                 </Header>
 

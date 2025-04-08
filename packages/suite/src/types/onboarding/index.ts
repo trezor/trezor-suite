@@ -1,3 +1,4 @@
+import { TranslationKey } from '@suite-common/intl-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { FirmwareVersionString } from '@trezor/device-utils/src/types';
 
@@ -7,6 +8,11 @@ import { PrerequisiteType } from 'src/utils/suite/prerequisites';
 type ModelWithFirmwareVersion = {
     model: DeviceModelInternal;
     minFwVersion: FirmwareVersionString;
+};
+
+export type ProgressBarStep = {
+    key: string;
+    labelTranslationId?: TranslationKey;
 };
 
 export type Step = {

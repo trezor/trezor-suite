@@ -9,7 +9,7 @@ import { spacings } from '@trezor/theme';
 import { onPinSubmit } from 'src/actions/suite/modalActions';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { PinMatrix, PrerequisitesGuide, Translation } from 'src/components/suite';
-import steps from 'src/config/onboarding/steps';
+import { steps } from 'src/config/onboarding/steps';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 

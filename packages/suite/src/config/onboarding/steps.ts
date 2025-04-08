@@ -1,7 +1,7 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import * as STEP from 'src/constants/onboarding/steps';
-import type { Step } from 'src/types/onboarding';
+import { ProgressBarStep, Step } from 'src/types/onboarding';
 
 const commonPrerequisites: Step['prerequisites'] = [
     'transport-bridge',
@@ -19,7 +19,29 @@ const afterInitializePrerequisites: Step['prerequisites'] = [
     'device-different',
 ];
 
-const steps: Step[] = [
+export const progressBarSteps: ProgressBarStep[] = [
+    {
+        key: 'device',
+        labelTranslationId: 'TR_DEVICE',
+    },
+    {
+        key: 'wallet',
+        labelTranslationId: 'TR_ONBOARDING_STEP_WALLET',
+    },
+    {
+        key: 'pin',
+        labelTranslationId: 'TR_PIN',
+    },
+    {
+        key: 'coins',
+        labelTranslationId: 'TR_COINS',
+    },
+    {
+        key: 'final',
+    },
+];
+
+export const steps: Step[] = [
     {
         id: STEP.ID_FIRMWARE_STEP,
         stepGroup: 0,
@@ -106,5 +128,3 @@ const steps: Step[] = [
         prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
     },
 ];
-
-export default steps;
