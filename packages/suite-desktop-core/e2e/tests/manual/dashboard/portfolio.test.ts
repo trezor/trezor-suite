@@ -1,49 +1,23 @@
-import { formatTestSteps } from '../../../support/annotations';
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-} from '../../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../../support/annotations';
+import { TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 
 test.describe.skip('Portfolio', { tag: ['@group=manual'] }, () => {
     test(
         'Check portfolio',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description: 'Verifies that the portfolio graph is rendered correctly.',
-                },
-                {
-                    type: TestAnnotationType.Prerequisites,
-                    description: formatTestSteps([
-                        'Seeded Trezor device',
-                        'Connected Trezor Suite',
-                    ]),
-                },
-                {
-                    type: TestAnnotationType.Steps,
-                    description: formatTestSteps([
-                        'Check the "Portfolio" graph',
-                        'The graph is rendered correctly',
-                        'Hover over any bottom part of the graph (eg "weekday" or a "month")',
-                        'A popup with detail values shows',
-                    ]),
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.Dashboard,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.High,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: 'TODO',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that the portfolio graph is rendered correctly.',
+                prerequisites: ['Seeded Trezor device', 'Connected Trezor Suite'],
+                steps: [
+                    'Check the "Portfolio" graph',
+                    'The graph is rendered correctly',
+                    'Hover over any bottom part of the graph (eg "weekday" or a "month")',
+                    'A popup with detail values shows',
+                ],
+                category: TestCategory.Dashboard,
+                priority: TestPriority.High,
+            }),
         },
         async () => {},
     );

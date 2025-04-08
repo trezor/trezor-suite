@@ -1,51 +1,28 @@
-import { formatTestSteps } from '../../../support/annotations';
-import {
-    TestAnnotationType,
-    TestCategory,
-    TestPriority,
-    TestStream,
-} from '../../../support/enums/testAnnotations';
+import { createTestAnnotation } from '../../../support/annotations';
+import { TestCategory, TestPriority, TestStream } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 
 test.describe.skip('Ethereum staking account', { tag: ['@group=manual'] }, () => {
     test(
         'Ethereum staking account',
         {
-            annotation: [
-                {
-                    type: TestAnnotationType.TestCase,
-                    description: 'Verifies that a user can access the Ethereum staking account.',
-                },
-                {
-                    type: TestAnnotationType.Prerequisites,
-                    description: formatTestSteps([
-                        'Seeded Trezor device with transactions (eg. with "all" seed"',
-                        'Connected Trezor Suite',
-                        'Funded Ethereum account',
-                    ]),
-                },
-                {
-                    type: TestAnnotationType.Steps,
-                    description: formatTestSteps([
-                        'Open Ethereum account',
-                        'Observe "Stake. Earn rewards. Repeat" card',
-                        'Learn more button is clickable and opens to "Staking" tab',
-                        '"X" button is clickable',
-                    ]),
-                },
-                {
-                    type: TestAnnotationType.Category,
-                    description: TestCategory.ETH,
-                },
-                {
-                    type: TestAnnotationType.Priority,
-                    description: TestPriority.Critical,
-                },
-                {
-                    type: TestAnnotationType.Stream,
-                    description: TestStream.Trends,
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that a user can access the Ethereum staking account.',
+                prerequisites: [
+                    'Seeded Trezor device with transactions (eg. with "all" seed"',
+                    'Connected Trezor Suite',
+                    'Funded Ethereum account',
+                ],
+                steps: [
+                    'Open Ethereum account',
+                    'Observe "Stake. Earn rewards. Repeat" card',
+                    'Learn more button is clickable and opens to "Staking" tab',
+                    '"X" button is clickable',
+                ],
+                category: TestCategory.ETH,
+                priority: TestPriority.Critical,
+                stream: TestStream.Trends,
+            }),
         },
         async () => {},
     );

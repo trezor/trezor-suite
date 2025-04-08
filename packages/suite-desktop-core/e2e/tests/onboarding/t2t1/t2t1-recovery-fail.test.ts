@@ -1,3 +1,4 @@
+import { createTestAnnotation } from '../../../support/annotations';
 import { test } from '../../../support/fixtures';
 
 test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-management'] }, () => {
@@ -13,13 +14,10 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
     test(
         'Device disconnected during recovery offers retry',
         {
-            annotation: [
-                {
-                    type: 'testcase',
-                    description:
-                        'Verifies that if the device is disconnected during the recovery process, the user is given the option to retry the recovery.',
-                },
-            ],
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verifies that if the device is disconnected during the recovery process, the user is given the option to retry the recovery.',
+            }),
         },
         async ({ page, onboardingPage, analyticsSection, devicePrompt, trezorUserEnvLink }) => {
             await analyticsSection.passThroughAnalytics();
