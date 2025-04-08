@@ -8,7 +8,12 @@ import * as STEP from 'src/constants/onboarding/steps';
 import { BackupType, DeviceTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 import { AnyPath, AnyStepId } from 'src/types/onboarding';
 import { Dispatch, GetState } from 'src/types/suite';
-import { findNextStep, findPrevStep, isStepUsed } from 'src/utils/onboarding/steps';
+import {
+    findNextStep,
+    findPrevStep,
+    isStepUsed,
+    selectIsStepUsedContext,
+} from 'src/utils/onboarding/steps';
 
 export type OnboardingAction =
     | {
@@ -63,7 +68,8 @@ const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetS
         return dispatch(goToStep(stepId));
     }
 
-    const stepsInPath = steps.filter(step => isStepUsed(step, getState));
+    const isStepUsedContext = selectIsStepUsedContext(getState());
+    const stepsInPath = steps.filter(step => isStepUsed(step, isStepUsedContext));
 
     const nextStep = findNextStep(getState().onboarding.activeStepId, stepsInPath);
     dispatch(goToStep(nextStep.id));
@@ -74,7 +80,8 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
         return dispatch(goToStep(stepId));
     }
 
-    const stepsInPath = steps.filter(step => isStepUsed(step, getState));
+    const isStepUsedContext = selectIsStepUsedContext(getState());
+    const stepsInPath = steps.filter(step => isStepUsed(step, isStepUsedContext));
 
     const prevStep = findPrevStep(getState().onboarding.activeStepId, stepsInPath);
     // steps listed in case statements contain path decisions, so we need

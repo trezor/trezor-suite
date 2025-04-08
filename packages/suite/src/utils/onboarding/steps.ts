@@ -4,13 +4,23 @@ import { versionUtils } from '@trezor/utils';
 
 import { ID_AUTHENTICATE_DEVICE_STEP } from 'src/constants/onboarding/steps';
 import { AnyPath, AnyStepId, Step } from 'src/types/onboarding';
-import { GetState } from 'src/types/suite';
+import { AppState } from 'src/types/suite';
 
-export const isStepUsed = (step: Step, getState: GetState): boolean => {
-    const state = getState();
-    const device = selectSelectedDevice(state);
+export const selectIsStepUsedContext = (state: AppState) => ({
+    device: selectSelectedDevice(state),
+    onboardingPath: state.onboarding.path,
+    isDeviceAuthenticityCheckEnabled: state.suite.settings.enabledSecurityChecks.deviceAuthenticity,
+    isUnlockedBootloaderAllowed: state.suite.settings.debug.isUnlockedBootloaderAllowed,
+});
+export type IsStepUsedContext = ReturnType<typeof selectIsStepUsedContext>;
 
-    const { path } = state.onboarding;
+export const isStepUsed = (step: Step, context: IsStepUsedContext): boolean => {
+    const {
+        device,
+        onboardingPath,
+        isDeviceAuthenticityCheckEnabled,
+        isUnlockedBootloaderAllowed,
+    } = context;
     const deviceModelInternal = device?.features?.internal_model;
     const firmwareVersion = getFirmwareVersion(device);
 
@@ -33,10 +43,6 @@ export const isStepUsed = (step: Step, getState: GetState): boolean => {
     }
 
     if (step.id === ID_AUTHENTICATE_DEVICE_STEP) {
-        const isDeviceAuthenticityCheckEnabled =
-            state.suite.settings.enabledSecurityChecks.deviceAuthenticity;
-        const { isUnlockedBootloaderAllowed } = state.suite.settings.debug;
-
         const isBootloaderUnlocked = device?.features?.bootloader_locked === false;
 
         return (
@@ -49,11 +55,11 @@ export const isStepUsed = (step: Step, getState: GetState): boolean => {
         return true;
     }
 
-    if (path.length === 0) {
+    if (onboardingPath.length === 0) {
         return true;
     }
 
-    return path.every((pathMember: AnyPath) =>
+    return onboardingPath.every((pathMember: AnyPath) =>
         step.path?.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
     );
 };
