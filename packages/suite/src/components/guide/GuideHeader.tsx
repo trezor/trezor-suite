@@ -87,7 +87,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
                 <>
                     <IconButton
                         size="medium"
-                        icon="arrowLeftLong"
+                        icon="arrowLeft"
                         onClick={goBack}
                         variant="tertiary"
                         data-testid="@guide/button-back"
@@ -101,7 +101,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
             {useBreadcrumb && <HeaderBreadcrumb />}
 
             <IconButton
-                icon="arrowRightLine"
+                icon="arrowLineRight"
                 variant="tertiary"
                 onClick={handleClose}
                 data-testid="@guide/button-close"

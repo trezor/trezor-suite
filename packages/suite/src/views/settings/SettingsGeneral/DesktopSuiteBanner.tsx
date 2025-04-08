@@ -80,7 +80,7 @@ export const DesktopSuiteBanner = () => {
                     >
                         <Box position={{ type: 'absolute', top: 16, right: 16 }} cursor="pointer">
                             <IconButton
-                                icon="close"
+                                icon="x"
                                 onClick={handleClose}
                                 data-testid="@banner/install-desktop-suite/close-button"
                                 size="small"
@@ -115,9 +115,9 @@ export const DesktopSuiteBanner = () => {
                             </Button>
 
                             <OSIcons>
-                                <Icon name="osMac" variant="primary" />
-                                <Icon name="osLinux" variant="primary" />
-                                <Icon name="osWindows" variant="primary" size={20} />
+                                <Icon name="appleLogo" variant="primary" />
+                                <Icon name="linuxLogo" variant="primary" />
+                                <Icon name="windowsLogo" variant="primary" size={20} />
                             </OSIcons>
                         </Content>
                     </Row>

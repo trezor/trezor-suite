@@ -109,7 +109,7 @@ const getButtonConfig = (
     if (isActivated) {
         if (isHovered) {
             return {
-                icon: 'close',
+                icon: 'x',
                 iconSize: 9,
                 text: 'TR_DISABLE_AUTOSTOP_COINJOIN',
             };

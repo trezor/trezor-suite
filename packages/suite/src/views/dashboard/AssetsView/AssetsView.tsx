@@ -205,7 +205,7 @@ export const AssetsView = () => {
                                 }
                             />
                             <Icon
-                                name="grid"
+                                name="gridNine"
                                 data-testid="@dashboard/assets/grid-icon"
                                 onClick={setGrid}
                                 color={
@@ -244,7 +244,7 @@ export const AssetsView = () => {
                         <Card width="100%">
                             <InfoMessage>
                                 <Icon
-                                    name="warningTriangle"
+                                    name="warning"
                                     color={theme.iconAlertRed}
                                     size={14}
                                     margin={{ right: spacings.xxs }}
@@ -265,7 +265,7 @@ export const AssetsView = () => {
                     />
                     {isError && (
                         <InfoMessage>
-                            <Icon name="warningTriangle" color={theme.iconAlertRed} size={14} />
+                            <Icon name="warning" color={theme.iconAlertRed} size={14} />
                             <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
                         </InfoMessage>
                     )}

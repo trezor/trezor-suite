@@ -21,7 +21,7 @@ export const HideBalances = () => {
             data-testid="@quickActions/hideBalances"
         >
             <Icon
-                name={isDiscreetModeActive ? 'hide' : 'show'}
+                name={isDiscreetModeActive ? 'eyeSlash' : 'eye'}
                 variant="tertiary"
                 size={iconSizes.medium}
             />

@@ -65,7 +65,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
                                 <IconButton
                                     variant="tertiary"
                                     size="tiny"
-                                    icon="refresh"
+                                    icon="repeat"
                                     onClick={startDiscovery}
                                 />
                             </Tooltip>
@@ -79,7 +79,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
                             <Button
                                 variant="tertiary"
                                 size="tiny"
-                                icon="refresh"
+                                icon="repeat"
                                 onClick={startDiscovery}
                             >
                                 <Translation id="REFRESH" />

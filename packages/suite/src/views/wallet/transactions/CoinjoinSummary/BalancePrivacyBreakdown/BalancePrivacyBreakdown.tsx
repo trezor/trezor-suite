@@ -69,7 +69,7 @@ export const BalancePrivacyBreakdown = () => {
             return <Icon name="shuffle" size={15} />;
         }
 
-        return <Icon name="close" size={15} />;
+        return <Icon name="x" size={15} />;
     };
 
     if (!currentAccount) {

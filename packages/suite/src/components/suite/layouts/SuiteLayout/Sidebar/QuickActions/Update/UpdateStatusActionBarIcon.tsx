@@ -144,7 +144,11 @@ const SuiteUpdateIcon = ({ iconSize, updateStatus, variant }: SuiteUpdateIconPro
             $size={iconSize}
         >
             <Highlighted $isHighlighted={updateStatus !== 'up-to-date'}>
-                <Icon name="trezor" size={iconSizes.small} color={theme['iconDefaultInverted']} />
+                <Icon
+                    name="trezorDevices"
+                    size={iconSizes.small}
+                    color={theme['iconDefaultInverted']}
+                />
             </Highlighted>
         </SuiteIconRectangle>
     );

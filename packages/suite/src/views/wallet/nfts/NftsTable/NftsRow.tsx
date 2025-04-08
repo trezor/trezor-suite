@@ -81,7 +81,7 @@ const NftsRow = ({
                                     options: [
                                         {
                                             label: <Translation id="TR_HIDE_COLLECTION" />,
-                                            icon: 'hide',
+                                            icon: 'eyeSlash',
                                             onClick: () =>
                                                 dispatch(
                                                     tokenDefinitionsActions.setTokenStatus({
@@ -154,7 +154,7 @@ const NftsRow = ({
                         />
                         {!isShown && (
                             <Button
-                                icon="show"
+                                icon="eye"
                                 onClick={() => {
                                     dispatch(
                                         tokenDefinitionsActions.setTokenStatus({

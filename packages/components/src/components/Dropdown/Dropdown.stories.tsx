@@ -65,7 +65,7 @@ export const Dropdown: StoryObj<DropdownProps> = {
                 console.log('navigate somewhere');
             },
             label: 'some link',
-            icon: 'arrowRightLong',
+            icon: 'arrowRight',
         },
         placement: {
             position: 'bottom',

@@ -1,6 +1,7 @@
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner, H4, Paragraph } from '@trezor/components';
+import { mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite';
 
@@ -20,11 +21,7 @@ const ConnectDevicePromo = ({ title, description }: ConnectDevicePromoProps) => 
         <Banner
             variant="warning"
             data-testid="@warning/trezorNotConnected"
-            icon={
-                selectedDeviceModelInternal === 'UNKNOWN'
-                    ? undefined
-                    : `trezor${selectedDeviceModelInternal}`
-            }
+            icon={mapTrezorModelToIcon[selectedDeviceModelInternal]}
             iconSize="extraLarge"
         >
             <H4>{title}</H4>

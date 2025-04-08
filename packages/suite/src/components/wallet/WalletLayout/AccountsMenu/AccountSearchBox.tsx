@@ -38,7 +38,7 @@ export const AccountSearchBox = () => {
             }}
             innerAddon={
                 <Icon
-                    name="search"
+                    name="magnifyingGlass"
                     size={16}
                     color={theme.iconDefault}
                     onClick={() => {

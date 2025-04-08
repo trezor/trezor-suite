@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { Button, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { mapTrezorModelToIconDeprecated } from '@trezor/product-components';
+import { mapTrezorModelToIcon } from '@trezor/product-components';
 
 interface DeviceButtonProps {
     isDisabled?: boolean;
@@ -26,7 +26,7 @@ export const DeviceButton = ({
             isDisabled={isDisabled}
             isLoading={isLoading}
             onClick={onClick}
-            icon={mapTrezorModelToIconDeprecated[deviceModelInternal]}
+            icon={mapTrezorModelToIcon[deviceModelInternal]}
         >
             {children}
         </Button>

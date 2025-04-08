@@ -125,7 +125,7 @@ const ToastNotification = ({
             {cancelable && (
                 <Icon
                     size={16}
-                    name="close"
+                    name="x"
                     hoverColor={theme.legacy.TYPE_LIGHTER_GREY}
                     onClick={handleCancelClick}
                     data-testid={`${dataTestBase}/close`}

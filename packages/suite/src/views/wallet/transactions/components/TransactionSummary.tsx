@@ -104,7 +104,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                                         <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
                                         <Button
                                             onClick={onRefresh}
-                                            icon="refresh"
+                                            icon="repeat"
                                             variant="tertiary"
                                         >
                                             <Translation id="TR_RETRY" />

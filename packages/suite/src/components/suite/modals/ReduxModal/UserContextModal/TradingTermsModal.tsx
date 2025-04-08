@@ -10,7 +10,7 @@ import {
     NewModal,
     Paragraph,
 } from '@trezor/components';
-import { mapTrezorModelToIconDeprecated } from '@trezor/product-components';
+import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import type { Deferred } from '@trezor/utils';
 
@@ -97,7 +97,7 @@ export const TradingTermsModal = ({
                 <List.Item
                     bulletComponent={
                         <IconCircle
-                            name={mapTrezorModelToIconDeprecated[device.features.internal_model]}
+                            name={mapTrezorModelToIcon[device.features.internal_model]}
                             {...iconProps}
                         />
                     }

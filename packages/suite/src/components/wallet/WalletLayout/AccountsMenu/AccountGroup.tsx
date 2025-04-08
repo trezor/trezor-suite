@@ -112,7 +112,7 @@ export const AccountGroup = ({
                                         data-testid="@account-menu/arrow"
                                         size={16}
                                         variant="tertiary"
-                                        name="chevronDown"
+                                        name="caretDown"
                                     />
                                 </IconWrapper>
                             )}

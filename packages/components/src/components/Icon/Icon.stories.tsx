@@ -1,11 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { IconName, icons } from '@suite-common/icons/src/icons';
-import {
-    IconName as IconNameDeprecated,
-    icons as iconsDeprecated,
-} from '@suite-common/icons-deprecated';
-import { typedObjectKeys } from '@trezor/utils';
+import { icons } from '@suite-common/icons/src/icons';
 
 import { Icon as IconComponent, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -15,12 +10,6 @@ const meta: Meta = {
     component: IconComponent,
 } as Meta;
 export default meta;
-
-const iconNames = new Set(typedObjectKeys(icons));
-const iconsDeprecatedNames = new Set(typedObjectKeys(iconsDeprecated));
-const allIcons = new Set(
-    [...iconNames, ...iconsDeprecatedNames].sort((a, b) => a.localeCompare(b)),
-);
 
 export const Icon: StoryObj<typeof IconComponent> = {
     args: {
@@ -32,19 +21,9 @@ export const Icon: StoryObj<typeof IconComponent> = {
     },
     argTypes: {
         name: {
-            options: [...allIcons],
+            options: Object.keys(icons),
             control: {
                 type: 'select',
-                labels: [...iconsDeprecatedNames].reduce(
-                    (acc, name) => {
-                        if (!iconNames.has(name as IconName)) {
-                            acc[name] = `${name} (deprecated)`;
-                        }
-
-                        return acc;
-                    },
-                    {} as Record<IconNameDeprecated, string>,
-                ),
             },
         },
         variant: {

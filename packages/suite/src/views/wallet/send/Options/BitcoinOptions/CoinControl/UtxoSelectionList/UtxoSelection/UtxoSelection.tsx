@@ -235,7 +235,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     {coinjoinUnavailableMessage && (
                         <UtxoTag
                             tooltipMessage={coinjoinUnavailableMessage}
-                            icon="blocked"
+                            icon="xCircle"
                             iconColor={utxoTagIconColor}
                         />
                     )}

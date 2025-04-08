@@ -8960,16 +8960,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/icons-deprecated@workspace:*, @suite-common/icons-deprecated@workspace:suite-common/icons-deprecated":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/icons-deprecated@workspace:suite-common/icons-deprecated"
-  dependencies:
-    prettier: "npm:3.2.5"
-    sharp: "npm:^0.33.5"
-    svgo: "npm:3.3.2"
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/icons@workspace:*, @suite-common/icons@workspace:suite-common/icons":
   version: 0.0.0-use.local
   resolution: "@suite-common/icons@workspace:suite-common/icons"
@@ -11193,7 +11183,6 @@ __metadata:
     "@storybook/test": "npm:^8.6.12"
     "@storybook/theming": "npm:^8.6.12"
     "@suite-common/icons": "workspace:*"
-    "@suite-common/icons-deprecated": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@testing-library/jest-dom": "npm:^6.6.3"

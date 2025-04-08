@@ -158,7 +158,7 @@ export const PassphraseTypeCardContent = ({
                                         <Icon
                                             size={18}
                                             color={theme.iconSubdued}
-                                            name={showPassword ? 'hide' : 'show'}
+                                            name={showPassword ? 'eyeSlash' : 'eye'}
                                             onClick={() => {
                                                 if (
                                                     typeof innerRef.current?.selectionStart ===

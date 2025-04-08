@@ -40,7 +40,7 @@ export const TokenTabs = ({ tabs, activeTokenTab, setActiveTokenTab }: TokenTabs
                     >
                         <Row gap={spacings.xxs}>
                             <Icon
-                                name={tab === 'tokens' ? 'tokens' : 'hide'}
+                                name={tab === 'tokens' ? 'coins' : 'eyeSlash'}
                                 variant={activeTokenTab === tab ? 'primary' : undefined}
                                 size="medium"
                             />

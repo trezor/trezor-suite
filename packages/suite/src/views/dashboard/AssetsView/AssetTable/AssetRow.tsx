@@ -156,11 +156,7 @@ export const AssetRow = memo(
                         ) : (
                             <Text variant="destructive" typographyStyle="hint" textWrap="nowrap">
                                 <Row gap={spacings.xxs}>
-                                    <Icon
-                                        name="warningTriangle"
-                                        color={theme.legacy.TYPE_RED}
-                                        size={14}
-                                    />
+                                    <Icon name="warning" color={theme.legacy.TYPE_RED} size={14} />
                                     <Translation id="TR_DASHBOARD_ASSET_FAILED" />
                                 </Row>
                             </Text>

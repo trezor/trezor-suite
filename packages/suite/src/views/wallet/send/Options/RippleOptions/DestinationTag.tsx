@@ -89,7 +89,7 @@ export const DestinationTag = () => {
                     </Note>
                 </>
             ) : (
-                <Banner variant="warning" icon="warningTriangle">
+                <Banner variant="warning" icon="warning">
                     <Translation id="DESTINATION_TAG_BANNER_SEND" />
                 </Banner>
             )}

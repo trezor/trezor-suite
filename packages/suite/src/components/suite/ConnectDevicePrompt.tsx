@@ -138,11 +138,11 @@ const ConnectImage = ({
 
             <Checkmark>
                 {connected && !showWarningIcon && (
-                    <Icon name="checkActive" size={24} color={theme.legacy.TYPE_GREEN} />
+                    <Icon name="checkCircleFilled" size={24} color={theme.legacy.TYPE_GREEN} />
                 )}
 
                 {showWarningIcon && (
-                    <Icon name="warningTriangle" size={24} color={theme.legacy.TYPE_ORANGE} />
+                    <Icon name="warning" size={24} color={theme.legacy.TYPE_ORANGE} />
                 )}
             </Checkmark>
         </ImageWrapper>

@@ -30,7 +30,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
 
     return enabled ? (
         <NewModal
-            iconName="eap"
+            iconName="starFour"
             variant="info"
             onCancel={hideWindow}
             bottomContent={
@@ -59,7 +59,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
         </NewModal>
     ) : (
         <NewModal
-            iconName="eap"
+            iconName="starFour"
             variant="info"
             onCancel={hideWindow}
             bottomContent={

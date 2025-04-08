@@ -20,7 +20,7 @@ export const ComponentWithSubIcon: StoryObj<ComponentWithSubIconProps> = {
             name: 'check',
         },
         variant: 'destructive',
-        children: <Icon name="tor" />,
+        children: <Icon name="torBrowser" />,
         ...getFramePropsStory(allowedComponentWithSubIconFrameProps).args,
     },
     argTypes: {

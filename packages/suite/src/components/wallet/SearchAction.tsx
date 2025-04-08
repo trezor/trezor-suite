@@ -114,7 +114,12 @@ export const SearchAction = ({
                 innerRef={inputRef}
                 innerAddon={
                     <SearchIconContainer onClick={!isExpanded ? openAndSelect : undefined}>
-                        <Icon name="search" cursor="pointer" size="medium" variant="default" />
+                        <Icon
+                            name="magnifyingGlass"
+                            cursor="pointer"
+                            size="medium"
+                            variant="default"
+                        />
                     </SearchIconContainer>
                 }
                 placeholder={isExpanded ? translationString(placeholder) : undefined}

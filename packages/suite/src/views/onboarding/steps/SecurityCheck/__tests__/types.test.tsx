@@ -16,7 +16,7 @@ describe('SecurityChecklistItem', () => {
 
         it('should accept icon: ReactElement<<Icon />> as an icon prop', () => {
             const x: SecurityChecklistItem = {
-                icon: <Icon name="hologram" />,
+                icon: <Icon name="gradient" />,
                 content: <div />,
             };
 

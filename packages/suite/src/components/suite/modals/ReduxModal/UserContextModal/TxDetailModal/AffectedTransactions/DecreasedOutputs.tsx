@@ -59,7 +59,7 @@ const ReducedAmount = ({ composedLevels, setMaxOutputId, account, selectedFee }:
 
     return (
         <>
-            <Icon name="arrowRightLong" />
+            <Icon name="arrowRight" />
             <AmountItem
                 labelTranslationKey="TR_RBF_NEW_AMOUNT"
                 amount={precomposedTx.outputs[setMaxOutputId].amount.toString()}

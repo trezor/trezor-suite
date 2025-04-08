@@ -88,7 +88,7 @@ const Notification = ({ header, body, cta, variant }: NotificationProps) => {
             <NotificationRightCol>
                 <NotificationHeader>
                     {header}
-                    <Icon name="close" color="#eb8a00" onClick={() => setHidden(true)} />
+                    <Icon name="x" color="#eb8a00" onClick={() => setHidden(true)} />
                 </NotificationHeader>
                 <NotificationBody>
                     <div>{body}</div>

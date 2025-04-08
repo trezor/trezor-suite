@@ -13,7 +13,7 @@ export default meta;
 export const IconButton: StoryObj<IconButtonProps> = {
     args: {
         label: 'label',
-        icon: 'arrowRightLong',
+        icon: 'arrowRight',
         variant: 'primary',
         size: 'large',
         isDisabled: false,

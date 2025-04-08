@@ -19,7 +19,7 @@ export const AuthFailed = () => {
             actions={[
                 {
                     key: '1',
-                    icon: 'refresh',
+                    icon: 'repeat',
                     isLoading: isLocked(),
                     onClick: handleClick,
                     children: <Translation id="TR_RETRY" />,

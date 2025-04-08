@@ -43,7 +43,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
             onCancel={onCancel}
             variant={onionBackends.length ? 'warning' : 'primary'}
             size="small"
-            iconName={onionBackends.length ? undefined : 'tor'}
+            iconName={onionBackends.length ? undefined : 'torBrowser'}
             heading={
                 onionBackends.length ? <Translation id="TR_TOR_DISABLE_ONIONS_ONLY" /> : undefined
             }
@@ -66,7 +66,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
         >
             {onionBackends.length ? (
                 <Column gap={spacings.md}>
-                    <Banner variant="warning" icon="tor">
+                    <Banner variant="warning" icon="torBrowser">
                         <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_TITLE" />{' '}
                         <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_DESCRIPTION" />
                     </Banner>
@@ -88,7 +88,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                                     <Button
                                         variant="tertiary"
                                         onClick={() => setSymbol(symbol)}
-                                        icon="settings"
+                                        icon="gear"
                                         size="small"
                                         margin={{ left: 'auto' }}
                                     >

@@ -92,7 +92,7 @@ export const ConfirmOnDeviceContent = ({
 
             {onCancel && (
                 <IconButton
-                    icon="close"
+                    icon="x"
                     onClick={onCancel}
                     data-testid="@confirm-on-device/close-button"
                     variant="tertiary"

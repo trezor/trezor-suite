@@ -167,7 +167,7 @@ const StyledInput = styled.input`
 
 export const DropZone = ({
     accept,
-    iconName = 'binary',
+    iconName = 'fileX',
     onSelect,
     'data-testid': dataTestId,
 }: DropZoneProps) => {

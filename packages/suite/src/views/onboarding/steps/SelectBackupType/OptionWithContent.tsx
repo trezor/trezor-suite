@@ -85,7 +85,7 @@ const ArrowDown = () => {
 
     return (
         <DownIconCircle $elevation={elevation}>
-            <Icon name="chevronDown" size={16} />
+            <Icon name="caretDown" size={16} />
         </DownIconCircle>
     );
 };
@@ -137,7 +137,7 @@ export const SelectedOption = forwardRef<HTMLDivElement, SelectedOptionProps>(
         <SelectedOptionStyled $isDisabled={isDisabled}>
             <OptionStyled ref={ref} onClick={isDisabled ? undefined : onClick}>
                 <div>
-                    <Icon name="backup2" size={24} />
+                    <Icon name="recoverySeed" size={24} />
                 </div>
                 {children}
                 <ArrowDown />

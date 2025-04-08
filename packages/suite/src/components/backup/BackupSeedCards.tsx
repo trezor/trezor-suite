@@ -54,7 +54,7 @@ const items = [
     {
         key: 'made-no-digital-copy',
         label: <Translation id="TR_BACKUP_CHECKBOX_2_TITLE" />,
-        icon: 'pencilUnderscored',
+        icon: 'pencilLine',
     },
     {
         key: 'will-hide-seed',

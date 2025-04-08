@@ -32,7 +32,7 @@ export const TorModal = ({ onResult }: TorModalProps) => {
                 </>
             }
             size="small"
-            iconName="tor"
+            iconName="torBrowser"
         >
             <H3>
                 <Translation id="TR_TOR_ENABLE" />

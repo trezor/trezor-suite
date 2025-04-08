@@ -28,7 +28,7 @@ export const TransactionReviewOutputTimer = ({
         return (
             <>
                 <Button
-                    icon="arrowClockwise"
+                    icon="repeat"
                     variant="tertiary"
                     type="button"
                     size="tiny"

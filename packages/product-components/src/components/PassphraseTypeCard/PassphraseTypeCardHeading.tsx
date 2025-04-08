@@ -63,7 +63,7 @@ export const PassphraseTypeCardHeading = ({
         <Row gap={spacings.xl}>
             <IconWrapper $type={type}>
                 {type === 'standard' ? (
-                    <Icon size={24} name="standardWallet" color={theme.iconPrimaryDefault} />
+                    <Icon size={24} name="wallet" color={theme.iconPrimaryDefault} />
                 ) : (
                     <Icon size={24} name="lock" color={theme.iconSubdued} />
                 )}

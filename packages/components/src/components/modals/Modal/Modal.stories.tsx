@@ -55,7 +55,7 @@ export const Modal: StoryObj<ModalProps> = {
         },
         headerComponent: {
             options: ['none', 'withComponent'],
-            mapping: { none: undefined, withComponent: <Icon name="app" /> },
+            mapping: { none: undefined, withComponent: <Icon name="appWindow" /> },
             control: {
                 type: 'select',
                 labels: {

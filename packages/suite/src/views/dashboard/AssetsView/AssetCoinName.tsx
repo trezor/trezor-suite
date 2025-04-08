@@ -18,7 +18,7 @@ export const AssetCoinName = ({ network }: AssetCoinNameProps) => {
     return (
         <Column gap={spacings.xxxs}>
             <span data-testid="@dashboard/asset/name">{name}</span>
-            <Note iconName="standardWallet">{selectedAccounts.length}</Note>
+            <Note iconName="wallet">{selectedAccounts.length}</Note>
         </Column>
     );
 };

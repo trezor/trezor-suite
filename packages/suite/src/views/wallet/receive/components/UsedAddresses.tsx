@@ -204,7 +204,7 @@ export const UsedAddresses = ({
                         {actionShowVisible && (
                             <Button
                                 variant="tertiary"
-                                icon="chevronDown"
+                                icon="caretDown"
                                 iconAlignment="end"
                                 onClick={() => setLimit(limit + 20)}
                                 data-testid="@wallet/receive/used-address/show-more"
@@ -216,7 +216,7 @@ export const UsedAddresses = ({
                         {actionHideVisible && (
                             <Button
                                 variant="tertiary"
-                                icon="chevronUp"
+                                icon="caretUp"
                                 onClick={() => setLimit(DEFAULT_LIMIT)}
                             >
                                 <Translation id="TR_SHOW_LESS" />

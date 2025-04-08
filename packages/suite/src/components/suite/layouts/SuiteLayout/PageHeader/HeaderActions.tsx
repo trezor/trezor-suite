@@ -35,7 +35,7 @@ export const HeaderActions = () => {
                 <ButtonGroup size="small" isDisabled={isAccountLoading}>
                     <HeaderActionButton
                         key="wallet-send"
-                        icon="send"
+                        icon="arrowUp"
                         onClick={() => {
                             goToWithAnalytics('wallet-send', { preserveParams: true });
                         }}
@@ -47,7 +47,7 @@ export const HeaderActions = () => {
 
                     <HeaderActionButton
                         key="wallet-receive"
-                        icon="receive"
+                        icon="arrowDown"
                         onClick={() => {
                             goToWithAnalytics('wallet-receive', { preserveParams: true });
                         }}

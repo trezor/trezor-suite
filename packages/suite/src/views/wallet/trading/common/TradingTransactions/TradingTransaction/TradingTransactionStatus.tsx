@@ -28,7 +28,7 @@ const getBuyTradeData = (status: BuyTradeStatus, theme: DefaultTheme) => {
             } as const;
         case 'TR_BUY_STATUS_ERROR':
             return {
-                icon: 'close',
+                icon: 'x',
                 color: theme.legacy.TYPE_RED,
                 statusMessageId: message,
             } as const;
@@ -54,7 +54,7 @@ const getSellTradeData = (status: SellTradeStatus, theme: DefaultTheme) => {
             } as const;
         case 'TR_SELL_STATUS_ERROR':
             return {
-                icon: 'close',
+                icon: 'x',
                 color: theme.legacy.TYPE_RED,
                 statusMessageId: message,
             } as const;
@@ -81,13 +81,13 @@ const getExchangeTradeData = (status: ExchangeTradeStatus, theme: DefaultTheme) 
             } as const;
         case 'TR_EXCHANGE_STATUS_KYC':
             return {
-                icon: 'warningTriangle',
+                icon: 'warning',
                 color: theme.legacy.TYPE_ORANGE,
                 statusMessageId: message,
             } as const;
         case 'TR_EXCHANGE_STATUS_ERROR':
             return {
-                icon: 'close',
+                icon: 'x',
                 color: theme.legacy.TYPE_RED,
                 statusMessageId: message,
             } as const;

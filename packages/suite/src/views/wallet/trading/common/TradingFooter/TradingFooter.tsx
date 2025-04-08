@@ -138,7 +138,7 @@ export const TradingFooter = () => {
                                     <BoxRight>
                                         <Link href={INVITY_URL}>invity.io</Link>
                                         <IconWrapper onClick={() => setToggled(false)}>
-                                            <Icon name="close" size={16} />
+                                            <Icon name="x" size={16} />
                                         </IconWrapper>
                                     </BoxRight>
                                 </Header>

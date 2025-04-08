@@ -44,7 +44,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
                           goToWithAnalytics('wallet-sign-verify', { preserveParams: true });
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
-                      icon: 'pencilUnderscored' as const,
+                      icon: 'pencilLine' as const,
                       isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
                   },
               ]

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-
 import type { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { changeCoinVisibility } from 'src/actions/settings/walletSettingsActions';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -11,10 +11,6 @@ import { useDispatch } from 'src/hooks/suite';
 
 import { CoinGroupHeader } from './CoinGroupHeader';
 import { CoinListProps } from '../CoinList/CoinList';
-
-const CoinGroupWrapper = styled.div`
-    width: 100%;
-`;
 
 type CoinGroupProps = {
     networks: Network[];
@@ -42,7 +38,7 @@ export const CoinGroup = ({ networks, enabledNetworks }: CoinGroupProps) => {
     const toggleSettingsMode = () => setSettingsMode(value => !value);
 
     return (
-        <CoinGroupWrapper>
+        <Column gap={spacings.sm}>
             <CoinGroupHeader
                 isAtLeastOneActive={isAtLeastOneActive}
                 settingsMode={settingsMode}
@@ -55,6 +51,6 @@ export const CoinGroup = ({ networks, enabledNetworks }: CoinGroupProps) => {
                 onToggle={settingsMode ? onSettings : onToggle}
                 onSettings={settingsMode ? undefined : onSettings}
             />
-        </CoinGroupWrapper>
+        </Column>
     );
 };

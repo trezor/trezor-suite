@@ -97,7 +97,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                         <List.Item bulletComponent={<Icon name="asterisk" size={16} />}>
                             <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM2" />
                         </List.Item>
-                        <List.Item bulletComponent={<Icon name="warningTriangle" size={16} />}>
+                        <List.Item bulletComponent={<Icon name="warning" size={16} />}>
                             <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM3" />
                         </List.Item>
                     </List>

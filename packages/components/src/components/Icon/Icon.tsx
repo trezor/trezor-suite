@@ -3,11 +3,7 @@ import { ReactSVG } from 'react-svg';
 
 import styled, { DefaultTheme, css } from 'styled-components';
 
-import { IconName as IconNameNew, icons } from '@suite-common/icons/src/icons';
-import {
-    IconName as IconNameDeprecated,
-    icons as iconsDeprecated,
-} from '@suite-common/icons-deprecated';
+import { IconName, icons } from '@suite-common/icons/src/icons';
 import { CSSColor, Color } from '@trezor/theme';
 
 import { UIVariant } from '../../config/types';
@@ -125,8 +121,6 @@ const SVG = styled(ReactSVG)`
     }
 ` as typeof ReactSVG;
 
-export type IconName = IconNameNew | IconNameDeprecated;
-
 export type IconProps = AllowedFrameProps & {
     name: IconName;
     size?: IconSize | number;
@@ -191,10 +185,12 @@ export const Icon = forwardRef(
                 <SVG
                     tabIndex={onClick ? 0 : undefined}
                     onKeyDown={handleOnKeyDown}
-                    src={icons[name as IconNameNew] ?? iconsDeprecated[name as IconNameDeprecated]}
+                    src={icons[name as IconName]}
                     beforeInjection={handleInjection}
                 />
             </SvgWrapper>
         );
     },
 );
+
+export type { IconName };

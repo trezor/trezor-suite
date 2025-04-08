@@ -1,9 +1,8 @@
-import styled from 'styled-components';
-
 import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
-import { Tooltip } from '@trezor/components';
+import { Row, Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
+import { spacings } from '@trezor/theme';
 import { versionUtils } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite';
@@ -11,13 +10,6 @@ import { useDevice, useDiscovery, useSelector } from 'src/hooks/suite';
 import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 
 import { Coin } from './Coin';
-
-const Wrapper = styled.div`
-    width: 100%;
-    display: flex;
-    flex-flow: wrap;
-    gap: 16px 12px;
-`;
 
 export type CoinListProps = {
     networks: Network[];
@@ -49,7 +41,7 @@ export const CoinList = ({
     const deviceDisplayName = device?.name;
 
     return (
-        <Wrapper>
+        <Row rowGap={spacings.md} columnGap={spacings.sm} flexWrap="wrap">
             {networks.map(network => {
                 const { symbol, name, support, features, testnet: isTestnet } = network;
                 const hasCustomBackend = !!blockchain[symbol].backends.selected;
@@ -109,6 +101,6 @@ export const CoinList = ({
                     </Tooltip>
                 );
             })}
-        </Wrapper>
+        </Row>
     );
 };

@@ -59,7 +59,7 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
                 </>
             }
         >
-            <Banner icon="tor" variant="primary" margin={{ top: spacings.md }}>
+            <Banner icon="torBrowser" variant="primary" margin={{ top: spacings.md }}>
                 <Translation
                     id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE"
                     values={{

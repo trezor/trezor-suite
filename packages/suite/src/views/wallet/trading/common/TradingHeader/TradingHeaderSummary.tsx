@@ -51,7 +51,7 @@ export const TradingHeaderSummary = ({
                             </H3>
                         )}
                         <IconWrapper>
-                            <Icon variant="tertiary" name="arrowRightLong" />
+                            <Icon variant="tertiary" name="arrowRight" />
                         </IconWrapper>
                         <H3>
                             <TradingFiatAmount currency={sendCurrency} />

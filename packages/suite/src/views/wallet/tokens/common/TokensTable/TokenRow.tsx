@@ -450,7 +450,7 @@ export const TokenRow = ({
                     {!isMobileLayout &&
                         (tokenStatusType === TokenManagementAction.SHOW ? (
                             <Button
-                                icon="show"
+                                icon="eye"
                                 onClick={() =>
                                     isUnverifiedTable && shouldShowUnhideTokenModal
                                         ? dispatch(
@@ -480,7 +480,7 @@ export const TokenRow = ({
                                     isDisabled={token.balance === '0'}
                                     key="token-send"
                                     variant="tertiary"
-                                    icon="send"
+                                    icon="arrowUp"
                                     onClick={() => {
                                         dispatch({
                                             type: SUITE.SET_SEND_FORM_PREFILL,
@@ -504,7 +504,7 @@ export const TokenRow = ({
                                     label={<Translation id="TR_NAV_RECEIVE" />}
                                     key="token-receive"
                                     variant="tertiary"
-                                    icon="receive"
+                                    icon="arrowDown"
                                     isDisabled={isReceiveButtonDisabled}
                                     onClick={onReceive}
                                 />

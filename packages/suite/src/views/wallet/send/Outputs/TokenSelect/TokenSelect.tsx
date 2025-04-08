@@ -398,7 +398,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                     </Row>
 
                     {!hasNoStandardTokens && (
-                        <IconButton icon="chevronDown" variant="tertiary" size="medium" />
+                        <IconButton icon="caretDown" variant="tertiary" size="medium" />
                     )}
                 </Row>
             </Card>

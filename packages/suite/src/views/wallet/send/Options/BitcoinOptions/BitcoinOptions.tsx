@@ -171,7 +171,7 @@ export const BitcoinOptions = () => {
                             <StyledButton
                                 variant="tertiary"
                                 size="small"
-                                icon="coinControl"
+                                icon="circleDashed"
                                 onClick={toggleUtxoSelection}
                                 data-testid="coin-control-button"
                             >

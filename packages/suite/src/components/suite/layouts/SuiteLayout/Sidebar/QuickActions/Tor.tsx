@@ -32,11 +32,11 @@ const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {
 
 const torIconMap: Record<TorStatus, IconName> = {
     [TorStatus.Enabled]: 'check',
-    [TorStatus.Disabled]: 'close',
-    [TorStatus.Disabling]: 'arrowsCircle',
-    [TorStatus.Enabling]: 'arrowsCircle',
-    [TorStatus.Error]: 'warningTriangle',
-    [TorStatus.Misbehaving]: 'warningTriangle',
+    [TorStatus.Disabled]: 'x',
+    [TorStatus.Disabling]: 'arrowsClockwise',
+    [TorStatus.Enabling]: 'arrowsClockwise',
+    [TorStatus.Error]: 'warning',
+    [TorStatus.Misbehaving]: 'warning',
 };
 
 const torIconVariantMap: Record<TorStatus, IconVariant> = {

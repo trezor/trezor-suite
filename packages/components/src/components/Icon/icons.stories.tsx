@@ -4,18 +4,11 @@ import { Meta, StoryObj } from '@storybook/react';
 import styled, { useTheme } from 'styled-components';
 
 import { IconName, icons } from '@suite-common/icons/src/icons';
-import {
-    IconName as IconNameDeprecated,
-    icons as iconsDeprecated,
-} from '@suite-common/icons-deprecated';
 import { typography } from '@trezor/theme';
-import { typedObjectKeys } from '@trezor/utils';
 
 import { Icon, IconProps, allowedIconFrameProps, iconSizes, iconVariants } from './Icon';
 import { getFramePropsStory } from '../../utils/frameProps';
-import { Checkbox } from '../form/Checkbox/Checkbox';
 import { Input } from '../form/Input/Input';
-import { Text } from '../typography/Text/Text';
 
 const CopiedText = styled.div`
     display: flex;
@@ -80,15 +73,8 @@ export default meta;
 
 const Render = (props: IconProps) => {
     const [search, setSearch] = useState('');
-    const [isDeprecatedVisible, setIsDeprecatedVisible] = useState(false);
     const [copied, setCopied] = useState<string | null>(null);
     const theme = useTheme();
-
-    const iconNames = new Set(typedObjectKeys(icons));
-    const iconsDeprecatedNames = new Set(typedObjectKeys(iconsDeprecated));
-    const allIcons = new Set(
-        [...iconNames, ...iconsDeprecatedNames].sort((a, b) => a.localeCompare(b)),
-    );
 
     const copy = (iconKey: string) => {
         navigator.clipboard.writeText(iconKey);
@@ -108,36 +94,20 @@ const Render = (props: IconProps) => {
                     onClear={() => setSearch('')}
                     showClearButton="always"
                 />
-                <Checkbox
-                    isChecked={isDeprecatedVisible}
-                    onClick={() => setIsDeprecatedVisible(!isDeprecatedVisible)}
-                    labelAlignment="end"
-                >
-                    Show deprecated
-                </Checkbox>
             </FloatingWrapper>
             <Wrapper>
-                {[...(isDeprecatedVisible ? allIcons : iconNames)]
+                {(Object.keys(icons) as IconName[])
                     .filter(iconKey => new RegExp(search, 'i').test(iconKey))
-                    .map(iconKey => {
-                        const isDeprecated =
-                            iconsDeprecatedNames.has(iconKey as IconNameDeprecated) &&
-                            !iconNames.has(iconKey as IconName);
-
-                        return copied === iconKey ? (
-                            <CopiedText>Copied to clipboard!</CopiedText>
+                    .map(iconKey =>
+                        copied === iconKey ? (
+                            <CopiedText key={iconKey}>Copied to clipboard!</CopiedText>
                         ) : (
                             <IconWrapper key={iconKey} onClick={() => copy(iconKey)}>
-                                <Icon {...props} name={iconKey as IconName | IconNameDeprecated} />
-                                <IconText>
-                                    <span>{iconKey}</span>
-                                    {isDeprecated && (
-                                        <Text color={theme.borderInputDefault}>(deprecated)</Text>
-                                    )}
-                                </IconText>
+                                <Icon {...props} name={iconKey} />
+                                <IconText>{iconKey}</IconText>
                             </IconWrapper>
-                        );
-                    })}
+                        ),
+                    )}
             </Wrapper>
         </>
     );

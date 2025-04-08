@@ -139,7 +139,7 @@ export const BasicTxDetails = ({
                 </Item>
 
                 {/* TX ID */}
-                <Item label={<Translation id="TR_TXID" />} iconName="biometric">
+                <Item label={<Translation id="TR_TXID" />} iconName="fingerprint">
                     <IOAddress
                         txAddress={tx.txid}
                         explorerUrl={explorerUrl}

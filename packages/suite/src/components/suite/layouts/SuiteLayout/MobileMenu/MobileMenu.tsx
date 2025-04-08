@@ -70,7 +70,7 @@ export const MobileMenu = () => {
                         <HamburgerWrapper>
                             <Icon
                                 onClick={() => setOpened(!opened)}
-                                name={opened ? 'close' : 'menu'}
+                                name={opened ? 'x' : 'list'}
                                 size={24}
                                 color={theme.legacy.TYPE_DARK_GREY}
                             />

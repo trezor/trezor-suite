@@ -95,7 +95,11 @@ const SuiteRow = ({ updateStatus, onClick }: SuiteRowProps) => {
             onClick={onClick}
             leftItem={
                 <SuiteIconRectangle $size="medium">
-                    <Icon name="trezor" size={iconSizes.small} color={theme.iconDefaultInverted} />
+                    <Icon
+                        name="trezorDevices"
+                        size={iconSizes.small}
+                        color={theme.iconDefaultInverted}
+                    />
                 </SuiteIconRectangle>
             }
             circleIconName={mapUpdateStatusToIcon[updateStatus]}

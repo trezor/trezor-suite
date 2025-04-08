@@ -167,7 +167,7 @@ export const FreshAddress = ({
                 </InfoItem>
                 <Tooltip content={buttonTooltipContent()}>
                     {isDeviceConnected ? (
-                        <Button minWidth={220} icon="trezor" {...buttonRevealAddressProps}>
+                        <Button minWidth={220} icon="trezorDevices" {...buttonRevealAddressProps}>
                             <Translation id="RECEIVE_ADDRESS_REVEAL" />
                         </Button>
                     ) : (

@@ -48,7 +48,7 @@ const firmwareInstalledChecklist = [
 const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
     [
         {
-            icon: <Icon size={24} name="verified" />,
+            icon: <Icon size={24} name="sealCheck" />,
             content: (
                 <Translation
                     id="TR_ONBOARDING_DEVICE_CHECK_2"
@@ -68,7 +68,7 @@ const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
             ),
         },
         {
-            icon: <Icon size={24} name="hologram" />,
+            icon: <Icon size={24} name="gradient" />,
             content: (
                 <Translation
                     id="TR_ONBOARDING_DEVICE_CHECK_1"

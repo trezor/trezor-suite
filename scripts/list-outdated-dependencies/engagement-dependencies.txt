@@ -57,7 +57,6 @@ react-focus-lock
 pako
 polished
 svgo
-sharp
 @types/pdfmake
 pdfmake
 @originjs/vite-plugin-commonjs

@@ -63,7 +63,7 @@ export const VerifyAddressButton = ({ item: { label, value } }: VerifyAddressBut
                 <Translation id="TR_REVEAL_ADDRESS" />
             </RevealText>
 
-            <Icon size={20} name="show" />
+            <Icon size={20} name="eye" />
         </ButtonWrapper>
     );
 };

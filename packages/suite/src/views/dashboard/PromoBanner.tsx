@@ -179,9 +179,9 @@ export const PromoBanner = () => {
                             </Text>
 
                             <OSIcons>
-                                <Icon name="osMac" size={14} />
-                                <Icon name="osLinux" size={14} />
-                                <Icon name="osWindows" size={12} />
+                                <Icon name="appleLogo" size={14} />
+                                <Icon name="linuxLogo" size={14} />
+                                <Icon name="windowsLogo" size={12} />
                             </OSIcons>
                         </div>
                     </Row>

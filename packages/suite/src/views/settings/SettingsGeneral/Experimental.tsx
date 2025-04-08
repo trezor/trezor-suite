@@ -109,7 +109,7 @@ export const Experimental = () => {
                 <TextColumn
                     title={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
                     description={
-                        <Banner icon="warningTriangle" variant="warning">
+                        <Banner icon="warning" variant="warning">
                             <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />
                         </Banner>
                     }

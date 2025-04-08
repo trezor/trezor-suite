@@ -108,7 +108,7 @@ export const PortfolioCard = memo(() => {
                                         shouldCloseOnClick: false,
                                     },
                                     {
-                                        icon: dashboardGraphHidden ? 'show' : 'hide',
+                                        icon: dashboardGraphHidden ? 'eye' : 'eyeSlash',
                                         label: dashboardGraphHidden ? (
                                             <Translation id="TR_SHOW_GRAPH" />
                                         ) : (

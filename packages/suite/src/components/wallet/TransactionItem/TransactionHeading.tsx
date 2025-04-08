@@ -163,7 +163,7 @@ export const TransactionHeading = ({
                                     }}
                                 />
                             }
-                            icon="warningTriangle"
+                            icon="warning"
                         />
                     )}
                     <BlurWrapper $isBlurred={isPhishingTransaction}>

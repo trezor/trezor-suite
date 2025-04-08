@@ -103,7 +103,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
     return (
         <NewModal
             variant="info"
-            iconName="tor"
+            iconName="torBrowser"
             size="small"
             bottomContent={
                 <>
@@ -119,7 +119,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                     {isTorError && (
                         <NewModal.Button
                             data-testid="@tor-loading-screen/try-again-button"
-                            icon="refresh"
+                            icon="repeat"
                             onClick={tryAgain}
                             variant="tertiary"
                         >

@@ -36,7 +36,7 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
     },
     {
         nameId: 'TR_NOTIFICATIONS',
-        icon: 'notifications',
+        icon: 'bell',
         CustomComponent: NotificationDropdown,
     },
     {

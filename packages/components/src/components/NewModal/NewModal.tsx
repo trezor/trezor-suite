@@ -143,7 +143,7 @@ const InnerNewModalBase = ({
                                 {onCancel && (
                                     <IconButton
                                         variant="tertiary"
-                                        icon="close"
+                                        icon="x"
                                         data-testid="@modal/close-button"
                                         onClick={onCancel}
                                         size="small"

@@ -35,8 +35,8 @@ const Items = styled.div<{ $isHorizontal: DeviceAuthenticationExplainerProps['ho
 
 const items: Array<{ icon: IconName; text: TranslationKey }> = [
     { icon: 'shieldCheck', text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
-    { icon: 'chip', text: 'TR_DEVICE_AUTHENTICITY_ITEM_2' },
-    { icon: 'checklist', text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
+    { icon: 'cpu', text: 'TR_DEVICE_AUTHENTICITY_ITEM_2' },
+    { icon: 'listChecks', text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
 ] as const;
 
 interface DeviceAuthenticationExplainerProps {

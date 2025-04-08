@@ -50,8 +50,8 @@ export const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconN
     const iconMap: Record<BannerVariant, IconName> = {
         primary: 'lightbulb',
         info: 'info',
-        warning: 'warningTriangle',
-        destructive: 'warningTriangle',
+        warning: 'warning',
+        destructive: 'warning',
         tertiary: 'info',
     };
 

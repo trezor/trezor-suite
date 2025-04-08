@@ -80,7 +80,7 @@ export const TradingVerifyOptionsItem = ({
 
     return (
         <Row gap={spacings.sm}>
-            <Icon name="nonSuite" size={iconSize} variant="tertiary" />
+            <Icon name="arrowSquareOut" size={iconSize} variant="tertiary" />
             <Column alignItems="flex-start">
                 <Translation
                     id="TR_EXCHANGE_USE_NON_SUITE_ACCOUNT"

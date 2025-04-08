@@ -11,7 +11,7 @@ type RowIcon = {
 };
 
 const RowIcon = ({ txType, isAccountOwned }: RowIcon) => {
-    const iconType = txType === 'recv' ? 'receive' : 'send';
+    const iconType = txType === 'recv' ? 'arrowDown' : 'arrowUp';
 
     return <Icon size={16} variant="disabled" name={isAccountOwned ? iconType : 'clock'} />;
 };

@@ -47,7 +47,7 @@ const TradingFeaturedOffersAmount = ({
         <AmountsWrapper>
             {fromAmount}
             <Arrow>
-                <Icon color={theme.iconSubdued} size={20} name="arrowRightLong" />
+                <Icon color={theme.iconSubdued} size={20} name="arrowRight" />
             </Arrow>
             {toAmount}
         </AmountsWrapper>

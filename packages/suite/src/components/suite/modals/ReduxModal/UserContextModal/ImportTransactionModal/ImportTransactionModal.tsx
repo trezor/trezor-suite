@@ -105,7 +105,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
                         {mode === 'upload' ? (
                             <DropZone
                                 accept=".csv,.txt,text/csv"
-                                iconName="csv"
+                                iconName="fileCsv"
                                 onSelect={onCsvSelect}
                             />
                         ) : (

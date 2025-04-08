@@ -174,7 +174,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     <Translation id="TR_COIN_CONTROL" />
                     <Row gap={spacings.md}>
                         <Switch isChecked={!!isCoinControlEnabled} onChange={toggleCoinControl} />
-                        <Icon size={24} name="chevronUp" onClick={close} />
+                        <Icon size={24} name="caretUp" onClick={close} />
                     </Row>
                 </Row>
 
@@ -229,7 +229,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     description={
                         <Translation id="TR_NOT_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
                     }
-                    icon="shieldCross"
+                    icon="shieldWarning"
                     iconColor={theme.legacy.TYPE_DARK_ORANGE}
                     utxos={lowAnonymityUtxosOnPage}
                 />

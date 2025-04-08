@@ -129,7 +129,7 @@ export const SettingsDevice = () => {
             {isPassphraseProtectionOn && (
                 <SettingsSection
                     title={<Translation id="TR_DEVICE_SETTINGS_WALLET_LOADING" />}
-                    icon="app"
+                    icon="appWindow"
                 >
                     <DefaultWalletLoading />
                 </SettingsSection>

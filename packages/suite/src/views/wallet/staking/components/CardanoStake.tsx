@@ -58,7 +58,7 @@ export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
         <Card data-testid="@wallet/cardano/staking">
             <Column gap={spacings.xs} alignItems="center">
                 <StyledH2>
-                    <Icon name="close" size={25} />
+                    <Icon name="x" size={25} />
                     <Heading>
                         <Translation id="TR_STAKING_STAKE_TITLE" />
                     </Heading>

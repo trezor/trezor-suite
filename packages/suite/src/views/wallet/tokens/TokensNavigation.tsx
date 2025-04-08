@@ -35,14 +35,14 @@ const getSubTabConfig = ({ isNft, tokens, goToRoute }: SubTabConfig) =>
     [
         {
             id: isNft ? 'wallet-nfts' : 'wallet-tokens',
-            iconName: isNft ? 'pictureFrame' : 'tokens',
+            iconName: isNft ? 'pictureFrame' : 'coins',
             onClick: goToRoute(isNft ? 'wallet-nfts' : 'wallet-tokens'),
             count: tokens.shownWithBalance.length,
             labelId: isNft ? 'TR_NAV_COLLECTIONS' : 'TR_NAV_TOKENS',
         },
         {
             id: isNft ? 'wallet-nfts-hidden' : 'wallet-tokens-hidden',
-            iconName: 'hide',
+            iconName: 'eyeSlash',
             onClick: goToRoute(isNft ? 'wallet-nfts-hidden' : 'wallet-tokens-hidden'),
             count: tokens.hiddenWithBalance.length,
             labelId: 'TR_HIDDEN',

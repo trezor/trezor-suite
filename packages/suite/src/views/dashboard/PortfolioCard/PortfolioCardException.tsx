@@ -122,7 +122,7 @@ export const PortfolioCardException = ({ exception, discovery }: PortfolioCardEx
                     description="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC"
                     cta={{
                         action: () => dispatch(authorizeDeviceThunk()),
-                        icon: 'refresh',
+                        icon: 'repeat',
                     }}
                     dataTestBase={exception.type}
                 />
@@ -133,7 +133,7 @@ export const PortfolioCardException = ({ exception, discovery }: PortfolioCardEx
                     title="TR_AUTH_CONFIRM_FAILED_TITLE"
                     cta={{
                         action: () => dispatch(authConfirm()),
-                        icon: 'refresh',
+                        icon: 'repeat',
                     }}
                     dataTestBase={exception.type}
                 />
@@ -146,7 +146,7 @@ export const PortfolioCardException = ({ exception, discovery }: PortfolioCardEx
                     cta={[
                         {
                             action: () => dispatch(goto('settings-coins')),
-                            icon: 'settings',
+                            icon: 'gear',
                             label: 'TR_COIN_SETTINGS',
                         },
                     ]}
@@ -163,7 +163,7 @@ export const PortfolioCardException = ({ exception, discovery }: PortfolioCardEx
                             values={{ details: discoveryFailedMessage(discovery) }}
                         />
                     }
-                    cta={{ action: () => dispatch(restartDiscovery()), icon: 'refresh' }}
+                    cta={{ action: () => dispatch(restartDiscovery()), icon: 'repeat' }}
                     dataTestBase={exception.type}
                 />
             );

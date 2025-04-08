@@ -325,7 +325,7 @@ export const TransactionItem = memo(
                                         {isExpandable && (
                                             <ExpandButton
                                                 variant="tertiary"
-                                                icon={toExpand > 0 ? 'chevronDown' : 'chevronUp'}
+                                                icon={toExpand > 0 ? 'caretDown' : 'caretUp'}
                                                 iconAlignment="end"
                                                 onClick={e => {
                                                     setLimit(toExpand > 0 ? limit + 20 : 0);

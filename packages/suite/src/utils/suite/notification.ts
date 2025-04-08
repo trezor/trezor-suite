@@ -9,9 +9,9 @@ export const getNotificationIcon = (variant: ToastNotificationVariant) => {
         case 'info':
             return 'info';
         case 'warning':
-            return 'warningTriangle';
+            return 'warning';
         case 'error':
-            return 'warningTriangle';
+            return 'warning';
         case 'success':
             return 'check';
         // no default

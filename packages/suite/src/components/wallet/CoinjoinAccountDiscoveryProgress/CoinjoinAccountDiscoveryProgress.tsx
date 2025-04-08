@@ -101,7 +101,7 @@ export const CoinjoinAccountDiscoveryProgress = () => {
                 <DiscoveryProgress max={1.01} value={progress} />
 
                 <FactHeading>
-                    <SparksIcon name="experimental" size={13} color={theme.legacy.TYPE_ORANGE} />
+                    <SparksIcon name="starFour" size={13} color={theme.legacy.TYPE_ORANGE} />
                     <Translation id="TR_LOADING_FACT_TITLE" />
                 </FactHeading>
 

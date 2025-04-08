@@ -96,7 +96,7 @@ export const Guide = () => {
                             </FeedbackButtonLabel>
                             <FeedbackIconWrapper>
                                 <Icon
-                                    name="circleRight"
+                                    name="caretCircleRight"
                                     size={24}
                                     color={theme.iconPrimaryDefault}
                                 />

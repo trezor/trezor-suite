@@ -19,7 +19,7 @@ export const AuthConfirmFailed = () => {
                 <Banner.Button
                     onClick={handleClick}
                     isLoading={isLocked()}
-                    icon="refresh"
+                    icon="repeat"
                     data-testid="@passphrase-mismatch/retry-button"
                 >
                     <Translation id="TR_AUTH_CONFIRM_FAILED_RETRY" />

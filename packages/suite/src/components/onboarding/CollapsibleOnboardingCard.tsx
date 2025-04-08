@@ -238,7 +238,7 @@ export const CollapsibleOnboardingCard = ({
                         >
                             {expandable && expanded && (
                                 <IconWrapper>
-                                    <Icon name="close" size={22} onClick={onToggle} />
+                                    <Icon name="x" size={22} onClick={onToggle} />
                                 </IconWrapper>
                             )}
 

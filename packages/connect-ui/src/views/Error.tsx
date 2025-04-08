@@ -84,7 +84,7 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
             });
 
             tips.push({
-                icon: 'biometric',
+                icon: 'fingerprint',
                 title: 'Disable: Block Fingerprinting',
                 detail: {
                     steps: [
@@ -129,7 +129,7 @@ const getTroubleshootingTips = (props: ErrorViewProps) => {
 
             // fallback, last resort tips
             tips.push({
-                icon: 'biometric',
+                icon: 'fingerprint',
                 title: 'Open site in “Incognito/Private mode”',
                 detail: {
                     steps: [

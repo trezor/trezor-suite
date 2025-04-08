@@ -48,7 +48,7 @@ export const TradingExchangeHeaderSummary = ({
                         />
                     </H3>
                 )}
-                <Icon variant="tertiary" name="arrowRightLong" />
+                <Icon variant="tertiary" name="arrowRight" />
                 {receiveCurrency && (
                     <H3>
                         <TradingCryptoAmount

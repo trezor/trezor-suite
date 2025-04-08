@@ -131,7 +131,7 @@ export const withEditable =
                         <Icon
                             size={14}
                             data-testid="@metadata/cancel"
-                            name="close"
+                            name="x"
                             onClick={e => {
                                 e.stopPropagation();
                                 onBlur();

@@ -287,11 +287,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                     <Row>
                         <IconWrapper $type={props.type}>
                             {props.type === 'standard' ? (
-                                <Icon
-                                    size={24}
-                                    name="standardWallet"
-                                    color={theme.iconPrimaryDefault}
-                                />
+                                <Icon size={24} name="wallet" color={theme.iconPrimaryDefault} />
                             ) : (
                                 <Icon size={24} name="lock" color={theme.iconSubdued} />
                             )}
@@ -368,7 +364,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardLegacyProps) => {
                                     <Icon
                                         size={18}
                                         color={theme.iconSubdued}
-                                        name={showPassword ? 'hide' : 'show'}
+                                        name={showPassword ? 'eyeSlash' : 'eye'}
                                         onClick={() => {
                                             if (typeof ref.current?.selectionStart === 'number') {
                                                 caretRef.current = ref.current.selectionStart;

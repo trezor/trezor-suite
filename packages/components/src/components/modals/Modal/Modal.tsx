@@ -308,7 +308,7 @@ const Modal = ({
                                 {isCancelable && (
                                     <IconButton
                                         variant="tertiary"
-                                        icon="close"
+                                        icon="x"
                                         data-testid="@modal/close-button"
                                         onClick={onCancel}
                                         size={HEADING_SIZES[headingSize].buttonSize}

@@ -82,21 +82,21 @@ export const NotificationRenderer = ({
         case 'backup-failed':
             return error(render, notification, 'TOAST_BACKUP_FAILED');
         case 'backup-success':
-            return success(render, notification, 'TOAST_BACKUP_SUCCESS', 'settings');
+            return success(render, notification, 'TOAST_BACKUP_SUCCESS', 'gear');
         case 'settings-applied':
-            return success(render, notification, 'TOAST_SETTINGS_APPLIED', 'settings');
+            return success(render, notification, 'TOAST_SETTINGS_APPLIED', 'gear');
         case 'pin-changed':
-            return success(render, notification, 'TOAST_PIN_CHANGED', 'settings');
+            return success(render, notification, 'TOAST_PIN_CHANGED', 'gear');
         case 'wipe-code-changed':
-            return success(render, notification, 'TOAST_WIPE_CODE_CHANGED', 'settings');
+            return success(render, notification, 'TOAST_WIPE_CODE_CHANGED', 'gear');
         case 'wipe-code-removed':
-            return success(render, notification, 'TOAST_WIPE_CODE_REMOVED', 'settings');
+            return success(render, notification, 'TOAST_WIPE_CODE_REMOVED', 'gear');
         case 'device-wiped':
-            return success(render, notification, 'TOAST_DEVICE_WIPED', 'settings');
+            return success(render, notification, 'TOAST_DEVICE_WIPED', 'gear');
         case 'copy-to-clipboard':
             return success(render, notification, 'TOAST_COPY_TO_CLIPBOARD');
         case 'raw-tx-sent':
-            return success(render, notification, 'TOAST_RAW_TX_SENT', 'send', {
+            return success(render, notification, 'TOAST_RAW_TX_SENT', 'arrowUp', {
                 txid: notification.txid,
             });
         case 'cardano-delegate-error':
@@ -182,7 +182,7 @@ export const NotificationRenderer = ({
                 notification,
                 'TR_TOR_IS_SLOW_MESSAGE',
                 { br: () => <br /> },
-                'tor',
+                'torBrowser',
             );
         case 'coin-scheme-protocol':
             return <CoinProtocolRenderer render={render} notification={notification} />;
@@ -191,7 +191,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="receive"
+                    icon="arrowDown"
                     variant="info"
                     message="TOAST_TX_RECEIVED"
                     messageValues={{
@@ -205,7 +205,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="send"
+                    icon="arrowUp"
                     variant="success"
                     message="TOAST_TX_SENT"
                     messageValues={{
@@ -261,7 +261,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="send"
+                    icon="arrowUp"
                     variant="success"
                     message="TOAST_TX_STAKED"
                     messageValues={{
@@ -275,7 +275,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="send"
+                    icon="arrowUp"
                     variant="success"
                     message="TOAST_TX_UNSTAKED"
                     messageValues={{
@@ -288,7 +288,7 @@ export const NotificationRenderer = ({
                 <TransactionRenderer
                     render={render}
                     notification={notification}
-                    icon="send"
+                    icon="arrowUp"
                     variant="success"
                     message="TOAST_TX_CLAIMED"
                     messageValues={{

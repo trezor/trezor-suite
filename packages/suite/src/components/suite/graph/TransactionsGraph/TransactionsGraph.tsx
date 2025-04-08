@@ -147,7 +147,7 @@ export const TransactionsGraph = memo(
                                 alignment: 'start',
                             }}
                         />
-                        {onRefresh && <Icon size={14} name="refresh" onClick={onRefresh} />}
+                        {onRefresh && <Icon size={14} name="repeat" onClick={onRefresh} />}
                     </Toolbar>
                 )}
                 <Description>

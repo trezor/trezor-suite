@@ -1,5 +1,6 @@
 import { Banner, Paragraph } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
@@ -11,9 +12,7 @@ export const EnterOnDeviceStep = ({
 }) => (
     <Banner
         variant="info"
-        icon={
-            deviceModelInternal === 'UNKNOWN' ? undefined : `trezor${deviceModelInternal}` // TODO: update to non-deprecated icons
-        }
+        icon={mapTrezorModelToIcon[deviceModelInternal]}
         iconSize="extraLarge"
         margin={{ top: spacings.xs }}
     >

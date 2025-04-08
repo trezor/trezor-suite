@@ -12,7 +12,7 @@ export const NavSettings = () => {
     return (
         <IconButton
             label={<Translation id="TR_SETTINGS" />}
-            icon="settings"
+            icon="gear"
             size="medium"
             variant="tertiary"
             onClick={handleClick}

@@ -29,7 +29,7 @@ const DebugAndExperimentalTooltip = ({
                 circleIconName="check"
                 variant="primary"
                 header={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
-                leftItem={<Icon name="experimental" variant="purple" size={iconSizes.medium} />}
+                leftItem={<Icon name="diamond" variant="warning" size={iconSizes.medium} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -39,7 +39,7 @@ const DebugAndExperimentalTooltip = ({
                 circleIconName="check"
                 variant="primary"
                 header={<Translation id="TR_EARLY_ACCESS" />}
-                leftItem={<Icon name="eap" variant="warning" size={iconSizes.medium} />}
+                leftItem={<Icon name="starFour" variant="info" size={iconSizes.medium} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -49,7 +49,9 @@ const DebugAndExperimentalTooltip = ({
                 circleIconName="check"
                 variant="primary"
                 header="Debug Mode"
-                leftItem={<Icon name="debug" variant="destructive" size={iconSizes.medium} />}
+                leftItem={
+                    <Icon name="dotOutlineFilled" variant="destructive" size={iconSizes.medium} />
+                }
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -98,17 +100,21 @@ export const DebugAndExperimental = () => {
             <Relative $size={getIconSize(iconSizes.medium)}>
                 {isDebug && (
                     <Absolute>
-                        <Icon name="debug" variant="destructive" size={iconSizes.medium} />
+                        <Icon
+                            name="dotOutlineFilled"
+                            variant="destructive"
+                            size={iconSizes.medium}
+                        />
                     </Absolute>
                 )}
                 {isExperimental && (
                     <Absolute>
-                        <Icon name="experimental" variant="purple" size={iconSizes.medium} />
+                        <Icon name="diamond" variant="warning" size={iconSizes.medium} />
                     </Absolute>
                 )}
                 {isEapEnabled && (
                     <Absolute>
-                        <Icon name="eap" variant="warning" size={iconSizes.medium} />
+                        <Icon name="starFour" variant="info" size={iconSizes.medium} />
                     </Absolute>
                 )}
             </Relative>

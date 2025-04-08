@@ -27,7 +27,7 @@ export const DiscoveryEmpty = () => {
                     key: '1',
                     isLoading: isDeviceLocked,
                     isDisabled,
-                    icon: 'settings',
+                    icon: 'gear',
                     onClick: goToCoinsSettings,
                     children: <Translation id="TR_COIN_SETTINGS" />,
                 },

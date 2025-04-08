@@ -66,7 +66,7 @@ export const ButtonRow = ({
                 <>
                     <StyledButton
                         variant="tertiary"
-                        icon="refresh"
+                        icon="repeat"
                         iconSize={20}
                         onClick={e => {
                             e.preventDefault();

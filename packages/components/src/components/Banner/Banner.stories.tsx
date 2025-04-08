@@ -86,10 +86,10 @@ export const Banner: StoryObj<BannerProps> = {
                         <BannerComponent.IconButton icon="x" isSubtle />
                     </Row>
                 ),
-                iconButton: <BannerComponent.IconButton icon="close" />,
+                iconButton: <BannerComponent.IconButton icon="x" />,
                 iconButtons: (
                     <Row gap={8}>
-                        <BannerComponent.IconButton icon="close" />
+                        <BannerComponent.IconButton icon="x" />
                         <BannerComponent.IconButton icon="asterisk" isSubtle />
                     </Row>
                 ),

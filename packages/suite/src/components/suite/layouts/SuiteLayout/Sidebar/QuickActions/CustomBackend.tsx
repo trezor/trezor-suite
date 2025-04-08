@@ -26,7 +26,7 @@ export const CustomBackend = () => {
                             size: iconSizes.extraSmall,
                         }}
                     >
-                        <Icon name="backend" size={iconSizes.medium} variant="tertiary" />
+                        <Icon name="database" size={iconSizes.medium} variant="tertiary" />
                     </ComponentWithSubIcon>
                 </QuickActionButton>
             </NavBackends>

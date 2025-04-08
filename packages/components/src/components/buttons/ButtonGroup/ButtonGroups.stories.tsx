@@ -46,13 +46,13 @@ export const ButtonGroups: StoryObj = {
             <ButtonGroup isDisabled>
                 <IconButton icon="pencil" />
                 <IconButton icon="clock" />
-                <IconButton icon="twoUsers" />
+                <IconButton icon="users" />
             </ButtonGroup>
 
             <ButtonGroup variant="tertiary" size="medium">
                 <IconButton icon="pencil" />
                 <IconButton icon="clock" />
-                <IconButton icon="twoUsers" />
+                <IconButton icon="users" />
             </ButtonGroup>
 
             <ButtonGroup>

@@ -163,7 +163,7 @@ export const AssetCard = ({
                             assetsFiatBalances={assetsFiatBalances}
                             index={index}
                         />
-                        <Icon size={16} name="arrowRightLong" variant="disabled" />
+                        <Icon size={16} name="arrowRight" variant="disabled" />
                     </Row>
                     {!failed ? (
                         <Column>
@@ -183,11 +183,7 @@ export const AssetCard = ({
                         </Column>
                     ) : (
                         <FailedContainer>
-                            <WarningIcon
-                                name="warningTriangle"
-                                color={theme.legacy.TYPE_RED}
-                                size={14}
-                            />
+                            <WarningIcon name="warning" color={theme.legacy.TYPE_RED} size={14} />
                             <Translation id="TR_DASHBOARD_ASSET_FAILED" />
                         </FailedContainer>
                     )}

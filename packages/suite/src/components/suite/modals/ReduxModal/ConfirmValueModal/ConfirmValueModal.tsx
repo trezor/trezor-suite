@@ -133,7 +133,7 @@ export const ConfirmValueModal = ({
             >
                 <Column gap={spacings.md}>
                     {!device?.connected && (
-                        <Banner icon="warningTriangle" variant="warning">
+                        <Banner icon="warning" variant="warning">
                             <Paragraph typographyStyle="hint">
                                 <Translation
                                     id="TR_DEVICE_LABEL_IS_NOT_CONNECTED"

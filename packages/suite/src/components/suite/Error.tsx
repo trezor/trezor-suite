@@ -70,7 +70,7 @@ export const Error = ({ error }: ErrorProps) => (
         <Separator />
         <Buttons>
             <StyledButton
-                icon="refresh"
+                icon="repeat"
                 variant="tertiary"
                 onClick={() => {
                     reloadApp();
@@ -80,7 +80,7 @@ export const Error = ({ error }: ErrorProps) => (
             </StyledButton>
 
             <StyledButton
-                icon="refresh"
+                icon="repeat"
                 variant="tertiary"
                 onClick={() => {
                     db.removeDatabase();

@@ -221,7 +221,7 @@ export const Coin = ({
                 $toggled={toggled}
                 data-testid={`@settings/wallet/network/${symbol}/advance`}
             >
-                <Icon name="settings" />
+                <Icon name="gear" />
             </SettingsWrapper>
         </CoinWrapper>
     );

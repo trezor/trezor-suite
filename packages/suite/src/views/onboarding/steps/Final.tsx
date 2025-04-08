@@ -187,7 +187,7 @@ export const FinalStep = () => {
                                         variant="tertiary"
                                         size="small"
                                         onClick={() => setState(null)}
-                                        icon="dashboard"
+                                        icon="chartBar"
                                     >
                                         <Translation id="TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN" />
                                     </Button>
@@ -220,7 +220,7 @@ export const FinalStep = () => {
 
                             goToSuite(true);
                         }}
-                        icon="arrowRightLong"
+                        icon="arrowRight"
                         iconAlignment="end"
                         isDisabled={isWaitingForConfirm}
                         size="large"

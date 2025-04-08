@@ -132,7 +132,7 @@ export const MobileAccountsMenu = () => {
                             onClick={() => {
                                 setIsExpanded(!isExpanded);
                             }}
-                            name="chevronDown"
+                            name="caretDown"
                         />
                     </Row>
                 </MenuHeader>

@@ -26,7 +26,7 @@ export const PassphraseWalletConfirmationStep2 = ({
                 <List.Item bulletComponent={<Icon name="copy" size={16} />}>
                     <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION" />
                 </List.Item>
-                <List.Item bulletComponent={<Icon name="hide" size={16} />}>
+                <List.Item bulletComponent={<Icon name="eyeSlash" size={16} />}>
                     <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM3_DESCRIPTION" />
                 </List.Item>
             </List>

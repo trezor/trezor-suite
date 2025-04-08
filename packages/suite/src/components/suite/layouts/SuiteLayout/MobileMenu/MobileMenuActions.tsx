@@ -56,14 +56,14 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                 onClick={toggleDiscreetMode}
                 isActive={discreetMode}
                 label={<Translation id="TR_DISCREET" />}
-                icon={discreetMode ? 'hide' : 'show'}
+                icon={discreetMode ? 'eyeSlash' : 'eye'}
             />
 
             {!!enabledBackends.length && (
                 <MobileActionItem
                     onClick={() => action('settings-coins')}
                     label={<Translation id="TR_BACKENDS" />}
-                    icon="backend"
+                    icon="database"
                     indicator="check"
                 />
             )}
@@ -72,7 +72,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                 <MobileActionItem
                     onClick={() => action('settings-index')}
                     label={<Translation id="TR_EARLY_ACCESS_MENU" />}
-                    icon="experimental"
+                    icon="diamond"
                 />
             )}
 
@@ -81,7 +81,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                 data-testid="@suite/menu/notifications-index"
                 onClick={() => action('notifications-index')}
                 isActive={getIfTabIsActive(['notifications-index'])}
-                icon="notifications"
+                icon="bell"
                 indicator={unseenNotifications ? 'alert' : undefined}
             />
 
@@ -103,7 +103,7 @@ export const MobileMenuActions = ({ closeMobileNavigation }: MobileMenuActionsPr
                     'settings-debug',
                     'settings-connected-apps',
                 ])}
-                icon="settings"
+                icon="gear"
             />
         </MobileWrapper>
     );
