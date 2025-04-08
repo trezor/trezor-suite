@@ -14,11 +14,12 @@ on:
   pull_request:
     types: [labeled]
   workflow_dispatch:
-    bluetooth:
-      description: "include bluetooth rust websocket server build"
-      required: false
-      type: boolean
-      default: false
+    inputs:
+      bluetooth:
+        description: "include bluetooth rust websocket server build"
+        required: false
+        type: boolean
+        default: false
 
 env:
   DESKTOP_APP_NAME: "Trezor-Suite"
