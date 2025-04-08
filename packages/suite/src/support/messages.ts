@@ -7382,6 +7382,10 @@ export default defineMessages({
         id: 'TR_TROUBLE_SHOOTING_TIPS',
         defaultMessage: 'Troubleshooting tips',
     },
+    TR_TROUBLE_SHOOTING_BLUETOOTH: {
+        id: 'TR_TROUBLE_SHOOTING_BLUETOOTH',
+        defaultMessage: 'Troubleshooting Bluetooth',
+    },
     TR_ONBOARDING_ADVANCED: {
         id: 'TR_ONBOARDING_ADVANCED',
         defaultMessage: 'Advanced',
