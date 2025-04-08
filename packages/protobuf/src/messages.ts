@@ -552,6 +552,10 @@ export type AuthorizeCoinJoin = {
     amount_unit?: AmountUnit;
 };
 
+export type BleUnpair = {
+    all?: boolean;
+};
+
 export type FirmwareErase = {
     length?: number;
 };
@@ -2343,6 +2347,7 @@ export type MessageType = {
     GetOwnershipProof: GetOwnershipProof;
     OwnershipProof: OwnershipProof;
     AuthorizeCoinJoin: AuthorizeCoinJoin;
+    BleUnpair: BleUnpair;
     FirmwareErase: FirmwareErase;
     FirmwareRequest: FirmwareRequest;
     FirmwareUpload: FirmwareUpload;
