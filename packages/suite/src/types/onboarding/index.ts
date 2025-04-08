@@ -23,6 +23,7 @@ export type Step = {
     prerequisites?: (PrerequisiteType | 'device-different')[];
     path?: AnyPath[];
     supportedModels?: (DeviceModelInternal | ModelWithFirmwareVersion)[];
+    hideForBitcoinOnly?: boolean;
 };
 
 // todo: remove, improve typing

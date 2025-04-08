@@ -5,7 +5,7 @@ import styled, { css, useTheme } from 'styled-components';
 import { Icon, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
-import { progressBarSteps } from '../../config/onboarding/steps';
+import { useOnboardingProgressBarStepsInPath } from '../../hooks/suite/useOnboardingProgressBarStepsInPath';
 import { ProgressBarStepKey } from '../../types/onboarding';
 import { Translation } from '../suite';
 
@@ -102,12 +102,15 @@ export const OnboardingProgressBar = ({
 }: OnboardingProgressBarProps) => {
     const theme = useTheme();
 
-    const lastStepNumber = progressBarSteps.length - 1;
-    const indexOfActiveStep = progressBarSteps.findIndex(({ key }) => key === activeStepGroup);
+    const progressBarStepsInPath = useOnboardingProgressBarStepsInPath();
+    const lastStepNumber = progressBarStepsInPath.length - 1;
+    const indexOfActiveStep = progressBarStepsInPath.findIndex(
+        ({ key }) => key === activeStepGroup,
+    );
 
     return (
         <ProgressBarWrapper className={className}>
-            {progressBarSteps.map(({ key, labelTranslationId }, index) => {
+            {progressBarStepsInPath.map(({ key, labelTranslationId }, index) => {
                 // if active step was not found (-1) because activeStepGroup is undefined, no step will be considered completed
                 const stepCompleted = indexOfActiveStep > index;
                 const stepActive = index === indexOfActiveStep;

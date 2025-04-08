@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import { ID_AUTHENTICATE_DEVICE_STEP } from 'src/constants/onboarding/steps';
@@ -23,6 +23,7 @@ export const isStepUsed = (step: Step, context: IsStepUsedContext): boolean => {
     } = context;
     const deviceModelInternal = device?.features?.internal_model;
     const firmwareVersion = getFirmwareVersion(device);
+    const bitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
 
     // The order of IF conditions matters!
     if (
@@ -39,6 +40,10 @@ export const isStepUsed = (step: Step, context: IsStepUsedContext): boolean => {
             )
         )
     ) {
+        return false;
+    }
+
+    if (step.hideForBitcoinOnly === true && bitcoinOnlyFirmware) {
         return false;
     }
 

@@ -121,6 +121,7 @@ export const steps: Step[] = [
         id: STEP.ID_COINS_STEP,
         stepGroup: 'coins',
         prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
+        hideForBitcoinOnly: true,
     },
     {
         id: STEP.ID_FINAL_STEP,
