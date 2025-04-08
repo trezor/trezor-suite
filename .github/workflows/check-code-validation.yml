@@ -125,7 +125,7 @@ jobs:
       - name: Detect unused dependencies
         run: yarn depcheck
       - name: Yarn Dedupe check
-        run: yarn dedupe --check
+        run: yarn dedupe --check --json
       - name: Check dependency domain lists
         run: ./scripts/ci/list-missing-dependencies.sh
       - name: Verify Workspace Resolutions
