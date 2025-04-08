@@ -64,7 +64,15 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
             url = url.replace('http', 'ws');
         }
 
-        return new WebSocket(url, { timeout, headers, agent });
+        return new WebSocket(url, {
+            timeout,
+            headers: {
+                // for convenience auto spoof Origin header in node.js
+                Origin: 'https://node.trezor.io',
+                ...headers,
+            },
+            agent,
+        });
     }
 
     private setPingTimeout() {

@@ -25,7 +25,6 @@ export class BlockfrostAPI extends BaseWebsocket<BlockfrostEvents> {
             url,
             agent: this.options.agent,
             headers: {
-                Origin: 'https://node.trezor.io',
                 'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
                 ...this.options.headers,
             },

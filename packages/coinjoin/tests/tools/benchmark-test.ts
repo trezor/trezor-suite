@@ -112,7 +112,6 @@ const getWebsocket = async () => {
         agent,
         perMessageDeflate: true,
         headers: {
-            Origin: 'https://node.trezor.io',
             'User-Agent': 'Trezor Suite',
         },
     });

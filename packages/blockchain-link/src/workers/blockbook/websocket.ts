@@ -50,7 +50,6 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
             url,
             agent: this.options.agent,
             headers: {
-                Origin: 'https://node.trezor.io',
                 'User-Agent': `Trezor Suite ${getSuiteVersion()}`,
                 ...this.options.headers,
             },
