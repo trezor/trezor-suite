@@ -89,7 +89,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         this._settings = newSettings;
 
         try {
-            this.ws = new WebsocketClient({ url: 'ws://localhost:21335/connect-ws' });
+            this.ws = new WebsocketClient({ url: 'ws://127.0.0.1.traefik.me:21335/connect-ws' });
 
             await this.ws.connect();
 
