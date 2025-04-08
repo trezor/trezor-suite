@@ -19,6 +19,33 @@ const baseDir = getPathForProject('desktop');
 
 // conditionally remove bluetooth binaries from the build, see https://github.com/trezor/trezor-suite/pull/18196
 // to be removed when BT is ready
+const BLUETOOTH_BIN = [
+    {
+        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/linux'),
+        to: path.join(baseDir, 'build/static/bin/bluetooth/linux-x64'),
+    },
+    {
+        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/linux'),
+        to: path.join(baseDir, 'build/static/bin/bluetooth/linux-arm64'),
+    },
+    {
+        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/macos'),
+        to: path.join(baseDir, 'build/static/bin/bluetooth/mac-x64'),
+    },
+    {
+        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/macos'),
+        to: path.join(baseDir, 'build/static/bin/bluetooth/mac-arm64'),
+    },
+    {
+        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/windows'),
+        to: path.join(baseDir, 'build/static/bin/bluetooth/win-x64'),
+    },
+    {
+        from: path.join(__dirname, '../../', 'transport-bluetooth/bin/windows'),
+        to: path.join(baseDir, 'build/static/bin/bluetooth/win-arm64'),
+    },
+];
+
 const BLUETOOTH_BIN_FILTER = !isDev && !process.env.BLUETOOTH ? [/bin\/bluetooth\//] : [];
 
 const config: webpack.Configuration = {
@@ -79,7 +106,8 @@ const config: webpack.Configuration = {
                         from: path.join(__dirname, '../../', 'suite-desktop/releaseNotes'),
                         to: path.join(baseDir, 'build'),
                     },
-                ]),
+                ])
+                .concat(BLUETOOTH_BIN),
             options: {
                 concurrency: 100,
             },

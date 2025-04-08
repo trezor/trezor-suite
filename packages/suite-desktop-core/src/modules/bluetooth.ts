@@ -2,13 +2,21 @@ import { ipcMain } from 'electron';
 
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
-import { BluetoothIpc, BluetoothIpcApi } from '@trezor/transport-bluetooth';
+import { BluetoothIpc, BluetoothIpcApi, BluetoothTransport } from '@trezor/transport-bluetooth';
 
 import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
 
 import type { ModuleInit } from './index';
 
 export const SERVICE_NAME = '@trezor/transport-bluetooth';
+
+// Export module state and use it trezor-connect module to override init + setTransports params
+// getTransport function is reassigned in onLoad, onQuit
+export const bluetoothModule: {
+    getTransport: () => BluetoothTransport | undefined;
+} = {
+    getTransport: () => undefined,
+};
 
 export const init: ModuleInit = () => {
     const { logger } = global;
@@ -17,7 +25,8 @@ export const init: ModuleInit = () => {
 
     const getBluetoothProcess = async () => {
         if (!bluetoothProcess) {
-            const port = await getFreePort();
+            // TODO: for debug purposes
+            const port = await getFreePort().then(_p => 21327);
             bluetoothProcess = new BluetoothProcess(port);
         }
 
@@ -36,11 +45,20 @@ export const init: ModuleInit = () => {
         await btProcess.start();
 
         return new BluetoothIpc({
-            // @ts-expect-error TODO BluetoothIpc params will be added in upcoming PR
             url: btProcess.getUrl(),
-            logger,
+            logger: logger as any, // TODO
         });
     };
+
+    const getBluetoothTransport = () =>
+        bluetoothProcess
+            ? new BluetoothTransport({
+                  id: 'BluetoothTransport',
+                  url: bluetoothProcess.getUrl(),
+                  logger: logger as any,
+                  messages: {}, // will be added later, in connect
+              })
+            : undefined;
 
     const proxyOptions: IpcProxyHandlerOptions<BluetoothIpcApi> = {
         onCreateInstance() {
@@ -81,12 +99,14 @@ export const init: ModuleInit = () => {
     const unregisterProxy = createIpcProxyHandler(ipcMain, 'Bluetooth', proxyOptions);
     const onLoad = () => {
         // empty, binary starts after bluetoothIpc.init
+        bluetoothModule.getTransport = getBluetoothTransport;
     };
 
     const onQuit = () => {
         logger.info(SERVICE_NAME, 'Stopping (app quit)');
         unregisterProxy();
         killBluetoothProcess();
+        bluetoothModule.getTransport = () => undefined;
     };
 
     return { onLoad, onQuit };
