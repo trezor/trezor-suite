@@ -17,8 +17,6 @@ const electronArgs = process.argv.slice(electronArgsIndex);
 const baseDirUI = getPathForProject('desktop-ui');
 const baseDir = getPathForProject('desktop');
 
-// conditionally remove bluetooth binaries from the build, see https://github.com/trezor/trezor-suite/pull/18196
-// to be removed when BT is ready
 const BLUETOOTH_BIN_FILTER = !isDev && !process.env.BLUETOOTH ? [/bin\/bluetooth\//] : [];
 
 const config: webpack.Configuration = {

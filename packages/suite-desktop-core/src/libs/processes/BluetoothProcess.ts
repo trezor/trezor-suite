@@ -7,7 +7,12 @@ export class BluetoothProcess extends BaseProcess {
     private readonly port;
 
     constructor(port = 21327) {
-        super('bluetooth', 'trezor-bluetooth');
+        super('bluetooth', 'trezor-bluetooth', {
+            stdio:
+                process.platform.indexOf('win') >= 0
+                    ? undefined
+                    : ['inherit', 'inherit', 'inherit'],
+        });
         this.port = port;
     }
 
