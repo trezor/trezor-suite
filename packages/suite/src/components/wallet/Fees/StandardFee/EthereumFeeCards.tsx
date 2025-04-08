@@ -80,23 +80,29 @@ export const EthereumFeeCards = ({
                         }
                         tooltipContent={
                             isDebug && isEip1559(fee) ? (
-                                <Grid columns={2} gap={spacings.xs}>
-                                    <Badge variant="warning" size="small">
+                                <>
+                                    <Badge variant="warning" size="small" inline>
                                         <Translation id="TR_DEBUG_ONLY" />
                                     </Badge>
-                                    <Translation id="TR_MAX_FEE_PER_GAS" />
-                                    <span>
-                                        {fee.maxFeePerGas} {getFeeUnits(networkType)}
-                                    </span>
-                                    <Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />
-                                    <span>
-                                        {fee.maxPriorityFeePerGas} {getFeeUnits(networkType)}
-                                    </span>
-                                    <Translation id="TR_BASE_FEE" />
-                                    <span>
-                                        {fee.baseFeePerGas} {getFeeUnits(networkType)}
-                                    </span>
-                                </Grid>
+                                    <Grid
+                                        columns={2}
+                                        gap={spacings.xs}
+                                        margin={{ top: spacings.xs }}
+                                    >
+                                        <Translation id="TR_MAX_FEE_PER_GAS" />
+                                        <Text isMonospaced>
+                                            {fee.maxFeePerGas} {getFeeUnits(networkType)}
+                                        </Text>
+                                        <Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />
+                                        <Text isMonospaced>
+                                            {fee.maxPriorityFeePerGas} {getFeeUnits(networkType)}
+                                        </Text>
+                                        <Translation id="TR_BASE_FEE" />
+                                        <Text isMonospaced>
+                                            {fee.baseFeePerGas} {getFeeUnits(networkType)}
+                                        </Text>
+                                    </Grid>
+                                </>
                             ) : undefined
                         }
                     />
