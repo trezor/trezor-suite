@@ -1,10 +1,10 @@
+import { formatTestSteps } from '../../../support/annotations';
 import {
     TestAnnotationType,
     TestCategory,
     TestPriority,
 } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
-import { formatTestSteps } from '../../../support/stepsFormat';
 
 test.describe.skip('Device switch', { tag: ['@group=manual'] }, () => {
     test(

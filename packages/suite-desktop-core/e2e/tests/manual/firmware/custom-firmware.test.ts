@@ -1,3 +1,4 @@
+import { formatTestSteps } from '../../../support/annotations';
 import {
     TestAnnotationType,
     TestCategory,
@@ -5,7 +6,6 @@ import {
     TestStream,
 } from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
-import { formatTestSteps } from '../../../support/stepsFormat';
 
 test.describe.skip('Custom firmware', { tag: ['@group=manual'] }, () => {
     test(
