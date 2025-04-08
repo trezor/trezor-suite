@@ -9876,4 +9876,12 @@ export default defineMessages({
         id: 'TR_CONNECTED_TO',
         defaultMessage: 'Connected to',
     },
+    TR_SELECT_ACCOUNT: {
+        id: 'TR_SELECT_ACCOUNT',
+        defaultMessage: 'Select {networkName} account',
+    },
+    TR_ACCOUNT: {
+        id: 'TR_ACCOUNT',
+        defaultMessage: 'Account',
+    },
 });

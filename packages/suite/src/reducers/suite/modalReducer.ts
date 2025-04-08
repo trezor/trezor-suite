@@ -1,5 +1,5 @@
 import { UserContextPayload } from '@suite-common/suite-types';
-import { DEVICE, Device, UI, UiRequestButtonData } from '@trezor/connect';
+import { DEVICE, Device, UI, UiRequestButtonData, UiRequestSelectAccount } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
 import type { Action, TrezorDevice } from 'src/types/suite';
@@ -17,6 +17,7 @@ type ModalState =
     | {
           context: typeof MODAL.CONTEXT_DEVICE_CONFIRMATION;
           windowType: string;
+          data?: UiRequestSelectAccount['payload'];
       }
     | {
           context: typeof MODAL.CONTEXT_USER;
@@ -77,6 +78,13 @@ const modalReducer = (state: State = initialState, action: Action): State => {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
                 windowType: action.payload.type,
+                preserve: state.preserve,
+            };
+        case UI.SELECT_ACCOUNT:
+            return {
+                context: MODAL.CONTEXT_DEVICE_CONFIRMATION,
+                windowType: UI.SELECT_ACCOUNT,
+                data: action.payload,
                 preserve: state.preserve,
             };
 

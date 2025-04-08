@@ -40,6 +40,18 @@ export const onReceiveConfirmation = (confirmation: boolean) => (dispatch: Dispa
 
     dispatch(onCancel());
 };
+export const onReceiveAccount = (accountIndex: number | null) => (dispatch: Dispatch) => {
+    if (accountIndex === null) {
+        TrezorConnect.cancel();
+    } else {
+        TrezorConnect.uiResponse({
+            type: UI.RECEIVE_ACCOUNT,
+            payload: accountIndex,
+        });
+    }
+
+    dispatch(onCancel());
+};
 
 export const openModal = createAction(MODAL.OPEN_USER_CONTEXT, (payload: UserContextPayload) => ({
     payload,

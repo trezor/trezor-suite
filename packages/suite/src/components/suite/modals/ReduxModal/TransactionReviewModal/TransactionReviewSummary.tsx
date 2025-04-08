@@ -8,6 +8,7 @@ import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabel, Translation } from 'src/components/suite';
+import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
@@ -120,16 +121,7 @@ export const TransactionReviewSummary = ({
                 </Note>
             )}
 
-            {connectPopupCall?.state === 'ongoing' && (
-                <Note iconName="plug">
-                    <Translation id="TR_CONNECTED_TO" />
-                    {': '}
-                    <Text variant="primary">
-                        {connectPopupCall.source?.manifest?.appName ||
-                            connectPopupCall.source?.origin}
-                    </Text>
-                </Note>
-            )}
+            {connectPopupCall?.state === 'ongoing' && <ConnectCallSource />}
 
             {tx.inputs.length > 0 && (
                 // TODO: IconButton doesn't take margin even though it should
