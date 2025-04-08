@@ -2,6 +2,7 @@ import { Action, AsyncThunk, ThunkAction } from '@reduxjs/toolkit';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { Discovery } from '@suite-common/wallet-types';
+import TrezorConnect from '@trezor/connect';
 
 export interface AnyAction extends Action {
     [extraProps: string]: any;
@@ -60,4 +61,12 @@ export type DiscoveryHook = {
         device: TrezorDevice,
     ) => void;
     deregisterAuthHook: (device: TrezorDevice) => void;
+};
+
+export type TrezorConnectService = {
+    invoke: <R>(fn: (trezorConnect: typeof TrezorConnect) => R) => R;
+    invokeUIAction: <R>(fn: (trezorConnect: typeof TrezorConnect) => R) => {
+        deviceReadyPromise: Promise<void>;
+        responsePromise: R;
+    };
 };

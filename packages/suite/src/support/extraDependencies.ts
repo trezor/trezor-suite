@@ -18,7 +18,7 @@ import {
     selectIsPendingTransportEvent,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
-import { PROTO, StaticSessionId } from '@trezor/connect';
+import TrezorConnect, { PROTO, StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
@@ -37,6 +37,7 @@ import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { createDiscoveryHook } from './discoveryHook';
+import { createTrezorConnectService } from './trezorConnectService';
 import { METADATA, STORAGE } from '../actions/suite/constants';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
@@ -63,6 +64,7 @@ const connectInitSettings = {
 export const extraDependencies: ExtraDependencies = {
     services: {
         discoveryHook: createDiscoveryHook(),
+        trezorConnectService: createTrezorConnectService(TrezorConnect),
     },
     thunks: {
         cardanoValidatePendingTxOnBlock: cardanoStakingActions.validatePendingTxOnBlock,
