@@ -65,6 +65,16 @@ export const getInitializedTradingStateWithQuotes = () => {
     const state = getInitializedTradingState();
 
     state.buy.quotes = quotes as TradingBuyState['quotes'];
+    state.info.paymentMethods = [
+        {
+            value: 'creditCard',
+            label: 'Credit Card',
+        },
+        {
+            value: 'applePay',
+            label: 'Apple Pay',
+        },
+    ];
 
     return state;
 };

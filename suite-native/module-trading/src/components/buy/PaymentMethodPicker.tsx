@@ -1,11 +1,6 @@
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    getTradingPaymentMethods,
-    selectTradingBuyIsLoading,
-    selectTradingBuyQuotes,
-} from '@suite-common/trading';
+import { selectTradingBuyIsLoading, selectTradingPaymentMethods } from '@suite-common/trading';
 import { Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 
@@ -18,12 +13,10 @@ import { TradingOverviewValueSkeleton } from '../general/TradingOverviewValueSke
 export const PaymentMethodPicker = () => {
     const { translate } = useTranslate();
     const form = useTradingBuyFormContext();
-    const quotes = useSelector(selectTradingBuyQuotes);
+    const methods = useSelector(selectTradingPaymentMethods);
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useTradeSheetControls(form, 'paymentMethod');
-
-    const methods = useMemo(() => getTradingPaymentMethods(quotes), [quotes]);
 
     if (isLoading) {
         return (
