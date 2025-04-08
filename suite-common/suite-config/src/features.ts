@@ -1,6 +1,6 @@
 /**
  * Feature flags configuration file
- * @docs docs/misc/feature_flags.md
+ * @docs docs/feature-flags.md
  */
 
 // General flags
