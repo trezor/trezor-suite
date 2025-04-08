@@ -63,6 +63,7 @@ runs:
           exit 0
         fi
 
+        SUCCESSFUL_JOB_URL=$(echo "$PREVIOUS_RUN_RESPONSE" | jq -r '.workflow_runs[0].html_url')
         echo "Previous successful job found: ${SUCCESSFUL_JOB_URL} - no need to run tests again"
         echo "skip_tests=true" >> $GITHUB_OUTPUT
     
