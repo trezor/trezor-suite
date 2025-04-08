@@ -1,3 +1,5 @@
+import { createTestAnnotation } from '../../support/annotations';
+import { TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('ETH staking', { tag: ['@group=wallet'] }, () => {
@@ -23,15 +25,26 @@ test.describe('ETH staking', { tag: ['@group=wallet'] }, () => {
         },
     );
 
-    test('checks that staking dashboard works', async ({ page, walletPage, tradingPage }) => {
-        await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
-        await walletPage.openSendFormButton.click();
-        await tradingPage.sendAmountInput.fill('1111.456789012345678901');
-        await page.getByTestId('@account-menu/eth/normal/0/staking').click();
+    test(
+        'checks that staking dashboard works',
+        {
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that a user can access the Ethereum staking account.',
+                category: TestCategory.ETH,
+                priority: TestPriority.Critical,
+                stream: TestStream.Trends,
+            }),
+        },
+        async ({ page, walletPage, tradingPage }) => {
+            await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
+            await walletPage.openSendFormButton.click();
+            await tradingPage.sendAmountInput.fill('1111.456789012345678901');
+            await page.getByTestId('@account-menu/eth/normal/0/staking').click();
 
-        await expect(page.getByTestId('@account/staking/pending')).toHaveText('3,000');
-        await expect(page.getByTestId('@account/staking/staked')).toHaveText('3,000');
-        await expect(page.getByTestId('@account/staking/rewards')).toHaveText('1,234');
-        await expect(page.getByTestId('@account/staking/unstaking')).toHaveText('4,000');
-    });
+            await expect(page.getByTestId('@account/staking/pending')).toHaveText('3,000');
+            await expect(page.getByTestId('@account/staking/staked')).toHaveText('3,000');
+            await expect(page.getByTestId('@account/staking/rewards')).toHaveText('1,234');
+            await expect(page.getByTestId('@account/staking/unstaking')).toHaveText('4,000');
+        },
+    );
 });
