@@ -58,6 +58,8 @@ export const factory = <
 
     // methods
 
+    bleUnpair: params => call({ ...params, method: 'bleUnpair' }),
+
     blockchainGetAccountBalanceHistory: params =>
         call({ ...params, method: 'blockchainGetAccountBalanceHistory' }),
 
