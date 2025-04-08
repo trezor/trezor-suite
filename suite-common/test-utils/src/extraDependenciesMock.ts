@@ -4,7 +4,7 @@ import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { Route, TrezorDevice } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { PROTO } from '@trezor/connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 
 import { testMocks } from './mocks';
 
@@ -84,6 +84,13 @@ export const createMockDiscoveryHook = () => ({
 export const extraDependenciesMock: ExtraDependencies = {
     services: {
         discoveryHook: createMockDiscoveryHook(),
+        trezorConnectService: {
+            invoke: <R>(cb: (trezor: typeof TrezorConnect) => R) => cb(TrezorConnect),
+            invokeUIAction: <R>(cb: (trezor: typeof TrezorConnect) => R) => ({
+                responsePromise: cb(TrezorConnect),
+                deviceReadyPromise: Promise.resolve(),
+            }),
+        },
     },
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
