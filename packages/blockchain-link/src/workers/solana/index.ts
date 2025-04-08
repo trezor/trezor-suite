@@ -371,8 +371,9 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     const { value: balance } = await api.rpc.getBalance(publicKey).send();
 
     let misc: AccountInfo['misc'] | undefined;
-    // Not necessary for basic details
-    if (details !== 'basic') {
+
+    // Not necessary for basic and tokens details
+    if (!['basic', 'tokens'].includes(details)) {
         // https://solana.stackexchange.com/a/13102
         const { value: accountInfo } = await api.rpc
             .getAccountInfo(publicKey, { encoding: 'base64' })
