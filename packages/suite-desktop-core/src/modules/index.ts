@@ -1,7 +1,7 @@
 import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import type { DeviceEvent, LocalFirmwares } from '@trezor/connect';
+import type { ConnectSettingsPublic, DeviceEvent, LocalFirmwares } from '@trezor/connect';
 import { InterceptedEvent } from '@trezor/request-manager';
 import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';
 import { TypedEmitter, isNotUndefined } from '@trezor/utils';
@@ -79,6 +79,7 @@ interface MainThreadMessages {
     'module/reset-tor-circuits': Extract<InterceptedEvent, { type: 'CIRCUIT_MISBEHAVING' }>;
     'module/tor-status-update': TorStatus;
     'module/trezor-connect/device-event': DeviceEvent;
+    'module/trezor-connect/init': { settings: Partial<ConnectSettingsPublic> };
     'module/bridge/toggle': void;
     'module/bridge/status': {
         service: boolean;
