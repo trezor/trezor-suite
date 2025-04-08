@@ -1,5 +1,6 @@
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Button } from '@trezor/components';
+import { Button, ButtonProps } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import {
@@ -16,7 +17,7 @@ import {
     TrezorLink,
 } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
 import { DesktopUpdateState, UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { getReleaseUrl } from 'src/services/github';
 
@@ -36,23 +37,41 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
     const appVersion = process.env.VERSION || '';
     const dispatch = useDispatch();
     const openChangelog = () => dispatch(openJustUpdatedChangelog());
+    const url = useExternalLink(getReleaseUrl(appVersion));
+    const commonButtonProps: Partial<ButtonProps> = {
+        'data-testid': '@settings/suite-version',
+        variant: 'tertiary',
+        size: 'tiny',
+    } as const;
+    const buttonLabel = (
+        <>
+            {appVersion}
+            {isDevEnv && '-dev'}
+        </>
+    );
 
     return (
         <div>
             <Translation
                 id="TR_YOUR_CURRENT_VERSION"
                 values={{
-                    version: (
+                    version: isDesktop() ? (
                         <Button
-                            data-testid="@settings/suite-version"
-                            variant="tertiary"
-                            size="tiny"
                             onClick={() => {
                                 openChangelog();
                             }}
+                            {...commonButtonProps}
                         >
-                            {appVersion}
-                            {isDevEnv && '-dev'}
+                            {buttonLabel}
+                        </Button>
+                    ) : (
+                        <Button
+                            href={url}
+                            icon="arrowUpRight"
+                            iconAlignment="end"
+                            {...commonButtonProps}
+                        >
+                            {buttonLabel}
                         </Button>
                     ),
                 }}
