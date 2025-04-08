@@ -803,6 +803,14 @@ export const AuthorizeCoinJoin = Type.Object(
     { $id: 'AuthorizeCoinJoin' },
 );
 
+export type BleUnpair = Static<typeof BleUnpair>;
+export const BleUnpair = Type.Object(
+    {
+        all: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'BleUnpair' },
+);
+
 export type FirmwareErase = Static<typeof FirmwareErase>;
 export const FirmwareErase = Type.Object(
     {
@@ -1385,7 +1393,7 @@ export const EnumFailureType = Type.Enum(FailureType);
 export type Failure = Static<typeof Failure>;
 export const Failure = Type.Object(
     {
-        code: Type.Optional(EnumFailureType),
+        code: Type.Optional(Type.KeyOfEnum(FailureType)),
         message: Type.Optional(Type.String()),
     },
     { $id: 'Failure' },
@@ -3592,6 +3600,7 @@ export const MessageType = Type.Object(
         GetOwnershipProof,
         OwnershipProof,
         AuthorizeCoinJoin,
+        BleUnpair,
         FirmwareErase,
         FirmwareRequest,
         FirmwareUpload,
