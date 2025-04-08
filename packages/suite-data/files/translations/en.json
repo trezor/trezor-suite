@@ -2094,7 +2094,7 @@
   "TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION": "Connect your device directly to your computer, without using a USB hub.",
   "TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE": "Use a different USB port",
   "TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN": "Unexpected state: {error}",
-  "TR_TROUBLE_SHOOTING_TIPS": "Troubleshooting Bluetooth",
+  "TR_TROUBLE_SHOOTING_TIPS": "Troubleshooting tips",
   "TR_TRY_AGAIN": "Try again",
   "TR_TXID": "TX ID",
   "TR_TXID_RBF": "Original TX ID to be replaced",
