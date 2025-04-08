@@ -1,4 +1,5 @@
 import { isDevEnv } from '@suite-common/suite-utils';
+import { isWindows } from '@trezor/env-utils';
 
 import { BaseProcess, Status } from './BaseProcess';
 import { getSwitchValue } from '../process-switches';
@@ -15,6 +16,7 @@ export class BluetoothProcess extends BaseProcess {
                 XDG_CURRENT_DESKTOP:
                     process.env.ORIGINAL_XDG_CURRENT_DESKTOP || process.env.XDG_CURRENT_DESKTOP,
             },
+            stdio: isWindows() ? undefined : 'inherit',
         });
         this.port = port;
     }

@@ -162,7 +162,7 @@ const initialState: SuiteState = {
         showCopyAddressModal: true,
         showUnhideTokenModal: true,
         enableAutoupdateOnNextRun: false,
-        isBluetoothEnabled: false,
+        isBluetoothEnabled: true,
         showBluetoothDebugInfo: false,
         stellarLimitedHistoryBannerClosed: false,
         solanaLimitedHistoryBannerClosed: false,
@@ -187,10 +187,10 @@ const initialState: SuiteState = {
         isCoinjoinReceiveWarningHidden: false,
         isDesktopSuitePromoHidden: false,
         enabledSecurityChecks: {
-            deviceAuthenticity: true,
-            entropy: true,
-            firmwareRevision: true,
-            firmwareHash: true,
+            deviceAuthenticity: false,
+            entropy: false,
+            firmwareRevision: false,
+            firmwareHash: false,
         },
         debug: {
             invityServerEnvironment: undefined,
