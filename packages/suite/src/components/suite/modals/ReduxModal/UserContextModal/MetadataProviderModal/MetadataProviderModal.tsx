@@ -70,18 +70,16 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                         <Translation id="TR_DROPBOX" />
                     </Button>
 
-                    {isFeatureFlagEnabled('GOOGLE_DRIVE_SYNC') && (
-                        <Button
-                            variant="tertiary"
-                            onClick={() => connect('google')}
-                            isLoading={isLoading === 'google'}
-                            isDisabled={!!isLoading}
-                            data-testid="@modal/metadata-provider/google-button"
-                            icon={<GoogleDriveLogo size={20} />}
-                        >
-                            <Translation id="TR_GOOGLE_DRIVE" />
-                        </Button>
-                    )}
+                    <Button
+                        variant="tertiary"
+                        onClick={() => connect('google')}
+                        isLoading={isLoading === 'google'}
+                        isDisabled={!!isLoading}
+                        data-testid="@modal/metadata-provider/google-button"
+                        icon={<GoogleDriveLogo size={20} />}
+                    >
+                        <Translation id="TR_GOOGLE_DRIVE" />
+                    </Button>
 
                     {/* desktop only */}
                     {isFeatureFlagEnabled('FILE_SYSTEM_SYNC') && (
