@@ -86,6 +86,11 @@ export const scrollUntilVisible = async (
         // Try to confirm that the element is visible without scrolling.
         await detoxExpect(target).toBeVisible();
     } catch {
+        // Hide keyboard in case it is open. (iOS scrolling is broken when keyboard is visible)
+        if (platform === 'ios') {
+            await device.tap({ x: 0, y: 0 });
+        }
+
         // If the element is not visible, then use the scroll to find it.
         await waitFor(target)
             .toBeVisible()
