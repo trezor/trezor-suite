@@ -4,21 +4,29 @@ import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { LegalSheet } from './LegalSheet';
-import { useTradeConfirmationControls } from '../../hooks/useTradeConfirmationControls';
+import { useTradingBuyFlow } from '../../hooks/useTradingBuyFlow';
+import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 
 export const Confirmation = () => {
-    const { isConfirmationEnabled, showSheet, hideSheet, isSheetVisible, tradeProviderName } =
-        useTradeConfirmationControls();
+    const form = useTradingBuyFormContext();
+
+    const { canProceed, selectQuote, isConsentRequested, giveConsent, cancelConsent } =
+        useTradingBuyFlow(form);
+
+    const provider = form.watch('provider');
 
     return (
         <AnimatedBox entering={FadeInDown} exiting={FadeOutDown}>
-            <Button onPress={showSheet} disabled={!isConfirmationEnabled}>
-                <Translation id="moduleTrading.tradingScreen.continueButton" />
-            </Button>
+            {canProceed && (
+                <Button onPress={selectQuote} disabled={!canProceed}>
+                    <Translation id="moduleTrading.tradingScreen.continueButton" />
+                </Button>
+            )}
             <LegalSheet
-                onClose={hideSheet}
-                isVisible={isSheetVisible}
-                tradeProviderName={tradeProviderName}
+                onClose={cancelConsent}
+                isVisible={isConsentRequested}
+                onConsent={giveConsent}
+                tradeProviderName={provider}
             />
         </AnimatedBox>
     );

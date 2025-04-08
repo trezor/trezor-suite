@@ -1,6 +1,13 @@
+import { BuyTrade } from 'invity-api';
+
 import { trezorLogo } from '@suite-common/suite-constants';
 
-import { applyHtmlTemplate, getRequestFormSource, getSourceForForm } from '../tradeFormUtils';
+import {
+    applyHtmlTemplate,
+    buildUrl,
+    getRequestFormSource,
+    getSourceForForm,
+} from '../tradeFormUtils';
 
 describe('tradeFormUtils', () => {
     describe('applyHtmlTemplate', () => {
@@ -175,5 +182,17 @@ describe('getRequestFormSource', () => {
             expect(result?.html).toContain('post_action');
             expect(result?.html).toContain('custom_back_url');
         });
+    });
+});
+
+describe('buildUrl', () => {
+    it('should return correct url format', () => {
+        expect(
+            buildUrl('quote', {
+                receiveCurrency: 'btc',
+                fiatCurrency: 'usd',
+                fiatAmount: 1234,
+            } as BuyTrade),
+        ).toBe('trezorsuitelite://buy/quote?receive=btc&send=usd&fiatAmount=1234');
     });
 });

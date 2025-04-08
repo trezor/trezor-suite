@@ -54,4 +54,9 @@ export enum EventType {
     FirmwareUpdateCancel = 'firmware/firmware_update_cancel',
     FirmwareUpdateFinished = 'firmware/firmware_update_finished',
     FirmwareUpdateStucked = 'firmware/firmware_update_stucked',
+    TradingEnterTrade = 'trading/enter_trade',
+    TradingConfirmTrade = 'trading/confirm_trade',
+    TradingQuoteReceived = 'trading/quote_received',
+    TradingSuccess = 'trading/success',
+    TradingCompareOffers = 'trading/compare_offers',
 }

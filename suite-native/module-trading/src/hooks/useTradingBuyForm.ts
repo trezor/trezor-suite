@@ -108,11 +108,12 @@ const usePaymentMethodChangeEffect = (form: TradingBuyForm) => {
     );
 
     useEffect(() => {
-        const [provider, amountInCrypto, fiatValue, cryptoValue] = form.getValues([
+        const [provider, amountInCrypto, fiatValue, cryptoValue, orderId] = form.getValues([
             'provider',
             'amountInCrypto',
             'fiatValue',
             'cryptoValue',
+            'orderId',
         ]);
 
         if (selectedQuote?.exchange !== provider) {
@@ -132,6 +133,10 @@ const usePaymentMethodChangeEffect = (form: TradingBuyForm) => {
                       )
                     : selectedQuote?.receiveStringAmount;
             form.setValue('cryptoValue', value);
+        }
+
+        if (selectedQuote?.orderId !== orderId) {
+            form.setValue('orderId', selectedQuote?.orderId);
         }
     }, [selectedQuote, isAmountInSats, symbol, form]);
 };
@@ -153,4 +158,12 @@ export const useTradingBuyForm = (): TradingBuyForm => {
     usePaymentMethodChangeEffect(form);
 
     return form;
+};
+
+export const clearTradingBuyFormQuoteData = (form: TradingBuyForm) => {
+    form.setValue('provider', undefined);
+    form.setValue('orderId', undefined);
+    form.setValue('fiatValue', undefined);
+    form.setValue('cryptoValue', undefined);
+    form.setValue('paymentMethod', undefined);
 };

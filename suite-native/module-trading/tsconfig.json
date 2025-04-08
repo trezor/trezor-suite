@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/trading" },
+        { "path": "../analytics" },
         { "path": "../navigation" },
         { "path": "../test-utils" },
         {

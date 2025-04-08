@@ -1,4 +1,4 @@
-import { FormResponse } from 'invity-api';
+import { BuyTrade, FormResponse } from 'invity-api';
 
 import { trezorLogo } from '@suite-common/suite-constants';
 import { xssFilters } from '@trezor/utils';
@@ -107,3 +107,6 @@ export const getSourceForForm = (form: FormResponse['form'] | undefined, backUrl
 
     return null;
 };
+
+export const buildUrl = (type: 'quote' | 'trade', trade: BuyTrade) =>
+    `trezorsuitelite://buy/${type}?receive=${trade.receiveCurrency}&send=${trade.fiatCurrency}&fiatAmount=${trade.fiatAmount}`;

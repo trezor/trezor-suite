@@ -8,6 +8,7 @@ describe('LegalSheet', () => {
             <LegalSheet
                 isVisible
                 onClose={() => {}}
+                onConsent={() => {}}
                 tradeProviderName="TEST_PROVIDER"
                 {...props}
             />,
@@ -24,14 +25,16 @@ describe('LegalSheet', () => {
         ).toBeDefined();
     });
 
-    it('should call onClose callback on Continue button press', () => {
+    it('should call onConsent callback on Continue button press and onClose not to be called', () => {
+        const onConsent = jest.fn();
         const onClose = jest.fn();
-        const { getByText } = renderLegalSheet({ onClose });
+        const { getByText } = renderLegalSheet({ onConsent, onClose });
 
         act(() => {
             fireEvent.press(getByText('Continue'));
         });
 
-        expect(onClose).toHaveBeenCalledTimes(1);
+        expect(onConsent).toHaveBeenCalledTimes(1);
+        expect(onClose).not.toHaveBeenCalled();
     });
 });

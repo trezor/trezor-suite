@@ -5,7 +5,8 @@ import { Translation } from '@suite-native/intl';
 
 export type LegalSheetProps = {
     isVisible: boolean;
-    onClose: () => void;
+    onConsent: () => void;
+    onClose?: () => void;
     tradeProviderName?: string;
 };
 
@@ -21,11 +22,16 @@ const Info = ({ children }: { children: ReactNode }) => (
     </BulletListItem>
 );
 
-export const LegalSheet = ({ isVisible, onClose, tradeProviderName }: LegalSheetProps) => (
+export const LegalSheet = ({
+    isVisible,
+    onConsent = () => {},
+    onClose = () => {},
+    tradeProviderName,
+}: LegalSheetProps) => (
     <BottomSheet
         title={<Translation id="moduleTrading.legalSheet.title" values={{ tradeProviderName }} />}
-        isVisible={isVisible}
         onClose={onClose}
+        isVisible={isVisible}
         collapsable
     >
         <VStack spacing="sp12" paddingHorizontal="sp12">
@@ -66,7 +72,7 @@ export const LegalSheet = ({ isVisible, onClose, tradeProviderName }: LegalSheet
                 </Info>
             </VStack>
             <Box paddingTop="sp40">
-                <Button onPress={onClose}>
+                <Button onPress={onConsent}>
                     <Translation id="moduleTrading.tradingScreen.continueButton" />
                 </Button>
             </Box>

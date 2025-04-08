@@ -1,0 +1,184 @@
+import { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
+import { BuyTradeResponse, FormResponse } from 'invity-api';
+
+import {
+    buyThunks,
+    selectTradingBuyIsLoading,
+    selectTradingBuyQuotes,
+    selectTradingBuySelectedQuote,
+    tradingBuyActions,
+} from '@suite-common/trading';
+import { EventType, analytics } from '@suite-native/analytics';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    StackNavigationProps,
+    StackToStackCompositeNavigationProps,
+    TradingStackParamList,
+    TradingStackRoutes,
+} from '@suite-native/navigation';
+import { useTimer } from '@trezor/react-utils';
+
+import { TradingBuyForm } from '../types';
+import { clearTradingBuyFormQuoteData } from './useTradingBuyForm';
+import { buildUrl, getSourceForForm } from '../utils/tradeFormUtils';
+import { getSelectedSymbolFromBuyForm } from '../utils/tradeableAssetUtils';
+
+type NavigationProps = StackToStackCompositeNavigationProps<
+    TradingStackParamList,
+    TradingStackRoutes.ReceiveAccounts,
+    RootStackParamList
+>;
+
+let consentResolver: ((confirmed: boolean) => void) | null = null;
+
+const waitForConsent = (): Promise<boolean> =>
+    new Promise(resolve => {
+        consentResolver = resolve;
+    });
+
+const resolveConsent = (confirmed: boolean) => {
+    consentResolver?.(confirmed);
+    consentResolver = null;
+};
+
+const reportTradeConfirmation = () => {
+    analytics.report({
+        type: EventType.TradingConfirmTrade,
+        payload: {
+            type: 'buy',
+        },
+    });
+};
+
+export const useTradingBuyFlow = (form: TradingBuyForm) => {
+    const dispatch = useDispatch();
+    const quotes = useSelector(selectTradingBuyQuotes);
+    const selectedQuote = useSelector(selectTradingBuySelectedQuote);
+    const isLoading = useSelector(selectTradingBuyIsLoading);
+
+    const timer = useTimer();
+    const navigation = useNavigation<NavigationProps>();
+    const rootNavigation =
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
+    const [isConsentRequested, setIsConsentRequested] = useState(false);
+
+    const [orderId, receiveAccount] = form.watch(['orderId', 'receiveAccount']);
+
+    const candidateQuote = useMemo(
+        () => (quotes.length > 0 ? quotes.filter(q => q.orderId === orderId)[0] : null),
+        [quotes, orderId],
+    );
+
+    const canProceed = !isLoading && !!candidateQuote;
+
+    const selectReceiveAccount = () => {
+        const selectedNetworkSymbol = getSelectedSymbolFromBuyForm(form);
+        if (selectedNetworkSymbol) {
+            navigation.navigate(TradingStackRoutes.ReceiveAccounts, {
+                symbol: selectedNetworkSymbol,
+            });
+        }
+    };
+
+    const handleConsent = {
+        give: () => {
+            setIsConsentRequested(false);
+            resolveConsent(true);
+        },
+        cancel: () => {
+            setIsConsentRequested(false);
+            resolveConsent(false);
+        },
+        request: async (_provider: string, _cryptoCurrency: string) => {
+            setIsConsentRequested(true);
+
+            return await waitForConsent();
+        },
+    };
+
+    const handleWebview = (formData: FormResponse['form'], returnUrl: string) => {
+        const source = getSourceForForm(formData);
+        if (!source) {
+            return;
+        }
+
+        rootNavigation.navigate(RootStackRoutes.TradingWebView, {
+            closeCallbackUrl: returnUrl,
+            source,
+        });
+    };
+
+    const handleTradeResponse = (response: BuyTradeResponse) => {
+        if (response.trade.paymentId) {
+            dispatch(tradingBuyActions.saveTransactionId(response.trade.paymentId));
+        }
+
+        if (response.tradeForm) {
+            const returnUrl = buildUrl('trade', candidateQuote!);
+            handleWebview(response.tradeForm.form, returnUrl);
+        }
+
+        clearTradingBuyFormQuoteData(form);
+    };
+
+    const confirmTrade = (address: string) => {
+        if (!selectedQuote || !receiveAccount) {
+            return;
+        }
+
+        const returnUrl = buildUrl('trade', selectedQuote);
+
+        dispatch(
+            buyThunks.confirmTradeThunk({
+                address,
+                returnUrl,
+                account: receiveAccount.account,
+                processResponseData: handleTradeResponse,
+                triggerAnalyticsTradeConfirmation: reportTradeConfirmation,
+            }),
+        );
+    };
+
+    const selectQuote = () => {
+        if (!candidateQuote || isLoading) {
+            return;
+        }
+
+        if (!receiveAccount || (!!receiveAccount.account.addresses && !receiveAccount.address)) {
+            selectReceiveAccount();
+
+            return;
+        }
+
+        setIsConsentRequested(false);
+
+        const returnUrl = buildUrl('quote', candidateQuote);
+
+        dispatch(
+            buyThunks.selectQuoteThunk({
+                quote: candidateQuote,
+                timer,
+                returnUrl,
+                loginRequest: formResponse => handleWebview(formResponse, returnUrl),
+                userConsent: handleConsent.request,
+                nextStep: () => {
+                    confirmTrade(
+                        receiveAccount.address?.address ?? receiveAccount.account.descriptor,
+                    );
+                },
+            }),
+        );
+    };
+
+    return {
+        canProceed,
+        selectQuote,
+        isConsentRequested,
+        giveConsent: handleConsent.give,
+        cancelConsent: handleConsent.cancel,
+    };
+};

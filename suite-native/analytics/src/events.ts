@@ -347,4 +347,10 @@ export type SuiteNativeAnalyticsEvent =
               duration: number;
               stuckedType: FirmwareUpdateStuckedState;
           };
+      }
+    | {
+          type: EventType.TradingConfirmTrade;
+          payload: {
+              type: 'buy' | 'sell' | 'exchange';
+          };
       };
