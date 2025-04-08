@@ -5,6 +5,7 @@ import { CryptoId } from 'invity-api';
 import {
     type TradingTradeType,
     type TradingType,
+    getBestRatedQuote,
     parseCryptoId,
     useTradingInfo,
 } from '@suite-common/trading';
@@ -24,7 +25,6 @@ import {
     isTradingExchangeContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import {
-    getBestRatedQuote,
     tradingGetAmountLabels,
     tradingGetRoundedFiatAmount,
     tradingGetSectionActionLabel,

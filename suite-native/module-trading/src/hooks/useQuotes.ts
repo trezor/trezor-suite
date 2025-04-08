@@ -11,9 +11,10 @@ import {
 } from '@suite-common/trading';
 import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 import { SettingsSliceRootState, selectIsAmountInSats } from '@suite-native/settings';
-import { useDebounce, useTimer } from '@trezor/react-utils';
+import { useDebounce } from '@trezor/react-utils';
 
 import { TradingBuyForm } from '../types';
+import { useReloadTimer } from './useReloadTimer';
 import { tradingBuyFormToTradingBuyFormProps } from '../utils/quotesUtils';
 import { getSelectedSymbolFromBuyForm } from '../utils/tradeableAssetUtils';
 
@@ -74,7 +75,7 @@ const useShouldFetchQuotes = (form: TradingBuyForm) => {
 export const useQuotes = (form: TradingBuyForm) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
-    const timer = useTimer();
+    const { timer, shouldReload } = useReloadTimer();
     const promiseRef = useRef<PromiseType | undefined>(undefined);
     const shouldFetchQuotes = useShouldFetchQuotes(form);
 
@@ -87,7 +88,7 @@ export const useQuotes = (form: TradingBuyForm) => {
         selectTradingCoinInfoByCryptoId(state, asset?.cryptoId),
     );
 
-    if (shouldFetchQuotes) {
+    if (shouldFetchQuotes || shouldReload) {
         if (promiseRef.current?.abort) {
             promiseRef.current.abort('Request was replaced by another one.');
         }

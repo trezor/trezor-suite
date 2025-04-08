@@ -204,9 +204,9 @@ export const getTradingPaymentMethods = <T extends TradingTradeBuySellType>(
 export const getTradingQuotesByPaymentMethod = <T extends TradingTradeBuySellType>(
     quotes: TradingTradeMapProps[T][] | undefined,
     currentPaymentMethod: TradingPaymentMethodProps,
-) => {
+): TradingTradeMapProps[T][] | undefined => {
     // TODO: trading - delete after trading will be refactored
-    if (!quotes) return;
+    if (!quotes) return undefined;
 
     return quotes.filter(
         quote => quote.paymentMethod === currentPaymentMethod && quote.error === undefined,

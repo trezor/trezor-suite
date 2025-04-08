@@ -1,6 +1,6 @@
 import type { BuyTrade } from 'invity-api';
 
-import { tradingBuyActions } from '@suite-common/trading';
+import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS, tradingBuyActions } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
 import {
     PreloadedState,
@@ -17,10 +17,20 @@ import { TradingBuyFormValues } from '../../types';
 import { useQuotes } from '../useQuotes';
 import { useTradingBuyForm } from '../useTradingBuyForm';
 
-jest.mock('@trezor/react-utils', () => ({
-    ...jest.requireActual('@trezor/react-utils'),
-    useDebounce: () => (fn: () => unknown) => fn(),
-}));
+let mockTimeSpent: number;
+
+jest.mock('@trezor/react-utils', () => {
+    const originalModule = jest.requireActual('@trezor/react-utils');
+
+    return {
+        ...originalModule,
+        useDebounce: () => (fn: () => unknown) => fn(),
+        useTimer: () => ({
+            ...originalModule.useTimer(),
+            timeSpent: { seconds: mockTimeSpent },
+        }),
+    };
+});
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -54,6 +64,10 @@ describe('useQuotes', () => {
             },
             { store },
         );
+
+    beforeEach(() => {
+        mockTimeSpent = 0;
+    });
 
     it('should query quotes once all required data is selected', async () => {
         const store = await getInitializedStore();
@@ -141,4 +155,31 @@ describe('useQuotes', () => {
             );
         },
     );
+
+    it('should not re-fetch quotes when refetch time elapsed', async () => {
+        const store = await getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result, rerender } = await renderUseQuotes(store);
+        act(() => {
+            result.current.setValue('asset', usdcAsset);
+            result.current.setValue('fiatCurrency', 'usd');
+        });
+        act(() => {
+            result.current.setValue('fiatValue', '100');
+        });
+
+        mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
+        rerender({});
+
+        // 1st call - trading/setBuySelectedReceiveAccount
+        // 2nd call - initial handleRequestThunkMock
+        // 3rd call - re-fetch of handleRequestThunkMock
+        expect(dispatchSpy).toHaveBeenCalledTimes(3);
+        expect(dispatchSpy).toHaveBeenNthCalledWith(
+            3,
+            expect.objectContaining({
+                type: 'handleRequestThunkMock',
+            }),
+        );
+    });
 });

@@ -1,3 +1,4 @@
+import { EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade } from 'invity-api';
 
 import { tradingBuyActions } from '@suite-common/trading';
@@ -15,7 +16,7 @@ import quotes from '../../__fixtures__/quotes.json';
 import { btcAsset, usdcAsset } from '../../__fixtures__/tradeableAssets';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { setBuySelectedReceiveAccount } from '../../tradingSlice';
-import { TradeableAsset } from '../../types';
+import { TradeableAsset, TradingBuyForm } from '../../types';
 import { useTradingBuyForm } from '../useTradingBuyForm';
 
 describe('useTradingBuyForm', () => {
@@ -34,6 +35,17 @@ describe('useTradingBuyForm', () => {
         };
 
         return await initStore(preloadedState);
+    };
+
+    const initFormAndQuotes = (form: TradingBuyForm, store: EnhancedStore) => {
+        act(() => {
+            form.setValue('fiatValue', '10');
+            form.setValue('asset', btcAsset);
+        });
+
+        act(() => {
+            store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+        });
     };
 
     it('should update form value when account in redux store is changed', async () => {
@@ -176,18 +188,11 @@ describe('useTradingBuyForm', () => {
         expect(result.current.getValues('amountInCrypto')).toBe(false);
     });
 
-    it('should set payment method and provider ofter quotes are fetched', async () => {
+    it('should set payment method and provider after quotes are fetched', async () => {
         const store = await getInitializedStore();
         const { result } = await renderUseTradingBuyForm(store);
 
-        act(() => {
-            result.current.setValue('fiatValue', '10');
-            result.current.setValue('asset', btcAsset);
-        });
-
-        act(() => {
-            store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
-        });
+        initFormAndQuotes(result.current, store);
 
         expect(result.current.getValues('provider')).toEqual('cexdirect');
         expect(result.current.getValues('paymentMethod')).toEqual(
@@ -218,14 +223,7 @@ describe('useTradingBuyForm', () => {
         const store = await getInitializedStore();
         const { result } = await renderUseTradingBuyForm(store);
 
-        act(() => {
-            result.current.setValue('fiatValue', '10');
-            result.current.setValue('asset', btcAsset);
-        });
-
-        act(() => {
-            store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
-        });
+        initFormAndQuotes(result.current, store);
 
         act(() => {
             store.dispatch(tradingBuyActions.saveQuotes([]));
@@ -265,14 +263,7 @@ describe('useTradingBuyForm', () => {
         const store = await getInitializedStore();
         const { result } = await renderUseTradingBuyForm(store);
 
-        act(() => {
-            result.current.setValue('fiatValue', '10');
-            result.current.setValue('asset', btcAsset);
-        });
-
-        act(() => {
-            store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
-        });
+        initFormAndQuotes(result.current, store);
 
         act(() => {
             result.current.setValue('paymentMethod', {
@@ -286,7 +277,7 @@ describe('useTradingBuyForm', () => {
         expect(result.current.getValues('fiatValue')).toEqual('10');
     });
 
-    it('should update provider and fiatamount when payment method is changed', async () => {
+    it('should update provider and fiatAmount when payment method is changed', async () => {
         const store = await getInitializedStore();
         const { result } = await renderUseTradingBuyForm(store);
 
@@ -319,15 +310,46 @@ describe('useTradingBuyForm', () => {
         const store = await getInitializedStore(true);
         const { result } = await renderUseTradingBuyForm(store);
 
-        act(() => {
-            result.current.setValue('fiatValue', '10');
-            result.current.setValue('asset', btcAsset);
-        });
-
-        act(() => {
-            store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
-        });
+        initFormAndQuotes(result.current, store);
 
         expect(result.current.getValues('cryptoValue')).toEqual('50000');
+    });
+
+    it('should not change payment method on new quotes', async () => {
+        const store = await getInitializedStore(true);
+        const { result } = await renderUseTradingBuyForm(store);
+
+        initFormAndQuotes(result.current, store);
+        act(() => {
+            result.current.setValue('paymentMethod', {
+                value: 'applePay',
+                label: 'Apple Pay',
+            });
+        });
+
+        act(() => {
+            store.dispatch(tradingBuyActions.saveQuotes([...quotes] as BuyTrade[]));
+        });
+
+        expect(result.current.getValues('paymentMethod')).toEqual({
+            value: 'applePay',
+            label: 'Apple Pay',
+        });
+    });
+
+    it('should change payment method on new quotes when payment method is not available', async () => {
+        const store = await getInitializedStore(true);
+        const { result } = await renderUseTradingBuyForm(store);
+
+        initFormAndQuotes(result.current, store);
+
+        act(() => {
+            store.dispatch(tradingBuyActions.saveQuotes([quotes[0]] as BuyTrade[]));
+        });
+
+        expect(result.current.getValues('paymentMethod')).toEqual({
+            value: 'applePay',
+            label: 'Apple Pay',
+        });
     });
 });

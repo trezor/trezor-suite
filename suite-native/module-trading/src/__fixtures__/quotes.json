@@ -22,7 +22,6 @@
         "receiveStringAmount": "0.0005",
         "rate": 20000,
         "quoteId": "fc12d4c4-9078-4175-becd-90fc58a3145c",
-        "error": "Amount too low, minimum is EUR 25 or BTC 0.002.",
         "exchange": "cexdirect",
         "minFiat": 25,
         "maxFiat": 1000,

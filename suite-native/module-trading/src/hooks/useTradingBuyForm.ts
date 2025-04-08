@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TradingPaymentMethodListProps, selectTradingBuyQuotes } from '@suite-common/trading';
+import {
+    TradingPaymentMethodListProps,
+    getBestRatedQuote,
+    getTradingQuotesByPaymentMethod,
+    selectTradingBuyQuotes,
+} from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
 import { getNetwork } from '@suite-common/wallet-config';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
@@ -77,7 +82,15 @@ const useQuotesChangeEffect = (form: TradingBuyForm) => {
     const quotes = useSelector(selectTradingBuyQuotes);
 
     useEffect(() => {
-        let selectedQuote = quotes.find(({ paymentMethod }) => paymentMethod === 'creditCard');
+        const currentPaymentMethodValue = form.getValues('paymentMethod')?.value;
+
+        let selectedQuote = quotes.find(
+            ({ paymentMethod }) => paymentMethod === currentPaymentMethodValue,
+        );
+
+        if (!selectedQuote) {
+            selectedQuote = quotes.find(({ paymentMethod }) => paymentMethod === 'creditCard');
+        }
 
         if (!selectedQuote) {
             selectedQuote = quotes[0];
@@ -99,9 +112,12 @@ const useQuotesChangeEffect = (form: TradingBuyForm) => {
 const usePaymentMethodChangeEffect = (form: TradingBuyForm) => {
     const paymentMethod = form.watch('paymentMethod');
     const symbol = getSelectedSymbolFromBuyForm(form);
-    const selectedQuote = useSelector(selectTradingBuyQuotes).find(
-        quote => quote.paymentMethod === paymentMethod?.value,
+    const allQuotes = useSelector(selectTradingBuyQuotes);
+    const quotesByPaymentMethod = getTradingQuotesByPaymentMethod<'buy'>(
+        allQuotes,
+        paymentMethod?.value ?? '',
     );
+    const selectedQuote = getBestRatedQuote(quotesByPaymentMethod, 'buy');
 
     const isAmountInSats = useSelector((state: SettingsSliceRootState) =>
         selectIsAmountInSats(state, symbol),
