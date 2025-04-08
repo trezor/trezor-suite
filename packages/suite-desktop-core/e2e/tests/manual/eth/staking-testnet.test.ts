@@ -20,7 +20,6 @@ test.describe.skip('Ethereum staking on testnet', { tag: ['@group=manual'] }, ()
                     '"Stake Ethereum" modal opens',
                     'Confirm that all 4 buttons are clickable and work correctly: "10%", "20%", "50%", "Max"',
                     'Populate ETH and USD input field',
-                    'Confirm that "Clear all" button works correctly',
                     'Change fee between "Normal" and "Custom", confirm that "Custom" fee can be “hanged',
                     'Click Contin“e button',
                     '"Confirm entry“period" modal ”pens',
