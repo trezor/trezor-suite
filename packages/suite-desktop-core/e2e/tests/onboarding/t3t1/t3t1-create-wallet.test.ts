@@ -1,5 +1,9 @@
 import { SeedType } from '../../../support/enums/seedType';
-import { TestAnnotationType, TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
+import {
+    TestAnnotationType,
+    TestCategory,
+    TestPriority,
+} from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 
 test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] }, () => {
@@ -12,69 +16,68 @@ test.describe('Onboarding - create wallet', { tag: ['@group=device-management'] 
         await onboardingPage.disableNecessaryFirmwareChecks();
     });
 
-    test('Success (Shamir backup)', {
-        annotation: [
-            {
-                type: TestAnnotationType.TestCase,
-                description: 'Verify that a user can successfully create a wallet during the onboarding process.',
-            },
-            {
-                type: TestAnnotationType.Category,
-                description: TestCategory.Onboarding,
-            },
-            {
-                type: TestAnnotationType.Priority,
-                description: TestPriority.Critical,
-            },
-            {
-                type: TestAnnotationType.Stream,
-                description: 'TODO',
-            },
-        ]
-    }, async ({
-        page,
-        onboardingPage,
-        devicePrompt,
-        analyticsSection,
-        trezorUserEnvLink,
-    }) => {
-        await analyticsSection.passThroughAnalytics();
+    test(
+        'Success (Shamir backup)',
+        {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description:
+                        'Verify that a user can successfully create a wallet during the onboarding process.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Onboarding,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Critical,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
+                },
+            ],
+        },
+        async ({ page, onboardingPage, devicePrompt, analyticsSection, trezorUserEnvLink }) => {
+            await analyticsSection.passThroughAnalytics();
 
-        // Device onboarding steps
-        await onboardingPage.firmware.continueThroughFirmware();
-        await onboardingPage.passThroughAuthenticityCheck();
-        await page.waitForTimeout(500);
-        await onboardingPage.tutorial.skip();
+            // Device onboarding steps
+            await onboardingPage.firmware.continueThroughFirmware();
+            await onboardingPage.passThroughAuthenticityCheck();
+            await page.waitForTimeout(500);
+            await onboardingPage.tutorial.skip();
 
-        // Create wallet with Shamir backup
-        await onboardingPage.createWalletButton.click();
-        await onboardingPage.selectSeedType(SeedType.Advanced);
+            // Create wallet with Shamir backup
+            await onboardingPage.createWalletButton.click();
+            await onboardingPage.selectSeedType(SeedType.Advanced);
 
-        // Accept ToS
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+            // Accept ToS
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
 
-        // Confirm wallet created
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+            // Confirm wallet created
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
 
-        onboardingPage.createBackupButton.click();
+            onboardingPage.createBackupButton.click();
 
-        // Create backup with Shamir shares and threshold
-        const shares = 3;
-        const threshold = 2;
-        await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
+            // Create backup with Shamir shares and threshold
+            const shares = 3;
+            const threshold = 2;
+            await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
 
-        // Set PIN
-        await onboardingPage.pin.setPinButton.click();
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.inputEmu('12');
-        await trezorUserEnvLink.inputEmu('12');
+            // Set PIN
+            await onboardingPage.pin.setPinButton.click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
+            await trezorUserEnvLink.inputEmu('12');
+            await trezorUserEnvLink.inputEmu('12');
 
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
 
-        await onboardingPage.pin.continueButton.click();
-    });
+            await onboardingPage.pin.continueButton.click();
+        },
+    );
 });

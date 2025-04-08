@@ -54,7 +54,7 @@ const config: PlaywrightTestConfig = defineConfig<CurrentsFixtures, CurrentsWork
     reportSlowTests: null,
     reporter: process.env.GITHUB_ACTION
         ? [['@currents/playwright']]
-        : [['list'], ['html', { open: 'never' }], ['./support/report/markdownReporter.ts']],
+        : [['list'], ['html', { open: 'never' }]],
     timeout: getTimeout(),
     outputDir: path.join(__dirname, 'test-results'),
     snapshotPathTemplate: 'snapshots/{projectName}/{testFilePath}/{arg}{ext}',

@@ -1,4 +1,8 @@
-import { TestAnnotationType, TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
+import {
+    TestAnnotationType,
+    TestCategory,
+    TestPriority,
+} from '../../../support/enums/testAnnotations';
 import { test } from '../../../support/fixtures';
 import { formatTestSteps } from '../../../support/stepsFormat';
 

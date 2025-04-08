@@ -1,4 +1,8 @@
-import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
+import {
+    TestAnnotationType,
+    TestCategory,
+    TestPriority,
+} from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
@@ -8,7 +12,9 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
         await settingsPage.navigateTo('device');
     });
 
-    test('change all possible device settings', {
+    test(
+        'change all possible device settings',
+        {
             annotation: [
                 {
                     type: TestAnnotationType.TestCase,
@@ -26,31 +32,28 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
                     type: TestAnnotationType.Stream,
                     description: 'TODO',
                 },
-            ]
-        }, async ({
-        page,
-        settingsPage,
-        devicePrompt,
-        trezorUserEnvLink,
-    }) => {
-        await test.step('Verify firmware modal', async () => {
-            await page.getByTestId('@settings/device/update-button').click();
-            await page.getByTestId('@modal/close-button').click();
-        });
+            ],
+        },
+        async ({ page, settingsPage, devicePrompt, trezorUserEnvLink }) => {
+            await test.step('Verify firmware modal', async () => {
+                await page.getByTestId('@settings/device/update-button').click();
+                await page.getByTestId('@modal/close-button').click();
+            });
 
-        await test.step("Change and verify device's name", async () => {
-            const newDeviceName = 'TREVOR!';
-            await settingsPage.changeDeviceName(newDeviceName);
-            await expect(page.getByTestId('@menu/device/label')).toHaveText(newDeviceName);
-        });
+            await test.step("Change and verify device's name", async () => {
+                const newDeviceName = 'TREVOR!';
+                await settingsPage.changeDeviceName(newDeviceName);
+                await expect(page.getByTestId('@menu/device/label')).toHaveText(newDeviceName);
+            });
 
-        await test.step('Change display rotation', async () => {
-            await page.getByTestId('select-bar/East').click();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
-            await devicePrompt.confirmOnDevicePromptIsHidden();
-        });
-    });
+            await test.step('Change display rotation', async () => {
+                await page.getByTestId('select-bar/East').click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.pressYes();
+                await devicePrompt.confirmOnDevicePromptIsHidden();
+            });
+        },
+    );
 
     test('Device Wipe', async ({ page, trezorUserEnvLink }) => {
         await page.getByTestId('@settings/device/open-wipe-modal-button').click();
@@ -61,28 +64,33 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
         //TODO: Any verification?
     });
 
-    test('Can change homescreen background in firmware >= 2.5.4', {
-        annotation: [
-            {
-                type: TestAnnotationType.TestCase,
-                description: 'Verifies that a user can change homescreen background in firmware >= 2.5.4',
-            },
-            {
-                type: TestAnnotationType.Category,
-                description: TestCategory.Settings,
-            },
-            {
-                type: TestAnnotationType.Priority,
-                description: TestPriority.Low,
-            },
-            {
-                type: TestAnnotationType.Stream,
-                description: 'TODO',
-            },
-        ]
-    }, async ({ settingsPage }) => {
-        await settingsPage.changeDeviceBackground('original_t2t1');
-    });
+    test(
+        'Can change homescreen background in firmware >= 2.5.4',
+        {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description:
+                        'Verifies that a user can change homescreen background in firmware >= 2.5.4',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Settings,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Low,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
+                },
+            ],
+        },
+        async ({ settingsPage }) => {
+            await settingsPage.changeDeviceBackground('original_t2t1');
+        },
+    );
 
     test.describe(
         'T2T1 - older firmware < 2.5.4',

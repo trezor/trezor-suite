@@ -1,4 +1,9 @@
-import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
+import {
+    TestAnnotationType,
+    TestCategory,
+    TestPriority,
+    TestStream,
+} from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
@@ -8,7 +13,9 @@ test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
         await settingsPage.navigateTo('device');
     });
 
-    test('enable pin', {
+    test(
+        'enable pin',
+        {
             annotation: [
                 {
                     type: TestAnnotationType.TestCase,
@@ -26,18 +33,20 @@ test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
                     type: TestAnnotationType.Stream,
                     description: TestStream.Foundation,
                 },
-            ]
-        }, async ({ page, devicePrompt, trezorUserEnvLink, trezorInput }) => {
-        await page.getByTestId('@settings/device/pin-switch').click();
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+            ],
+        },
+        async ({ page, devicePrompt, trezorUserEnvLink, trezorInput }) => {
+            await page.getByTestId('@settings/device/pin-switch').click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
 
-        const pinEntryNumber = '1';
-        await trezorInput.enterPinOnBlindMatrix(pinEntryNumber);
-        await expect(page.getByTestId('@pin/input/1')).toBeVisible();
-        await trezorInput.enterPinOnBlindMatrix(pinEntryNumber);
-        await expect(page.getByTestId('@toast/pin-changed')).toBeVisible();
-    });
+            const pinEntryNumber = '1';
+            await trezorInput.enterPinOnBlindMatrix(pinEntryNumber);
+            await expect(page.getByTestId('@pin/input/1')).toBeVisible();
+            await trezorInput.enterPinOnBlindMatrix(pinEntryNumber);
+            await expect(page.getByTestId('@toast/pin-changed')).toBeVisible();
+        },
+    );
 
     test('pin mismatch', async ({ page, devicePrompt, trezorUserEnvLink }) => {
         await page.getByTestId('@settings/device/pin-switch').click();
@@ -59,28 +68,33 @@ test.describe('T1B1 - Device settings', { tag: ['@group=settings'] }, () => {
         await trezorUserEnvLink.pressYes();
     });
 
-    test('Change homescreen', {
-        annotation: [
-            {
-                type: TestAnnotationType.TestCase,
-                description: 'Verifies that a user can change homescreen background on T1B1 device.',
-            },
-            {
-                type: TestAnnotationType.Category,
-                description: TestCategory.Settings,
-            },
-            {
-                type: TestAnnotationType.Priority,
-                description: TestPriority.High,
-            },
-            {
-                type: TestAnnotationType.Stream,
-                description: 'TODO',
-            },
-        ]
-    }, async ({ settingsPage }) => {
-        await settingsPage.changeDeviceBackground('nyancat');
-    });
+    test(
+        'Change homescreen',
+        {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description:
+                        'Verifies that a user can change homescreen background on T1B1 device.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Settings,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.High,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
+                },
+            ],
+        },
+        async ({ settingsPage }) => {
+            await settingsPage.changeDeviceBackground('nyancat');
+        },
+    );
 
     // TODO: pin caching immediately after it is set
     // TODO: keyboard handling

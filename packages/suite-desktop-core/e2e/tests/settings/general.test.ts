@@ -1,6 +1,11 @@
 import { EventType } from '@trezor/suite-analytics';
 
-import { TestAnnotationType, TestCategory, TestPriority, TestStream } from '../../support/enums/testAnnotations';
+import {
+    TestAnnotationType,
+    TestCategory,
+    TestPriority,
+    TestStream,
+} from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
 import { ExtractByEventType } from '../../support/types';
@@ -16,100 +21,100 @@ test.describe('General settings', { tag: ['@group=settings'] }, () => {
         await analytics.interceptAnalytics();
     });
 
-    test('Change settings on "general settings" page', {
-        annotation: [
-            {
-                type: TestAnnotationType.TestCase,
-                description: 'Verifies that a user can change settings on the "General Settings" page.',
-            },
-            {
-                type: TestAnnotationType.Category,
-                description: TestCategory.Settings,
-            },
-            {
-                type: TestAnnotationType.Priority,
-                description: TestPriority.Medium,
-            },
-            {
-                type: TestAnnotationType.Stream,
-                description: TestStream.Foundation,
-            },
-        ]
-    }, async ({
-        analytics,
-        settingsPage,
-        dashboardPage,
-        page,
-    }) => {
-        await test.step('Check default currency is USD', async () => {
-            await expect(page.getByTestId('@dashboard/index')).toContainText('$0.00');
-        });
+    test(
+        'Change settings on "general settings" page',
+        {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description:
+                        'Verifies that a user can change settings on the "General Settings" page.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Settings,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Medium,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: TestStream.Foundation,
+                },
+            ],
+        },
+        async ({ analytics, settingsPage, dashboardPage, page }) => {
+            await test.step('Check default currency is USD', async () => {
+                await expect(page.getByTestId('@dashboard/index')).toContainText('$0.00');
+            });
 
-        await test.step('Change fiat currency to EUR', async () => {
-            await settingsPage.navigateTo('application');
-            await page.getByTestId('@settings/fiat-select/input').click();
-            await page.getByTestId(`@settings/fiat-select/option/${Currency.EUR}`).click();
+            await test.step('Change fiat currency to EUR', async () => {
+                await settingsPage.navigateTo('application');
+                await page.getByTestId('@settings/fiat-select/input').click();
+                await page.getByTestId(`@settings/fiat-select/option/${Currency.EUR}`).click();
 
-            const settingsGeneralChangeFiatEvent = analytics.findAnalyticsEventByType<
-                ExtractByEventType<EventType.SettingsGeneralChangeFiat>
-            >(EventType.SettingsGeneralChangeFiat);
-            expect(settingsGeneralChangeFiatEvent.fiat).toBe('eur');
-        });
+                const settingsGeneralChangeFiatEvent = analytics.findAnalyticsEventByType<
+                    ExtractByEventType<EventType.SettingsGeneralChangeFiat>
+                >(EventType.SettingsGeneralChangeFiat);
+                expect(settingsGeneralChangeFiatEvent.fiat).toBe('eur');
+            });
 
-        await test.step('Check currency changed to EUR', async () => {
-            await dashboardPage.navigateTo();
-            await expect(page.getByTestId('@dashboard/index')).toContainText('€0.00');
-        });
+            await test.step('Check currency changed to EUR', async () => {
+                await dashboardPage.navigateTo();
+                await expect(page.getByTestId('@dashboard/index')).toContainText('€0.00');
+            });
 
-        await test.step('Change theme mode to Dark', async () => {
-            await settingsPage.navigateTo('application');
-            await settingsPage.changeTheme(Theme.Dark);
+            await test.step('Change theme mode to Dark', async () => {
+                await settingsPage.navigateTo('application');
+                await settingsPage.changeTheme(Theme.Dark);
 
-            const settingsGeneralChangeThemeEvent = analytics.findAnalyticsEventByType<
-                ExtractByEventType<EventType.SettingsGeneralChangeTheme>
-            >(EventType.SettingsGeneralChangeTheme);
-            expect(settingsGeneralChangeThemeEvent.platformTheme).toBe(Theme.Light);
-            expect(settingsGeneralChangeThemeEvent.previousTheme).toBe(Theme.Light);
-            expect(settingsGeneralChangeThemeEvent.previousAutodetectTheme).toBe('true');
-            expect(settingsGeneralChangeThemeEvent.autodetectTheme).toBe('false');
-            expect(settingsGeneralChangeThemeEvent.theme).toBe(Theme.Dark);
-        });
+                const settingsGeneralChangeThemeEvent = analytics.findAnalyticsEventByType<
+                    ExtractByEventType<EventType.SettingsGeneralChangeTheme>
+                >(EventType.SettingsGeneralChangeTheme);
+                expect(settingsGeneralChangeThemeEvent.platformTheme).toBe(Theme.Light);
+                expect(settingsGeneralChangeThemeEvent.previousTheme).toBe(Theme.Light);
+                expect(settingsGeneralChangeThemeEvent.previousAutodetectTheme).toBe('true');
+                expect(settingsGeneralChangeThemeEvent.autodetectTheme).toBe('false');
+                expect(settingsGeneralChangeThemeEvent.theme).toBe(Theme.Dark);
+            });
 
-        await test.step('Check suite version is visible', async () => {
-            await expect(page.getByTestId('@settings/suite-version')).toBeVisible();
-        });
+            await test.step('Check suite version is visible', async () => {
+                await expect(page.getByTestId('@settings/suite-version')).toBeVisible();
+            });
 
-        await test.step('Change language to Spanish', async () => {
-            await settingsPage.changeLanguage(Language.Spanish);
+            await test.step('Change language to Spanish', async () => {
+                await settingsPage.changeLanguage(Language.Spanish);
 
-            const settingsGeneralChangeLanguageEvent = analytics.findAnalyticsEventByType<
-                ExtractByEventType<EventType.SettingsGeneralChangeLanguage>
-            >(EventType.SettingsGeneralChangeLanguage);
-            expect(settingsGeneralChangeLanguageEvent.language).toBe('es');
-            expect(settingsGeneralChangeLanguageEvent.previousLanguage).toBe('en');
-            expect(settingsGeneralChangeLanguageEvent.autodetectLanguage).toBe('false');
-            expect(settingsGeneralChangeLanguageEvent.previousAutodetectLanguage).toBe('true');
-            expect(settingsGeneralChangeLanguageEvent.platformLanguages).toBe('en-US');
-        });
+                const settingsGeneralChangeLanguageEvent = analytics.findAnalyticsEventByType<
+                    ExtractByEventType<EventType.SettingsGeneralChangeLanguage>
+                >(EventType.SettingsGeneralChangeLanguage);
+                expect(settingsGeneralChangeLanguageEvent.language).toBe('es');
+                expect(settingsGeneralChangeLanguageEvent.previousLanguage).toBe('en');
+                expect(settingsGeneralChangeLanguageEvent.autodetectLanguage).toBe('false');
+                expect(settingsGeneralChangeLanguageEvent.previousAutodetectLanguage).toBe('true');
+                expect(settingsGeneralChangeLanguageEvent.platformLanguages).toBe('en-US');
+            });
 
-        await test.step('Toggle Data usage analytics', async () => {
-            await expect(
-                page.getByTestId('@analytics/toggle-switch').locator('input'),
-            ).toBeChecked();
-            await page.getByTestId('@analytics/toggle-switch').click({ force: true });
-            await expect(
-                page.getByTestId('@analytics/toggle-switch').locator('input'),
-            ).not.toBeChecked();
+            await test.step('Toggle Data usage analytics', async () => {
+                await expect(
+                    page.getByTestId('@analytics/toggle-switch').locator('input'),
+                ).toBeChecked();
+                await page.getByTestId('@analytics/toggle-switch').click({ force: true });
+                await expect(
+                    page.getByTestId('@analytics/toggle-switch').locator('input'),
+                ).not.toBeChecked();
 
-            const settingsAnalyticsEvent = analytics.findAnalyticsEventByType<
-                ExtractByEventType<EventType.SettingsAnalytics>
-            >(EventType.SettingsAnalytics);
-            expect(settingsAnalyticsEvent.value).toBe('false');
-        });
+                const settingsAnalyticsEvent = analytics.findAnalyticsEventByType<
+                    ExtractByEventType<EventType.SettingsAnalytics>
+                >(EventType.SettingsAnalytics);
+                expect(settingsAnalyticsEvent.value).toBe('false');
+            });
 
-        // TODO: enable this after https://github.com/trezor/trezor-suite/issues/13262 is fixed
-        // //reset app button - wipes db, reloads app, shows onboarding again
-        // await page.getByTestId('@settings/reset-app-button').click({ force: true });
-        // await expect(page.getByTestId('@onboarding/welcome')).toBeVisible({ timeout: 20000 });
-    });
+            // TODO: enable this after https://github.com/trezor/trezor-suite/issues/13262 is fixed
+            // //reset app button - wipes db, reloads app, shows onboarding again
+            // await page.getByTestId('@settings/reset-app-button').click({ force: true });
+            // await expect(page.getByTestId('@onboarding/welcome')).toBeVisible({ timeout: 20000 });
+        },
+    );
 });

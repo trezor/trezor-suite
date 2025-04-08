@@ -1,4 +1,8 @@
-import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
+import {
+    TestAnnotationType,
+    TestCategory,
+    TestPriority,
+} from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
@@ -7,7 +11,9 @@ test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
         await onboardingPage.completeOnboarding();
     });
 
-    test('BTC blockbook discovery', {
+    test(
+        'BTC blockbook discovery',
+        {
             annotation: [
                 {
                     type: TestAnnotationType.TestCase,
@@ -25,16 +31,18 @@ test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
                     type: TestAnnotationType.Stream,
                     description: 'TODO',
                 },
-            ]
-        }, async ({ settingsPage, dashboardPage }) => {
-        const btcBlockbook = 'https://btc1.trezor.io';
-        await settingsPage.navigateTo('coins');
-        await settingsPage.coins.openNetworkAdvanceSettings('btc');
-        await settingsPage.coins.changeBackend('blockbook', btcBlockbook);
-        await dashboardPage.navigateTo();
-        await expect(dashboardPage.graph).toBeVisible();
-        //TODO: Improve verification
-    });
+            ],
+        },
+        async ({ settingsPage, dashboardPage }) => {
+            const btcBlockbook = 'https://btc1.trezor.io';
+            await settingsPage.navigateTo('coins');
+            await settingsPage.coins.openNetworkAdvanceSettings('btc');
+            await settingsPage.coins.changeBackend('blockbook', btcBlockbook);
+            await dashboardPage.navigateTo();
+            await expect(dashboardPage.graph).toBeVisible();
+            //TODO: Improve verification
+        },
+    );
 
     test('LTC blockbook discovery', async ({ page, settingsPage, dashboardPage }) => {
         const ltcBlockbook = 'https://ltc1.trezor.io';

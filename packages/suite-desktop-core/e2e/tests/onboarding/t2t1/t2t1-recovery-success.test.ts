@@ -1,4 +1,8 @@
-import { TestAnnotationType, TestCategory, TestPriority } from '../../../support/enums/testAnnotations';
+import {
+    TestAnnotationType,
+    TestCategory,
+    TestPriority,
+} from '../../../support/enums/testAnnotations';
 import { expect, test } from '../../../support/fixtures';
 
 test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-management'] }, () => {
@@ -12,57 +16,58 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@group=device-managem
         analyticsSection.passThroughAnalytics();
     });
 
-    test('Successfully recovers wallet from mnemonic', {
-        annotation: [
-            {
-                type: TestAnnotationType.TestCase,
-                description: 'Verify that a user can successfully recover a wallet from a mnemonic during the onboarding process.',
-            },
-            {
-                type: TestAnnotationType.Category,
-                description: TestCategory.Onboarding,
-            },
-            {
-                type: TestAnnotationType.Priority,
-                description: TestPriority.Critical,
-            },
-            {
-                type: TestAnnotationType.Stream,
-                description: 'TODO',
-            },
-        ]
-    }, async ({
-        onboardingPage,
-        devicePrompt,
-        trezorUserEnvLink,
-    }) => {
-        // Start wallet recovery process and confirm on device
-        await onboardingPage.firmware.continueThroughFirmware();
-        await onboardingPage.recoverWalletButton.click();
-        await onboardingPage.startRecoveryButton.click();
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+    test(
+        'Successfully recovers wallet from mnemonic',
+        {
+            annotation: [
+                {
+                    type: TestAnnotationType.TestCase,
+                    description:
+                        'Verify that a user can successfully recover a wallet from a mnemonic during the onboarding process.',
+                },
+                {
+                    type: TestAnnotationType.Category,
+                    description: TestCategory.Onboarding,
+                },
+                {
+                    type: TestAnnotationType.Priority,
+                    description: TestPriority.Critical,
+                },
+                {
+                    type: TestAnnotationType.Stream,
+                    description: 'TODO',
+                },
+            ],
+        },
+        async ({ onboardingPage, devicePrompt, trezorUserEnvLink }) => {
+            // Start wallet recovery process and confirm on device
+            await onboardingPage.firmware.continueThroughFirmware();
+            await onboardingPage.recoverWalletButton.click();
+            await onboardingPage.startRecoveryButton.click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
 
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.selectNumOfWordsEmu(12);
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.selectNumOfWordsEmu(12);
 
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
 
-        // Input mnemonic
-        for (let i = 0; i < 12; i++) {
-            await trezorUserEnvLink.inputEmu('all');
-        }
+            // Input mnemonic
+            for (let i = 0; i < 12; i++) {
+                await trezorUserEnvLink.inputEmu('all');
+            }
 
-        // Confirm recovery success
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+            // Confirm recovery success
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await trezorUserEnvLink.pressYes();
 
-        // Finalize recovery, skip pin, and check success
-        await onboardingPage.continueRecoveryButton.click();
-        await onboardingPage.pin.skip();
-        await onboardingPage.continueCoinsButton.click();
-        await expect(onboardingPage.finalTitle).toBeVisible();
-        await expect(onboardingPage.finalTitle).toContainText('Setup complete!');
-    });
+            // Finalize recovery, skip pin, and check success
+            await onboardingPage.continueRecoveryButton.click();
+            await onboardingPage.pin.skip();
+            await onboardingPage.continueCoinsButton.click();
+            await expect(onboardingPage.finalTitle).toBeVisible();
+            await expect(onboardingPage.finalTitle).toContainText('Setup complete!');
+        },
+    );
 });

@@ -1,11 +1,15 @@
-import { TestAnnotationType, TestCategory, TestPriority } from '../../support/enums/testAnnotations';
+import {
+    TestAnnotationType,
+    TestCategory,
+    TestPriority,
+} from '../../support/enums/testAnnotations';
 import { expect, test } from '../../support/fixtures';
 
 test.use({ startEmulator: false });
 
 test(
     'Join early access',
-    { 
+    {
         tag: ['@group=settings', '@desktopOnly'],
         annotation: [
             {
@@ -24,7 +28,7 @@ test(
                 type: TestAnnotationType.Stream,
                 description: 'TODO',
             },
-        ]
+        ],
     },
     async ({ settingsPage }) => {
         await settingsPage.navigateTo('application');
