@@ -15,7 +15,7 @@ const firmwareStep: Step = {
 const backupStep: Step = {
     id: STEP.ID_BACKUP_STEP,
     path: [],
-    stepGroup: 1,
+    stepGroup: 'wallet',
     supportedModels: [
         DeviceModelInternal.T2B1,
         { model: DeviceModelInternal.T3T1, minFwVersion: '2.8.0' },

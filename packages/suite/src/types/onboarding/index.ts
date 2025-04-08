@@ -10,14 +10,16 @@ type ModelWithFirmwareVersion = {
     minFwVersion: FirmwareVersionString;
 };
 
+export type ProgressBarStepKey = 'device' | 'wallet' | 'pin' | 'coins' | 'final';
+
 export type ProgressBarStep = {
-    key: string;
+    key: ProgressBarStepKey;
     labelTranslationId?: TranslationKey;
 };
 
 export type Step = {
     id: AnyStepId;
-    stepGroup: number | undefined;
+    stepGroup: ProgressBarStepKey | undefined;
     prerequisites?: (PrerequisiteType | 'device-different')[];
     path?: AnyPath[];
     supportedModels?: (DeviceModelInternal | ModelWithFirmwareVersion)[];

@@ -44,7 +44,7 @@ export const progressBarSteps: ProgressBarStep[] = [
 export const steps: Step[] = [
     {
         id: STEP.ID_FIRMWARE_STEP,
-        stepGroup: 0,
+        stepGroup: 'device',
         prerequisites: [
             'transport-bridge',
             'device-seedless',
@@ -58,7 +58,7 @@ export const steps: Step[] = [
     },
     {
         id: STEP.ID_AUTHENTICATE_DEVICE_STEP,
-        stepGroup: 0,
+        stepGroup: 'device',
         supportedModels: [
             DeviceModelInternal.T2B1,
             DeviceModelInternal.T3B1,
@@ -69,7 +69,7 @@ export const steps: Step[] = [
     },
     {
         id: STEP.ID_TUTORIAL_STEP,
-        stepGroup: 0,
+        stepGroup: 'device',
         supportedModels: [
             DeviceModelInternal.T2B1,
             DeviceModelInternal.T3B1,
@@ -80,19 +80,19 @@ export const steps: Step[] = [
     },
     {
         id: STEP.ID_CREATE_OR_RECOVER,
-        stepGroup: 1,
+        stepGroup: 'wallet',
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE],
         prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
     },
     {
         id: STEP.ID_RESET_DEVICE_STEP,
-        stepGroup: 1,
+        stepGroup: 'wallet',
         path: [STEP.PATH_CREATE],
         prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
     },
     {
         id: STEP.ID_RECOVERY_STEP,
-        stepGroup: 1,
+        stepGroup: 'wallet',
         path: [STEP.PATH_RECOVERY],
         prerequisites: [
             ...commonPrerequisites,
@@ -101,30 +101,30 @@ export const steps: Step[] = [
     },
     {
         id: STEP.ID_SECURITY_STEP,
-        stepGroup: 1,
+        stepGroup: 'wallet',
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE],
         prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
     },
     {
         id: STEP.ID_BACKUP_STEP,
-        stepGroup: 1,
+        stepGroup: 'wallet',
         path: [STEP.PATH_CREATE],
         prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
     },
     {
         id: STEP.ID_SET_PIN_STEP,
-        stepGroup: 2,
+        stepGroup: 'pin',
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE],
         prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
     },
     {
         id: STEP.ID_COINS_STEP,
-        stepGroup: 3,
+        stepGroup: 'coins',
         prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
     },
     {
         id: STEP.ID_FINAL_STEP,
-        stepGroup: 4,
+        stepGroup: 'final',
         prerequisites: [...commonPrerequisites, ...afterInitializePrerequisites],
     },
 ];

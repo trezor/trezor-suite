@@ -6,6 +6,7 @@ import { Icon, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import { progressBarSteps } from '../../config/onboarding/steps';
+import { ProgressBarStepKey } from '../../types/onboarding';
 import { Translation } from '../suite';
 
 const ProgressBarWrapper = styled.div`
@@ -91,20 +92,25 @@ const Divider = styled.div`
 `;
 
 interface OnboardingProgressBarProps {
-    activeStep?: number;
+    activeStepGroup?: ProgressBarStepKey;
     className?: string;
 }
 
-export const OnboardingProgressBar = ({ activeStep, className }: OnboardingProgressBarProps) => {
+export const OnboardingProgressBar = ({
+    activeStepGroup,
+    className,
+}: OnboardingProgressBarProps) => {
     const theme = useTheme();
 
     const lastStepNumber = progressBarSteps.length - 1;
+    const indexOfActiveStep = progressBarSteps.findIndex(({ key }) => key === activeStepGroup);
 
     return (
         <ProgressBarWrapper className={className}>
             {progressBarSteps.map(({ key, labelTranslationId }, index) => {
-                const stepCompleted = (activeStep ?? 0) > index;
-                const stepActive = index === activeStep;
+                // if active step was not found (-1) because activeStepGroup is undefined, no step will be considered completed
+                const stepCompleted = indexOfActiveStep > index;
+                const stepActive = index === indexOfActiveStep;
 
                 return (
                     <Fragment key={key}>

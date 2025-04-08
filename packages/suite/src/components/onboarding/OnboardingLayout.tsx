@@ -151,7 +151,9 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                                     </LogoHeaderRow>
 
                                     <ProgressBarRow>
-                                        <OnboardingProgressBar activeStep={activeStep.stepGroup} />
+                                        <OnboardingProgressBar
+                                            activeStepGroup={activeStep.stepGroup}
+                                        />
                                     </ProgressBarRow>
                                 </Header>
 
