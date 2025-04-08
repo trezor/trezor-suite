@@ -28,7 +28,8 @@ export const init: ModuleInit = () => {
 
     const getBluetoothProcess = async () => {
         if (!bluetoothProcess) {
-            const [port] = await getFreePort();
+            // TODO: for debug purposes
+            const port = await getFreePort().then(_p => 21327);
             bluetoothProcess = new BluetoothProcess(port);
         }
 

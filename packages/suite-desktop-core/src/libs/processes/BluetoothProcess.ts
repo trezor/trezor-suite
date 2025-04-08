@@ -1,4 +1,5 @@
 import { isDevEnv } from '@suite-common/suite-utils';
+import { isWindows } from '@trezor/env-utils';
 
 import { BaseProcess, Status } from './BaseProcess';
 import { getSwitchValue } from '../process-switches';
@@ -9,6 +10,7 @@ export class BluetoothProcess extends BaseProcess {
     constructor(port = 21327) {
         super('bluetooth', 'trezor-bluetooth', {
             autoRestart: 0,
+            stdio: isWindows() ? undefined : 'inherit',
         });
         this.port = port;
     }
