@@ -85,6 +85,14 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
             ...settings,
         });
 
+        // manifest is required in all implementations. for core-in-suite-desktop, also manifest.appName is required
+        if (!newSettings.manifest || !newSettings.manifest.appName) {
+            throw ERRORS.TypedError(
+                'Init_ManifestMissing',
+                'Manifest is missing or manifest.appName is not set',
+            );
+        }
+
         // defaults
         if (!newSettings.transports?.length) {
             newSettings.transports = ['BridgeTransport', 'WebUsbTransport'];
