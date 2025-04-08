@@ -5328,6 +5328,10 @@ export default defineMessages({
         id: 'TR_COULD_NOT_RETRIEVE_CHANGELOG',
         defaultMessage: 'Could not retrieve the changelog',
     },
+    TR_CHANGELOG_ON_GITHUB: {
+        id: 'TR_CHANGELOG_ON_GITHUB',
+        defaultMessage: 'Show changelog on GitHub',
+    },
     TR_NAV_TRADE: {
         id: 'TR_NAV_TRADE',
         defaultMessage: 'Trade',

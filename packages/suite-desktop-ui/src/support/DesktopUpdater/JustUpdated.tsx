@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Card, Markdown, NewModal } from '@trezor/components';
+import { useTheme } from 'styled-components';
 
-import { Translation, TrezorLink } from 'src/components/suite';
+import { Card, NewModal, Row } from '@trezor/components';
+import { spacings } from '@trezor/theme';
+
+import { MarkdownWithComponents, Translation, TrezorLink } from 'src/components/suite';
+import { getReleaseUrl } from 'src/services/github';
 
 interface AvailableProps {
     onCancel: () => void;
@@ -10,7 +14,7 @@ interface AvailableProps {
 
 export const JustUpdated = ({ onCancel }: AvailableProps) => {
     const [changelog, setChangelog] = useState<string | null>(null);
-
+    const theme = useTheme();
     const suiteCurrentVersion = process.env.VERSION || '';
 
     const getReleaseNotes = useCallback(async () => {
@@ -40,28 +44,23 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
                 </>
             }
         >
-            <Card overflow="auto" label={<Translation id="TR_UPDATE_MODAL_WHATS_NEW" />}>
+            <Card
+                overflow="auto"
+                label={
+                    <Row justifyContent="space-between" gap={spacings.xs}>
+                        <Translation id="TR_UPDATE_MODAL_WHATS_NEW" />
+                        <TrezorLink
+                            href={getReleaseUrl(suiteCurrentVersion)}
+                            typographyStyle="hint"
+                            color={theme.textSubdued}
+                        >
+                            <Translation id="TR_CHANGELOG_ON_GITHUB" />
+                        </TrezorLink>
+                    </Row>
+                }
+            >
                 {changelog !== null ? (
-                    <Markdown
-                        components={{
-                            a: ({ children, href }) => {
-                                if (!href) {
-                                    return null;
-                                }
-
-                                // Support for both http(s) links and Tor (.onion) addresses
-                                // All links in release notes are external, so we use TrezorLink
-                                // which handles opening links in external browser
-                                return (
-                                    <TrezorLink variant="underline" href={href}>
-                                        {children}
-                                    </TrezorLink>
-                                );
-                            },
-                        }}
-                    >
-                        {changelog}
-                    </Markdown>
+                    <MarkdownWithComponents>{changelog}</MarkdownWithComponents>
                 ) : (
                     <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
                 )}

@@ -34,7 +34,7 @@ export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
                             }
 
                             return href.startsWith('http') ? (
-                                <TrezorLink variant="default" href={href}>
+                                <TrezorLink variant="default" href={href} target="_blank">
                                     {children}
                                 </TrezorLink>
                             ) : (
