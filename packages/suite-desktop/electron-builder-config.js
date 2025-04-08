@@ -95,6 +95,10 @@ module.exports = {
                 from: 'build/static/bin/coinjoin/mac-${arch}',
                 to: 'bin/coinjoin',
             },
+            {
+                from: 'build/static/bin/bluetooth/mac-${arch}',
+                to: 'bin/bluetooth',
+            },
         ],
         icon: 'build/static/images/desktop/512x512.icns',
         artifactName: 'Trezor-Suite-${version}-mac-${arch}.${ext}',
@@ -105,7 +109,7 @@ module.exports = {
         entitlementsInherit: 'entitlements.mac.inherit.plist',
         extendInfo: {
             // Delete those keys from Info.plist, Electron adds them by default but Trezor Suite does not need these permissions
-            NSBluetoothAlwaysUsageDescription: undefined,
+            NSBluetoothAlwaysUsageDescription: undefined, // TODO
             NSBluetoothPeripheralUsageDescription: undefined,
             NSMicrophoneUsageDescription: undefined,
             // Replace default "This app needs access to the camera" message with our own
@@ -131,6 +135,10 @@ module.exports = {
             {
                 from: 'build/static/bin/win_hello.node',
                 to: 'bin/win_hello.node',
+            },
+            {
+                from: 'build/static/bin/bluetooth/win-${arch}',
+                to: 'bin/bluetooth',
             },
         ],
         icon: 'build/static/images/desktop/512x512.png',
@@ -159,6 +167,10 @@ module.exports = {
             {
                 from: 'build/static/bin/coinjoin/linux-${arch}',
                 to: 'bin/coinjoin',
+            },
+            {
+                from: 'build/static/bin/bluetooth/linux-${arch}',
+                to: 'bin/bluetooth',
             },
         ],
         icon: 'build/static/images/desktop/512x512.png',

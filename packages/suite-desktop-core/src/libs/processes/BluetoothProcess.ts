@@ -7,7 +7,10 @@ export class BluetoothProcess extends BaseProcess {
     private readonly port;
 
     constructor(port = 21327) {
-        super('bluetooth', 'trezor-bluetooth');
+        super('bluetooth', 'trezor-bluetooth', {
+            autoRestart: 0,
+            stdio: 'inherit',
+        });
         this.port = port;
     }
 
@@ -37,13 +40,10 @@ export class BluetoothProcess extends BaseProcess {
             });
             this.logger.debug(this.logTopic, `Checking status (${resp.status})`);
             if (resp.status === 200) {
-                const data = await resp.json();
-                if (data?.version) {
-                    return {
-                        service: true,
-                        process: true,
-                    };
-                }
+                return {
+                    service: true,
+                    process: true,
+                };
             }
         } catch (err) {
             this.logger.debug(this.logTopic, `Status error: ${err.message}`);

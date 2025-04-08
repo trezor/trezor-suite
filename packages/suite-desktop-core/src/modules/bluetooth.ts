@@ -28,7 +28,8 @@ export const init: ModuleInit = () => {
 
     const getBluetoothProcess = async () => {
         if (!bluetoothProcess) {
-            const [port] = await getFreePort();
+            // TODO: for debug purposes
+            const port = await getFreePort().then(_p => 21327);
             bluetoothProcess = new BluetoothProcess(port);
         }
 
@@ -55,7 +56,6 @@ export const init: ModuleInit = () => {
         await btProcess.start();
 
         return new BluetoothIpc({
-            // @ts-expect-error TODO BluetoothIpc params will be added in upcoming PR
             url: btProcess.getUrl(),
             logger: desktopLogger,
         });
