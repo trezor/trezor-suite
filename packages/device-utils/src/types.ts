@@ -62,6 +62,10 @@ export type FeaturesNarrowing =
 // todo: this is copy-pasted from packages/protobuf/src/messages
 export type PartialDevice = {
     firmwareType?: FirmwareType;
+    authenticityChecks?: {
+        firmwareRevision: { success: boolean } | null;
+        firmwareHash: { success: boolean } | null;
+    };
 
     features?: {
         major_version: number;

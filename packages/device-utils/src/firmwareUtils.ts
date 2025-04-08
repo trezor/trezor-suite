@@ -1,6 +1,17 @@
 import { isDeviceInBootloaderMode } from './modeUtils';
 import { FirmwareType, FirmwareVersionString, PartialDevice, VersionArray } from './types';
 
+export const isOfficialFirmware = (device?: PartialDevice): boolean => {
+    if (
+        device?.authenticityChecks?.firmwareRevision?.success &&
+        device?.authenticityChecks?.firmwareHash?.success
+    ) {
+        return true;
+    }
+
+    return false;
+};
+
 export const getFirmwareRevision = (device?: PartialDevice) => device?.features?.revision || '';
 
 export const getFirmwareVersionArray = (device?: PartialDevice): VersionArray | null => {

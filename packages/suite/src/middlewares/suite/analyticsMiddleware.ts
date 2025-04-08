@@ -19,6 +19,7 @@ import {
     getFirmwareVersion,
     hasBitcoinOnlyFirmware,
     isDeviceInBootloaderMode,
+    isOfficialFirmware,
 } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -73,6 +74,7 @@ const analyticsMiddleware =
                         error,
                         toBtcOnly,
                         toFwVersion,
+                        isOfficialFw: isOfficialFirmware(device),
                     },
                 });
             }
@@ -122,6 +124,7 @@ const analyticsMiddleware =
                             language: features.language,
                             model: features.internal_model,
                             optiga_sec: features.optiga_sec,
+                            isOfficialFw: isOfficialFirmware(action.payload.device),
                         },
                     });
                 } else {
@@ -131,6 +134,7 @@ const analyticsMiddleware =
                             mode: 'bootloader',
                             firmware: getFirmwareVersion(action.payload.device),
                             bootloader: getBootloaderVersion(action.payload.device),
+                            isOfficialFw: isOfficialFirmware(action.payload.device),
                         },
                     });
                 }

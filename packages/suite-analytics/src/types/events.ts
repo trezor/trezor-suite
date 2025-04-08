@@ -91,6 +91,7 @@ export type SuiteAnalyticsEvent =
           payload: {
               mode: 'normal' | 'bootloader' | 'initialize' | 'seedless';
               firmware: string;
+              isOfficialFw: boolean;
               bootloader?: string;
               pin_protection?: boolean | null;
               passphrase_protection?: boolean | null;
@@ -116,6 +117,7 @@ export type SuiteAnalyticsEvent =
               fromFwVersion: string;
               toFwVersion?: string;
               toBtcOnly?: boolean;
+              isOfficialFw: boolean;
               error: string;
           };
       }
