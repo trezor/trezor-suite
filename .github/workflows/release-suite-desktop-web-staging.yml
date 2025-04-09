@@ -282,17 +282,11 @@ jobs:
   suite-desktop-autoupdate-test-upload:
     if: github.repository == 'trezor/trezor-suite-release' && github.event.inputs.createTestRelease == 'true'
     name: Upload suite-desktop autoupdate test versions
-    environment: suite-production
     runs-on: runner-deploy1
     needs: create-test-releases
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
-          aws-region: eu-central-1
       - name: Download suite-desktop apps
         uses: actions/download-artifact@v4
         with:
