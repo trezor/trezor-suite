@@ -9872,4 +9872,8 @@ export default defineMessages({
         id: 'TR_VERIFYING',
         defaultMessage: 'Verifying',
     },
+    TR_CONNECTED_TO: {
+        id: 'TR_CONNECTED_TO',
+        defaultMessage: 'Connected to',
+    },
 });

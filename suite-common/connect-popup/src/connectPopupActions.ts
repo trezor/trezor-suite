@@ -37,6 +37,13 @@ const confirmAddresses = createAction(
     }),
 );
 
+const setSelectedAccountKey = createAction(
+    `${ACTION_PREFIX}/setSelectedAccountKey`,
+    (payload: Pick<ConnectPopupCall & { state: 'ongoing' }, 'selectedAccountKey'>) => ({
+        payload,
+    }),
+);
+
 const deeplinkCallback = createAction(
     `${ACTION_PREFIX}/deeplinkCallback`,
     (payload: Pick<ConnectPopupCall & { state: 'deeplink-callback' }, 'callbackUrl'>) => ({
@@ -69,6 +76,7 @@ export const connectPopupActions = {
     rejectPermissions,
     finishCall,
     confirmAddresses,
+    setSelectedAccountKey,
     deeplinkCallback,
     setError,
     rememberAppPermissions,

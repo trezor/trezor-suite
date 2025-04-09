@@ -43,9 +43,12 @@ export type ConnectPopupCallLoaded = {
 } & (
     | {
           state: 'ongoing';
+          permissionDecision?: undefined;
+          selectedAccountKey?: string;
       }
     | {
           state: 'finished';
+          permissionDecision?: undefined;
       }
     | {
           state: 'permission-request';

@@ -1,5 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit/react';
 
+import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
     CallMethodParams,
     CallMethodResponse,
@@ -9,12 +10,14 @@ import {
 } from '@trezor/connect';
 
 import { addressConfirmationModalHooks } from './addressConfirmation';
+import { ethereumSignTransaction } from './ethereumSignTransaction';
 
 export type PreCallHookParams<M extends keyof TrezorConnect> = {
     method: M;
     payload: Omit<CallMethodParams<M>, 'method'>;
     dispatch: Dispatch;
     getState: () => any;
+    txSigningPrecomposed?: PrecomposedTransactionFinal;
 };
 export type PostCallHookParams<M extends keyof TrezorConnect> = PreCallHookParams<M> & {
     originalPayload: Omit<CallMethodParams<M>, 'method'>;
@@ -23,8 +26,14 @@ export type PostCallHookParams<M extends keyof TrezorConnect> = PreCallHookParam
 
 export const preCallHooks = async <M extends keyof TrezorConnect>(params: PreCallHookParams<M>) => {
     await addressConfirmationModalHooks.preCallHook(params);
+    await ethereumSignTransaction.preCallHook(params);
 };
 
 export async function postCallHooks<M extends keyof TrezorConnect>(params: PostCallHookParams<M>) {
-    return await addressConfirmationModalHooks.postCallHook(params);
+    const hooks = [
+        await ethereumSignTransaction.postCallHook(params),
+        await addressConfirmationModalHooks.postCallHook(params),
+    ];
+
+    return hooks.some(Boolean);
 }

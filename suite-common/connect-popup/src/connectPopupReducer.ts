@@ -58,6 +58,7 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                     state.activeCall.permissionDecision?.resolve();
                     state.activeCall = {
                         ...state.activeCall,
+                        permissionDecision: undefined,
                         state: 'ongoing',
                     };
                 }
@@ -67,6 +68,7 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                     state.activeCall.permissionDecision?.reject(payload);
                     state.activeCall = {
                         ...state.activeCall,
+                        permissionDecision: undefined,
                         state: 'finished',
                     };
                 }
@@ -80,6 +82,14 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                         ...state.activeCall,
                         state: 'address-confirmation',
                         addresses: payload.addresses,
+                    };
+                }
+            })
+            .addCase(connectPopupActions.setSelectedAccountKey, (state, { payload }) => {
+                if (state.activeCall?.state === 'ongoing') {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        ...payload,
                     };
                 }
             })

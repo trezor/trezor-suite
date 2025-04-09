@@ -1,3 +1,4 @@
+import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { NetworkType, networks } from '@suite-common/wallet-config';
 import { FeeInfo, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
@@ -53,6 +54,7 @@ export const TransactionReviewSummary = ({
     const network = networks[symbol];
     const fee = getFee(account.networkType, tx);
     const estimateTime = getEstimatedTime(networkType, fees[account.symbol], tx);
+    const connectPopupCall = useSelector(selectConnectPopupCall);
 
     const formFeeRate = drafts[currentAccountKey]?.feePerUnit;
     const isFeeCustom = drafts[currentAccountKey]?.selectedFee === 'custom';
@@ -65,7 +67,7 @@ export const TransactionReviewSummary = ({
             <Row gap={spacings.xxs}>
                 <CoinLogo size={14} symbol={symbol} />
                 <AccountLabel
-                    accountLabel={accountLabel}
+                    accountLabel={accountLabel || account.accountLabel}
                     accountType={accountType}
                     symbol={symbol}
                     index={index}
@@ -108,12 +110,23 @@ export const TransactionReviewSummary = ({
                 <Translation id="TR_FEE_RATE_CHANGED" />
             )}
 
-            {!stakeType && !broadcast && (
+            {!stakeType && !broadcast && connectPopupCall?.state !== 'ongoing' && (
                 <Note iconName="broadcast">
                     <Translation id="BROADCAST" />
                     {': '}
                     <Text variant="destructive">
                         <Translation id="TR_OFF" />
+                    </Text>
+                </Note>
+            )}
+
+            {connectPopupCall?.state === 'ongoing' && (
+                <Note iconName="plug">
+                    <Translation id="TR_CONNECTED_TO" />
+                    {': '}
+                    <Text variant="primary">
+                        {connectPopupCall.source?.manifest?.appName ||
+                            connectPopupCall.source?.origin}
                     </Text>
                 </Note>
             )}

@@ -104,6 +104,9 @@ export const getNetworkByCoingeckoId = (coingeckoId: string) =>
 export const getNetworkByTradeCryptoId = (coingeckoId: string) =>
     networksCollection.find(n => n.tradeCryptoId === coingeckoId);
 
+export const getNetworkByEvmChainId = (chainId: number) =>
+    networksCollection.find(n => n.chainId === chainId);
+
 export const getNetworkDisplaySymbol = (symbol: NetworkSymbol) => getNetwork(symbol).displaySymbol;
 
 export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | null) => {

@@ -6,7 +6,12 @@ import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
-import { type AccountType, type NetworkSymbol, networks } from '@suite-common/wallet-config';
+import {
+    type AccountType,
+    type Bip43Path,
+    type NetworkSymbol,
+    networks,
+} from '@suite-common/wallet-config';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { enhanceHistory, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
@@ -366,6 +371,16 @@ export const selectFirstNormalAccountForNetworkSymbol = createMemoizedSelector(
             selectDeviceAccountsForNetworkSymbolAndAccountType(state, symbol, 'normal'),
     ],
     accounts => accounts.find(account => account.index === 0) ?? null,
+);
+
+export const selectAccountForNetworkSymbolAndPath = createMemoizedSelector(
+    [
+        selectAccounts,
+        (_state: AccountsRootState, networkSymbol: NetworkSymbol) => networkSymbol,
+        (_state: AccountsRootState, _networkSymbol: NetworkSymbol, path: Bip43Path) => path,
+    ],
+    (accounts, networkSymbol, path) =>
+        accounts.find(account => path === account.path && networkSymbol === account.symbol) ?? null,
 );
 
 export const selectAccountLabel = createMemoizedSelector(

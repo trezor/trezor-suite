@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import {
@@ -129,6 +130,7 @@ export const TransactionReviewModalContent = ({
     const accounts = useSelector(selectAccounts);
     const device = useSelector(selectSelectedDevice);
     const isActionAbortable = useSelector(selectIsActionAbortable);
+    const connectPopupCall = useSelector(selectConnectPopupCall);
     const [isSending, setIsSending] = useState(false);
     const [areDetailsVisible, setAreDetailsVisible] = useState(false);
     const deviceModelInternal = device?.features?.internal_model;
@@ -345,6 +347,10 @@ export const TransactionReviewModalContent = ({
         }
 
         if (areDetailsVisible) {
+            return null;
+        }
+
+        if (connectPopupCall?.state === 'ongoing') {
             return null;
         }
 

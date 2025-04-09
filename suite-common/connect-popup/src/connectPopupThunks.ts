@@ -2,6 +2,7 @@ import { AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
+import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect, { CallMethodParams, CallMethodResponse } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect/src/constants/errors';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
@@ -91,8 +92,16 @@ export const connectPopupCallThunkInner = createThunk<
                 throw TypedError('Device_NotFound');
             }
 
+            const txSigningPrecomposed: PrecomposedTransactionFinal | undefined =
+                methodInfo.payload.precomposed;
             const originalPayload = { ...payload };
-            await preCallHooks({ method, payload, dispatch, getState });
+            await preCallHooks({
+                method,
+                payload,
+                dispatch,
+                getState,
+                txSigningPrecomposed,
+            });
 
             // @ts-expect-error: method is dynamic
             const response = await TrezorConnect[method]({
