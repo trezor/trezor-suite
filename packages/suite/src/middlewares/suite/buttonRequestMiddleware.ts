@@ -6,6 +6,7 @@ import TrezorConnect, { UI } from '@trezor/connect';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { SUITE } from 'src/actions/suite/constants';
+import { goto } from 'src/actions/suite/routerActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
 const buttonRequest =
@@ -34,6 +35,19 @@ const buttonRequest =
 
                 return action;
             }
+        }
+
+        // can happen when there is a Connect Popup call and the device is unreadable/unacquired.
+        // for now we just open the device switcher and cancel the call, user will have to retry manually
+        if (action.type === UI.SELECT_DEVICE) {
+            api.dispatch(
+                goto('suite-switch-device', {
+                    params: {
+                        cancelable: true,
+                    },
+                }),
+            );
+            TrezorConnect.cancel('Device_Unreadable');
         }
 
         // firmware bug https://github.com/trezor/trezor-firmware/issues/35
