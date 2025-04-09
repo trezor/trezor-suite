@@ -9879,4 +9879,12 @@ export default defineMessages({
         id: 'TR_ACCOUNT',
         defaultMessage: 'Account',
     },
+    TR_SELECT_FEE: {
+        id: 'TR_SELECT_FEE',
+        defaultMessage: 'Select fee',
+    },
+    TR_NOT_ENOUGH_FUNDS: {
+        id: 'TR_NOT_ENOUGH_FUNDS',
+        defaultMessage: 'Not enough funds, please select a different account.',
+    },
 });

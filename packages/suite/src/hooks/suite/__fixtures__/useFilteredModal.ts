@@ -39,7 +39,7 @@ export const fixtures = [
         'Device confirmation modal',
         {
             context: MODAL.CONTEXT_DEVICE_CONFIRMATION,
-            windowType: '',
+            windowType: 'no-backup',
         },
         [false, true, false, false],
     ],

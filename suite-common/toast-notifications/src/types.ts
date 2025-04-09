@@ -71,7 +71,8 @@ export type ToastPayload = (
               | 'coinjoin-interrupted'
               | 'firmware-language-changed'
               | 'firmware-language-fetch-error'
-              | 'estimated-fee-error';
+              | 'estimated-fee-error'
+              | 'not-enough-funds-error';
       }
     | SentTransactionNotification
     | {

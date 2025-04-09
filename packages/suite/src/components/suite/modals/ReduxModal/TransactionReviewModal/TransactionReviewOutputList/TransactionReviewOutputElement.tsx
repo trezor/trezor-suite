@@ -129,7 +129,7 @@ export type OutputElementLine = {
 export type TransactionReviewOutputElementProps = {
     title: ReactNode;
     lines: OutputElementLine[];
-    account: Account;
+    account: Pick<Account, 'networkType' | 'symbol' | 'tokens'>;
     state: 'active' | 'confirmed' | 'unconfirmed';
     fiatVisible?: boolean;
     token?: TokenInfo;

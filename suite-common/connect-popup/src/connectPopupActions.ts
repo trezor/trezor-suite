@@ -9,7 +9,10 @@ export const ACTION_PREFIX = '@suite-common/connect-popup';
 const initiateCall = createAction(
     `${ACTION_PREFIX}/initiateCall`,
     (
-        payload: Pick<ConnectPopupCall & { state: 'ongoing' }, 'method' | 'methodInfo' | 'source'>,
+        payload: Pick<
+            ConnectPopupCall & { state: 'ongoing' },
+            'method' | 'methodInfo' | 'source' | 'payload'
+        >,
     ) => ({
         payload,
     }),

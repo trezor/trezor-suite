@@ -304,6 +304,8 @@ export const NotificationRenderer = ({
             return success(render, notification, 'TR_FIRMWARE_LANGUAGE_CHANGED');
         case 'firmware-language-fetch-error':
             return error(render, notification, 'TR_FIRMWARE_LANGUAGE_FETCH_ERROR');
+        case 'not-enough-funds-error':
+            return error(render, notification, 'TR_NOT_ENOUGH_FUNDS');
 
         // intentionally no default, all cases must be handled.
     }

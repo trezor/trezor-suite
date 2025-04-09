@@ -4,6 +4,7 @@ import { MODAL } from 'src/actions/suite/constants';
 import { NoBackupModal } from 'src/components/suite/modals';
 
 import { SelectAccountModal } from './SelectAccountModal';
+import { SelectFeeModal } from './SelectFeeModal';
 import type { ReduxModalProps } from '../ReduxModal';
 
 /** Modals requested from `trezor-connect` */
@@ -14,6 +15,8 @@ export const DeviceConfirmationModal = ({
     switch (windowType) {
         case UI.SELECT_ACCOUNT:
             return data ? <SelectAccountModal data={data} /> : null;
+        case UI.SELECT_FEE:
+            return data ? <SelectFeeModal data={data} /> : null;
         case 'no-backup':
             return <NoBackupModal />;
         default:

@@ -40,6 +40,7 @@ export type ConnectPopupCallLoaded = {
         permissionTypes: MethodPermission[];
     };
     source: ConnectCallSource;
+    payload: any;
 } & (
     | {
           state: 'ongoing';

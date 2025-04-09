@@ -57,7 +57,7 @@ export type FeeOptionType = {
 };
 
 export interface FeesProps<TFieldValues extends FormState> {
-    account: Account;
+    account: Pick<Account, 'symbol' | 'networkType'>;
     feeInfo: FeeInfo;
     register: UseFormRegister<TFieldValues>;
     control: Control<any>;

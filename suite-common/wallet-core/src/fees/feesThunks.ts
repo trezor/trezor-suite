@@ -22,7 +22,7 @@ import { selectFees } from '../fees/feesReducer';
 // sort FeeLevels in reversed order (Low > High)
 // TODO: consider to use same order in @trezor/connect to avoid double sorting
 const order: FeeLevel['label'][] = ['low', 'economy', 'normal', 'high'];
-const sortLevels = (levels: FeeLevel[]) =>
+export const sortLevels = (levels: FeeLevel[]) =>
     levels.sort((levelA, levelB) => order.indexOf(levelA.label) - order.indexOf(levelB.label));
 
 export const preloadFeeInfoThunk = createThunk(
