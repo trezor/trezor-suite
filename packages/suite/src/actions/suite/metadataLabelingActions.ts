@@ -4,6 +4,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { cloneObject } from '@trezor/utils';
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
@@ -626,6 +627,13 @@ export const init =
         if (!selectSelectedProviderForLabels(getState())) {
             const providerResult = await dispatch(metadataProviderActions.initProvider());
             if (!providerResult) {
+                analytics.report({
+                    type: EventType.SettingsGeneralLabelingProvider,
+                    payload: {
+                        provider: 'closed',
+                    },
+                });
+
                 dispatch({ type: METADATA.SET_INITIATING, payload: false });
                 dispatch({ type: METADATA.SET_EDITING, payload: undefined });
                 // NOTE: when the provider is not initialized
