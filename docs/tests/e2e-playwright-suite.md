@@ -102,7 +102,6 @@ Assigning a @group allows filtering based on logical test category
 -   `@group=passphrase`
 -   `@group=settings`
 
-
 #### @desktopOnly or @webOnly
 
 Some tests are only applicable for Desktop app or Web and you can use this tag to notify the runner, that the test should be ignored when running against opposite Suite.
