@@ -34,9 +34,9 @@ export const ConnectPermissions = () => {
 
                         <Column flex="1">
                             <Row gap={spacings.sm}>
-                                {app.appName ? (
+                                {app.manifest?.appName ? (
                                     <>
-                                        <Text>{app.appName}</Text>
+                                        <Text>{app.manifest.appName}</Text>
                                         <Text variant="tertiary">{app.origin}</Text>
                                     </>
                                 ) : (

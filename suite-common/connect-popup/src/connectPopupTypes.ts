@@ -7,6 +7,30 @@ export type ManifestPartial = {
     appIcon?: string;
 };
 
+export const CALL_SOURCE_DESKTOP_WS = 'desktop-ws';
+export const CALL_SOURCE_WALLETCONNECT = 'walletconnect';
+export const CALL_SOURCE_DEEPLINK = 'deeplink';
+
+export type ConnectCallSource = {
+    origin: string;
+} & (
+    | {
+          type: typeof CALL_SOURCE_DESKTOP_WS;
+          processName: string;
+          manifest: ManifestPartial;
+      }
+    | {
+          type: typeof CALL_SOURCE_WALLETCONNECT;
+          processName?: undefined;
+          manifest: ManifestPartial;
+      }
+    | {
+          type: typeof CALL_SOURCE_DEEPLINK;
+          processName?: undefined;
+          manifest?: undefined;
+      }
+);
+
 export type ConnectPopupCallLoaded = {
     // Common properties that are always present
     method: string;
@@ -15,20 +39,7 @@ export type ConnectPopupCallLoaded = {
         confirmLabel: string;
         permissionTypes: MethodPermission[];
     };
-    source: {
-        origin: string;
-    } & (
-        | {
-              isWalletConnect: false;
-              processName: string;
-              manifest: ManifestPartial;
-          }
-        | {
-              isWalletConnect: true;
-              processName: 'WalletConnect';
-              manifest: undefined;
-          }
-    );
+    source: ConnectCallSource;
 } & (
     | {
           state: 'ongoing';
@@ -66,15 +77,5 @@ export type ConnectPopupCallError = {
 export type ConnectPopupCall = ConnectPopupCallLoaded | ConnectPopupCallError;
 
 export type AppRememberedPermission = {
-    origin: string;
     types: MethodPermission[];
-} & (
-    | ({
-          isWalletConnect: false;
-          processName: string;
-      } & ManifestPartial)
-    | {
-          isWalletConnect: true;
-          processName: 'WalletConnect';
-      }
-);
+} & ConnectCallSource;

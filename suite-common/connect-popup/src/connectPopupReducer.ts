@@ -3,7 +3,11 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';
-import { AppRememberedPermission, ConnectPopupCall } from './connectPopupTypes';
+import {
+    AppRememberedPermission,
+    CALL_SOURCE_WALLETCONNECT,
+    ConnectPopupCall,
+} from './connectPopupTypes';
 
 export type ConnectPopupState = {
     activeCall?: ConnectPopupCall;
@@ -110,7 +114,7 @@ export const selectConnectPopupCall = (state: ConnectPopupStateRootState) =>
     state.wallet.connectPopup.activeCall;
 
 export const selectConnectAppPermissions = (state: ConnectPopupStateRootState) =>
-    state.wallet.connectPopup.permissions.filter(p => !p.isWalletConnect);
+    state.wallet.connectPopup.permissions.filter(p => p.type !== CALL_SOURCE_WALLETCONNECT);
 
 export const selectWalletConnectAppPermissions = (state: ConnectPopupStateRootState) =>
-    state.wallet.connectPopup.permissions.filter(p => p.isWalletConnect);
+    state.wallet.connectPopup.permissions.filter(p => p.type === CALL_SOURCE_WALLETCONNECT);

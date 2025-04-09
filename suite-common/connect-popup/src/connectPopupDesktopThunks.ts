@@ -1,7 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils';
+import TrezorConnect from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { connectPopupCallThunk } from './connectPopupThunks';
+import { CALL_SOURCE_DESKTOP_WS } from './connectPopupTypes';
 
 // Desktop only - not directly exported by package
 export const connectPopupDesktopInitThunk = createThunk(
@@ -10,10 +12,16 @@ export const connectPopupDesktopInitThunk = createThunk(
         if (desktopApi.available && (await desktopApi.connectPopupEnabled())) {
             desktopApi.on('connect-popup/call', async params => {
                 const response = await dispatch(
-                    connectPopupCallThunk(
-                        // @ts-expect-error: params in desktopApi are not fully typed
-                        { ...params, isWalletConnect: false as const },
-                    ),
+                    connectPopupCallThunk({
+                        method: params.method as keyof typeof TrezorConnect,
+                        payload: params.payload,
+                        source: {
+                            type: CALL_SOURCE_DESKTOP_WS,
+                            processName: params.processName ?? 'Unknown',
+                            origin: params.origin,
+                            manifest: params.manifest,
+                        },
+                    }),
                 ).unwrap();
                 desktopApi.connectPopupResponse({ ...response, id: params.id });
             });

@@ -10,7 +10,7 @@ import { createDeferred } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import { selectConnectAppPermissions, selectConnectPopupCall } from './connectPopupReducer';
-import { ManifestPartial } from './connectPopupTypes';
+import { ConnectCallSource } from './connectPopupTypes';
 import { postCallHooks, preCallHooks } from './methodHooks';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
@@ -20,32 +20,18 @@ type ConnectPopupCallThunkResponse<M extends keyof typeof TrezorConnect> = Promi
     payload: CallMethodResponse<M>;
 }>;
 
-export type ConnectPopupCallThunkWalletConnectParams = {
-    isWalletConnect: true;
-    processName: 'WalletConnect';
-    manifest: undefined;
-};
-
-export type ConnectPopupCallThunkConnectParams = {
-    isWalletConnect: false;
-    processName: string;
-    manifest: ManifestPartial;
-};
 type ConnectPopupCallThunkParams<M extends keyof typeof TrezorConnect> = {
-    origin: string;
     method: M;
     payload: Omit<CallMethodParams<M>, 'method'>;
-} & (ConnectPopupCallThunkWalletConnectParams | ConnectPopupCallThunkConnectParams);
+    source: ConnectCallSource;
+};
 
 export const connectPopupCallThunkInner = createThunk<
     ConnectPopupCallThunkResponse<keyof typeof TrezorConnect>,
     ConnectPopupCallThunkParams<keyof typeof TrezorConnect>
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
-    async (
-        { method, payload, processName, origin, manifest, isWalletConnect },
-        { dispatch, getState, extra },
-    ) => {
+    async ({ method, payload, source }, { dispatch, getState, extra }) => {
         try {
             // @ts-expect-error: method is dynamic
             const methodInfo = await TrezorConnect[method]({
@@ -65,9 +51,6 @@ export const connectPopupCallThunkInner = createThunk<
                 throw TypedError('Method_NotAllowed');
             }
 
-            const source = isWalletConnect
-                ? { processName, origin, manifest: undefined, isWalletConnect }
-                : { processName, origin, manifest, isWalletConnect };
             dispatch(
                 connectPopupActions.initiateCall({
                     method,
@@ -85,8 +68,8 @@ export const connectPopupCallThunkInner = createThunk<
             const rememberedApps = selectConnectAppPermissions(getState());
             const isRemembered = rememberedApps.some(
                 app =>
-                    app.origin === origin &&
-                    app.processName === processName &&
+                    app.origin === source.origin &&
+                    app.processName === source.processName &&
                     methodInfo.payload.requiredPermissions.every((permission: MethodPermission) =>
                         app.types.includes(permission),
                     ),
@@ -212,10 +195,11 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
 
         const response = await dispatch(
             connectPopupCallThunk({
-                processName: 'deeplink',
-                origin: `${callbackUrl.protocol}//${callbackUrl.host}`,
-                // @ts-expect-error: method is dynamic
-                method,
+                source: {
+                    type: 'deeplink',
+                    origin: `${callbackUrl.protocol}//${callbackUrl.host}`,
+                },
+                method: method as keyof typeof TrezorConnect,
                 payload,
             }),
         ).unwrap();
