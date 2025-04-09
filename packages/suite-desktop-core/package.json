@@ -50,7 +50,6 @@
         "ws": "^8.18.0"
     },
     "devDependencies": {
-        "@currents/cmd": "^1.6.9",
         "@currents/playwright": "^1.11.3",
         "@electron/fuses": "^1.8.0",
         "@electron/notarize": "2.5.0",

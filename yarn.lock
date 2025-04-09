@@ -11992,7 +11992,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-core@workspace:packages/suite-desktop-core"
   dependencies:
-    "@currents/cmd": "npm:^1.6.9"
     "@currents/playwright": "npm:^1.11.3"
     "@electron/fuses": "npm:^1.8.0"
     "@electron/notarize": "npm:2.5.0"
