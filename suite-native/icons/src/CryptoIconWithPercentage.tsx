@@ -20,7 +20,7 @@ import { PizzaIcon, usePizzaAnimation } from './PizzaIcon';
 
 const CANVAS_SIZE = 48;
 const ICON_SIZE = 32;
-const RADIUS = 20;
+const RADIUS = 21;
 
 type CryptoIconProps = {
     iconName: CryptoIconName;
@@ -92,7 +92,7 @@ export const CryptoIconWithPercentage = ({
                                 cy={CANVAS_SIZE / 2}
                                 r={RADIUS}
                                 style="stroke"
-                                strokeWidth={4}
+                                strokeWidth={6}
                                 color={utils.colors.backgroundSurfaceElevation2}
                             />
                             <Path
@@ -100,7 +100,7 @@ export const CryptoIconWithPercentage = ({
                                 start={0}
                                 end={percentageFill}
                                 style="stroke"
-                                strokeWidth={4}
+                                strokeWidth={6}
                                 color={percentageColor}
                                 opacity={0.3}
                             />
