@@ -49,7 +49,13 @@ const buttonRequest =
             } = api.getState();
             if (
                 ['cardano', 'ethereum'].includes(account?.networkType || '') &&
-                ['wallet-send', 'wallet-staking', 'wallet-index'].includes(route?.name || '')
+                [
+                    'wallet-send',
+                    'wallet-staking',
+                    'wallet-index',
+                    'wallet-trading-exchange-confirm',
+                    'wallet-trading-sell-confirm',
+                ].includes(route?.name || '')
             ) {
                 api.dispatch({
                     ...action,
