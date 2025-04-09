@@ -134,6 +134,7 @@ export class TransactionComposer {
                     name: level.label,
                     fee: tx.fee,
                     feePerByte: level.feePerUnit,
+                    blocks: level.blocks,
                     minutes: level.blocks * this.coinInfo.blockTime,
                     total: tx.totalSpent,
                 });
