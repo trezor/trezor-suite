@@ -28,7 +28,7 @@ export type AcquireIntentRequest = AcquireInput;
 
 export type AcquireIntentResponse = BackgroundResponseWithError<
     { session: Session; path: PathInternal; releaseRequest?: Descriptor },
-    typeof ERRORS.SESSION_WRONG_PREVIOUS | typeof ERRORS.DESCRIPTOR_NOT_FOUND
+    typeof ERRORS.SESSION_WRONG_PREVIOUS | typeof ERRORS.DEVICE_NOT_FOUND
 >;
 
 export type AcquireDoneRequest = {
@@ -41,7 +41,7 @@ export type AcquireDoneResponse = BackgroundResponseWithError<
         session: Session;
         descriptors: Descriptor[];
     },
-    typeof ERRORS.DESCRIPTOR_NOT_FOUND
+    typeof ERRORS.DEVICE_NOT_FOUND
 >;
 export interface ReleaseIntentRequest {
     session: Session;

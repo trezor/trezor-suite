@@ -170,7 +170,7 @@ export class SessionsBackground
         const pathInternal = this.getInternal(payload.path);
 
         if (!pathInternal) {
-            return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
+            return this.error(ERRORS.DEVICE_NOT_FOUND);
         }
 
         const previous = this.descriptors[pathInternal]?.session;
@@ -180,7 +180,7 @@ export class SessionsBackground
         }
 
         if (!this.descriptors[pathInternal]) {
-            return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
+            return this.error(ERRORS.DEVICE_NOT_FOUND);
         }
 
         await this.waitInQueue();
@@ -208,7 +208,7 @@ export class SessionsBackground
         const pathInternal = this.getInternal(payload.path);
 
         if (!pathInternal || !this.descriptors[pathInternal]) {
-            return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
+            return this.error(ERRORS.DEVICE_NOT_FOUND);
         }
         this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
         this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;

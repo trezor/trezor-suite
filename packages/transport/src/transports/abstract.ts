@@ -194,7 +194,6 @@ export abstract class AbstractTransport extends TransportEmitter {
         Session,
         // webusb
         | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
-        | typeof ERRORS.DESCRIPTOR_NOT_FOUND
         // bridge
         | typeof ERRORS.WRONG_RESULT_TYPE
         | typeof ERRORS.HTTP_ERROR
