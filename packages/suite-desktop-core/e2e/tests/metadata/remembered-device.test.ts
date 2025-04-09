@@ -5,7 +5,7 @@ import { MetadataProvider } from '../../support/mocks/metadataMock';
 //Metadata - In settings, there is enable metadata switch.
 //On enable, it initiates metadata right away (if device already has state).
 //On disable, it throws away all metadata related records from memory.
-test.describe('Remembered device', { tag: ['@group=metadata2', '@webOnly'] }, () => {
+test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () => {
     test.use({
         emulatorStartConf: { model: 'T2T1', wipe: true },
         emulatorSetupConf: { mnemonic: 'mnemonic_all' },

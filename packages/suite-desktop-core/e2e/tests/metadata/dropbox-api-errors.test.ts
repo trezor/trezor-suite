@@ -2,7 +2,7 @@ import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 
-test.describe('Dropbox API errors', { tag: ['@group=metadata1', '@webOnly'] }, () => {
+test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic: 'mnemonic_all' },
     });

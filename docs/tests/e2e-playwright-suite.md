@@ -55,7 +55,7 @@ _(in case of Linux with X11 support, skip to step 6.)_
 
 1. **To run tests headed (showing UI)** you can add: `--headed`.
 
-1. **To run just one test file** you can do: `yarn workspace @trezor/suite-desktop-core test:e2e smoke/wallet-discovery.test.ts`
+1. **To run just one test file** you can do: `yarn workspace @trezor/suite-desktop-core test:e2e general/wallet-discovery.test.ts`
 
 1. **To run just one test** you can add: `-g "Basic cardano walkthrough"`
 
@@ -92,10 +92,16 @@ At the moment, there are the following tags:
 
 #### @group
 
-Assigning a @group allows test runner to run the groups in parallel on CI. At the moment these groups exist:
+Assigning a @group allows filtering based on logical test category
 
 -   `@group=wallet`
+-   `@group=suite`
+-   `@group=device-management`
+-   `@group=other`
+-   `@group=metadata`
+-   `@group=passphrase`
 -   `@group=settings`
+
 
 #### @desktopOnly or @webOnly
 
