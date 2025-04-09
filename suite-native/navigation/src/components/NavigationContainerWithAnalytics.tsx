@@ -6,9 +6,9 @@ import {
     NavigationContainer,
     useNavigationContainerRef,
 } from '@react-navigation/native';
-import * as Sentry from '@sentry/react-native';
 
 import { EventType, analytics } from '@suite-native/analytics';
+import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
 import { useNativeStyles } from '@trezor/styles';
 
 import { useReportSendFlowExitToAnalytics } from '../useReportSendFlowExitToAnalytics';
@@ -68,7 +68,7 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
                 },
             });
 
-            Sentry.addBreadcrumb({
+            addSentryBreadcrumb({
                 category: EventType.ScreenChange,
                 message: 'screen changed',
                 level: 'info',
@@ -78,7 +78,7 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
                 },
             });
 
-            Sentry.setTag('route', currentRouteName);
+            setSentryTag('route', currentRouteName);
         }
     };
 

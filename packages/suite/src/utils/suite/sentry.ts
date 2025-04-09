@@ -24,10 +24,6 @@ export const setSentryUser = (instanceId: string) => {
     Sentry.setUser({ id: instanceId });
 };
 
-export const unsetSentryUser = () => {
-    Sentry.setUser(null);
-};
-
 export const reportToSentry = (error: any) => (_: Dispatch, getState: GetState) => {
     const { analytics, wallet, logs } = getState();
     const device = selectSelectedDevice(getState());

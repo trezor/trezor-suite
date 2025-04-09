@@ -1,7 +1,6 @@
 import { Alert } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-import * as Sentry from '@sentry/react-native';
 
 import { Button, Card, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
@@ -13,6 +12,7 @@ import {
     ScreenHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { captureSentryException } from '@suite-native/sentry';
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 
@@ -56,7 +56,7 @@ export const DevUtilsScreen = () => {
                         <Button
                             onPress={() => {
                                 const errorMessage = `Sentry test error - ${Date.now()}`;
-                                Sentry.captureException(new Error(errorMessage));
+                                captureSentryException(new Error(errorMessage));
                                 Alert.alert('Sentry error thrown', errorMessage);
                             }}
                         >

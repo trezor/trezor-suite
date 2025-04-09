@@ -27,6 +27,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
