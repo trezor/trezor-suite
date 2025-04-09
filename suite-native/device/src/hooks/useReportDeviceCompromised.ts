@@ -1,10 +1,9 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import * as Sentry from '@sentry/react-native';
-
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { captureSentryException, withSentryScope } from '@suite-native/sentry';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { revisionCheckErrorScenarios } from '../config/firmware';
@@ -15,11 +14,11 @@ const reportCheckFail = (
     errorPayload?: unknown,
 ) => {
     const payloadLabel = `${checkType} check failed!`;
-    Sentry.withScope(scope => {
+    withSentryScope(scope => {
         scope.setExtra('errorPayload', errorPayload);
         const exceptionForSentry = new Error(`${payloadLabel} ${JSON.stringify(contextData)}`);
         exceptionForSentry.name = 'reportCheckFail'; // Custom issue title
-        Sentry.captureException(exceptionForSentry, scope);
+        captureSentryException(exceptionForSentry, scope);
     });
 };
 

@@ -38,6 +38,7 @@
         { "path": "../message-system" },
         { "path": "../module-send" },
         { "path": "../module-trading" },
+        { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../storage" },
         {

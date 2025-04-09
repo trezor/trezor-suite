@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import * as Sentry from '@sentry/react-native';
 
 import {
     acquireDevice,
@@ -28,6 +27,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { captureSentryException } from '@suite-native/sentry';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 import { BootloaderModalAppendix } from '../components/BootloaderModalAppendix';
@@ -241,7 +241,7 @@ export const useDetectDeviceError = () => {
 
     useEffect(() => {
         if (deviceError && !isUnacquiredDevice && isOnboardingFinished) {
-            Sentry.captureException(new Error(`device error - ${deviceError}`));
+            captureSentryException(new Error(`device error - ${deviceError}`));
 
             showAlert({
                 title: <Translation id="moduleDevice.genericErrorModal.title" />,

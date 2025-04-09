@@ -3,9 +3,9 @@ import { AppState } from 'react-native';
 import { Provider } from 'react-redux';
 
 import { EnhancedStore } from '@reduxjs/toolkit';
-import * as Sentry from '@sentry/react-native';
 import { Persistor, persistStore } from 'redux-persist';
 
+import { captureSentryException } from '@suite-native/sentry';
 import { StorageProvider } from '@suite-native/storage';
 
 import { initStore } from './store';
@@ -28,7 +28,7 @@ export const StoreProvider = ({ children }: StoreProviderProps) => {
             setStorePersistor(freshPersistor);
         } catch (error) {
             console.error('Init store error:', error);
-            Sentry.captureException(error);
+            captureSentryException(error);
         }
     };
     useEffect(() => {

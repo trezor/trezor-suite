@@ -18,6 +18,7 @@
         { "path": "../icons" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../sentry" },
         { "path": "../storage" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },

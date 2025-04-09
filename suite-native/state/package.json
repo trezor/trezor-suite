@@ -11,7 +11,6 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.6.0",
-        "@sentry/react-native": "6.10.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/logger": "workspace:*",
@@ -32,6 +31,7 @@
         "@suite-native/message-system": "workspace:*",
         "@suite-native/module-send": "workspace:*",
         "@suite-native/module-trading": "workspace:*",
+        "@suite-native/sentry": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/transport-native-usb": "workspace:*",

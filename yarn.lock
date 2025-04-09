@@ -9744,7 +9744,6 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.18"
     "@reduxjs/toolkit": "npm:2.6.0"
-    "@sentry/react-native": "npm:6.10.0"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -9760,6 +9759,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -10199,7 +10199,6 @@ __metadata:
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:2.6.0"
-    "@sentry/react-native": "npm:6.10.0"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -10212,6 +10211,7 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/sentry": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -10496,7 +10496,6 @@ __metadata:
     "@react-navigation/bottom-tabs": "npm:6.6.1"
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
-    "@sentry/react-native": "npm:6.10.0"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -10618,6 +10617,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/sentry@workspace:*, @suite-native/sentry@workspace:suite-native/sentry":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/sentry@workspace:suite-native/sentry"
+  dependencies:
+    "@sentry/react-native": "npm:6.10.0"
+    "@suite-common/sentry": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/settings@workspace:*, @suite-native/settings@workspace:suite-native/settings":
   version: 0.0.0-use.local
   resolution: "@suite-native/settings@workspace:suite-native/settings"
@@ -10650,7 +10658,6 @@ __metadata:
   resolution: "@suite-native/state@workspace:suite-native/state"
   dependencies:
     "@reduxjs/toolkit": "npm:2.6.0"
-    "@sentry/react-native": "npm:6.10.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/logger": "workspace:*"
@@ -10671,6 +10678,7 @@ __metadata:
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-send": "workspace:*"
     "@suite-native/module-trading": "workspace:*"
+    "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@trezor/transport-native-usb": "workspace:*"
