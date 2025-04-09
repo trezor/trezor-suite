@@ -2,6 +2,7 @@ import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { RECEIVE } from 'src/actions/wallet/constants';
@@ -62,10 +63,26 @@ export const showAddress =
                 }),
             );
 
+            analytics.report({
+                type: EventType.CreateReceiveAddressShowAddress,
+                payload: {
+                    assetSymbol: account.symbol,
+                    type: 'unverified',
+                },
+            });
+
             return;
         }
 
         dispatch(modalActions.preserve());
+
+        analytics.report({
+            type: EventType.CreateReceiveAddressShowAddress,
+            payload: {
+                assetSymbol: account.symbol,
+                type: 'verified',
+            },
+        });
 
         const response = await dispatch(
             confirmAddressOnDeviceThunk({ accountKey: account.key, addressPath: path, chunkify }),
@@ -74,6 +91,11 @@ export const showAddress =
         if (response.success) {
             // show second part of the "confirm address" modal
             dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
+
+            analytics.report({
+                type: EventType.CreateReceiveAddressConfirmOnTrezor,
+                payload: { assetSymbol: account.symbol },
+            });
         } else {
             dispatch(modalActions.onCancel());
             // special case: device no-backup permissions not granted

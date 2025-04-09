@@ -28,6 +28,10 @@ export enum EventType {
 
     CreateBackup = 'create-backup',
 
+    CreateReceiveAddressShowAddress = 'create-receive-address/show-address',
+    CreateReceiveAddressCopyAddress = 'create-receive-address/copy-address',
+    CreateReceiveAddressConfirmOnTrezor = 'create-receive-address/confirm-on-trezor',
+
     AccountsStatus = 'accounts/status',
     AccountsTokensStatus = 'accounts/tokens-status',
     AccountsNonZeroBalance = 'accounts/non-zero-balance',

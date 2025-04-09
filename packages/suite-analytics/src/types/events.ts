@@ -1,3 +1,5 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import { EventType } from '../constants';
 import type { AppUpdateEvent, OnboardingAnalytics } from './definitions';
 
@@ -130,6 +132,25 @@ export type SuiteAnalyticsEvent =
           payload: {
               status: 'finished' | 'error';
               error: string;
+          };
+      }
+    | {
+          type: EventType.CreateReceiveAddressShowAddress;
+          payload: {
+              assetSymbol: NetworkSymbol;
+              type: 'verified' | 'unverified';
+          };
+      }
+    | {
+          type: EventType.CreateReceiveAddressCopyAddress;
+          payload: {
+              assetSymbol: NetworkSymbol;
+          };
+      }
+    | {
+          type: EventType.CreateReceiveAddressConfirmOnTrezor;
+          payload: {
+              assetSymbol: NetworkSymbol;
           };
       }
     | {

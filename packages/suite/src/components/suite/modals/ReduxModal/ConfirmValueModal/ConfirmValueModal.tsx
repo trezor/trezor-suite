@@ -21,6 +21,7 @@ import {
 } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CoinLogo, ConfirmOnDevice } from '@trezor/product-components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -72,6 +73,13 @@ export const ConfirmValueModal = ({
 
     const copy = () => {
         const result = copyToClipboard(value);
+
+        if (account) {
+            analytics.report({
+                type: EventType.CreateReceiveAddressCopyAddress,
+                payload: { assetSymbol: account.symbol },
+            });
+        }
 
         if (typeof result !== 'string') {
             setIsCopied(true);
