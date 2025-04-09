@@ -7,6 +7,7 @@ import {
 } from '@suite-common/analytics';
 import { createThunk } from '@suite-common/redux-utils';
 import { isDevelopEnv } from '@suite-native/config';
+import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
 import { getTrackingRandomId } from '@trezor/analytics';
 import { getCommitHash } from '@trezor/env-utils';
 
@@ -22,6 +23,7 @@ export const enableAnalyticsThunk = createThunk(
             type: EventType.SettingsDataPermission,
             payload: { analyticsPermission: true },
         });
+        allowSentryReport(true);
         dispatch(analyticsActions.enableAnalytics());
     },
 );
@@ -33,6 +35,7 @@ export const disableAnalyticsThunk = createThunk(
             { type: EventType.SettingsDataPermission, payload: { analyticsPermission: false } },
             { force: true },
         );
+        allowSentryReport(false);
         dispatch(analyticsActions.disableAnalytics());
     },
 );
@@ -58,6 +61,8 @@ export const initAnalyticsThunk = createThunk(
                 onDisable: () => dispatch(disableAnalyticsThunk()),
             },
         });
+
+        allowSentryReport(!!userAllowedTracking);
 
         dispatch(
             analyticsActions.initAnalytics({

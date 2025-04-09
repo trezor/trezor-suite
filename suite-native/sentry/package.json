@@ -11,7 +11,9 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@sentry/core": "8.55.0",
         "@sentry/react-native": "6.10.0",
-        "@suite-common/sentry": "workspace:*"
+        "@suite-common/sentry": "workspace:*",
+        "@suite-native/config": "workspace:*"
     }
 }
