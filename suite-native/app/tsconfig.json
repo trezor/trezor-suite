@@ -70,6 +70,7 @@
         { "path": "../navigation" },
         { "path": "../notifications" },
         { "path": "../receive" },
+        { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../state" },
         { "path": "../storage" },

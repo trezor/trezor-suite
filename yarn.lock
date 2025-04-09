@@ -9416,7 +9416,6 @@ __metadata:
     "@react-navigation/native": "npm:6.1.18"
     "@react-navigation/native-stack": "npm:6.11.0"
     "@reduxjs/toolkit": "npm:2.6.0"
-    "@sentry/core": "npm:8.55.0"
     "@sentry/react-native": "npm:6.10.0"
     "@shopify/flash-list": "npm:1.7.3"
     "@shopify/react-native-skia": "npm:^1.11.6"
@@ -9463,6 +9462,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/notifications": "workspace:*"
     "@suite-native/receive": "workspace:*"
+    "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/state": "workspace:*"
     "@suite-native/storage": "workspace:*"
@@ -10621,8 +10621,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/sentry@workspace:suite-native/sentry"
   dependencies:
+    "@sentry/core": "npm:8.55.0"
     "@sentry/react-native": "npm:6.10.0"
     "@suite-common/sentry": "workspace:*"
+    "@suite-native/config": "workspace:*"
   languageName: unknown
   linkType: soft
 
