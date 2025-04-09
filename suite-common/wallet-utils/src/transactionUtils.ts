@@ -64,6 +64,9 @@ export const isPending = (tx: WalletAccountTransaction | AccountTransaction) => 
     return !!tx && (!tx.blockHeight || tx.blockHeight < 0);
 };
 
+export const isSentTransaction = (tx: WalletAccountTransaction | AccountTransaction) =>
+    ['sent', 'self'].includes(tx.type);
+
 export const isRbfTransaction = (
     tx: GeneralPrecomposedTransactionFinal,
 ): tx is PrecomposedTransactionFinalBumpFeeRbf | PrecomposedTransactionFinalCancelRbf =>

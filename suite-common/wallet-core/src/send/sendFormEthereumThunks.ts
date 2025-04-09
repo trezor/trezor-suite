@@ -28,6 +28,7 @@ import {
     getTxStakeNameByDataHex,
     getUnstakeAmountByEthereumDataHex,
     isPending,
+    isSentTransaction,
     prepareEthereumTransaction,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
@@ -282,7 +283,9 @@ export const ethereumGetCurrentNonceThunk = createThunk<
         // This may lead to unexpected/unwanted behavior
         // whenever pending tx gets rejected all following txs (with higher nonce) will be rejected as well
         const transactions = selectTransactions(getState());
-        const pendingTxs = (transactions[selectedAccount.key] || []).filter(isPending);
+        const pendingTxs = (transactions[selectedAccount.key] || [])
+            .filter(isPending)
+            .filter(isSentTransaction);
         const pendingNonce = pendingTxs.reduce((value, tx) => {
             if (!tx.ethereumSpecific) return value;
 
