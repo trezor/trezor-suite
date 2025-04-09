@@ -1,4 +1,4 @@
-import { ABORTED_BY_SIGNAL } from '../src/errors';
+import { ABORTED_BY_SIGNAL, INTERFACE_DATA_TRANSFER } from '../src/errors';
 import { readMessageBuffer } from '../src/utils/readMessageBuffer';
 
 describe('readMessageBuffer', () => {
@@ -58,5 +58,16 @@ describe('readMessageBuffer', () => {
         result = await r.read('1');
         if (!result.success) throw new Error(result.error);
         expect(result.payload.toString('hex')).toEqual('0101');
+    });
+
+    it('read from readRequest cancelRead', async () => {
+        const r = readMessageBuffer();
+
+        const readPromise = r.read('1');
+        r.cancelRead('1');
+        const result = await readPromise;
+
+        if (result.success) throw new Error('Unexpected success');
+        expect(result.error).toEqual(INTERFACE_DATA_TRANSFER);
     });
 });

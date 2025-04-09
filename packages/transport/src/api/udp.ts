@@ -163,6 +163,13 @@ export class UdpApi extends AbstractApi {
             device => !!this.devices.find(d => d.path === device.path),
         );
 
+        // find all disconnected devices and cancel reading (if any)
+        const [disconnected] = arrayPartition(
+            this.devices,
+            device => !devices.find(d => d.path === device.path),
+        );
+        disconnected.forEach(d => this.readBuffer.cancelRead(d.path));
+
         if (known.length !== this.devices.length || unknown.length > 0) {
             this.devices = devices;
             if (this.listening) {
@@ -176,7 +183,9 @@ export class UdpApi extends AbstractApi {
         return Promise.resolve(this.success(undefined));
     }
 
-    public closeDevice(_path: string) {
+    public closeDevice(path: string) {
+        this.readBuffer.cancelRead(path);
+
         return Promise.resolve(this.success(undefined));
     }
 
