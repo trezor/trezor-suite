@@ -63,6 +63,7 @@ export const initAnalyticsThunk = createThunk(
         });
 
         allowSentryReport(!!userAllowedTracking);
+        setSentryUser(instanceId);
 
         dispatch(
             analyticsActions.initAnalytics({
