@@ -149,7 +149,7 @@ export abstract class BaseProcess {
                 stdio: ['ignore', 'ignore', 'ignore'],
             });
             this.process.on('error', err => this.onError(err));
-            this.process.on('exit', code => this.onExit(code));
+            this.process.on('close', code => this.onExit(code));
 
             if (this.options.autoRestart && this.options.autoRestart > 0) {
                 // When process runs with `autoRestart`, restarting the process is managed by BaseProcess.
@@ -169,16 +169,16 @@ export abstract class BaseProcess {
                 reject(new Error(`Process ${this.processName} not started. ${message}`));
             };
 
-            this.process.once('error', spawnErrorHandler);
-            this.process.once('exit', spawnErrorHandler);
+            // `close` event should handle both `exit` and `error` cases
+            // https://nodejs.org/api/child_process.html#event-close
+            this.process.once('close', spawnErrorHandler);
 
             resolveTimeout = setInterval(async () => {
                 const currentStatus = await this.status();
                 // We make sure that the service is available and then stop listening for initial error.
                 if (currentStatus.service && this.process) {
                     clearTimeout(resolveTimeout);
-                    this.process.removeListener('exit', spawnErrorHandler);
-                    this.process.removeListener('error', spawnErrorHandler);
+                    this.process.removeListener('close', spawnErrorHandler);
                     resolve();
                 }
             }, 200);
@@ -234,11 +234,11 @@ export abstract class BaseProcess {
         await this.start();
     }
 
-    onError(err: Error) {
+    private onError(err: Error) {
         this.logger.error(this.logTopic, err.message);
     }
 
-    onExit(code: number | null) {
+    private onExit(code: number | null) {
         this.logger.info(
             this.logTopic,
             `Exited, code: ${code ?? 'N/A'} (Stopped: ${b2t(this.stopped)})`,
@@ -246,7 +246,7 @@ export abstract class BaseProcess {
         this.process = null;
 
         if (this.options.autoRestart && this.options.autoRestart > 0 && !this.stopped) {
-            this.logger.debug(this.logTopic, 'Auto restarting...');
+            this.logger.debug(this.logTopic, 'Auto restart planned...');
             let restartDelay = this.options.autoRestart;
 
             // Add throttle delay to prevent the process from never restarting if the throttle is hit
@@ -254,7 +254,7 @@ export abstract class BaseProcess {
                 restartDelay += this.options.startupCooldown;
             }
 
-            setTimeout(() => this.start(), restartDelay * 1000);
+            setTimeout(() => !this.stopped && this.start(), restartDelay * 1000);
         }
     }
 
