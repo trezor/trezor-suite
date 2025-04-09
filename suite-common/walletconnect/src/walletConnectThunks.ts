@@ -306,6 +306,7 @@ export const walletConnectInitThunk = createThunk(
 
         const core = new Core({
             projectId: PROJECT_ID,
+            telemetryEnabled: false,
         });
 
         walletKit = await WalletKit.init({
