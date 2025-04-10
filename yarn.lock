@@ -11214,7 +11214,7 @@ __metadata:
     framer-motion: "npm:^12.6.3"
     lottie-react: "npm:2.4.1"
     polished: "npm:^4.3.1"
-    postcss-styled-syntax: "npm:^0.6.4"
+    postcss-styled-syntax: "npm:^0.7.1"
     react: "npm:18.2.0"
     react-date-range: "npm:^1.4.0"
     react-dom: "npm:18.2.0"
@@ -33878,14 +33878,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-styled-syntax@npm:^0.6.4":
-  version: 0.6.4
-  resolution: "postcss-styled-syntax@npm:0.6.4"
+"postcss-styled-syntax@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "postcss-styled-syntax@npm:0.7.1"
   dependencies:
-    typescript: "npm:^5.3.3"
+    typescript: "npm:^5.7.3"
   peerDependencies:
-    postcss: ^8.4.21
-  checksum: 10/435bc414cc68d2d2297bb6354230226f554b88efb38610c0c35575eefc241edbabf12a4d4662957204e92091443fa25c85cb943916b61023c222e30a1127b1ff
+    postcss: ^8.5.1
+  checksum: 10/285a714f7dd28fc4b7677fc36cd2248ae8e9f610f1f6cea46a739968562a1978d48f42cdd7c41b51764b2080ed01f9379e2c845d7ca556c8accbb6003b5a41d1
   languageName: node
   linkType: hard
 

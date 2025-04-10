@@ -64,7 +64,7 @@
         "@trezor/eslint": "workspace:*",
         "@types/react": "18.2.55",
         "@types/react-date-range": "^1.4.10",
-        "postcss-styled-syntax": "^0.6.4",
+        "postcss-styled-syntax": "^0.7.1",
         "storybook": "^8.6.12",
         "stylelint": "^16.14.1",
         "stylelint-config-standard": "^36.0.0",
