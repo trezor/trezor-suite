@@ -24,7 +24,7 @@ import { useTimer } from '@trezor/react-utils';
 
 import { TradingBuyForm } from '../types';
 import { clearTradingBuyFormQuoteData } from './useTradingBuyForm';
-import { buildUrl, getSourceForForm } from '../utils/tradeFormUtils';
+import { buildTradingUrl, getSourceForForm } from '../utils/tradeFormUtils';
 import { getSelectedSymbolFromBuyForm } from '../utils/tradeableAssetUtils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -118,7 +118,7 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
         }
 
         if (response.tradeForm) {
-            const returnUrl = buildUrl('trade', candidateQuote!);
+            const returnUrl = buildTradingUrl('trade', candidateQuote!);
             handleWebview(response.tradeForm.form, returnUrl);
         }
 
@@ -130,7 +130,7 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
             return;
         }
 
-        const returnUrl = buildUrl('trade', selectedQuote);
+        const returnUrl = buildTradingUrl('trade', selectedQuote);
 
         dispatch(
             buyThunks.confirmTradeThunk({
@@ -156,7 +156,7 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
 
         setIsConsentRequested(false);
 
-        const returnUrl = buildUrl('quote', candidateQuote);
+        const returnUrl = buildTradingUrl('quote', candidateQuote);
 
         dispatch(
             buyThunks.selectQuoteThunk({

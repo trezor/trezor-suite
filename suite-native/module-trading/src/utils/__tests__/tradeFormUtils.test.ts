@@ -4,7 +4,7 @@ import { trezorLogo } from '@suite-common/suite-constants';
 
 import {
     applyHtmlTemplate,
-    buildUrl,
+    buildTradingUrl,
     getRequestFormSource,
     getSourceForForm,
 } from '../tradeFormUtils';
@@ -185,10 +185,10 @@ describe('getRequestFormSource', () => {
     });
 });
 
-describe('buildUrl', () => {
+describe('buildTradingUrl', () => {
     it('should return correct url format', () => {
         expect(
-            buildUrl('quote', {
+            buildTradingUrl('quote', {
                 receiveCurrency: 'btc',
                 fiatCurrency: 'usd',
                 fiatAmount: 1234,

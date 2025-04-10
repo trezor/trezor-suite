@@ -108,5 +108,5 @@ export const getSourceForForm = (form: FormResponse['form'] | undefined, backUrl
     return null;
 };
 
-export const buildUrl = (type: 'quote' | 'trade', trade: BuyTrade) =>
-    `trezorsuitelite://buy/${type}?receive=${trade.receiveCurrency}&send=${trade.fiatCurrency}&fiatAmount=${trade.fiatAmount}`;
+export const buildTradingUrl = (type: 'quote' | 'trade', trade: BuyTrade) =>
+    `suitetrading://buy/${type}?receive=${trade.receiveCurrency}&send=${trade.fiatCurrency}&fiatAmount=${trade.fiatAmount}`;
