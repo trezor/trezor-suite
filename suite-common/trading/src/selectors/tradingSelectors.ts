@@ -8,8 +8,16 @@ import addressValidator from '@trezor/address-validator';
 
 import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
 import type { TradingInfo, TradingState } from '../reducers/tradingReducer';
-import { InvityServerEnvironment, TradingFiatCurrenciesProps } from '../types';
-import { cryptoIdToNetwork, testnetToProdCryptoId } from '../utils';
+import {
+    InvityServerEnvironment,
+    TradingFiatCurrenciesProps,
+    TradingPaymentMethodProps,
+} from '../types';
+import {
+    cryptoIdToNetwork,
+    getTradingQuotesByPaymentMethod,
+    testnetToProdCryptoId,
+} from '../utils';
 import {
     getTradingCoinInfoByCryptoId,
     getTradingCoinSymbolByCryptoId,
@@ -17,6 +25,7 @@ import {
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
 } from '../utils/infoUtils';
+import { getBestRatedQuote } from '../utils/tradingUtils';
 
 // partial copy of Suite state
 export type TradingRootState = {
@@ -212,3 +221,20 @@ export const selectTradingBuyIsLoading = (state: TradingRootState) =>
 
 export const selectTradingBuyQuotes = (state: TradingRootState) =>
     state.wallet.tradingNew.buy.quotes;
+
+export const selectBestBuyQuoteByPaymentMethod = createMemoizedSelector(
+    [
+        selectTradingBuyQuotes,
+        (_: TradingRootState, paymentMethod: TradingPaymentMethodProps | undefined) =>
+            paymentMethod,
+    ],
+    (quotes, paymentMethod) => {
+        if (!paymentMethod) {
+            return undefined;
+        }
+
+        const quotesByPaymentMethod = getTradingQuotesByPaymentMethod<'buy'>(quotes, paymentMethod);
+
+        return getBestRatedQuote(quotesByPaymentMethod, 'buy');
+    },
+);

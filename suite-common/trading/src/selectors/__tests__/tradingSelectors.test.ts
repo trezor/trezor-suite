@@ -7,6 +7,7 @@ import { initialState } from '../../reducers/tradingReducer';
 import { TradingPaymentMethodListProps } from '../../types';
 import {
     TradingRootState,
+    selectBestBuyQuoteByPaymentMethod,
     selectTrading,
     selectTradingBuy,
     selectTradingBuyIsLoading,
@@ -59,6 +60,35 @@ describe('tradingSelectors', () => {
                 providerInfos: {},
                 supportedFiatCurrencies: ['usd', 'eur', 'czk'],
             },
+            quotes: [
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin',
+                    receiveStringAmount: '0.0005',
+                    rate: 20000,
+                    paymentMethod: 'eps',
+                    quoteId: 'quoteId1',
+                },
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin',
+                    receiveStringAmount: '0.001',
+                    rate: 10000,
+                    paymentMethod: 'eps',
+                    quoteId: 'quoteId2',
+                },
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin',
+                    receiveStringAmount: '0.002',
+                    rate: 5000,
+                    paymentMethod: 'cred',
+                    quoteId: 'quoteId1',
+                },
+            ],
         }) as TradingBuyState;
 
     const getState = () =>
@@ -283,6 +313,27 @@ describe('tradingSelectors', () => {
     describe('selectTradingBuyQuotes', () => {
         it('should return quotes', () => {
             expect(selectTradingBuyQuotes(state)).toBe(state.wallet.tradingNew.buy.quotes);
+        });
+    });
+
+    describe('selectBestBuyQuoteByPaymentMethod', () => {
+        it('should return best quote', () => {
+            expect(selectBestBuyQuoteByPaymentMethod(state, 'eps')).toEqual(
+                expect.objectContaining({
+                    paymentMethod: 'eps',
+                    quoteId: 'quoteId2',
+                }),
+            );
+        });
+
+        it('should be undefined when payment method is not specified', () => {
+            expect(selectBestBuyQuoteByPaymentMethod(state, undefined)).toBeUndefined();
+        });
+
+        it('should be undefined when no quotes are loaded', () => {
+            state.wallet.tradingNew.buy.quotes = [];
+
+            expect(selectBestBuyQuoteByPaymentMethod(state, 'eps')).toBeUndefined();
         });
     });
 });

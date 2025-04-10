@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     TradingPaymentMethodListProps,
-    getBestRatedQuote,
-    getTradingQuotesByPaymentMethod,
+    TradingRootState,
+    selectBestBuyQuoteByPaymentMethod,
     selectTradingBuyQuotes,
 } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
@@ -112,12 +112,9 @@ const useQuotesChangeEffect = (form: TradingBuyForm) => {
 const usePaymentMethodChangeEffect = (form: TradingBuyForm) => {
     const paymentMethod = form.watch('paymentMethod');
     const symbol = getSelectedSymbolFromBuyForm(form);
-    const allQuotes = useSelector(selectTradingBuyQuotes);
-    const quotesByPaymentMethod = getTradingQuotesByPaymentMethod<'buy'>(
-        allQuotes,
-        paymentMethod?.value ?? '',
+    const selectedQuote = useSelector((state: TradingRootState) =>
+        selectBestBuyQuoteByPaymentMethod(state, paymentMethod?.value),
     );
-    const selectedQuote = getBestRatedQuote(quotesByPaymentMethod, 'buy');
 
     const isAmountInSats = useSelector((state: SettingsSliceRootState) =>
         selectIsAmountInSats(state, symbol),
