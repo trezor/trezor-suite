@@ -29,7 +29,7 @@ const logger = initLog('DeviceCommands');
 
 const success = <T>(payload: T) => ({ success: true as const, payload });
 const error = (error: Error) => ({ success: false as const, error });
-const fail = (msg: string, cause?: string) => error(new Error(msg, cause ? { cause } : undefined));
+const fail = (msg: string) => error(new Error(msg, { cause: 'transport-error' }));
 
 export interface TypedCallProvider {
     typedCall: Messages.TypedCall;
@@ -124,15 +124,12 @@ export class DeviceCurrentSession implements TypedCallProvider {
         type: T,
         msg: Messages.MessagePayload<T>,
         abortPromise: Promise<ReturnType<typeof fail>>,
-    ): Promise<ReturnType<typeof success<Messages.MessageResponse>> | ReturnType<typeof fail>> {
+    ) {
         let [name, data] = [type, msg];
-        const { protocol, session } = this;
         let pinUnlocked = false;
 
         while (true) {
-            if (this.disposed) return error(this.disposed);
-
-            const callPromise = this.call({ session, name, data, protocol });
+            const callPromise = this.call(name, data);
 
             const abortedDuringCall = await Promise.race([
                 callPromise.then(() => false),
@@ -257,10 +254,14 @@ export class DeviceCurrentSession implements TypedCallProvider {
         }
     }
 
-    private async call(params: Parameters<Transport['call']>[0]) {
-        logger.debug('Sending', params.name, filterForLog(params.name, params.data));
+    private async call<T extends Messages.MessageKey>(name: T, data: Messages.MessagePayload<T>) {
+        if (this.disposed) return Promise.resolve(error(this.disposed));
 
-        const result = await this.transport.call(params);
+        logger.debug('Sending', name, filterForLog(name, data));
+
+        const { session, protocol } = this;
+
+        const result = await this.transport.call({ name, data, session, protocol });
 
         if (result.success) {
             const { type, message } = result.payload;
@@ -270,7 +271,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
             logger.warn('Received transport error', result.error, result.message);
         }
 
-        return result.success ? success(result.payload) : fail(result.error, 'transport-error');
+        return result.success ? success(result.payload) : fail(result.error);
     }
 
     async cancelCall(expectResponse = true) {
