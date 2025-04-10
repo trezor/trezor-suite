@@ -44,17 +44,38 @@ export const getSupportedDefinitionTypes = (symbol: NetworkSymbol) => {
     ];
 };
 
+type TokenDefinitionsParameters = [NetworkSymbol, DefinitionType, TokenManagementAction];
+
+const getSafeDefinitionParameters = (
+    definitionKey: string,
+): TokenDefinitionsParameters | undefined => {
+    const safeDefinitions = definitionKey
+        .split('-')
+        .filter(
+            definitionPart => !['__proto__', 'constructor', 'prototype'].includes(definitionPart),
+        );
+
+    if (safeDefinitions.length !== 3) return undefined;
+
+    return [
+        safeDefinitions[0],
+        safeDefinitions[1],
+        safeDefinitions[2],
+    ] as TokenDefinitionsParameters;
+};
+
 export const buildTokenDefinitionsFromStorage = (
     storageTokenDefinitions: TokenManagementStorage[],
 ): TokenDefinitionsState => {
     const tokenDefinitions: TokenDefinitionsState = {};
 
     for (const definition of storageTokenDefinitions) {
-        const [symbol, type, action] = definition.key.split('-') as [
-            NetworkSymbol,
-            DefinitionType,
-            TokenManagementAction,
-        ];
+        const definitionParameters = getSafeDefinitionParameters(definition.key);
+
+        if (!definitionParameters) continue;
+
+        const [symbol, type, action] = definitionParameters;
+
         const networkTokenDefinition = tokenDefinitions[symbol];
 
         if (!networkTokenDefinition) {
