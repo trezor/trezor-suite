@@ -3,11 +3,12 @@ import { useEffect } from 'react';
 import { BuyCryptoPaymentMethod, CryptoId, SellCryptoPaymentMethod } from 'invity-api';
 import styled from 'styled-components';
 
+import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 import { FeeLevel } from '@trezor/connect';
 
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
 import { Account } from 'src/types/wallet';
 
@@ -30,6 +31,8 @@ export const TradingRedirect = () => {
     } = useTradingRedirect();
     const router = useSelector(state => state.router);
 
+    const dispatch = useDispatch();
+
     useEffect(() => {
         // get rid of parameters appended by some partners to url which we pass to them
         const params = router?.hash?.split('?')[0].split('/');
@@ -46,6 +49,8 @@ export const TradingRedirect = () => {
             accountType: params[2] as Account['accountType'],
             index: parseInt(params[3], 10),
         };
+
+        dispatch(updateFeeInfoThunk({ networkSymbol: redirectCommonParams.symbol }));
 
         if (redirectCommonParams.routeType === 'offers') {
             redirectToBuyOffers({
@@ -110,6 +115,7 @@ export const TradingRedirect = () => {
         redirectToSellOffers,
         redirectToExchangeOffers,
         router,
+        dispatch,
     ]);
 
     return (
