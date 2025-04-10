@@ -36,7 +36,7 @@
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "react-intl": "^7.1.11",
-        "styled-components": "^6.1.16",
+        "styled-components": "^6.1.17",
         "usb": "^2.15.0"
     }
 }

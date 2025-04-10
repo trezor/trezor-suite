@@ -11417,7 +11417,7 @@ __metadata:
     react-svg: "npm:16.3.0"
     react-use: "npm:^17.5.0"
     storybook: "npm:^8.6.12"
-    styled-components: "npm:^6.1.16"
+    styled-components: "npm:^6.1.17"
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^36.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
@@ -11480,7 +11480,7 @@ __metadata:
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     scroll-into-view-if-needed: "npm:^3.1.0"
-    styled-components: "npm:^6.1.16"
+    styled-components: "npm:^6.1.17"
     tailwindcss: "npm:^3.4.10"
     zod: "npm:^3.24.2"
   peerDependencies:
@@ -11535,7 +11535,7 @@ __metadata:
     remark-gemoji: "npm:^8.0.0"
     remark-gfm: "npm:^4.0.1"
     rimraf: "npm:^6.0.1"
-    styled-components: "npm:^6.1.16"
+    styled-components: "npm:^6.1.17"
     swr: "npm:^2.3.3"
     tsx: "npm:^4.19.3"
     webpack: "npm:^5.97.1"
@@ -11646,7 +11646,7 @@ __metadata:
     xvfb-maybe: "npm:^0.2.1"
   peerDependencies:
     react: 18.2.0
-    styled-components: ^6.1.16
+    styled-components: ^6.1.17
     stylelint: ^16.2.1
     stylelint-config-standard: ^36.0.0
   languageName: unknown
@@ -11673,7 +11673,7 @@ __metadata:
     react-intl: "npm:^7.1.11"
   peerDependencies:
     react: 18.2.0
-    styled-components: ^6.1.16
+    styled-components: ^6.1.17
     stylelint: ^16.2.1
     stylelint-config-standard: ^36.0.0
   languageName: unknown
@@ -11915,7 +11915,7 @@ __metadata:
     react-intl: "npm:^7.1.11"
     react-svg: "npm:16.3.0"
     storybook: "npm:^8.6.12"
-    styled-components: "npm:^6.1.16"
+    styled-components: "npm:^6.1.17"
     stylelint: "npm:^16.14.1"
     typescript-styled-plugin: "npm:^0.18.3"
     zxcvbn: "npm:^4.4.2"
@@ -12213,7 +12213,7 @@ __metadata:
     react-helmet-async: "npm:^2.0.5"
     react-redux: "npm:9.2.0"
     react-router-dom: "npm:^5.2.0"
-    styled-components: "npm:^6.1.16"
+    styled-components: "npm:^6.1.17"
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^36.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
@@ -12280,7 +12280,7 @@ __metadata:
     react-router: "npm:^5.2.0"
     react-router-dom: "npm:^5.2.0"
     rimraf: "npm:^6.0.1"
-    styled-components: "npm:^6.1.16"
+    styled-components: "npm:^6.1.17"
     stylelint: "npm:^16.17.0"
     stylelint-config-standard: "npm:^36.0.0"
     tsx: "npm:^4.19.3"
@@ -12416,7 +12416,7 @@ __metadata:
     redux-mock-store: "npm:^1.5.4"
     redux-thunk: "npm:^3.1.0"
     semver: "npm:^7.7.1"
-    styled-components: "npm:^6.1.16"
+    styled-components: "npm:^6.1.17"
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^36.0.0"
     typescript-styled-plugin: "npm:^0.18.3"
@@ -12464,7 +12464,7 @@ __metadata:
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
     react-intl: "npm:^7.1.11"
-    styled-components: "npm:^6.1.16"
+    styled-components: "npm:^6.1.17"
     usb: "npm:^2.15.0"
     webpack: "npm:^5.97.1"
   languageName: unknown
@@ -23178,6 +23178,18 @@ __metadata:
   dependencies:
     pend: "npm:~1.2.0"
   checksum: 10/db3e34fa483b5873b73f248e818f8a8b59a6427fd8b1436cd439c195fdf11e8659419404826059a642b57d18075c856d06d6a50a1413b714f12f833a9341ead3
+  languageName: node
+  linkType: hard
+
+"fdir@npm:^6.4.2":
+  version: 6.4.3
+  resolution: "fdir@npm:6.4.3"
+  peerDependencies:
+    picomatch: ^3 || ^4
+  peerDependenciesMeta:
+    picomatch:
+      optional: true
+  checksum: 10/8e6d20f4590dc168de1374a9cadaa37e20ca6e0b822aa247c230e7ea1d9e9674a68cd816146435e4ecc98f9285091462ab7e5e56eebc9510931a1794e4db68b2
   languageName: node
   linkType: hard
 
@@ -38664,9 +38676,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-components@npm:^6.1.16":
-  version: 6.1.16
-  resolution: "styled-components@npm:6.1.16"
+"styled-components@npm:^6.1.17":
+  version: 6.1.17
+  resolution: "styled-components@npm:6.1.17"
   dependencies:
     "@emotion/is-prop-valid": "npm:1.2.2"
     "@emotion/unitless": "npm:0.8.1"
@@ -38680,7 +38692,7 @@ __metadata:
   peerDependencies:
     react: ">= 16.8.0"
     react-dom: ">= 16.8.0"
-  checksum: 10/ed7178c31a205a1f29ef99fa2799501cb51f52cb431d960afc90184f4c3f7c2d83debeae6d417e795c03e0b91448113acda10201d8060696acfd0a2e608b8cb5
+  checksum: 10/31939ba34ef8440f02cbdd2b509d03c6125d9f67876562899e6359680ad600b169a4d2c87afa57b399ecca31432b61de54bf052e1846051bbcfca64d86e5181b
   languageName: node
   linkType: hard
 
@@ -39496,13 +39508,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinyglobby@npm:^0.2.12, tinyglobby@npm:^0.2.9":
+"tinyglobby@npm:^0.2.12":
   version: 0.2.13
   resolution: "tinyglobby@npm:0.2.13"
   dependencies:
     fdir: "npm:^6.4.4"
     picomatch: "npm:^4.0.2"
   checksum: 10/b04557ee58ad2be5f2d2cbb4b441476436c92bb45ba2e1fc464d686b793392b305ed0bcb8b877429e9b5036bdd46770c161a08384c0720b6682b7cd6ac80e403
+  languageName: node
+  linkType: hard
+
+"tinyglobby@npm:^0.2.9":
+  version: 0.2.10
+  resolution: "tinyglobby@npm:0.2.10"
+  dependencies:
+    fdir: "npm:^6.4.2"
+    picomatch: "npm:^4.0.2"
+  checksum: 10/10c976866d849702edc47fc3fef27d63f074c40f75ef17171ecc1452967900699fa1e62373681dd58e673ddff2e3f6094bcd0a2101e3e4b30f4c2b9da41397f2
   languageName: node
   linkType: hard
 
