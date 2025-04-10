@@ -1,8 +1,8 @@
 diff --git a/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt b/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
-index 6385d40..1f03038 100644
+index f697c98..a9f4c03 100644
 --- a/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
 +++ b/node_modules/expo-updates/android/src/main/java/expo/modules/updates/UpdatesPackage.kt
-@@ -97,7 +97,7 @@ class UpdatesPackage : Package {
+@@ -98,7 +98,7 @@ class UpdatesPackage : Package {
      val handler = object : ApplicationLifecycleListener {
        override fun onCreate(application: Application) {
          super.onCreate(application)
