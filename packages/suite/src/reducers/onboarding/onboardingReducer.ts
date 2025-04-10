@@ -62,7 +62,11 @@ const removePath = (paths: AnyPath[], state: OnboardingState) =>
 const onboarding = (state: OnboardingState = initialState, action: Action) => {
     if (
         !state.isActive &&
-        ![ONBOARDING.RESET_ONBOARDING, ONBOARDING.ENABLE_ONBOARDING_REDUCER].includes(action.type)
+        ![
+            ONBOARDING.RESET_ONBOARDING,
+            ONBOARDING.ENABLE_ONBOARDING_REDUCER,
+            ONBOARDING.ANALYTICS,
+        ].includes(action.type)
     ) {
         return state;
     }

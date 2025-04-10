@@ -2,7 +2,11 @@ import { MouseEvent } from 'react';
 
 import { Button } from '@trezor/components';
 
-import { enableOnboardingReducer, resetOnboarding } from 'src/actions/onboarding/onboardingActions';
+import {
+    enableOnboardingReducer,
+    resetOnboarding,
+    updateAnalytics,
+} from 'src/actions/onboarding/onboardingActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
@@ -16,6 +20,8 @@ export const DeviceInitialize = () => {
         dispatch(resetOnboarding());
         // and resetting state disables onboarding reducer so we need to enable it again
         dispatch(enableOnboardingReducer(true));
+
+        dispatch(updateAnalytics({ startTime: Date.now() }));
 
         dispatch(goto('onboarding-index'));
     };

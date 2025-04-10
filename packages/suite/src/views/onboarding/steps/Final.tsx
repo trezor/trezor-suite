@@ -205,8 +205,6 @@ export const FinalStep = () => {
                         variant="primary"
                         data-testid="@onboarding/exit-app-button"
                         onClick={() => {
-                            goToSuite(true);
-
                             const payload = {
                                 ...onboardingAnalytics,
                                 duration: Date.now() - onboardingAnalytics.startTime!,
@@ -219,6 +217,8 @@ export const FinalStep = () => {
                                 type: EventType.DeviceSetupCompleted,
                                 payload,
                             });
+
+                            goToSuite(true);
                         }}
                         icon="arrowRightLong"
                         iconAlignment="end"
