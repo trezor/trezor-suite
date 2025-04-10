@@ -4,7 +4,7 @@ import { CSSColor } from '@trezor/theme';
 
 export const getValueAndUnit = (valueAndUnit: string): [value: number, unit: string] => {
     const value = parseFloat(valueAndUnit);
-    const [unit] = valueAndUnit.match(/([a-zA-Z]*|%)$/) ?? [''];
+    const [unit] = valueAndUnit.match(/([a-zA-Z]{1,4}|%)$/) ?? ['']; // CSS units shouldn't have more than 4 characters.
 
     return [value, unit];
 };
