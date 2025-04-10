@@ -1,3 +1,5 @@
+import { getWeakRandomId } from '@trezor/utils';
+
 import { experimentTest, getArrayOfInstanceIds } from '../__fixtures__/experimentUtils';
 import {
     getExperimentGroupByInclusion,
@@ -5,6 +7,11 @@ import {
     selectActiveExperimentGroup,
 } from '../experimentUtils';
 import { ExperimentId } from '../messageSystemTypes';
+
+jest.mock('@trezor/utils', () => ({
+    ...jest.requireActual('@trezor/utils'),
+    getWeakRandomId: jest.fn(),
+}));
 
 describe('testing experiment utils', () => {
     const experimentId = 'e2e8d05f-1469-4e47-9ab0-53544e5cad07' as ExperimentId;
@@ -35,13 +42,27 @@ describe('testing experiment utils', () => {
         expect(isExistInstanceIdNotInVariantRange).toEqual(false);
     });
 
+    const mockRandomInt = (isAGroup: boolean) => {
+        (getWeakRandomId as jest.Mock).mockImplementation(() =>
+            isAGroup ? '1XxK0mjUnx' : 'AyRQxROQKW',
+        );
+    };
+
     it('test selectActiveExperimentGroup share of variant inclusion', () => {
-        const deviation = 0.05;
         const sampleSize = 1000;
         let groupACount = 0;
         let groupBCount = 0;
 
-        const arrayOfIds = getArrayOfInstanceIds(sampleSize);
+        mockRandomInt(true);
+        const arrayOfIdsAGroup = getArrayOfInstanceIds(
+            sampleSize * (experimentTest.groups[0].percentage / 100),
+        );
+        mockRandomInt(false);
+        const arrayOfIdsBGroup = getArrayOfInstanceIds(
+            sampleSize * (experimentTest.groups[1].percentage / 100),
+        );
+
+        const arrayOfIds = [...arrayOfIdsAGroup, ...arrayOfIdsBGroup];
 
         arrayOfIds.forEach(id => {
             const selectedGroup = selectActiveExperimentGroup({
@@ -61,13 +82,7 @@ describe('testing experiment utils', () => {
         const shareA = groupACount / sampleSize;
         const shareB = groupBCount / sampleSize;
 
-        expect(shareA).toBeGreaterThanOrEqual(
-            experimentTest.groups[0].percentage / 100 - deviation,
-        );
-        expect(shareA).toBeLessThanOrEqual(experimentTest.groups[0].percentage / 100 + deviation);
-        expect(shareB).toBeGreaterThanOrEqual(
-            experimentTest.groups[1].percentage / 100 - deviation,
-        );
-        expect(shareB).toBeLessThanOrEqual(experimentTest.groups[1].percentage / 100 + deviation);
+        expect(shareA).toEqual(experimentTest.groups[0].percentage / 100);
+        expect(shareB).toEqual(experimentTest.groups[1].percentage / 100);
     });
 });
