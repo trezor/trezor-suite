@@ -110,6 +110,10 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     }
 
     public getServerAddress() {
+        if (!this.server.listening) {
+            // this happens when port was already in use at the time of starting the server
+            throw new Error(`Server is not listening`);
+        }
         const address = this.server.address();
         if (!address || typeof address === 'string') {
             // this is only for typescript
