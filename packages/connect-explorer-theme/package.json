@@ -37,7 +37,7 @@
         "next-seo": "^6.6.0",
         "next-themes": "^0.3.0",
         "scroll-into-view-if-needed": "^3.1.0",
-        "styled-components": "^6.1.16",
+        "styled-components": "^6.1.17",
         "tailwindcss": "^3.4.10",
         "zod": "^3.24.2"
     },
