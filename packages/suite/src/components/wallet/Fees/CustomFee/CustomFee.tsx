@@ -134,7 +134,11 @@ export const CustomFee = <TFieldValues extends FormState>({
                                     symbol={symbol}
                                 />
                             </Text>
-                            <Text variant="tertiary" typographyStyle="hint">
+                            <Text
+                                data-testid="@trading/quote/custom-fee-fiat-amount"
+                                variant="tertiary"
+                                typographyStyle="hint"
+                            >
                                 <FiatValue
                                     disableHiddenPlaceholder
                                     amount={cachedNetworkAmount}

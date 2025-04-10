@@ -32,6 +32,8 @@ const accountTabFilters = [
 
 type AccountTabFilter = (typeof accountTabFilters)[number];
 
+type FeeTypes = 'economy' | 'normal' | 'high' | 'custom';
+
 function isAccountTabFilter(network: string): network is AccountTabFilter {
     return accountTabFilters.includes(network as AccountTabFilter);
 }
@@ -55,10 +57,14 @@ export class TradingPage {
     readonly cryptoInputBottomText: Locator;
     readonly youPayFractionButton = (amount: '10%' | '25%' | '50%' | 'Max') =>
         this.page.getByRole('button', { name: amount });
-    readonly feeButton = (fee: 'economy' | 'normal' | 'high' | 'custom') =>
-        this.page.getByTestId(`select-bar/${fee}`);
+    readonly feeButton = (feeType: FeeTypes) => this.page.getByTestId(`select-bar/${feeType}`);
+    readonly bitcoinFeeValue = (feeType: Exclude<FeeTypes, 'custom'>) =>
+        this.page.getByTestId(`@fee-card/${feeType}-fait-amount`);
+    readonly bitcoinFeeRateValue = (feeType: Exclude<FeeTypes, 'custom'>) =>
+        this.page.getByTestId(`@fee-card/${feeType}-rate`);
     readonly customFeeInput: Locator;
     readonly customFeeAmount: Locator;
+    readonly customFeeFiatAmount: Locator;
     readonly miscFeeAmount: Locator;
     readonly countryOfResidenceDropdown: Locator;
     readonly countryOfResidenceOption = (countryCode: string) =>
@@ -147,6 +153,7 @@ export class TradingPage {
         );
         this.customFeeInput = this.page.getByTestId('feePerUnit');
         this.customFeeAmount = this.page.getByTestId('@trading/quote/custom-fee-amount');
+        this.customFeeFiatAmount = this.page.getByTestId('@trading/quote/custom-fee-fiat-amount');
         this.miscFeeAmount = this.page.getByTestId('@wallet/misc-fee-amount');
         this.countryOfResidenceDropdown = this.page.getByTestId(
             '@trading/form/country-select/input',
@@ -447,7 +454,7 @@ export class TradingPage {
     @step()
     async waitForRedirectCompletion() {
         await expect(this.page.getByText('Buy & sell')).not.toBeVisible();
-        await expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 15000 });
+        await expect(this.page.getByText('Buy & sell')).toBeVisible({ timeout: 30_000 });
     }
 
     @step()
@@ -514,5 +521,31 @@ export class TradingPage {
         }
 
         return parseFloat(feeParts[0]) / lamportsToSolanaRatio;
+    }
+
+    @step()
+    async expectBitcoinFeeCalculated() {
+        const feePattern = /[≈~]\s*\$\s*\d+\.\d+/;
+        await expect(this.bitcoinFeeValue('economy')).toHaveText(feePattern);
+        await expect(this.bitcoinFeeValue('normal')).toHaveText(feePattern);
+        await expect(this.bitcoinFeeValue('high')).toHaveText(feePattern);
+    }
+
+    @step()
+    async getBitcoinFeeRate(type: FeeTypes) {
+        if (type !== 'custom') {
+            await this.expectBitcoinFeeCalculated();
+        }
+
+        const feeRateText =
+            type === 'custom'
+                ? await this.customFeeInput.textContent()
+                : await this.bitcoinFeeRateValue(type).textContent();
+
+        if (!feeRateText) {
+            throw new Error('Fee amount is undefined or null');
+        }
+
+        return feeRateText;
     }
 }

@@ -44,10 +44,13 @@ test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () =>
     );
 
     test('Sell Bitcoin for best offer', async ({ page, tradingPage, devicePrompt }) => {
+        let feeRate: string | undefined;
+
         await test.step('Fill in a sell request', async () => {
             await tradingPage.fillSellForm(cryptoAmount);
             await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
+            feeRate = await tradingPage.getBitcoinFeeRate('normal');
         });
 
         await test.step('Confirm sell', async () => {
@@ -79,6 +82,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () =>
                 formattedCryptoAmount,
             );
             await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
+            expect(await devicePrompt.getFeeRate()).toBe(feeRate);
         });
 
         // Rest of the flow is not implemented as we don't know how to mock the send request and actually not send the crypto
