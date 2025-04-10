@@ -40,6 +40,8 @@ const loadSolanaTokenProgramLib = async (tokenProgramName: TokenProgramName) => 
     }
 };
 
+export const SOLANA_BASE_FEE = 5000; // lamports
+
 export const getLamportsFromSol = (amountInSol: string) =>
     BigInt(new BigNumber(amountInSol).times(10 ** 9).toString());
 

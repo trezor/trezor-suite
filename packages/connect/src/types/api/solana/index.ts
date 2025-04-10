@@ -20,6 +20,7 @@ export const SolanaTxTokenAccountInfo = Type.Object({
     tokenProgram: Type.String(),
     tokenMint: Type.String(),
     tokenAccount: Type.String(),
+    symbol: Type.Optional(Type.String()),
 });
 
 export type SolanaTxAdditionalInfo = Static<typeof SolanaTxAdditionalInfo>;
