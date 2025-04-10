@@ -144,10 +144,11 @@ export const TransactionReviewModalContent = ({
             : selectPrecomposedSendForm(state),
     );
 
+    const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
     const shouldCheckTxTimeValidity =
-        account?.networkType === 'solana' && !precomposedForm?.isTrading;
-
-    const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp || 0;
+        account?.networkType === 'solana' &&
+        !precomposedForm?.isTrading &&
+        createdTxTimestamp !== 0;
     const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
 
     // check if transaction is still valid

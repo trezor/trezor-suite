@@ -84,12 +84,12 @@ export const TransactionReviewOutputList = ({
     const accounts = useSelector(state => state.wallet.accounts);
     const { networkType, symbol } = account;
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
-    const isFirstOutputAddress = outputs[0].type === 'address';
+    const isFirstOutputAddress = outputs[0]?.type === 'address';
     const isFirstStep = buttonRequestsCount <= 1;
     const isStaking = stakeType;
     const isInternalTransfer =
         isFirstOutputAddress &&
-        findAccountsByAddress(symbol, outputs[0].value, accounts).length > 0;
+        findAccountsByAddress(symbol, outputs[0]?.value, accounts).length > 0;
 
     const summaryIndex = outputs.findIndex(
         ({ type }) => !['address', 'amount', 'opreturn'].includes(type),
