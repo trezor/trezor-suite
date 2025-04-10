@@ -71,7 +71,7 @@ export const LegalSheet = ({
                     <Translation id="moduleTrading.legalSheet.infoLegal2" />
                 </Info>
             </VStack>
-            <Box paddingTop="sp40">
+            <Box padding="sp20">
                 <Button onPress={onConsent}>
                     <Translation id="moduleTrading.tradingScreen.continueButton" />
                 </Button>

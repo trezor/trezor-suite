@@ -193,6 +193,6 @@ describe('buildTradingUrl', () => {
                 fiatCurrency: 'usd',
                 fiatAmount: 1234,
             } as BuyTrade),
-        ).toBe('trezorsuitelite://buy/quote?receive=btc&send=usd&fiatAmount=1234');
+        ).toBe('suitetrading://buy/quote?receive=btc&send=usd&fiatAmount=1234');
     });
 });
