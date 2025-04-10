@@ -8,8 +8,8 @@
         "exp": "qtn7k13GIY/wauu7BvapWA==",
         "country": "CZ",
         "paymentMethodName": "Credit Card",
-        "fiatStringAmount": "55.84",
-        "cryptoStringAmount": "0.00065",
+        "fiatStringAmount": "29.21",
+        "cryptoStringAmount": "0.00034",
         "minFiat": 20,
         "maxFiat": 30000,
         "minCrypto": 0.00006,
@@ -19,5 +19,5 @@
         "orderId": "4839ba2d-dd85-49b3-ae73-5ab1b526e66f",
         "refundAddress": "bc1qw0r95wvsqxumq3km0q8kqyjdard2u8ahaw4y2n"
     },
-    "returnUrl": "http://localhost:8000/coinmarket-redirect#sell-offers/btc/normal/0/p-qc/CZ/EUR/0.00065/bitcoin/4839ba2d-dd85-49b3-ae73-5ab1b526e66f"
+    "returnUrl": "http://localhost:8000/coinmarket-redirect#sell-offers/btc/normal/0/p-qc/CZ/EUR/0.00065/bitcoin/4839ba2d-dd85-49b3-ae73-5ab1b526e66f/custom/1/undefined/undefined"
 }

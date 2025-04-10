@@ -22,6 +22,7 @@ type FeeCardProps = {
     bottomLeftChild: React.ReactNode;
     bottomRightChild: React.ReactNode;
     tooltipContent?: React.ReactNode;
+    'data-testid'?: string;
 };
 
 export const FeeCard = ({
@@ -33,8 +34,9 @@ export const FeeCard = ({
     bottomLeftChild,
     bottomRightChild,
     tooltipContent,
+    'data-testid': dataTestId,
 }: FeeCardProps) => (
-    <Box minWidth={FEE_CARD_MIN_WIDTH}>
+    <Box data-testid={dataTestId} minWidth={FEE_CARD_MIN_WIDTH}>
         <Tooltip content={tooltipContent} delayShow={TOOLTIP_DELAY_NORMAL}>
             <RadioCard onClick={() => changeFeeLevel(value)} isActive={isSelected}>
                 <Column>
