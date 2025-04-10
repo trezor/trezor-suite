@@ -31,10 +31,10 @@ export async function findProcessFromIncomingPort(port: number) {
     switch (process.platform) {
         case 'darwin':
         case 'linux': {
-            const command = `lsof -iTCP:${port} -sTCP:ESTABLISHED -n -P +c0`;
+            const command = `lsof -iTCP:${port} -n -P +c0`;
             const stdout = await spawnAndCollectStdout(command);
             const lines = stdout.split('\n');
-            const process = lines.find(line => line.includes(`:${port}->`));
+            const process = lines.find(line => line.includes(`:${port}`));
             if (process) {
                 const name = process.split(/\s+/)[0].replace(/\\x\d{2}/g, ' ');
                 const pid = process.split(/\s+/)[1];
@@ -46,7 +46,7 @@ export async function findProcessFromIncomingPort(port: number) {
             return undefined;
         }
         case 'win32': {
-            const command = `netstat -ano | findstr :${port} | findstr ESTABLISHED`;
+            const command = `netstat -ano | findstr :${port}`;
             const stdout = await spawnAndCollectStdout(command);
             const lines = stdout.split('\n');
             const record = lines
