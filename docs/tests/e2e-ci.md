@@ -13,6 +13,18 @@ We are using Playwright in combination with Currents.dev to run and orchestrate 
 -   Configurable fail fast - If a given number of tests fails, all the parallel groups are terminated and the rest of the testing is skipped. This is used to save resources and time in case of heavily broken build.
 -   Test retries - The test runner is configured to perform up to two retries (i.e. maximum of 3 runs) to deal with test flakiness
 
+### Note manual workflow reruns and orchestration
+
+Due to the dynamic distribution of tests to the groups, we advise you to always use the option to rerun all jobs and never only the failed ones. That is because the orchestration would have less workers to run the tests and it would cause your test execution to be unnecessarily long.
+
+#### When to use manual reruns
+
+Please use manual workflow rerun in case you've made significant and dangerous changes in subsequent pushes after your tests already passed once and would be skipped.
+
+#### When to NEVER use manual reruns
+
+You should never need to manually rerun tests, because you think the fail is caused by flakiness. This is already solved by the built-in retries and the fail is most likely real and will occur again in the rerun.
+
 ## Pull request pipeline
 
 ### Description and usage

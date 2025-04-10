@@ -76,4 +76,4 @@ runs:
           body: |
             ✅ Previously successful run of **${{ inputs.workflow_name }}** workflow has been found.
             ⏭️ Skipping tests for this run.
-            💡 If you are unsure about your latest changes, please rerun the workflow manually.
+            💡 If you are unsure about your latest changes, please rerun the workflow manually. (Use the Re-run all jobs option)

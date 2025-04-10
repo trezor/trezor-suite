@@ -129,5 +129,4 @@ jobs:
           fail-fast: 3
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          currents-api-key: ${{ secrets.CURRENTS_API_KEY }}
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
