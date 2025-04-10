@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { VStack } from '@suite-native/atoms';
 import { useDebouncedValue } from '@trezor/react-utils';
 
@@ -10,6 +12,22 @@ import { useQuotes } from '../../hooks/useQuotes';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { TradingFooter } from '../general/TradingFooter';
 
+const BuyFormMemoized = memo(({ isAmountInputActive }: { isAmountInputActive: boolean }) => (
+    <VStack spacing="sp16">
+        {!isAmountInputActive && <BuyHeader />}
+        <BuyCard isAmountInputActive={isAmountInputActive} />
+        {isAmountInputActive ? (
+            <AmountEditingDoneButton />
+        ) : (
+            <>
+                <PaymentCard />
+                <Confirmation />
+                <TradingFooter />
+            </>
+        )}
+    </VStack>
+));
+
 export const BuyForm = () => {
     const buyForm = useTradingBuyFormContext();
     useQuotes(buyForm);
@@ -17,19 +35,5 @@ export const BuyForm = () => {
     const isAmountInputActive = !!buyForm.watch('focusedValue');
     const isAmountInputActiveDebounced = useDebouncedValue(isAmountInputActive);
 
-    return (
-        <VStack spacing="sp16">
-            {!isAmountInputActiveDebounced && <BuyHeader />}
-            <BuyCard form={buyForm} isAmountInputActive={isAmountInputActiveDebounced} />
-            {isAmountInputActiveDebounced ? (
-                <AmountEditingDoneButton />
-            ) : (
-                <>
-                    <PaymentCard />
-                    <Confirmation />
-                    <TradingFooter />
-                </>
-            )}
-        </VStack>
-    );
+    return <BuyFormMemoized isAmountInputActive={isAmountInputActiveDebounced} />;
 };

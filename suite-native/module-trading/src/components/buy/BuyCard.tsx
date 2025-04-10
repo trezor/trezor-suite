@@ -16,11 +16,10 @@ import { FiatCurrencyPicker } from './FiatCurrencyPicker';
 import { ReceiveAccountCryptoBalance } from './ReceiveAccountCryptoBalance';
 import { ReceiveAccountPicker } from './ReceiveAccountPicker';
 import { TradeableAssetPicker } from './TradeableAssetPicker';
-import { TradingBuyForm } from '../../types';
+import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { getSelectedSymbolFromBuyForm } from '../../utils/tradeableAssetUtils';
 
 type BuyCardProps = {
-    form: TradingBuyForm;
     isAmountInputActive: boolean;
 };
 
@@ -47,7 +46,8 @@ const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
     }));
 };
 
-export const BuyCard = ({ form, isAmountInputActive }: BuyCardProps) => {
+export const BuyCard = ({ isAmountInputActive }: BuyCardProps) => {
+    const form = useTradingBuyFormContext();
     const { applyStyle } = useNativeStyles();
     const animatedStyle = useAnimatedBorderStyle(isAmountInputActive);
 
