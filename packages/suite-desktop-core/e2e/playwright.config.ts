@@ -1,5 +1,6 @@
+import { CurrentsFixtures, CurrentsWorkerFixtures } from '@currents/playwright';
 import type { PlaywrightTestConfig } from '@playwright/test';
-import { devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -21,7 +22,7 @@ function getTimeout(): number {
     return process.env.GITHUB_ACTION ? CI_TIMEOUT : LOCAL_TIMEOUT;
 }
 
-const config: PlaywrightTestConfig = {
+const config: PlaywrightTestConfig = defineConfig<CurrentsFixtures, CurrentsWorkerFixtures>({
     projects: [
         {
             name: PlaywrightProjects.Web,
@@ -48,6 +49,7 @@ const config: PlaywrightTestConfig = {
         screenshot: 'on',
         testIdAttribute: 'data-testid',
         actionTimeout: 1000 * 15,
+        currentsFixturesEnabled: !!process.env.GITHUB_ACTION,
     },
     reportSlowTests: null,
     reporter: process.env.GITHUB_ACTION
@@ -56,7 +58,7 @@ const config: PlaywrightTestConfig = {
     timeout: getTimeout(),
     outputDir: path.join(__dirname, 'test-results'),
     snapshotPathTemplate: 'snapshots/{projectName}/{testFilePath}/{arg}{ext}',
-};
+});
 
 // eslint-disable-next-line import/no-default-export
 export default config;

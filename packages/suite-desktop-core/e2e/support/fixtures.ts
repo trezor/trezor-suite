@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { mergeTests } from '@playwright/test';
+
 import { AnalyticsFixture } from './analytics';
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
@@ -16,6 +18,7 @@ import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { TradingPage } from './pageObjects/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
 import { WalletPage } from './pageObjects/walletPage';
+import { currentsTest } from './testExtends/currentsFixture';
 import { suiteBaseTest } from './testExtends/suiteBaseFixture';
 
 type Fixtures = {
@@ -38,7 +41,7 @@ type Fixtures = {
     tradingMock: TradingMock;
 };
 
-const test = suiteBaseTest.extend<Fixtures>({
+const suiteTest = suiteBaseTest.extend<Fixtures>({
     dashboardPage: async ({ page, devicePrompt }, use) => {
         await use(new DashboardPage(page, devicePrompt));
     },
@@ -108,6 +111,8 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(new TradingMock(page));
     },
 });
+
+const test = mergeTests(suiteTest, currentsTest);
 
 export { test };
 export { expect } from './testExtends/customMatchers';
