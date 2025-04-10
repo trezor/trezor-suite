@@ -5,9 +5,6 @@ import { createDeferred, typedObjectKeys } from '@trezor/utils';
 
 import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
-import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
-import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
-import GoogleProvider from 'src/services/suite/metadata/GoogleProvider';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     DataType,
@@ -20,15 +17,10 @@ import {
 } from 'src/types/suite/metadata';
 
 import * as metadataActions from './metadataActions';
+import { DropboxProvider } from '../../services/suite/metadata/DropboxProvider';
+import { FileSystemProvider } from '../../services/suite/metadata/FileSystemProvider';
+import { GoogleProvider } from '../../services/suite/metadata/GoogleProvider';
 import { InMemoryTestProvider } from '../../services/suite/metadata/InMemoryTestProvider';
-
-export type MetadataAction = {
-    type: typeof METADATA.SET_SELECTED_PROVIDER;
-    payload: {
-        dataType: DataType;
-        clientId: string;
-    };
-};
 
 export type ProviderInstance =
     | DropboxProvider
@@ -64,14 +56,21 @@ const createProviderInstance = (
             return new FileSystemProvider();
         case 'inMemoryTest':
             return new InMemoryTestProvider();
+
+        default: {
+            const _unhandledCase: never = type;
+            throw new Error(`Unhandled type: ${_unhandledCase}`);
+        }
     }
 };
+
+type GetProviderInstanceParams = { clientId: string; dataType: DataType };
 
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
 export const getProviderInstance =
-    ({ clientId, dataType = 'labels' }: { clientId: string; dataType: DataType }) =>
+    ({ clientId, dataType = 'labels' }: GetProviderInstanceParams) =>
     (_dispatch: Dispatch, getState: GetState) => {
         const state = getState();
         const { providers } = state.metadata;
@@ -97,16 +96,14 @@ export const getProviderInstance =
         return providerInstance[dataType];
     };
 
+type DisconnectProviderParams = {
+    clientId: string;
+    dataType: DataType;
+    removeMetadata?: boolean;
+};
+
 export const disconnectProvider =
-    ({
-        clientId,
-        dataType,
-        removeMetadata = true,
-    }: {
-        clientId: string;
-        dataType: DataType;
-        removeMetadata?: boolean;
-    }) =>
+    ({ clientId, dataType, removeMetadata = true }: DisconnectProviderParams) =>
     async (dispatch: Dispatch) => {
         typedObjectKeys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
             const [trackedDataType, trackedClientId] = id.split('-');
@@ -123,7 +120,7 @@ export const disconnectProvider =
 
         const provider = dispatch(getProviderInstance({ clientId, dataType }));
 
-        if (provider) {
+        if (provider !== undefined) {
             await provider.disconnect();
             providerInstance[dataType] = undefined;
 
@@ -146,6 +143,12 @@ export const disconnectProvider =
         }
     };
 
+type HandleProviderErrorParams = {
+    error: MetadataProviderError;
+    action: string;
+    clientId?: string;
+};
+
 /**
  * handleProviderError method controls how application reacts to various errors from metadata providers
  * Toasts go in this format:
@@ -153,15 +156,7 @@ export const disconnectProvider =
  * Error: Upload failed: Access token is invalid
  */
 export const handleProviderError =
-    ({
-        error,
-        action,
-        clientId,
-    }: {
-        error: MetadataProviderError;
-        action: string;
-        clientId?: string;
-    }) =>
+    ({ error, action, clientId }: HandleProviderErrorParams) =>
     (dispatch: Dispatch) => {
         // error should be of specified type, but in case it is not (catch is not typed) show generic error
         // if this happens, it means that there is a hole in error handling and it should be fixed
@@ -193,6 +188,7 @@ export const handleProviderError =
                         }),
                     );
                     break;
+
                 case 'PROVIDER_ERROR':
                 case 'RATE_LIMIT_ERROR':
                 case 'AUTH_ERROR':
@@ -203,9 +199,15 @@ export const handleProviderError =
                         }),
                     );
                     break;
+
                 case 'CONNECTIVITY_ERROR':
-                default:
+                case 'NOT_FOUND_ERROR':
                     break;
+
+                default: {
+                    const _unhandledCase: never = error.code;
+                    throw new Error(`Unhandled type: ${_unhandledCase}`);
+                }
             }
         }
     };
@@ -229,16 +231,14 @@ export const selectProvider =
         });
     };
 
+type ConnectProviderParams = {
+    type: MetadataProviderType;
+    dataType?: DataType;
+    clientId?: string;
+};
+
 export const connectProvider =
-    ({
-        type,
-        dataType = 'labels',
-        clientId,
-    }: {
-        type: MetadataProviderType;
-        dataType?: DataType;
-        clientId?: string;
-    }) =>
+    ({ type, dataType = 'labels', clientId }: ConnectProviderParams) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const providerInstance = createProviderInstance(
             type,

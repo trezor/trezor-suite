@@ -1,7 +1,7 @@
 import GoogleClient from 'src/services/google';
 import { AbstractMetadataProvider, OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
 
-class GoogleProvider extends AbstractMetadataProvider {
+export class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     isCloud = true;
 
@@ -220,5 +220,3 @@ class GoogleProvider extends AbstractMetadataProvider {
         return this.error('OTHER_ERROR', message);
     }
 }
-
-export default GoogleProvider;

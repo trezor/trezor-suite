@@ -11,7 +11,7 @@ import {
 
 // Dropbox messed up types, that's why @ts-expect-error occurs in this file
 
-class DropboxProvider extends AbstractMetadataProvider {
+export class DropboxProvider extends AbstractMetadataProvider {
     client: Dropbox;
     auth: DropboxAuth;
     user?: users.FullAccount;
@@ -243,7 +243,7 @@ class DropboxProvider extends AbstractMetadataProvider {
      * Specific implementation in every provider. Returns standardized error
      */
     handleProviderError(err: any) {
-        // collect human readable errors from wherever possible or fill with own general message;
+        // collect human-readable errors from wherever possible or fill with own general message;
         let message: string =
             err?.error?.user_message ||
             err?.error?.error_description ||
@@ -283,5 +283,3 @@ class DropboxProvider extends AbstractMetadataProvider {
         return this.error('OTHER_ERROR', message);
     }
 }
-
-export default DropboxProvider;

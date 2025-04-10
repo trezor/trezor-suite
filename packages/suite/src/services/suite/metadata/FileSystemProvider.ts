@@ -2,8 +2,9 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { AbstractMetadataProvider } from 'src/types/suite/metadata';
 
-class FileSystemProvider extends AbstractMetadataProvider {
+export class FileSystemProvider extends AbstractMetadataProvider {
     isCloud = false;
+
     constructor() {
         super('fileSystem');
     }
@@ -81,5 +82,3 @@ class FileSystemProvider extends AbstractMetadataProvider {
         return true;
     }
 }
-
-export default FileSystemProvider;

@@ -126,16 +126,14 @@ export const disableMetadata = () => (dispatch: Dispatch) => {
     dispatch(disposeMetadataKeys());
 };
 
+type SetMetadataParams = {
+    provider: MetadataProvider;
+    fileName: string;
+    data: WalletLabels | AccountLabels | PasswordManagerState;
+};
+
 export const setMetadata =
-    ({
-        provider,
-        fileName,
-        data,
-    }: {
-        provider: MetadataProvider;
-        fileName: string;
-        data: WalletLabels | AccountLabels | PasswordManagerState;
-    }) =>
+    ({ provider, fileName, data }: SetMetadataParams) =>
     (dispatch: Dispatch) => {
         dispatch({
             type: METADATA.SET_DATA,
@@ -148,17 +146,19 @@ export const setMetadata =
         });
     };
 
+type EncryptAndSaveMetadataParams = {
+    data: AccountLabels | WalletLabels | PasswordManagerState;
+    aesKey: string;
+    fileName: string;
+    providerInstance: AbstractMetadataProvider;
+};
+
 export const encryptAndSaveMetadata = async ({
     data,
     aesKey,
     fileName,
     providerInstance,
-}: {
-    data: AccountLabels | WalletLabels | PasswordManagerState;
-    aesKey: string;
-    fileName: string;
-    providerInstance: AbstractMetadataProvider;
-}) => {
+}: EncryptAndSaveMetadataParams) => {
     const encrypted = await metadataUtils.encrypt(
         {
             version: METADATA_LABELING.FORMAT_VERSION,

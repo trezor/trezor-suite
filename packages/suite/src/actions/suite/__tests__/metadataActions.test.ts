@@ -8,10 +8,10 @@ import suiteMiddleware from 'src/middlewares/suite/suiteMiddleware';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { accountsReducer } from 'src/reducers/wallet';
-import DropboxProvider from 'src/services/suite/metadata/DropboxProvider';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 
+import { DropboxProvider } from '../../../services/suite/metadata/DropboxProvider';
 import * as fixtures from '../__fixtures__/metadataActions';
 import { MODAL, STORAGE } from '../constants';
 import * as metadataActions from '../metadataActions';
