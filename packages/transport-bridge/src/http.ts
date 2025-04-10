@@ -480,12 +480,15 @@ export class TrezordNode {
 
             app.post('/configure', [this.handleInfo.bind(this)]);
 
-            app.start()
-                .then(() => {
+            app.start().then(result => {
+                if (result.success) {
                     this.server = app;
-                    resolve();
-                })
-                .catch(reject);
+
+                    return resolve();
+                } else {
+                    reject(result.error);
+                }
+            });
         });
     }
 

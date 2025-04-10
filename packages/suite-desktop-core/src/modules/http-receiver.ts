@@ -82,16 +82,18 @@ export const initBackground: ModuleInitBackground = ({ mainWindowProxy, mainThre
 
         logger.info(SERVICE_NAME, 'Starting server');
 
-        try {
-            await receiver.start();
-
-            return receiver.getInfo();
-        } catch (error) {
+        const startResult = await receiver.start();
+        if (!startResult.success) {
             // Don't fail hard if the server can't start
-            logger.error(SERVICE_NAME, 'Failed to start server: ' + error);
+            logger.error(
+                SERVICE_NAME,
+                `Failed to start server:  ${startResult.error}, error details: ${startResult.message}`,
+            );
 
             return { url: null };
         }
+
+        return receiver.getInfo();
     };
 
     const onQuit = async () => {

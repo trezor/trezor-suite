@@ -6,6 +6,7 @@ import * as url from 'url';
 import type { RequiredKey } from '@trezor/type-utils';
 import { Log, TypedEmitter, arrayPartition } from '@trezor/utils';
 
+import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
 import { getFreePort } from './getFreePort';
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
@@ -143,7 +144,19 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     public async start() {
         const port = this.port || (this.port = await getFreePort());
 
-        return new Promise<net.AddressInfo>((resolve, reject) => {
+        return new Promise<
+            | { success: true; payload: net.AddressInfo }
+            | {
+                  success: false;
+                  error: 'port already in use';
+                  message: string;
+              }
+            | {
+                  success: false;
+                  error: 'other error';
+                  message: string;
+              }
+        >(resolve => {
             let nextSocketId = 0;
             this.server.on('connection', socket => {
                 // Add a newly connected socket
@@ -155,19 +168,34 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 });
             });
 
-            this.server.on('error', e => {
+            this.server.on('error', async e => {
                 this.server.close();
                 // @ts-expect-error - type is missing
                 const errorCode: string = e.code;
+                const portOccupied = errorCode === 'EADDRINUSE' || errorCode === 'EACCES';
 
-                const errorMessage =
-                    errorCode === 'EADDRINUSE' || errorCode === 'EACCES'
-                        ? `Port ${port} already in use!` // TODO: Try different port?
-                        : `Start error code: ${errorCode}`;
+                if (portOccupied) {
+                    const processInfo = await findProcessFromIncomingPort(port).catch(() => {});
+                    const errorMessage = processInfo
+                        ? `Port ${port} is occupied by process ${processInfo.name} (${processInfo.pid})`
+                        : 'process info not found';
+                    this.logger.error(errorMessage);
+
+                    return resolve({
+                        success: false,
+                        error: 'port already in use',
+                        message: errorMessage,
+                    });
+                }
+                const errorMessage = `Start error code: ${errorCode}`;
 
                 this.logger.error(errorMessage);
 
-                return reject(new Error(`http-receiver: ${errorMessage}`));
+                return {
+                    success: false,
+                    error: 'other error',
+                    message: `Start error code: ${errorCode}`,
+                };
             });
 
             this.server.listen(port, '127.0.0.1', undefined, () => {
@@ -177,7 +205,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                     this.emitter.emit('server/listening', address);
                 }
 
-                return resolve(address);
+                return resolve({ success: true, payload: address });
             });
         });
     }
