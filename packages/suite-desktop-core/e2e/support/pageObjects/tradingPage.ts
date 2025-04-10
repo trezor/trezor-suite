@@ -32,7 +32,7 @@ const accountTabFilters = [
 
 type AccountTabFilter = (typeof accountTabFilters)[number];
 
-type FeeTypes = 'economy' | 'normal' | 'high' | 'custom';
+export type FeeTypes = 'economy' | 'normal' | 'high';
 
 function isAccountTabFilter(network: string): network is AccountTabFilter {
     return accountTabFilters.includes(network as AccountTabFilter);
@@ -57,10 +57,13 @@ export class TradingPage {
     readonly cryptoInputBottomText: Locator;
     readonly youPayFractionButton = (amount: '10%' | '25%' | '50%' | 'Max') =>
         this.page.getByRole('button', { name: amount });
-    readonly feeButton = (feeType: FeeTypes) => this.page.getByTestId(`select-bar/${feeType}`);
-    readonly bitcoinFeeValue = (feeType: Exclude<FeeTypes, 'custom'>) =>
+    readonly feeSwitchButton = (feeMode: 'normal' | 'custom') =>
+        this.page.getByTestId(`select-bar/${feeMode}`);
+    readonly bitcoinFeeCard = (feeType: FeeTypes) =>
+        this.page.getByTestId(`@fee-card/${feeType}-card`);
+    readonly bitcoinFeeValue = (feeType: FeeTypes) =>
         this.page.getByTestId(`@fee-card/${feeType}-fait-amount`);
-    readonly bitcoinFeeRateValue = (feeType: Exclude<FeeTypes, 'custom'>) =>
+    readonly bitcoinFeeRateValue = (feeType: FeeTypes) =>
         this.page.getByTestId(`@fee-card/${feeType}-rate`);
     readonly customFeeInput: Locator;
     readonly customFeeAmount: Locator;
@@ -532,15 +535,17 @@ export class TradingPage {
     }
 
     @step()
-    async getBitcoinFeeRate(type: FeeTypes) {
+    async getBitcoinFeeRate(type: FeeTypes | 'custom') {
+        let feeRateText: string | null;
+        const nonBreakingSpace = '\u00A0';
+        const suffixForCustomFee = `.00${nonBreakingSpace}sat/vB`;
+
         if (type !== 'custom') {
             await this.expectBitcoinFeeCalculated();
+            feeRateText = await this.bitcoinFeeRateValue(type).textContent();
+        } else {
+            feeRateText = (await this.customFeeInput.inputValue()) + suffixForCustomFee;
         }
-
-        const feeRateText =
-            type === 'custom'
-                ? await this.customFeeInput.textContent()
-                : await this.bitcoinFeeRateValue(type).textContent();
 
         if (!feeRateText) {
             throw new Error('Fee amount is undefined or null');

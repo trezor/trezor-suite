@@ -57,7 +57,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=other', '@webOnly'] }, ()
         });
 
         await test.step('Try all % inputs for Bitcoin', async () => {
-            await tradingPage.feeButton('custom').click();
+            await tradingPage.feeSwitchButton('custom').click();
             await tradingPage.customFeeInput.fill(customFeeRate.toString());
 
             for (const percentage of [10, 25, 50]) {

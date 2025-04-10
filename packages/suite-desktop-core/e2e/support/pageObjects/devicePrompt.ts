@@ -26,6 +26,7 @@ export class DevicePrompt {
     readonly header: Locator;
     readonly headerParagraph: Locator;
     readonly acquireDeviceButton: Locator;
+    readonly closeButton: Locator;
 
     constructor(private page: Page) {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
@@ -40,6 +41,7 @@ export class DevicePrompt {
         this.header = page.getByTestId('@modal/header');
         this.headerParagraph = page.getByTestId('@modal/header-paragraph');
         this.acquireDeviceButton = this.page.getByTestId('@device-acquire');
+        this.closeButton = this.page.getByTestId('@confirm-on-device/close-button');
     }
 
     @step()
