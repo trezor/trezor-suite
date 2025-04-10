@@ -44,6 +44,11 @@ export const getTransactionVbytes = (
 
     outputs.forEach(out => {
         if (out.script_type === 'PAYTOOPRETURN') {
+            if (!out.op_return_data) {
+                cannotProcess = true;
+
+                return;
+            }
             calc.addOutput({ length: 2 + out.op_return_data.length / 2 });
 
             return;
