@@ -23,7 +23,7 @@
         "react-dom": ">=16.13.1"
     },
     "dependencies": {
-        "@headlessui/react": "^1.7.17",
+        "@headlessui/react": "^2.2.1",
         "@trezor/components": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",

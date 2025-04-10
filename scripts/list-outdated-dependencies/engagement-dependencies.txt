@@ -12,7 +12,6 @@
 @storybook/react-webpack5
 @storybook/test
 @storybook/theming
-@types/qrcode.react
 @types/react-date-range
 @types/react-qr-reader
 @types/ua-parser-js
