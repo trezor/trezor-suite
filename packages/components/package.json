@@ -63,7 +63,7 @@
         "@testing-library/react": "14.2.1",
         "@testing-library/user-event": "^14.6.1",
         "@trezor/eslint": "workspace:*",
-        "@types/react": "18.2.79",
+        "@types/react": "18.2.55",
         "@types/react-date-range": "^1.4.10",
         "postcss-styled-syntax": "^0.6.4",
         "storybook": "^8.6.12",

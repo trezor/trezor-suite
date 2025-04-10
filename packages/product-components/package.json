@@ -48,7 +48,7 @@
         "@storybook/test": "^8.6.12",
         "@storybook/theming": "^8.6.12",
         "@trezor/eslint": "workspace:*",
-        "@types/react": "18.2.79",
+        "@types/react": "18.2.55",
         "storybook": "^8.6.12",
         "stylelint": "^16.14.1",
         "typescript-styled-plugin": "^0.18.3"

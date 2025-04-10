@@ -13,7 +13,7 @@
     "dependencies": {
         "@shopify/react-native-skia": "^1.11.6",
         "@trezor/utils": "workspace:*",
-        "@types/react": "18.2.79",
+        "@types/react": "18.2.55",
         "react": "18.2.0",
         "react-native": "0.76.9",
         "react-native-gesture-handler": "^2.21.0",
