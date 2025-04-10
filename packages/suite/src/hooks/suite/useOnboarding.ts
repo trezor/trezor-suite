@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { UI } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
@@ -6,10 +8,13 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 
+import { parseStepId } from '../../utils/onboarding/steps';
+
 export const useOnboarding = () => {
     const dispatch = useDispatch();
 
-    const { onboarding, modal } = useSelector(({ onboarding, modal }) => ({ onboarding, modal }));
+    const onboarding = useSelector(state => state.onboarding);
+    const modal = useSelector(state => state.modal);
 
     const showPinMatrix =
         modal.context === '@modal/context-device' && modal.windowType === UI.REQUEST_PIN;
@@ -37,9 +42,17 @@ export const useOnboarding = () => {
         }
     };
 
+    const { activeStepId } = onboarding;
+    const { activeStep, activeStepCategory } = useMemo(
+        () => parseStepId(activeStepId),
+        [activeStepId],
+    );
+
     return {
         ...onboarding,
         ...actions,
+        activeStep,
+        activeStepCategory,
         showPinMatrix,
         goToSuite,
     };

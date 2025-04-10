@@ -1,5 +1,5 @@
 import { TranslationKey } from '@suite-common/intl-types';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 import { FirmwareVersionString } from '@trezor/device-utils/src/types';
 
 import * as STEP from 'src/constants/onboarding/steps';
@@ -10,20 +10,20 @@ type ModelWithFirmwareVersion = {
     minFwVersion: FirmwareVersionString;
 };
 
-export type ProgressBarStepKey = 'device' | 'wallet' | 'pin' | 'coins' | 'final';
+export type StepCategoryKey = 'device' | 'wallet' | 'pin' | 'coins' | 'final';
 
-export type ProgressBarStep = {
-    key: ProgressBarStepKey;
+export type StepCategory = {
+    id: StepCategoryKey;
+    steps: Step[];
     labelTranslationId?: TranslationKey;
 };
 
 export type Step = {
     id: AnyStepId;
-    stepGroup: ProgressBarStepKey | undefined;
     prerequisites?: (PrerequisiteType | 'device-different')[];
     path?: AnyPath[];
     supportedModels?: (DeviceModelInternal | ModelWithFirmwareVersion)[];
-    hideForBitcoinOnly?: boolean;
+    supportedFirmwareTypes?: FirmwareType[];
 };
 
 // todo: remove, improve typing

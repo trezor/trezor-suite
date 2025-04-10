@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -12,9 +12,8 @@ import { GuideButton, GuideRouter } from 'src/components/guide';
 import { OnboardingProgressBar } from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import { MessageSystemBanner } from 'src/components/suite/banners';
-import { steps } from 'src/config/onboarding/steps';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 
 import { TrafficLightOffset } from '../suite/TrafficLightOffset';
@@ -120,10 +119,6 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
     const bannerMessage = useSelector(selectBannerMessage);
     const theme = useSelector(state => state.suite.settings.theme);
 
-    const { activeStepId } = useOnboarding();
-
-    const activeStep = useMemo(() => steps.find(step => step.id === activeStepId)!, [activeStepId]);
-
     return (
         <TrafficLightOffset>
             <Wrapper>
@@ -151,9 +146,7 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                                     </LogoHeaderRow>
 
                                     <ProgressBarRow>
-                                        <OnboardingProgressBar
-                                            activeStepGroup={activeStep.stepGroup}
-                                        />
+                                        <OnboardingProgressBar />
                                     </ProgressBarRow>
                                 </Header>
 

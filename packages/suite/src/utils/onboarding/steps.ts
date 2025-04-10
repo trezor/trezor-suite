@@ -1,29 +1,40 @@
-import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import { ID_AUTHENTICATE_DEVICE_STEP } from 'src/constants/onboarding/steps';
-import { AnyPath, AnyStepId, Step } from 'src/types/onboarding';
-import { AppState } from 'src/types/suite';
+import { AnyPath, AnyStepId, Step, StepCategory } from 'src/types/onboarding';
+import { TrezorDevice } from 'src/types/suite';
 
-export const selectIsStepUsedContext = (state: AppState) => ({
-    device: selectSelectedDevice(state),
-    onboardingPath: state.onboarding.path,
-    isDeviceAuthenticityCheckEnabled: state.suite.settings.enabledSecurityChecks.deviceAuthenticity,
-    isUnlockedBootloaderAllowed: state.suite.settings.debug.isUnlockedBootloaderAllowed,
-});
-export type IsStepUsedContext = ReturnType<typeof selectIsStepUsedContext>;
+import { stepCategories } from '../../config/onboarding/steps';
 
-export const isStepUsed = (step: Step, context: IsStepUsedContext): boolean => {
+export const parseStepId = (stepId: AnyStepId) => {
+    const activeStepCategory =
+        stepCategories.find(({ steps }) => steps.map(({ id }) => id).includes(stepId)) ?? null;
+
+    const activeStep = activeStepCategory?.steps.find(({ id }) => id === stepId) ?? null;
+
+    return {
+        activeStep,
+        activeStepCategory,
+    };
+};
+
+export type IsStepUsedProps = {
+    device: TrezorDevice | undefined;
+    onboardingPath: AnyPath[];
+    isDeviceAuthenticityCheckEnabled: boolean;
+    isUnlockedBootloaderAllowed: boolean;
+};
+
+export const isStepUsed = (step: Step, props: IsStepUsedProps): boolean => {
     const {
         device,
         onboardingPath,
         isDeviceAuthenticityCheckEnabled,
         isUnlockedBootloaderAllowed,
-    } = context;
+    } = props;
     const deviceModelInternal = device?.features?.internal_model;
     const firmwareVersion = getFirmwareVersion(device);
-    const bitcoinOnlyFirmware = hasBitcoinOnlyFirmware(device);
 
     // The order of IF conditions matters!
     if (
@@ -43,7 +54,11 @@ export const isStepUsed = (step: Step, context: IsStepUsedContext): boolean => {
         return false;
     }
 
-    if (step.hideForBitcoinOnly === true && bitcoinOnlyFirmware) {
+    if (
+        device?.firmwareType &&
+        Array.isArray(step.supportedFirmwareTypes) &&
+        !step.supportedFirmwareTypes.includes(device.firmwareType)
+    ) {
         return false;
     }
 
@@ -68,6 +83,9 @@ export const isStepUsed = (step: Step, context: IsStepUsedContext): boolean => {
         step.path?.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
     );
 };
+
+export const isStepCategoryUsed = (stepCategory: StepCategory, props: IsStepUsedProps): boolean =>
+    stepCategory.steps.filter(step => isStepUsed(step, props)).length > 0;
 
 export const findNextStep = (currentStepId: AnyStepId, steps: Step[]) => {
     const currentIndex = steps.findIndex((step: Step) => step.id === currentStepId);

@@ -4,18 +4,16 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import * as STEP from 'src/constants/onboarding/steps';
 import { Step } from 'src/types/onboarding';
 
-import { IsStepUsedContext, findNextStep, findPrevStep, isStepUsed } from '../steps';
+import { IsStepUsedProps, findNextStep, findPrevStep, isStepUsed } from '../steps';
 
 const firmwareStep: Step = {
     id: STEP.ID_FIRMWARE_STEP,
     path: [],
-    stepGroup: undefined,
 };
 
 const backupStep: Step = {
     id: STEP.ID_BACKUP_STEP,
     path: [],
-    stepGroup: 'wallet',
     supportedModels: [
         DeviceModelInternal.T2B1,
         { model: DeviceModelInternal.T3T1, minFwVersion: '2.8.0' },
@@ -26,7 +24,7 @@ const defaultDevice = {
     features: { internal_model: DeviceModelInternal.T1B1 },
 } as TrezorDevice;
 
-const contextMock: IsStepUsedContext = {
+const propsMock: IsStepUsedProps = {
     onboardingPath: [],
     device: defaultDevice,
     isDeviceAuthenticityCheckEnabled: true,
@@ -58,33 +56,31 @@ describe('steps', () => {
 
     describe('isStepUsed', () => {
         it('empty path means no restriction', () => {
-            expect(isStepUsed(firmwareStep, contextMock)).toEqual(true);
+            expect(isStepUsed(firmwareStep, propsMock)).toEqual(true);
         });
 
         it('should return false for no overlap', () => {
-            const step = firmwareStep;
+            const step = { ...firmwareStep };
             firmwareStep.path = ['create'];
-            expect(isStepUsed(step, { ...contextMock, onboardingPath: ['recovery'] })).toEqual(
-                false,
-            );
+            expect(isStepUsed(step, { ...propsMock, onboardingPath: ['recovery'] })).toEqual(false);
         });
 
         it('should return true for full overlap', () => {
-            const step = firmwareStep;
+            const step = { ...firmwareStep };
             firmwareStep.path = ['create'];
-            expect(isStepUsed(step, { ...contextMock, onboardingPath: ['create'] })).toEqual(true);
+            expect(isStepUsed(step, { ...propsMock, onboardingPath: ['create'] })).toEqual(true);
         });
 
         it('should exclude steps not supported by device', () => {
             const deviceT2B1 = {
                 features: { internal_model: DeviceModelInternal.T2B1 },
             } as TrezorDevice;
-            expect(isStepUsed(backupStep, { ...contextMock, device: deviceT2B1 })).toEqual(true);
+            expect(isStepUsed(backupStep, { ...propsMock, device: deviceT2B1 })).toEqual(true);
 
             const deviceT1B1 = {
                 features: { internal_model: DeviceModelInternal.T1B1 },
             } as TrezorDevice;
-            expect(isStepUsed(backupStep, { ...contextMock, device: deviceT1B1 })).toEqual(false);
+            expect(isStepUsed(backupStep, { ...propsMock, device: deviceT1B1 })).toEqual(false);
         });
 
         it('should exclude steps not supported by firmware', () => {
@@ -96,9 +92,7 @@ describe('steps', () => {
                     patch_version: 0,
                 },
             } as TrezorDevice;
-            expect(isStepUsed(backupStep, { ...contextMock, device: deviceT3T1newer })).toEqual(
-                true,
-            );
+            expect(isStepUsed(backupStep, { ...propsMock, device: deviceT3T1newer })).toEqual(true);
 
             const deviceT3T1older = {
                 features: {
@@ -108,7 +102,7 @@ describe('steps', () => {
                     patch_version: 2,
                 },
             } as TrezorDevice;
-            expect(isStepUsed(backupStep, { ...contextMock, device: deviceT3T1older })).toEqual(
+            expect(isStepUsed(backupStep, { ...propsMock, device: deviceT3T1older })).toEqual(
                 false,
             );
         });

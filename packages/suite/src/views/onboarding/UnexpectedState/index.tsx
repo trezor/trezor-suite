@@ -9,7 +9,6 @@ import { spacings } from '@trezor/theme';
 import { onPinSubmit } from 'src/actions/suite/modalActions';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { PinMatrix, PrerequisitesGuide, Translation } from 'src/components/suite';
-import { steps } from 'src/config/onboarding/steps';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 
@@ -32,9 +31,7 @@ const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
 
-    const { prevDeviceId, activeStepId, showPinMatrix } = useOnboarding();
-
-    const activeStep = steps.find(s => s.id === activeStepId);
+    const { prevDeviceId, activeStep, activeStepId, showPinMatrix } = useOnboarding();
 
     const isNotSameDevice = useMemo(() => {
         // if no device was connected before, assume it is same device

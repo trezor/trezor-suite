@@ -3,17 +3,12 @@ import TrezorConnect from '@trezor/connect';
 import { OnboardingAnalytics } from '@trezor/suite-analytics';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
-import { steps } from 'src/config/onboarding/steps';
+import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
 import { BackupType, DeviceTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 import { AnyPath, AnyStepId } from 'src/types/onboarding';
 import { Dispatch, GetState } from 'src/types/suite';
-import {
-    findNextStep,
-    findPrevStep,
-    isStepUsed,
-    selectIsStepUsedContext,
-} from 'src/utils/onboarding/steps';
+import { findNextStep, findPrevStep, isStepUsed } from 'src/utils/onboarding/steps';
 
 export type OnboardingAction =
     | {
@@ -63,14 +58,24 @@ const removePath = (payload: AnyPath[]): OnboardingAction => ({
     payload,
 });
 
+const getAllStepsInPath = (getState: GetState) => {
+    const allSteps = stepCategories.flatMap(({ steps }) => steps);
+    const isStepUsedProps = {
+        device: selectSelectedDevice(getState()),
+        onboardingPath: getState().onboarding.path,
+        isDeviceAuthenticityCheckEnabled:
+            getState().suite.settings.enabledSecurityChecks.deviceAuthenticity,
+        isUnlockedBootloaderAllowed: getState().suite.settings.debug.isUnlockedBootloaderAllowed,
+    };
+
+    return allSteps.filter(step => isStepUsed(step, isStepUsedProps));
+};
+
 const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
     if (stepId) {
         return dispatch(goToStep(stepId));
     }
-
-    const isStepUsedContext = selectIsStepUsedContext(getState());
-    const stepsInPath = steps.filter(step => isStepUsed(step, isStepUsedContext));
-
+    const stepsInPath = getAllStepsInPath(getState);
     const nextStep = findNextStep(getState().onboarding.activeStepId, stepsInPath);
     dispatch(goToStep(nextStep.id));
 };
@@ -79,10 +84,7 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
     if (stepId) {
         return dispatch(goToStep(stepId));
     }
-
-    const isStepUsedContext = selectIsStepUsedContext(getState());
-    const stepsInPath = steps.filter(step => isStepUsed(step, isStepUsedContext));
-
+    const stepsInPath = getAllStepsInPath(getState);
     const prevStep = findPrevStep(getState().onboarding.activeStepId, stepsInPath);
     // steps listed in case statements contain path decisions, so we need
     // to remove saved paths from reducers to let user change it again.
