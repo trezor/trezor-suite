@@ -10,6 +10,7 @@ import type { EthereumSignTransaction } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';
+import { createPlaceholderAccount } from './utils';
 
 import { PostCallHookParams, PreCallHookParams } from './index';
 
@@ -39,30 +40,7 @@ const preCallHook = async <M extends keyof typeof TrezorConnect>({
                 : null;
             if (!selectedAccount) {
                 // Create a new placeholder account
-                const createdAccount = await dispatch(
-                    accountsActions.createAccount({
-                        // Real device state not needed, this is also better to differentiate from real accounts
-                        deviceState: 'placeholder@connect:0',
-                        discoveryItem: {
-                            index: 0,
-                            path,
-                            accountType: 'imported',
-                            networkType: network.networkType,
-                            coin: network.symbol,
-                        },
-                        accountInfo: {
-                            path,
-                            descriptor: '',
-                            balance: '',
-                            availableBalance: '',
-                            empty: false,
-                            history: { total: 0, unconfirmed: 0 },
-                        },
-                        imported: true,
-                        visible: false,
-                        accountLabel: network.name,
-                    }),
-                );
+                const createdAccount = await dispatch(createPlaceholderAccount(network, path));
                 temporaryAccounts.push(createdAccount.payload);
                 selectedAccount = createdAccount.payload;
             }
