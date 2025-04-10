@@ -7,6 +7,7 @@ export const TREZOR_SUPPORT_URL: Url = 'https://trezor.io/support';
 export const TREZOR_RESELLERS_URL: Url = 'https://trezor.io/resellers/';
 export const TREZOR_COINS_URL: Url = 'https://trezor.io/coins';
 
+export const SUITE_WEB_URL = 'https://suite.trezor.io/web/';
 export const DATA_URL: Url = 'https://data.trezor.io/';
 export const DATA_TOS_URL: Url = 'https://data.trezor.io/legal/wallet-terms.pdf';
 export const DATA_TOS_INVITY_URL: Url = 'https://data.trezor.io/legal/invity-terms-of-use.pdf';

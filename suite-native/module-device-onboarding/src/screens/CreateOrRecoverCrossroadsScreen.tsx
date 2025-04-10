@@ -6,7 +6,6 @@ import {
     DeviceOnboardingStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
@@ -21,17 +20,13 @@ export const CreateOrRecoverCrossroadsScreen = ({
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads
 >) => {
-    const { showToast } = useToast();
     const { applyStyle } = useNativeStyles();
     const handleCreateButtonPress = () => {
         navigation.navigate(DeviceOnboardingStackRoutes.CreateWalletLoading);
     };
 
     const handleRecoverButtonPress = () => {
-        showToast({
-            message: 'Not implemented yet',
-            variant: 'warning',
-        });
+        navigation.navigate(DeviceOnboardingStackRoutes.Recovery);
     };
 
     return (
@@ -61,7 +56,7 @@ export const CreateOrRecoverCrossroadsScreen = ({
                 </Card>
                 <VStack spacing="sp24" flexShrink={1}>
                     <TextDivider />
-                    <VStack spacing="sp16">
+                    <VStack spacing="sp16" paddingHorizontal="sp16">
                         <CenteredTitleHeader
                             titleVariant="highlight"
                             titleSpacing="sp4"

@@ -134,6 +134,7 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.CreateWalletLoading]: undefined;
     [DeviceOnboardingStackRoutes.WalletBackupTutorial]: undefined;
     [DeviceOnboardingStackRoutes.WalletCreation]: undefined;
+    [DeviceOnboardingStackRoutes.Recovery]: undefined;
 };
 
 export type AccountsImportStackParamList = {

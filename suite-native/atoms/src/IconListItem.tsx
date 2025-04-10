@@ -9,7 +9,7 @@ import { OrderedListIcon } from './OrderedListIcon';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-type Variant = 'default' | 'red' | 'yellow';
+type Variant = 'default' | 'red' | 'yellow' | 'primary';
 type IconColors = {
     iconColor: Color;
     iconBorderColor: Color;
@@ -31,6 +31,11 @@ const iconColorsMap = {
         iconColor: 'iconAlertYellow',
         iconBorderColor: 'backgroundAlertYellowSubtleOnElevation0',
         iconBackgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+    },
+    primary: {
+        iconColor: 'iconDefaultInverted',
+        iconBorderColor: 'backgroundPrimaryDefault',
+        iconBackgroundColor: 'backgroundPrimaryDefault',
     },
 } as const satisfies Record<Variant, IconColors>;
 

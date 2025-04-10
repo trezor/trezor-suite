@@ -29,6 +29,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
+import { SUITE_WEB_URL } from '@trezor/urls';
 
 import { BootloaderModalAppendix } from '../components/BootloaderModalAppendix';
 import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';
@@ -39,8 +40,6 @@ import {
     selectIsDeviceFirmwareSupported,
     selectIsDeviceSetupSupported,
 } from '../selectors';
-
-export const SUITE_WEB_URL = 'https://suite.trezor.io/web/';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     HomeStackParamList,

@@ -12,6 +12,7 @@ import { CreateOrRecoverCrossroadsScreen } from '../screens/CreateOrRecoverCross
 import { CreateWalletLoadingScreen } from '../screens/CreateWalletLoadingScreen';
 import { DeviceTutorialScreen } from '../screens/DeviceTutorialScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
+import { RecoveryScreen } from '../screens/RecoveryScreen';
 import { SecurityCheckScreen } from '../screens/SecurityCheckScreen';
 import { SuspiciousDeviceScreen } from '../screens/SuspiciousDeviceScreen';
 import { UninitializedDeviceLandingScreen } from '../screens/UninitializedDeviceLandingScreen';
@@ -60,6 +61,10 @@ export const DeviceOnboardingStackNavigator = () => (
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads}
             component={CreateOrRecoverCrossroadsScreen}
+        />
+        <DeviceOnboardingStack.Screen
+            name={DeviceOnboardingStackRoutes.Recovery}
+            component={RecoveryScreen}
         />
         <DeviceOnboardingStack.Screen
             name={DeviceOnboardingStackRoutes.CreateWalletLoading}
