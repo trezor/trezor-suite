@@ -11,10 +11,18 @@ WORKDIR /app
 COPY ./src ./src
 COPY ./Cargo.toml ./Cargo.toml
 
+RUN cargo build --target aarch64-apple-darwin --release
 RUN cargo build --target x86_64-apple-darwin --release
-RUN cargo build --target x86_64-unknown-linux-musl --release
+
+RUN cargo build --target aarch64-unknown-linux-gnu --release
+RUN cargo build --target x86_64-unknown-linux-gnu --release
+
 RUN cargo build --target x86_64-pc-windows-gnu --release
 
-RUN mkdir -p /output/macos && cp ./target/x86_64-apple-darwin/release/trezor-bluetooth /output/macos/trezor-bluetooth
-RUN mkdir -p /output/linux && cp ./target/x86_64-unknown-linux-musl/release/trezor-bluetooth /output/linux/trezor-bluetooth
+RUN mkdir -p /output/mac-arm64 && cp ./target/aarch64-apple-darwin/release/trezor-bluetooth /output/mac-arm64/trezor-bluetooth
+RUN mkdir -p /output/mac-x64 && cp ./target/x86_64-apple-darwin/release/trezor-bluetooth /output/mac-x64/trezor-bluetooth
+
+RUN mkdir -p /output/linux-arm64 && cp ./target/aarch64-unknown-linux-gnu/release/trezor-bluetooth /output/linux-arm64/trezor-bluetooth
+RUN mkdir -p /output/linux-x64 && cp ./target/x86_64-unknown-linux-gnu/release/trezor-bluetooth /output/linux-x64/trezor-bluetooth
+
 RUN mkdir -p /output/windows && cp ./target/x86_64-pc-windows-gnu/release/trezor-bluetooth.exe /output/windows/trezor-bluetooth.exe
