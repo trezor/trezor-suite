@@ -9,12 +9,12 @@ import {
     PopupHandshake,
     parseConnectSettings,
 } from '@trezor/connect';
+import { ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
 import { Deferred, createDeferred } from '@trezor/utils';
 
 import { createHttpReceiver } from './http-receiver';
 import { Dependencies } from '../modules';
-import { ProcessInfo, findProcessFromIncomingPort } from './find-process-from-port';
 
 const LOG_PREFIX = 'connect-ws';
 
