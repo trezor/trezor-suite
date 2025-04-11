@@ -1,6 +1,13 @@
 import TrezorConnect from '@trezor/connect-web';
 
 import { expect, test } from '../../support/fixtures';
+import { ConnectPopupModal } from '../../support/pageObjects/connectPopupModal';
+
+const passThroughPermissions = async (connectModal: ConnectPopupModal) => {
+    await expect(connectModal.processParagraph).toHaveText('Process: node');
+    await expect(connectModal.rememberCheckbox).toHaveText('Always allow for this app');
+    await connectModal.confirmButton.click();
+};
 
 test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
@@ -26,13 +33,12 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
             coin: 'btc',
         });
 
-        // export single address
         await expect(connectModal.header).toHaveText('Export Bitcoin address');
-        await expect(connectModal.processParagraph).toHaveText('Process: node');
-        await expect(connectModal.rememberCheckbox).toHaveText('Always allow for this app');
-        await connectModal.confirmButton.click();
+        await passThroughPermissions(connectModal);
+
+        // export single address
         await trezorUserEnvLink.pressYes();
-        expect((await res).success).toBe(true);
+        expect(await res).toMatchObject({ success: true });
 
         // export multiple addresses
         const resMultiple = TrezorConnect.getAddress({
@@ -51,7 +57,34 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         await connectModal.confirmButton.click();
         await trezorUserEnvLink.pressYes();
         await trezorUserEnvLink.pressYes();
-        expect((await resMultiple).success).toBe(true);
+
+        expect(await resMultiple).toMatchObject({ success: true });
+    });
+
+    test('TrezorConnect.ethereumSignTransaction', async ({ connectModal, trezorUserEnvLink }) => {
+        const res = TrezorConnect.ethereumSignTransaction({
+            path: "m/44'/60'/0'/0/0",
+            transaction: {
+                nonce: '0x0',
+                gasPrice: '0x14',
+                gasLimit: '0x14',
+                to: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+                chainId: 1,
+                value: '0x0',
+                data: '0xa9059cbb000000000000000000000000D6971aabeDC7f2A8113679199FE374aE1B1Aea96000000000000000000000000000000000000000000000000000000000097f6b2',
+            },
+        });
+
+        await expect(connectModal.header).toHaveText('Sign Ethereum transaction');
+        await passThroughPermissions(connectModal);
+
+        // todo: add UI asserts for step 1
+        await trezorUserEnvLink.swipeEmu('up');
+
+        // todo: add UI asserts for step 2
+        await trezorUserEnvLink.pressYes();
+
+        expect(await res).toMatchObject({ success: true });
     });
 });
 
