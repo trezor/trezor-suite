@@ -5,6 +5,7 @@ import webpack from 'webpack';
 
 import { FLAGS } from '@suite-common/suite-config';
 
+import { AssetsFilterPlugin } from '../plugins/assets-filter-plugin';
 import { NixosInterpreterPlugin } from '../plugins/nixos-interpreter-plugin';
 import ShellSpawnPlugin from '../plugins/shell-spawn-plugin';
 import { assetPrefix, isCodesignBuild, isDev, launchElectron } from '../utils/env';
@@ -15,6 +16,10 @@ const electronArgs = process.argv.slice(electronArgsIndex);
 
 const baseDirUI = getPathForProject('desktop-ui');
 const baseDir = getPathForProject('desktop');
+
+// conditionally remove bluetooth binaries from the build, see https://github.com/trezor/trezor-suite/pull/18196
+// to be removed when BT is ready
+const BLUETOOTH_BIN_FILTER = !isDev && !process.env.BLUETOOTH ? [/bin\/bluetooth\//] : [];
 
 const config: webpack.Configuration = {
     // Electron 35 runs on Chromium 134 https://www.electronjs.org/blog/electron-35-0#stack-changes
@@ -78,6 +83,9 @@ const config: webpack.Configuration = {
             options: {
                 concurrency: 100,
             },
+        }),
+        new AssetsFilterPlugin({
+            test: BLUETOOTH_BIN_FILTER,
         }),
         new HtmlWebpackPlugin({
             minify: !isDev,
