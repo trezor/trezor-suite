@@ -82,7 +82,7 @@ You can override ENV variables locally using `.env.development.local` (or `.env.
 
 -   `EXPO_PUBLIC_IS_ANALYTICS_LOGGER_ENABLED=true` in `.env.development.local` to debug analytics locally and
 -   `EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true` to debug Sentry locally.
--   `EXPO_PUBLIC_FF_*` overrides initial state for Feature Flags. See [.env.development](./.evn.development) for examples to copy to `.env.development.local` file and [featureFlagsSlice.ts](../feature-flags/src/featureFlagsSlice.ts) for all available values.
+-   `EXPO_PUBLIC_FF_*` overrides initial state for Feature Flags. See [.env.development](./.env.development) for examples to copy to `.env.development.local` file and [featureFlagsSlice.ts](../feature-flags/src/featureFlagsSlice.ts) for all available values.
 
 ## Native changes - bumping runtimeVersion
 
@@ -97,3 +97,5 @@ Whenever you do a change in a native code (updating native dependency and so on)
 3. Sometimes it's helpful to combine two previous points with uninstalling the app from the device/emulator.
 4. Make sure you are using pure Node or `nvm` for managing node version (other version managers like `fnm` can cause build issues on iOS).
 5. `npx react-native doctor` may help to identify issues with your environment, though not every check _has_ to pass
+6. Android emulator on Linux may be unstable with default software renderer. Then go to settings of the Android Virtual Device and choose Graphics acceleration: Hardware.<br />
+   For further debugging, start emulator with `adb logcat -v long > emulator_log.txt` running somewhere in the background.
