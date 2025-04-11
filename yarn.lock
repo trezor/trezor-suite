@@ -9360,6 +9360,7 @@ __metadata:
   dependencies:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/icons": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:1.9.1"

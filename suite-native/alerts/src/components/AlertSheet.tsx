@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Modal, Pressable } from 'react-native';
+import { Modal, Pressable, StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import {
@@ -11,6 +11,7 @@ import {
     VStack,
     useBottomSheetAnimation,
 } from '@suite-native/atoms';
+import { getScreenHeight, getScreenWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Alert } from '../alertsAtoms';
@@ -20,6 +21,9 @@ import { useShakeAnimation } from '../useShakeAnimation';
 type AlertSheetProps = {
     alert: Alert;
 };
+
+const SCREEN_WIDTH = getScreenWidth();
+const SCREEN_HEIGHT = getScreenHeight();
 
 const alertSheetContainerStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
@@ -43,8 +47,12 @@ const shakeTriggerStyle = prepareNativeStyle(_ => ({
 }));
 
 const sheetOverlayStyle = prepareNativeStyle(_ => ({
-    flex: 1,
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+    ...StyleSheet.absoluteFillObject,
 }));
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const AlertSheet = ({ alert }: AlertSheetProps) => {
     const { hideAlert } = useAlert();
@@ -92,54 +100,56 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
 
     return (
         <Modal transparent visible={!!alert} testID={testID}>
-            <Animated.View style={[animatedSheetWithOverlayStyle, applyStyle(sheetOverlayStyle)]}>
-                <Pressable onPress={runShakeAnimation} style={applyStyle(shakeTriggerStyle)}>
-                    <Animated.View
-                        style={[animatedSheetWrapperStyle, shakeAnimatedStyle]}
-                        onStartShouldSetResponder={_ => true} // Stop the shake event trigger propagation.
-                    >
-                        <Card style={applyStyle(alertSheetContainerStyle)}>
-                            <VStack style={applyStyle(alertSheetContentStyle)}>
-                                {pictogramVariant && (
-                                    <Box alignItems="center">
-                                        <Pictogram variant={pictogramVariant} icon={icon} />
-                                    </Box>
-                                )}
-                                {(title || description) && (
-                                    <TitleHeader
-                                        title={title}
-                                        subtitle={description}
-                                        textAlign={textAlign}
-                                        titleSpacing={titleSpacing}
-                                    />
-                                )}
-                                {appendix}
-                                <VStack spacing="sp12">
+            <Animated.View style={[applyStyle(sheetOverlayStyle), animatedSheetWithOverlayStyle]} />
+            <AnimatedPressable
+                onPress={runShakeAnimation}
+                style={[animatedSheetWrapperStyle, applyStyle(shakeTriggerStyle)]}
+            >
+                <Animated.View
+                    style={shakeAnimatedStyle}
+                    onStartShouldSetResponder={_ => true} // Stop the shake event trigger propagation.
+                >
+                    <Card style={applyStyle(alertSheetContainerStyle)}>
+                        <VStack style={applyStyle(alertSheetContentStyle)}>
+                            {pictogramVariant && (
+                                <Box alignItems="center">
+                                    <Pictogram variant={pictogramVariant} icon={icon} />
+                                </Box>
+                            )}
+                            {(title || description) && (
+                                <TitleHeader
+                                    title={title}
+                                    subtitle={description}
+                                    textAlign={textAlign}
+                                    titleSpacing={titleSpacing}
+                                />
+                            )}
+                            {appendix}
+                            <VStack spacing="sp12">
+                                <Button
+                                    size="medium"
+                                    colorScheme={primaryButtonVariant}
+                                    onPress={handlePressPrimaryButton}
+                                    viewLeft={primaryButtonViewLeft}
+                                    testID="@alert-sheet/primary-button"
+                                >
+                                    {primaryButtonTitle}
+                                </Button>
+                                {secondaryButtonTitle && (
                                     <Button
                                         size="medium"
-                                        colorScheme={primaryButtonVariant}
-                                        onPress={handlePressPrimaryButton}
-                                        viewLeft={primaryButtonViewLeft}
-                                        testID="@alert-sheet/primary-button"
+                                        colorScheme={secondaryButtonVariant}
+                                        onPress={handlePressSecondaryButton}
+                                        testID="@alert-sheet/secondary-button"
                                     >
-                                        {primaryButtonTitle}
+                                        {secondaryButtonTitle}
                                     </Button>
-                                    {secondaryButtonTitle && (
-                                        <Button
-                                            size="medium"
-                                            colorScheme={secondaryButtonVariant}
-                                            onPress={handlePressSecondaryButton}
-                                            testID="@alert-sheet/secondary-button"
-                                        >
-                                            {secondaryButtonTitle}
-                                        </Button>
-                                    )}
-                                </VStack>
+                                )}
                             </VStack>
-                        </Card>
-                    </Animated.View>
-                </Pressable>
-            </Animated.View>
+                        </VStack>
+                    </Card>
+                </Animated.View>
+            </AnimatedPressable>
         </Modal>
     );
 };
