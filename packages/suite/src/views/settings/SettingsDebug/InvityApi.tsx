@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { type InvityServerEnvironment, invityAPI } from '@suite-common/trading';
 
 import { setDebugMode } from 'src/actions/suite/suiteActions';
-import { SettingsSectionItem } from 'src/components/settings';
-import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
+import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { reloadApp } from 'src/utils/suite/reload';
 
@@ -34,7 +33,7 @@ export const InvityApi = () => {
     };
 
     return (
-        <SettingsSectionItem>
+        <SectionItem>
             <TextColumn
                 title="API server"
                 description="Set the server url for buy and exchange features"
@@ -46,6 +45,6 @@ export const InvityApi = () => {
                     options={invityApiServerOptions}
                 />
             </ActionColumn>
-        </SettingsSectionItem>
+        </SectionItem>
     );
 };

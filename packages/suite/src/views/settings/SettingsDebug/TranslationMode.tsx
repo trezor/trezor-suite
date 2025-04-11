@@ -1,11 +1,10 @@
 import { Switch } from '@trezor/components';
 
-import { SettingsSectionItem } from 'src/components/settings';
-import { ActionColumn, TextColumn } from 'src/components/suite';
+import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { isTranslationMode, setTranslationMode } from 'src/utils/suite/l10n';
 
 export const TranslationMode = () => (
-    <SettingsSectionItem>
+    <SectionItem>
         <TextColumn
             title="Translation mode"
             description="Translation mode enables distinctive visual styling for currently used intl messages. Helpful tooltip with an ID of the message will show up when you mouse over the message."
@@ -16,5 +15,5 @@ export const TranslationMode = () => (
                 onChange={() => setTranslationMode(!isTranslationMode())}
             />
         </ActionColumn>
-    </SettingsSectionItem>
+    </SectionItem>
 );

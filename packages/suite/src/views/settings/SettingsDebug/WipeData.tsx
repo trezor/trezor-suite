@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { SettingsSectionItem } from 'src/components/settings';
-import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const UserDataLink = styled.span`
@@ -20,7 +19,7 @@ export const WipeData = () => {
     const dispatch = useDispatch();
 
     return (
-        <SettingsSectionItem>
+        <SectionItem>
             <TextColumn
                 title="Wipe app data"
                 description={
@@ -57,6 +56,6 @@ export const WipeData = () => {
                     Wipe data
                 </ActionButton>
             </ActionColumn>
-        </SettingsSectionItem>
+        </SectionItem>
     );
 };
