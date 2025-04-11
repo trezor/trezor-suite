@@ -69,7 +69,8 @@ jobs:
             --title "$PR_TITLE" \
             --body "Automatically generated PR for updating crowdin translations from ${{ env.SOURCE_BRANCH }} branch." \
             --base ${{ env.SOURCE_BRANCH }} \
-            --label translations
+            --label translations \
+            --label no-project
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
           BRANCH_NAME: trezor-ci/crowdin-sync-${{ env.NOW }}
