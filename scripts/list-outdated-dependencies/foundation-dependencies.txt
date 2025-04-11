@@ -54,7 +54,6 @@ int64-buffer
 minimaldata
 n64
 node-fetch
-noble/hashes
 openpgp
 patch-package
 redux-thunk
@@ -78,4 +77,3 @@ jssha
 minimatch
 terser-webpack-plugin
 tiny-worker
-typescript-eslint (shared with Engagement)

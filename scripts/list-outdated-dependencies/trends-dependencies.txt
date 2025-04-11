@@ -6,7 +6,6 @@
 @solana/addresses
 @solana/buffer-layout
 @solana/keys
-@solana-kit
 @solana-program/compute-budget
 @solana-program/stake
 @solana-program/system

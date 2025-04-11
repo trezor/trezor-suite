@@ -39,7 +39,6 @@ browserify-bignum
 clsx
 codemirror-json-schema
 codemirror-json5
-connect
 crypto-browserify
 crc
 events
