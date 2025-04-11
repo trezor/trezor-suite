@@ -5,7 +5,6 @@ import { type InvityServerEnvironment, invityAPI } from '@suite-common/trading';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { reloadApp } from 'src/utils/suite/reload';
 
@@ -35,7 +34,7 @@ export const InvityApi = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.InvityApi}>
+        <SettingsSectionItem>
             <TextColumn
                 title="API server"
                 description="Set the server url for buy and exchange features"

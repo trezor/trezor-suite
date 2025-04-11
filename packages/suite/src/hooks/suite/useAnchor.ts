@@ -6,7 +6,7 @@ import { useSelector } from 'src/hooks/suite';
 
 const OFFSET = 30;
 
-export const useAnchor = (anchorId: string) => {
+export const useAnchor = (anchorId: string | undefined) => {
     const anchorRef = useRef<HTMLDivElement>(null);
     const anchor = useSelector(state => state.router.anchor);
 

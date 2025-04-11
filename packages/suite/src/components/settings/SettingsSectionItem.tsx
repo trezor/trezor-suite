@@ -5,7 +5,7 @@ import { SettingsAnchorValue } from 'src/constants/suite/anchors';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 
 interface SettingsSectionItemProps {
-    anchorId: SettingsAnchorValue;
+    anchorId?: SettingsAnchorValue;
     children: ReactNode;
 }
 

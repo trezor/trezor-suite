@@ -1,10 +1,6 @@
 import { Route } from '@suite-common/suite-types';
 
-export type AnchorSettingSection =
-    | 'general-settings'
-    | 'device-settings'
-    | 'coin-settings'
-    | 'debug-settings';
+export type AnchorSettingSection = 'general-settings' | 'device-settings' | 'coin-settings';
 
 type Anchor = `@${AnchorSettingSection}/${string}`;
 
@@ -50,12 +46,6 @@ export const SettingsAnchor = {
     Crypto: '@coin-settings/crypto',
     TestnetCrypto: '@coin-settings/testnet-crypto',
     UnsupportedCrypto: '@coin-settings/unsupported-crypto',
-
-    TranslationMode: '@debug-settings/translation-mode',
-    GithubIssue: '@debug-settings/github-issue',
-    WipeData: '@debug-settings/wipe-data',
-    InvityApi: '@debug-settings/invity-api',
-    OAuthApi: '@debug-settings/oauth-api',
 } satisfies { [key: string]: Anchor };
 
 export type SettingsAnchorValue = (typeof SettingsAnchor)[keyof typeof SettingsAnchor];
@@ -64,7 +54,6 @@ export const mapAnchorToRoute: Record<AnchorSettingSection, Route['name']> = {
     'general-settings': 'settings-index',
     'device-settings': 'settings-device',
     'coin-settings': 'settings-coins',
-    'debug-settings': 'settings-debug',
 };
 
 export const AccountTransactionBaseAnchor = '@account/transaction';

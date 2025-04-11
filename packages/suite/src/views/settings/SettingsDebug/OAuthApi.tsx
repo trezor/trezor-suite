@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import GoogleClient from 'src/services/google';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
@@ -29,7 +28,7 @@ export const OAuthApi = () => {
     };
 
     return (
-        <SettingsSectionItem anchorId={SettingsAnchor.OAuthApi}>
+        <SettingsSectionItem>
             <TextColumn
                 title="Google auth server"
                 description="Set the authorisation server url for labeling in Google Drive"
