@@ -1478,6 +1478,7 @@ export const en = {
                 poweredBy: 'Powered by',
                 learnMore: 'Learn more',
             },
+            balance: 'Balance:',
         },
         selectFiat: {
             title: 'Fund',
@@ -1552,6 +1553,11 @@ export const en = {
                 "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",
             infoLegal2:
                 'I understand that cryptocurrencies are an emerging financial tool and that regulations can differ by region. This may increase the risk of fraud, theft, or market instability.',
+        },
+        validators: {
+            min: 'Minimum is {min}',
+            max: 'Maximum is {max}',
+            noQuotes: 'No offers available for your request. Change amount or currency.',
         },
         defaultSearchLabel: 'Search',
         notSelected: 'Not selected',

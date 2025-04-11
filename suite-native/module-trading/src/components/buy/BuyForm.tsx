@@ -10,11 +10,13 @@ import { Confirmation } from './Confirmation';
 import { PaymentCard } from './PaymentCard';
 import { useQuotes } from '../../hooks/useQuotes';
 import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
+import { TradingAlert } from '../general/TradingAlert';
 import { TradingFooter } from '../general/TradingFooter';
 
 const BuyFormMemoized = memo(({ isAmountInputActive }: { isAmountInputActive: boolean }) => (
     <VStack spacing="sp16">
         {!isAmountInputActive && <BuyHeader />}
+        <TradingAlert />
         <BuyCard isAmountInputActive={isAmountInputActive} />
         {isAmountInputActive ? (
             <AmountEditingDoneButton />

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
@@ -22,7 +22,7 @@ type PromiseType = {
     abort: (message?: string) => void;
 };
 
-type ShouldFetchQuotesState = {
+type ShouldFetchQuotesRef = {
     cryptoId: string | undefined;
     fiatCurrency: string | undefined;
     amount: string | undefined;
@@ -36,7 +36,7 @@ type ShouldFetchQuotes = {
 };
 
 const useShouldFetchQuotes = (form: TradingBuyForm): ShouldFetchQuotes => {
-    const [prevState, setPrevState] = useState<ShouldFetchQuotesState>({
+    const prevState = useRef<ShouldFetchQuotesRef>({
         cryptoId: undefined,
         fiatCurrency: undefined,
         amount: undefined,
@@ -56,11 +56,11 @@ const useShouldFetchQuotes = (form: TradingBuyForm): ShouldFetchQuotes => {
     const isFetchAllowed = !!(asset && fiatCurrency && amount);
 
     if (
-        asset?.cryptoId === prevState.cryptoId &&
-        fiatCurrency === prevState.fiatCurrency &&
-        amount === prevState.amount &&
-        amountInCrypto === prevState.amountInCrypto &&
-        country?.value === prevState.country
+        asset?.cryptoId === prevState.current.cryptoId &&
+        fiatCurrency === prevState.current.fiatCurrency &&
+        amount === prevState.current.amount &&
+        amountInCrypto === prevState.current.amountInCrypto &&
+        country?.value === prevState.current.country
     ) {
         return {
             isFetchAllowed,
@@ -68,13 +68,13 @@ const useShouldFetchQuotes = (form: TradingBuyForm): ShouldFetchQuotes => {
         };
     }
 
-    setPrevState({
+    prevState.current = {
         cryptoId: asset?.cryptoId,
         fiatCurrency,
         amount,
         amountInCrypto,
         country: country?.value,
-    });
+    };
 
     return {
         isFetchAllowed,

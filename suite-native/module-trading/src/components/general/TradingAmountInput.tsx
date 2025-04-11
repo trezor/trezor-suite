@@ -13,15 +13,17 @@ export type TradingAmountInputProps = {
 export const INPUT_MIN_WIDTH = 60;
 export const INPUT_HEIGHT = 42;
 
-const inputStyle = prepareNativeStyle(({ colors, typography }) => ({
-    ...typography.body,
-    color: colors.textDefault,
-    textAlign: 'right',
-    fontSize: 34,
-    lineHeight: INPUT_HEIGHT,
-    minWidth: INPUT_MIN_WIDTH,
-    flex: 1,
-}));
+const inputStyle = prepareNativeStyle<{ hasError: boolean }>(
+    ({ colors, typography }, { hasError }) => ({
+        ...typography.body,
+        color: hasError ? colors.textAlertRed : colors.textDefault,
+        textAlign: 'right',
+        fontSize: 34,
+        lineHeight: INPUT_HEIGHT,
+        minWidth: INPUT_MIN_WIDTH,
+        flex: 1,
+    }),
+);
 
 export const TradingAmountInput = ({
     name,
@@ -31,7 +33,7 @@ export const TradingAmountInput = ({
 }: TradingAmountInputProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const form = useTradingBuyFormContext();
-    const { value, onChange, onBlur } = useField({ name });
+    const { value, onChange, onBlur, hasError } = useField({ name });
 
     const setFocusedValue = () => {
         form.setValue('focusedValue', name);
@@ -43,13 +45,14 @@ export const TradingAmountInput = ({
 
     const handleTextChange = (text: string) => {
         const transformedText = inputTransformer(text);
+        const truncatedText = transformedText.slice(0, maxLength);
 
-        return onChange(transformedText.slice(0, maxLength));
+        return onChange(truncatedText === '' ? undefined : truncatedText);
     };
 
     return (
         <TextInput
-            style={applyStyle(inputStyle)}
+            style={applyStyle(inputStyle, { hasError })}
             placeholder="0.0"
             keyboardType="decimal-pad"
             inputMode="decimal"

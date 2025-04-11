@@ -37,10 +37,6 @@ export type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export type ReceiveAccountPickerProps = {
-    selectedSymbol?: NetworkSymbol;
-};
-
 const RightText = ({ color, variant = 'body', children }: RightTextProps) => (
     <Text color={color} variant={variant} textAlign="right" ellipsizeMode="tail" numberOfLines={1}>
         {children}

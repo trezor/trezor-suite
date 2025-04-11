@@ -93,3 +93,6 @@ export const selectBuySupportedFiatCurrenciesList = createMemoizedSelector(
                     }) as FiatCurrencyItem,
             ),
 );
+
+export const selectBuyAmountLimits = (state: TradingRootState) =>
+    selectTradingBuy(state).amountLimits;

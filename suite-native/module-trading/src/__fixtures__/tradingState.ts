@@ -11,12 +11,7 @@ import quotes from './quotes.json';
 export const getInitializedBuyState = () =>
     ({
         ...initialState.buy,
-        quotesRequest: {
-            wantCrypto: true,
-            fiatCurrency: 'fiatCurrency',
-            paymentMethod: 'eps',
-            receiveCurrency: 'bitcoin' as CryptoId,
-        },
+        quotesRequest: undefined,
         selectedQuote: {
             paymentMethod: 'eps',
         },
@@ -45,6 +40,11 @@ export const getInitializedBuyState = () =>
                 ['cexdirect']: cexdirect,
             } as unknown as Record<string, BuyProviderInfo>,
             supportedFiatCurrencies: ['usd', 'eur', 'czk'],
+        },
+        amountLimits: {
+            currency: 'BTC',
+            minCrypto: '0.0001',
+            maxCrypto: '50',
         },
     }) as TradingBuyState;
 

@@ -1,5 +1,5 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
-import type { BuyTrade } from 'invity-api';
+import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { tradingBuyActions } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
@@ -363,5 +363,194 @@ describe('useTradingBuyForm', () => {
         });
 
         expect(result.current.getValues('provider')).toEqual('mercuryo');
+    });
+
+    describe('validations', () => {
+        it.each([
+            ['10', 'Minimum is $1,000.00'],
+            ['3000', 'Maximum is $2,000.00'],
+        ])('should display fiat error for amount %s', async (amount, expectedValue) => {
+            const store = await getInitializedStore(true);
+            store.dispatch(
+                tradingBuyActions.setAmountLimits({
+                    minFiat: '1000',
+                    maxFiat: '2000',
+                    currency: 'USD',
+                }),
+            );
+            const { result } = await renderUseTradingBuyForm(store);
+
+            act(() => {
+                result.current.setValue('fiatValue', amount);
+                result.current.setValue('asset', btcAsset);
+            });
+
+            await act(() => result.current.trigger('fiatValue'));
+
+            const { error, invalid } = result.current.getFieldState('fiatValue');
+
+            expect(invalid).toBe(true);
+            expect(error).toEqual(expect.objectContaining({ message: expectedValue }));
+        });
+
+        it.each([
+            ['10', 'Minimum is 1000 BTC'],
+            ['3000', 'Maximum is 2000 BTC'],
+        ])('should display crypto error for amount %s', async (amount, expectedValue) => {
+            const store = await getInitializedStore(true);
+            store.dispatch(
+                tradingBuyActions.setAmountLimits({
+                    minCrypto: '1000',
+                    maxCrypto: '2000',
+                    currency: 'BTC',
+                }),
+            );
+            const { result } = await renderUseTradingBuyForm(store);
+
+            act(() => {
+                result.current.setValue('amountInCrypto', true);
+                result.current.setValue('asset', btcAsset);
+            });
+            act(() => {
+                result.current.setValue('cryptoValue', amount);
+            });
+
+            await act(() => result.current.trigger('cryptoValue'));
+
+            const { error, invalid } = result.current.getFieldState('cryptoValue');
+
+            expect(invalid).toBe(true);
+            expect(error).toEqual(expect.objectContaining({ message: expectedValue }));
+        });
+
+        it('should trigger validation once limits are loaded', async () => {
+            const store = await getInitializedStore(true);
+            const { result } = await renderUseTradingBuyForm(store);
+
+            act(() => {
+                result.current.setValue('fiatValue', '1');
+                result.current.setValue('asset', btcAsset);
+            });
+
+            await act(async () => {
+                store.dispatch(
+                    tradingBuyActions.setAmountLimits({
+                        minFiat: '10',
+                        currency: 'USD',
+                    }),
+                );
+                // allow to form.trigger validation to finish
+                await Promise.resolve();
+            });
+
+            const { invalid } = result.current.getFieldState('fiatValue');
+
+            expect(invalid).toBe(true);
+        });
+
+        describe('generalAlert', () => {
+            it('should be undefined by default', async () => {
+                const store = await getInitializedStore(true);
+                const { result } = await renderUseTradingBuyForm(store);
+
+                act(() => {
+                    store.dispatch(tradingBuyActions.saveQuotes([] as BuyTrade[]));
+                    store.dispatch(tradingBuyActions.setAmountLimits(undefined));
+                });
+
+                expect(result.current.getValues('generalAlert')).toBeUndefined();
+            });
+
+            it('should be set when empty quotes are fetched and no limits are set', async () => {
+                const store = await getInitializedStore(true);
+                const { result } = await renderUseTradingBuyForm(store);
+
+                act(() => {
+                    store.dispatch(
+                        tradingBuyActions.saveQuoteRequest({
+                            receiveCurrency: 'BTC' as CryptoId,
+                            fiatAmount: 10,
+                            fiatCurrency: 'USD',
+                            wantCrypto: true,
+                        }),
+                    );
+                    store.dispatch(tradingBuyActions.saveQuotes([] as BuyTrade[]));
+                    store.dispatch(tradingBuyActions.setAmountLimits(undefined));
+                });
+
+                expect(result.current.getValues('generalAlert')).toEqual(
+                    'No offers available for your request. Change amount or currency.',
+                );
+            });
+
+            it('should be undefined when empty quotes are fetched and limits are set', async () => {
+                const store = await getInitializedStore(true);
+                const { result } = await renderUseTradingBuyForm(store);
+
+                act(() => {
+                    store.dispatch(
+                        tradingBuyActions.saveQuoteRequest({
+                            receiveCurrency: 'BTC' as CryptoId,
+                            fiatAmount: 10,
+                            fiatCurrency: 'USD',
+                            wantCrypto: true,
+                        }),
+                    );
+                    store.dispatch(tradingBuyActions.saveQuotes([] as BuyTrade[]));
+                    store.dispatch(
+                        tradingBuyActions.setAmountLimits({
+                            currency: 'USD',
+                            minFiat: '100',
+                        }),
+                    );
+                });
+
+                expect(result.current.getValues('generalAlert')).toBeUndefined();
+            });
+
+            it('should be undefined when quotes are fetched ', async () => {
+                const store = await getInitializedStore(true);
+                const { result } = await renderUseTradingBuyForm(store);
+
+                act(() => {
+                    store.dispatch(
+                        tradingBuyActions.saveQuoteRequest({
+                            receiveCurrency: 'BTC' as CryptoId,
+                            fiatAmount: 10,
+                            fiatCurrency: 'USD',
+                            wantCrypto: true,
+                        }),
+                    );
+                    store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+                    store.dispatch(tradingBuyActions.setAmountLimits(undefined));
+                });
+
+                expect(result.current.getValues('generalAlert')).toBeUndefined();
+            });
+
+            it('should be cleared once quotes are fetched', async () => {
+                const store = await getInitializedStore(true);
+                const { result } = await renderUseTradingBuyForm(store);
+
+                act(() => {
+                    store.dispatch(
+                        tradingBuyActions.saveQuoteRequest({
+                            receiveCurrency: 'BTC' as CryptoId,
+                            fiatAmount: 10,
+                            fiatCurrency: 'USD',
+                            wantCrypto: true,
+                        }),
+                    );
+                    store.dispatch(tradingBuyActions.saveQuotes([] as BuyTrade[]));
+                    store.dispatch(tradingBuyActions.setAmountLimits(undefined));
+                });
+
+                act(() => {
+                    store.dispatch(tradingBuyActions.saveQuotes(quotes as BuyTrade[]));
+                });
+
+                expect(result.current.getValues('generalAlert')).toBeUndefined();
+            });
+        });
     });
 });

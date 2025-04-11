@@ -52,4 +52,16 @@ describe('TradingAmountInput', () => {
             '12345678901234567890123456789012345678901234567890',
         );
     });
+
+    it('should call onChange with undefined instead of empty text', async () => {
+        const { result } = await renderBuyFormHook();
+        const { getByLabelText } = renderTradingAmountInput({}, result.current);
+
+        await userEvent.type(getByLabelText('INPUT'), '1234567890');
+        expect(getByLabelText('INPUT')).toHaveDisplayValue('1234567890');
+
+        await userEvent.clear(getByLabelText('INPUT'));
+        expect(getByLabelText('INPUT')).toHaveDisplayValue('');
+        expect(result.current.getValues('fiatValue')).toBe(undefined);
+    });
 });

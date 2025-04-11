@@ -6,6 +6,7 @@ import { getBtcAccount } from '../../__fixtures__/account';
 import { getInitializedTradingState } from '../../__fixtures__/tradingState';
 import { TradingState, tradingSlice } from '../../tradingSlice';
 import {
+    selectBuyAmountLimits,
     selectBuyFormDefaultValues,
     selectBuySelectedReceiveAccount,
     selectBuySupportedFiatCurrencies,
@@ -200,6 +201,16 @@ describe('buySelectors', () => {
                     value: 'xxx',
                 },
             ]);
+        });
+    });
+
+    describe('selectBuyAmountLimits', () => {
+        it('should return amount limits', () => {
+            expect(selectBuyAmountLimits({ wallet: { tradingNew: prevState } })).toEqual({
+                currency: 'BTC',
+                maxCrypto: '50',
+                minCrypto: '0.0001',
+            });
         });
     });
 });

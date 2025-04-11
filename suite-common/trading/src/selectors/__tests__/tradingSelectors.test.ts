@@ -39,6 +39,7 @@ import {
     selectTradingPlatformByCryptoId,
     selectTradingSymbolAndContractAddressByCryptoId,
     selectTradingTrades,
+    selectValidTradingBuyQuotes,
 } from '../tradingSelectors';
 
 describe('tradingSelectors', () => {
@@ -586,6 +587,49 @@ describe('tradingSelectors', () => {
                     state.wallet.selectedAccount,
                 ),
             ).toBeUndefined();
+        });
+    });
+
+    describe('selectValidTradingBuyQuotes', () => {
+        beforeEach(() => {
+            state.wallet.tradingNew.buy.quotes = [
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin' as CryptoId,
+                    receiveStringAmount: '0.0005',
+                    rate: 20000,
+                    paymentMethod: 'eps',
+                    quoteId: 'quoteId1',
+                },
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin' as CryptoId,
+                    receiveStringAmount: '0.0005',
+                    rate: 0,
+                    paymentMethod: 'eps',
+                    quoteId: 'quoteId2',
+                },
+                {
+                    fiatStringAmount: '10',
+                    fiatCurrency: 'EUR',
+                    receiveCurrency: 'bitcoin' as CryptoId,
+                    receiveStringAmount: '0.0005',
+                    paymentMethod: 'eps',
+                    quoteId: 'quoteId2',
+                },
+            ];
+        });
+
+        it('should return only quotes with non-zero rate', () => {
+            const validQuotes = selectValidTradingBuyQuotes(state);
+
+            expect(validQuotes).toEqual([state.wallet.tradingNew.buy.quotes[0]]);
+        });
+
+        it('should be stable', () => {
+            expect(selectValidTradingBuyQuotes(state)).toBe(selectValidTradingBuyQuotes(state));
         });
     });
 });

@@ -41,9 +41,9 @@ describe('ReceiveAccountBalance', () => {
                 } as any,
             });
         });
-        const { getByTestId } = renderComponent();
+        const { queryByTestId } = renderComponent();
 
-        expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('');
+        expect(queryByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
     });
 
     it('should display empty box when balance is not specified', () => {
@@ -55,9 +55,9 @@ describe('ReceiveAccountBalance', () => {
                 } as any,
             });
         });
-        const { getByTestId } = renderComponent();
+        const { queryByTestId } = renderComponent();
 
-        expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('');
+        expect(queryByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
     });
 
     it('should display balance when symbol and balance is specified', () => {
@@ -71,6 +71,6 @@ describe('ReceiveAccountBalance', () => {
         });
         const { getByTestId } = renderComponent();
 
-        expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('0.01 BTC');
+        expect(getByTestId(RECEIVE_ACCOUNT_BALANCE_TEST_ID)).toHaveTextContent('Balance:0.01 BTC');
     });
 });

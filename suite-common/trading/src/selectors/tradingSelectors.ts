@@ -331,3 +331,12 @@ export const selectTradingAccountAccordingActiveSection = createMemoizedSelector
         return params.selectedAccount.account;
     },
 );
+
+export const selectValidTradingBuyQuotes = createMemoizedSelector(
+    [selectTradingBuyQuotes],
+    quotes => {
+        if (!quotes) return [];
+
+        return quotes.filter(item => item.rate && item.rate !== 0);
+    },
+);

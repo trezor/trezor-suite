@@ -123,7 +123,6 @@ describe('useQuotes', () => {
 
     it.each([
         ['fiatValue', '1000'],
-        ['fiatCurrency', 'czk'],
         ['country', 'CZ'],
     ] as [keyof TradingBuyFormValues, TradingBuyFormValues[keyof TradingBuyFormValues]][])(
         'should re-fetch quotes on %s value change',
@@ -167,6 +166,8 @@ describe('useQuotes', () => {
         act(() => {
             result.current.setValue('fiatValue', '100');
         });
+
+        expect(dispatchSpy).toHaveBeenCalledTimes(2);
 
         mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
         rerender({});
