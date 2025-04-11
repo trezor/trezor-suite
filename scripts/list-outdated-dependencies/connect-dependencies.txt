@@ -102,3 +102,7 @@ xvfb-maybe
 yargs
 json5
 json-stable-stringify
+@originjs/vite-plugin-commonjs
+@types/lodash
+@types/ws
+@uiw/react-codemirror

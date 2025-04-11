@@ -28,3 +28,6 @@ redux-devtools-extension
 redux-logger
 redux-mock-store
 xrpl
+@noble/hashes
+@solana/kit
+web3-utils

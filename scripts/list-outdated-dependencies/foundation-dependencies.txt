@@ -70,3 +70,12 @@ typescript
 uuid
 varuint-bitcoin
 wif
+@eslint/js
+cbor-js
+cross-fetch
+globals
+jssha
+minimatch
+terser-webpack-plugin
+tiny-worker
+typescript-eslint (shared with Engagement)
