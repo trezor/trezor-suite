@@ -815,6 +815,11 @@ export const en = {
             step2: 'Complete recovery in your browser.',
             step3: 'Start using your Trezor with\nTrezor Suite Lite.',
         },
+        createPinScreen: {
+            title: 'Set your Trezor’s PIN',
+            subtitle:
+                'Use your PIN to unlock your Trezor when\nconnecting it to a phone or computer.',
+        },
         walletBackupSheet: {
             title: 'Wallet backup type',
             timeLabel: 'Time',

@@ -1,17 +1,21 @@
 import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectDeviceButtonRequestsCodes } from '@suite-common/wallet-core';
+import { usePinAction } from '@suite-native/device';
 import {
     DevicePinProtectionStackParamList,
     DevicePinProtectionStackRoutes,
+    DeviceSettingsStackParamList,
+    DeviceStackRoutes,
+    StackNavigationProps,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
 import { useDeviceConnectionGuard } from '../hooks/useDeviceConnectionGuard';
-import { usePinAction } from '../hooks/usePinAction';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import {
     ConfirmNewPinScreen,
@@ -21,8 +25,19 @@ import {
 
 const DevicePinProtectionStack = createNativeStackNavigator<DevicePinProtectionStackParamList>();
 
+type NavigationProp = StackNavigationProps<
+    DeviceSettingsStackParamList,
+    DeviceStackRoutes.DevicePinProtection
+>;
+
 export const DevicePinProtectionStackNavigator = () => {
-    usePinAction();
+    const navigation = useNavigation<NavigationProp>();
+
+    const route =
+        useRoute<RouteProp<DeviceSettingsStackParamList, DeviceStackRoutes.DevicePinProtection>>();
+
+    const { type } = route.params;
+    usePinAction({ type, onSuccess: navigation.goBack });
     const { isDeviceConnected } = useDeviceConnectionGuard();
 
     const buttonRequestCodes = useSelector(selectDeviceButtonRequestsCodes);

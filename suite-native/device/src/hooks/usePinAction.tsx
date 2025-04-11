@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
     removeButtonRequests,
@@ -12,19 +12,9 @@ import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation, TxKeyPath } from '@suite-native/intl';
-import {
-    DeviceSettingsStackParamList,
-    DeviceStackRoutes,
-    PinActionType,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import { PinActionType } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
-
-type NavigationProp = StackNavigationProps<
-    DeviceSettingsStackParamList,
-    DeviceStackRoutes.DevicePinProtection
->;
 
 type ActionConfig = {
     remove: boolean | undefined;
@@ -50,17 +40,18 @@ const actionConfigMap = {
     },
 } as const satisfies Record<PinActionType, ActionConfig>;
 
-export const usePinAction = () => {
+type PinActionProps = {
+    type: PinActionType;
+    onSuccess: () => void;
+};
+
+export const usePinAction = ({ type, onSuccess }: PinActionProps) => {
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const device = useSelector(selectSelectedDevice);
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation();
     const dispatch = useDispatch();
     const { showToast } = useToast();
     const { showAlert, hideAlert } = useAlert();
-    const route =
-        useRoute<RouteProp<DeviceSettingsStackParamList, DeviceStackRoutes.DevicePinProtection>>();
-    const { type } = route.params;
-
     const showSuccess = useCallback(
         (messageKey: TxKeyPath) => {
             showToast({
@@ -116,7 +107,7 @@ export const usePinAction = () => {
         const { success, payload } = result.payload;
         if (success) {
             showSuccess(successMessageKey);
-            navigation.goBack();
+            onSuccess();
         } else {
             const errorCode = payload.code;
             if (errorCode === 'Failure_ActionCancelled' || errorCode === 'Failure_PinCancelled') {
@@ -127,7 +118,7 @@ export const usePinAction = () => {
                 showError('moduleDeviceSettings.pinProtection.errors.pinMismatch', handlePinAction);
             }
         }
-    }, [device, dispatch, navigation, showError, showSuccess, type]);
+    }, [device, dispatch, onSuccess, showError, showSuccess, type]);
 
     useEffect(() => {
         if (isDeviceConnected) handlePinAction();

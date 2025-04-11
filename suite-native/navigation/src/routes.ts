@@ -50,6 +50,7 @@ export enum DeviceOnboardingStackRoutes {
     WalletBackupRecap = 'WalletBackupRecap',
     WalletCreation = 'WalletCreation',
     Recovery = 'Recovery',
+    CreatePin = 'CreatePin',
 }
 
 export enum AccountsImportStackRoutes {

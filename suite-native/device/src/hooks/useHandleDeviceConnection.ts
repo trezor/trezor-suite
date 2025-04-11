@@ -47,6 +47,11 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
+const pinMatrixBlacklistedScreens = [
+    RootStackRoutes.DeviceSettingsStack,
+    RootStackRoutes.DeviceOnboardingStack,
+];
+
 export const useHandleDeviceConnection = () => {
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
@@ -90,13 +95,14 @@ export const useHandleDeviceConnection = () => {
     );
 
     const lastRoute = useNavigationState(state => state?.routes.at(-1)?.name);
-    const isDeviceSettingsStackFocused = lastRoute === RootStackRoutes.DeviceSettingsStack;
     const isSendStackFocused = lastRoute === RootStackRoutes.SendStack;
     const isOnboardingStackFocused = lastRoute === RootStackRoutes.OnboardingStack;
     const isDeviceOnboardingStackFocused = lastRoute === RootStackRoutes.DeviceOnboardingStack;
     const shouldBlockSendReviewRedirect = isDeviceRemembered && isSendStackFocused;
     const isDeviceCompromisedModalFocused = lastRoute === RootStackRoutes.DeviceCompromisedModal;
-
+    const isOnPinMatrixBlacklistedRoute = pinMatrixBlacklistedScreens.includes(
+        lastRoute as RootStackRoutes,
+    );
     const shouldNavigateToDeviceCompromisedModal =
         hasFirmwareAuthenticityCheckHardFailed &&
         !isFirmwareAuthenticityCheckDismissed &&
@@ -230,10 +236,10 @@ export const useHandleDeviceConnection = () => {
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
     // and then continue with the interaction. For T2, PIN is entered on device, but the screen is still displayed.
     useEffect(() => {
-        if (isOnboardingFinished && hasDeviceRequestedPin && !isDeviceSettingsStackFocused) {
+        if (isOnboardingFinished && hasDeviceRequestedPin && !isOnPinMatrixBlacklistedRoute) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.PinMatrix,
             });
         }
-    }, [isOnboardingFinished, hasDeviceRequestedPin, isDeviceSettingsStackFocused, navigation]);
+    }, [isOnboardingFinished, hasDeviceRequestedPin, isOnPinMatrixBlacklistedRoute, navigation]);
 };
