@@ -7,7 +7,8 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.6.0",
