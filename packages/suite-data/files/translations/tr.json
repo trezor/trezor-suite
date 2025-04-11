@@ -378,7 +378,7 @@
   "TR_BITCOIN_ONLY_UNAVAILABLE": "{bitcoinOnly}'ye geçmeden önce ürün yazılımınızı en son sürüme yükseltmeniz gerekir.",
   "TR_BLOCK_BASE_FEE": "Blok taban ücreti",
   "TR_BLUETOOTH": "Bluetooth",
-  "TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE": "Bluetooth ayarları açılamıyor. Ayarlara manuel olarak gidin ve Bluetooth ayarlarında listeleniyorsa Trezor'unuzu listeden kaldırıp tekrar eşleştirin.",
+  "TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE": "Bluetooth ayarları açılamıyor. Ayarlara manuel olarak gidin ve Bluetooth ayarlarında listeleniyorsa Trezor'unuzu kaldırıp tekrar eşleştirin.",
   "TR_BLUETOOTH_TIP_CABLE_HEADER": "Sorun hiçbir şekilde çözülmezse Trezor Safe 7'yi kabloyla bağlayın",
   "TR_BLUETOOTH_TIP_CABLE_TEXT": "Cihaz ayarlarından Bluetooth'u eşleştirmeyi deneyin",
   "TR_BLUETOOTH_TIP_PARING_MODE_HEADER": "Trezor Safe 7'yi eşleştirme moduna alın",

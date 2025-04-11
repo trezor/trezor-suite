@@ -378,7 +378,7 @@
   "TR_BITCOIN_ONLY_UNAVAILABLE": "Antes de cambiar el ajuste a {bitcoinOnly}, tienes que actualizar el firmware a la versión más reciente.",
   "TR_BLOCK_BASE_FEE": "Bloquear comisión básica",
   "TR_BLUETOOTH": "Bluetooth",
-  "TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE": "No se puede abrir la configuración de Bluetooth. Ve a la configuración manualmente, y si tu Trezor se encuentra en la configuración de Bluetooth, elimínalo y emparéjalo de nuevo.",
+  "TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS_REMOVE_DEVICE": "No se puede abrir la configuración de Bluetooth. Ve a la configuración manualmente, y si tu Trezor se encuentra en la lista de la configuración de Bluetooth, elimínalo y emparéjalo de nuevo.",
   "TR_BLUETOOTH_TIP_CABLE_HEADER": "Si no funciona ninguna opción, conecta Trezor Safe 7 con cable",
   "TR_BLUETOOTH_TIP_CABLE_TEXT": "Intenta emparejar Bluetooth desde la configuración del dispositivo",
   "TR_BLUETOOTH_TIP_PARING_MODE_HEADER": "Pon Trezor Safe 7 en modo de emparejamiento",

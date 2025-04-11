@@ -3060,7 +3060,7 @@ export default defineMessages({
         id: 'TR_TAPROOT_BANNER_POINT_2',
     },
     TR_GOT_IT: {
-        defaultMessage: 'Got it!',
+        defaultMessage: 'Got it',
         id: 'TR_GOT_IT',
     },
     TR_RECONNECT_HEADER: {
@@ -4164,7 +4164,7 @@ export default defineMessages({
     },
     TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE: {
         id: 'TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE',
-        defaultMessage: 'Leave',
+        defaultMessage: 'Opt out',
     },
     TR_TRANSACTIONS_NOT_AVAILABLE: {
         id: 'TR_TRANSACTIONS_NOT_AVAILABLE',
@@ -5056,7 +5056,7 @@ export default defineMessages({
     TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION',
         defaultMessage:
-            "Adds an NFT section to EVM-based chain accounts, allowing you to view NFTs. Sending NFTs isn't currently supported.",
+            "Add an NFT section to EVM-based chain accounts, allowing you to view NFTs. Sending NFTs isn't currently supported.",
     },
     TR_EXPERIMENTAL_FEATURES_ALLOW: {
         id: 'TR_EXPERIMENTAL_FEATURES_ALLOW',
@@ -5196,7 +5196,7 @@ export default defineMessages({
     },
     TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_DISABLE_CONFIRM_DESCRIPTION',
-        defaultMessage: 'Click "Opt out" to stop checking for beta releases',
+        defaultMessage: 'Click "Opt out" to stop checking for beta releases.',
     },
     TR_EXPORT_TO_FILE: {
         id: 'TR_EXPORT_TO_FILE',
@@ -6032,7 +6032,8 @@ export default defineMessages({
     },
     TR_LABELING_FEATURE_ALLOWS: {
         id: 'TR_LABELING_FEATURE_ALLOWS',
-        defaultMessage: 'Rename your wallets, accounts, or label your transactions.',
+        defaultMessage:
+            'Rename your wallets or accounts and label your transactions to stay organized.',
     },
     TR_LABELING_ENABLED: {
         id: 'TR_LABELING_ENABLED',
@@ -7367,7 +7368,7 @@ export default defineMessages({
     },
     TR_TROUBLE_SHOOTING_TIPS: {
         id: 'TR_TROUBLE_SHOOTING_TIPS',
-        defaultMessage: 'Troubleshooting tips',
+        defaultMessage: 'Troubleshooting Bluetooth',
     },
     TR_TROUBLE_SHOOTING_BLUETOOTH: {
         id: 'TR_TROUBLE_SHOOTING_BLUETOOTH',
@@ -7465,7 +7466,7 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION',
-        defaultMessage: 'Connect your device to a different computer with Trezor Bridge installed.',
+        defaultMessage: 'Connect your device to a different computer.',
     },
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE',
