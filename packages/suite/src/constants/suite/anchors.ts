@@ -64,7 +64,7 @@ export const mapAnchorToRoute: Record<AnchorSettingSection, Route['name']> = {
     'general-settings': 'settings-index',
     'device-settings': 'settings-device',
     'coin-settings': 'settings-coins',
-    'debug-settings': 'suite-start',
+    'debug-settings': 'settings-debug',
 };
 
 export const AccountTransactionBaseAnchor = '@account/transaction';
