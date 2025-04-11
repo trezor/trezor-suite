@@ -16,6 +16,7 @@ import {
 } from '../types';
 import {
     cryptoIdToNetwork,
+    getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
     testnetToProdCryptoId,
 } from '../utils';
@@ -26,7 +27,6 @@ import {
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
 } from '../utils/infoUtils';
-import { getBestRatedQuote } from '../utils/tradingUtils';
 
 // partial copy of Suite state
 export type TradingRootState = {
