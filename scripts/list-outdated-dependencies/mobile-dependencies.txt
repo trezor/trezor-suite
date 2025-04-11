@@ -80,3 +80,6 @@ event-target-shim
 @react-native-async-storage/async-storage
 @types/fast-text-encoding
 fast-text-encoding
+node-gyp
+@mobily/ts-belt
+react-fela

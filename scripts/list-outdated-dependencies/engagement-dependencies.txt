@@ -38,6 +38,8 @@ react-medium-image-zoom
 react-qr-reader
 react-select
 react-svg
+react-toastify
+react-use
 recharts
 simple-git
 storybook

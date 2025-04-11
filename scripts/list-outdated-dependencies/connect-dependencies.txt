@@ -85,7 +85,6 @@ jssha
 jest-extended
 jest-environment-node
 scroll-into-view-if-needed
-@types/bn.js
 @types/events
 @noble/hashes
 @scure/bip39
@@ -95,3 +94,11 @@ scroll-into-view-if-needed
 @walletconnect/react-native-compat
 html-inline-script-webpack-plugin
 version-bump-prompt
+concurrently
+cross-fetch
+escape-string-regexp
+@types/node-fetch
+node-fetch
+react-inspector
+ts-mixer
+ts-node

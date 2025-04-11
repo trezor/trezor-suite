@@ -1,24 +1,28 @@
 # CRYPTOGRAPHY
-golomb
+bech32
+bignumber.js
+bip66
+bitcoin-ops
+blake-hash
+blakejs
+@types/bn.js
+bn.js
 @types/bs58
 bs58
 @types/bs58check
 bs58check
 @types/create-hmac
 create-hmac
-bech32
-bip66
-bitcoin-ops
-blake-hash
-blakejs
-varuint-bitcoin
+golomb
 int64-buffer
 minimaldata
 n64
+tiny-secp256k1
+typeforce
+uuid
+varuint-bitcoin
 @types/wif
 wif
-tiny-secp256k1
-uuid
 
 # DESKTOP
 @electron/notarize
@@ -30,6 +34,10 @@ electron-store
 electron-updater
 @types/electron-localshortcut
 electron-localshortcut
+@types/file-saver
+file-saver
+glob
+
 openpgp
 systeminformation
 @braintree/sanitize-url
@@ -45,9 +53,10 @@ dropbox
 express
 
 # STORAGE
+fake-indexeddb
 idb
 
-# ESLINT
+# LINTER
 @eslint/js
 eslint
 typescript-eslint
@@ -59,4 +68,5 @@ eslint-plugin-local-rules
 eslint-plugin-mdx
 eslint-plugin-react-hooks
 eslint-plugin-react
+globals
 husky
