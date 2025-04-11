@@ -19,8 +19,10 @@ import type {
     WatchSellTradeResponse,
 } from 'invity-api';
 
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AccountType, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import type { Account, FormState } from '@suite-common/wallet-types';
+import { PrimitiveType } from '@trezor/type-utils';
 
 import * as constants from './constants';
 
@@ -219,3 +221,11 @@ export type TradingExchangeStepType =
     | 'SEND_TRANSACTION'
     | 'SEND_APPROVAL_TRANSACTION'
     | 'SIGN_DATA';
+
+export type TradingSendRejectedProps = {
+    type: 'error' | 'sign-tx-error';
+    error: {
+        id: ExtendedMessageDescriptor['id'];
+        values?: Record<string, PrimitiveType>;
+    };
+};

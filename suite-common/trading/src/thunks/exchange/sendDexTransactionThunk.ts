@@ -7,6 +7,7 @@ import { exchangeThunks, tradingThunks } from '../';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingActions } from '../../reducers/tradingReducer';
 import { selectTradingExchangeSelectedQuote } from '../../selectors/tradingSelectors';
+import { TradingSendRejectedProps } from '../../types';
 import { RecomposeAndSignTxThunkProps } from '../common/recomposeAndSignTxThunk';
 
 export type SendDexTransactionThunkProps = {
@@ -20,7 +21,13 @@ export type SendDexTransactionThunkProps = {
     signAndPushSendFormTransaction: RecomposeAndSignTxThunkProps['signAndPushSendFormTransaction'];
 };
 
-export const sendDexTransactionThunk = createThunk(
+export const sendDexTransactionThunk = createThunk<
+    undefined,
+    SendDexTransactionThunkProps,
+    {
+        rejectValue: TradingSendRejectedProps;
+    }
+>(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/sendDexTransaction`,
     async (
         {
