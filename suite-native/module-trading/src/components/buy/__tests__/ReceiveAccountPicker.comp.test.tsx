@@ -1,8 +1,15 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { Form } from '@suite-native/forms';
+import {
+    PreloadedState,
+    act,
+    fireEvent,
+    renderHookWithStoreProviderAsync,
+    renderWithStoreProviderAsync,
+} from '@suite-native/test-utils';
 
 import { getBtcAccount } from '../../../__fixtures__/account';
-import { ReceiveAccount } from '../../../types';
+import { useTradingBuyForm } from '../../../hooks/useTradingBuyForm';
+import { ReceiveAccount, TradingBuyForm } from '../../../types';
 import { ReceiveAccountPicker } from '../ReceiveAccountPicker';
 
 let mockNavigate: jest.Mock;
@@ -28,28 +35,42 @@ const getBuyState = (selectedReceiveAccount: ReceiveAccount | undefined) => ({
 });
 
 describe('ReceiveAccountPicker', () => {
-    const renderPicker = ({
-        selectedSymbol,
-        preloadedState,
-    }: {
-        selectedSymbol: NetworkSymbol | undefined;
-        preloadedState?: PreloadedState;
-    }) =>
-        renderWithStoreProviderAsync(<ReceiveAccountPicker selectedSymbol={selectedSymbol} />, {
-            preloadedState,
-        });
+    let buyForm: TradingBuyForm;
 
-    beforeEach(() => {
+    const renderBuyForm = async () => {
+        const { result } = await renderHookWithStoreProviderAsync(() => useTradingBuyForm());
+
+        return result.current;
+    };
+
+    const renderPicker = ({ preloadedState }: { preloadedState?: PreloadedState } = {}) =>
+        renderWithStoreProviderAsync(
+            <Form form={buyForm}>
+                <ReceiveAccountPicker />
+            </Form>,
+            {
+                preloadedState,
+            },
+        );
+
+    const setSelectedCryptoId = (cryptoId: string) => {
+        act(() => {
+            buyForm.setValue('asset', { cryptoId } as any);
+        });
+    };
+
+    beforeEach(async () => {
         mockNavigate = jest.fn();
+        buyForm = await renderBuyForm();
     });
 
     it('should display "Select coin first" when selectedSymbol is not specified', async () => {
-        const { getByText } = await renderPicker({ selectedSymbol: undefined });
+        const { getByText } = await renderPicker();
         expect(getByText('Select coin first')).toBeDefined();
     });
 
     it('should not call navigate on press when selectedSymbol is not specified', async () => {
-        const { getByText } = await renderPicker({ selectedSymbol: undefined });
+        const { getByText } = await renderPicker();
 
         fireEvent.press(getByText('Receive account'));
 
@@ -57,14 +78,15 @@ describe('ReceiveAccountPicker', () => {
     });
 
     it('should display "Not selected" when selectedValue is not specified', async () => {
-        const { getByText } = await renderPicker({ selectedSymbol: 'btc' });
+        setSelectedCryptoId('bitcoin');
+        const { getByText } = await renderPicker();
 
         expect(getByText('Not selected')).toBeDefined();
     });
 
     it('should call navigate to account picker when selectedSymbol is specified and picker pressed', async () => {
+        setSelectedCryptoId('ethereum');
         const { getByText } = await renderPicker({
-            selectedSymbol: 'etc',
             preloadedState: getBuyState(undefined),
         });
 
@@ -75,8 +97,8 @@ describe('ReceiveAccountPicker', () => {
     });
 
     it('should display selected account name', async () => {
+        setSelectedCryptoId('bitcoin');
         const { getByText } = await renderPicker({
-            selectedSymbol: 'btc',
             preloadedState: getBuyState({ account: getBtcAccount() }),
         });
 
@@ -84,9 +106,9 @@ describe('ReceiveAccountPicker', () => {
     });
 
     it('should display selected account name and address', async () => {
+        setSelectedCryptoId('bitcoin');
         const btcAccount = getBtcAccount();
         const { getByText } = await renderPicker({
-            selectedSymbol: 'btc',
             preloadedState: getBuyState({
                 account: btcAccount,
                 address: btcAccount.addresses?.used[0],

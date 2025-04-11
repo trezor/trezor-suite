@@ -16,8 +16,6 @@ import { FiatCurrencyPicker } from './FiatCurrencyPicker';
 import { ReceiveAccountCryptoBalance } from './ReceiveAccountCryptoBalance';
 import { ReceiveAccountPicker } from './ReceiveAccountPicker';
 import { TradeableAssetPicker } from './TradeableAssetPicker';
-import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
-import { getSelectedSymbolFromBuyForm } from '../../utils/tradeableAssetUtils';
 
 type BuyCardProps = {
     isAmountInputActive: boolean;
@@ -47,12 +45,8 @@ const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
 };
 
 export const BuyCard = ({ isAmountInputActive }: BuyCardProps) => {
-    const form = useTradingBuyFormContext();
     const { applyStyle } = useNativeStyles();
     const animatedStyle = useAnimatedBorderStyle(isAmountInputActive);
-
-    const [selectedReceiveAccount] = form.watch(['receiveAccount']);
-    const selectedNetworkSymbol = getSelectedSymbolFromBuyForm(form);
 
     return (
         <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
@@ -70,12 +64,10 @@ export const BuyCard = ({ isAmountInputActive }: BuyCardProps) => {
                     <TradeableAssetPicker />
                     <HStack justifyContent="space-between" alignItems="center">
                         <ReceiveAccountCryptoBalance
-                            symbol={selectedReceiveAccount?.account?.symbol}
-                            balance={selectedReceiveAccount?.account?.balance}
                         />
                     </HStack>
                 </VStack>
-                <ReceiveAccountPicker selectedSymbol={selectedNetworkSymbol} />
+                <ReceiveAccountPicker />
             </AnimatedCard>
         </AnimatedBox>
     );

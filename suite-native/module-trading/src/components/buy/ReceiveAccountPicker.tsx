@@ -14,7 +14,9 @@ import {
 } from '@suite-native/navigation';
 import { Color } from '@trezor/theme';
 
+import { useTradingBuyFormContext } from '../../hooks/useTradingBuyFormContext';
 import { selectBuySelectedReceiveAccount } from '../../selectors/buySelectors';
+import { getSelectedSymbolFromBuyForm } from '../../utils/tradeableAssetUtils';
 import { AccountAddress } from '../general/AccountAddress';
 import { TradingOverviewRow } from '../general/TradingOverviewRow';
 
@@ -84,10 +86,13 @@ const ReceiveAccountPickerRight = ({
     );
 };
 
-export const ReceiveAccountPicker = ({ selectedSymbol }: ReceiveAccountPickerProps) => {
+export const ReceiveAccountPicker = () => {
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProps>();
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
+    const form = useTradingBuyFormContext();
+
+    const selectedSymbol = getSelectedSymbolFromBuyForm(form);
 
     const openAccountPicker = () =>
         selectedSymbol &&
