@@ -25,6 +25,7 @@ varuint-bitcoin
 wif
 
 # DESKTOP
+@braintree/sanitize-url
 @electron/notarize
 electron
 electron-builder
@@ -37,10 +38,8 @@ electron-localshortcut
 @types/file-saver
 file-saver
 glob
-
 openpgp
 systeminformation
-@braintree/sanitize-url
 
 # FORMS
 @hookform/resolvers

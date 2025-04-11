@@ -14,7 +14,6 @@
 @testing-library/jest-dom
 @testing-library/user-event
 @types/copy-webpack-plugin
-@types/file-saver
 @types/fs-extra
 @types/prettier
 @types/react
@@ -31,9 +30,7 @@ babel-jest
 babel-loader
 chalk
 copy-webpack-plugin
-cross-fetch
 depcheck
-file-saver
 fs-extra
 history
 html-webpack-plugin
@@ -43,14 +40,12 @@ jest-canvas-mock
 jest-watch-typeahead
 jsdom
 minimatch
-node-gyp
 nx
 patch-package
 prettier
 raw-loader
 react
 react-dom
-react-inspector
 react-redux
 react-refresh
 react-router
@@ -65,7 +60,6 @@ rimraf
 reselect
 sort-package-json
 tar
-ts-node
 tslib
 tsx
 typescript

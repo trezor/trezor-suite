@@ -25,3 +25,4 @@ json-schema-to-typescript
 @types/bchaddrjs
 bchaddrjs
 xrpl
+react-use

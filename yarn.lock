@@ -12103,7 +12103,6 @@ __metadata:
     webpack: "npm:^5.97.1"
     worker-loader: "npm:^3.0.8"
     ws: "npm:^8.18.0"
-    yargs: "npm:17.7.2"
   languageName: unknown
   linkType: soft
 
