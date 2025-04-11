@@ -81,6 +81,7 @@ export const TradeableAssetsFilterTabs = ({
                     {item.label}
                 </FilterTab>
             )}
+            keyboardShouldPersistTaps="always"
         />
     );
 };
