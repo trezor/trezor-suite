@@ -1,4 +1,3 @@
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
@@ -13,10 +12,10 @@ import {
     GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { Success, Unsuccessful } from '@trezor/connect';
-import { PrimitiveType } from '@trezor/type-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { selectTradingComposedTransactionInfo } from '../../selectors/tradingSelectors';
+import { TradingSendRejectedProps } from '../../types';
 
 type SignAndPushSendFormTransactionProps = {
     formState: FormState;
@@ -25,14 +24,6 @@ type SignAndPushSendFormTransactionProps = {
 };
 
 type FulfillValue = Success<{ txid: string }> | Unsuccessful | undefined;
-
-type RejectedValue = {
-    type: 'sign-tx-error';
-    error: {
-        id: ExtendedMessageDescriptor['id'];
-        values?: Record<string, PrimitiveType>;
-    };
-};
 
 export type RecomposeAndSignTxThunkProps = {
     account: Account;
@@ -65,7 +56,7 @@ export const recomposeAndSignTxThunk = createThunk<
     FulfillValue,
     RecomposeAndSignTxThunkProps,
     {
-        rejectValue: RejectedValue;
+        rejectValue: TradingSendRejectedProps;
     }
 >(
     `${TRADING_THUNK_PREFIX}/recomposeAndSignTx`,
@@ -142,7 +133,7 @@ export const recomposeAndSignTxThunk = createThunk<
                 normalLevels.normal.type !== 'final' ||
                 !normalLevels.normal.feeLimit
             ) {
-                const error: RejectedValue['error'] =
+                const error: TradingSendRejectedProps['error'] =
                     normalLevels?.normal?.type === 'error' && normalLevels?.normal?.errorMessage
                         ? {
                               id: normalLevels.normal.errorMessage.id,
@@ -181,7 +172,7 @@ export const recomposeAndSignTxThunk = createThunk<
         const precomposedToSign = composedLevels.payload[selectedFee];
 
         if (!precomposedToSign || precomposedToSign.type !== 'final') {
-            const error: RejectedValue['error'] =
+            const error: TradingSendRejectedProps['error'] =
                 precomposedToSign?.type === 'error' && precomposedToSign.errorMessage
                     ? {
                           id: precomposedToSign.errorMessage.id,
