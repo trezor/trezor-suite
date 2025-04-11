@@ -122,10 +122,17 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
             }
             await this.handshake();
 
-            const response = await this.ws?.sendMessage({
-                type: IFRAME.CALL,
-                payload: params,
-            });
+            const response = await this.ws?.sendMessage(
+                {
+                    type: IFRAME.CALL,
+                    payload: params,
+                },
+                {
+                    // base timeout in WebsocketClient is 20s, setting 0 overrides it.
+                    // todo: there should be no base timeout in the websocket client. it is just too opinionated
+                    timeout: 0,
+                },
+            );
 
             if (!response) {
                 throw ERRORS.TypedError('Desktop_ConnectionMissing', 'No response');
