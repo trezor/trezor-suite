@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
-import { selectHasUserAllowedTracking } from '@suite-common/analytics';
+import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { Switch } from '@trezor/components';
 import { analytics } from '@trezor/suite-analytics';
 
@@ -15,7 +15,7 @@ const PositionedSwitch = styled.div`
 `;
 
 export const Analytics = () => {
-    const userAllowedTracking = useSelector(selectHasUserAllowedTracking);
+    const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.Analytics}>
@@ -27,9 +27,9 @@ export const Analytics = () => {
                 <PositionedSwitch>
                     <Switch
                         data-testid="@analytics/toggle-switch"
-                        isChecked={!!userAllowedTracking}
+                        isChecked={isAnalyticsEnabled}
                         onChange={() => {
-                            if (userAllowedTracking) {
+                            if (isAnalyticsEnabled) {
                                 analytics.disable();
                             } else {
                                 analytics.enable();

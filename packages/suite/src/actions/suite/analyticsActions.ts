@@ -44,11 +44,11 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     const sessionId = getTrackingRandomId();
     // if instanceId does not exist yet (was not loaded from storage), create a new one
     const instanceId = selectAnalyticsInstanceId(getState()) ?? getTrackingRandomId();
-    const userAllowedTracking = selectHasUserAllowedTracking(getState());
+    const hasUserAllowedTracking = selectHasUserAllowedTracking(getState());
     const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
     const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
 
-    analytics.init(userAllowedTracking, {
+    analytics.init(hasUserAllowedTracking, {
         instanceId,
         sessionId,
         environment: getEnvironment(),
@@ -60,7 +60,7 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
         },
     });
 
-    allowSentryReport(!!userAllowedTracking);
+    allowSentryReport(isAnalyticsEnabled);
     setSentryUser(instanceId);
 
     dispatch(

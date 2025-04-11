@@ -45,12 +45,12 @@ export const initAnalyticsThunk = createThunk(
     (_, { dispatch, getState }) => {
         const sessionId = getTrackingRandomId();
         const instanceId = selectAnalyticsInstanceId(getState()) ?? getTrackingRandomId();
-        const userAllowedTracking = selectHasUserAllowedTracking(getState());
+        const hasUserAllowedTracking = selectHasUserAllowedTracking(getState());
 
         const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
         const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
 
-        analytics.init(userAllowedTracking, {
+        analytics.init(hasUserAllowedTracking, {
             instanceId,
             sessionId,
             environment: 'mobile',
@@ -62,7 +62,7 @@ export const initAnalyticsThunk = createThunk(
             },
         });
 
-        allowSentryReport(!!userAllowedTracking);
+        allowSentryReport(isAnalyticsEnabled);
         setSentryUser(instanceId);
 
         dispatch(
