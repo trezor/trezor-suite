@@ -99,6 +99,7 @@ Assigning a @group allows filtering based on logical test category
 - `@group=metadata`
 - `@group=passphrase`
 - `@group=settings`
+- `@group=trading`
 
 #### @desktopOnly or @webOnly
 

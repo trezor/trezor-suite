@@ -10,7 +10,7 @@ import {
 } from '../../fixtures/invity';
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
-import { FeeTypes } from '../../support/pageObjects/tradingPage';
+import { FeeTypes } from '../../support/pageObjects/trading/fees';
 
 interface FeeSwitchTestCase {
     feeType: FeeTypes | 'custom';
@@ -28,7 +28,7 @@ const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeBTC.trade;
 const formattedAddress = formatAddress(sellWatchBTC.destinationAddress);
 
-test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage }) => {
         await test.step('Mocking responses', async () => {
@@ -55,7 +55,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () =>
             await tradingPage.fillSellForm(cryptoAmount);
             await expect(tradingPage.bestOfferAmount).toHaveText(fiatAmount);
             await expect(tradingPage.quoteProvider).toHaveText(capitalizeFirstLetter(provider));
-            await tradingPage.expectBitcoinFeeCalculated();
+            await tradingPage.fees.expectBitcoinFeeCalculated();
         });
 
         await test.step('Confirm sell', async () => {
@@ -97,26 +97,26 @@ test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () =>
             {
                 feeType: 'economy',
                 feeSwitchFunction: async () => {
-                    await tradingPage.bitcoinFeeCard('economy').click();
+                    await tradingPage.fees.bitcoinCard('economy').click();
                 },
             },
             {
                 feeType: 'normal',
                 feeSwitchFunction: async () => {
-                    await tradingPage.bitcoinFeeCard('normal').click();
+                    await tradingPage.fees.bitcoinCard('normal').click();
                 },
             },
             {
                 feeType: 'high',
                 feeSwitchFunction: async () => {
-                    await tradingPage.bitcoinFeeCard('high').click();
+                    await tradingPage.fees.bitcoinCard('high').click();
                 },
             },
             {
                 feeType: 'custom',
                 feeSwitchFunction: async () => {
-                    await tradingPage.feeSwitchButton('custom').click();
-                    await tradingPage.customFeeInput.fill('1');
+                    await tradingPage.fees.switchModeButton('custom').click();
+                    await tradingPage.fees.customInput.fill('1');
                 },
             },
         ];
@@ -132,7 +132,7 @@ test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () =>
                 await test.step(`Fill in a sell form with ${feeType} fee`, async () => {
                     await feeSwitchFunction();
                     await tradingPage.fillSellForm(cryptoAmount);
-                    feeRate = await tradingPage.getBitcoinFeeRate(feeType);
+                    feeRate = await tradingPage.fees.getBitcoinFeeRate(feeType);
                 });
 
                 await test.step('Confirm sell', async () => {

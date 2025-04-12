@@ -20,7 +20,7 @@ const provider = getCompanyNameFromList(sellQuotesEthereumToken[0].exchange, 'se
 // const { paymentMethodName } = sellTradeEthereum.trade;
 // const formattedAddress = formatAddress(sellWatchEthereum.destinationAddress);
 
-test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
         async ({ page, tradingMock, onboardingPage, dashboardPage, settingsPage, walletPage }) => {

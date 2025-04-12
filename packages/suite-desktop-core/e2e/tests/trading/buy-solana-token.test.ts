@@ -17,7 +17,7 @@ const formattedCryptoAmount = `${cryptoAmount} JUP`;
 const formattedFiatAmount = `CZK ${fiatAmount}`;
 const { receiveAddress, paymentMethodName } = buyTradeSolanaToken.trade;
 
-test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Buy Solana', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, settingsPage, walletPage }) => {
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesSolanaToken });

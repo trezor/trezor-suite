@@ -6,7 +6,7 @@ const customFeeRate = 1;
 let bitcoinBalance: string | null;
 let solanaBalance: string | null;
 
-test.describe('Trading - Sell inputs', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
@@ -57,8 +57,8 @@ test.describe('Trading - Sell inputs', { tag: ['@group=other', '@webOnly'] }, ()
         });
 
         await test.step('Try all % inputs for Bitcoin', async () => {
-            await tradingPage.feeSwitchButton('custom').click();
-            await tradingPage.customFeeInput.fill(customFeeRate.toString());
+            await tradingPage.fees.switchModeButton('custom').click();
+            await tradingPage.fees.customInput.fill(customFeeRate.toString());
 
             for (const percentage of [10, 25, 50]) {
                 await test.step(`${percentage}% of BTC balance`, async () => {
@@ -75,7 +75,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=other', '@webOnly'] }, ()
                 await page.getByRole('button', { name: 'Max' }).click();
                 await expect
                     .soft(async () => {
-                        const resultingFee = await tradingPage.customFeeAmount.textContent();
+                        const resultingFee = await tradingPage.fees.customAmount.textContent();
                         if (!resultingFee) {
                             throw new Error('Custom Fee amount is undefined or null');
                         }
@@ -108,7 +108,7 @@ test.describe('Trading - Sell inputs', { tag: ['@group=other', '@webOnly'] }, ()
 
             await test.step('Max of Solana balance', async () => {
                 await page.getByRole('button', { name: 'Max' }).click();
-                const resultingFee = await tradingPage.getSolanaFee();
+                const resultingFee = await tradingPage.fees.getSolanaFee();
                 const maxValue = (parseFloat(solanaBalance!) - resultingFee).toString();
                 await expect
                     .soft(tradingPage.youPayCryptoInput)

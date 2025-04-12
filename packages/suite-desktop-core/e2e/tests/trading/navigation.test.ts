@@ -1,6 +1,6 @@
 import { test } from '../../support/fixtures';
 
-test.describe('Trading - Navigation', { tag: ['@group=other'] }, () => {
+test.describe('Trading - Navigation', { tag: ['@group=trading'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(async ({ page, onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();

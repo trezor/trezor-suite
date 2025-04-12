@@ -18,7 +18,7 @@ const { sendAddress, receiveAddress, receive: usdcMint } = swapTradeSolanaUSDC;
 const formattedSendAddress = formatAddress(sendAddress);
 const toastText = `${formattedSendAmount} sent from Solana #1`;
 
-test.describe('Trading - Swap coin to token', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Swap coin to token', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, tradingMock, walletPage, settingsPage }) => {

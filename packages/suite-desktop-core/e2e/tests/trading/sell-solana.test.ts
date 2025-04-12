@@ -25,7 +25,7 @@ const { paymentMethodName } = sellTradeSolana.trade;
 const formattedAddress = formatAddress(sellWatchSolana.destinationAddress);
 const toastText = `${formattedCryptoAmount} sent from Solana #1`;
 
-test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
         async ({

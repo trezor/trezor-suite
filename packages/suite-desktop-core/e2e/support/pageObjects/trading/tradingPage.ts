@@ -1,9 +1,10 @@
-import { Locator, Page, Response } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { getCompanyNameFromList, invityEndpoint } from '../../fixtures/invity';
+import { Fees } from './fees';
+import { getCompanyNameFromList, invityEndpoint } from '../../../fixtures/invity';
 import {
     TrezorUserEnvLinkProxy,
     calculatePercentageOfBalance,
@@ -11,11 +12,10 @@ import {
     getCountryLabel,
     paymentMethodToCamelCase,
     step,
-} from '../common';
-import { DevicePrompt } from './devicePrompt';
-import { solanaUrlPattern } from '../mocks/tradingMock';
-import { expect } from '../testExtends/customMatchers';
-import { PaymentMethods, PercentageOfBalanceParams } from '../types';
+} from '../../common';
+import { expect } from '../../testExtends/customMatchers';
+import { PaymentMethods, PercentageOfBalanceParams } from '../../types';
+import { DevicePrompt } from '../devicePrompt';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
 
@@ -32,13 +32,13 @@ const accountTabFilters = [
 
 type AccountTabFilter = (typeof accountTabFilters)[number];
 
-export type FeeTypes = 'economy' | 'normal' | 'high';
-
 function isAccountTabFilter(network: string): network is AccountTabFilter {
     return accountTabFilters.includes(network as AccountTabFilter);
 }
 
 export class TradingPage {
+    readonly fees: Fees;
+
     // Input and general
     readonly offerSpinner: Locator;
     readonly section: Locator;
@@ -57,18 +57,7 @@ export class TradingPage {
     readonly cryptoInputBottomText: Locator;
     readonly youPayFractionButton = (amount: '10%' | '25%' | '50%' | 'Max') =>
         this.page.getByRole('button', { name: amount });
-    readonly feeSwitchButton = (feeMode: 'normal' | 'custom') =>
-        this.page.getByTestId(`select-bar/${feeMode}`);
-    readonly bitcoinFeeCard = (feeType: FeeTypes) =>
-        this.page.getByTestId(`@fee-card/${feeType}-card`);
-    readonly bitcoinFeeValue = (feeType: FeeTypes) =>
-        this.page.getByTestId(`@fee-card/${feeType}-fait-amount`);
-    readonly bitcoinFeeRateValue = (feeType: FeeTypes) =>
-        this.page.getByTestId(`@fee-card/${feeType}-rate`);
-    readonly customFeeInput: Locator;
-    readonly customFeeAmount: Locator;
-    readonly customFeeFiatAmount: Locator;
-    readonly miscFeeAmount: Locator;
+
     readonly countryOfResidenceDropdown: Locator;
     readonly countryOfResidenceOption = (countryCode: string) =>
         this.page.getByTestId(`@trading/form/country-select/option/${countryCode}`);
@@ -111,7 +100,6 @@ export class TradingPage {
     readonly finishTransactionButton: Locator;
     readonly confirmOnTrezorAndSend: Locator;
     // Swap
-    readonly swapFeeDetails: Locator;
     readonly broadcastButton: Locator;
     readonly sendAddressInput: Locator;
     readonly sendAmountInput: Locator;
@@ -135,6 +123,8 @@ export class TradingPage {
         private page: Page,
         private readonly devicePrompt: DevicePrompt,
     ) {
+        this.fees = new Fees(page);
+
         this.offerSpinner = this.page.getByTestId('@trading/offers/loading-spinner');
         this.section = this.page.getByTestId('@trading');
         this.form = this.page.getByTestId('@trading/form');
@@ -154,10 +144,6 @@ export class TradingPage {
         this.cryptoInputBottomText = this.page.getByTestId(
             '@trading/form/crypto-input/bottom-text',
         );
-        this.customFeeInput = this.page.getByTestId('feePerUnit');
-        this.customFeeAmount = this.page.getByTestId('@trading/quote/custom-fee-amount');
-        this.customFeeFiatAmount = this.page.getByTestId('@trading/quote/custom-fee-fiat-amount');
-        this.miscFeeAmount = this.page.getByTestId('@wallet/misc-fee-amount');
         this.countryOfResidenceDropdown = this.page.getByTestId(
             '@trading/form/country-select/input',
         );
@@ -203,7 +189,6 @@ export class TradingPage {
             '@trading/offer/confirm-on-trezor-and-send',
         );
         // Swap
-        this.swapFeeDetails = this.page.getByTestId('@wallet/fee-details');
         this.broadcastButton = this.page.getByTestId('broadcast-button');
         this.sendAddressInput = this.page.getByTestId('outputs.0.address');
         this.sendAmountInput = this.page.getByTestId('outputs.0.amount');
@@ -356,7 +341,7 @@ export class TradingPage {
         // The suite does not wait for these responses and it causes flakiness in automation.
         // Toast error: 'Transaction signing error: Missing composed data' and not possible to send.
         // So we have to wait for them manually.
-        const swapFeeCallsPromise = this.promiseForResponseSwapFeeCalls();
+        const swapFeeCallsPromise = this.fees.promiseForResponseSwapFeeCalls();
         await this.swapBestOfferButton.click();
         await swapFeeCallsPromise;
     }
@@ -461,32 +446,6 @@ export class TradingPage {
     }
 
     @step()
-    promiseForResponseSwapFeeCalls() {
-        const isSolanaResponse = (response: Response, method: string) =>
-            new RegExp(solanaUrlPattern).test(response.url()) &&
-            response.request().postDataJSON().method === method;
-        const getFeeForMessagePromise = this.page.waitForResponse(response =>
-            isSolanaResponse(response, 'getFeeForMessage'),
-        );
-        const getRecentPrioritizationFeesPromise = this.page.waitForResponse(response =>
-            isSolanaResponse(response, 'getRecentPrioritizationFees'),
-        );
-        const simulateTransactionPromise = this.page.waitForResponse(response =>
-            isSolanaResponse(response, 'simulateTransaction'),
-        );
-
-        // Suite calls the each request twice and we have to wait for all of them
-        return Promise.all([
-            getFeeForMessagePromise,
-            getRecentPrioritizationFeesPromise,
-            simulateTransactionPromise,
-            getFeeForMessagePromise,
-            getRecentPrioritizationFeesPromise,
-            simulateTransactionPromise,
-        ]);
-    }
-
-    @step()
     async verifyBuyFormOpened(cryptoName: string) {
         await expect(this.accountDropdown).toContainText(cryptoName);
         await expect(this.page.getByText('You buy')).toBeVisible();
@@ -508,49 +467,5 @@ export class TradingPage {
     async expectInputToBe(params: PercentageOfBalanceParams) {
         const expectedValue = calculatePercentageOfBalance(params);
         await expect.soft(this.youPayCryptoInput).toHaveValue(expectedValue);
-    }
-
-    @step()
-    async getSolanaFee() {
-        const lamportsToSolanaRatio = 1_000_000_000;
-        const feeWithSymbol = await this.miscFeeAmount.textContent();
-        if (!feeWithSymbol) {
-            throw new Error('Fee amount is undefined or null');
-        }
-
-        const feeParts = feeWithSymbol.split(' ');
-        if (feeParts.length === 0 || isNaN(parseFloat(feeParts[0]))) {
-            throw new Error('Fee amount is invalid');
-        }
-
-        return parseFloat(feeParts[0]) / lamportsToSolanaRatio;
-    }
-
-    @step()
-    async expectBitcoinFeeCalculated() {
-        const feePattern = /[≈~]\s*\$\s*\d+\.\d+/;
-        await expect(this.bitcoinFeeValue('economy')).toHaveText(feePattern);
-        await expect(this.bitcoinFeeValue('normal')).toHaveText(feePattern);
-        await expect(this.bitcoinFeeValue('high')).toHaveText(feePattern);
-    }
-
-    @step()
-    async getBitcoinFeeRate(type: FeeTypes | 'custom') {
-        let feeRateText: string | null;
-        const nonBreakingSpace = '\u00A0';
-        const suffixForCustomFee = `.00${nonBreakingSpace}sat/vB`;
-
-        if (type !== 'custom') {
-            await this.expectBitcoinFeeCalculated();
-            feeRateText = await this.bitcoinFeeRateValue(type).textContent();
-        } else {
-            feeRateText = (await this.customFeeInput.inputValue()) + suffixForCustomFee;
-        }
-
-        if (!feeRateText) {
-            throw new Error('Fee amount is undefined or null');
-        }
-
-        return feeRateText;
     }
 }

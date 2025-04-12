@@ -12,7 +12,7 @@ const formattedCryptoAmount = `${localizeNumber(buyQuotesEthereum[3].receiveStri
 const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en', 2)}`;
 const { receiveAddress, paymentMethodName } = buyTradeEthereum.trade;
 
-test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Buy Ethereum', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage }) => {
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesEthereum });

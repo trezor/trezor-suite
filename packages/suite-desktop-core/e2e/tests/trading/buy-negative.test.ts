@@ -1,7 +1,7 @@
 import { buyQuotesNegativeMax, buyQuotesNegativeMin, invityEndpoint } from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Trading - Buy Negative scenarios', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Buy Negative scenarios', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

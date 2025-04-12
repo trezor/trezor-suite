@@ -48,7 +48,7 @@ const secondOfferProvider = capitalizeFirstLetter(buyQuotesBTCUpdate[5].exchange
 const secondOfferCryptoAmount = `${buyQuotesBTCUpdate[5].receiveStringAmount} BTC`;
 const formattedUpdateFiatAmount = `CZK ${localizeNumber(updateFiatAmount, 'en', 2)}`;
 
-test.describe('Trading - Buy BTC', { tag: ['@group=other', '@webOnly'] }, () => {
+test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, walletPage }) => {
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesBTC });
