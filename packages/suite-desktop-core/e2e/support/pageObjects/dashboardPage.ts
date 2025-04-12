@@ -8,7 +8,6 @@ export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
 export class DashboardPage {
     readonly dashboardMenuButton: Locator;
     readonly dashboardHeader: Locator;
-    readonly discoveryBar: Locator;
     readonly graph: Locator;
     readonly graphRangeSelector = (range: graphRangeOptions) =>
         this.page.getByTestId(`@dashboard/graph/range-${range}`);
@@ -45,7 +44,6 @@ export class DashboardPage {
     ) {
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
         this.dashboardHeader = this.page.getByRole('heading', { name: 'Dashboard' });
-        this.discoveryBar = this.page.getByTestId('@wallet/discovery-progress-bar');
         this.graph = this.page.getByTestId('@dashboard/graph');
         this.deviceSwitchingOpenButton = this.page.getByTestId('@menu/switch-device');
         this.deviceSwitchingCloseButton = this.page.getByTestId('@switch-device/cancel-button');
@@ -83,14 +81,6 @@ export class DashboardPage {
     }
 
     @step()
-    async discoveryShouldFinish() {
-        await expect(this.discoveryBar, 'discovery bar should be visible').toBeVisible({
-            timeout: 10_000,
-        });
-        await this.discoveryBar.waitFor({ state: 'detached', timeout: 120_000 });
-    }
-
-    @step()
     async openDeviceSwitcher() {
         await this.deviceSwitchingOpenButton.click();
         await expect(this.modal).toBeVisible();
@@ -108,7 +98,7 @@ export class DashboardPage {
     async addStandardWallet() {
         await this.addStandardWalletButton.click();
         await this.modal.waitFor({ state: 'detached' });
-        await this.discoveryShouldFinish();
+        await this.page.discoveryShouldFinish();
     }
 
     @step()
@@ -132,7 +122,7 @@ export class DashboardPage {
         // Sometimes the pressYes action takes 5,5s and suite in meantime can finish discovery
         // This would cause failure of the test even tho the flow continued correctly
         // Solution is to fire both Promises asynchronously and wait for both to finish
-        await Promise.all([TrezorUserEnvLinkProxy.pressYes(), this.discoveryShouldFinish()]);
+        await Promise.all([TrezorUserEnvLinkProxy.pressYes(), this.page.discoveryShouldFinish()]);
     }
 
     @step()

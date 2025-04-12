@@ -16,7 +16,7 @@ test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
         //TODO: Improve verification
     });
 
-    test('LTC blockbook discovery', async ({ settingsPage, dashboardPage }) => {
+    test('LTC blockbook discovery', async ({ page, settingsPage, dashboardPage }) => {
         const ltcBlockbook = 'https://ltc1.trezor.io';
         await settingsPage.navigateTo('coins');
         await settingsPage.coins.disableNetwork('btc');
@@ -24,7 +24,7 @@ test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
         await settingsPage.coins.openNetworkAdvanceSettings('ltc');
         await settingsPage.coins.changeBackend('blockbook', ltcBlockbook);
         await dashboardPage.navigateTo();
-        await dashboardPage.discoveryShouldFinish();
+        await page.discoveryShouldFinish();
         await expect(dashboardPage.graph).toBeVisible();
         //TODO: Improve verification
     });

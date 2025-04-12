@@ -46,7 +46,7 @@ test.describe(
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressNo();
 
-            await dashboardPage.discoveryShouldFinish();
+            await page.discoveryShouldFinish();
             await dashboardPage.deviceSwitchingOpenButton.click();
             await page.getByTestId('@viewOnlyStatus/disabled').click();
             await page.getByTestId('@viewOnly/radios/enabled').click();

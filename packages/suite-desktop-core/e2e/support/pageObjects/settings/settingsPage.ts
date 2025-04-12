@@ -232,6 +232,6 @@ export class SettingsPage {
         }
 
         await this.coins.activateCoinsButton.click();
-        await this.discoveryShouldFinish();
+        await this.page.discoveryShouldFinish();
     }
 }

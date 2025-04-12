@@ -97,7 +97,6 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
      */
     test('Add-account-types-non-BTC-coins', async ({
         page,
-        dashboardPage,
         settingsPage,
         walletPage,
         analytics,
@@ -126,7 +125,7 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
                 await expect(page.getByTestId('@modal')).toBeVisible();
                 await page.getByTestId(`@settings/wallet/network/${coin.symbol}`).click();
                 await page.getByTestId('@add-account').click();
-                await dashboardPage.discoveryShouldFinish();
+                await page.discoveryShouldFinish();
 
                 const numberOfAccountsAfter = await page
                     .getByTestId('@account-menu/normal/group')

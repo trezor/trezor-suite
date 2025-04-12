@@ -6,20 +6,22 @@ test.describe('LTC send form with mocked blockbook', { tag: ['@group=wallet'] },
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
         },
     });
-    test.beforeEach(async ({ dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
-        await onboardingPage.completeOnboarding();
+    test.beforeEach(
+        async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
+            await onboardingPage.completeOnboarding();
 
-        await settingsPage.navigateTo('coins');
-        await blockbookMock.start('ltc');
+            await settingsPage.navigateTo('coins');
+            await blockbookMock.start('ltc');
 
-        await settingsPage.coins.disableNetwork('btc');
-        await settingsPage.coins.enableNetwork('ltc');
-        await settingsPage.coins.openNetworkAdvanceSettings('ltc');
-        await settingsPage.coins.changeBackend('blockbook', blockbookMock.url);
+            await settingsPage.coins.disableNetwork('btc');
+            await settingsPage.coins.enableNetwork('ltc');
+            await settingsPage.coins.openNetworkAdvanceSettings('ltc');
+            await settingsPage.coins.changeBackend('blockbook', blockbookMock.url);
 
-        await dashboardPage.dashboardMenuButton.click();
-        await dashboardPage.discoveryShouldFinish();
-    });
+            await dashboardPage.dashboardMenuButton.click();
+            await page.discoveryShouldFinish();
+        },
+    );
 
     test('spend output originating from mimble-wimble peg out tx', async ({
         page,

@@ -44,7 +44,7 @@ test.describe('Analytics Toggle - Enabling and Disabling', { tag: ['@group=other
 
         // reload app (important, app needs time to save initialRun flag into storage) to change session id
         await page.getByTestId('@suite/loading').waitFor({ state: 'hidden' });
-        await dashboardPage.discoveryShouldFinish();
+        await page.discoveryShouldFinish();
         await page.reload();
 
         // go to settings, analytics should not enabled and no additional analytics requests should be fired

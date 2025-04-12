@@ -6,20 +6,22 @@ test.describe('ETH staking', { tag: ['@group=wallet'] }, () => {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
         },
     });
-    test.beforeEach(async ({ dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
-        await onboardingPage.completeOnboarding();
+    test.beforeEach(
+        async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
+            await onboardingPage.completeOnboarding();
 
-        await settingsPage.navigateTo('coins');
-        await blockbookMock.start('eth');
+            await settingsPage.navigateTo('coins');
+            await blockbookMock.start('eth');
 
-        await settingsPage.coins.disableNetwork('btc');
-        await settingsPage.coins.enableNetwork('eth');
-        await settingsPage.coins.openNetworkAdvanceSettings('eth');
-        await settingsPage.coins.changeBackend('blockbook', blockbookMock.url);
+            await settingsPage.coins.disableNetwork('btc');
+            await settingsPage.coins.enableNetwork('eth');
+            await settingsPage.coins.openNetworkAdvanceSettings('eth');
+            await settingsPage.coins.changeBackend('blockbook', blockbookMock.url);
 
-        await dashboardPage.dashboardMenuButton.click();
-        await dashboardPage.discoveryShouldFinish();
-    });
+            await dashboardPage.dashboardMenuButton.click();
+            await page.discoveryShouldFinish();
+        },
+    );
 
     test('checks that staking dashboard works', async ({ page, walletPage, tradingPage }) => {
         await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });

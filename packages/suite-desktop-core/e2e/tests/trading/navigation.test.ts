@@ -2,13 +2,13 @@ import { test } from '../../support/fixtures';
 
 test.describe('Trading - Navigation', { tag: ['@group=other'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
+    test.beforeEach(async ({ page, onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('coins');
         await settingsPage.coins.enableNetwork('ltc');
         await settingsPage.coins.enableNetwork('eth');
         await settingsPage.coins.activateCoinsButton.click();
-        await dashboardPage.discoveryShouldFinish();
+        await page.discoveryShouldFinish();
         await dashboardPage.deviceSwitchingOpenButton.click();
         await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
     });

@@ -10,6 +10,7 @@ test.describe(
         });
 
         test('Electrum completes discovery successfully', async ({
+            page,
             dashboardPage,
             settingsPage,
             walletPage,
@@ -26,7 +27,7 @@ test.describe(
             await settingsPage.coins.changeBackend('electrum', electrumUrl);
 
             await dashboardPage.navigateTo();
-            await dashboardPage.discoveryShouldFinish();
+            await page.discoveryShouldFinish();
 
             await expect(walletPage.balanceOfAccount('regtest').first()).toBeVisible();
         });

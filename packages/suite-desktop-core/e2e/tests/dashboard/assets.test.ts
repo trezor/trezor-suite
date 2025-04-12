@@ -24,6 +24,7 @@ test.describe('Assets', { tag: ['@group=suite'] }, () => {
     });
 
     test('New asset is shown in both grid and row', async ({
+        page,
         assetsSection,
         dashboardPage,
         settingsPage,
@@ -31,7 +32,7 @@ test.describe('Assets', { tag: ['@group=suite'] }, () => {
         await assetsSection.enableMoreCoins.click();
         await settingsPage.coins.enableNetwork('eth');
         await dashboardPage.navigateTo();
-        await dashboardPage.discoveryShouldFinish();
+        await page.discoveryShouldFinish();
         await assetsSection.verifyAssetContents();
         await assetsSection.tableIcon.click();
         await assetsSection.verifyAssetContents();
