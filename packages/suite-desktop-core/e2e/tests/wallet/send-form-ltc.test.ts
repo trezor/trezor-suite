@@ -8,7 +8,6 @@ test.describe('LTC send form with mocked blockbook', { tag: ['@group=wallet'] },
     });
     test.beforeEach(async ({ dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
 
         await settingsPage.navigateTo('coins');
         await blockbookMock.start('ltc');

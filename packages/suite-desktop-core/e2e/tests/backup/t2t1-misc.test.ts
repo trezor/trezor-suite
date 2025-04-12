@@ -6,9 +6,8 @@ test.describe('Backup misc', { tag: ['@group=device-management'] }, () => {
         emulatorSetupConf: { needs_backup: true },
     });
 
-    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test('Backup should reset if modal is closed', async ({ onboardingPage, dashboardPage }) => {

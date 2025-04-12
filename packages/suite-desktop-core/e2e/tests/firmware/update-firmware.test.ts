@@ -6,9 +6,8 @@ test.describe.skip(
     { tag: ['@group=device-management', '@specificFirmware'] },
     () => {
         test.use({ emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.2' } });
-        test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+        test.beforeEach(async ({ onboardingPage }) => {
             await onboardingPage.completeOnboarding();
-            await dashboardPage.discoveryShouldFinish();
         });
 
         test('User triggers firmware update from a notification banner', async ({ page }) => {

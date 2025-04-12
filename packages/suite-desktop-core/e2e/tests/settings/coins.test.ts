@@ -3,9 +3,8 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Coin Settings', { tag: ['@group=settings'] }, () => {
-    test.beforeEach(async ({ analytics, onboardingPage, dashboardPage, settingsPage }) => {
+    test.beforeEach(async ({ analytics, onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
         await settingsPage.navigateTo('coins');
         await analytics.interceptAnalytics();
     });

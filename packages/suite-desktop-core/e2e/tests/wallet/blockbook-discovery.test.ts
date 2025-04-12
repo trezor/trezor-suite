@@ -2,9 +2,8 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Custom-blockbook-discovery', { tag: ['@group=wallet'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test('BTC blockbook discovery', async ({ settingsPage, dashboardPage }) => {

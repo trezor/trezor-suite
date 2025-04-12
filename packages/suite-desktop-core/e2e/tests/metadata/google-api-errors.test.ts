@@ -13,7 +13,6 @@ test.describe('Google API errors', { tag: ['@group=metadata', '@webOnly'] }, () 
     test('Malformed token', async ({
         page,
         onboardingPage,
-        dashboardPage,
         metadataPage,
         walletPage,
         metadataMock,
@@ -44,7 +43,6 @@ test.describe('Google API errors', { tag: ['@group=metadata', '@webOnly'] }, () 
         }
 
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
 
         await walletPage.openAccount();
         await metadataPage.account.clickAddLabelButton(AccountLabelId.BitcoinDefault1);

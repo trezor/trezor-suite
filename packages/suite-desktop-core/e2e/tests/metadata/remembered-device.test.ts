@@ -22,7 +22,6 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
     test('google provider', async ({
         page,
         onboardingPage,
-        dashboardPage,
         settingsPage,
         metadataPage,
         walletPage,
@@ -30,7 +29,6 @@ test.describe('Remembered device', { tag: ['@group=metadata', '@webOnly'] }, () 
         trezorUserEnvLink,
     }) => {
         await onboardingPage.completeOnboarding({ enableViewOnly: true });
-        await dashboardPage.discoveryShouldFinish();
 
         await page.getByTestId('@account-menu/btc/normal/0/label').click();
 

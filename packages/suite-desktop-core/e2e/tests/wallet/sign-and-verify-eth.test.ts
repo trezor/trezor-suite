@@ -4,7 +4,6 @@ test.describe('Sign and verify ETH', { tag: ['@group=wallet'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ dashboardPage, onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
 
         await settingsPage.navigateTo('coins');
 

@@ -34,7 +34,6 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=other', '@webOnly'] }, 
                 });
             });
             await onboardingPage.completeOnboarding();
-            await dashboardPage.discoveryShouldFinish();
 
             await test.step('Enable Ethereum and open its token sell trading', async () => {
                 await settingsPage.navigateTo('coins');

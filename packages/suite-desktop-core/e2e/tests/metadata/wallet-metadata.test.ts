@@ -5,10 +5,9 @@ const standardWalletIndex = 0;
 const hiddenWalletIndex = 1;
 
 test.describe('Metadata - wallet labeling', { tag: ['@group=metadata', '@webOnly'] }, () => {
-    test.beforeEach(async ({ onboardingPage, dashboardPage, metadataMock }) => {
+    test.beforeEach(async ({ onboardingPage, metadataMock }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding({ enableViewOnly: true });
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test.use({

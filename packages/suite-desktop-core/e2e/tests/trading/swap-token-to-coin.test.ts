@@ -31,7 +31,6 @@ test.describe('Trading - Swap token to coin', { tag: ['@group=other', '@webOnly'
                 await tradingMock.routeSolanaSendRequests();
             });
             await onboardingPage.completeOnboarding();
-            await dashboardPage.discoveryShouldFinish();
             await settingsPage.navigateTo('coins');
             await settingsPage.coins.enableNetwork('sol');
             await settingsPage.coins.activateCoinsButton.click();

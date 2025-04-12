@@ -36,7 +36,6 @@ test.describe('Trading - Sell BTC', { tag: ['@group=other', '@webOnly'] }, () =>
                 });
             });
             await onboardingPage.completeOnboarding();
-            await dashboardPage.discoveryShouldFinish();
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openTrading();

@@ -10,15 +10,8 @@ test.describe('Metadata - Output labeling', { tag: ['@group=metadata', '@webOnly
         await metadataMock.start(MetadataProvider.DROPBOX);
     });
 
-    test('dropbox provider', async ({
-        page,
-        onboardingPage,
-        dashboardPage,
-        metadataPage,
-        walletPage,
-    }) => {
+    test('dropbox provider', async ({ page, onboardingPage, metadataPage, walletPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
 
         await walletPage.openAccount();
 

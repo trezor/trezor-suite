@@ -4,9 +4,8 @@ test.describe(
     'Settings changes persist when device disconnected',
     { tag: ['@group=settings'] },
     () => {
-        test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+        test.beforeEach(async ({ onboardingPage }) => {
             await onboardingPage.completeOnboarding({ enableViewOnly: true });
-            await dashboardPage.discoveryShouldFinish();
         });
 
         test('Settings navigation', async ({ page, walletPage, trezorUserEnvLink }) => {

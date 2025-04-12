@@ -13,14 +13,12 @@ test.describe(
         test('Start with one and switch to another', async ({
             page,
             onboardingPage,
-            dashboardPage,
             metadataPage,
             settingsPage,
             metadataMock,
             walletPage,
         }) => {
             await onboardingPage.completeOnboarding();
-            await dashboardPage.discoveryShouldFinish();
 
             // Navigate to account and verify initial state
             await walletPage.openAccount();

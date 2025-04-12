@@ -40,7 +40,6 @@ test.describe('Trading - Swap coins', { tag: ['@group=other', '@webOnly'] }, () 
                 });
             });
             await onboardingPage.completeOnboarding();
-            await dashboardPage.discoveryShouldFinish();
             await settingsPage.navigateTo('coins');
             await settingsPage.coins.enableNetwork('sol');
             await settingsPage.coins.activateCoinsButton.click();

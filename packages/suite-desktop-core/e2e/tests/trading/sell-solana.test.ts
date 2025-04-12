@@ -49,7 +49,6 @@ test.describe('Trading - Sell Solana', { tag: ['@group=other', '@webOnly'] }, ()
                 });
             });
             await onboardingPage.completeOnboarding();
-            await dashboardPage.discoveryShouldFinish();
 
             await test.step('Enable Solana and open its sell trading', async () => {
                 await settingsPage.navigateTo('coins');
