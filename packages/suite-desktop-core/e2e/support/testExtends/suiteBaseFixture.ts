@@ -5,6 +5,7 @@ import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezo
 
 import { TrezorUserEnvLinkProxy, getUrl, getVideoPath, isDesktopProject } from '../common';
 import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
+import { enhancePage } from './enhancePage';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 
@@ -151,6 +152,7 @@ const suiteBaseTest = base.extend<suiteBaseFixture>({
 
         if (isDesktopProject(testInfo)) {
             const suite = await electronSetup(testInfo, locale, colorScheme, electronConf);
+            enhancePage(suite.window);
             await use(suite.window);
             await electronTeardown(suite, testInfo);
         } else {
@@ -160,6 +162,7 @@ const suiteBaseTest = base.extend<suiteBaseFixture>({
                 },
             });
             const page = await webSetup(browserContext);
+            enhancePage(page);
             await use(page);
             await webTeardown(page, browserContext, testInfo);
         }

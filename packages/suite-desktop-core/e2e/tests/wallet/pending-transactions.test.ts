@@ -46,12 +46,11 @@ test.describe.skip(
                 await page.waitForTimeout(5_000);
 
                 await onboardingPage.completeOnboarding();
-                await dashboardPage.discoveryShouldFinish();
                 await settingsPage.navigateTo('coins');
                 await settingsPage.coins.disableNetwork('btc');
                 await settingsPage.coins.enableNetwork('regtest');
                 await dashboardPage.dashboardMenuButton.click();
-                await dashboardPage.discoveryShouldFinish();
+                await page.discoveryShouldFinish();
                 expect(
                     await walletPage.getAccountsCount('regtest'),
                     'expected 3 Regtest accounts to be discovered. They might not have been mined yet',

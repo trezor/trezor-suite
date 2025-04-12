@@ -9,9 +9,8 @@ const receiveAddress =
 //mnemonic: 'clot trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',
 
 test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
-    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
         await settingsPage.navigateTo('coins');
     });
 

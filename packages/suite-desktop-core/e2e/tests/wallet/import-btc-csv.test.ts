@@ -7,10 +7,9 @@ import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 
 test.describe('Import a BTC csv file', { tag: ['@group=wallet', '@webOnly'] }, () => {
-    test.beforeEach(async ({ metadataMock, onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ metadataMock, onboardingPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test('Go to BTC send form and import a csv', async ({

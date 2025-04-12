@@ -22,10 +22,9 @@ const verifyHiddenAndRevealedValue = async ({
 };
 
 test.describe('Discreet Mode', { tag: ['@group=suite'] }, () => {
-    test.beforeEach(async ({ analytics, dashboardPage, onboardingPage }) => {
+    test.beforeEach(async ({ analytics, onboardingPage }) => {
         await analytics.interceptAnalytics();
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test('Balances are hidden when user enables discreet mode', async ({

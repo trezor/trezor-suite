@@ -2,9 +2,8 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Passphrase input', { tag: ['@group=passphrase'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test('just test passphrase input', async ({ dashboardPage }) => {

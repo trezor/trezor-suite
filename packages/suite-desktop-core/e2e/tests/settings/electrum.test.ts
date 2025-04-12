@@ -5,9 +5,8 @@ test.describe(
     'Suite works with Electrum server',
     { tag: ['@group=settings', '@desktopOnly'] },
     () => {
-        test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+        test.beforeEach(async ({ onboardingPage }) => {
             await onboardingPage.completeOnboarding();
-            await dashboardPage.discoveryShouldFinish();
         });
 
         test('Electrum completes discovery successfully', async ({

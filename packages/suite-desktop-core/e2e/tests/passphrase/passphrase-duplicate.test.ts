@@ -2,10 +2,9 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Passphrase duplicate', { tag: ['@group=passphrase'] }, () => {
     test.use({ emulatorSetupConf: { passphrase_protection: true } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage, trezorUserEnvLink }) => {
+    test.beforeEach(async ({ onboardingPage, trezorUserEnvLink }) => {
         await trezorUserEnvLink.applySettings({ passphrase_always_on_device: false });
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     //TODO: #17161 Fix instable test

@@ -9,19 +9,8 @@ test.describe('Metadata - address labeling', { tag: ['@group=metadata', '@webOnl
         await metadataMock.start(MetadataProvider.GOOGLE);
     });
 
-    test('google provider', async ({
-        page,
-        onboardingPage,
-        metadataPage,
-        dashboardPage,
-        walletPage,
-    }) => {
-        // Pass through onboarding and device authentication
+    test('google provider', async ({ page, onboardingPage, metadataPage, walletPage }) => {
         await onboardingPage.completeOnboarding();
-
-        // Finish discovery process
-        // Discovery process completed
-        await dashboardPage.discoveryShouldFinish();
 
         // Interact with accounts and metadata
         await walletPage.openAccount();

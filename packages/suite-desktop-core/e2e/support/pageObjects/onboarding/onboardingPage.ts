@@ -98,7 +98,7 @@ export class OnboardingPage {
     }
 
     @step()
-    async completeOnboarding({ enableViewOnly = false } = {}) {
+    async completeOnboarding(options?: { enableViewOnly?: boolean }) {
         await this.disableNecessaryFirmwareChecks();
         await this.optionallyDismissFwHashCheckError();
         await this.analyticsSection.continueButton.click();
@@ -106,12 +106,13 @@ export class OnboardingPage {
         if (this.isModelWithSecureElement()) {
             await this.passThroughAuthenticityCheck();
         }
-        if (enableViewOnly) {
+        if (options?.enableViewOnly) {
             await this.onboardingViewOnlyEnableButton.click();
         } else {
             await this.onboardingViewOnlySkipButton.click();
         }
         await this.viewOnlyTooltipGotItButton.click();
+        await this.page.discoveryShouldFinish();
     }
 
     @step()

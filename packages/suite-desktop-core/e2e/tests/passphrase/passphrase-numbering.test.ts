@@ -2,9 +2,8 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Passphrase numbering', { tag: ['@group=passphrase'] }, () => {
     test.use({ emulatorSetupConf: { passphrase_protection: true } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test('hidden wallet numbering', async ({ dashboardPage }) => {

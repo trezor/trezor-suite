@@ -17,9 +17,8 @@ const coinsToActivate = [
     'zec',
 ] as NetworkSymbol[];
 test.describe('Discovery', { tag: ['@group=wallet'] }, () => {
-    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test('go to wallet settings page, activate all coins and see that there is equal number of records on dashboard', async ({

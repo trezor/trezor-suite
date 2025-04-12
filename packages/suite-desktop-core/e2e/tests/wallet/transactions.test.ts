@@ -11,9 +11,8 @@ const rangeData: { range: graphRangeOptions; label: string }[] = [
 
 test.describe('Account transactions overview', { tag: ['@group=wallet'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test('Check graph span and search a transaction by BTC address', async ({

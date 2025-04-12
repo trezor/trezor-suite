@@ -22,7 +22,6 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         test(`${p.provider} - watches files over time`, async ({
             page,
             onboardingPage,
-            dashboardPage,
             metadataPage,
             metadataMock,
         }) => {
@@ -35,8 +34,6 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
             );
 
             await onboardingPage.completeOnboarding({ enableViewOnly: true });
-
-            await dashboardPage.discoveryShouldFinish();
 
             await page.getByTestId('@account-menu/btc/normal/0/label').click();
             await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(

@@ -24,9 +24,8 @@ test.describe('Public Keys', { tag: ['@group=wallet'] }, () => {
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     testCases.forEach(({ symbol, xpub }) => {

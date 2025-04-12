@@ -3,9 +3,8 @@ import { expect, test } from '../../support/fixtures';
 test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
     const address = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ dashboardPage, onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test('Account balance is increased', async ({

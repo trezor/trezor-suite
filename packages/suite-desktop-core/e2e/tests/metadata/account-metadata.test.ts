@@ -20,10 +20,6 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
     }) => {
         await onboardingPage.completeOnboarding();
 
-        // Finish discovery process
-        // Discovery process completed
-        await dashboardPage.discoveryShouldFinish();
-
         // Interact with accounts and metadata
         // Clicking "Bitcoin" label in account menu is not possible, click triggers metadata flow
         await page.getByTestId('@account-menu/btc/normal/0/label').click();

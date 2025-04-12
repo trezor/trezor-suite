@@ -19,7 +19,6 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage, blockbookMock }) => {
         await blockbookMock.start('doge');
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
         await settingsPage.navigateTo('coins');
         await settingsPage.coins.disableNetwork('btc');
         await settingsPage.coins.enableNetwork('doge');

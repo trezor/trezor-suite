@@ -25,7 +25,6 @@ test.describe('Trading - Buy Solana', { tag: ['@group=other', '@webOnly'] }, () 
             });
             await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeSolanaToken);
             await onboardingPage.completeOnboarding();
-            await dashboardPage.discoveryShouldFinish();
 
             await test.step('Enable Solana and open its trading', async () => {
                 await settingsPage.navigateTo('coins');

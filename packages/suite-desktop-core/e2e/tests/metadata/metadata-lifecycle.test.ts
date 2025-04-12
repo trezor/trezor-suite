@@ -28,7 +28,6 @@ test.describe(
             trezorUserEnvLink,
         }) => {
             await onboardingPage.completeOnboarding({ enableViewOnly: false });
-            await dashboardPage.discoveryShouldFinish();
 
             await settingsPage.navigateTo('application');
             await expect(

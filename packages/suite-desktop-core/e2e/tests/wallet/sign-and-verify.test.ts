@@ -9,9 +9,8 @@ const ELECTRUM_SIGNATURE =
     'HxpInbBQH8LYgBBnRt4/QCV+HBW3hL1o1Yg85biWX1DdBTbfN96pyLL7tLQdYn+VtjvuZWJhEYbUCasjZLmih6w=';
 test.describe('Sign and verify', { tag: ['@group=wallet'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
-    test.beforeEach(async ({ page, walletPage, onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ page, walletPage, onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
         await walletPage.openAccount();
         await page.waitForTimeout(500); // wait until is the dropdown loaded
         await walletPage.walletExtraDropDown.click();

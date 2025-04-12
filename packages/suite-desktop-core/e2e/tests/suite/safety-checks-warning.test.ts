@@ -1,9 +1,8 @@
 import { expect, test } from '../../support/fixtures';
 
 test.describe('safety_checks Warnings', { tag: ['@group=suite'] }, () => {
-    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
         await settingsPage.changeSafetyChecksLevel('prompt');
     });
 

@@ -9,9 +9,8 @@ const defAddr = 'bc1qek0hazgrelpuce8anp72ur4kpgel74ype3pw52';
 
 test.describe('Passphrase', { tag: ['@group=passphrase'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     // add hidden wallet (abc)

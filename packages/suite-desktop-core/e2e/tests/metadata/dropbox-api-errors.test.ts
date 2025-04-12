@@ -13,7 +13,6 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
     test('Malformed token', async ({
         page,
         onboardingPage,
-        dashboardPage,
         settingsPage,
         metadataPage,
         walletPage,
@@ -26,7 +25,6 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
         );
 
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
 
         await settingsPage.navigateTo('application');
         await settingsPage.metadataSwitch.click();
@@ -65,7 +63,6 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
     //TODO: #17855 Fix unstable test
     test.skip('Success after retrying GET request', async ({
         onboardingPage,
-        dashboardPage,
         settingsPage,
         metadataPage,
         walletPage,
@@ -78,7 +75,6 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
         );
 
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
 
         await settingsPage.navigateTo('application');
         await settingsPage.metadataSwitch.click();
@@ -123,7 +119,6 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
 
     test('Incomplete data returned from provider', async ({
         onboardingPage,
-        dashboardPage,
         settingsPage,
         metadataPage,
         walletPage,
@@ -142,7 +137,6 @@ test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, ()
         );
 
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
 
         await settingsPage.navigateTo('application');
         await settingsPage.metadataSwitch.click();

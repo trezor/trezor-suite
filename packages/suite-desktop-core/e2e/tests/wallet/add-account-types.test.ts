@@ -10,9 +10,8 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
             mnemonic: 'town grace cat forest dress dust trick practice hair survey pupil regular',
         },
     });
-    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     /**

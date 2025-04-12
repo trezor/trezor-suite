@@ -2,9 +2,8 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('T2T1 - Device settings', { tag: ['@group=settings'] }, () => {
     test.use({ emulatorStartConf: { wipe: true, model: 'T2T1' } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
+    test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
         await settingsPage.navigateTo('device');
     });
 

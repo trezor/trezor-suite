@@ -7,9 +7,8 @@ const passphrase = 'secret passphrase A';
 
 test.describe('Passphrase with cardano', { tag: ['@group=passphrase'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test('verify cardano address behind passphrase', async ({

@@ -13,18 +13,16 @@ const formattedFiatAmount = `CZK ${localizeNumber(fiatAmount, 'en', 2)}`;
 const { receiveAddress, paymentMethodName } = buyTradeEthereum.trade;
 
 test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, () => {
-    test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ page, tradingMock, onboardingPage }) => {
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesEthereum });
         });
         await tradingMock.routeTrade(invityEndpoint.buyTrade, buyTradeEthereum);
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
     });
 
     test('Enable Ethereum on account by buying it', async ({
         page,
-        dashboardPage,
         settingsPage,
         devicePrompt,
         walletPage,
@@ -50,7 +48,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@group=other', '@webOnly'] }, (
             await page.getByRole('option', { name: 'Create a new Ethereum account' }).click();
             await expect(settingsPage.coins.networkButton('eth')).toBeEnabledCoin();
             await page.getByRole('button', { name: 'Find my Ethereum accounts' }).click();
-            await dashboardPage.discoveryShouldFinish();
+            await page.discoveryShouldFinish();
             await expect(tradingPage.confirmationAccountDropdown).toHaveText(
                 'Ethereum #1Balance: 0 ETH',
             );

@@ -12,7 +12,6 @@ test.describe('Send form for bitcoin', { tag: ['@group=wallet'] }, () => {
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, trezorUserEnvLink }) => {
             await onboardingPage.completeOnboarding();
-            await dashboardPage.discoveryShouldFinish();
 
             await settingsPage.navigateTo('coins');
             await settingsPage.coins.enableNetwork('regtest');
