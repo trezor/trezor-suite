@@ -224,11 +224,11 @@ export class SettingsPage {
     }) {
         await this.navigateTo('coins');
         for (const network of options.enableNetworks) {
-            this.coins.enableNetwork(network);
+            await this.coins.enableNetwork(network);
         }
 
         for (const network of options.disableNetworks ?? []) {
-            this.coins.disableNetwork(network);
+            await this.coins.disableNetwork(network);
         }
 
         await this.coins.activateCoinsButton.click();
