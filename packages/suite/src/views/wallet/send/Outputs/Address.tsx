@@ -13,6 +13,7 @@ import {
     isAddressDeprecated,
     isAddressValid,
     isBech32AddressUppercase,
+    isCashAddressUppercase,
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
 import { Button, Icon, IconButton, Input, Link, Row } from '@trezor/components';
@@ -210,7 +211,8 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
 
                 return {};
-            case 'uppercase':
+            case 'cashaddr_uppercase':
+            case 'bech32_uppercase':
                 return {
                     buttonProps: {
                         onClick: () =>
@@ -240,6 +242,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     return translationString('TR_UNSUPPORTED_ADDRESS_FORMAT');
                 }
             },
+            cashaddr_uppercase: (value: string) => {
+                if (symbol === 'bch' && isCashAddressUppercase(value)) {
+                    return translationString('RECIPIENT_IS_NOT_VALID');
+                }
+            },
             valid: (value: string) => {
                 if (!isAddressValid(value, symbol)) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
@@ -256,7 +263,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
             },
             // bech32 addresses are valid as uppercase but are not accepted by Trezor
-            uppercase: (value: string) => {
+            bech32_uppercase: (value: string) => {
                 if (networkType === 'bitcoin' && isBech32AddressUppercase(value)) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
                 }
