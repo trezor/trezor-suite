@@ -1,9 +1,9 @@
+@currents/cmd
+@currents/playwright
 @playwright/browser-chromium
 @playwright/browser-firefox
 @playwright/browser-webkit
 @playwright/test
-@currents/playwright
-@currents/cmd
 dotenv
-jest-junit
 jest-diff
+jest-junit
