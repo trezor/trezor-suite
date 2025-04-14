@@ -86,6 +86,26 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
 
         expect(await res).toMatchObject({ success: true });
     });
+
+    test('TrezorConnect.ethereumSignMessage', async ({ connectModal, trezorUserEnvLink, page }) => {
+        const res = TrezorConnect.ethereumSignMessage({
+            path: "m/44'/60'/0'",
+            message: 'example message',
+        });
+
+        await passThroughPermissions(connectModal);
+        await expect(connectModal.loadingHeader).toHaveText('Sign Ethereum message');
+
+        const text = page.getByTestId('@sign-message-modal/message');
+        await expect(text).toHaveText('example message');
+
+        await trezorUserEnvLink.swipeEmu('up');
+        await trezorUserEnvLink.swipeEmu('up');
+        await trezorUserEnvLink.pressYes();
+        expect(await res).toMatchObject({ success: true });
+    });
+
+    // todo: use account not available in suite (weird derivation path)
 });
 
 // todo: write tests:

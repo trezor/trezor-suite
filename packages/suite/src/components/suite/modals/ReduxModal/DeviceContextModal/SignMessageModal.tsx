@@ -102,7 +102,12 @@ export const SignMessageModal = ({
                         }
                         paddingType="small"
                     >
-                        <Text isMonospaced as="pre" margin={{ left: spacings.xxl }}>
+                        <Text
+                            isMonospaced
+                            as="pre"
+                            margin={{ left: spacings.xxl }}
+                            data-testid="@sign-message-modal/message"
+                        >
                             {message}
                         </Text>
                     </Card>
