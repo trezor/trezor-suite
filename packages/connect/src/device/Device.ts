@@ -824,7 +824,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             return null;
         }
 
-        const checkSupported = this.atLeast(FIRMWARE.FW_HASH_SUPPORTED_VERSIONS);
+        const checkSupported = !this.unavailableCapabilities.getFirmwareHash;
         if (!checkSupported) return createFailResult('check-unsupported');
 
         const release = getReleases(this.features.internal_model).find(r =>

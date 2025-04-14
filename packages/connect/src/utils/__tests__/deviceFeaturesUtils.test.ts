@@ -166,6 +166,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 signMessageNoScriptType: 'update-required',
                 chunkify: 'no-support',
                 entropyCheck: 'no-support',
+                getFirmwareHash: 'update-required',
             });
         });
 
@@ -196,6 +197,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 dsol: 'no-capability',
                 chunkify: 'update-required',
                 entropyCheck: 'update-required',
+                getFirmwareHash: 'update-required',
             });
         });
 
@@ -312,6 +314,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 signMessageNoScriptType: 'update-required',
                 taproot: 'update-required',
                 entropyCheck: 'update-required',
+                getFirmwareHash: 'update-required',
             });
         });
 
@@ -344,6 +347,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 signMessageNoScriptType: 'update-required',
                 taproot: 'update-required',
                 entropyCheck: 'no-support',
+                getFirmwareHash: 'update-required',
             });
         });
 
@@ -377,6 +381,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 signMessageNoScriptType: 'update-required',
                 taproot: 'update-required',
                 entropyCheck: 'no-support',
+                getFirmwareHash: 'update-required',
             });
         });
     });

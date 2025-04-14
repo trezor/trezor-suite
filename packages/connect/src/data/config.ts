@@ -230,6 +230,7 @@ export const config = {
             },
         },
         {
+            capabilities: ['getFirmwareHash'],
             methods: ['getFirmwareHash'],
             min: { T1B1: '1.11.1', T2T1: '2.5.1' },
         },
