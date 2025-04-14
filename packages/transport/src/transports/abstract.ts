@@ -77,6 +77,7 @@ class TransportEmitter extends TypedEmitter<{
     [TRANSPORT.DEVICE_REQUEST_RELEASE]: Descriptor;
     [TRANSPORT.ERROR]:
         | typeof ERRORS.HTTP_ERROR // most common error - bridge was killed
+        | typeof ERRORS.API_DISCONNECTED // BluetoothApi disconnected
         // probably never happens, wrong shape of data came from bridge
         | typeof ERRORS.WRONG_RESULT_TYPE
         | typeof ERRORS.UNEXPECTED_ERROR;
