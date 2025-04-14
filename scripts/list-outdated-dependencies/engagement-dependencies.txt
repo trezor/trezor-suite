@@ -64,3 +64,13 @@ pdfmake
 vite-plugin-wasm
 vite
 vm-browserify
+@types/prettier
+@types/react
+@types/react-dom
+@types/react-router
+@types/react-router-dom
+react
+react-dom
+tslib
+tsx
+typescript
