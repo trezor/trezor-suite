@@ -9,19 +9,24 @@ test.describe('Send form for bitcoin', { tag: ['@group=wallet'] }, () => {
             mnemonic: 'mnemonic_all',
         },
     });
-    test.beforeEach(async ({ onboardingPage, settingsPage, walletPage, trezorUserEnvLink }) => {
-        await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });
+    test.beforeEach(
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, trezorUserEnvLink }) => {
+            await onboardingPage.completeOnboarding();
 
-        await trezorUserEnvLink.sendToAddressAndMineBlock({
-            address: ADDRESS_INDEX_1,
-            btc_amount: 1,
-        });
-        await trezorUserEnvLink.mineBlocks({ block_amount: 1 });
+            await settingsPage.navigateTo('coins');
+            await settingsPage.coins.enableNetwork('regtest');
 
-        await walletPage.openAccount({ symbol: 'regtest' });
-        await walletPage.openSendFormButton.click();
-    });
+            await trezorUserEnvLink.sendToAddressAndMineBlock({
+                address: ADDRESS_INDEX_1,
+                btc_amount: 1,
+            });
+            await trezorUserEnvLink.mineBlocks({ block_amount: 1 });
+
+            await dashboardPage.dashboardMenuButton.click();
+            await walletPage.openAccount({ symbol: 'regtest' });
+            await walletPage.openSendFormButton.click();
+        },
+    );
 
     test('add and remove output in send form, toggle form options, input data', async ({
         page,

@@ -32,6 +32,7 @@ test.describe('Trading - Swap tokens', { tag: ['@group=other', '@webOnly'] }, ()
             });
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+            await dashboardPage.openDeviceSwitcher();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'sol' });
         },

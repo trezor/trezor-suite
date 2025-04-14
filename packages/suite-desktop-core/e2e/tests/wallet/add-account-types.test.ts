@@ -23,7 +23,12 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
      * 5. Get the number of accounts again
      * 6. Verify that the current number is equal to previous number + 1
      */
-    test('Add-account-types-btc-like', async ({ page, settingsPage, walletPage }) => {
+    test('Add-account-types-btc-like', async ({
+        page,
+        dashboardPage,
+        settingsPage,
+        walletPage,
+    }) => {
         const accountTypes = [
             {
                 coin: 'btc',
@@ -47,6 +52,7 @@ test.describe('Account types suite', { tag: ['@group=wallet'] }, () => {
         await settingsPage.changeNetworks({
             enableNetworks: coinsWithoutBTC as NetworkSymbol[],
         });
+        await dashboardPage.navigateTo();
 
         const chevrons = await walletPage.accountChevron.all();
         for (const chevron of chevrons) {
