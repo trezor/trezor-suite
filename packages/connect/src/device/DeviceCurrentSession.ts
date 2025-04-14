@@ -3,7 +3,7 @@
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { TransportProtocol } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
-import { Session, TRANSPORT_ERROR, Transport } from '@trezor/transport';
+import { Session, TRANSPORT, TRANSPORT_ERROR, Transport } from '@trezor/transport';
 import { isErrorWithoutDeviceInteraction } from '@trezor/transport/src/errors-groups';
 import { resolveAfter, scheduleAction, versionUtils } from '@trezor/utils';
 
@@ -81,6 +81,17 @@ export class DeviceCurrentSession implements TypedCallProvider {
         this.transport = transport;
         this.protocol = protocol;
         this.session = session;
+
+        transport.deviceEvents.once(device.transportPath, e => {
+            if (!this.disposed) {
+                this.disposed = ERRORS.TypedError(
+                    e.type === TRANSPORT.DEVICE_DISCONNECTED
+                        ? 'Device_Disconnected'
+                        : 'Device_UsedElsewhere',
+                );
+                this.abortController?.abort(this.disposed);
+            }
+        });
     }
 
     isDisposed() {
@@ -321,19 +332,9 @@ export class DeviceCurrentSession implements TypedCallProvider {
         return this.call('Cancel', {});
     }
 
-    async abort(reason: Error, dispose = false) {
+    async abort(reason: Error) {
         this.abortController?.abort(reason);
         await this.callPromise;
-        if (dispose) this.disposed = reason;
-    }
-
-    async dispose() {
-        if (!this.disposed) {
-            this.disposed = ERRORS.TypedError(
-                'Runtime',
-                'typedCall: DeviceCommands already disposed',
-            );
-            await this.abort(this.disposed);
-        }
+        this.disposed = reason;
     }
 }

@@ -273,7 +273,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(result => {
                 if (result.success) {
                     this.sessionAcquired = result.payload;
-                    this.currentSession?.dispose();
                     this.currentSession = new DeviceCurrentSession(
                         this,
                         this.transport,
@@ -293,12 +292,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.acquirePromise;
     }
 
-    async release() {
+    release() {
         if (!this.sessionAcquired || this.keepTransportSession || this.releasePromise) {
             return;
         }
-
-        await this.currentSession?.dispose();
 
         const sessionPromise = this.getSessionChangePromise();
 
@@ -391,10 +388,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // Session changed to null
         // -> released
         if (!descriptor.session) {
-            const methodStillRunning = !this.currentSession?.isDisposed();
-            if (methodStillRunning) {
-                this.keepTransportSession = false;
-            }
+            this.keepTransportSession = false;
         }
 
         this.emitLifecycle(DEVICE.CHANGED);
@@ -439,7 +433,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async interrupt(reason: Error) {
-        await this.currentSession?.abort(reason, true);
+        await this.currentSession?.abort(reason);
 
         // reject inner defer
         this.runAbort?.abort(reason);
@@ -466,8 +460,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this._featuresNeedsReload = true;
 
         _log.debug('interruptionFromOutside');
-
-        this.currentSession?.dispose();
 
         this.runAbort?.abort(ERRORS.TypedError('Device_UsedElsewhere'));
     }
