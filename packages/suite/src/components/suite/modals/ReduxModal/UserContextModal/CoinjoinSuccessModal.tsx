@@ -1,48 +1,18 @@
-import { transparentize } from 'polished';
-import styled from 'styled-components';
-
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
-import { Button, Icon, variables } from '@trezor/components';
+import { Column, H3, NewModal, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Modal, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';
 
-const StyledModal = styled(Modal)`
-    width: 435px;
-`;
-
-const IconWrapper = styled.div`
-    width: 84px;
-    height: 84px;
-    margin: 12px auto 32px;
-    border-radius: 50%;
-    background: ${({ theme }) => transparentize(0.9, theme.legacy.BG_GREEN)};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
-const Heading = styled.h3`
-    margin-bottom: 22px;
-    font-size: 32px;
-    line-height: 32px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.legacy.TYPE_GREEN};
-`;
-
-const Text = styled.p`
-    color: ${({ theme }) => theme.legacy.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-interface CoinjoinSuccessModalProps {
+type CoinjoinSuccessModalProps = {
     relatedAccountKey: string;
-}
+};
 
 export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModalProps) => {
     const routerParams = useSelector(selectRouterParams);
@@ -80,30 +50,31 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
         symbolParam === symbol && indexParam === index && accountTypeParam === accountType;
 
     return (
-        <StyledModal
-            bottomBarComponents={
+        <NewModal
+            onCancel={close}
+            bottomContent={
                 <>
-                    <Button isFullWidth variant="tertiary" onClick={close}>
-                        <Translation id="TR_DISMISS" />
-                    </Button>
                     {!isOnAccountPage && (
-                        <Button isFullWidth onClick={navigateToRelatedAccount}>
+                        <NewModal.Button onClick={navigateToRelatedAccount}>
                             <Translation id="TR_VIEW_ACCOUNT" />
-                        </Button>
+                        </NewModal.Button>
                     )}
+                    <NewModal.Button variant="tertiary" onClick={close}>
+                        <Translation id="TR_CLOSE" />
+                    </NewModal.Button>
                 </>
             }
+            size="small"
+            iconName="arrowsIn"
         >
-            <IconWrapper>
-                <Icon name="confetti" size={32} variant="primary" />
-            </IconWrapper>
-
-            <Heading>
-                <Translation id="TR_COINJOIN_COMPLETED" />
-            </Heading>
-            <Text>
-                <Translation id="TR_COINJOIN_COMPLETED_DESCRIPTION" />
-            </Text>
-        </StyledModal>
+            <Column gap={spacings.xxs}>
+                <H3>
+                    <Translation id="TR_COINJOIN_COMPLETED" />
+                </H3>
+                <Paragraph variant="tertiary">
+                    <Translation id="TR_COINJOIN_COMPLETED_DESCRIPTION" />
+                </Paragraph>
+            </Column>
+        </NewModal>
     );
 };

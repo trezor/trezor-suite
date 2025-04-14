@@ -1,10 +1,4 @@
-import { useState } from 'react';
-
-import styled, { css, useTheme } from 'styled-components';
-
-import { TranslationKey } from '@suite-common/intl-types';
-import { Icon, IconName } from '@trezor/components';
-import { borders, typography } from '@trezor/theme';
+import { Checkbox, Text } from '@trezor/components';
 
 import { toggleAutostopCoinjoin } from 'src/actions/wallet/coinjoinAccountActions';
 import { Translation } from 'src/components/suite';
@@ -12,157 +6,23 @@ import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsSessionAutostopped } from 'src/reducers/wallet/coinjoinReducer';
 
-const TRANSITION_CONFIG = '0.1s ease';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledIcon = styled(Icon)<{ $isActivated: boolean }>`
-    position: absolute;
-    left: 6px;
-    width: 15px;
-    height: 15px;
-    border: 1.5px solid
-        ${({ theme, $isActivated }) =>
-            $isActivated ? theme.legacy.TYPE_GREEN : theme.legacy.TYPE_LIGHT_GREY};
-    border-radius: 50%;
-    transition:
-        background ${TRANSITION_CONFIG},
-        border-color ${TRANSITION_CONFIG};
-
-    path {
-        transition: fill ${TRANSITION_CONFIG};
-    }
-`;
-
-const getHoverStyle = (backgroundColor: string, strokeColor: string, fontColor?: string) => css`
-    color: ${fontColor};
-    background: ${backgroundColor};
-    border-color: ${backgroundColor};
-
-    ${StyledIcon} {
-        background: ${strokeColor};
-        border-color: ${strokeColor};
-
-        path {
-            fill: ${backgroundColor};
-        }
-    }
-`;
-
-const Container = styled.button<{
-    $isActivated: boolean;
-    $isHovered: boolean;
-}>`
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 290px;
-    margin: 14px auto 0;
-    padding: 3px 8px 3px 26px;
-    border: 1px solid ${({ theme }) => theme.legacy.STROKE_LIGHT_GREY};
-    border-radius: ${borders.radii.lg};
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.hint}
-    background: none;
-    transition:
-        background ${TRANSITION_CONFIG},
-        border-color ${TRANSITION_CONFIG},
-        color ${TRANSITION_CONFIG};
-    cursor: pointer;
-    appearance: none;
-
-    &:focus-visible {
-        ${({ theme }) => getHoverStyle(theme.legacy.BG_GREY, theme.legacy.TYPE_LIGHTER_GREY)}
-    }
-
-    ${({ theme, $isHovered }) =>
-        $isHovered && getHoverStyle(theme.legacy.BG_GREY, theme.legacy.TYPE_LIGHTER_GREY)}
-
-    ${({ theme, $isActivated, $isHovered }) =>
-        $isActivated &&
-        css`
-            border-color: ${theme.legacy.BG_LIGHT_GREEN};
-            background: ${theme.legacy.BG_LIGHT_GREEN};
-            color: ${theme.legacy.TYPE_GREEN};
-
-            &:focus-visible {
-                ${getHoverStyle(
-                    theme.legacy.BG_LIGHT_RED,
-                    theme.legacy.TYPE_RED,
-                    theme.legacy.TYPE_RED,
-                )}
-            }
-
-            ${$isHovered &&
-            getHoverStyle(theme.legacy.BG_LIGHT_RED, theme.legacy.TYPE_RED, theme.legacy.TYPE_RED)}
-        `};
-`;
-
-const getButtonConfig = (
-    isActivated: boolean,
-    isHovered: boolean,
-): {
-    icon: IconName;
-    iconSize: number;
-    text: TranslationKey;
-} => {
-    if (isActivated) {
-        if (isHovered) {
-            return {
-                icon: 'x',
-                iconSize: 9,
-                text: 'TR_DISABLE_AUTOSTOP_COINJOIN',
-            };
-        }
-
-        return {
-            icon: 'check',
-            iconSize: 10,
-            text: 'TR_AUTOSTOP_COINJOIN_ENABLED',
-        };
-    }
-
-    return {
-        icon: 'stop',
-        iconSize: 7,
-        text: 'TR_ENABLE_AUTOSTOP_COINJOIN',
-    };
-};
-
-interface AutoStopButtonProps {
+type AutoStopButtonProps = {
     relatedAccountKey: string;
-}
+};
 
 export const AutoStopButton = ({ relatedAccountKey }: AutoStopButtonProps) => {
     const isActivated = useSelector(state => selectIsSessionAutostopped(state, relatedAccountKey));
-    const [isHovered, setIsHovered] = useState(false);
-
-    const theme = useTheme();
     const dispatch = useDispatch();
 
     const handleClick = () => {
-        setIsHovered(current => !current);
         dispatch(toggleAutostopCoinjoin(relatedAccountKey));
     };
 
-    const { icon, iconSize, text } = getButtonConfig(isActivated, isHovered);
-
     return (
-        <Container
-            $isActivated={!!isActivated}
-            $isHovered={isHovered}
-            onClick={handleClick}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
-            <StyledIcon
-                $isActivated={!!isActivated}
-                name={icon}
-                size={iconSize}
-                color={isActivated ? theme.iconPrimaryDefault : undefined}
-            />
-
-            <Translation id={text} />
-        </Container>
+        <Checkbox isChecked={isActivated} onClick={handleClick} verticalAlignment="center">
+            <Text typographyStyle="hint" variant="tertiary">
+                <Translation id="TR_ENABLE_AUTOSTOP_COINJOIN" />
+            </Text>
+        </Checkbox>
     );
 };

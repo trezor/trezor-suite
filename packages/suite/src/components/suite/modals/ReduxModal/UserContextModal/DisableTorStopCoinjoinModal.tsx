@@ -1,23 +1,8 @@
-import styled from 'styled-components';
-
 import { UserContextPayload } from '@suite-common/suite-types';
-import { Button, Paragraph } from '@trezor/components';
+import { Banner, Column, NewModal, Paragraph } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-import { Modal, Translation } from 'src/components/suite';
-
-const SmallModal = styled(Modal)`
-    width: 560px;
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const Description = styled(Paragraph)`
-    text-align: left;
-    margin-bottom: 16px;
-`;
-
-const ItalicDescription = styled(Description)`
-    font-style: italic;
-`;
+import { Translation } from 'src/components/suite';
 
 type DisableTorStopCoinjoinModalProps = {
     decision: Extract<UserContextPayload, { type: 'disable-tor-stop-coinjoin' }>['decision'];
@@ -39,37 +24,37 @@ export const DisableTorStopCoinjoinModal = ({
     };
 
     return (
-        <>
-            <SmallModal
-                isCancelable
-                onCancel={onKeepRunningTor}
-                isHeadingCentered
-                heading={<Translation id="TR_TOR_DISABLE" />}
-                bottomBarComponents={
-                    <>
-                        <Button variant="tertiary" onClick={onStopRunningTor}>
-                            <Translation id="TR_TOR_STOP" />
-                        </Button>
-                        <Button variant="primary" onClick={onKeepRunningTor}>
-                            <Translation id="TR_TOR_KEEP_RUNNING" />
-                        </Button>
-                    </>
-                }
-            >
+        <NewModal
+            onCancel={onKeepRunningTor}
+            heading={<Translation id="TR_TOR_DISABLE" />}
+            variant="warning"
+            size="small"
+            bottomContent={
                 <>
-                    <Description>
+                    <NewModal.Button onClick={onStopRunningTor}>
+                        <Translation id="TR_TOR_STOP" />
+                    </NewModal.Button>
+                    <NewModal.Button variant="tertiary" onClick={onKeepRunningTor}>
+                        <Translation id="TR_TOR_KEEP_RUNNING" />
+                    </NewModal.Button>
+                </>
+            }
+        >
+            <Column gap={spacings.xl}>
+                <Banner variant="warning" icon="torBrowser" iconSize="large">
+                    <Paragraph typographyStyle="body">
                         <Translation
                             id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE"
                             values={{
-                                b: chunks => <b>{chunks}</b>,
+                                b: chunks => <strong>{chunks}</strong>,
                             }}
                         />
-                    </Description>
-                    <ItalicDescription>
-                        <Translation id="TR_TOR_KEEP_RUNNING_FOR_COIN_JOIN_SUBTITLE" />
-                    </ItalicDescription>
-                </>
-            </SmallModal>
-        </>
+                    </Paragraph>
+                </Banner>
+                <Paragraph variant="tertiary" typographyStyle="hint">
+                    <Translation id="TR_TOR_KEEP_RUNNING_FOR_COIN_JOIN_SUBTITLE" />
+                </Paragraph>
+            </Column>
+        </NewModal>
     );
 };
