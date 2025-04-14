@@ -1,4 +1,5 @@
 import {
+    hasCashAddressPrefix,
     isAddressDeprecated,
     isAddressValid,
     isBech32AddressUppercase,
@@ -163,6 +164,19 @@ describe('validation', () => {
                 'test',
             ),
         ).toEqual(true);
+    });
+
+    it('hasCashAddressPrefix', () => {
+        expect(hasCashAddressPrefix('')).toBe(false);
+        expect(hasCashAddressPrefix('bitcoincash')).toBe(false);
+        expect(hasCashAddressPrefix('bitcoincash:')).toBe(true);
+        expect(hasCashAddressPrefix('bitcoincash:qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc')).toBe(
+            true,
+        );
+        expect(hasCashAddressPrefix('BITCOINCASH:QZ8GJEXL9X7GAG53XL08MT7QSKVJG8X2WUEEJJMTTC')).toBe(
+            true,
+        );
+        expect(hasCashAddressPrefix('somethingbitcoincash:something')).toBe(false);
     });
 
     it('isCashAddressUppercase', () => {

@@ -10,6 +10,7 @@ import type { Output } from '@suite-common/wallet-types';
 import {
     checkIsAddressNotUsedNotChecksummed,
     getInputState,
+    hasCashAddressPrefix,
     isAddressDeprecated,
     isAddressValid,
     isBech32AddressUppercase,
@@ -221,6 +222,16 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         text: translationString('TR_CONVERT_TO_LOWERCASE'),
                     },
                 };
+            case 'bch_missing_prefix':
+                return {
+                    buttonProps: {
+                        onClick: () =>
+                            setValue(inputName, 'bitcoincash:' + address, {
+                                shouldValidate: true,
+                            }),
+                        text: translationString('TR_ADD_BITCOINCASH_PREFIX'),
+                    },
+                };
             default:
                 return {};
         }
@@ -262,6 +273,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     device?.unavailableCapabilities?.taproot
                 ) {
                     return translationString('RECIPIENT_REQUIRES_UPDATE');
+                }
+            },
+            bch_missing_prefix: (value: string) => {
+                if (symbol == 'bch' && !hasCashAddressPrefix(value)) {
+                    return translationString('RECIPIENT_IS_NOT_VALID');
                 }
             },
             evmchecks: async (address: string) => {
