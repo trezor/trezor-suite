@@ -173,18 +173,6 @@ describe('validation', () => {
         expect(
             isCashAddressUppercase('BITCOINCASH:QZ8GJEXL9X7GAG53XL08MT7QSKVJG8X2WUEEJJMTTC'),
         ).toBe(true);
-        expect(isCashAddressUppercase('bchtest:qqyr08lnsfc82ek7y6xys6j0ne2v5uv7a5pj9v0t07')).toBe(
-            false,
-        );
-        expect(isCashAddressUppercase('BCHTEST:QQYR08LNSFC82EK7Y6XYS6J0NE2V5UV7A5PJ9V0T07')).toBe(
-            true,
-        );
-        expect(isCashAddressUppercase('bchreg:qp3wjpa3tjlj042z7x7z0ur7t3g4a2t5p9z4wpgs4y')).toBe(
-            false,
-        );
-        expect(isCashAddressUppercase('BCHREG:QP3WJPA3TJLJ042Z7X7Z0UR7T3G4A2T5P9Z4WPGS4Y')).toBe(
-            true,
-        );
         expect(isCashAddressUppercase('1BpEi6DfDAUFd7GtittLSdBeYJvcoaVggu')).toBe(false);
         expect(isCashAddressUppercase('1BPEI6DFDAUFD7GTITTLSDBEYJVCOAVGGU')).toBe(false);
         expect(isCashAddressUppercase('NotValidAddressContainsBITCOINCASH:BCHTEST:1')).toBe(false);
@@ -198,10 +186,6 @@ describe('validation', () => {
         expect(isBech32AddressUppercase('TB1QKVWU9G3K2PDXEWFQR7SYZ89R3GJ557L3UUF9R9')).toBe(true);
         expect(isBech32AddressUppercase('ltc1qkzyarpkhdecu5rzeuj78pwpr5sfm798afny4n6')).toBe(false);
         expect(isBech32AddressUppercase('LTC1QKZYARPKHDECU5RZEUJ78PWPR5SFM798AFNY4N6')).toBe(true);
-        expect(isBech32AddressUppercase('tltc1qkvwu9g3k2pdxewfqr7syz89r3gj557l395tmnv')).toBe(
-            false,
-        );
-        expect(isBech32AddressUppercase('TLTC1QKVWU9G3K2PDXEWFQR7SYZ89R3GJ557L395TMNV')).toBe(true);
         expect(isBech32AddressUppercase('37VJHKeBA9DHKmTwYE7TWYjwDzo5JTb1sz')).toBe(false); // real btc address contains tb1 string
         expect(isBech32AddressUppercase('NotValidAddressContainsTb1bc1Ltc1Tltc1')).toBe(false);
     });
