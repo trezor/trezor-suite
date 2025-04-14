@@ -45,6 +45,7 @@ export class SettingsPage {
     readonly settingsMenuButton: Locator;
     readonly settingsHeader: Locator;
     readonly debugTabButton: Locator;
+    readonly connectTabButton: Locator;
     readonly applicationTabButton: Locator;
     readonly deviceTabButton: Locator;
     readonly coinsTabButton: Locator;
@@ -81,6 +82,7 @@ export class SettingsPage {
         this.settingsMenuButton = this.page.getByTestId('@suite/menu/settings');
         this.settingsHeader = this.page.getByTestId('@settings/menu/title');
         this.debugTabButton = this.page.getByTestId('@settings/menu/debug');
+        this.connectTabButton = this.page.getByTestId('@settings/menu/connected-apps');
         this.applicationTabButton = this.page.getByTestId('@settings/menu/general');
         this.deviceTabButton = this.page.getByTestId('@settings/menu/device');
         this.coinsTabButton = this.page.getByTestId('@settings/menu/wallet');
@@ -109,7 +111,7 @@ export class SettingsPage {
     }
 
     @step()
-    async navigateTo(tab: 'application' | 'coins' | 'device' | 'debug') {
+    async navigateTo(tab: 'application' | 'coins' | 'device' | 'debug' | 'connect') {
         const notInSettings = !(await this.settingsHeader.isVisible());
         if (notInSettings) {
             await this.settingsMenuButton.click();
@@ -120,6 +122,7 @@ export class SettingsPage {
             coins: () => this.coinsTabButton.click(),
             device: () => this.deviceTabButton.click(),
             debug: () => this.debugTabButton.click(),
+            connect: () => this.connectTabButton.click(),
         };
         await tabNavigation[tab]();
     }

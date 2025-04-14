@@ -39,7 +39,11 @@ export const ConnectPermissions = () => {
                 <H3 align="center">
                     <Translation id="TR_NO_CONNECTED_APPS" />
                 </H3>
-                <Text align="center" variant="tertiary">
+                <Text
+                    align="center"
+                    variant="tertiary"
+                    data-testid="@settings/connect-apps/no-apps"
+                >
                     <Translation id="TR_NO_CONNECTED_APPS_DESCRIPTION" />
                 </Text>
             </Column>
@@ -49,8 +53,13 @@ export const ConnectPermissions = () => {
     return (
         <Card paddingType="none">
             <Column hasDivider>
-                {apps.map(app => (
-                    <Row key={app.origin} gap={spacings.md} padding={spacings.md}>
+                {apps.map((app, index) => (
+                    <Row
+                        key={app.origin}
+                        gap={spacings.md}
+                        padding={spacings.md}
+                        data-testid={`@settings/connect-apps/${index}`}
+                    >
                         <IconCircle
                             name="plugs"
                             size={spacings.xxl}
@@ -83,6 +92,7 @@ export const ConnectPermissions = () => {
                         </Column>
 
                         <Dropdown
+                            data-testid={`@settings/connect-apps/${index}/dropdown`}
                             placement={{ position: 'bottom', alignment: 'end' }}
                             items={[
                                 {
