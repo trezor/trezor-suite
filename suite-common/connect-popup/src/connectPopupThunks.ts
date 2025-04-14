@@ -1,6 +1,7 @@
 import { AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect, { CallMethodParams, CallMethodResponse } from '@trezor/connect';
@@ -41,7 +42,7 @@ export const connectPopupCallThunkInner = createThunk<
             });
             if (!methodInfo.success) {
                 dispatch(connectPopupActions.setError(TypedError(methodInfo.payload.code)));
-                throw methodInfo;
+                throw methodInfo.payload;
             }
             if (
                 methodInfo.payload.requiredPermissions.includes('management') ||
@@ -134,6 +135,13 @@ export const connectPopupCallThunkInner = createThunk<
             return response;
         } catch (error) {
             console.error('connectPopupCallThunk', error);
+            // todo: there should be a modal with richer error message
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: `connect error: ${serializeError(error).error || 'unhandled error'}`,
+                }),
+            );
 
             return {
                 success: false,
