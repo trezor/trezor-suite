@@ -133,8 +133,11 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads]: undefined;
     [DeviceOnboardingStackRoutes.CreateWalletLoading]: undefined;
     [DeviceOnboardingStackRoutes.WalletBackupTutorial]: undefined;
-    [DeviceOnboardingStackRoutes.WalletCreation]: undefined;
+    [DeviceOnboardingStackRoutes.WalletCreation]: {
+        walletBackupType: 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
+    };
     [DeviceOnboardingStackRoutes.Recovery]: undefined;
+    [DeviceOnboardingStackRoutes.WalletCreatedSuccess]: undefined;
     [DeviceOnboardingStackRoutes.WalletBackupRecap]: undefined;
     [DeviceOnboardingStackRoutes.CreatePin]: undefined;
 };

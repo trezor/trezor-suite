@@ -2,6 +2,7 @@ import { useDerivedValue } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/core';
 
+import { WalletBackupType } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceOnboardingStackParamList,
@@ -13,7 +14,6 @@ import {
 import { WalletBackupInstructionCards } from './WalletBackupInstructionCards';
 import { WalletBackupTutorialStep } from './WalletBackupTutorialStep';
 import { WalletBackupTutorialNumberedStepProps } from './WalletBackupTutorialStep1';
-import { WalletBackupType } from '../../screens/WalletBackupTutorialScreen';
 import { HoldToConfirmButton } from '../SwipeableWalkthrough/HoldToConfirmButton';
 
 type WalletBackupTutorialStep6Props = WalletBackupTutorialNumberedStepProps & {
@@ -37,7 +37,9 @@ export const WalletBackupTutorialStep6 = ({
     const isMultishareSelected = selectedType === 'shamir-advanced';
 
     const handleHoldToStartSuccess = () => {
-        navigation.navigate(DeviceOnboardingStackRoutes.WalletCreation);
+        navigation.navigate(DeviceOnboardingStackRoutes.WalletCreation, {
+            walletBackupType: selectedType,
+        });
     };
 
     return (

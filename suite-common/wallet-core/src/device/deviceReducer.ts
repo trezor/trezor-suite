@@ -737,6 +737,11 @@ export const selectDeviceType = createMemoizedSelector(
     device => device?.type,
 );
 
+export const selectDevicePath = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => device?.path,
+);
+
 export const selectDeviceFeatures = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.features,

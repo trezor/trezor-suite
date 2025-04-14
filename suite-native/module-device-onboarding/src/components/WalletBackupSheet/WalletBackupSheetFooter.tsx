@@ -1,12 +1,12 @@
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { Box, Button } from '@suite-native/atoms';
+import { WalletBackupType } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@trezor/utils';
 
 import { walletBackupSheetCopyByType } from './presets';
-import { WalletBackupType } from '../../screens/WalletBackupTutorialScreen';
 
 const buttonStyle = prepareNativeStyle(utils => ({
     marginHorizontal: utils.spacings.sp16,

@@ -83,6 +83,7 @@ const usedIcons = [
     'link',
     'lock',
     'magnifyingGlass',
+    'newspaper',
     'package',
     'palette',
     'password',

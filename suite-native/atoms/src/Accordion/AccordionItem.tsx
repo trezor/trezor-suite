@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
-import Animated, {
+import {
     SharedValue,
     measure,
     useAnimatedRef,
@@ -12,7 +12,7 @@ import Animated, {
 import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Box } from '../Box';
+import { AnimatedBox, Box } from '../Box';
 import { Divider } from '../Divider';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
@@ -93,12 +93,12 @@ export const AccordionItem = ({
                         {iconName && <Icon name={iconName} size="mediumLarge" />}
                         <Text variant="callout">{title}</Text>
                     </HStack>
-                    <Animated.View style={[animatedChevronStyle]}>
+                    <AnimatedBox style={animatedChevronStyle}>
                         <Icon name="caretDown" size="mediumLarge" />
-                    </Animated.View>
+                    </AnimatedBox>
                 </HStack>
                 <Box>
-                    <Animated.View style={[animatedHeightStyle]}>
+                    <AnimatedBox style={animatedHeightStyle}>
                         <View style={applyStyle(contentWrapperStyle)}>
                             <View
                                 ref={animatedRef}
@@ -108,7 +108,7 @@ export const AccordionItem = ({
                                 {content}
                             </View>
                         </View>
-                    </Animated.View>
+                    </AnimatedBox>
                 </Box>
             </VStack>
             {isDividerDisplayed && <Divider style={applyStyle(dividerStyle)} />}

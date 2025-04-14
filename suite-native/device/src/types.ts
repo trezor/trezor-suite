@@ -7,3 +7,5 @@ export type SetupSupportingDeviceModel = Exclude<
     | DeviceModelInternal.T3W1
     | DeviceModelInternal.UNKNOWN
 >;
+
+export type WalletBackupType = 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';

@@ -15,10 +15,10 @@ export const AccordionList = ({ items }: AccordionListProps) => {
             {items.map((accordion, index) => (
                 <AccordionItem
                     key={index}
-                    {...accordion}
                     currentIndexOpened={openedAccordionIndex}
                     index={index}
                     isDividerDisplayed={index !== items.length - 1}
+                    {...accordion}
                 />
             ))}
         </VStack>

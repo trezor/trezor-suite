@@ -3,6 +3,7 @@ import { useSharedValue } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/core';
 
+import { WalletBackupType } from '@suite-native/device';
 import {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
@@ -26,7 +27,6 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackRoutes.WalletBackupTutorial,
     RootStackParamList
 >;
-export type WalletBackupType = 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
 
 export const WalletBackupTutorialScreen = () => {
     const currentStepIndex = useSharedValue(0);

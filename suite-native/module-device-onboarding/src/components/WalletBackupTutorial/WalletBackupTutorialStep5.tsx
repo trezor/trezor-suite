@@ -3,6 +3,7 @@ import { useState } from 'react';
 import * as Haptics from 'expo-haptics';
 
 import { Box, Button, Card, InlineAlertBox, Text, TitleHeader } from '@suite-native/atoms';
+import { WalletBackupType } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -12,7 +13,6 @@ import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 import { WalletBackupTutorialStep } from './WalletBackupTutorialStep';
 import { WalletBackupTutorialNumberedStepProps } from './WalletBackupTutorialStep1';
 import { walletBackupTutorialCopyByType } from './presets';
-import { WalletBackupType } from '../../screens/WalletBackupTutorialScreen';
 import { WalletBackupSheet } from '../WalletBackupSheet/WalletBackupSheet';
 
 const cardStyle = prepareNativeStyle<{ isCalloutButtonShown: boolean }>(

@@ -3,13 +3,13 @@ import { useRef, useState } from 'react';
 import * as Haptics from 'expo-haptics';
 
 import { BottomSheet, BottomSheetHandle, Button, VStack } from '@suite-native/atoms';
+import { WalletBackupType } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { WalletBackupCard } from './WalletBackupCard/WalletBackupCard';
 import { WalletBackupSheetFooter } from './WalletBackupSheetFooter';
-import { WalletBackupType } from '../../screens/WalletBackupTutorialScreen';
 
 const containerStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp32,

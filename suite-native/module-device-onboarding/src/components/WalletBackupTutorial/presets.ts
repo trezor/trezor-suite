@@ -1,6 +1,5 @@
+import { WalletBackupType } from '@suite-native/device';
 import { TxKeyPath } from '@suite-native/intl';
-
-import { WalletBackupType } from '../../screens/WalletBackupTutorialScreen';
 
 type TranslationKeys = 'title' | 'description' | 'calloutLabel';
 export const walletBackupTutorialCopyByType = {
