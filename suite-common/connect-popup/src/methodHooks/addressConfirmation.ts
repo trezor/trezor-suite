@@ -33,13 +33,18 @@ const preCallHook = <M extends keyof typeof TrezorConnect>({
 }: PreCallHookParams<M>) => {
     if (methods.includes(method)) {
         if ('bundle' in payload && Array.isArray(payload.bundle)) {
-            payload.bundle = payload.bundle.map(item => ({
-                ...item,
-                showOnTrezor: false,
-            }));
+            payload = {
+                ...payload,
+                bundle: payload.bundle.map(item => ({
+                    ...item,
+                    showOnTrezor: false,
+                })),
+            };
         } else {
-            // @ts-expect-error
-            payload.showOnTrezor = false;
+            payload = {
+                ...payload,
+                showOnTrezor: false,
+            };
         }
     }
 };
