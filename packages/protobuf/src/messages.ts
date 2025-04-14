@@ -921,7 +921,7 @@ export enum FailureType {
 }
 
 export type Failure = {
-    code?: keyof typeof FailureType;
+    code?: FailureType;
     message?: string;
 };
 
