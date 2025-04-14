@@ -24,6 +24,6 @@ test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => 
         TrezorConnect.ethereumGetAddress({ path: 'foo bar' });
         // todo: error should be handled in a modal
         const toast = page.getByTestId('@toast/error');
-        await expect(toast).toHaveText('Error: Not a valid path');
+        await expect(toast).toHaveText('Error: connect error: Not a valid path');
     });
 });
