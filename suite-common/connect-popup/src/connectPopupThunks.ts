@@ -96,8 +96,7 @@ export const connectPopupCallThunkInner = createThunk<
 
             const txSigningPrecomposed: PrecomposedTransactionFinal | undefined =
                 methodInfo.payload.precomposed;
-            const originalPayload = { ...payload };
-            await preCallHooks({
+            const modifiedPayload = await preCallHooks({
                 method,
                 payload,
                 dispatch,
@@ -113,7 +112,7 @@ export const connectPopupCallThunkInner = createThunk<
                     state: device.state,
                 },
                 useEmptyPassphrase: device.useEmptyPassphrase,
-                ...payload,
+                ...modifiedPayload,
             });
             response.id = undefined;
 
@@ -122,8 +121,8 @@ export const connectPopupCallThunkInner = createThunk<
 
             const postCallOngoing = await postCallHooks({
                 method,
-                payload,
-                originalPayload,
+                payload: modifiedPayload,
+                originalPayload: payload,
                 response,
                 dispatch,
                 getState,
@@ -263,12 +262,13 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
                 showOnTrezor: true,
                 chunked: false,
             });
+            const validatedStatus = res.success ? 'valid' : 'failed';
             dispatch(
                 connectPopupActions.confirmAddresses({
                     addresses: call.addresses.map((address, i) => ({
                         ...address,
                         loading: false,
-                        validated: i === index ? res.success : address.validated,
+                        validated: i === index ? validatedStatus : address.validated,
                     })),
                 }),
             );
@@ -279,7 +279,7 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
                     addresses: call.addresses.map((address, i) => ({
                         ...address,
                         loading: false,
-                        validated: i === index ? false : address.validated,
+                        validated: i === index ? 'failed' : address.validated,
                     })),
                 }),
             );

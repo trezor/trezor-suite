@@ -33,7 +33,7 @@ const preCallHook = <M extends keyof typeof TrezorConnect>({
 }: PreCallHookParams<M>) => {
     if (methods.includes(method)) {
         if ('bundle' in payload && Array.isArray(payload.bundle)) {
-            payload = {
+            return {
                 ...payload,
                 bundle: payload.bundle.map(item => ({
                     ...item,
@@ -41,12 +41,14 @@ const preCallHook = <M extends keyof typeof TrezorConnect>({
                 })),
             };
         } else {
-            payload = {
+            return {
                 ...payload,
                 showOnTrezor: false,
             };
         }
     }
+
+    return payload;
 };
 
 export function postCallHook<M extends keyof typeof TrezorConnect>({
@@ -77,7 +79,7 @@ export function postCallHook<M extends keyof typeof TrezorConnect>({
 
             return {
                 address: displayAddress(),
-                validated: false,
+                validated: 'not-started' as const,
                 loading: false,
                 validatePayload,
             };

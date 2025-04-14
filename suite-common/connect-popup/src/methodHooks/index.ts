@@ -25,8 +25,9 @@ export type PostCallHookParams<M extends keyof TrezorConnect> = PreCallHookParam
 };
 
 export const preCallHooks = async <M extends keyof TrezorConnect>(params: PreCallHookParams<M>) => {
-    await addressConfirmationModalHooks.preCallHook(params);
     await ethereumSignTransaction.preCallHook(params);
+
+    return await addressConfirmationModalHooks.preCallHook(params);
 };
 
 export async function postCallHooks<M extends keyof TrezorConnect>(params: PostCallHookParams<M>) {
