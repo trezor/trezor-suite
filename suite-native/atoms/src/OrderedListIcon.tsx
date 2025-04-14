@@ -2,7 +2,7 @@ import { RequireExactlyOne } from 'type-fest';
 
 import { Icon, IconName, IconSize, getIconSize } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Color, NativeRadius } from '@trezor/theme';
 
 import { Box } from './Box';
 import { Text } from './Text';
@@ -11,13 +11,14 @@ const iconBackgroundStyle = prepareNativeStyle<{
     iconSize: number;
     backgroundColor: Color;
     borderColor: Color;
-}>((utils, { iconSize, backgroundColor, borderColor }) => ({
+    borderRadius: NativeRadius;
+}>((utils, { iconSize, backgroundColor, borderColor, borderRadius }) => ({
     width: iconSize + 2 * (utils.spacings.sp8 + utils.borders.widths.small),
     aspectRatio: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: utils.colors[backgroundColor],
-    borderRadius: utils.borders.radii.r12,
+    borderRadius: utils.borders.radii[borderRadius],
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors[borderColor],
 }));
@@ -30,6 +31,7 @@ export type OrderedListIconProps = RequireExactlyOne<
         iconColor?: Color;
         iconSize?: IconSize;
         iconBorderColor?: Color;
+        iconBorderRadius?: NativeRadius;
     },
     'iconName' | 'iconNumber'
 >;
@@ -41,6 +43,7 @@ export const OrderedListIcon = ({
     iconSize = 'mediumLarge',
     iconBackgroundColor = 'backgroundTertiaryDefaultOnElevation1',
     iconBorderColor = 'borderElevation0',
+    iconBorderRadius = 'r12',
 }: OrderedListIconProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -50,6 +53,7 @@ export const OrderedListIcon = ({
                 iconSize: getIconSize(iconSize),
                 backgroundColor: iconBackgroundColor,
                 borderColor: iconBorderColor,
+                borderRadius: iconBorderRadius,
             })}
         >
             {iconNumber && <Text color={iconColor}>{iconNumber}</Text>}

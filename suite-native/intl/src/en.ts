@@ -1008,6 +1008,30 @@ export const en = {
                 holdToConfirmButton: 'Hold to start',
             },
         },
+        walletBackupRecapScreen: {
+            step1: {
+                callout: 'Using your wallet backup',
+                title: 'Store your wallet backup in a secure, private place',
+                step1: 'Realize your Trezor is lost, stolen, or damaged',
+                step2: 'Get a new Trezor',
+                step3: 'Enter your wallet backup',
+                step4: 'Regain access to your assets',
+            },
+            step2: {
+                callout: 'Securing your wallet backup',
+                titleRegular: 'backup anywhere digital',
+                titleUnderlined: 'Never store your wallet',
+            },
+            step3: {
+                callout: 'Storing your wallet backup',
+                title: 'Store your wallet backup in a secure, private place',
+            },
+            step4: {
+                callout: 'Protecting your wallet backup',
+                title: 'No one can recover your wallet backup—not even Trezor Support',
+                holdToConfirmButton: 'Hold to continue',
+            },
+        },
 
         walletCreationScreen: {
             title: 'Continue on your Trezor',

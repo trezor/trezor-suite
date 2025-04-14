@@ -11,11 +11,11 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { SwipeableWalkthroughStepHeader } from './SwipeableWalkthroughStepHeader';
 
 export type SwipeableWalkthroughStepProps = {
-    callout: ReactNode;
-    title: ReactNode;
     children: ReactNode;
     currentStepIndex: SharedValue<number>;
-    onNextButtonPress: () => void;
+    totalSteps: number;
+    title?: ReactNode;
+    callout?: ReactNode;
     description?: ReactNode;
     continueButton?: ReactNode;
 };
@@ -43,12 +43,12 @@ const scrollViewContentStyle = prepareNativeStyle<{
 }));
 
 export const SwipeableWalkthroughStep = ({
+    totalSteps,
     callout,
     title,
     description,
     children,
     currentStepIndex,
-    onNextButtonPress,
     continueButton,
 }: SwipeableWalkthroughStepProps) => {
     const { top: topSafeAreaInset, bottom: bottomSafeAreaInset } = useSafeAreaInsets();
@@ -70,6 +70,12 @@ export const SwipeableWalkthroughStep = ({
             },
         ],
     }));
+
+    const handleNextButtonPress = () => {
+        if (currentStepIndex.value < totalSteps - 1) {
+            currentStepIndex.value += 1;
+        }
+    };
 
     return (
         <AnimatedBox
@@ -97,7 +103,7 @@ export const SwipeableWalkthroughStep = ({
                             iconName="caretDown"
                             colorScheme="tertiaryElevation0"
                             size="large"
-                            onPress={onNextButtonPress}
+                            onPress={handleNextButtonPress}
                         />
                     )}
                 </VStack>

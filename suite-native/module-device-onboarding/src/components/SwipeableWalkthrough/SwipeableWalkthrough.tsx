@@ -4,22 +4,25 @@ import { SharedValue } from 'react-native-reanimated';
 
 import { AnimatedBox } from '@suite-native/atoms';
 
-import { WALLET_BACKUP_TUTORIAL_STEPS_COUNT } from '../../constants';
-
 type SwipeableWalkthroughProps = {
     children: ReactNode;
     currentStepIndex: SharedValue<number>;
+    totalSteps: number;
 };
 
 const PAN_GESTURE_DETECTION_THRESHOLD = 50;
 
-export const SwipeableWalkthrough = ({ children, currentStepIndex }: SwipeableWalkthroughProps) => {
+export const SwipeableWalkthrough = ({
+    children,
+    currentStepIndex,
+    totalSteps,
+}: SwipeableWalkthroughProps) => {
     const panGesture = Gesture.Pan().onEnd(event => {
         const { translationY } = event;
 
         if (
             translationY < -PAN_GESTURE_DETECTION_THRESHOLD &&
-            currentStepIndex.value < WALLET_BACKUP_TUTORIAL_STEPS_COUNT - 1
+            currentStepIndex.value < totalSteps - 1
         ) {
             currentStepIndex.value += 1;
         } else if (translationY > PAN_GESTURE_DETECTION_THRESHOLD && currentStepIndex.value > 0) {

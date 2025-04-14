@@ -20,9 +20,11 @@ export const SwipeableWalkthroughStepHeader = ({
 }: SwipeableWalkthroughStepHeaderProps) => {
     const { applyStyle } = useNativeStyles();
 
+    if (!title || !callout) return;
+
     return (
         <VStack spacing="sp8">
-            <VStack spacing="sp12">
+            <VStack spacing="sp12" alignItems="center">
                 <Text variant="highlight" color="textSecondaryHighlight" textAlign="center">
                     {callout}
                 </Text>

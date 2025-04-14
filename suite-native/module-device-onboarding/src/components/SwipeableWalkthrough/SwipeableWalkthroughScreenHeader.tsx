@@ -10,6 +10,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 type SwipeableWalkthroughScreenHeaderProps = {
     onPressBack: () => void;
     currentStepIndex: SharedValue<number>;
+    CustomBackButton?: React.ComponentType<SwipeableWalkthroughScreenHeaderProps>;
 };
 
 const ANIMATION_DURATION = 800;
@@ -64,6 +65,7 @@ const SwipeableWalkthroughBackButton = ({
 export const SwipeableWalkthroughScreenHeader = ({
     onPressBack,
     currentStepIndex,
+    CustomBackButton,
 }: SwipeableWalkthroughScreenHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const { top: topSafeAreaInset } = useSafeAreaInsets();
@@ -71,6 +73,8 @@ export const SwipeableWalkthroughScreenHeader = ({
         colors: { background },
         dark,
     } = useTheme();
+
+    const BackButton = CustomBackButton || SwipeableWalkthroughBackButton;
 
     return (
         <>
@@ -84,10 +88,7 @@ export const SwipeableWalkthroughScreenHeader = ({
             <Box style={applyStyle(screenHeaderContainerStyle)}>
                 <ScreenHeader
                     leftIcon={
-                        <SwipeableWalkthroughBackButton
-                            currentStepIndex={currentStepIndex}
-                            onPressBack={onPressBack}
-                        />
+                        <BackButton currentStepIndex={currentStepIndex} onPressBack={onPressBack} />
                     }
                 />
             </Box>

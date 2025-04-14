@@ -14,7 +14,7 @@ import {
 import { Canvas, Circle, Path, Skia } from '@shopify/react-native-skia';
 
 import { AnimatedVStack, Text } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles';
 const CANVAS_SIZE = 88;
 const CIRCLE_CENTER = CANVAS_SIZE / 2;
@@ -34,7 +34,8 @@ const LOADER_ARC_OVAL_CONFIG = {
 
 type HoldToConfirmButtonProps = {
     onSuccess: () => void;
-    isDisplayed: SharedValue<boolean>;
+    isDisplayed?: SharedValue<boolean>;
+    buttonLabelId?: TxKeyPath;
 };
 
 const GESTURE_HIT_SLOP = 20;
@@ -57,7 +58,11 @@ const startOnHoldVibration = () => {
     }
 };
 
-export const HoldToConfirmButton = ({ onSuccess, isDisplayed }: HoldToConfirmButtonProps) => {
+export const HoldToConfirmButton = ({
+    onSuccess,
+    isDisplayed,
+    buttonLabelId = 'moduleDeviceOnboarding.walletBackupTutorialScreen.step6.holdToConfirmButton',
+}: HoldToConfirmButtonProps) => {
     const { utils } = useNativeStyles();
 
     const animationProgress = useSharedValue(0);
@@ -97,6 +102,8 @@ export const HoldToConfirmButton = ({ onSuccess, isDisplayed }: HoldToConfirmBut
     );
 
     const buttonAnimatedStyle = useAnimatedStyle(() => {
+        if (isDisplayed?.value === undefined) return { opacity: 1 };
+
         if (!isDisplayed.value) {
             return {
                 opacity: 0,
@@ -116,7 +123,7 @@ export const HoldToConfirmButton = ({ onSuccess, isDisplayed }: HoldToConfirmBut
     return (
         <AnimatedVStack style={buttonAnimatedStyle} alignItems="center">
             <Text variant="callout">
-                <Translation id="moduleDeviceOnboarding.walletBackupTutorialScreen.step6.holdToConfirmButton" />
+                <Translation id={buttonLabelId} />
             </Text>
             <GestureDetector gesture={tapGesture}>
                 <Canvas style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}>
