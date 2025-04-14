@@ -5,7 +5,15 @@ import { Inspector } from 'react-inspector';
 import { CopyToClipboard } from 'nextra/components';
 import styled, { useTheme } from 'styled-components';
 
-import { ButtonProps, Card, H3, Button as TrezorButton, variables } from '@trezor/components';
+import {
+    ButtonProps,
+    Card,
+    H3,
+    IconButton,
+    Row,
+    Button as TrezorButton,
+    variables,
+} from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import * as methodActions from '../actions/methodActions';
@@ -256,6 +264,7 @@ export const Method = () => {
     }));
     const actions = useActions({
         onSubmit: methodActions.onSubmit,
+        onCancelCall: methodActions.onCancelCall,
         onVerify: methodActions.onVerify,
         onBatchAdd: methodActions.onBatchAdd,
         onBatchRemove: methodActions.onBatchRemove,
@@ -317,7 +326,16 @@ export const Method = () => {
                             <CopyToClipboard getValue={() => javascriptCode ?? ''} />
                         </CopyWrapper>
 
-                        <SubmitButton {...buttonProps} />
+                        <Row>
+                            <SubmitButton {...buttonProps} isFullWidth />
+                            {buttonProps.isLoading && (
+                                <IconButton
+                                    icon="x"
+                                    variant="tertiary"
+                                    onClick={() => actions.onCancelCall()}
+                                />
+                            )}
+                        </Row>
                     </Container>
                 ) : (
                     getFields(fields, { actions })
@@ -332,7 +350,16 @@ export const Method = () => {
                                 <CopyToClipboard getValue={() => javascriptCode ?? ''} />
                             </CopyWrapper>
                             <pre>{javascriptCode}</pre>
-                            <SubmitButton {...buttonProps} isFullWidth />
+                            <Row>
+                                <SubmitButton {...buttonProps} isFullWidth />
+                                {buttonProps.isLoading && (
+                                    <IconButton
+                                        icon="x"
+                                        variant="tertiary"
+                                        onClick={() => actions.onCancelCall()}
+                                    />
+                                )}
+                            </Row>
                         </Container>
                     )}
                     <Container data-testid="@response">

@@ -161,3 +161,7 @@ export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: Ge
         console.error('Invalid JSON', error);
     }
 };
+
+export const onCancelCall = () => () => {
+    TrezorConnect.cancel();
+};
