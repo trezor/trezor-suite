@@ -14,6 +14,9 @@ export const prepareConnectPopupMiddleware = createMiddlewareWithExtraDeps(
         if (connectPopupActions.confirmAddresses.match(action)) {
             dispatch(extra.actions.openModal({ type: 'connect-address-confirmation' }));
         }
+        if (connectPopupActions.setError.match(action)) {
+            dispatch(extra.actions.openModal({ type: 'connect-error' }));
+        }
         if (
             connectPopupActions.finishCall.match(action) ||
             connectPopupActions.approvePermissions.match(action) ||

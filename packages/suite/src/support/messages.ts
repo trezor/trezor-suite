@@ -9891,4 +9891,8 @@ export default defineMessages({
         id: 'TR_SIGN_EIP712_TYPED_DATA',
         defaultMessage: 'Sign EIP-712 typed data',
     },
+    TR_CONNECT_ERROR_GENERIC_DESCRIPTION: {
+        id: 'TR_CONNECT_ERROR_GENERIC_DESCRIPTION',
+        defaultMessage: 'An error occured during the Trezor Connect call.',
+    },
 });

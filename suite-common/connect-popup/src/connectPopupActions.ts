@@ -1,8 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { TrezorError } from '@trezor/connect/src/constants/errors';
-
-import { AppRememberedPermission, ConnectPopupCall } from './connectPopupTypes';
+import {
+    AppRememberedPermission,
+    ConnectPopupCall,
+    ConnectSerializedError,
+} from './connectPopupTypes';
 
 export const ACTION_PREFIX = '@suite-common/connect-popup';
 
@@ -54,7 +56,7 @@ const deeplinkCallback = createAction(
     }),
 );
 
-const setError = createAction(`${ACTION_PREFIX}/setError`, (payload: TrezorError) => ({
+const setError = createAction(`${ACTION_PREFIX}/setError`, (payload: ConnectSerializedError) => ({
     payload,
 }));
 

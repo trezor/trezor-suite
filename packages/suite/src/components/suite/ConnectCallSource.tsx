@@ -7,7 +7,8 @@ import { Translation } from './Translation';
 
 export const ConnectCallSource = () => {
     const connectPopupCall = useSelector(selectConnectPopupCall);
-    if (connectPopupCall?.state !== 'ongoing') return null;
+    if (connectPopupCall?.state !== 'ongoing' && connectPopupCall?.state !== 'call-error')
+        return null;
 
     return (
         <Note iconName="plug">

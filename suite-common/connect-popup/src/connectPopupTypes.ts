@@ -1,4 +1,4 @@
-import { TrezorError } from '@trezor/connect/src/constants/errors';
+import { ErrorCode } from '@trezor/connect/src/constants/errors';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { Deferred } from '@trezor/utils';
 
@@ -11,6 +11,7 @@ export const CALL_SOURCE_DESKTOP_WS = 'desktop-ws';
 export const CALL_SOURCE_WALLETCONNECT = 'walletconnect';
 export const CALL_SOURCE_DEEPLINK = 'deeplink';
 
+export type ConnectSerializedError = { error: string; code: ErrorCode };
 export type ConnectCallSource = {
     origin: string;
 } & (
@@ -70,13 +71,13 @@ export type ConnectPopupCallLoaded = {
       }
     | {
           state: 'call-error';
-          error: TrezorError;
+          error: ConnectSerializedError;
       }
 );
 
 export type ConnectPopupCallError = {
     state: 'error';
-    error: TrezorError;
+    error: ConnectSerializedError;
 };
 export type ConnectPopupCall = ConnectPopupCallLoaded | ConnectPopupCallError;
 

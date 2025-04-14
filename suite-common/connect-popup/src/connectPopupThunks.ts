@@ -1,7 +1,6 @@
 import { AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect, { CallMethodParams, CallMethodResponse } from '@trezor/connect';
@@ -41,15 +40,12 @@ export const connectPopupCallThunkInner = createThunk<
                 __info: true,
             });
             if (!methodInfo.success) {
-                dispatch(connectPopupActions.setError(TypedError(methodInfo.payload.code)));
                 throw methodInfo.payload;
             }
             if (
                 methodInfo.payload.requiredPermissions.includes('management') ||
                 methodInfo.payload.requiredPermissions.includes('push_tx')
             ) {
-                dispatch(connectPopupActions.setError(TypedError('Method_NotAllowed')));
-
                 throw TypedError('Method_NotAllowed');
             }
 
@@ -134,13 +130,7 @@ export const connectPopupCallThunkInner = createThunk<
             return response;
         } catch (error) {
             console.error('connectPopupCallThunk', error);
-            // todo: there should be a modal with richer error message
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: `connect error: ${serializeError(error).error || 'unhandled error'}`,
-                }),
-            );
+            dispatch(connectPopupActions.setError(serializeError(error)));
 
             return {
                 success: false,
@@ -188,13 +178,19 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
             typeof queryParams?.callback !== 'string' ||
             !Object.prototype.hasOwnProperty.call(TrezorConnect, queryParams?.method)
         ) {
-            dispatch(connectPopupActions.setError(TypedError('Method_InvalidParameter')));
+            dispatch(
+                connectPopupActions.setError(serializeError(TypedError('Method_InvalidParameter'))),
+            );
 
             return;
         }
 
         if (!version || parseInt(version) > DEEPLINK_VERSION) {
-            dispatch(connectPopupActions.setError(TypedError('Deeplink_VersionMismatch')));
+            dispatch(
+                connectPopupActions.setError(
+                    serializeError(TypedError('Deeplink_VersionMismatch')),
+                ),
+            );
 
             return;
         }
@@ -205,7 +201,9 @@ export const connectPopupDeeplinkThunk = createThunk<void, { url: string }>(
             payload = JSON.parse(queryParams.params);
             callbackUrl = new URL(callback);
         } catch {
-            dispatch(connectPopupActions.setError(TypedError('Method_InvalidParameter')));
+            dispatch(
+                connectPopupActions.setError(serializeError(TypedError('Method_InvalidParameter'))),
+            );
 
             return;
         }
