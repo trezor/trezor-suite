@@ -6,6 +6,7 @@ import {
     IFRAME,
     IFrameCallMessage,
     POPUP,
+    PopupClosedMessage,
     PopupHandshake,
     parseConnectSettings,
 } from '@trezor/connect';
@@ -24,6 +25,7 @@ const LOG_PREFIX = 'connect-ws';
 type IncomingMessage =
     | (IFrameCallMessage & { id: string })
     | (PopupHandshake & { id: string })
+    | (PopupClosedMessage & { id: string })
     | { type: 'ping'; id: string };
 
 const validateIncomingMessage = (message: any): message is IncomingMessage => {
@@ -41,6 +43,10 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
     }
 
     if (message.type === POPUP.HANDSHAKE && message.payload?.settings) {
+        return true;
+    }
+
+    if (message.type === POPUP.CLOSED) {
         return true;
     }
 
@@ -120,6 +126,10 @@ export const exposeConnectWs = ({
                 processOnPort = await findProcessFromIncomingPort(port);
                 settings = parseConnectSettings(message.payload.settings);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
+            } else if (message.type === POPUP.CLOSED) {
+                mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
+                    error: message.payload?.error,
+                });
             } else if (message.type === IFRAME.CALL) {
                 if (!processOnPort) {
                     // ts check, should be set

@@ -140,6 +140,10 @@ export type ConnectPopupCall = {
     };
 };
 
+export type ConnectPopupCancel = {
+    error?: string;
+};
+
 export type ConnectPopupResponse = {
     id: string;
     success: boolean;

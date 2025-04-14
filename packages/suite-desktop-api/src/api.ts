@@ -2,6 +2,7 @@ import {
     BootstrapTorEvent,
     BridgeSettings,
     ConnectPopupCall,
+    ConnectPopupCancel,
     ConnectPopupResponse,
     HandshakeClient,
     HandshakeElectron,
@@ -77,6 +78,7 @@ export interface RendererChannels {
 
     // connect
     'connect-popup/call': ConnectPopupCall;
+    'connect-popup/cancel': ConnectPopupCancel;
 }
 
 // Invocation from renderer process

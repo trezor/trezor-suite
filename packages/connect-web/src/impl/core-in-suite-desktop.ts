@@ -50,7 +50,12 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         return Promise.resolve(undefined);
     }
 
-    public cancel(_error?: string) {}
+    public cancel(_error?: string) {
+        this.ws?.sendMessage({
+            type: POPUP.CLOSED,
+            payload: { error: _error },
+        });
+    }
 
     private async handshake() {
         if (!this.ws) {

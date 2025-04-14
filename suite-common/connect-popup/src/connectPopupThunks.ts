@@ -286,3 +286,12 @@ export const connectPopupVerifyAddressThunk = createThunk<void, { index: number 
         }
     },
 );
+
+export const connectPopupCancelThunk = createThunk<void, { error?: string }>(
+    `${CONNECT_POPUP_MODULE}/cancelThunk`,
+    ({ error }, { dispatch }) => {
+        TrezorConnect.cancel(error);
+        dispatch(deviceActions.removeButtonRequests({}));
+        dispatch(connectPopupActions.finishCall());
+    },
+);

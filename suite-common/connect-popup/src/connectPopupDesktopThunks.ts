@@ -2,7 +2,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { connectPopupCallThunk } from './connectPopupThunks';
+import { connectPopupCallThunk, connectPopupCancelThunk } from './connectPopupThunks';
 import { CALL_SOURCE_DESKTOP_WS } from './connectPopupTypes';
 
 // Desktop only - not directly exported by package
@@ -24,6 +24,9 @@ export const connectPopupDesktopInitThunk = createThunk(
                     }),
                 ).unwrap();
                 desktopApi.connectPopupResponse({ ...response, id: params.id });
+            });
+            desktopApi.on('connect-popup/cancel', params => {
+                dispatch(connectPopupCancelThunk(params));
             });
             desktopApi.connectPopupReady();
         }

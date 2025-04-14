@@ -45,5 +45,6 @@ const validChannels: Array<keyof RendererChannels> = [
     'bridge/settings',
     'tray/settings',
     'connect-popup/call',
+    'connect-popup/cancel',
 ];
 export const isValidChannel = (channel: any) => validChannels.includes(channel);
