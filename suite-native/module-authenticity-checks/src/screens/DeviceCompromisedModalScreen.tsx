@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
+import { selectIsEntropyCheckEnabledAndFailed } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
@@ -72,8 +73,19 @@ export const DeviceCompromisedModalScreen = () => {
 
     const handleContactSupportClick = () => openLink(chatUrl);
 
+    const isEntropyCheckEnabledAndFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
+    const isDismissible = !isEntropyCheckEnabledAndFailed;
+    const screenHeaderContent = isDismissible ? (
+        <ScreenHeader closeActionType="close" closeAction={handleClose} />
+    ) : null;
+    const closeButtonContent = isDismissible ? (
+        <Button colorScheme="redElevation0" onPress={handleClose}>
+            <Translation id="generic.buttons.close" />
+        </Button>
+    ) : null;
+
     return (
-        <Screen header={<ScreenHeader closeActionType="close" closeAction={handleClose} />}>
+        <Screen header={screenHeaderContent}>
             <VStack spacing="sp32" flex={1}>
                 <TitleHeader
                     titleVariant="titleMedium"
@@ -89,9 +101,7 @@ export const DeviceCompromisedModalScreen = () => {
                 <Button colorScheme="redBold" onPress={handleContactSupportClick}>
                     <Translation id="moduleAuthenticityChecks.deviceCompromised.buttonContactSupport" />
                 </Button>
-                <Button colorScheme="redElevation0" onPress={handleClose}>
-                    <Translation id="generic.buttons.close" />
-                </Button>
+                {closeButtonContent}
             </VStack>
         </Screen>
     );

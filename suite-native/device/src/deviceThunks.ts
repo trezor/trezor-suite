@@ -1,3 +1,4 @@
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { deviceActions, selectDevicePath, selectSelectedDevice } from '@suite-common/wallet-core';
 import { WalletBackupType } from '@suite-native/device';
@@ -54,14 +55,15 @@ export const createAndBackupWalletThunk = createThunk(
     `${NATIVE_DEVICE_MODULE_PREFIX}/resetDevice`,
     async ({ walletBackupType }: { walletBackupType: WalletBackupType }, { getState }) => {
         const devicePath = selectDevicePath(getState());
+        const isEntropyCheckEnabled = selectIsFeatureEnabled(
+            getState(),
+            Feature.entropyCheckMobile,
+            true,
+        );
 
         if (!devicePath) {
             throw new Error('Device not found');
         }
-
-        // TODO: implement entropy check for mobile
-        // https://github.com/trezor/trezor-suite/issues/18355
-        const isEntropyCheckEnabled = false;
 
         return await TrezorConnect.resetDevice({
             device: { path: devicePath },

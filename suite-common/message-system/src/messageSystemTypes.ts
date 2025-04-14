@@ -39,6 +39,7 @@ export const Feature = {
     // subset of `firmwareHashCheck`: can turn off specifically UI for other-error result
     firmwareHashCheckOtherError: 'security.firmware.hashCheck.otherError',
     entropyCheck: 'security.entropyCheck',
+    entropyCheckMobile: 'security.entropyCheck.mobile',
     // FW update feature flag implemented only for mobile app
     firmwareUpdate: 'device.firmware.update',
     // trading feature flags implemented for mobile app

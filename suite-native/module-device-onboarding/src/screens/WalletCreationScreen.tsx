@@ -11,10 +11,14 @@ import {
     DeviceOnboardingStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
+import { ERRORS } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { WalletCreationHint } from '../components/WalletCreationHint';
+
+// Do not retry if user cancelled the flow via the app UI, or the Entropy check has failed
+const DEFINITIVE_ERRORS: ERRORS.ErrorCode[] = ['Method_Interrupted', 'Failure_EntropyCheck'];
 
 const SHOW_HINT_DELAY = 5000;
 
@@ -42,11 +46,11 @@ export const WalletCreationScreen = ({
         const response = await dispatch(createAndBackupWalletThunk({ walletBackupType })).unwrap();
 
         if (response.success) {
-            navigation.navigate(DeviceOnboardingStackRoutes.WalletCreatedSuccess);
-        } else if (response.payload.code !== 'Method_Interrupted') {
-            // Do not retry if user cancelled the flow via the app UI.
-            handleCreateAndBackupWallet();
+            return navigation.navigate(DeviceOnboardingStackRoutes.WalletCreatedSuccess);
         }
+        if (response.payload.code && DEFINITIVE_ERRORS.includes(response.payload.code)) return;
+
+        handleCreateAndBackupWallet();
     }, [dispatch, walletBackupType, navigation]);
 
     useEffect(() => {
