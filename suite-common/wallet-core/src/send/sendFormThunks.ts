@@ -546,7 +546,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             (!hasDecreasedOutput && nativeRbfAvailable) ||
             (hasDecreasedOutput && decreaseOutputAvailable);
 
-        const createGeneralPrecomposedTransactionFinal = (): GeneralPrecomposedTransactionFinal => {
+        const createRbfEnhancedTransaction = (): GeneralPrecomposedTransactionFinal => {
             if (!isCardanoTx(selectedAccount, precomposedTransaction) && formValues.rbfParams) {
                 const enhancedRbfPrecomposedTx: PrecomposedTransactionFinalBumpFeeRbf = {
                     ...precomposedTransaction,
@@ -569,15 +569,16 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             return precomposedTransaction;
         };
 
-        const enhancedPrecomposedTransaction = createGeneralPrecomposedTransactionFinal();
+        const enhancedPrecomposedTransaction = createRbfEnhancedTransaction();
 
+        let isTokenKnown;
         if (
             !isCardanoTx(selectedAccount, enhancedPrecomposedTransaction) &&
             selectedAccount.networkType === 'ethereum' &&
             enhancedPrecomposedTransaction.token?.contract &&
             selectedAccountNetwork.chainId
         ) {
-            const isTokenKnown = await fetch(
+            isTokenKnown = await fetch(
                 `https://data.trezor.io/firmware/eth-definitions/chain-id/${
                     selectedAccountNetwork.chainId
                 }/token-${enhancedPrecomposedTransaction.token.contract.substring(2).toLowerCase()}.dat`,
@@ -585,17 +586,15 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             )
                 .then(response => response.ok)
                 .catch(() => false);
-
-            enhancedPrecomposedTransaction.isTokenKnown = isTokenKnown;
         }
 
-        // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
         dispatch(
             sendFormActions.storePrecomposedTransaction({
                 formState: formValues,
                 precomposedTransaction: {
                     ...enhancedPrecomposedTransaction,
                     createdTimestamp: new Date().getTime(),
+                    isTokenKnown,
                 },
             }),
         );
