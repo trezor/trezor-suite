@@ -10,7 +10,7 @@ import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer
 import { TrezorBluetooth } from './trezor-bluetooth';
 import { BluetoothDevice } from './types';
 
-// implementation of @trezor/transport/src/api/AbstractApi
+// implementation of @trezor/transport/src/api/abstract
 
 type BluetoothApiParams = AbstractApiConstructorParams & {
     url: string;
@@ -45,23 +45,6 @@ export class BluetoothApi extends AbstractApi {
             return this.error({ error: ERRORS.UNEXPECTED_ERROR, message: error.message });
         }
 
-        const transportApiEvent = ({ devices }: { devices: BluetoothDevice[] }) => {
-            this.emit('transport-interface-change', this.devicesToDescriptors(devices));
-        };
-
-        api.on('device_connected', transportApiEvent);
-        api.on('device_disconnected', transportApiEvent); // TODO: readbuffer clear
-        api.on('device_read', ({ id, data }) => {
-            this.readBuffer.onMessage(id, Buffer.from(data));
-        });
-        api.on('adapter_state_changed', ({ state }) => {
-            if (state !== 'enabled') {
-                transportApiEvent({ devices: [] });
-            }
-        });
-        // TODO: discuss should it try to reconnect?
-        api.on('disconnected', () => api.connect()); // TODO: readbuffer clear
-
         return this.success(true);
     }
 
@@ -73,8 +56,27 @@ export class BluetoothApi extends AbstractApi {
     }
 
     listen() {
-        // TODO
-        console.warn('BluetoothApi listen method not implemented.');
+        const { api } = this;
+
+        const transportApiEvent = ({ devices }: { devices: BluetoothDevice[] }) => {
+            this.emit('transport-interface-change', this.devicesToDescriptors(devices));
+        };
+        api.on('device_connected', transportApiEvent);
+        api.on('device_disconnected', event => {
+            this.readBuffer.cancelRead(event.id);
+            transportApiEvent(event);
+        });
+        api.on('device_read', ({ id, data }) => {
+            this.readBuffer.onMessage(id, Buffer.from(data));
+        });
+        api.on('adapter_state_changed', ({ state }) => {
+            if (state !== 'enabled') {
+                transportApiEvent({ devices: [] });
+            }
+        });
+        api.on('disconnected', () => {
+            this.emit('transport-interface-error', { error: ERRORS.API_DISCONNECTED });
+        });
     }
 
     dispose() {

@@ -39,6 +39,7 @@ type AccessLock = {
 
 export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-change': DescriptorApiLevel[];
+    'transport-interface-error': { error: typeof ERRORS.API_DISCONNECTED };
 }> {
     protected logger?: Logger;
     protected listening: boolean = false;

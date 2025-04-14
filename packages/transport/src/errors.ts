@@ -76,6 +76,8 @@ export const DEVICE_DISCONNECTED_DURING_ACTION = 'device disconnected during act
 export const OTHER_CALL_IN_PROGRESS = 'other call in progress' as const;
 // bridge
 export const HTTP_ERROR = 'Network request failed' as const;
+// bluetooth
+export const API_DISCONNECTED = 'Api disconnected' as const;
 /**
  * COMMON ERRORS
  */
