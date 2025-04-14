@@ -84,9 +84,33 @@ export const watchTradeThunk = createThunk(
                 return;
             }
             case 'sell':
-            case 'exchange':
-                // TODO: trading - add watch trade for sell and exchange
+                // TODO: trading - add watch trade for sell
                 break;
+            case 'exchange': {
+                const data = await watchTradeData<typeof tradeType>({
+                    trade,
+                    refreshCount,
+                });
+
+                if (!data) return;
+
+                if (data.tradeData) {
+                    data.tradeData.sendAddress = data.response.sendAddress;
+                    data.tradeData.partnerPaymentExtraId = data.response.partnerPaymentExtraId;
+                }
+
+                dispatch(
+                    tradingActions.saveTrade({
+                        tradeType,
+                        date,
+                        key: data.tradeData.orderId,
+                        account: accountData,
+                        data: data.tradeData,
+                    }),
+                );
+
+                return;
+            }
             /* istanbul ignore next */
             default:
                 throw new UnreachableCaseError(tradeType, 'Unexpected trade type');

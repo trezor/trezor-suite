@@ -209,14 +209,14 @@ describe('watchTradeThunk', () => {
         expect(saveTradeAction).toBeUndefined();
     });
 
-    it('should skip update exchange trade data', async () => {
+    it('should update exchange trade data', async () => {
         const trade = {
             date: dateISO,
             key: 'tradeKey',
             tradeType: 'exchange',
             data: {
                 status: 'SENDING',
-                paymentId: 'tradeKey',
+                orderId: 'tradeKey',
             },
             account: accountData,
         } as TradingTransactionExchange;
@@ -227,8 +227,9 @@ describe('watchTradeThunk', () => {
 
         invityAPI.watchTrade = () =>
             Promise.resolve({
-                status: 'ERROR',
-                error: 'Some error occurred',
+                status: 'CONFIRM',
+                sendAddress: 'address',
+                partnerPaymentExtraId: 'extraId',
             } as any);
 
         await store.dispatch(
@@ -242,6 +243,17 @@ describe('watchTradeThunk', () => {
         const actions = store.getActions();
         const saveTradeAction = actions.find(action => action.type === '@trading/saveTrade');
 
-        expect(saveTradeAction).toBeUndefined();
+        expect(saveTradeAction?.payload).toEqual({
+            tradeType: 'exchange',
+            date: dateISO,
+            key: 'tradeKey',
+            account: accountData,
+            data: {
+                status: 'CONFIRM',
+                orderId: 'tradeKey',
+                sendAddress: 'address',
+                partnerPaymentExtraId: 'extraId',
+            },
+        });
     });
 });
