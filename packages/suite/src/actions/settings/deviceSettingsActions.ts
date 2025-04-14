@@ -186,7 +186,7 @@ export const resetDevice =
                     vendor: device?.features?.fw_vendor,
                     error: result.payload.error,
                 });
-                // TODO: temporary exception to avoid false positives
+                // TODO: temporary exception to avoid false positives, see https://github.com/trezor/trezor-suite-private/issues/135
                 if (result.payload.error !== 'device disconnected during action') {
                     dispatch(deviceActions.setEntropyCheckFail(device.id));
                 }

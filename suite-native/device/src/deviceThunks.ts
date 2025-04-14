@@ -1,8 +1,9 @@
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { deviceActions, selectDevicePath, selectSelectedDevice } from '@suite-common/wallet-core';
-import { WalletBackupType } from '@suite-native/device';
+import { WalletBackupType, reportCheckFail } from '@suite-native/device';
 import TrezorConnect, { PROTO } from '@trezor/connect';
+import { getFirmwareVersion } from '@trezor/device-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
 
@@ -53,7 +54,11 @@ const getResetDeviceConfig = (walletBackupType: WalletBackupType): PROTO.ResetDe
 
 export const createAndBackupWalletThunk = createThunk(
     `${NATIVE_DEVICE_MODULE_PREFIX}/resetDevice`,
-    async ({ walletBackupType }: { walletBackupType: WalletBackupType }, { getState }) => {
+    async (
+        { walletBackupType }: { walletBackupType: WalletBackupType },
+        { getState, dispatch },
+    ) => {
+        const device = selectSelectedDevice(getState());
         const devicePath = selectDevicePath(getState());
         const isEntropyCheckEnabled = selectIsFeatureEnabled(
             getState(),
@@ -61,16 +66,32 @@ export const createAndBackupWalletThunk = createThunk(
             true,
         );
 
-        if (!devicePath) {
+        if (!device || !device.features || !devicePath) {
             throw new Error('Device not found');
         }
 
-        return await TrezorConnect.resetDevice({
+        const result = await TrezorConnect.resetDevice({
             device: { path: devicePath },
             skip_backup: false,
             ...getResetDeviceConfig(walletBackupType),
             //Entropy check can be toggled via message system config so it should be always last to avoid unintentional disabling.
             entropy_check: isEntropyCheckEnabled,
         });
+
+        if (!result.success && result.payload.code === 'Failure_EntropyCheck') {
+            const contextData = {
+                model: device?.features?.internal_model,
+                revision: device?.features?.revision,
+                version: getFirmwareVersion(device),
+                vendor: device?.features?.fw_vendor,
+            };
+            reportCheckFail('Entropy', contextData, result.payload.error);
+            // TODO: temporary exception to avoid false positives, see https://github.com/trezor/trezor-suite-private/issues/135
+            if (result.payload.error !== 'device disconnected during action') {
+                dispatch(deviceActions.setEntropyCheckFail(device.id));
+            }
+        }
+
+        return result;
     },
 );

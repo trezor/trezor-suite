@@ -8,9 +8,9 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { revisionCheckErrorScenarios } from '../config/firmware';
 
-const reportCheckFail = (
-    checkType: 'Firmware revision',
-    contextData: any,
+export const reportCheckFail = (
+    checkType: 'Entropy' | 'Firmware revision',
+    contextData: Record<string, any>,
     errorPayload?: unknown,
 ) => {
     const payloadLabel = `${checkType} check failed!`;
