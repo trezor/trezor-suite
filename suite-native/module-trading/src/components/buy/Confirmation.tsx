@@ -26,7 +26,7 @@ export const Confirmation = () => {
                 onClose={cancelConsent}
                 isVisible={isConsentRequested}
                 onConsent={giveConsent}
-                tradeProviderName={provider}
+                tradeProvider={provider ?? ''}
             />
         </AnimatedBox>
     );

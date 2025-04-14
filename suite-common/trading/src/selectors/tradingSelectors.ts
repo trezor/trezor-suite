@@ -222,19 +222,26 @@ export const selectTradingBuyIsLoading = (state: TradingRootState) =>
 export const selectTradingBuyQuotes = (state: TradingRootState) =>
     state.wallet.tradingNew.buy.quotes;
 
-export const selectBestBuyQuoteByPaymentMethod = createMemoizedSelector(
+export const selectTradingBuyQuoteByQuoteId = (
+    state: TradingRootState,
+    quoteId: string | undefined,
+) => (quoteId ? state.wallet.tradingNew.buy.quotes.find(q => q.quoteId === quoteId) : undefined);
+
+export const selectBuyQuotesByPaymentMethod = createMemoizedSelector(
     [
         selectTradingBuyQuotes,
         (_: TradingRootState, paymentMethod: TradingPaymentMethodProps | undefined) =>
             paymentMethod,
     ],
-    (quotes, paymentMethod) => {
-        if (!paymentMethod) {
-            return undefined;
-        }
+    (quotes, paymentMethod) =>
+        paymentMethod
+            ? getTradingQuotesByPaymentMethod<'buy'>(quotes, paymentMethod)?.sort(
+                  (a, b) => (a.rate ?? 0) - (b.rate ?? 0),
+              )
+            : undefined,
+);
 
-        const quotesByPaymentMethod = getTradingQuotesByPaymentMethod<'buy'>(quotes, paymentMethod);
-
-        return getBestRatedQuote(quotesByPaymentMethod, 'buy');
-    },
+export const selectBestBuyQuoteByPaymentMethod = createMemoizedSelector(
+    [selectBuyQuotesByPaymentMethod],
+    quotes => getBestRatedQuote(quotes, 'buy'),
 );

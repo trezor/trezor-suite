@@ -64,11 +64,11 @@ export const useTradingBuyFlow = (form: TradingBuyForm) => {
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const [isConsentRequested, setIsConsentRequested] = useState(false);
 
-    const [orderId, receiveAccount] = form.watch(['orderId', 'receiveAccount']);
+    const [quoteId, receiveAccount] = form.watch(['quoteId', 'receiveAccount']);
 
     const candidateQuote = useMemo(
-        () => (quotes.length > 0 ? quotes.filter(q => q.orderId === orderId)[0] : null),
-        [quotes, orderId],
+        () => (quotes.length > 0 ? quotes.filter(q => q.quoteId === quoteId)[0] : null),
+        [quotes, quoteId],
     );
 
     const canProceed = !isLoading && !!candidateQuote;

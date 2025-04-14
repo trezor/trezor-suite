@@ -1536,7 +1536,7 @@ export const en = {
             balanceCrypto: 'Balance in crypto',
         },
         legalSheet: {
-            title: 'Buy with {tradeProviderName}',
+            title: 'Buy with {companyName}',
             subheaderSecurity: 'Security first with your Trezor',
             infoSecurity1:
                 "I’m here to swap cryptocurrencies. If I were directed to this site for any other reason, I'll contact Trezor Support before proceeding.",
@@ -1546,7 +1546,7 @@ export const en = {
                 "I understand that cryptocurrency transactions are final and can't be reversed or refunded. Losses due to fraud or mistakes may not be recoverable.",
             subheaderPartners: 'Verified partners by Invity',
             infoPartners:
-                "I understand that Invity doesn't provide this service. It's governed by {tradeProviderName}’s Terms and Conditions.",
+                "I understand that Invity doesn't provide this service. It's governed by {companyName}’s Terms and Conditions.",
             subheaderLegal: 'Legal notice',
             infoLegal1:
                 "I'm not using this feature for gambling, fraud, or any activity that violates Invity’s or the provider's Terms of Service, or any applicable laws.",

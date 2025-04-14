@@ -5,6 +5,7 @@ import {
     TradingPaymentMethodListProps,
     TradingRootState,
     selectBestBuyQuoteByPaymentMethod,
+    selectTradingBuyQuoteByQuoteId,
     selectTradingBuyQuotes,
 } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
@@ -102,6 +103,7 @@ const useQuotesChangeEffect = (form: TradingBuyForm) => {
             return;
         }
 
+        form.setValue('quoteId', selectedQuote?.quoteId);
         form.setValue('paymentMethod', {
             value: selectedQuote.paymentMethod,
             label: selectedQuote.paymentMethodName,
@@ -121,12 +123,12 @@ const usePaymentMethodChangeEffect = (form: TradingBuyForm) => {
     );
 
     useEffect(() => {
-        const [provider, amountInCrypto, fiatValue, cryptoValue, orderId] = form.getValues([
+        const [provider, amountInCrypto, fiatValue, cryptoValue, quoteId] = form.getValues([
             'provider',
             'amountInCrypto',
             'fiatValue',
             'cryptoValue',
-            'orderId',
+            'quoteId',
         ]);
 
         if (selectedQuote?.exchange !== provider) {
@@ -148,8 +150,49 @@ const usePaymentMethodChangeEffect = (form: TradingBuyForm) => {
             form.setValue('cryptoValue', value);
         }
 
-        if (selectedQuote?.orderId !== orderId) {
-            form.setValue('orderId', selectedQuote?.orderId);
+        if (selectedQuote?.quoteId !== quoteId) {
+            form.setValue('quoteId', selectedQuote?.quoteId);
+        }
+    }, [selectedQuote, isAmountInSats, symbol, form]);
+};
+
+const useQuoteQuoteIdChangeEffect = (form: TradingBuyForm) => {
+    const quoteId = form.watch('quoteId');
+
+    const symbol = getSelectedSymbolFromBuyForm(form);
+    const selectedQuote = useSelector((state: TradingRootState) =>
+        selectTradingBuyQuoteByQuoteId(state, quoteId),
+    );
+
+    const isAmountInSats = useSelector((state: SettingsSliceRootState) =>
+        selectIsAmountInSats(state, symbol),
+    );
+
+    useEffect(() => {
+        const [amountInCrypto, fiatValue, cryptoValue, provider] = form.getValues([
+            'amountInCrypto',
+            'fiatValue',
+            'cryptoValue',
+            'provider',
+        ]);
+
+        if (amountInCrypto && fiatValue !== selectedQuote?.fiatStringAmount) {
+            form.setValue('fiatValue', selectedQuote?.fiatStringAmount);
+        }
+
+        if (!amountInCrypto && cryptoValue !== selectedQuote?.receiveStringAmount) {
+            const value =
+                isAmountInSats && selectedQuote?.receiveStringAmount && symbol
+                    ? amountToSmallestUnit(
+                          selectedQuote.receiveStringAmount,
+                          getNetwork(symbol).decimals,
+                      )
+                    : selectedQuote?.receiveStringAmount;
+            form.setValue('cryptoValue', value);
+        }
+
+        if (selectedQuote?.exchange !== provider) {
+            form.setValue('provider', selectedQuote?.exchange);
         }
     }, [selectedQuote, isAmountInSats, symbol, form]);
 };
@@ -169,13 +212,14 @@ export const useTradingBuyForm = (): TradingBuyForm => {
     useCryptoValueChangeEffect(form);
     useQuotesChangeEffect(form);
     usePaymentMethodChangeEffect(form);
+    useQuoteQuoteIdChangeEffect(form);
 
     return form;
 };
 
 export const clearTradingBuyFormQuoteData = (form: TradingBuyForm) => {
     form.setValue('provider', undefined);
-    form.setValue('orderId', undefined);
+    form.setValue('quoteId', undefined);
     form.setValue('fiatValue', undefined);
     form.setValue('cryptoValue', undefined);
     form.setValue('paymentMethod', undefined);

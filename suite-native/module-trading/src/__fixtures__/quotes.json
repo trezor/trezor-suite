@@ -46,5 +46,21 @@
         "paymentMethod": "creditCard",
         "paymentMethodName": "Credit Card",
         "paymentId": "e709df77-ee9e-4d12-98c2-84004a19c524"
+    },
+    {
+        "fiatStringAmount": "10",
+        "fiatCurrency": "EUR",
+        "receiveCurrency": "bitcoin",
+        "receiveStringAmount": "0.00051",
+        "rate": 20001,
+        "quoteId": "ab12d4c3-1001-4175-becd-90fc58a3145c",
+        "exchange": "mercuryo",
+        "minFiat": 26,
+        "maxFiat": 1001,
+        "minCrypto": 0.0022,
+        "maxCrypto": 0.105321,
+        "paymentMethod": "creditCard",
+        "paymentMethodName": "Credit Card",
+        "paymentId": "e709df77-ee9e-4d12-98c2-84004a19c546"
     }
 ]

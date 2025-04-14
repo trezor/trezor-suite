@@ -352,4 +352,16 @@ describe('useTradingBuyForm', () => {
             label: 'Apple Pay',
         });
     });
+
+    it('should change data when quoteId is changed', async () => {
+        const store = await getInitializedStore(true);
+        const { result } = await renderUseTradingBuyForm(store);
+
+        initFormAndQuotes(result.current, store);
+        act(() => {
+            result.current.setValue('quoteId', 'ab12d4c3-1001-4175-becd-90fc58a3145c');
+        });
+
+        expect(result.current.getValues('provider')).toEqual('mercuryo');
+    });
 });

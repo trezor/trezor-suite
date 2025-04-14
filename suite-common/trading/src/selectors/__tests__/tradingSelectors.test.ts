@@ -1,5 +1,7 @@
 import { Coins, CryptoId, FiatCurrenciesProps, Platforms } from 'invity-api';
 
+import { TradingPaymentMethodProps } from '@suite-common/trading';
+
 import coins from '../../__fixtures__/coins.json';
 import platforms from '../../__fixtures__/platforms.json';
 import { TradingBuyState } from '../../reducers/buyReducer';
@@ -8,10 +10,12 @@ import { TradingPaymentMethodListProps } from '../../types';
 import {
     TradingRootState,
     selectBestBuyQuoteByPaymentMethod,
+    selectBuyQuotesByPaymentMethod,
     selectTrading,
     selectTradingBuy,
     selectTradingBuyIsLoading,
     selectTradingBuyProviders,
+    selectTradingBuyQuoteByQuoteId,
     selectTradingBuyQuotes,
     selectTradingBuyQuotesRequest,
     selectTradingBuySelectedQuote,
@@ -69,6 +73,8 @@ describe('tradingSelectors', () => {
                     rate: 20000,
                     paymentMethod: 'eps',
                     quoteId: 'quoteId1',
+                    orderId: 'orderId1',
+                    exchange: 'topper',
                 },
                 {
                     fiatStringAmount: '10',
@@ -78,6 +84,8 @@ describe('tradingSelectors', () => {
                     rate: 10000,
                     paymentMethod: 'eps',
                     quoteId: 'quoteId2',
+                    orderId: 'orderId2',
+                    exchange: 'banxa',
                 },
                 {
                     fiatStringAmount: '10',
@@ -87,6 +95,8 @@ describe('tradingSelectors', () => {
                     rate: 5000,
                     paymentMethod: 'cred',
                     quoteId: 'quoteId1',
+                    orderId: 'orderId3',
+                    exchange: 'invity',
                 },
             ],
         }) as TradingBuyState;
@@ -334,6 +344,46 @@ describe('tradingSelectors', () => {
             state.wallet.tradingNew.buy.quotes = [];
 
             expect(selectBestBuyQuoteByPaymentMethod(state, 'eps')).toBeUndefined();
+        });
+    });
+
+    describe('selectBuyQuotesByPaymentMethod', () => {
+        it('should return undefined when payment method is not provided', () => {
+            const result = selectBuyQuotesByPaymentMethod(state, undefined);
+            expect(result).toBeUndefined();
+        });
+
+        it('should filter quotes by payment method and sort by rate', () => {
+            const paymentMethod: TradingPaymentMethodProps = 'eps';
+            const result = selectBuyQuotesByPaymentMethod(state, paymentMethod);
+
+            expect(result).toHaveLength(2);
+            expect(result?.[0].orderId).toBe('orderId2');
+            expect(result?.[1].orderId).toBe('orderId1');
+        });
+
+        it('should return empty array when no quotes match payment method', () => {
+            const paymentMethod: TradingPaymentMethodProps = 'bankTransfer';
+            const result = selectBuyQuotesByPaymentMethod(state, paymentMethod);
+
+            expect(result).toHaveLength(0);
+        });
+    });
+
+    describe('selectTradingBuyQuoteByQuoteId', () => {
+        it('should return undefined when quoteId1 is not provided', () => {
+            const result = selectTradingBuyQuoteByQuoteId(state, undefined);
+            expect(result).toBeUndefined();
+        });
+
+        it('should return undefined when quote with quoteId is not found', () => {
+            const result = selectTradingBuyQuoteByQuoteId(state, 'non_existent_id');
+            expect(result).toBeUndefined();
+        });
+
+        it('should return correct quote', () => {
+            const result = selectTradingBuyQuoteByQuoteId(state, 'quoteId1');
+            expect(result?.orderId).toBe('orderId1');
         });
     });
 });

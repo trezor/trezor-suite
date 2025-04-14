@@ -1,5 +1,6 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
+import { getInitializedTradingStateWithQuotes } from '../../../__fixtures__/tradingState';
 import { Confirmation } from '../Confirmation';
 
 jest.mock('../../../hooks/useTradingBuyFlow', () => ({
@@ -15,7 +16,12 @@ jest.mock('../../../hooks/useTradingBuyFormContext', () => ({
 describe('Confirmation', () => {
     const mockUseTradingBuyFlow = require('../../../hooks/useTradingBuyFlow').useTradingBuyFlow;
 
-    it('should render continue button when canProceed is true', () => {
+    const renderConfirmation = () =>
+        renderWithStoreProviderAsync(<Confirmation />, {
+            preloadedState: { wallet: { tradingNew: getInitializedTradingStateWithQuotes() } },
+        });
+
+    it('should render continue button when canProceed is true', async () => {
         mockUseTradingBuyFlow.mockReturnValue({
             canProceed: true,
             selectQuote: jest.fn(),
@@ -24,12 +30,11 @@ describe('Confirmation', () => {
             cancelConsent: jest.fn(),
         });
 
-        const { getByText } = renderWithBasicProvider(<Confirmation />);
-
+        const { getByText } = await renderConfirmation();
         expect(getByText('Continue')).toBeDefined();
     });
 
-    it('should not render continue button when canProceed is false', () => {
+    it('should not render continue button when canProceed is false', async () => {
         mockUseTradingBuyFlow.mockReturnValue({
             canProceed: false,
             selectQuote: jest.fn(),
@@ -38,7 +43,7 @@ describe('Confirmation', () => {
             cancelConsent: jest.fn(),
         });
 
-        const { queryByText } = renderWithBasicProvider(<Confirmation />);
+        const { queryByText } = await renderConfirmation();
 
         expect(queryByText('Continue')).toBeNull();
     });

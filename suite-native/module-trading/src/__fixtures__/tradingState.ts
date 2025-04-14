@@ -4,8 +4,8 @@ import { TradingBuyState, TradingPaymentMethodListProps } from '@suite-common/tr
 
 import { TradingState, initialState } from '../tradingSlice';
 import coins from './coins.json';
-import invity from './invityProvider.json';
 import platforms from './platforms.json';
+import { cexdirect, invity, mercuryo } from './providers';
 import quotes from './quotes.json';
 
 export const getInitializedBuyState = () =>
@@ -23,7 +23,7 @@ export const getInitializedBuyState = () =>
         buyInfo: {
             buyInfo: {
                 country: 'CZ',
-                providers: [invity] as BuyProviderInfo[],
+                providers: [invity, mercuryo, cexdirect],
                 defaultAmountsOfFiatCurrencies: {
                     usd: 150,
                     eur: 100,
@@ -39,7 +39,11 @@ export const getInitializedBuyState = () =>
                 'ethereum',
                 'bitcoin',
             ] as CryptoId[],
-            providerInfos: { ['invity']: invity } as unknown as Record<string, BuyProviderInfo>,
+            providerInfos: {
+                ['invity']: invity,
+                ['mercuryo']: mercuryo,
+                ['cexdirect']: cexdirect,
+            } as unknown as Record<string, BuyProviderInfo>,
             supportedFiatCurrencies: ['usd', 'eur', 'czk'],
         },
     }) as TradingBuyState;

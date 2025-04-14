@@ -69,12 +69,12 @@ describe('useTradingBuyFlow', () => {
         expect(result.current.canProceed).toBe(false);
     });
 
-    it('should canProceed be true when not loading and orderId filters one in quotes', async () => {
+    it('should canProceed be true when not loading and quoteId filters one in quotes', async () => {
         const store = await getInitializedStore({ isLoading: false });
 
         const { result } = await renderUseTradingBuyFlow({
             store,
-            orderId: 'e709df77-ee9e-4d12-98c2-84004a19c524',
+            quoteId: 'fc12d4c4-9078-4175-becd-90fc58a3145c',
         });
 
         expect(result.current.canProceed).toBe(true);
@@ -87,7 +87,7 @@ describe('useTradingBuyFlow', () => {
 
         const { result } = await renderUseTradingBuyFlow({
             store,
-            orderId: 'e709df77-ee9e-4d12-98c2-84004a19c524',
+            quoteId: 'e709df77-ee9e-4d12-98c2-84004a19c524',
             receiveAccount: { account: btcAccount, address: btcAccount.addresses?.used?.[0] },
         });
 
@@ -119,7 +119,7 @@ describe('useTradingBuyFlow', () => {
 
         const { result } = await renderUseTradingBuyFlow({
             store,
-            orderId: 'e709df77-ee9e-4d12-98c2-84004a19c524',
+            quoteId: 'e709df77-ee9e-4d12-98c2-84004a19c524',
             receiveAccount: { account: btcAccount, address: btcAccount.addresses?.used?.[0] },
         });
 

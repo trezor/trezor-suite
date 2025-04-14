@@ -21,7 +21,7 @@ export type ReceiveAccount = {
 };
 
 export type TradingBuyFormValues = {
-    orderId: string | undefined;
+    quoteId: string | undefined;
     asset: TradeableAsset;
     receiveAccount: ReceiveAccount | undefined;
     fiatCurrency: FiatCurrencyCode;

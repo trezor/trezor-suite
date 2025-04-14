@@ -2,14 +2,17 @@ import { ReactNode } from 'react';
 
 import type {
     BuyCryptoPaymentMethod,
+    BuyProviderInfo,
     BuyTrade,
     BuyTradeStatus,
     CryptoId,
+    ExchangeProviderInfo,
     ExchangeTrade,
     ExchangeTradeStatus,
     FiatCurrencyCode,
     SellCryptoPaymentMethod,
     SellFiatTrade,
+    SellProviderInfo,
     SellTradeStatus,
     WatchBuyTradeResponse,
     WatchExchangeTradeResponse,
@@ -162,3 +165,5 @@ export type TradingOTC = {
     minimumFiat: string;
     allowedCurrencies: FiatCurrencyCode[];
 };
+
+export type TradingProviderInfo = BuyProviderInfo | ExchangeProviderInfo | SellProviderInfo;
