@@ -52,6 +52,7 @@ import { PassphraseMismatchModal } from './PassphraseMismatchModal';
 import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
 import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { ConnectErrorModal } from './ConnectErrorModal';
+import { ConnectLoadingModal } from './ConnectLoadingModal';
 import { TradingDCAModal } from './TradingDCAModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
@@ -223,6 +224,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <ConnectAddressConfirmation />;
         case 'connect-error':
             return <ConnectErrorModal />;
+        case 'connect-loading':
+            return <ConnectLoadingModal />;
         default:
             return null;
     }

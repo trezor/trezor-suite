@@ -209,4 +209,7 @@ export type UserContextPayload =
       }
     | {
           type: 'connect-error';
+      }
+    | {
+          type: 'connect-loading';
       };
