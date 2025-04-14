@@ -411,14 +411,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     async enumerate() {
         const promises = this.getConnectedTransports().map(async transport => {
             const res = await transport.enumerate();
-
-            if (!res.success) {
-                return;
+            if (res.success) {
+                transport.handleDescriptorsChange(res.payload);
             }
-
-            res.payload.forEach(d => {
-                this.devices.get(d.path, transport)?.updateDescriptor(d);
-            });
         });
 
         await Promise.all(promises);
