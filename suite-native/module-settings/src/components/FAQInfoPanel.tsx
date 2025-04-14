@@ -1,112 +1,136 @@
-import { AccordionItem, BulletListItem, Text, VStack } from '@suite-native/atoms';
+import { AccordionList, Box, BulletListItem, Text, VStack } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 
-type QuestionItemProps = {
-    question: string;
-    answer: string | string[];
-};
+const AccordionContentText = ({ translationKey }: { translationKey: TxKeyPath }) => (
+    <Text variant="label">
+        <Translation id={translationKey} />
+    </Text>
+);
 
-const QuestionItem = ({ question, answer }: QuestionItemProps) => {
-    if (typeof answer === 'string') {
-        return <AccordionItem title={question} content={<Text variant="label">{answer}</Text>} />;
-    } else {
-        return (
-            <AccordionItem
-                title={question}
-                content={answer.map((text, index) => (
-                    <BulletListItem key={`${text}-${index}`} variant="label">
-                        {text}
-                    </BulletListItem>
-                ))}
-            />
-        );
-    }
-};
+const EnabledUsbFAQ = () => (
+    <AccordionList
+        items={[
+            {
+                title: <Translation id="moduleSettings.faq.usbEnabled.0.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.0.answer" />
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbEnabled.1.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.1.answer" />
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbEnabled.2.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.2.answer" />
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbEnabled.3.question" />,
+                content: (
+                    <Box>
+                        <BulletListItem variant="label">
+                            <Translation id="moduleSettings.faq.usbEnabled.3.answer.0" />
+                        </BulletListItem>
+                        <BulletListItem variant="label">
+                            <Translation id="moduleSettings.faq.usbEnabled.3.answer.1" />
+                        </BulletListItem>
+                        <BulletListItem variant="label">
+                            <Translation id="moduleSettings.faq.usbEnabled.3.answer.2" />
+                        </BulletListItem>
+                        <BulletListItem variant="label">
+                            <Translation id="moduleSettings.faq.usbEnabled.3.answer.3" />
+                        </BulletListItem>
+                    </Box>
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbEnabled.4.question" />,
+                content: (
+                    <Box style={{ position: 'relative' }}>
+                        <BulletListItem variant="label">
+                            <Translation id="moduleSettings.faq.usbEnabled.4.answer.0" />
+                        </BulletListItem>
+                        <BulletListItem variant="label">
+                            <Translation id="moduleSettings.faq.usbEnabled.4.answer.1" />
+                        </BulletListItem>
+                        <BulletListItem variant="label">
+                            <Translation id="moduleSettings.faq.usbEnabled.4.answer.2" />
+                        </BulletListItem>
+                        <BulletListItem variant="label">
+                            <Translation id="moduleSettings.faq.usbEnabled.4.answer.3" />
+                        </BulletListItem>
+                    </Box>
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbEnabled.5.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.5.answer" />
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbEnabled.6.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.6.answer" />
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbEnabled.7.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbEnabled.7.answer" />
+                ),
+            },
+        ]}
+    />
+);
 
-const EnabledUsbFAQ = () => {
-    const { translate } = useTranslate();
-
-    return (
-        <>
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbEnabled.0.question')}
-                answer={translate('moduleSettings.faq.usbEnabled.0.answer')}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbEnabled.1.question')}
-                answer={translate('moduleSettings.faq.usbEnabled.1.answer')}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbEnabled.2.question')}
-                answer={translate('moduleSettings.faq.usbEnabled.2.answer')}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbEnabled.3.question')}
-                answer={[
-                    translate('moduleSettings.faq.usbEnabled.3.answer.0'),
-                    translate('moduleSettings.faq.usbEnabled.3.answer.1'),
-                    translate('moduleSettings.faq.usbEnabled.3.answer.2'),
-                    translate('moduleSettings.faq.usbEnabled.3.answer.3'),
-                ]}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbEnabled.4.question')}
-                answer={[
-                    translate('moduleSettings.faq.usbEnabled.4.answer.0'),
-                    translate('moduleSettings.faq.usbEnabled.4.answer.1'),
-                    translate('moduleSettings.faq.usbEnabled.4.answer.2'),
-                    translate('moduleSettings.faq.usbEnabled.4.answer.3'),
-                ]}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbEnabled.5.question')}
-                answer={translate('moduleSettings.faq.usbEnabled.5.answer')}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbEnabled.6.question')}
-                answer={translate('moduleSettings.faq.usbEnabled.6.answer')}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbEnabled.7.question')}
-                answer={translate('moduleSettings.faq.usbEnabled.7.answer')}
-            />
-        </>
-    );
-};
-
-const DisabledUsbFAQ = () => {
-    const { translate } = useTranslate();
-
-    return (
-        <>
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbDisabled.0.question')}
-                answer={translate('moduleSettings.faq.usbDisabled.0.answer')}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbDisabled.1.question')}
-                answer={translate('moduleSettings.faq.usbDisabled.1.answer')}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbDisabled.2.question')}
-                answer={translate('moduleSettings.faq.usbDisabled.2.answer')}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbDisabled.3.question')}
-                answer={translate('moduleSettings.faq.usbDisabled.3.answer')}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbDisabled.4.question')}
-                answer={translate('moduleSettings.faq.usbDisabled.4.answer')}
-            />
-            <QuestionItem
-                question={translate('moduleSettings.faq.usbDisabled.5.question')}
-                answer={translate('moduleSettings.faq.usbDisabled.5.answer')}
-            />
-        </>
-    );
-};
+const DisabledUsbFAQ = () => (
+    <AccordionList
+        items={[
+            {
+                title: <Translation id="moduleSettings.faq.usbDisabled.0.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.0.answer" />
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbDisabled.1.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.1.answer" />
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbDisabled.2.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.2.answer" />
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbDisabled.3.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.3.answer" />
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbDisabled.4.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.4.answer" />
+                ),
+            },
+            {
+                title: <Translation id="moduleSettings.faq.usbDisabled.5.question" />,
+                content: (
+                    <AccordionContentText translationKey="moduleSettings.faq.usbDisabled.5.answer" />
+                ),
+            },
+        ]}
+    />
+);
 
 export const FAQInfoPanel = () => {
     const isUsbDeviceConnectFeatureEnabled = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
