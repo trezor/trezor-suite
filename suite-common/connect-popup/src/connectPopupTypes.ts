@@ -64,7 +64,7 @@ export type ConnectPopupCallLoaded = {
           addresses: {
               address: string;
               loading: boolean;
-              validated: boolean;
+              validated: 'valid' | 'failed' | 'not-started';
               validatePayload: any;
           }[];
       }

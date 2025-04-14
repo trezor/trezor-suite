@@ -40,7 +40,9 @@ export const ConnectAddressConfirmation = () => {
         const isLoading = popupCall?.addresses.some(address => address.loading);
         const addressToVerify = popupCall?.addresses.findIndex(
             address =>
-                address.validatePayload.showOnTrezor && !address.validated && !address.loading,
+                address.validatePayload.showOnTrezor &&
+                address.validated === 'not-started' &&
+                !address.loading,
         );
         if (!isLoading && addressToVerify >= 0) {
             dispatch(
@@ -86,9 +88,14 @@ export const ConnectAddressConfirmation = () => {
                             >
                                 <Row gap={spacings.sm} alignItems="center" flex="1">
                                     <Paragraph wordBreak="break-all">{address.address}</Paragraph>
-                                    {address.validated && (
+                                    {address.validated === 'valid' && (
                                         <Badge variant="primary" icon="check" size="small">
                                             <Translation id="TR_VERIFIED" />
+                                        </Badge>
+                                    )}
+                                    {address.validated === 'failed' && (
+                                        <Badge variant="warning" icon="warning" size="small">
+                                            <Translation id="TR_ERROR" />
                                         </Badge>
                                     )}
                                 </Row>
