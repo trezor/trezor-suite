@@ -10,10 +10,11 @@ import type { Output } from '@suite-common/wallet-types';
 import {
     checkIsAddressNotUsedNotChecksummed,
     getInputState,
+    hasBitcoinCashAddressPrefix,
     isAddressDeprecated,
     isAddressValid,
     isBech32AddressUppercase,
-    isCashAddressUppercase,
+    isBitcoinCashAddressUppercase,
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
 import { Button, Icon, IconButton, Input, Link, Row } from '@trezor/components';
@@ -221,6 +222,16 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         text: translationString('TR_CONVERT_TO_LOWERCASE'),
                     },
                 };
+            case 'bch_missing_prefix':
+                return {
+                    buttonProps: {
+                        onClick: () =>
+                            setValue(inputName, 'bitcoincash:' + address, {
+                                shouldValidate: true,
+                            }),
+                        text: translationString('TR_ADD_BITCOINCASH_PREFIX'),
+                    },
+                };
             default:
                 return {};
         }
@@ -245,7 +256,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             uppercase: (value: string) => {
                 if (
                     (networkType === 'bitcoin' && isBech32AddressUppercase(value)) ||
-                    (symbol === 'bch' && isCashAddressUppercase(value))
+                    (symbol === 'bch' && isBitcoinCashAddressUppercase(value))
                 ) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
                 }
@@ -263,6 +274,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     device?.unavailableCapabilities?.taproot
                 ) {
                     return translationString('RECIPIENT_REQUIRES_UPDATE');
+                }
+            },
+            bch_missing_prefix: (value: string) => {
+                if (symbol === 'bch' && !hasBitcoinCashAddressPrefix(value)) {
+                    return translationString('RECIPIENT_IS_NOT_VALID');
                 }
             },
             evmchecks: async (address: string) => {

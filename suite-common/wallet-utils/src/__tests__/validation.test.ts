@@ -1,8 +1,9 @@
 import {
+    hasBitcoinCashAddressPrefix,
     isAddressDeprecated,
     isAddressValid,
     isBech32AddressUppercase,
-    isCashAddressUppercase,
+    isBitcoinCashAddressUppercase,
     isDecimalsValid,
     isHexValid,
     isInteger,
@@ -165,17 +166,26 @@ describe('validation', () => {
         ).toEqual(true);
     });
 
-    it('isCashAddressUppercase', () => {
-        expect(isCashAddressUppercase('')).toBe(false);
-        expect(
-            isCashAddressUppercase('bitcoincash:qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc'),
-        ).toBe(false);
-        expect(
-            isCashAddressUppercase('BITCOINCASH:QZ8GJEXL9X7GAG53XL08MT7QSKVJG8X2WUEEJJMTTC'),
-        ).toBe(true);
-        expect(isCashAddressUppercase('1BpEi6DfDAUFd7GtittLSdBeYJvcoaVggu')).toBe(false);
-        expect(isCashAddressUppercase('1BPEI6DFDAUFD7GTITTLSDBEYJVCOAVGGU')).toBe(false);
-        expect(isCashAddressUppercase('NotValidAddressContainsBITCOINCASH:BCHTEST:1')).toBe(false);
+    it.each([
+        ['', false],
+        ['bitcoincash', false],
+        ['bitcoincash:', true],
+        ['bitcoincash:qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc', true],
+        ['BITCOINCASH:QZ8GJEXL9X7GAG53XL08MT7QSKVJG8X2WUEEJJMTTC', true],
+        ['somethingbitcoincash:something', false],
+    ])('hasBitcoinCashAddressPrefix', (address, expected) => {
+        expect(hasBitcoinCashAddressPrefix(address)).toBe(expected);
+    });
+
+    it.each([
+        ['', false],
+        ['bitcoincash:qz8gjexl9x7gag53xl08mt7qskvjg8x2wueejjmttc', false],
+        ['BITCOINCASH:QZ8GJEXL9X7GAG53XL08MT7QSKVJG8X2WUEEJJMTTC', true],
+        ['1BpEi6DfDAUFd7GtittLSdBeYJvcoaVggu', false],
+        ['1BPEI6DFDAUFD7GTITTLSDBEYJVCOAVGGU', false],
+        ['NotValidAddressContainsBITCOINCASH:BCHTEST:1', false],
+    ])('isBitcoinCashAddressUppercase', (address, expected) => {
+        expect(isBitcoinCashAddressUppercase(address)).toBe(expected);
     });
 
     it('isBech32AddressUppercase', () => {

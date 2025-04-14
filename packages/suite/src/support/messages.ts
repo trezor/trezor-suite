@@ -5448,6 +5448,10 @@ export default defineMessages({
         defaultMessage: 'Convert to lowercase',
         id: 'TR_CONVERT_TO_LOWERCASE',
     },
+    TR_ADD_BITCOINCASH_PREFIX: {
+        defaultMessage: 'Add "bitcoincash:" prefix',
+        id: 'TR_ADD_BITCOINCASH_PREFIX',
+    },
     TR_CONVERT_TO_CHECKSUM_ADDRESS: {
         defaultMessage: 'Convert to checksum',
         id: 'TR_CONVERT_TO_CHECKSUM_ADDRESS',
