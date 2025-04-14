@@ -19,6 +19,7 @@ import { useSelector } from 'src/hooks/suite';
 import messages from 'src/support/messages';
 
 import type { ReduxModalProps } from '../ReduxModal';
+import { SignMessageModal } from './SignMessageModal';
 
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({
@@ -52,6 +53,8 @@ export const DeviceContextModal = ({
             return <TransactionReviewModal type="sign-transaction" />;
         }
         case 'ButtonRequest_Other': {
+            if (data?.type === 'message') return <SignMessageModal device={device} {...data} />;
+
             return <ConfirmActionModal device={device} />;
         }
         case 'ButtonRequest_FirmwareCheck':
@@ -72,7 +75,7 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_PinEntry':
             return <ConfirmActionModal device={device} />;
         case 'ButtonRequest_Address':
-            return data ? (
+            return data?.type === 'address' ? (
                 <ConfirmAddressModal
                     value={data.address}
                     addressPath={data.serializedPath}

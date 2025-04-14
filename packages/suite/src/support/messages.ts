@@ -9887,4 +9887,8 @@ export default defineMessages({
         id: 'TR_NOT_ENOUGH_FUNDS',
         defaultMessage: 'Not enough funds, please select a different account.',
     },
+    TR_SIGN_EIP712_TYPED_DATA: {
+        id: 'TR_SIGN_EIP712_TYPED_DATA',
+        defaultMessage: 'Sign EIP-712 typed data',
+    },
 });
