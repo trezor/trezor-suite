@@ -1,0 +1,46 @@
+name: "Post Currents link"
+description: "Appends Currents link to PR description"
+inputs:
+  github_token:
+    description: "GitHub token for accessing the API"
+    required: true
+  project:
+    description: "Playwright project name. (web|desktop)"
+    required: true
+  currents-project-id:
+    description: "Currents project ID for reporting"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Post Currents link
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.github_token }}
+        script: |
+          const projectId = '${{ inputs.currents-project-id }}';
+          const branch = context.payload.pull_request.head.ref;
+          const currentsUrl = `https://app.currents.dev/projects/${projectId}/runs?branch=${branch}&lookback=7`;
+          const appendedNote = `🔍🖥️ **Suite ${{ inputs.project }} test results:** [View in Currents](${currentsUrl})`;
+
+          const pr = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+          });
+
+          const existingBody = pr.data.body || '';
+
+          if (!existingBody.includes(currentsUrl)) {
+            const newBody = existingBody + '\n\n' + appendedNote;
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              body: newBody
+            });
+            console.log('Appended Currents link to PR description.');
+          } else {
+            console.log('Currents link already present. Skipping append.');
+          }

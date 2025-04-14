@@ -67,13 +67,23 @@ runs:
         echo "Previous successful job found: ${SUCCESSFUL_JOB_URL} - no need to run tests again"
         echo "skip_tests=true" >> $GITHUB_OUTPUT
     
-    - name: Post Skipped tests comment
+    - name: Find skipped tests comment
+      uses: peter-evans/find-comment@v3
+      id: find-comment
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'trezor-ci'
+        body-includes: ✅ Previously successful run of **${{ inputs.workflow_name }}**
+
+    - name: Post skipped tests comment
       if: ${{ steps.check-previous-runs.outputs.skip_tests == 'true' }}
       uses: peter-evans/create-or-update-comment@v4
       with:
-          token: ${{ inputs.github_token }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ✅ Previously successful run of **${{ inputs.workflow_name }}** workflow has been found.
-            ⏭️ Skipping tests for this run.
-            💡 If you are unsure about your latest changes, please rerun the workflow manually. (Use the Re-run all jobs option)
+        comment-id: ${{ steps.find-comment.outputs.comment-id }}
+        token: ${{ inputs.github_token }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          ✅ Previously successful run of **${{ inputs.workflow_name }}** workflow has been found.
+          ⏭️ Skipping tests for this run.
+          💡 If you are unsure about your latest changes, please rerun the workflow manually. (Use the Re-run all jobs option)
+        edit-mode: replace

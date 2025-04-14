@@ -78,27 +78,20 @@ jobs:
         uses: ./.github/actions/build-web
 
   post-currents-link:
-    if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request' && github.event.action == 'opened'
+    if: github.repository == 'trezor/trezor-suite' && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     needs:
       - build-web
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Post Currents link
-        uses: actions/github-script@v7
-        env:
-          CURRENTS_PROJECT_ID: "Og0NOQ"
+        uses: ./.github/actions/post-currents-link
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const projectId = process.env.CURRENTS_PROJECT_ID;
-            const branch = context.payload.pull_request.head.ref;
-            const currentsUrl = `https://app.currents.dev/projects/${projectId}/runs?branch=${branch}&lookback=7`;
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              body: `🔍🌐 Suite Web test results: [View in Currents](${currentsUrl})`
-            });
+          github_token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          project: "web"
+          currents-project-id: "Og0NOQ"
 
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite'
