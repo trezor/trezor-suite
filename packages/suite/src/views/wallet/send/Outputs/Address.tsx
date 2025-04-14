@@ -211,8 +211,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
 
                 return {};
-            case 'cashaddr_uppercase':
-            case 'bech32_uppercase':
+            case 'uppercase':
                 return {
                     buttonProps: {
                         onClick: () =>
@@ -242,8 +241,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     return translationString('TR_UNSUPPORTED_ADDRESS_FORMAT');
                 }
             },
-            cashaddr_uppercase: (value: string) => {
-                if (symbol === 'bch' && isCashAddressUppercase(value)) {
+            // bech32 and CashAddr addresses are valid as uppercase but are not accepted by Trezor
+            uppercase: (value: string) => {
+                if (
+                    (networkType === 'bitcoin' && isBech32AddressUppercase(value)) ||
+                    (symbol === 'bch' && isCashAddressUppercase(value))
+                ) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
                 }
             },
@@ -260,12 +263,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     device?.unavailableCapabilities?.taproot
                 ) {
                     return translationString('RECIPIENT_REQUIRES_UPDATE');
-                }
-            },
-            // bech32 addresses are valid as uppercase but are not accepted by Trezor
-            bech32_uppercase: (value: string) => {
-                if (networkType === 'bitcoin' && isBech32AddressUppercase(value)) {
-                    return translationString('RECIPIENT_IS_NOT_VALID');
                 }
             },
             evmchecks: async (address: string) => {
