@@ -63,6 +63,20 @@ export const fetchCurrentFiatRates = ({
                         { timeout: CONNECT_FETCH_TIMEOUT },
                     );
 
+                    if (!success && payload.error === 'No tickers found!') {
+                        const fallbackCoinGeckoResponse =
+                            await coingeckoService.fetchCurrentFiatRates(ticker);
+
+                        if (!fallbackCoinGeckoResponse) {
+                            return null;
+                        }
+
+                        return {
+                            rate: fallbackCoinGeckoResponse?.rates?.[localCurrency],
+                            lastTickerTimestamp: fallbackCoinGeckoResponse?.ts as Timestamp,
+                        };
+                    }
+
                     if (!success) return null;
 
                     const rate = payload.rates?.[localCurrency];
