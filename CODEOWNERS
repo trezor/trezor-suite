@@ -2,7 +2,13 @@
 
 /docker @vdovhanych @mroz22
 
-/scripts @MiroslavProchazka
+/scripts/list-outdated-dependencies/connect-dependencies.txt @mroz22
+/scripts/list-outdated-dependencies/engagement-dependencies.txt @jvaclavik
+/scripts/list-outdated-dependencies/foundation-dependencies.txt @komret
+/scripts/list-outdated-dependencies/mobile-dependencies.txt @matejkriz
+/scripts/list-outdated-dependencies/qa-dependencies.txt @HajekOndrej
+/scripts/list-outdated-dependencies/trends-dependencies.txt @tomasklim
+/scripts @karliatto
 
 /packages/analytics @tomasklim
 
@@ -72,9 +78,7 @@
 
 /packages/transport-test @mroz22
 
-/packages/transport-native @trezor/suite-mobile @MiroslavProchazka
-
-/packages/theme @MiroslavProchazka @trezor/suite-engagement
+/packages/theme @trezor/suite-engagement
 
 /packages/urls @marekrjpolak
 
@@ -84,11 +88,11 @@
 
 /packages/utxo-lib @szymonlesisz
 
-/packages/styles @MiroslavProchazka @trezor/suite-engagement
+/packages/styles @trezor/suite-engagement
 
 /packages/suite/src/support/messages.ts @MiroslavProchazka
 
-/suite-common/graph @trezor/suite-mobile @MiroslavProchazka
+/suite-common/graph @trezor/suite-mobile
 
 /packages/connect/src/data/deviceAuthenticityConfig.ts @tsusanka
 
