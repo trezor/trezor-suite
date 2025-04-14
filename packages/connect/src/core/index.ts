@@ -780,7 +780,7 @@ const onDeviceButtonHandler =
         }
         const data =
             typeof method?.getButtonRequestData === 'function' && request.code
-                ? method?.getButtonRequestData(request.code)
+                ? method?.getButtonRequestData(request.code, request.name)
                 : undefined;
         // interaction timeout
         startInteractionTimeout(context);

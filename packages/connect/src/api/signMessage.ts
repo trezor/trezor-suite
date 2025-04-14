@@ -9,9 +9,11 @@ import { SignMessage as SignMessageSchema } from '../types';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { messageToHex } from '../utils/formatUtils';
-import { getLabel, getScriptType, validatePath } from '../utils/pathUtils';
+import { getLabel, getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
 export default class SignMessage extends AbstractMethod<'signMessage', PROTO.SignMessage> {
+    coinInfo: BitcoinNetworkInfo | undefined;
+
     init() {
         this.requiredPermissions = ['read', 'write'];
 
@@ -21,19 +23,18 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
         Assert(SignMessageSchema, payload);
 
         const path = validatePath(payload.path);
-        let coinInfo: BitcoinNetworkInfo | undefined;
         if (payload.coin) {
-            coinInfo = getBitcoinNetwork(payload.coin);
-            validateCoinPath(path, coinInfo);
+            this.coinInfo = getBitcoinNetwork(payload.coin);
+            validateCoinPath(path, this.coinInfo);
         } else {
-            coinInfo = getBitcoinNetwork(path);
+            this.coinInfo = getBitcoinNetwork(path);
         }
 
         // firmware range depends on used no_script_type parameter
         // no_script_type is possible since 1.10.4 / 2.4.3
         this.firmwareRange = getFirmwareRange(
             payload.no_script_type ? 'signMessageNoScriptType' : this.name,
-            coinInfo,
+            this.coinInfo,
             this.firmwareRange,
         );
 
@@ -44,7 +45,7 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
         this.params = {
             address_n: path,
             message: messageHex,
-            coin_name: coinInfo ? coinInfo.name : undefined,
+            coin_name: this.coinInfo ? this.coinInfo.name : undefined,
             script_type: scriptType && scriptType !== 'SPENDMULTISIG' ? scriptType : 'SPENDADDRESS', // script_type 'SPENDMULTISIG' throws Failure_FirmwareError
             no_script_type: payload.no_script_type,
         };
@@ -54,6 +55,17 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
         const coinInfo = getBitcoinNetwork(this.payload.coin ?? this.params.address_n);
 
         return getLabel('Sign #NETWORK message', coinInfo);
+    }
+
+    getButtonRequestData(code: string, name?: string) {
+        if (code === 'ButtonRequest_Other' && name === 'sign_message') {
+            return {
+                type: 'message' as const,
+                serializedPath: getSerializedPath(this.params.address_n.slice(0, 4)),
+                coin: this.coinInfo?.shortcut ?? 'BTC',
+                message: this.payload.message,
+            };
+        }
     }
 
     async run() {

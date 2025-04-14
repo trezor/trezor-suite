@@ -131,11 +131,18 @@ export type UiRequestDeviceAction =
           };
       };
 
-export interface UiRequestButtonData {
-    type: 'address';
-    serializedPath: string;
-    address: string;
-}
+export type UiRequestButtonData =
+    | {
+          type: 'address';
+          serializedPath: string;
+          address: string;
+      }
+    | {
+          type: 'message';
+          serializedPath: string;
+          coin: string;
+          message: string;
+      };
 
 // ButtonRequest_FirmwareUpdate is a artificial button request thrown by "uploadFirmware" method
 // at the beginning of the uploading process

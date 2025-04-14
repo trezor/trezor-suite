@@ -94,7 +94,12 @@ export const events = (api: TrezorConnect) => {
             if (event.payload.code === 'foo') {
                 //
             }
-            event.payload.data?.address.toLowerCase();
+            if (event.payload.data?.type === 'address') {
+                event.payload.data.address.toLowerCase();
+            }
+            if (event.payload.data?.type === 'message') {
+                event.payload.data.message.toLowerCase();
+            }
             event.payload.device.label.toLowerCase();
         }
 

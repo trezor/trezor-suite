@@ -158,7 +158,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     noBackupConfirmationMode: 'never' | 'always' | 'popup-only';
 
-    getButtonRequestData?(code: string): UiRequestButtonData | undefined;
+    getButtonRequestData?(code: string, name?: string): UiRequestButtonData | undefined;
 
     // callbacks
     // @ts-expect-error: strictPropertyInitialization

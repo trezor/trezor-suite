@@ -15,7 +15,7 @@ import {
 } from '../../../types/api/ethereum';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { messageToHex } from '../../../utils/formatUtils';
-import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
+import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
 import { encodeData, getFieldType, parseArrayType } from '../ethereumSignTypedData';
@@ -116,6 +116,17 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
             'Sign #NETWORK typed data',
             getEthereumNetwork(this.params.address_n),
         );
+    }
+
+    getButtonRequestData(code: string) {
+        if (code === 'ButtonRequest_Other') {
+            return {
+                type: 'message' as const,
+                coin: this.params.network?.shortcut ?? 'ETH',
+                serializedPath: getSerializedPath(this.params.address_n),
+                message: JSON.stringify(this.params.data, null, 2),
+            };
+        }
     }
 
     async run() {

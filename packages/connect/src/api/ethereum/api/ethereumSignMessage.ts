@@ -12,7 +12,7 @@ import {
 } from '../../../types';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { messageToHex } from '../../../utils/formatUtils';
-import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
+import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { getEthereumDefinitions } from '../ethereumDefinitions';
 
@@ -56,6 +56,17 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
 
     get info() {
         return getNetworkLabel('Sign #NETWORK message', getEthereumNetwork(this.params.address_n));
+    }
+
+    getButtonRequestData(code: string, name?: string) {
+        if (code === 'ButtonRequest_Other' && name === 'sign_message') {
+            return {
+                type: 'message' as const,
+                coin: this.params.network?.shortcut ?? 'ETH',
+                serializedPath: getSerializedPath(this.params.address_n),
+                message: this.payload.message,
+            };
+        }
     }
 
     async run() {
