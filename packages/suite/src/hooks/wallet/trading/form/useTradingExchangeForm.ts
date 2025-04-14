@@ -563,6 +563,7 @@ export const useTradingExchangeForm = ({
                 address: sendAddress,
                 amount: sendStringAmount,
                 destinationTag: sendPaymentExtraId,
+                setMaxOutputId: values.setMaxOutputId,
             });
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {
