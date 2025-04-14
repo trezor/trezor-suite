@@ -10,6 +10,7 @@ import { expect, test } from '../../support/fixtures';
 import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
 import { DevicePrompt } from '../../support/pageObjects/devicePrompt';
 import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingPage';
+import { enhancePage } from '../../support/testExtends/enhancePage';
 
 test.use({ exceptionLogger: skipFixture });
 test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
@@ -28,6 +29,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
             viewport: testInfo.project.use.viewport!,
         });
         const title = await suite.window.title();
+        enhancePage(suite.window);
         expect(title).toContain('Trezor Suite');
 
         await waitForAppToBeInitialized(suite);
@@ -62,6 +64,7 @@ test.describe.serial('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => 
             artefactFolder: testInfo.outputDir,
             viewport: testInfo.project.use.viewport!,
         });
+        enhancePage(suite.window);
         await suite.window.title();
 
         const devicePrompt = new DevicePrompt(suite.window);

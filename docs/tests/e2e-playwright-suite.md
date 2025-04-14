@@ -51,8 +51,6 @@ _(in case of Linux with X11 support, skip to step 6.)_
 
 #### Troubleshooting
 
-1. **To run both Web and Desktop at same time** you can do: `yarn workspace @trezor/suite-desktop-core test:e2e`
-
 1. **To run tests headed (showing UI)** you can add: `--headed`.
 
 1. **To run just one test file** you can do: `yarn workspace @trezor/suite-desktop-core test:e2e general/wallet-discovery.test.ts`
@@ -73,7 +71,7 @@ _(in case of Linux with X11 support, skip to step 6.)_
 
 1. **To increase test timeouts** when your local run exceed 1m limit, you can specify test timeout override in `packages/suite-desktop-core/.env`. (UI runner --ui needs to be restarted to reflect the change in `.env`)
 
-1. **To run with x-main firmware** instead of x-latest you can use CANARY_FIRMWARE env variable like this: `CANARY_FIRMWARE=true yarn workspace @trezor/suite-desktop-core test:e2e`
+1. **To run with x-main firmware** instead of x-latest you can use CANARY_FIRMWARE env variable like this: `CANARY_FIRMWARE=true yarn workspace @trezor/suite-desktop-core test:e2e:web` or `CANARY_FIRMWARE=true yarn workspace @trezor/suite-desktop-core test:e2e:desktop`
 
 ## Contribution
 

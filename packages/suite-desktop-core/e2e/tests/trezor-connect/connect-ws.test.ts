@@ -11,9 +11,8 @@ const passThroughPermissions = async (connectModal: ConnectPopupModal) => {
 
 test.describe('TrezorConnect', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
-    test.beforeEach(async ({ onboardingPage, dashboardPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
         await test.step('Initialize TrezorConnect', async () => {
             await TrezorConnect.init({
                 manifest: {

@@ -6,6 +6,7 @@ import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
 import { DashboardPage } from '../../support/pageObjects/dashboardPage';
 import { DevicePrompt } from '../../support/pageObjects/devicePrompt';
 import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingPage';
+import { enhancePage } from '../../support/testExtends/enhancePage';
 
 const stealBridgeSession = async () => {
     await test.step('Steal Bridge session', async () => {
@@ -90,6 +91,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
             await onboardingPage.completeOnboarding();
 
             const pageTwo = await context.newPage();
+            enhancePage(pageTwo);
             await pageTwo.context().addInitScript(() => {
                 window.Playwright = true;
             });

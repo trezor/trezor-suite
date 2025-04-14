@@ -4,7 +4,6 @@ test.describe('Trading - Navigation', { tag: ['@group=other'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
         await settingsPage.navigateTo('coins');
         await settingsPage.coins.enableNetwork('ltc');
         await settingsPage.coins.enableNetwork('eth');

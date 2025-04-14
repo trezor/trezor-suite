@@ -10,7 +10,6 @@ test.describe('Trading - Sell inputs', { tag: ['@group=other', '@webOnly'] }, ()
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await dashboardPage.discoveryShouldFinish();
 
         await test.step('Enable Solana', async () => {
             await settingsPage.navigateTo('coins');

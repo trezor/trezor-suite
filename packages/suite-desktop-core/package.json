@@ -13,7 +13,6 @@
         "test:unit": "yarn g:jest",
         "test:orchestrated:e2e:web": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=web",
         "test:orchestrated:e2e:desktop": "yarn xvfb-maybe -- pwc-p --config=./e2e/playwright.config.ts --project=desktop",
-        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "test:e2e:web": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=web",
         "test:e2e:desktop": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --project=desktop",
         "test:e2e:update-snapshots": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts --grep @snapshot --update-snapshots"
