@@ -9857,7 +9857,7 @@ export default defineMessages({
     TR_BLUETOOTH_TURNED_OFF_TEXT: {
         id: 'TR_BLUETOOTH_TURNED_OFF_TEXT',
         defaultMessage:
-            'Bluetooth is currently turned of on this computer. Go to System Settings &gt; Bluetooth and turn on Bluetooth.',
+            'Bluetooth is currently turned off on this computer. Go to System Settings > Bluetooth and turn on Bluetooth.',
     },
     TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS: {
         id: 'TR_BLUETOOTH_CANNOT_OPEN_BLUETOOTH_SETTINGS',
