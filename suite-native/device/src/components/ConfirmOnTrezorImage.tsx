@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo, useState } from 'react';
-import { Image, Pressable } from 'react-native';
+import { Image, Pressable, SafeAreaView } from 'react-native';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -7,7 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ConfirmOnTrezorBottomSheet } from './ConfirmOnTrezorBottomSheet';
 
 type ConfirmOnTrezorImageProps = {
-    bottomSheetText: ReactNode;
+    bottomSheetText?: ReactNode;
 };
 
 const imageContainerStyle = prepareNativeStyle(utils => ({
@@ -35,7 +35,7 @@ export const ConfirmOnTrezorImage = ({ bottomSheetText }: ConfirmOnTrezorImagePr
     };
 
     return (
-        <>
+        <SafeAreaView>
             <AnimatedPressable
                 entering={SlideInDown}
                 exiting={SlideOutDown}
@@ -44,11 +44,13 @@ export const ConfirmOnTrezorImage = ({ bottomSheetText }: ConfirmOnTrezorImagePr
             >
                 <Image source={imageSource} />
             </AnimatedPressable>
-            <ConfirmOnTrezorBottomSheet
-                text={bottomSheetText}
-                isOpened={isBottomSheetOpened}
-                onClose={handleCloseBottomSheet}
-            />
-        </>
+            {bottomSheetText && (
+                <ConfirmOnTrezorBottomSheet
+                    text={bottomSheetText}
+                    isOpened={isBottomSheetOpened}
+                    onClose={handleCloseBottomSheet}
+                />
+            )}
+        </SafeAreaView>
     );
 };
