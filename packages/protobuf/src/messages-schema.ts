@@ -1393,7 +1393,7 @@ export const EnumFailureType = Type.Enum(FailureType);
 export type Failure = Static<typeof Failure>;
 export const Failure = Type.Object(
     {
-        code: Type.Optional(Type.KeyOfEnum(FailureType)),
+        code: Type.Optional(EnumFailureType),
         message: Type.Optional(Type.String()),
     },
     { $id: 'Failure' },
