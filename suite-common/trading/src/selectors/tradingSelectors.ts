@@ -1,6 +1,7 @@
 import { Coins, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { UnreachableCaseError } from '@suite-common/suite-utils';
 import { NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types/src/settings';
@@ -209,6 +210,11 @@ export const selectTradingExchangeProviders = createMemoizedSelector(
     exchangeInfo => exchangeInfo?.providerInfos,
 );
 
+export const selectTradingSellProviders = createMemoizedSelector(
+    [selectTradingSellInfo],
+    sellInfo => sellInfo?.providerInfos,
+);
+
 export const selectTradingProviderByNameAndTradeType = (
     state: TradingRootState,
     name: string | undefined,
@@ -224,8 +230,10 @@ export const selectTradingProviderByNameAndTradeType = (
         case 'exchange':
             return selectTradingExchangeProviders(state)?.[name];
         case 'sell':
-            // TODO: Not implemented until SELL is migrated to suite-common
-            return undefined;
+            return selectTradingSellProviders(state)?.[name];
+
+        default:
+            throw new UnreachableCaseError(type, 'Unexpected trade type');
     }
 };
 
@@ -235,11 +243,17 @@ export const selectTradingBuyQuotesRequest = (state: TradingRootState) =>
 export const selectTradingExchangeQuotesRequest = (state: TradingRootState) =>
     state.wallet.tradingNew.exchange.quotesRequest;
 
+export const selectTradingSellQuotesRequest = (state: TradingRootState) =>
+    state.wallet.tradingNew.sell.quotesRequest;
+
 export const selectTradingBuySelectedQuote = (state: TradingRootState) =>
     state.wallet.tradingNew.buy.selectedQuote;
 
 export const selectTradingExchangeSelectedQuote = (state: TradingRootState) =>
     state.wallet.tradingNew.exchange.selectedQuote;
+
+export const selectTradingSellSelectedQuote = (state: TradingRootState) =>
+    state.wallet.tradingNew.sell.selectedQuote;
 
 export const selectTradingPaymentMethods = (state: TradingRootState) =>
     state.wallet.tradingNew.info.paymentMethods;
