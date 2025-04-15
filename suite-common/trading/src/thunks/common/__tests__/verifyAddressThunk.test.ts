@@ -8,6 +8,7 @@ import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { tradingThunks } from '../../';
 import { accounts } from '../../../reducers/__fixtures__/account';
 import { tradingBuyActions } from '../../../reducers/buyReducer';
+import { tradingExchangeActions } from '../../../reducers/exchangeReducer';
 import { initialState, prepareTradingReducer } from '../../../reducers/tradingReducer';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
@@ -30,50 +31,55 @@ describe('verifyAddressThunk', () => {
         jest.clearAllMocks();
     });
 
-    it('should save verified address', async () => {
-        const store = configureMockStore({
-            extra: {},
-            reducer: combineReducers({
-                wallet: combineReducers({
-                    tradingNew: tradingReducer,
+    describe('should save verified address', () => {
+        it.each([
+            ['buy', tradingBuyActions.verifyAddress.type],
+            ['exchange', tradingExchangeActions.verifyAddress.type],
+        ])('when %s is active', async (type, tradingAction) => {
+            const store = configureMockStore({
+                extra: {},
+                reducer: combineReducers({
+                    wallet: combineReducers({
+                        tradingNew: tradingReducer,
+                    }),
+                    suite: mockedSuiteReducer(extraDependenciesMock),
                 }),
-                suite: mockedSuiteReducer(extraDependenciesMock),
-            }),
-            preloadedState: {
-                wallet: {
-                    tradingNew: initialState,
+                preloadedState: {
+                    wallet: {
+                        tradingNew: initialState,
+                    },
                 },
-            },
+            });
+
+            const account = accounts[0];
+            const addressData = account.addresses?.unused[0];
+
+            (selectSelectedDevice as jest.Mock).mockImplementation(() => ({
+                connected: true,
+                available: true,
+                useEmptyPassphrase: true,
+            }));
+
+            (confirmAddressOnDeviceThunk as unknown as jest.Mock).mockImplementation(
+                createThunk('@suite/device/confirmAddressOnDeviceThunk', () => ({
+                    success: true,
+                })),
+            );
+
+            await store.dispatch(
+                tradingThunks.verifyAddressThunk({
+                    account,
+                    address: addressData?.address,
+                    path: addressData?.path,
+                    tradingAction,
+                }),
+            );
+
+            expect(store.getActions().length).toEqual(6);
+            expect(
+                store.getState().wallet.tradingNew[type as 'buy' | 'exchange'].addressVerified,
+            ).toEqual(addressData?.address);
         });
-
-        const account = accounts[0];
-        const addressData = account.addresses?.unused[0];
-
-        (selectSelectedDevice as jest.Mock).mockImplementation(() => ({
-            connected: true,
-            available: true,
-            useEmptyPassphrase: true,
-        }));
-
-        (confirmAddressOnDeviceThunk as unknown as jest.Mock).mockImplementation(
-            createThunk('@suite/device/confirmAddressOnDeviceThunk', () => ({
-                success: true,
-            })),
-        );
-
-        await store.dispatch(
-            tradingThunks.verifyAddressThunk({
-                account,
-                address: addressData?.address,
-                path: addressData?.path,
-                tradingAction: tradingBuyActions.verifyAddress.type,
-            }),
-        );
-
-        expect(store.getActions().length).toEqual(6);
-        expect(store.getState().wallet.tradingNew.buy.addressVerified).toEqual(
-            addressData?.address,
-        );
     });
 
     it('should not update verified address device not found', async () => {

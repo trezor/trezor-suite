@@ -21,7 +21,11 @@ import type {
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AccountType, NetworkSymbolExtended } from '@suite-common/wallet-config';
-import type { Account, FormState } from '@suite-common/wallet-types';
+import type {
+    Account,
+    FormState,
+    GeneralPrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { PrimitiveType } from '@trezor/type-utils';
 
 import * as constants from './constants';
@@ -35,6 +39,7 @@ export type TradingExchangeType = 'exchange';
 export type TradingType = TradingBuyType | TradingSellType | TradingExchangeType;
 
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
+export type TradingTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;
 
 // information about created trade
 export type TradingTradeType = BuyTrade | SellFiatTrade | ExchangeTrade;
@@ -228,4 +233,17 @@ export type TradingSendRejectedProps = {
         id: ExtendedMessageDescriptor['id'];
         values?: Record<string, PrimitiveType>;
     };
+};
+
+export type TradingExchangeUserConsentProps = {
+    provider: string;
+    isDex: boolean;
+    send: string;
+    receive: string;
+};
+
+export type TradingSignAndPushSendFormTransactionProps = {
+    formState: FormState;
+    precomposedTransaction: GeneralPrecomposedTransactionFinal;
+    selectedAccount: Account;
 };

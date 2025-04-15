@@ -23,6 +23,7 @@ interface TradingRecomposeAndSignProps {
     options?: FormOptions[];
 }
 
+// TODO: trading - delete
 export const useTradingRecomposeAndSign = () => {
     const { translationString } = useTranslation();
     const { composed, selectedFee } = useSelector(

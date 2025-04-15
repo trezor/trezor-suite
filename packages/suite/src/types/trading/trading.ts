@@ -13,6 +13,7 @@ import { TokenDefinitionsState } from '@suite-common/token-definitions';
 import type {
     TradingBuyInfoSelector,
     TradingBuyType,
+    TradingExchangeInfoSelector,
     TradingExchangeType,
     TradingPaymentMethodType,
     TradingSelectAssetOptionGroupProps,
@@ -32,7 +33,6 @@ import { StaticSessionId } from '@trezor/connect';
 import { AssetOptionBaseProps } from '@trezor/product-components';
 import { Timer } from '@trezor/react-utils';
 
-import type { TradingExchangeInfoSelector } from 'src/actions/wallet/tradingExchangeActions';
 import type { TradingSellInfoSelector } from 'src/actions/wallet/tradingSellActions';
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 import { State } from 'src/reducers/wallet/tradingReducer';

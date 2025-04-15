@@ -9,6 +9,7 @@ import {
     parseCryptoId,
     useTradingInfo,
 } from '@suite-common/trading';
+import { tradingExchangeActions } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     Banner,
@@ -25,7 +26,6 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { saveSelectedQuote } from 'src/actions/wallet/tradingExchangeActions';
 import { AccountLabeling, Address, Translation } from 'src/components/suite';
 import { IOAddress } from 'src/components/suite/copy/IOAddress';
 import { useDispatch } from 'src/hooks/suite';
@@ -103,9 +103,13 @@ export const TradingOfferExchangeSendApproval = () => {
                 approvalType: type,
             };
 
-            dispatch(saveSelectedQuote(updatedSelectedQuote));
+            dispatch(tradingExchangeActions.saveSelectedQuote(updatedSelectedQuote));
 
-            await confirmTrade(selectedQuote.receiveAddress, undefined, updatedSelectedQuote);
+            await confirmTrade({
+                receiveAddress: selectedQuote.receiveAddress,
+                extraField: undefined,
+                trade: updatedSelectedQuote,
+            });
         }
     };
 
@@ -121,10 +125,14 @@ export const TradingOfferExchangeSendApproval = () => {
 
         if (selectedQuote.approvalType) {
             updatedSelectedQuote.approvalType = undefined;
-            dispatch(saveSelectedQuote(updatedSelectedQuote));
+            dispatch(tradingExchangeActions.saveSelectedQuote(updatedSelectedQuote));
         }
 
-        await confirmTrade(selectedQuote.receiveAddress, undefined, updatedSelectedQuote);
+        await confirmTrade({
+            receiveAddress: selectedQuote.receiveAddress,
+            extraField: undefined,
+            trade: updatedSelectedQuote,
+        });
     };
 
     return (

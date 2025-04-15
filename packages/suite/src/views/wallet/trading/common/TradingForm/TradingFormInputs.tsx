@@ -160,7 +160,7 @@ export const TradingFormInputs = () => {
         const output = outputs[0];
         const currencySelect = output.currency;
         const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
-        const supportedCryptoCurrencies = exchangeInfo?.buySymbols;
+        const supportedCryptoCurrencies = exchangeInfo?.buyCryptoIds;
         const outputAmount =
             shouldSendInSats && output.amount
                 ? formatAmount(output.amount, getTradingNetworkDecimals({ sendCryptoSelect }))

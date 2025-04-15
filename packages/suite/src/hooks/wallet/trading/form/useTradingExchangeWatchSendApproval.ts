@@ -4,13 +4,14 @@ import { useTimeoutFn, useUnmount } from 'react-use';
 import { ExchangeTrade } from 'invity-api';
 
 import { type TradingExchangeType, invityAPI } from '@suite-common/trading';
+import { tradingExchangeActions } from '@suite-common/trading';
 
-import { saveSelectedQuote } from 'src/actions/wallet/tradingExchangeActions';
 import { useDispatch } from 'src/hooks/suite';
+import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 
 interface TradingUseExchangeWatchSendApprovalProps {
     selectedQuote?: ExchangeTrade;
-    confirmTrade: (address: string, extraField?: string, trade?: ExchangeTrade) => Promise<boolean>;
+    confirmTrade: TradingExchangeFormContextProps['confirmTrade'];
 }
 
 /**
@@ -44,6 +45,7 @@ export const useTradingExchangeWatchSendApproval = ({
         const watchTradeAsync = async () => {
             cancelRefresh();
 
+            // TODO: trading - could be moved to suite-common
             const response = await invityAPI.watchTrade<TradingExchangeType>(
                 selectedQuote,
                 'exchange',
@@ -58,14 +60,13 @@ export const useTradingExchangeWatchSendApproval = ({
                     approvalType: undefined,
                 };
 
-                dispatch(saveSelectedQuote(updatedSelectedQuote));
+                dispatch(tradingExchangeActions.saveSelectedQuote(updatedSelectedQuote));
 
                 if (selectedQuote.dexTx && selectedQuote.receiveAddress) {
-                    await confirmTrade(
-                        selectedQuote.receiveAddress,
-                        undefined,
-                        updatedSelectedQuote,
-                    );
+                    await confirmTrade({
+                        receiveAddress: selectedQuote.receiveAddress,
+                        trade: updatedSelectedQuote,
+                    });
                 }
             }
 

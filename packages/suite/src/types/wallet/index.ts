@@ -1,6 +1,6 @@
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
-import { tradingActions, tradingBuyActions } from '@suite-common/trading';
+import { tradingActions, tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
 import {
     accountsActions,
     blockchainActions,
@@ -18,7 +18,6 @@ import { GraphAction } from 'src/actions/wallet/graphActions';
 import { ReceiveAction } from 'src/actions/wallet/receiveActions';
 import { SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
 import { TradingCommonAction } from 'src/actions/wallet/trading/tradingCommonActions';
-import { TradingExchangeAction } from 'src/actions/wallet/tradingExchangeActions';
 import { TradingInfoAction } from 'src/actions/wallet/tradingInfoActions';
 import { TradingSellAction } from 'src/actions/wallet/tradingSellActions';
 
@@ -64,6 +63,9 @@ type StakeAction = ReturnType<(typeof stakeActions)[keyof typeof stakeActions]>;
 type SendFormAction = ReturnType<(typeof sendFormActions)[keyof typeof sendFormActions]>;
 type TradingAction = ReturnType<(typeof tradingActions)[keyof typeof tradingActions]>;
 type TradingBuyAction = ReturnType<(typeof tradingBuyActions)[keyof typeof tradingBuyActions]>;
+type TradingExchangeAction = ReturnType<
+    (typeof tradingExchangeActions)[keyof typeof tradingExchangeActions]
+>;
 type ConnectPopupAction = ReturnType<
     (typeof connectPopupActions)[keyof typeof connectPopupActions]
 >;
@@ -76,11 +78,11 @@ export type WalletAction =
     | GraphAction
     | DiscoveryAction
     | TradingInfoAction
-    | TradingExchangeAction
     | TradingSellAction
     | TradingCommonAction
     | TradingAction
     | TradingBuyAction
+    | TradingExchangeAction
     | SendFormAction
     | AccountSearchAction
     | FormDraftAction

@@ -14,7 +14,7 @@ import {
 } from '@suite-common/trading';
 
 interface TradingExchangeQuotesFilterProps {
-    quotes: ExchangeTrade[] | undefined;
+    quotes: ExchangeTrade[];
     exchangeType: TradingExchangeFormType;
     rateType: TradingExchangeRateType;
     exchangeInfo: any;
@@ -28,7 +28,7 @@ export const useTradingExchangeQuotesFilter = ({
     exchangeInfo,
     setValue,
 }: TradingExchangeQuotesFilterProps) => {
-    const dexQuotes = useMemo(() => quotes?.filter(quote => quote.isDex), [quotes]);
+    const dexQuotes = useMemo(() => quotes.filter(quote => quote.isDex), [quotes]);
     const cexQuotes = useMemo(
         () => exchangeUtils.getCexQuotesByRateType(rateType, quotes, exchangeInfo),
         [rateType, quotes, exchangeInfo],
@@ -37,11 +37,11 @@ export const useTradingExchangeQuotesFilter = ({
     // handle edge case when there are no longer quotes of selected exchange type
     useEffect(() => {
         const isSelectedDexButFoundOnlyCex =
-            exchangeType === TRADING_EXCHANGE_FORM_DEX && !dexQuotes?.length && cexQuotes?.length;
+            exchangeType === TRADING_EXCHANGE_FORM_DEX && !dexQuotes.length && cexQuotes.length;
         const isSelectedCexButFoundOnlyDex =
-            exchangeType === TRADING_EXCHANGE_FORM_CEX && dexQuotes?.length && !cexQuotes?.length;
+            exchangeType === TRADING_EXCHANGE_FORM_CEX && dexQuotes.length && !cexQuotes.length;
         const isSelectedDexButNotFoundAny =
-            exchangeType === TRADING_EXCHANGE_FORM_DEX && !dexQuotes?.length && !cexQuotes?.length;
+            exchangeType === TRADING_EXCHANGE_FORM_DEX && !dexQuotes.length && !cexQuotes.length;
 
         if (isSelectedDexButFoundOnlyCex) {
             setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX);

@@ -103,12 +103,6 @@ describe('exchangeUtils', () => {
     describe('getCexQuotesByRateType', () => {
         it.each([
             [
-                'should return  undefined when quotes are undefined',
-                'fixed' as const,
-                undefined,
-                undefined,
-            ],
-            [
                 'should return fixed rate quotes',
                 'fixed' as const,
                 exchangeUtilsFixtures.MIN_MAX_QUOTES_OK,

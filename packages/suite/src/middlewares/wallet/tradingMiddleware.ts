@@ -5,12 +5,12 @@ import {
     invityAPI,
     tradingActions,
     tradingBuyActions,
+    tradingExchangeActions,
 } from '@suite-common/trading';
 
 import { ROUTER } from 'src/actions/suite/constants';
-import { TRADING_COMMON, TRADING_EXCHANGE, TRADING_SELL } from 'src/actions/wallet/constants';
+import { TRADING_COMMON, TRADING_SELL } from 'src/actions/wallet/constants';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
-import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
 import * as tradingInfoAction from 'src/actions/wallet/tradingInfoActions';
 import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
@@ -27,6 +27,8 @@ export const getAccountAccordingToRoute = (state: AppState) => {
         accounts,
         trading: {
             sell: { tradingAccountKey: sellSelectedAccountKey },
+        },
+        tradingNew: {
             exchange: { tradingAccountKey: exchangeSelectedAccountKey },
         },
     } = state.wallet;
@@ -45,7 +47,6 @@ export const tradingMiddleware =
     (action: Action): Action => {
         const state = api.getState();
         const { isLoading, lastLoadedTimestamp, modalAccountKey } = state.wallet.trading;
-        const { exchangeInfo } = state.wallet.trading.exchange;
         const { sellInfo } = state.wallet.trading.sell;
         const isRouteChange = action.type === ROUTER.LOCATION_CHANGE;
 
@@ -86,14 +87,6 @@ export const tradingMiddleware =
                     );
                 }
 
-                if (isDifferentAccount || !exchangeInfo) {
-                    loadPromises.push(
-                        tradingExchangeActions.loadExchangeInfo().then(exchangeInfo => {
-                            api.dispatch(tradingExchangeActions.saveExchangeInfo(exchangeInfo));
-                        }),
-                    );
-                }
-
                 if (isDifferentAccount || !sellInfo) {
                     loadPromises.push(
                         tradingSellActions.loadSellInfo().then(sellInfo => {
@@ -119,7 +112,7 @@ export const tradingMiddleware =
             const isBuy = routeName === 'wallet-trading-buy';
             const isSell = routeName === 'wallet-trading-sell';
             const isExchange = routeName === 'wallet-trading-exchange';
-            const newModalAccountKey = newState.wallet.trading.modalAccountKey;
+            const newModalAccountKey = newState.wallet.tradingNew.modalAccountKey;
 
             // it is necessary to clear the state because it could affect the other modal state
             if (!isTradingRoute && (modalAccountKey || newModalAccountKey)) {
@@ -129,6 +122,7 @@ export const tradingMiddleware =
 
             if (isBuy) {
                 api.dispatch(tradingCommonActions.setActiveSection('buy'));
+                api.dispatch(tradingActions.setTradingActiveSection('buy'));
 
                 api.dispatch(tradingBuyActions.saveTransactionId(undefined));
 
@@ -150,6 +144,7 @@ export const tradingMiddleware =
 
             if (isExchange) {
                 api.dispatch(tradingCommonActions.setActiveSection('exchange'));
+                api.dispatch(tradingActions.setTradingActiveSection('exchange'));
                 api.dispatch(tradingExchangeActions.saveTransactionId(undefined));
             }
 
@@ -170,7 +165,7 @@ export const tradingMiddleware =
 
         // after an account change in the Sell or Swap update the invityAPIKey based on the account
         if (
-            action.type === TRADING_EXCHANGE.SET_TRADING_ACCOUNT_KEY ||
+            action.type === tradingExchangeActions.setTradingAccountKey.type ||
             action.type === TRADING_SELL.SET_TRADING_ACCOUNT_KEY
         ) {
             const account = getAccountAccordingToRoute(newState);

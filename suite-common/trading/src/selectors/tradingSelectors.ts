@@ -13,6 +13,7 @@ import {
     InvityServerEnvironment,
     TradingFiatCurrenciesProps,
     TradingPaymentMethodProps,
+    TradingType,
 } from '../types';
 import {
     cryptoIdToNetwork,
@@ -299,3 +300,27 @@ export const selectTradingExchangeFormStep = (state: TradingRootState) =>
 
 export const selectTradingComposedTransactionInfo = (state: TradingRootState) =>
     state.wallet.tradingNew.composedTransactionInfo;
+
+export const selectTradingAccountAccordingActiveSection = createMemoizedSelector(
+    [
+        selectTradingExchange,
+        ({ wallet }) => wallet.accounts,
+        (
+            _: TradingRootState,
+            activeSection: TradingType,
+            selectedAccount: SelectedAccountStatus,
+        ) => ({
+            selectedAccount,
+            activeSection,
+        }),
+    ],
+    (tradingExchange, accounts, params) => {
+        if (params.activeSection === 'exchange') {
+            return accounts.find(account => account.key === tradingExchange.tradingAccountKey);
+        }
+
+        if (params.activeSection === 'sell') return; // TODO: trading - sell
+
+        return params.selectedAccount.account;
+    },
+);

@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import {
+    type TradingState as TradingNewState,
     invityAPI,
     prepareTradingReducer,
     initialState as tradingNewInitialState,
@@ -19,7 +20,6 @@ import { initialState, tradingReducer } from 'src/reducers/wallet/tradingReducer
 import { Action } from 'src/types/suite';
 
 // TODO: trading - refactor after/during moving to suite-common
-
 jest.mock('@suite-common/trading', () => {
     const originalModule = jest.requireActual('@suite-common/trading');
 
@@ -37,24 +37,26 @@ invityAPI.getInfo = () =>
         platforms: {},
     });
 
+const tradingNewReducer = prepareTradingReducer(extraDependenciesMock);
+
 const ACCOUNT = {
     descriptor: 'btc-descriptor',
 };
 
-const TRADING_EXCHANGE_ROUTE = {
+const TRADING_SELL_ROUTE = {
     anchor: undefined,
     app: 'wallet',
     hash: '/btc/0/normal',
     loaded: true,
     params: { symbol: 'btc', accountIndex: 0, accountType: 'normal' },
-    pathname: '/accounts/coinmarket/exchange',
+    pathname: '/accounts/coinmarket/sell',
     route: {
-        name: 'wallet-trading-exchange',
-        pattern: '/accounts/coinmarket/exchange',
+        name: 'wallet-trading-sell',
+        pattern: '/accounts/coinmarket/sell',
         app: 'wallet',
     },
     settingsBackRoute: { name: 'wallet-index', params: undefined },
-    url: '/accounts/coinmarket/exchange#/btc/0/normal',
+    url: '/accounts/coinmarket/sell#/btc/0/normal',
 };
 
 const DEFAULT_ROUTE = {
@@ -75,17 +77,23 @@ type SuiteState = ReturnType<typeof suiteReducer>;
 
 interface Args {
     trading?: TradingState;
+    tradingNew?: TradingNewState;
     selectedAccount?: SelectedAccountState;
     settings?: SuiteState['settings'];
     router?: RouterState;
     modal?: ModalState;
 }
 
-const getInitialState = ({ trading, selectedAccount, router }: Args = {}) => ({
+const getInitialState = ({ trading, tradingNew, selectedAccount, router }: Args = {}) => ({
     wallet: {
-        tradingNew: tradingNewInitialState,
         trading:
             trading ??
+            ({
+                isLoading: false,
+                lastLoadedTimestamp: 0,
+            } as any),
+        tradingNew:
+            tradingNew ??
             ({
                 isLoading: false,
                 lastLoadedTimestamp: 0,
@@ -119,7 +127,7 @@ const initStore = (state: State) => {
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: tradingReducer,
-                tradingNew: prepareTradingReducer(extraDependenciesMock),
+                tradingNew: tradingNewReducer,
                 selectedAccount: selectedAccountReducer,
             }),
             suite: suiteReducer,
@@ -129,14 +137,17 @@ const initStore = (state: State) => {
         preloadedState: {
             wallet: {
                 trading: { ...initialState, ...trading },
-                tradingNew,
+                tradingNew: {
+                    ...tradingNewInitialState,
+                    ...tradingNew,
+                },
                 selectedAccount,
             },
             suite: {
                 settings,
             } as any,
-            router: (state.router ? { ...state.router } : {}) as any,
-            modal: (state.modal ? { ...state.modal } : {}) as any,
+            router: state.router ? { ...state.router } : {},
+            modal: state.modal ? { ...state.modal } : {},
         },
         middleware: [tradingMiddleware],
     });
@@ -161,11 +172,7 @@ describe('tradingMiddleware', () => {
             'setInvityServersEnvironment',
         );
 
-        const store = initStore(
-            getInitialState({
-                trading: initialState,
-            }),
-        );
+        const store = initStore(getInitialState());
 
         store.dispatch({ type: TRADING_COMMON.LOAD_DATA });
         expect(store.getActions()).toEqual([
@@ -238,7 +245,7 @@ describe('tradingMiddleware', () => {
                     modalAccountKey: accounts[0].key,
                     lastLoadedTimestamp: Date.now(),
                 },
-                router: routerReducer(TRADING_EXCHANGE_ROUTE as RouterState, {} as Action),
+                router: routerReducer(TRADING_SELL_ROUTE as RouterState, {} as Action),
             }),
         );
 
@@ -273,10 +280,10 @@ describe('tradingMiddleware', () => {
         store.dispatch({
             type: ROUTER.LOCATION_CHANGE,
             payload: {
-                ...TRADING_EXCHANGE_ROUTE,
+                ...TRADING_SELL_ROUTE,
             },
         });
 
-        expect(store.getState().wallet.trading.activeSection).toBe('exchange');
+        expect(store.getState().wallet.trading.activeSection).toBe('sell');
     });
 });

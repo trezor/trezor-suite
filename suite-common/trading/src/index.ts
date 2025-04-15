@@ -8,6 +8,7 @@ export * from './utils/exchange/exchangeUtils';
 export * from './constants';
 export * from './reducers/tradingReducer';
 export * from './reducers/buyReducer';
+export * from './reducers/exchangeReducer';
 export * from './selectors/tradingSelectors';
 export * from './thunks';
 export * from './hooks/useTradingInfo';

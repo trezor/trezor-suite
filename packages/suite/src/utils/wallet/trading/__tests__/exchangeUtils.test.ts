@@ -1,8 +1,8 @@
 import { CryptoId, ExchangeTradeQuoteRequest } from 'invity-api';
 
+import { TradingComposedTransactionInfo } from '@suite-common/trading';
 import { Account } from '@suite-common/wallet-types';
 
-import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
 import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 
 describe('exchangeUtils', () => {
@@ -28,7 +28,7 @@ describe('exchangeUtils', () => {
             maxPriorityFeePerGas: '3',
             feeLimit: '4',
         },
-    } as ComposedTransactionInfo;
+    } as TradingComposedTransactionInfo;
     const mockQuoteId = 'quoteId';
 
     describe('createQuoteLink', () => {

@@ -1,24 +1,10 @@
-import {
-    CryptoId,
-    ExchangeTradeQuoteRequest,
-    InfoResponse,
-    SellFiatTradeQuoteRequest,
-} from 'invity-api';
+import { CryptoId, InfoResponse, SellFiatTradeQuoteRequest } from 'invity-api';
 
-import type { TradingTransactionExchange } from '@suite-common/trading';
+import type { TradingTransactionSell } from '@suite-common/trading';
 
 import { STORAGE } from 'src/actions/suite/constants';
-import {
-    TRADING_COMMON,
-    TRADING_EXCHANGE,
-    TRADING_INFO,
-    TRADING_SELL,
-} from 'src/actions/wallet/constants';
-import { ExchangeInfo } from 'src/actions/wallet/tradingExchangeActions';
-import {
-    exchangeQuotes,
-    sellQuotes,
-} from 'src/reducers/wallet/__fixtures__/tradingReducerFixtures';
+import { TRADING_COMMON, TRADING_INFO, TRADING_SELL } from 'src/actions/wallet/constants';
+import { sellQuotes } from 'src/reducers/wallet/__fixtures__/tradingReducerFixtures';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 import { initialState, tradingReducer } from 'src/reducers/wallet/tradingReducer';
 
@@ -141,74 +127,19 @@ describe('settings reducer', () => {
         });
     });
 
-    it('TRADING_EXCHANGE.EXCHANGE_QUOTES', () => {
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_EXCHANGE.SAVE_QUOTES,
-                quotes: exchangeQuotes,
-            }),
-        ).toEqual({
-            ...initialState,
-            exchange: { ...initialState.exchange, quotes: exchangeQuotes },
-        });
-    });
-
-    it('TRADING_EXCHANGE.SAVE_EXCHANGE_INFO', () => {
-        const exchangeInfo: ExchangeInfo = {
-            providerInfos: {},
-            buySymbols: ['BTC', 'ETH'] as CryptoId[],
-            sellSymbols: ['USDT@ETH'] as CryptoId[],
-        };
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_EXCHANGE.SAVE_EXCHANGE_INFO,
-                exchangeInfo,
-            }),
-        ).toEqual({ ...initialState, exchange: { ...initialState.exchange, exchangeInfo } });
-    });
-
-    it('TRADING_EXCHANGE.SAVE_QUOTE_REQUEST', () => {
-        const request: ExchangeTradeQuoteRequest = {
-            receive: 'BTC' as CryptoId,
-            send: 'LTC' as CryptoId,
-            sendStringAmount: '1',
-        };
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_EXCHANGE.SAVE_QUOTE_REQUEST,
-                request,
-            }),
-        ).toEqual({
-            ...initialState,
-            exchange: { ...initialState.exchange, quotesRequest: request },
-        });
-    });
-
-    it('TRADING_EXCHANGE.VERIFY_ADDRESS', () => {
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_EXCHANGE.VERIFY_ADDRESS,
-                addressVerified: '2efghi',
-            }),
-        ).toEqual({
-            ...initialState,
-            exchange: { ...initialState.exchange, addressVerified: '2efghi' },
-        });
-    });
-
     it('SAVE_TRADE', () => {
-        const tradeExchange: TradingTransactionExchange = {
+        const tradeSell: TradingTransactionSell = {
             date: 'ddd',
             key: 'exchange-key',
-            tradeType: 'exchange',
+            tradeType: 'sell',
             data: {
-                sendStringAmount: '47.12',
-                send: 'LTC' as CryptoId,
-                receive: 'BTC' as CryptoId,
-                receiveStringAmount: '0.004705020432603938',
+                cryptoStringAmount: '1.22',
+                fiatStringAmount: '100',
+                fiatCurrency: 'USD',
+                cryptoCurrency: 'bitcoin' as CryptoId,
                 orderId: 'd369ba9e-7370-4a6e-87dc-aefd3851c735',
                 exchange: 'changelly',
-                status: 'CONFIRMING',
+                status: 'SEND_CRYPTO',
             },
             account: {
                 symbol: 'btc',
@@ -218,25 +149,25 @@ describe('settings reducer', () => {
             },
         };
 
-        const updatedTradeExchange = {
-            ...tradeExchange,
-            data: { ...tradeExchange.data, statutus: 'CONVERTING' },
+        const updatedTradeSell = {
+            ...tradeSell,
+            data: { ...tradeSell.data, status: 'REQUESTING' as const },
         };
 
         expect(
             tradingReducer(
                 {
                     ...initialState,
-                    trades: [tradeExchange],
+                    trades: [tradeSell],
                 },
                 {
                     type: TRADING_COMMON.SAVE_TRADE,
-                    ...updatedTradeExchange,
+                    ...updatedTradeSell,
                 },
             ),
         ).toEqual({
             ...initialState,
-            trades: [updatedTradeExchange],
+            trades: [updatedTradeSell],
         });
     });
 
@@ -294,21 +225,6 @@ describe('settings reducer', () => {
         });
     });
 
-    it('TRADING_EXCHANGE.SAVE_QUOTE', () => {
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_EXCHANGE.SAVE_QUOTE,
-                quote: exchangeQuotes[0],
-            }),
-        ).toEqual({
-            ...initialState,
-            exchange: {
-                ...initialState.exchange,
-                selectedQuote: exchangeQuotes[0],
-            },
-        });
-    });
-
     it('TRADING_SELL.SET_TRADING_ACCOUNT', () => {
         expect(
             tradingReducer(undefined, {
@@ -319,21 +235,6 @@ describe('settings reducer', () => {
             ...initialState,
             sell: {
                 ...initialState.sell,
-                tradingAccountKey: accounts[0].key,
-            },
-        });
-    });
-
-    it('TRADING_EXCHANGE.SET_TRADING_ACCOUNT', () => {
-        expect(
-            tradingReducer(undefined, {
-                type: TRADING_EXCHANGE.SET_TRADING_ACCOUNT_KEY,
-                accountKey: accounts[0].key,
-            }),
-        ).toEqual({
-            ...initialState,
-            exchange: {
-                ...initialState.exchange,
                 tradingAccountKey: accounts[0].key,
             },
         });

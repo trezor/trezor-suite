@@ -4,7 +4,9 @@ import { TradingPaymentMethodProps } from '@suite-common/trading';
 
 import coins from '../../__fixtures__/coins.json';
 import platforms from '../../__fixtures__/platforms.json';
+import { accountBtc, accountEth } from '../../__fixtures__/utils';
 import { TradingBuyState } from '../../reducers/buyReducer';
+import { exchangeInitialState } from '../../reducers/exchangeReducer';
 import { initialState } from '../../reducers/tradingReducer';
 import { TradingPaymentMethodListProps } from '../../types';
 import {
@@ -12,6 +14,7 @@ import {
     selectBestBuyQuoteByPaymentMethod,
     selectBuyQuotesByPaymentMethod,
     selectTrading,
+    selectTradingAccountAccordingActiveSection,
     selectTradingBuy,
     selectTradingBuyInfo,
     selectTradingBuyIsLoading,
@@ -125,6 +128,10 @@ describe('tradingSelectors', () => {
                         coins: coins as Coins,
                         platforms: platforms as Platforms,
                     },
+                    exchange: {
+                        ...exchangeInitialState,
+                        tradingAccountKey: accountEth.key,
+                    },
                     trades: [{ tradeType: 'buy' }],
                     composedTransactionInfo: {
                         composed: {
@@ -133,6 +140,11 @@ describe('tradingSelectors', () => {
                         selectedFee: 'normal',
                     },
                 },
+                selectedAccount: {
+                    account: accountBtc,
+                    status: 'loaded',
+                },
+                accounts: [accountEth],
             },
             suite: {
                 settings: {
@@ -538,6 +550,42 @@ describe('tradingSelectors', () => {
                 feePerByte: '1',
             },
             selectedFee: 'normal',
+        });
+    });
+
+    describe('selectTradingAccountAccordingActiveSection', () => {
+        it('should return correct account for buy', () => {
+            expect(
+                selectTradingAccountAccordingActiveSection(
+                    state,
+                    'buy',
+                    state.wallet.selectedAccount,
+                ),
+            ).toEqual(state.wallet.selectedAccount.account);
+        });
+
+        it('should return correct account for exchange according to tradingAccountKey', () => {
+            expect(
+                selectTradingAccountAccordingActiveSection(
+                    state,
+                    'exchange',
+                    state.wallet.selectedAccount,
+                ),
+            ).toEqual(
+                state.wallet.accounts.find(
+                    account => account.key === state.wallet.tradingNew.exchange.tradingAccountKey,
+                ),
+            );
+        });
+
+        it('should return correct account for sell according to tradingAccountKey', () => {
+            expect(
+                selectTradingAccountAccordingActiveSection(
+                    state,
+                    'sell',
+                    state.wallet.selectedAccount,
+                ),
+            ).toBeUndefined();
         });
     });
 });

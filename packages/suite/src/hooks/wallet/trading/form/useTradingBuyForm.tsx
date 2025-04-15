@@ -31,8 +31,8 @@ import {
     FORM_FIAT_INPUT,
 } from 'src/constants/wallet/trading/form';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useTradingBuyHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingBuyHandleChange';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
-import { useTradingHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingHandleChange';
 import { useTradingModalCrypto } from 'src/hooks/wallet/trading/form/common/useTradingModalCrypto';
 import { useTradingPreviousRoute } from 'src/hooks/wallet/trading/form/common/useTradingPreviousRoute';
 import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
@@ -42,7 +42,10 @@ import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { Dispatch } from 'src/types/suite';
 import { UseTradingFormProps } from 'src/types/trading/trading';
-import { TradingBuyFormContextProps } from 'src/types/trading/tradingForm';
+import {
+    TradingBuyConfirmTradeProps,
+    TradingBuyFormContextProps,
+} from 'src/types/trading/tradingForm';
 import { createQuoteLink, createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 import { useTradingInitializer } from './common/useTradingInitializer';
@@ -141,7 +144,7 @@ export const useTradingBuyForm = ({
         },
     });
 
-    const { handleChange } = useTradingHandleChange({
+    const { handleChange } = useTradingBuyHandleChange({
         formValues: values as TradingBuyFormProps,
         network,
         timer,
@@ -192,7 +195,7 @@ export const useTradingBuyForm = ({
         );
     };
 
-    const confirmTrade = async (address: string) => {
+    const confirmTrade = async ({ receiveAddress }: TradingBuyConfirmTradeProps) => {
         if (!selectedQuote) return;
 
         const returnUrl = await createTxLink(selectedQuote, account);
@@ -224,7 +227,7 @@ export const useTradingBuyForm = ({
 
         await dispatch(
             buyThunks.confirmTradeThunk({
-                address,
+                address: receiveAddress,
                 returnUrl,
                 account,
                 processResponseData,

@@ -2,7 +2,6 @@ import { DeviceReducerState } from '@suite-common/wallet-core';
 import type { DeepPartial } from '@trezor/type-utils';
 
 import { DEFAULT_STORE } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
-import { VERIFY_EXCHANGE_ADDRESS_FIXTURES } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/verifyAddress';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { accountsReducer, transactionsReducer } from 'src/reducers/wallet';
@@ -53,27 +52,6 @@ const initStore = (state: State) => {
 describe('Trading Common Actions', () => {
     afterEach(() => {
         jest.clearAllMocks();
-    });
-
-    VERIFY_EXCHANGE_ADDRESS_FIXTURES.forEach(f => {
-        it(f.description, async () => {
-            const store = initStore(getInitialState(f.initialState));
-
-            await store.dispatch(
-                tradingCommonActions.verifyAddress(
-                    f.params.account,
-                    f.params.address,
-                    f.params.path,
-                    f.params.tradingAction,
-                ),
-            );
-            expect(store.getState().wallet.trading.exchange.addressVerified).toEqual(
-                f.result.value,
-            );
-            if (f.result && f.result.action) {
-                expect(store.getActions().pop()).toMatchObject(f.result.action);
-            }
-        });
     });
 
     it('saveComposedTransaction', () => {

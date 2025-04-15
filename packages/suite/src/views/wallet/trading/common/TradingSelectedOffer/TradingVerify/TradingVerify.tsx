@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react';
 import { CryptoId } from 'invity-api';
 
 import {
-    TradingExchangeType,
+    TradingTradeBuyExchangeType,
     cryptoIdToNetwork,
     tradingBuyActions,
     useTradingInfo,
@@ -37,7 +37,7 @@ interface TradingVerifyProps {
 export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const context = useTradingFormContext<TradingExchangeType>();
+    const context = useTradingFormContext<TradingTradeBuyExchangeType>();
     const { cryptoIdToNativeCoinSymbol, cryptoIdToSymbolAndContractAddress } = useTradingInfo(
         context.type,
     );
@@ -251,7 +251,10 @@ export const TradingVerify = ({ tradingVerifyAccount, cryptoId }: TradingVerifyP
                             isLoading={callInProgress}
                             onClick={() => {
                                 if (address) {
-                                    confirmTrade(address, extraField);
+                                    confirmTrade({
+                                        receiveAddress: address,
+                                        extraField,
+                                    });
                                 }
                             }}
                             isDisabled={isButtonDisabled}

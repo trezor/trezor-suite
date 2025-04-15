@@ -1,9 +1,0 @@
-export const SAVE_EXCHANGE_INFO = '@trading-exchange/save_exchange_info';
-export const SAVE_QUOTE_REQUEST = '@trading-exchange/save_exchange_quote_request';
-export const SAVE_QUOTES = '@trading-exchange/save_exchange_quotes';
-export const SAVE_QUOTE = '@trading-exchange/save_exchange_quote';
-export const CLEAR_QUOTES = '@trading-exchange/clear_exchange_quotes';
-export const VERIFY_ADDRESS = '@trading-exchange/verify_address';
-export const SAVE_TRANSACTION_ID = '@trading-exchange/save_transaction_id';
-export const SET_IS_FROM_REDIRECT = '@trading-exchange/set_is_from_redirect';
-export const SET_TRADING_ACCOUNT_KEY = '@trading-exchange/set_trading_account_key';

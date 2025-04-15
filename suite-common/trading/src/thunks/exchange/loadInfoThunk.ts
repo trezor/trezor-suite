@@ -14,7 +14,7 @@ export const loadInfoThunk = createThunk<ExchangeInfo>(
         const buyCryptoIds: CryptoId[] = [];
         const sellCryptoIds: CryptoId[] = [];
 
-        if (!exchangeList || exchangeList.length === 0) {
+        if (!Array.isArray(exchangeList)) {
             return fulfillWithValue({ providerInfos, buyCryptoIds, sellCryptoIds });
         }
 

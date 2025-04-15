@@ -1,13 +1,8 @@
 import { CryptoId } from 'invity-api';
 
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { type TradingType, getUnusedAddressFromAccount } from '@suite-common/trading';
-import {
-    confirmAddressOnDeviceThunk,
-    selectSelectedDevice,
-    toggleRememberDevice,
-} from '@suite-common/wallet-core';
-import { AccountKey, AddressDisplayOptions, Output } from '@suite-common/wallet-types/src';
+import { type TradingType } from '@suite-common/trading';
+import { selectSelectedDevice, toggleRememberDevice } from '@suite-common/wallet-core';
+import { AccountKey, Output } from '@suite-common/wallet-types/src';
 import {
     amountToSmallestUnit,
     formatAmount,
@@ -18,13 +13,10 @@ import {
 import { PROTO } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
-import * as modalActions from 'src/actions/suite/modalActions';
-import { TRADING_COMMON, TRADING_EXCHANGE } from 'src/actions/wallet/constants';
+import { TRADING_COMMON } from 'src/actions/wallet/constants';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
-import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/tradingReducer';
 import { Dispatch, GetState } from 'src/types/suite';
-import { Account } from 'src/types/wallet';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 
 export type TradingCommonAction =
@@ -78,68 +70,6 @@ export const setActiveSection = (activeSection: TradingType): TradingCommonActio
     type: TRADING_COMMON.SET_TRADING_ACTIVE_SECTION,
     activeSection,
 });
-
-export const verifyAddress =
-    (
-        account: Account,
-        address: string | undefined,
-        path: string | undefined,
-        tradingAction: typeof TRADING_EXCHANGE.VERIFY_ADDRESS,
-    ) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const device = selectSelectedDevice(getState());
-        if (!device || !account) return;
-        const accountAddress = getUnusedAddressFromAccount(account);
-        address = address ?? accountAddress.address;
-        path = path ?? accountAddress.path;
-        if (!path || !address) return;
-
-        dispatch(setTradingModalAccountKey(account.key));
-
-        const addressDisplayType = selectAddressDisplayType(getState());
-
-        const { useEmptyPassphrase, connected, available } = device;
-
-        // Show warning when device is not connected
-        if (!connected || !available) {
-            dispatch(
-                modalActions.openModal({
-                    type: 'unverified-address-proceed',
-                    value: address,
-                }),
-            );
-
-            return;
-        }
-
-        const params = {
-            device,
-            accountKey: account.key,
-            addressPath: path,
-            useEmptyPassphrase,
-            coin: account.symbol,
-            chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
-        };
-
-        const response = await dispatch(confirmAddressOnDeviceThunk(params)).unwrap();
-
-        if (response.success) {
-            dispatch({
-                type: tradingAction,
-                addressVerified: address,
-            });
-        } else {
-            // special case: device no-backup permissions not granted
-            if (response.payload.code === 'Method_PermissionsNotGranted') return;
-
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'verify-address-error',
-                    error: response.payload.error,
-                }),
-            );
-        }
-    };
 
 export const saveComposedTransactionInfo = (
     info: ComposedTransactionInfo,

@@ -8,7 +8,7 @@ import { Timer } from '@trezor/react-utils';
 import { FORM_PAYMENT_METHOD_SELECT } from 'src/constants/wallet/trading/form';
 import { useDispatch } from 'src/hooks/suite';
 
-type TradingUseHandleChangeProps = {
+type TradingBuyUseHandleChangeProps = {
     formValues: TradingBuyFormProps;
     network: Network;
     timer: Timer;
@@ -25,13 +25,13 @@ type PromiseType = {
  * Wrapping the handleRequestThunk to have a better control
  * over the request.
  */
-export const useTradingHandleChange = ({
+export const useTradingBuyHandleChange = ({
     formValues,
     network,
     timer,
     shouldSendInSats,
     setValue,
-}: TradingUseHandleChangeProps) => {
+}: TradingBuyUseHandleChangeProps) => {
     const dispatch = useDispatch();
     const previousPromise = useRef<PromiseType>(null);
 

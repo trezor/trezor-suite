@@ -94,7 +94,7 @@ export const watchTradeThunk = createThunk(
 
                 if (!data) return;
 
-                if (data.tradeData) {
+                if (data.response.sendAddress) {
                     data.tradeData.sendAddress = data.response.sendAddress;
                     data.tradeData.partnerPaymentExtraId = data.response.partnerPaymentExtraId;
                 }

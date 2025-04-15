@@ -1,12 +1,14 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
-import { buyThunks } from '../../';
-import { accountBtc } from '../../../__fixtures__/utils';
+import { buyThunks, exchangeThunks } from '../../';
+import { accountBtc, accountEth } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { tradingBuyActions } from '../../../reducers/buyReducer';
+import { exchangeInitialState, tradingExchangeActions } from '../../../reducers/exchangeReducer';
 import {
     TradingState,
     initialState,
@@ -34,6 +36,8 @@ const mockedSelectedAccountReducer = createReducer<SelectedAccountState>(
     () => {},
 );
 
+const mockedAccountReducer = prepareAccountsReducer(extraDependenciesMock);
+
 const mockedSuiteReducer = createReducer(
     {
         settings: {
@@ -57,6 +61,7 @@ const initStore = (localInitialState?: Partial<TradingState>) =>
             wallet: combineReducers({
                 tradingNew: tradingReducer,
                 selectedAccount: mockedSelectedAccountReducer,
+                accounts: mockedAccountReducer,
             }),
             suite: mockedSuiteReducer,
         }),
@@ -66,6 +71,7 @@ const initStore = (localInitialState?: Partial<TradingState>) =>
                     ...initialState,
                     ...localInitialState,
                 },
+                accounts: [accountEth],
             },
         },
     });
@@ -105,6 +111,12 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
         supportedCryptoCurrencies: [],
     };
 
+    const mockExchangeInfo = {
+        providerInfos: {},
+        buyCryptoIds: [],
+        sellCryptoIds: [],
+    };
+
     expect(store.getActions()).toEqual([
         {
             payload: undefined,
@@ -132,6 +144,13 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
                 platforms: {},
             },
         },
+        {
+            type: '@trading-info/save-info',
+            info: {
+                coins: {},
+                platforms: {},
+            },
+        },
         { type: buyThunks.loadInfoThunk.pending.type, payload: undefined },
         {
             type: buyThunks.loadInfoThunk.fulfilled.type,
@@ -140,6 +159,15 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
         {
             type: tradingBuyActions.saveBuyInfo.type,
             payload: mockBuyInfo,
+        },
+        { type: exchangeThunks.loadInfoThunk.pending.type, payload: undefined },
+        {
+            type: exchangeThunks.loadInfoThunk.fulfilled.type,
+            payload: mockExchangeInfo,
+        },
+        {
+            type: tradingExchangeActions.saveExchangeInfo.type,
+            payload: mockExchangeInfo,
         },
         {
             payload: {
@@ -223,9 +251,13 @@ describe('loadInitialDataThunk', () => {
     it('should update active section', async () => {
         const store = initStore({
             lastLoadedTimestamp: Date.now(),
+            exchange: {
+                ...exchangeInitialState,
+                tradingAccountKey: accountEth.key,
+            },
         });
 
-        await store.dispatch(loadInitialDataThunk({ activeSection: 'exchange' }));
+        await store.dispatch(loadInitialDataThunk({ activeSection: 'exchange' })).unwrap();
 
         expect(store.getState().wallet.tradingNew.activeSection).toBe('exchange');
     });

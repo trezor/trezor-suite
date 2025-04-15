@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import { TradingExchangeFormProps } from '@suite-common/trading';
+import { TradingExchangeFormProps, tradingActions } from '@suite-common/trading';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
@@ -148,6 +148,12 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             }
 
             dispatch(saveComposedTransactionInfo({ selectedFee: selectedFeeLevel, composed }));
+            dispatch(
+                tradingActions.saveComposedTransactionInfo({
+                    selectedFee: selectedFeeLevel,
+                    composed,
+                }),
+            );
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit, { shouldDirty: true });
         }
     }, [

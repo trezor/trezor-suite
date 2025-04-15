@@ -2,17 +2,18 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { selectTradingBuyProviders, selectTradingTrades } from '@suite-common/trading';
+import {
+    selectTradingBuyProviders,
+    selectTradingExchangeInfo,
+    selectTradingTrades,
+} from '@suite-common/trading';
 import { H3, Paragraph, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
-import {
-    selectTradingExchangeInfo,
-    selectTradingSellInfo,
-} from 'src/reducers/wallet/tradingReducer';
+import { selectTradingSellInfo } from 'src/reducers/wallet/tradingReducer';
 import { TradingTransactionExchange } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionExchange';
 import { TradingTransactionBuy } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsBuy';
 import { TradingTransactionSell } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransactionsSell';
@@ -44,15 +45,15 @@ export const TradingTransactionsList = () => {
     const exchangeProviders = useSelector(selectTradingExchangeInfo)?.providerInfos;
     const sellProviders = useSelector(selectTradingSellInfo)?.providerInfos;
     const isBuyAndSell = activeSection !== 'exchange';
-    const newTradingBuyTransactions = newTradingAllTransactions.filter(
-        transaction => transaction.tradeType === 'buy',
+    const newTradingTransactions = newTradingAllTransactions.filter(
+        transaction => transaction.tradeType !== 'sell',
     );
-    const oldTradingSellAndExchange = oldTradingAllTransactions.filter(
-        transaction => transaction.tradeType !== 'buy',
+    const oldTradingTransactions = oldTradingAllTransactions.filter(
+        transaction => transaction.tradeType === 'sell',
     );
     const allTransactions = useMemo(
-        () => [...oldTradingSellAndExchange, ...newTradingBuyTransactions],
-        [oldTradingSellAndExchange, newTradingBuyTransactions],
+        () => [...oldTradingTransactions, ...newTradingTransactions],
+        [oldTradingTransactions, newTradingTransactions],
     );
 
     useTradingLoadData();

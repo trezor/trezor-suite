@@ -80,10 +80,9 @@ const floatRateCexQuotes = (quotes: ExchangeTrade[], exchangeInfo: ExchangeInfo 
 
 const getCexQuotesByRateType = (
     rateType: TradingExchangeRateType,
-    quotes: ExchangeTrade[] | undefined,
+    quotes: ExchangeTrade[],
     exchangeInfo: ExchangeInfo | undefined,
 ) => {
-    if (!quotes) return undefined;
     if (rateType === TRADING_EXCHANGE_RATE_FIXED) return fixedRateCexQuotes(quotes, exchangeInfo);
 
     return floatRateCexQuotes(quotes, exchangeInfo);

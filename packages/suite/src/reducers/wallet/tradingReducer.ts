@@ -2,8 +2,6 @@ import { produce } from 'immer';
 import type {
     Coins,
     CryptoId,
-    ExchangeTrade,
-    ExchangeTradeQuoteRequest,
     Platforms,
     SellFiatTrade,
     SellFiatTradeQuoteRequest,
@@ -15,21 +13,13 @@ import {
     type TradingTransaction,
     type TradingType,
     selectTradingBuyInfo,
+    selectTradingExchangeInfo,
 } from '@suite-common/trading';
 import type { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import type { FeeLevel } from '@trezor/connect';
 
 import { STORAGE } from 'src/actions/suite/constants';
-import {
-    TRADING_COMMON,
-    TRADING_EXCHANGE,
-    TRADING_INFO,
-    TRADING_SELL,
-} from 'src/actions/wallet/constants';
-import type {
-    ExchangeInfo,
-    TradingExchangeInfoSelector,
-} from 'src/actions/wallet/tradingExchangeActions';
+import { TRADING_COMMON, TRADING_INFO, TRADING_SELL } from 'src/actions/wallet/constants';
 import type { SellInfo, TradingSellInfoSelector } from 'src/actions/wallet/tradingSellActions';
 import { AppState } from 'src/reducers/store';
 import { Action } from 'src/types/suite';
@@ -58,17 +48,6 @@ interface Info {
     paymentMethods: TradingPaymentMethodListProps[];
 }
 
-interface Exchange extends TradingTradeCommonProps {
-    exchangeInfo?: ExchangeInfo;
-    quotesRequest?: ExchangeTradeQuoteRequest;
-    quotes: ExchangeTrade[] | undefined;
-    addressVerified: string | undefined;
-    // internal selected account key in trading section
-    tradingAccountKey?: AccountKey;
-    selectedQuote: ExchangeTrade | undefined;
-    isFromRedirect: boolean;
-}
-
 interface Sell extends TradingTradeCommonProps {
     sellInfo?: SellInfo;
     quotesRequest?: SellFiatTradeQuoteRequest;
@@ -82,7 +61,6 @@ interface Sell extends TradingTradeCommonProps {
 
 export interface State {
     info: Info;
-    exchange: Exchange;
     sell: Sell;
     composedTransactionInfo: ComposedTransactionInfo;
     trades: TradingTransaction[];
@@ -100,16 +78,6 @@ export const initialState: State = {
         coins: undefined,
         paymentMethods: [],
     },
-    exchange: {
-        exchangeInfo: undefined,
-        transactionId: undefined,
-        quotesRequest: undefined,
-        quotes: [],
-        addressVerified: undefined,
-        tradingAccountKey: undefined,
-        selectedQuote: undefined,
-        isFromRedirect: false,
-    },
     sell: {
         sellInfo: undefined,
         quotesRequest: undefined,
@@ -125,7 +93,7 @@ export const initialState: State = {
     modalAccountKey: undefined,
     modalCryptoId: undefined,
     lastLoadedTimestamp: 0,
-    activeSection: 'buy',
+    activeSection: 'sell',
     prefilledFromCryptoId: undefined,
 };
 
@@ -152,30 +120,6 @@ export const tradingReducer = (state: State = initialState, action: Action): Sta
                     trades.push(trade);
                     draft.trades = trades;
                 }
-                break;
-            case TRADING_EXCHANGE.SAVE_EXCHANGE_INFO:
-                draft.exchange.exchangeInfo = action.exchangeInfo;
-                break;
-            case TRADING_EXCHANGE.SAVE_QUOTE_REQUEST:
-                draft.exchange.quotesRequest = action.request;
-                break;
-            case TRADING_EXCHANGE.SAVE_QUOTES:
-                draft.exchange.quotes = action.quotes;
-                break;
-            case TRADING_EXCHANGE.SAVE_QUOTE:
-                draft.exchange.selectedQuote = action.quote;
-                break;
-            case TRADING_EXCHANGE.SET_IS_FROM_REDIRECT:
-                draft.exchange.isFromRedirect = action.isFromRedirect;
-                break;
-            case TRADING_EXCHANGE.VERIFY_ADDRESS:
-                draft.exchange.addressVerified = action.addressVerified;
-                break;
-            case TRADING_EXCHANGE.SAVE_TRANSACTION_ID:
-                draft.exchange.transactionId = action.transactionId;
-                break;
-            case TRADING_EXCHANGE.SET_TRADING_ACCOUNT_KEY:
-                draft.exchange.tradingAccountKey = action.accountKey;
                 break;
             case TRADING_COMMON.SAVE_COMPOSED_TRANSACTION_INFO:
                 draft.composedTransactionInfo = action.info;
@@ -235,21 +179,6 @@ export const selectTradingSellInfo = createMemoizedSelector(
     },
 );
 
-export const selectTradingExchangeInfo = createMemoizedSelector(
-    [state => state.wallet.trading.exchange],
-    (exchange): TradingExchangeInfoSelector | undefined => {
-        const { exchangeInfo } = exchange;
-
-        if (!exchangeInfo) return;
-
-        return {
-            ...exchangeInfo,
-            buySymbols: new Set(exchangeInfo.buySymbols),
-            sellSymbols: new Set(exchangeInfo.sellSymbols),
-        };
-    },
-);
-
 export const selectSupportedSymbols =
     (type: TradingType) =>
     (state: AppState): Set<CryptoId> | undefined => {
@@ -257,7 +186,7 @@ export const selectSupportedSymbols =
             case 'buy':
                 return selectTradingBuyInfo(state)?.supportedCryptoCurrencies;
             case 'exchange':
-                return selectTradingExchangeInfo(state)?.sellSymbols;
+                return selectTradingExchangeInfo(state)?.sellCryptoIds;
             case 'sell':
                 return selectTradingSellInfo(state)?.supportedCryptoCurrencies;
         }

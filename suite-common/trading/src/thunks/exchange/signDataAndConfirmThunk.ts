@@ -14,7 +14,7 @@ import { selectTradingExchangeSelectedQuote } from '../../selectors/tradingSelec
 
 export type SignDataAndConfirmThunkProps = {
     account: Account;
-    device: TrezorDevice;
+    device: TrezorDevice | undefined;
 
     returnUrl: string;
     triggerAnalyticsTradeConfirmation: () => void;

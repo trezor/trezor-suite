@@ -5,6 +5,7 @@ import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
+import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
 import { getUnusedAddressFromAccount } from '../../utils';
 
@@ -12,8 +13,9 @@ export interface VerifyAddressThunk {
     account: Account;
     address: string | undefined;
     path: string | undefined;
-    tradingAction: typeof tradingBuyActions.verifyAddress.type;
-    // TODO: | typeof TRADING_EXCHANGE.VERIFY_ADDRESS;
+    tradingAction:
+        | typeof tradingBuyActions.verifyAddress.type
+        | typeof tradingExchangeActions.verifyAddress.type;
 }
 
 export const verifyAddressThunk = createThunk(

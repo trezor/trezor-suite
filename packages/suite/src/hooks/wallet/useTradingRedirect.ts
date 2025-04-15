@@ -7,12 +7,11 @@ import {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
-import { tradingBuyActions } from '@suite-common/trading';
+import { tradingActions, tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
 import { FeeLevel } from '@trezor/connect';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
-import * as tradingExchangeActions from 'src/actions/wallet/tradingExchangeActions';
 import * as tradingSellActions from 'src/actions/wallet/tradingSellActions';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
@@ -181,9 +180,6 @@ export const useTradingRedirect = () => {
             receive,
             sendStringAmount: amount,
         };
-
-        dispatch(tradingExchangeActions.saveQuoteRequest(request));
-        dispatch(tradingExchangeActions.setIsFromRedirect(true));
         const composed = {
             feeLimit,
             feePerByte: feePerByte || '',
@@ -191,7 +187,15 @@ export const useTradingRedirect = () => {
             maxFeePerGas,
             maxPriorityFeePerGas,
         };
-        dispatch(saveComposedTransactionInfo({ selectedFee: selectedFee || 'normal', composed }));
+
+        dispatch(tradingExchangeActions.saveQuoteRequest(request));
+        dispatch(tradingExchangeActions.setIsFromRedirect(true));
+        dispatch(
+            tradingActions.saveComposedTransactionInfo({
+                selectedFee: selectedFee || 'normal',
+                composed,
+            }),
+        );
         dispatch(tradingExchangeActions.saveTransactionId(orderId));
         dispatch(
             goto('wallet-trading-exchange-confirm', {

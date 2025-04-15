@@ -17,7 +17,6 @@ import { isChanged } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import { saveComposedTransactionInfo } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
@@ -338,7 +337,6 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
                 setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true, shouldDirty: true });
             }
 
-            dispatch(saveComposedTransactionInfo({ selectedFee: selectedFeeLevel, composed }));
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit, { shouldDirty: true });
         }
     }, [

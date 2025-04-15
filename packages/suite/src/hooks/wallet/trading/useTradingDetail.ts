@@ -6,6 +6,7 @@ import {
     type TradingType,
     selectTrading,
     selectTradingBuyInfo,
+    selectTradingExchangeInfo,
     tradingThunks,
 } from '@suite-common/trading';
 
@@ -13,10 +14,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useTradingLoadData } from 'src/hooks/wallet/trading/useTradingLoadData';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import {
-    selectTradingExchangeInfo,
-    selectTradingSellInfo,
-} from 'src/reducers/wallet/tradingReducer';
+import { selectTradingSellInfo } from 'src/reducers/wallet/tradingReducer';
 import {
     TradingGetDetailDataProps,
     TradingGetTypedTradeProps,
@@ -62,9 +60,9 @@ const getTradingDetailData = <T extends TradingType>({
     const info = infos[tradeType] as TradingTradeInfoMapProps[T];
 
     // TODO: trading - temporary hack solution using new reducer state
-    if (tradeType === 'buy') {
+    if (tradeType === 'buy' || tradeType === 'exchange') {
         const { trades } = tradingNew;
-        const { transactionId } = tradingNew.buy;
+        const { transactionId } = tradingNew[tradeType];
 
         const trade = getTypedTrade<T>({
             trades,

@@ -1,3 +1,5 @@
+import { ExchangeTrade } from 'invity-api';
+
 import { createThunk } from '@suite-common/redux-utils';
 import { amountToSmallestUnit } from '@suite-common/wallet-utils';
 
@@ -7,12 +9,12 @@ import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingReducer';
 import { selectTradingExchangeSelectedQuote } from '../../selectors/tradingSelectors';
-import { TradingSendRejectedProps, TradingTransactionExchange } from '../../types';
+import { TradingSendRejectedProps } from '../../types';
 
 export type SendTransactionThunkProps = {
-    trade: TradingTransactionExchange | undefined;
+    trade: ExchangeTrade | undefined;
     decimals: number;
-    shouldSendInSats: boolean;
+    shouldSendInSats: boolean | undefined;
 } & SendDexTransactionThunkProps;
 
 export const sendTransactionThunk = createThunk<
@@ -39,7 +41,7 @@ export const sendTransactionThunk = createThunk<
         { dispatch, getState, rejectWithValue },
     ) => {
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
-        const selectedTrade = trade?.data || selectedQuote;
+        const selectedTrade = trade ?? selectedQuote;
         // sendAddress may be set by useTradingWatchTrade hook to the trade object
         const sendAddress = selectedTrade?.sendAddress;
 
@@ -81,7 +83,7 @@ export const sendTransactionThunk = createThunk<
             ? amountToSmallestUnit(selectedTrade.sendStringAmount, decimals)
             : selectedTrade.sendStringAmount;
         const sendPaymentExtraId =
-            selectedTrade.partnerPaymentExtraId || trade?.data?.partnerPaymentExtraId;
+            selectedTrade.partnerPaymentExtraId || trade?.partnerPaymentExtraId;
 
         const { payload } = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({

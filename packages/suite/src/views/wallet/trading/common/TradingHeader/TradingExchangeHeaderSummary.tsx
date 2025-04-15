@@ -1,7 +1,10 @@
 import { CryptoId } from 'invity-api';
 import { useTheme } from 'styled-components';
 
-import type { TradingExchangeType } from '@suite-common/trading';
+import {
+    type TradingExchangeType,
+    selectTradingComposedTransactionInfo,
+} from '@suite-common/trading';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { H3, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -26,7 +29,7 @@ export const TradingExchangeHeaderSummary = ({
     const context = useTradingFormContext<TradingExchangeType>();
     const { account } = context;
     const { symbol } = account;
-    const fee = useSelector(state => state.wallet.trading.composedTransactionInfo.composed?.fee);
+    const fee = useSelector(selectTradingComposedTransactionInfo)?.composed?.fee;
     const feeAmount = formatNetworkAmount(fee || '0', symbol);
 
     return (

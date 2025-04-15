@@ -1,10 +1,10 @@
 import { Fragment } from 'react';
 
-import type { TradingExchangeType } from '@suite-common/trading';
+import { selectTradingExchangeFormStep } from '@suite-common/trading';
 import { Card, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useSelector } from 'src/hooks/suite';
 import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';
 import { TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
 import { TradingOfferExchangeSend } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferExchange/TradingOfferExchangeSend';
@@ -25,7 +25,7 @@ export const TradingOfferExchange = ({
     type,
     quoteAmounts,
 }: TradingOfferExchangeProps) => {
-    const { exchangeStep } = useTradingFormContext<TradingExchangeType>();
+    const formStep = useSelector(selectTradingExchangeFormStep);
     const cryptoId = selectedQuote?.receive;
     const tradingVerifyAccount = useTradingVerifyAccount({
         cryptoId,
@@ -36,7 +36,7 @@ export const TradingOfferExchange = ({
         {
             step: 'RECEIVING_ADDRESS',
             translationId: 'TR_EXCHANGE_VERIFY_ADDRESS_STEP',
-            isActive: exchangeStep === 'RECEIVING_ADDRESS',
+            isActive: formStep === 'RECEIVING_ADDRESS',
             component: cryptoId ? (
                 <TradingVerify tradingVerifyAccount={tradingVerifyAccount} cryptoId={cryptoId} />
             ) : null,
@@ -46,7 +46,7 @@ export const TradingOfferExchange = ({
                   {
                       step: 'SEND_APPROVAL_TRANSACTION',
                       translationId: 'TR_EXCHANGE_CREATE_APPROVAL_STEP',
-                      isActive: exchangeStep === 'SEND_APPROVAL_TRANSACTION',
+                      isActive: formStep === 'SEND_APPROVAL_TRANSACTION',
                       component: <TradingOfferExchangeSendApproval />,
                   },
               ]
@@ -54,12 +54,12 @@ export const TradingOfferExchange = ({
         {
             step: 'SEND_TRANSACTION',
             translationId: 'TR_EXCHANGE_CONFIRM_SEND_STEP',
-            isActive: exchangeStep === 'SEND_TRANSACTION' || exchangeStep === 'SIGN_DATA',
+            isActive: formStep === 'SEND_TRANSACTION' || formStep === 'SIGN_DATA',
             component: !selectedQuote.isDex ? (
                 <TradingOfferExchangeSend />
             ) : (
                 <>
-                    {exchangeStep === 'SIGN_DATA' ? (
+                    {formStep === 'SIGN_DATA' ? (
                         <TradingOfferExchangeSignData />
                     ) : (
                         <TradingOfferExchangeSendSwap />

@@ -1,10 +1,10 @@
 import { ExchangeProviderInfo } from 'invity-api';
 
 import type { TradingTransactionExchange as TradingTxExchange } from '@suite-common/trading';
+import { tradingExchangeActions } from '@suite-common/trading';
 import { Button } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { saveTransactionId } from 'src/actions/wallet/tradingExchangeActions';
 import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
@@ -31,7 +31,7 @@ export const TradingTransactionExchange = ({
     const dispatch = useDispatch();
 
     const viewDetail = () => {
-        dispatch(saveTransactionId(trade.key || ''));
+        dispatch(tradingExchangeActions.saveTransactionId(trade.key || ''));
         dispatch(goto('wallet-trading-exchange-detail'));
     };
 

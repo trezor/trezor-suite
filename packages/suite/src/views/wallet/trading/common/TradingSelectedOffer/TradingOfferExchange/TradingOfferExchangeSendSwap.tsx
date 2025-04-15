@@ -107,10 +107,14 @@ export const TradingOfferExchangeSendSwap = () => {
                 !customSlippageError &&
                 customSlippage !== selectedQuote.swapSlippage
             ) {
-                confirmTrade(selectedQuote.receiveAddress, undefined, {
-                    ...selectedQuote,
-                    swapSlippage: customSlippage,
-                    approvalType: undefined,
+                confirmTrade({
+                    receiveAddress: selectedQuote.receiveAddress,
+                    extraField: undefined,
+                    trade: {
+                        ...selectedQuote,
+                        swapSlippage: customSlippage,
+                        approvalType: undefined,
+                    },
                 });
             }
         },
@@ -151,10 +155,14 @@ export const TradingOfferExchangeSendSwap = () => {
 
             if (!selectedQuote.dexTx || !selectedQuote.receiveAddress) return;
 
-            await confirmTrade(selectedQuote.receiveAddress, undefined, {
-                ...selectedQuote,
-                swapSlippage: value,
-                approvalType: undefined,
+            await confirmTrade({
+                receiveAddress: selectedQuote.receiveAddress,
+                extraField: undefined,
+                trade: {
+                    ...selectedQuote,
+                    swapSlippage: value,
+                    approvalType: undefined,
+                },
             });
         }
     };

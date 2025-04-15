@@ -61,8 +61,8 @@ export const useTradingInfo = (section?: TradingType): TradingInfoProps => {
 
     const getInfo = () => {
         if (section) {
-            // TODO: trading - refactor only buy is refactored for now
-            return section === 'buy' ? tradingNewInfo : tradingInfo;
+            // TODO: trading - refactor only buy & exchange is refactored for now
+            return ['buy', 'exchange'].includes(section) ? tradingNewInfo : tradingInfo;
         }
 
         return tradingInfo;

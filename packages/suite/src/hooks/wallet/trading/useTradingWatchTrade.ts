@@ -6,8 +6,6 @@ import {
     BuyTradeFinalStatus,
     ExchangeTradeFinalStatus,
     SellTradeFinalStatus,
-    WatchBuyTradeResponse,
-    WatchExchangeTradeResponse,
     WatchSellTradeResponse,
 } from 'invity-api';
 
@@ -16,11 +14,9 @@ import {
     type TradingTransaction,
     type TradingType,
     invityAPI,
-    tradingActions,
     tradingThunks,
 } from '@suite-common/trading';
 
-import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/tradingExchangeActions';
 import { saveTrade as saveSellTrade } from 'src/actions/wallet/tradingSellActions';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { TradingUseWatchTradeProps, TradingWatchTradeProps } from 'src/types/trading/trading';
@@ -45,35 +41,10 @@ const tradingWatchTrade = async <T extends TradingType>({
     invityAPI.createInvityAPIKey(account.descriptor);
 
     const response = await invityAPI.watchTrade<T>(trade.data, trade.tradeType, refreshCount);
-    const accountData = {
-        descriptor: account.descriptor,
-        symbol: account.symbol,
-        accountType: account.accountType,
-        accountIndex: account.index,
-    };
 
     if (!response) return;
     if (response.status && response.status !== trade.data.status) {
         const newDate = new Date().toISOString();
-
-        if (trade.tradeType === 'buy') {
-            const buyResponse = response as WatchBuyTradeResponse;
-            const tradeData = {
-                ...trade.data,
-                status: buyResponse.status,
-                error: buyResponse.error,
-            };
-
-            dispatch(
-                tradingActions.saveTrade({
-                    tradeType: 'buy',
-                    data: tradeData,
-                    key: tradeData.paymentId,
-                    account: accountData,
-                    date: newDate,
-                }),
-            );
-        }
 
         if (trade.tradeType === 'sell') {
             const sellResponse = response as WatchSellTradeResponse;
@@ -93,22 +64,6 @@ const tradingWatchTrade = async <T extends TradingType>({
             }
 
             dispatch(saveSellTrade(tradeData, account, newDate));
-        }
-
-        if (trade.tradeType === 'exchange') {
-            const exchangeResponse = response as WatchExchangeTradeResponse;
-            const tradeData = {
-                ...trade.data,
-                status: exchangeResponse.status,
-                error: exchangeResponse.error,
-            };
-
-            if (exchangeResponse.sendAddress) {
-                tradeData.sendAddress = exchangeResponse.sendAddress;
-                tradeData.partnerPaymentExtraId = exchangeResponse.partnerPaymentExtraId;
-            }
-
-            dispatch(saveExchangeTrade(tradeData, account, newDate));
         }
     }
 
@@ -143,7 +98,7 @@ export const useTradingWatchTrade = <T extends TradingType>({
         if (shouldRefreshTrade(trade)) {
             cancelRefresh();
 
-            if (trade.tradeType === 'buy') {
+            if (['buy', 'exchange'].includes(trade.tradeType)) {
                 dispatch(
                     tradingThunks.watchTradeThunk({
                         account,

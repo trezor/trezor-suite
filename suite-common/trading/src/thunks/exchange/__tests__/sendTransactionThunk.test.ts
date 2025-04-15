@@ -186,24 +186,20 @@ describe('sendTransactionThunk', () => {
     describe('should return error', () => {
         it.each([
             ['when trade data is undefined', { trade: undefined }],
-            ['when trade data has not orderId', { trade: { data: {} } }],
-            [
-                'when trade data has not sendStringAmount',
-                { trade: { data: { orderId: 'orderId' } } },
-            ],
+            ['when trade data has not orderId', { trade: {} }],
+            ['when trade data has not sendStringAmount', { trade: { orderId: 'orderId' } }],
             [
                 'when trade data has not sendAddress',
-                { trade: { data: { orderId: 'orderId', sendStringAmount: '1' } } },
+                { trade: { orderId: 'orderId', sendStringAmount: '1' } },
             ],
-        ])('%s', async (_, tradeDataTest) => {
-            const { store, returnUrl, account, trade } = getMocks();
+        ])('%s', async (_, tradeTest) => {
+            const { store, returnUrl, account } = getMocks();
 
             const result = await store.dispatch(
                 exchangeThunks.sendTransactionThunk({
                     account,
                     trade: {
-                        ...trade,
-                        data: tradeDataTest.trade?.data as ExchangeTrade,
+                        ...(tradeTest.trade as ExchangeTrade),
                     },
                     returnUrl,
                     decimals: getNetwork(account.symbol).decimals,
@@ -247,7 +243,7 @@ describe('sendTransactionThunk', () => {
             const result = await store.dispatch(
                 exchangeThunks.sendTransactionThunk({
                     account,
-                    trade,
+                    trade: trade.data,
                     returnUrl,
                     decimals: getNetwork(account.symbol).decimals,
                     shouldSendInSats: false,
@@ -291,11 +287,9 @@ describe('sendTransactionThunk', () => {
             exchangeThunks.sendTransactionThunk({
                 account,
                 trade: {
-                    ...trade,
-                    data: {
-                        ...trade.data,
-                        partnerPaymentExtraId: undefined,
-                    },
+                    ...trade.data,
+                    ...trade.data,
+                    partnerPaymentExtraId: undefined,
                 },
                 returnUrl,
                 decimals: getNetwork(account.symbol).decimals,

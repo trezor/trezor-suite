@@ -9,19 +9,18 @@ import {
     selectTradingExchangeInfo,
     selectTradingExchangeQuotesRequest,
 } from '../../selectors/tradingSelectors';
-
-type UserConsentProps = {
-    provider: string;
-    isDex: boolean;
-    send: string;
-    receive: string;
-};
+import { TradingExchangeUserConsentProps } from '../../types';
 
 export type SelectQuoteThunkProps = {
     quote: ExchangeTrade;
     timer: Timer;
 
-    userConsent: ({ provider, isDex, send, receive }: UserConsentProps) => Promise<boolean>;
+    userConsent: ({
+        provider,
+        isDex,
+        send,
+        receive,
+    }: TradingExchangeUserConsentProps) => Promise<boolean>;
     nextStep: () => void;
 };
 

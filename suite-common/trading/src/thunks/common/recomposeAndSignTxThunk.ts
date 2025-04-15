@@ -5,23 +5,12 @@ import {
     composeSendFormTransactionFeeLevelsThunk,
     selectNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import {
-    Account,
-    FormOptions,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-} from '@suite-common/wallet-types';
+import { Account, FormOptions, FormState } from '@suite-common/wallet-types';
 import { Success, Unsuccessful } from '@trezor/connect';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { selectTradingComposedTransactionInfo } from '../../selectors/tradingSelectors';
-import { TradingSendRejectedProps } from '../../types';
-
-type SignAndPushSendFormTransactionProps = {
-    formState: FormState;
-    precomposedTransaction: GeneralPrecomposedTransactionFinal;
-    selectedAccount: Account;
-};
+import { TradingSendRejectedProps, TradingSignAndPushSendFormTransactionProps } from '../../types';
 
 type FulfillValue = Success<{ txid: string }> | Unsuccessful | undefined;
 
@@ -39,7 +28,7 @@ export type RecomposeAndSignTxThunkProps = {
         formState,
         precomposedTransaction,
         selectedAccount,
-    }: SignAndPushSendFormTransactionProps) => Promise<FulfillValue>;
+    }: TradingSignAndPushSendFormTransactionProps) => Promise<FulfillValue>;
 };
 
 /**

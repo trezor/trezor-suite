@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { mapTestnetSymbol } from '@suite-common/trading';
+import { mapTestnetSymbol, tradingExchangeActions } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
-import { setTradingExchangeAccountKey } from 'src/actions/wallet/tradingExchangeActions';
 import { setTradingSellAccountKey } from 'src/actions/wallet/tradingSellActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TradingTradeSellExchangeType } from 'src/types/trading/trading';
@@ -62,7 +61,7 @@ export const useTradingAccountKey = ({
             if (type === 'sell') {
                 dispatch(setTradingSellAccountKey(accountKey));
             } else {
-                dispatch(setTradingExchangeAccountKey(accountKey));
+                dispatch(tradingExchangeActions.setTradingAccountKey(accountKey));
             }
         }
     }, [accountKey, dispatch, shouldUseTradingAccountKey, type]);
