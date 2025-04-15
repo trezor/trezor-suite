@@ -130,7 +130,11 @@ export const connectPopupCallThunkInner = createThunk<
             return response;
         } catch (error) {
             console.error('connectPopupCallThunk', error);
-            dispatch(connectPopupActions.setError(serializeError(error)));
+            if (error?.code === 'Method_Cancel') {
+                dispatch(connectPopupActions.finishCall());
+            } else {
+                dispatch(connectPopupActions.setError(serializeError(error)));
+            }
 
             return {
                 success: false,
