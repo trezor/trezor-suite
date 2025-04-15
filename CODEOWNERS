@@ -2,7 +2,7 @@
 
 /docker @vdovhanych @mroz22
 
-/scripts @Nodonisko
+/scripts @MiroslavProchazka
 
 /packages/analytics @tomasklim
 
@@ -72,9 +72,9 @@
 
 /packages/transport-test @mroz22
 
-/packages/transport-native @trezor/suite-mobile @Nodonisko
+/packages/transport-native @trezor/suite-mobile @MiroslavProchazka
 
-/packages/theme @Nodonisko @trezor/suite-engagement
+/packages/theme @MiroslavProchazka @trezor/suite-engagement
 
 /packages/urls @marekrjpolak
 
@@ -84,11 +84,11 @@
 
 /packages/utxo-lib @szymonlesisz
 
-/packages/styles @Nodonisko @trezor/suite-engagement
+/packages/styles @MiroslavProchazka @trezor/suite-engagement
 
 /packages/suite/src/support/messages.ts @MiroslavProchazka
 
-/suite-common/graph @trezor/suite-mobile @Nodonisko
+/suite-common/graph @trezor/suite-mobile @MiroslavProchazka
 
 /packages/connect/src/data/deviceAuthenticityConfig.ts @tsusanka
 
@@ -97,3 +97,5 @@
 /packages/connect-explorer-theme @martykan
 
 /packages/websocket-client @mroz22 @marekrjpolak
+
+packages/suite-desktop-core/e2e @HajekOndrej @Vere-Grey
